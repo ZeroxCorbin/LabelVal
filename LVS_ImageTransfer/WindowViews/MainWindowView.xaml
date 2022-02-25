@@ -11,26 +11,38 @@
         d:DataContext="{d:DesignInstance Type=local:MainWindowViewModel}"
         mc:Ignorable="d"
         Title="MainWindowView" Height="450" Width="800">
+    <mah:MetroWindow.DataContext>
+        <local:MainWindowViewModel/>
+    </mah:MetroWindow.DataContext>
     <Grid>
         <StackPanel>
              <StackPanel Orientation="Horizontal">
                 <Label Content="LVS Image Path"/>
                 <TextBox mah:TextBoxHelper.Watermark="Path to LVS image files."
-                         Text="{Binding ImageSourcePath}"/>
+                         Text="{Binding ImageSourcePath}"
+                         MinWidth="200"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal">
                 <TextBox mah:TextBoxHelper.Watermark="FTP Server IP" 
-                         Text="{Binding FTPServerIP}" MinWidth="80"/>
+                         Text="{Binding Host}" MinWidth="80"/>
                 <TextBox mah:TextBoxHelper.Watermark="Path" 
-                         Text="{Binding FTPServerPath}" MinWidth="80"/>
+                         Text="{Binding RootPath}" MinWidth="80"/>
                 <TextBox mah:TextBoxHelper.Watermark="User Name" 
-                         Text="{Binding FTPServerUserName}" MinWidth="80"/>
+                         Text="{Binding UserName}" MinWidth="80"/>
                 <TextBox mah:TextBoxHelper.Watermark="Password" 
-                         Text="{Binding FTPServerPassword}" MinWidth="80"/>
-                <Button Content="Connect"/>
+                         Text="{Binding Password}" MinWidth="80"/>
             </StackPanel>
-            
+
+            <StackPanel Orientation="Horizontal">
+             <Button Content="Start"
+                    Command="{Binding Start}"
+                     IsEnabled="{Binding NotStarted}"/> 
+                <Button Content="Stop"
+                    Command="{Binding Stop}"
+                        IsEnabled="{Binding Started}"/>             
+            </StackPanel>
+
         </StackPanel>
 
     </Grid>
