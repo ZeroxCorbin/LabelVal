@@ -18,12 +18,12 @@ namespace LVS_ImageTransfer
         public static Databases.SimpleDatabase Settings { get; private set; }
 
 #if DEBUG
-        public static string SettingsFileRootDir { get; set; } = System.IO.Directory.GetCurrentDirectory();
+        public static string WorkingDir { get; set; } = System.IO.Directory.GetCurrentDirectory();
 #else        
-        public static string SettingsFileRootDir { get; set; } = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\\TDD\\LVS_ImageTransfer\\";
+        public static string WorkingDir { get; set; } = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\\TDD\\LVS_ImageTransfer\\";
 #endif
 
-        public static string UserDataDirectory => $"{SettingsFileRootDir}\\UserData";
+        public static string UserDataDirectory => $"{WorkingDir}\\UserData";
         public static string MapDatabaseSettingsFile => "ApplicationSettings";
         public static string MapDatabaseExtension => ".sqlite";
 

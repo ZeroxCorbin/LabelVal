@@ -16,14 +16,15 @@
     </mah:MetroWindow.DataContext>
     <Grid>
         <StackPanel>
-             <StackPanel Orientation="Horizontal">
-                <Label Content="LVS Image Path"/>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="LVS Images Path"/>
                 <TextBox mah:TextBoxHelper.Watermark="Path to LVS image files."
                          Text="{Binding ImageSourcePath}"
                          MinWidth="200"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal">
+                <Label Content="FTP Connection Values"/>
                 <TextBox mah:TextBoxHelper.Watermark="FTP Server IP" 
                          Text="{Binding Host}" MinWidth="80"/>
                 <TextBox mah:TextBoxHelper.Watermark="Path" 
@@ -35,14 +36,17 @@
             </StackPanel>
 
             <StackPanel Orientation="Horizontal">
-             <Button Content="Start"
+                <Label/>
+                <Button Content="Start"
                     Command="{Binding Start}"
-                     IsEnabled="{Binding NotStarted}"/> 
+                     IsEnabled="{Binding NotStarted}"/>
+                <Label/>
                 <Button Content="Stop"
                     Command="{Binding Stop}"
-                        IsEnabled="{Binding Started}"/>             
+                        IsEnabled="{Binding Started}"/>
             </StackPanel>
-
+            
+            <Label Content="{Binding Status}"/>
         </StackPanel>
 
     </Grid>

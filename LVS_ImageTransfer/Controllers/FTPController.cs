@@ -11,12 +11,12 @@ namespace LVS_ImageTransfer.Controllers
 {
     internal class FTPController
     {
-        public string ImageSourcePath { get => App.Settings.GetValue("ImageSourcePath", ""); set => App.Settings.SetValue("ImageSourcePath", value); }
+        public string ImageSourcePath { get => App.Settings.GetValue("ImageSourcePath", "");  }
 
-        public string Host { get => App.Settings.GetValue("FTPHost", ""); set => App.Settings.SetValue("FTPHost", value); }
-        public string RootPath { get => App.Settings.GetValue("FTPRootPath", "/*.*"); set => App.Settings.SetValue("FTPRootPath", value); }
-        public string UserName { get => App.Settings.GetValue("FTPUserName", ""); set => App.Settings.SetValue("FTPUserName", value); }
-        public string Password { get => App.Settings.GetValue("FTPPassword", ""); set => App.Settings.SetValue("FTPPassword", value); }
+        public string Host { get => App.Settings.GetValue("FTPHost", ""); }
+        public string RootPath { get => App.Settings.GetValue("FTPRootPath", "/*.*"); }
+        public string UserName { get => App.Settings.GetValue("FTPUserName", ""); }
+        public string Password { get => App.Settings.GetValue("FTPPassword", "");  }
 
 
         public void OpenWrite(string localFilePath, string fileName)
