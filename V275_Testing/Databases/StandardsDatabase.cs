@@ -99,7 +99,7 @@ namespace V275_Testing.Databases
             if (!Open()) return;
 
             StringBuilder sb = new StringBuilder();
-            _ = sb.Append($"INSERT OR IGNORE INTO '{tableName}' (Repeat, Job, Report) VALUES (");
+            _ = sb.Append($"INSERT OR REPLACE INTO '{tableName}' (Repeat, Job, Report) VALUES (");
             _ = sb.Append($"@Repeat,");
             _ = sb.Append($"@Job,");
             _ = sb.Append($"@Report);");

@@ -45,6 +45,9 @@ namespace V275_Testing.WindowViewModels
 
         V275_API_Commands V275 { get; }
 
+        V275_Job Job { get; set; }
+        V275_Report Report {get; set;}
+
         public ICommand Print { get; }
         public ICommand Read { get; }
         public ICommand Store { get; }
@@ -66,14 +69,14 @@ namespace V275_Testing.WindowViewModels
         private bool isRun = false;
 
 
-        public RepeatControlViewModel(int repeatNumber, string imagePath, string printerName, V275_API_Commands v275, string gradingStandard, StandardsDatabase standardsDatabase)
+        public RepeatControlViewModel(int repeatNumber, string imagePath, string printerName, string gradingStandard, StandardsDatabase standardsDatabase, V275_API_Commands v275)
         {
             RepeatNumber = repeatNumber;
             ImagePath = imagePath;
             PrinterName = printerName;
-            V275 = v275;
             GradingStandard = gradingStandard;
             StandardsDatabase = standardsDatabase;
+            V275 = v275;
 
             Print = new Core.RelayCommand(PrintAction, c => true);
             Read = new Core.RelayCommand(ReadAction, c => true);
@@ -133,7 +136,7 @@ namespace V275_Testing.WindowViewModels
                 Status = V275.Status;
                 return;
             }
-                
+            Job = V275.Job;
 
             if (!await V275.Inspect())
             {
@@ -148,14 +151,16 @@ namespace V275_Testing.WindowViewModels
                 Status = V275.Status;
                 return;
             }
+            Report = V275.Report;
 
-            JobSegments = GetDisplayString(V275.Job, V275.Report);
+            JobSegments = GetDisplayString(Job, Report);
 
         }
 
-        private async void StoreAction(object parameter)
+        private void StoreAction(object parameter)
         {
-
+            StandardsDatabase.AddRow(GradingStandard, RepeatNumber, JsonConvert.SerializeObject(Job), JsonConvert.SerializeObject(Report));
+            GetStored();
         }
 
         private string GetDisplayString(V275_Job job, V275_Report report)

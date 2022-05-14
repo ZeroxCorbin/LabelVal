@@ -33,10 +33,11 @@ namespace V275_Testing.WindowViewModels
 
         public string StoredStandard { get => App.Settings.GetValue("StoredStandard", "GS1 Table 1"); set { App.Settings.SetValue("StoredStandard", value); } }
         public ObservableCollection<string> Standards { get; } = new ObservableCollection<string>();
-        public string SelectedStandard { 
-            get => selectedStandard; 
-            set 
-            { 
+        public string SelectedStandard
+        {
+            get => selectedStandard;
+            set
+            {
                 SetProperty(ref selectedStandard, value);
 
                 if (!string.IsNullOrEmpty(value))
@@ -54,9 +55,10 @@ namespace V275_Testing.WindowViewModels
 
         public string StoredPrinter { get => App.Settings.GetValue("StoredPrinter", ""); set { App.Settings.SetValue("StoredPrinter", value); } }
         public ObservableCollection<string> Printers { get; } = new ObservableCollection<string>();
-        public string SelectedPrinter {
+        public string SelectedPrinter
+        {
             get => selectedPrinter;
-            set 
+            set
             {
                 SetProperty(ref selectedPrinter, value);
 
@@ -134,7 +136,7 @@ namespace V275_Testing.WindowViewModels
             {
                 Printers.Add(p);
 
-                if(StoredPrinter == p)
+                if (StoredPrinter == p)
                     SelectedPrinter = p;
             }
 
@@ -159,9 +161,9 @@ namespace V275_Testing.WindowViewModels
             Images.Sort();
 
             int i = 1;
-            foreach(var img in Images)
+            foreach (var img in Images)
             {
-                Repeats.Add(new RepeatControlViewModel(i++, img, SelectedPrinter, V275, SelectedStandard, StandardsDatabase));
+                Repeats.Add(new RepeatControlViewModel(i++, img, SelectedPrinter, SelectedStandard, StandardsDatabase, V275));
             }
         }
 
@@ -214,7 +216,7 @@ namespace V275_Testing.WindowViewModels
 
             List<string> tables = StandardsDatabase.GetAllTables();
 
-            foreach(var standard in Standards)
+            foreach (var standard in Standards)
             {
                 if (tables.Contains(standard))
                     continue;
@@ -263,6 +265,11 @@ namespace V275_Testing.WindowViewModels
             if (await V275.Login(UserName, Password, true))
             {
                 IsLogggedIn = true;
+
+                foreach (var rep in Repeats)
+                {
+                    rep.IsSetup = true;
+                }
             }
             else
             {
@@ -278,6 +285,11 @@ namespace V275_Testing.WindowViewModels
             if (await V275.Login(UserName, Password, false))
             {
                 IsLogggedIn = true;
+
+                foreach (var rep in Repeats)
+                {
+                    rep.IsRun = true;
+                }
             }
             else
             {
@@ -297,6 +309,13 @@ namespace V275_Testing.WindowViewModels
                 Status = V275.Status;
                 IsLogggedIn = false;
             }
+
+            foreach (var rep in Repeats)
+            {
+                rep.IsRun = false;
+                rep.IsSetup = false;
+            }
+
         }
 
         private async void StartAction(object parameter)
@@ -313,7 +332,7 @@ namespace V275_Testing.WindowViewModels
                 return;
             }
 
-          //  Printer.PrintControl.Print(System.IO.Directory.GetCurrentDirectory() + "\\Assets\\GS1\\Table 1\\600\\", 1);
+            //  Printer.PrintControl.Print(System.IO.Directory.GetCurrentDirectory() + "\\Assets\\GS1\\Table 1\\600\\", 1);
 
             //bool res = true;
             //string result = await V275_API_Connection.Put(V275_API_URLs.Print(), V275_API_URLs.Print_Body(true), Token);

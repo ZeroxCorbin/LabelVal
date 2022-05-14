@@ -11,7 +11,9 @@
             d:DataContext="{d:DesignInstance Type=local:RepeatControlViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="booltovis"/>
+    </UserControl.Resources>
     <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="2" MinWidth="200" Margin="5">
 
         <Grid>
@@ -62,15 +64,23 @@
                 </Grid>
             </Border>
 
-            <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Grid.Row="0" Grid.Column="2" Margin="3,3,3,-3">
+            <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
+                    BorderThickness="1"
+                    Grid.Row="0" Grid.Column="2" 
+                    Margin="3,3,3,-3">
                 <StackPanel Orientation="Horizontal" Margin="3,3,3,6">
                     <Button Content="Store" Command="{Binding Store}" Margin="2"/>
-                    <Button Content="Get" Command="{Binding Read}" Margin="2"/>
+                    <Button Content="Get" Command="{Binding Read}" Margin="2" 
+                        Visibility="{Binding IsSetup, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                     <Label Content="{Binding Status}"/>
                 </StackPanel>
             </Border>
             
-            <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Grid.Row="1" Grid.Column="2" MinWidth="200" Margin="3">
+            <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
+                   BorderThickness="1"
+                    Grid.Row="1" Grid.Column="2"
+                    MinWidth="200"
+                    Margin="3">
                 <Grid>
                     <TextBlock Text="{Binding JobSegments}"/>
                 </Grid>

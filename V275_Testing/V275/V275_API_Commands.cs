@@ -13,16 +13,15 @@ namespace V275_Testing.V275
         V275_API_Connection Connection { get; set; } = new V275_API_Connection();
         V275_API_URLs URLs { get; set; } = new V275_API_URLs();
 
-        public bool IsLogggedIn { get; set; }
-        public bool IsMonitor { get; set; }
-        private string Token { get; set; }
-
+        //public bool IsLogggedIn { get; set; }
+        //public bool IsMonitor { get; set; }
+        public string Token { get; set; }
         public string Host { get => URLs.Host; set=>URLs.Host = value; }
         public string SystemPort { get => URLs.SystemPort; set => URLs.SystemPort = value; }
         public string NodeNumber { get => URLs.NodeNumber; set => URLs.NodeNumber = value; }
 
-        public bool IsException => Connection.IsException ? true : string.IsNullOrEmpty(Status) ? true : false;
-        public string Exception => Connection.IsException ? Connection.Exception.Message : Status;
+        //public bool IsException => Connection.IsException ? true : string.IsNullOrEmpty(Status) ? true : false;
+        //public string Exception => Connection.IsException ? Connection.Exception.Message : Status;
         public string Status { get; private set; }
 
         public V275_Devices Devices { get; private set; }
