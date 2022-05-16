@@ -1,0 +1,118 @@
+﻿<UserControl x:Class="V275_Testing.WindowViews.SectorControlView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+            xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+            xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+            xmlns:local="clr-namespace:V275_Testing.WindowViews"
+             xmlns:ViewModels="clr-namespace:V275_Testing.WindowViewModels"
+             xmlns:V275="clr-namespace:V275_Testing.V275.Models"
+            xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+            Dialog:DialogParticipation.Register="{Binding}"
+            d:DataContext="{d:DesignInstance Type=ViewModels:SectorControlViewModel}"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="booltovis"/>
+    </UserControl.Resources>
+    
+    <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Margin="3">
+        <Grid Margin="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="   WRONG STANDARD   " 
+                       Background="OrangeRed"
+                       Grid.ColumnSpan="4"
+                       HorizontalAlignment="Center"
+                       Visibility="{Binding IsWrongStandard, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+            <Border Grid.Row="1" Grid.Column="0" Background="White" Height="30" Width="30">
+                <Image Stretch="Fill" >
+
+                    <Image.Style>
+                        <Style TargetType="{x:Type Image}">
+                            <Setter Property="Source" Value="/Assets/Images/barcode-1d.png"/>
+                            <Style.Triggers>
+                                <DataTrigger Value="True" Binding="{Binding IsVerify2D}">
+                                    <Setter Property="Source" Value="/Assets/Images/barcode-2d.png"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
+            </Border>
+
+
+            <Grid Grid.Row="1" Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <Label Content="{Binding JobSector.username}" Grid.Row="0"/>
+                <Label Content="{Binding ReportSector.data.decodeText}" Grid.Row="2"/>
+            </Grid>
+
+            <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Grid.Row="1" Grid.Column="2" Height="30" Width="30" CornerRadius="3">
+                    <Border.Style>
+                        <Style TargetType="{x:Type Border}">
+                            <Setter Property="Background" Value="Green"/>
+                            <Style.Triggers>
+                                <DataTrigger Value="True" Binding="{Binding IsError}">
+                                    <Setter Property="Background" Value="Red"/>
+                                </DataTrigger>
+                            <DataTrigger Value="True" Binding="{Binding IsWarning}">
+                                <Setter Property="Background" Value="Orange"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+
+                <TextBlock Text="{Binding ReportSector.data.overallGrade.grade.value, StringFormat=N1}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            </Border>
+
+            <ItemsControl Grid.Row="2" Grid.ColumnSpan="4" ItemsSource="{Binding CompareSector.Alarms}">
+                <ItemsControl.ItemTemplate>
+                    <HierarchicalDataTemplate>
+                        <StackPanel Orientation="Horizontal" Margin="2">
+                           <TextBlock Text="{Binding Path=name}"/>
+                            <TextBlock Text=" "/>
+                            <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Grid.Column="2" Height="10" Width="10" CornerRadius="3">
+                                <Border.Style>
+                                    <Style TargetType="{x:Type Border}">
+                                        <Setter Property="Background" Value="Green"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Value="2" Binding="{Binding Path=category}">
+                                                <Setter Property="Background" Value="Red"/>
+                                            </DataTrigger>
+                                            <DataTrigger Value="1" Binding="{Binding category}">
+                                                <Setter Property="Background" Value="Orange"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                            </Border>
+                            <TextBlock Text=" "/>
+                            <TextBlock Text="{Binding Path=data.subAlarm}"/>
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+                </ItemsControl.ItemTemplate>
+
+            </ItemsControl>
+
+        </Grid>
+    </Border>
+</UserControl>

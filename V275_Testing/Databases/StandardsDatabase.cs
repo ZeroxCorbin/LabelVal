@@ -121,10 +121,10 @@ namespace V275_Testing.Databases
             List<string> lst = new List<string>();
 
             if (!Open()) return lst;
- 
+
             using (SQLiteCommand command = new SQLiteCommand($"SELECT name FROM sqlite_schema WHERE type='table';", Connection))
             using (SQLiteDataReader rdr = command.ExecuteReader())
-                while(rdr.Read())
+                while (rdr.Read())
                     lst.Add(rdr.GetString(0));
 
             if (!IsConnectionPersistent)
@@ -141,7 +141,7 @@ namespace V275_Testing.Databases
 
             using (SQLiteCommand command = new SQLiteCommand($"SELECT * FROM '{tableName}'", Connection))
             using (SQLiteDataReader rdr = command.ExecuteReader())
-                while(rdr.Read())
+                while (rdr.Read())
                     lst.Add(new Row(rdr));
 
             if (!IsConnectionPersistent)
@@ -150,7 +150,7 @@ namespace V275_Testing.Databases
             return lst;
         }
 
-        public Row GetRepeat(string tableName, int repeat)
+        public Row GetRow(string tableName, int repeat)
         {
             Row row = null;
 
@@ -161,8 +161,9 @@ namespace V275_Testing.Databases
                 try
                 {
                     using (SQLiteDataReader rdr = command.ExecuteReader())
-                    while (rdr.Read())
-                        row = new Row(rdr);            }
+                        while (rdr.Read())
+                            row = new Row(rdr);
+                }
                 catch
                 {
 
@@ -175,6 +176,19 @@ namespace V275_Testing.Databases
             return row;
         }
 
+        public Row DeleteRow(string tableName, int repeat)
+        {
+            Row row = null;
+
+            if (!Open()) return row;
+            using (SQLiteCommand command = new SQLiteCommand($"DELETE FROM '{tableName}' WHERE Repeat={repeat}", Connection))
+            using (SQLiteDataReader rdr = command.ExecuteReader()) { };
+
+            if (!IsConnectionPersistent)
+                Close();
+
+            return row;
+        }
 
         private bool disposedValue;
         protected virtual void Dispose(bool disposing)

@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -35,22 +36,23 @@ namespace V275_Testing.WindowViewModels
 
         public int PrintCount { get; set; } = 3;
 
-        public string JobSegments { get => jobSegments; set => SetProperty(ref jobSegments, value); }
-        private string jobSegments;
-
-        public string StoredSegments { get => storedSegments; set => SetProperty(ref storedSegments, value); }
-        private string storedSegments;
-
-        public string JobSegmentsResults { get; set; }
-
         V275_API_Commands V275 { get; }
-
         V275_Job Job { get; set; }
-        V275_Report Report {get; set;}
+        V275_Report Report { get; set; }
+
+        public ObservableCollection<SectorControlViewModel> ReadSectors { get; } = new ObservableCollection<SectorControlViewModel>();
+        public ObservableCollection<SectorControlViewModel> StoredSectors { get; } = new ObservableCollection<SectorControlViewModel>();
+
+        public ObservableCollection<SectorControlViewModel> DiffSectors { get; } = new ObservableCollection<SectorControlViewModel>();
 
         public ICommand Print { get; }
         public ICommand Read { get; }
         public ICommand Store { get; }
+        public ICommand Load { get; }
+        public ICommand Inspect { get; }
+
+        public ICommand ClearStored { get; }
+        public ICommand ClearRead { get; }
 
         public bool IsSetup
         {
@@ -68,6 +70,13 @@ namespace V275_Testing.WindowViewModels
         public bool IsNotRun => !isRun;
         private bool isRun = false;
 
+        public bool IsStore
+        {
+            get => isStore;
+            set { SetProperty(ref isStore, value); OnPropertyChanged("IsNotStore"); }
+        }
+        public bool IsNotStore => !isStore;
+        private bool isStore = false;
 
         public RepeatControlViewModel(int repeatNumber, string imagePath, string printerName, string gradingStandard, StandardsDatabase standardsDatabase, V275_API_Commands v275)
         {
@@ -81,6 +90,11 @@ namespace V275_Testing.WindowViewModels
             Print = new Core.RelayCommand(PrintAction, c => true);
             Read = new Core.RelayCommand(ReadAction, c => true);
             Store = new Core.RelayCommand(StoreAction, c => true);
+            Load = new Core.RelayCommand(LoadAction, c => true);
+            Inspect = new Core.RelayCommand(InspectAction, c => true);
+
+            ClearStored = new Core.RelayCommand(ClearStoredAction, c => true);
+            ClearRead = new Core.RelayCommand(ClearReadAction, c => true);
 
             GetImage(imagePath);
             GetStored();
@@ -102,20 +116,88 @@ namespace V275_Testing.WindowViewModels
             RepeatImage.EndInit();
         }
 
+        private void ClearStoredAction(object parameter)
+        {
+            StandardsDatabase.DeleteRow(GradingStandard, RepeatNumber);
+            GetStored();
+        }
+        private void ClearReadAction(object parameter)
+        {
+            ReadSectors.Clear();
+            IsStore = false;
+        }
         private void GetStored()
         {
-            StandardsDatabase.Row row = StandardsDatabase.GetRepeat(GradingStandard, RepeatNumber);
+
+            StoredSectors.Clear();
+
+            StandardsDatabase.Row row = StandardsDatabase.GetRow(GradingStandard, RepeatNumber);
 
             if (row == null)
             {
-                StoredSegments = "Nothing stored yet!";
                 return;
             }
 
-            if(!string.IsNullOrEmpty(row.Report) && !string.IsNullOrEmpty(row.Job))
-                StoredSegments = GetDisplayString(JsonConvert.DeserializeObject<V275_Job>(row.Job), JsonConvert.DeserializeObject<V275_Report>(row.Report));
-            else
-                StoredSegments = "Nothing stored yet!";
+            if (!string.IsNullOrEmpty(row.Report) && !string.IsNullOrEmpty(row.Job))
+                foreach (var jSec in JsonConvert.DeserializeObject<V275_Job>(row.Job).sectors)
+                {
+                    bool isWrongStandard;
+                    if (jSec.gradingStandard.enabled)
+                        isWrongStandard = !(GradingStandard == $"{jSec.gradingStandard.standard} Table {jSec.gradingStandard.tableId}");
+                    else
+                        isWrongStandard = true;
+
+                    foreach (JObject rSec in JsonConvert.DeserializeObject<V275_Report>(row.Report).inspectLabel.inspectSector)
+                    {
+                        if (jSec.name == rSec["name"].ToString())
+                        {
+                            object fSec;
+                            if (rSec["type"].ToString() == "verify1D")
+                            {
+                                fSec = JsonConvert.DeserializeObject<V275_Report_InspectSector_Verify1D>(rSec.ToString());
+                                StoredSectors.Add(new SectorControlViewModel(jSec, fSec, isWrongStandard));
+                            }
+                            else if (rSec["type"].ToString() == "verify2D")
+                            {
+                                fSec = JsonConvert.DeserializeObject<V275_Report_InspectSector_Verify2D>(rSec.ToString());
+                                StoredSectors.Add(new SectorControlViewModel(jSec, fSec, isWrongStandard));
+                            }
+
+                            break;
+                        }
+                    }
+                }
+        }
+
+        private async void LoadAction(object parameter)
+        {
+            if (!await V275.GetJob())
+            {
+                Status = V275.Status;
+                return;
+            }
+            Job = V275.Job;
+
+            foreach (var sec in Job.sectors)
+            {
+                await V275.DeleteSector(sec.name);
+
+            }
+                //StandardsDatabase.Row row = StandardsDatabase.GetRow(GradingStandard, RepeatNumber);
+
+                //if (row == null)
+                //{
+                //    return;
+                //}
+            foreach(var sec in StoredSectors)
+            {
+                await V275.AddSector(sec.JobSector.name, JsonConvert.SerializeObject(sec.JobSector));
+            }
+        }
+
+        private void InspectAction(object parameter)
+        {
+            ReadAction(parameter);
         }
 
         private void PrintAction(object parameter)
@@ -131,7 +213,10 @@ namespace V275_Testing.WindowViewModels
         {
             Status = string.Empty;
 
-            if(!await V275.GetJob())
+            ReadSectors.Clear();
+            IsStore = false;
+
+            if (!await V275.GetJob())
             {
                 Status = V275.Status;
                 return;
@@ -153,8 +238,64 @@ namespace V275_Testing.WindowViewModels
             }
             Report = V275.Report;
 
-            JobSegments = GetDisplayString(Job, Report);
+            //foreach (var jSec in Job.sectors)
+            //    foreach (V275_Report_InspectSector rSec in Report.inspectLabel.inspectSector)
+            //        if (jSec.name == rSec.name)
+            //        {
+            //            ReadSectors.Add(new SectorControlViewModel(jSec, rSec));
+            //            break;
+            //        }
 
+            foreach (var jSec in Job.sectors)
+            {
+                bool isWrongStandard;
+                if (jSec.gradingStandard.enabled)
+                    isWrongStandard = !(GradingStandard == $"{jSec.gradingStandard.standard} Table {jSec.gradingStandard.tableId}");
+                else
+                    isWrongStandard = true;
+
+                foreach (JObject rSec in Report.inspectLabel.inspectSector)
+                {
+                    if (jSec.name == rSec["name"].ToString())
+                    {
+                        object fSec;
+                        if (rSec["type"].ToString() == "verify1D")
+                        {
+                            fSec = JsonConvert.DeserializeObject<V275_Report_InspectSector_Verify1D>(rSec.ToString());
+                            ReadSectors.Add(new SectorControlViewModel(jSec, fSec, isWrongStandard));
+                        }
+                        else if (rSec["type"].ToString() == "verify2D")
+                        {
+                            fSec = JsonConvert.DeserializeObject<V275_Report_InspectSector_Verify2D>(rSec.ToString());
+                            ReadSectors.Add(new SectorControlViewModel(jSec, fSec, isWrongStandard));
+                        }
+
+                        break;
+                    }
+                }
+            }
+            if(ReadSectors.Count > 0)
+                IsStore = true;
+
+            List<V275_Report_InspectSector_Compare> diff = new List<V275_Report_InspectSector_Compare>();
+            foreach(var sec in StoredSectors)
+            {
+                bool found = false;
+                foreach(var cSec in ReadSectors)
+                    if(sec.JobSector.name == cSec.JobSector.name)
+                    {
+                        found = true;
+                        diff.Add(sec.CompareSector.Compare(cSec.CompareSector));
+                    }
+
+                if (!found)
+                {
+                    var dat = sec.CompareSector.Compare(new V275_Report_InspectSector_Compare());
+                    dat.IsSectorMissing = true;
+                    diff.Add(dat);
+                }
+                    
+            }
         }
 
         private void StoreAction(object parameter)
@@ -181,33 +322,33 @@ namespace V275_Testing.WindowViewModels
                 {
                     sb.AppendLine();
                 }
-                foreach (JObject rep in report.inspectLabel.inspectSector)
-                {
-                    //V275_Report_Verify1D verify1D;
-                    //V275_Report_Verify2D verify2D;
-                    if (item.name == rep["name"].ToString())
-                        foreach (JObject alm in rep["data"]["alarms"])
-                        {
-                            sb.Append('\t');
-                            sb.Append(alm["name"]);
-                            sb.Append(": ");
-                            sb.Append(alm["data"]["subAlarm"]);
-                            sb.Append(" ");
-                            sb.Append(alm["data"]["text"]);
-                            sb.Append(" / ");
-                            sb.Append(alm["data"]["expected"]);
-                            sb.AppendLine();
-                        }
-                    //if (type == "verify1D")
-                    //    verify1D = JsonConvert.DeserializeObject<V275_Report_Verify1D>(rep.ToString());
-                    //else if (type == "verify2D")
-                    //    verify2D = JsonConvert.DeserializeObject<V275_Report_Verify2D>(rep.ToString());
+                //foreach (JObject rep in report.inspectLabel.inspectSector)
+                //{
+                //    //V275_Report_Verify1D verify1D;
+                //    //V275_Report_Verify2D verify2D;
+                //    if (item.name == rep["name"].ToString())
+                //        foreach (JObject alm in rep["data"]["alarms"])
+                //        {
+                //            sb.Append('\t');
+                //            sb.Append(alm["name"]);
+                //            sb.Append(": ");
+                //            sb.Append(alm["data"]["subAlarm"]);
+                //            sb.Append(" ");
+                //            sb.Append(alm["data"]["text"]);
+                //            sb.Append(" / ");
+                //            sb.Append(alm["data"]["expected"]);
+                //            sb.AppendLine();
+                //        }
+                //    //if (type == "verify1D")
+                //    //    verify1D = JsonConvert.DeserializeObject<V275_Report_Verify1D>(rep.ToString());
+                //    //else if (type == "verify2D")
+                //    //    verify2D = JsonConvert.DeserializeObject<V275_Report_Verify2D>(rep.ToString());
 
 
-                }
+                //}
             }
 
-           return sb.ToString();
+            return sb.ToString();
         }
     }
 }

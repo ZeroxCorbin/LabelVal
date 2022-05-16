@@ -106,6 +106,20 @@ namespace V275_Testing.V275
             return res;
         }
 
+        public async Task<bool> DeleteSector(string sectorName)
+        {
+            _ = await Connection.Delete(URLs.DeleteSector(sectorName), Token);
+
+            return CheckResults("", true);
+        }
+
+        public async Task<bool> AddSector(string sectorName, string json)
+        {
+            _ = await Connection.Post(URLs.AddSector(sectorName), json, Token);
+
+            return CheckResults("", true);
+        }
+
         public async Task<bool> Inspect()
         {
             await Connection.Put(URLs.Inspect(),"", Token);

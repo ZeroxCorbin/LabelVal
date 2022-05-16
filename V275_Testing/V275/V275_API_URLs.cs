@@ -23,6 +23,8 @@ namespace V275_Testing.V275
         public string GradingStandards() => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/gradingstandards";
 
         public string Job() => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/inspection/job";
+        public string DeleteSector(string sectorName) => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/inspection/job/sectors/{sectorName}";
+        public string AddSector(string sectorName) => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/inspection/job/sectors/{sectorName}";
 
         public string Print() => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/inspection/print";
         public string Print_Body(bool enabled) => $"{{\"enabled\":{(enabled ? "true" : "false")}}}";

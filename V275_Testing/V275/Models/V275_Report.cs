@@ -23,14 +23,6 @@ namespace V275_Testing.V275.Models
             public object[] ioLines { get; set; }
         }
 
-        public class Alarm
-        {
-            public string name { get; set; }
-            public int category { get; set; }
-            public SubAlarm data { get; set; }
-            public Useraction userAction { get; set; }
-        }
-
         public class SubAlarm
         {
             public string text { get; set; }

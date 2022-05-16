@@ -63,11 +63,11 @@
 
         <StackPanel Orientation="Horizontal" Grid.Row="1">
             <Label Content="Node Connection"/>
-            
+
             <Button Content="Get Nodes"
                     Command="{Binding GetDevices}"
                     IsEnabled="{Binding IsNotLogggedIn}"/>
-            
+
             <ComboBox ItemsSource="{Binding Nodes}"
                           SelectedValue="{Binding SelectedNode}"
                           IsEnabled="{Binding IsNotLogggedIn}">
@@ -101,24 +101,24 @@
                             IsEnabled="{Binding IsNotLogggedIn}"/>
                 <Button Content="Logout"
                             Command="{Binding Logout}"
-                            IsEnabled="{Binding IsLogggedIn}"/>                
+                            IsEnabled="{Binding IsLogggedIn}"/>
             </StackPanel>
 
         </StackPanel>
-        
+
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            
-             <StackPanel>
+
+            <StackPanel>
                 <ComboBox ItemsSource="{Binding Standards}" SelectedItem="{Binding SelectedStandard}"/>
             </StackPanel>
-        
+
             <!--<StackPanel Orientation="Horizontal" Grid.Row="1">
                 <Label/>
                 <Button Content="Start"
@@ -131,18 +131,18 @@
             </StackPanel>-->
 
             <ScrollViewer Grid.Row="1" >
-                   <ItemsControl ItemsSource="{Binding Repeats}">
+                <ItemsControl ItemsSource="{Binding Repeats}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel IsItemsHost="True"/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <local:RepeatControlView />
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>         
+                        <DataTemplate>
+                            <local:RepeatControlView />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </ScrollViewer>
 
         </Grid>

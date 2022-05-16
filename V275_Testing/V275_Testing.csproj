@@ -137,22 +137,31 @@
     <Compile Include="Databases\SimpleDatabase.cs" />
     <Compile Include="Core\StaticUtils.cs" />
     <Compile Include="Printer\PrintControl.cs" />
+    <Compile Include="V275\Models\IV275_Report_InspectSector.cs" />
     <Compile Include="V275\Models\V275_Devices.cs" />
     <Compile Include="V275\Models\V275_GradingStandards.cs" />
     <Compile Include="V275\Models\V275_Job.cs" />
-    <Compile Include="V275\Models\V275_Report_Verify1D.cs" />
+    <Compile Include="V275\Models\V275_Report_InspectSector_Compare.cs" />
+    <Compile Include="V275\Models\V275_Report_InspectSector_Common.cs" />
+    <Compile Include="V275\Models\V275_Report_InspectSector_Verify1D.cs" />
+    <Compile Include="V275\Models\V275_Report_InspectSector.cs" />
     <Compile Include="V275\Models\V275_Report.cs" />
-    <Compile Include="V275\Models\V275_Report_Verify2D.cs" />
+    <Compile Include="V275\Models\V275_Report_InspectSector_2D.cs" />
+    <Compile Include="V275\Models\V275_Report_InspectSector_Verify2D.cs" />
     <Compile Include="V275\V275_API_Commands.cs" />
     <Compile Include="V275\V275_API_Connection.cs" />
     <Compile Include="V275\V275_API_URLs.cs" />
     <Compile Include="WindowViewModels\MainWindowViewModel.cs" />
     <Compile Include="WindowViewModels\RepeatControlViewModel.cs" />
+    <Compile Include="WindowViewModels\SectorControlViewModel.cs" />
     <Compile Include="WindowViews\MainWindowView.xaml.cs">
       <DependentUpon>MainWindowView.xaml</DependentUpon>
     </Compile>
     <Compile Include="WindowViews\RepeatControlView.xaml.cs">
       <DependentUpon>RepeatControlView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WindowViews\SectorControlView.xaml.cs">
+      <DependentUpon>SectorControlView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -194,8 +203,18 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="WindowViews\SectorControlView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\Images\barcode-1d.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\barcode-2d.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\Standards\GS1 Table 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_01.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
