@@ -11,7 +11,7 @@ namespace V275_Testing.V275
     public class V275_API_Commands
     {
         V275_API_Connection Connection { get; set; } = new V275_API_Connection();
-        V275_API_URLs URLs { get; set; } = new V275_API_URLs();
+        public V275_API_URLs URLs { get; set; } = new V275_API_URLs();
 
         //public bool IsLogggedIn { get; set; }
         //public bool IsMonitor { get; set; }

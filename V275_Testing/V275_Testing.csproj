@@ -139,6 +139,7 @@
     <Compile Include="Printer\PrintControl.cs" />
     <Compile Include="V275\Models\IV275_Report_InspectSector.cs" />
     <Compile Include="V275\Models\V275_Devices.cs" />
+    <Compile Include="V275\Models\V275_Event_Base.cs" />
     <Compile Include="V275\Models\V275_GradingStandards.cs" />
     <Compile Include="V275\Models\V275_Job.cs" />
     <Compile Include="V275\Models\V275_Report_InspectSector_Compare.cs" />
@@ -151,6 +152,7 @@
     <Compile Include="V275\V275_API_Commands.cs" />
     <Compile Include="V275\V275_API_Connection.cs" />
     <Compile Include="V275\V275_API_URLs.cs" />
+    <Compile Include="V275\V275_API_WebSocketEvents.cs" />
     <Compile Include="WindowViewModels\MainWindowViewModel.cs" />
     <Compile Include="WindowViewModels\RepeatControlViewModel.cs" />
     <Compile Include="WindowViewModels\SectorControlViewModel.cs" />

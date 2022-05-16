@@ -20,6 +20,7 @@ namespace V275_Testing.WindowViewModels
     {
         private V275_API_Commands V275 = new V275_API_Commands();
         private StandardsDatabase StandardsDatabase { get; }
+        private V275_API_WebSocketEvents WebSocket { get; } = new V275_API_WebSocketEvents();
 
         public string V275_Host { get => V275.Host = App.Settings.GetValue("V275_Host", "127.0.0.1"); set { App.Settings.SetValue("V275_Host", value); V275.Host = value; } }
         public string V275_SystemPort { get => V275.SystemPort = App.Settings.GetValue("V275_SystemPort", "8080"); set { App.Settings.SetValue("V275_SystemPort", value); ; V275.SystemPort = value; } }
@@ -264,18 +265,26 @@ namespace V275_Testing.WindowViewModels
 
             if (await V275.Login(UserName, Password, true))
             {
+                WebSocket.NewRepeat += WebSocket_NewRepeat;
+                if (!await WebSocket.StartAsync(V275.URLs.WS_NodeEvents))
+                    return;
+
                 IsLogggedIn = true;
 
                 foreach (var rep in Repeats)
-                {
                     rep.IsSetup = true;
-                }
+
             }
             else
             {
                 Status = V275.Status;
                 IsLogggedIn = false;
             }
+        }
+
+        private void WebSocket_NewRepeat(string repeat)
+        {
+            
         }
 
         private async void LoginControlAction(object parameter)
@@ -309,6 +318,8 @@ namespace V275_Testing.WindowViewModels
                 Status = V275.Status;
                 IsLogggedIn = false;
             }
+
+            await WebSocket.StopAsync();
 
             foreach (var rep in Repeats)
             {

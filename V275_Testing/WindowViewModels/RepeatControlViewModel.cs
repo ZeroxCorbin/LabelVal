@@ -274,6 +274,7 @@ namespace V275_Testing.WindowViewModels
                     }
                 }
             }
+
             if(ReadSectors.Count > 0)
                 IsStore = true;
 

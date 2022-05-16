@@ -15,10 +15,13 @@ namespace V275_Testing.V275
 
         //public void Configure(string host, string systemPort, string nodeNumber = "1") { Host = host; SystemPort = systemPort; NodeNumber = nodeNumber; }
 
+
         public string Login(bool monitor = false, bool temporary = false) => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/security/login?monitor={(monitor ? "1" : "0")}&temporary={(temporary ? "1" : "0")}";
         public string Logout() => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/security/logout";
 
         public string Devices() => $"http://{Host}:{SystemPort}/api/printinspection/devices";
+
+        public string WS_NodeEvents => $"ws://{Host}:{NodePort}/api/printinspection/{NodeNumber}/inspection/events";
 
         public string GradingStandards() => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/gradingstandards";
 
