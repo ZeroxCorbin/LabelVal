@@ -15,6 +15,7 @@ namespace V275_Testing.V275.Models
 
         public Dictionary<string, V275_Report_InspectSector_Common.GradeValue> GradeValues { get; set; } = new Dictionary<string, V275_Report_InspectSector_Common.GradeValue>();
         public Dictionary<string, V275_Report_InspectSector_Common.ValueResult> ValueResults { get; set; } = new Dictionary<string, V275_Report_InspectSector_Common.ValueResult>();
+        public Dictionary<string, V275_Report_InspectSector_Common.ValueResult> Gs1ValueResults { get; set; } = new Dictionary<string, V275_Report_InspectSector_Common.ValueResult>();
         public Dictionary<string, V275_Report_InspectSector_Common.Value> Values { get; set; } = new Dictionary<string, V275_Report_InspectSector_Common.Value>();
         public List<V275_Report_InspectSector_Common.Alarm> Alarms { get; set; } = new List<V275_Report_InspectSector_Common.Alarm>();
 
@@ -49,6 +50,20 @@ namespace V275_Testing.V275.Models
                         if (prop1.PropertyType == typeof(V275_Report_InspectSector_Common.Alarm[]))
                         {
                             Alarms = ((V275_Report_InspectSector_Common.Alarm[])prop1.GetValue(prop.GetValue(verify))).ToList();
+                            continue;
+                        }
+
+                        if (prop1.PropertyType == typeof(V275_Report_InspectSector_Verify1D.Gs1symbolquality))
+                        {
+                            foreach(var prop2 in prop1.GetValue(prop.GetValue(verify)).GetType().GetProperties())
+                            {
+                                if (prop2.PropertyType == typeof(V275_Report_InspectSector_Common.ValueResult))
+                                {
+                                    Gs1ValueResults.Add(prop2.Name, (V275_Report_InspectSector_Common.ValueResult)prop2.GetValue(prop1.GetValue(prop.GetValue(verify))));
+                                    continue;
+                                }
+                            }
+                            //ValueResults.Add(prop1.Name, (V275_Report_InspectSector_Common.ValueResult)prop1.GetValue(prop.GetValue(verify)));
                             continue;
                         }
 

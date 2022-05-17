@@ -18,8 +18,6 @@ namespace V275_Testing.WindowViewModels
 
         //public List<V275_Report_InspectSector_Common.Alarm> Alarms { get; } = new List<V275_Report_InspectSector_Common.Alarm>();
 
-        public bool IsVerify2D { get; }
-
         public bool IsWarning { get; }
         public bool IsError { get; }
 
@@ -32,9 +30,6 @@ namespace V275_Testing.WindowViewModels
             IsWrongStandard = isWrongStandard;
 
             CompareSector.Process(reportSector);
-
-            if (JobSector.type == "verify2D")
-                IsVerify2D = true;
 
             int highCat = 0;
 

@@ -30,9 +30,9 @@ namespace V275_Testing.WindowViewModels
         public V275_Devices.Node SelectedNode { get => selectedNode; set { SetProperty(ref selectedNode, value); if (value != null) V275_NodeNumber = value.enumeration.ToString(); } }
         private V275_Devices.Node selectedNode;
 
-        public ObservableCollection<RepeatControlViewModel> Repeats { get; } = new ObservableCollection<RepeatControlViewModel>();
+        public ObservableCollection<LabelControlViewModel> Labels { get; } = new ObservableCollection<LabelControlViewModel>();
 
-        public string StoredStandard { get => App.Settings.GetValue("StoredStandard", "GS1 Table 1"); set { App.Settings.SetValue("StoredStandard", value); } }
+        public string StoredStandard { get => App.Settings.GetValue("StoredStandard", "GS1 TABLE 1"); set { App.Settings.SetValue("StoredStandard", value); } }
         public ObservableCollection<string> Standards { get; } = new ObservableCollection<string>();
         public string SelectedStandard
         {
@@ -44,11 +44,11 @@ namespace V275_Testing.WindowViewModels
                 if (!string.IsNullOrEmpty(value))
                 {
                     StoredStandard = value;
-                    LoadRepeats();
+                    LoadLabels();
                 }
                 else
                 {
-                    Repeats.Clear();
+                    Labels.Clear();
                 }
             }
         }
@@ -95,13 +95,27 @@ namespace V275_Testing.WindowViewModels
         public ICommand LoginMonitor { get; }
         public ICommand LoginControl { get; }
         public ICommand Logout { get; }
-        public bool IsLogggedIn
+        public bool IsLoggedIn
         {
-            get => isLoggedIn;
-            set { SetProperty(ref isLoggedIn, value); OnPropertyChanged("IsNotLogggedIn"); }
+            get => IsSetup || IsRun;
         }
-        public bool IsNotLogggedIn => !isLoggedIn;
-        private bool isLoggedIn = false;
+        public bool IsNotLoggedIn => !(IsSetup || IsRun);
+
+        public bool IsSetup
+        {
+            get => isSetup;
+            set { SetProperty(ref isSetup, value); OnPropertyChanged("IsNotSetup"); OnPropertyChanged("IsNotLoggedIn"); OnPropertyChanged("IsLoggedIn"); }
+        }
+        public bool IsNotSetup => !isSetup;
+        private bool isSetup = false;
+
+        public bool IsRun
+        {
+            get => isRun;
+            set { SetProperty(ref isRun, value); OnPropertyChanged("IsNotRun"); OnPropertyChanged("IsNotLoggedIn"); OnPropertyChanged("IsLoggedIn"); }
+        }
+        public bool IsNotRun => !isRun;
+        private bool isRun = false;
 
         public ICommand Start { get; }
         public bool IsStarted
@@ -147,13 +161,15 @@ namespace V275_Testing.WindowViewModels
 
         private void UpdatePrinters()
         {
-            foreach (var r in Repeats)
+            foreach (var r in Labels)
                 r.PrinterName = StoredPrinter;
 
         }
 
-        private void LoadRepeats()
+        private void LoadLabels()
         {
+            Labels.Clear();
+
             List<string> Images = new List<string>();
             Images.Clear();
             foreach (var f in Directory.EnumerateFiles($"{App.StandardsRoot}\\{StoredStandard}\\600\\"))
@@ -164,8 +180,30 @@ namespace V275_Testing.WindowViewModels
             int i = 1;
             foreach (var img in Images)
             {
-                Repeats.Add(new RepeatControlViewModel(i++, img, SelectedPrinter, SelectedStandard, StandardsDatabase, V275));
+                var tmp = new LabelControlViewModel(i++, img, SelectedPrinter, SelectedStandard, StandardsDatabase, V275);
+                tmp.Printing += Label_Printing;
+                Labels.Add(tmp);
             }
+
+            foreach (var rep in Labels)
+            {
+                rep.IsRun = IsRun;
+                rep.IsSetup = IsSetup;
+            }
+        }
+
+        public class Repeat
+        {
+            public string Standard { get; }
+            public int LabelNumber { get; }
+
+            public int RepeatNumber { get; } = -1;
+
+            
+        }
+        private void Label_Printing(string standard, int labelNumber)
+        {
+            throw new NotImplementedException();
         }
 
         private void Reset()
@@ -269,16 +307,16 @@ namespace V275_Testing.WindowViewModels
                 if (!await WebSocket.StartAsync(V275.URLs.WS_NodeEvents))
                     return;
 
-                IsLogggedIn = true;
+                IsSetup = true;
 
-                foreach (var rep in Repeats)
+                foreach (var rep in Labels)
                     rep.IsSetup = true;
 
             }
             else
             {
                 Status = V275.Status;
-                IsLogggedIn = false;
+                IsSetup = false;
             }
         }
 
@@ -293,17 +331,19 @@ namespace V275_Testing.WindowViewModels
 
             if (await V275.Login(UserName, Password, false))
             {
-                IsLogggedIn = true;
+                WebSocket.NewRepeat += WebSocket_NewRepeat;
+                if (!await WebSocket.StartAsync(V275.URLs.WS_NodeEvents))
+                    return;
 
-                foreach (var rep in Repeats)
-                {
+                IsRun = true;
+
+                foreach (var rep in Labels)
                     rep.IsRun = true;
-                }
             }
             else
             {
                 Status = V275.Status;
-                IsLogggedIn = false;
+                IsRun = false;
             }
         }
 
@@ -311,20 +351,26 @@ namespace V275_Testing.WindowViewModels
         {
             Reset();
 
-            if (await V275.Logout())
-                IsLogggedIn = false;
-            else
-            {
+            if (!await V275.Logout())
                 Status = V275.Status;
-                IsLogggedIn = false;
-            }
 
-            await WebSocket.StopAsync();
+            IsRun = false;
+            IsSetup = false;
 
-            foreach (var rep in Repeats)
+            try
             {
-                rep.IsRun = false;
-                rep.IsSetup = false;
+                await WebSocket.StopAsync();
+            }
+            catch
+            {
+
+            }
+            
+
+            foreach (var rep in Labels)
+            {
+                rep.IsRun = IsRun;
+                rep.IsSetup = IsSetup;
             }
 
         }

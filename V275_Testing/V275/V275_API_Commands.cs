@@ -13,7 +13,7 @@ namespace V275_Testing.V275
         V275_API_Connection Connection { get; set; } = new V275_API_Connection();
         public V275_API_URLs URLs { get; set; } = new V275_API_URLs();
 
-        //public bool IsLogggedIn { get; set; }
+        //public bool IsLoggedIn { get; set; }
         //public bool IsMonitor { get; set; }
         public string Token { get; set; }
         public string Host { get => URLs.Host; set=>URLs.Host = value; }

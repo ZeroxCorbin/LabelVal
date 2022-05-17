@@ -24,5 +24,10 @@ namespace V275_Testing.WindowViews
         {
             InitializeComponent();
         }
+
+        private void Image_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+
+        }
     }
 }

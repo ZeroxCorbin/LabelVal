@@ -66,11 +66,11 @@
 
             <Button Content="Get Nodes"
                     Command="{Binding GetDevices}"
-                    IsEnabled="{Binding IsNotLogggedIn}"/>
+                    IsEnabled="{Binding IsNotLoggedIn}"/>
 
             <ComboBox ItemsSource="{Binding Nodes}"
                           SelectedValue="{Binding SelectedNode}"
-                          IsEnabled="{Binding IsNotLogggedIn}">
+                          IsEnabled="{Binding IsNotLoggedIn}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
 
@@ -88,20 +88,20 @@
                          Text="{Binding RootPath}" MinWidth="80"/>-->
             <TextBox mah:TextBoxHelper.Watermark="User Name" 
                          Text="{Binding UserName}" MinWidth="80"
-                     IsEnabled="{Binding IsNotLogggedIn}"/>
+                     IsEnabled="{Binding IsNotLoggedIn}"/>
             <TextBox mah:TextBoxHelper.Watermark="Password" 
                          Text="{Binding Password}" MinWidth="80"
-                     IsEnabled="{Binding IsNotLogggedIn}"/>
+                     IsEnabled="{Binding IsNotLoggedIn}"/>
             <StackPanel Orientation="Horizontal" IsEnabled="{Binding IsGetDevices}" >
                 <Button Content="Setup"
                             Command="{Binding LoginMonitor}"
-                            IsEnabled="{Binding IsNotLogggedIn}"/>
+                            IsEnabled="{Binding IsNotLoggedIn}"/>
                 <Button Content="Run"
                             Command="{Binding LoginControl}"
-                            IsEnabled="{Binding IsNotLogggedIn}"/>
+                            IsEnabled="{Binding IsNotLoggedIn}"/>
                 <Button Content="Logout"
                             Command="{Binding Logout}"
-                            IsEnabled="{Binding IsLogggedIn}"/>
+                            IsEnabled="{Binding IsLoggedIn}"/>
             </StackPanel>
 
         </StackPanel>
@@ -131,7 +131,7 @@
             </StackPanel>-->
 
             <ScrollViewer Grid.Row="1" >
-                <ItemsControl ItemsSource="{Binding Repeats}">
+                <ItemsControl ItemsSource="{Binding Labels}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel IsItemsHost="True"/>
@@ -139,7 +139,7 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <local:RepeatControlView />
+                            <local:LabelControlView />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
