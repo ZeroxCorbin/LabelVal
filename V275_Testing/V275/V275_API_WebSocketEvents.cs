@@ -9,6 +9,7 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using V275_Testing.V275.Models;
 
 namespace V275_Testing.V275
 {
@@ -20,8 +21,14 @@ namespace V275_Testing.V275
         public delegate void MessageRecievedDelegate(string message);
         public event MessageRecievedDelegate MessageRecieved;
 
-        public delegate void NewRepeatDelegate(string repeat);
-        public event NewRepeatDelegate NewRepeat;
+        public delegate void HeartbeatDelegate(V275_Events_System ev);
+        public event HeartbeatDelegate Heartbeat;
+
+        public delegate void SetupCaptureDelegate(V275_Events_System ev);
+        public event SetupCaptureDelegate SetupCapture;
+
+        public delegate void SessionStateChangeDelegate(V275_Events_System ev);
+        public event SessionStateChangeDelegate SessionStateChange;
 
         public async Task<bool> StartAsync(string wsUri)
             => await StartAsync(new Uri(wsUri));
@@ -55,18 +62,40 @@ namespace V275_Testing.V275
 
         private void V275_API_WebSocketEvents_MessageRecieved(string message)
         {
-            if (message.Contains("heartbeat"))
-                return;
+            string tmp;
+            tmp = message.Remove(2, 15);
+            tmp = tmp.Remove(tmp.LastIndexOf('}'), 1);
+            V275_Events_System ev = JsonConvert.DeserializeObject<V275_Events_System>(tmp);
 
-            if (message.Contains("setupCapture"))
+            if (ev.source == "system")
+                if (ev.name == "heartbeat")
+                    return;
+                else
+                    using (StreamWriter sw = File.AppendText("capture_system.txt"))
+                        sw.WriteLine(message);
+
+            else if (ev.name != "heartbeat")
+                using (StreamWriter sw = File.AppendText("capture_node.txt"))
+                    sw.WriteLine(message);
+
+            if (ev.name == "heartbeat")
             {
-                JObject obj = (JObject)JsonConvert.DeserializeObject(message);
-                NewRepeat?.Invoke(obj["event"]["data"]["repeat"].ToString());
+                Heartbeat?.Invoke(ev);
+                return;
             }
 
-            using (StreamWriter sw = File.AppendText("capture.txt"))
+            if (ev.name == "setupCapture")
             {
-                sw.WriteLine(message);
+                //JObject obj = (JObject)JsonConvert.DeserializeObject(message);
+                SetupCapture?.Invoke(ev);
+                return;
+            }
+
+            if (ev.name == "sessionStateChange")
+            {
+                //JObject obj = (JObject)JsonConvert.DeserializeObject(message);
+                SessionStateChange?.Invoke(ev);
+                return;
             }
         }
 
@@ -86,6 +115,7 @@ namespace V275_Testing.V275
             {
                 // normal upon task/token cancellation, disregard
             }
+            catch { }
             // whether we closed the socket or timed out, we cancel the token causing RecieveAsync to abort the socket
             SocketLoopTokenSource.Cancel();
             // the finally block at the end of the processing loop will dispose and null the Socket object
@@ -136,8 +166,12 @@ namespace V275_Testing.V275
             {
                 MessageRecieved -= V275_API_WebSocketEvents_MessageRecieved;
 
-                Socket.Dispose();
-                Socket = null;
+                if (Socket != null)
+                {
+                    Socket.Dispose();
+                    Socket = null;
+                }
+
             }
         }
     }

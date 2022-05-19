@@ -18,11 +18,11 @@ namespace V275_Testing.WindowViewModels
 {
     public class LabelControlViewModel : Core.BaseViewModel
     {
-        public delegate void PrintingDelegate(string standard, int labelNumber);
+        public delegate void PrintingDelegate(LabelControlViewModel label);
         public event PrintingDelegate Printing;
 
         public string PrinterName { get; set; }
-        public int RepeatNumber { get; }
+        public int LabelNumber { get; }
         public BitmapImage RepeatImage { get; } = new BitmapImage();
 
         public string Status
@@ -37,7 +37,7 @@ namespace V275_Testing.WindowViewModels
 
         private string ImagePath { get; }
 
-        public int PrintCount { get; set; } = 3;
+        public int PrintCount { get; set; } = 1;
 
         V275_API_Commands V275 { get; }
         V275_Job Job { get; set; }
@@ -48,11 +48,11 @@ namespace V275_Testing.WindowViewModels
 
         public ObservableCollection<SectorControlViewModel> DiffSectors { get; } = new ObservableCollection<SectorControlViewModel>();
 
-        public ICommand Print { get; }
-        public ICommand Read { get; }
-        public ICommand Store { get; }
-        public ICommand Load { get; }
-        public ICommand Inspect { get; }
+        public ICommand PrintCommand { get; }
+        public ICommand ReadCommand { get; }
+        public ICommand StoreCommand { get; }
+        public ICommand LoadCommand { get; }
+        public ICommand InspectCommand { get; }
 
         public ICommand ClearStored { get; }
         public ICommand ClearRead { get; }
@@ -68,7 +68,7 @@ namespace V275_Testing.WindowViewModels
         public bool IsRun
         {
             get => isRun;
-            set { SetProperty(ref isRun, value); OnPropertyChanged("IsNotRun"); }
+            set { if(value != isRun) App.Current.Dispatcher.Invoke(new Action(() => { ReadSectors.Clear(); IsStore = false; })); SetProperty(ref isRun, value); OnPropertyChanged("IsNotRun"); }
         }
         public bool IsNotRun => !isRun;
         private bool isRun = false;
@@ -81,20 +81,20 @@ namespace V275_Testing.WindowViewModels
         public bool IsNotStore => !isStore;
         private bool isStore = false;
 
-        public LabelControlViewModel(int repeatNumber, string imagePath, string printerName, string gradingStandard, StandardsDatabase standardsDatabase, V275_API_Commands v275)
+        public LabelControlViewModel(int labelNumber, string imagePath, string printerName, string gradingStandard, StandardsDatabase standardsDatabase, V275_API_Commands v275)
         {
-            RepeatNumber = repeatNumber;
+            LabelNumber = labelNumber;
             ImagePath = imagePath;
             PrinterName = printerName;
             GradingStandard = gradingStandard;
             StandardsDatabase = standardsDatabase;
             V275 = v275;
 
-            Print = new Core.RelayCommand(PrintAction, c => true);
-            Read = new Core.RelayCommand(ReadAction, c => true);
-            Store = new Core.RelayCommand(StoreAction, c => true);
-            Load = new Core.RelayCommand(LoadAction, c => true);
-            Inspect = new Core.RelayCommand(InspectAction, c => true);
+            PrintCommand = new Core.RelayCommand(PrintAction, c => true);
+            ReadCommand = new Core.RelayCommand(ReadAction, c => true);
+            StoreCommand = new Core.RelayCommand(StoreAction, c => true);
+            LoadCommand = new Core.RelayCommand(LoadAction, c => true);
+            InspectCommand = new Core.RelayCommand(InspectAction, c => true);
 
             ClearStored = new Core.RelayCommand(ClearStoredAction, c => true);
             ClearRead = new Core.RelayCommand(ClearReadAction, c => true);
@@ -121,7 +121,7 @@ namespace V275_Testing.WindowViewModels
 
         private void ClearStoredAction(object parameter)
         {
-            StandardsDatabase.DeleteRow(GradingStandard, RepeatNumber);
+            StandardsDatabase.DeleteRow(GradingStandard, LabelNumber);
             GetStored();
         }
         private void ClearReadAction(object parameter)
@@ -134,13 +134,14 @@ namespace V275_Testing.WindowViewModels
 
             StoredSectors.Clear();
 
-            StandardsDatabase.Row row = StandardsDatabase.GetRow(GradingStandard, RepeatNumber);
+            StandardsDatabase.Row row = StandardsDatabase.GetRow(GradingStandard, LabelNumber);
 
             if (row == null)
             {
                 return;
             }
 
+            List<SectorControlViewModel> tempSectors = new List<SectorControlViewModel>();
             if (!string.IsNullOrEmpty(row.Report) && !string.IsNullOrEmpty(row.Job))
                 foreach (var jSec in JsonConvert.DeserializeObject<V275_Job>(row.Job).sectors)
                 {
@@ -155,39 +156,57 @@ namespace V275_Testing.WindowViewModels
                     {
                         if (jSec.name == rSec["name"].ToString())
                         {
-                            object fSec;
-                            if (rSec["type"].ToString() == "verify1D")
-                            {
-                                fSec = JsonConvert.DeserializeObject<V275_Report_InspectSector_Verify1D>(rSec.ToString());
-                                StoredSectors.Add(new SectorControlViewModel(jSec, fSec, isWrongStandard));
-                            }
-                            else if (rSec["type"].ToString() == "verify2D")
-                            {
-                                fSec = JsonConvert.DeserializeObject<V275_Report_InspectSector_Verify2D>(rSec.ToString());
-                                StoredSectors.Add(new SectorControlViewModel(jSec, fSec, isWrongStandard));
-                            }
-                            else if (rSec["type"].ToString() == "ocr")
-                            {
-                                fSec = JsonConvert.DeserializeObject<V275_Report_InspectSector_OCR>(rSec.ToString());
-                                StoredSectors.Add(new SectorControlViewModel(jSec, fSec, isWrongStandard));
-                            }
-                            else if (rSec["type"].ToString() == "ocv")
-                            {
-                                fSec = JsonConvert.DeserializeObject<V275_Report_InspectSector_OCV>(rSec.ToString());
-                                StoredSectors.Add(new SectorControlViewModel(jSec, fSec, isWrongStandard));
-                            }
+                            
+                            object fSec = DeserializeSector(rSec);
+
+                            if (fSec == null)
+                                break;
+
+                            tempSectors.Add(new SectorControlViewModel(jSec, fSec , isWrongStandard));
+
                             break;
                         }
                     }
                 }
+
+            if (tempSectors.Count > 0)
+            {
+                tempSectors = tempSectors.OrderBy(x => x.JobSector.top).ToList();
+
+                foreach (var sec in tempSectors)
+                    StoredSectors.Add(sec);
+            }
         }
 
-        private async void LoadAction(object parameter)
+        private object DeserializeSector(JObject reportSec)
+        {
+            if (reportSec["type"].ToString() == "verify1D")
+            {
+                return JsonConvert.DeserializeObject<V275_Report_InspectSector_Verify1D>(reportSec.ToString());
+            }
+            else if (reportSec["type"].ToString() == "verify2D")
+            {
+                return JsonConvert.DeserializeObject<V275_Report_InspectSector_Verify2D>(reportSec.ToString());
+            }
+            else if (reportSec["type"].ToString() == "ocr")
+            {
+                return JsonConvert.DeserializeObject<V275_Report_InspectSector_OCR>(reportSec.ToString());
+            }
+            else if (reportSec["type"].ToString() == "ocv")
+            {
+                return JsonConvert.DeserializeObject<V275_Report_InspectSector_OCV>(reportSec.ToString());
+            }
+            else
+                return null;
+        }
+        private void LoadAction(object parameter) => _ = Load();
+
+        public async Task<bool> Load()
         {
             if (!await V275.GetJob())
             {
                 Status = V275.Status;
-                return;
+                return false;
             }
             Job = V275.Job;
 
@@ -196,33 +215,41 @@ namespace V275_Testing.WindowViewModels
                 await V275.DeleteSector(sec.name);
 
             }
-            //StandardsDatabase.Row row = StandardsDatabase.GetRow(GradingStandard, RepeatNumber);
+            //StandardsDatabase.Row row = StandardsDatabase.GetRow(GradingStandard, LabelNumber);
 
             //if (row == null)
             //{
             //    return;
             //}
+            if(StoredSectors.Count > 0)
+                if (!await V275.GetJob())
+                {
+                    Status = V275.Status;
+                    return false;
+                }
             foreach (var sec in StoredSectors)
             {
                 await V275.AddSector(sec.JobSector.name, JsonConvert.SerializeObject(sec.JobSector));
             }
+
+            return true;
         }
 
-        private void InspectAction(object parameter)
-        {
-            ReadAction(parameter);
-        }
+        private void InspectAction(object parameter) => _ = Read(-1);
 
         private void PrintAction(object parameter)
         {
             Task.Run(() =>
             {
+                Printing?.Invoke(this);
+
                 PrintControl printer = new PrintControl();
                 printer.Print(ImagePath, PrintCount, PrinterName);
             });
         }
+        public void ReadAction(object parameter) => _=Read(-1);
 
-        private async void ReadAction(object parameter)
+        public async Task<bool> Read(int repeat)
         {
             Status = string.Empty;
 
@@ -232,14 +259,21 @@ namespace V275_Testing.WindowViewModels
             if (!await V275.GetJob())
             {
                 Status = V275.Status;
-                return;
+                return false;
             }
             Job = V275.Job;
+
+            if(repeat > 0)
+                if (!await V275.SetRepeat(repeat))
+                {
+                    Status = V275.Status;
+                    return false;
+                }
 
             if (!await V275.Inspect())
             {
                 Status = V275.Status;
-                return;
+                return false;
             }
 
             Thread.Sleep(1000);
@@ -247,7 +281,7 @@ namespace V275_Testing.WindowViewModels
             if (!await V275.GetReport())
             {
                 Status = V275.Status;
-                return;
+                return false;
             }
             Report = V275.Report;
 
@@ -259,6 +293,7 @@ namespace V275_Testing.WindowViewModels
             //            break;
             //        }
 
+            List<SectorControlViewModel> tempSectors = new List<SectorControlViewModel>();
             foreach (var jSec in Job.sectors)
             {
                 bool isWrongStandard = false;
@@ -272,35 +307,27 @@ namespace V275_Testing.WindowViewModels
                 {
                     if (jSec.name == rSec["name"].ToString())
                     {
-                        object fSec;
-                        if (rSec["type"].ToString() == "verify1D")
-                        {
-                            fSec = JsonConvert.DeserializeObject<V275_Report_InspectSector_Verify1D>(rSec.ToString());
-                            ReadSectors.Add(new SectorControlViewModel(jSec, fSec, isWrongStandard));
-                        }
-                        else if (rSec["type"].ToString() == "verify2D")
-                        {
-                            fSec = JsonConvert.DeserializeObject<V275_Report_InspectSector_Verify2D>(rSec.ToString());
-                            ReadSectors.Add(new SectorControlViewModel(jSec, fSec, isWrongStandard));
-                        }
-                        else if (rSec["type"].ToString() == "ocr")
-                        {
-                            fSec = JsonConvert.DeserializeObject<V275_Report_InspectSector_OCR>(rSec.ToString());
-                            ReadSectors.Add(new SectorControlViewModel(jSec, fSec, isWrongStandard));
-                        }
-                        else if (rSec["type"].ToString() == "ocv")
-                        {
-                            fSec = JsonConvert.DeserializeObject<V275_Report_InspectSector_OCV>(rSec.ToString());
-                            ReadSectors.Add(new SectorControlViewModel(jSec, fSec, isWrongStandard));
-                        }
+                        object fSec = DeserializeSector(rSec);
+
+                        if (fSec == null)
+                            break; //Not yet supported sector type
+
+                        tempSectors.Add(new SectorControlViewModel(jSec, fSec, isWrongStandard));
 
                         break;
                     }
                 }
             }
 
-            if (ReadSectors.Count > 0)
+            if (tempSectors.Count > 0)
+            {
                 IsStore = true;
+                tempSectors = tempSectors.OrderBy(x => x.JobSector.top).ToList();
+
+                foreach(var sec in tempSectors)
+                    ReadSectors.Add(sec);
+            }
+                
 
             List<V275_Report_InspectSector_Compare> diff = new List<V275_Report_InspectSector_Compare>();
             foreach (var sec in StoredSectors)
@@ -321,11 +348,13 @@ namespace V275_Testing.WindowViewModels
                 }
 
             }
+
+            return true;
         }
 
         private void StoreAction(object parameter)
         {
-            StandardsDatabase.AddRow(GradingStandard, RepeatNumber, JsonConvert.SerializeObject(Job), JsonConvert.SerializeObject(Report));
+            StandardsDatabase.AddRow(GradingStandard, LabelNumber, JsonConvert.SerializeObject(Job), JsonConvert.SerializeObject(Report));
             GetStored();
         }
 

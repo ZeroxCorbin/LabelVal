@@ -22,6 +22,7 @@ namespace V275_Testing.V275
         public string Devices() => $"http://{Host}:{SystemPort}/api/printinspection/devices";
 
         public string WS_NodeEvents => $"ws://{Host}:{NodePort}/api/printinspection/{NodeNumber}/inspection/events";
+        public string WS_SystemEvents => $"ws://{Host}:{SystemPort}/api/printinspection/event";
 
         public string GradingStandards() => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/gradingstandards";
 
@@ -35,8 +36,13 @@ namespace V275_Testing.V275
         public string History(string repeatNumber) => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/inspection/setup/image?source=history&repeat={repeatNumber}";
         public string History() => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/inspection/setup/image/history";
 
+        public string Available () => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/inspection/setup/image/available";
+
         public string Inspect() => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/inspection/setup/inspect";
         public string Report() => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/inspection/setup/report";
+        public string Detect() => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/inspection/setup/detect";
+
+        public string Configuration_Camera() => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/configuration/camera";
 
         public string CameraCommand(string nodeNumber) => "";
 

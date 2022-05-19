@@ -138,9 +138,15 @@
                                             <Setter Property="Background" Value="Green"/>
                                             <Style.Triggers>
                                                 <DataTrigger Value="B" Binding="{Binding Path=Value.grade.letter}">
-                                                    <Setter Property="Background" Value="Orange"/>
+                                                    <Setter Property="Background" Value="Turquoise"/>
                                                 </DataTrigger>
                                                 <DataTrigger Value="C" Binding="{Binding Path=Value.grade.letter}">
+                                                    <Setter Property="Background" Value="Blue"/>
+                                                </DataTrigger>
+                                                <DataTrigger Value="F" Binding="{Binding Path=Value.grade.letter}">
+                                                    <Setter Property="Background" Value="Fuchsia"/>
+                                                </DataTrigger>
+                                                <DataTrigger Value="F" Binding="{Binding Path=Value.grade.letter}">
                                                     <Setter Property="Background" Value="Red"/>
                                                 </DataTrigger>
                                             </Style.Triggers>

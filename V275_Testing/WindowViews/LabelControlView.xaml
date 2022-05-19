@@ -43,7 +43,7 @@
                     </Grid.RowDefinitions>
                     <TextBlock Text="Label#" HorizontalAlignment="Center"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="1">
-                        <Label Content="{Binding RepeatNumber}" FontSize="22"/>
+                        <Label Content="{Binding LabelNumber}" FontSize="22"/>
                     </StackPanel>
                 </Grid>
                 <!--</Border>-->
@@ -58,7 +58,7 @@
                     <!--<TextBlock Text="Label#" HorizontalAlignment="Center"/>-->
                     <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center">
                         <mah:NumericUpDown Value="{Binding PrintCount}" Minimum="1" Maximum="100" Interval="1" HideUpDownButtons="True" Margin="2"/>
-                        <Button Content="Print" Command="{Binding Print}" Margin="2"/>
+                        <Button Content="Print" Command="{Binding PrintCommand}" Margin="2"/>
                     </StackPanel>
                 </Grid>
 
@@ -81,7 +81,7 @@
                 <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center">
                     <Button Content="Clear" Command="{Binding ClearStored}" Margin="2"
                             Visibility="{Binding IsSetup, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                    <Button Content="Load" Command="{Binding Load}" Margin="2"
+                    <Button Content="Load" Command="{Binding LoadCommand}" Margin="2"
                              Visibility="{Binding IsRun, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                 </StackPanel>
             </Grid>
@@ -114,13 +114,27 @@
                 <TextBlock Text="Read Sectors" HorizontalAlignment="Center"/>
                 <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center">
 
-                    <Button Content="Store" Command="{Binding Store}" Margin="2"
-                            Visibility="{Binding IsStore, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                    <Button Content="Read" Command="{Binding Read}" Margin="2" 
+                    <Button Content="Store" Command="{Binding StoreCommand}" Margin="2"
+                            >
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Value="True" Binding="{Binding IsStore}">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                    <DataTrigger Value="True" Binding="{Binding IsRun}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button Content="Read" Command="{Binding ReadCommand}" Margin="2" 
                         Visibility="{Binding IsSetup, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                     <Button Content="Clear" Command="{Binding ClearRead}" Margin="2"
                             Visibility="{Binding IsStore, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                    <Button Content="Inspect" Command="{Binding Inspect}" Margin="2"
+                    <Button Content="Inspect" Command="{Binding InspectCommand}" Margin="2"
                             Visibility="{Binding IsRun, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                     <Label Content="{Binding Status}"/>
                 </StackPanel>

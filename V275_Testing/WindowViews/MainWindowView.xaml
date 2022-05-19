@@ -58,6 +58,17 @@
             <StackPanel Orientation="Horizontal">
                 <Label Content="Printer"/>
                 <ComboBox ItemsSource="{Binding Printers}" SelectedItem="{Binding SelectedPrinter}"/>
+
+                <!--<Button Content="Start"
+                            Command="{Binding Print}"
+                            CommandParameter="1"
+                        IsEnabled="{Binding IsLoggedIn}"/>
+                
+                <Button Content="Stop"
+                            Command="{Binding Print}"
+                            CommandParameter="0"
+                        IsEnabled="{Binding IsLoggedIn}"/>-->
+
             </StackPanel>
         </StackPanel>
 
@@ -93,17 +104,49 @@
                          Text="{Binding Password}" MinWidth="80"
                      IsEnabled="{Binding IsNotLoggedIn}"/>
             <StackPanel Orientation="Horizontal" IsEnabled="{Binding IsGetDevices}" >
+                <Button Content="Logout"
+                            Command="{Binding Logout}"
+                            IsEnabled="{Binding IsLoggedIn}"/>
                 <Button Content="Setup"
                             Command="{Binding LoginMonitor}"
                             IsEnabled="{Binding IsNotLoggedIn}"/>
                 <Button Content="Run"
                             Command="{Binding LoginControl}"
                             IsEnabled="{Binding IsNotLoggedIn}"/>
-                <Button Content="Logout"
-                            Command="{Binding Logout}"
-                            IsEnabled="{Binding IsLoggedIn}"/>
+
             </StackPanel>
 
+            <Label>
+                <Label.Style>
+                    <Style TargetType="{x:Type Label}">
+                        <Setter Property="Content" Value=""/>
+                        <Style.Triggers>
+                            <DataTrigger Value="True" Binding="{Binding IsSetup}">
+                                <Setter Property="Content" Value="Setup"/>
+                            </DataTrigger>
+                            <DataTrigger Value="True" Binding="{Binding IsRun}">
+                                <Setter Property="Content" Value="Run"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Label.Style>
+            </Label>
+            
+            <Label Content="{Binding V275_JobName}"/>
+            <Label Content="State:"/>
+            <Label Content="{Binding V275_State}">
+                <Label.Style>
+                    <Style TargetType="{x:Type Label}">
+                        <Setter Property="Background" Value="Red"/>
+                        <Style.Triggers>
+                            <DataTrigger Value="Editing" Binding="{Binding V275_State}">
+                                <Setter Property="Background" Value="Green"/>
+                              </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Label.Style>
+            </Label>
+            
         </StackPanel>
 
         <Grid Grid.Row="2">
@@ -149,7 +192,7 @@
 
         <StatusBar VerticalAlignment="Bottom" Grid.Row="3">
             <StatusBarItem>
-                <TextBlock Text="{Binding Status}"/>
+                <TextBlock Text="{Binding UserMessage}"/>
             </StatusBarItem>
         </StatusBar>
     </Grid>

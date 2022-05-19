@@ -28,6 +28,8 @@ namespace V275_Testing.V275
         public V275_GradingStandards GradingStandards { get; private set; }
         public V275_Job Job { get; private set; }
         public V275_Report Report { get; private set; }
+        public V275_Configuration_Camera ConfigurationCamera { get; private set; }
+        public List<int> Available { get; private set; }
 
         private bool CheckResults(string json, bool ignoreJson = false)
         {
@@ -106,6 +108,29 @@ namespace V275_Testing.V275
             return res;
         }
 
+        public async Task<bool> GetRepeatsAvailable()
+        {
+            string result = await Connection.Get(URLs.Available(), Token);
+
+            bool res;
+            if (res = CheckResults(result))
+                Available = JsonConvert.DeserializeObject<int[]>(result).ToList();
+
+            return res;
+        }
+
+
+        public async Task<bool> GetCameraConfig()
+        {
+            string result = await Connection.Get(URLs.Configuration_Camera(), Token);
+
+            bool res;
+            if (res = CheckResults(result))
+                ConfigurationCamera = JsonConvert.DeserializeObject<V275_Configuration_Camera>(result);
+
+            return res;
+        }
+
         public async Task<bool> DeleteSector(string sectorName)
         {
             _ = await Connection.Delete(URLs.DeleteSector(sectorName), Token);
@@ -123,6 +148,25 @@ namespace V275_Testing.V275
         public async Task<bool> Inspect()
         {
             await Connection.Put(URLs.Inspect(),"", Token);
+
+            return CheckResults("", true);
+        }
+        public async Task<bool> Detect()
+        {
+            await Connection.Put(URLs.Detect(), "", Token);
+
+            return CheckResults("", true);
+        }
+        public async Task<bool> Print(bool start)
+        {
+            await Connection.Put(URLs.Print(), URLs.Print_Body(start), Token);
+
+            return CheckResults("", true);
+        }
+
+        public async Task<bool> SetRepeat(int repeat)
+        {
+            await Connection.Put(URLs.History(repeat.ToString()), "", Token);
 
             return CheckResults("", true);
         }

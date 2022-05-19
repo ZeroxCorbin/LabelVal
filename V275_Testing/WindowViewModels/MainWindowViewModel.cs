@@ -21,6 +21,7 @@ namespace V275_Testing.WindowViewModels
         private V275_API_Commands V275 = new V275_API_Commands();
         private StandardsDatabase StandardsDatabase { get; }
         private V275_API_WebSocketEvents WebSocket { get; } = new V275_API_WebSocketEvents();
+        private V275_API_WebSocketEvents SysWebSocket { get; } = new V275_API_WebSocketEvents();
 
         public string V275_Host { get => V275.Host = App.Settings.GetValue("V275_Host", "127.0.0.1"); set { App.Settings.SetValue("V275_Host", value); V275.Host = value; } }
         public string V275_SystemPort { get => V275.SystemPort = App.Settings.GetValue("V275_SystemPort", "8080"); set { App.Settings.SetValue("V275_SystemPort", value); ; V275.SystemPort = value; } }
@@ -75,13 +76,14 @@ namespace V275_Testing.WindowViewModels
 
         public string UserName { get => App.Settings.GetValue("UserName", "admin"); set => App.Settings.SetValue("UserName", value); }
         public string Password { get => App.Settings.GetValue("Password", "admin"); set => App.Settings.SetValue("Password", value); }
+        private V275_Events_System.Data LoginData { get; } = new V275_Events_System.Data();
 
-        public string Status
+        public string UserMessage
         {
-            get { return _Status; }
-            set { SetProperty(ref _Status, value); }
+            get { return userMessage; }
+            set { SetProperty(ref userMessage, value); }
         }
-        private string _Status;
+        private string userMessage;
 
         public ICommand GetDevices { get; }
         public bool IsGetDevices
@@ -117,6 +119,21 @@ namespace V275_Testing.WindowViewModels
         public bool IsNotRun => !isRun;
         private bool isRun = false;
 
+        public string V275_State
+        {
+            get => v275_State;
+            set => SetProperty(ref v275_State, value);
+        }
+        private string v275_State;
+        public string V275_JobName
+        {
+            get => v275_JobName;
+            set => SetProperty(ref v275_JobName, value);
+        }
+        private string v275_JobName;
+
+        public bool V275_IsBackupVoid => V275.ConfigurationCamera.backupVoidMode.value == "ON";
+
         public ICommand Start { get; }
         public bool IsStarted
         {
@@ -129,6 +146,7 @@ namespace V275_Testing.WindowViewModels
 
         public ICommand Stop { get; }
 
+        public ICommand Print { get; }
 
         public MainWindowViewModel()
         {
@@ -138,6 +156,8 @@ namespace V275_Testing.WindowViewModels
             Logout = new Core.RelayCommand(LogoutAction, c => true);
             Start = new Core.RelayCommand(StartAction, c => true);
             Stop = new Core.RelayCommand(StopAction, c => true);
+
+            Print = new Core.RelayCommand(PrintAction, c => true);
 
             StandardsDatabase = new StandardsDatabase($"{App.UserDataDirectory}\\{App.StandardsDatabaseName}");
 
@@ -181,34 +201,47 @@ namespace V275_Testing.WindowViewModels
             foreach (var img in Images)
             {
                 var tmp = new LabelControlViewModel(i++, img, SelectedPrinter, SelectedStandard, StandardsDatabase, V275);
-                tmp.Printing += Label_Printing;
-                Labels.Add(tmp);
-            }
 
-            foreach (var rep in Labels)
-            {
-                rep.IsRun = IsRun;
-                rep.IsSetup = IsSetup;
+                tmp.Printing += Label_Printing;
+
+                tmp.IsRun = IsRun;
+                tmp.IsSetup = IsSetup;
+
+                Labels.Add(tmp);
             }
         }
 
         public class Repeat
         {
-            public string Standard { get; }
-            public int LabelNumber { get; }
+            public LabelControlViewModel Label { get; set; }
 
-            public int RepeatNumber { get; } = -1;
+            public int RepeatNumber { get; set; } = -1;
 
-            
+            public Repeat(LabelControlViewModel label)
+            {
+                Label = label;
+            }
         }
-        private void Label_Printing(string standard, int labelNumber)
+
+        private Dictionary<int, Repeat> Repeats = new Dictionary<int, Repeat>();
+
+        private int LabelCount { get; set; } = 1;
+
+        private async void ResetRepeats()
         {
-            throw new NotImplementedException();
+            Repeats.Clear();
+
+            await V275.GetRepeatsAvailable();
+
+            if (V275.Available != null && V275.Available.Count > 0)
+                LabelCount = V275.Available[0];
+            else
+                LabelCount = 1;
         }
 
         private void Reset()
         {
-            Status = "";
+            UserMessage = "";
         }
 
         private async void GetDevicesAction(object parameter)
@@ -234,7 +267,7 @@ namespace V275_Testing.WindowViewModels
             }
             else
             {
-                Status = V275.Status;
+                UserMessage = V275.Status;
                 IsGetDevices = false;
             }
 
@@ -303,26 +336,130 @@ namespace V275_Testing.WindowViewModels
 
             if (await V275.Login(UserName, Password, true))
             {
-                WebSocket.NewRepeat += WebSocket_NewRepeat;
-                if (!await WebSocket.StartAsync(V275.URLs.WS_NodeEvents))
-                    return;
-
-                IsSetup = true;
-
-                foreach (var rep in Labels)
-                    rep.IsSetup = true;
-
+                _ = PostLogin(true);
             }
             else
             {
-                Status = V275.Status;
+                UserMessage = V275.Status;
                 IsSetup = false;
             }
         }
 
-        private void WebSocket_NewRepeat(string repeat)
+        private async Task PostLogin(bool isSetup)
         {
-            
+            LoginData.accessLevel = isSetup ? "monitor" : "control";
+            LoginData.token = V275.Token;
+            LoginData.id = UserName;
+            LoginData.state = "0";
+
+            IsSetup = isSetup;
+            IsRun = !isSetup;
+
+            foreach (var rep in Labels)
+            {
+                rep.IsSetup = IsSetup;
+                rep.IsRun = IsRun;
+            }
+
+            await V275.GetCameraConfig();
+
+            WebSocket.SetupCapture -= WebSocket_SetupCapture;
+            WebSocket.SessionStateChange -= WebSocket_SessionStateChange;
+            WebSocket.Heartbeat -= WebSocket_Heartbeat;
+
+            WebSocket.SetupCapture += WebSocket_SetupCapture;
+            WebSocket.SessionStateChange += WebSocket_SessionStateChange;
+            WebSocket.Heartbeat += WebSocket_Heartbeat;
+
+            if (!await WebSocket.StartAsync(V275.URLs.WS_NodeEvents))
+                return;
+
+            if (!await SysWebSocket.StartAsync(V275.URLs.WS_SystemEvents))
+                return;
+        }
+
+        private void WebSocket_Heartbeat(V275_Events_System ev)
+        {
+            string state = char.ToUpper(ev.data.state[0]) + ev.data.state.Substring(1);
+
+            if (V275_State != state)
+            {
+                V275_State = state;
+
+                if (V275_State == "Editing")
+                {
+                    ResetRepeats();
+                    new Task(async () =>
+                        {
+                            if (await V275.GetJob())
+                            {
+                                V275_JobName = V275.Job.name;
+                            }
+                            else
+                            {
+                                V275_JobName = "ERROR GETTING JOB NAME !";
+                            }
+                        }).Start();
+                }
+                else
+                {
+                    ResetRepeats();
+                    V275_JobName = "";
+                }
+
+            }
+
+        }
+
+        private void WebSocket_SessionStateChange(V275_Events_System ev)
+        {
+            //if (ev.data.id == LoginData.id)
+            if (ev.data.state == "0")
+                if (ev.data.accessLevel == "control")
+                    if (LoginData.accessLevel == "control")
+                        if (ev.data.token != LoginData.token)
+                            LogoutAction(new object());
+        }
+
+        private void WebSocket_SetupCapture(V275_Events_System ev)
+        {
+            if (Repeats.ContainsKey(ev.data.repeat))
+            {
+                Repeats[ev.data.repeat].RepeatNumber = ev.data.repeat;
+
+                if (IsRun)
+                    if (!Repeats.ContainsKey(ev.data.repeat + 1))
+                        App.Current.Dispatcher.Invoke(new Action(() => ProcessRepeat(ev.data.repeat)));
+            }
+            else
+            {
+                LabelCount = ev.data.repeat;
+                return;
+            }
+
+
+            if (IsRun)
+                PrintAction("1");
+        }
+
+        private void Label_Printing(LabelControlViewModel label)
+        {
+            if (V275_State == "Editing")
+            {
+                for (int i = 0; i < label.PrintCount; i++)
+                    Repeats.Add(++LabelCount, new Repeat(label));
+
+                if (IsRun)
+                    PrintAction("1");
+            }
+
+            //throw new NotImplementedException();
+        }
+
+        private async void ProcessRepeat(int repeat)
+        {
+            await Repeats[repeat].Label.Load();
+            await Repeats[repeat].Label.Read(repeat);
         }
 
         private async void LoginControlAction(object parameter)
@@ -331,18 +468,11 @@ namespace V275_Testing.WindowViewModels
 
             if (await V275.Login(UserName, Password, false))
             {
-                WebSocket.NewRepeat += WebSocket_NewRepeat;
-                if (!await WebSocket.StartAsync(V275.URLs.WS_NodeEvents))
-                    return;
-
-                IsRun = true;
-
-                foreach (var rep in Labels)
-                    rep.IsRun = true;
+                _ = PostLogin(false);
             }
             else
             {
-                Status = V275.Status;
+                UserMessage = V275.Status;
                 IsRun = false;
             }
         }
@@ -352,20 +482,15 @@ namespace V275_Testing.WindowViewModels
             Reset();
 
             if (!await V275.Logout())
-                Status = V275.Status;
+                UserMessage = V275.Status;
+
+            LoginData.accessLevel = "";
+            LoginData.token = "";
+            LoginData.id = "";
+            LoginData.state = "1";
 
             IsRun = false;
             IsSetup = false;
-
-            try
-            {
-                await WebSocket.StopAsync();
-            }
-            catch
-            {
-
-            }
-            
 
             foreach (var rep in Labels)
             {
@@ -373,6 +498,29 @@ namespace V275_Testing.WindowViewModels
                 rep.IsSetup = IsSetup;
             }
 
+            try
+            {
+                WebSocket.SetupCapture -= WebSocket_SetupCapture;
+                WebSocket.SessionStateChange -= WebSocket_SessionStateChange;
+                WebSocket.Heartbeat -= WebSocket_Heartbeat;
+
+                await WebSocket.StopAsync();
+                await SysWebSocket.StopAsync();
+
+                V275_State = "";
+                V275_JobName = "";
+            }
+            catch { }
+        }
+
+        private async void PrintAction(object parameter)
+        {
+            if (V275_IsBackupVoid)
+                await V275.Print(false);
+
+            Thread.Sleep(200);
+
+            await V275.Print((string)parameter == "1");
         }
 
         private async void StartAction(object parameter)
@@ -380,12 +528,12 @@ namespace V275_Testing.WindowViewModels
             Reset();
             if (!await V275.GetJob())
             {
-                Status = V275.Status;
+                UserMessage = V275.Status;
                 return;
             }
             if (!await V275.GetReport())
             {
-                Status = V275.Status;
+                UserMessage = V275.Status;
                 return;
             }
 
