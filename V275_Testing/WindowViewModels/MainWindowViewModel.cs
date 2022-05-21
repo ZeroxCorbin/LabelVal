@@ -163,6 +163,7 @@ namespace V275_Testing.WindowViewModels
 
             LoadPrinters();
             SetupGradingStandards();
+            
         }
 
         private void LoadPrinters()
@@ -200,7 +201,7 @@ namespace V275_Testing.WindowViewModels
             int i = 1;
             foreach (var img in Images)
             {
-                var tmp = new LabelControlViewModel(i++, img, SelectedPrinter, SelectedStandard, StandardsDatabase, V275);
+                var tmp = new LabelControlViewModel(i++, img, SelectedPrinter, SelectedStandard, StandardsDatabase, V275, MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance);
 
                 tmp.Printing += Label_Printing;
 
@@ -275,8 +276,6 @@ namespace V275_Testing.WindowViewModels
 
         private void SetupGradingStandards()
         {
-            Reset();
-
             Standards.Clear();
             SelectedStandard = null;
 
@@ -362,20 +361,31 @@ namespace V275_Testing.WindowViewModels
             }
 
             await V275.GetCameraConfig();
+            await V275.GetSymbologies();
 
             WebSocket.SetupCapture -= WebSocket_SetupCapture;
             WebSocket.SessionStateChange -= WebSocket_SessionStateChange;
             WebSocket.Heartbeat -= WebSocket_Heartbeat;
+            WebSocket.SetupDetect -= WebSocket_SetupDetect;
 
             WebSocket.SetupCapture += WebSocket_SetupCapture;
             WebSocket.SessionStateChange += WebSocket_SessionStateChange;
             WebSocket.Heartbeat += WebSocket_Heartbeat;
+            WebSocket.SetupDetect += WebSocket_SetupDetect;
 
             if (!await WebSocket.StartAsync(V275.URLs.WS_NodeEvents))
                 return;
 
             if (!await SysWebSocket.StartAsync(V275.URLs.WS_SystemEvents))
                 return;
+        }
+
+        private bool detectLock;
+        private V275_Events_System detectEvent;
+        private void WebSocket_SetupDetect(V275_Events_System ev, bool end)
+        {
+            detectEvent = ev;
+            detectLock = end;
         }
 
         private void WebSocket_Heartbeat(V275_Events_System ev)
@@ -437,7 +447,6 @@ namespace V275_Testing.WindowViewModels
                 return;
             }
 
-
             if (IsRun)
                 PrintAction("1");
         }
@@ -458,7 +467,23 @@ namespace V275_Testing.WindowViewModels
 
         private async void ProcessRepeat(int repeat)
         {
-            await Repeats[repeat].Label.Load();
+            if (repeat > 0)
+                if (!await V275.SetRepeat(repeat))
+                {
+                    return;
+                }
+
+            detectLock = false;
+            int i = await Repeats[repeat].Label.Load();
+
+            if (i == 2)
+            {
+                while (!detectLock) { };
+
+                await Repeats[repeat].Label.CreateSectors(detectEvent, StoredStandard);
+            }
+                
+
             await Repeats[repeat].Label.Read(repeat);
         }
 
@@ -503,6 +528,7 @@ namespace V275_Testing.WindowViewModels
                 WebSocket.SetupCapture -= WebSocket_SetupCapture;
                 WebSocket.SessionStateChange -= WebSocket_SessionStateChange;
                 WebSocket.Heartbeat -= WebSocket_Heartbeat;
+                WebSocket.SetupDetect -= WebSocket_SetupDetect;
 
                 await WebSocket.StopAsync();
                 await SysWebSocket.StopAsync();

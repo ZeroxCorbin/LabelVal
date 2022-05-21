@@ -24,10 +24,9 @@ namespace V275_Testing.WindowViews
         {
             InitializeComponent();
         }
-
-        private void Image_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
-
+            DetailsPop.IsOpen = true;
         }
     }
 }

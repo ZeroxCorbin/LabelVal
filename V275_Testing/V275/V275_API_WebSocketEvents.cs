@@ -27,6 +27,9 @@ namespace V275_Testing.V275
         public delegate void SetupCaptureDelegate(V275_Events_System ev);
         public event SetupCaptureDelegate SetupCapture;
 
+        public delegate void SetupDetectDelegate(V275_Events_System ev, bool end);
+        public event SetupDetectDelegate SetupDetect;
+
         public delegate void SessionStateChangeDelegate(V275_Events_System ev);
         public event SessionStateChangeDelegate SessionStateChange;
 
@@ -70,13 +73,13 @@ namespace V275_Testing.V275
             if (ev.source == "system")
                 if (ev.name == "heartbeat")
                     return;
-                else
-                    using (StreamWriter sw = File.AppendText("capture_system.txt"))
-                        sw.WriteLine(message);
+            //    else
+            //        using (StreamWriter sw = File.AppendText("capture_system.txt"))
+            //            sw.WriteLine(message);
 
-            else if (ev.name != "heartbeat")
-                using (StreamWriter sw = File.AppendText("capture_node.txt"))
-                    sw.WriteLine(message);
+            //else if (ev.name != "heartbeat")
+            //    using (StreamWriter sw = File.AppendText("capture_node.txt"))
+            //        sw.WriteLine(message);
 
             if (ev.name == "heartbeat")
             {
@@ -86,14 +89,23 @@ namespace V275_Testing.V275
 
             if (ev.name == "setupCapture")
             {
-                //JObject obj = (JObject)JsonConvert.DeserializeObject(message);
                 SetupCapture?.Invoke(ev);
+                return;
+            }
+
+            if (ev.name.StartsWith("setupDetect"))
+            {
+                if (ev.name.EndsWith("End"))
+                {
+                    SetupDetect?.Invoke(ev, true);
+                    return;
+                }
+                SetupDetect?.Invoke(ev, false);
                 return;
             }
 
             if (ev.name == "sessionStateChange")
             {
-                //JObject obj = (JObject)JsonConvert.DeserializeObject(message);
                 SessionStateChange?.Invoke(ev);
                 return;
             }

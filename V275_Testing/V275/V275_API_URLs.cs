@@ -42,6 +42,8 @@ namespace V275_Testing.V275
         public string Report() => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/inspection/setup/report";
         public string Detect() => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/inspection/setup/detect";
 
+        public string VerifySymbologies() => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/inspection/verify/symbologies";
+
         public string Configuration_Camera() => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/configuration/camera";
 
         public string CameraCommand(string nodeNumber) => "";

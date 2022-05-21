@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using MahApps.Metro.Controls.Dialogs;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -68,7 +69,7 @@ namespace V275_Testing.WindowViewModels
         public bool IsRun
         {
             get => isRun;
-            set { if(value != isRun) App.Current.Dispatcher.Invoke(new Action(() => { ReadSectors.Clear(); IsStore = false; })); SetProperty(ref isRun, value); OnPropertyChanged("IsNotRun"); }
+            set { /*if (value != isRun) App.Current.Dispatcher.Invoke(new Action(() => { ReadSectors.Clear(); IsStore = false; }));*/ SetProperty(ref isRun, value); OnPropertyChanged("IsNotRun"); }
         }
         public bool IsNotRun => !isRun;
         private bool isRun = false;
@@ -81,8 +82,19 @@ namespace V275_Testing.WindowViewModels
         public bool IsNotStore => !isStore;
         private bool isStore = false;
 
-        public LabelControlViewModel(int labelNumber, string imagePath, string printerName, string gradingStandard, StandardsDatabase standardsDatabase, V275_API_Commands v275)
+        public bool IsLoad
         {
+            get => isLoad;
+            set { SetProperty(ref isLoad, value); OnPropertyChanged("IsNotLoad"); }
+        }
+        public bool IsNotLoad => !isLoad;
+        private bool isLoad = false;
+
+        private IDialogCoordinator dialogCoordinator;
+        public LabelControlViewModel(int labelNumber, string imagePath, string printerName, string gradingStandard, StandardsDatabase standardsDatabase, V275_API_Commands v275, IDialogCoordinator diag)
+        {
+            dialogCoordinator = diag;
+
             LabelNumber = labelNumber;
             ImagePath = imagePath;
             PrinterName = printerName;
@@ -103,6 +115,13 @@ namespace V275_Testing.WindowViewModels
             GetStored();
         }
 
+        public async Task<MessageDialogResult> OkCancelDialog(string title, string message)
+        {
+            MessageDialogResult result = await this.dialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative);
+
+            return result;
+        }
+
         private void GetImage(string imagePath)
         {
             RepeatImage.BeginInit();
@@ -119,10 +138,14 @@ namespace V275_Testing.WindowViewModels
             RepeatImage.EndInit();
         }
 
-        private void ClearStoredAction(object parameter)
+        private async void ClearStoredAction(object parameter)
         {
-            StandardsDatabase.DeleteRow(GradingStandard, LabelNumber);
-            GetStored();
+            if(await OkCancelDialog("Clear Stored Sectors", $"Are you sure you want to clear the stored sectors for label {LabelNumber}?\r\nThis can not be undone!") == MessageDialogResult.Affirmative)
+            {
+                StandardsDatabase.DeleteRow(GradingStandard, LabelNumber);
+                GetStored();
+            }
+
         }
         private void ClearReadAction(object parameter)
         {
@@ -133,6 +156,7 @@ namespace V275_Testing.WindowViewModels
         {
 
             StoredSectors.Clear();
+            IsLoad = false;
 
             StandardsDatabase.Row row = StandardsDatabase.GetRow(GradingStandard, LabelNumber);
 
@@ -156,13 +180,13 @@ namespace V275_Testing.WindowViewModels
                     {
                         if (jSec.name == rSec["name"].ToString())
                         {
-                            
+
                             object fSec = DeserializeSector(rSec);
 
                             if (fSec == null)
                                 break;
 
-                            tempSectors.Add(new SectorControlViewModel(jSec, fSec , isWrongStandard));
+                            tempSectors.Add(new SectorControlViewModel(jSec, fSec, isWrongStandard));
 
                             break;
                         }
@@ -175,7 +199,20 @@ namespace V275_Testing.WindowViewModels
 
                 foreach (var sec in tempSectors)
                     StoredSectors.Add(sec);
+
+                IsLoad = true;
             }
+        }
+
+        private void PrintAction(object parameter)
+        {
+            Task.Run(() =>
+            {
+                Printing?.Invoke(this);
+
+                PrintControl printer = new PrintControl();
+                printer.Print(ImagePath, PrintCount, PrinterName);
+            });
         }
 
         private object DeserializeSector(JObject reportSec)
@@ -199,55 +236,47 @@ namespace V275_Testing.WindowViewModels
             else
                 return null;
         }
+
         private void LoadAction(object parameter) => _ = Load();
 
-        public async Task<bool> Load()
+        public async Task<int> Load()
         {
             if (!await V275.GetJob())
             {
                 Status = V275.Status;
-                return false;
+                return -1;
             }
             Job = V275.Job;
 
             foreach (var sec in Job.sectors)
-            {
                 await V275.DeleteSector(sec.name);
 
-            }
-            //StandardsDatabase.Row row = StandardsDatabase.GetRow(GradingStandard, LabelNumber);
+            await V275.Inspect();
+            await V275.GetReport();
 
-            //if (row == null)
-            //{
-            //    return;
-            //}
-            if(StoredSectors.Count > 0)
-                if (!await V275.GetJob())
+            if (StoredSectors.Count == 0)
+            {
+                if (!await V275.GetDetect())
                 {
                     Status = V275.Status;
-                    return false;
+                    return -1;
                 }
-            foreach (var sec in StoredSectors)
-            {
-                await V275.AddSector(sec.JobSector.name, JsonConvert.SerializeObject(sec.JobSector));
+                if (!await V275.Detect())
+                {
+                    Status = V275.Status;
+                    return -1;
+                }
+                return 2;
             }
 
-            return true;
+            foreach (var sec in StoredSectors)
+                await V275.AddSector(sec.JobSector.name, JsonConvert.SerializeObject(sec.JobSector));
+
+            return 1;
         }
 
         private void InspectAction(object parameter) => _ = Read(-1);
-
-        private void PrintAction(object parameter)
-        {
-            Task.Run(() =>
-            {
-                Printing?.Invoke(this);
-
-                PrintControl printer = new PrintControl();
-                printer.Print(ImagePath, PrintCount, PrinterName);
-            });
-        }
-        public void ReadAction(object parameter) => _=Read(-1);
+        public void ReadAction(object parameter) => _ = Read(-1);
 
         public async Task<bool> Read(int repeat)
         {
@@ -263,7 +292,7 @@ namespace V275_Testing.WindowViewModels
             }
             Job = V275.Job;
 
-            if(repeat > 0)
+            if (repeat > 0)
                 if (!await V275.SetRepeat(repeat))
                 {
                     Status = V275.Status;
@@ -324,10 +353,10 @@ namespace V275_Testing.WindowViewModels
                 IsStore = true;
                 tempSectors = tempSectors.OrderBy(x => x.JobSector.top).ToList();
 
-                foreach(var sec in tempSectors)
+                foreach (var sec in tempSectors)
                     ReadSectors.Add(sec);
             }
-                
+
 
             List<V275_Report_InspectSector_Compare> diff = new List<V275_Report_InspectSector_Compare>();
             foreach (var sec in StoredSectors)
@@ -352,8 +381,60 @@ namespace V275_Testing.WindowViewModels
             return true;
         }
 
-        private void StoreAction(object parameter)
+
+        public async Task<bool> CreateSectors(V275_Events_System ev, string gradingStandard)
         {
+            int d1 = 1;
+            int d2 = 1;
+            bool res = true;
+
+            V275_Job_Sector_Verify verify = new V275_Job_Sector_Verify();
+            foreach (var val in ev.data.detections)
+            {
+                bool isGS1 = false;
+                if(gradingStandard.StartsWith("GS1"))
+                    isGS1 = true;
+
+                string table = "1";
+                if (isGS1)
+                    table = gradingStandard.Replace("GS1 TABLE ", "");
+
+                V275_Symbologies.Symbol sym = V275.Symbologies.Find((e) => e.symbology == val.symbology);
+                if (sym == null)
+                    continue;
+
+                if (sym.regionType == "verify1D")
+                    verify.id = d1++;
+                else
+                    verify.id = d2++;
+
+                verify.type = sym.regionType;
+                verify.symbology = val.symbology;
+                verify.name = $"{sym.regionType}_{verify.id}";
+                verify.username = $"{char.ToUpper(verify.name[0])}{verify.name.Substring(1)}";
+
+                verify.top = val.region.y;
+                verify.left = val.region.x;
+                verify.height = val.region.height;
+                verify.width = val.region.width;
+
+                verify.orientation = val.orientation;
+
+                verify.gradingStandard.enabled = isGS1;
+                verify.gradingStandard.tableId = table;
+
+                res &= await V275.AddSector(verify.name, JsonConvert.SerializeObject(verify));
+            }
+
+            return res;
+        }
+
+        private async void StoreAction(object parameter)
+        {
+            if(StoredSectors.Count > 0)
+            if (await OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for label {LabelNumber}?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
+                    return;
+
             StandardsDatabase.AddRow(GradingStandard, LabelNumber, JsonConvert.SerializeObject(Job), JsonConvert.SerializeObject(Report));
             GetStored();
         }

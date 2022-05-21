@@ -26,9 +26,11 @@ namespace V275_Testing.V275
 
         public V275_Devices Devices { get; private set; }
         public V275_GradingStandards GradingStandards { get; private set; }
+        public List<V275_Symbologies.Symbol> Symbologies { get; private set; }
         public V275_Job Job { get; private set; }
         public V275_Report Report { get; private set; }
         public V275_Configuration_Camera ConfigurationCamera { get; private set; }
+        public V275_DetectResponse Detected { get; private set; }
         public List<int> Available { get; private set; }
 
         private bool CheckResults(string json, bool ignoreJson = false)
@@ -43,7 +45,7 @@ namespace V275_Testing.V275
 
             if (Connection.IsException)
                 Status = Connection.Exception.Message;
-            else if (!Connection.HttpResponseMessage.IsSuccessStatusCode)
+            else if (Connection.HttpResponseMessage != null && !Connection.HttpResponseMessage.IsSuccessStatusCode)
                 Status = $"{Connection.HttpResponseMessage.StatusCode}: {Connection.HttpResponseMessage.ReasonPhrase}";
 
 
@@ -85,7 +87,16 @@ namespace V275_Testing.V275
 
             return res;
         }
+        public async Task<bool> GetSymbologies()
+        {
+            string result = await Connection.Get(URLs.VerifySymbologies(), Token);
 
+            bool res;
+            if (res = CheckResults(result))
+                Symbologies = JsonConvert.DeserializeObject<List<V275_Symbologies.Symbol>>(result);
+
+            return res;
+        }
         public async Task<bool> GetJob()
         {
             string result = await Connection.Get(URLs.Job(), Token);
@@ -156,6 +167,16 @@ namespace V275_Testing.V275
             await Connection.Put(URLs.Detect(), "", Token);
 
             return CheckResults("", true);
+        }
+        public async Task<bool> GetDetect()
+        {
+            string result = await Connection.Get(URLs.Detect(), Token);
+
+            bool res;
+            if (res = CheckResults(result))
+                Detected = JsonConvert.DeserializeObject<V275_DetectResponse>(result);
+
+            return res;
         }
         public async Task<bool> Print(bool start)
         {

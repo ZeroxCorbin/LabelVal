@@ -72,6 +72,12 @@ namespace V275_Testing.V275.Models
             }
         }
 
+        private string FormatName(string name)
+        {
+            string tmp = string.Concat(name.Select(x => Char.IsUpper(x) ? " " + x : x.ToString())).TrimStart(' ');
+            return $"{char.ToUpper(tmp[0])}{tmp.Substring(1)}";
+        }
+
         public V275_Report_InspectSector_Compare Compare(V275_Report_InspectSector_Compare compare)
         {
             V275_Report_InspectSector_Compare results = new V275_Report_InspectSector_Compare();

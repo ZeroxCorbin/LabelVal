@@ -131,6 +131,7 @@
     <Compile Include="Controllers\FolderWatcher.cs" />
     <Compile Include="Controllers\FTPController.cs" />
     <Compile Include="Controllers\PNGProcess.cs" />
+    <Compile Include="Converters\StringToUpperSpacedConverter.cs" />
     <Compile Include="Core\BaseViewModel.cs" />
     <Compile Include="Core\RelayCommand.cs" />
     <Compile Include="Databases\StandardsDatabase.cs" />
@@ -138,11 +139,13 @@
     <Compile Include="Core\StaticUtils.cs" />
     <Compile Include="Printer\PrintControl.cs" />
     <Compile Include="V275\Models\V275_Configuration_Camera.cs" />
+    <Compile Include="V275\Models\V275_DetectResponse.cs" />
     <Compile Include="V275\Models\V275_Devices.cs" />
     <Compile Include="V275\Models\V275_Events_System.cs" />
     <Compile Include="V275\Models\V275_Event_Base.cs" />
     <Compile Include="V275\Models\V275_GradingStandards.cs" />
     <Compile Include="V275\Models\V275_Job.cs" />
+    <Compile Include="V275\Models\V275_Job_Sector_Verify.cs" />
     <Compile Include="V275\Models\V275_Repeat_Available.cs" />
     <Compile Include="V275\Models\V275_Report_InspectSector_Compare.cs" />
     <Compile Include="V275\Models\V275_Report_InspectSector_Common.cs" />
@@ -151,6 +154,7 @@
     <Compile Include="V275\Models\V275_Report_InspectSector_Verify1D.cs" />
     <Compile Include="V275\Models\V275_Report.cs" />
     <Compile Include="V275\Models\V275_Report_InspectSector_Verify2D.cs" />
+    <Compile Include="V275\Models\V275_Symbologies.cs" />
     <Compile Include="V275\V275_API_Commands.cs" />
     <Compile Include="V275\V275_API_Connection.cs" />
     <Compile Include="V275\V275_API_URLs.cs" />

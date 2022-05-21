@@ -10,11 +10,11 @@ namespace V275_Testing.V275.Models
     {
 
 
-            public string time { get; set; }
-            public string source { get; set; }
-            public int item { get; set; }
-            public string name { get; set; }
-            public Data data { get; set; }
+        public string time { get; set; }
+        public string source { get; set; }
+        public int item { get; set; }
+        public string name { get; set; }
+        public Data data { get; set; }
 
         public class Data
         {
@@ -28,9 +28,23 @@ namespace V275_Testing.V275.Models
             public int repeatWidth { get; set; }
             public int repeatHeight { get; set; }
             public int sectorCount { get; set; }
+
+            public Detection[] detections { get; set; }
         }
 
+        public class Detection
+        {
+            public string symbology { get; set; }
+            public Region region { get; set; }
+            public int orientation { get; set; }
 
-
+            public class Region
+            {
+                public int x { get; set; }
+                public int y { get; set; }
+                public int width { get; set; }
+                public int height { get; set; }
+            }
+        }
     }
 }
