@@ -16,6 +16,7 @@ namespace V275_Testing.V275.Models
         public Dictionary<string, V275_Report_InspectSector_Common.GradeValue> GradeValues { get; set; } = new Dictionary<string, V275_Report_InspectSector_Common.GradeValue>();
         public Dictionary<string, V275_Report_InspectSector_Common.ValueResult> ValueResults { get; set; } = new Dictionary<string, V275_Report_InspectSector_Common.ValueResult>();
         public Dictionary<string, V275_Report_InspectSector_Common.ValueResult> Gs1ValueResults { get; set; } = new Dictionary<string, V275_Report_InspectSector_Common.ValueResult>();
+        public Dictionary<string, V275_Report_InspectSector_Common.Grade> Gs1Grades { get; set; } = new Dictionary<string, V275_Report_InspectSector_Common.Grade>();
         public Dictionary<string, V275_Report_InspectSector_Common.Value> Values { get; set; } = new Dictionary<string, V275_Report_InspectSector_Common.Value>();
         public List<V275_Report_InspectSector_Common.Alarm> Alarms { get; set; } = new List<V275_Report_InspectSector_Common.Alarm>();
 
@@ -53,13 +54,18 @@ namespace V275_Testing.V275.Models
                             continue;
                         }
 
-                        if (prop1.PropertyType == typeof(V275_Report_InspectSector_Verify1D.Gs1symbolquality))
+                        if (prop1.PropertyType == typeof(V275_Report_InspectSector_Verify1D.Gs1symbolquality) || prop1.PropertyType == typeof(V275_Report_InspectSector_Verify2D.Gs1symbolquality))
                         {
                             foreach(var prop2 in prop1.GetValue(prop.GetValue(verify)).GetType().GetProperties())
                             {
                                 if (prop2.PropertyType == typeof(V275_Report_InspectSector_Common.ValueResult))
                                 {
                                     Gs1ValueResults.Add(prop2.Name, (V275_Report_InspectSector_Common.ValueResult)prop2.GetValue(prop1.GetValue(prop.GetValue(verify))));
+                                    continue;
+                                }
+                                if (prop2.PropertyType == typeof(V275_Report_InspectSector_Common.Grade))
+                                {
+                                    Gs1Grades.Add(prop2.Name, (V275_Report_InspectSector_Common.Grade)prop2.GetValue(prop1.GetValue(prop.GetValue(verify))));
                                     continue;
                                 }
                             }

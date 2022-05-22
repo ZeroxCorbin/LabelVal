@@ -90,6 +90,14 @@ namespace V275_Testing.WindowViewModels
         public bool IsNotLoad => !isLoad;
         private bool isLoad = false;
 
+        public bool IsWorking
+        {
+            get => isWorking;
+            set { SetProperty(ref isWorking, value); OnPropertyChanged("IsNotWorking"); }
+        }
+        public bool IsNotWorking => !isWorking;
+        private bool isWorking = false;
+
         private IDialogCoordinator dialogCoordinator;
         public LabelControlViewModel(int labelNumber, string imagePath, string printerName, string gradingStandard, StandardsDatabase standardsDatabase, V275_API_Commands v275, IDialogCoordinator diag)
         {
@@ -138,32 +146,30 @@ namespace V275_Testing.WindowViewModels
             RepeatImage.EndInit();
         }
 
-        private async void ClearStoredAction(object parameter)
+        private void PrintAction(object parameter)
         {
-            if(await OkCancelDialog("Clear Stored Sectors", $"Are you sure you want to clear the stored sectors for label {LabelNumber}?\r\nThis can not be undone!") == MessageDialogResult.Affirmative)
+            IsWorking = true;
+            Task.Run(() =>
             {
-                StandardsDatabase.DeleteRow(GradingStandard, LabelNumber);
-                GetStored();
-            }
+                Printing?.Invoke(this);
 
+                PrintControl printer = new PrintControl();
+                printer.Print(ImagePath, PrintCount, PrinterName);
+
+                if (!IsRun)
+                    IsWorking = false;
+            });
         }
-        private void ClearReadAction(object parameter)
-        {
-            ReadSectors.Clear();
-            IsStore = false;
-        }
+
         private void GetStored()
         {
-
             StoredSectors.Clear();
             IsLoad = false;
 
             StandardsDatabase.Row row = StandardsDatabase.GetRow(GradingStandard, LabelNumber);
 
             if (row == null)
-            {
                 return;
-            }
 
             List<SectorControlViewModel> tempSectors = new List<SectorControlViewModel>();
             if (!string.IsNullOrEmpty(row.Report) && !string.IsNullOrEmpty(row.Job))
@@ -203,42 +209,26 @@ namespace V275_Testing.WindowViewModels
                 IsLoad = true;
             }
         }
-
-        private void PrintAction(object parameter)
+        private async void StoreAction(object parameter)
         {
-            Task.Run(() =>
-            {
-                Printing?.Invoke(this);
+            if (StoredSectors.Count > 0)
+                if (await OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for label {LabelNumber}?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
+                    return;
 
-                PrintControl printer = new PrintControl();
-                printer.Print(ImagePath, PrintCount, PrinterName);
-            });
+            StandardsDatabase.AddRow(GradingStandard, LabelNumber, JsonConvert.SerializeObject(Job), JsonConvert.SerializeObject(Report));
+            GetStored();
         }
-
-        private object DeserializeSector(JObject reportSec)
+        private async void ClearStoredAction(object parameter)
         {
-            if (reportSec["type"].ToString() == "verify1D")
+            if (await OkCancelDialog("Clear Stored Sectors", $"Are you sure you want to clear the stored sectors for label {LabelNumber}?\r\nThis can not be undone!") == MessageDialogResult.Affirmative)
             {
-                return JsonConvert.DeserializeObject<V275_Report_InspectSector_Verify1D>(reportSec.ToString());
+                StandardsDatabase.DeleteRow(GradingStandard, LabelNumber);
+                GetStored();
             }
-            else if (reportSec["type"].ToString() == "verify2D")
-            {
-                return JsonConvert.DeserializeObject<V275_Report_InspectSector_Verify2D>(reportSec.ToString());
-            }
-            else if (reportSec["type"].ToString() == "ocr")
-            {
-                return JsonConvert.DeserializeObject<V275_Report_InspectSector_OCR>(reportSec.ToString());
-            }
-            else if (reportSec["type"].ToString() == "ocv")
-            {
-                return JsonConvert.DeserializeObject<V275_Report_InspectSector_OCV>(reportSec.ToString());
-            }
-            else
-                return null;
+
         }
 
         private void LoadAction(object parameter) => _ = Load();
-
         public async Task<int> Load()
         {
             if (!await V275.GetJob())
@@ -277,7 +267,6 @@ namespace V275_Testing.WindowViewModels
 
         private void InspectAction(object parameter) => _ = Read(-1);
         public void ReadAction(object parameter) => _ = Read(-1);
-
         public async Task<bool> Read(int repeat)
         {
             Status = string.Empty;
@@ -380,7 +369,11 @@ namespace V275_Testing.WindowViewModels
 
             return true;
         }
-
+        private void ClearReadAction(object parameter)
+        {
+            ReadSectors.Clear();
+            IsStore = false;
+        }
 
         public async Task<bool> CreateSectors(V275_Events_System ev, string gradingStandard)
         {
@@ -392,7 +385,7 @@ namespace V275_Testing.WindowViewModels
             foreach (var val in ev.data.detections)
             {
                 bool isGS1 = false;
-                if(gradingStandard.StartsWith("GS1"))
+                if (gradingStandard.StartsWith("GS1"))
                     isGS1 = true;
 
                 string table = "1";
@@ -428,62 +421,30 @@ namespace V275_Testing.WindowViewModels
 
             return res;
         }
-
-        private async void StoreAction(object parameter)
+        private object DeserializeSector(JObject reportSec)
         {
-            if(StoredSectors.Count > 0)
-            if (await OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for label {LabelNumber}?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
-                    return;
-
-            StandardsDatabase.AddRow(GradingStandard, LabelNumber, JsonConvert.SerializeObject(Job), JsonConvert.SerializeObject(Report));
-            GetStored();
-        }
-
-        private string GetDisplayString(V275_Job job, V275_Report report)
-        {
-            StringBuilder sb = new StringBuilder();
-
-            foreach (var item in job.sectors)
+            if (reportSec["type"].ToString() == "verify1D")
             {
-                sb.Append(item.username);
-
-                string s = $"{item.gradingStandard.standard} TABLE {item.gradingStandard.tableId}";
-
-                if (s != GradingStandard)
-                {
-                    sb.AppendLine(" WRONG GRADING STANDARD");
-                }
-                else
-                {
-                    sb.AppendLine();
-                }
-                //foreach (JObject rep in report.inspectLabel.inspectSector)
-                //{
-                //    //V275_Report_Verify1D verify1D;
-                //    //V275_Report_Verify2D verify2D;
-                //    if (item.name == rep["name"].ToString())
-                //        foreach (JObject alm in rep["data"]["alarms"])
-                //        {
-                //            sb.Append('\t');
-                //            sb.Append(alm["name"]);
-                //            sb.Append(": ");
-                //            sb.Append(alm["data"]["subAlarm"]);
-                //            sb.Append(" ");
-                //            sb.Append(alm["data"]["text"]);
-                //            sb.Append(" / ");
-                //            sb.Append(alm["data"]["expected"]);
-                //            sb.AppendLine();
-                //        }
-                //    //if (type == "verify1D")
-                //    //    verify1D = JsonConvert.DeserializeObject<V275_Report_Verify1D>(rep.ToString());
-                //    //else if (type == "verify2D")
-                //    //    verify2D = JsonConvert.DeserializeObject<V275_Report_Verify2D>(rep.ToString());
-
-
-                //}
+                return JsonConvert.DeserializeObject<V275_Report_InspectSector_Verify1D>(reportSec.ToString());
             }
-
-            return sb.ToString();
+            else if (reportSec["type"].ToString() == "verify2D")
+            {
+                return JsonConvert.DeserializeObject<V275_Report_InspectSector_Verify2D>(reportSec.ToString());
+            }
+            else if (reportSec["type"].ToString() == "ocr")
+            {
+                return JsonConvert.DeserializeObject<V275_Report_InspectSector_OCR>(reportSec.ToString());
+            }
+            else if (reportSec["type"].ToString() == "ocv")
+            {
+                return JsonConvert.DeserializeObject<V275_Report_InspectSector_OCV>(reportSec.ToString());
+            }
+            else if (reportSec["type"].ToString() == "blemish")
+            {
+                return JsonConvert.DeserializeObject<V275_Report_InspectSector_Blemish>(reportSec.ToString());
+            }
+            else
+                return null;
         }
     }
 }

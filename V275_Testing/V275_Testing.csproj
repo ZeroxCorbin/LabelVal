@@ -131,12 +131,16 @@
     <Compile Include="Controllers\FolderWatcher.cs" />
     <Compile Include="Controllers\FTPController.cs" />
     <Compile Include="Controllers\PNGProcess.cs" />
+    <Compile Include="Converters\FloatStringTrimConverter.cs" />
     <Compile Include="Converters\StringToUpperSpacedConverter.cs" />
     <Compile Include="Core\BaseViewModel.cs" />
     <Compile Include="Core\RelayCommand.cs" />
+    <Compile Include="Databases\RunDatabase.cs" />
+    <Compile Include="Databases\JobDatabase.cs" />
     <Compile Include="Databases\StandardsDatabase.cs" />
     <Compile Include="Databases\SimpleDatabase.cs" />
     <Compile Include="Core\StaticUtils.cs" />
+    <Compile Include="Job\JobController.cs" />
     <Compile Include="Printer\PrintControl.cs" />
     <Compile Include="V275\Models\V275_Configuration_Camera.cs" />
     <Compile Include="V275\Models\V275_DetectResponse.cs" />
@@ -147,6 +151,7 @@
     <Compile Include="V275\Models\V275_Job.cs" />
     <Compile Include="V275\Models\V275_Job_Sector_Verify.cs" />
     <Compile Include="V275\Models\V275_Repeat_Available.cs" />
+    <Compile Include="V275\Models\V275_Report_InspectSector_Blemish.cs" />
     <Compile Include="V275\Models\V275_Report_InspectSector_Compare.cs" />
     <Compile Include="V275\Models\V275_Report_InspectSector_Common.cs" />
     <Compile Include="V275\Models\V275_Report_InspectSector_OCR.cs" />
@@ -221,6 +226,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Images\barcode-2d.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\FlawTool.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Images\OCR.png">

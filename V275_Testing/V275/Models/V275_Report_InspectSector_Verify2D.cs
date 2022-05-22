@@ -36,7 +36,7 @@ namespace V275_Testing.V275.Models
             public V275_Report_InspectSector_Common.GradeValue axialNonUniformity { get; set; }
             public V275_Report_InspectSector_Common.GradeValue gridNonUniformity { get; set; }
             public V275_Report_InspectSector_Common.GradeValue unusedErrorCorrection { get; set; }
-            public V275_Report_InspectSector_Common.GradeValue fixedPatternDamage { get; set; } 
+            public V275_Report_InspectSector_Common.GradeValue fixedPatternDamage { get; set; }
 
             public V275_Report_InspectSector_Common.Value minimumReflectance { get; set; }
             public V275_Report_InspectSector_Common.Value maximumReflectance { get; set; }
@@ -51,6 +51,13 @@ namespace V275_Testing.V275.Models
             public V275_Report_InspectSector_Common.ValueResult symbolHeight { get; set; }
             public V275_Report_InspectSector_Common.ValueResult cellSizeX { get; set; }
             public V275_Report_InspectSector_Common.ValueResult cellSizeY { get; set; }
+
+            public V275_Report_InspectSector_Common.Grade L1 { get; set; }
+            public V275_Report_InspectSector_Common.Grade L2 { get; set; }
+            public V275_Report_InspectSector_Common.Grade QZL1 { get; set; }
+            public V275_Report_InspectSector_Common.Grade QZL2 { get; set; }
+            public V275_Report_InspectSector_Common.Grade OCTASA { get; set; }
+
             public int growthX { get; set; }
             public int growthY { get; set; }
             public int formatInfo { get; set; }

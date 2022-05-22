@@ -17,6 +17,7 @@
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="booltovis"/>
         <Converters:StringToUpperSpacedConverter x:Key="stringToUpper"/>
+        <Converters:FloatStringTrimConverter x:Key="floatTrim"/>
     </UserControl.Resources>
 
     <Border BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}" BorderThickness="1" Margin="1" CornerRadius="3">
@@ -37,13 +38,20 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
-            <TextBlock Text="   WRONG STANDARD   " 
-                       Background="OrangeRed"
-                       Grid.ColumnSpan="4"
-                       HorizontalAlignment="Center"
-                       Visibility="{Binding IsWrongStandard, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            <StackPanel Orientation="Horizontal" Grid.ColumnSpan="3">
 
-            <Border Grid.Row="1" Grid.Column="0" Background="White" Height="30">
+
+                <TextBlock Text="{Binding JobSector.username}" Margin="3,0,3,0"/>
+                
+                <TextBlock Text="WRONG STANDARD" 
+                           Background="OrangeRed"
+                           Grid.ColumnSpan="4"
+                           HorizontalAlignment="Center"
+                           Visibility="{Binding IsWrongStandard, Converter={StaticResource BooleanToVisibilityConverter}}"/>              
+            </StackPanel>
+
+
+            <Border Grid.Row="1" Grid.Column="0" Background="White" Height="30" VerticalAlignment="Top" Margin="0,3">
                 <Image Stretch="Fill" >
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
@@ -68,11 +76,11 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
-                    <RowDefinition/>
                 </Grid.RowDefinitions>
+                
+                <TextBlock Grid.Row="0" Text="{Binding JobSector.symbology, Converter={StaticResource stringToUpper}}" Margin="3,1,3,0"/>
 
-                <TextBlock Text="{Binding JobSector.username}" Grid.Row="0" Margin="3,0,3,0"/>
-                <TextBlock Grid.Row="1" Margin="3,0,3,3" TextWrapping="Wrap">
+                <TextBlock Grid.Row="1" Margin="3,0,3,0" TextWrapping="Wrap">
                     <TextBlock.Style>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Text" Value="{Binding ReportSector.data.decodeText}"/>
@@ -82,6 +90,9 @@
                                 </DataTrigger>
                                 <DataTrigger Value="ocv" Binding="{Binding JobSector.type}">
                                     <Setter Property="Text" Value="{Binding ReportSector.data.text}"/>
+                                </DataTrigger>
+                                <DataTrigger Value="blemish" Binding="{Binding JobSector.type}">
+                                    <Setter Property="Text" Value=""/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -103,171 +114,365 @@
                                 <RowDefinition/>
                                 <RowDefinition/>
                                 <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
                             </Grid.RowDefinitions>
 
-                            <ItemsControl ItemsSource="{Binding CompareSector.GradeValues}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="auto"/>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="auto"/>
-                                            </Grid.ColumnDefinitions>
+                            <Border Grid.Row="0" BorderThickness="1" Padding="1" CornerRadius="3">
+                                <Border.Style>
+                                    <Style TargetType="{x:Type Border}">
+                                        <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}"/>
+                                        <Setter Property="Margin" Value="2"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Value="0" Binding="{Binding CompareSector.Alarms.Count}">
+                                                <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.ThemeBackground}"/>
+                                                <Setter Property="Margin" Value="0"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
 
-                                            <StackPanel Orientation="Horizontal" Margin="3,0,6,0">
+                                <ItemsControl ItemsSource="{Binding CompareSector.Alarms}">
+                                    <ItemsControl.ItemTemplate>
+                                        <HierarchicalDataTemplate>
+                                            <Grid Margin="2">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="auto"/>
+                                                </Grid.ColumnDefinitions>
 
-                                                <TextBlock Text="{Binding Path=Key, Converter={StaticResource stringToUpper}}" Grid.Column="0"/>
-                                            </StackPanel>
+                                                <StackPanel Orientation="Horizontal" Grid.Column="0">
+                                                    <TextBlock Text="{Binding Path=name, Converter={StaticResource stringToUpper}}"/>
+                                                    <TextBlock Text=": "/>
+                                                    <TextBlock Text="{Binding Path=data.subAlarm, Converter={StaticResource stringToUpper}}" Grid.Column="1"/>
+                                                </StackPanel>
 
-                                            <StackPanel Orientation="Horizontal" Grid.Column="2" >
-                                                <TextBlock Text="{Binding Path=Value.grade.value, StringFormat=N1}" Grid.Column="1"/>
+                                                <StackPanel Orientation="Horizontal" Grid.Column="2">
+                                                    <TextBlock Text=" ( "/>
+                                                    <TextBlock Text="{Binding Path=data.text, StringFormat=N2, Converter={StaticResource floatTrim}}"/>
+                                                    <TextBlock Text="/"/>
+                                                    <TextBlock Text="{Binding Path=data.expected, StringFormat=N2, Converter={StaticResource floatTrim}}"/>
+                                                    <TextBlock Text=" )   "/>
+                                                    
+                                                    <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3">
+                                                        <Border.Style>
+                                                            <Style TargetType="{x:Type Border}">
+                                                                <Setter Property="Background" Value="Green"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Value="2" Binding="{Binding category}">
+                                                                        <Setter Property="Background" Value="Red"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Value="1" Binding="{Binding category}">
+                                                                        <Setter Property="Background" Value="Orange"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Border.Style>
+                                                    </Border>                                                    
+                                                </StackPanel>
+                                                
+                                            </Grid>
+                                        </HierarchicalDataTemplate>
+                                    </ItemsControl.ItemTemplate>
 
-                                                <TextBlock Text=" "/>
-                                                <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3">
-                                                    <Border.Style>
-                                                        <Style TargetType="{x:Type Border}">
-                                                            <Setter Property="Background" Value="Green"/>
-                                                            <Style.Triggers>
-                                                                <DataTrigger Value="B" Binding="{Binding Path=Value.grade.letter}">
-                                                                    <Setter Property="Background" Value="Turquoise"/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Value="C" Binding="{Binding Path=Value.grade.letter}">
-                                                                    <Setter Property="Background" Value="Blue"/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Value="D" Binding="{Binding Path=Value.grade.letter}">
-                                                                    <Setter Property="Background" Value="Fuchsia"/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Value="F" Binding="{Binding Path=Value.grade.letter}">
-                                                                    <Setter Property="Background" Value="Red"/>
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </Border.Style>
-                                                </Border>
-                                                <TextBlock Text=" "/>
-                                                <TextBlock Text="{Binding Path=Value.grade.letter}"/>
-                                                <TextBlock Text=" ("/>
-                                                <TextBlock Text="{Binding Path=Value.value}" Grid.Column="1"/>
-                                                <TextBlock Text=") "/>
-                                            </StackPanel>
+                                </ItemsControl>
+                            </Border>
 
-                                        </Grid>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
+                            <Border Grid.Row="1" BorderThickness="1" Padding="1" CornerRadius="3">
+                                <Border.Style>
+                                    <Style TargetType="{x:Type Border}">
+                                        <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}"/>
+                                        <Setter Property="Margin" Value="2"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Value="0" Binding="{Binding CompareSector.GradeValues.Count}">
+                                                <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.ThemeBackground}"/>
+                                                <Setter Property="Margin" Value="0"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
 
-                            </ItemsControl>
+                                <ItemsControl ItemsSource="{Binding CompareSector.GradeValues}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="auto"/>
+                                                </Grid.ColumnDefinitions>
 
-                            <ItemsControl ItemsSource="{Binding CompareSector.Values}" Grid.Row="1">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="auto"/>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="auto"/>
-                                            </Grid.ColumnDefinitions>
+                                                <StackPanel Orientation="Horizontal" Margin="3,0,6,0">
 
-                                            <StackPanel Orientation="Horizontal" Margin="3,0,6,0">
-                                                <TextBlock Text="{Binding Path=Key, Converter={StaticResource stringToUpper}}" Grid.Column="0"/>
-                                            </StackPanel>
+                                                    <TextBlock Text="{Binding Path=Key, Converter={StaticResource stringToUpper}}" Grid.Column="0"/>
+                                                </StackPanel>
 
-                                            <StackPanel Orientation="Horizontal" Grid.Column="2" >
-                                                <TextBlock Text=" ("/>
-                                                <TextBlock Text="{Binding Path=Value.value}" Grid.Column="1"/>
-                                                <TextBlock Text=") "/>
-                                            </StackPanel>
+                                                <StackPanel Orientation="Horizontal" Grid.Column="2" >
+                                                    <TextBlock Text=" ( "/>
+                                                    <TextBlock Text="{Binding Path=Value.value}" Grid.Column="1"/>
+                                                    <TextBlock Text=" )   "/>
+                                                    
+                                                     <TextBlock Text="{Binding Path=Value.grade.value, StringFormat=N1}" Grid.Column="1"/>
+                                                    <TextBlock Text=" "/>
+                                                    
+                                                    <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3">
+                                                        <Border.Style>
+                                                            <Style TargetType="{x:Type Border}">
+                                                                <Setter Property="Background" Value="Green"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Value="B" Binding="{Binding Path=Value.grade.letter}">
+                                                                        <Setter Property="Background" Value="Turquoise"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Value="C" Binding="{Binding Path=Value.grade.letter}">
+                                                                        <Setter Property="Background" Value="Blue"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Value="D" Binding="{Binding Path=Value.grade.letter}">
+                                                                        <Setter Property="Background" Value="Fuchsia"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Value="F" Binding="{Binding Path=Value.grade.letter}">
+                                                                        <Setter Property="Background" Value="Red"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Border.Style>
+                                                    </Border>
+                                                    <TextBlock Text=" "/>
+                                                    <TextBlock Text="{Binding Path=Value.grade.letter}"/>
 
-                                        </Grid>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
+                                                </StackPanel>
 
-                            <ItemsControl ItemsSource="{Binding CompareSector.ValueResults}" Grid.Row="2">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="auto"/>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="auto"/>
-                                            </Grid.ColumnDefinitions>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
 
-                                            <StackPanel Orientation="Horizontal" Margin="3,0,6,0">
-                                                <TextBlock Text="{Binding Path=Key, Converter={StaticResource stringToUpper}}" Grid.Column="0"/>
-                                            </StackPanel>
+                                </ItemsControl>
+                            </Border>
 
-                                            <StackPanel Orientation="Horizontal" Grid.Column="2" >
-                                                <TextBlock Text="{Binding Path=Value.result}"/>
-                                                <TextBlock Text=" "/>
-                                                <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3">
-                                                    <Border.Style>
-                                                        <Style TargetType="{x:Type Border}">
-                                                            <Setter Property="Background" Value="Green"/>
-                                                            <Style.Triggers>
-                                                                <DataTrigger Value="FAIL" Binding="{Binding Path=Value.result}">
-                                                                    <Setter Property="Background" Value="Red"/>
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </Border.Style>
-                                                </Border>
-                                                <TextBlock Text=" ("/>
-                                                <TextBlock Text="{Binding Path=Value.value, StringFormat=N1}" Grid.Column="1"/>
-                                                <TextBlock Text=") "/>
-                                            </StackPanel>
+                            <Border Grid.Row="2" BorderThickness="1" Padding="1" CornerRadius="3">
+                                <Border.Style>
+                                    <Style TargetType="{x:Type Border}">
+                                        <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}"/>
+                                        <Setter Property="Margin" Value="2"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Value="0" Binding="{Binding CompareSector.Values.Count}">
+                                                <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.ThemeBackground}"/>
+                                                <Setter Property="Margin" Value="0"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                
+                                <ItemsControl ItemsSource="{Binding CompareSector.Values}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="auto"/>
+                                                </Grid.ColumnDefinitions>
 
-                                        </Grid>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
+                                                <StackPanel Orientation="Horizontal" Margin="3,0,6,0">
+                                                    <TextBlock Text="{Binding Path=Key, Converter={StaticResource stringToUpper}}"/>
+                                                </StackPanel>
 
-                            </ItemsControl>
+                                                <StackPanel Orientation="Horizontal" Grid.Column="2" >
+                                                    <TextBlock Text=" ( "/>
+                                                    <TextBlock Text="{Binding Path=Value.value}"/>
+                                                    <TextBlock Text=" )               "/>
+                                                </StackPanel>
 
-                            <ItemsControl ItemsSource="{Binding CompareSector.Gs1ValueResults}" Grid.Row="3">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="auto"/>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="auto"/>
-                                            </Grid.ColumnDefinitions>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </Border>
 
-                                            <StackPanel Orientation="Horizontal" Margin="3,0,6,0">
-                                                <TextBlock Text="{Binding Path=Key, Converter={StaticResource stringToUpper}}" Grid.Column="0"/>
-                                            </StackPanel>
+                            <Border Grid.Row="3" BorderThickness="1" Padding="1" CornerRadius="3">
+                                <Border.Style>
+                                    <Style TargetType="{x:Type Border}">
+                                        <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}"/>
+                                        <Setter Property="Margin" Value="2"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Value="0" Binding="{Binding CompareSector.ValueResults.Count}">
+                                                <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.ThemeBackground}"/>
+                                                <Setter Property="Margin" Value="0"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
 
-                                            <StackPanel Orientation="Horizontal" Grid.Column="2" >
-                                                <TextBlock Text="{Binding Path=Value.result}"/>
-                                                <TextBlock Text=" "/>
-                                                <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3">
-                                                    <Border.Style>
-                                                        <Style TargetType="{x:Type Border}">
-                                                            <Setter Property="Background" Value="Green"/>
-                                                            <Style.Triggers>
-                                                                <DataTrigger Value="FAIL" Binding="{Binding Path=Value.result}">
-                                                                    <Setter Property="Background" Value="Red"/>
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </Border.Style>
-                                                </Border>
-                                                <TextBlock Text=" ("/>
-                                                <TextBlock Text="{Binding Path=Value.value, StringFormat=N2}" Grid.Column="1"/>
-                                                <TextBlock Text=") "/>
-                                            </StackPanel>
+                                <ItemsControl ItemsSource="{Binding CompareSector.ValueResults}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="auto"/>
+                                                </Grid.ColumnDefinitions>
 
-                                        </Grid>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
+                                                <StackPanel Orientation="Horizontal" Margin="3,0,6,0">
+                                                    <TextBlock Text="{Binding Path=Key, Converter={StaticResource stringToUpper}}" Grid.Column="0"/>
+                                                </StackPanel>
 
-                            </ItemsControl>
+                                                <StackPanel Orientation="Horizontal" Grid.Column="2" > 
+                                                    <TextBlock Text="( "/>
+                                                    <TextBlock Text="{Binding Path=Value.value, StringFormat=N1}" Grid.Column="1"/>
+                                                    <TextBlock Text=" )   "/>
+
+                                                    <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3">
+                                                        <Border.Style>
+                                                            <Style TargetType="{x:Type Border}">
+                                                                <Setter Property="Background" Value="Green"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Value="FAIL" Binding="{Binding Path=Value.result}">
+                                                                        <Setter Property="Background" Value="Red"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Border.Style>
+                                                    </Border>
+                                                    <TextBlock Text=" "/>
+                                                    <TextBlock Text="{Binding Path=Value.result}"/>
+                                                    
+                                                </StackPanel>
+
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+
+                                </ItemsControl>
+                            </Border>
+
+                            <Border Grid.Row="4" BorderThickness="1" Padding="1" CornerRadius="3">
+                                <Border.Style>
+                                    <Style TargetType="{x:Type Border}">
+                                        <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}"/>
+                                        <Setter Property="Margin"  Value="2"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Value="0" Binding="{Binding CompareSector.Gs1ValueResults.Count}">
+                                                <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.ThemeBackground}"/>
+                                                <Setter Property="Margin" Value="0"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+
+                                <ItemsControl ItemsSource="{Binding CompareSector.Gs1ValueResults}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <StackPanel Orientation="Horizontal" Margin="3,0,6,0">
+                                                    <TextBlock Text="{Binding Path=Key, Converter={StaticResource stringToUpper}}" Grid.Column="0"/>
+                                                </StackPanel>
+
+                                                <StackPanel Orientation="Horizontal" Grid.Column="2" >
+                                                    <TextBlock Text=" ( "/>
+                                                    <TextBlock Text="{Binding Path=Value.value, StringFormat=N2}" Grid.Column="1"/>
+                                                    <TextBlock Text=" )   "/>
+
+                                                    <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3">
+                                                        <Border.Style>
+                                                            <Style TargetType="{x:Type Border}">
+                                                                <Setter Property="Background" Value="Green"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Value="FAIL" Binding="{Binding Path=Value.result}">
+                                                                        <Setter Property="Background" Value="Red"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Border.Style>
+                                                    </Border>
+                                                    <TextBlock Text=" "/>
+                                                    <TextBlock Text="{Binding Path=Value.result}"/>
+                                                    
+                                                </StackPanel>
+
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+
+                                </ItemsControl>
+                            </Border>
+
+                            <Border Grid.Row="5" BorderThickness="1" Padding="1" CornerRadius="3">
+                                <Border.Style>
+                                    <Style TargetType="{x:Type Border}">
+                                        <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}"/>
+                                        <Setter Property="Margin" Value="2"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Value="0" Binding="{Binding CompareSector.Gs1Grades.Count}">
+                                                <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.ThemeBackground}"/>
+                                                <Setter Property="Margin" Value="0"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+
+                                <ItemsControl ItemsSource="{Binding CompareSector.Gs1Grades}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <StackPanel Orientation="Horizontal" Margin="3,0,6,0">
+
+                                                    <TextBlock Text="{Binding Path=Key, Converter={StaticResource stringToUpper}}" Grid.Column="0"/>
+                                                </StackPanel>
+
+                                                <StackPanel Orientation="Horizontal" Grid.Column="2" >
+                                                    <TextBlock Text="{Binding Path=Value.value, StringFormat=N1}" Grid.Column="1"/>
+
+                                                    <TextBlock Text=" "/>
+                                                    <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3">
+                                                        <Border.Style>
+                                                            <Style TargetType="{x:Type Border}">
+                                                                <Setter Property="Background" Value="Green"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Value="B" Binding="{Binding Path=Value.letter}">
+                                                                        <Setter Property="Background" Value="Turquoise"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Value="C" Binding="{Binding Path=Value.letter}">
+                                                                        <Setter Property="Background" Value="Blue"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Value="D" Binding="{Binding Path=Value.letter}">
+                                                                        <Setter Property="Background" Value="Fuchsia"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Value="F" Binding="{Binding Path=Value.letter}">
+                                                                        <Setter Property="Background" Value="Red"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Border.Style>
+                                                    </Border>
+                                                    <TextBlock Text=" "/>
+                                                    <TextBlock Text="{Binding Path=Value.letter}"/>
+                                                </StackPanel>
+
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+
+                                </ItemsControl>
+                            </Border>
                         </Grid>
                     </Border>
                 </Border>
             </Popup>
 
-            <Border Name="PopupBorder" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Grid.Row="1" Grid.Column="2" Height="30" Width="30" CornerRadius="3">
+            <Border Name="PopupBorder" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Grid.Row="1" Grid.Column="2" Height="30" Width="30" CornerRadius="3" VerticalAlignment="Top">
                 <Button Click="Button_Click">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Square.Accent}">
@@ -283,15 +488,23 @@
                         </Style>
                     </Button.Style>
                     <Button.Content>
-                        <StackPanel Orientation="Vertical">
-                            <TextBlock Text="{Binding ReportSector.data.overallGrade.grade.value, StringFormat=N1}"/>
-                            <TextBlock Text="{Binding ReportSector.data.overallGrade.grade.letter}"/>
-                        </StackPanel>
+                        <TextBlock>
+                            <TextBlock.Style>
+                                <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                    <Setter Property="Text" Value="{Binding ReportSector.data.overallGrade.grade.value, StringFormat=N1}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Value="blemish" Binding="{Binding JobSector.type}">
+                                            <Setter Property="Text" Value="{Binding ReportSector.data.blemishCount}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
                     </Button.Content>
                 </Button>
             </Border>
             
-            <Border BorderThickness="1" Grid.Row="2" Grid.ColumnSpan="4" CornerRadius="3">
+            <Border BorderThickness="1" Grid.Row="2" Grid.ColumnSpan="4" Padding="1" CornerRadius="3">
                 <Border.Style>
                     <Style TargetType="{x:Type Border}">
                         <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}"/>
@@ -316,7 +529,7 @@
                                 </Grid.ColumnDefinitions>
                                 
                                 <StackPanel Orientation="Horizontal" Grid.Column="0">
-                                    <TextBlock Text="{Binding Path=name}"/>
+                                    <TextBlock Text="{Binding Path=name, Converter={StaticResource stringToUpper}}"/>
                                     <TextBlock Text=": "/>
                                 </StackPanel>
 
@@ -344,7 +557,7 @@
                 </ItemsControl>
             </Border>
 
-            <Border BorderThickness="1" Grid.Row="5" Grid.ColumnSpan="4" CornerRadius="3">
+            <Border BorderThickness="1" Grid.Row="5" Grid.ColumnSpan="4" Padding="1" CornerRadius="3">
                 <Border.Style>
                     <Style TargetType="{x:Type Border}">
                         <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}"/>
@@ -356,6 +569,7 @@
                         </Style.Triggers>
                     </Style>
                 </Border.Style>
+                
                 <ItemsControl ItemsSource="{Binding CompareSector.Gs1ValueResults}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
@@ -373,7 +587,8 @@
                                 <StackPanel Orientation="Horizontal" Grid.Column="2" >
 
                                     <TextBlock Text="{Binding Path=Value.value, StringFormat=N2}" Grid.Column="1" Margin="3,0,3,0"/>
-                                    <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3">
+                                    
+                                    <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3" Margin="2,0,2,0">
                                         <Border.Style>
                                             <Style TargetType="{x:Type Border}">
                                                 <Setter Property="Background" Value="Green"/>

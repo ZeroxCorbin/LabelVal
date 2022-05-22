@@ -36,161 +36,178 @@
             </Button>
         </mah:WindowCommands>
     </mah:MetroWindow.RightWindowCommands>
+
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="0">
-            <Label Content="V275 System"/>
+        <Grid Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
 
-            <TextBox mah:TextBoxHelper.Watermark="Host" 
+            <Border Grid.Row="0" Grid.Column="0" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="2" Margin="5">
+                <StackPanel Orientation="Horizontal" Margin="3">
+                    <Label Content="V275 System"/>
+
+                    <TextBox mah:TextBoxHelper.Watermark="Host" 
                          Text="{Binding V275_Host}" MinWidth="80"/>
 
-            <TextBox mah:TextBoxHelper.Watermark="System Port" 
+                    <TextBox mah:TextBoxHelper.Watermark="System Port" 
                          Text="{Binding V275_SystemPort}" MinWidth="80"/>
+                </StackPanel>
+            </Border>
 
+            <Border Grid.Row="0" Grid.Column="1" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="2" Margin="5">
+                <StackPanel Orientation="Horizontal"  Margin="3">
+                    
+                    <Label Content="Node Connection"/>
 
-
-            <StackPanel Orientation="Horizontal">
-                <Label Content="Printer"/>
-                <ComboBox ItemsSource="{Binding Printers}" SelectedItem="{Binding SelectedPrinter}"/>
-
-                <!--<Button Content="Start"
-                            Command="{Binding Print}"
-                            CommandParameter="1"
-                        IsEnabled="{Binding IsLoggedIn}"/>
-                
-                <Button Content="Stop"
-                            Command="{Binding Print}"
-                            CommandParameter="0"
-                        IsEnabled="{Binding IsLoggedIn}"/>-->
-
-            </StackPanel>
-        </StackPanel>
-
-        <StackPanel Orientation="Horizontal" Grid.Row="1">
-            <Label Content="Node Connection"/>
-
-            <Button Content="Get Nodes"
+                    <Button Content="Get Nodes"
                     Command="{Binding GetDevices}"
                     IsEnabled="{Binding IsNotLoggedIn}"/>
 
-            <ComboBox ItemsSource="{Binding Nodes}"
+                    <ComboBox ItemsSource="{Binding Nodes}"
                           SelectedValue="{Binding SelectedNode}"
                           IsEnabled="{Binding IsNotLoggedIn}">
-                <ComboBox.ItemTemplate>
-                    <DataTemplate>
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
 
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Path=enumeration,StringFormat='Slot: {0} Model: '}" />
-                            <TextBlock Text="{Binding Path=printerModel}" />
-                            <TextBlock Text="{Binding Path=cameraMAC,StringFormat=' ({0})'}" />
-                        </StackPanel>
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
-            </ComboBox>
-            <!--<TextBox mah:TextBoxHelper.Watermark="Board Stack IP" 
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Path=enumeration,StringFormat='Slot: {0} Model: '}" />
+                                    <TextBlock Text="{Binding Path=printerModel}" />
+                                    <TextBlock Text="{Binding Path=cameraMAC,StringFormat=' ({0})'}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <!--<TextBox mah:TextBoxHelper.Watermark="Board Stack IP" 
                          Text="{Binding Host}" MinWidth="80"/>-->
-            <!--<TextBox mah:TextBoxHelper.Watermark="Path" 
+                    <!--<TextBox mah:TextBoxHelper.Watermark="Path" 
                          Text="{Binding RootPath}" MinWidth="80"/>-->
-            <TextBox mah:TextBoxHelper.Watermark="User Name" 
+                    <TextBox mah:TextBoxHelper.Watermark="User Name" 
                          Text="{Binding UserName}" MinWidth="80"
                      IsEnabled="{Binding IsNotLoggedIn}"/>
-            <TextBox mah:TextBoxHelper.Watermark="Password" 
+                    <TextBox mah:TextBoxHelper.Watermark="Password" 
                          Text="{Binding Password}" MinWidth="80"
                      IsEnabled="{Binding IsNotLoggedIn}"/>
-            <StackPanel Orientation="Horizontal" IsEnabled="{Binding IsGetDevices}" >
-                <Button Content="Logout"
+                    <StackPanel Orientation="Horizontal" IsEnabled="{Binding IsGetDevices}" >
+                        <Button Content="Logout"
                             Command="{Binding Logout}"
                             IsEnabled="{Binding IsLoggedIn}"/>
-                <Button Content="Setup"
+                        <Button Content="Setup"
                             Command="{Binding LoginMonitor}"
                             IsEnabled="{Binding IsNotLoggedIn}"/>
-                <Button Content="Run"
+                        <Button Content="Run"
                             Command="{Binding LoginControl}"
                             IsEnabled="{Binding IsNotLoggedIn}"/>
 
-            </StackPanel>
+                    </StackPanel>
 
-            <Label>
-                <Label.Style>
-                    <Style TargetType="{x:Type Label}">
-                        <Setter Property="Content" Value=""/>
-                        <Style.Triggers>
-                            <DataTrigger Value="True" Binding="{Binding IsSetup}">
-                                <Setter Property="Content" Value="Setup"/>
-                            </DataTrigger>
-                            <DataTrigger Value="True" Binding="{Binding IsRun}">
-                                <Setter Property="Content" Value="Run"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Label.Style>
-            </Label>
-            
-            <Label Content="{Binding V275_JobName}"/>
-            <Label Content="State:"/>
-            <Label Content="{Binding V275_State}">
-                <Label.Style>
-                    <Style TargetType="{x:Type Label}">
-                        <Setter Property="Background" Value="Red"/>
-                        <Style.Triggers>
-                            <DataTrigger Value="Editing" Binding="{Binding V275_State}">
-                                <Setter Property="Background" Value="Green"/>
-                              </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Label.Style>
-            </Label>
-            
-        </StackPanel>
+                    <Label>
+                        <Label.Style>
+                            <Style TargetType="{x:Type Label}">
+                                <Setter Property="Content" Value=""/>
+                                <Style.Triggers>
+                                    <DataTrigger Value="True" Binding="{Binding IsSetup}">
+                                        <Setter Property="Content" Value="Setup"/>
+                                    </DataTrigger>
+                                    <DataTrigger Value="True" Binding="{Binding IsRun}">
+                                        <Setter Property="Content" Value="Run"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Label.Style>
+                    </Label>
 
-        <Grid Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
+                    <Label Content="{Binding V275_JobName}"/>
+                    <Label Content="State:"/>
+                    <Label Content="{Binding V275_State}">
+                        <Label.Style>
+                            <Style TargetType="{x:Type Label}">
+                                <Setter Property="Background" Value="Red"/>
+                                <Style.Triggers>
+                                    <DataTrigger Value="Editing" Binding="{Binding V275_State}">
+                                        <Setter Property="Background" Value="Green"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Label.Style>
+                    </Label>
 
-            <StackPanel>
-                <ComboBox ItemsSource="{Binding Standards}" SelectedItem="{Binding SelectedStandard}"/>
-            </StackPanel>
+                </StackPanel>
+            </Border>
 
-            <!--<StackPanel Orientation="Horizontal" Grid.Row="1">
-                <Label/>
-                <Button Content="Start"
-                        Command="{Binding Start}"
-                         IsEnabled="{Binding IsNotStarted}"/>
-                <Label/>
-                <Button Content="Stop"
-                        Command="{Binding Stop}"
-                            IsEnabled="{Binding IsStarted}"/>
-            </StackPanel>-->
+            <Grid Grid.Row="1" Grid.ColumnSpan="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
 
-            <ScrollViewer Grid.Row="1" >
-                <ItemsControl ItemsSource="{Binding Labels}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel IsItemsHost="True"/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <local:LabelControlView />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </ScrollViewer>
+                <Border Grid.Column="0" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="2" Margin="5">
+                    <StackPanel Orientation="Horizontal" Margin="3">
+                        <Label Content="Printer"/>
+                        <ComboBox ItemsSource="{Binding Printers}" SelectedItem="{Binding SelectedPrinter}"/>
+                    </StackPanel>
+                </Border>
 
+                <Border Grid.Column="1" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="2" Margin="5">
+                    <StackPanel Orientation="Horizontal" Margin="3">
+                        <Label Content="Grading Stadards"/>
+                        <ComboBox ItemsSource="{Binding Standards}" SelectedItem="{Binding SelectedStandard}"/>
+                    </StackPanel>
+                </Border>
+                
+                <Border Grid.Column="2" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="2" Margin="5">
+                    <StackPanel Orientation="Horizontal" Margin="3">
+                        <Label Content="Job"/>
+                        <mah:NumericUpDown Minimum="1" Maximum="100" Interval="1" HideUpDownButtons="True"/>
+
+                        <Button Content="Start"
+                            Command="{Binding StartRun}"
+                            IsEnabled="{Binding IsRun}"/>
+
+                        <Button Content="Pause"
+                            Command="{Binding PauseRun}"
+                            IsEnabled="{Binding IsRun}"/>
+
+                        <Button Content="Stop"
+                            Command="{Binding StopRun}"
+                            IsEnabled="{Binding IsRun}"/>
+                    </StackPanel>
+                </Border>
+                
+            </Grid>
         </Grid>
+        
+        <ScrollViewer Grid.Row="1" >
+            <ItemsControl ItemsSource="{Binding Labels}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel IsItemsHost="True"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <local:LabelControlView />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
 
-        <StatusBar VerticalAlignment="Bottom" Grid.Row="3">
+        <StatusBar VerticalAlignment="Bottom" Grid.Row="2">
             <StatusBarItem>
                 <TextBlock Text="{Binding UserMessage}"/>
             </StatusBarItem>

@@ -8,24 +8,18 @@ using System.Windows.Data;
 
 namespace V275_Testing.Converters
 {
-    internal class StringToUpperSpacedConverter : IValueConverter
+    internal class FloatStringTrimConverter : IValueConverter
     {
 
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (value == null || string.IsNullOrEmpty(value.ToString()))
+            if(float.TryParse(value.ToString(), out var floatValue))
+            {
+                return floatValue;
+            }
+            else
                 return value;
-
-            string tmp = Regex.Replace(
-        Regex.Replace(
-            value.ToString(),
-            @"(\P{Ll})(\P{Ll}\p{Ll})",
-            "$1 $2"
-        ),
-        @"(\p{Ll})(\P{Ll})",
-        "$1 $2"
-    );
-            return $"{char.ToUpper(tmp[0])}{tmp.Substring(1)}";
+            
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

@@ -35,52 +35,53 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
-                <!--<Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Margin="3">-->
                 <Grid Grid.Column="0" Width="40">
                     <Grid.RowDefinitions>
                         <RowDefinition/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
+
                     <TextBlock Text="Label#" HorizontalAlignment="Center"/>
+
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="1">
                         <Label Content="{Binding LabelNumber}" FontSize="22"/>
                     </StackPanel>
                 </Grid>
-                <!--</Border>-->
-
-                <!--<Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" MinWidth="200" Margin="3">-->
 
                 <Grid Grid.Column="1" >
                     <Grid.RowDefinitions>
                         <RowDefinition/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
-                    <!--<TextBlock Text="Label#" HorizontalAlignment="Center"/>-->
+
                     <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center">
+
                         <mah:NumericUpDown Value="{Binding PrintCount}" Minimum="1" Maximum="1000" Interval="1" HideUpDownButtons="True" Margin="2"/>
+
                         <Button Content="Print" Command="{Binding PrintCommand}" Margin="2"/>
+
+                        <mah:ProgressRing IsActive="{Binding IsWorking}" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" Height="30" Width="30"/>
+
                     </StackPanel>
                 </Grid>
 
-                <!--</Border>-->
-
             </Grid>
 
-
-            <!--<Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" >-->
             <Image Grid.Row="1" Source="{Binding RepeatImage}" Margin="3" x:Name="image" />
-            <!--</Border>-->
 
-            <!--<Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" >-->
             <Grid Grid.Row="0" Grid.Column="1">
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
+
                 <TextBlock Text="Stored Sectors" HorizontalAlignment="Center"/>
+
                 <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center">
+
                     <Button Content="Clear" Command="{Binding ClearStored}" Margin="2"
                             Visibility="{Binding IsLoad, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
                     <Button Content="Load" Command="{Binding LoadCommand}" Margin="2">
                         <Button.Style>
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
@@ -96,19 +97,12 @@
                             </Style>
                         </Button.Style>
                     </Button>
+
                 </StackPanel>
             </Grid>
 
-            <!--</Border>-->
-
-            <!--<Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Grid.Row="1" Grid.Column="1" MinWidth="200" Margin="3" MaxHeight="400">-->
-            <ScrollViewer Grid.Row="1" Grid.Column="1" Width="200" Margin="3" MaxHeight="{Binding ElementName=image, Path=ActualHeight}">
+            <ScrollViewer Grid.Row="1" Grid.Column="1" Width="200" Margin="3" MaxHeight="{Binding ElementName=image, Path=ActualHeight}" Padding="0,0,0,6">
                 <ItemsControl ItemsSource="{Binding StoredSectors}">
-                    <!--<ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel IsItemsHost="True"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>-->
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <local:SectorControlView />
@@ -116,16 +110,14 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </ScrollViewer>
-            <!--</Border>-->
 
-            <!--<Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Grid.Row="0" Grid.Column="2">-->
             <Grid Grid.Row="0" Grid.Column="2">
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
                 <TextBlock Text="Read Sectors" HorizontalAlignment="Center"/>
-                
+
                 <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center">
 
                     <Button Content="Store" Command="{Binding StoreCommand}" Margin="2">
@@ -140,13 +132,13 @@
                             </Style>
                         </Button.Style>
                     </Button>
-                    
+
                     <Button Content="Clear" Command="{Binding ClearRead}" Margin="2"
                             Visibility="{Binding IsStore, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                    
+
                     <Button Content="Read" Command="{Binding ReadCommand}" Margin="2" 
                         Visibility="{Binding IsSetup, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                    
+
                     <Button Content="Inspect" Command="{Binding InspectCommand}" Margin="2"
                             Visibility="{Binding IsRun, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                     <Label Content="{Binding Status}"/>

@@ -18,6 +18,13 @@ namespace V275_Testing.WindowViewModels
 {
     public class MainWindowViewModel : Core.BaseViewModel
     {
+        public class Repeat
+        {
+            public LabelControlViewModel Label { get; set; }
+            public int RepeatNumber { get; set; } = -1;
+            public Repeat(LabelControlViewModel label) => Label = label;
+        }
+
         private V275_API_Commands V275 = new V275_API_Commands();
         private StandardsDatabase StandardsDatabase { get; }
         private V275_API_WebSocketEvents WebSocket { get; } = new V275_API_WebSocketEvents();
@@ -134,28 +141,39 @@ namespace V275_Testing.WindowViewModels
 
         public bool V275_IsBackupVoid => V275.ConfigurationCamera.backupVoidMode.value == "ON";
 
-        public ICommand Start { get; }
-        public bool IsStarted
-        {
-            get => isStarted;
-            set { SetProperty(ref isStarted, value); OnPropertyChanged("IsNotStarted"); }
-        }
-        public bool IsNotStarted => !isStarted;
-        private bool isStarted = false;
-
-
-        public ICommand Stop { get; }
-
         public ICommand Print { get; }
+
+        public ICommand StartRun { get; }
+        public bool IsRunStarted
+        {
+            get => isRunStarted;
+            set { SetProperty(ref isRunStarted, value); OnPropertyChanged("IsNotRunStarted"); }
+        }
+        public bool IsNotRunStarted => !isRunStarted;
+        private bool isRunStarted = false;
+
+        public ICommand PauseRun { get; }
+        public bool IsRunPaused
+        {
+            get => isRunPaused;
+            set { SetProperty(ref isRunPaused, value); OnPropertyChanged("IsNotRunPaused"); }
+        }
+        public bool IsNotRunPaused => !isRunPaused;
+        private bool isRunPaused = false;
+
+        public ICommand StopRun { get; }
 
         public MainWindowViewModel()
         {
             GetDevices = new Core.RelayCommand(GetDevicesAction, c => true);
+
             LoginMonitor = new Core.RelayCommand(LoginMonitorAction, c => true);
             LoginControl = new Core.RelayCommand(LoginControlAction, c => true);
             Logout = new Core.RelayCommand(LogoutAction, c => true);
-            Start = new Core.RelayCommand(StartAction, c => true);
-            Stop = new Core.RelayCommand(StopAction, c => true);
+
+            StartRun = new Core.RelayCommand(StartRunAction, c => true);
+            PauseRun = new Core.RelayCommand(PauseRunAction, c => true);
+            StopRun = new Core.RelayCommand(StopRunAction, c => true);
 
             Print = new Core.RelayCommand(PrintAction, c => true);
 
@@ -209,18 +227,6 @@ namespace V275_Testing.WindowViewModels
                 tmp.IsSetup = IsSetup;
 
                 Labels.Add(tmp);
-            }
-        }
-
-        public class Repeat
-        {
-            public LabelControlViewModel Label { get; set; }
-
-            public int RepeatNumber { get; set; } = -1;
-
-            public Repeat(LabelControlViewModel label)
-            {
-                Label = label;
             }
         }
 
@@ -343,7 +349,56 @@ namespace V275_Testing.WindowViewModels
                 IsSetup = false;
             }
         }
+        private async void LoginControlAction(object parameter)
+        {
+            Reset();
 
+            if (await V275.Login(UserName, Password, false))
+            {
+                _ = PostLogin(false);
+            }
+            else
+            {
+                UserMessage = V275.Status;
+                IsRun = false;
+            }
+        }
+        private async void LogoutAction(object parameter)
+        {
+            Reset();
+
+            if (!await V275.Logout())
+                UserMessage = V275.Status;
+
+            LoginData.accessLevel = "";
+            LoginData.token = "";
+            LoginData.id = "";
+            LoginData.state = "1";
+
+            IsRun = false;
+            IsSetup = false;
+
+            foreach (var rep in Labels)
+            {
+                rep.IsRun = IsRun;
+                rep.IsSetup = IsSetup;
+            }
+
+            try
+            {
+                WebSocket.SetupCapture -= WebSocket_SetupCapture;
+                WebSocket.SessionStateChange -= WebSocket_SessionStateChange;
+                WebSocket.Heartbeat -= WebSocket_Heartbeat;
+                WebSocket.SetupDetect -= WebSocket_SetupDetect;
+
+                await WebSocket.StopAsync();
+                await SysWebSocket.StopAsync();
+
+                V275_State = "";
+                V275_JobName = "";
+            }
+            catch { }
+        }
         private async Task PostLogin(bool isSetup)
         {
             LoginData.accessLevel = isSetup ? "monitor" : "control";
@@ -387,7 +442,6 @@ namespace V275_Testing.WindowViewModels
             detectEvent = ev;
             detectLock = end;
         }
-
         private void WebSocket_Heartbeat(V275_Events_System ev)
         {
             string state = char.ToUpper(ev.data.state[0]) + ev.data.state.Substring(1);
@@ -420,7 +474,6 @@ namespace V275_Testing.WindowViewModels
             }
 
         }
-
         private void WebSocket_SessionStateChange(V275_Events_System ev)
         {
             //if (ev.data.id == LoginData.id)
@@ -430,7 +483,6 @@ namespace V275_Testing.WindowViewModels
                         if (ev.data.token != LoginData.token)
                             LogoutAction(new object());
         }
-
         private void WebSocket_SetupCapture(V275_Events_System ev)
         {
             if (Repeats.ContainsKey(ev.data.repeat))
@@ -464,7 +516,6 @@ namespace V275_Testing.WindowViewModels
 
             //throw new NotImplementedException();
         }
-
         private async void ProcessRepeat(int repeat)
         {
             if (repeat > 0)
@@ -478,66 +529,16 @@ namespace V275_Testing.WindowViewModels
 
             if (i == 2)
             {
-                while (!detectLock) { };
+                await Task.Run(() => { while (!detectLock) { } });
 
                 await Repeats[repeat].Label.CreateSectors(detectEvent, StoredStandard);
             }
-                
 
             await Repeats[repeat].Label.Read(repeat);
+
+            Repeats[repeat].Label.IsWorking = false;
         }
 
-        private async void LoginControlAction(object parameter)
-        {
-            Reset();
-
-            if (await V275.Login(UserName, Password, false))
-            {
-                _ = PostLogin(false);
-            }
-            else
-            {
-                UserMessage = V275.Status;
-                IsRun = false;
-            }
-        }
-
-        private async void LogoutAction(object parameter)
-        {
-            Reset();
-
-            if (!await V275.Logout())
-                UserMessage = V275.Status;
-
-            LoginData.accessLevel = "";
-            LoginData.token = "";
-            LoginData.id = "";
-            LoginData.state = "1";
-
-            IsRun = false;
-            IsSetup = false;
-
-            foreach (var rep in Labels)
-            {
-                rep.IsRun = IsRun;
-                rep.IsSetup = IsSetup;
-            }
-
-            try
-            {
-                WebSocket.SetupCapture -= WebSocket_SetupCapture;
-                WebSocket.SessionStateChange -= WebSocket_SessionStateChange;
-                WebSocket.Heartbeat -= WebSocket_Heartbeat;
-                WebSocket.SetupDetect -= WebSocket_SetupDetect;
-
-                await WebSocket.StopAsync();
-                await SysWebSocket.StopAsync();
-
-                V275_State = "";
-                V275_JobName = "";
-            }
-            catch { }
-        }
 
         private async void PrintAction(object parameter)
         {
@@ -549,53 +550,17 @@ namespace V275_Testing.WindowViewModels
             await V275.Print((string)parameter == "1");
         }
 
-        private async void StartAction(object parameter)
+        private async void StartRunAction(object parameter)
         {
-            Reset();
-            if (!await V275.GetJob())
-            {
-                UserMessage = V275.Status;
-                return;
-            }
-            if (!await V275.GetReport())
-            {
-                UserMessage = V275.Status;
-                return;
-            }
 
-            //  Printer.PrintControl.Print(System.IO.Directory.GetCurrentDirectory() + "\\Assets\\GS1\\Table 1\\600\\", 1);
-
-            //bool res = true;
-            //string result = await V275_API_Connection.Put(V275_API_URLs.Print(), V275_API_URLs.Print_Body(true), Token);
-            //Thread.Sleep(200);
-            //result = await V275_API_Connection.Put(V275_API_URLs.Print(), V275_API_URLs.Print_Body(false), Token);
-            //result = await V275_API_Connection.Put(V275_API_URLs.History("2"), "", Token);
-            //string result1 = await V275_API_Connection.Put(V275_API_URLs.Inspect(), "", Token);
-
-            //Thread.Sleep(1000);
-            //string report = await V275_API_Connection.Get(V275_API_URLs.Report(), Token);
-
-            //if (string.IsNullOrEmpty(report))
-            //{
-            //    res = false;
-            //    Status = "No data returned!";
-            //}
-            //if (V275_API_Connection.IsException)
-            //{
-            //    res = false;
-            //    Status = V275_API_Connection.Exception.Message;
-            //}
-
-            //if (res)
-            //{
-            //    V275_Report job = JsonConvert.DeserializeObject<V275_Report>(report);
-
-            //}
         }
 
+        private async void PauseRunAction(object parameter)
+        {
 
+        }
 
-        private void StopAction(object parameter)
+        private async void StopRunAction(object parameter)
         {
 
         }

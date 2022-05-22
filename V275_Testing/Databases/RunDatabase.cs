@@ -8,26 +8,39 @@ using System.Threading.Tasks;
 
 namespace V275_Testing.Databases
 {
-    public class StandardsDatabase : IDisposable
+    public class RunDatabase : IDisposable
     {
         public string FilePath { get; private set; }
 
         private SQLiteConnection Connection { get; set; } = null;
         public bool IsConnectionPersistent { get; set; }
 
-        public class Row
+        public class RunRow
         {
+            public float EntryTime { get; set; }
             public int Repeat { get; set; }
             public string Job { get; set; }
             public string Report { get; set; }
 
-            public Row(SQLiteDataReader rdr)
+            public RunRow(SQLiteDataReader rdr)
             {
+                EntryTime = Convert.ToInt32(rdr["EntryTime"]);
                 Repeat = Convert.ToInt32(rdr["Repeat"]);
                 Job = rdr["Job"].ToString();
                 Report = rdr["Report"].ToString();
             }
         }
+
+        public RunDatabase(string filePath, bool isConnectionPersistent = true)
+        {
+            FilePath = filePath;
+            IsConnectionPersistent = isConnectionPersistent;
+
+            CreateFile();
+        }
+
+        private string SerializeObject(object o) => Newtonsoft.Json.JsonConvert.SerializeObject(o, o.GetType(), new Newtonsoft.Json.JsonSerializerSettings());
+
 
         private void CreateFile(bool overwrite = false)
         {
@@ -62,24 +75,16 @@ namespace V275_Testing.Databases
             Connection = null;
         }
 
-        public StandardsDatabase(string filePath, bool isConnectionPersistent = true)
-        {
-            FilePath = filePath;
-            IsConnectionPersistent = isConnectionPersistent;
-
-            CreateFile();
-        }
-
-        private string SerializeObject(object o) => Newtonsoft.Json.JsonConvert.SerializeObject(o, o.GetType(), new Newtonsoft.Json.JsonSerializerSettings());
-
-        public void CreateTable(string tableName)
+        public void CreateTables()
         {
             if (!Open()) return;
 
             StringBuilder sb = new StringBuilder();
-            sb.Append($"CREATE TABLE '{tableName}'");
+            sb.Append($"CREATE TABLE 'Run'");
             sb.Append(" (");
-            sb.Append("Repeat INTEGER");
+            sb.Append("EntryTime REAL default current_timestamp");
+            sb.Append(",");
+            sb.Append("Repeat INTEGER"); 
             sb.Append(",");
             sb.Append("Job TEXT");
             sb.Append(",");
@@ -92,30 +97,6 @@ namespace V275_Testing.Databases
             if (!IsConnectionPersistent)
                 Close();
         }
-
-        public void AddRow(string tableName, Row row) => AddRow(tableName, row.Repeat, row.Job, row.Report);
-        public void AddRow(string tableName, int repeat, string job, string report)
-        {
-            if (!Open()) return;
-
-            StringBuilder sb = new StringBuilder();
-            _ = sb.Append($"INSERT OR REPLACE INTO '{tableName}' (Repeat, Job, Report) VALUES (");
-            _ = sb.Append($"@Repeat,");
-            _ = sb.Append($"@Job,");
-            _ = sb.Append($"@Report);");
-
-            using (SQLiteCommand command = new SQLiteCommand(sb.ToString(), Connection))
-            {
-                _ = command.Parameters.AddWithValue("Repeat", repeat);
-                _ = command.Parameters.AddWithValue("Job", job);
-                _ = command.Parameters.AddWithValue("Report", report);
-                command.ExecuteNonQuery();
-            }
-
-            if (!IsConnectionPersistent)
-                Close();
-        }
-
         public List<string> GetAllTables()
         {
             List<string> lst = new List<string>();
@@ -133,16 +114,39 @@ namespace V275_Testing.Databases
             return lst;
         }
 
-        public List<Row> GetAllRows(string tableName)
+        public void AddRunRow(RunRow row) => AddRunRow(row.Repeat, row.Job, row.Report);
+        public void AddRunRow(int repeat, string job, string report)
         {
-            List<Row> lst = new List<Row>();
+            if (!Open()) return;
+
+            StringBuilder sb = new StringBuilder();
+            _ = sb.Append($"INSERT OR REPLACE INTO 'Run' (Repeat, Job, Report) VALUES ("); 
+            _ = sb.Append($"@Repeat,");
+            _ = sb.Append($"@Job,");
+            _ = sb.Append($"@Report);");
+
+            using (SQLiteCommand command = new SQLiteCommand(sb.ToString(), Connection))
+            {
+                _ = command.Parameters.AddWithValue("Repeat", repeat);
+                _ = command.Parameters.AddWithValue("Job", job);
+                _ = command.Parameters.AddWithValue("Report", report);
+                command.ExecuteNonQuery();
+            }
+
+            if (!IsConnectionPersistent)
+                Close();
+        }
+
+        public List<RunRow> GetAllRunRows()
+        {
+            List<RunRow> lst = new List<RunRow>();
 
             if (!Open()) return lst;
 
-            using (SQLiteCommand command = new SQLiteCommand($"SELECT * FROM '{tableName}'", Connection))
+            using (SQLiteCommand command = new SQLiteCommand($"SELECT * FROM 'Run'", Connection))
             using (SQLiteDataReader rdr = command.ExecuteReader())
                 while (rdr.Read())
-                    lst.Add(new Row(rdr));
+                    lst.Add(new RunRow(rdr));
 
             if (!IsConnectionPersistent)
                 Close();
@@ -150,19 +154,19 @@ namespace V275_Testing.Databases
             return lst;
         }
 
-        public Row GetRow(string tableName, int repeat)
+        public RunRow GetRunRow(int repeat)
         {
-            Row row = null;
+            RunRow row = null;
 
             if (!Open()) return row;
 
-            using (SQLiteCommand command = new SQLiteCommand($"SELECT * FROM '{tableName}' WHERE Repeat={repeat}", Connection))
+            using (SQLiteCommand command = new SQLiteCommand($"SELECT * FROM 'Run' WHERE Repeat={repeat}", Connection))
 
                 try
                 {
                     using (SQLiteDataReader rdr = command.ExecuteReader())
                         while (rdr.Read())
-                            row = new Row(rdr);
+                            row = new RunRow(rdr);
                 }
                 catch
                 {
@@ -176,18 +180,14 @@ namespace V275_Testing.Databases
             return row;
         }
 
-        public Row DeleteRow(string tableName, int repeat)
+        public void DeleteRunRow(int repeat)
         {
-            Row row = null;
-
-            if (!Open()) return row;
-            using (SQLiteCommand command = new SQLiteCommand($"DELETE FROM '{tableName}' WHERE Repeat={repeat}", Connection))
+            if (!Open()) return;
+            using (SQLiteCommand command = new SQLiteCommand($"DELETE FROM 'Run' WHERE Repeat={repeat}", Connection))
             using (SQLiteDataReader rdr = command.ExecuteReader()) { };
 
             if (!IsConnectionPersistent)
                 Close();
-
-            return row;
         }
 
         private bool disposedValue;
