@@ -24,11 +24,16 @@ namespace V275_Testing
 #endif
 
         public static string UserDataDirectory => $"{WorkingDir}\\UserData";
-        public static string DatabaseSettingsFile => "ApplicationSettings";
         public static string DatabaseExtension => ".sqlite";
+
+        public static string SettingsDatabaseName => $"ApplicationSettings{DatabaseExtension}";
 
         public static string StandardsRoot =>  $"{WorkingDir}\\Assets\\Standards";
         public static string StandardsDatabaseName => $"Standards{DatabaseExtension}";
+
+        public static string JobsRoot => $"{UserDataDirectory}\\Jobs";
+        public static string JobsDatabaseName => $"Jobs{DatabaseExtension}";
+        public static string RunsDatabaseName(long timeDate) => $"Job_Run_{timeDate}{DatabaseExtension}";
 
         public App()
         {
@@ -38,7 +43,7 @@ namespace V275_Testing
                 _ = Directory.CreateDirectory(UserDataDirectory);
             }
 
-            Settings = new Databases.SimpleDatabase().Init(Path.Combine(UserDataDirectory, $"{DatabaseSettingsFile}{DatabaseExtension}"), false);
+            Settings = new Databases.SimpleDatabase().Open(Path.Combine(UserDataDirectory, $"{SettingsDatabaseName}"));
 
             if (Settings == null)
             {
