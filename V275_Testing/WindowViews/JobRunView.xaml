@@ -1,0 +1,25 @@
+﻿<mah:MetroWindow x:Class="V275_Testing.WindowViews.JobRunView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        xmlns:local="clr-namespace:V275_Testing.WindowViews"
+            xmlns:ViewModels="clr-namespace:V275_Testing.WindowViewModels"     
+        xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+        Dialog:DialogParticipation.Register="{Binding}"
+        d:DataContext="{d:DesignInstance Type=ViewModels:JobRunViewModel}"
+        mc:Ignorable="d"
+        Title="V275 Testing" Height="450" Width="800" SaveWindowPosition="True">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <DataGrid>
+            
+        </DataGrid>
+    </Grid>
+</mah:MetroWindow>

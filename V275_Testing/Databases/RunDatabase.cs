@@ -9,13 +9,17 @@ namespace V275_Testing.Databases
         public class Run
         {
             [PrimaryKey]
-            public long TimeDate { get; set; }
-
+            public long TimeDate { get; set; } = DateTime.Now.Ticks;
+         
             public string Job { get; set; }
-            public string Report { get; set; }
+            public string StoredReport { get; set; }
 
+            public int LabelNumber { get; set; }
             public byte[] LabelImage { get; set; }
+            public string LabelImageUID { get; set; }
+
             public byte[] RepeatImage { get; set; }
+            public string Report { get; set; }
         }
 
         private SQLiteConnection Connection { get; set; } = null;
@@ -57,7 +61,7 @@ namespace V275_Testing.Databases
         public int DeleteRun(long timeDate) => Connection.Table<Run>().Delete(v => v.TimeDate == timeDate);
 
         public int InsertOrReplace(JobDatabase.Job job) => Connection.InsertOrReplace(job);
-        public bool ExistsJob(long timeDate)=> Connection.Table<JobDatabase.Job>().Where(v => v.TimeDate == timeDate).Count() > 0;
+        public bool ExistsJob(long timeDate) => Connection.Table<JobDatabase.Job>().Where(v => v.TimeDate == timeDate).Count() > 0;
         public JobDatabase.Job SelectJob(long timeDate) => Connection.Table<JobDatabase.Job>().Where(v => v.TimeDate == timeDate).FirstOrDefault();
         public List<JobDatabase.Job> SelectAllJobs() => Connection.CreateCommand("select * from Job").ExecuteQuery<JobDatabase.Job>();
         public int DeleteJob(long timeDate) => Connection.Table<JobDatabase.Job>().Delete(v => v.TimeDate == timeDate);

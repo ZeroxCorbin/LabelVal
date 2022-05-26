@@ -15,6 +15,8 @@ namespace V275_Testing
     /// </summary>
     public partial class App : Application
     {
+        private static NLog.Logger Logger { get; set; }
+
         public static Databases.SimpleDatabase Settings { get; private set; }
 
 #if DEBUG
@@ -37,13 +39,35 @@ namespace V275_Testing
 
         public App()
         {
+            var config = new NLog.Config.LoggingConfiguration();
+
+            // Targets where to log to: File and Console
+            var logfile = new NLog.Targets.FileTarget("logfile") { FileName = "UserData/log.txt",
+                ArchiveFileName = "$UserData/log.${shortdate}.txt",
+            ArchiveAboveSize = 5242880,
+            ArchiveEvery = NLog.Targets.FileArchivePeriod.Day,
+            ArchiveNumbering = NLog.Targets.ArchiveNumberingMode.Rolling,
+            MaxArchiveFiles = 3
+            };
+            //var logconsole = new NLog.Targets.ConsoleTarget("logconsole");
+
+            // Rules for mapping loggers to targets
+            config.AddRuleForAllLevels(logfile);
+            //config.AddRuleForAllLevels(logconsole);
+            // Apply config
+            NLog.LogManager.Configuration = config;
+            Logger = NLog.LogManager.GetCurrentClassLogger();
 
             if (!Directory.Exists(UserDataDirectory))
             {
                 _ = Directory.CreateDirectory(UserDataDirectory);
             }
+            if (!Directory.Exists(JobsRoot))
+            {
+                _ = Directory.CreateDirectory(JobsRoot);
+            }
 
-            Settings = new Databases.SimpleDatabase().Open(Path.Combine(UserDataDirectory, $"{SettingsDatabaseName}"));
+            Settings = new Databases.SimpleDatabase().Open(Path.Combine(UserDataDirectory, SettingsDatabaseName));
 
             if (Settings == null)
             {

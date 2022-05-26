@@ -20,6 +20,7 @@ namespace V275_Testing.V275
         public string Logout() => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/security/logout";
 
         public string Devices() => $"http://{Host}:{SystemPort}/api/printinspection/devices";
+public string Product() => $"http://{Host}:{SystemPort}/api/printinspection/product";
 
         public string WS_NodeEvents => $"ws://{Host}:{NodePort}/api/printinspection/{NodeNumber}/inspection/events";
         public string WS_SystemEvents => $"ws://{Host}:{SystemPort}/api/printinspection/event";

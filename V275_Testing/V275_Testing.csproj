@@ -71,6 +71,9 @@
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.5.0.0\lib\net46\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="SQLite-net, Version=1.8.116.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\sqlite-net-pcl.1.8.116\lib\netstandard2.0\SQLite-net.dll</HintPath>
     </Reference>
@@ -109,6 +112,7 @@
       <HintPath>..\packages\System.Data.SQLite.Linq.1.0.115.5\lib\net46\System.Data.SQLite.Linq.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
     </Reference>
@@ -164,6 +168,7 @@
     <Compile Include="V275\Models\V275_GradingStandards.cs" />
     <Compile Include="V275\Models\V275_Job.cs" />
     <Compile Include="V275\Models\V275_Job_Sector_Verify.cs" />
+    <Compile Include="V275\Models\V275_Product.cs" />
     <Compile Include="V275\Models\V275_Repeat_Available.cs" />
     <Compile Include="V275\Models\V275_Report_InspectSector_Blemish.cs" />
     <Compile Include="V275\Models\V275_Report_InspectSector_Compare.cs" />
@@ -178,9 +183,13 @@
     <Compile Include="V275\V275_API_Connection.cs" />
     <Compile Include="V275\V275_API_URLs.cs" />
     <Compile Include="V275\V275_API_WebSocketEvents.cs" />
+    <Compile Include="WindowViewModels\JobRunViewModel.cs" />
     <Compile Include="WindowViewModels\MainWindowViewModel.cs" />
     <Compile Include="WindowViewModels\LabelControlViewModel.cs" />
     <Compile Include="WindowViewModels\SectorControlViewModel.cs" />
+    <Compile Include="WindowViews\JobRunView.xaml.cs">
+      <DependentUpon>JobRunView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WindowViews\MainWindowView.xaml.cs">
       <DependentUpon>MainWindowView.xaml</DependentUpon>
     </Compile>
@@ -222,6 +231,10 @@
     <Resource Include="favicon.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="WindowViews\JobRunView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="WindowViews\MainWindowView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -251,349 +264,349 @@
     <Content Include="Assets\Images\OCV.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_01.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_01.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_02.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_02.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_03.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_03.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_04.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_04.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_05.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_05.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_06.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_06.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_07.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_07.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_08.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_08.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_09.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_09.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_10.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_10.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_11.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_11.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_12.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_12.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_13.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_13.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_14.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_14.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 11\600\SS 600DPI TEST ROLL FOR GS1 TABLE 11_1.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 11\600\SS 600DPI TEST ROLL FOR GS1 TABLE 11_1.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 11\600\SS 600DPI TEST ROLL FOR GS1 TABLE 11_2.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 11\600\SS 600DPI TEST ROLL FOR GS1 TABLE 11_2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 11\600\SS 600DPI TEST ROLL FOR GS1 TABLE 11_3.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 11\600\SS 600DPI TEST ROLL FOR GS1 TABLE 11_3.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 11\600\SS 600DPI TEST ROLL FOR GS1 TABLE 11_4.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 11\600\SS 600DPI TEST ROLL FOR GS1 TABLE 11_4.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 11\600\SS 600DPI TEST ROLL FOR GS1 TABLE 11_5.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 11\600\SS 600DPI TEST ROLL FOR GS1 TABLE 11_5.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 12\600\SS TEST ROLL FOR GS1 TABLE 12-1 600DPI_1.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 12-1\600\SS TEST ROLL FOR GS1 TABLE 12-1 600DPI_1.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 12\600\SS TEST ROLL FOR GS1 TABLE 12-1 600DPI_2.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 12-1\600\SS TEST ROLL FOR GS1 TABLE 12-1 600DPI_2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 12\600\SS TEST ROLL FOR GS1 TABLE 12-2 600DPI_1.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 12-2\600\SS TEST ROLL FOR GS1 TABLE 12-2 600DPI_1.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 12\600\SS TEST ROLL FOR GS1 TABLE 12-2 600DPI_2.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 12-2\600\SS TEST ROLL FOR GS1 TABLE 12-2 600DPI_2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 12\600\SS TEST ROLL FOR GS1 TABLE 12-2 600DPI_3.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 12-2\600\SS TEST ROLL FOR GS1 TABLE 12-2 600DPI_3.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 12\600\SS TEST ROLL FOR GS1 TABLE 12-3 600DPI_1.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 12-3\600\SS TEST ROLL FOR GS1 TABLE 12-3 600DPI_1.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 12\600\SS TEST ROLL FOR GS1 TABLE 12-3 600DPI_2.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 12-3\600\SS TEST ROLL FOR GS1 TABLE 12-3 600DPI_2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 12\600\SS TEST ROLL FOR GS1 TABLE 12-3 600DPI_3.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 12-3\600\SS TEST ROLL FOR GS1 TABLE 12-3 600DPI_3.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_01.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_01.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_02.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_02.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_03.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_03.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_04.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_04.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_05.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_05.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_06.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_06.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_07.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_07.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_08.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_08.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_09.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_09.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_10.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_10.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_11.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_11.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_12.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_12.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_13.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_13.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_14.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_14.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_15.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_15.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_16.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_16.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _01.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _01.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _02.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _02.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _03.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _03.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _04.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _04.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _05.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _05.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _06.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _06.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _07.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _07.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _08.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _08.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _09.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _09.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _10.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _10.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _11.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _11.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _12.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _12.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _13.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _13.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _14.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _14.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _15.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _15.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 3\600\SS 600DPI TEST ROLL FOR GS1 TABLE 3_1.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 3\600\SS 600DPI TEST ROLL FOR GS1 TABLE 3_1.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 3\600\SS 600DPI TEST ROLL FOR GS1 TABLE 3_2.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 3\600\SS 600DPI TEST ROLL FOR GS1 TABLE 3_2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 3\600\SS 600DPI TEST ROLL FOR GS1 TABLE 3_3.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 3\600\SS 600DPI TEST ROLL FOR GS1 TABLE 3_3.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 3\600\SS 600DPI TEST ROLL FOR GS1 TABLE 3_4.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 3\600\SS 600DPI TEST ROLL FOR GS1 TABLE 3_4.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 3\600\SS 600DPI TEST ROLL FOR GS1 TABLE 3_5.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 3\600\SS 600DPI TEST ROLL FOR GS1 TABLE 3_5.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 3\600\SS 600DPI TEST ROLL FOR GS1 TABLE 3_6.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 3\600\SS 600DPI TEST ROLL FOR GS1 TABLE 3_6.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 3\600\SS 600DPI TEST ROLL FOR GS1 TABLE 3_7.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 3\600\SS 600DPI TEST ROLL FOR GS1 TABLE 3_7.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 3\600\SS 600DPI TEST ROLL FOR GS1 TABLE 3_8.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 3\600\SS 600DPI TEST ROLL FOR GS1 TABLE 3_8.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_01.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_01.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_02.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_02.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_03.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_03.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_04.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_04.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_05.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_05.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_06.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_06.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_07.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_07.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_08.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_08.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_09.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_09.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_10.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_10.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_11.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_11.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_12.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_12.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_13.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_13.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_14.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_14.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_15.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_15.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 5\600\SS 600DPI TEST ROLL FOR GS1 TABLE 5_1.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 5\600\SS 600DPI TEST ROLL FOR GS1 TABLE 5_1.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 5\600\SS 600DPI TEST ROLL FOR GS1 TABLE 5_2.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 5\600\SS 600DPI TEST ROLL FOR GS1 TABLE 5_2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 5\600\SS 600DPI TEST ROLL FOR GS1 TABLE 5_3.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 5\600\SS 600DPI TEST ROLL FOR GS1 TABLE 5_3.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_01.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_01.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_02.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_02.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_03.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_03.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_04.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_04.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_05.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_05.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_06.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_06.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_07.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_07.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_08.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_08.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_09.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_09.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_10.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_10.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_11.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_11.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_12.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_12.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_13.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_13.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_14.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_14.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_01.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_01.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_02.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_02.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_03.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_03.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_04.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_04.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_05.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_05.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_06.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_06.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_07.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_07.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_08.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_08.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_09.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_09.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_10.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_10.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_11.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_11.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_12.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_12.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_13.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_13.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_14.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_14.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 9\600\SS 600DPI TEST ROLL GS1 TABLE 9_1.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 9\600\SS 600DPI TEST ROLL GS1 TABLE 9_1.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 9\600\SS 600DPI TEST ROLL GS1 TABLE 9_2.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 9\600\SS 600DPI TEST ROLL GS1 TABLE 9_2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 9\600\SS 600DPI TEST ROLL GS1 TABLE 9_3.bmp">
+    <Content Include="Assets\Standards\GS1 TABLE 9\600\SS 600DPI TEST ROLL GS1 TABLE 9_3.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

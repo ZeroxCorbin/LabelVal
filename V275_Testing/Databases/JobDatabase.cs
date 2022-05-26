@@ -21,6 +21,9 @@ namespace V275_Testing.Databases
 
             public int Completed { get; set; }
             public string GradingStandard { get; set; }
+
+            public string ProductPart { get; set; }
+            public string CameraMAC { get; set; }
         }
 
         private SQLiteConnection Connection { get; set; } = null;
@@ -37,7 +40,7 @@ namespace V275_Testing.Databases
                     if (Connection == null)
                         Connection = new SQLiteConnection(dbFilePath);
                 }
-                catch
+                catch(Exception ex)
                 {
                     return null;
                 }

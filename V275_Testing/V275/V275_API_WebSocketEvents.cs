@@ -15,6 +15,8 @@ namespace V275_Testing.V275
 {
     public class V275_API_WebSocketEvents
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         private ClientWebSocket Socket;
         private CancellationTokenSource SocketLoopTokenSource;
 
@@ -39,6 +41,8 @@ namespace V275_Testing.V275
         public async Task<bool> StartAsync(Uri wsUri)
         {
             SocketLoopTokenSource = new CancellationTokenSource();
+
+            Logger.Info("WS Staring: {uri}", wsUri.OriginalString);
 
             try
             {
@@ -89,6 +93,7 @@ namespace V275_Testing.V275
 
             if (ev.name == "setupCapture")
             {
+                Logger.Debug("WSE: {node}; {name}", ev.source, ev.name);
                 SetupCapture?.Invoke(ev);
                 return;
             }
@@ -97,15 +102,19 @@ namespace V275_Testing.V275
             {
                 if (ev.name.EndsWith("End"))
                 {
+                    Logger.Debug("WSE: {node}; {name}", ev.source, ev.name);
+
                     SetupDetect?.Invoke(ev, true);
                     return;
                 }
+                Logger.Debug("WSE: {node}; {name}", ev.source, ev.name);
                 SetupDetect?.Invoke(ev, false);
                 return;
             }
 
             if (ev.name == "sessionStateChange")
             {
+                Logger.Debug("WSE: {node}; {name}", ev.source, ev.name);
                 SessionStateChange?.Invoke(ev);
                 return;
             }
@@ -113,6 +122,8 @@ namespace V275_Testing.V275
 
         public async Task StopAsync()
         {
+            Logger.Info("WS Stopping");
+
             if (Socket == null || Socket.State != WebSocketState.Open) return;
             // close the socket first, because ReceiveAsync leaves an invalid socket (state = aborted) when the token is cancelled
             var timeout = new CancellationTokenSource(5000);
@@ -127,7 +138,10 @@ namespace V275_Testing.V275
             {
                 // normal upon task/token cancellation, disregard
             }
-            catch { }
+            catch(Exception ex)
+            {
+                Logger.Error(ex, "WS Exception: ");
+            }
             // whether we closed the socket or timed out, we cancel the token causing RecieveAsync to abort the socket
             SocketLoopTokenSource.Cancel();
             // the finally block at the end of the processing loop will dispose and null the Socket object

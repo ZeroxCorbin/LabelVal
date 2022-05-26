@@ -13,11 +13,14 @@ using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.Drawing.Printing;
 using V275_Testing.Databases;
+using V275_Testing.Job;
 
 namespace V275_Testing.WindowViewModels
 {
     public class MainWindowViewModel : Core.BaseViewModel
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         public class Repeat
         {
             public LabelControlViewModel Label { get; set; }
@@ -35,7 +38,19 @@ namespace V275_Testing.WindowViewModels
         public string V275_NodeNumber { get => V275.NodeNumber = App.Settings.GetValue("V275_NodeNumber", "1"); set { App.Settings.SetValue("V275_NodeNumber", value); V275.NodeNumber = value; } }
 
         public ObservableCollection<V275_Devices.Node> Nodes { get; } = new ObservableCollection<V275_Devices.Node>();
-        public V275_Devices.Node SelectedNode { get => selectedNode; set { SetProperty(ref selectedNode, value); if (value != null) V275_NodeNumber = value.enumeration.ToString(); } }
+        public V275_Devices.Node SelectedNode
+        {
+            get => selectedNode;
+            set
+            {
+                SetProperty(ref selectedNode, value);
+                if (value != null)
+                {
+                    V275_NodeNumber = value.enumeration.ToString();
+                    IsDeviceSelected = true;
+                }
+            }
+        }
         private V275_Devices.Node selectedNode;
 
         public ObservableCollection<LabelControlViewModel> Labels { get; } = new ObservableCollection<LabelControlViewModel>();
@@ -104,27 +119,36 @@ namespace V275_Testing.WindowViewModels
         public ICommand LoginMonitor { get; }
         public ICommand LoginControl { get; }
         public ICommand Logout { get; }
+
+        public bool IsDeviceSelected
+        {
+            get => isDeviceSelected;
+            set { SetProperty(ref isDeviceSelected, value); OnPropertyChanged("IsNotDeviceSelected"); }
+        }
+        public bool IsNotDeviceSelected => !isDeviceSelected;
+        private bool isDeviceSelected = false;
+
         public bool IsLoggedIn
         {
-            get => IsSetup || IsRun;
+            get => IsLoggedIn_Setup || IsLoggedIn_Control;
         }
-        public bool IsNotLoggedIn => !(IsSetup || IsRun);
+        public bool IsNotLoggedIn => !(IsLoggedIn_Setup || IsLoggedIn_Control);
 
-        public bool IsSetup
+        public bool IsLoggedIn_Setup
         {
-            get => isSetup;
-            set { SetProperty(ref isSetup, value); OnPropertyChanged("IsNotSetup"); OnPropertyChanged("IsNotLoggedIn"); OnPropertyChanged("IsLoggedIn"); }
+            get => isLoggedIn_Setup;
+            set { SetProperty(ref isLoggedIn_Setup, value); OnPropertyChanged("IsNotLoggedIn_Setup"); OnPropertyChanged("IsNotLoggedIn"); OnPropertyChanged("IsLoggedIn"); }
         }
-        public bool IsNotSetup => !isSetup;
-        private bool isSetup = false;
+        public bool IsNotLoggedIn_Setup => !isLoggedIn_Setup;
+        private bool isLoggedIn_Setup = false;
 
-        public bool IsRun
+        public bool IsLoggedIn_Control
         {
-            get => isRun;
-            set { SetProperty(ref isRun, value); OnPropertyChanged("IsNotRun"); OnPropertyChanged("IsNotLoggedIn"); OnPropertyChanged("IsLoggedIn"); }
+            get => isLoggedIn_Control;
+            set { SetProperty(ref isLoggedIn_Control, value); OnPropertyChanged("IsNotLoggedIn_Control"); OnPropertyChanged("IsNotLoggedIn"); OnPropertyChanged("IsLoggedIn"); }
         }
-        public bool IsNotRun => !isRun;
-        private bool isRun = false;
+        public bool IsNotLoggedIn_Control => !isLoggedIn_Control;
+        private bool isLoggedIn_Control = false;
 
         public string V275_State
         {
@@ -143,25 +167,35 @@ namespace V275_Testing.WindowViewModels
 
         public ICommand Print { get; }
 
-        public ICommand StartRun { get; }
-        public bool IsRunStarted
-        {
-            get => isRunStarted;
-            set { SetProperty(ref isRunStarted, value); OnPropertyChanged("IsNotRunStarted"); }
-        }
-        public bool IsNotRunStarted => !isRunStarted;
-        private bool isRunStarted = false;
+        public int JobLoopCount { get => App.Settings.GetValue("JobLoopCount", 1); set { App.Settings.SetValue("JobLoopCount", value); } }
 
-        public ICommand PauseRun { get; }
-        public bool IsRunPaused
+        public ICommand StartJob { get; }
+        public bool IsJobRunning
         {
-            get => isRunPaused;
-            set { SetProperty(ref isRunPaused, value); OnPropertyChanged("IsNotRunPaused"); }
+            get => isJobRunning;
+            set { SetProperty(ref isJobRunning, value); OnPropertyChanged("IsNotJobRunning"); }
         }
-        public bool IsNotRunPaused => !isRunPaused;
-        private bool isRunPaused = false;
+        public bool IsNotJobRunning => !isJobRunning;
+        private bool isJobRunning = false;
 
-        public ICommand StopRun { get; }
+        public ICommand PauseJob { get; }
+        public bool IsJobPaused
+        {
+            get => isJobPaused;
+            set { SetProperty(ref isJobPaused, value); OnPropertyChanged("IsNotJobPaused"); }
+        }
+        public bool IsNotJobPaused => !isJobPaused;
+        private bool isJobPaused = false;
+
+        public ICommand StopJob { get; }
+
+        public JobController.JobStates JobState { get => jobState; set => SetProperty(ref jobState, value); }
+        private JobController.JobStates jobState;
+
+        private Dictionary<int, Repeat> Repeats = new Dictionary<int, Repeat>();
+
+        private int LabelCount { get; set; } = 1;
+        private JobController CurrentJob { get; set; }
 
         public MainWindowViewModel()
         {
@@ -171,21 +205,23 @@ namespace V275_Testing.WindowViewModels
             LoginControl = new Core.RelayCommand(LoginControlAction, c => true);
             Logout = new Core.RelayCommand(LogoutAction, c => true);
 
-            StartRun = new Core.RelayCommand(StartRunAction, c => true);
-            PauseRun = new Core.RelayCommand(PauseRunAction, c => true);
-            StopRun = new Core.RelayCommand(StopRunAction, c => true);
+            StartJob = new Core.RelayCommand(StartJobAction, c => true);
+            PauseJob = new Core.RelayCommand(PauseJobAction, c => true);
+            StopJob = new Core.RelayCommand(StopJobAction, c => true);
 
             Print = new Core.RelayCommand(PrintAction, c => true);
 
+            Logger.Info("Initializing standards database: {name}", $"{App.UserDataDirectory}\\{App.StandardsDatabaseName}");
             StandardsDatabase = new StandardsDatabase($"{App.UserDataDirectory}\\{App.StandardsDatabaseName}");
 
-            LoadPrinters();
             SetupGradingStandards();
-            
+            LoadPrinters();
         }
 
         private void LoadPrinters()
         {
+            Logger.Info("Loading printers.");
+
             foreach (string p in PrinterSettings.InstalledPrinters)
             {
                 Printers.Add(p);
@@ -193,6 +229,8 @@ namespace V275_Testing.WindowViewModels
                 if (StoredPrinter == p)
                     SelectedPrinter = p;
             }
+
+            Logger.Info("Processed {count} printers.", Printers.Count);
 
             if (string.IsNullOrEmpty(SelectedPrinter) && Printers.Count > 0)
                 SelectedPrinter = Printers.First();
@@ -207,6 +245,8 @@ namespace V275_Testing.WindowViewModels
 
         private void LoadLabels()
         {
+            Logger.Info("Loading label images from standards directory: {name}", $"{App.StandardsRoot}\\{StoredStandard}\\600\\");
+
             Labels.Clear();
 
             List<string> Images = new List<string>();
@@ -216,6 +256,8 @@ namespace V275_Testing.WindowViewModels
 
             Images.Sort();
 
+            Logger.Info("Processed {count} label images.", Images.Count);
+
             int i = 1;
             foreach (var img in Images)
             {
@@ -223,18 +265,16 @@ namespace V275_Testing.WindowViewModels
 
                 tmp.Printing += Label_Printing;
 
-                tmp.IsRun = IsRun;
-                tmp.IsSetup = IsSetup;
+                tmp.IsLoggedIn_Control = IsLoggedIn_Control;
+                tmp.IsLoggedIn_Setup = IsLoggedIn_Setup;
 
                 Labels.Add(tmp);
             }
         }
 
-        private Dictionary<int, Repeat> Repeats = new Dictionary<int, Repeat>();
 
-        private int LabelCount { get; set; } = 1;
 
-        private async void ResetRepeats()
+        private async Task ResetRepeats()
         {
             Repeats.Clear();
 
@@ -253,8 +293,11 @@ namespace V275_Testing.WindowViewModels
 
         private async void GetDevicesAction(object parameter)
         {
+            Logger.Info("Loading V275 devices.");
+
             Reset();
 
+            IsDeviceSelected = false;
             Nodes.Clear();
             SelectedNode = null;
 
@@ -262,15 +305,23 @@ namespace V275_Testing.WindowViewModels
             {
                 foreach (var node in V275.Devices.nodes)
                 {
+                    Logger.Debug("Device MAC: {dev}", node.cameraMAC);
+
                     Nodes.Add(node);
+
                     if (node.enumeration.ToString() == V275_NodeNumber)
                         SelectedNode = node;
                 }
+
+                Logger.Info("Processed {count} devices.", Nodes.Count);
+
 
                 if (SelectedNode == null && Nodes.Count > 0)
                     SelectedNode = Nodes.First();
 
                 IsGetDevices = true;
+
+                await V275.GetProduct();
             }
             else
             {
@@ -278,18 +329,25 @@ namespace V275_Testing.WindowViewModels
                 IsGetDevices = false;
             }
 
+            
         }
 
         private void SetupGradingStandards()
         {
+            Logger.Info("Loading grading standards from file system. {path}", App.StandardsRoot);
+
             Standards.Clear();
             SelectedStandard = null;
 
             foreach (var dir in Directory.EnumerateDirectories(App.StandardsRoot))
             {
-                Standards.Add(dir.Substring(dir.LastIndexOf("\\") + 1));
+                Logger.Debug("GS: {name}", dir.Substring(dir.LastIndexOf("\\") + 1));
 
+                Standards.Add(dir.Substring(dir.LastIndexOf("\\") + 1));
             }
+            Logger.Info("Processed {count} grading standards.", Standards.Count);
+
+            Logger.Info("Updating standards database.");
 
             List<string> tables = StandardsDatabase.GetAllTables();
 
@@ -298,6 +356,7 @@ namespace V275_Testing.WindowViewModels
                 if (tables.Contains(standard))
                     continue;
 
+                Logger.Debug("Creating table: {name}", standard);
                 StandardsDatabase.CreateTable(standard);
             }
 
@@ -305,34 +364,6 @@ namespace V275_Testing.WindowViewModels
                 SelectedStandard = StoredStandard;
             else if (Standards.Count > 0)
                 SelectedStandard = Standards.First();
-
-            //if (await V275.GetGradingStandards())
-            //{
-            //    foreach (var standard in V275.GradingStandards.gradingStandards)
-            //    {
-            //        string s = $"{standard.standard} Table {standard.tableId}";
-
-            //        if (!Standards.Contains(s))
-            //        {
-            //            if (Directory.Exists($"{App.StandardsRoot}\\{s}"))
-            //                Standards.Add(s);
-            //            else
-            //                s = "";
-            //        }
-            //        else
-            //            continue;
-
-            //        if (StoredStandard == s)
-            //            SelectedStandard = StoredStandard;
-            //    }
-
-            //    if (SelectedStandard == null && Standards.Count > 0)
-            //        SelectedStandard = Standards.First();
-            //}
-            //else
-            //{
-            //    Status = V275.Status;
-            //}
         }
 
         private async void LoginMonitorAction(object parameter)
@@ -346,7 +377,7 @@ namespace V275_Testing.WindowViewModels
             else
             {
                 UserMessage = V275.Status;
-                IsSetup = false;
+                IsLoggedIn_Setup = false;
             }
         }
         private async void LoginControlAction(object parameter)
@@ -360,7 +391,7 @@ namespace V275_Testing.WindowViewModels
             else
             {
                 UserMessage = V275.Status;
-                IsRun = false;
+                IsLoggedIn_Control = false;
             }
         }
         private async void LogoutAction(object parameter)
@@ -375,13 +406,13 @@ namespace V275_Testing.WindowViewModels
             LoginData.id = "";
             LoginData.state = "1";
 
-            IsRun = false;
-            IsSetup = false;
+            IsLoggedIn_Control = false;
+            IsLoggedIn_Setup = false;
 
             foreach (var rep in Labels)
             {
-                rep.IsRun = IsRun;
-                rep.IsSetup = IsSetup;
+                rep.IsLoggedIn_Control = IsLoggedIn_Control;
+                rep.IsLoggedIn_Setup = IsLoggedIn_Setup;
             }
 
             try
@@ -399,20 +430,20 @@ namespace V275_Testing.WindowViewModels
             }
             catch { }
         }
-        private async Task PostLogin(bool isSetup)
+        private async Task PostLogin(bool isLoggedIn_Setup)
         {
-            LoginData.accessLevel = isSetup ? "monitor" : "control";
+            LoginData.accessLevel = isLoggedIn_Setup ? "monitor" : "control";
             LoginData.token = V275.Token;
             LoginData.id = UserName;
             LoginData.state = "0";
 
-            IsSetup = isSetup;
-            IsRun = !isSetup;
+            IsLoggedIn_Setup = isLoggedIn_Setup;
+            IsLoggedIn_Control = !isLoggedIn_Setup;
 
             foreach (var rep in Labels)
             {
-                rep.IsSetup = IsSetup;
-                rep.IsRun = IsRun;
+                rep.IsLoggedIn_Setup = IsLoggedIn_Setup;
+                rep.IsLoggedIn_Control = IsLoggedIn_Control;
             }
 
             await V275.GetCameraConfig();
@@ -442,7 +473,7 @@ namespace V275_Testing.WindowViewModels
             detectEvent = ev;
             detectLock = end;
         }
-        private void WebSocket_Heartbeat(V275_Events_System ev)
+        private async void WebSocket_Heartbeat(V275_Events_System ev)
         {
             string state = char.ToUpper(ev.data.state[0]) + ev.data.state.Substring(1);
 
@@ -452,7 +483,7 @@ namespace V275_Testing.WindowViewModels
 
                 if (V275_State == "Editing")
                 {
-                    ResetRepeats();
+                    await ResetRepeats();
                     new Task(async () =>
                         {
                             if (await V275.GetJob())
@@ -467,7 +498,7 @@ namespace V275_Testing.WindowViewModels
                 }
                 else
                 {
-                    ResetRepeats();
+                    await ResetRepeats();
                     V275_JobName = "";
                 }
 
@@ -489,7 +520,7 @@ namespace V275_Testing.WindowViewModels
             {
                 Repeats[ev.data.repeat].RepeatNumber = ev.data.repeat;
 
-                if (IsRun)
+                if (IsLoggedIn_Control)
                     if (!Repeats.ContainsKey(ev.data.repeat + 1))
                         App.Current.Dispatcher.Invoke(new Action(() => ProcessRepeat(ev.data.repeat)));
             }
@@ -499,7 +530,7 @@ namespace V275_Testing.WindowViewModels
                 return;
             }
 
-            if (IsRun)
+            if (IsLoggedIn_Control)
                 PrintAction("1");
         }
 
@@ -510,7 +541,7 @@ namespace V275_Testing.WindowViewModels
                 for (int i = 0; i < label.PrintCount; i++)
                     Repeats.Add(++LabelCount, new Repeat(label));
 
-                if (IsRun)
+                if (IsLoggedIn_Control)
                     PrintAction("1");
             }
 
@@ -550,20 +581,70 @@ namespace V275_Testing.WindowViewModels
             await V275.Print((string)parameter == "1");
         }
 
-        private async void StartRunAction(object parameter)
+        private void LoadJobs()
         {
 
         }
-
-        private async void PauseRunAction(object parameter)
+        private void StartJobAction(object parameter)
         {
+            if (CurrentJob != null)
+            {
+                CurrentJob.JobStateChange -= CurrentJob_JobStateChange;
+                CurrentJob.Close();
+                CurrentJob = null;
+            }
+
+            Logger.Info("Starting Job: {stand}; {count}", Labels[0].GradingStandard, JobLoopCount);
+
+            CurrentJob = new JobController(Labels, JobLoopCount, StandardsDatabase, V275.Product.part, SelectedNode.cameraMAC).Init();
+            CurrentJob.JobStateChange += CurrentJob_JobStateChange;
+
+            if (CurrentJob == null)
+                return;
+
+            CurrentJob.StartAsync();
+        }
+        private void PauseJobAction(object parameter)
+        {
+            if (CurrentJob == null)
+                return;
+
+            if (CurrentJob.State != JobController.JobStates.PAUSED)
+                CurrentJob.Pause();
+            else
+                CurrentJob.Resume();
 
         }
-
-        private async void StopRunAction(object parameter)
+        private void StopJobAction(object parameter)
         {
+            if (CurrentJob == null)
+                return;
 
+            CurrentJob.Stop();
         }
 
+        private void CurrentJob_JobStateChange(JobController.JobStates state)
+        {
+            JobState = state;
+            switch (state)
+            {
+                case JobController.JobStates.RUNNING:
+                    IsJobRunning = true;
+                    IsJobPaused = false;
+                    break;
+                case JobController.JobStates.PAUSED:
+                    IsJobRunning = true;
+                    IsJobPaused = true;
+                    break;
+                case JobController.JobStates.STOPPED:
+                    IsJobRunning = false;
+                    IsJobPaused = false;
+                    break;
+                default:
+                    IsJobRunning = false;
+                    IsJobPaused = false;
+                    break;
+            }
+        }
     }
 }

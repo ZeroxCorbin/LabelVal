@@ -56,7 +56,8 @@
 
                     <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center">
 
-                        <mah:NumericUpDown Value="{Binding PrintCount}" Minimum="1" Maximum="1000" Interval="1" HideUpDownButtons="True" Margin="2"/>
+                        <mah:NumericUpDown Value="{Binding PrintCount}" Minimum="1" Maximum="1000" Interval="1" Margin="2"
+                                           IsEnabled="{Binding IsNotLoggedIn_Control}"/>
 
                         <Button Content="Print" Command="{Binding PrintCommand}" Margin="2"/>
 
@@ -87,7 +88,7 @@
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
                                 <Style.Triggers>
-                                    <DataTrigger Value="True" Binding="{Binding IsRun}">
+                                    <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Control}">
                                         <Setter Property="Visibility" Value="Visible"/>
                                     </DataTrigger>
                                     <DataTrigger Value="False" Binding="{Binding IsLoad}">
@@ -137,10 +138,10 @@
                             Visibility="{Binding IsStore, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
                     <Button Content="Read" Command="{Binding ReadCommand}" Margin="2" 
-                        Visibility="{Binding IsSetup, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        Visibility="{Binding IsLoggedIn_Setup, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
                     <Button Content="Inspect" Command="{Binding InspectCommand}" Margin="2"
-                            Visibility="{Binding IsRun, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                            Visibility="{Binding IsLoggedIn_Control, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                     <Label Content="{Binding Status}"/>
                 </StackPanel>
             </Grid>

@@ -25,6 +25,7 @@ namespace V275_Testing.WindowViewModels
         public string PrinterName { get; set; }
         public int LabelNumber { get; }
         public BitmapImage RepeatImage { get; } = new BitmapImage();
+        public string RepeatImagePath { get; }
 
         public string Status
         {
@@ -38,11 +39,13 @@ namespace V275_Testing.WindowViewModels
 
         private string ImagePath { get; }
 
-        public int PrintCount { get; set; } = 1;
+        public int PrintCount { get => printCount; set => SetProperty(ref printCount, value); }
+        private int printCount = 1;
 
         V275_API_Commands V275 { get; }
-        V275_Job Job { get; set; }
-        V275_Report Report { get; set; }
+        V275_Job ReadJob { get; set; }
+        //public string StoredJob { get; private set; }
+        public V275_Report Report { get; private set; }
 
         public ObservableCollection<SectorControlViewModel> ReadSectors { get; } = new ObservableCollection<SectorControlViewModel>();
         public ObservableCollection<SectorControlViewModel> StoredSectors { get; } = new ObservableCollection<SectorControlViewModel>();
@@ -58,21 +61,25 @@ namespace V275_Testing.WindowViewModels
         public ICommand ClearStored { get; }
         public ICommand ClearRead { get; }
 
-        public bool IsSetup
+        public bool IsLoggedIn_Setup
         {
-            get => isSetup;
-            set { SetProperty(ref isSetup, value); OnPropertyChanged("IsNotSetup"); }
+            get => isLoggedIn_Setup;
+            set { SetProperty(ref isLoggedIn_Setup, value); OnPropertyChanged("IsNotLoggedIn_Setup"); }
         }
-        public bool IsNotSetup => !isSetup;
-        private bool isSetup = false;
+        public bool IsNotLoggedIn_Setup => !isLoggedIn_Setup;
+        private bool isLoggedIn_Setup = false;
 
-        public bool IsRun
+        public bool IsLoggedIn_Control
         {
-            get => isRun;
-            set { /*if (value != isRun) App.Current.Dispatcher.Invoke(new Action(() => { ReadSectors.Clear(); IsStore = false; }));*/ SetProperty(ref isRun, value); OnPropertyChanged("IsNotRun"); }
+            get => isLoggedIn_Control;
+            set { 
+                SetProperty(ref isLoggedIn_Control, value); 
+                OnPropertyChanged("IsNotLoggedIn_Control");
+                if (value) PrintCount = 1;
+            }
         }
-        public bool IsNotRun => !isRun;
-        private bool isRun = false;
+        public bool IsNotLoggedIn_Control => !isLoggedIn_Control;
+        private bool isLoggedIn_Control = false;
 
         public bool IsStore
         {
@@ -119,6 +126,8 @@ namespace V275_Testing.WindowViewModels
             ClearStored = new Core.RelayCommand(ClearStoredAction, c => true);
             ClearRead = new Core.RelayCommand(ClearReadAction, c => true);
 
+            RepeatImagePath = imagePath;
+
             GetImage(imagePath);
             GetStored();
         }
@@ -134,7 +143,7 @@ namespace V275_Testing.WindowViewModels
         {
             RepeatImage.BeginInit();
             RepeatImage.UriSource = new Uri(imagePath);
-
+            
             // To save significant application memory, set the DecodePixelWidth or
             // DecodePixelHeight of the BitmapImage value of the image source to the desired
             // height or width of the rendered image. If you don't do this, the application will
@@ -146,7 +155,7 @@ namespace V275_Testing.WindowViewModels
             RepeatImage.EndInit();
         }
 
-        private void PrintAction(object parameter)
+        public void PrintAction(object parameter)
         {
             IsWorking = true;
             Task.Run(() =>
@@ -156,7 +165,7 @@ namespace V275_Testing.WindowViewModels
                 PrintControl printer = new PrintControl();
                 printer.Print(ImagePath, PrintCount, PrinterName);
 
-                if (!IsRun)
+                if (!IsLoggedIn_Control)
                     IsWorking = false;
             });
         }
@@ -164,12 +173,15 @@ namespace V275_Testing.WindowViewModels
         private void GetStored()
         {
             StoredSectors.Clear();
+            //StoredJob = String.Empty;
             IsLoad = false;
 
             StandardsDatabase.Row row = StandardsDatabase.GetRow(GradingStandard, LabelNumber);
-
+            
             if (row == null)
                 return;
+
+            //StoredJob = row.Job;
 
             List<SectorControlViewModel> tempSectors = new List<SectorControlViewModel>();
             if (!string.IsNullOrEmpty(row.Report) && !string.IsNullOrEmpty(row.Job))
@@ -215,7 +227,7 @@ namespace V275_Testing.WindowViewModels
                 if (await OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for label {LabelNumber}?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
                     return;
 
-            StandardsDatabase.AddRow(GradingStandard, LabelNumber, JsonConvert.SerializeObject(Job), JsonConvert.SerializeObject(Report));
+            StandardsDatabase.AddRow(GradingStandard, LabelNumber, JsonConvert.SerializeObject(ReadJob), JsonConvert.SerializeObject(Report));
             GetStored();
         }
         private async void ClearStoredAction(object parameter)
@@ -236,9 +248,9 @@ namespace V275_Testing.WindowViewModels
                 Status = V275.Status;
                 return -1;
             }
-            Job = V275.Job;
+            ReadJob = V275.Job;
 
-            foreach (var sec in Job.sectors)
+            foreach (var sec in V275.Job.sectors)
                 await V275.DeleteSector(sec.name);
 
             await V275.Inspect();
@@ -272,6 +284,7 @@ namespace V275_Testing.WindowViewModels
             Status = string.Empty;
 
             ReadSectors.Clear();
+            ReadJob = null;
             IsStore = false;
 
             if (!await V275.GetJob())
@@ -279,7 +292,7 @@ namespace V275_Testing.WindowViewModels
                 Status = V275.Status;
                 return false;
             }
-            Job = V275.Job;
+            ReadJob = V275.Job;
 
             if (repeat > 0)
                 if (!await V275.SetRepeat(repeat))
@@ -312,7 +325,7 @@ namespace V275_Testing.WindowViewModels
             //        }
 
             List<SectorControlViewModel> tempSectors = new List<SectorControlViewModel>();
-            foreach (var jSec in Job.sectors)
+            foreach (var jSec in V275.Job.sectors)
             {
                 bool isWrongStandard = false;
                 if (jSec.type == "verify1D" || jSec.type == "verify2D")
@@ -372,6 +385,7 @@ namespace V275_Testing.WindowViewModels
         private void ClearReadAction(object parameter)
         {
             ReadSectors.Clear();
+            ReadJob = null;
             IsStore = false;
         }
 

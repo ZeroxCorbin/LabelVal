@@ -10,13 +10,15 @@ namespace V275_Testing.V275
 {
     public class V275_API_Commands
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         V275_API_Connection Connection { get; set; } = new V275_API_Connection();
         public V275_API_URLs URLs { get; set; } = new V275_API_URLs();
 
         //public bool IsLoggedIn { get; set; }
         //public bool IsMonitor { get; set; }
         public string Token { get; set; }
-        public string Host { get => URLs.Host; set=>URLs.Host = value; }
+        public string Host { get => URLs.Host; set => URLs.Host = value; }
         public string SystemPort { get => URLs.SystemPort; set => URLs.SystemPort = value; }
         public string NodeNumber { get => URLs.NodeNumber; set => URLs.NodeNumber = value; }
 
@@ -25,6 +27,7 @@ namespace V275_Testing.V275
         public string Status { get; private set; }
 
         public V275_Devices Devices { get; private set; }
+        public V275_Product Product { get; private set; }
         public V275_GradingStandards GradingStandards { get; private set; }
         public List<V275_Symbologies.Symbol> Symbologies { get; private set; }
         public V275_Job Job { get; private set; }
@@ -37,23 +40,34 @@ namespace V275_Testing.V275
         {
             Status = "";
 
-            if(!ignoreJson)
-                if(json != null)
+            if (!ignoreJson)
+                if (json != null)
                     if (!json.StartsWith("{"))
                         if (!json.StartsWith("["))
+                        {
                             Status = $"Return data is not JSON: \"{json}\"";
+                            Logger.Warn($"Return data is not JSON: \"{json}\"");
+                        }
 
             if (Connection.IsException)
+            {
                 Status = Connection.Exception.Message;
-            else if (Connection.HttpResponseMessage != null && !Connection.HttpResponseMessage.IsSuccessStatusCode)
-                Status = $"{Connection.HttpResponseMessage.StatusCode}: {Connection.HttpResponseMessage.ReasonPhrase}";
+                Logger.Error(Connection.Exception);
+            }
 
+            else if (Connection.HttpResponseMessage != null && !Connection.HttpResponseMessage.IsSuccessStatusCode)
+            {
+                Status = $"{Connection.HttpResponseMessage.StatusCode}: {Connection.HttpResponseMessage.ReasonPhrase}";
+                Logger.Warn($"{Connection.HttpResponseMessage.StatusCode}: {Connection.HttpResponseMessage.ReasonPhrase}");
+            }
 
             return string.IsNullOrEmpty(Status);
         }
 
         public async Task<bool> GetDevices()
         {
+            Logger.Info("GET: {url}", URLs.Devices());
+
             string data = await Connection.Get(URLs.Devices(), "");
 
             bool res;
@@ -63,8 +77,23 @@ namespace V275_Testing.V275
             return res;
         }
 
+        public async Task<bool> GetProduct()
+        {
+            Logger.Info("GET: {url}", URLs.Product());
+
+            string data = await Connection.Get(URLs.Product(), "");
+
+            bool res;
+            if (res = CheckResults(data))
+                Product = JsonConvert.DeserializeObject<V275_Product>(data);
+
+            return res;
+        }
+
         public async Task<bool> Login(string user, string pass, bool monitor, bool temporary = false)
         {
+            Logger.Info("LOGIN {user}: {url}", user, URLs.Login(monitor, temporary));
+
             Token = await Connection.Get_Token(URLs.Login(monitor, temporary), user, pass);
 
             return CheckResults(Token, true); ;
@@ -72,6 +101,8 @@ namespace V275_Testing.V275
 
         public async Task<bool> Logout()
         {
+            Logger.Info("LOGOUT: {url}", URLs.Logout());
+
             await Connection.Put(URLs.Logout(), "", Token);
 
             return CheckResults("", true);
@@ -79,6 +110,8 @@ namespace V275_Testing.V275
 
         public async Task<bool> GetGradingStandards()
         {
+            Logger.Info("GET: {url}", URLs.GradingStandards());
+
             string result = await Connection.Get(URLs.GradingStandards(), Token);
 
             bool res;
@@ -89,6 +122,8 @@ namespace V275_Testing.V275
         }
         public async Task<bool> GetSymbologies()
         {
+            Logger.Info("GET: {url}", URLs.VerifySymbologies());
+
             string result = await Connection.Get(URLs.VerifySymbologies(), Token);
 
             bool res;
@@ -99,6 +134,8 @@ namespace V275_Testing.V275
         }
         public async Task<bool> GetJob()
         {
+            Logger.Info("GET: {url}", URLs.Job());
+
             string result = await Connection.Get(URLs.Job(), Token);
 
             bool res;
@@ -110,6 +147,8 @@ namespace V275_Testing.V275
 
         public async Task<bool> GetReport()
         {
+            Logger.Info("GET: {url}", URLs.Report());
+
             string result = await Connection.Get(URLs.Report(), Token);
 
             bool res;
@@ -121,6 +160,8 @@ namespace V275_Testing.V275
 
         public async Task<bool> GetRepeatsAvailable()
         {
+            Logger.Info("GET: {url}", URLs.Available());
+
             string result = await Connection.Get(URLs.Available(), Token);
 
             bool res;
@@ -133,6 +174,8 @@ namespace V275_Testing.V275
 
         public async Task<bool> GetCameraConfig()
         {
+            Logger.Info("GET: {url}", URLs.Configuration_Camera());
+
             string result = await Connection.Get(URLs.Configuration_Camera(), Token);
 
             bool res;
@@ -144,6 +187,8 @@ namespace V275_Testing.V275
 
         public async Task<bool> DeleteSector(string sectorName)
         {
+            Logger.Info("DELETE: {url}", URLs.DeleteSector(sectorName));
+
             _ = await Connection.Delete(URLs.DeleteSector(sectorName), Token);
 
             return CheckResults("", true);
@@ -151,6 +196,8 @@ namespace V275_Testing.V275
 
         public async Task<bool> AddSector(string sectorName, string json)
         {
+            Logger.Info("POST: {url}", URLs.AddSector(sectorName));
+
             _ = await Connection.Post(URLs.AddSector(sectorName), json, Token);
 
             return CheckResults("", true);
@@ -158,18 +205,24 @@ namespace V275_Testing.V275
 
         public async Task<bool> Inspect()
         {
-            await Connection.Put(URLs.Inspect(),"", Token);
+            Logger.Info("PUT: {url}", URLs.Inspect());
+
+            await Connection.Put(URLs.Inspect(), "", Token);
 
             return CheckResults("", true);
         }
         public async Task<bool> Detect()
         {
+            Logger.Info("PUT: {url}", URLs.Detect());
+
             await Connection.Put(URLs.Detect(), "", Token);
 
             return CheckResults("", true);
         }
         public async Task<bool> GetDetect()
         {
+            Logger.Info("GET: {url}", URLs.Detect());
+
             string result = await Connection.Get(URLs.Detect(), Token);
 
             bool res;
@@ -180,6 +233,8 @@ namespace V275_Testing.V275
         }
         public async Task<bool> Print(bool start)
         {
+            Logger.Info("PUT: {url}", URLs.Print());
+
             await Connection.Put(URLs.Print(), URLs.Print_Body(start), Token);
 
             return CheckResults("", true);
@@ -187,6 +242,8 @@ namespace V275_Testing.V275
 
         public async Task<bool> SetRepeat(int repeat)
         {
+            Logger.Info("PUT: {url}", URLs.History(repeat.ToString()));
+
             await Connection.Put(URLs.History(repeat.ToString()), "", Token);
 
             return CheckResults("", true);

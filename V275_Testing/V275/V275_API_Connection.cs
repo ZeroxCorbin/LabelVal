@@ -15,14 +15,14 @@ namespace V275_Testing.V275
     public class V275_API_Connection
     {
 
-        public enum Actions
-        {
-            GET,
-            PUT,
-            POST,
-            DELETE,
-            STREAM
-        }
+        //public enum Actions
+        //{
+        //    GET,
+        //    PUT,
+        //    POST,
+        //    DELETE,
+        //    STREAM
+        //}
 
         public bool IsException { get; private set; }
         public Exception Exception { get; private set; }
