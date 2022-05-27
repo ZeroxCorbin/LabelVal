@@ -68,7 +68,7 @@
 
             </Grid>
 
-            <Image Grid.Row="1" Source="{Binding RepeatImage}" Margin="3" x:Name="image" />
+            <Image Grid.Row="1" Source="{Binding LabelImage}" Margin="3" x:Name="image" />
 
             <Grid Grid.Row="0" Grid.Column="1">
                 <Grid.RowDefinitions>

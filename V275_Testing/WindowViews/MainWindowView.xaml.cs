@@ -29,5 +29,11 @@ namespace V275_Testing.WindowViews
         private void btnLightTheme_Click(object sender, RoutedEventArgs e) => ThemeManager.Current.ChangeTheme(App.Current, "Light.Steel");
 
         private void btnDarkTheme_Click(object sender, RoutedEventArgs e) => ThemeManager.Current.ChangeTheme(App.Current, "Dark.Steel");
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            JobRunView win = new JobRunView();
+            win.Show();
+        }
     }
 }

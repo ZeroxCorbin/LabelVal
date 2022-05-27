@@ -24,6 +24,10 @@ namespace V275_Testing.Databases
 
             public string ProductPart { get; set; }
             public string CameraMAC { get; set; }
+
+            [Ignore]
+            public bool RunDBMissing { get; set; }
+
         }
 
         private SQLiteConnection Connection { get; set; } = null;

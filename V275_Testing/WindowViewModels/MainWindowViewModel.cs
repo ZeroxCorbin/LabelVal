@@ -163,7 +163,7 @@ namespace V275_Testing.WindowViewModels
         }
         private string v275_JobName;
 
-        public bool V275_IsBackupVoid => V275.ConfigurationCamera.backupVoidMode.value == "ON";
+        public bool V275_IsBackupVoid => V275.ConfigurationCamera.backupVoidMode == null ? false : V275.ConfigurationCamera.backupVoidMode.value == "ON";
 
         public ICommand Print { get; }
 
@@ -194,7 +194,7 @@ namespace V275_Testing.WindowViewModels
 
         private Dictionary<int, Repeat> Repeats = new Dictionary<int, Repeat>();
 
-        private int LabelCount { get; set; } = 1;
+        private int LabelCount { get; set; } = 0;
         private JobController CurrentJob { get; set; }
 
         public MainWindowViewModel()
@@ -283,7 +283,7 @@ namespace V275_Testing.WindowViewModels
             if (V275.Available != null && V275.Available.Count > 0)
                 LabelCount = V275.Available[0];
             else
-                LabelCount = 1;
+                LabelCount = 0;
         }
 
         private void Reset()
@@ -529,7 +529,7 @@ namespace V275_Testing.WindowViewModels
                 LabelCount = ev.data.repeat;
                 return;
             }
-
+            
             if (IsLoggedIn_Control)
                 PrintAction("1");
         }
@@ -554,6 +554,8 @@ namespace V275_Testing.WindowViewModels
                 {
                     return;
                 }
+
+
 
             detectLock = false;
             int i = await Repeats[repeat].Label.Load();

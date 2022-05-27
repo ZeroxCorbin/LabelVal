@@ -157,7 +157,7 @@ namespace V275_Testing.Job
                         Job = sRow.Job,
                         StoredReport = sRow.Report,
                         LabelNumber = label.LabelNumber,
-                        LabelImage = File.ReadAllBytes(label.RepeatImagePath)
+                        LabelImage = File.ReadAllBytes(label.LabelImagePath)
                     };
                     row.LabelImageUID = ImageUID(row.LabelImage);
 
@@ -172,6 +172,22 @@ namespace V275_Testing.Job
                             return false;
                         }
                     };
+
+                    PngBitmapEncoder encoder = new PngBitmapEncoder();
+                    using (var ms = new System.IO.MemoryStream(label.RepeatImageData))
+                    {
+                        //img.BeginInit();
+                        //img.CacheOption = BitmapCacheOption.OnLoad; // here
+                        //img.StreamSource = ms;
+                        //img.EndInit();
+                        using (MemoryStream stream = new MemoryStream())
+                        {
+                            encoder.Frames.Add(BitmapFrame.Create(ms));
+                            encoder.Save(stream);
+                            row.RepeatImage = stream.ToArray();
+                            stream.Close();
+                        }
+                    }
 
                     row.Report = JsonConvert.SerializeObject(label.Report);
                     RunDatabase.InsertOrReplace(row);

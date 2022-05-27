@@ -35,6 +35,7 @@ namespace V275_Testing.V275
         public V275_Configuration_Camera ConfigurationCamera { get; private set; }
         public V275_DetectResponse Detected { get; private set; }
         public List<int> Available { get; private set; }
+        public byte[] Repeatimage { get; private set; }
 
         private bool CheckResults(string json, bool ignoreJson = false)
         {
@@ -167,6 +168,19 @@ namespace V275_Testing.V275
             bool res;
             if (res = CheckResults(result))
                 Available = JsonConvert.DeserializeObject<int[]>(result).ToList();
+
+            return res;
+        }
+
+        public async Task<bool> GetRepeatsImage(int repeat)
+        {
+            Logger.Info("GET: {url}", URLs.RepeatImage(repeat));
+
+            var result = await Connection.GetBytes(URLs.RepeatImage(repeat), Token);
+
+            bool res;
+            if (res = CheckResults("", true))
+                Repeatimage = result;
 
             return res;
         }

@@ -1,0 +1,173 @@
+﻿using MahApps.Metro.Controls.Dialogs;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
+using V275_Testing.Databases;
+using V275_Testing.V275.Models;
+
+namespace V275_Testing.WindowViewModels
+{
+    public class JobLabelControlViewModel : Core.BaseViewModel
+    {
+        public RunDatabase.Run Run { get; set; }
+        public JobDatabase.Job Job { get; set; }
+
+        public ObservableCollection<SectorControlViewModel> RepeatSectors { get; } = new ObservableCollection<SectorControlViewModel>();
+        public ObservableCollection<SectorControlViewModel> LabelSectors { get; } = new ObservableCollection<SectorControlViewModel>();
+
+        public BitmapImage LabelImage { get; private set; } = new BitmapImage();
+        public BitmapImage RepeatImage { get; } = new BitmapImage();
+
+        private IDialogCoordinator dialogCoordinator;
+        public JobLabelControlViewModel(IDialogCoordinator diag, RunDatabase.Run run, JobDatabase.Job job)
+        {
+            dialogCoordinator = diag;
+            Run = run;
+            Job = job;
+
+            GetStored();
+            GetRead();
+
+            LoadImages();
+        }
+
+        private void GetStored()
+        {
+            LabelSectors.Clear();
+
+            List<SectorControlViewModel> tempSectors = new List<SectorControlViewModel>();
+            if (!string.IsNullOrEmpty(Run.StoredReport) && !string.IsNullOrEmpty(Run.Job))
+                foreach (var jSec in JsonConvert.DeserializeObject<V275_Job>(Run.Job).sectors)
+                {
+                    bool isWrongStandard = false;
+                    if (jSec.type == "verify1D" || jSec.type == "verify2D")
+                        if (jSec.gradingStandard.enabled)
+                            isWrongStandard = !(Job.GradingStandard == $"{jSec.gradingStandard.standard} TABLE {jSec.gradingStandard.tableId}");
+                        else
+                            isWrongStandard = true;
+
+                    foreach (JObject rSec in JsonConvert.DeserializeObject<V275_Report>(Run.StoredReport).inspectLabel.inspectSector)
+                    {
+                        if (jSec.name == rSec["name"].ToString())
+                        {
+
+                            object fSec = DeserializeSector(rSec);
+
+                            if (fSec == null)
+                                break;
+
+                            tempSectors.Add(new SectorControlViewModel(jSec, fSec, isWrongStandard));
+
+                            break;
+                        }
+                    }
+                }
+
+            if (tempSectors.Count > 0)
+            {
+                tempSectors = tempSectors.OrderBy(x => x.JobSector.top).ToList();
+
+                foreach (var sec in tempSectors)
+                    LabelSectors.Add(sec);
+            }
+        }
+
+        private void GetRead()
+        {
+            RepeatSectors.Clear();
+
+            List<SectorControlViewModel> tempSectors = new List<SectorControlViewModel>();
+            if (!string.IsNullOrEmpty(Run.Report) && !string.IsNullOrEmpty(Run.Job))
+                foreach (var jSec in JsonConvert.DeserializeObject<V275_Job>(Run.Job).sectors)
+                {
+                    bool isWrongStandard = false;
+                    if (jSec.type == "verify1D" || jSec.type == "verify2D")
+                        if (jSec.gradingStandard.enabled)
+                            isWrongStandard = !(Job.GradingStandard == $"{jSec.gradingStandard.standard} TABLE {jSec.gradingStandard.tableId}");
+                        else
+                            isWrongStandard = true;
+
+                    foreach (JObject rSec in JsonConvert.DeserializeObject<V275_Report>(Run.Report).inspectLabel.inspectSector)
+                    {
+                        if (jSec.name == rSec["name"].ToString())
+                        {
+
+                            object fSec = DeserializeSector(rSec);
+
+                            if (fSec == null)
+                                break;
+
+                            tempSectors.Add(new SectorControlViewModel(jSec, fSec, isWrongStandard));
+
+                            break;
+                        }
+                    }
+                }
+
+            if (tempSectors.Count > 0)
+            {
+                tempSectors = tempSectors.OrderBy(x => x.JobSector.top).ToList();
+
+                foreach (var sec in tempSectors)
+                    RepeatSectors.Add(sec);
+            }
+        }
+
+        private void LoadImages()
+        {
+            using (MemoryStream ms = new MemoryStream(Run.LabelImage))
+            {
+                LabelImage.BeginInit();
+                LabelImage.CacheOption = BitmapCacheOption.OnLoad;
+                LabelImage.StreamSource = ms;
+                LabelImage.EndInit();
+                //LabelImage.Freeze();
+            }
+
+            if (Run.RepeatImage == null)
+                return;
+
+            using (MemoryStream ms = new MemoryStream(Run.RepeatImage))
+            {
+                RepeatImage.BeginInit();
+                RepeatImage.CacheOption = BitmapCacheOption.OnLoad;
+                RepeatImage.StreamSource = ms;
+                RepeatImage.EndInit();
+            }
+        }
+
+        private object DeserializeSector(JObject reportSec)
+        {
+            if (reportSec["type"].ToString() == "verify1D")
+            {
+                return JsonConvert.DeserializeObject<V275_Report_InspectSector_Verify1D>(reportSec.ToString());
+            }
+            else if (reportSec["type"].ToString() == "verify2D")
+            {
+                return JsonConvert.DeserializeObject<V275_Report_InspectSector_Verify2D>(reportSec.ToString());
+            }
+            else if (reportSec["type"].ToString() == "ocr")
+            {
+                return JsonConvert.DeserializeObject<V275_Report_InspectSector_OCR>(reportSec.ToString());
+            }
+            else if (reportSec["type"].ToString() == "ocv")
+            {
+                return JsonConvert.DeserializeObject<V275_Report_InspectSector_OCV>(reportSec.ToString());
+            }
+            else if (reportSec["type"].ToString() == "blemish")
+            {
+                return JsonConvert.DeserializeObject<V275_Report_InspectSector_Blemish>(reportSec.ToString());
+            }
+            else
+                return null;
+        }
+
+    }
+}

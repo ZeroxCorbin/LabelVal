@@ -151,6 +151,7 @@
     <Compile Include="Controllers\PNGProcess.cs" />
     <Compile Include="Converters\FloatStringTrimConverter.cs" />
     <Compile Include="Converters\StringToUpperSpacedConverter.cs" />
+    <Compile Include="Converters\UNIXToTimeDateConverter.cs" />
     <Compile Include="Core\BaseViewModel.cs" />
     <Compile Include="Core\RelayCommand.cs" />
     <Compile Include="Databases\RunDatabase.cs" />
@@ -183,10 +184,14 @@
     <Compile Include="V275\V275_API_Connection.cs" />
     <Compile Include="V275\V275_API_URLs.cs" />
     <Compile Include="V275\V275_API_WebSocketEvents.cs" />
+    <Compile Include="WindowViewModels\JobLabelControlViewModel.cs" />
     <Compile Include="WindowViewModels\JobRunViewModel.cs" />
     <Compile Include="WindowViewModels\MainWindowViewModel.cs" />
     <Compile Include="WindowViewModels\LabelControlViewModel.cs" />
     <Compile Include="WindowViewModels\SectorControlViewModel.cs" />
+    <Compile Include="WindowViews\JobLabelControlView.xaml.cs">
+      <DependentUpon>JobLabelControlView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WindowViews\JobRunView.xaml.cs">
       <DependentUpon>JobRunView.xaml</DependentUpon>
     </Compile>
@@ -231,6 +236,10 @@
     <Resource Include="favicon.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="WindowViews\JobLabelControlView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="WindowViews\JobRunView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

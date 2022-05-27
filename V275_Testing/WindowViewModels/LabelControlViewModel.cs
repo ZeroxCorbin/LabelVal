@@ -24,8 +24,10 @@ namespace V275_Testing.WindowViewModels
 
         public string PrinterName { get; set; }
         public int LabelNumber { get; }
-        public BitmapImage RepeatImage { get; } = new BitmapImage();
-        public string RepeatImagePath { get; }
+        public BitmapImage LabelImage { get; } = new BitmapImage();
+        public string LabelImagePath { get; }
+
+        public byte[] RepeatImageData { get; private set; }
 
         public string Status
         {
@@ -126,7 +128,7 @@ namespace V275_Testing.WindowViewModels
             ClearStored = new Core.RelayCommand(ClearStoredAction, c => true);
             ClearRead = new Core.RelayCommand(ClearReadAction, c => true);
 
-            RepeatImagePath = imagePath;
+            LabelImagePath = imagePath;
 
             GetImage(imagePath);
             GetStored();
@@ -141,9 +143,9 @@ namespace V275_Testing.WindowViewModels
 
         private void GetImage(string imagePath)
         {
-            RepeatImage.BeginInit();
-            RepeatImage.UriSource = new Uri(imagePath);
-            
+            LabelImage.BeginInit();
+            LabelImage.UriSource = new Uri(imagePath);
+
             // To save significant application memory, set the DecodePixelWidth or
             // DecodePixelHeight of the BitmapImage value of the image source to the desired
             // height or width of the rendered image. If you don't do this, the application will
@@ -152,7 +154,8 @@ namespace V275_Testing.WindowViewModels
             // Note: In order to preserve aspect ratio, set DecodePixelWidth
             // or DecodePixelHeight but not both.
             //RepeatImage.DecodePixelWidth = 200;
-            RepeatImage.EndInit();
+            LabelImage.EndInit();
+            LabelImage.Freeze();
         }
 
         public void PrintAction(object parameter)
@@ -316,6 +319,12 @@ namespace V275_Testing.WindowViewModels
             }
             Report = V275.Report;
 
+            if (!await V275.GetRepeatsImage(repeat))
+            {
+                Status = V275.Status;
+                return false;
+            }
+            RepeatImageData = V275.Repeatimage;
             //foreach (var jSec in Job.sectors)
             //    foreach (V275_Report_InspectSector rSec in Report.inspectLabel.inspectSector)
             //        if (jSec.name == rSec.name)

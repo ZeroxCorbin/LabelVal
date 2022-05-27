@@ -43,6 +43,8 @@ public string Product() => $"http://{Host}:{SystemPort}/api/printinspection/prod
         public string Report() => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/inspection/setup/report";
         public string Detect() => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/inspection/setup/detect";
 
+        public string RepeatImage(int repeatNumber) => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/inspection/repeat/images/{repeatNumber}?scale=1.0";
+
         public string VerifySymbologies() => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/inspection/verify/symbologies";
 
         public string Configuration_Camera() => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/configuration/camera";

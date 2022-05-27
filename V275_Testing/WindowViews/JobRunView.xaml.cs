@@ -23,6 +23,24 @@ namespace V275_Testing.WindowViews
         public JobRunView()
         {
             InitializeComponent();
+
+            JobList.IsOpen = true;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            JobList.IsOpen = true;
+        }
+
+        private void JobList_LostMouseCapture(object sender, MouseEventArgs e)
+        {
+            JobList.IsOpen = false;
+        }
+
+        private void JobList_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (JobList.IsShown)
+                JobList.IsOpen = false;
         }
     }
 }

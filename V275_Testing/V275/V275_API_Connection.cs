@@ -175,6 +175,35 @@ namespace V275_Testing.V275
                 return null;
             }
         }
+        public async Task<byte[]> GetBytes(string url, string token)
+        {
+            Reset();
+
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new System.Uri(url);
+                    if (!string.IsNullOrEmpty(token))
+                        client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", token);
+                    client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("*/*"));
+
+                    HttpResponseMessage = await client.GetAsync(url);
+
+                    if (HttpResponseMessage.IsSuccessStatusCode)
+                        return HttpResponseMessage.Content.ReadAsByteArrayAsync().Result;
+                    else
+                        return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                Exception = ex;
+                IsException = true;
+                return null;
+            }
+        }
+
         public async Task<Stream> Stream(string url, string token)
         {
             Reset();
