@@ -16,14 +16,17 @@ namespace V275_Testing.WindowViewModels
 {
     public class JobLabelControlViewModel : Core.BaseViewModel
     {
-        public RunDatabase.Run Run { get; set; }
-        public JobDatabase.Job Job { get; set; }
+        public RunDatabase.Run Run { get => run; set => SetProperty(ref run, value); }
+        private RunDatabase.Run run;
+        public JobDatabase.Job Job { get => job; set => SetProperty(ref job, value); }
+        private JobDatabase.Job job;
 
-        public ObservableCollection<SectorControlViewModel> RepeatSectors { get; } = new ObservableCollection<SectorControlViewModel>();
-        public ObservableCollection<SectorControlViewModel> LabelSectors { get; } = new ObservableCollection<SectorControlViewModel>();
+        public ObservableCollection<SectorControlViewModel> RepeatSectors { get; private set; } = new ObservableCollection<SectorControlViewModel>();
+
+        public ObservableCollection<SectorControlViewModel> LabelSectors { get; private set; } = new ObservableCollection<SectorControlViewModel>();
 
         public BitmapImage LabelImage { get; private set; } = new BitmapImage();
-        public BitmapImage RepeatImage { get; } = new BitmapImage();
+        public BitmapImage RepeatImage { get; private set; } = new BitmapImage();
 
         private IDialogCoordinator dialogCoordinator;
         public JobLabelControlViewModel(IDialogCoordinator diag, RunDatabase.Run run, JobDatabase.Job job)
@@ -128,8 +131,9 @@ namespace V275_Testing.WindowViewModels
                 LabelImage.CacheOption = BitmapCacheOption.OnLoad;
                 LabelImage.StreamSource = ms;
                 LabelImage.EndInit();
-                //LabelImage.Freeze();
             }
+            LabelImage.Freeze();
+            Run.LabelImage = new byte[0];
 
             if (Run.RepeatImage == null)
                 return;
@@ -141,6 +145,8 @@ namespace V275_Testing.WindowViewModels
                 RepeatImage.StreamSource = ms;
                 RepeatImage.EndInit();
             }
+            RepeatImage.Freeze();
+            Run.RepeatImage = new byte[0];
         }
 
         private object DeserializeSector(JObject reportSec)
@@ -167,6 +173,27 @@ namespace V275_Testing.WindowViewModels
             }
             else
                 return null;
+        }
+
+        public void Clear()
+        {
+            RepeatSectors.Clear();
+            RepeatSectors = null;
+
+            LabelSectors.Clear();
+            LabelSectors = null;
+            
+            //LabelImage.StreamSource = null;
+            LabelImage = null;
+
+            //RepeatImage.StreamSource = null;
+            RepeatImage = null;
+
+            Run = null;
+            Job = null;
+
+            
+            GC.Collect();
         }
 
     }

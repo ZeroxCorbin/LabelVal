@@ -52,7 +52,7 @@ namespace V275_Testing.Databases
                 return null;
             }
         }
-        public void Close() => Connection?.Close();
+        public void Close() => Connection?.Dispose();
 
         public int InsertOrReplace(Run run) => Connection.InsertOrReplace(run);
         public bool ExistsRun(long timeDate) => Connection.Table<Run>().Where(v => v.TimeDate == timeDate).Count() > 0;
@@ -69,7 +69,7 @@ namespace V275_Testing.Databases
         public void Dispose()
         {
             Connection?.Close();
-            ((IDisposable)Connection)?.Dispose();
+            Connection?.Dispose();
 
             GC.SuppressFinalize(this);
         }

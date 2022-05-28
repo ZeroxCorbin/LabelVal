@@ -20,9 +20,9 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
-        <Image Grid.Row="0" Grid.Column="0" Source="{Binding LabelImage}" Margin="3" x:Name="image" MaxWidth="400"/>
+        <Image Grid.Row="0" Grid.Column="0" Source="{Binding LabelImage, Mode=OneTime}" Margin="3" x:Name="image" MaxWidth="400"/>
 
-        <ScrollViewer Grid.Row="0" Grid.Column="1" Width="200" Margin="3" Padding="0,0,0,6" MaxHeight="{Binding ElementName=image, Path=ActualHeight}">
+        <ScrollViewer Grid.Row="0" Grid.Column="1" Width="200" Margin="3" Padding="0,0,0,6" MaxHeight="400">
             <ItemsControl ItemsSource="{Binding LabelSectors}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -32,7 +32,7 @@
             </ItemsControl>
         </ScrollViewer>
 
-        <ScrollViewer Grid.Row="0" Grid.Column="2" Width="200" Margin="3" MaxHeight="{Binding ElementName=image, Path=ActualHeight}">
+        <ScrollViewer Grid.Row="0" Grid.Column="2" Width="200" Margin="3" MaxHeight="400">
             <ItemsControl ItemsSource="{Binding RepeatSectors}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -42,7 +42,7 @@
             </ItemsControl>
         </ScrollViewer>
 
-        <Image Grid.Row="0" Grid.Column="3" Source="{Binding RepeatImage}" Margin="3"/>
+        <Image Grid.Row="0" Grid.Column="3" Source="{Binding RepeatImage, Mode=OneTime}" Margin="3"/>
 
 
     </Grid>

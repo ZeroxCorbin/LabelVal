@@ -41,7 +41,7 @@
             <StackPanel Orientation="Horizontal" Grid.ColumnSpan="3">
 
 
-                <TextBlock Text="{Binding JobSector.username}" Margin="3,0,3,0"/>
+                <TextBlock Text="{Binding JobSector.username, Mode=OneTime}" Margin="3,0,3,0"/>
                 
                 <TextBlock Text="WRONG STANDARD" 
                            Background="OrangeRed"
@@ -83,7 +83,7 @@
                 <TextBlock Grid.Row="1" Margin="3,0,3,0" TextWrapping="Wrap">
                     <TextBlock.Style>
                         <Style TargetType="{x:Type TextBlock}">
-                            <Setter Property="Text" Value="{Binding ReportSector.data.decodeText}"/>
+                            <Setter Property="Text" Value="{Binding ReportSector.data.decodeText, Mode=OneTime}"/>
                             <Style.Triggers>
                                 <DataTrigger Value="ocr" Binding="{Binding JobSector.type}">
                                     <Setter Property="Text" Value="{Binding ReportSector.data.text}"/>
@@ -185,7 +185,7 @@
                                         <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}"/>
                                         <Setter Property="Margin" Value="2"/>
                                         <Style.Triggers>
-                                            <DataTrigger Value="0" Binding="{Binding CompareSector.GradeValues.Count}">
+                                            <DataTrigger Value="0" Binding="{Binding CompareSector.GradeValues.Count, Mode=OneTime}">
                                                 <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.ThemeBackground}"/>
                                                 <Setter Property="Margin" Value="0"/>
                                             </DataTrigger>
@@ -255,7 +255,7 @@
                                         <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}"/>
                                         <Setter Property="Margin" Value="2"/>
                                         <Style.Triggers>
-                                            <DataTrigger Value="0" Binding="{Binding CompareSector.Values.Count}">
+                                            <DataTrigger Value="0" Binding="{Binding CompareSector.Values.Count, Mode=OneTime}">
                                                 <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.ThemeBackground}"/>
                                                 <Setter Property="Margin" Value="0"/>
                                             </DataTrigger>

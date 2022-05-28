@@ -12,10 +12,12 @@ namespace V275_Testing.WindowViewModels
     public class SectorControlViewModel : Core.BaseViewModel
     {
 
-        public V275_Job.Sector JobSector { get; }
-        public object ReportSector { get; }
-        public V275_Report_InspectSector_Compare CompareSector { get; } = new V275_Report_InspectSector_Compare();
-
+        public V275_Job.Sector JobSector { get => jobSector; set => SetProperty(ref jobSector, value); }
+        private V275_Job.Sector jobSector;
+        public object ReportSector { get => reportSector; set => SetProperty(ref reportSector, value); }
+        private object reportSector;
+        public V275_Report_InspectSector_Compare CompareSector { get => compareSector; set => SetProperty(ref compareSector, value); } 
+        private V275_Report_InspectSector_Compare compareSector = new V275_Report_InspectSector_Compare();
         //public List<V275_Report_InspectSector_Common.Alarm> Alarms { get; } = new List<V275_Report_InspectSector_Common.Alarm>();
 
         public bool IsWarning { get; }
@@ -45,7 +47,7 @@ namespace V275_Testing.WindowViewModels
             else if (highCat == 2)
                 IsError = true;
 
-                
+
         }
     }
 }

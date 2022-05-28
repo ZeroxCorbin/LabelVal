@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using V275_Testing.WindowViewModels;
 
 namespace V275_Testing.WindowViews
 {
@@ -24,6 +25,7 @@ namespace V275_Testing.WindowViews
         {
             InitializeComponent();
 
+            
             JobList.IsOpen = true;
         }
 
@@ -41,6 +43,14 @@ namespace V275_Testing.WindowViews
         {
             if (JobList.IsShown)
                 JobList.IsOpen = false;
+        }
+
+        private void BtnSort_Click(object sender, RoutedEventArgs e)
+        {
+            CollectionViewSource viewSource = FindResource("GroupedDataList") as CollectionViewSource;
+            viewSource.SortDescriptions.Clear();
+            viewSource.SortDescriptions.Add(new System.ComponentModel.SortDescription("TimeDate", System.ComponentModel.ListSortDirection.Descending));
+
         }
     }
 }

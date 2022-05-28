@@ -59,7 +59,7 @@ namespace V275_Testing.Databases
                 return null;
             }
         }
-        public void Close() => Connection?.Close();
+        public void Close() => Connection?.Dispose();
 
         public int InsertOrReplace(Job job) => Connection.InsertOrReplace(job);
         public bool ExistsJob(long timeDate)
@@ -73,7 +73,7 @@ namespace V275_Testing.Databases
         public void Dispose()
         {
             Connection?.Close();
-            ((IDisposable)Connection)?.Dispose();
+            Connection?.Dispose();
 
             GC.SuppressFinalize(this);
         }

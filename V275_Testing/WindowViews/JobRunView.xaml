@@ -8,124 +8,147 @@
         xmlns:local="clr-namespace:V275_Testing.WindowViews"
         xmlns:Converters="clr-namespace:V275_Testing.Converters"
         xmlns:ViewModels="clr-namespace:V275_Testing.WindowViewModels"     
-        xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
-        Dialog:DialogParticipation.Register="{Binding}"
+        xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro" 
+                 xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+                 Dialog:DialogParticipation.Register="{Binding}"
         d:DataContext="{d:DesignInstance Type=ViewModels:JobRunViewModel}"
         mc:Ignorable="d"
         Title="V275 Testing" Height="450" Width="800" SaveWindowPosition="True">
     <mah:MetroWindow.DataContext>
         <ViewModels:JobRunViewModel/>
     </mah:MetroWindow.DataContext>
+
     <mah:MetroWindow.Resources>
         <Converters:UNIXToTimeDateConverter x:Key="toDate"/>
 
-        <CollectionViewSource x:Key="GroupedDataList" Source="{Binding Jobs}" IsLiveGroupingRequested="True">
+        <CollectionViewSource x:Key="GroupedDataList" Source="{Binding Jobs}" IsLiveGroupingRequested="True" IsLiveSortingRequested="True">
+            <CollectionViewSource.SortDescriptions>
+                <componentmodel:SortDescription PropertyName="TimeDate" Direction="Ascending"/>
+            </CollectionViewSource.SortDescriptions>
             <CollectionViewSource.GroupDescriptions>
                 <PropertyGroupDescription PropertyName="ProductPart" />
                 <PropertyGroupDescription PropertyName="GradingStandard"/>
-                
+
                 <PropertyGroupDescription PropertyName="CameraMAC" />
-                
+
             </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
-        
-       
+
+        <ContextMenu x:Key="contextMenu">
+            <MenuItem Header="Delete" Command="{Binding DeleteRunCommand}"
+                                      CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}},
+                                Path=PlacementTarget.SelectedItem}"/>
+        </ContextMenu>
+
     </mah:MetroWindow.Resources>
     <mah:MetroWindow.Flyouts>
         <mah:FlyoutsControl>
-            <mah:Flyout x:Name="JobList" Header="Jobs" Position="Left">
-                <!--LostFocus="JobList_LostFocus">-->
-                <ListView ItemsSource="{Binding Source={StaticResource ResourceKey=GroupedDataList}}" SelectedItem="{Binding SelectedJob}">
-                    <ListView.GroupStyle>
-                        <GroupStyle>
-                            <GroupStyle.ContainerStyle>
-                                <Style TargetType="{x:Type GroupItem}">
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="{x:Type GroupItem}">
-                                                <Expander IsExpanded="False">
-                                                    <Expander.Style>
-                                                        <Style TargetType="{x:Type Expander}" BasedOn="{StaticResource {x:Type Expander}}">
-                                                            <Setter Property="BorderBrush" Value="Orange"/>
-                                                            <Setter Property="Margin" Value="5"/>
-                                                        </Style>
-                                                    </Expander.Style>
-                                                    <Expander.Header>
-                                                        <StackPanel Orientation="Horizontal">
-                                                            <TextBlock Text="{Binding Name}" Margin="5 2 5 2"/>
-                                                            <!--<TextBlock Text=":" Margin="0 2 5 2"/>
+            <mah:Flyout x:Name="JobList" Position="Left">
+                <mah:Flyout.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Runs" Margin="5"/>
+                    </StackPanel>
+                </mah:Flyout.Header>
+                <StackPanel>
+
+                    <StackPanel Orientation="Horizontal">
+                        <Button x:Name="BtnSort" Click="BtnSort_Click" Style="{StaticResource MahApps.Styles.Button.Circle}" Width="30" Height="30">
+                            <IconPacks:Modern Kind="Sort"/>
+                        </Button>
+                    </StackPanel>
+                    
+                    <ListView ItemsSource="{Binding Source={StaticResource ResourceKey=GroupedDataList}}" SelectedItem="{Binding SelectedJob}" ContextMenu="{StaticResource contextMenu}">
+
+                        <ListView.GroupStyle>
+                            <GroupStyle>
+                                <GroupStyle.ContainerStyle>
+                                    <Style TargetType="{x:Type GroupItem}">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type GroupItem}">
+                                                    <Expander>
+                                                        <Expander.Style>
+                                                            <Style TargetType="{x:Type Expander}" BasedOn="{StaticResource {x:Type Expander}}">
+                                                                <Setter Property="BorderBrush" Value="Orange"/>
+                                                                <Setter Property="Margin" Value="5"/>
+                                                            </Style>
+                                                        </Expander.Style>
+                                                        <Expander.Header>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="{Binding Name}" Margin="5 2 5 2"/>
+                                                                <!--<TextBlock Text=":" Margin="0 2 5 2"/>
                                                             <TextBlock Text="{Binding ItemCount}" Margin="0 2 0 2"/>-->
-                                                        </StackPanel>
-                                                    </Expander.Header>
-                                                    
-                                                    <ItemsPresenter />
-                                                    
-                                                </Expander>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </GroupStyle.ContainerStyle>
-                        </GroupStyle>
-                        <GroupStyle>
-                            <GroupStyle.ContainerStyle>
-                                <Style TargetType="{x:Type GroupItem}">
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="{x:Type GroupItem}">
-                                                <Expander IsExpanded="False">
-                                                    <Expander.Style>
-                                                        <Style TargetType="{x:Type Expander}" BasedOn="{StaticResource {x:Type Expander}}">
-                                                            <Setter Property="BorderBrush" Value="Green"/>
-                                                            <Setter Property="Margin" Value="3"/>
-                                                        </Style>
-                                                    </Expander.Style>
-                                                    <Expander.Header>
-                                                        <StackPanel Orientation="Horizontal">
-                                                            <TextBlock Text="{Binding Name}" Margin="5 2 5 2"/>
-                                                            <TextBlock Text=":" Margin="0 2 5 2"/>
-                                                            <TextBlock Text="{Binding ItemCount}" Margin="0 2 0 2"/>
-                                                        </StackPanel>
-                                                    </Expander.Header>
+                                                            </StackPanel>
+                                                        </Expander.Header>
 
-                                                    <ItemsPresenter />
+                                                        <ItemsPresenter />
 
-                                                </Expander>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </GroupStyle.ContainerStyle>
-                        </GroupStyle>
-                        <GroupStyle>
-                            <GroupStyle.HeaderTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal" Background="{DynamicResource MahApps.Brushes.Highlight}">
-                                        <TextBlock Text="{Binding Name}" Margin="15 2 5 2"/>
-                                        <TextBlock Text=":" Margin="0 2 5 2"/>
-                                        <TextBlock Text="{Binding ItemCount}" Margin="0 2 0 2"/>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </GroupStyle.HeaderTemplate>
-                        </GroupStyle>
-                    </ListView.GroupStyle>
+                                                    </Expander>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </GroupStyle.ContainerStyle>
+                            </GroupStyle>
+                            <GroupStyle>
+                                <GroupStyle.ContainerStyle>
+                                    <Style TargetType="{x:Type GroupItem}">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type GroupItem}">
+                                                    <Expander>
+                                                        <Expander.Style>
+                                                            <Style TargetType="{x:Type Expander}" BasedOn="{StaticResource {x:Type Expander}}">
+                                                                <Setter Property="BorderBrush" Value="Green"/>
+                                                                <Setter Property="Margin" Value="3"/>
+                                                            </Style>
+                                                        </Expander.Style>
+                                                        <Expander.Header>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="{Binding Name}" Margin="5 2 5 2"/>
+                                                                <TextBlock Text=":" Margin="0 2 5 2"/>
+                                                                <TextBlock Text="{Binding ItemCount}" Margin="0 2 0 2"/>
+                                                            </StackPanel>
+                                                        </Expander.Header>
 
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding TimeDate, Converter={StaticResource toDate}}">
-                                    <TextBlock.Style>
-                                        <Style TargetType="{x:Type TextBlock}">
-                                            <Style.Triggers>
-                                                <DataTrigger Value="True" Binding="{Binding RunDBMissing}">
-                                                    <Setter Property="Foreground" Value="Yellow"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
-                                
-                                <!--<Button BorderThickness="0" Margin="3">
+                                                        <ItemsPresenter />
+
+                                                    </Expander>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </GroupStyle.ContainerStyle>
+                            </GroupStyle>
+                            <GroupStyle>
+                                <GroupStyle.HeaderTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" Background="{DynamicResource MahApps.Brushes.Highlight}">
+                                            <TextBlock Text="{Binding Name}" Margin="15 2 5 2"/>
+                                            <TextBlock Text=":" Margin="0 2 5 2"/>
+                                            <TextBlock Text="{Binding ItemCount}" Margin="0 2 0 2"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </GroupStyle.HeaderTemplate>
+                            </GroupStyle>
+                        </ListView.GroupStyle>
+
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding TimeDate, Converter={StaticResource toDate}}">
+                                        <TextBlock.Style>
+                                            <Style TargetType="{x:Type TextBlock}">
+                                                <Style.Triggers>
+                                                    <DataTrigger Value="True" Binding="{Binding RunDBMissing}">
+                                                        <Setter Property="Foreground" Value="Yellow"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+
+                                    <!--<Button BorderThickness="0" Margin="3">
                                     <Button.Style>
                                         <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Circle}">
                                             <Setter Property="Content">
@@ -150,55 +173,15 @@
                                         </Style>
                                     </Button.Style>
                                 </Button>-->
-                            </StackPanel>
-                            
-                        </DataTemplate>
-                        
-                    </ListView.ItemTemplate>
-                    
-                    <!--<ListView.Columns>
+                                </StackPanel>
 
-                        <DataGridTextColumn IsReadOnly="True" Binding="{Binding TimeDate, Converter={StaticResource toDate}}" />
-                        <DataGridTextColumn IsReadOnly="True" Header="Grading Standard" Binding="{Binding GradingStandard}" />
-                        <DataGridTextColumn IsReadOnly="True" Header="Camera MAC" Binding="{Binding CameraMAC}" />
-                        <DataGridTextColumn IsReadOnly="True" Header="Product Version" Binding="{Binding ProductPart}" />
-                        <DataGridTemplateColumn>
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Grid>
-                                        <Button BorderThickness="0">
-                                            <Button.Style>
-                                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Circle}">
-                                                    <Setter Property="Content">
-                                                        <Setter.Value>
-                                                            <IconPacks:Modern Kind="Check" />
-                                                        </Setter.Value>
-                                                    </Setter>
-                                                    <Setter Property="IsEnabled" Value="False"/>
-                                                    <Setter Property="Foreground" Value="Green"/>
-                                                    <Setter Property="Background" Value="{StaticResource MahApps.Brushes.ThemeBackground}"/>
-                                                    <Style.Triggers>
-                                                        <DataTrigger Value="True" Binding="{Binding RunDBMissing}">
-                                                            <Setter Property="Content">
-                                                                <Setter.Value>
-                                                                    <IconPacks:Modern Kind="Delete" />
-                                                                </Setter.Value>
-                                                            </Setter>
-                                                            <Setter Property="IsEnabled" Value="True"/>
-                                                            <Setter Property="Foreground" Value="Red"/>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Button.Style>
-                                        </Button>
-                                    </Grid>
+                            </DataTemplate>
 
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                    </ListView.Columns>-->
-                </ListView>
+                        </ListView.ItemTemplate>
 
+                    </ListView>
+                
+                </StackPanel>
             </mah:Flyout>
 
         </mah:FlyoutsControl>
@@ -212,7 +195,7 @@
             <RowDefinition Height="auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        
+
         <Button Grid.Column="0" Click="Button_Click" Style="{StaticResource MahApps.Styles.Button.Circle}" Width="30" Height="30" Margin="5">
             <IconPacks:Modern Kind="ArrowRight"/>
         </Button>
@@ -220,11 +203,11 @@
         <Button Grid.Column="0" Grid.Row="1" Click="Button_Click" Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Foreground="{DynamicResource MahApps.Brushes.Text}">
             <Button.Content>
                 <Grid>
-                     <TextBlock Text="Jobs" VerticalAlignment="Top">
+                    <TextBlock Text="Jobs" VerticalAlignment="Top">
                         <TextBlock.LayoutTransform>
                             <RotateTransform Angle="90"/>
                         </TextBlock.LayoutTransform>
-                    </TextBlock>                   
+                    </TextBlock>
                 </Grid>
 
             </Button.Content>

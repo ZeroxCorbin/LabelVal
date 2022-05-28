@@ -19,11 +19,11 @@ namespace V275_Testing
 
         public static Databases.SimpleDatabase Settings { get; private set; }
 
-#if DEBUG
+//#if DEBUG
         public static string WorkingDir { get; set; } = System.IO.Directory.GetCurrentDirectory();
-#else        
-        public static string WorkingDir { get; set; } = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\\TDD\\V275_Testing\\";
-#endif
+//#else        
+//        public static string WorkingDir { get; set; } = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\\TDD\\V275_Testing";
+//#endif
 
         public static string UserDataDirectory => $"{WorkingDir}\\UserData";
         public static string DatabaseExtension => ".sqlite";
