@@ -26,7 +26,7 @@
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
-                <RowDefinition MaxHeight="{Binding ElementName=image, Path=ActualHeight}"/>
+                <RowDefinition />
             </Grid.RowDefinitions>
 
             <Grid>
@@ -68,7 +68,7 @@
 
             </Grid>
 
-            <Image Grid.Row="1" Source="{Binding LabelImage}" Margin="3" x:Name="image" />
+            <Image Grid.Row="1" Source="{Binding LabelImage}" Margin="3" x:Name="image" MaxHeight="400"/>
 
             <Grid Grid.Row="0" Grid.Column="1">
                 <Grid.RowDefinitions>
@@ -102,7 +102,7 @@
                 </StackPanel>
             </Grid>
 
-            <ScrollViewer Grid.Row="1" Grid.Column="1" Width="200" Margin="3" MaxHeight="{Binding ElementName=image, Path=ActualHeight}" Padding="0,0,0,6">
+            <ScrollViewer Grid.Row="1" Grid.Column="1" Width="200" Margin="3" MaxHeight="400" Padding="0,0,0,6">
                 <ItemsControl ItemsSource="{Binding StoredSectors}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
@@ -148,7 +148,7 @@
             <!--</Border>-->
 
             <!--<Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Grid.Row="1" Grid.Column="2" MinWidth="200" MaxHeight="400" >-->
-            <ScrollViewer Grid.Row="1" Grid.Column="2" Width="200" Margin="3" MaxHeight="{Binding ElementName=image, Path=ActualHeight}">
+            <ScrollViewer Grid.Row="1" Grid.Column="2" Width="200" Margin="3" MaxHeight="400">
                 <ItemsControl ItemsSource="{Binding ReadSectors}">
                     <!--<ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>

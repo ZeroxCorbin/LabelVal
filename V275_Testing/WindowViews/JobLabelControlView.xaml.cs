@@ -24,5 +24,11 @@ namespace V275_Testing.WindowViews
         {
             InitializeComponent();
         }
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            this.DataContext = null;
+            GC.Collect();
+        }
     }
 }

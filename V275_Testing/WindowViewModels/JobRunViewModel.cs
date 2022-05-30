@@ -116,7 +116,7 @@ namespace V275_Testing.WindowViewModels
         private void LoadRun()
         {
 
-            foreach (var label in Labels)
+            foreach (var label in Labels.ToList())
                 label.Clear();
 
             Labels.Clear();
@@ -132,7 +132,6 @@ namespace V275_Testing.WindowViewModels
                 Labels.Add(new JobLabelControlViewModel(MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance, run, SelectedJob));
             }
 
-            
             RunDatabase.Close();
             RunDatabase = null;
         }

@@ -14,10 +14,11 @@ namespace V275_Testing.Databases
 {
     public class JobDatabase : IDisposable
     {
-        public class Job
+        public class Job : Core.BaseViewModel
         {
             [PrimaryKey]
-            public long TimeDate { get; set; }
+            public long TimeDate { get => timeDate; set => SetProperty(ref timeDate, value); }
+            private long timeDate;
 
             public int Completed { get; set; }
             public string GradingStandard { get; set; }

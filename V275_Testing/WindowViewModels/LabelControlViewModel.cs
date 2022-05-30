@@ -153,7 +153,7 @@ namespace V275_Testing.WindowViewModels
             // the size that is displayed.
             // Note: In order to preserve aspect ratio, set DecodePixelWidth
             // or DecodePixelHeight but not both.
-            //RepeatImage.DecodePixelWidth = 200;
+            LabelImage.DecodePixelHeight = 400;
             LabelImage.EndInit();
             LabelImage.Freeze();
         }

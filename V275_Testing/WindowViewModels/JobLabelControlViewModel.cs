@@ -25,8 +25,10 @@ namespace V275_Testing.WindowViewModels
 
         public ObservableCollection<SectorControlViewModel> LabelSectors { get; private set; } = new ObservableCollection<SectorControlViewModel>();
 
-        public BitmapImage LabelImage { get; private set; } = new BitmapImage();
-        public BitmapImage RepeatImage { get; private set; } = new BitmapImage();
+        //public byte[] LImage { get=> lImage; private set => SetProperty(ref lImage, value); }
+        //private byte[] lImage;
+        //public BitmapImage LabelImage { get; private set; } = new BitmapImage();
+        //public BitmapImage RepeatImage { get; private set; } = new BitmapImage();
 
         private IDialogCoordinator dialogCoordinator;
         public JobLabelControlViewModel(IDialogCoordinator diag, RunDatabase.Run run, JobDatabase.Job job)
@@ -38,7 +40,7 @@ namespace V275_Testing.WindowViewModels
             GetStored();
             GetRead();
 
-            LoadImages();
+            //LoadImages();
         }
 
         private void GetStored()
@@ -123,31 +125,31 @@ namespace V275_Testing.WindowViewModels
             }
         }
 
-        private void LoadImages()
-        {
-            using (MemoryStream ms = new MemoryStream(Run.LabelImage))
-            {
-                LabelImage.BeginInit();
-                LabelImage.CacheOption = BitmapCacheOption.OnLoad;
-                LabelImage.StreamSource = ms;
-                LabelImage.EndInit();
-            }
-            LabelImage.Freeze();
-            Run.LabelImage = new byte[0];
+        //private void LoadImages()
+        //{
+        //    using (MemoryStream ms = new MemoryStream(Run.LabelImage))
+        //    {
+        //        LabelImage.BeginInit();
+        //        LabelImage.CacheOption = BitmapCacheOption.OnLoad;
+        //        LabelImage.StreamSource = ms;
+        //        LabelImage.EndInit();
+        //    }
+        //    LabelImage.Freeze();
+        //    Run.LabelImage = new byte[0];
 
-            if (Run.RepeatImage == null)
-                return;
+        //    if (Run.RepeatImage == null)
+        //        return;
 
-            using (MemoryStream ms = new MemoryStream(Run.RepeatImage))
-            {
-                RepeatImage.BeginInit();
-                RepeatImage.CacheOption = BitmapCacheOption.OnLoad;
-                RepeatImage.StreamSource = ms;
-                RepeatImage.EndInit();
-            }
-            RepeatImage.Freeze();
-            Run.RepeatImage = new byte[0];
-        }
+        //    using (MemoryStream ms = new MemoryStream(Run.RepeatImage))
+        //    {
+        //        RepeatImage.BeginInit();
+        //        RepeatImage.CacheOption = BitmapCacheOption.OnLoad;
+        //        RepeatImage.StreamSource = ms;
+        //        RepeatImage.EndInit();
+        //    }
+        //    RepeatImage.Freeze();
+        //    Run.RepeatImage = new byte[0];
+        //}
 
         private object DeserializeSector(JObject reportSec)
         {
@@ -184,10 +186,10 @@ namespace V275_Testing.WindowViewModels
             LabelSectors = null;
             
             //LabelImage.StreamSource = null;
-            LabelImage = null;
+            //LabelImage = null;
 
             //RepeatImage.StreamSource = null;
-            RepeatImage = null;
+            //RepeatImage = null;
 
             Run = null;
             Job = null;

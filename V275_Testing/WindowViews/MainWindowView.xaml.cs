@@ -21,6 +21,8 @@ namespace V275_Testing.WindowViews
     /// </summary>
     public partial class MainWindowView : MetroWindow
     {
+JobRunView win;
+
         public MainWindowView()
         {
             InitializeComponent();
@@ -32,7 +34,7 @@ namespace V275_Testing.WindowViews
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            JobRunView win = new JobRunView();
+            win = new JobRunView();
             win.Show();
         }
     }

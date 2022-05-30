@@ -136,11 +136,11 @@
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding TimeDate, Converter={StaticResource toDate}}">
+                                    <TextBlock Text="{Binding TimeDate, Converter={StaticResource toDate}, Mode=OneTime}">
                                         <TextBlock.Style>
                                             <Style TargetType="{x:Type TextBlock}">
                                                 <Style.Triggers>
-                                                    <DataTrigger Value="True" Binding="{Binding RunDBMissing}">
+                                                    <DataTrigger Value="True" Binding="{Binding RunDBMissing, Mode=OneTime}">
                                                         <Setter Property="Foreground" Value="Yellow"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -214,7 +214,7 @@
         </Button>
 
         <ScrollViewer Grid.Column="1" Grid.RowSpan="2">
-            <ItemsControl ItemsSource="{Binding Labels}">
+            <ItemsControl ItemsSource="{Binding Labels, Mode=OneTime}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel IsItemsHost="True"/>

@@ -70,8 +70,6 @@ namespace V275_Testing.Databases
         {
             Connection?.Close();
             Connection?.Dispose();
-
-            GC.SuppressFinalize(this);
         }
     }
 }
