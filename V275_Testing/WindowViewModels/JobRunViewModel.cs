@@ -16,7 +16,9 @@ namespace V275_Testing.WindowViewModels
         JobDatabase JobDatabase { get; set; }
         RunDatabase RunDatabase { get; set; }
 
-        public ObservableCollection<JobDatabase.Job> Jobs { get; } = new ObservableCollection<JobDatabase.Job>();
+        private ObservableCollection<JobDatabase.Job> jobs = new ObservableCollection<JobDatabase.Job>();
+        public ObservableCollection<JobDatabase.Job> Jobs { get => jobs; set => SetProperty(ref jobs, value); }
+
         public JobDatabase.Job SelectedJob
         {
             get => selectedJob;
@@ -32,9 +34,8 @@ namespace V275_Testing.WindowViewModels
         }
         private JobDatabase.Job selectedJob;
 
-        public ObservableCollection<JobLabelControlViewModel> Labels { get; } = new ObservableCollection<JobLabelControlViewModel>();
-
-        public string GroupName { get; set; } = "GS1 TABLE 1";
+        private ObservableCollection<JobLabelControlViewModel> labels = new ObservableCollection<JobLabelControlViewModel>();
+        public ObservableCollection<JobLabelControlViewModel> Labels { get => labels; set => SetProperty(ref labels, value); }
 
         public ICommand DeleteRunCommand { get; }
 

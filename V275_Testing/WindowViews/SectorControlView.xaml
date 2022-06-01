@@ -1,19 +1,20 @@
 ﻿<UserControl x:Class="V275_Testing.WindowViews.SectorControlView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
             xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
             xmlns:local="clr-namespace:V275_Testing.WindowViews"
-             xmlns:ViewModels="clr-namespace:V275_Testing.WindowViewModels"
-             xmlns:V275="clr-namespace:V275_Testing.V275.Models"
-             xmlns:Converters="clr-namespace:V275_Testing.Converters"
+            xmlns:ViewModels="clr-namespace:V275_Testing.WindowViewModels"
+            xmlns:V275="clr-namespace:V275_Testing.V275.Models"
+            xmlns:Converters="clr-namespace:V275_Testing.Converters"
             xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
             Dialog:DialogParticipation.Register="{Binding}"
             d:DataContext="{d:DesignInstance Type=ViewModels:SectorControlViewModel}"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+            mc:Ignorable="d" 
+            d:DesignHeight="450" d:DesignWidth="800">
+    
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="booltovis"/>
         <Converters:StringToUpperSpacedConverter x:Key="stringToUpper"/>
@@ -124,7 +125,7 @@
                                         <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}"/>
                                         <Setter Property="Margin" Value="2"/>
                                         <Style.Triggers>
-                                            <DataTrigger Value="0" Binding="{Binding CompareSector.Alarms.Count, Mode=OneTime}">
+                                            <DataTrigger Value="0" Binding="{Binding SectorResults.Alarms.Count, Mode=OneTime}">
                                                 <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.ThemeBackground}"/>
                                                 <Setter Property="Margin" Value="0"/>
                                             </DataTrigger>
@@ -132,7 +133,7 @@
                                     </Style>
                                 </Border.Style>
 
-                                <ItemsControl ItemsSource="{Binding CompareSector.Alarms, Mode=OneTime}">
+                                <ItemsControl ItemsSource="{Binding SectorResults.Alarms, Mode=OneTime}">
                                     <ItemsControl.ItemTemplate>
                                         <HierarchicalDataTemplate>
                                             <Grid Margin="2">
@@ -185,7 +186,7 @@
                                         <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}"/>
                                         <Setter Property="Margin" Value="2"/>
                                         <Style.Triggers>
-                                            <DataTrigger Value="0" Binding="{Binding CompareSector.GradeValues.Count, Mode=OneTime}">
+                                            <DataTrigger Value="0" Binding="{Binding SectorResults.GradeValues.Count, Mode=OneTime}">
                                                 <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.ThemeBackground}"/>
                                                 <Setter Property="Margin" Value="0"/>
                                             </DataTrigger>
@@ -193,7 +194,7 @@
                                     </Style>
                                 </Border.Style>
 
-                                <ItemsControl ItemsSource="{Binding CompareSector.GradeValues, Mode=OneTime}">
+                                <ItemsControl ItemsSource="{Binding SectorResults.GradeValues, Mode=OneTime}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <Grid>
@@ -255,7 +256,7 @@
                                         <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}"/>
                                         <Setter Property="Margin" Value="2"/>
                                         <Style.Triggers>
-                                            <DataTrigger Value="0" Binding="{Binding CompareSector.Values.Count, Mode=OneTime}">
+                                            <DataTrigger Value="0" Binding="{Binding SectorResults.Values.Count, Mode=OneTime}">
                                                 <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.ThemeBackground}"/>
                                                 <Setter Property="Margin" Value="0"/>
                                             </DataTrigger>
@@ -263,7 +264,7 @@
                                     </Style>
                                 </Border.Style>
 
-                                <ItemsControl ItemsSource="{Binding CompareSector.Values, Mode=OneTime}">
+                                <ItemsControl ItemsSource="{Binding SectorResults.Values, Mode=OneTime}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <Grid>
@@ -295,7 +296,7 @@
                                         <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}"/>
                                         <Setter Property="Margin" Value="2"/>
                                         <Style.Triggers>
-                                            <DataTrigger Value="0" Binding="{Binding CompareSector.ValueResults.Count, Mode=OneTime}">
+                                            <DataTrigger Value="0" Binding="{Binding SectorResults.ValueResults.Count, Mode=OneTime}">
                                                 <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.ThemeBackground}"/>
                                                 <Setter Property="Margin" Value="0"/>
                                             </DataTrigger>
@@ -303,7 +304,7 @@
                                     </Style>
                                 </Border.Style>
 
-                                <ItemsControl ItemsSource="{Binding CompareSector.ValueResults, Mode=OneTime}">
+                                <ItemsControl ItemsSource="{Binding SectorResults.ValueResults, Mode=OneTime}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <Grid>
@@ -352,7 +353,7 @@
                                         <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}"/>
                                         <Setter Property="Margin"  Value="2"/>
                                         <Style.Triggers>
-                                            <DataTrigger Value="0" Binding="{Binding CompareSector.Gs1ValueResults.Count, Mode=OneTime}">
+                                            <DataTrigger Value="0" Binding="{Binding SectorResults.Gs1ValueResults.Count, Mode=OneTime}">
                                                 <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.ThemeBackground}"/>
                                                 <Setter Property="Margin" Value="0"/>
                                             </DataTrigger>
@@ -360,7 +361,7 @@
                                     </Style>
                                 </Border.Style>
 
-                                <ItemsControl ItemsSource="{Binding CompareSector.Gs1ValueResults, Mode=OneTime}">
+                                <ItemsControl ItemsSource="{Binding SectorResults.Gs1ValueResults, Mode=OneTime}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <Grid>
@@ -409,7 +410,7 @@
                                         <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}"/>
                                         <Setter Property="Margin" Value="2"/>
                                         <Style.Triggers>
-                                            <DataTrigger Value="0" Binding="{Binding CompareSector.Gs1Grades.Count, Mode=OneTime}">
+                                            <DataTrigger Value="0" Binding="{Binding SectorResults.Gs1Grades.Count, Mode=OneTime}">
                                                 <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.ThemeBackground}"/>
                                                 <Setter Property="Margin" Value="0"/>
                                             </DataTrigger>
@@ -417,7 +418,7 @@
                                     </Style>
                                 </Border.Style>
 
-                                <ItemsControl ItemsSource="{Binding CompareSector.Gs1Grades, Mode=OneTime}">
+                                <ItemsControl ItemsSource="{Binding SectorResults.Gs1Grades, Mode=OneTime}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <Grid>
@@ -510,7 +511,7 @@
                         <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}"/>
                         <Setter Property="Margin" Value="0,3"/>
                         <Style.Triggers>
-                            <DataTrigger Value="0" Binding="{Binding CompareSector.Alarms.Count, Mode=OneTime}">
+                            <DataTrigger Value="0" Binding="{Binding SectorResults.Alarms.Count, Mode=OneTime}">
                                 <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.ThemeBackground}"/>
                                 <Setter Property="Margin" Value="0"/>
                             </DataTrigger>
@@ -518,7 +519,7 @@
                     </Style>
                 </Border.Style>
 
-                <ItemsControl ItemsSource="{Binding CompareSector.Alarms, Mode=OneTime}">
+                <ItemsControl ItemsSource="{Binding SectorResults.Alarms, Mode=OneTime}">
                     <ItemsControl.ItemTemplate>
                         <HierarchicalDataTemplate>
                             <Grid Margin="2">
@@ -562,7 +563,7 @@
                     <Style TargetType="{x:Type Border}">
                         <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}"/>
                         <Style.Triggers>
-                            <DataTrigger Value="0" Binding="{Binding CompareSector.Gs1ValueResults.Count, Mode=OneTime}">
+                            <DataTrigger Value="0" Binding="{Binding SectorResults.Gs1ValueResults.Count, Mode=OneTime}">
                                 <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.ThemeBackground}"/>
                                 <Setter Property="Margin" Value="0"/>
                             </DataTrigger>
@@ -570,7 +571,7 @@
                     </Style>
                 </Border.Style>
 
-                <ItemsControl ItemsSource="{Binding CompareSector.Gs1ValueResults, Mode=OneTime}">
+                <ItemsControl ItemsSource="{Binding SectorResults.Gs1ValueResults, Mode=OneTime}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Grid>

@@ -1,19 +1,21 @@
 ﻿<mah:MetroWindow x:Class="V275_Testing.WindowViews.JobRunView"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-        xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-        xmlns:local="clr-namespace:V275_Testing.WindowViews"
-        xmlns:Converters="clr-namespace:V275_Testing.Converters"
-        xmlns:ViewModels="clr-namespace:V275_Testing.WindowViewModels"     
-        xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro" 
-                 xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
-                 Dialog:DialogParticipation.Register="{Binding}"
-        d:DataContext="{d:DesignInstance Type=ViewModels:JobRunViewModel}"
-        mc:Ignorable="d"
-        Title="V275 Testing" Height="450" Width="800" SaveWindowPosition="True">
+                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+                xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                xmlns:local="clr-namespace:V275_Testing.WindowViews"
+                xmlns:Converters="clr-namespace:V275_Testing.Converters"
+                xmlns:ViewModels="clr-namespace:V275_Testing.WindowViewModels"     
+                xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro" 
+                xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+                Dialog:DialogParticipation.Register="{Binding}"
+                d:DataContext="{d:DesignInstance Type=ViewModels:JobRunViewModel}"
+                mc:Ignorable="d"
+                Title="V275 Testing" Height="450" Width="800"
+                SaveWindowPosition="True">
+    
     <mah:MetroWindow.DataContext>
         <ViewModels:JobRunViewModel/>
     </mah:MetroWindow.DataContext>
@@ -41,6 +43,7 @@
         </ContextMenu>
 
     </mah:MetroWindow.Resources>
+
     <mah:MetroWindow.Flyouts>
         <mah:FlyoutsControl>
             <mah:Flyout x:Name="JobList" Position="Left">
@@ -56,7 +59,7 @@
                             <IconPacks:Modern Kind="Sort"/>
                         </Button>
                     </StackPanel>
-                    
+
                     <ListView ItemsSource="{Binding Source={StaticResource ResourceKey=GroupedDataList}}" SelectedItem="{Binding SelectedJob}" ContextMenu="{StaticResource contextMenu}">
 
                         <ListView.GroupStyle>
@@ -180,12 +183,13 @@
                         </ListView.ItemTemplate>
 
                     </ListView>
-                
+
                 </StackPanel>
             </mah:Flyout>
 
         </mah:FlyoutsControl>
     </mah:MetroWindow.Flyouts>
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>
@@ -213,19 +217,82 @@
             </Button.Content>
         </Button>
 
-        <ScrollViewer Grid.Column="1" Grid.RowSpan="2">
-            <ItemsControl ItemsSource="{Binding Labels, Mode=OneTime}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel IsItemsHost="True"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <local:JobLabelControlView />
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </ScrollViewer>
+        <Grid Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" HorizontalAlignment="Center">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="2" Margin="5">
+                <Grid >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Row="0" Grid.Column="2" Content="Select a run." FontSize="20">
+                        <Label.Style>
+                            <Style TargetType="{x:Type Label}" BasedOn="{StaticResource {x:Type Label}}">
+                                <Setter Value="Collapsed" Property="Visibility"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedJob}" Value="{x:Null}">
+                                        <Setter  Value="Visible" Property="Visibility"/>
+                                    </DataTrigger>
+
+                                </Style.Triggers>
+                            </Style>
+                        </Label.Style>
+                    </Label>
+
+                    <Label Grid.Row="1" Grid.Column="1" Content="{Binding SelectedJob.GradingStandard}"/>
+                    <Label Grid.Row="1" Grid.Column="2" Content="{Binding SelectedJob.CameraMAC}"/>
+                    <Label Grid.Row="1" Grid.Column="3" Content="{Binding SelectedJob.TimeDate, Converter={StaticResource toDate}}"/>
+                </Grid>
+            </Border>
+            
+            <Border Grid.Row="1" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="2" Margin="5,0,5,0">
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition MaxWidth="400"/>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="280"/>
+                        <ColumnDefinition MaxWidth="400"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Column="0" Content="Label Image" HorizontalAlignment="Center"/>
+                    <Label Grid.Column="1" Content="Label Sectors" HorizontalAlignment="Center"/>
+                    <Label Grid.Column="2" Content="Repeat Sectors" HorizontalAlignment="Center"/>
+                    <Label Grid.Column="3" Content="Dissimilar Inspection Results" HorizontalAlignment="Center"/>
+                    <Label Grid.Column="4" Content="Repeat Image" HorizontalAlignment="Center"/>
+                </Grid>
+            </Border>
+
+            <ScrollViewer Grid.Row="2" >
+                <ItemsControl ItemsSource="{Binding Labels, Mode=OneTime}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel IsItemsHost="True"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <local:JobLabelControlView />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>            
+        </Grid>
+
+        
     </Grid>
 </mah:MetroWindow>

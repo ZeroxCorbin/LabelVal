@@ -16,19 +16,26 @@ namespace V275_Testing.Databases
     {
         public class Job : Core.BaseViewModel
         {
+
+            private long timeDate;
             [PrimaryKey]
             public long TimeDate { get => timeDate; set => SetProperty(ref timeDate, value); }
-            private long timeDate;
 
-            public int Completed { get; set; }
-            public string GradingStandard { get; set; }
+            private int completed;
+            public int Completed { get => completed; set => SetProperty(ref completed, value); }
 
-            public string ProductPart { get; set; }
-            public string CameraMAC { get; set; }
+            private string gradingStandard;
+            public string GradingStandard { get => gradingStandard; set => SetProperty(ref gradingStandard, value); }
 
+            private string productPart;
+            public string ProductPart { get => productPart; set => SetProperty(ref productPart, value); }
+
+            private string cameraMAC;
+            public string CameraMAC { get => cameraMAC; set => SetProperty(ref cameraMAC, value); }
+
+            private bool runDBMissing;
             [Ignore]
-            public bool RunDBMissing { get; set; }
-
+            public bool RunDBMissing { get => runDBMissing; set => SetProperty(ref runDBMissing, value); }
         }
 
         private SQLiteConnection Connection { get; set; } = null;
@@ -45,7 +52,7 @@ namespace V275_Testing.Databases
                     if (Connection == null)
                         Connection = new SQLiteConnection(dbFilePath);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     return null;
                 }

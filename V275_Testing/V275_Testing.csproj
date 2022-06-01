@@ -173,7 +173,7 @@
     <Compile Include="V275\Models\V275_Product.cs" />
     <Compile Include="V275\Models\V275_Repeat_Available.cs" />
     <Compile Include="V275\Models\V275_Report_InspectSector_Blemish.cs" />
-    <Compile Include="V275\Models\V275_Report_InspectSector_Compare.cs" />
+    <Compile Include="WindowViewModels\SectorResultsViewModel.cs" />
     <Compile Include="V275\Models\V275_Report_InspectSector_Common.cs" />
     <Compile Include="V275\Models\V275_Report_InspectSector_OCR.cs" />
     <Compile Include="V275\Models\V275_Report_InspectSector_OCV.cs" />
@@ -190,6 +190,7 @@
     <Compile Include="WindowViewModels\MainWindowViewModel.cs" />
     <Compile Include="WindowViewModels\LabelControlViewModel.cs" />
     <Compile Include="WindowViewModels\SectorControlViewModel.cs" />
+    <Compile Include="WindowViewModels\SectorDifferenceControlViewModel.cs" />
     <Compile Include="WindowViews\JobLabelControlView.xaml.cs">
       <DependentUpon>JobLabelControlView.xaml</DependentUpon>
     </Compile>
@@ -204,6 +205,9 @@
     </Compile>
     <Compile Include="WindowViews\SectorControlView.xaml.cs">
       <DependentUpon>SectorControlView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WindowViews\SectorDifferenceControlView.xaml.cs">
+      <DependentUpon>SectorDifferenceControlView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -254,6 +258,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="WindowViews\SectorControlView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WindowViews\SectorDifferenceControlView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

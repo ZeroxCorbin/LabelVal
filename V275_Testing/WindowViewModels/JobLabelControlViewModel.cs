@@ -16,19 +16,20 @@ namespace V275_Testing.WindowViewModels
 {
     public class JobLabelControlViewModel : Core.BaseViewModel
     {
-        public RunDatabase.Run Run { get => run; set => SetProperty(ref run, value); }
         private RunDatabase.Run run;
-        public JobDatabase.Job Job { get => job; set => SetProperty(ref job, value); }
+        public RunDatabase.Run Run { get => run; set => SetProperty(ref run, value); }
+                
         private JobDatabase.Job job;
+        public JobDatabase.Job Job { get => job; set => SetProperty(ref job, value); }
+        
+        private ObservableCollection<SectorControlViewModel> repeatSectors = new ObservableCollection<SectorControlViewModel>();
+        public ObservableCollection<SectorControlViewModel> RepeatSectors { get => repeatSectors; set => SetProperty(ref repeatSectors, value); }
 
-        public ObservableCollection<SectorControlViewModel> RepeatSectors { get; private set; } = new ObservableCollection<SectorControlViewModel>();
+        private ObservableCollection<SectorControlViewModel> labelSectors = new ObservableCollection<SectorControlViewModel>();
+        public ObservableCollection<SectorControlViewModel> LabelSectors { get => labelSectors; set => SetProperty(ref labelSectors, value); }
 
-        public ObservableCollection<SectorControlViewModel> LabelSectors { get; private set; } = new ObservableCollection<SectorControlViewModel>();
-
-        //public byte[] LImage { get=> lImage; private set => SetProperty(ref lImage, value); }
-        //private byte[] lImage;
-        //public BitmapImage LabelImage { get; private set; } = new BitmapImage();
-        //public BitmapImage RepeatImage { get; private set; } = new BitmapImage();
+        private ObservableCollection<SectorResultsViewModel> diffSectors = new ObservableCollection<SectorResultsViewModel>();
+        public ObservableCollection<SectorResultsViewModel> DiffSectors { get => diffSectors; set => SetProperty(ref diffSectors, value); }
 
         private IDialogCoordinator dialogCoordinator;
         public JobLabelControlViewModel(IDialogCoordinator diag, RunDatabase.Run run, JobDatabase.Job job)
@@ -37,13 +38,12 @@ namespace V275_Testing.WindowViewModels
             Run = run;
             Job = job;
 
-            GetStored();
-            GetRead();
-
-            //LoadImages();
+            GetLabelSectors();
+            GetRepeatSectors();
+            GetSectorDiff();
         }
 
-        private void GetStored()
+        private void GetLabelSectors()
         {
             LabelSectors.Clear();
 
@@ -84,7 +84,7 @@ namespace V275_Testing.WindowViewModels
             }
         }
 
-        private void GetRead()
+        private void GetRepeatSectors()
         {
             RepeatSectors.Clear();
 
@@ -125,31 +125,33 @@ namespace V275_Testing.WindowViewModels
             }
         }
 
-        //private void LoadImages()
-        //{
-        //    using (MemoryStream ms = new MemoryStream(Run.LabelImage))
-        //    {
-        //        LabelImage.BeginInit();
-        //        LabelImage.CacheOption = BitmapCacheOption.OnLoad;
-        //        LabelImage.StreamSource = ms;
-        //        LabelImage.EndInit();
-        //    }
-        //    LabelImage.Freeze();
-        //    Run.LabelImage = new byte[0];
+        private void GetSectorDiff()
+        {
+            List<SectorResultsViewModel> diff = new List<SectorResultsViewModel>();
+            foreach (var sec in LabelSectors)
+            {
+                bool found = false;
+                foreach (var cSec in RepeatSectors)
+                    if (sec.JobSector.name == cSec.JobSector.name)
+                    {
+                        found = true;
+                        diff.Add(sec.SectorResults.Compare(cSec.SectorResults));
+                        continue;
+                    }
 
-        //    if (Run.RepeatImage == null)
-        //        return;
+                if (!found)
+                {
+                    var dat = sec.SectorResults.Compare(new SectorResultsViewModel());
+                    dat.IsSectorMissing = true;
+                    diff.Add(dat);
+                }
 
-        //    using (MemoryStream ms = new MemoryStream(Run.RepeatImage))
-        //    {
-        //        RepeatImage.BeginInit();
-        //        RepeatImage.CacheOption = BitmapCacheOption.OnLoad;
-        //        RepeatImage.StreamSource = ms;
-        //        RepeatImage.EndInit();
-        //    }
-        //    RepeatImage.Freeze();
-        //    Run.RepeatImage = new byte[0];
-        //}
+            }
+
+            foreach(var d in diff)
+                DiffSectors.Add(d);
+
+        }
 
         private object DeserializeSector(JObject reportSec)
         {

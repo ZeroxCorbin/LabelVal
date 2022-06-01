@@ -36,6 +36,14 @@ JobRunView win;
         {
             win = new JobRunView();
             win.Show();
+            win.Closed += Win_Closed;
+        }
+
+        private void Win_Closed(object sender, EventArgs e)
+        {
+            ((JobRunView)sender).Closed-= Win_Closed;
+
+            GC.Collect();
         }
     }
 }

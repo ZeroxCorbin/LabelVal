@@ -6,20 +6,34 @@ namespace V275_Testing.Databases
 {
     public class RunDatabase : IDisposable
     {
-        public class Run
+        public class Run : Core.BaseViewModel
         {
+
+            private long timeDate = DateTime.Now.Ticks;
             [PrimaryKey]
-            public long TimeDate { get; set; } = DateTime.Now.Ticks;
-         
-            public string Job { get; set; }
-            public string StoredReport { get; set; }
+            public long TimeDate { get => this.timeDate; set => SetProperty(ref timeDate, value); }
 
-            public int LabelNumber { get; set; }
-            public byte[] LabelImage { get; set; }
-            public string LabelImageUID { get; set; }
+            private string job;
+            public string Job { get => job; set => SetProperty(ref job, value); }
 
-            public byte[] RepeatImage { get; set; }
-            public string Report { get; set; }
+            private string storedReport;
+            public string StoredReport { get => storedReport; set => SetProperty(ref storedReport, value); }
+
+            private int labelNumber;
+            public int LabelNumber { get => labelNumber; set => SetProperty(ref labelNumber, value); }
+
+            private byte[] labelImage;
+            public byte[] LabelImage { get => labelImage; set => SetProperty(ref labelImage, value); }
+
+            private string labelImageUID;
+            public string LabelImageUID { get => labelImageUID; set => SetProperty(ref labelImageUID, value); }
+
+            private byte[] repeatImage;
+            public byte[] RepeatImage { get => repeatImage; set => SetProperty(ref repeatImage, value); }
+
+            private string report;
+            public string Report { get => report; set => SetProperty(ref report, value); }
+
         }
 
         private SQLiteConnection Connection { get; set; } = null;

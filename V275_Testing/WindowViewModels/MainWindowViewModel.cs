@@ -53,7 +53,8 @@ namespace V275_Testing.WindowViewModels
         }
         private V275_Devices.Node selectedNode;
 
-        public ObservableCollection<LabelControlViewModel> Labels { get; } = new ObservableCollection<LabelControlViewModel>();
+        private ObservableCollection<LabelControlViewModel> labels = new ObservableCollection<LabelControlViewModel>();
+        public ObservableCollection<LabelControlViewModel> Labels { get => labels; set => SetProperty(ref labels, value); }
 
         public string StoredStandard { get => App.Settings.GetValue("StoredStandard", "GS1 TABLE 1"); set { App.Settings.SetValue("StoredStandard", value); } }
         public ObservableCollection<string> Standards { get; } = new ObservableCollection<string>();
@@ -583,10 +584,6 @@ namespace V275_Testing.WindowViewModels
             await V275.Print((string)parameter == "1");
         }
 
-        private void LoadJobs()
-        {
-
-        }
         private void StartJobAction(object parameter)
         {
             if (CurrentJob != null)

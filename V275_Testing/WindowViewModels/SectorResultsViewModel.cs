@@ -3,37 +3,52 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using V275_Testing.V275.Models;
 
-namespace V275_Testing.V275.Models
+namespace V275_Testing.WindowViewModels
 {
-    public class V275_Report_InspectSector_Compare
+    public class SectorResultsViewModel : Core.BaseViewModel
     {
-        public string name { get; set; }
-        public string type { get; set; }
+        private string userName;
+        public string UserName { get => userName; set => SetProperty(ref userName, value); }
 
-        public bool IsSectorMissing { get; set; } = false;
+        private string type;
+        public string Type { get => type; set => SetProperty(ref type, value); }
 
-        public Dictionary<string, V275_Report_InspectSector_Common.GradeValue> GradeValues { get; set; } = new Dictionary<string, V275_Report_InspectSector_Common.GradeValue>();
-        public Dictionary<string, V275_Report_InspectSector_Common.ValueResult> ValueResults { get; set; } = new Dictionary<string, V275_Report_InspectSector_Common.ValueResult>();
-        public Dictionary<string, V275_Report_InspectSector_Common.ValueResult> Gs1ValueResults { get; set; } = new Dictionary<string, V275_Report_InspectSector_Common.ValueResult>();
-        public Dictionary<string, V275_Report_InspectSector_Common.Grade> Gs1Grades { get; set; } = new Dictionary<string, V275_Report_InspectSector_Common.Grade>();
-        public Dictionary<string, V275_Report_InspectSector_Common.Value> Values { get; set; } = new Dictionary<string, V275_Report_InspectSector_Common.Value>();
-        public List<V275_Report_InspectSector_Common.Alarm> Alarms { get; set; } = new List<V275_Report_InspectSector_Common.Alarm>();
+        private bool isSectorMissing;
+        public bool IsSectorMissing { get => isSectorMissing; set => SetProperty(ref isSectorMissing, value); }
 
-        public void Process(object verify)
+        private Dictionary<string, V275_Report_InspectSector_Common.GradeValue> gradeValues = new Dictionary<string, V275_Report_InspectSector_Common.GradeValue>();
+        public Dictionary<string, V275_Report_InspectSector_Common.GradeValue> GradeValues { get => gradeValues; set => SetProperty(ref gradeValues, value); }
+
+        private Dictionary<string, V275_Report_InspectSector_Common.ValueResult> valueResults = new Dictionary<string, V275_Report_InspectSector_Common.ValueResult>();
+        public Dictionary<string, V275_Report_InspectSector_Common.ValueResult> ValueResults { get => valueResults; set => SetProperty(ref valueResults, value); }
+
+        private Dictionary<string, V275_Report_InspectSector_Common.ValueResult> gs1ValueResults = new Dictionary<string, V275_Report_InspectSector_Common.ValueResult>();
+        public Dictionary<string, V275_Report_InspectSector_Common.ValueResult> Gs1ValueResults { get => gs1ValueResults; set => SetProperty(ref gs1ValueResults, value); }
+
+        private Dictionary<string, V275_Report_InspectSector_Common.Grade> gs1Grades = new Dictionary<string, V275_Report_InspectSector_Common.Grade>();
+        public Dictionary<string, V275_Report_InspectSector_Common.Grade> Gs1Grades { get => gs1Grades; set => SetProperty(ref gs1Grades, value); }
+
+        private Dictionary<string, V275_Report_InspectSector_Common.Value> values = new Dictionary<string, V275_Report_InspectSector_Common.Value>();
+        public Dictionary<string, V275_Report_InspectSector_Common.Value> Values { get => values; set => SetProperty(ref values, value); }
+
+        private List<V275_Report_InspectSector_Common.Alarm> alarms = new List<V275_Report_InspectSector_Common.Alarm>();
+        public List<V275_Report_InspectSector_Common.Alarm> Alarms { get => alarms; set => SetProperty(ref alarms, value); }
+
+        public void Process(object verify, string userName)
         {
-            
-            foreach(var prop in verify.GetType().GetProperties())
-            {
-                if(prop.Name == "name")
-                    name = prop.GetValue(verify).ToString();
-                if(prop.Name == "type")
-                   type = prop.GetValue(verify).ToString();
+            UserName = userName;
 
-                if(prop.Name=="data")
-                    foreach(var prop1 in prop.GetValue(verify).GetType().GetProperties())
+            foreach (var prop in verify.GetType().GetProperties())
+            {
+                if (prop.Name == "type")
+                    Type = prop.GetValue(verify).ToString();
+
+                if (prop.Name == "data")
+                    foreach (var prop1 in prop.GetValue(verify).GetType().GetProperties())
                     {
-                        if(prop1.PropertyType == typeof(V275_Report_InspectSector_Common.GradeValue))
+                        if (prop1.PropertyType == typeof(V275_Report_InspectSector_Common.GradeValue))
                         {
                             GradeValues.Add(prop1.Name, (V275_Report_InspectSector_Common.GradeValue)prop1.GetValue(prop.GetValue(verify)));
                             continue;
@@ -56,7 +71,7 @@ namespace V275_Testing.V275.Models
 
                         if (prop1.PropertyType == typeof(V275_Report_InspectSector_Verify1D.Gs1symbolquality) || prop1.PropertyType == typeof(V275_Report_InspectSector_Verify2D.Gs1symbolquality))
                         {
-                            foreach(var prop2 in prop1.GetValue(prop.GetValue(verify)).GetType().GetProperties())
+                            foreach (var prop2 in prop1.GetValue(prop.GetValue(verify)).GetType().GetProperties())
                             {
                                 if (prop2.PropertyType == typeof(V275_Report_InspectSector_Common.ValueResult))
                                 {
@@ -84,62 +99,50 @@ namespace V275_Testing.V275.Models
             return $"{char.ToUpper(tmp[0])}{tmp.Substring(1)}";
         }
 
-        public V275_Report_InspectSector_Compare Compare(V275_Report_InspectSector_Compare compare)
+        public SectorResultsViewModel Compare(SectorResultsViewModel compare)
         {
-            V275_Report_InspectSector_Compare results = new V275_Report_InspectSector_Compare();
+            SectorResultsViewModel results = new SectorResultsViewModel();
 
-            results.name = name;
-            results.type = type;
+            results.UserName = UserName;
+            results.Type = Type;
 
             foreach (var gv in GradeValues)
                 if (compare.GradeValues.ContainsKey(gv.Key))
                 {
                     if (!CompareGradeValue(gv.Value, compare.GradeValues[gv.Key]))
-                        results.GradeValues.Add(gv.Key, gv.Value);
-                }
-                else
-                {
-                    results.GradeValues.Add(gv.Key, gv.Value);
+                        results.GradeValues.Add(gv.Key, compare.GradeValues[gv.Key]);
                 }
 
             foreach (var vr in ValueResults)
                 if (compare.ValueResults.ContainsKey(vr.Key))
                 {
                     if (!CompareValueResult(vr.Value, compare.ValueResults[vr.Key]))
-                        results.ValueResults.Add(vr.Key, vr.Value);
+                        results.ValueResults.Add(vr.Key, compare.ValueResults[vr.Key]);
                 }
-                else
-                {
-                    results.ValueResults.Add(vr.Key, vr.Value);
-                }
-            
+
             foreach (var v in Values)
                 if (compare.Values.ContainsKey(v.Key))
                 {
                     if (!CompareValue(v.Value, compare.Values[v.Key]))
-                        results.Values.Add(v.Key, v.Value);
-                }
-                else
-                {
-                    results.Values.Add(v.Key, v.Value);
+                        results.Values.Add(v.Key, compare.Values[v.Key]);
                 }
 
-            foreach (var aS in Alarms)
+            foreach (var aS in compare.Alarms)
             {
                 bool found = false;
-                foreach(var aC in compare.Alarms)
+                foreach (var aC in Alarms)
                 {
-                    if(aS.name == aC.name)
+                    if (aS.name == aC.name)
                     {
                         found = true;
                         if (!CompareAlarm(aS, aC))
                         {
-                            results.Alarms.Add(aS);
+                            results.Alarms.Add(aC);
                         }
                     }
                 }
 
-                if(!found)
+                if (!found)
                     results.Alarms.Add(aS);
             }
 
@@ -159,12 +162,12 @@ namespace V275_Testing.V275.Models
 
         private bool CompareValue(V275_Report_InspectSector_Common.Value source, V275_Report_InspectSector_Common.Value compare)
         {
-            return source.value == compare.value;
+            return (compare.value <= source.value + 5) && (compare.value >= source.value - 5);
 
         }
         private bool CompareAlarm(V275_Report_InspectSector_Common.Alarm source, V275_Report_InspectSector_Common.Alarm compare)
         {
-            if(source.category != compare.category)
+            if (source.category != compare.category)
                 return false;
 
             if (source.data.subAlarm != compare.data.subAlarm)

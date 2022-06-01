@@ -22,46 +22,23 @@ namespace V275_Testing.WindowViewModels
         public delegate void PrintingDelegate(LabelControlViewModel label);
         public event PrintingDelegate Printing;
 
-        public string PrinterName { get; set; }
-        public int LabelNumber { get; }
-        public BitmapImage LabelImage { get; } = new BitmapImage();
-        public string LabelImagePath { get; }
+        private int labelNumber;
+        public int LabelNumber { get => labelNumber; set => SetProperty(ref labelNumber, value); }
 
-        public byte[] RepeatImageData { get; private set; }
+        private BitmapImage labelImage = new BitmapImage();
+        public BitmapImage LabelImage { get => labelImage; set => SetProperty(ref labelImage, value); }
 
-        public string Status
-        {
-            get { return _Status; }
-            set { SetProperty(ref _Status, value); }
-        }
-        private string _Status;
+        private string gradingStandard;
+        public string GradingStandard { get => gradingStandard; set => SetProperty(ref gradingStandard, value); }
 
-        public string GradingStandard { get; }
-        private StandardsDatabase StandardsDatabase { get; }
-
-        private string ImagePath { get; }
-
-        public int PrintCount { get => printCount; set => SetProperty(ref printCount, value); }
         private int printCount = 1;
+        public int PrintCount { get => printCount; set => SetProperty(ref printCount, value); }
 
-        V275_API_Commands V275 { get; }
-        V275_Job ReadJob { get; set; }
-        //public string StoredJob { get; private set; }
-        public V275_Report Report { get; private set; }
+        private ObservableCollection<SectorControlViewModel> readSectors = new ObservableCollection<SectorControlViewModel>();
+        public ObservableCollection<SectorControlViewModel> ReadSectors { get => readSectors; set => SetProperty(ref readSectors, value); }
 
-        public ObservableCollection<SectorControlViewModel> ReadSectors { get; } = new ObservableCollection<SectorControlViewModel>();
-        public ObservableCollection<SectorControlViewModel> StoredSectors { get; } = new ObservableCollection<SectorControlViewModel>();
-
-        public ObservableCollection<SectorControlViewModel> DiffSectors { get; } = new ObservableCollection<SectorControlViewModel>();
-
-        public ICommand PrintCommand { get; }
-        public ICommand ReadCommand { get; }
-        public ICommand StoreCommand { get; }
-        public ICommand LoadCommand { get; }
-        public ICommand InspectCommand { get; }
-
-        public ICommand ClearStored { get; }
-        public ICommand ClearRead { get; }
+        private ObservableCollection<SectorControlViewModel> storedSectors = new ObservableCollection<SectorControlViewModel>();
+        public ObservableCollection<SectorControlViewModel> StoredSectors { get => storedSectors; set => SetProperty(ref storedSectors, value); }
 
         public bool IsLoggedIn_Setup
         {
@@ -74,8 +51,9 @@ namespace V275_Testing.WindowViewModels
         public bool IsLoggedIn_Control
         {
             get => isLoggedIn_Control;
-            set { 
-                SetProperty(ref isLoggedIn_Control, value); 
+            set
+            {
+                SetProperty(ref isLoggedIn_Control, value);
                 OnPropertyChanged("IsNotLoggedIn_Control");
                 if (value) PrintCount = 1;
             }
@@ -107,13 +85,46 @@ namespace V275_Testing.WindowViewModels
         public bool IsNotWorking => !isWorking;
         private bool isWorking = false;
 
+
+        public string PrinterName { get; set; }
+        public string LabelImagePath { get; }
+        public byte[] RepeatImageData { get; private set; }
+
+        public string Status
+        {
+            get { return _Status; }
+            set { SetProperty(ref _Status, value); }
+        }
+        private string _Status;
+
+
+        private StandardsDatabase StandardsDatabase { get; }
+
+        V275_API_Commands V275 { get; }
+        V275_Job ReadJob { get; set; }
+        //public string StoredJob { get; private set; }
+        public V275_Report Report { get; private set; }
+
+
+
+        public ICommand PrintCommand { get; }
+        public ICommand ReadCommand { get; }
+        public ICommand StoreCommand { get; }
+        public ICommand LoadCommand { get; }
+        public ICommand InspectCommand { get; }
+
+        public ICommand ClearStored { get; }
+        public ICommand ClearRead { get; }
+
+
+
         private IDialogCoordinator dialogCoordinator;
         public LabelControlViewModel(int labelNumber, string imagePath, string printerName, string gradingStandard, StandardsDatabase standardsDatabase, V275_API_Commands v275, IDialogCoordinator diag)
         {
             dialogCoordinator = diag;
 
             LabelNumber = labelNumber;
-            ImagePath = imagePath;
+            LabelImagePath = imagePath;
             PrinterName = printerName;
             GradingStandard = gradingStandard;
             StandardsDatabase = standardsDatabase;
@@ -128,7 +139,7 @@ namespace V275_Testing.WindowViewModels
             ClearStored = new Core.RelayCommand(ClearStoredAction, c => true);
             ClearRead = new Core.RelayCommand(ClearReadAction, c => true);
 
-            LabelImagePath = imagePath;
+
 
             GetImage(imagePath);
             GetStored();
@@ -166,7 +177,7 @@ namespace V275_Testing.WindowViewModels
                 Printing?.Invoke(this);
 
                 PrintControl printer = new PrintControl();
-                printer.Print(ImagePath, PrintCount, PrinterName);
+                printer.Print(LabelImagePath, PrintCount, PrinterName);
 
                 if (!IsLoggedIn_Control)
                     IsWorking = false;
@@ -180,7 +191,7 @@ namespace V275_Testing.WindowViewModels
             IsLoad = false;
 
             StandardsDatabase.Row row = StandardsDatabase.GetRow(GradingStandard, LabelNumber);
-            
+
             if (row == null)
                 return;
 
@@ -319,12 +330,12 @@ namespace V275_Testing.WindowViewModels
             }
             Report = V275.Report;
 
-            if (!await V275.GetRepeatsImage(repeat))
+            if (await V275.GetRepeatsImage(repeat))
             {
-                Status = V275.Status;
-                return false;
+                RepeatImageData = V275.Repeatimage;
             }
-            RepeatImageData = V275.Repeatimage;
+            else
+                RepeatImageData = null;
             //foreach (var jSec in Job.sectors)
             //    foreach (V275_Report_InspectSector rSec in Report.inspectLabel.inspectSector)
             //        if (jSec.name == rSec.name)
@@ -369,25 +380,25 @@ namespace V275_Testing.WindowViewModels
             }
 
 
-            List<V275_Report_InspectSector_Compare> diff = new List<V275_Report_InspectSector_Compare>();
-            foreach (var sec in StoredSectors)
-            {
-                bool found = false;
-                foreach (var cSec in ReadSectors)
-                    if (sec.JobSector.name == cSec.JobSector.name)
-                    {
-                        found = true;
-                        diff.Add(sec.CompareSector.Compare(cSec.CompareSector));
-                    }
+            //List<SectorResultsViewModel> diff = new List<SectorResultsViewModel>();
+            //foreach (var sec in StoredSectors)
+            //{
+            //    bool found = false;
+            //    foreach (var cSec in ReadSectors)
+            //        if (sec.JobSector.name == cSec.JobSector.name)
+            //        {
+            //            found = true;
+            //            diff.Add(sec.SectorResults.Compare(cSec.SectorResults));
+            //        }
 
-                if (!found)
-                {
-                    var dat = sec.CompareSector.Compare(new V275_Report_InspectSector_Compare());
-                    dat.IsSectorMissing = true;
-                    diff.Add(dat);
-                }
+            //    if (!found)
+            //    {
+            //        var dat = sec.SectorResults.Compare(new SectorResultsViewModel());
+            //        dat.IsSectorMissing = true;
+            //        diff.Add(dat);
+            //    }
 
-            }
+            //}
 
             return true;
         }
