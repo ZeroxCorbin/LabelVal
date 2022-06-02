@@ -9,15 +9,15 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using V275_Testing.Databases;
 
-namespace V275_Testing.WindowViewModels
+namespace V275_Testing.RunViewModels
 {
     public class RunViewModel : Core.BaseViewModel
     {
         RunLedgerDatabase RunLedgerDatabase { get; set; }
         RunDatabase RunDatabase { get; set; }
 
-        private ObservableCollection<RunLedgerDatabase.RunEntry> runEntrys = new ObservableCollection<RunLedgerDatabase.RunEntry>();
-        public ObservableCollection<RunLedgerDatabase.RunEntry> RunEntrys { get => runEntrys; set => SetProperty(ref runEntrys, value); }
+        private ObservableCollection<RunLedgerDatabase.RunEntry> runEntries = new ObservableCollection<RunLedgerDatabase.RunEntry>();
+        public ObservableCollection<RunLedgerDatabase.RunEntry> RunEntries { get => runEntries; set => SetProperty(ref runEntries, value); }
 
         public RunLedgerDatabase.RunEntry SelectedRunEntry
         {
@@ -46,7 +46,7 @@ namespace V275_Testing.WindowViewModels
 
             DeleteRunCommand = new Core.RelayCommand(DeleteRunAction, c => true);
 
-            LoadRunEntrys();
+            LoadRunEntries();
         }
         public async Task<MessageDialogResult> OkCancelDialog(string title, string message)
         {
@@ -64,7 +64,7 @@ namespace V275_Testing.WindowViewModels
             {
                 RunLedgerDatabase.RunEntry runEntry = (RunLedgerDatabase.RunEntry)parameter;
 
-                RunEntrys.Remove(runEntry);
+                RunEntries.Remove(runEntry);
 
                 RunLedgerDatabase.DeleteRunEntry(runEntry.TimeDate);
 
@@ -93,21 +93,21 @@ namespace V275_Testing.WindowViewModels
             //    Labels.Remove(res);
         }
 
-        private void LoadRunEntrys()
+        private void LoadRunEntries()
         {
             RunLedgerDatabase = new RunLedgerDatabase().Open($"{App.RunsRoot}\\{App.RunLedgerDatabaseName}");
             var files = Directory.GetFiles(App.RunsRoot);
 
             if (RunLedgerDatabase != null)
             {
-                var list = RunLedgerDatabase.SelectAllRunEntrys();
+                var list = RunLedgerDatabase.SelectAllRunEntries();
 
                 foreach (var runEntry in list)
                 {
                     if (string.IsNullOrEmpty(files.FirstOrDefault(e => e.EndsWith($"{App.RunDatabaseName(runEntry.TimeDate)}"))))
                         runEntry.RunDBMissing = true;
 
-                    RunEntrys.Add(runEntry);
+                    RunEntries.Add(runEntry);
                 }
 
                 RunLedgerDatabase.Close();

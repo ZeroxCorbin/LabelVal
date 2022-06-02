@@ -13,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using V275_Testing.RunViews;
 
 namespace V275_Testing.WindowViews
 {
@@ -21,7 +22,7 @@ namespace V275_Testing.WindowViews
     /// </summary>
     public partial class MainWindowView : MetroWindow
     {
-RunView win;
+        RunView win;
 
         public MainWindowView()
         {
@@ -41,7 +42,7 @@ RunView win;
 
         private void Win_Closed(object sender, EventArgs e)
         {
-            ((RunView)sender).Closed-= Win_Closed;
+            ((RunView)sender).Closed -= Win_Closed;
 
             GC.Collect();
         }

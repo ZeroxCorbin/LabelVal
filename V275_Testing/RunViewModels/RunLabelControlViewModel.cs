@@ -11,8 +11,9 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using V275_Testing.Databases;
 using V275_Testing.V275.Models;
+using V275_Testing.WindowViewModels;
 
-namespace V275_Testing.WindowViewModels
+namespace V275_Testing.RunViewModels
 {
     public class RunLabelControlViewModel : Core.BaseViewModel
     {

@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace V275_Testing.WindowViews
+namespace V275_Testing.RunViews
 {
     /// <summary>
     /// Interaction logic for RunLabelControlView.xaml

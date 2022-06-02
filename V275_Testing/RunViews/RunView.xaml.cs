@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using V275_Testing.WindowViewModels;
 
-namespace V275_Testing.WindowViews
+namespace V275_Testing.RunViews
 {
     /// <summary>
     /// Interaction logic for RunRunView.xaml
