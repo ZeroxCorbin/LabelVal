@@ -13,7 +13,7 @@ using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.Drawing.Printing;
 using V275_Testing.Databases;
-using V275_Testing.Job;
+using V275_Testing.RunControllers;
 
 namespace V275_Testing.WindowViewModels
 {
@@ -168,35 +168,35 @@ namespace V275_Testing.WindowViewModels
 
         public ICommand Print { get; }
 
-        public int JobLoopCount { get => App.Settings.GetValue("JobLoopCount", 1); set { App.Settings.SetValue("JobLoopCount", value); } }
+        public int RunLoopCount { get => App.Settings.GetValue("RunLoopCount", 1); set { App.Settings.SetValue("RunLoopCount", value); } }
 
-        public ICommand StartJob { get; }
-        public bool IsJobRunning
+        public ICommand StartRun { get; }
+        public bool IsRunRunning
         {
-            get => isJobRunning;
-            set { SetProperty(ref isJobRunning, value); OnPropertyChanged("IsNotJobRunning"); }
+            get => isRunRunning;
+            set { SetProperty(ref isRunRunning, value); OnPropertyChanged("IsNotRunRunning"); }
         }
-        public bool IsNotJobRunning => !isJobRunning;
-        private bool isJobRunning = false;
+        public bool IsNotRunRunning => !isRunRunning;
+        private bool isRunRunning = false;
 
-        public ICommand PauseJob { get; }
-        public bool IsJobPaused
+        public ICommand PauseRun { get; }
+        public bool IsRunPaused
         {
-            get => isJobPaused;
-            set { SetProperty(ref isJobPaused, value); OnPropertyChanged("IsNotJobPaused"); }
+            get => isRunPaused;
+            set { SetProperty(ref isRunPaused, value); OnPropertyChanged("IsNotRunPaused"); }
         }
-        public bool IsNotJobPaused => !isJobPaused;
-        private bool isJobPaused = false;
+        public bool IsNotRunPaused => !isRunPaused;
+        private bool isRunPaused = false;
 
-        public ICommand StopJob { get; }
+        public ICommand StopRun { get; }
 
-        public JobController.JobStates JobState { get => jobState; set => SetProperty(ref jobState, value); }
-        private JobController.JobStates jobState;
+        public RunController.RunStates RunState { get => runState; set => SetProperty(ref runState, value); }
+        private RunController.RunStates runState;
 
         private Dictionary<int, Repeat> Repeats = new Dictionary<int, Repeat>();
 
         private int LabelCount { get; set; } = 0;
-        private JobController CurrentJob { get; set; }
+        private RunController CurrentRun { get; set; }
 
         public MainWindowViewModel()
         {
@@ -206,9 +206,9 @@ namespace V275_Testing.WindowViewModels
             LoginControl = new Core.RelayCommand(LoginControlAction, c => true);
             Logout = new Core.RelayCommand(LogoutAction, c => true);
 
-            StartJob = new Core.RelayCommand(StartJobAction, c => true);
-            PauseJob = new Core.RelayCommand(PauseJobAction, c => true);
-            StopJob = new Core.RelayCommand(StopJobAction, c => true);
+            StartRun = new Core.RelayCommand(StartRunAction, c => true);
+            PauseRun = new Core.RelayCommand(PauseRunAction, c => true);
+            StopRun = new Core.RelayCommand(StopRunAction, c => true);
 
             Print = new Core.RelayCommand(PrintAction, c => true);
 
@@ -584,64 +584,64 @@ namespace V275_Testing.WindowViewModels
             await V275.Print((string)parameter == "1");
         }
 
-        private void StartJobAction(object parameter)
+        private void StartRunAction(object parameter)
         {
-            if (CurrentJob != null)
+            if (CurrentRun != null)
             {
-                CurrentJob.JobStateChange -= CurrentJob_JobStateChange;
-                CurrentJob.Close();
-                CurrentJob = null;
+                CurrentRun.RunStateChange -= CurrentRun_RunStateChange;
+                CurrentRun.Close();
+                CurrentRun = null;
             }
 
-            Logger.Info("Starting Job: {stand}; {count}", Labels[0].GradingStandard, JobLoopCount);
+            Logger.Info("Starting Run: {stand}; {count}", Labels[0].GradingStandard, RunLoopCount);
 
-            CurrentJob = new JobController(Labels, JobLoopCount, StandardsDatabase, V275.Product.part, SelectedNode.cameraMAC).Init();
-            CurrentJob.JobStateChange += CurrentJob_JobStateChange;
+            CurrentRun = new RunController(Labels, RunLoopCount, StandardsDatabase, V275.Product.part, SelectedNode.cameraMAC).Init();
+            CurrentRun.RunStateChange += CurrentRun_RunStateChange;
 
-            if (CurrentJob == null)
+            if (CurrentRun == null)
                 return;
 
-            CurrentJob.StartAsync();
+            CurrentRun.StartAsync();
         }
-        private void PauseJobAction(object parameter)
+        private void PauseRunAction(object parameter)
         {
-            if (CurrentJob == null)
+            if (CurrentRun == null)
                 return;
 
-            if (CurrentJob.State != JobController.JobStates.PAUSED)
-                CurrentJob.Pause();
+            if (CurrentRun.State != RunController.RunStates.PAUSED)
+                CurrentRun.Pause();
             else
-                CurrentJob.Resume();
+                CurrentRun.Resume();
 
         }
-        private void StopJobAction(object parameter)
+        private void StopRunAction(object parameter)
         {
-            if (CurrentJob == null)
+            if (CurrentRun == null)
                 return;
 
-            CurrentJob.Stop();
+            CurrentRun.Stop();
         }
 
-        private void CurrentJob_JobStateChange(JobController.JobStates state)
+        private void CurrentRun_RunStateChange(RunController.RunStates state)
         {
-            JobState = state;
+            RunState = state;
             switch (state)
             {
-                case JobController.JobStates.RUNNING:
-                    IsJobRunning = true;
-                    IsJobPaused = false;
+                case RunController.RunStates.RUNNING:
+                    IsRunRunning = true;
+                    IsRunPaused = false;
                     break;
-                case JobController.JobStates.PAUSED:
-                    IsJobRunning = true;
-                    IsJobPaused = true;
+                case RunController.RunStates.PAUSED:
+                    IsRunRunning = true;
+                    IsRunPaused = true;
                     break;
-                case JobController.JobStates.STOPPED:
-                    IsJobRunning = false;
-                    IsJobPaused = false;
+                case RunController.RunStates.STOPPED:
+                    IsRunRunning = false;
+                    IsRunPaused = false;
                     break;
                 default:
-                    IsJobRunning = false;
-                    IsJobPaused = false;
+                    IsRunRunning = false;
+                    IsRunPaused = false;
                     break;
             }
         }

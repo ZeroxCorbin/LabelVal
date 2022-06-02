@@ -14,13 +14,13 @@ using V275_Testing.V275.Models;
 
 namespace V275_Testing.WindowViewModels
 {
-    public class JobLabelControlViewModel : Core.BaseViewModel
+    public class RunLabelControlViewModel : Core.BaseViewModel
     {
         private RunDatabase.Run run;
         public RunDatabase.Run Run { get => run; set => SetProperty(ref run, value); }
                 
-        private JobDatabase.Job job;
-        public JobDatabase.Job Job { get => job; set => SetProperty(ref job, value); }
+        private RunLedgerDatabase.RunEntry runEntry;
+        public RunLedgerDatabase.RunEntry RunEntry { get => runEntry; set => SetProperty(ref runEntry, value); }
         
         private ObservableCollection<SectorControlViewModel> repeatSectors = new ObservableCollection<SectorControlViewModel>();
         public ObservableCollection<SectorControlViewModel> RepeatSectors { get => repeatSectors; set => SetProperty(ref repeatSectors, value); }
@@ -32,11 +32,11 @@ namespace V275_Testing.WindowViewModels
         public ObservableCollection<SectorResultsViewModel> DiffSectors { get => diffSectors; set => SetProperty(ref diffSectors, value); }
 
         private IDialogCoordinator dialogCoordinator;
-        public JobLabelControlViewModel(IDialogCoordinator diag, RunDatabase.Run run, JobDatabase.Job job)
+        public RunLabelControlViewModel(IDialogCoordinator diag, RunDatabase.Run run, RunLedgerDatabase.RunEntry runEntry)
         {
             dialogCoordinator = diag;
             Run = run;
-            Job = job;
+            RunEntry = runEntry;
 
             GetLabelSectors();
             GetRepeatSectors();
@@ -54,7 +54,7 @@ namespace V275_Testing.WindowViewModels
                     bool isWrongStandard = false;
                     if (jSec.type == "verify1D" || jSec.type == "verify2D")
                         if (jSec.gradingStandard.enabled)
-                            isWrongStandard = !(Job.GradingStandard == $"{jSec.gradingStandard.standard} TABLE {jSec.gradingStandard.tableId}");
+                            isWrongStandard = !(RunEntry.GradingStandard == $"{jSec.gradingStandard.standard} TABLE {jSec.gradingStandard.tableId}");
                         else
                             isWrongStandard = true;
 
@@ -95,7 +95,7 @@ namespace V275_Testing.WindowViewModels
                     bool isWrongStandard = false;
                     if (jSec.type == "verify1D" || jSec.type == "verify2D")
                         if (jSec.gradingStandard.enabled)
-                            isWrongStandard = !(Job.GradingStandard == $"{jSec.gradingStandard.standard} TABLE {jSec.gradingStandard.tableId}");
+                            isWrongStandard = !(RunEntry.GradingStandard == $"{jSec.gradingStandard.standard} TABLE {jSec.gradingStandard.tableId}");
                         else
                             isWrongStandard = true;
 
@@ -194,7 +194,7 @@ namespace V275_Testing.WindowViewModels
             //RepeatImage = null;
 
             Run = null;
-            Job = null;
+            RunEntry = null;
 
             
             GC.Collect();

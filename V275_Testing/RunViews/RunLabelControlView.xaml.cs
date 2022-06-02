@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace V275_Testing.WindowViews
 {
     /// <summary>
-    /// Interaction logic for JobLabelControlView.xaml
+    /// Interaction logic for RunLabelControlView.xaml
     /// </summary>
-    public partial class JobLabelControlView : UserControl
+    public partial class RunLabelControlView : UserControl
     {
-        public JobLabelControlView()
+        public RunLabelControlView()
         {
             InitializeComponent();
         }

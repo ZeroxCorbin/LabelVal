@@ -33,9 +33,9 @@ namespace V275_Testing
         public static string StandardsRoot =>  $"{WorkingDir}\\Assets\\Standards";
         public static string StandardsDatabaseName => $"Standards{DatabaseExtension}";
 
-        public static string JobsRoot => $"{UserDataDirectory}\\Jobs";
-        public static string JobsDatabaseName => $"Jobs{DatabaseExtension}";
-        public static string RunsDatabaseName(long timeDate) => $"Job_Run_{timeDate}{DatabaseExtension}";
+        public static string RunsRoot => $"{UserDataDirectory}\\Runs";
+        public static string RunLedgerDatabaseName => $"RunLedger{DatabaseExtension}";
+        public static string RunDatabaseName(long timeDate) => $"Run_{timeDate}{DatabaseExtension}";
 
         public App()
         {
@@ -43,7 +43,7 @@ namespace V275_Testing
 
             // Targets where to log to: File and Console
             var logfile = new NLog.Targets.FileTarget("logfile") { FileName = "UserData/log.txt",
-                ArchiveFileName = "$UserData/log.${shortdate}.txt",
+                ArchiveFileName = "UserData/log.${shortdate}.txt",
             ArchiveAboveSize = 5242880,
             ArchiveEvery = NLog.Targets.FileArchivePeriod.Day,
             ArchiveNumbering = NLog.Targets.ArchiveNumberingMode.Rolling,
@@ -62,9 +62,9 @@ namespace V275_Testing
             {
                 _ = Directory.CreateDirectory(UserDataDirectory);
             }
-            if (!Directory.Exists(JobsRoot))
+            if (!Directory.Exists(RunsRoot))
             {
-                _ = Directory.CreateDirectory(JobsRoot);
+                _ = Directory.CreateDirectory(RunsRoot);
             }
 
             Settings = new Databases.SimpleDatabase().Open(Path.Combine(UserDataDirectory, SettingsDatabaseName));

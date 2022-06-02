@@ -187,15 +187,12 @@ namespace V275_Testing.WindowViewModels
         private void GetStored()
         {
             StoredSectors.Clear();
-            //StoredJob = String.Empty;
             IsLoad = false;
 
             StandardsDatabase.Row row = StandardsDatabase.GetRow(GradingStandard, LabelNumber);
 
             if (row == null)
                 return;
-
-            //StoredJob = row.Job;
 
             List<SectorControlViewModel> tempSectors = new List<SectorControlViewModel>();
             if (!string.IsNullOrEmpty(row.Report) && !string.IsNullOrEmpty(row.Job))

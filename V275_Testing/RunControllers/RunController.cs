@@ -12,11 +12,11 @@ using System.Windows.Media.Imaging;
 using V275_Testing.Databases;
 using V275_Testing.WindowViewModels;
 
-namespace V275_Testing.Job
+namespace V275_Testing.RunControllers
 {
-    public class JobController
+    public class RunController
     {
-        public enum JobStates
+        public enum RunStates
         {
             LOADED,
             RUNNING,
@@ -25,15 +25,15 @@ namespace V275_Testing.Job
             STOPPED
         }
 
-        public delegate void JobStateChangeDeletgate(JobStates state);
-        public event JobStateChangeDeletgate JobStateChange;
+        public delegate void RunStateChangeDeletgate(RunStates state);
+        public event RunStateChangeDeletgate RunStateChange;
 
-        public JobStates State { get; private set; }
-        private JobStates RequestedState { get; set; }
+        public RunStates State { get; private set; }
+        private RunStates RequestedState { get; set; }
         public long TimeDate { get; private set; }
-        public JobDatabase JobsDatabase { get; private set; }
+        public RunLedgerDatabase RunLedgerDatabase { get; private set; }
 
-        public JobDatabase.Job Job { get; private set; }
+        public RunLedgerDatabase.RunEntry RunEntry { get; private set; }
 
         public RunDatabase RunDatabase { get; private set; }
         public List<RunDatabase.Run> RunLabels { get; private set; } = new List<RunDatabase.Run>();
@@ -43,7 +43,7 @@ namespace V275_Testing.Job
         private string GradingStandard { get; }
         private StandardsDatabase StandardsDatabase { get; }
 
-        public JobController(ObservableCollection<LabelControlViewModel> labels, int loopCount, StandardsDatabase standardsDatabase, string productPart, string cameraMAC)
+        public RunController(ObservableCollection<LabelControlViewModel> labels, int loopCount, StandardsDatabase standardsDatabase, string productPart, string cameraMAC)
         {
             Labels = labels;
             LoopCount = loopCount;
@@ -51,33 +51,33 @@ namespace V275_Testing.Job
             GradingStandard = Labels[0].GradingStandard;
             TimeDate = DateTime.UtcNow.Ticks;
 
-            Job = new JobDatabase.Job() { GradingStandard = GradingStandard, TimeDate = TimeDate, Completed = 0, ProductPart = productPart, CameraMAC = cameraMAC };
+            RunEntry = new RunLedgerDatabase.RunEntry() { GradingStandard = GradingStandard, TimeDate = TimeDate, Completed = 0, ProductPart = productPart, CameraMAC = cameraMAC };
 
             //OpenDatabases();
             //CreateJobEntries();
             //InitializeRunDatabase();
         }
 
-        public JobController(long timeDate)
+        public RunController(long timeDate)
         {
             TimeDate = timeDate;
 
             OpenDatabases();
         }
 
-        public JobController Init()
+        public RunController Init()
         {
             if (!OpenDatabases())
                 return null;
 
-            if (!CreateJobEntries())
+            if (!CreateRunEntries())
                 return null;
 
             //if (!InitializeRunDatabase())
             //    return null;
 
-            State = JobStates.LOADED;
-            JobStateChange?.Invoke(State);
+            State = RunStates.LOADED;
+            RunStateChange?.Invoke(State);
 
             return this;
         }
@@ -86,8 +86,8 @@ namespace V275_Testing.Job
         {
             try
             {
-                JobsDatabase = new JobDatabase().Open($"{App.JobsRoot}\\{App.JobsDatabaseName}");
-                RunDatabase = new RunDatabase().Open($"{App.JobsRoot}\\{App.RunsDatabaseName(TimeDate)}");
+                RunLedgerDatabase = new RunLedgerDatabase().Open($"{App.RunsRoot}\\{App.RunLedgerDatabaseName}");
+                RunDatabase = new RunDatabase().Open($"{App.RunsRoot}\\{App.RunDatabaseName(TimeDate)}");
 
                 return true;
             }
@@ -98,12 +98,12 @@ namespace V275_Testing.Job
 
         }
 
-        private bool CreateJobEntries()
+        private bool CreateRunEntries()
         {
             try
             {
-                JobsDatabase.InsertOrReplace(Job);
-                RunDatabase.InsertOrReplace(Job);
+                RunLedgerDatabase.InsertOrReplace(RunEntry);
+                RunDatabase.InsertOrReplace(RunEntry);
 
                 return true;
             }
@@ -116,7 +116,7 @@ namespace V275_Testing.Job
 
         public void StartAsync()
         {
-            RequestedState = JobStates.RUNNING;
+            RequestedState = RunStates.RUNNING;
             Task.Run(() => Start());
         }
 
@@ -128,22 +128,22 @@ namespace V275_Testing.Job
                     if (label.StoredSectors.Count == 0)
                         continue;
 
-                    while (RequestedState == JobStates.PAUSED)
+                    while (RequestedState == RunStates.PAUSED)
                     {
-                        if (State == JobStates.RUNNING)
-                            JobStateChange?.Invoke(State = JobStates.PAUSED);
+                        if (State == RunStates.RUNNING)
+                            RunStateChange?.Invoke(State = RunStates.PAUSED);
 
                         Thread.Sleep(10);
                     }
 
-                    if (RequestedState == JobStates.STOPPED)
+                    if (RequestedState == RunStates.STOPPED)
                     {
-                        JobStateChange?.Invoke(State = JobStates.STOPPED);
+                        RunStateChange?.Invoke(State = RunStates.STOPPED);
                         return false;
                     }
 
-                    if (RequestedState == JobStates.RUNNING && State != JobStates.RUNNING)
-                        JobStateChange?.Invoke(State = JobStates.RUNNING);
+                    if (RequestedState == RunStates.RUNNING && State != RunStates.RUNNING)
+                        RunStateChange?.Invoke(State = RunStates.RUNNING);
 
                     label.PrintAction(null);
 
@@ -166,9 +166,9 @@ namespace V275_Testing.Job
 
                     while (label.IsWorking)
                     {
-                        if (RequestedState == JobStates.STOPPED)
+                        if (RequestedState == RunStates.STOPPED)
                         {
-                            JobStateChange?.Invoke(State = JobStates.STOPPED);
+                            RunStateChange?.Invoke(State = RunStates.STOPPED);
                             return false;
                         }
                     };
@@ -194,27 +194,27 @@ namespace V275_Testing.Job
                     //}
                 }
 
-            JobStateChange?.Invoke(State = JobStates.COMPLETE);
+            RunStateChange?.Invoke(State = RunStates.COMPLETE);
 
             RunDatabase.Close();
-            JobsDatabase.Close();
+            RunLedgerDatabase.Close();
 
             return true;
         }
 
         public void Pause()
         {
-            RequestedState = JobStates.PAUSED;
+            RequestedState = RunStates.PAUSED;
         }
 
         public void Resume()
         {
-            RequestedState = JobStates.RUNNING;
+            RequestedState = RunStates.RUNNING;
         }
 
         public void Stop()
         {
-            RequestedState = JobStates.STOPPED;
+            RequestedState = RunStates.STOPPED;
         }
 
         public void Close()
@@ -222,7 +222,7 @@ namespace V275_Testing.Job
             Stop();
 
             RunDatabase.Close();
-            JobsDatabase.Close();
+            RunLedgerDatabase.Close();
         }
 
         private string ImageUID(byte[] image)

@@ -56,7 +56,7 @@ namespace V275_Testing.Databases
                 }
 
                 Connection.CreateTable<Run>();
-                Connection.CreateTable<JobDatabase.Job>();
+                Connection.CreateTable<RunLedgerDatabase.RunEntry>();
 
                 return this;
             }
@@ -74,11 +74,11 @@ namespace V275_Testing.Databases
         public List<Run> SelectAllRuns() => Connection.CreateCommand("select * from Run").ExecuteQuery<Run>();
         public int DeleteRun(long timeDate) => Connection.Table<Run>().Delete(v => v.TimeDate == timeDate);
 
-        public int InsertOrReplace(JobDatabase.Job job) => Connection.InsertOrReplace(job);
-        public bool ExistsJob(long timeDate) => Connection.Table<JobDatabase.Job>().Where(v => v.TimeDate == timeDate).Count() > 0;
-        public JobDatabase.Job SelectJob(long timeDate) => Connection.Table<JobDatabase.Job>().Where(v => v.TimeDate == timeDate).FirstOrDefault();
-        public List<JobDatabase.Job> SelectAllJobs() => Connection.CreateCommand("select * from Job").ExecuteQuery<JobDatabase.Job>();
-        public int DeleteJob(long timeDate) => Connection.Table<JobDatabase.Job>().Delete(v => v.TimeDate == timeDate);
+        public int InsertOrReplace(RunLedgerDatabase.RunEntry entry) => Connection.InsertOrReplace(entry);
+        public bool ExistsRunEntry(long timeDate) => Connection.Table<RunLedgerDatabase.RunEntry>().Where(v => v.TimeDate == timeDate).Count() > 0;
+        public RunLedgerDatabase.RunEntry SelectRunEntry(long timeDate) => Connection.Table<RunLedgerDatabase.RunEntry>().Where(v => v.TimeDate == timeDate).FirstOrDefault();
+        public List<RunLedgerDatabase.RunEntry> SelectAllRunEntrys() => Connection.CreateCommand("select * from RunEntry").ExecuteQuery<RunLedgerDatabase.RunEntry>();
+        public int DeleteRunEntry(long timeDate) => Connection.Table<RunLedgerDatabase.RunEntry>().Delete(v => v.TimeDate == timeDate);
 
         public void Dispose()
         {

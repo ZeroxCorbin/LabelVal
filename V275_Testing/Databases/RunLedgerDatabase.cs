@@ -12,9 +12,9 @@ using System.Text;
 
 namespace V275_Testing.Databases
 {
-    public class JobDatabase : IDisposable
+    public class RunLedgerDatabase : IDisposable
     {
-        public class Job : Core.BaseViewModel
+        public class RunEntry : Core.BaseViewModel
         {
 
             private long timeDate;
@@ -40,7 +40,7 @@ namespace V275_Testing.Databases
 
         private SQLiteConnection Connection { get; set; } = null;
 
-        public JobDatabase Open(string dbFilePath)
+        public RunLedgerDatabase Open(string dbFilePath)
         {
             if (string.IsNullOrEmpty(dbFilePath))
                 return null;
@@ -57,7 +57,7 @@ namespace V275_Testing.Databases
                     return null;
                 }
 
-                Connection.CreateTable<Job>();
+                Connection.CreateTable<RunEntry>();
 
                 return this;
             }
@@ -67,17 +67,14 @@ namespace V275_Testing.Databases
                 return null;
             }
         }
+
+        public int InsertOrReplace(RunEntry entry) => Connection.InsertOrReplace(entry);
+        public bool ExistsRunEntry(long timeDate) => Connection.Table<RunEntry>().Where(v => v.TimeDate == timeDate).Count() > 0;
+        public RunEntry SelectRunEntry(long timeDate) => Connection.Table<RunEntry>().Where(v => v.TimeDate == timeDate).FirstOrDefault();
+        public List<RunEntry> SelectAllRunEntrys() => Connection.CreateCommand("select * from RunEntry").ExecuteQuery<RunEntry>();
+        public int DeleteRunEntry(long timeDate) => Connection.Table<RunEntry>().Delete(v => v.TimeDate == timeDate);
+
         public void Close() => Connection?.Dispose();
-
-        public int InsertOrReplace(Job job) => Connection.InsertOrReplace(job);
-        public bool ExistsJob(long timeDate)
-        {
-            return Connection.Table<Job>().Where(v => v.TimeDate == timeDate).Count() > 0;
-        }
-        public Job SelectJob(long timeDate) => Connection.Table<Job>().Where(v => v.TimeDate == timeDate).FirstOrDefault();
-        public List<Job> SelectAllJobs() => Connection.CreateCommand("select * from Job").ExecuteQuery<Job>();
-        public int DeleteJob(long timeDate) => Connection.Table<Job>().Delete(v => v.TimeDate == timeDate);
-
         public void Dispose()
         {
             Connection?.Close();

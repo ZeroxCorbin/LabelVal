@@ -21,7 +21,7 @@ namespace V275_Testing.WindowViews
     /// </summary>
     public partial class MainWindowView : MetroWindow
     {
-JobRunView win;
+RunView win;
 
         public MainWindowView()
         {
@@ -34,14 +34,14 @@ JobRunView win;
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            win = new JobRunView();
+            win = new RunView();
             win.Show();
             win.Closed += Win_Closed;
         }
 
         private void Win_Closed(object sender, EventArgs e)
         {
-            ((JobRunView)sender).Closed-= Win_Closed;
+            ((RunView)sender).Closed-= Win_Closed;
 
             GC.Collect();
         }

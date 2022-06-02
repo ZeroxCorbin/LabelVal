@@ -17,32 +17,32 @@ using V275_Testing.WindowViewModels;
 namespace V275_Testing.WindowViews
 {
     /// <summary>
-    /// Interaction logic for JobRunView.xaml
+    /// Interaction logic for RunRunView.xaml
     /// </summary>
-    public partial class JobRunView : MetroWindow
+    public partial class RunView : MetroWindow
     {
-        public JobRunView()
+        public RunView()
         {
             InitializeComponent();
 
             
-            JobList.IsOpen = true;
+            RunList.IsOpen = true;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            JobList.IsOpen = true;
+            RunList.IsOpen = true;
         }
 
-        private void JobList_LostMouseCapture(object sender, MouseEventArgs e)
+        private void RunList_LostMouseCapture(object sender, MouseEventArgs e)
         {
-            JobList.IsOpen = false;
+            RunList.IsOpen = false;
         }
 
-        private void JobList_LostFocus(object sender, RoutedEventArgs e)
+        private void RunList_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (JobList.IsShown)
-                JobList.IsOpen = false;
+            if (RunList.IsShown)
+                RunList.IsOpen = false;
         }
 
         private void BtnSort_Click(object sender, RoutedEventArgs e)
