@@ -147,8 +147,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Controllers\FolderWatcher.cs" />
-    <Compile Include="Controllers\PNGProcess.cs" />
     <Compile Include="Converters\BytesToImageConverter.cs" />
     <Compile Include="Converters\FloatStringTrimConverter.cs" />
     <Compile Include="Converters\StringToUpperSpacedConverter.cs" />

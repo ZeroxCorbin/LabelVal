@@ -12,15 +12,15 @@ namespace V275_Testing.V275
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        V275_API_Connection Connection { get; set; } = new V275_API_Connection();
-        public V275_API_URLs URLs { get; set; } = new V275_API_URLs();
+        private V275_API_Connection Connection { get; set; } = new V275_API_Connection();
+        public V275_API_URLs URLs { get; private set; } = new V275_API_URLs();
 
         //public bool IsLoggedIn { get; set; }
         //public bool IsMonitor { get; set; }
         public string Token { get; set; }
         public string Host { get => URLs.Host; set => URLs.Host = value; }
-        public string SystemPort { get => URLs.SystemPort; set => URLs.SystemPort = value; }
-        public string NodeNumber { get => URLs.NodeNumber; set => URLs.NodeNumber = value; }
+        public uint SystemPort { get => URLs.SystemPort; set => URLs.SystemPort = value; }
+        public uint NodeNumber { get => URLs.NodeNumber; set => URLs.NodeNumber = value; }
 
         //public bool IsException => Connection.IsException ? true : string.IsNullOrEmpty(Status) ? true : false;
         //public string Exception => Connection.IsException ? Connection.Exception.Message : Status;
@@ -99,7 +99,6 @@ namespace V275_Testing.V275
 
             return CheckResults(Token, true); ;
         }
-
         public async Task<bool> Logout()
         {
             Logger.Info("LOGOUT: {url}", URLs.Logout());
@@ -145,7 +144,6 @@ namespace V275_Testing.V275
 
             return res;
         }
-
         public async Task<bool> GetReport()
         {
             Logger.Info("GET: {url}", URLs.Report());
@@ -158,7 +156,6 @@ namespace V275_Testing.V275
 
             return res;
         }
-
         public async Task<bool> GetRepeatsAvailable()
         {
             Logger.Info("GET: {url}", URLs.Available());
@@ -171,7 +168,6 @@ namespace V275_Testing.V275
 
             return res;
         }
-
         public async Task<bool> GetRepeatsImage(int repeat)
         {
             Logger.Info("GET: {url}", URLs.RepeatImage(repeat));
@@ -184,8 +180,6 @@ namespace V275_Testing.V275
 
             return res;
         }
-
-
         public async Task<bool> GetCameraConfig()
         {
             Logger.Info("GET: {url}", URLs.Configuration_Camera());
@@ -207,7 +201,6 @@ namespace V275_Testing.V275
 
             return CheckResults("", true);
         }
-
         public async Task<bool> AddSector(string sectorName, string json)
         {
             Logger.Info("POST: {url}", URLs.AddSector(sectorName));
@@ -245,6 +238,7 @@ namespace V275_Testing.V275
 
             return res;
         }
+
         public async Task<bool> Print(bool start)
         {
             Logger.Info("PUT: {url}", URLs.Print());

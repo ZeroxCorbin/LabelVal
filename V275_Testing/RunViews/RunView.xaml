@@ -26,7 +26,10 @@
 
         <CollectionViewSource x:Key="GroupedDataList" Source="{Binding RunEntries}" IsLiveGroupingRequested="True" IsLiveSortingRequested="True">
             <CollectionViewSource.SortDescriptions>
+                <componentmodel:SortDescription PropertyName="ProductPart" Direction="Descending"/>
                 <componentmodel:SortDescription PropertyName="TimeDate" Direction="Descending"/>
+                <componentmodel:SortDescription PropertyName="GradingStandard" Direction="Ascending"/>
+                <componentmodel:SortDescription PropertyName="CameraMAC" Direction="Ascending"/>
             </CollectionViewSource.SortDescriptions>
             <CollectionViewSource.GroupDescriptions>
                 <PropertyGroupDescription PropertyName="ProductPart" />

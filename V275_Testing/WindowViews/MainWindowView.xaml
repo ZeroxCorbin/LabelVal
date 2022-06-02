@@ -113,9 +113,9 @@
                             <DataTemplate>
 
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding Path=enumeration,StringFormat='Slot: {0} Model: '}" />
-                                    <TextBlock Text="{Binding Path=printerModel}" />
-                                    <TextBlock Text="{Binding Path=cameraMAC,StringFormat=' ({0})'}" />
+                                    <TextBlock Text="{Binding Path=enumeration, Mode=OneTime, StringFormat='Slot: {0} Model: '}"/>
+                                    <TextBlock Text="{Binding Path=printerModel, Mode=OneTime}" />
+                                    <TextBlock Text="{Binding Path=cameraMAC, Mode=OneTime, StringFormat=' ({0})'}" />
                                 </StackPanel>
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
@@ -187,7 +187,7 @@
                         </Label.Style>
                     </Label>
 
-                    <Label Content="{Binding V275_RunName}"/>
+                    <Label Content="{Binding V275_JobName}"/>
                     <Label Content="State:"/>
                     <Label Content="{Binding V275_State}">
                         <Label.Style>

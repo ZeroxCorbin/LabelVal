@@ -1,5 +1,4 @@
-﻿using V275_Testing.Controllers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -34,10 +33,13 @@ namespace V275_Testing.WindowViewModels
         private V275_API_WebSocketEvents SysWebSocket { get; } = new V275_API_WebSocketEvents();
 
         public string V275_Host { get => V275.Host = App.Settings.GetValue("V275_Host", "127.0.0.1"); set { App.Settings.SetValue("V275_Host", value); V275.Host = value; } }
-        public string V275_SystemPort { get => V275.SystemPort = App.Settings.GetValue("V275_SystemPort", "8080"); set { App.Settings.SetValue("V275_SystemPort", value); ; V275.SystemPort = value; } }
-        public string V275_NodeNumber { get => V275.NodeNumber = App.Settings.GetValue("V275_NodeNumber", "1"); set { App.Settings.SetValue("V275_NodeNumber", value); V275.NodeNumber = value; } }
+        public uint V275_SystemPort { get => V275.SystemPort = App.Settings.GetValue<uint>("V275_SystemPort", 8080); set { App.Settings.SetValue("V275_SystemPort", value); ; V275.SystemPort = value; } }
+        public uint V275_NodeNumber { get => V275.NodeNumber = App.Settings.GetValue<uint>("V275_NodeNumber", 1); set { App.Settings.SetValue("V275_NodeNumber", value); V275.NodeNumber = value; } }
 
-        public ObservableCollection<V275_Devices.Node> Nodes { get; } = new ObservableCollection<V275_Devices.Node>();
+        private ObservableCollection<V275_Devices.Node> nodes = new ObservableCollection<V275_Devices.Node>();
+        public ObservableCollection<V275_Devices.Node> Nodes { get => nodes; set => SetProperty(ref nodes, value); }
+
+        private V275_Devices.Node selectedNode;
         public V275_Devices.Node SelectedNode
         {
             get => selectedNode;
@@ -46,12 +48,11 @@ namespace V275_Testing.WindowViewModels
                 SetProperty(ref selectedNode, value);
                 if (value != null)
                 {
-                    V275_NodeNumber = value.enumeration.ToString();
+                    V275_NodeNumber = (uint)value.enumeration;
                     IsDeviceSelected = true;
                 }
             }
         }
-        private V275_Devices.Node selectedNode;
 
         private ObservableCollection<LabelControlViewModel> labels = new ObservableCollection<LabelControlViewModel>();
         public ObservableCollection<LabelControlViewModel> Labels { get => labels; set => SetProperty(ref labels, value); }
@@ -310,7 +311,7 @@ namespace V275_Testing.WindowViewModels
 
                     Nodes.Add(node);
 
-                    if (node.enumeration.ToString() == V275_NodeNumber)
+                    if (node.enumeration == V275_NodeNumber)
                         SelectedNode = node;
                 }
 
@@ -330,7 +331,7 @@ namespace V275_Testing.WindowViewModels
                 IsGetDevices = false;
             }
 
-            
+
         }
 
         private void SetupGradingStandards()
@@ -530,7 +531,7 @@ namespace V275_Testing.WindowViewModels
                 LabelCount = ev.data.repeat;
                 return;
             }
-            
+
             if (IsLoggedIn_Control)
                 PrintAction("1");
         }

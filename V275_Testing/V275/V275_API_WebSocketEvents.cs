@@ -65,6 +65,12 @@ namespace V275_Testing.V275
                 return false;
                 // normal upon task/token cancellation, disregard
             }
+            catch (Exception e)
+            {
+                Logger.Error(e, "WS ConnectAsync Exception");
+
+                return false;
+            }
         }
 
         private void V275_API_WebSocketEvents_MessageRecieved(string message)
@@ -140,7 +146,7 @@ namespace V275_Testing.V275
             }
             catch(Exception ex)
             {
-                Logger.Error(ex, "WS Exception: ");
+                Logger.Error(ex, "WS Close Output Async Exception");
             }
             // whether we closed the socket or timed out, we cancel the token causing RecieveAsync to abort the socket
             SocketLoopTokenSource.Cancel();
@@ -186,7 +192,7 @@ namespace V275_Testing.V275
             }
             catch (Exception ex)
             {
-                //Program.ReportException(ex);
+                Logger.Error(ex, "WS Processing Loop Exception");
             }
             finally
             {

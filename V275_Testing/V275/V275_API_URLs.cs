@@ -9,47 +9,54 @@ namespace V275_Testing.V275
     public class V275_API_URLs
     {
         public string Host { get; set; }
-        public string SystemPort { get; set; }
-        public string NodeNumber { get; set; }
-        private string NodePort => $"808{NodeNumber}";
+        public uint SystemPort { get; set; }
+        public uint NodeNumber { get; set; }
+        private string NodePort => $"{SystemPort + NodeNumber}";
 
-        //public void Configure(string host, string systemPort, string nodeNumber = "1") { Host = host; SystemPort = systemPort; NodeNumber = nodeNumber; }
-
-
-        public string Login(bool monitor = false, bool temporary = false) => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/security/login?monitor={(monitor ? "1" : "0")}&temporary={(temporary ? "1" : "0")}";
-        public string Logout() => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/security/logout";
-
-        public string Devices() => $"http://{Host}:{SystemPort}/api/printinspection/devices";
-public string Product() => $"http://{Host}:{SystemPort}/api/printinspection/product";
-
+        /// <summary>
+        /// Events
+        /// </summary>
         public string WS_NodeEvents => $"ws://{Host}:{NodePort}/api/printinspection/{NodeNumber}/inspection/events";
         public string WS_SystemEvents => $"ws://{Host}:{SystemPort}/api/printinspection/event";
 
-        public string GradingStandards() => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/gradingstandards";
+        /// <summary>
+        /// System API
+        /// </summary>
+        private string SystemBase => $"http://{Host}:{SystemPort}/api/printinspection";
+        public string Devices() => $"{SystemBase}/devices";
+        public string Product() => $"{SystemBase}/product";
 
-        public string Job() => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/inspection/job";
-        public string DeleteSector(string sectorName) => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/inspection/job/sectors/{sectorName}";
-        public string AddSector(string sectorName) => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/inspection/job/sectors/{sectorName}";
+        /// <summary>
+        /// Node API
+        /// </summary>
+        private string NodeBase => $"http://{Host}:{NodePort}/api/printinspection";
+        public string Login(bool monitor = false, bool temporary = false) => $"{NodeBase}/{NodeNumber}/security/login?monitor={(monitor ? "1" : "0")}&temporary={(temporary ? "1" : "0")}";
+        public string Logout() => $"{NodeBase}/{NodeNumber}/security/logout";
 
-        public string Print() => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/inspection/print";
+        public string GradingStandards() => $"{NodeBase}/{NodeNumber}/gradingstandards";
+
+        public string Job() => $"{NodeBase}/{NodeNumber}/inspection/job";
+        public string DeleteSector(string sectorName) => $"{NodeBase}/{NodeNumber}/inspection/job/sectors/{sectorName}";
+        public string AddSector(string sectorName) => $"{NodeBase}/{NodeNumber}/inspection/job/sectors/{sectorName}";
+
+        public string Print() => $"{NodeBase}/{NodeNumber}/inspection/print";
         public string Print_Body(bool enabled) => $"{{\"enabled\":{(enabled ? "true" : "false")}}}";
 
-        public string History(string repeatNumber) => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/inspection/setup/image?source=history&repeat={repeatNumber}";
-        public string History() => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/inspection/setup/image/history";
+        public string History(string repeatNumber) => $"{NodeBase}/{NodeNumber}/inspection/setup/image?source=history&repeat={repeatNumber}";
+        public string History() => $"{NodeBase}/{NodeNumber}/inspection/setup/image/history";
 
-        public string Available () => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/inspection/setup/image/available";
+        public string Available() => $"{NodeBase}/{NodeNumber}/inspection/setup/image/available";
 
-        public string Inspect() => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/inspection/setup/inspect";
-        public string Report() => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/inspection/setup/report";
-        public string Detect() => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/inspection/setup/detect";
+        public string Inspect() => $"{NodeBase}/{NodeNumber}/inspection/setup/inspect";
+        public string Report() => $"{NodeBase}/{NodeNumber}/inspection/setup/report";
+        public string Detect() => $"{NodeBase}/{NodeNumber}/inspection/setup/detect";
 
-        public string RepeatImage(int repeatNumber) => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/inspection/repeat/images/{repeatNumber}?scale=1.0";
+        public string RepeatImage(int repeatNumber) => $"{NodeBase}/{NodeNumber}/inspection/repeat/images/{repeatNumber}?scale=1.0";
 
-        public string VerifySymbologies() => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/inspection/verify/symbologies";
+        public string VerifySymbologies() => $"{NodeBase}/{NodeNumber}/inspection/verify/symbologies";
 
-        public string Configuration_Camera() => $"http://{Host}:{NodePort}/api/printinspection/{NodeNumber}/configuration/camera";
+        public string Configuration_Camera() => $"{NodeBase}/{NodeNumber}/configuration/camera";
 
-        public string CameraCommand(string nodeNumber) => "";
 
     }
 }
