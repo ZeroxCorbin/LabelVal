@@ -13,26 +13,24 @@ namespace V275_Testing.Databases
             [PrimaryKey]
             public long TimeDate { get => this.timeDate; set => SetProperty(ref timeDate, value); }
 
-            private string job;
-            public string Job { get => job; set => SetProperty(ref job, value); }
-
-            private string storedReport;
-            public string StoredReport { get => storedReport; set => SetProperty(ref storedReport, value); }
-
-            private int labelNumber;
-            public int LabelNumber { get => labelNumber; set => SetProperty(ref labelNumber, value); }
+            private string labelImageUID;
+            public string LabelImageUID { get => labelImageUID; set => SetProperty(ref labelImageUID, value); }
 
             private byte[] labelImage;
             public byte[] LabelImage { get => labelImage; set => SetProperty(ref labelImage, value); }
 
-            private string labelImageUID;
-            public string LabelImageUID { get => labelImageUID; set => SetProperty(ref labelImageUID, value); }
+            private string labelTemplate;
+            public string LabelTemplate { get => labelTemplate; set => SetProperty(ref labelTemplate, value); }
+
+            private string labelReport;
+            public string LabelReport { get => labelReport; set => SetProperty(ref labelReport, value); }
+
 
             private byte[] repeatImage;
             public byte[] RepeatImage { get => repeatImage; set => SetProperty(ref repeatImage, value); }
 
-            private string report;
-            public string Report { get => report; set => SetProperty(ref report, value); }
+            private string repeatReport;
+            public string RepeatReport { get => repeatReport; set => SetProperty(ref repeatReport, value); }
 
         }
 

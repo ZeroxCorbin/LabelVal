@@ -23,17 +23,18 @@ namespace V275_Testing.V275
         public delegate void MessageRecievedDelegate(string message);
         public event MessageRecievedDelegate MessageRecieved;
 
-        public delegate void HeartbeatDelegate(V275_Events_System ev);
-        public event HeartbeatDelegate Heartbeat;
+        public delegate void InspectionEventDelegate(V275_Events_System ev);
 
-        public delegate void SetupCaptureDelegate(V275_Events_System ev);
-        public event SetupCaptureDelegate SetupCapture;
+        public event InspectionEventDelegate Heartbeat;
+        public event InspectionEventDelegate LabelEnd;
+        public event InspectionEventDelegate SetupCapture;
+        public event InspectionEventDelegate SessionStateChange;
+        public event InspectionEventDelegate StateChange;
 
         public delegate void SetupDetectDelegate(V275_Events_System ev, bool end);
         public event SetupDetectDelegate SetupDetect;
 
-        public delegate void SessionStateChangeDelegate(V275_Events_System ev);
-        public event SessionStateChangeDelegate SessionStateChange;
+        
 
         public async Task<bool> StartAsync(string wsUri)
             => await StartAsync(new Uri(wsUri));
@@ -88,8 +89,7 @@ namespace V275_Testing.V275
             //            sw.WriteLine(message);
 
             //else if (ev.name != "heartbeat")
-            //    using (StreamWriter sw = File.AppendText("capture_node.txt"))
-            //        sw.WriteLine(message);
+
 
             if (ev.name == "heartbeat")
             {
@@ -97,9 +97,12 @@ namespace V275_Testing.V275
                 return;
             }
 
+            using (StreamWriter sw = File.AppendText("capture_node.txt"))
+                sw.WriteLine(message);
+
             if (ev.name == "setupCapture")
             {
-                Logger.Debug("WSE: {node}; {name}", ev.source, ev.name);
+                Logger.Debug("WSE: setupCapture {node}; {name}", ev.source, ev.name);
                 SetupCapture?.Invoke(ev);
                 return;
             }
@@ -108,20 +111,34 @@ namespace V275_Testing.V275
             {
                 if (ev.name.EndsWith("End"))
                 {
-                    Logger.Debug("WSE: {node}; {name}", ev.source, ev.name);
+                    Logger.Debug("WSE: setupDetect {node}; {name}", ev.source, ev.name);
 
                     SetupDetect?.Invoke(ev, true);
                     return;
                 }
-                Logger.Debug("WSE: {node}; {name}", ev.source, ev.name);
+                Logger.Debug("WSE: setupDetect {node}; {name}", ev.source, ev.name);
                 SetupDetect?.Invoke(ev, false);
+                return;
+            }
+
+            if (ev.name == "stateChange")
+            {
+                Logger.Debug("WSE: stateChange {node}; {name}", ev.source, ev.name);
+                StateChange?.Invoke(ev);
                 return;
             }
 
             if (ev.name == "sessionStateChange")
             {
-                Logger.Debug("WSE: {node}; {name}", ev.source, ev.name);
+                Logger.Debug("WSE: sessionStateChange {node}; {name}", ev.source, ev.name);
                 SessionStateChange?.Invoke(ev);
+                return;
+            }
+
+            if (ev.name == "labelEnd")
+            {
+                Logger.Debug("WSE: labelEnd {node}; {name}", ev.source, ev.name);
+                LabelEnd?.Invoke(ev);
                 return;
             }
         }
@@ -144,7 +161,7 @@ namespace V275_Testing.V275
             {
                 // normal upon task/token cancellation, disregard
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Logger.Error(ex, "WS Close Output Async Exception");
             }

@@ -49,8 +49,8 @@ namespace V275_Testing.RunViewModels
             LabelSectors.Clear();
 
             List<SectorControlViewModel> tempSectors = new List<SectorControlViewModel>();
-            if (!string.IsNullOrEmpty(Run.StoredReport) && !string.IsNullOrEmpty(Run.Job))
-                foreach (var jSec in JsonConvert.DeserializeObject<V275_Job>(Run.Job).sectors)
+            if (!string.IsNullOrEmpty(Run.LabelReport) && !string.IsNullOrEmpty(Run.LabelTemplate))
+                foreach (var jSec in JsonConvert.DeserializeObject<V275_Job>(Run.LabelTemplate).sectors)
                 {
                     bool isWrongStandard = false;
                     if (jSec.type == "verify1D" || jSec.type == "verify2D")
@@ -59,7 +59,7 @@ namespace V275_Testing.RunViewModels
                         else
                             isWrongStandard = true;
 
-                    foreach (JObject rSec in JsonConvert.DeserializeObject<V275_Report>(Run.StoredReport).inspectLabel.inspectSector)
+                    foreach (JObject rSec in JsonConvert.DeserializeObject<V275_Report>(Run.LabelReport).inspectLabel.inspectSector)
                     {
                         if (jSec.name == rSec["name"].ToString())
                         {
@@ -90,8 +90,8 @@ namespace V275_Testing.RunViewModels
             RepeatSectors.Clear();
 
             List<SectorControlViewModel> tempSectors = new List<SectorControlViewModel>();
-            if (!string.IsNullOrEmpty(Run.Report) && !string.IsNullOrEmpty(Run.Job))
-                foreach (var jSec in JsonConvert.DeserializeObject<V275_Job>(Run.Job).sectors)
+            if (!string.IsNullOrEmpty(Run.LabelReport) && !string.IsNullOrEmpty(Run.LabelTemplate))
+                foreach (var jSec in JsonConvert.DeserializeObject<V275_Job>(Run.LabelTemplate).sectors)
                 {
                     bool isWrongStandard = false;
                     if (jSec.type == "verify1D" || jSec.type == "verify2D")
@@ -100,7 +100,7 @@ namespace V275_Testing.RunViewModels
                         else
                             isWrongStandard = true;
 
-                    foreach (JObject rSec in JsonConvert.DeserializeObject<V275_Report>(Run.Report).inspectLabel.inspectSector)
+                    foreach (JObject rSec in JsonConvert.DeserializeObject<V275_Report>(Run.LabelReport).inspectLabel.inspectSector)
                     {
                         if (jSec.name == rSec["name"].ToString())
                         {

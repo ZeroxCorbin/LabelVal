@@ -7,15 +7,19 @@
             xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
             xmlns:local="clr-namespace:V275_Testing.WindowViews"
             xmlns:ViewModels="clr-namespace:V275_Testing.WindowViewModels"
+            xmlns:Converters="clr-namespace:V275_Testing.Converters"
             xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
             Dialog:DialogParticipation.Register="{Binding}"
             d:DataContext="{d:DesignInstance Type=ViewModels:LabelControlViewModel}"
             mc:Ignorable="d" 
             d:DesignHeight="450" d:DesignWidth="800">
+    
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="booltovis"/>
+        <Converters:BytesToImageConverter x:Key="bytesToImage"/>
+        <Converters:ShortenUIDConverter x:Key="shortenUID"/>
     </UserControl.Resources>
-    
+
     <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="2" Margin="5">
 
         <Grid>
@@ -35,41 +39,29 @@
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition />
+                </Grid.RowDefinitions>
 
-                <Grid Grid.Column="0" Width="40">
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
+                <StackPanel Grid.RowSpan="2">
+                    <TextBlock Text="Label UID" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding LabelImageUID, Converter={StaticResource shortenUID}}" ToolTip="{Binding LabelImageUID}"/>
+                </StackPanel>
 
-                    <TextBlock Text="Label#" HorizontalAlignment="Center"/>
+                <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
 
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="1">
-                        <Label Content="{Binding LabelNumber}" FontSize="22"/>
-                    </StackPanel>
-                </Grid>
-
-                <Grid Grid.Column="1" >
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
-
-                    <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center">
-
-                        <mah:NumericUpDown Value="{Binding PrintCount}" Minimum="1" Maximum="1000" Interval="1" Margin="2"
+                    <mah:NumericUpDown Value="{Binding PrintCount}" Minimum="1" Maximum="100" Interval="1" Margin="2"
                                            IsEnabled="{Binding IsNotLoggedIn_Control}"/>
 
-                        <Button Content="Print" Command="{Binding PrintCommand}" Margin="2"/>
+                    <Button Content="Print" Command="{Binding PrintCommand}" Margin="2"/>
 
-                        <mah:ProgressRing IsActive="{Binding IsWorking}" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" Height="30" Width="30"/>
+                    <mah:ProgressRing IsActive="{Binding IsWorking}" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" Height="30" Width="30"/>
 
-                    </StackPanel>
-                </Grid>
-
+                </StackPanel>
             </Grid>
 
-            <Image Grid.Row="1" Grid.Column="0" Source="{Binding LabelImage}" Margin="3" x:Name="image" MaxHeight="400" Width="400"/>
+            <Image Grid.Row="1" Grid.Column="0" Source="{Binding LabelImageBytes, Mode=OneTime, Converter={StaticResource bytesToImage}}" Margin="3" x:Name="image" MaxHeight="400" Width="400"/>
 
             <Grid Grid.Row="0" Grid.Column="1">
                 <Grid.RowDefinitions>
@@ -118,7 +110,7 @@
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                
+
                 <TextBlock Text="Repeat Sectors" HorizontalAlignment="Center"/>
 
                 <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center">
@@ -150,11 +142,6 @@
 
             <ScrollViewer Grid.Row="1" Grid.Column="2" Width="200" Margin="3" MaxHeight="400" mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True">
                 <ItemsControl ItemsSource="{Binding ReadSectors}">
-                    <!--<ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel IsItemsHost="True"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>-->
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <local:SectorControlView />

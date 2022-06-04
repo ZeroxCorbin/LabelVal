@@ -7,7 +7,7 @@ using System.Windows.Data;
 
 namespace V275_Testing.Converters
 {
-    public class UNIXToTimeDateConverter : IValueConverter
+    internal class UNIXToTimeDateConverter : IValueConverter
     {
 
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

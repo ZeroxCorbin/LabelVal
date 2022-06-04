@@ -29,6 +29,9 @@ namespace V275_Testing.V275.Models
             public int repeatHeight { get; set; }
             public int sectorCount { get; set; }
 
+            public string fromState { get; set; }
+            public string toState { get; set; }
+
             public Detection[] detections { get; set; }
         }
 
@@ -46,5 +49,21 @@ namespace V275_Testing.V275.Models
                 public int height { get; set; }
             }
         }
+
+
+        public class Rootobject
+        {
+            public Event _event { get; set; }
+        }
+
+        public class Event
+        {
+            public string time { get; set; }
+            public string source { get; set; }
+            public int item { get; set; }
+            public string name { get; set; }
+            public Data data { get; set; }
+        }
+
     }
 }

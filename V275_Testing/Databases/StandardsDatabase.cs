@@ -15,17 +15,22 @@ namespace V275_Testing.Databases
         private SQLiteConnection Connection { get; set; } = null;
         public bool IsConnectionPersistent { get; set; }
 
-        public class Row
+        public class Row : Core.BaseViewModel
         {
-            public int Repeat { get; set; }
-            public string Job { get; set; }
-            public string Report { get; set; }
+            private string labelImageUID;
+            public string LabelImageUID { get => labelImageUID; set => SetProperty(ref labelImageUID, value); }
+
+            private string labelTemplate;
+            public string LabelTemplate { get => labelTemplate; set => SetProperty(ref labelTemplate, value); }  
+            
+            private string labelReport;
+            public string LabelReport { get => labelReport; set => SetProperty(ref labelReport, value); }
 
             public Row(SQLiteDataReader rdr)
-            {
-                Repeat = Convert.ToInt32(rdr["Repeat"]);
-                Job = rdr["Job"].ToString();
-                Report = rdr["Report"].ToString();
+            { 
+                LabelImageUID = rdr["LabelImageUID"].ToString();
+                LabelTemplate = rdr["LabelTemplate"].ToString();
+                LabelReport = rdr["LabelReport"].ToString();
             }
         }
 
@@ -79,11 +84,11 @@ namespace V275_Testing.Databases
             StringBuilder sb = new StringBuilder();
             sb.Append($"CREATE TABLE '{tableName}'");
             sb.Append(" (");
-            sb.Append("Repeat INTEGER");
+            sb.Append("LabelImageUID TEXT");
             sb.Append(",");
-            sb.Append("Job TEXT");
+            sb.Append("LabelTemplate TEXT");
             sb.Append(",");
-            sb.Append("Report TEXT");
+            sb.Append("LabelReport TEXT");
             sb.Append(");");
 
             using (SQLiteCommand command = new SQLiteCommand(sb.ToString(), Connection))
@@ -93,22 +98,22 @@ namespace V275_Testing.Databases
                 Close();
         }
 
-        public void AddRow(string tableName, Row row) => AddRow(tableName, row.Repeat, row.Job, row.Report);
-        public void AddRow(string tableName, int repeat, string job, string report)
+        public void AddRow(string tableName, Row row) => AddRow(tableName, row.LabelImageUID, row.LabelTemplate, row.LabelReport);
+        public void AddRow(string tableName, string imageUID, string template, string report)
         {
             if (!Open()) return;
 
             StringBuilder sb = new StringBuilder();
-            _ = sb.Append($"INSERT OR REPLACE INTO '{tableName}' (Repeat, Job, Report) VALUES (");
-            _ = sb.Append($"@Repeat,");
-            _ = sb.Append($"@Job,");
-            _ = sb.Append($"@Report);");
+            _ = sb.Append($"INSERT OR REPLACE INTO '{tableName}' (LabelImageUID, LabelTemplate, LabelReport) VALUES (");
+            _ = sb.Append($"@LabelImageUID,");
+            _ = sb.Append($"@LabelTemplate,");
+            _ = sb.Append($"@LabelReport);");
 
             using (SQLiteCommand command = new SQLiteCommand(sb.ToString(), Connection))
             {
-                _ = command.Parameters.AddWithValue("Repeat", repeat);
-                _ = command.Parameters.AddWithValue("Job", job);
-                _ = command.Parameters.AddWithValue("Report", report);
+                _ = command.Parameters.AddWithValue("LabelImageUID", imageUID);
+                _ = command.Parameters.AddWithValue("LabelTemplate", template);
+                _ = command.Parameters.AddWithValue("LabelReport", report);
                 command.ExecuteNonQuery();
             }
 
@@ -150,13 +155,13 @@ namespace V275_Testing.Databases
             return lst;
         }
 
-        public Row GetRow(string tableName, int repeat)
+        public Row GetRow(string tableName, string labelImageUID)
         {
             Row row = null;
 
             if (!Open()) return row;
 
-            using (SQLiteCommand command = new SQLiteCommand($"SELECT * FROM '{tableName}' WHERE Repeat={repeat}", Connection))
+            using (SQLiteCommand command = new SQLiteCommand($"SELECT * FROM '{tableName}' WHERE LabelImageUID='{labelImageUID}'", Connection))
 
                 try
                 {
@@ -164,7 +169,7 @@ namespace V275_Testing.Databases
                         while (rdr.Read())
                             row = new Row(rdr);
                 }
-                catch
+                catch(Exception ex)
                 {
 
                 }
@@ -176,12 +181,12 @@ namespace V275_Testing.Databases
             return row;
         }
 
-        public Row DeleteRow(string tableName, int repeat)
+        public Row DeleteRow(string tableName, string labelImageUID)
         {
             Row row = null;
 
             if (!Open()) return row;
-            using (SQLiteCommand command = new SQLiteCommand($"DELETE FROM '{tableName}' WHERE Repeat={repeat}", Connection))
+            using (SQLiteCommand command = new SQLiteCommand($"DELETE FROM '{tableName}' WHERE LabelImageUID='{labelImageUID}'", Connection))
             using (SQLiteDataReader rdr = command.ExecuteReader()) { };
 
             if (!IsConnectionPersistent)

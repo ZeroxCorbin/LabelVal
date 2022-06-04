@@ -13,6 +13,7 @@ using System.Collections.ObjectModel;
 using System.Drawing.Printing;
 using V275_Testing.Databases;
 using V275_Testing.RunControllers;
+using V275_Testing.Printer;
 
 namespace V275_Testing.WindowViewModels
 {
@@ -20,6 +21,12 @@ namespace V275_Testing.WindowViewModels
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
+        public enum V275_States
+        {
+            editing,
+            running,
+            paused,
+        }
         public class Repeat
         {
             public LabelControlViewModel Label { get; set; }
@@ -263,7 +270,7 @@ namespace V275_Testing.WindowViewModels
             int i = 1;
             foreach (var img in Images)
             {
-                var tmp = new LabelControlViewModel(i++, img, SelectedPrinter, SelectedStandard, StandardsDatabase, V275, MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance);
+                var tmp = new LabelControlViewModel(img, SelectedPrinter, SelectedStandard, StandardsDatabase, V275, MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance);
 
                 tmp.Printing += Label_Printing;
 
@@ -455,11 +462,15 @@ namespace V275_Testing.WindowViewModels
             WebSocket.SessionStateChange -= WebSocket_SessionStateChange;
             WebSocket.Heartbeat -= WebSocket_Heartbeat;
             WebSocket.SetupDetect -= WebSocket_SetupDetect;
+            WebSocket.LabelEnd -= WebSocket_LabelEnd;
+            WebSocket.StateChange -= WebSocket_StateChange;
 
             WebSocket.SetupCapture += WebSocket_SetupCapture;
             WebSocket.SessionStateChange += WebSocket_SessionStateChange;
             WebSocket.Heartbeat += WebSocket_Heartbeat;
             WebSocket.SetupDetect += WebSocket_SetupDetect;
+            WebSocket.LabelEnd += WebSocket_LabelEnd;
+            WebSocket.StateChange += WebSocket_StateChange;
 
             if (!await WebSocket.StartAsync(V275.URLs.WS_NodeEvents))
                 return;
@@ -467,6 +478,8 @@ namespace V275_Testing.WindowViewModels
             if (!await SysWebSocket.StartAsync(V275.URLs.WS_SystemEvents))
                 return;
         }
+
+
 
         private bool detectLock;
         private V275_Events_System detectEvent;
@@ -532,18 +545,59 @@ namespace V275_Testing.WindowViewModels
                 return;
             }
 
-            if (IsLoggedIn_Control)
-                PrintAction("1");
+            //if (IsLoggedIn_Control)
+            //    PrintAction("1");
         }
+        private void WebSocket_LabelEnd(V275_Events_System ev)
+        {
+            if (V275_State != "Running")
+                return;
+
+            if (Repeats.ContainsKey(ev.data.repeat))
+            {
+                Repeats[ev.data.repeat].RepeatNumber = ev.data.repeat;
+
+                if (IsLoggedIn_Control)
+                    if (!Repeats.ContainsKey(ev.data.repeat + 1))
+                        App.Current.Dispatcher.Invoke(new Action(() => ProcessRepeat(ev.data.repeat)));
+            }
+            else
+            {
+                LabelCount = ev.data.repeat;
+                return;
+            }
+
+            //if (IsLoggedIn_Control)
+            //    PrintAction("1");
+
+        }
+        private void WebSocket_StateChange(V275_Events_System ev)
+        {
+            ev.data.state = ev.data.toState;
+            WebSocket_Heartbeat(ev);
+            //V275_State = char.ToUpper(ev.data.toState[0]) + ev.data.toState.Substring(1);
+        }
+
 
         private void Label_Printing(LabelControlViewModel label)
         {
-            if (V275_State == "Editing")
+            if (V275_State != "Paused")
             {
+                Task.Run(() =>
+                {
+                    label.IsWorking = true;
+
+                    PrintControl printer = new PrintControl();
+                    printer.Print(label.LabelImagePath, label.PrintCount, SelectedPrinter);
+
+                    if (!IsLoggedIn_Control)
+                        label.IsWorking = false;
+                });
+
                 for (int i = 0; i < label.PrintCount; i++)
                     Repeats.Add(++LabelCount, new Repeat(label));
 
-                if (IsLoggedIn_Control)
+                if (V275_State == "Editing" && IsLoggedIn_Control)
                     PrintAction("1");
             }
 
@@ -556,8 +610,6 @@ namespace V275_Testing.WindowViewModels
                 {
                     return;
                 }
-
-
 
             detectLock = false;
             int i = await Repeats[repeat].Label.Load();

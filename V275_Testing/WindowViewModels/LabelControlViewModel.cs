@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -12,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using V275_Testing.Databases;
 using V275_Testing.Printer;
+using V275_Testing.Utilities;
 using V275_Testing.V275;
 using V275_Testing.V275.Models;
 
@@ -22,11 +24,11 @@ namespace V275_Testing.WindowViewModels
         public delegate void PrintingDelegate(LabelControlViewModel label);
         public event PrintingDelegate Printing;
 
-        private int labelNumber;
-        public int LabelNumber { get => labelNumber; set => SetProperty(ref labelNumber, value); }
+        private string labelImageUID;
+        public string LabelImageUID { get => labelImageUID; set => SetProperty(ref labelImageUID, value); }
 
-        private BitmapImage labelImage = new BitmapImage();
-        public BitmapImage LabelImage { get => labelImage; set => SetProperty(ref labelImage, value); }
+        private byte[] labelImageBytes;
+        public byte[] LabelImageBytes { get => labelImageBytes; set => SetProperty(ref labelImageBytes, value); }
 
         private string gradingStandard;
         public string GradingStandard { get => gradingStandard; set => SetProperty(ref gradingStandard, value); }
@@ -119,11 +121,10 @@ namespace V275_Testing.WindowViewModels
 
 
         private IDialogCoordinator dialogCoordinator;
-        public LabelControlViewModel(int labelNumber, string imagePath, string printerName, string gradingStandard, StandardsDatabase standardsDatabase, V275_API_Commands v275, IDialogCoordinator diag)
+        public LabelControlViewModel(string imagePath, string printerName, string gradingStandard, StandardsDatabase standardsDatabase, V275_API_Commands v275, IDialogCoordinator diag)
         {
             dialogCoordinator = diag;
 
-            LabelNumber = labelNumber;
             LabelImagePath = imagePath;
             PrinterName = printerName;
             GradingStandard = gradingStandard;
@@ -154,49 +155,38 @@ namespace V275_Testing.WindowViewModels
 
         private void GetImage(string imagePath)
         {
-            LabelImage.BeginInit();
-            LabelImage.UriSource = new Uri(imagePath);
+            LabelImageBytes = File.ReadAllBytes(imagePath);
+            LabelImageUID = ImageUtilities.ImageUID(LabelImageBytes);
+            //LabelImage.BeginInit();
+            //LabelImage.UriSource = new Uri(imagePath);
 
-            // To save significant application memory, set the DecodePixelWidth or
-            // DecodePixelHeight of the BitmapImage value of the image source to the desired
-            // height or width of the rendered image. If you don't do this, the application will
-            // cache the image as though it were rendered as its normal size rather then just
-            // the size that is displayed.
-            // Note: In order to preserve aspect ratio, set DecodePixelWidth
-            // or DecodePixelHeight but not both.
-            LabelImage.DecodePixelHeight = 400;
-            LabelImage.EndInit();
-            LabelImage.Freeze();
+            //// To save significant application memory, set the DecodePixelWidth or
+            //// DecodePixelHeight of the BitmapImage value of the image source to the desired
+            //// height or width of the rendered image. If you don't do this, the application will
+            //// cache the image as though it were rendered as its normal size rather then just
+            //// the size that is displayed.
+            //// Note: In order to preserve aspect ratio, set DecodePixelWidth
+            //// or DecodePixelHeight but not both.
+            //LabelImage.DecodePixelHeight = 400;
+            //LabelImage.EndInit();
+            //LabelImage.Freeze();
         }
 
-        public void PrintAction(object parameter)
-        {
-            IsWorking = true;
-            Task.Run(() =>
-            {
-                Printing?.Invoke(this);
-
-                PrintControl printer = new PrintControl();
-                printer.Print(LabelImagePath, PrintCount, PrinterName);
-
-                if (!IsLoggedIn_Control)
-                    IsWorking = false;
-            });
-        }
+        public void PrintAction(object parameter) => Printing?.Invoke(this);
 
         private void GetStored()
         {
             StoredSectors.Clear();
             IsLoad = false;
 
-            StandardsDatabase.Row row = StandardsDatabase.GetRow(GradingStandard, LabelNumber);
+            StandardsDatabase.Row row = StandardsDatabase.GetRow(GradingStandard, LabelImageUID);
 
             if (row == null)
                 return;
 
             List<SectorControlViewModel> tempSectors = new List<SectorControlViewModel>();
-            if (!string.IsNullOrEmpty(row.Report) && !string.IsNullOrEmpty(row.Job))
-                foreach (var jSec in JsonConvert.DeserializeObject<V275_Job>(row.Job).sectors)
+            if (!string.IsNullOrEmpty(row.LabelReport) && !string.IsNullOrEmpty(row.LabelTemplate))
+                foreach (var jSec in JsonConvert.DeserializeObject<V275_Job>(row.LabelTemplate).sectors)
                 {
                     bool isWrongStandard = false;
                     if (jSec.type == "verify1D" || jSec.type == "verify2D")
@@ -205,7 +195,7 @@ namespace V275_Testing.WindowViewModels
                         else
                             isWrongStandard = true;
 
-                    foreach (JObject rSec in JsonConvert.DeserializeObject<V275_Report>(row.Report).inspectLabel.inspectSector)
+                    foreach (JObject rSec in JsonConvert.DeserializeObject<V275_Report>(row.LabelReport).inspectLabel.inspectSector)
                     {
                         if (jSec.name == rSec["name"].ToString())
                         {
@@ -235,17 +225,17 @@ namespace V275_Testing.WindowViewModels
         private async void StoreAction(object parameter)
         {
             if (StoredSectors.Count > 0)
-                if (await OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for label {LabelNumber}?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
+                if (await OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for label {LabelImageUID}?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
                     return;
 
-            StandardsDatabase.AddRow(GradingStandard, LabelNumber, JsonConvert.SerializeObject(ReadJob), JsonConvert.SerializeObject(Report));
+            StandardsDatabase.AddRow(GradingStandard, LabelImageUID, JsonConvert.SerializeObject(ReadJob), JsonConvert.SerializeObject(Report));
             GetStored();
         }
         private async void ClearStoredAction(object parameter)
         {
-            if (await OkCancelDialog("Clear Stored Sectors", $"Are you sure you want to clear the stored sectors for label {LabelNumber}?\r\nThis can not be undone!") == MessageDialogResult.Affirmative)
+            if (await OkCancelDialog("Clear Stored Sectors", $"Are you sure you want to clear the stored sectors for label {LabelImageUID}?\r\nThis can not be undone!") == MessageDialogResult.Affirmative)
             {
-                StandardsDatabase.DeleteRow(GradingStandard, LabelNumber);
+                StandardsDatabase.DeleteRow(GradingStandard, LabelImageUID);
                 GetStored();
             }
 
@@ -264,8 +254,8 @@ namespace V275_Testing.WindowViewModels
             foreach (var sec in V275.Job.sectors)
                 await V275.DeleteSector(sec.name);
 
-            await V275.Inspect();
-            await V275.GetReport();
+            //await V275.Inspect();
+            //await V275.GetReport();
 
             if (StoredSectors.Count == 0)
             {

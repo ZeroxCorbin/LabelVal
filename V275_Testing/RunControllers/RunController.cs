@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using V275_Testing.Databases;
+using V275_Testing.Utilities;
 using V275_Testing.WindowViewModels;
 
 namespace V275_Testing.RunControllers
@@ -147,19 +148,18 @@ namespace V275_Testing.RunControllers
 
                     label.PrintAction(null);
 
-                    var sRow = StandardsDatabase.GetRow(GradingStandard, label.LabelNumber);
+                    var sRow = StandardsDatabase.GetRow(GradingStandard, label.LabelImageUID);
 
-                    if (sRow == null || string.IsNullOrEmpty(sRow.Report))
+                    if (sRow == null || string.IsNullOrEmpty(sRow.LabelReport))
                         continue;
 
                     var row = new RunDatabase.Run()
                     {
-                        Job = sRow.Job,
-                        StoredReport = sRow.Report,
-                        LabelNumber = label.LabelNumber,
-                        LabelImage = File.ReadAllBytes(label.LabelImagePath)
+                        LabelTemplate = sRow.LabelTemplate,
+                        LabelReport = sRow.LabelReport,
+                        LabelImageUID = label.LabelImageUID,
+                        LabelImage = label.LabelImageBytes
                     };
-                    row.LabelImageUID = ImageUID(row.LabelImage);
 
                     RunLabels.Add(row);
                     RunDatabase.InsertOrReplace(row);
@@ -189,7 +189,7 @@ namespace V275_Testing.RunControllers
                         }
                     }
 
-                    row.Report = JsonConvert.SerializeObject(label.Report);
+                    row.RepeatReport = JsonConvert.SerializeObject(label.Report);
                     RunDatabase.InsertOrReplace(row);
                     //}
                 }
@@ -225,20 +225,5 @@ namespace V275_Testing.RunControllers
             RunLedgerDatabase.Close();
         }
 
-        private string ImageUID(byte[] image)
-        {
-            try
-            {
-                using (SHA256 md5 = SHA256.Create())
-                {
-                    return BitConverter.ToString(md5.ComputeHash(image)).Replace("-", String.Empty);
-                }
-
-            }
-            catch (Exception)
-            {
-                return string.Empty;
-            }
-        }
     }
 }
