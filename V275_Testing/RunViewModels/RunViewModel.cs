@@ -13,6 +13,8 @@ namespace V275_Testing.RunViewModels
 {
     public class RunViewModel : Core.BaseViewModel
     {
+        public string Version => App.Version;
+
         RunLedgerDatabase RunLedgerDatabase { get; set; }
         RunDatabase RunDatabase { get; set; }
 

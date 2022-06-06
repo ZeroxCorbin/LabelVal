@@ -190,7 +190,6 @@
     <Compile Include="WindowViewModels\MainWindowViewModel.cs" />
     <Compile Include="WindowViewModels\LabelControlViewModel.cs" />
     <Compile Include="WindowViewModels\SectorControlViewModel.cs" />
-    <Compile Include="WindowViewModels\SectorDifferenceControlViewModel.cs" />
     <Compile Include="RunViews\RunLabelControlView.xaml.cs">
       <DependentUpon>RunLabelControlView.xaml</DependentUpon>
     </Compile>

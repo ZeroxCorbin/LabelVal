@@ -14,8 +14,14 @@
                 Dialog:DialogParticipation.Register="{Binding}"
                 d:DataContext="{d:DesignInstance Type=ViewModels:RunViewModel}"
                 mc:Ignorable="d"
-                Title="V275 Testing" Height="450" Width="800"
+                Height="450" Width="800"
                 SaveWindowPosition="True">
+    
+    <mah:MetroWindow.Title>
+        <MultiBinding StringFormat="V275 Testing : {0}">
+            <Binding Path="Version"/>
+        </MultiBinding>
+    </mah:MetroWindow.Title>
     
     <mah:MetroWindow.DataContext>
         <ViewModels:RunViewModel/>

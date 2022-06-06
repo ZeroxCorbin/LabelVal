@@ -6,6 +6,8 @@ namespace V275_Testing.Databases
 {
     public class RunDatabase : IDisposable
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         public class Run : Core.BaseViewModel
         {
 
@@ -38,20 +40,15 @@ namespace V275_Testing.Databases
 
         public RunDatabase Open(string dbFilePath)
         {
+            Logger.Info("Opening Database: {file}", dbFilePath);
+
             if (string.IsNullOrEmpty(dbFilePath))
                 return null;
 
             try
             {
-                try
-                {
-                    if (Connection == null)
-                        Connection = new SQLiteConnection(dbFilePath);
-                }
-                catch
-                {
-                    return null;
-                }
+                if (Connection == null)
+                    Connection = new SQLiteConnection(dbFilePath);
 
                 Connection.CreateTable<Run>();
                 Connection.CreateTable<RunLedgerDatabase.RunEntry>();
@@ -60,7 +57,7 @@ namespace V275_Testing.Databases
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                Logger.Error(e);
                 return null;
             }
         }

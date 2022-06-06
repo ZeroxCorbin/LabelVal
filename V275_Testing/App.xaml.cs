@@ -5,6 +5,7 @@ using System.Configuration;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -15,22 +16,22 @@ namespace V275_Testing
     /// </summary>
     public partial class App : Application
     {
-        private static NLog.Logger Logger { get; set; }
-
         public static Databases.SimpleDatabase Settings { get; private set; }
 
-//#if DEBUG
+        //#if DEBUG
         public static string WorkingDir { get; set; } = System.IO.Directory.GetCurrentDirectory();
-//#else        
-//        public static string WorkingDir { get; set; } = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\\TDD\\V275_Testing";
-//#endif
+        //#else        
+        //        public static string WorkingDir { get; set; } = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\\TDD\\V275_Testing";
+        //#endif
+
+        public static string Version { get; set; }
 
         public static string UserDataDirectory => $"{WorkingDir}\\UserData";
         public static string DatabaseExtension => ".sqlite";
 
         public static string SettingsDatabaseName => $"ApplicationSettings{DatabaseExtension}";
 
-        public static string StandardsRoot =>  $"{WorkingDir}\\Assets\\Standards";
+        public static string StandardsRoot => $"{WorkingDir}\\Assets\\Standards";
         public static string StandardsDatabaseName => $"Standards{DatabaseExtension}";
 
         public static string RunsRoot => $"{UserDataDirectory}\\Runs";
@@ -42,21 +43,21 @@ namespace V275_Testing
             var config = new NLog.Config.LoggingConfiguration();
 
             // Targets where to log to: File and Console
-            var logfile = new NLog.Targets.FileTarget("logfile") { FileName = "UserData/log.txt",
+            var logfile = new NLog.Targets.FileTarget("logfile")
+            {
+                FileName = "UserData/log.txt",
                 ArchiveFileName = "UserData/log.${shortdate}.txt",
-            ArchiveAboveSize = 5242880,
-            ArchiveEvery = NLog.Targets.FileArchivePeriod.Day,
-            ArchiveNumbering = NLog.Targets.ArchiveNumberingMode.Rolling,
-            MaxArchiveFiles = 3
+                ArchiveAboveSize = 5242880,
+                ArchiveEvery = NLog.Targets.FileArchivePeriod.Day,
+                ArchiveNumbering = NLog.Targets.ArchiveNumberingMode.Rolling,
+                MaxArchiveFiles = 3
             };
-            //var logconsole = new NLog.Targets.ConsoleTarget("logconsole");
-
-            // Rules for mapping loggers to targets
             config.AddRuleForAllLevels(logfile);
-            //config.AddRuleForAllLevels(logconsole);
-            // Apply config
             NLog.LogManager.Configuration = config;
-            Logger = NLog.LogManager.GetCurrentClassLogger();
+
+            Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+
+            NLog.LogManager.GetCurrentClassLogger().Info($"Starting: {Version}");
 
             if (!Directory.Exists(UserDataDirectory))
             {
@@ -71,7 +72,7 @@ namespace V275_Testing
 
             if (Settings == null)
             {
-               return;
+                return;
             }
         }
 

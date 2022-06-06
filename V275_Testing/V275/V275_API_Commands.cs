@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using V275_Testing.V275.Models;
@@ -12,6 +13,12 @@ namespace V275_Testing.V275
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
+        private class Results
+        {
+            public bool OK { get; set; }
+            public string Data { get; set; }
+        }
+        
         private V275_API_Connection Connection { get; set; } = new V275_API_Connection();
         public V275_API_URLs URLs { get; private set; } = new V275_API_URLs();
 

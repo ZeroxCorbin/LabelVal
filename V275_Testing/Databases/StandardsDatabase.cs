@@ -10,10 +10,7 @@ namespace V275_Testing.Databases
 {
     public class StandardsDatabase : IDisposable
     {
-        public string FilePath { get; private set; }
-
-        private SQLiteConnection Connection { get; set; } = null;
-        public bool IsConnectionPersistent { get; set; }
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         public class Row : Core.BaseViewModel
         {
@@ -34,13 +31,20 @@ namespace V275_Testing.Databases
             }
         }
 
+        public string FilePath { get; private set; }
+
+        private SQLiteConnection Connection { get; set; } = null;
+        public bool IsConnectionPersistent { get; set; }
+
+
+
         private void CreateFile(bool overwrite = false)
         {
-            if (overwrite && System.IO.File.Exists(FilePath))
-                System.IO.File.Delete(FilePath);
-
             if (!System.IO.File.Exists(FilePath))
+            {
+                Logger.Info("Creating Database: {file}", FilePath);
                 SQLiteConnection.CreateFile(FilePath);
+            }
         }
 
         private bool Open()
@@ -49,8 +53,11 @@ namespace V275_Testing.Databases
                 Connection = new SQLiteConnection($"Data Source={FilePath}; Version=3;");
 
             if (Connection.State == System.Data.ConnectionState.Closed)
+            {
+                Logger.Info("Opening Database: {file}", FilePath);
                 Connection.Open();
-
+            }
+            
             if (Connection.State != System.Data.ConnectionState.Open)
                 return false;
             else
@@ -59,6 +66,8 @@ namespace V275_Testing.Databases
 
         public void Close()
         {
+            Logger.Info("Closing Database: {file}", FilePath);
+
             if (Connection == null)
                 return;
 

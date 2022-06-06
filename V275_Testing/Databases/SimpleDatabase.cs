@@ -13,8 +13,9 @@ using System.Text;
 namespace V275_Testing.Databases
 {
     public class SimpleDatabase : IDisposable
-
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         public class SimpleSetting
         {
             [PrimaryKey]
@@ -24,30 +25,28 @@ namespace V275_Testing.Databases
 
         private SQLiteConnection Connection { get; set; } = null;
 
-        public string DbFilePath { get; private set; } = null;
-
         public SimpleDatabase Open(string dbFilePath)
         {
+            Logger.Info("Opening Database: {file}", dbFilePath);
+
             if (string.IsNullOrEmpty(dbFilePath))
                 return null;
 
-            DbFilePath = dbFilePath;
-
             try
             {
-                if (!OpenConnection())
-                    return null;
+                if (Connection == null)
+                    Connection = new SQLiteConnection(dbFilePath);
 
                 Connection.CreateTable<SimpleSetting>();
+
                 return this;
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                Logger.Error(e);
                 return null;
             }
         }
-        public void Close() => Connection?.Close();
 
         public string GetValue(string key, string defaultValue = "")
         {
@@ -107,26 +106,11 @@ namespace V275_Testing.Databases
         public int DeleteSetting(string key) => Connection.Table<SimpleSetting>().Delete(v => v.Key == key);
         public List<SimpleSetting> SelectAllSettings(string key) => Connection.CreateCommand("select * from SimpleSetting").ExecuteQuery<SimpleSetting>();
 
-        private bool OpenConnection()
-        {
-            try
-            {
-                if (Connection == null)
-                    Connection = new SQLiteConnection(DbFilePath);
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-
+        public void Close() => Connection?.Dispose();
         public void Dispose()
         {
             Connection?.Close();
-            ((IDisposable)Connection)?.Dispose();
+            Connection?.Dispose();
 
             GC.SuppressFinalize(this);
         }

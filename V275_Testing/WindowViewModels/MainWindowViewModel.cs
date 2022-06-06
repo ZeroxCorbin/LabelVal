@@ -34,6 +34,8 @@ namespace V275_Testing.WindowViewModels
             public Repeat(LabelControlViewModel label) => Label = label;
         }
 
+        public string Version => App.Version;
+
         private V275_API_Commands V275 = new V275_API_Commands();
         private StandardsDatabase StandardsDatabase { get; }
         private V275_API_WebSocketEvents WebSocket { get; } = new V275_API_WebSocketEvents();
