@@ -126,7 +126,7 @@ namespace V275_Testing.RunControllers
             for (int i = 0; i < LoopCount; i++)
                 foreach (var label in Labels)
                 {
-                    if (label.StoredSectors.Count == 0)
+                    if (label.LabelSectors.Count == 0)
                         continue;
 
                     while (RequestedState == RunStates.PAUSED)
@@ -171,15 +171,13 @@ namespace V275_Testing.RunControllers
                             RunStateChange?.Invoke(State = RunStates.STOPPED);
                             return false;
                         }
+
+                        Thread.Sleep(10);
                     };
 
                     PngBitmapEncoder encoder = new PngBitmapEncoder();
                     using (var ms = new System.IO.MemoryStream(label.RepeatImageData))
                     {
-                        //img.BeginInit();
-                        //img.CacheOption = BitmapCacheOption.OnLoad; // here
-                        //img.StreamSource = ms;
-                        //img.EndInit();
                         using (MemoryStream stream = new MemoryStream())
                         {
                             encoder.Frames.Add(BitmapFrame.Create(ms));
@@ -191,7 +189,6 @@ namespace V275_Testing.RunControllers
 
                     row.RepeatReport = JsonConvert.SerializeObject(label.Report);
                     RunDatabase.InsertOrReplace(row);
-                    //}
                 }
 
             RunStateChange?.Invoke(State = RunStates.COMPLETE);

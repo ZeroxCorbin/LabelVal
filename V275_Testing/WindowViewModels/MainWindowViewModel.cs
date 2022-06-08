@@ -36,10 +36,10 @@ namespace V275_Testing.WindowViewModels
 
         public string Version => App.Version;
 
-        private V275_API_Commands V275 = new V275_API_Commands();
+        private V275_API_Controller V275 = new V275_API_Controller();
         private StandardsDatabase StandardsDatabase { get; }
-        private V275_API_WebSocketEvents WebSocket { get; } = new V275_API_WebSocketEvents();
-        private V275_API_WebSocketEvents SysWebSocket { get; } = new V275_API_WebSocketEvents();
+        //private V275_API_WebSocketEvents WebSocket { get; } = new V275_API_WebSocketEvents();
+        //private V275_API_WebSocketEvents SysWebSocket { get; } = new V275_API_WebSocketEvents();
 
         public string V275_Host { get => V275.Host = App.Settings.GetValue("V275_Host", "127.0.0.1"); set { App.Settings.SetValue("V275_Host", value); V275.Host = value; } }
         public uint V275_SystemPort { get => V275.SystemPort = App.Settings.GetValue<uint>("V275_SystemPort", 8080); set { App.Settings.SetValue("V275_SystemPort", value); ; V275.SystemPort = value; } }
@@ -174,7 +174,7 @@ namespace V275_Testing.WindowViewModels
         }
         private string v275_JobName;
 
-        public bool V275_IsBackupVoid => V275.ConfigurationCamera.backupVoidMode == null ? false : V275.ConfigurationCamera.backupVoidMode.value == "ON";
+        public bool V275_IsBackupVoid => V275.Commands.ConfigurationCamera.backupVoidMode == null ? false : V275.Commands.ConfigurationCamera.backupVoidMode.value == "ON";
 
         public ICommand Print { get; }
 
@@ -224,6 +224,12 @@ namespace V275_Testing.WindowViewModels
 
             Logger.Info("Initializing standards database: {name}", $"{App.UserDataDirectory}\\{App.StandardsDatabaseName}");
             StandardsDatabase = new StandardsDatabase($"{App.UserDataDirectory}\\{App.StandardsDatabaseName}");
+
+            V275.WebSocket.SetupCapture += WebSocket_SetupCapture;
+            V275.WebSocket.SessionStateChange += WebSocket_SessionStateChange;
+            V275.WebSocket.Heartbeat += WebSocket_Heartbeat;
+            V275.WebSocket.LabelEnd += WebSocket_LabelEnd;
+            V275.WebSocket.StateChange += WebSocket_StateChange;
 
             SetupGradingStandards();
             LoadPrinters();
@@ -289,10 +295,10 @@ namespace V275_Testing.WindowViewModels
         {
             Repeats.Clear();
 
-            await V275.GetRepeatsAvailable();
+            await V275.Commands.GetRepeatsAvailable();
 
-            if (V275.Available != null && V275.Available.Count > 0)
-                LabelCount = V275.Available[0];
+            if (V275.Commands.Available != null && V275.Commands.Available.Count > 0)
+                LabelCount = V275.Commands.Available[0];
             else
                 LabelCount = 0;
         }
@@ -312,9 +318,9 @@ namespace V275_Testing.WindowViewModels
             Nodes.Clear();
             SelectedNode = null;
 
-            if (await V275.GetDevices())
+            if (await V275.Commands.GetDevices())
             {
-                foreach (var node in V275.Devices.nodes)
+                foreach (var node in V275.Commands.Devices.nodes)
                 {
                     Logger.Debug("Device MAC: {dev}", node.cameraMAC);
 
@@ -332,7 +338,7 @@ namespace V275_Testing.WindowViewModels
 
                 IsGetDevices = true;
 
-                await V275.GetProduct();
+                await V275.Commands.GetProduct();
             }
             else
             {
@@ -381,7 +387,7 @@ namespace V275_Testing.WindowViewModels
         {
             Reset();
 
-            if (await V275.Login(UserName, Password, true))
+            if (await V275.Commands.Login(UserName, Password, true))
             {
                 _ = PostLogin(true);
             }
@@ -395,7 +401,7 @@ namespace V275_Testing.WindowViewModels
         {
             Reset();
 
-            if (await V275.Login(UserName, Password, false))
+            if (await V275.Commands.Login(UserName, Password, false))
             {
                 _ = PostLogin(false);
             }
@@ -409,7 +415,7 @@ namespace V275_Testing.WindowViewModels
         {
             Reset();
 
-            if (!await V275.Logout())
+            if (!await V275.Commands.Logout())
                 UserMessage = V275.Status;
 
             LoginData.accessLevel = "";
@@ -428,13 +434,8 @@ namespace V275_Testing.WindowViewModels
 
             try
             {
-                WebSocket.SetupCapture -= WebSocket_SetupCapture;
-                WebSocket.SessionStateChange -= WebSocket_SessionStateChange;
-                WebSocket.Heartbeat -= WebSocket_Heartbeat;
-                WebSocket.SetupDetect -= WebSocket_SetupDetect;
-
-                await WebSocket.StopAsync();
-                await SysWebSocket.StopAsync();
+                await V275.WebSocket.StopAsync();
+                //await SysWebSocket.StopAsync();
 
                 V275_State = "";
                 V275_JobName = "";
@@ -444,7 +445,7 @@ namespace V275_Testing.WindowViewModels
         private async Task PostLogin(bool isLoggedIn_Setup)
         {
             LoginData.accessLevel = isLoggedIn_Setup ? "monitor" : "control";
-            LoginData.token = V275.Token;
+            LoginData.token = V275.Commands.Token;
             LoginData.id = UserName;
             LoginData.state = "0";
 
@@ -457,39 +458,17 @@ namespace V275_Testing.WindowViewModels
                 rep.IsLoggedIn_Control = IsLoggedIn_Control;
             }
 
-            await V275.GetCameraConfig();
-            await V275.GetSymbologies();
+            await V275.Commands.GetCameraConfig();
+            await V275.Commands.GetSymbologies();
 
-            WebSocket.SetupCapture -= WebSocket_SetupCapture;
-            WebSocket.SessionStateChange -= WebSocket_SessionStateChange;
-            WebSocket.Heartbeat -= WebSocket_Heartbeat;
-            WebSocket.SetupDetect -= WebSocket_SetupDetect;
-            WebSocket.LabelEnd -= WebSocket_LabelEnd;
-            WebSocket.StateChange -= WebSocket_StateChange;
-
-            WebSocket.SetupCapture += WebSocket_SetupCapture;
-            WebSocket.SessionStateChange += WebSocket_SessionStateChange;
-            WebSocket.Heartbeat += WebSocket_Heartbeat;
-            WebSocket.SetupDetect += WebSocket_SetupDetect;
-            WebSocket.LabelEnd += WebSocket_LabelEnd;
-            WebSocket.StateChange += WebSocket_StateChange;
-
-            if (!await WebSocket.StartAsync(V275.URLs.WS_NodeEvents))
+            if (!await V275.WebSocket.StartAsync(V275.Commands.URLs.WS_NodeEvents))
                 return;
 
-            if (!await SysWebSocket.StartAsync(V275.URLs.WS_SystemEvents))
-                return;
+            //if (!await SysWebSocket.StartAsync(V275.Commands.URLs.WS_SystemEvents))
+            //    return;
         }
 
 
-
-        private bool detectLock;
-        private V275_Events_System detectEvent;
-        private void WebSocket_SetupDetect(V275_Events_System ev, bool end)
-        {
-            detectEvent = ev;
-            detectLock = end;
-        }
         private async void WebSocket_Heartbeat(V275_Events_System ev)
         {
             string state = char.ToUpper(ev.data.state[0]) + ev.data.state.Substring(1);
@@ -505,7 +484,7 @@ namespace V275_Testing.WindowViewModels
                         {
                             if (await V275.GetJob())
                             {
-                                V275_JobName = V275.Job.name;
+                                V275_JobName = V275.Commands.Job.name;
                             }
                             else
                             {
@@ -608,22 +587,24 @@ namespace V275_Testing.WindowViewModels
         private async void ProcessRepeat(int repeat)
         {
             if (repeat > 0)
-                if (!await V275.SetRepeat(repeat))
+                if (!await V275.Commands.SetRepeat(repeat))
                 {
                     return;
                 }
 
-            detectLock = false;
             int i = await Repeats[repeat].Label.Load();
 
             if (i == 2)
             {
-                await Task.Run(() => { while (!detectLock) { } });
+                var sectors = V275.CreateSectors(V275.SetupDetectEvent, StoredStandard);
 
-                await Repeats[repeat].Label.CreateSectors(detectEvent, StoredStandard);
+                foreach(var sec in sectors)
+                    await V275.AddSector(sec.name, JsonConvert.SerializeObject(sec));
             }
 
+            Logger.Info("Reading label results and Image.");
             await Repeats[repeat].Label.Read(repeat);
+            Logger.Info("DONE - Reading label results and Image.");
 
             Repeats[repeat].Label.IsWorking = false;
         }
@@ -632,11 +613,11 @@ namespace V275_Testing.WindowViewModels
         private async void PrintAction(object parameter)
         {
             if (V275_IsBackupVoid)
-                await V275.Print(false);
+                await V275.Commands.Print(false);
 
             Thread.Sleep(200);
 
-            await V275.Print((string)parameter == "1");
+            await V275.Commands.Print((string)parameter == "1");
         }
 
         private void StartRunAction(object parameter)
@@ -650,7 +631,7 @@ namespace V275_Testing.WindowViewModels
 
             Logger.Info("Starting Run: {stand}; {count}", Labels[0].GradingStandard, RunLoopCount);
 
-            CurrentRun = new RunController(Labels, RunLoopCount, StandardsDatabase, V275.Product.part, SelectedNode.cameraMAC).Init();
+            CurrentRun = new RunController(Labels, RunLoopCount, StandardsDatabase, V275.Commands.Product.part, SelectedNode.cameraMAC).Init();
             CurrentRun.RunStateChange += CurrentRun_RunStateChange;
 
             if (CurrentRun == null)

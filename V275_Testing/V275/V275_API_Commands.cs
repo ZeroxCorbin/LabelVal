@@ -18,7 +18,7 @@ namespace V275_Testing.V275
             public bool OK { get; set; }
             public string Data { get; set; }
         }
-        
+
         private V275_API_Connection Connection { get; set; } = new V275_API_Connection();
         public V275_API_URLs URLs { get; private set; } = new V275_API_URLs();
 
@@ -200,6 +200,55 @@ namespace V275_Testing.V275
             return res;
         }
 
+        public async Task<bool> GetIsRunReady()
+        {
+            Logger.Info("GET: {url}", URLs.IsRunReady());
+
+            string result = await Connection.Get(URLs.IsRunReady(), Token);
+
+            bool res;
+            if (res = CheckResults(result))
+            {
+                if (result == "OK")
+                    return res;
+                else
+                    return false;
+            }
+            return res;
+        }
+        public async Task<bool> RunJob(string jobName)
+        {
+            Logger.Info("PUT: {url}", URLs.RunJob(jobName));
+
+            await Connection.Put(URLs.RunJob(jobName), "", Token);
+
+            return CheckResults("", true);
+        }
+        public async Task<bool> StartJob()
+        {
+            Logger.Info("PUT: {url}", URLs.StartJob());
+
+            await Connection.Put(URLs.StartJob(), "", Token);
+
+            return CheckResults("", true);
+        }
+        public async Task<bool> StopJob()
+        {
+            Logger.Info("PUT: {url}", URLs.StopJob());
+
+            await Connection.Put(URLs.StopJob(), "", Token);
+
+            return CheckResults("", true);
+        }
+        public async Task<bool> PauseJob()
+        {
+            Logger.Info("PUT: {url}", URLs.PauseJob());
+
+            await Connection.Put(URLs.PauseJob(), "", Token);
+
+            return CheckResults("", true);
+        }
+
         public async Task<bool> DeleteSector(string sectorName)
         {
             Logger.Info("DELETE: {url}", URLs.DeleteSector(sectorName));
@@ -263,5 +312,7 @@ namespace V275_Testing.V275
 
             return CheckResults("", true);
         }
+
+
     }
 }

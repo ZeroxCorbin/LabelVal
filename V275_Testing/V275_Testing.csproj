@@ -36,6 +36,8 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
@@ -173,6 +175,7 @@
     <Compile Include="V275\Models\V275_Product.cs" />
     <Compile Include="V275\Models\V275_Repeat_Available.cs" />
     <Compile Include="V275\Models\V275_Report_InspectSector_Blemish.cs" />
+    <Compile Include="V275\V275_API_Controller.cs" />
     <Compile Include="WindowViewModels\SectorResultsViewModel.cs" />
     <Compile Include="V275\Models\V275_Report_InspectSector_Common.cs" />
     <Compile Include="V275\Models\V275_Report_InspectSector_OCR.cs" />

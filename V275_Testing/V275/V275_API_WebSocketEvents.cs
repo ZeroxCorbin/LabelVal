@@ -34,8 +34,6 @@ namespace V275_Testing.V275
         public delegate void SetupDetectDelegate(V275_Events_System ev, bool end);
         public event SetupDetectDelegate SetupDetect;
 
-        
-
         public async Task<bool> StartAsync(string wsUri)
             => await StartAsync(new Uri(wsUri));
 

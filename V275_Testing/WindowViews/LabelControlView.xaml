@@ -96,7 +96,7 @@
             </Grid>
 
             <ScrollViewer Grid.Row="1" Grid.Column="1" Width="200" Margin="3" MaxHeight="400" Padding="0,0,0,6" mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True">
-                <ItemsControl ItemsSource="{Binding StoredSectors}">
+                <ItemsControl ItemsSource="{Binding LabelSectors}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <local:SectorControlView />
@@ -141,7 +141,7 @@
             </Grid>
 
             <ScrollViewer Grid.Row="1" Grid.Column="2" Width="200" Margin="3" MaxHeight="400" mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True">
-                <ItemsControl ItemsSource="{Binding ReadSectors}">
+                <ItemsControl ItemsSource="{Binding RepeatSectors}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <local:SectorControlView />

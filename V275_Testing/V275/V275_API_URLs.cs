@@ -47,6 +47,12 @@ namespace V275_Testing.V275
 
         public string Available() => $"{NodeBase}/{NodeNumber}/inspection/setup/image/available";
 
+        public string IsRunReady() => $"{NodeBase}/{NodeNumber}/inspection/job/isrunready";
+        public string RunJob(string jobName) => $"{NodeBase}/{NodeNumber}/repository/jobs/design/{jobName}?source=inspection";
+        public string StartJob() => $"{NodeBase}/{NodeNumber}/inspection/job/start";
+        public string PauseJob() => $"{NodeBase}/{NodeNumber}/inspection/job/pause";
+        public string StopJob() => $"{NodeBase}/{NodeNumber}/inspection/job/stop?finalizeActive=0";
+
         public string Inspect() => $"{NodeBase}/{NodeNumber}/inspection/setup/inspect";
         public string Report() => $"{NodeBase}/{NodeNumber}/inspection/setup/report";
         public string Detect() => $"{NodeBase}/{NodeNumber}/inspection/setup/detect";
