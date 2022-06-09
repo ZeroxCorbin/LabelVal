@@ -35,16 +35,33 @@ namespace V275_Testing.WindowViews
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            if (win != null)
+            {
+                win.BringIntoView();
+                return;
+            }
+
             win = new RunView();
-            win.Show();
             win.Closed += Win_Closed;
+            win.Show();
+            
         }
 
         private void Win_Closed(object sender, EventArgs e)
         {
             ((RunView)sender).Closed -= Win_Closed;
 
+            win = null;
+
             GC.Collect();
+        }
+
+        private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (win != null)
+            {
+                win.Close();
+            }
         }
     }
 }

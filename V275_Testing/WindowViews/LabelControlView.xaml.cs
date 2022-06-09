@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using V275_Testing.WindowViewModels;
 
 namespace V275_Testing.WindowViews
 {
@@ -23,6 +24,19 @@ namespace V275_Testing.WindowViews
         public LabelControlView()
         {
             InitializeComponent();
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            LabelControlViewModel viewModel = (LabelControlViewModel)DataContext;
+            viewModel.BringIntoView += ViewModel_BringIntoView;
+
+        }
+
+        private void ViewModel_BringIntoView()
+        {
+            App.Current.Dispatcher.Invoke(new Action(() => this.BringIntoView()));
+            
         }
     }
 }

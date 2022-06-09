@@ -24,6 +24,9 @@ namespace V275_Testing.WindowViewModels
         public delegate void PrintingDelegate(LabelControlViewModel label);
         public event PrintingDelegate Printing;
 
+        public delegate void BringIntoViewDelegate();
+        public event BringIntoViewDelegate BringIntoView;
+
         private string labelImageUID;
         public string LabelImageUID { get => labelImageUID; set => SetProperty(ref labelImageUID, value); }
 
@@ -45,13 +48,13 @@ namespace V275_Testing.WindowViewModels
         public ObservableCollection<SectorControlViewModel> RepeatSectors { get => repeatSectors; set => SetProperty(ref repeatSectors, value); }
 
 
-        public bool IsLoggedIn_Setup
+        public bool IsLoggedIn_Monitor
         {
-            get => isLoggedIn_Setup;
-            set { SetProperty(ref isLoggedIn_Setup, value); OnPropertyChanged("IsNotLoggedIn_Setup"); }
+            get => isLoggedIn_Monitor;
+            set { SetProperty(ref isLoggedIn_Monitor, value); OnPropertyChanged("IsNotLoggedIn_Monitor"); }
         }
-        public bool IsNotLoggedIn_Setup => !isLoggedIn_Setup;
-        private bool isLoggedIn_Setup = false;
+        public bool IsNotLoggedIn_Monitor => !isLoggedIn_Monitor;
+        private bool isLoggedIn_Monitor = false;
 
         public bool IsLoggedIn_Control
         {
@@ -143,8 +146,6 @@ namespace V275_Testing.WindowViewModels
             ClearStored = new Core.RelayCommand(ClearStoredAction, c => true);
             ClearRead = new Core.RelayCommand(ClearReadAction, c => true);
 
-
-
             GetImage(imagePath);
             GetStored();
         }
@@ -175,7 +176,11 @@ namespace V275_Testing.WindowViewModels
             //LabelImage.Freeze();
         }
 
-        public void PrintAction(object parameter) => Printing?.Invoke(this);
+        public void PrintAction(object parameter)
+        {
+            BringIntoView?.Invoke();
+            Printing?.Invoke(this);
+        }
 
         private void GetStored()
         {

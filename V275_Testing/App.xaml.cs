@@ -40,6 +40,8 @@ namespace V275_Testing
 
         public App()
         {
+            SQLitePCL.Batteries.Init();
+
             var config = new NLog.Config.LoggingConfiguration();
 
             // Targets where to log to: File and Console

@@ -24,8 +24,6 @@ namespace V275_Testing.RunViews
         public RunView()
         {
             InitializeComponent();
-
-            
             RunList.IsOpen = true;
         }
 
@@ -45,12 +43,32 @@ namespace V275_Testing.RunViews
                 RunList.IsOpen = false;
         }
 
-        private void BtnSort_Click(object sender, RoutedEventArgs e)
+        private void BtnSortLabels_Click(object sender, RoutedEventArgs e)
         {
-            CollectionViewSource viewSource = FindResource("GroupedDataList") as CollectionViewSource;
-            viewSource.SortDescriptions.Clear();
-            viewSource.SortDescriptions.Add(new System.ComponentModel.SortDescription("TimeDate", System.ComponentModel.ListSortDirection.Descending));
+            if (FindResource("LabelsDataList") is CollectionViewSource viewSource)
+                if (viewSource.GroupDescriptions.Count == 0)
+                {
+                    viewSource.GroupDescriptions.Add(new PropertyGroupDescription("Run.LabelImageUID"));
+                }
+                else
+                {
+                    viewSource.GroupDescriptions.Clear();
+                }
+        }
 
+        private void BtnSortRuns_Click(object sender, RoutedEventArgs e)
+        {
+            if (FindResource("RunEntriesDataList") is CollectionViewSource viewSource)
+                if (viewSource.SortDescriptions[3].Direction == System.ComponentModel.ListSortDirection.Ascending)
+                {
+                    viewSource.SortDescriptions.RemoveAt(3);
+                    viewSource.SortDescriptions.Add(new System.ComponentModel.SortDescription("TimeDate", System.ComponentModel.ListSortDirection.Descending));
+                }
+                else
+                {
+                    viewSource.SortDescriptions.RemoveAt(3);
+                    viewSource.SortDescriptions.Add(new System.ComponentModel.SortDescription("TimeDate", System.ComponentModel.ListSortDirection.Ascending));
+                }
         }
     }
 }

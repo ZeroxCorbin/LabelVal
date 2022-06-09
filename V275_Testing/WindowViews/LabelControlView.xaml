@@ -12,7 +12,7 @@
             Dialog:DialogParticipation.Register="{Binding}"
             d:DataContext="{d:DesignInstance Type=ViewModels:LabelControlViewModel}"
             mc:Ignorable="d" 
-            d:DesignHeight="450" d:DesignWidth="800">
+            d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded">
     
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="booltovis"/>
@@ -132,7 +132,7 @@
                             Visibility="{Binding IsStore, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
                     <Button Content="Read" Command="{Binding ReadCommand}" Margin="2" 
-                        Visibility="{Binding IsLoggedIn_Setup, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        Visibility="{Binding IsLoggedIn_Monitor, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
                     <Button Content="Inspect" Command="{Binding InspectCommand}" Margin="2"
                             Visibility="{Binding IsLoggedIn_Control, Converter={StaticResource BooleanToVisibilityConverter}}"/>

@@ -17,6 +17,8 @@ namespace V275_Testing.RunControllers
 {
     public class RunController
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         public enum RunStates
         {
             LOADED,
@@ -121,9 +123,18 @@ namespace V275_Testing.RunControllers
             Task.Run(() => Start());
         }
 
+        private int LabelCount;
+
         public bool Start()
         {
+            LabelCount = 1;
+
+            Logger.Info("Job Started: Loop Count {loop}", LoopCount);
+
             for (int i = 0; i < LoopCount; i++)
+            {
+                Logger.Info("Job Loop: {loop}", i + 1);
+
                 foreach (var label in Labels)
                 {
                     if (label.LabelSectors.Count == 0)
@@ -132,20 +143,25 @@ namespace V275_Testing.RunControllers
                     while (RequestedState == RunStates.PAUSED)
                     {
                         if (State == RunStates.RUNNING)
+                        {
+                            Logger.Info("Job Pasued");
                             RunStateChange?.Invoke(State = RunStates.PAUSED);
+                        }
 
                         Thread.Sleep(10);
                     }
 
                     if (RequestedState == RunStates.STOPPED)
                     {
-                        RunStateChange?.Invoke(State = RunStates.STOPPED);
+                        RunEntry.Completed = 2;
+                        Stopped();
                         return false;
                     }
 
                     if (RequestedState == RunStates.RUNNING && State != RunStates.RUNNING)
                         RunStateChange?.Invoke(State = RunStates.RUNNING);
 
+                    Logger.Info("Job Print");
                     label.PrintAction(null);
 
                     var sRow = StandardsDatabase.GetRow(GradingStandard, label.LabelImageUID);
@@ -158,20 +174,30 @@ namespace V275_Testing.RunControllers
                         LabelTemplate = sRow.LabelTemplate,
                         LabelReport = sRow.LabelReport,
                         LabelImageUID = label.LabelImageUID,
-                        LabelImage = label.LabelImageBytes
+                        LabelImage = label.LabelImageBytes,
+                        LabelImageOrder = LabelCount++
                     };
 
                     RunLabels.Add(row);
                     RunDatabase.InsertOrReplace(row);
 
+                    DateTime start = DateTime.Now;
                     while (label.IsWorking)
                     {
                         if (RequestedState == RunStates.STOPPED)
                         {
-                            RunStateChange?.Invoke(State = RunStates.STOPPED);
+                            RunEntry.Completed = 2;
+                            Stopped();
                             return false;
                         }
-
+                        if((DateTime.Now - start) > TimeSpan.FromMilliseconds(10000))
+                        {
+                            Logger.Error("Job timeout.");
+                            RunEntry.Completed = -1;
+                            Stopped();
+                            return false;
+                        }
+                            
                         Thread.Sleep(10);
                     };
 
@@ -191,12 +217,32 @@ namespace V275_Testing.RunControllers
                     RunDatabase.InsertOrReplace(row);
                 }
 
+            }
+
+            RunEntry.Completed = 1;
+
+            Logger.Info("Job Completed");
+
+            RunLedgerDatabase.InsertOrReplace(RunEntry);
+            RunDatabase.InsertOrReplace(RunEntry);
+
             RunStateChange?.Invoke(State = RunStates.COMPLETE);
 
             RunDatabase.Close();
             RunLedgerDatabase.Close();
 
             return true;
+        }
+
+        private void Stopped()
+        {
+
+            RunLedgerDatabase.InsertOrReplace(RunEntry);
+            RunDatabase.InsertOrReplace(RunEntry);
+
+            Logger.Info("Job Stopped");
+
+            RunStateChange?.Invoke(State = RunStates.STOPPED);
         }
 
         public void Pause()

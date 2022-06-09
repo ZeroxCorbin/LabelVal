@@ -14,6 +14,7 @@ using System.Drawing.Printing;
 using V275_Testing.Databases;
 using V275_Testing.RunControllers;
 using V275_Testing.Printer;
+using MahApps.Metro.Controls.Dialogs;
 
 namespace V275_Testing.WindowViewModels
 {
@@ -141,17 +142,17 @@ namespace V275_Testing.WindowViewModels
 
         public bool IsLoggedIn
         {
-            get => IsLoggedIn_Setup || IsLoggedIn_Control;
+            get => IsLoggedIn_Monitor || IsLoggedIn_Control;
         }
-        public bool IsNotLoggedIn => !(IsLoggedIn_Setup || IsLoggedIn_Control);
+        public bool IsNotLoggedIn => !(IsLoggedIn_Monitor || IsLoggedIn_Control);
 
-        public bool IsLoggedIn_Setup
+        public bool IsLoggedIn_Monitor
         {
-            get => isLoggedIn_Setup;
-            set { SetProperty(ref isLoggedIn_Setup, value); OnPropertyChanged("IsNotLoggedIn_Setup"); OnPropertyChanged("IsNotLoggedIn"); OnPropertyChanged("IsLoggedIn"); }
+            get => isLoggedIn_Monitor;
+            set { SetProperty(ref isLoggedIn_Monitor, value); OnPropertyChanged("IsNotLoggedIn_Monitor"); OnPropertyChanged("IsNotLoggedIn"); OnPropertyChanged("IsLoggedIn"); }
         }
-        public bool IsNotLoggedIn_Setup => !isLoggedIn_Setup;
-        private bool isLoggedIn_Setup = false;
+        public bool IsNotLoggedIn_Monitor => !isLoggedIn_Monitor;
+        private bool isLoggedIn_Monitor = false;
 
         public bool IsLoggedIn_Control
         {
@@ -234,6 +235,12 @@ namespace V275_Testing.WindowViewModels
             SetupGradingStandards();
             LoadPrinters();
         }
+        public async Task<MessageDialogResult> OkCancelDialog(string title, string message)
+        {
+            MessageDialogResult result = await DialogCoordinator.Instance.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative);
+
+            return result;
+        }
 
         private void LoadPrinters()
         {
@@ -283,13 +290,11 @@ namespace V275_Testing.WindowViewModels
                 tmp.Printing += Label_Printing;
 
                 tmp.IsLoggedIn_Control = IsLoggedIn_Control;
-                tmp.IsLoggedIn_Setup = IsLoggedIn_Setup;
+                tmp.IsLoggedIn_Monitor = IsLoggedIn_Monitor;
 
                 Labels.Add(tmp);
             }
         }
-
-
 
         private async Task ResetRepeats()
         {
@@ -394,7 +399,7 @@ namespace V275_Testing.WindowViewModels
             else
             {
                 UserMessage = V275.Status;
-                IsLoggedIn_Setup = false;
+                IsLoggedIn_Monitor = false;
             }
         }
         private async void LoginControlAction(object parameter)
@@ -424,12 +429,12 @@ namespace V275_Testing.WindowViewModels
             LoginData.state = "1";
 
             IsLoggedIn_Control = false;
-            IsLoggedIn_Setup = false;
+            IsLoggedIn_Monitor = false;
 
             foreach (var rep in Labels)
             {
                 rep.IsLoggedIn_Control = IsLoggedIn_Control;
-                rep.IsLoggedIn_Setup = IsLoggedIn_Setup;
+                rep.IsLoggedIn_Monitor = IsLoggedIn_Monitor;
             }
 
             try
@@ -442,19 +447,19 @@ namespace V275_Testing.WindowViewModels
             }
             catch { }
         }
-        private async Task PostLogin(bool isLoggedIn_Setup)
+        private async Task PostLogin(bool isLoggedIn_Monitor)
         {
-            LoginData.accessLevel = isLoggedIn_Setup ? "monitor" : "control";
+            LoginData.accessLevel = isLoggedIn_Monitor ? "monitor" : "control";
             LoginData.token = V275.Commands.Token;
             LoginData.id = UserName;
             LoginData.state = "0";
 
-            IsLoggedIn_Setup = isLoggedIn_Setup;
-            IsLoggedIn_Control = !isLoggedIn_Setup;
+            IsLoggedIn_Monitor = isLoggedIn_Monitor;
+            IsLoggedIn_Control = !isLoggedIn_Monitor;
 
             foreach (var rep in Labels)
             {
-                rep.IsLoggedIn_Setup = IsLoggedIn_Setup;
+                rep.IsLoggedIn_Monitor = IsLoggedIn_Monitor;
                 rep.IsLoggedIn_Control = IsLoggedIn_Control;
             }
 
@@ -620,8 +625,12 @@ namespace V275_Testing.WindowViewModels
             await V275.Commands.Print((string)parameter == "1");
         }
 
-        private void StartRunAction(object parameter)
+        private async void StartRunAction(object parameter)
         {
+            if (!StartRunCheck())
+                if (await OkCancelDialog("Missing Label Sectors", "There are Labels that do not have stored sectors. Are you sure you want to continue?") == MessageDialogResult.Negative)
+                    return;
+
             if (CurrentRun != null)
             {
                 CurrentRun.RunStateChange -= CurrentRun_RunStateChange;
@@ -638,6 +647,13 @@ namespace V275_Testing.WindowViewModels
                 return;
 
             CurrentRun.StartAsync();
+        }
+        private bool StartRunCheck()
+        {
+            foreach(var lab in Labels)
+                if (lab.LabelSectors.Count == 0)
+                    return false;
+            return true;
         }
         private void PauseRunAction(object parameter)
         {

@@ -15,6 +15,9 @@ namespace V275_Testing.Databases
             [PrimaryKey]
             public long TimeDate { get => this.timeDate; set => SetProperty(ref timeDate, value); }
 
+            private int labelImageOrder;
+            public int LabelImageOrder { get => labelImageOrder; set => SetProperty(ref labelImageOrder, value); }
+
             private string labelImageUID;
             public string LabelImageUID { get => labelImageUID; set => SetProperty(ref labelImageUID, value); }
 

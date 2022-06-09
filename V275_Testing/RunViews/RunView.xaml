@@ -30,12 +30,12 @@
     <mah:MetroWindow.Resources>
         <Converters:UNIXToTimeDateConverter x:Key="toDate"/>
 
-        <CollectionViewSource x:Key="GroupedDataList" Source="{Binding RunEntries}" IsLiveGroupingRequested="True" IsLiveSortingRequested="True">
+        <CollectionViewSource x:Key="RunEntriesDataList" Source="{Binding RunEntries}" IsLiveGroupingRequested="True" IsLiveSortingRequested="True">
             <CollectionViewSource.SortDescriptions>
-                <componentmodel:SortDescription PropertyName="ProductPart" Direction="Descending"/>
-                <componentmodel:SortDescription PropertyName="TimeDate" Direction="Descending"/>
                 <componentmodel:SortDescription PropertyName="GradingStandard" Direction="Ascending"/>
+                <componentmodel:SortDescription PropertyName="ProductPart" Direction="Descending"/>
                 <componentmodel:SortDescription PropertyName="CameraMAC" Direction="Ascending"/>
+                <componentmodel:SortDescription PropertyName="TimeDate" Direction="Descending"/>
             </CollectionViewSource.SortDescriptions>
             <CollectionViewSource.GroupDescriptions>
                 <PropertyGroupDescription PropertyName="ProductPart" />
@@ -46,6 +46,13 @@
             </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
 
+        <CollectionViewSource x:Key="LabelsDataList" Source="{Binding Labels}" IsLiveSortingRequested="True">
+            <CollectionViewSource.SortDescriptions>
+                <componentmodel:SortDescription PropertyName="Run.LabelImageOrder" Direction="Ascending"/>
+            </CollectionViewSource.SortDescriptions>
+
+        </CollectionViewSource>
+        
         <ContextMenu x:Key="contextMenu">
             <MenuItem Header="Delete" Command="{Binding DeleteRunCommand}"
                                       CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}},
@@ -65,12 +72,12 @@
                 <StackPanel>
 
                     <StackPanel Orientation="Horizontal">
-                        <Button x:Name="BtnSort" Click="BtnSort_Click" Style="{StaticResource MahApps.Styles.Button.Circle}" Width="30" Height="30">
+                        <Button x:Name="BtnSortRuns" Style="{StaticResource MahApps.Styles.Button.Circle}" Width="30" Height="30" Click="BtnSortRuns_Click">
                             <IconPacks:Modern Kind="Sort"/>
                         </Button>
                     </StackPanel>
 
-                    <ListView ItemsSource="{Binding Source={StaticResource ResourceKey=GroupedDataList}}" SelectedItem="{Binding SelectedRunEntry}" ContextMenu="{StaticResource contextMenu}">
+                    <ListView ItemsSource="{Binding Source={StaticResource ResourceKey=RunEntriesDataList}}" SelectedItem="{Binding SelectedRunEntry}" ContextMenu="{StaticResource contextMenu}">
 
                         <ListView.GroupStyle>
                             <GroupStyle>
@@ -265,6 +272,27 @@
                     <Label Grid.Row="1" Grid.Column="1" Content="{Binding SelectedRunEntry.GradingStandard}"/>
                     <Label Grid.Row="1" Grid.Column="2" Content="{Binding SelectedRunEntry.CameraMAC}"/>
                     <Label Grid.Row="1" Grid.Column="3" Content="{Binding SelectedRunEntry.TimeDate, Converter={StaticResource toDate}}"/>
+                    <Label Grid.Row="1" Grid.Column="4">
+                        <Label.Style>
+                            <Style TargetType="{x:Type Label}" BasedOn="{StaticResource {x:Type Label}}">
+                                <Setter Property="Content" Value=""/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedRunEntry.Completed}" Value="1">
+                                        <Setter Property="Content" Value="Complete"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding SelectedRunEntry.Completed}" Value="2">
+                                        <Setter Property="Content" Value="Stopped"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding SelectedRunEntry.Completed}" Value="0">
+                                        <Setter Property="Content" Value="Unknown"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding SelectedRunEntry.Completed}" Value="-1">
+                                        <Setter Property="Content" Value="Faulted"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Label.Style>
+                    </Label>
                 </Grid>
             </Border>
             
@@ -279,7 +307,19 @@
                         <ColumnDefinition MaxWidth="400"/>
                     </Grid.ColumnDefinitions>
 
-                    <Label Grid.Column="0" Content="Label Image" HorizontalAlignment="Center"/>
+                    <Grid Grid.Column="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button Grid.Column="0" x:Name="BtnSortLabels" Click="BtnSortLabels_Click">
+                            <IconPacks:Material Kind="FormatListGroup"/>
+                        </Button>
+                        
+                        <Label Grid.Column="1" Content="Label Image" HorizontalAlignment="Center"/>
+                    </Grid>
+                    
                     <Label Grid.Column="1" Content="Label Sectors" HorizontalAlignment="Center"/>
                     <Label Grid.Column="2" Content="Repeat Sectors" HorizontalAlignment="Center"/>
                     <Label Grid.Column="3" Content="Dissimilar Inspection Results" HorizontalAlignment="Center"/>
@@ -288,7 +328,7 @@
             </Border>
 
             <ScrollViewer Grid.Row="2" >
-                <ItemsControl ItemsSource="{Binding Labels, Mode=OneTime}">
+                <ItemsControl ItemsSource="{Binding Source={StaticResource ResourceKey=LabelsDataList}}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel IsItemsHost="True"/>
