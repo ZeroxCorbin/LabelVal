@@ -40,7 +40,14 @@ namespace V275_Testing
 
         public App()
         {
-            SQLitePCL.Batteries.Init();
+            if (!Directory.Exists(UserDataDirectory))
+            {
+                _ = Directory.CreateDirectory(UserDataDirectory);
+            }
+            if (!Directory.Exists(RunsRoot))
+            {
+                _ = Directory.CreateDirectory(RunsRoot);
+            }
 
             var config = new NLog.Config.LoggingConfiguration();
 
@@ -61,20 +68,22 @@ namespace V275_Testing
 
             NLog.LogManager.GetCurrentClassLogger().Info($"Starting: {Version}");
 
-            if (!Directory.Exists(UserDataDirectory))
+            try
             {
-                _ = Directory.CreateDirectory(UserDataDirectory);
+                SQLitePCL.Batteries.Init();
             }
-            if (!Directory.Exists(RunsRoot))
+            catch (Exception ex)
             {
-                _ = Directory.CreateDirectory(RunsRoot);
+                NLog.LogManager.GetCurrentClassLogger().Error(ex);
+                this.Shutdown();
+                return;
             }
 
             Settings = new Databases.SimpleDatabase().Open(Path.Combine(UserDataDirectory, SettingsDatabaseName));
 
             if (Settings == null)
             {
-                return;
+                this.Shutdown();
             }
         }
 
@@ -94,7 +103,7 @@ namespace V275_Testing
         {
             base.OnExit(e);
 
-            Settings.Dispose();
+            Settings?.Dispose();
         }
     }
 }
