@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -40,6 +42,8 @@ namespace V275_Testing
 
         public App()
         {
+
+
             if (!Directory.Exists(UserDataDirectory))
             {
                 _ = Directory.CreateDirectory(UserDataDirectory);
@@ -48,6 +52,8 @@ namespace V275_Testing
             {
                 _ = Directory.CreateDirectory(RunsRoot);
             }
+
+           // FixFiducial();
 
             var config = new NLog.Config.LoggingConfiguration();
 
@@ -105,5 +111,52 @@ namespace V275_Testing
 
             Settings?.Dispose();
         }
+
+        private void FixFiducial()
+        {
+            foreach (var dir in Directory.EnumerateDirectories(StandardsRoot))
+            {
+                foreach (var imgFile in Directory.EnumerateFiles($"{dir}\\600"))
+                {
+                    RedrawFiducial(imgFile);
+                }
+            }
+        }
+
+        private void RedrawFiducial(string path)
+        {
+            // load your photo
+            using (FileStream fs = new FileStream(path, FileMode.Open))
+            {
+                Image photo = Bitmap.FromStream(fs);
+                fs.Close();
+
+                if (photo.Height != 2400)
+                    File.AppendAllText($"{UserDataDirectory}\\Small Images List", Path.GetFileName(path));
+
+                using (var graphics = Graphics.FromImage(photo))
+                {
+                    // specify the desired quality of the render and text, if you wish
+                    //graphics.CompositingQuality = CompositingQuality.HighQuality;
+                    //graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
+
+                    // set background color
+                    //graphics.Clear(Color.White);
+                    //place photo on image in desired location
+                    //graphics.DrawImage(photo, 0, 0);
+
+                    graphics.FillRectangle(Brushes.White, 0, 1952, 172, photo.Height - 1952);
+                    graphics.FillRectangle(Brushes.Black, 39, 2000, 106, 158);
+                    photo.Save(path, ImageFormat.Png);
+                }
+            }
+
+        }
+        // create an image of the desired size
+
+
+        // save image to file or stream
+
+        //}
     }
 }

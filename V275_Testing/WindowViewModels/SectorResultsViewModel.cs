@@ -48,6 +48,16 @@ namespace V275_Testing.WindowViewModels
                 if (prop.Name == "data")
                     foreach (var prop1 in prop.GetValue(verify).GetType().GetProperties())
                     {
+                        if (prop1.PropertyType == typeof(V275_Report_InspectSector_Common.Decode))
+                        {
+                            var decode = (V275_Report_InspectSector_Common.Decode)prop1.GetValue(prop.GetValue(verify));
+                            GradeValues.Add(prop1.Name, new V275_Report_InspectSector_Common.GradeValue() { grade = decode.grade, value = decode.value });
+
+                            if(Type == "verify1D")
+                                ValueResults.Add("edgeDetermination", decode.edgeDetermination);
+                            continue;
+                        }
+
                         if (prop1.PropertyType == typeof(V275_Report_InspectSector_Common.GradeValue))
                         {
                             GradeValues.Add(prop1.Name, (V275_Report_InspectSector_Common.GradeValue)prop1.GetValue(prop.GetValue(verify)));
@@ -71,19 +81,20 @@ namespace V275_Testing.WindowViewModels
 
                         if (prop1.PropertyType == typeof(V275_Report_InspectSector_Verify1D.Gs1symbolquality) || prop1.PropertyType == typeof(V275_Report_InspectSector_Verify2D.Gs1symbolquality))
                         {
-                            foreach (var prop2 in prop1.GetValue(prop.GetValue(verify)).GetType().GetProperties())
-                            {
-                                if (prop2.PropertyType == typeof(V275_Report_InspectSector_Common.ValueResult))
+                            if (prop1.GetValue(prop.GetValue(verify)) != null)
+                                foreach (var prop2 in prop1.GetValue(prop.GetValue(verify)).GetType().GetProperties())
                                 {
-                                    Gs1ValueResults.Add(prop2.Name, (V275_Report_InspectSector_Common.ValueResult)prop2.GetValue(prop1.GetValue(prop.GetValue(verify))));
-                                    continue;
+                                    if (prop2.PropertyType == typeof(V275_Report_InspectSector_Common.ValueResult))
+                                    {
+                                        Gs1ValueResults.Add(prop2.Name, (V275_Report_InspectSector_Common.ValueResult)prop2.GetValue(prop1.GetValue(prop.GetValue(verify))));
+                                        continue;
+                                    }
+                                    if (prop2.PropertyType == typeof(V275_Report_InspectSector_Common.Grade))
+                                    {
+                                        Gs1Grades.Add(prop2.Name, (V275_Report_InspectSector_Common.Grade)prop2.GetValue(prop1.GetValue(prop.GetValue(verify))));
+                                        continue;
+                                    }
                                 }
-                                if (prop2.PropertyType == typeof(V275_Report_InspectSector_Common.Grade))
-                                {
-                                    Gs1Grades.Add(prop2.Name, (V275_Report_InspectSector_Common.Grade)prop2.GetValue(prop1.GetValue(prop.GetValue(verify))));
-                                    continue;
-                                }
-                            }
                             //ValueResults.Add(prop1.Name, (V275_Report_InspectSector_Common.ValueResult)prop1.GetValue(prop.GetValue(verify)));
                             continue;
                         }

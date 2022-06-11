@@ -113,7 +113,7 @@
                     <Button Content="Get Nodes"
                     Command="{Binding GetDevices}"
                     IsEnabled="{Binding IsNotLoggedIn}"/>
-
+                    <Label/>
                     <ComboBox ItemsSource="{Binding Nodes}"
                           SelectedValue="{Binding SelectedNode}"
                           IsEnabled="{Binding IsNotLoggedIn}">
@@ -128,6 +128,7 @@
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
+                    
                     <!--<TextBox mah:TextBoxHelper.Watermark="Board Stack IP" 
                          Text="{Binding Host}" MinWidth="80"/>-->
                     <!--<TextBox mah:TextBoxHelper.Watermark="Path" 
@@ -138,6 +139,7 @@
                     <TextBox mah:TextBoxHelper.Watermark="Password" 
                          Text="{Binding Password}" MinWidth="80"
                      IsEnabled="{Binding IsNotLoggedIn}"/>
+                    <Label/>
                     <StackPanel Orientation="Horizontal" IsEnabled="{Binding IsGetDevices}" >
                         <Button Content="Logout"
                             Command="{Binding Logout}"
@@ -240,7 +242,7 @@
                         <Label Content="Run Test"/>
 
                         <mah:NumericUpDown Value="{Binding RunLoopCount}" Minimum="1" Maximum="100" Interval="1"/>
-
+                        <Label/>
                         <Button Content="Start"
                             Command="{Binding StartRun}">
                             <Button.Style>

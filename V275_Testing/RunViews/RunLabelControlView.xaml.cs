@@ -30,5 +30,11 @@ namespace V275_Testing.RunViews
             this.DataContext = null;
             GC.Collect();
         }
+
+        private void ScrollLabelSectors_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            if (e.VerticalChange != 0)
+                ScrollRepeatSectors.ScrollToVerticalOffset(e.VerticalOffset);
+        }
     }
 }

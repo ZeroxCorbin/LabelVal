@@ -175,7 +175,8 @@ namespace V275_Testing.RunControllers
                         LabelReport = sRow.LabelReport,
                         LabelImageUID = label.LabelImageUID,
                         LabelImage = label.LabelImageBytes,
-                        LabelImageOrder = LabelCount++
+                        LabelImageOrder = LabelCount++,
+                        LoopCount = i + 1
                     };
 
                     RunLabels.Add(row);

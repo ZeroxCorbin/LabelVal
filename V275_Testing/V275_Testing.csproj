@@ -176,6 +176,7 @@
     <Compile Include="Converters\FloatStringTrimConverter.cs" />
     <Compile Include="Converters\ShortenUIDConverter.cs" />
     <Compile Include="Converters\StringToUpperSpacedConverter.cs" />
+    <Compile Include="Converters\TestRunHeaderConverter.cs" />
     <Compile Include="Converters\UNIXToTimeDateConverter.cs" />
     <Compile Include="Core\BaseViewModel.cs" />
     <Compile Include="Core\RelayCommand.cs" />
@@ -361,28 +362,28 @@
     <Content Include="Assets\Standards\GS1 TABLE 11\600\SS 600DPI TEST ROLL FOR GS1 TABLE 11_5.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 12-1\600\SS TEST ROLL FOR GS1 TABLE 12-1 600DPI_1.png">
+    <Content Include="Assets\Standards\GS1 TABLE 12.1\600\SS TEST ROLL FOR GS1 TABLE 12-1 600DPI_1.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 12-1\600\SS TEST ROLL FOR GS1 TABLE 12-1 600DPI_2.png">
+    <Content Include="Assets\Standards\GS1 TABLE 12.1\600\SS TEST ROLL FOR GS1 TABLE 12-1 600DPI_2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 12-2\600\SS TEST ROLL FOR GS1 TABLE 12-2 600DPI_1.png">
+    <Content Include="Assets\Standards\GS1 TABLE 12.2\600\SS TEST ROLL FOR GS1 TABLE 12-2 600DPI_1.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 12-2\600\SS TEST ROLL FOR GS1 TABLE 12-2 600DPI_2.png">
+    <Content Include="Assets\Standards\GS1 TABLE 12.2\600\SS TEST ROLL FOR GS1 TABLE 12-2 600DPI_2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 12-2\600\SS TEST ROLL FOR GS1 TABLE 12-2 600DPI_3.png">
+    <Content Include="Assets\Standards\GS1 TABLE 12.2\600\SS TEST ROLL FOR GS1 TABLE 12-2 600DPI_3.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 12-3\600\SS TEST ROLL FOR GS1 TABLE 12-3 600DPI_1.png">
+    <Content Include="Assets\Standards\GS1 TABLE 12.3\600\SS TEST ROLL FOR GS1 TABLE 12-3 600DPI_1.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 12-3\600\SS TEST ROLL FOR GS1 TABLE 12-3 600DPI_2.png">
+    <Content Include="Assets\Standards\GS1 TABLE 12.3\600\SS TEST ROLL FOR GS1 TABLE 12-3 600DPI_2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 12-3\600\SS TEST ROLL FOR GS1 TABLE 12-3 600DPI_3.png">
+    <Content Include="Assets\Standards\GS1 TABLE 12.3\600\SS TEST ROLL FOR GS1 TABLE 12-3 600DPI_3.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_01.png">

@@ -83,10 +83,15 @@ namespace V275_Testing.V275
             }
 
             LabelEnd = false;
-            while(!LabelEnd) 
-                Thread.Sleep(10);
+            await Task.Run(() =>
+            {
+                DateTime start = DateTime.Now;
+                while (!LabelEnd)
+                    if ((DateTime.Now - start) > TimeSpan.FromMilliseconds(10000))
+                        return;
+            });
 
-            return true;
+            return LabelEnd;
         }
 
         public async Task<bool> GetReport(int repeat)
@@ -143,9 +148,15 @@ namespace V275_Testing.V275
             }
 
             SetupDetectEnd = false;
-            await Task.Run(() => { while (!SetupDetectEnd) { } });
+            await Task.Run(() =>
+            {
+                DateTime start = DateTime.Now;
+                while (!SetupDetectEnd)
+                    if ((DateTime.Now - start) > TimeSpan.FromMilliseconds(10000))
+                        return;
+            });
 
-            return true;
+            return SetupDetectEnd;
         }
 
         public async Task<bool> AddSector(string name, string json)

@@ -41,18 +41,21 @@ namespace V275_Testing.RunViews
         {
             if (RunList.IsShown)
                 RunList.IsOpen = false;
+
         }
 
         private void BtnSortLabels_Click(object sender, RoutedEventArgs e)
         {
             if (FindResource("LabelsDataList") is CollectionViewSource viewSource)
-                if (viewSource.GroupDescriptions.Count == 0)
+                if (((PropertyGroupDescription)viewSource.GroupDescriptions[0]).PropertyName == "Run.LoopCount")
                 {
+                    viewSource.GroupDescriptions.Clear();
                     viewSource.GroupDescriptions.Add(new PropertyGroupDescription("Run.LabelImageUID"));
                 }
                 else
                 {
                     viewSource.GroupDescriptions.Clear();
+                    viewSource.GroupDescriptions.Add(new PropertyGroupDescription("Run.LoopCount"));
                 }
         }
 

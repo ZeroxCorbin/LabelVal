@@ -38,5 +38,16 @@ namespace V275_Testing.WindowViews
             App.Current.Dispatcher.Invoke(new Action(() => this.BringIntoView()));
             
         }
+
+        private void ScrollLabelSectors_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            if (e.VerticalChange != 0)
+                ScrollRepeatSectors.ScrollToVerticalOffset(e.VerticalOffset);
+        }
+
+        private void ScrollRepeatSectors_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+
+        }
     }
 }

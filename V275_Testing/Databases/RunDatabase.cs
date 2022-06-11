@@ -16,6 +16,9 @@ namespace V275_Testing.Databases
             [PrimaryKey]
             public long TimeDate { get => this.timeDate; set => SetProperty(ref timeDate, value); }
 
+            private int loopCount;
+            public int LoopCount { get => loopCount; set => SetProperty(ref loopCount, value); }
+
             private int labelImageOrder;
             public int LabelImageOrder { get => labelImageOrder; set => SetProperty(ref labelImageOrder, value); }
 

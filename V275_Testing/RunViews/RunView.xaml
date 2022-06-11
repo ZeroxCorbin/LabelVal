@@ -16,20 +16,21 @@
                 mc:Ignorable="d"
                 Height="450" Width="800"
                 SaveWindowPosition="True">
-    
+
     <mah:MetroWindow.Title>
         <MultiBinding StringFormat="V275 Testing : {0}">
             <Binding Path="Version"/>
         </MultiBinding>
     </mah:MetroWindow.Title>
-    
+
     <mah:MetroWindow.DataContext>
         <ViewModels:RunViewModel/>
     </mah:MetroWindow.DataContext>
 
     <mah:MetroWindow.Resources>
         <Converters:UNIXToTimeDateConverter x:Key="toDate"/>
-
+        <Converters:TestRunHeaderConverter x:Key="TestHeader"/>
+        
         <CollectionViewSource x:Key="RunEntriesDataList" Source="{Binding RunEntries}" IsLiveGroupingRequested="True" IsLiveSortingRequested="True">
             <CollectionViewSource.SortDescriptions>
                 <componentmodel:SortDescription PropertyName="GradingStandard" Direction="Ascending"/>
@@ -50,9 +51,11 @@
             <CollectionViewSource.SortDescriptions>
                 <componentmodel:SortDescription PropertyName="Run.LabelImageOrder" Direction="Ascending"/>
             </CollectionViewSource.SortDescriptions>
-
+            <CollectionViewSource.GroupDescriptions>
+                <PropertyGroupDescription PropertyName="Run.LoopCount" />
+            </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
-        
+
         <ContextMenu x:Key="contextMenu">
             <MenuItem Header="Delete" Command="{Binding DeleteRunCommand}"
                                       CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type ContextMenu}},
@@ -295,7 +298,7 @@
                     </Label>
                 </Grid>
             </Border>
-            
+
             <Border Grid.Row="1" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="2" Margin="5,0,5,0">
 
                 <Grid>
@@ -316,10 +319,10 @@
                         <Button Grid.Column="0" x:Name="BtnSortLabels" Click="BtnSortLabels_Click">
                             <IconPacks:Material Kind="FormatListGroup"/>
                         </Button>
-                        
+
                         <Label Grid.Column="1" Content="Label Image" HorizontalAlignment="Center"/>
                     </Grid>
-                    
+
                     <Label Grid.Column="1" Content="Label Sectors" HorizontalAlignment="Center"/>
                     <Label Grid.Column="2" Content="Repeat Sectors" HorizontalAlignment="Center"/>
                     <Label Grid.Column="3" Content="Dissimilar Inspection Results" HorizontalAlignment="Center"/>
@@ -329,20 +332,45 @@
 
             <ScrollViewer Grid.Row="2" >
                 <ItemsControl ItemsSource="{Binding Source={StaticResource ResourceKey=LabelsDataList}}">
-                    <ItemsControl.ItemsPanel>
+                    <!--<ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <WrapPanel IsItemsHost="True"/>
+                            <ListView/>
                         </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
+                    </ItemsControl.ItemsPanel>-->
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <RunViews:RunLabelControlView />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
+                    <ItemsControl.GroupStyle>
+                        <GroupStyle>
+                            <GroupStyle.ContainerStyle>
+                                <Style TargetType="{x:Type GroupItem}">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type GroupItem}">
+                                                <GroupBox BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="2" Margin="5">
+                                                    <ItemsPresenter />
+                                                    <GroupBox.Header>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="{Binding Name, Converter={StaticResource TestHeader}}" Margin="5 2 5 2" ToolTip="{Binding Name}"/>
+                                                            <TextBlock Text="(" Margin="0 2 0 2"/>
+                                                            <TextBlock Text="{Binding ItemCount}" Margin="2 2 2 2"/>
+                                                            <TextBlock Text=")" Margin="0 2 0 2"/>
+                                                        </StackPanel>
+                                                    </GroupBox.Header>
+                                                </GroupBox>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </GroupStyle.ContainerStyle>
+                        </GroupStyle>
+                    </ItemsControl.GroupStyle>
                 </ItemsControl>
-            </ScrollViewer>            
+            </ScrollViewer>
         </Grid>
 
-        
+
     </Grid>
 </mah:MetroWindow>
