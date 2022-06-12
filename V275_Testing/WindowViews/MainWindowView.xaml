@@ -178,33 +178,8 @@
                                 </Style>
                             </Button.Style>
                         </Button>
-                        <Label/>
-                        <Button Content="Run"
-                            Command="{Binding V275_SwitchRun}">
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
-                                    <Setter Property="IsEnabled" Value="False"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Value="True" Binding="{Binding IsLoggedIn}">
-                                            <Setter Property="IsEnabled" Value="True"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
-                        <Button Content="Edit"
-                            Command="{Binding V275_SwitchEdit}">
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
-                                    <Setter Property="IsEnabled" Value="False"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Value="True" Binding="{Binding IsLoggedIn}">
-                                            <Setter Property="IsEnabled" Value="True"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
+                        
+
                     </StackPanel>
 
                     <Label>
@@ -237,7 +212,56 @@
                             </Style>
                         </Label.Style>
                     </Label>
+                    <Label/>
+                    <Button Content="Run"
+                            Command="{Binding V275_SwitchRun}">
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+                                <Setter Property="IsEnabled" Value="True"/>
+                                <Style.Triggers>
+                                    <DataTrigger Value="True" Binding="{Binding IsNotLoggedIn}">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                    <DataTrigger Value="" Binding="{Binding V275.V275_State}">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                    <DataTrigger Value="Running" Binding="{Binding V275.V275_State}">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                    <DataTrigger Value="Idle" Binding="{Binding V275.V275_State}">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                    <DataTrigger Value="True" Binding="{Binding IsGS1Standard}">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button Content="Edit"
+                            Command="{Binding V275_SwitchEdit}">
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+                                <Setter Property="IsEnabled" Value="True"/>
+                                <Style.Triggers>
+                                    <DataTrigger Value="True" Binding="{Binding IsNotLoggedIn}">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                    <DataTrigger Value="" Binding="{Binding V275.V275_State}">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                    <DataTrigger Value="Editing" Binding="{Binding V275.V275_State}">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                    <DataTrigger Value="Idle" Binding="{Binding V275.V275_State}">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
 
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    
                 </StackPanel>
             </Border>
 
@@ -279,6 +303,9 @@
                                             <Setter Property="IsEnabled" Value="False"/>
                                         </DataTrigger>
                                         <DataTrigger Value="True" Binding="{Binding IsRunRunning}">
+                                            <Setter Property="IsEnabled" Value="False"/>
+                                        </DataTrigger>
+                                        <DataTrigger Value="" Binding="{Binding V275.V275_State}">
                                             <Setter Property="IsEnabled" Value="False"/>
                                         </DataTrigger>
                                         <DataTrigger Value="Idle" Binding="{Binding V275.V275_State}">

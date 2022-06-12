@@ -68,7 +68,9 @@ namespace V275_Testing.RunViewModels
 
                 RunEntries.Remove(runEntry);
 
+                RunLedgerDatabase = new RunLedgerDatabase().Open($"{App.RunsRoot}\\{App.RunLedgerDatabaseName}");
                 RunLedgerDatabase.DeleteRunEntry(runEntry.TimeDate);
+                RunLedgerDatabase.Close();
 
                 if (!runEntry.RunDBMissing)
                 {
@@ -84,15 +86,7 @@ namespace V275_Testing.RunViewModels
                     }
 
                 }
-
-
             }
-
-
-            //var res = Labels.FirstOrDefault(e => e.Job.TimeDate == ((JobDatabase.Job)parameter).TimeDate);
-
-            //if (res != null)
-            //    Labels.Remove(res);
         }
 
         private void LoadRunEntries()
@@ -123,8 +117,6 @@ namespace V275_Testing.RunViewModels
                 label.Clear();
 
             Labels.Clear();
-
-            //System.GC.Collect();
 
             RunDatabase = new RunDatabase().Open($"{App.RunsRoot}\\{App.RunDatabaseName(SelectedRunEntry.TimeDate)}");
 

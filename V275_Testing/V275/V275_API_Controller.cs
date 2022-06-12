@@ -18,13 +18,13 @@ namespace V275_Testing.V275
             get => v275_State;
             set => SetProperty(ref v275_State, value);
         }
-        private string v275_State;
+        private string v275_State = "";
         public string V275_JobName
         {
             get => v275_JobName;
             set => SetProperty(ref v275_JobName, value);
         }
-        private string v275_JobName;
+        private string v275_JobName = "";
 
         public V275_Events_System SetupDetectEvent { get; set; }
         private bool SetupDetectEnd { get; set; } = false;

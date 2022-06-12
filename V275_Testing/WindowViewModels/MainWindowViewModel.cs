@@ -66,6 +66,9 @@ namespace V275_Testing.WindowViewModels
         private ObservableCollection<LabelControlViewModel> labels = new ObservableCollection<LabelControlViewModel>();
         public ObservableCollection<LabelControlViewModel> Labels { get => labels; set => SetProperty(ref labels, value); }
 
+        private bool isGS1Standard;
+        public bool IsGS1Standard { get => isGS1Standard; set => SetProperty(ref isGS1Standard, value); }
+
         public string StoredStandard { get => App.Settings.GetValue("StoredStandard", "GS1 TABLE 1"); set { App.Settings.SetValue("StoredStandard", value); } }
         public ObservableCollection<string> Standards { get; } = new ObservableCollection<string>();
         public string SelectedStandard
@@ -261,6 +264,8 @@ namespace V275_Testing.WindowViewModels
 
         private void LoadLabels()
         {
+            IsGS1Standard = StoredStandard.StartsWith("GS1") ? true : false;
+
             Logger.Info("Loading label images from standards directory: {name}", $"{App.StandardsRoot}\\{StoredStandard}\\600\\");
 
             Labels.Clear();
