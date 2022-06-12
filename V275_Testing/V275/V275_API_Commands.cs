@@ -163,6 +163,19 @@ namespace V275_Testing.V275
 
             return res;
         }
+        public async Task<bool> GetReport(int repeat)
+        {
+            Logger.Info("GET: {url}", URLs.Report(repeat));
+
+            string result = await Connection.Get(URLs.Report(repeat), Token);
+
+            bool res;
+            if (res = CheckResults(result))
+                Report = JsonConvert.DeserializeObject<V275_Report>(result);
+
+            return res;
+        }
+
         public async Task<bool> GetRepeatsAvailable()
         {
             Logger.Info("GET: {url}", URLs.Available());
@@ -207,7 +220,7 @@ namespace V275_Testing.V275
             string result = await Connection.Get(URLs.IsRunReady(), Token);
 
             bool res;
-            if (res = CheckResults(result))
+            if (res = CheckResults(result, true))
             {
                 if (result == "OK")
                     return res;
@@ -229,6 +242,14 @@ namespace V275_Testing.V275
             Logger.Info("PUT: {url}", URLs.StartJob());
 
             await Connection.Put(URLs.StartJob(), "", Token);
+
+            return CheckResults("", true);
+        }
+        public async Task<bool> ResumeJob()
+        {
+            Logger.Info("PUT: {url}", URLs.ResumeJob());
+
+            await Connection.Put(URLs.ResumeJob(), "", Token);
 
             return CheckResults("", true);
         }
@@ -294,7 +315,14 @@ namespace V275_Testing.V275
 
             return res;
         }
+        public async Task<bool> RemoveRepeat(int repeat)
+        {
+            Logger.Info("PUT: {url}", URLs.Remove(repeat));
 
+            await Connection.Put(URLs.Remove(repeat), "", Token);
+
+            return CheckResults("", true);
+        }
         public async Task<bool> Print(bool start)
         {
             Logger.Info("PUT: {url}", URLs.Print());

@@ -32,12 +32,11 @@ namespace V275_Testing.WindowViewModels
         {
             public LabelControlViewModel Label { get; set; }
             public int RepeatNumber { get; set; } = -1;
-            public Repeat(LabelControlViewModel label) => Label = label;
         }
 
         public string Version => App.Version;
 
-        private V275_API_Controller V275 = new V275_API_Controller();
+        public V275_API_Controller V275 { get; } = new V275_API_Controller();
         private StandardsDatabase StandardsDatabase { get; }
         //private V275_API_WebSocketEvents WebSocket { get; } = new V275_API_WebSocketEvents();
         //private V275_API_WebSocketEvents SysWebSocket { get; } = new V275_API_WebSocketEvents();
@@ -162,19 +161,6 @@ namespace V275_Testing.WindowViewModels
         public bool IsNotLoggedIn_Control => !isLoggedIn_Control;
         private bool isLoggedIn_Control = false;
 
-        public string V275_State
-        {
-            get => v275_State;
-            set => SetProperty(ref v275_State, value);
-        }
-        private string v275_State;
-        public string V275_JobName
-        {
-            get => v275_JobName;
-            set => SetProperty(ref v275_JobName, value);
-        }
-        private string v275_JobName;
-
         public bool V275_IsBackupVoid => V275.Commands.ConfigurationCamera.backupVoidMode == null ? false : V275.Commands.ConfigurationCamera.backupVoidMode.value == "ON";
 
         public ICommand Print { get; }
@@ -201,6 +187,9 @@ namespace V275_Testing.WindowViewModels
 
         public ICommand StopRun { get; }
 
+        public ICommand V275_SwitchRun { get; }
+        public ICommand V275_SwitchEdit { get; }
+
         public RunController.RunStates RunState { get => runState; set => SetProperty(ref runState, value); }
         private RunController.RunStates runState;
 
@@ -223,12 +212,15 @@ namespace V275_Testing.WindowViewModels
 
             Print = new Core.RelayCommand(PrintAction, c => true);
 
+            V275_SwitchRun = new Core.RelayCommand(V275_SwitchRunAction, c => true);
+            V275_SwitchEdit = new Core.RelayCommand(V275_SwitchEditAction, c => true);
+
             Logger.Info("Initializing standards database: {name}", $"{App.UserDataDirectory}\\{App.StandardsDatabaseName}");
             StandardsDatabase = new StandardsDatabase($"{App.UserDataDirectory}\\{App.StandardsDatabaseName}");
 
             V275.WebSocket.SetupCapture += WebSocket_SetupCapture;
             V275.WebSocket.SessionStateChange += WebSocket_SessionStateChange;
-            V275.WebSocket.Heartbeat += WebSocket_Heartbeat;
+            //V275.WebSocket.Heartbeat += WebSocket_Heartbeat;
             V275.WebSocket.LabelEnd += WebSocket_LabelEnd;
             V275.WebSocket.StateChange += WebSocket_StateChange;
 
@@ -282,7 +274,6 @@ namespace V275_Testing.WindowViewModels
 
             Logger.Info("Processed {count} label images.", Images.Count);
 
-            int i = 1;
             foreach (var img in Images)
             {
                 var tmp = new LabelControlViewModel(img, SelectedPrinter, SelectedStandard, StandardsDatabase, V275, MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance);
@@ -296,17 +287,22 @@ namespace V275_Testing.WindowViewModels
             }
         }
 
-        private async Task ResetRepeats()
-        {
-            Repeats.Clear();
+        //private async Task ResetRepeats()
+        //{
+        //    Repeats.Clear();
 
-            await V275.Commands.GetRepeatsAvailable();
+        //    await V275.Commands.GetRepeatsAvailable();
 
-            if (V275.Commands.Available != null && V275.Commands.Available.Count > 0)
-                LabelCount = V275.Commands.Available[0];
-            else
-                LabelCount = 0;
-        }
+        //    if (V275.Commands.Available != null && V275.Commands.Available.Count > 0)
+        //    {
+        //        LabelCount = V275.Commands.Available[0];
+        //        if (LabelCount == -1)
+        //            LabelCount = 0;
+        //    }
+
+        //    else
+        //        LabelCount = 0;
+        //}
 
         private void Reset()
         {
@@ -442,8 +438,8 @@ namespace V275_Testing.WindowViewModels
                 await V275.WebSocket.StopAsync();
                 //await SysWebSocket.StopAsync();
 
-                V275_State = "";
-                V275_JobName = "";
+                V275.V275_State = "";
+                V275.V275_JobName = "";
             }
             catch { }
         }
@@ -469,43 +465,23 @@ namespace V275_Testing.WindowViewModels
             if (!await V275.WebSocket.StartAsync(V275.Commands.URLs.WS_NodeEvents))
                 return;
 
-            //if (!await SysWebSocket.StartAsync(V275.Commands.URLs.WS_SystemEvents))
-            //    return;
+            Repeats.Clear();
         }
 
 
-        private async void WebSocket_Heartbeat(V275_Events_System ev)
-        {
-            string state = char.ToUpper(ev.data.state[0]) + ev.data.state.Substring(1);
+        //private void WebSocket_Heartbeat(V275_Events_System ev)
+        //{
+        //    string state = char.ToUpper(ev.data.state[0]) + ev.data.state.Substring(1);
 
-            if (V275_State != state)
-            {
-                V275_State = state;
+        //    if (v275_State != state)
+        //    {
+        //        v275_State = state;
 
-                if (V275_State == "Editing")
-                {
-                    await ResetRepeats();
-                    new Task(async () =>
-                        {
-                            if (await V275.GetJob())
-                            {
-                                V275_JobName = V275.Commands.Job.name;
-                            }
-                            else
-                            {
-                                V275_JobName = "ERROR GETTING JOB NAME !";
-                            }
-                        }).Start();
-                }
-                else
-                {
-                    await ResetRepeats();
-                    V275_JobName = "";
-                }
+        //        OnPropertyChanged("V275_State");
+        //        OnPropertyChanged("V275_JobName");
+        //    }
 
-            }
-
-        }
+        //}
         private void WebSocket_SessionStateChange(V275_Events_System ev)
         {
             //if (ev.data.id == LoginData.id)
@@ -517,101 +493,88 @@ namespace V275_Testing.WindowViewModels
         }
         private void WebSocket_SetupCapture(V275_Events_System ev)
         {
-            if (Repeats.ContainsKey(ev.data.repeat))
-            {
-                Repeats[ev.data.repeat].RepeatNumber = ev.data.repeat;
-
-                if (IsLoggedIn_Control)
-                    if (!Repeats.ContainsKey(ev.data.repeat + 1))
-                        App.Current.Dispatcher.Invoke(new Action(() => ProcessRepeat(ev.data.repeat)));
-            }
-            else
-            {
-                LabelCount = ev.data.repeat;
+            if (PrintingLabel == null)
                 return;
-            }
 
-            //if (IsLoggedIn_Control)
-            //    PrintAction("1");
+            Repeats.Add(ev.data.repeat, new Repeat() { Label = PrintingLabel, RepeatNumber = ev.data.repeat });
+            PrintingLabel = null;
+
+            if (IsLoggedIn_Control)
+                if (!Repeats.ContainsKey(ev.data.repeat + 1))
+                    App.Current.Dispatcher.Invoke(new Action(() => ProcessRepeat(ev.data.repeat)));
         }
         private void WebSocket_LabelEnd(V275_Events_System ev)
         {
-            if (V275_State != "Running")
+            if (V275.V275_State == "Editing")
                 return;
 
-            if (Repeats.ContainsKey(ev.data.repeat))
-            {
-                Repeats[ev.data.repeat].RepeatNumber = ev.data.repeat;
-
-                if (IsLoggedIn_Control)
-                    if (!Repeats.ContainsKey(ev.data.repeat + 1))
-                        App.Current.Dispatcher.Invoke(new Action(() => ProcessRepeat(ev.data.repeat)));
-            }
-            else
-            {
-                LabelCount = ev.data.repeat;
+            if (PrintingLabel == null)
                 return;
-            }
 
-            //if (IsLoggedIn_Control)
-            //    PrintAction("1");
+            Repeats.Add(ev.data.repeat, new Repeat() { Label = PrintingLabel, RepeatNumber = ev.data.repeat });
+            PrintingLabel = null;
 
+            if (IsLoggedIn_Control)
+                if (!Repeats.ContainsKey(ev.data.repeat + 1))
+                    App.Current.Dispatcher.Invoke(new Action(() => ProcessRepeat(ev.data.repeat)));
         }
         private void WebSocket_StateChange(V275_Events_System ev)
         {
-            ev.data.state = ev.data.toState;
-            WebSocket_Heartbeat(ev);
-            //V275_State = char.ToUpper(ev.data.toState[0]) + ev.data.toState.Substring(1);
+            if (ev.data.toState == "editing" || (ev.data.toState == "running" && ev.data.fromState != "paused"))
+                Repeats.Clear();
         }
 
-
+        private LabelControlViewModel PrintingLabel { get; set; } = null;
         private void Label_Printing(LabelControlViewModel label)
         {
-            if (V275_State != "Paused")
+            Task.Run(() =>
             {
-                Task.Run(() =>
-                {
-                    label.IsWorking = true;
+                label.IsWorking = true;
 
-                    PrintControl printer = new PrintControl();
-                    printer.Print(label.LabelImagePath, label.PrintCount, SelectedPrinter);
+                PrintControl printer = new PrintControl();
+                printer.Print(label.LabelImagePath, label.PrintCount, SelectedPrinter);
 
-                    if (!IsLoggedIn_Control)
-                        label.IsWorking = false;
-                });
+                if (!IsLoggedIn_Control)
+                    label.IsWorking = false;
+            });
 
-                for (int i = 0; i < label.PrintCount; i++)
-                    Repeats.Add(++LabelCount, new Repeat(label));
+            if (IsLoggedIn_Control)
+                PrintingLabel = label;
+            else
+                PrintingLabel = null;
 
-                if (V275_State == "Editing" && IsLoggedIn_Control)
-                    PrintAction("1");
-            }
-
-            //throw new NotImplementedException();
+            if (V275.V275_State != "Idle" && IsLoggedIn_Control)
+                PrintAction("1");
         }
         private async void ProcessRepeat(int repeat)
         {
-            if (repeat > 0)
-                if (!await V275.Commands.SetRepeat(repeat))
-                {
-                    return;
-                }
-
-            int i = await Repeats[repeat].Label.Load();
-
-            if (i == 2)
+            if (SelectedStandard.StartsWith("GS1"))
             {
-                var sectors = V275.CreateSectors(V275.SetupDetectEvent, StoredStandard);
+                if (repeat > 0)
+                    if (!await V275.Commands.SetRepeat(repeat))
+                    {
+                        return;
+                    }
 
-                foreach(var sec in sectors)
-                    await V275.AddSector(sec.name, JsonConvert.SerializeObject(sec));
+
+                int i = await Repeats[repeat].Label.Load();
+
+                if (i == 2)
+                {
+                    var sectors = V275.CreateSectors(V275.SetupDetectEvent, StoredStandard);
+
+                    Logger.Info("Creating sectors.");
+                    foreach (var sec in sectors)
+                        await V275.AddSector(sec.name, JsonConvert.SerializeObject(sec));
+                }
             }
 
             Logger.Info("Reading label results and Image.");
             await Repeats[repeat].Label.Read(repeat);
-            Logger.Info("DONE - Reading label results and Image.");
 
             Repeats[repeat].Label.IsWorking = false;
+
+            Repeats.Clear();
         }
 
 
@@ -623,6 +586,15 @@ namespace V275_Testing.WindowViewModels
             Thread.Sleep(200);
 
             await V275.Commands.Print((string)parameter == "1");
+        }
+
+        private async void V275_SwitchRunAction(object parameter)
+        {
+            await V275.SwitchToRun();
+        }
+        private async void V275_SwitchEditAction(object parameter)
+        {
+            await V275.SwitchToEdit();
         }
 
         private async void StartRunAction(object parameter)
@@ -650,7 +622,7 @@ namespace V275_Testing.WindowViewModels
         }
         private bool StartRunCheck()
         {
-            foreach(var lab in Labels)
+            foreach (var lab in Labels)
                 if (lab.LabelSectors.Count == 0)
                     return false;
             return true;

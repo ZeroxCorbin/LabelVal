@@ -45,6 +45,9 @@ namespace V275_Testing.RunControllers
         private ObservableCollection<LabelControlViewModel> Labels { get; set; }
         private string GradingStandard { get; }
         private StandardsDatabase StandardsDatabase { get; }
+        //private string JobName { get; }
+
+        public bool IsGS1Standard { get; set; }
 
         public RunController(ObservableCollection<LabelControlViewModel> labels, int loopCount, StandardsDatabase standardsDatabase, string productPart, string cameraMAC)
         {
@@ -52,7 +55,10 @@ namespace V275_Testing.RunControllers
             LoopCount = loopCount;
             StandardsDatabase = standardsDatabase;
             GradingStandard = Labels[0].GradingStandard;
+            IsGS1Standard = GradingStandard.StartsWith("GS1") ? true : false;
+
             TimeDate = DateTime.UtcNow.Ticks;
+            //JobName = jobName;
 
             RunEntry = new RunLedgerDatabase.RunEntry() { GradingStandard = GradingStandard, TimeDate = TimeDate, Completed = 0, ProductPart = productPart, CameraMAC = cameraMAC };
 
@@ -125,7 +131,7 @@ namespace V275_Testing.RunControllers
 
         private int LabelCount;
 
-        public bool Start()
+        public async Task<bool> Start()
         {
             LabelCount = 1;
 
@@ -139,6 +145,11 @@ namespace V275_Testing.RunControllers
                 {
                     if (label.LabelSectors.Count == 0)
                         continue;
+
+                    if (IsGS1Standard)
+                        await label.V275.SwitchToEdit();
+                    else
+                        await label.V275.SwitchToRun();
 
                     while (RequestedState == RunStates.PAUSED)
                     {
@@ -161,9 +172,6 @@ namespace V275_Testing.RunControllers
                     if (RequestedState == RunStates.RUNNING && State != RunStates.RUNNING)
                         RunStateChange?.Invoke(State = RunStates.RUNNING);
 
-                    Logger.Info("Job Print");
-                    label.PrintAction(null);
-
                     var sRow = StandardsDatabase.GetRow(GradingStandard, label.LabelImageUID);
 
                     if (sRow == null || string.IsNullOrEmpty(sRow.LabelReport))
@@ -182,6 +190,9 @@ namespace V275_Testing.RunControllers
                     RunLabels.Add(row);
                     RunDatabase.InsertOrReplace(row);
 
+                    Logger.Info("Job Print");
+                    label.PrintAction(null);
+
                     DateTime start = DateTime.Now;
                     while (label.IsWorking)
                     {
@@ -191,14 +202,14 @@ namespace V275_Testing.RunControllers
                             Stopped();
                             return false;
                         }
-                        if((DateTime.Now - start) > TimeSpan.FromMilliseconds(10000))
+                        if ((DateTime.Now - start) > TimeSpan.FromMilliseconds(10000))
                         {
                             Logger.Error("Job timeout.");
                             RunEntry.Completed = -1;
                             Stopped();
                             return false;
                         }
-                            
+
                         Thread.Sleep(10);
                     };
 
@@ -209,7 +220,9 @@ namespace V275_Testing.RunControllers
                         {
                             encoder.Frames.Add(BitmapFrame.Create(ms));
                             encoder.Save(stream);
+
                             row.RepeatImage = stream.ToArray();
+
                             stream.Close();
                         }
                     }

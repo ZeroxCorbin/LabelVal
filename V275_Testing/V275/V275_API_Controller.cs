@@ -8,12 +8,28 @@ using V275_Testing.V275.Models;
 
 namespace V275_Testing.V275
 {
-    public class V275_API_Controller
+    public class V275_API_Controller : Core.BaseViewModel
     {
-        public V275_API_Commands Commands { get; }= new V275_API_Commands();
+        public V275_API_Commands Commands { get; } = new V275_API_Commands();
         public V275_API_WebSocketEvents WebSocket { get; } = new V275_API_WebSocketEvents();
 
-        public V275_Events_System SetupDetectEvent { get; private set; }
+        public string V275_State
+        {
+            get => v275_State;
+            set => SetProperty(ref v275_State, value);
+        }
+        private string v275_State;
+        public string V275_JobName
+        {
+            get => v275_JobName;
+            set => SetProperty(ref v275_JobName, value);
+        }
+        private string v275_JobName;
+
+        public V275_Events_System SetupDetectEvent { get; set; }
+        private bool SetupDetectEnd { get; set; } = false;
+
+        bool LabelEnd { get; set; } = false;
 
         public string Host { get => Commands.Host; set => Commands.Host = value; }
         public uint SystemPort { get => Commands.SystemPort; set => Commands.SystemPort = value; }
@@ -31,30 +47,56 @@ namespace V275_Testing.V275
         public V275_API_Controller()
         {
             //WebSocket.SetupCapture += WebSocket_SetupCapture;
-            WebSocket.SessionStateChange += WebSocket_SessionStateChange;
-            //WebSocket.Heartbeat += WebSocket_Heartbeat;
+            //WebSocket.SessionStateChange += WebSocket_SessionStateChange;
+            WebSocket.Heartbeat += WebSocket_Heartbeat;
             //WebSocket.SetupDetect += WebSocket_SetupDetect;
             WebSocket.LabelEnd += WebSocket_LabelEnd;
             WebSocket.SetupDetect += WebSocket_SetupDetect;
-            //WebSocket.StateChange += WebSocket_StateChange;
+            WebSocket.StateChange += WebSocket_StateChange;
         }
 
-        bool SetupDetectEnd = false;
+
         private void WebSocket_SetupDetect(Models.V275_Events_System ev, bool end)
         {
             SetupDetectEvent = ev;
             SetupDetectEnd = end;
         }
 
-        bool LabelEnd = false;
+
         private void WebSocket_LabelEnd(Models.V275_Events_System ev)
         {
             LabelEnd = true;
         }
 
-        private void WebSocket_SessionStateChange(Models.V275_Events_System ev)
+        private void WebSocket_Heartbeat(V275_Events_System ev)
         {
-            
+            string state = char.ToUpper(ev.data.state[0]) + ev.data.state.Substring(1);
+
+            if (V275_State != state)
+            {
+                V275_State = state;
+
+                if (V275_State == "Editing")
+                {
+                    new Task(async () =>
+                    {
+                        if (await Commands.GetJob())
+                        {
+                            V275_JobName = Commands.Job.name;
+                        }
+                        else
+                        {
+                            V275_JobName = "";
+                        }
+                    }).Start();
+                }
+            }
+        }
+        private void WebSocket_StateChange(V275_Events_System ev)
+        {
+            ev.data.state = ev.data.toState;
+            WebSocket_Heartbeat(ev);
+            //V275_State = char.ToUpper(ev.data.toState[0]) + ev.data.toState.Substring(1);
         }
 
         public async Task<bool> GetJob()
@@ -96,10 +138,21 @@ namespace V275_Testing.V275
 
         public async Task<bool> GetReport(int repeat)
         {
-            if (!await Commands.GetReport())
+            if (V275_State == "Editing")
             {
-                Status = Commands.Status;
-                return false;
+                if (!await Commands.GetReport())
+                {
+                    Status = Commands.Status;
+                    return false;
+                }
+            }
+            else
+            {
+                if (!await Commands.GetReport(repeat))
+                {
+                    Status = Commands.Status;
+                    return false;
+                }
             }
 
             if (!await Commands.GetRepeatsImage(repeat))
@@ -166,7 +219,7 @@ namespace V275_Testing.V275
                 Status = Commands.Status;
                 return false;
             }
-           else
+            else
                 return true;
         }
 
@@ -176,7 +229,7 @@ namespace V275_Testing.V275
             int d2 = 1;
 
             List<V275_Job_Sector_Verify> lst = new List<V275_Job_Sector_Verify>();
-            
+
 
             foreach (var val in ev.data.detections)
             {
@@ -219,6 +272,71 @@ namespace V275_Testing.V275
             }
 
             return lst;
+        }
+
+        public async Task<bool> SwitchToEdit()
+        {
+            if (V275_State == "Idle")
+                return false;
+
+            if (V275_State == "Editing")
+                return true;
+
+            if (!await Commands.StopJob())
+            {
+                Status = Commands.Status;
+                return false;
+            }
+
+            await Task.Run(() =>
+            {
+                DateTime start = DateTime.Now;
+                while (V275_State != "Editing")
+                    if ((DateTime.Now - start) > TimeSpan.FromMilliseconds(10000))
+                        return;
+            });
+
+            return V275_State == "Editing";
+        }
+
+        public async Task<bool> SwitchToRun()
+        {
+            if (V275_State == "Idle")
+                return false;
+
+            if (V275_State == "Running")
+                return true;
+
+            if (string.IsNullOrEmpty(V275_JobName))
+                return false;
+
+            if (!await Commands.GetIsRunReady())
+            {
+                Status = Commands.Status;
+                return false;
+            }
+
+            if (!await Commands.RunJob(V275_JobName))
+            {
+                Status = Commands.Status;
+                return false;
+            }
+
+            if (!await Commands.StartJob())
+            {
+                Status = Commands.Status;
+                return false;
+            }
+
+            await Task.Run(() =>
+            {
+                DateTime start = DateTime.Now;
+                while (V275_State != "Running")
+                    if ((DateTime.Now - start) > TimeSpan.FromMilliseconds(30000))
+                        return;
+            });
+
+            return V275_State == "Running";
         }
 
         private void read()

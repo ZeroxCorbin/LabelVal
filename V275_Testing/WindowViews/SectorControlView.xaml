@@ -558,7 +558,7 @@
                 </ItemsControl>
             </Border>
 
-            <Border BorderThickness="1" Grid.Row="5" Grid.ColumnSpan="4" Padding="1" CornerRadius="3">
+            <Border BorderThickness="1" Grid.Row="5" Grid.ColumnSpan="4" Padding="1" CornerRadius="3" Visibility="{Binding IsGS1Standard, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Border.Style>
                     <Style TargetType="{x:Type Border}">
                         <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}"/>

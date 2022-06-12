@@ -25,13 +25,18 @@ namespace V275_Testing.WindowViewModels
         public bool IsWarning { get; }
         public bool IsError { get; }
 
-        public bool IsWrongStandard { get; set; }
+        private bool isWrongStandard;
+        public bool IsWrongStandard { get => isWrongStandard; set => SetProperty(ref isWrongStandard, value); }
 
-        public SectorControlViewModel(V275_Job.Sector jobSector, object reportSector, bool isWrongStandard)
+        private bool isGS1Standard;
+        public bool IsGS1Standard { get => isGS1Standard; set => SetProperty(ref isGS1Standard, value); }
+
+        public SectorControlViewModel(V275_Job.Sector jobSector, object reportSector, bool isWrongStandard, bool isGS1Standard)
         {
             ReportSector = reportSector;
             JobSector = jobSector;
             IsWrongStandard = isWrongStandard;
+            IsGS1Standard = isGS1Standard;
 
             SectorResults.Process(reportSector, jobSector.username);
 

@@ -32,12 +32,16 @@ namespace V275_Testing.RunViewModels
         private ObservableCollection<SectorResultsViewModel> diffSectors = new ObservableCollection<SectorResultsViewModel>();
         public ObservableCollection<SectorResultsViewModel> DiffSectors { get => diffSectors; set => SetProperty(ref diffSectors, value); }
 
+        private bool isGS1Standard;
+        public bool IsGS1Standard { get => isGS1Standard; set => SetProperty(ref isGS1Standard, value); }
+
         private IDialogCoordinator dialogCoordinator;
         public RunLabelControlViewModel(IDialogCoordinator diag, RunDatabase.Run run, RunLedgerDatabase.RunEntry runEntry)
         {
             dialogCoordinator = diag;
             Run = run;
             RunEntry = runEntry;
+            IsGS1Standard = RunEntry.GradingStandard.StartsWith("GS1") ? true : false;
 
             GetLabelSectors();
             GetRepeatSectors();
@@ -54,10 +58,10 @@ namespace V275_Testing.RunViewModels
                 {
                     bool isWrongStandard = false;
                     if (jSec.type == "verify1D" || jSec.type == "verify2D")
-                        if (jSec.gradingStandard.enabled)
+                        if (jSec.gradingStandard.enabled && IsGS1Standard)
                             isWrongStandard = !(RunEntry.GradingStandard == $"{jSec.gradingStandard.standard} TABLE {jSec.gradingStandard.tableId}");
                         else
-                            isWrongStandard = true;
+                            isWrongStandard = false;
 
                     foreach (JObject rSec in JsonConvert.DeserializeObject<V275_Report>(Run.LabelReport).inspectLabel.inspectSector)
                     {
@@ -69,7 +73,7 @@ namespace V275_Testing.RunViewModels
                             if (fSec == null)
                                 break;
 
-                            tempSectors.Add(new SectorControlViewModel(jSec, fSec, isWrongStandard));
+                            tempSectors.Add(new SectorControlViewModel(jSec, fSec, isWrongStandard, jSec.gradingStandard == null ? false : jSec.gradingStandard.enabled));
 
                             break;
                         }
@@ -95,10 +99,10 @@ namespace V275_Testing.RunViewModels
                 {
                     bool isWrongStandard = false;
                     if (jSec.type == "verify1D" || jSec.type == "verify2D")
-                        if (jSec.gradingStandard.enabled)
+                        if (jSec.gradingStandard.enabled && IsGS1Standard)
                             isWrongStandard = !(RunEntry.GradingStandard == $"{jSec.gradingStandard.standard} TABLE {jSec.gradingStandard.tableId}");
                         else
-                            isWrongStandard = true;
+                            isWrongStandard = false;
 
                     foreach (JObject rSec in JsonConvert.DeserializeObject<V275_Report>(Run.RepeatReport).inspectLabel.inspectSector)
                     {
@@ -110,7 +114,7 @@ namespace V275_Testing.RunViewModels
                             if (fSec == null)
                                 break;
 
-                            tempSectors.Add(new SectorControlViewModel(jSec, fSec, isWrongStandard));
+                            tempSectors.Add(new SectorControlViewModel(jSec, fSec, isWrongStandard, jSec.gradingStandard == null ? false : jSec.gradingStandard.enabled));
 
                             break;
                         }

@@ -178,7 +178,33 @@
                                 </Style>
                             </Button.Style>
                         </Button>
-
+                        <Label/>
+                        <Button Content="Run"
+                            Command="{Binding V275_SwitchRun}">
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+                                    <Setter Property="IsEnabled" Value="False"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Value="True" Binding="{Binding IsLoggedIn}">
+                                            <Setter Property="IsEnabled" Value="True"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                        <Button Content="Edit"
+                            Command="{Binding V275_SwitchEdit}">
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+                                    <Setter Property="IsEnabled" Value="False"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Value="True" Binding="{Binding IsLoggedIn}">
+                                            <Setter Property="IsEnabled" Value="True"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
                     </StackPanel>
 
                     <Label>
@@ -197,14 +223,14 @@
                         </Label.Style>
                     </Label>
 
-                    <Label Content="{Binding V275_JobName}"/>
+                    <Label Content="{Binding V275.V275_JobName}"/>
                     <Label Content="State:"/>
-                    <Label Content="{Binding V275_State}">
+                    <Label Content="{Binding V275.V275_State}">
                         <Label.Style>
                             <Style TargetType="{x:Type Label}">
                                 <Setter Property="Background" Value="Red"/>
                                 <Style.Triggers>
-                                    <DataTrigger Value="Editing" Binding="{Binding V275_State}">
+                                    <DataTrigger Value="Editing" Binding="{Binding V275.V275_State}">
                                         <Setter Property="Background" Value="Green"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -255,10 +281,10 @@
                                         <DataTrigger Value="True" Binding="{Binding IsRunRunning}">
                                             <Setter Property="IsEnabled" Value="False"/>
                                         </DataTrigger>
-                                        <DataTrigger Value="Idle" Binding="{Binding V275_State}">
+                                        <DataTrigger Value="Idle" Binding="{Binding V275.V275_State}">
                                             <Setter Property="IsEnabled" Value="False"/>
                                         </DataTrigger>
-                                        <DataTrigger Value="Running" Binding="{Binding V275_State}">
+                                        <DataTrigger Value="Running" Binding="{Binding V275.V275_State}">
                                             <Setter Property="IsEnabled" Value="False"/>
                                         </DataTrigger>
                                     </Style.Triggers>

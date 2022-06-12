@@ -33,6 +33,9 @@ namespace V275_Testing.WindowViewModels
         private byte[] labelImageBytes;
         public byte[] LabelImageBytes { get => labelImageBytes; set => SetProperty(ref labelImageBytes, value); }
 
+        private bool isGS1Standard;
+        public bool IsGS1Standard { get => isGS1Standard; set => SetProperty(ref isGS1Standard, value); }
+
         private string gradingStandard;
         public string GradingStandard { get => gradingStandard; set => SetProperty(ref gradingStandard, value); }
 
@@ -108,7 +111,7 @@ namespace V275_Testing.WindowViewModels
 
         private StandardsDatabase StandardsDatabase { get; }
 
-        V275_API_Controller V275 { get; }
+        public V275_API_Controller V275 { get; }
         V275_Job ReadJob { get; set; }
         //public string StoredJob { get; private set; }
         public V275_Report Report { get; private set; }
@@ -134,6 +137,9 @@ namespace V275_Testing.WindowViewModels
             LabelImagePath = imagePath;
             PrinterName = printerName;
             GradingStandard = gradingStandard;
+
+            IsGS1Standard = GradingStandard.StartsWith("GS1") ? true : false;
+
             StandardsDatabase = standardsDatabase;
             V275 = v275;
 
@@ -198,10 +204,10 @@ namespace V275_Testing.WindowViewModels
                 {
                     bool isWrongStandard = false;
                     if (jSec.type == "verify1D" || jSec.type == "verify2D")
-                        if (jSec.gradingStandard.enabled)
+                        if (jSec.gradingStandard.enabled && IsGS1Standard)
                             isWrongStandard = !(GradingStandard == $"{jSec.gradingStandard.standard} TABLE {jSec.gradingStandard.tableId}");
                         else
-                            isWrongStandard = true;
+                            isWrongStandard = false;
 
                     foreach (JObject rSec in JsonConvert.DeserializeObject<V275_Report>(row.LabelReport).inspectLabel.inspectSector)
                     {
@@ -213,7 +219,7 @@ namespace V275_Testing.WindowViewModels
                             if (fSec == null)
                                 break;
 
-                            tempSectors.Add(new SectorControlViewModel(jSec, fSec, isWrongStandard));
+                            tempSectors.Add(new SectorControlViewModel(jSec, fSec, isWrongStandard, jSec.gradingStandard == null ? false : jSec.gradingStandard.enabled));
 
                             break;
                         }
@@ -297,17 +303,34 @@ namespace V275_Testing.WindowViewModels
                 return false;
             }
 
-            if (!await V275.Inspect(repeat))
-            {
-                Status = V275.Status;
-                return false;
-            }
+            if (V275.V275_State == "Editing")
+                if (!await V275.Inspect(repeat))
+                {
+                    Status = V275.Status;
+                    return false;
+                }
 
             if (!await V275.GetReport(repeat))
             {
                 Status = V275.Status;
                 return false;
             }
+
+            if (V275.V275_State == "Paused")
+            {
+                if (!await V275.Commands.RemoveRepeat(repeat))
+                {
+                    Status = V275.Status;
+                    return false;
+                }
+
+                if (!await V275.Commands.ResumeJob())
+                {
+                    Status = V275.Status;
+                    return false;
+                }
+            }
+
 
             ReadJob = V275.Commands.Job;
             Report = V275.Commands.Report;
@@ -318,10 +341,10 @@ namespace V275_Testing.WindowViewModels
             {
                 bool isWrongStandard = false;
                 if (jSec.type == "verify1D" || jSec.type == "verify2D")
-                    if (jSec.gradingStandard.enabled)
+                    if (jSec.gradingStandard.enabled && IsGS1Standard)
                         isWrongStandard = !(GradingStandard == $"{jSec.gradingStandard.standard} TABLE {jSec.gradingStandard.tableId}");
                     else
-                        isWrongStandard = true;
+                        isWrongStandard = false;
 
                 foreach (JObject rSec in Report.inspectLabel.inspectSector)
                 {
@@ -332,7 +355,7 @@ namespace V275_Testing.WindowViewModels
                         if (fSec == null)
                             break; //Not yet supported sector type
 
-                        tempSectors.Add(new SectorControlViewModel(jSec, fSec, isWrongStandard));
+                        tempSectors.Add(new SectorControlViewModel(jSec, fSec, isWrongStandard, jSec.gradingStandard == null ? false : jSec.gradingStandard.enabled));
 
                         break;
                     }
