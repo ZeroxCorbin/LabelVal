@@ -311,9 +311,9 @@
                                         <DataTrigger Value="Idle" Binding="{Binding V275.V275_State}">
                                             <Setter Property="IsEnabled" Value="False"/>
                                         </DataTrigger>
-                                        <DataTrigger Value="Running" Binding="{Binding V275.V275_State}">
+                                        <!--<DataTrigger Value="Running" Binding="{Binding V275.V275_State}">
                                             <Setter Property="IsEnabled" Value="False"/>
-                                        </DataTrigger>
+                                        </DataTrigger>-->
                                     </Style.Triggers>
                                 </Style>
                             </Button.Style>

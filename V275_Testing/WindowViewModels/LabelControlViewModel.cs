@@ -137,11 +137,10 @@ namespace V275_Testing.WindowViewModels
             LabelImagePath = imagePath;
             PrinterName = printerName;
             GradingStandard = gradingStandard;
-
-            IsGS1Standard = GradingStandard.StartsWith("GS1") ? true : false;
-
             StandardsDatabase = standardsDatabase;
             V275 = v275;
+
+            IsGS1Standard = GradingStandard.StartsWith("GS1") ? true : false;
 
             PrintCommand = new Core.RelayCommand(PrintAction, c => true);
             ReadCommand = new Core.RelayCommand(ReadAction, c => true);

@@ -79,16 +79,49 @@
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock Grid.Row="0" Text="{Binding JobSector.symbology, Converter={StaticResource stringToUpper}, Mode=OneTime}" Margin="3,1,3,0"/>
+                <TextBlock Grid.Row="0" Margin="3,1,3,0">
+                    <TextBlock.Style>
+                        <Style TargetType="{x:Type TextBlock}">
+
+                            <Style.Triggers>
+                                <DataTrigger Value="verify1D" Binding="{Binding JobSector.type, Mode=OneTime}">
+                                    <Setter Property="Text" Value="{Binding JobSector.symbology, Converter={StaticResource stringToUpper}, Mode=OneTime}"/>
+                                </DataTrigger>
+                                <DataTrigger Value="verify2D" Binding="{Binding JobSector.type, Mode=OneTime}">
+                                    <Setter Property="Text" Value="{Binding JobSector.symbology, Converter={StaticResource stringToUpper}, Mode=OneTime}"/>
+                                </DataTrigger>
+                                
+                                <DataTrigger Value="ocr" Binding="{Binding JobSector.type, Mode=OneTime}">
+                                    <Setter Property="Text" Value="{Binding JobSector.matchSettings.fixedText, Mode=OneTime}"/>
+                                    <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Text}"/>
+                                </DataTrigger>
+                                <DataTrigger Value="ocv" Binding="{Binding JobSector.type, Mode=OneTime}">
+                                    <Setter Property="Text" Value="{Binding JobSector.matchSettings.fixedText, Mode=OneTime}"/>
+                                </DataTrigger>
+                                <DataTrigger Value="blemish" Binding="{Binding JobSector.type, Mode=OneTime}">
+                                    <Setter Property="Text" Value=""/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
 
                 <TextBlock Grid.Row="1" Margin="3,0,3,0" TextWrapping="Wrap">
                     <TextBlock.Style>
                         <Style TargetType="{x:Type TextBlock}">
-                            <Setter Property="Text" Value="{Binding ReportSector.data.decodeText, Mode=OneTime}"/>
-                            <Style.Triggers>
+                            
+                            <Style.Triggers> 
+                                 <DataTrigger Value="verify1D" Binding="{Binding JobSector.type, Mode=OneTime}">
+                                    <Setter Property="Text" Value="{Binding ReportSector.data.decodeText, Mode=OneTime}"/>
+
+                                </DataTrigger>
+                                <DataTrigger Value="verify2D" Binding="{Binding JobSector.type, Mode=OneTime}">
+                                    <Setter Property="Text" Value="{Binding ReportSector.data.decodeText, Mode=OneTime}"/>
+                                </DataTrigger>
                                 <DataTrigger Value="ocr" Binding="{Binding JobSector.type, Mode=OneTime}">
                                     <Setter Property="Text" Value="{Binding ReportSector.data.text, Mode=OneTime}"/>
                                 </DataTrigger>
+
                                 <DataTrigger Value="ocv" Binding="{Binding JobSector.type, Mode=OneTime}">
                                     <Setter Property="Text" Value="{Binding ReportSector.data.text, Mode=OneTime}"/>
                                 </DataTrigger>
@@ -347,7 +380,7 @@
                                 </ItemsControl>
                             </Border>
 
-                            <Border Grid.Row="4" BorderThickness="1" Padding="1" CornerRadius="3">
+                            <Border Grid.Row="4" BorderThickness="1" Padding="1" CornerRadius="3" Visibility="{Binding IsGS1Standard, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <Border.Style>
                                     <Style TargetType="{x:Type Border}">
                                         <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}"/>
@@ -404,7 +437,7 @@
                                 </ItemsControl>
                             </Border>
 
-                            <Border Grid.Row="5" BorderThickness="1" Padding="1" CornerRadius="3">
+                            <Border Grid.Row="5" BorderThickness="1" Padding="1" CornerRadius="3" Visibility="{Binding IsGS1Standard, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <Border.Style>
                                     <Style TargetType="{x:Type Border}">
                                         <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}"/>
@@ -478,12 +511,20 @@
                     <Button.Style>
                         <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Square.Accent}">
                             <Setter Property="Background" Value="Green"/>
+                            <Setter Property="IsHitTestVisible" Value="True"/>
                             <Style.Triggers>
                                 <DataTrigger Value="True" Binding="{Binding IsError, Mode=OneTime}">
                                     <Setter Property="Background" Value="Red"/>
                                 </DataTrigger>
                                 <DataTrigger Value="True" Binding="{Binding IsWarning, Mode=OneTime}">
                                     <Setter Property="Background" Value="Orange"/>
+                                </DataTrigger>
+
+                                <DataTrigger Value="ocr" Binding="{Binding JobSector.type, Mode=OneTime}">
+                                    <Setter Property="IsHitTestVisible" Value="False"/>
+                                </DataTrigger>
+                                <DataTrigger Value="ocv" Binding="{Binding JobSector.type, Mode=OneTime}">
+                                    <Setter Property="IsHitTestVisible" Value="False"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -492,10 +533,23 @@
                         <TextBlock>
                             <TextBlock.Style>
                                 <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                    <Setter Property="Text" Value="{Binding ReportSector.data.overallGrade.grade.value, StringFormat=N1, Mode=OneTime}"/>
+                                    
                                     <Style.Triggers>
+                                        <DataTrigger Value="verify1D" Binding="{Binding JobSector.type, Mode=OneTime}">
+                                            <Setter Property="Text" Value="{Binding ReportSector.data.overallGrade.grade.value, StringFormat=N1, Mode=OneTime}"/>
+                                        </DataTrigger>
+                                        <DataTrigger Value="verify2D" Binding="{Binding JobSector.type, Mode=OneTime}">
+                                            <Setter Property="Text" Value="{Binding ReportSector.data.overallGrade.grade.value, StringFormat=N1, Mode=OneTime}"/>
+                                        </DataTrigger>
+                                        
                                         <DataTrigger Value="blemish" Binding="{Binding JobSector.type, Mode=OneTime}">
                                             <Setter Property="Text" Value="{Binding ReportSector.data.blemishCount, Mode=OneTime}"/>
+                                        </DataTrigger>
+                                        <DataTrigger Value="ocr" Binding="{Binding JobSector.type, Mode=OneTime}">
+                                            <Setter Property="Text" Value="{Binding ReportSector.data.score, Mode=OneTime}"/>
+                                        </DataTrigger>
+                                        <DataTrigger Value="ocv" Binding="{Binding JobSector.type, Mode=OneTime}">
+                                            <Setter Property="Text" Value="{Binding ReportSector.data.score, Mode=OneTime}"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
