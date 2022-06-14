@@ -22,8 +22,11 @@ namespace V275_Testing.WindowViewModels
         private SectorDifferenceViewModel sectorResults = new SectorDifferenceViewModel();
         //public List<V275_Report_InspectSector_Common.Alarm> Alarms { get; } = new List<V275_Report_InspectSector_Common.Alarm>();
 
-        public bool IsWarning { get; }
-        public bool IsError { get; }
+        private bool isWarning;
+        public bool IsWarning { get => isWarning; set => SetProperty(ref isWarning, value); }
+
+        private bool isError;
+        public bool IsError { get => isError; set => SetProperty(ref isError, value); }
 
         private bool isWrongStandard;
         public bool IsWrongStandard { get => isWrongStandard; set => SetProperty(ref isWrongStandard, value); }

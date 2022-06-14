@@ -53,7 +53,7 @@ namespace V275_Testing
                 _ = Directory.CreateDirectory(RunsRoot);
             }
 
-            // FixFiducial();
+            FixFiducial();
             //FixRotation();
 
             var config = new NLog.Config.LoggingConfiguration();
@@ -132,8 +132,11 @@ namespace V275_Testing
                 Image photo = Bitmap.FromStream(fs);
                 fs.Close();
 
-                if (photo.Height != 2400)
-                    File.AppendAllText($"{UserDataDirectory}\\Small Images List", Path.GetFileName(path));
+                //if (photo.Height != 2400)
+                //    File.AppendAllText($"{UserDataDirectory}\\Small Images List", Path.GetFileName(path));
+
+                if (photo.Height > 2400 || photo.Height < 2000)
+                    return;
 
                 using (var graphics = Graphics.FromImage(photo))
                 {

@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using V275_Testing.Utilities;
 using V275_Testing.V275.Models;
 
 namespace V275_Testing.WindowViewModels
@@ -21,23 +24,23 @@ namespace V275_Testing.WindowViewModels
         private bool isNotEmpty = false;
         public bool IsNotEmpty { get => isNotEmpty; set => SetProperty(ref isNotEmpty, value); }
 
-        private Dictionary<string, V275_Report_InspectSector_Common.GradeValue> gradeValues = new Dictionary<string, V275_Report_InspectSector_Common.GradeValue>();
-        public Dictionary<string, V275_Report_InspectSector_Common.GradeValue> GradeValues { get => gradeValues; set => SetProperty(ref gradeValues, value); }
+        private ObservableDictionary<string, V275_Report_InspectSector_Common.GradeValue> gradeValues = new ObservableDictionary<string, V275_Report_InspectSector_Common.GradeValue>();
+        public ObservableDictionary<string, V275_Report_InspectSector_Common.GradeValue> GradeValues { get => gradeValues; set => SetProperty(ref gradeValues, value); }
 
-        private Dictionary<string, V275_Report_InspectSector_Common.ValueResult> valueResults = new Dictionary<string, V275_Report_InspectSector_Common.ValueResult>();
-        public Dictionary<string, V275_Report_InspectSector_Common.ValueResult> ValueResults { get => valueResults; set => SetProperty(ref valueResults, value); }
+        private ObservableDictionary<string, V275_Report_InspectSector_Common.ValueResult> valueResults = new ObservableDictionary<string, V275_Report_InspectSector_Common.ValueResult>();
+        public ObservableDictionary<string, V275_Report_InspectSector_Common.ValueResult> ValueResults { get => valueResults; set => SetProperty(ref valueResults, value); }
 
-        private Dictionary<string, V275_Report_InspectSector_Common.ValueResult> gs1ValueResults = new Dictionary<string, V275_Report_InspectSector_Common.ValueResult>();
-        public Dictionary<string, V275_Report_InspectSector_Common.ValueResult> Gs1ValueResults { get => gs1ValueResults; set => SetProperty(ref gs1ValueResults, value); }
+        private ObservableDictionary<string, V275_Report_InspectSector_Common.ValueResult> gs1ValueResults = new ObservableDictionary<string, V275_Report_InspectSector_Common.ValueResult>();
+        public ObservableDictionary<string, V275_Report_InspectSector_Common.ValueResult> Gs1ValueResults { get => gs1ValueResults; set => SetProperty(ref gs1ValueResults, value); }
 
-        private Dictionary<string, V275_Report_InspectSector_Common.Grade> gs1Grades = new Dictionary<string, V275_Report_InspectSector_Common.Grade>();
-        public Dictionary<string, V275_Report_InspectSector_Common.Grade> Gs1Grades { get => gs1Grades; set => SetProperty(ref gs1Grades, value); }
+        private ObservableDictionary<string, V275_Report_InspectSector_Common.Grade> gs1Grades = new ObservableDictionary<string, V275_Report_InspectSector_Common.Grade>();
+        public ObservableDictionary<string, V275_Report_InspectSector_Common.Grade> Gs1Grades { get => gs1Grades; set => SetProperty(ref gs1Grades, value); }
 
-        private Dictionary<string, V275_Report_InspectSector_Common.Value> values = new Dictionary<string, V275_Report_InspectSector_Common.Value>();
-        public Dictionary<string, V275_Report_InspectSector_Common.Value> Values { get => values; set => SetProperty(ref values, value); }
+        private ObservableDictionary<string, V275_Report_InspectSector_Common.Value> values = new ObservableDictionary<string, V275_Report_InspectSector_Common.Value>();
+        public ObservableDictionary<string, V275_Report_InspectSector_Common.Value> Values { get => values; set => SetProperty(ref values, value); }
 
-        private List<V275_Report_InspectSector_Common.Alarm> alarms = new List<V275_Report_InspectSector_Common.Alarm>();
-        public List<V275_Report_InspectSector_Common.Alarm> Alarms { get => alarms; set => SetProperty(ref alarms, value); }
+        private ObservableCollection<V275_Report_InspectSector_Common.Alarm> alarms = new ObservableCollection<V275_Report_InspectSector_Common.Alarm>();
+        public ObservableCollection<V275_Report_InspectSector_Common.Alarm> Alarms { get => alarms; set => SetProperty(ref alarms, value); }
 
         public void Process(object verify, string userName)
         {
@@ -83,7 +86,10 @@ namespace V275_Testing.WindowViewModels
                         }
                         if (prop1.PropertyType == typeof(V275_Report_InspectSector_Common.Alarm[]))
                         {
-                            Alarms = ((V275_Report_InspectSector_Common.Alarm[])prop1.GetValue(prop.GetValue(verify))).ToList();
+                            var lst = ((V275_Report_InspectSector_Common.Alarm[])prop1.GetValue(prop.GetValue(verify))).ToList();
+                            foreach(var alm in lst)
+                                Alarms.Add(alm);
+                            //Alarms = ((V275_Report_InspectSector_Common.Alarm[])prop1.GetValue(prop.GetValue(verify))).ToList();
                             IsNotEmpty = true;
                             continue;
                         }
@@ -137,8 +143,8 @@ namespace V275_Testing.WindowViewModels
                 Type = Type
             };
 
-            foreach (var gv in GradeValues)
-                if (compare.GradeValues.ContainsKey(gv.Key))
+            foreach (KeyValuePair<string, V275_Report_InspectSector_Common.GradeValue> gv in GradeValues)
+                if (compare.GradeValues.ContainsKey(gv.Key.ToString()))
                 {
                     if (!CompareGradeValue(gv.Value, compare.GradeValues[gv.Key]))
                     {
@@ -148,7 +154,7 @@ namespace V275_Testing.WindowViewModels
 
                 }
 
-            foreach (var vr in ValueResults)
+            foreach (KeyValuePair<string, V275_Report_InspectSector_Common.ValueResult> vr in ValueResults)
                 if (compare.ValueResults.ContainsKey(vr.Key))
                 {
                     if (!CompareValueResult(vr.Value, compare.ValueResults[vr.Key]))
@@ -158,7 +164,7 @@ namespace V275_Testing.WindowViewModels
                     }
                 }
 
-            foreach (var v in Values)
+            foreach (KeyValuePair<string, V275_Report_InspectSector_Common.Value> v in Values)
                 if (compare.Values.ContainsKey(v.Key))
                 {
                     if (!CompareValue(v.Value, compare.Values[v.Key]))
@@ -168,7 +174,7 @@ namespace V275_Testing.WindowViewModels
                     }
                 }
 
-            foreach (var v in Gs1ValueResults)
+            foreach (KeyValuePair<string, V275_Report_InspectSector_Common.ValueResult> v in Gs1ValueResults)
                 if (compare.Gs1ValueResults.ContainsKey(v.Key))
                 {
                     if (!CompareValueResult(v.Value, compare.Gs1ValueResults[v.Key]))
@@ -178,7 +184,7 @@ namespace V275_Testing.WindowViewModels
                     }
                 }
 
-            foreach (var v in Gs1Grades)
+            foreach (KeyValuePair<string, V275_Report_InspectSector_Common.Grade> v in Gs1Grades)
                 if (compare.Gs1Grades.ContainsKey(v.Key))
                 {
                     if (!CompareGrade(v.Value, compare.Gs1Grades[v.Key]))

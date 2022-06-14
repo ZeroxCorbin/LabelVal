@@ -188,6 +188,7 @@
     <Compile Include="RunControllers\RunController.cs" />
     <Compile Include="Printer\PrintControl.cs" />
     <Compile Include="Utilities\ImageUtilies.cs" />
+    <Compile Include="Utilities\ObservableDictionary.cs" />
     <Compile Include="V275\Models\V275_Configuration_Camera.cs" />
     <Compile Include="V275\Models\V275_DetectResponse.cs" />
     <Compile Include="V275\Models\V275_Devices.cs" />
@@ -303,6 +304,306 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Images\OCV.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART A\600\25 All Symbology Part A PDF_01.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART A\600\25 All Symbology Part A PDF_02.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART A\600\25 All Symbology Part A PDF_03.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART A\600\25 All Symbology Part A PDF_04.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART A\600\25 All Symbology Part A PDF_05.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART A\600\25 All Symbology Part A PDF_06.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART A\600\25 All Symbology Part A PDF_07.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART A\600\25 All Symbology Part A PDF_08.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART A\600\25 All Symbology Part A PDF_09.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART A\600\25 All Symbology Part A PDF_10.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART A\600\25 All Symbology Part A PDF_11.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART A\600\25 All Symbology Part A PDF_12.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART A\600\25 All Symbology Part A PDF_13.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART A\600\25 All Symbology Part A PDF_14.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART A\600\25 All Symbology Part A PDF_15.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART A\600\25 All Symbology Part A PDF_16.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART A\600\25 All Symbology Part A PDF_17.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART A\600\25 All Symbology Part A PDF_18.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART A\600\25 All Symbology Part A PDF_19.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART A\600\25 All Symbology Part A PDF_20.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART A\600\25 All Symbology Part A PDF_21.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART A\600\25 All Symbology Part A PDF_22.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART A\600\25 All Symbology Part A PDF_23.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART A\600\25 All Symbology Part A PDF_24.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART A\600\25 All Symbology Part A PDF_25.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART B\600\25 Labels All Symbologies Part B 600dpi_01.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART B\600\25 Labels All Symbologies Part B 600dpi_02.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART B\600\25 Labels All Symbologies Part B 600dpi_03.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART B\600\25 Labels All Symbologies Part B 600dpi_04.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART B\600\25 Labels All Symbologies Part B 600dpi_05.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART B\600\25 Labels All Symbologies Part B 600dpi_06.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART B\600\25 Labels All Symbologies Part B 600dpi_07.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART B\600\25 Labels All Symbologies Part B 600dpi_08.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART B\600\25 Labels All Symbologies Part B 600dpi_09.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART B\600\25 Labels All Symbologies Part B 600dpi_10.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART B\600\25 Labels All Symbologies Part B 600dpi_11.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART B\600\25 Labels All Symbologies Part B 600dpi_12.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART B\600\25 Labels All Symbologies Part B 600dpi_13.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART B\600\25 Labels All Symbologies Part B 600dpi_14.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART B\600\25 Labels All Symbologies Part B 600dpi_15.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART B\600\25 Labels All Symbologies Part B 600dpi_16.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART B\600\25 Labels All Symbologies Part B 600dpi_17.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART B\600\25 Labels All Symbologies Part B 600dpi_18.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART B\600\25 Labels All Symbologies Part B 600dpi_19.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART B\600\25 Labels All Symbologies Part B 600dpi_20.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART B\600\25 Labels All Symbologies Part B 600dpi_21.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART B\600\25 Labels All Symbologies Part B 600dpi_22.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART B\600\25 Labels All Symbologies Part B 600dpi_23.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART B\600\25 Labels All Symbologies Part B 600dpi_24.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART B\600\25 Labels All Symbologies Part B 600dpi_25.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART C\600\25 Labels All Symbologies Part C 600dpi_01.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART C\600\25 Labels All Symbologies Part C 600dpi_02.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART C\600\25 Labels All Symbologies Part C 600dpi_03.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART C\600\25 Labels All Symbologies Part C 600dpi_04.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART C\600\25 Labels All Symbologies Part C 600dpi_05.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART C\600\25 Labels All Symbologies Part C 600dpi_06.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART C\600\25 Labels All Symbologies Part C 600dpi_07.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART C\600\25 Labels All Symbologies Part C 600dpi_08.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART C\600\25 Labels All Symbologies Part C 600dpi_09.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART C\600\25 Labels All Symbologies Part C 600dpi_10.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART C\600\25 Labels All Symbologies Part C 600dpi_11.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART C\600\25 Labels All Symbologies Part C 600dpi_12.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART C\600\25 Labels All Symbologies Part C 600dpi_13.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART C\600\25 Labels All Symbologies Part C 600dpi_14.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART C\600\25 Labels All Symbologies Part C 600dpi_15.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART C\600\25 Labels All Symbologies Part C 600dpi_16.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART C\600\25 Labels All Symbologies Part C 600dpi_17.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART C\600\25 Labels All Symbologies Part C 600dpi_18.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART C\600\25 Labels All Symbologies Part C 600dpi_19.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART C\600\25 Labels All Symbologies Part C 600dpi_20.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART C\600\25 Labels All Symbologies Part C 600dpi_21.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART C\600\25 Labels All Symbologies Part C 600dpi_22.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART C\600\25 Labels All Symbologies Part C 600dpi_23.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART C\600\25 Labels All Symbologies Part C 600dpi_24.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART C\600\25 Labels All Symbologies Part C 600dpi_25.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART D\600\25 Labels All Symbologies Part D 600dpi_01.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART D\600\25 Labels All Symbologies Part D 600dpi_02.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART D\600\25 Labels All Symbologies Part D 600dpi_03.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART D\600\25 Labels All Symbologies Part D 600dpi_04.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART D\600\25 Labels All Symbologies Part D 600dpi_05.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART D\600\25 Labels All Symbologies Part D 600dpi_06.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART D\600\25 Labels All Symbologies Part D 600dpi_07.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART D\600\25 Labels All Symbologies Part D 600dpi_08.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART D\600\25 Labels All Symbologies Part D 600dpi_09.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART D\600\25 Labels All Symbologies Part D 600dpi_10.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART D\600\25 Labels All Symbologies Part D 600dpi_11.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART D\600\25 Labels All Symbologies Part D 600dpi_12.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART D\600\25 Labels All Symbologies Part D 600dpi_13.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART D\600\25 Labels All Symbologies Part D 600dpi_14.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART D\600\25 Labels All Symbologies Part D 600dpi_15.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART D\600\25 Labels All Symbologies Part D 600dpi_16.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART D\600\25 Labels All Symbologies Part D 600dpi_17.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART D\600\25 Labels All Symbologies Part D 600dpi_18.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART D\600\25 Labels All Symbologies Part D 600dpi_19.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART D\600\25 Labels All Symbologies Part D 600dpi_20.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART D\600\25 Labels All Symbologies Part D 600dpi_21.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART D\600\25 Labels All Symbologies Part D 600dpi_22.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART D\600\25 Labels All Symbologies Part D 600dpi_23.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART D\600\25 Labels All Symbologies Part D 600dpi_24.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES - PART D\600\25 Labels All Symbologies Part D 600dpi_25.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_01.png">
@@ -650,154 +951,394 @@
     <Content Include="Assets\Standards\GS1 TABLE 9\600\SS 600DPI TEST ROLL GS1 TABLE 9_3.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_01.png">
+    <Content Include="Assets\Standards\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_01.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_02.png">
+    <Content Include="Assets\Standards\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_02.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_03.png">
+    <Content Include="Assets\Standards\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_03.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_04.png">
+    <Content Include="Assets\Standards\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_04.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_05.png">
+    <Content Include="Assets\Standards\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_05.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_06.png">
+    <Content Include="Assets\Standards\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_06.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_07.png">
+    <Content Include="Assets\Standards\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_07.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_08.png">
+    <Content Include="Assets\Standards\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_08.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_09.png">
+    <Content Include="Assets\Standards\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_09.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_10.png">
+    <Content Include="Assets\Standards\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_10.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_11.png">
+    <Content Include="Assets\Standards\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_11.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_12.png">
+    <Content Include="Assets\Standards\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_12.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_13.png">
+    <Content Include="Assets\Standards\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_13.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_14.png">
+    <Content Include="Assets\Standards\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_14.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_15.png">
+    <Content Include="Assets\Standards\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_15.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_16.png">
+    <Content Include="Assets\Standards\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_16.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_17.png">
+    <Content Include="Assets\Standards\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_17.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_18.png">
+    <Content Include="Assets\Standards\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_18.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_19.png">
+    <Content Include="Assets\Standards\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_19.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_20.png">
+    <Content Include="Assets\Standards\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_20.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_21.png">
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_01.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_22.png">
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_02.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_23.png">
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_03.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_24.png">
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_04.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_25.png">
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_05.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_26.png">
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_06.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_27.png">
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_07.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_28.png">
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_08.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_29.png">
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_09.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_30.png">
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_10.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_31.png">
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_11.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_32.png">
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_12.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_33.png">
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_13.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_34.png">
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_14.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_35.png">
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_15.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_36.png">
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_16.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_37.png">
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_17.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_38.png">
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_18.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_39.png">
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_19.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_40.png">
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_20.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_41.png">
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_21.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_42.png">
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_22.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_43.png">
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_23.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_44.png">
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_24.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_45.png">
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_25.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_46.png">
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_26.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_47.png">
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_27.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_48.png">
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_28.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_49.png">
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_29.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\PRINT QUALITY\600\V275Val_50_600DPI_50.png">
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_30.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_31.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_32.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_33.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_34.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_35.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_36.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_37.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_38.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_39.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_40.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_41.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_42.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_43.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_44.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_45.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_46.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_47.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_48.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_49.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_50.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION 6x4\300\TEST ROLL 6x4 10 LABELS_01.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION 6x4\300\TEST ROLL 6x4 10 LABELS_02.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION 6x4\300\TEST ROLL 6x4 10 LABELS_03.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION 6x4\300\TEST ROLL 6x4 10 LABELS_04.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION 6x4\300\TEST ROLL 6x4 10 LABELS_05.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION 6x4\300\TEST ROLL 6x4 10 LABELS_06.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION 6x4\300\TEST ROLL 6x4 10 LABELS_07.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION 6x4\300\TEST ROLL 6x4 10 LABELS_08.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION 6x4\300\TEST ROLL 6x4 10 LABELS_09.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION 6x4\300\TEST ROLL 6x4 10 LABELS_10.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_01.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_02.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_03.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_04.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_05.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_06.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_07.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_08.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_09.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_10.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_11.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_12.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_13.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_14.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_15.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_16.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_17.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_18.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_19.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_20.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_21.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_22.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_23.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_24.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_25.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_26.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_27.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_28.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_29.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_30.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_31.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_32.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_33.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_34.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_35.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_36.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_37.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_38.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_39.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_40.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_41.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_42.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_43.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_44.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_45.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_46.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_47.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_48.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_49.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_50.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
