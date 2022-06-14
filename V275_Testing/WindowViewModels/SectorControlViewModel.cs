@@ -18,8 +18,8 @@ namespace V275_Testing.WindowViewModels
         public object ReportSector { get => reportSector; set => SetProperty(ref reportSector, value); }
         private object reportSector;
 
-        public SectorResultsViewModel SectorResults { get => sectorResults; set => SetProperty(ref sectorResults, value); } 
-        private SectorResultsViewModel sectorResults = new SectorResultsViewModel();
+        public SectorDifferenceViewModel SectorResults { get => sectorResults; set => SetProperty(ref sectorResults, value); } 
+        private SectorDifferenceViewModel sectorResults = new SectorDifferenceViewModel();
         //public List<V275_Report_InspectSector_Common.Alarm> Alarms { get; } = new List<V275_Report_InspectSector_Common.Alarm>();
 
         public bool IsWarning { get; }

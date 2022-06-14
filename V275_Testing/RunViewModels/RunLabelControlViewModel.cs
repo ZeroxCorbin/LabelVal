@@ -29,8 +29,8 @@ namespace V275_Testing.RunViewModels
         private ObservableCollection<SectorControlViewModel> labelSectors = new ObservableCollection<SectorControlViewModel>();
         public ObservableCollection<SectorControlViewModel> LabelSectors { get => labelSectors; set => SetProperty(ref labelSectors, value); }
 
-        private ObservableCollection<SectorResultsViewModel> diffSectors = new ObservableCollection<SectorResultsViewModel>();
-        public ObservableCollection<SectorResultsViewModel> DiffSectors { get => diffSectors; set => SetProperty(ref diffSectors, value); }
+        private ObservableCollection<SectorDifferenceViewModel> diffSectors = new ObservableCollection<SectorDifferenceViewModel>();
+        public ObservableCollection<SectorDifferenceViewModel> DiffSectors { get => diffSectors; set => SetProperty(ref diffSectors, value); }
 
         private bool isGS1Standard;
         public bool IsGS1Standard { get => isGS1Standard; set => SetProperty(ref isGS1Standard, value); }
@@ -132,7 +132,7 @@ namespace V275_Testing.RunViewModels
 
         private void GetSectorDiff()
         {
-            List<SectorResultsViewModel> diff = new List<SectorResultsViewModel>();
+            List<SectorDifferenceViewModel> diff = new List<SectorDifferenceViewModel>();
             foreach (var sec in LabelSectors)
             {
                 bool found = false;
@@ -146,7 +146,7 @@ namespace V275_Testing.RunViewModels
 
                 if (!found)
                 {
-                    var dat = sec.SectorResults.Compare(new SectorResultsViewModel());
+                    var dat = sec.SectorResults.Compare(new SectorDifferenceViewModel());
                     dat.IsSectorMissing = true;
                     diff.Add(dat);
                 }

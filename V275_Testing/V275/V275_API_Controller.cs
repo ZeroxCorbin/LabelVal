@@ -76,7 +76,7 @@ namespace V275_Testing.V275
             {
                 V275_State = state;
 
-                if (V275_State == "Editing")
+                if (V275_State != "Idle")
                 {
                     new Task(async () =>
                     {

@@ -53,7 +53,8 @@ namespace V275_Testing
                 _ = Directory.CreateDirectory(RunsRoot);
             }
 
-           // FixFiducial();
+            // FixFiducial();
+            //FixRotation();
 
             var config = new NLog.Config.LoggingConfiguration();
 
@@ -149,6 +150,33 @@ namespace V275_Testing
                     graphics.FillRectangle(Brushes.Black, 39, 2000, 106, 158);
                     photo.Save(path, ImageFormat.Png);
                 }
+            }
+
+        }
+
+        private void FixRotation()
+        {
+            foreach (var dir in Directory.EnumerateDirectories(StandardsRoot))
+            {
+                foreach (var imgFile in Directory.EnumerateFiles($"{dir}\\600"))
+                {
+                    if (imgFile.Contains("PRINT QUALITY"))
+                        RotateImage(imgFile);
+                }
+            }
+        }
+
+        private void RotateImage(string path)
+        {
+            // load your photo
+            using (FileStream fs = new FileStream(path, FileMode.Open))
+            {
+                Image photo = Bitmap.FromStream(fs);
+                fs.Close();
+
+                photo.RotateFlip(RotateFlipType.Rotate180FlipNone);
+                photo.Save(path, ImageFormat.Png);
+
             }
 
         }

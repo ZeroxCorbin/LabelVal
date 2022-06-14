@@ -200,7 +200,7 @@
     <Compile Include="V275\Models\V275_Repeat_Available.cs" />
     <Compile Include="V275\Models\V275_Report_InspectSector_Blemish.cs" />
     <Compile Include="V275\V275_API_Controller.cs" />
-    <Compile Include="WindowViewModels\SectorResultsViewModel.cs" />
+    <Compile Include="WindowViewModels\SectorDifferenceViewModel.cs" />
     <Compile Include="V275\Models\V275_Report_InspectSector_Common.cs" />
     <Compile Include="V275\Models\V275_Report_InspectSector_OCR.cs" />
     <Compile Include="V275\Models\V275_Report_InspectSector_OCV.cs" />

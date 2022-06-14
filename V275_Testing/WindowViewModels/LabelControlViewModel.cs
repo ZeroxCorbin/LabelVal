@@ -238,7 +238,7 @@ namespace V275_Testing.WindowViewModels
         private async void StoreAction(object parameter)
         {
             if (LabelSectors.Count > 0)
-                if (await OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for label {LabelImageUID}?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
+                if (await OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for this label?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
                     return;
 
             StandardsDatabase.AddRow(GradingStandard, LabelImageUID, JsonConvert.SerializeObject(ReadJob), JsonConvert.SerializeObject(Report));
@@ -246,7 +246,7 @@ namespace V275_Testing.WindowViewModels
         }
         private async void ClearStoredAction(object parameter)
         {
-            if (await OkCancelDialog("Clear Stored Sectors", $"Are you sure you want to clear the stored sectors for label {LabelImageUID}?\r\nThis can not be undone!") == MessageDialogResult.Affirmative)
+            if (await OkCancelDialog("Clear Stored Sectors", $"Are you sure you want to clear the stored sectors for this label?\r\nThis can not be undone!") == MessageDialogResult.Affirmative)
             {
                 StandardsDatabase.DeleteRow(GradingStandard, LabelImageUID);
                 GetStored();

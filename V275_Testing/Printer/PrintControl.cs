@@ -15,19 +15,22 @@ namespace V275_Testing.Printer
 
         private int Count { get; set; }
         private string ImagePath { get; set; }
+        private string Data;
 
         private int index;
 
-        public void Print(string imagePath, int count, string printerName)
+        public void Print(string imagePath, int count, string printerName, string data)
         {
             ImagePath = imagePath;
             Count = count;
+            Data = data;
 
             index = 1;
 
             using (PrintDocument pd = new PrintDocument())
             {
                 pd.PrintPage += PrintPage;
+
                 pd.PrinterSettings.PrinterName = printerName;
                 pd.Print();
             }
@@ -35,22 +38,15 @@ namespace V275_Testing.Printer
 
         private void PrintPage(object o, PrintPageEventArgs e)
         {
-            //e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            //e.Graphics.InterpolationMode = InterpolationMode.High;
-           //e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-
-
-
             using (System.Drawing.Image img = System.Drawing.Image.FromFile(ImagePath))
             {
-                Size s = new Size(((int)(img.Width / img.HorizontalResolution) * 300), ((int)(img.Height / img.VerticalResolution) * 300));
+                e.Graphics.DrawImage(img, new Point(0, 0));
+                if (!string.IsNullOrEmpty(Data))
+                {
+                    SizeF dataLength = e.Graphics.MeasureString(Data, new Font("Arial", 8));
+                    e.Graphics.DrawString(Data, new Font("Arial", 8), Brushes.Black, new Point(e.PageBounds.Width - (int)dataLength.Width - 10, 10));
+                }
 
-            //Rectangle rect = new Rectangle(x, y, thumbSize.Width, thumbSize.Height);
-            //g.DrawImage(mg, rect, 0, 0, mg.Width, mg.Height, GraphicsUnit.Pixel);
-            //    Bitmap bit = new Bitmap(img, );
-                //Rectangle rectangle = new Rectangle(0,0, ((int)(img.Width / img.HorizontalResolution) * 300), ((int)(img.Height / img.VerticalResolution) * 300));
-                System.Drawing.Point loc = new System.Drawing.Point(0, 0);
-                e.Graphics.DrawImage(img, new Point(0,0));
             }
 
             if (index++ < Count)

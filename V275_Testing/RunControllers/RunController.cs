@@ -21,11 +21,11 @@ namespace V275_Testing.RunControllers
 
         public enum RunStates
         {
-            LOADED,
+            IDLE,
             RUNNING,
             PAUSED,
-            COMPLETE,
-            STOPPED
+            STOPPED,
+            COMPLETE
         }
 
         public delegate void RunStateChangeDeletgate(RunStates state);
@@ -41,7 +41,9 @@ namespace V275_Testing.RunControllers
         public RunDatabase RunDatabase { get; private set; }
         public List<RunDatabase.Run> RunLabels { get; private set; } = new List<RunDatabase.Run>();
 
-        private int LoopCount { get; set; }
+        public int LoopCount { get; private set; }
+        public int LabelCount { get; private set; }
+
         private ObservableCollection<LabelControlViewModel> Labels { get; set; }
         private string GradingStandard { get; }
         private StandardsDatabase StandardsDatabase { get; }
@@ -58,13 +60,8 @@ namespace V275_Testing.RunControllers
             IsGS1Standard = GradingStandard.StartsWith("GS1") ? true : false;
 
             TimeDate = DateTime.UtcNow.Ticks;
-            //JobName = jobName;
 
             RunEntry = new RunLedgerDatabase.RunEntry() { GradingStandard = GradingStandard, TimeDate = TimeDate, Completed = 0, ProductPart = productPart, CameraMAC = cameraMAC };
-
-            //OpenDatabases();
-            //CreateJobEntries();
-            //InitializeRunDatabase();
         }
 
         public RunController(long timeDate)
@@ -81,12 +78,6 @@ namespace V275_Testing.RunControllers
 
             if (!CreateRunEntries())
                 return null;
-
-            //if (!InitializeRunDatabase())
-            //    return null;
-
-            State = RunStates.LOADED;
-            RunStateChange?.Invoke(State);
 
             return this;
         }
@@ -129,7 +120,7 @@ namespace V275_Testing.RunControllers
             Task.Run(() => Start());
         }
 
-        private int LabelCount;
+       
 
         public async Task<bool> Start()
         {

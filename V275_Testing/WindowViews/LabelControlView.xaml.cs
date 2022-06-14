@@ -47,7 +47,8 @@ namespace V275_Testing.WindowViews
 
         private void ScrollRepeatSectors_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
-
+            if (e.VerticalChange != 0)
+                ScrollLabelSectors.ScrollToVerticalOffset(e.VerticalOffset);
         }
     }
 }

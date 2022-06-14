@@ -29,10 +29,18 @@
 
             <Grid Grid.Row="0" Grid.Column="0">
                  <Image Source="{Binding Run.LabelImage, Mode=OneTime, Converter={StaticResource bytesToImage}}" Margin="3" x:Name="image" MaxHeight="400" Width="400"/>
-                <TextBlock Text="{Binding Run.LabelImageOrder}" Margin="5" FontSize="32" Foreground="Black"/>
+                
+                <StackPanel HorizontalAlignment="Left" Margin="5" Orientation="Horizontal">
+                    <TextBlock Text="{Binding Run.LoopCount}" FontSize="16" Foreground="Black" />
+                    <TextBlock Text=" : " FontSize="16" Foreground="Black" />
+                    <TextBlock Text="{Binding Run.LabelImageOrder}" FontSize="16" Foreground="Black" />                
+                </StackPanel >
+
             </Grid>
 
-            <ScrollViewer x:Name="ScrollLabelSectors" Grid.Row="0" Grid.Column="1" Width="200" Margin="3" Padding="0,0,0,6" MaxHeight="400" mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True" ScrollChanged="ScrollLabelSectors_ScrollChanged">
+            <ScrollViewer x:Name="ScrollLabelSectors"
+                          Grid.Row="0" Grid.Column="1" Width="200" Margin="3" Padding="0,0,0,6" MaxHeight="400"
+                          ScrollChanged="ScrollLabelSectors_ScrollChanged">
                 <ItemsControl ItemsSource="{Binding LabelSectors, Mode=OneTime}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
@@ -42,7 +50,9 @@
                 </ItemsControl>
             </ScrollViewer>
 
-            <ScrollViewer x:Name="ScrollRepeatSectors" Grid.Row="0" Grid.Column="2" Width="200" Margin="3" Padding="0,0,0,6" MaxHeight="400" mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True" >
+            <ScrollViewer x:Name="ScrollRepeatSectors" 
+                          Grid.Row="0" Grid.Column="2" Width="200" Margin="3" Padding="0,0,0,6" MaxHeight="400" 
+                          ScrollChanged="ScrollRepeatSectors_ScrollChanged" >
                 <ItemsControl ItemsSource="{Binding RepeatSectors, Mode=OneTime}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
@@ -52,7 +62,7 @@
                 </ItemsControl>
             </ScrollViewer>
 
-            <ScrollViewer Grid.Row="0" Grid.Column="3" Width="280" Margin="3" Padding="0,0,0,6" MaxHeight="400" mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True">
+            <ScrollViewer Grid.Row="0" Grid.Column="3" Width="280" Margin="3" Padding="0,0,0,6" MaxHeight="400" >
                 <ItemsControl ItemsSource="{Binding DiffSectors, Mode=OneTime}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>

@@ -36,5 +36,11 @@ namespace V275_Testing.RunViews
             if (e.VerticalChange != 0)
                 ScrollRepeatSectors.ScrollToVerticalOffset(e.VerticalOffset);
         }
+
+        private void ScrollRepeatSectors_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            if (e.VerticalChange != 0)
+                ScrollLabelSectors.ScrollToVerticalOffset(e.VerticalOffset);
+        }
     }
 }

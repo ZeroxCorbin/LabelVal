@@ -194,7 +194,7 @@ namespace V275_Testing.WindowViewModels
         public ICommand V275_SwitchEdit { get; }
 
         public RunController.RunStates RunState { get => runState; set => SetProperty(ref runState, value); }
-        private RunController.RunStates runState;
+        private RunController.RunStates runState = RunController.RunStates.IDLE;
 
         private Dictionary<int, Repeat> Repeats = new Dictionary<int, Repeat>();
 
@@ -537,7 +537,12 @@ namespace V275_Testing.WindowViewModels
                 label.IsWorking = true;
 
                 PrintControl printer = new PrintControl();
-                printer.Print(label.LabelImagePath, label.PrintCount, SelectedPrinter);
+
+                string data = String.Empty;
+                if (RunState != RunController.RunStates.IDLE)
+                    data = $"Loop {CurrentRun.LoopCount} : {CurrentRun.LabelCount}";
+
+                printer.Print(label.LabelImagePath, label.PrintCount, SelectedPrinter, data);
 
                 if (!IsLoggedIn_Control)
                     label.IsWorking = false;
@@ -653,24 +658,28 @@ namespace V275_Testing.WindowViewModels
 
         private void CurrentRun_RunStateChange(RunController.RunStates state)
         {
-            RunState = state;
+            
             switch (state)
             {
                 case RunController.RunStates.RUNNING:
                     IsRunRunning = true;
                     IsRunPaused = false;
+                    RunState = state;
                     break;
                 case RunController.RunStates.PAUSED:
                     IsRunRunning = true;
                     IsRunPaused = true;
+                    RunState = state;
                     break;
                 case RunController.RunStates.STOPPED:
                     IsRunRunning = false;
                     IsRunPaused = false;
+                    RunState = RunController.RunStates.IDLE;
                     break;
                 default:
                     IsRunRunning = false;
                     IsRunPaused = false;
+                    RunState = RunController.RunStates.IDLE;
                     break;
             }
         }

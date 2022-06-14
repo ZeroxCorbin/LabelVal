@@ -11,7 +11,7 @@
             xmlns:Converters="clr-namespace:V275_Testing.Converters"
             xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
             Dialog:DialogParticipation.Register="{Binding}"
-            d:DataContext="{d:DesignInstance Type=ViewModels:SectorResultsViewModel}"
+            d:DataContext="{d:DesignInstance Type=ViewModels:SectorDifferenceViewModel}"
             mc:Ignorable="d" 
             d:DesignHeight="450" d:DesignWidth="800">
 
@@ -21,7 +21,9 @@
         <Converters:FloatStringTrimConverter x:Key="floatTrim"/>
     </UserControl.Resources>
 
-    <Border BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}" BorderThickness="1" Margin="1" CornerRadius="3">
+    <Border BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
+            Visibility="{Binding IsNotEmpty, Converter={StaticResource booltovis}}"
+            BorderThickness="1" Margin="1" CornerRadius="3">
         <Grid Margin="3">
 
             <Grid.RowDefinitions>
