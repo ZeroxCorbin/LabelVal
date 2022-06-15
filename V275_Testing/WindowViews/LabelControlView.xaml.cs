@@ -50,5 +50,12 @@ namespace V275_Testing.WindowViews
             if (e.VerticalChange != 0)
                 ScrollLabelSectors.ScrollToVerticalOffset(e.VerticalOffset);
         }
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            //LabelControlViewModel viewModel = (LabelControlViewModel)DataContext;
+            //viewModel.BringIntoView -= ViewModel_BringIntoView;
+            LabelImage.Source=null;
+        }
     }
 }

@@ -15,19 +15,22 @@ namespace V275_Testing.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var imageByteArray = value as byte[];
-            if (imageByteArray == null || imageByteArray.Length < 2 ) return null;
+            if (imageByteArray == null || imageByteArray.Length < 2)
+                return null;
 
-            
+
             BitmapImage img = new BitmapImage();
             using (MemoryStream memStream = new MemoryStream(imageByteArray))
             {
                 img.BeginInit();
                 img.CacheOption = BitmapCacheOption.OnLoad;
                 img.StreamSource = memStream;
-                img.DecodePixelWidth = 400;
+                img.DecodePixelWidth = 1200;
                 img.EndInit();
                 img.Freeze();
+
             }
+            
             return img;
         }
 

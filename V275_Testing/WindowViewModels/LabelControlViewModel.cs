@@ -30,6 +30,9 @@ namespace V275_Testing.WindowViewModels
         private string labelImageUID;
         public string LabelImageUID { get => labelImageUID; set => SetProperty(ref labelImageUID, value); }
 
+        private string labelComment;
+        public string LabelComment { get => labelComment; set => SetProperty(ref labelComment, value); }
+
         private byte[] labelImageBytes;
         public byte[] LabelImageBytes { get => labelImageBytes; set => SetProperty(ref labelImageBytes, value); }
 
@@ -130,11 +133,12 @@ namespace V275_Testing.WindowViewModels
 
 
         private IDialogCoordinator dialogCoordinator;
-        public LabelControlViewModel(string imagePath, string printerName, string gradingStandard, StandardsDatabase standardsDatabase, V275_API_Controller v275, IDialogCoordinator diag)
+        public LabelControlViewModel(string imagePath, string imageComment, string printerName, string gradingStandard, StandardsDatabase standardsDatabase, V275_API_Controller v275, IDialogCoordinator diag)
         {
             dialogCoordinator = diag;
 
             LabelImagePath = imagePath;
+            LabelComment = imageComment;
             PrinterName = printerName;
             GradingStandard = gradingStandard;
             StandardsDatabase = standardsDatabase;

@@ -12,8 +12,8 @@
             Dialog:DialogParticipation.Register="{Binding}"
             d:DataContext="{d:DesignInstance Type=ViewModels:LabelControlViewModel}"
             mc:Ignorable="d" 
-            d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded">
-    
+            d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded" Unloaded="UserControl_Unloaded" >
+
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="booltovis"/>
         <Converters:BytesToImageConverter x:Key="bytesToImage"/>
@@ -61,7 +61,10 @@
                 </StackPanel>
             </Grid>
 
-            <Image Grid.Row="1" Grid.Column="0" Source="{Binding LabelImageBytes, Mode=OneTime, Converter={StaticResource bytesToImage}}" Margin="3" x:Name="image" MaxHeight="400" Width="400"/>
+            <Grid Grid.Row="1" Grid.Column="0">
+                <Image x:Name="LabelImage" Source="{Binding LabelImageBytes, Mode=OneTime, Converter={StaticResource bytesToImage}}" Margin="3" MaxHeight="400" Width="400"/>
+                <TextBlock Text="{Binding LabelComment}" Foreground="Black" Margin="3" HorizontalAlignment="Center"/>
+            </Grid>
 
             <Grid Grid.Row="0" Grid.Column="1">
                 <Grid.RowDefinitions>

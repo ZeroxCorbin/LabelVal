@@ -266,22 +266,57 @@ namespace V275_Testing.WindowViewModels
         {
             IsGS1Standard = StoredStandard.StartsWith("GS1") ? true : false;
 
-            Logger.Info("Loading label images from standards directory: {name}", $"{App.StandardsRoot}\\{StoredStandard}\\600\\");
+            string std = StoredStandard.Replace(" (300)", "");
+
+            bool is300 = false;
+            if (std.Length < StoredStandard.Length)
+                is300 = true;
+
+
+            Logger.Info("Loading label images from standards directory: {name}", $"{App.StandardsRoot}\\{std}\\");
+
+            foreach (var lab in Labels)
+                lab.LabelImageBytes = null;
+
+            GC.Collect();
 
             Labels.Clear();
 
             List<string> Images = new List<string>();
             Images.Clear();
-            foreach (var f in Directory.EnumerateFiles($"{App.StandardsRoot}\\{StoredStandard}\\600\\"))
-                Images.Add(f);
+
+            if (is300)
+            {
+                foreach (var f in Directory.EnumerateFiles($"{App.StandardsRoot}\\{std}\\300\\"))
+                    if (Path.GetExtension(f) == ".png")
+                        Images.Add(f);
+            }
+            else
+            {
+                foreach (var f in Directory.EnumerateFiles($"{App.StandardsRoot}\\{StoredStandard}\\600\\"))
+                    if (Path.GetExtension(f) == ".png")
+                        Images.Add(f);
+            }
+
 
             Images.Sort();
 
-            Logger.Info("Processed {count} label images.", Images.Count);
+            //List<string> Images300 = new List<string>();
+            //Images300.Clear();
+            //foreach (var f in Directory.EnumerateFiles($"{App.StandardsRoot}\\{StoredStandard}\\300\\"))
+            //    Images300.Add(f);
+
+            //Images300.Sort();
+
+            Logger.Info("Found label images: {count}", Images.Count);
 
             foreach (var img in Images)
             {
-                var tmp = new LabelControlViewModel(img, SelectedPrinter, SelectedStandard, StandardsDatabase, V275, MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance);
+                string comment = string.Empty;
+                if (File.Exists(img.Replace(".png", ".txt")))
+                    comment = File.ReadAllText(img.Replace(".png", ".txt"));
+
+                var tmp = new LabelControlViewModel(img, comment, SelectedPrinter, SelectedStandard, StandardsDatabase, V275, MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance);
 
                 tmp.Printing += Label_Printing;
 
@@ -364,9 +399,15 @@ namespace V275_Testing.WindowViewModels
 
             foreach (var dir in Directory.EnumerateDirectories(App.StandardsRoot))
             {
-                Logger.Debug("GS: {name}", dir.Substring(dir.LastIndexOf("\\") + 1));
+                Logger.Debug("Found: {name}", dir.Substring(dir.LastIndexOf("\\") + 1));
 
-                Standards.Add(dir.Substring(dir.LastIndexOf("\\") + 1));
+                foreach (var subdir in Directory.EnumerateDirectories(dir))
+                {
+                    if (subdir.EndsWith("600"))
+                        Standards.Add(dir.Substring(dir.LastIndexOf("\\") + 1));
+                    else if (subdir.EndsWith("300"))
+                        Standards.Add($"{dir.Substring(dir.LastIndexOf("\\") + 1)} (300)");
+                }
             }
             Logger.Info("Processed {count} grading standards.", Standards.Count);
 
@@ -658,7 +699,7 @@ namespace V275_Testing.WindowViewModels
 
         private void CurrentRun_RunStateChange(RunController.RunStates state)
         {
-            
+
             switch (state)
             {
                 case RunController.RunStates.RUNNING:

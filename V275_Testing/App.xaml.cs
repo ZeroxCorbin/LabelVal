@@ -53,7 +53,7 @@ namespace V275_Testing
                 _ = Directory.CreateDirectory(RunsRoot);
             }
 
-            FixFiducial();
+            //FixFiducial();
             //FixRotation();
 
             var config = new NLog.Config.LoggingConfiguration();
@@ -117,10 +117,11 @@ namespace V275_Testing
         {
             foreach (var dir in Directory.EnumerateDirectories(StandardsRoot))
             {
-                foreach (var imgFile in Directory.EnumerateFiles($"{dir}\\600"))
-                {
-                    RedrawFiducial(imgFile);
-                }
+                if (Directory.Exists($"{dir}\\300"))
+                    foreach (var imgFile in Directory.EnumerateFiles($"{dir}\\300"))
+                    {
+                        RedrawFiducial(imgFile);
+                    }
             }
         }
 
@@ -135,22 +136,24 @@ namespace V275_Testing
                 //if (photo.Height != 2400)
                 //    File.AppendAllText($"{UserDataDirectory}\\Small Images List", Path.GetFileName(path));
 
-                if (photo.Height > 2400 || photo.Height < 2000)
+                //600 DPI
+                //if ((photo.Height > 2400 && photo.Height != 4800) || photo.Height < 2000)
+                //    return;
+
+                //300 DPI
+                if ((photo.Height > 1200) || photo.Height < 1000)
                     return;
 
                 using (var graphics = Graphics.FromImage(photo))
                 {
-                    // specify the desired quality of the render and text, if you wish
-                    //graphics.CompositingQuality = CompositingQuality.HighQuality;
-                    //graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
 
-                    // set background color
-                    //graphics.Clear(Color.White);
-                    //place photo on image in desired location
-                    //graphics.DrawImage(photo, 0, 0);
+                    //graphics.FillRectangle(Brushes.White, 0, 1952, 180, photo.Height - 1952);
+                    //graphics.FillRectangle(Brushes.Black, 39, 2000, 106, 158);
 
-                    graphics.FillRectangle(Brushes.White, 0, 1952, 172, photo.Height - 1952);
-                    graphics.FillRectangle(Brushes.Black, 39, 2000, 106, 158);
+                    //300 DPI
+                    graphics.FillRectangle(Brushes.White, 0, 976, 150, photo.Height - 976);
+                    graphics.FillRectangle(Brushes.Black, 20, 1000, 53, 79);
+
                     photo.Save(path, ImageFormat.Png);
                 }
             }
