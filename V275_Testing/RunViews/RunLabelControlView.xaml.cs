@@ -25,12 +25,6 @@ namespace V275_Testing.RunViews
             InitializeComponent();
         }
 
-        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
-        {
-            this.DataContext = null;
-            GC.Collect();
-        }
-
         private void ScrollLabelSectors_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
             if (e.VerticalChange != 0)

@@ -42,7 +42,8 @@ namespace V275_Testing.RunControllers
         public List<RunDatabase.Run> RunLabels { get; private set; } = new List<RunDatabase.Run>();
 
         public int LoopCount { get; private set; }
-        public int LabelCount { get; private set; }
+        public int CurrentLoopCount { get; private set; }
+        public int CurrentLabelCount { get; private set; }
 
         private ObservableCollection<LabelControlViewModel> Labels { get; set; }
         private string GradingStandard { get; }
@@ -120,17 +121,16 @@ namespace V275_Testing.RunControllers
             Task.Run(() => Start());
         }
 
-       
-
         public async Task<bool> Start()
         {
-            LabelCount = 1;
+            CurrentLabelCount = 1;
 
             Logger.Info("Job Started: Loop Count {loop}", LoopCount);
 
             for (int i = 0; i < LoopCount; i++)
             {
-                Logger.Info("Job Loop: {loop}", i + 1);
+                CurrentLoopCount = i + 1;
+                Logger.Info("Job Loop: {loop}", CurrentLoopCount);
 
                 foreach (var label in Labels)
                 {
@@ -174,7 +174,7 @@ namespace V275_Testing.RunControllers
                         LabelReport = sRow.LabelReport,
                         LabelImageUID = label.LabelImageUID,
                         LabelImage = label.LabelImageBytes,
-                        LabelImageOrder = LabelCount++,
+                        LabelImageOrder = CurrentLabelCount++,
                         LoopCount = i + 1
                     };
 
@@ -182,6 +182,7 @@ namespace V275_Testing.RunControllers
                     RunDatabase.InsertOrReplace(row);
 
                     Logger.Info("Job Print");
+
                     label.PrintAction(null);
 
                     DateTime start = DateTime.Now;

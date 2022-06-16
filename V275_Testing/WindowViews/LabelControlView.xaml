@@ -12,7 +12,7 @@
             Dialog:DialogParticipation.Register="{Binding}"
             d:DataContext="{d:DesignInstance Type=ViewModels:LabelControlViewModel}"
             mc:Ignorable="d" 
-            d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded" Unloaded="UserControl_Unloaded" >
+            d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded" Unloaded="UserControl_Unloaded">
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="booltovis"/>
@@ -63,7 +63,7 @@
 
             <Grid Grid.Row="1" Grid.Column="0">
                 <Image x:Name="LabelImage" Source="{Binding LabelImageBytes, Mode=OneTime, Converter={StaticResource bytesToImage}}" Margin="3" MaxHeight="400" Width="400"/>
-                <TextBlock Text="{Binding LabelComment}" Foreground="Black" Margin="3" HorizontalAlignment="Center"/>
+                <TextBlock Text="{Binding LabelComment}" Foreground="Red" Margin="3" HorizontalAlignment="Left"/>
             </Grid>
 
             <Grid Grid.Row="0" Grid.Column="1">

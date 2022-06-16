@@ -575,13 +575,11 @@ namespace V275_Testing.WindowViewModels
         {
             Task.Run(() =>
             {
-                label.IsWorking = true;
-
                 PrintControl printer = new PrintControl();
 
                 string data = String.Empty;
                 if (RunState != RunController.RunStates.IDLE)
-                    data = $"Loop {CurrentRun.LoopCount} : {CurrentRun.LabelCount}";
+                    data = $"Loop {CurrentRun.CurrentLoopCount} : {CurrentRun.CurrentLabelCount}";
 
                 printer.Print(label.LabelImagePath, label.PrintCount, SelectedPrinter, data);
 

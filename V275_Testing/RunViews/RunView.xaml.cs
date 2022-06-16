@@ -1,6 +1,7 @@
 ﻿using MahApps.Metro.Controls;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using V275_Testing.RunViewModels;
 using V275_Testing.WindowViewModels;
 
 namespace V275_Testing.RunViews
@@ -21,10 +23,35 @@ namespace V275_Testing.RunViews
     /// </summary>
     public partial class RunView : MetroWindow
     {
+        public static class VisualTreeHelper
+        {
+            public static Collection<T> GetVisualChildren<T>(DependencyObject current) where T : DependencyObject
+            {
+                if (current == null)
+                    return null;
+
+                var children = new Collection<T>();
+                GetVisualChildren(current, children);
+                return children;
+            }
+            private static void GetVisualChildren<T>(DependencyObject current, Collection<T> children) where T : DependencyObject
+            {
+                if (current != null)
+                {
+                    if (current.GetType() == typeof(T))
+                        children.Add((T)current);
+
+                    for (int i = 0; i < System.Windows.Media.VisualTreeHelper.GetChildrenCount(current); i++)
+                    {
+                        GetVisualChildren(System.Windows.Media.VisualTreeHelper.GetChild(current, i), children);
+                    }
+                }
+            }
+        }
+
         public RunView()
         {
             InitializeComponent();
-            RunList.IsOpen = true;
 
             if (FindResource("LabelsDataList") is CollectionViewSource viewSource)
             {
@@ -37,23 +64,6 @@ namespace V275_Testing.RunViews
                 viewSource1.SortDescriptions.RemoveAt(3);
                 viewSource1.SortDescriptions.Add(new System.ComponentModel.SortDescription("TimeDate", App.Settings.GetValue("RunEntriesDataList_Sort", System.ComponentModel.ListSortDirection.Descending)));
             }
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            RunList.IsOpen = true;
-        }
-
-        private void RunList_LostMouseCapture(object sender, MouseEventArgs e)
-        {
-            RunList.IsOpen = false;
-        }
-
-        private void RunList_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (RunList.IsShown)
-                RunList.IsOpen = false;
-
         }
 
         private void BtnSortLabels_Click(object sender, RoutedEventArgs e)
@@ -90,9 +100,72 @@ namespace V275_Testing.RunViews
                 }
         }
 
-        private void BtnAutoScroll_Click(object sender, RoutedEventArgs e)
+        private void BtnExpandAll_Click(object sender, RoutedEventArgs e)
         {
+            Collection<Expander> collection = VisualTreeHelper.GetVisualChildren<Expander>(this.RunList);
+            foreach (Expander expander in collection)
+            {
+                expander.IsExpanded = true;
+            }
 
+        }
+
+        private void BtnCollapseAll_Click(object sender, RoutedEventArgs e)
+        {
+            Collection<Expander> collection = VisualTreeHelper.GetVisualChildren<Expander>(this.RunList);
+            foreach (Expander expander in collection)
+            {
+                expander.IsExpanded = false;
+            }
+        }
+
+        private void Expander_Loaded_1(object sender, RoutedEventArgs e)
+        {
+            if (sender is System.Windows.Controls.Expander expander)
+            {
+                if (expander.Content is ItemsPresenter ip)
+                    if (ip.DataContext is CollectionViewGroup collection)
+                    {
+                        int errorCount = 0;
+                        foreach (RunLabelControlViewModel item in collection.Items)
+                        {
+                            if (expander.Header is Grid grid1)
+                            {
+                                if (grid1.FindChild<TextBlock>("LabelSectors") is var res)
+                                {
+                                    res.Text = item.LabelSectors.Count.ToString();
+                                }
+
+                                if (grid1.FindChild<TextBlock>("RepeatSectors") is var res1)
+                                {
+                                    res1.Text = item.RepeatSectors.Count.ToString();
+                                }
+                            }
+
+                            foreach (var diff in item.DiffSectors)
+                            {
+                                if (diff.IsNotEmpty)
+                                {
+                                    errorCount++;
+                                }
+                            }
+                        }
+
+                        if (expander.Header is Grid grid)
+                        {
+                            if (grid.FindChild<TextBlock>("HasErrors") is var res)
+                            {
+                                if (errorCount > 0)
+                                    res.Text = "Has Errors";
+                            }
+
+                            if (grid.FindChild<TextBlock>("DissimilarSectors") is var res1)
+                            {
+                                res1.Text = errorCount.ToString();
+                            }
+                        }
+                    }
+            }
         }
     }
 }

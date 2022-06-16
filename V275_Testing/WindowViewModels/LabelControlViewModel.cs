@@ -187,6 +187,8 @@ namespace V275_Testing.WindowViewModels
 
         public void PrintAction(object parameter)
         {
+            IsWorking = true;
+
             BringIntoView?.Invoke();
             Printing?.Invoke(this);
         }

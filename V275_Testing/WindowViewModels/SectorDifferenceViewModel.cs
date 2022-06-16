@@ -18,11 +18,16 @@ namespace V275_Testing.WindowViewModels
         private string type;
         public string Type { get => type; set => SetProperty(ref type, value); }
 
+        private bool isOCVMatch = false;
+        public bool IsOCVMatch { get => isOCVMatch; set => SetProperty(ref isOCVMatch, value); }
+
         private bool isSectorMissing;
         public bool IsSectorMissing { get => isSectorMissing; set => SetProperty(ref isSectorMissing, value); }
 
         private bool isNotEmpty = false;
         public bool IsNotEmpty { get => isNotEmpty; set => SetProperty(ref isNotEmpty, value); }
+
+
 
         private ObservableDictionary<string, V275_Report_InspectSector_Common.GradeValue> gradeValues = new ObservableDictionary<string, V275_Report_InspectSector_Common.GradeValue>();
         public ObservableDictionary<string, V275_Report_InspectSector_Common.GradeValue> GradeValues { get => gradeValues; set => SetProperty(ref gradeValues, value); }
@@ -58,12 +63,16 @@ namespace V275_Testing.WindowViewModels
                         if (prop1.PropertyType == typeof(V275_Report_InspectSector_Common.Decode))
                         {
                             var decode = (V275_Report_InspectSector_Common.Decode)prop1.GetValue(prop.GetValue(verify));
-                            GradeValues.Add(prop1.Name, new V275_Report_InspectSector_Common.GradeValue() { grade = decode.grade, value = decode.value });
-                            IsNotEmpty = true;
+                            if (decode != null)
+                            {
+                                GradeValues.Add(prop1.Name, new V275_Report_InspectSector_Common.GradeValue() { grade = decode.grade, value = decode.value });
+                                IsNotEmpty = true;
 
-                            if (Type == "verify1D")
-                                ValueResults.Add("edgeDetermination", decode.edgeDetermination);
-                            continue;
+                                if (Type == "verify1D")
+                                    ValueResults.Add("edgeDetermination", decode.edgeDetermination);
+
+                                continue;
+                            }
                         }
 
                         if (prop1.PropertyType == typeof(V275_Report_InspectSector_Common.GradeValue))
@@ -87,7 +96,7 @@ namespace V275_Testing.WindowViewModels
                         if (prop1.PropertyType == typeof(V275_Report_InspectSector_Common.Alarm[]))
                         {
                             var lst = ((V275_Report_InspectSector_Common.Alarm[])prop1.GetValue(prop.GetValue(verify))).ToList();
-                            foreach(var alm in lst)
+                            foreach (var alm in lst)
                                 Alarms.Add(alm);
                             //Alarms = ((V275_Report_InspectSector_Common.Alarm[])prop1.GetValue(prop.GetValue(verify))).ToList();
                             IsNotEmpty = true;

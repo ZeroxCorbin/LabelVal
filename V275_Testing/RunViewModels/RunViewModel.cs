@@ -16,7 +16,6 @@ namespace V275_Testing.RunViewModels
         public string Version => App.Version;
 
         RunLedgerDatabase RunLedgerDatabase { get; set; }
-        RunDatabase RunDatabase { get; set; }
 
         private ObservableCollection<RunLedgerDatabase.RunEntry> runEntries = new ObservableCollection<RunLedgerDatabase.RunEntry>();
         public ObservableCollection<RunLedgerDatabase.RunEntry> RunEntries { get => runEntries; set => SetProperty(ref runEntries, value); }
@@ -29,7 +28,7 @@ namespace V275_Testing.RunViewModels
                 SetProperty(ref selectedRunEntry, value);
 
                 if (value != null && !value.RunDBMissing)
-                    LoadRun();
+                    Task.Run(() => LoadRun());
                 else
                     Labels.Clear();
             }
@@ -74,9 +73,6 @@ namespace V275_Testing.RunViewModels
 
                 if (!runEntry.RunDBMissing)
                 {
-                    if (RunDatabase != null)
-                        RunDatabase.Close();
-
                     try
                     {
                         File.Delete($"{App.RunsRoot}\\{App.RunDatabaseName(runEntry.TimeDate)}");
@@ -110,25 +106,24 @@ namespace V275_Testing.RunViewModels
             }
         }
 
-        private void LoadRun()
+        private async void LoadRun()
         {
+            await App.Current.Dispatcher.InvokeAsync(() => Labels.Clear());
 
-            foreach (var label in Labels.ToList())
-                label.Clear();
+            RunDatabase db = new RunDatabase().Open($"{App.RunsRoot}\\{App.RunDatabaseName(SelectedRunEntry.TimeDate)}");
+            var runs = db.SelectAllRuns();
+            db.Close();
 
-            Labels.Clear();
-
-            RunDatabase = new RunDatabase().Open($"{App.RunsRoot}\\{App.RunDatabaseName(SelectedRunEntry.TimeDate)}");
-
-            var runs = RunDatabase.SelectAllRuns();
-
-            foreach (var run in runs)
+            await App.Current.Dispatcher.InvokeAsync(() =>
             {
-                Labels.Add(new RunLabelControlViewModel(MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance, run, SelectedRunEntry));
-            }
+                foreach (var run in runs)
+                {
+                    Labels.Add(new RunLabelControlViewModel(MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance, run, SelectedRunEntry));
+                }
+            });
 
-            RunDatabase.Close();
-            RunDatabase = null;
+
+
         }
     }
 }

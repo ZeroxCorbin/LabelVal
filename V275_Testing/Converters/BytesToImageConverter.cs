@@ -25,10 +25,9 @@ namespace V275_Testing.Converters
                 img.BeginInit();
                 img.CacheOption = BitmapCacheOption.OnLoad;
                 img.StreamSource = memStream;
-                img.DecodePixelWidth = 1200;
+                img.DecodePixelWidth = 400;
                 img.EndInit();
                 img.Freeze();
-
             }
             
             return img;
