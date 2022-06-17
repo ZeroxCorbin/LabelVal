@@ -209,7 +209,7 @@ namespace V275_Testing.RunControllers
                     };
 
                     PngBitmapEncoder encoder = new PngBitmapEncoder();
-                    using (var ms = new System.IO.MemoryStream(label.RepeatImageData))
+                    using (var ms = new System.IO.MemoryStream(label.RepeatImage))
                     {
                         using (MemoryStream stream = new MemoryStream())
                         {

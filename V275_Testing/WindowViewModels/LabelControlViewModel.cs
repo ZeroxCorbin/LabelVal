@@ -102,7 +102,9 @@ namespace V275_Testing.WindowViewModels
 
         public string PrinterName { get; set; }
         public string LabelImagePath { get; }
-        public byte[] RepeatImageData { get; private set; }
+
+        private byte[] repeatImage;
+        public byte[] RepeatImage { get => repeatImage; set => SetProperty(ref repeatImage, value); }
 
         public string Status
         {
@@ -247,7 +249,7 @@ namespace V275_Testing.WindowViewModels
                 if (await OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for this label?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
                     return;
 
-            StandardsDatabase.AddRow(GradingStandard, LabelImageUID, JsonConvert.SerializeObject(ReadJob), JsonConvert.SerializeObject(Report));
+            StandardsDatabase.AddRow(GradingStandard, LabelImageUID, JsonConvert.SerializeObject(ReadJob), JsonConvert.SerializeObject(Report), RepeatImage);
             GetStored();
         }
         private async void ClearStoredAction(object parameter)
@@ -339,7 +341,7 @@ namespace V275_Testing.WindowViewModels
 
             ReadJob = V275.Commands.Job;
             Report = V275.Commands.Report;
-            RepeatImageData = V275.Commands.Repeatimage;
+            RepeatImage = V275.Commands.Repeatimage;
 
             List<SectorControlViewModel> tempSectors = new List<SectorControlViewModel>();
             foreach (var jSec in ReadJob.sectors)
@@ -401,9 +403,17 @@ namespace V275_Testing.WindowViewModels
         }
         private void ClearReadAction(object parameter)
         {
+            RepeatImage = null;
             RepeatSectors.Clear();
             ReadJob = null;
             IsStore = false;
+
+            StandardsDatabase.Row row = StandardsDatabase.GetRow(GradingStandard, LabelImageUID);
+
+            if (row == null)
+                return;
+
+            RepeatImage = row.RepeatImage;
         }
 
 

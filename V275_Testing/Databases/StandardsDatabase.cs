@@ -23,11 +23,15 @@ namespace V275_Testing.Databases
             private string labelReport;
             public string LabelReport { get => labelReport; set => SetProperty(ref labelReport, value); }
 
+            private byte[] repeatImage;
+            public byte[] RepeatImage { get => repeatImage; set => SetProperty(ref repeatImage, value); }
+
             public Row(SQLiteDataReader rdr)
             { 
                 LabelImageUID = rdr["LabelImageUID"].ToString();
                 LabelTemplate = rdr["LabelTemplate"].ToString();
                 LabelReport = rdr["LabelReport"].ToString();
+                RepeatImage = (byte[])rdr["RepeatImage"];
             }
         }
 
@@ -98,6 +102,8 @@ namespace V275_Testing.Databases
             sb.Append("LabelTemplate TEXT");
             sb.Append(",");
             sb.Append("LabelReport TEXT");
+            sb.Append(",");
+            sb.Append("RepeatImage BLOB");
             sb.Append(");");
 
             using (SQLiteCommand command = new SQLiteCommand(sb.ToString(), Connection))
@@ -107,22 +113,24 @@ namespace V275_Testing.Databases
                 Close();
         }
 
-        public void AddRow(string tableName, Row row) => AddRow(tableName, row.LabelImageUID, row.LabelTemplate, row.LabelReport);
-        public void AddRow(string tableName, string imageUID, string template, string report)
+        public void AddRow(string tableName, Row row) => AddRow(tableName, row.LabelImageUID, row.LabelTemplate, row.LabelReport, row.RepeatImage);
+        public void AddRow(string tableName, string imageUID, string template, string report, byte[] repeatImage)
         {
             if (!Open()) return;
 
             StringBuilder sb = new StringBuilder();
-            _ = sb.Append($"INSERT OR REPLACE INTO '{tableName}' (LabelImageUID, LabelTemplate, LabelReport) VALUES (");
+            _ = sb.Append($"INSERT OR REPLACE INTO '{tableName}' (LabelImageUID, LabelTemplate, LabelReport, RepeatImage) VALUES (");
             _ = sb.Append($"@LabelImageUID,");
             _ = sb.Append($"@LabelTemplate,");
-            _ = sb.Append($"@LabelReport);");
+            _ = sb.Append($"@LabelReport,");
+            _ = sb.Append($"@RepeatImage);");
 
             using (SQLiteCommand command = new SQLiteCommand(sb.ToString(), Connection))
             {
                 _ = command.Parameters.AddWithValue("LabelImageUID", imageUID);
                 _ = command.Parameters.AddWithValue("LabelTemplate", template);
                 _ = command.Parameters.AddWithValue("LabelReport", report);
+                _ = command.Parameters.AddWithValue("RepeatImage", repeatImage);
                 command.ExecuteNonQuery();
             }
 

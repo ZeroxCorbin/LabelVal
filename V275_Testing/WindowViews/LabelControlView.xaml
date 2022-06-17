@@ -159,6 +159,10 @@
                 </ItemsControl>
             </ScrollViewer>
 
+
+            <Image Grid.Row="1" Grid.Column="3" Source="{Binding RepeatImage, Converter={StaticResource bytesToImage}}" Margin="3" MaxHeight="400" Width="400"/>
+
+            
         </Grid>
     </Border>
 </UserControl>
