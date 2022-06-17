@@ -41,7 +41,7 @@ namespace V275_Testing.WindowViewModels
             IsWrongStandard = isWrongStandard;
             IsGS1Standard = isGS1Standard;
 
-            SectorResults.Process(reportSector, jobSector.username);
+            SectorResults.Process(reportSector, jobSector.username, IsGS1Standard);
 
             int highCat = 0;
 

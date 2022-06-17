@@ -144,12 +144,12 @@ namespace V275_Testing.RunViewModels
                         continue;
                     }
 
-                if (!found)
-                {
-                    var dat = sec.SectorResults.Compare(new SectorDifferenceViewModel());
-                    dat.IsSectorMissing = true;
-                    diff.Add(dat);
-                }
+                //if (!found)
+                //{
+                //    var dat = sec.SectorResults.Compare(new SectorDifferenceViewModel());
+                //    dat.IsSectorMissing = true;
+                //    diff.Add(dat);
+                //}
 
             }
 

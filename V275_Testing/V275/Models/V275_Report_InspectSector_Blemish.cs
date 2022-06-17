@@ -21,10 +21,10 @@ namespace V275_Testing.V275.Models
             public V275_Report_InspectSector_Common.Alarm[] alarms { get; set; }
             public int blemishCount { get; set; }
             public int reportCount { get; set; }
-            public Blemishlist[] blemishList { get; set; }
+            public Blemish[] blemishList { get; set; }
         }
 
-        public class Blemishlist
+        public class Blemish
         {
             public string type { get; set; }
             public int top { get; set; }

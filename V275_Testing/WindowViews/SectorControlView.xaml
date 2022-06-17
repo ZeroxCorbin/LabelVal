@@ -239,15 +239,15 @@
 
                                                 <StackPanel Orientation="Horizontal" Margin="3,0,6,0">
 
-                                                    <TextBlock Text="{Binding Path=Key, Converter={StaticResource stringToUpper}, Mode=OneTime}" Grid.Column="0"/>
+                                                    <TextBlock Text="{Binding Path=name, Converter={StaticResource stringToUpper}, Mode=OneTime}" Grid.Column="0"/>
                                                 </StackPanel>
 
                                                 <StackPanel Orientation="Horizontal" Grid.Column="2" >
                                                     <TextBlock Text=" ( "/>
-                                                    <TextBlock Text="{Binding Path=Value.value, Mode=OneTime}" Grid.Column="1"/>
+                                                    <TextBlock Text="{Binding Path=value, Mode=OneTime}" Grid.Column="1"/>
                                                     <TextBlock Text=" )   "/>
 
-                                                    <TextBlock Text="{Binding Path=Value.grade.value, StringFormat=N1, Mode=OneTime}" Grid.Column="1"/>
+                                                    <TextBlock Text="{Binding Path=grade.value, StringFormat=N1, Mode=OneTime}" Grid.Column="1"/>
                                                     <TextBlock Text=" "/>
                                                     
                                                     <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3">
@@ -255,16 +255,16 @@
                                                             <Style TargetType="{x:Type Border}">
                                                                 <Setter Property="Background" Value="Green"/>
                                                                 <Style.Triggers>
-                                                                    <DataTrigger Value="B" Binding="{Binding Path=Value.grade.letter, Mode=OneTime}">
+                                                                    <DataTrigger Value="B" Binding="{Binding Path=grade.letter, Mode=OneTime}">
                                                                         <Setter Property="Background" Value="Turquoise"/>
                                                                     </DataTrigger>
-                                                                    <DataTrigger Value="C" Binding="{Binding Path=Value.grade.letter, Mode=OneTime}">
+                                                                    <DataTrigger Value="C" Binding="{Binding Path=grade.letter, Mode=OneTime}">
                                                                         <Setter Property="Background" Value="Blue"/>
                                                                     </DataTrigger>
-                                                                    <DataTrigger Value="D" Binding="{Binding Path=Value.grade.letter, Mode=OneTime}">
+                                                                    <DataTrigger Value="D" Binding="{Binding Path=grade.letter, Mode=OneTime}">
                                                                         <Setter Property="Background" Value="Fuchsia"/>
                                                                     </DataTrigger>
-                                                                    <DataTrigger Value="F" Binding="{Binding Path=Value.grade.letter, Mode=OneTime}">
+                                                                    <DataTrigger Value="F" Binding="{Binding Path=grade.letter, Mode=OneTime}">
                                                                         <Setter Property="Background" Value="Red"/>
                                                                     </DataTrigger>
                                                                 </Style.Triggers>
@@ -272,7 +272,7 @@
                                                         </Border.Style>
                                                     </Border>
                                                     <TextBlock Text=" "/>
-                                                    <TextBlock Text="{Binding Path=Value.grade.letter, Mode=OneTime}"/>
+                                                    <TextBlock Text="{Binding Path=grade.letter, Mode=OneTime}"/>
 
                                                 </StackPanel>
 
@@ -308,12 +308,12 @@
                                                 </Grid.ColumnDefinitions>
 
                                                 <StackPanel Orientation="Horizontal" Margin="3,0,6,0">
-                                                    <TextBlock Text="{Binding Path=Key, Converter={StaticResource stringToUpper}, Mode=OneTime}"/>
+                                                    <TextBlock Text="{Binding Path=name, Converter={StaticResource stringToUpper}, Mode=OneTime}"/>
                                                 </StackPanel>
 
                                                 <StackPanel Orientation="Horizontal" Grid.Column="2" >
                                                     <TextBlock Text=" ( "/>
-                                                    <TextBlock Text="{Binding Path=Value.value, Mode=OneTime}"/>
+                                                    <TextBlock Text="{Binding Path=value, Mode=OneTime}"/>
                                                     <TextBlock Text=" )               "/>
                                                 </StackPanel>
 
@@ -348,12 +348,12 @@
                                                 </Grid.ColumnDefinitions>
 
                                                 <StackPanel Orientation="Horizontal" Margin="3,0,6,0">
-                                                    <TextBlock Text="{Binding Path=Key, Converter={StaticResource stringToUpper}, Mode=OneTime}" Grid.Column="0"/>
+                                                    <TextBlock Text="{Binding Path=name, Converter={StaticResource stringToUpper}, Mode=OneTime}" Grid.Column="0"/>
                                                 </StackPanel>
 
                                                 <StackPanel Orientation="Horizontal" Grid.Column="2" > 
                                                     <TextBlock Text="( "/>
-                                                    <TextBlock Text="{Binding Path=Value.value, StringFormat=N1, Mode=OneTime}" Grid.Column="1"/>
+                                                    <TextBlock Text="{Binding Path=value, StringFormat=N1, Mode=OneTime}" Grid.Column="1"/>
                                                     <TextBlock Text=" )   "/>
 
                                                     <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3">
@@ -361,7 +361,7 @@
                                                             <Style TargetType="{x:Type Border}">
                                                                 <Setter Property="Background" Value="Green"/>
                                                                 <Style.Triggers>
-                                                                    <DataTrigger Value="FAIL" Binding="{Binding Path=Value.result, Mode=OneTime}">
+                                                                    <DataTrigger Value="FAIL" Binding="{Binding Path=result, Mode=OneTime}">
                                                                         <Setter Property="Background" Value="Red"/>
                                                                     </DataTrigger>
                                                                 </Style.Triggers>
@@ -369,7 +369,7 @@
                                                         </Border.Style>
                                                     </Border>
                                                     <TextBlock Text=" "/>
-                                                    <TextBlock Text="{Binding Path=Value.result, Mode=OneTime}"/>
+                                                    <TextBlock Text="{Binding Path=result, Mode=OneTime}"/>
                                                     
                                                 </StackPanel>
 
@@ -405,12 +405,12 @@
                                                 </Grid.ColumnDefinitions>
 
                                                 <StackPanel Orientation="Horizontal" Margin="3,0,6,0">
-                                                    <TextBlock Text="{Binding Path=Key, Converter={StaticResource stringToUpper}, Mode=OneTime}" Grid.Column="0"/>
+                                                    <TextBlock Text="{Binding Path=name, Converter={StaticResource stringToUpper}, Mode=OneTime}" Grid.Column="0"/>
                                                 </StackPanel>
 
                                                 <StackPanel Orientation="Horizontal" Grid.Column="2" >
                                                     <TextBlock Text=" ( "/>
-                                                    <TextBlock Text="{Binding Path=Value.value, StringFormat=N2, Mode=OneTime}" Grid.Column="1"/>
+                                                    <TextBlock Text="{Binding Path=value, StringFormat=N2, Mode=OneTime}" Grid.Column="1"/>
                                                     <TextBlock Text=" )   "/>
 
                                                     <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3">
@@ -418,7 +418,7 @@
                                                             <Style TargetType="{x:Type Border}">
                                                                 <Setter Property="Background" Value="Green"/>
                                                                 <Style.Triggers>
-                                                                    <DataTrigger Value="FAIL" Binding="{Binding Path=Value.result, Mode=OneTime}">
+                                                                    <DataTrigger Value="FAIL" Binding="{Binding Path=result, Mode=OneTime}">
                                                                         <Setter Property="Background" Value="Red"/>
                                                                     </DataTrigger>
                                                                 </Style.Triggers>
@@ -426,7 +426,7 @@
                                                         </Border.Style>
                                                     </Border>
                                                     <TextBlock Text=" "/>
-                                                    <TextBlock Text="{Binding Path=Value.result, Mode=OneTime}"/>
+                                                    <TextBlock Text="{Binding Path=result, Mode=OneTime}"/>
                                                     
                                                 </StackPanel>
 
@@ -463,11 +463,11 @@
 
                                                 <StackPanel Orientation="Horizontal" Margin="3,0,6,0">
 
-                                                    <TextBlock Text="{Binding Path=Key, Converter={StaticResource stringToUpper}, Mode=OneTime}" Grid.Column="0"/>
+                                                    <TextBlock Text="{Binding Path=name, Converter={StaticResource stringToUpper}, Mode=OneTime}" Grid.Column="0"/>
                                                 </StackPanel>
 
                                                 <StackPanel Orientation="Horizontal" Grid.Column="2" >
-                                                    <TextBlock Text="{Binding Path=Value.value, StringFormat=N1, Mode=OneTime}" Grid.Column="1"/>
+                                                    <TextBlock Text="{Binding Path=value, StringFormat=N1, Mode=OneTime}" Grid.Column="1"/>
 
                                                     <TextBlock Text=" "/>
                                                     <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3">
@@ -475,16 +475,16 @@
                                                             <Style TargetType="{x:Type Border}">
                                                                 <Setter Property="Background" Value="Green"/>
                                                                 <Style.Triggers>
-                                                                    <DataTrigger Value="B" Binding="{Binding Path=Value.letter, Mode=OneTime}">
+                                                                    <DataTrigger Value="B" Binding="{Binding Path=letter, Mode=OneTime}">
                                                                         <Setter Property="Background" Value="Turquoise"/>
                                                                     </DataTrigger>
-                                                                    <DataTrigger Value="C" Binding="{Binding Path=Value.letter, Mode=OneTime}">
+                                                                    <DataTrigger Value="C" Binding="{Binding Path=letter, Mode=OneTime}">
                                                                         <Setter Property="Background" Value="Blue"/>
                                                                     </DataTrigger>
-                                                                    <DataTrigger Value="D" Binding="{Binding Path=Value.letter, Mode=OneTime}">
+                                                                    <DataTrigger Value="D" Binding="{Binding Path=letter, Mode=OneTime}">
                                                                         <Setter Property="Background" Value="Fuchsia"/>
                                                                     </DataTrigger>
-                                                                    <DataTrigger Value="F" Binding="{Binding Path=Value.letter, Mode=OneTime}">
+                                                                    <DataTrigger Value="F" Binding="{Binding Path=letter, Mode=OneTime}">
                                                                         <Setter Property="Background" Value="Red"/>
                                                                     </DataTrigger>
                                                                 </Style.Triggers>
@@ -492,7 +492,7 @@
                                                         </Border.Style>
                                                     </Border>
                                                     <TextBlock Text=" "/>
-                                                    <TextBlock Text="{Binding Path=Value.letter, Mode=OneTime}"/>
+                                                    <TextBlock Text="{Binding Path=letter, Mode=OneTime}"/>
                                                 </StackPanel>
 
                                             </Grid>
@@ -636,19 +636,19 @@
                                 </Grid.ColumnDefinitions>
 
                                 <StackPanel Orientation="Horizontal" Margin="3,0,6,0">
-                                    <TextBlock Text="{Binding Path=Key, Converter={StaticResource stringToUpper}, Mode=OneTime}" Grid.Column="0"/>
+                                    <TextBlock Text="{Binding Path=name, Converter={StaticResource stringToUpper}, Mode=OneTime}" Grid.Column="0"/>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal" Grid.Column="2" >
 
-                                    <TextBlock Text="{Binding Path=Value.value, StringFormat=N2, Mode=OneTime}" Grid.Column="1" Margin="3,0,3,0"/>
+                                    <TextBlock Text="{Binding Path=value, StringFormat=N2, Mode=OneTime}" Grid.Column="1" Margin="3,0,3,0"/>
                                     
                                     <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3" Margin="2,0,2,0">
                                         <Border.Style>
                                             <Style TargetType="{x:Type Border}">
                                                 <Setter Property="Background" Value="Green"/>
                                                 <Style.Triggers>
-                                                    <DataTrigger Value="FAIL" Binding="{Binding Path=Value.result, Mode=OneTime}">
+                                                    <DataTrigger Value="FAIL" Binding="{Binding Path=result, Mode=OneTime}">
                                                         <Setter Property="Background" Value="Red"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>

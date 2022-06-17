@@ -123,17 +123,20 @@ namespace V275_Testing.RunControllers
 
         public async Task<bool> Start()
         {
-            CurrentLabelCount = 1;
+            CurrentLabelCount = 0;
 
             Logger.Info("Job Started: Loop Count {loop}", LoopCount);
 
             for (int i = 0; i < LoopCount; i++)
             {
+                
                 CurrentLoopCount = i + 1;
                 Logger.Info("Job Loop: {loop}", CurrentLoopCount);
 
                 foreach (var label in Labels)
                 {
+                    CurrentLabelCount++;
+
                     if (label.LabelSectors.Count == 0)
                         continue;
 
@@ -174,7 +177,7 @@ namespace V275_Testing.RunControllers
                         LabelReport = sRow.LabelReport,
                         LabelImageUID = label.LabelImageUID,
                         LabelImage = label.LabelImageBytes,
-                        LabelImageOrder = CurrentLabelCount++,
+                        LabelImageOrder = CurrentLabelCount,
                         LoopCount = i + 1
                     };
 
