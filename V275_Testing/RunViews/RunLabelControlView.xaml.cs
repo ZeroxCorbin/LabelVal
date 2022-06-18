@@ -12,6 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using V275_Testing.Dialogs;
+using V275_Testing.RunViewModels;
+using V275_Testing.WindowViews;
 
 namespace V275_Testing.RunViews
 {
@@ -35,6 +38,33 @@ namespace V275_Testing.RunViews
         {
             if (e.VerticalChange != 0)
                 ScrollLabelSectors.ScrollToVerticalOffset(e.VerticalOffset);
+        }
+
+        private void RepeatImage_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ShowImage(((RunLabelControlViewModel)DataContext).Run.RepeatImage);
+        }
+
+        private bool ShowImage(byte[] image)
+        {
+            var dc = new ImageViewerDialogViewModel();
+
+            dc.CreateImage(image);
+            if (dc.RepeatImage == null) return false;
+
+            RunView yourParentWindow = (RunView)Window.GetWindow(this);
+
+            dc.Width = yourParentWindow.ActualWidth - 100;
+            dc.Height = yourParentWindow.ActualHeight - 100;
+
+            MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance.ShowMetroDialogAsync(yourParentWindow.DataContext, new ImageViewerDialogView() { DataContext = dc });
+
+            return true;
+        }
+
+        private void LabelImage_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ShowImage(((RunLabelControlViewModel)DataContext).Run.LabelImage);
         }
     }
 }

@@ -33,8 +33,11 @@ namespace V275_Testing.WindowViewModels
         private string labelComment;
         public string LabelComment { get => labelComment; set => SetProperty(ref labelComment, value); }
 
-        private byte[] labelImageBytes;
-        public byte[] LabelImageBytes { get => labelImageBytes; set => SetProperty(ref labelImageBytes, value); }
+        private byte[] labelImage;
+        public byte[] LabelImage { get => labelImage; set => SetProperty(ref labelImage, value); }
+
+        private byte[] repeatImage;
+        public byte[] RepeatImage { get => repeatImage; set => SetProperty(ref repeatImage, value); }
 
         private bool isGS1Standard;
         public bool IsGS1Standard { get => isGS1Standard; set => SetProperty(ref isGS1Standard, value); }
@@ -103,8 +106,7 @@ namespace V275_Testing.WindowViewModels
         public string PrinterName { get; set; }
         public string LabelImagePath { get; }
 
-        private byte[] repeatImage;
-        public byte[] RepeatImage { get => repeatImage; set => SetProperty(ref repeatImage, value); }
+
 
         public string Status
         {
@@ -163,6 +165,7 @@ namespace V275_Testing.WindowViewModels
 
         public async Task<MessageDialogResult> OkCancelDialog(string title, string message)
         {
+            
             MessageDialogResult result = await this.dialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative);
 
             return result;
@@ -170,8 +173,8 @@ namespace V275_Testing.WindowViewModels
 
         private void GetImage(string imagePath)
         {
-            LabelImageBytes = File.ReadAllBytes(imagePath);
-            LabelImageUID = ImageUtilities.ImageUID(LabelImageBytes);
+            LabelImage = File.ReadAllBytes(imagePath);
+            LabelImageUID = ImageUtilities.ImageUID(LabelImage);
             //LabelImage.BeginInit();
             //LabelImage.UriSource = new Uri(imagePath);
 
@@ -204,6 +207,8 @@ namespace V275_Testing.WindowViewModels
 
             if (row == null)
                 return;
+
+            RepeatImage = row.RepeatImage;
 
             List<SectorControlViewModel> tempSectors = new List<SectorControlViewModel>();
             if (!string.IsNullOrEmpty(row.LabelReport) && !string.IsNullOrEmpty(row.LabelTemplate))
@@ -310,6 +315,20 @@ namespace V275_Testing.WindowViewModels
                 return false;
             }
 
+            if(repeat == -1)
+            {
+                if (!await V275.Commands.GetRepeatsAvailable())
+                {
+                    Status = V275.Status;
+                    return false;
+                }
+
+                if(V275.Commands.Available.Count > 0)
+                    repeat = V275.Commands.Available.First();
+            }
+
+
+
             if (V275.V275_State == "Editing")
                 if (!await V275.Inspect(repeat))
                 {
@@ -337,7 +356,6 @@ namespace V275_Testing.WindowViewModels
                     return false;
                 }
             }
-
 
             ReadJob = V275.Commands.Job;
             Report = V275.Commands.Report;

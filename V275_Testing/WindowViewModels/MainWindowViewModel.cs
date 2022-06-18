@@ -275,10 +275,10 @@ namespace V275_Testing.WindowViewModels
 
             Logger.Info("Loading label images from standards directory: {name}", $"{App.StandardsRoot}\\{std}\\");
 
-            foreach (var lab in Labels)
-                lab.LabelImageBytes = null;
+            //foreach (var lab in Labels)
+            //    lab.LabelImage = null;
 
-            GC.Collect();
+            //GC.Collect();
 
             Labels.Clear();
 

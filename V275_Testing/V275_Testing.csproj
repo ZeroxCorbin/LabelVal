@@ -86,6 +86,9 @@
     <Reference Include="MahApps.Metro.IconPacks.Modern, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0c0d510f9915137a, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.IconPacks.Modern.4.11.0\lib\net47\MahApps.Metro.IconPacks.Modern.dll</HintPath>
     </Reference>
+    <Reference Include="MahApps.Metro.SimpleChildWindow, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ca3e0454e54ef52a, processorArchitecture=MSIL">
+      <HintPath>..\packages\MahApps.Metro.SimpleChildWindow.2.0.0\lib\net47\MahApps.Metro.SimpleChildWindow.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Extensions.Primitives, Version=6.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.Primitives.6.0.0\lib\net461\Microsoft.Extensions.Primitives.dll</HintPath>
     </Reference>
@@ -99,7 +102,10 @@
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.5.0.0\lib\net46\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.5.0.1\lib\net46\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="PanAndZoom, Version=2.3.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\PanAndZoom.2.3.4\lib\net461\PanAndZoom.dll</HintPath>
     </Reference>
     <Reference Include="SQLite-net, Version=1.8.116.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\sqlite-net-pcl.1.8.116\lib\netstandard2.0\SQLite-net.dll</HintPath>
@@ -164,6 +170,12 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="Wpf.Controls.PanAndZoom, Version=2.3.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Wpf.Controls.PanAndZoom.2.3.4\lib\net461\Wpf.Controls.PanAndZoom.dll</HintPath>
+    </Reference>
+    <Reference Include="Wpf.MatrixExtensions, Version=2.3.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Wpf.MatrixExtensions.2.3.4\lib\net461\Wpf.MatrixExtensions.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -175,6 +187,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Converters\BytesToImageConverter.cs" />
+    <Compile Include="Converters\DoubleToStringConverter.cs" />
     <Compile Include="Converters\FloatStringTrimConverter.cs" />
     <Compile Include="Converters\ShortenUIDConverter.cs" />
     <Compile Include="Converters\StringToUpperSpacedConverter.cs" />
@@ -187,6 +200,10 @@
     <Compile Include="Databases\StandardsDatabase.cs" />
     <Compile Include="Databases\SimpleDatabase.cs" />
     <Compile Include="Core\StaticUtils.cs" />
+    <Compile Include="Dialogs\ImageViewerDialogView.xaml.cs">
+      <DependentUpon>ImageViewerDialogView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ImageViewerDialogViewModel.cs" />
     <Compile Include="RunControllers\RunController.cs" />
     <Compile Include="Printer\PrintControl.cs" />
     <Compile Include="Utilities\ImageUtilies.cs" />
@@ -268,6 +285,10 @@
     <Resource Include="favicon.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Dialogs\ImageViewerDialogView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="RunViews\RunLabelControlView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

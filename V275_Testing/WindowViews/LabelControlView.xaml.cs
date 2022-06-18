@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using V275_Testing.Dialogs;
 using V275_Testing.WindowViewModels;
 
 namespace V275_Testing.WindowViews
@@ -24,19 +26,24 @@ namespace V275_Testing.WindowViews
         public LabelControlView()
         {
             InitializeComponent();
+
         }
 
+        LabelControlViewModel viewModel;
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            LabelControlViewModel viewModel = (LabelControlViewModel)DataContext;
+            viewModel = (LabelControlViewModel)DataContext;
             viewModel.BringIntoView += ViewModel_BringIntoView;
+        }
 
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            viewModel.BringIntoView -= ViewModel_BringIntoView;
         }
 
         private void ViewModel_BringIntoView()
         {
             App.Current.Dispatcher.Invoke(new Action(() => this.BringIntoView()));
-            
         }
 
         private void ScrollLabelSectors_ScrollChanged(object sender, ScrollChangedEventArgs e)
@@ -51,11 +58,31 @@ namespace V275_Testing.WindowViews
                 ScrollLabelSectors.ScrollToVerticalOffset(e.VerticalOffset);
         }
 
-        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        private void RepeatImage_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            //LabelControlViewModel viewModel = (LabelControlViewModel)DataContext;
-            //viewModel.BringIntoView -= ViewModel_BringIntoView;
-            LabelImage.Source=null;
+            ShowImage(((LabelControlViewModel)DataContext).RepeatImage);
+        }
+
+        private bool ShowImage(byte[] image)
+        {
+            var dc = new ImageViewerDialogViewModel();
+
+            dc.CreateImage(image);
+            if (dc.RepeatImage == null) return false;
+
+            MainWindowView yourParentWindow = (MainWindowView)Window.GetWindow(this);
+
+            dc.Width = yourParentWindow.ActualWidth - 100;
+            dc.Height = yourParentWindow.ActualHeight - 100;
+
+            MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance.ShowMetroDialogAsync(yourParentWindow.DataContext, new ImageViewerDialogView() { DataContext = dc });
+
+            return true;
+        }
+
+        private void LabelImage_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ShowImage(((LabelControlViewModel)DataContext).LabelImage);
         }
     }
 }

@@ -153,7 +153,7 @@ namespace V275_Testing.RunControllers
                             RunStateChange?.Invoke(State = RunStates.PAUSED);
                         }
 
-                        Thread.Sleep(10);
+                        Thread.Sleep(1);
                     }
 
                     if (RequestedState == RunStates.STOPPED)
@@ -176,7 +176,7 @@ namespace V275_Testing.RunControllers
                         LabelTemplate = sRow.LabelTemplate,
                         LabelReport = sRow.LabelReport,
                         LabelImageUID = label.LabelImageUID,
-                        LabelImage = label.LabelImageBytes,
+                        LabelImage = label.LabelImage,
                         LabelImageOrder = CurrentLabelCount,
                         LoopCount = i + 1
                     };
@@ -205,7 +205,7 @@ namespace V275_Testing.RunControllers
                             return false;
                         }
 
-                        Thread.Sleep(10);
+                        Thread.Sleep(1);
                     };
 
                     PngBitmapEncoder encoder = new PngBitmapEncoder();

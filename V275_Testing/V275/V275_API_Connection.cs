@@ -186,7 +186,7 @@ namespace V275_Testing.V275
                     client.BaseAddress = new System.Uri(url);
                     if (!string.IsNullOrEmpty(token))
                         client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", token);
-                    client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("*/*"));
+                    client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("image/bmp"));
 
                     HttpResponseMessage = await client.GetAsync(url);
 

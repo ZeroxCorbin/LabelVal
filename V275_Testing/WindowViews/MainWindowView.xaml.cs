@@ -1,5 +1,6 @@
 ﻿using ControlzEx.Theming;
 using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,10 +24,13 @@ namespace V275_Testing.WindowViews
     public partial class MainWindowView : MetroWindow
     {
         RunView win;
+        public IDialogCoordinator DialogCoord { get; }
 
         public MainWindowView()
         {
             InitializeComponent();
+
+            DialogCoord = DialogCoordinator.Instance;
         }
 
         private void btnLightTheme_Click(object sender, RoutedEventArgs e) => ThemeManager.Current.ChangeTheme(App.Current, "Light.Steel");
