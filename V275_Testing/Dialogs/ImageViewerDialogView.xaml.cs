@@ -28,13 +28,19 @@ namespace V275_Testing.Dialogs
 
         private void CustomDialog_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if(e.Key == Key.Escape)
-                MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance.HideMetroDialogAsync(this.DataContext, this);
+            if (e.Key == Key.Escape)
+                Close();
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance.HideMetroDialogAsync(this.DataContext, this);
+            Close();
+        }
+
+        private async void Close()
+        {
+            await MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance.HideMetroDialogAsync(this.DataContext, this);
+            this.DataContext = null;
         }
 
         private void Reset_Click(object sender, RoutedEventArgs e)

@@ -274,26 +274,26 @@ namespace V275_Testing.WindowViewModels
                     
             }
 
-            foreach (Blemish src in Blemishes)
-                if (compare.Blemishes.FirstOrDefault((x) => x.rectangle.Contains(new System.Drawing.Point(src.rectangle.Left + (src.width / 2), src.rectangle.Top + (src.rectangle.Height / 2)))) is Blemish cmp)
-                {
-                    //if (cmp == null)
-                    //{
-                    //    results.Blemishes.Add(src);
-                    //    results.IsNotEmpty = true;
-                    //    continue;
-                    //}
+            //foreach (Blemish src in Blemishes)
+            //    if (compare.Blemishes.FirstOrDefault((x) => x.rectangle.Contains(new System.Drawing.Point(src.rectangle.Left + (src.width / 2), src.rectangle.Top + (src.rectangle.Height / 2)))) is Blemish cmp)
+            //    {
+            //        //if (cmp == null)
+            //        //{
+            //        //    results.Blemishes.Add(src);
+            //        //    results.IsNotEmpty = true;
+            //        //    continue;
+            //        //}
                         
 
-                    //results.Blemishes.Add(cmp);
-                    //results.IsNotEmpty = true;
+            //        //results.Blemishes.Add(cmp);
+            //        //results.IsNotEmpty = true;
 
-                }
-                else
-                {
-                    results.Blemishes.Add(src);
-                    results.IsNotEmpty = true;
-                }
+            //    }
+            //    else
+            //    {
+            //        results.Blemishes.Add(src);
+            //        results.IsNotEmpty = true;
+            //    }
 
             foreach (GradeValue src in GradeValues)
                 if (compare.GradeValues.FirstOrDefault((x) => x.name == src.name) is GradeValue cmp)

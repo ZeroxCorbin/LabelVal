@@ -39,6 +39,7 @@ namespace V275_Testing.WindowViews
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)
         {
             viewModel.BringIntoView -= ViewModel_BringIntoView;
+            viewModel = null;
         }
 
         private void ViewModel_BringIntoView()

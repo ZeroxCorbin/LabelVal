@@ -23,9 +23,23 @@ namespace V275_Testing.RunViews
     /// </summary>
     public partial class RunLabelControlView : UserControl
     {
+        RunLabelControlViewModel viewModel;
         public RunLabelControlView()
         {
             InitializeComponent();
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            viewModel = (RunLabelControlViewModel)DataContext;
+        }
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            if (viewModel == null) return;
+
+            viewModel.Run = null;
+            viewModel = null;
         }
 
         private void ScrollLabelSectors_ScrollChanged(object sender, ScrollChangedEventArgs e)
@@ -66,5 +80,6 @@ namespace V275_Testing.RunViews
         {
             ShowImage(((RunLabelControlViewModel)DataContext).Run.LabelImage);
         }
+
     }
 }
