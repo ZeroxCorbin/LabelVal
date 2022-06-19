@@ -92,11 +92,16 @@ namespace V275_Testing
             {
                 this.Shutdown();
             }
+
+            
+
         }
 
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+
+            ChangeColorBlindTheme(App.Settings.GetValue("App.IsColorBlind", false));
 
             // Set the application theme to Dark.Green
             _ = ThemeManager.Current.ChangeTheme(this, Settings.GetValue("App.Theme", "Dark.Steel"));
@@ -104,7 +109,20 @@ namespace V275_Testing
             ThemeManager.Current.ThemeChanged += Current_ThemeChanged;
             ThemeManager.Current.ThemeSyncMode = ThemeSyncMode.SyncWithAppMode;
         }
-        private void Current_ThemeChanged(object sender, ThemeChangedEventArgs e) => App.Settings.SetValue("App.Theme", e.NewTheme.Name);
+        private void Current_ThemeChanged(object sender, ThemeChangedEventArgs e)
+        {
+            App.Settings.SetValue("App.Theme", e.NewTheme.Name);
+        }
+
+        public static void ChangeColorBlindTheme(bool isColorBlind)
+        {
+            App.Settings.SetValue("App.IsColorBlind", isColorBlind);
+
+            if(isColorBlind)
+                Application.Current.Resources["CB_Green"] = Application.Current.Resources["ColorBlindBrush1"];
+            else
+                Application.Current.Resources["CB_Green"] = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Green);
+        }
 
         protected override void OnExit(ExitEventArgs e)
         {

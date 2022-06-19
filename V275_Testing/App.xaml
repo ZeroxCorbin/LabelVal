@@ -10,6 +10,51 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.FlatButton.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <Color x:Key="ColorBlind1">#193cbc</Color>
+            <SolidColorBrush x:Key="ColorBlindBrush1" Color="{StaticResource ColorBlind1}"/>
+
+            <Color x:Key="ColorBlind2">#1473af</Color>
+            <SolidColorBrush x:Key="ColorBlindBrush2" Color="{StaticResource ColorBlind2}"/>
+
+            <Color x:Key="ColorBlind3">#589acf</Color>
+            <SolidColorBrush x:Key="ColorBlindBrush3" Color="{StaticResource ColorBlind3}"/>
+
+            <Color x:Key="ColorBlind4">#89c3ef</Color>
+            <SolidColorBrush x:Key="ColorBlindBrush4" Color="{StaticResource ColorBlind4}"/>
+
+            <Color x:Key="ColorBlind5">#ea594e</Color>
+            <SolidColorBrush x:Key="ColorBlindBrush5" Color="{StaticResource ColorBlind5}"/>
+
+            <Color x:Key="ColorBlind6">#e5b039</Color>
+            <SolidColorBrush x:Key="ColorBlindBrush6" Color="{StaticResource ColorBlind6}"/>
+
+            <Color x:Key="ColorBlind7">#ede65a</Color>
+            <SolidColorBrush x:Key="ColorBlindBrush7" Color="{StaticResource ColorBlind7}"/>
+
+
+            <Color x:Key="ColorNormal1">Green</Color>
+            <SolidColorBrush x:Key="ColorNormalBrush1" Color="{StaticResource ColorNormal1}"/>
+
+            <Color x:Key="ColorNormal2"></Color>
+            <SolidColorBrush x:Key="ColorNormalBrush2" Color="{StaticResource ColorNormal2}"/>
+
+            <Color x:Key="ColorNormal3">#589acf</Color>
+            <SolidColorBrush x:Key="ColorNormalBrush3" Color="{StaticResource ColorNormal3}"/>
+
+            <Color x:Key="ColorNormal4">#89c3ef</Color>
+            <SolidColorBrush x:Key="ColorNormalBrush4" Color="{StaticResource ColorNormal4}"/>
+
+            <Color x:Key="ColorNormal5">#ea594e</Color>
+            <SolidColorBrush x:Key="ColorNormalBrush5" Color="{StaticResource ColorNormal5}"/>
+
+            <Color x:Key="ColorNormal6">#e5b039</Color>
+            <SolidColorBrush x:Key="ColorNormalBrush6" Color="{StaticResource ColorNormal6}"/>
+
+            <Color x:Key="ColorNormal7">#ede65a</Color>
+            <SolidColorBrush x:Key="ColorNormalBrush7" Color="{StaticResource ColorNormal7}"/>
+            
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

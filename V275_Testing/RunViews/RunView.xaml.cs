@@ -1,4 +1,5 @@
-﻿using MahApps.Metro.Controls;
+﻿using ControlzEx.Theming;
+using MahApps.Metro.Controls;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -47,6 +48,15 @@ namespace V275_Testing.RunViews
                     }
                 }
             }
+        }
+
+        private void btnLightTheme_Click(object sender, RoutedEventArgs e) => ThemeManager.Current.ChangeTheme(App.Current, "Light.Steel");
+
+        private void btnDarkTheme_Click(object sender, RoutedEventArgs e) => ThemeManager.Current.ChangeTheme(App.Current, "Dark.Steel");
+
+        private void btnColorBlind_Click(object sender, RoutedEventArgs e)
+        {
+            App.ChangeColorBlindTheme(!App.Settings.GetValue("App.IsColorBlind", false));
         }
 
         public RunView()

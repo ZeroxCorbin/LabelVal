@@ -67,5 +67,10 @@ namespace V275_Testing.WindowViews
                 win.Close();
             }
         }
+
+        private void btnColorBlind_Click(object sender, RoutedEventArgs e)
+        {
+            App.ChangeColorBlindTheme(!App.Settings.GetValue("App.IsColorBlind", false));
+        }
     }
 }

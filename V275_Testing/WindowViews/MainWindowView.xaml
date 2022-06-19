@@ -27,6 +27,15 @@
         <mah:WindowCommands>>
 
             <Button BorderThickness="0" 
+                        x:Name="btnColorBlind"
+                        Click="btnColorBlind_Click">
+                <Button.Content>
+                    <IconPacks:PackIconModern Width="20" Height="20" Kind="Eye"/>
+                </Button.Content>
+
+            </Button>
+            
+            <Button BorderThickness="0" 
                         x:Name="btnLightTheme"
                         Click="btnLightTheme_Click">
                 <Button.Content>
@@ -203,10 +212,10 @@
                     <Label Content="{Binding V275.V275_State}">
                         <Label.Style>
                             <Style TargetType="{x:Type Label}">
-                                <Setter Property="Background" Value="Red"/>
+                                <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
                                 <Style.Triggers>
                                     <DataTrigger Value="Editing" Binding="{Binding V275.V275_State}">
-                                        <Setter Property="Background" Value="Green"/>
+                                        <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>

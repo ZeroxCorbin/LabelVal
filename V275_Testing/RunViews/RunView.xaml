@@ -63,6 +63,38 @@
         </ContextMenu>
 
     </mah:MetroWindow.Resources>
+
+    <mah:MetroWindow.RightWindowCommands>
+        <mah:WindowCommands>>
+
+            <Button BorderThickness="0" 
+                        x:Name="btnColorBlind"
+                        Click="btnColorBlind_Click">
+                <Button.Content>
+                    <IconPacks:PackIconModern Width="20" Height="20" Kind="Eye"/>
+                </Button.Content>
+
+            </Button>
+            
+            <Button BorderThickness="0" 
+                        x:Name="btnLightTheme"
+                        Click="btnLightTheme_Click">
+                <Button.Content>
+                    <IconPacks:PackIconModern Width="20" Height="20" Kind="WeatherSun"/>
+                </Button.Content>
+
+            </Button>
+
+            <Button BorderThickness="0" 
+                        x:Name="btnDarkTheme"
+                        Click="btnDarkTheme_Click">
+                <Button.Content>
+                    <IconPacks:PackIconModern Width="20" Height="20" Kind="MoonWaningCrescent"/>
+                </Button.Content>
+            </Button>
+        </mah:WindowCommands>
+    </mah:MetroWindow.RightWindowCommands>
+    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>

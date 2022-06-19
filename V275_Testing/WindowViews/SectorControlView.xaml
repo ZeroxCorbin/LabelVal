@@ -50,7 +50,7 @@
                 <TextBlock Text="{Binding JobSector.username, Mode=OneTime}" Margin="3,0,3,0"/>
                 
                 <TextBlock Grid.Column="1" Text="WRONG STANDARD" 
-                           Background="OrangeRed"
+                           Background="{DynamicResource ColorBlindBrush5}"
                            HorizontalAlignment="Center"
                            Visibility="{Binding IsWrongStandard, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneTime}"/>
 
@@ -229,13 +229,13 @@
                                                     <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3">
                                                         <Border.Style>
                                                             <Style TargetType="{x:Type Border}">
-                                                                <Setter Property="Background" Value="Green"/>
+                                                                <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
                                                                 <Style.Triggers>
                                                                     <DataTrigger Value="2" Binding="{Binding category, Mode=OneTime}">
-                                                                        <Setter Property="Background" Value="Red"/>
+                                                                        <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
                                                                     </DataTrigger>
                                                                     <DataTrigger Value="1" Binding="{Binding category, Mode=OneTime}">
-                                                                        <Setter Property="Background" Value="Orange"/>
+                                                                        <Setter Property="Background" Value="{DynamicResource ColorBlindBrush6}"/>
                                                                     </DataTrigger>
                                                                 </Style.Triggers>
                                                             </Style>
@@ -290,19 +290,19 @@
                                                     <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3">
                                                         <Border.Style>
                                                             <Style TargetType="{x:Type Border}">
-                                                                <Setter Property="Background" Value="Green"/>
+                                                                <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
                                                                 <Style.Triggers>
                                                                     <DataTrigger Value="B" Binding="{Binding Path=grade.letter, Mode=OneTime}">
-                                                                        <Setter Property="Background" Value="Turquoise"/>
+                                                                        <Setter Property="Background" Value="{DynamicResource ColorBlindBrush2}"/>
                                                                     </DataTrigger>
                                                                     <DataTrigger Value="C" Binding="{Binding Path=grade.letter, Mode=OneTime}">
-                                                                        <Setter Property="Background" Value="Blue"/>
+                                                                        <Setter Property="Background" Value="{DynamicResource ColorBlindBrush4}"/>
                                                                     </DataTrigger>
                                                                     <DataTrigger Value="D" Binding="{Binding Path=grade.letter, Mode=OneTime}">
-                                                                        <Setter Property="Background" Value="Fuchsia"/>
+                                                                        <Setter Property="Background" Value="{DynamicResource ColorBlindBrush7}"/>
                                                                     </DataTrigger>
                                                                     <DataTrigger Value="F" Binding="{Binding Path=grade.letter, Mode=OneTime}">
-                                                                        <Setter Property="Background" Value="Red"/>
+                                                                        <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
                                                                     </DataTrigger>
                                                                 </Style.Triggers>
                                                             </Style>
@@ -396,10 +396,10 @@
                                                     <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3">
                                                         <Border.Style>
                                                             <Style TargetType="{x:Type Border}">
-                                                                <Setter Property="Background" Value="Green"/>
+                                                                <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
                                                                 <Style.Triggers>
                                                                     <DataTrigger Value="FAIL" Binding="{Binding Path=result, Mode=OneTime}">
-                                                                        <Setter Property="Background" Value="Red"/>
+                                                                        <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
                                                                     </DataTrigger>
                                                                 </Style.Triggers>
                                                             </Style>
@@ -453,10 +453,10 @@
                                                     <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3">
                                                         <Border.Style>
                                                             <Style TargetType="{x:Type Border}">
-                                                                <Setter Property="Background" Value="Green"/>
+                                                                <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
                                                                 <Style.Triggers>
                                                                     <DataTrigger Value="FAIL" Binding="{Binding Path=result, Mode=OneTime}">
-                                                                        <Setter Property="Background" Value="Red"/>
+                                                                        <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
                                                                     </DataTrigger>
                                                                 </Style.Triggers>
                                                             </Style>
@@ -510,19 +510,19 @@
                                                     <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3">
                                                         <Border.Style>
                                                             <Style TargetType="{x:Type Border}">
-                                                                <Setter Property="Background" Value="Green"/>
+                                                                <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
                                                                 <Style.Triggers>
                                                                     <DataTrigger Value="B" Binding="{Binding Path=letter, Mode=OneTime}">
-                                                                        <Setter Property="Background" Value="Turquoise"/>
+                                                                        <Setter Property="Background" Value="{DynamicResource ColorBlindBrush2}"/>
                                                                     </DataTrigger>
                                                                     <DataTrigger Value="C" Binding="{Binding Path=letter, Mode=OneTime}">
-                                                                        <Setter Property="Background" Value="Blue"/>
+                                                                        <Setter Property="Background" Value="{DynamicResource ColorBlindBrush4}"/>
                                                                     </DataTrigger>
                                                                     <DataTrigger Value="D" Binding="{Binding Path=letter, Mode=OneTime}">
-                                                                        <Setter Property="Background" Value="Fuchsia"/>
+                                                                        <Setter Property="Background" Value="{DynamicResource ColorBlindBrush7}"/>
                                                                     </DataTrigger>
                                                                     <DataTrigger Value="F" Binding="{Binding Path=letter, Mode=OneTime}">
-                                                                        <Setter Property="Background" Value="Red"/>
+                                                                        <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
                                                                     </DataTrigger>
                                                                 </Style.Triggers>
                                                             </Style>
@@ -547,14 +547,14 @@
                 <Button Click="Button_Click">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Square.Accent}">
-                            <Setter Property="Background" Value="Green"/>
+                            <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
                             <Setter Property="IsHitTestVisible" Value="True"/>
                             <Style.Triggers>
                                 <DataTrigger Value="True" Binding="{Binding IsError, Mode=OneTime}">
-                                    <Setter Property="Background" Value="Red"/>
+                                    <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
                                 </DataTrigger>
                                 <DataTrigger Value="True" Binding="{Binding IsWarning, Mode=OneTime}">
-                                    <Setter Property="Background" Value="Orange"/>
+                                    <Setter Property="Background" Value="{DynamicResource ColorBlindBrush6}"/>
                                 </DataTrigger>
 
                                 <DataTrigger Value="ocr" Binding="{Binding JobSector.type, Mode=OneTime}">
@@ -628,13 +628,13 @@
                                 <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Grid.Column="2" Height="10" Width="10" CornerRadius="3">
                                     <Border.Style>
                                         <Style TargetType="{x:Type Border}">
-                                            <Setter Property="Background" Value="Green"/>
+                                            <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
                                             <Style.Triggers>
                                                 <DataTrigger Value="2" Binding="{Binding category, Mode=OneTime}">
-                                                    <Setter Property="Background" Value="Red"/>
+                                                    <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
                                                 </DataTrigger>
                                                 <DataTrigger Value="1" Binding="{Binding category, Mode=OneTime}">
-                                                    <Setter Property="Background" Value="Orange"/>
+                                                    <Setter Property="Background" Value="{DynamicResource ColorBlindBrush6}"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -683,10 +683,10 @@
                                     <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3" Margin="2,0,2,0">
                                         <Border.Style>
                                             <Style TargetType="{x:Type Border}">
-                                                <Setter Property="Background" Value="Green"/>
+                                                <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Value="FAIL" Binding="{Binding Path=result, Mode=OneTime}">
-                                                        <Setter Property="Background" Value="Red"/>
+                                                        <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
