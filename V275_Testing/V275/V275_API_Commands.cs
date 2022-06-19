@@ -185,6 +185,8 @@ namespace V275_Testing.V275
             bool res;
             if (res = CheckResults(result))
                 Available = JsonConvert.DeserializeObject<int[]>(result).ToList();
+            else
+                Available = null;
 
             return res;
         }

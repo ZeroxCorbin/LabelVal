@@ -127,6 +127,9 @@ namespace V275_Testing.RunControllers
 
             Logger.Info("Job Started: Loop Count {loop}", LoopCount);
 
+            if(Labels.Count > 0)
+                await Labels[0].V275.SwitchToEdit();
+
             for (int i = 0; i < LoopCount; i++)
             {
                 
@@ -140,9 +143,7 @@ namespace V275_Testing.RunControllers
                     if (label.LabelSectors.Count == 0)
                         continue;
 
-                    if (IsGS1Standard)
-                        await label.V275.SwitchToEdit();
-                    else
+                    if (!IsGS1Standard)
                         await label.V275.SwitchToRun();
 
                     while (RequestedState == RunStates.PAUSED)
@@ -178,6 +179,7 @@ namespace V275_Testing.RunControllers
                         LabelImageUID = label.LabelImageUID,
                         LabelImage = label.LabelImage,
                         LabelImageOrder = CurrentLabelCount,
+                        RepeatGoldenImage = sRow.RepeatImage,
                         LoopCount = i + 1
                     };
 

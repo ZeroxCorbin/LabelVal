@@ -12,6 +12,7 @@ namespace V275_Testing.WindowViewModels
 {
     public class SectorDifferenceViewModel : Core.BaseViewModel
     {
+
         private string userName;
         public string UserName { get => userName; set => SetProperty(ref userName, value); }
 
@@ -140,6 +141,7 @@ namespace V275_Testing.WindowViewModels
                         {
                             if (prop1.Name == "text")
                                 OCVMatchText = (string)prop1.GetValue(prop.GetValue(verify));
+                              
                         }
 
                         if (prop1.PropertyType == typeof(V275_Report_InspectSector_Blemish.Blemish[]))

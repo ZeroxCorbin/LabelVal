@@ -38,6 +38,9 @@ namespace V275_Testing.Databases
             private byte[] repeatImage;
             public byte[] RepeatImage { get => repeatImage; set => SetProperty(ref repeatImage, value); }
 
+            private byte[] repeatGoldenImage;
+            public byte[] RepeatGoldenImage { get => repeatGoldenImage; set => SetProperty(ref repeatGoldenImage, value); }
+
             private string repeatReport;
             public string RepeatReport { get => repeatReport; set => SetProperty(ref repeatReport, value); }
 

@@ -9,8 +9,9 @@
             xmlns:ViewModels="clr-namespace:V275_Testing.WindowViewModels"
             xmlns:V275="clr-namespace:V275_Testing.V275.Models"
             xmlns:Converters="clr-namespace:V275_Testing.Converters"
-            xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
-            Dialog:DialogParticipation.Register="{Binding}"
+            xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro" 
+             xmlns:V275Converters="clr-namespace:V275_Testing.V275.Converters"
+             Dialog:DialogParticipation.Register="{Binding}"
             d:DataContext="{d:DesignInstance Type=ViewModels:SectorControlViewModel}"
             mc:Ignorable="d" 
             d:DesignHeight="450" d:DesignWidth="800">
@@ -19,6 +20,7 @@
         <BooleanToVisibilityConverter x:Key="booltovis"/>
         <Converters:StringToUpperSpacedConverter x:Key="stringToUpper"/>
         <Converters:FloatStringTrimConverter x:Key="floatTrim"/>
+        <V275Converters:V275_OCMatchModeToString x:Key="matchModeToString"/>
     </UserControl.Resources>
 
     <Border BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}" BorderThickness="1" Margin="1" CornerRadius="3">
@@ -39,17 +41,52 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
-            <StackPanel Orientation="Horizontal" Grid.ColumnSpan="3">
-
+            <Grid Grid.ColumnSpan="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
 
                 <TextBlock Text="{Binding JobSector.username, Mode=OneTime}" Margin="3,0,3,0"/>
                 
-                <TextBlock Text="WRONG STANDARD" 
+                <TextBlock Grid.Column="1" Text="WRONG STANDARD" 
                            Background="OrangeRed"
-                           Grid.ColumnSpan="4"
                            HorizontalAlignment="Center"
-                           Visibility="{Binding IsWrongStandard, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneTime}"/>              
-            </StackPanel>
+                           Visibility="{Binding IsWrongStandard, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneTime}"/>
+
+                <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="5,0,0,0">
+                    <TextBlock.Style>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Value="ocr" Binding="{Binding JobSector.type, Mode=OneTime}">
+                                    <Setter Property="Text">
+                                        <Setter.Value>
+                                            <MultiBinding StringFormat="{}{0} ({1})">
+                                                <Binding Path="JobSector.matchSettings.matchMode" Mode="OneTime" Converter="{StaticResource matchModeToString}"/>
+                                                <Binding Path="JobSector.matchSettings.userDefinedDataTrueSize" Mode="OneTime"/>
+                                            </MultiBinding>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+
+                                <DataTrigger Value="ocv" Binding="{Binding JobSector.type, Mode=OneTime}">
+                                    <Setter Property="Text">
+                                        <Setter.Value>
+                                            <MultiBinding StringFormat="{}{0} ({1})">
+                                                <Binding Path="JobSector.matchSettings.matchMode" Mode="OneTime" Converter="{StaticResource matchModeToString}"/>
+                                                <Binding Path="JobSector.matchSettings.userDefinedDataTrueSize" Mode="OneTime"/>
+                                            </MultiBinding>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </Grid>
 
 
             <Border Grid.Row="1" Grid.Column="0" Background="White" Height="30" VerticalAlignment="Top" Margin="0,3">

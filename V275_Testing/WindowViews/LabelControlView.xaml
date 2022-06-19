@@ -19,83 +19,6 @@
         <BooleanToVisibilityConverter x:Key="booltovis"/>
         <Converters:BytesToImageConverter x:Key="bytesToImage"/>
         <Converters:ShortenUIDConverter x:Key="shortenUID"/>
-
-        <Style TargetType="{x:Type Dialog:BaseMetroDialog}"
-        x:Key="NewCustomDialogStyle"
-        BasedOn="{StaticResource {x:Type Dialog:BaseMetroDialog}}">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Dialog:BaseMetroDialog}">
-                        <ControlTemplate.Resources>
-                            <Storyboard x:Key="DialogShownStoryboard">
-                                <DoubleAnimation AccelerationRatio=".9"
-                                            BeginTime="0:0:0"
-                                            Duration="0:0:0.2"
-                                            Storyboard.TargetProperty="Opacity"
-                                            To="1" />
-                            </Storyboard>
-                        </ControlTemplate.Resources>
-                        <Grid Background="{TemplateBinding Background}">
-                            <Border FocusVisualStyle="{x:Null}"
-                            Focusable="False">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="*" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
-                                    <ContentPresenter Grid.Row="0"
-                                                Content="{TemplateBinding DialogTop}" />
-                                    <Grid Grid.Row="1">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="10*" />
-                                            <ColumnDefinition Width="80*" />
-                                            <ColumnDefinition Width="10*" />
-                                        </Grid.ColumnDefinitions>
-                                        <!--  Content area  -->
-                                        <Grid Grid.Column="1"
-                                        Margin="0 10 0 0">
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="*" />
-                                            </Grid.RowDefinitions>
-                                            <TextBlock Grid.Row="0"
-                                                FontSize="{DynamicResource DialogTitleFontSize}"
-                                                Foreground="{TemplateBinding Foreground}"
-                                                Text="{TemplateBinding Title}"
-                                                TextWrapping="Wrap" />
-                                            <ContentPresenter Grid.Row="1"
-                                                        Content="{TemplateBinding Content}" />
-                                        </Grid>
-                                    </Grid>
-                                    <ContentPresenter Grid.Row="2"
-                                                Content="{TemplateBinding DialogBottom}" />
-                                </Grid>
-                            </Border>
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <EventTrigger RoutedEvent="Loaded">
-                                <EventTrigger.Actions>
-                                    <BeginStoryboard Storyboard="{StaticResource DialogShownStoryboard}" />
-                                </EventTrigger.Actions>
-                            </EventTrigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Dialog:CustomDialog x:Key="CustomDialogTest"
-                        Style="{StaticResource NewCustomDialogStyle}"
-                        Title="This dialog allows arbitrary content. It will close in 5 seconds."
-                        x:Name="CustomTestDialog">
-            <StackPanel>
-                <TextBlock Height="30"
-                    Text="This dialog allows arbitrary content. You have to close it yourself by clicking the close button below."
-                    TextWrapping="Wrap"
-                    Foreground="{DynamicResource AccentColorBrush}" />
-                <Button Content="Close Me!" />
-            </StackPanel>
-        </Dialog:CustomDialog>
     </UserControl.Resources>
 
     <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="2" Margin="5">
@@ -236,8 +159,25 @@
                 </ItemsControl>
             </ScrollViewer>
 
+            <Grid Grid.Row="1" Grid.Column="3" >
+                <Image Name="RepeatImage" Source="{Binding RepeatImage, Converter={StaticResource bytesToImage}}" Margin="3" Height="400" Width="400" MouseDown="RepeatImage_MouseDown"/>
+                <Label Foreground="Goldenrod" HorizontalAlignment="Left" VerticalAlignment="Top">
+                    <Label.Style>
+                        <Style TargetType="{x:Type Label}" BasedOn="{StaticResource {x:Type Label}}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsGoldenRepeat}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Label.Style>
+                    <Label.Content>
+                        <IconPacks:Material Kind="Gold"/>
+                    </Label.Content>
+                </Label>
 
-            <Image Name="RepeatImage" Grid.Row="1" Grid.Column="3" Source="{Binding RepeatImage, Converter={StaticResource bytesToImage}}" Margin="3" MaxHeight="400" Width="400" MouseDown="RepeatImage_MouseDown"/>
+            </Grid>
 
 
         </Grid>

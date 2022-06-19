@@ -45,6 +45,9 @@ namespace V275_Testing.WindowViewModels
         private string gradingStandard;
         public string GradingStandard { get => gradingStandard; set => SetProperty(ref gradingStandard, value); }
 
+        private bool isGoldenRepeat;
+        public bool IsGoldenRepeat { get => isGoldenRepeat; set => SetProperty(ref isGoldenRepeat, value); }
+
         private int printCount = 1;
         public int PrintCount { get => printCount; set => SetProperty(ref printCount, value); }
 
@@ -209,6 +212,7 @@ namespace V275_Testing.WindowViewModels
                 return;
 
             RepeatImage = row.RepeatImage;
+            IsGoldenRepeat = true;
 
             List<SectorControlViewModel> tempSectors = new List<SectorControlViewModel>();
             if (!string.IsNullOrEmpty(row.LabelReport) && !string.IsNullOrEmpty(row.LabelTemplate))
@@ -319,17 +323,26 @@ namespace V275_Testing.WindowViewModels
             {
                 if (!await V275.Commands.GetRepeatsAvailable())
                 {
-                    Status = V275.Status;
-                    return false;
+                    if(V275.Commands.Available == null)
+                        repeat = -1;
+                    else
+                    {
+                        Status = V275.Status;
+                        return false;
+                    }
+
+                }
+                else
+                {
+                    if(V275.Commands.Available.Count > 0)
+                        repeat = V275.Commands.Available.First();
                 }
 
-                if(V275.Commands.Available.Count > 0)
-                    repeat = V275.Commands.Available.First();
             }
 
 
 
-            if (V275.V275_State == "Editing")
+            if (V275.V275_State == "Editing" && repeat > -1)
                 if (!await V275.Inspect(repeat))
                 {
                     Status = V275.Status;
@@ -359,7 +372,13 @@ namespace V275_Testing.WindowViewModels
 
             ReadJob = V275.Commands.Job;
             Report = V275.Commands.Report;
-            RepeatImage = V275.Commands.Repeatimage;
+
+            if (repeat > -1)
+                RepeatImage = V275.Commands.Repeatimage;
+            else
+                RepeatImage = null;
+
+            IsGoldenRepeat = false;
 
             List<SectorControlViewModel> tempSectors = new List<SectorControlViewModel>();
             foreach (var jSec in ReadJob.sectors)
@@ -422,6 +441,7 @@ namespace V275_Testing.WindowViewModels
         private void ClearReadAction(object parameter)
         {
             RepeatImage = null;
+            IsGoldenRepeat = false;
             RepeatSectors.Clear();
             ReadJob = null;
             IsStore = false;
@@ -432,6 +452,7 @@ namespace V275_Testing.WindowViewModels
                 return;
 
             RepeatImage = row.RepeatImage;
+            IsGoldenRepeat = true;
         }
 
 
