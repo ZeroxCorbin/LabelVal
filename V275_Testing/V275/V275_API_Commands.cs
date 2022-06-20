@@ -196,6 +196,7 @@ namespace V275_Testing.V275
 
             var result = await Connection.GetBytes(URLs.RepeatImage(repeat), Token);
 
+            Repeatimage = null;
             bool res;
             if (res = CheckResults("", true))
                 Repeatimage = result;

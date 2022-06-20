@@ -345,5 +345,62 @@ namespace V275_Testing.V275
 
         }
 
+        public async Task<bool> Read(int repeat)
+        {
+            Status = string.Empty;
+
+            if (repeat == 0)
+            {
+                if (!await Commands.GetRepeatsAvailable())
+                {
+                    if (Commands.Available == null)
+                        repeat = 0;
+                    else
+                    {
+                        Status = Commands.Status;
+                        return false;
+                    }
+                }
+                else
+                {
+                    if (Commands.Available.Count > 0)
+                        repeat = Commands.Available.First();
+                }
+
+            }
+
+            if (V275_State == "Editing" && repeat != 0)
+                if (!await Inspect(repeat))
+                {
+                    return false;
+                }
+
+            if (!await GetReport(repeat))
+            {
+                return false;
+            }
+
+            if (!await GetJob())
+            {
+                return false;
+            }
+
+            if (V275_State == "Paused")
+            {
+                if (!await Commands.RemoveRepeat(repeat))
+                {
+                    Status = Commands.Status;
+                    return false;
+                }
+
+                if (!await Commands.ResumeJob())
+                {
+                    Status = Commands.Status;
+                    return false;
+                }
+            }
+            return true;
+        }
+
     }
 }

@@ -309,69 +309,18 @@ namespace V275_Testing.WindowViewModels
 
             RepeatSectors.Clear();
             ReadJob = null;
+            //RepeatImage = null;
             IsStore = false;
-            
-            if(repeat == 0)
-            {
-                if (!await V275.Commands.GetRepeatsAvailable())
-                {
-                    if(V275.Commands.Available == null)
-                        repeat = 0;
-                    else
-                    {
-                        Status = V275.Status;
-                        return false;
-                    }
-                }
-                else
-                {
-                    if(V275.Commands.Available.Count > 0)
-                        repeat = V275.Commands.Available.First();
-                }
 
-            }
-
-            if (V275.V275_State == "Editing" && repeat != 0)
-                if (!await V275.Inspect(repeat))
-                {
-                    Status = V275.Status;
-                    return false;
-                }
-
-            if (!await V275.GetReport(repeat))
+            if (!await V275.Read(repeat))
             {
                 Status = V275.Status;
                 return false;
-            }
-
-            if (!await V275.GetJob())
-            {
-                Status = V275.Status;
-                return false;
-            }
-
-            if (V275.V275_State == "Paused")
-            {
-                if (!await V275.Commands.RemoveRepeat(repeat))
-                {
-                    Status = V275.Status;
-                    return false;
-                }
-
-                if (!await V275.Commands.ResumeJob())
-                {
-                    Status = V275.Status;
-                    return false;
-                }
             }
 
             ReadJob = V275.Commands.Job;
             Report = V275.Commands.Report;
-
-            if (repeat != 0)
-                RepeatImage = V275.Commands.Repeatimage;
-            else
-                RepeatImage = null;
+            RepeatImage = V275.Commands.Repeatimage;
 
             IsGoldenRepeat = false;
 
@@ -409,27 +358,6 @@ namespace V275_Testing.WindowViewModels
                 foreach (var sec in tempSectors)
                     RepeatSectors.Add(sec);
             }
-
-
-            //List<SectorResultsViewModel> diff = new List<SectorResultsViewModel>();
-            //foreach (var sec in LabelSectors)
-            //{
-            //    bool found = false;
-            //    foreach (var cSec in RepeatSectors)
-            //        if (sec.JobSector.name == cSec.JobSector.name)
-            //        {
-            //            found = true;
-            //            diff.Add(sec.SectorResults.Compare(cSec.SectorResults));
-            //        }
-
-            //    if (!found)
-            //    {
-            //        var dat = sec.SectorResults.Compare(new SectorResultsViewModel());
-            //        dat.IsSectorMissing = true;
-            //        diff.Add(dat);
-            //    }
-
-            //}
 
             return true;
         }

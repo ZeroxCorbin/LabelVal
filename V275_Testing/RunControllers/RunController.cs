@@ -127,12 +127,16 @@ namespace V275_Testing.RunControllers
 
             Logger.Info("Job Started: Loop Count {loop}", LoopCount);
 
-            if(Labels.Count > 0)
-                await Labels[0].V275.SwitchToEdit();
+            if (RequestedState == RunStates.RUNNING && State != RunStates.RUNNING)
+                RunStateChange?.Invoke(State = RunStates.RUNNING);
 
             for (int i = 0; i < LoopCount; i++)
             {
-                
+                //Switch to edit mode at the start of each loop.
+                //If running a non-GS1 label then this will reset the match to file and sequences.
+                //If running a GS1 label label then edit mode is required.
+                await Labels[0].V275.SwitchToEdit();
+
                 CurrentLoopCount = i + 1;
                 Logger.Info("Job Loop: {loop}", CurrentLoopCount);
 
@@ -163,9 +167,6 @@ namespace V275_Testing.RunControllers
                         Stopped();
                         return false;
                     }
-
-                    if (RequestedState == RunStates.RUNNING && State != RunStates.RUNNING)
-                        RunStateChange?.Invoke(State = RunStates.RUNNING);
 
                     var sRow = StandardsDatabase.GetRow(GradingStandard, label.LabelImageUID);
 
