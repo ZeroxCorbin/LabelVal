@@ -36,7 +36,7 @@ namespace V275_Testing.WindowViewModels
         private byte[] labelImage;
         public byte[] LabelImage { get => labelImage; set => SetProperty(ref labelImage, value); }
 
-        private byte[] repeatImage;
+        private byte[] repeatImage = null;
         public byte[] RepeatImage { get => repeatImage; set => SetProperty(ref repeatImage, value); }
 
         private bool isGS1Standard;
@@ -125,8 +125,6 @@ namespace V275_Testing.WindowViewModels
         V275_Job ReadJob { get; set; }
         //public string StoredJob { get; private set; }
         public V275_Report Report { get; private set; }
-
-
 
         public ICommand PrintCommand { get; }
         public ICommand ReadCommand { get; }
@@ -303,8 +301,8 @@ namespace V275_Testing.WindowViewModels
             return 1;
         }
 
-        private void InspectAction(object parameter) => _ = Read(-1);
-        public void ReadAction(object parameter) => _ = Read(-1);
+        private void InspectAction(object parameter) => _ = Read(0);
+        public void ReadAction(object parameter) => _ = Read(0);
         public async Task<bool> Read(int repeat)
         {
             Status = string.Empty;
@@ -312,25 +310,18 @@ namespace V275_Testing.WindowViewModels
             RepeatSectors.Clear();
             ReadJob = null;
             IsStore = false;
-
-            if (!await V275.GetJob())
-            {
-                Status = V275.Status;
-                return false;
-            }
-
-            if(repeat == -1)
+            
+            if(repeat == 0)
             {
                 if (!await V275.Commands.GetRepeatsAvailable())
                 {
                     if(V275.Commands.Available == null)
-                        repeat = -1;
+                        repeat = 0;
                     else
                     {
                         Status = V275.Status;
                         return false;
                     }
-
                 }
                 else
                 {
@@ -340,9 +331,7 @@ namespace V275_Testing.WindowViewModels
 
             }
 
-
-
-            if (V275.V275_State == "Editing" && repeat > -1)
+            if (V275.V275_State == "Editing" && repeat != 0)
                 if (!await V275.Inspect(repeat))
                 {
                     Status = V275.Status;
@@ -350,6 +339,12 @@ namespace V275_Testing.WindowViewModels
                 }
 
             if (!await V275.GetReport(repeat))
+            {
+                Status = V275.Status;
+                return false;
+            }
+
+            if (!await V275.GetJob())
             {
                 Status = V275.Status;
                 return false;
@@ -373,7 +368,7 @@ namespace V275_Testing.WindowViewModels
             ReadJob = V275.Commands.Job;
             Report = V275.Commands.Report;
 
-            if (repeat > -1)
+            if (repeat != 0)
                 RepeatImage = V275.Commands.Repeatimage;
             else
                 RepeatImage = null;

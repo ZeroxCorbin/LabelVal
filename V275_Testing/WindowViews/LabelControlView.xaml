@@ -49,6 +49,9 @@
                     <TextBlock Text="{Binding LabelImageUID, Converter={StaticResource shortenUID}}" ToolTip="{Binding LabelImageUID}"/>
                 </StackPanel>
 
+                <TextBlock Grid.Column="1" Grid.Row="0" Text="Label Image" HorizontalAlignment="Center" Margin="0,0,30,0"
+                           ToolTip="The Label Image file from the '.\Standards' directory."/>
+
                 <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
 
                     <mah:NumericUpDown Value="{Binding PrintCount}" Minimum="1" Maximum="100" Interval="1" Margin="2"
@@ -62,7 +65,11 @@
             </Grid>
 
             <Grid Grid.Row="1" Grid.Column="0">
-                <Image x:Name="LabelImage" Source="{Binding LabelImage, Mode=OneTime, Converter={StaticResource bytesToImage}}" Margin="3" MaxHeight="400" Width="400" MouseDown="LabelImage_MouseDown"/>
+                <Image x:Name="LabelImage" Margin="3" MaxHeight="400" Width="400"
+                       Source="{Binding LabelImage, Mode=OneTime, Converter={StaticResource bytesToImage}}"
+                       MouseDown="LabelImage_MouseDown"
+                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+                
                 <TextBlock Text="{Binding LabelComment}" Foreground="Red" Margin="3" HorizontalAlignment="Left"/>
             </Grid>
 
@@ -150,6 +157,7 @@
                           Grid.Row="1" Grid.Column="2" Width="200" Margin="3" MaxHeight="400"
                           mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
                           ScrollChanged="ScrollRepeatSectors_ScrollChanged">
+                
                 <ItemsControl ItemsSource="{Binding RepeatSectors}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
@@ -159,9 +167,31 @@
                 </ItemsControl>
             </ScrollViewer>
 
-            <Grid Grid.Row="1" Grid.Column="3" >
-                <Image Name="RepeatImage" Source="{Binding RepeatImage, Converter={StaticResource bytesToImage}}" Margin="3" Height="400" Width="400" MouseDown="RepeatImage_MouseDown"/>
-                <Label Foreground="Goldenrod" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <Grid Grid.Column="3" Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="1" Text="Repeat Image" HorizontalAlignment="Center" Margin="0,0,10,0">
+                    <TextBlock.Style>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="ToolTip" Value="The Repeat Image for the current Repeat Sectors."/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsGoldenRepeat}" Value="True">
+                                    <Setter Property="ToolTip" Value="The 'Golden' Repeat Image stored in the database."/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding RepeatImage}" Value="{x:Null}">
+                                    <Setter Property="ToolTip" Value="No image stored or read."/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>                        
+                    </TextBlock.Style>
+
+                </TextBlock>
+
+                <Label Grid.Column="2" Foreground="Goldenrod" HorizontalAlignment="Left" Padding="0" ToolTip="The 'Golden' Repeat Image stored in the database.">
                     <Label.Style>
                         <Style TargetType="{x:Type Label}" BasedOn="{StaticResource {x:Type Label}}">
                             <Setter Property="Visibility" Value="Collapsed"/>
@@ -176,7 +206,12 @@
                         <IconPacks:Material Kind="Gold"/>
                     </Label.Content>
                 </Label>
-
+            </Grid>
+            
+            <Grid Grid.Row="1" Grid.Column="3" >
+                <Image Name="RepeatImage" Source="{Binding RepeatImage, Converter={StaticResource bytesToImage}}" 
+                       Margin="3" Height="400" Width="400" MouseDown="RepeatImage_MouseDown"
+                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
             </Grid>
 
 

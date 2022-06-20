@@ -21,8 +21,10 @@
     </Dialog:CustomDialog.Resources>
     <Dialog:CustomDialog.DialogTop>
         <Grid>
-            <paz:ZoomBorder Name="ZoomBorder" Margin="3" >
-                <Image Source="{Binding RepeatImage}"  Width="{Binding Width}" Height="{Binding Height}"/>
+            <paz:ZoomBorder Name="ZoomBorder" Margin="3">
+                <Image Source="{Binding RepeatImage}"  Width="{Binding Width}" Height="{Binding Height}"
+                       SnapsToDevicePixels="true"
+                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
             </paz:ZoomBorder>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" >

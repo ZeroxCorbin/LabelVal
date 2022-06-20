@@ -365,7 +365,10 @@
                                 </Style>
                             </Button.Style>
                         </Button>
-                        <Label/>
+
+
+                        <mah:ProgressRing IsActive="{Binding IsRunRunning}" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" Height="30" Width="30"/>
+
                         <Button Content="View Test Results" Click="Button_Click"/>
                     </StackPanel>
                 </Border>
