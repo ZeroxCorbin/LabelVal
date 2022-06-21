@@ -166,7 +166,7 @@ namespace V275_Testing.RunViews
                             if (grid.FindChild<TextBlock>("HasErrors") is var res)
                             {
                                 if (errorCount > 0)
-                                    res.Text = "Has Errors";
+                                    res.Text = "Dissimilar";
                             }
 
                             if (grid.FindChild<TextBlock>("DissimilarSectors") is var res1)

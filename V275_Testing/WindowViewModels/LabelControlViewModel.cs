@@ -207,7 +207,11 @@ namespace V275_Testing.WindowViewModels
             StandardsDatabase.Row row = StandardsDatabase.GetRow(GradingStandard, LabelImageUID);
 
             if (row == null)
+            {
+                RepeatImage = null;
+                IsGoldenRepeat = false;
                 return;
+            }
 
             RepeatImage = row.RepeatImage;
             IsGoldenRepeat = true;

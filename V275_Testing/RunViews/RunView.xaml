@@ -75,7 +75,7 @@
                 </Button.Content>
 
             </Button>
-            
+
             <Button BorderThickness="0" 
                         x:Name="btnLightTheme"
                         Click="btnLightTheme_Click">
@@ -94,11 +94,11 @@
             </Button>
         </mah:WindowCommands>
     </mah:MetroWindow.RightWindowCommands>
-    
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
         <Grid>
@@ -335,12 +335,12 @@
                     <Label Grid.Column="0" Content="Label Image" HorizontalAlignment="Center"/>
                     <Label Grid.Column="1" Content="Label Sectors" HorizontalAlignment="Center"/>
                     <Label Grid.Column="2" Content="Repeat Sectors" HorizontalAlignment="Center"/>
-                    <Label Grid.Column="3" Content="Dissimilar Inspection Results" HorizontalAlignment="Center"/>
+                    <Label Grid.Column="3" Content="Dissimilar Sector Results" HorizontalAlignment="Center"/>
                     <Label Grid.Column="4" Content="Repeat Image" HorizontalAlignment="Center"/>
                 </Grid>
             </Border>
 
-            <ScrollViewer Grid.Row="2" >
+            <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Auto">
                 <ItemsControl ItemsSource="{Binding Source={StaticResource ResourceKey=LabelsDataList}}" x:Name="RunList">
                     <!--<ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -376,18 +376,18 @@
                                                                     <ColumnDefinition Width="110"/>
                                                                     <ColumnDefinition />
                                                                 </Grid.ColumnDefinitions>
-                                                                
+
                                                                 <TextBlock Name="HasErrors" Margin="5 2 5 2"/>
-                                                                
+
                                                                 <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left">
-                                                                    
+
                                                                     <TextBlock Text="{Binding Name, Converter={StaticResource TestHeader}}" Margin="5 2 5 2" ToolTip="{Binding Name}"/>
                                                                     <TextBlock Text="(" Margin="0 2 0 2"/>
                                                                     <TextBlock Text="{Binding ItemCount}" Margin="2 2 2 2"/>
                                                                     <TextBlock Text=")" Margin="0 2 0 2"/>
                                                                     <Label/>
-                                                                
-                                                                </StackPanel>                                                               
+
+                                                                </StackPanel>
                                                             </Grid>
 
                                                             <TextBlock Grid.Column="1" Name="LabelSectors" Margin="5 2 5 2" HorizontalAlignment="Center"/>
@@ -407,5 +407,7 @@
                 </ItemsControl>
             </ScrollViewer>
         </Grid>
+
+
     </Grid>
 </mah:MetroWindow>

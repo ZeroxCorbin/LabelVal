@@ -571,6 +571,8 @@ namespace V275_Testing.WindowViewModels
         }
 
         private LabelControlViewModel PrintingLabel { get; set; } = null;
+
+        private bool WaitForRepeat;
         private void Label_Printing(LabelControlViewModel label)
         {
             Task.Run(() =>
@@ -588,7 +590,26 @@ namespace V275_Testing.WindowViewModels
             });
 
             if (IsLoggedIn_Control)
+            {
                 PrintingLabel = label;
+
+                Task.Run(() =>
+                {
+                    WaitForRepeat = true;
+
+                    DateTime start = DateTime.Now;
+                    while (WaitForRepeat)
+                    {
+                        if ((DateTime.Now - start) > TimeSpan.FromMilliseconds(10000))
+                        {
+                            WaitForRepeat = false;
+                            PrintingLabel = null;
+                            label.IsWorking = false;
+                            return;
+                        }
+                    }
+                });
+            }
             else
                 PrintingLabel = null;
 
@@ -597,6 +618,8 @@ namespace V275_Testing.WindowViewModels
         }
         private async void ProcessRepeat(int repeat)
         {
+            WaitForRepeat = false;
+
             if (SelectedStandard.StartsWith("GS1"))
             {
                 if (repeat > 0)
@@ -605,7 +628,6 @@ namespace V275_Testing.WindowViewModels
                         return;
                     }
 
-
                 int i = await Repeats[repeat].Label.Load();
 
                 if (i == 2)
@@ -613,6 +635,7 @@ namespace V275_Testing.WindowViewModels
                     var sectors = V275.CreateSectors(V275.SetupDetectEvent, StoredStandard);
 
                     Logger.Info("Creating sectors.");
+
                     foreach (var sec in sectors)
                         await V275.AddSector(sec.name, JsonConvert.SerializeObject(sec));
                 }
