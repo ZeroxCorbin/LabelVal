@@ -31,7 +31,7 @@ When running a sequential OCR/OCV, when starting a new loop, the system must go 
 
 beta 7
 Clear stored does not null the RepeatImage.
-Change "Has Error" in the run logs to 'Dissimilarities"
+Change "Has Error" in the run logs to 'Dissimilar"
 Dissimilar Inspection Results change to Dissimilar Sector Results
 Activity indicator for label working stays active if printed to the wrong printer.
 Scrollbars do not appear when window is to small on run viewer.

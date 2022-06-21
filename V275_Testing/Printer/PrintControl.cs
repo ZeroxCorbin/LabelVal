@@ -40,13 +40,17 @@ namespace V275_Testing.Printer
         {
             using (System.Drawing.Image img = System.Drawing.Image.FromFile(ImagePath))
             {
-                e.Graphics.DrawImage(img, new Point(0, 0));
                 if (!string.IsNullOrEmpty(Data))
                 {
-                    SizeF dataLength = e.Graphics.MeasureString(Data, new Font("Arial", 8));
-                    e.Graphics.DrawString(Data, new Font("Arial", 8), Brushes.Black, new Point(e.PageBounds.Width - (int)dataLength.Width - 10, 5));
-                }
 
+                    using (var g = Graphics.FromImage(img))
+                    {
+                        SizeF dataLength = g.MeasureString(Data, new Font("Arial", 8));
+                        g.DrawString(Data, new Font("Arial", 8), Brushes.Black, new Point(img.Width - (int)dataLength.Width - 100, 5));
+
+                    }
+                }
+                e.Graphics.DrawImage(img, new Point(0, 0));
             }
 
             if (index++ < Count)
