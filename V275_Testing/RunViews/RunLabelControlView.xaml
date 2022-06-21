@@ -20,11 +20,11 @@
 
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition/>
+                <ColumnDefinition MaxWidth="400"/>
+                <ColumnDefinition MaxWidth="200"/>
+                <ColumnDefinition MaxWidth="200"/>
+                <ColumnDefinition MaxWidth="280"/>
+                <ColumnDefinition MaxWidth="400"/>
             </Grid.ColumnDefinitions>
 
             <Grid Grid.Row="0" Grid.Column="0">

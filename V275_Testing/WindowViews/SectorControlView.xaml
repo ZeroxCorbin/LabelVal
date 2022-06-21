@@ -15,7 +15,7 @@
             d:DataContext="{d:DesignInstance Type=ViewModels:SectorControlViewModel}"
             mc:Ignorable="d" 
             d:DesignHeight="450" d:DesignWidth="800">
-    
+
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="booltovis"/>
         <Converters:StringToUpperSpacedConverter x:Key="stringToUpper"/>
@@ -48,7 +48,7 @@
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Text="{Binding JobSector.username, Mode=OneTime}" Margin="3,0,3,0"/>
-                
+
                 <TextBlock Grid.Column="1" Text="WRONG STANDARD" 
                            Background="{DynamicResource ColorBlindBrush5}"
                            HorizontalAlignment="Center"
@@ -127,7 +127,7 @@
                                 <DataTrigger Value="verify2D" Binding="{Binding JobSector.type, Mode=OneTime}">
                                     <Setter Property="Text" Value="{Binding JobSector.symbology, Converter={StaticResource stringToUpper}, Mode=OneTime}"/>
                                 </DataTrigger>
-                                
+
                                 <DataTrigger Value="ocr" Binding="{Binding JobSector.type, Mode=OneTime}">
                                     <Setter Property="Text" Value="{Binding JobSector.matchSettings.fixedText, Mode=OneTime}"/>
                                     <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Text}"/>
@@ -146,9 +146,9 @@
                 <TextBlock Grid.Row="1" Margin="3,0,3,0" TextWrapping="Wrap">
                     <TextBlock.Style>
                         <Style TargetType="{x:Type TextBlock}">
-                            
-                            <Style.Triggers> 
-                                 <DataTrigger Value="verify1D" Binding="{Binding JobSector.type, Mode=OneTime}">
+
+                            <Style.Triggers>
+                                <DataTrigger Value="verify1D" Binding="{Binding JobSector.type, Mode=OneTime}">
                                     <Setter Property="Text" Value="{Binding ReportSector.data.decodeText, Mode=OneTime}"/>
 
                                 </DataTrigger>
@@ -176,371 +176,409 @@
                     <Style TargetType="{x:Type Popup}"/>
                 </Popup.Style>
 
-                <Border BorderBrush="{DynamicResource MahApps.Brushes.ContextMenu.Border}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}" BorderThickness="2">
+                <Border Padding="3" BorderThickness="2"
+                        BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
 
-                    <Border BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}" BorderThickness="1" Margin="3" CornerRadius="3" >
-                        <Grid MinHeight="100" MinWidth="100" >
-                            <Grid.RowDefinitions>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
+                    <!--<Border BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}" BorderThickness="1" Margin="3" CornerRadius="3" >-->
+                    <Grid >
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
 
-                            <Border Grid.Row="0" BorderThickness="1" Padding="1" CornerRadius="3">
-                                <Border.Style>
-                                    <Style TargetType="{x:Type Border}">
-                                        <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}"/>
-                                        <Setter Property="Margin" Value="2"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Value="0" Binding="{Binding SectorResults.Alarms.Count, Mode=OneTime}">
-                                                <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.ThemeBackground}"/>
-                                                <Setter Property="Margin" Value="0"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Border.Style>
+                        <Border Grid.Row="0" BorderThickness="1" Padding="2" Margin="2" CornerRadius="3" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
+                            <Border.Style>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Value="ocr" Binding="{Binding JobSector.type, Mode=OneTime}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Setter Property="IsEnabled" Value="False"/>
+                                        </DataTrigger>
+                                        <DataTrigger Value="ocv" Binding="{Binding JobSector.type, Mode=OneTime}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Setter Property="IsEnabled" Value="False"/>
+                                        </DataTrigger>
+                                        <DataTrigger Value="blemish" Binding="{Binding JobSector.type, Mode=OneTime}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Setter Property="IsEnabled" Value="False"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
 
-                                <ItemsControl ItemsSource="{Binding SectorResults.Alarms, Mode=OneTime}">
-                                    <ItemsControl.ItemTemplate>
-                                        <HierarchicalDataTemplate>
-                                            <Grid Margin="2">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="auto"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="auto"/>
-                                                </Grid.ColumnDefinitions>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
 
-                                                <StackPanel Orientation="Horizontal" Grid.Column="0">
-                                                    <TextBlock Text="{Binding Path=name, Converter={StaticResource stringToUpper}, Mode=OneTime}"/>
-                                                    <TextBlock Text=": "/>
-                                                    <TextBlock Text="{Binding Path=data.subAlarm, Converter={StaticResource stringToUpper}, Mode=OneTime}" Grid.Column="1"/>
-                                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <TextBlock Text="Aperture  "/>
+                                    <TextBlock Text="{Binding ReportSector.data.aperture}"/>
+                                 </StackPanel>
+                                
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <TextBlock Text="X-Dimension  "/>
+                                    <TextBlock Text="{Binding ReportSector.data.xDimension}"/>                                    
+                                </StackPanel>
 
-                                                <StackPanel Orientation="Horizontal" Grid.Column="2">
-                                                    <TextBlock Text=" ( "/>
-                                                    <TextBlock Text="{Binding Path=data.text, StringFormat=N2, Converter={StaticResource floatTrim}, Mode=OneTime}"/>
-                                                    <TextBlock Text="/"/>
-                                                    <TextBlock Text="{Binding Path=data.expected, StringFormat=N2, Converter={StaticResource floatTrim}, Mode=OneTime}"/>
-                                                    <TextBlock Text=" )   "/>
-                                                    
-                                                    <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3">
-                                                        <Border.Style>
-                                                            <Style TargetType="{x:Type Border}">
-                                                                <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
-                                                                <Style.Triggers>
-                                                                    <DataTrigger Value="2" Binding="{Binding category, Mode=OneTime}">
-                                                                        <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Value="1" Binding="{Binding category, Mode=OneTime}">
-                                                                        <Setter Property="Background" Value="{DynamicResource ColorBlindBrush6}"/>
-                                                                    </DataTrigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </Border.Style>
-                                                    </Border>                                                    
-                                                </StackPanel>
-                                                
-                                            </Grid>
-                                        </HierarchicalDataTemplate>
-                                    </ItemsControl.ItemTemplate>
+                            </Grid>
+                        </Border>
 
-                                </ItemsControl>
-                            </Border>
+                        
+                        <Border Grid.Row="1" BorderThickness="1" Padding="2" Margin="2,0,2,2" CornerRadius="3" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
+                            <Border.Style>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Value="0" Binding="{Binding SectorResults.Alarms.Count, Mode=OneTime}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
 
-                            <Border Grid.Row="1" BorderThickness="1" Padding="1" CornerRadius="3">
-                                <Border.Style>
-                                    <Style TargetType="{x:Type Border}">
-                                        <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}"/>
-                                        <Setter Property="Margin" Value="2"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Value="0" Binding="{Binding SectorResults.GradeValues.Count, Mode=OneTime}">
-                                                <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.ThemeBackground}"/>
-                                                <Setter Property="Margin" Value="0"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Border.Style>
+                            <ItemsControl ItemsSource="{Binding SectorResults.Alarms, Mode=OneTime}">
+                                <ItemsControl.ItemTemplate>
+                                    <HierarchicalDataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="auto"/>
+                                            </Grid.ColumnDefinitions>
 
-                                <ItemsControl ItemsSource="{Binding SectorResults.GradeValues, Mode=OneTime}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="auto"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="auto"/>
-                                                </Grid.ColumnDefinitions>
+                                            <StackPanel Orientation="Horizontal" Grid.Column="0">
+                                                <TextBlock Text="{Binding Path=name, Converter={StaticResource stringToUpper}, Mode=OneTime}"/>
+                                                <TextBlock Text=": "/>
+                                                <TextBlock Text="{Binding Path=data.subAlarm, Converter={StaticResource stringToUpper}, Mode=OneTime}" Grid.Column="1"/>
+                                            </StackPanel>
 
-                                                <StackPanel Orientation="Horizontal" Margin="3,0,6,0">
+                                            <StackPanel Orientation="Horizontal" Grid.Column="2">
+                                                <TextBlock Text=" ( "/>
+                                                <TextBlock Text="{Binding Path=data.text, StringFormat=N2, Converter={StaticResource floatTrim}, Mode=OneTime}"/>
+                                                <TextBlock Text="/"/>
+                                                <TextBlock Text="{Binding Path=data.expected, StringFormat=N2, Converter={StaticResource floatTrim}, Mode=OneTime}"/>
+                                                <TextBlock Text=" )   "/>
 
-                                                    <TextBlock Text="{Binding Path=name, Converter={StaticResource stringToUpper}, Mode=OneTime}" Grid.Column="0"/>
-                                                </StackPanel>
+                                                <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3">
+                                                    <Border.Style>
+                                                        <Style TargetType="{x:Type Border}">
+                                                            <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Value="2" Binding="{Binding category, Mode=OneTime}">
+                                                                    <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Value="1" Binding="{Binding category, Mode=OneTime}">
+                                                                    <Setter Property="Background" Value="{DynamicResource ColorBlindBrush6}"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                            </StackPanel>
 
-                                                <StackPanel Orientation="Horizontal" Grid.Column="2" >
-                                                    <TextBlock Text=" ( "/>
-                                                    <TextBlock Text="{Binding Path=value, Mode=OneTime}" Grid.Column="1"/>
-                                                    <TextBlock Text=" )   "/>
+                                        </Grid>
+                                    </HierarchicalDataTemplate>
+                                </ItemsControl.ItemTemplate>
 
-                                                    <TextBlock Text="{Binding Path=grade.value, StringFormat=N1, Mode=OneTime}" Grid.Column="1"/>
-                                                    <TextBlock Text=" "/>
-                                                    
-                                                    <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3">
-                                                        <Border.Style>
-                                                            <Style TargetType="{x:Type Border}">
-                                                                <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
-                                                                <Style.Triggers>
-                                                                    <DataTrigger Value="B" Binding="{Binding Path=grade.letter, Mode=OneTime}">
-                                                                        <Setter Property="Background" Value="{DynamicResource ColorBlindBrush2}"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Value="C" Binding="{Binding Path=grade.letter, Mode=OneTime}">
-                                                                        <Setter Property="Background" Value="{DynamicResource ColorBlindBrush4}"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Value="D" Binding="{Binding Path=grade.letter, Mode=OneTime}">
-                                                                        <Setter Property="Background" Value="{DynamicResource ColorBlindBrush7}"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Value="F" Binding="{Binding Path=grade.letter, Mode=OneTime}">
-                                                                        <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
-                                                                    </DataTrigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </Border.Style>
-                                                    </Border>
-                                                    <TextBlock Text=" "/>
-                                                    <TextBlock Text="{Binding Path=grade.letter, Mode=OneTime}"/>
+                            </ItemsControl>
+                        </Border>
 
-                                                </StackPanel>
+                        <Border Grid.Row="2" BorderThickness="1" Padding="2" Margin="2,0,2,2" CornerRadius="3" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
+                            <Border.Style>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Value="0" Binding="{Binding SectorResults.GradeValues.Count, Mode=OneTime}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
 
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
+                            <ItemsControl ItemsSource="{Binding SectorResults.GradeValues, Mode=OneTime}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="auto"/>
+                                            </Grid.ColumnDefinitions>
 
-                                </ItemsControl>
-                            </Border>
+                                            <StackPanel Orientation="Horizontal" Margin="3,0,6,0">
 
-                            <Border Grid.Row="2" BorderThickness="1" Padding="1" CornerRadius="3">
-                                <Border.Style>
-                                    <Style TargetType="{x:Type Border}">
-                                        <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}"/>
-                                        <Setter Property="Margin" Value="2"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Value="0" Binding="{Binding SectorResults.Values.Count, Mode=OneTime}">
-                                                <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.ThemeBackground}"/>
-                                                <Setter Property="Margin" Value="0"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Border.Style>
+                                                <TextBlock Text="{Binding Path=name, Converter={StaticResource stringToUpper}, Mode=OneTime}" Grid.Column="0"/>
+                                            </StackPanel>
 
-                                <ItemsControl ItemsSource="{Binding SectorResults.Values, Mode=OneTime}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="auto"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="auto"/>
-                                                </Grid.ColumnDefinitions>
+                                            <StackPanel Orientation="Horizontal" Grid.Column="2" >
+                                                <TextBlock Text=" ( "/>
+                                                <TextBlock Text="{Binding Path=value, Mode=OneTime}" Grid.Column="1"/>
+                                                <TextBlock Text=" )   "/>
 
-                                                <StackPanel Orientation="Horizontal" Margin="3,0,6,0">
-                                                    <TextBlock Text="{Binding Path=name, Converter={StaticResource stringToUpper}, Mode=OneTime}"/>
-                                                </StackPanel>
+                                                <TextBlock Text="{Binding Path=grade.value, StringFormat=N1, Mode=OneTime}" Grid.Column="1"/>
+                                                <TextBlock Text=" "/>
 
-                                                <StackPanel Orientation="Horizontal" Grid.Column="2" >
-                                                    <TextBlock Text=" ( "/>
-                                                    <TextBlock Text="{Binding Path=value, Mode=OneTime}"/>
-                                                    <TextBlock Text=" )               "/>
-                                                </StackPanel>
+                                                <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3">
+                                                    <Border.Style>
+                                                        <Style TargetType="{x:Type Border}">
+                                                            <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Value="B" Binding="{Binding Path=grade.letter, Mode=OneTime}">
+                                                                    <Setter Property="Background" Value="{DynamicResource ColorBlindBrush2}"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Value="C" Binding="{Binding Path=grade.letter, Mode=OneTime}">
+                                                                    <Setter Property="Background" Value="{DynamicResource ColorBlindBrush4}"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Value="D" Binding="{Binding Path=grade.letter, Mode=OneTime}">
+                                                                    <Setter Property="Background" Value="{DynamicResource ColorBlindBrush7}"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Value="F" Binding="{Binding Path=grade.letter, Mode=OneTime}">
+                                                                    <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                                <TextBlock Text=" "/>
+                                                <TextBlock Text="{Binding Path=grade.letter, Mode=OneTime}"/>
 
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </Border>
+                                            </StackPanel>
 
-                            <Border Grid.Row="3" BorderThickness="1" Padding="1" CornerRadius="3">
-                                <Border.Style>
-                                    <Style TargetType="{x:Type Border}">
-                                        <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}"/>
-                                        <Setter Property="Margin" Value="2"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Value="0" Binding="{Binding SectorResults.ValueResults.Count, Mode=OneTime}">
-                                                <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.ThemeBackground}"/>
-                                                <Setter Property="Margin" Value="0"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Border.Style>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
 
-                                <ItemsControl ItemsSource="{Binding SectorResults.ValueResults, Mode=OneTime}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="auto"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="auto"/>
-                                                </Grid.ColumnDefinitions>
+                            </ItemsControl>
+                        </Border>
 
-                                                <StackPanel Orientation="Horizontal" Margin="3,0,6,0">
-                                                    <TextBlock Text="{Binding Path=name, Converter={StaticResource stringToUpper}, Mode=OneTime}" Grid.Column="0"/>
-                                                </StackPanel>
+                        <Border Grid.Row="3" BorderThickness="1" Padding="2" Margin="2,0,2,2" CornerRadius="3" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
+                            <Border.Style>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Value="0" Binding="{Binding SectorResults.Values.Count, Mode=OneTime}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
 
-                                                <StackPanel Orientation="Horizontal" Grid.Column="2" > 
-                                                    <TextBlock Text="( "/>
-                                                    <TextBlock Text="{Binding Path=value, StringFormat=N1, Mode=OneTime}" Grid.Column="1"/>
-                                                    <TextBlock Text=" )   "/>
+                            <ItemsControl ItemsSource="{Binding SectorResults.Values, Mode=OneTime}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="auto"/>
+                                            </Grid.ColumnDefinitions>
 
-                                                    <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3">
-                                                        <Border.Style>
-                                                            <Style TargetType="{x:Type Border}">
-                                                                <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
-                                                                <Style.Triggers>
-                                                                    <DataTrigger Value="FAIL" Binding="{Binding Path=result, Mode=OneTime}">
-                                                                        <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
-                                                                    </DataTrigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </Border.Style>
-                                                    </Border>
-                                                    <TextBlock Text=" "/>
-                                                    <TextBlock Text="{Binding Path=result, Mode=OneTime}"/>
-                                                    
-                                                </StackPanel>
+                                            <StackPanel Orientation="Horizontal" Margin="3,0,6,0">
+                                                <TextBlock Text="{Binding Path=name, Converter={StaticResource stringToUpper}, Mode=OneTime}"/>
+                                            </StackPanel>
 
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
+                                            <StackPanel Orientation="Horizontal" Grid.Column="2" >
+                                                <TextBlock Text=" ( "/>
+                                                <TextBlock Text="{Binding Path=value, Mode=OneTime}"/>
+                                                <TextBlock Text=" )               "/>
+                                            </StackPanel>
 
-                                </ItemsControl>
-                            </Border>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Border>
 
-                            <Border Grid.Row="4" BorderThickness="1" Padding="1" CornerRadius="3" Visibility="{Binding IsGS1Standard, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Border.Style>
-                                    <Style TargetType="{x:Type Border}">
-                                        <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}"/>
-                                        <Setter Property="Margin"  Value="2"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Value="0" Binding="{Binding SectorResults.Gs1ValueResults.Count, Mode=OneTime}">
-                                                <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.ThemeBackground}"/>
-                                                <Setter Property="Margin" Value="0"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Border.Style>
+                        <Border Grid.Row="4" BorderThickness="1" Padding="2" Margin="2,0,2,2" CornerRadius="3" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
+                            <Border.Style>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Value="0" Binding="{Binding SectorResults.ValueResults.Count, Mode=OneTime}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
 
-                                <ItemsControl ItemsSource="{Binding SectorResults.Gs1ValueResults, Mode=OneTime}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="auto"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="auto"/>
-                                                </Grid.ColumnDefinitions>
+                            <ItemsControl ItemsSource="{Binding SectorResults.ValueResults, Mode=OneTime}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="auto"/>
+                                            </Grid.ColumnDefinitions>
 
-                                                <StackPanel Orientation="Horizontal" Margin="3,0,6,0">
-                                                    <TextBlock Text="{Binding Path=name, Converter={StaticResource stringToUpper}, Mode=OneTime}" Grid.Column="0"/>
-                                                </StackPanel>
+                                            <StackPanel Orientation="Horizontal" Margin="3,0,6,0">
+                                                <TextBlock Text="{Binding Path=name, Converter={StaticResource stringToUpper}, Mode=OneTime}" Grid.Column="0"/>
+                                            </StackPanel>
 
-                                                <StackPanel Orientation="Horizontal" Grid.Column="2" >
-                                                    <TextBlock Text=" ( "/>
-                                                    <TextBlock Text="{Binding Path=value, StringFormat=N2, Mode=OneTime}" Grid.Column="1"/>
-                                                    <TextBlock Text=" )   "/>
+                                            <StackPanel Orientation="Horizontal" Grid.Column="2" >
+                                                <TextBlock Text="( "/>
+                                                <TextBlock Text="{Binding Path=value, StringFormat=N1, Mode=OneTime}" Grid.Column="1"/>
+                                                <TextBlock Text=" )   "/>
 
-                                                    <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3">
-                                                        <Border.Style>
-                                                            <Style TargetType="{x:Type Border}">
-                                                                <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
-                                                                <Style.Triggers>
-                                                                    <DataTrigger Value="FAIL" Binding="{Binding Path=result, Mode=OneTime}">
-                                                                        <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
-                                                                    </DataTrigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </Border.Style>
-                                                    </Border>
-                                                    <TextBlock Text=" "/>
-                                                    <TextBlock Text="{Binding Path=result, Mode=OneTime}"/>
-                                                    
-                                                </StackPanel>
+                                                <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3">
+                                                    <Border.Style>
+                                                        <Style TargetType="{x:Type Border}">
+                                                            <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Value="FAIL" Binding="{Binding Path=result, Mode=OneTime}">
+                                                                    <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                                <TextBlock Text=" "/>
+                                                <TextBlock Text="{Binding Path=result, Mode=OneTime}"/>
 
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
+                                            </StackPanel>
 
-                                </ItemsControl>
-                            </Border>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
 
-                            <Border Grid.Row="5" BorderThickness="1" Padding="1" CornerRadius="3" Visibility="{Binding IsGS1Standard, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Border.Style>
-                                    <Style TargetType="{x:Type Border}">
-                                        <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}"/>
-                                        <Setter Property="Margin" Value="2"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Value="0" Binding="{Binding SectorResults.Gs1Grades.Count, Mode=OneTime}">
-                                                <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.ThemeBackground}"/>
-                                                <Setter Property="Margin" Value="0"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Border.Style>
+                            </ItemsControl>
+                        </Border>
 
-                                <ItemsControl ItemsSource="{Binding SectorResults.Gs1Grades, Mode=OneTime}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="auto"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="auto"/>
-                                                </Grid.ColumnDefinitions>
+                        <Border Grid.Row="5" BorderThickness="1" Padding="2" Margin="2,0,2,2" CornerRadius="3" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
+                            <Border.Style>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Value="0" Binding="{Binding SectorResults.Gs1ValueResults.Count, Mode=OneTime}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                        <DataTrigger Value="False" Binding="{Binding IsGS1Standard, Mode=OneTime}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
 
-                                                <StackPanel Orientation="Horizontal" Margin="3,0,6,0">
+                            <ItemsControl ItemsSource="{Binding SectorResults.Gs1ValueResults, Mode=OneTime}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="auto"/>
+                                            </Grid.ColumnDefinitions>
 
-                                                    <TextBlock Text="{Binding Path=name, Converter={StaticResource stringToUpper}, Mode=OneTime}" Grid.Column="0"/>
-                                                </StackPanel>
+                                            <StackPanel Orientation="Horizontal" Margin="3,0,6,0">
+                                                <TextBlock Text="{Binding Path=name, Converter={StaticResource stringToUpper}, Mode=OneTime}" Grid.Column="0"/>
+                                            </StackPanel>
 
-                                                <StackPanel Orientation="Horizontal" Grid.Column="2" >
-                                                    <TextBlock Text="{Binding Path=value, StringFormat=N1, Mode=OneTime}" Grid.Column="1"/>
+                                            <StackPanel Orientation="Horizontal" Grid.Column="2" >
+                                                <TextBlock Text=" ( "/>
+                                                <TextBlock Text="{Binding Path=value, StringFormat=N2, Mode=OneTime}" Grid.Column="1"/>
+                                                <TextBlock Text=" )   "/>
 
-                                                    <TextBlock Text=" "/>
-                                                    <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3">
-                                                        <Border.Style>
-                                                            <Style TargetType="{x:Type Border}">
-                                                                <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
-                                                                <Style.Triggers>
-                                                                    <DataTrigger Value="B" Binding="{Binding Path=letter, Mode=OneTime}">
-                                                                        <Setter Property="Background" Value="{DynamicResource ColorBlindBrush2}"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Value="C" Binding="{Binding Path=letter, Mode=OneTime}">
-                                                                        <Setter Property="Background" Value="{DynamicResource ColorBlindBrush4}"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Value="D" Binding="{Binding Path=letter, Mode=OneTime}">
-                                                                        <Setter Property="Background" Value="{DynamicResource ColorBlindBrush7}"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Value="F" Binding="{Binding Path=letter, Mode=OneTime}">
-                                                                        <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
-                                                                    </DataTrigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </Border.Style>
-                                                    </Border>
-                                                    <TextBlock Text=" "/>
-                                                    <TextBlock Text="{Binding Path=letter, Mode=OneTime}"/>
-                                                </StackPanel>
+                                                <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3">
+                                                    <Border.Style>
+                                                        <Style TargetType="{x:Type Border}">
+                                                            <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Value="FAIL" Binding="{Binding Path=result, Mode=OneTime}">
+                                                                    <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                                <TextBlock Text=" "/>
+                                                <TextBlock Text="{Binding Path=result, Mode=OneTime}"/>
 
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
+                                            </StackPanel>
 
-                                </ItemsControl>
-                            </Border>
-                        </Grid>
-                    </Border>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+
+                            </ItemsControl>
+                        </Border>
+
+                        <Border Grid.Row="6" BorderThickness="1" Padding="2" Margin="2,0,2,2" CornerRadius="3" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
+                            <Border.Style>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Value="0" Binding="{Binding SectorResults.Gs1Grades.Count, Mode=OneTime}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                        <DataTrigger Value="False" Binding="{Binding IsGS1Standard, Mode=OneTime}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+
+                            <ItemsControl ItemsSource="{Binding SectorResults.Gs1Grades, Mode=OneTime}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <StackPanel Orientation="Horizontal" Margin="3,0,6,0">
+
+                                                <TextBlock Text="{Binding Path=name, Converter={StaticResource stringToUpper}, Mode=OneTime}" Grid.Column="0"/>
+                                            </StackPanel>
+
+                                            <StackPanel Orientation="Horizontal" Grid.Column="2" >
+                                                <TextBlock Text="{Binding Path=value, StringFormat=N1, Mode=OneTime}" Grid.Column="1"/>
+
+                                                <TextBlock Text=" "/>
+                                                <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3">
+                                                    <Border.Style>
+                                                        <Style TargetType="{x:Type Border}">
+                                                            <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Value="B" Binding="{Binding Path=letter, Mode=OneTime}">
+                                                                    <Setter Property="Background" Value="{DynamicResource ColorBlindBrush2}"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Value="C" Binding="{Binding Path=letter, Mode=OneTime}">
+                                                                    <Setter Property="Background" Value="{DynamicResource ColorBlindBrush4}"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Value="D" Binding="{Binding Path=letter, Mode=OneTime}">
+                                                                    <Setter Property="Background" Value="{DynamicResource ColorBlindBrush7}"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Value="F" Binding="{Binding Path=letter, Mode=OneTime}">
+                                                                    <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                                <TextBlock Text=" "/>
+                                                <TextBlock Text="{Binding Path=letter, Mode=OneTime}"/>
+                                            </StackPanel>
+
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+
+                            </ItemsControl>
+                        </Border>
+                    </Grid>
                 </Border>
+                <!--</Border>-->
             </Popup>
 
             <Border Name="PopupBorder" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Grid.Row="1" Grid.Column="2" Height="30" Width="30" CornerRadius="3" VerticalAlignment="Top">
@@ -570,7 +608,7 @@
                         <TextBlock>
                             <TextBlock.Style>
                                 <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                    
+
                                     <Style.Triggers>
                                         <DataTrigger Value="verify1D" Binding="{Binding JobSector.type, Mode=OneTime}">
                                             <Setter Property="Text" Value="{Binding ReportSector.data.overallGrade.grade.value, StringFormat=N1, Mode=OneTime}"/>
@@ -578,7 +616,7 @@
                                         <DataTrigger Value="verify2D" Binding="{Binding JobSector.type, Mode=OneTime}">
                                             <Setter Property="Text" Value="{Binding ReportSector.data.overallGrade.grade.value, StringFormat=N1, Mode=OneTime}"/>
                                         </DataTrigger>
-                                        
+
                                         <DataTrigger Value="blemish" Binding="{Binding JobSector.type, Mode=OneTime}">
                                             <Setter Property="Text" Value="{Binding ReportSector.data.blemishCount, Mode=OneTime}"/>
                                         </DataTrigger>
@@ -595,7 +633,7 @@
                     </Button.Content>
                 </Button>
             </Border>
-            
+
             <Border BorderThickness="1" Grid.Row="2" Grid.ColumnSpan="4" Padding="1" CornerRadius="3">
                 <Border.Style>
                     <Style TargetType="{x:Type Border}">
@@ -619,7 +657,7 @@
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="auto"/>
                                 </Grid.ColumnDefinitions>
-                                
+
                                 <StackPanel Orientation="Horizontal" Grid.Column="0">
                                     <TextBlock Text="{Binding Path=name, Converter={StaticResource stringToUpper}, Mode=OneTime}"/>
                                     <TextBlock Text=": "/>
@@ -679,7 +717,7 @@
                                 <StackPanel Orientation="Horizontal" Grid.Column="2" >
 
                                     <TextBlock Text="{Binding Path=value, StringFormat=N2, Mode=OneTime}" Grid.Column="1" Margin="3,0,3,0"/>
-                                    
+
                                     <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3" Margin="2,0,2,0">
                                         <Border.Style>
                                             <Style TargetType="{x:Type Border}">

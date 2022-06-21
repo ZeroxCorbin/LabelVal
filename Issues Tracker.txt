@@ -35,22 +35,13 @@ Change "Has Error" in the run logs to 'Dissimilar"
 Dissimilar Inspection Results change to Dissimilar Sector Results
 Activity indicator for label working stays active if printed to the wrong printer.
 Scrollbars do not appear when window is to small on run viewer.
-
-----------------------
-
-
-
-
-
-
 Display all available data in the popup
 
+----------------------
 
 Export images for external use.
 Start a run at a particular label and for a certian number of labels.
 Blemish tool does not show a problem if the blemish count is not equal.
-
-
 
 Print continuous mode.
 

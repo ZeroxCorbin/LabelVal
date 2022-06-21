@@ -46,7 +46,7 @@ namespace V275_Testing.Printer
                     using (var g = Graphics.FromImage(img))
                     {
                         SizeF dataLength = g.MeasureString(Data, new Font("Arial", 8));
-                        g.DrawString(Data, new Font("Arial", 8), Brushes.Black, new Point(img.Width - (int)dataLength.Width - 100, 5));
+                        g.DrawString(Data, new Font("Arial", 8), Brushes.Black, new Point(img.Width - (int)dataLength.Width - 100, 20));
 
                     }
                 }
