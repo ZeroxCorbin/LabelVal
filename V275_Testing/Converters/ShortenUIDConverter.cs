@@ -12,6 +12,8 @@ namespace V275_Testing.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if(value == null) return null;
+
             return $"{((string)value).Substring(0, 5)}...";
         }
 

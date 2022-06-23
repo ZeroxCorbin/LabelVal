@@ -272,15 +272,20 @@ namespace V275_Testing.WindowViewModels
             if (std.Length < StoredStandard.Length)
                 is300 = true;
 
-
             Logger.Info("Loading label images from standards directory: {name}", $"{App.StandardsRoot}\\{std}\\");
 
-            //foreach (var lab in Labels)
-            //    lab.LabelImage = null;
+            //Labels.Clear();
+            foreach (var lab in Labels.ToArray())
+            {
+                lab.Printing -= Label_Printing;
+                lab.LabelImage = null;
+                lab.RepeatImage = null;
+                lab.LabelSectors.Clear();
+                lab.RepeatSectors.Clear();
+                Labels.Remove(lab);
 
-            //GC.Collect();
 
-            Labels.Clear();
+            }
 
             List<string> Images = new List<string>();
             Images.Clear();
@@ -642,7 +647,7 @@ namespace V275_Testing.WindowViewModels
             }
 
             Logger.Info("Reading label results and Image.");
-            await Repeats[repeat].Label.Read(repeat);
+            await Repeats[repeat].Label.Read(repeat, IsRunRunning);
 
             Repeats[repeat].Label.IsWorking = false;
 

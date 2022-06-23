@@ -135,11 +135,9 @@ namespace V275_Testing.RunViewModels
             List<SectorDifferenceViewModel> diff = new List<SectorDifferenceViewModel>();
             foreach (var sec in LabelSectors)
             {
-                bool found = false;
                 foreach (var cSec in RepeatSectors)
                     if (sec.JobSector.name == cSec.JobSector.name)
                     {
-                        found = true;
                         diff.Add(sec.SectorResults.Compare(cSec.SectorResults));
                         continue;
                     }

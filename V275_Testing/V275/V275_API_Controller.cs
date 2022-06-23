@@ -10,6 +10,19 @@ namespace V275_Testing.V275
 {
     public class V275_API_Controller : Core.BaseViewModel
     {
+        public Dictionary<int, string> MatchModes { get; } = new Dictionary<int, string>()
+        {
+            {0, "Standard" },
+            {1, "Exact String" },
+            {2, "Match Region" },
+            {3, "Sequential Inc+" },
+            {4, "Sequential Dec-" },
+            {5, "Match Start" },
+            {6, "File Start" },
+            {7, "Duplicate Check" },
+
+        };
+
         public V275_API_Commands Commands { get; } = new V275_API_Commands();
         public V275_API_WebSocketEvents WebSocket { get; } = new V275_API_WebSocketEvents();
 
@@ -42,8 +55,6 @@ namespace V275_Testing.V275
         }
         private string _Status;
 
-
-
         public V275_API_Controller()
         {
             //WebSocket.SetupCapture += WebSocket_SetupCapture;
@@ -55,13 +66,11 @@ namespace V275_Testing.V275
             WebSocket.StateChange += WebSocket_StateChange;
         }
 
-
         private void WebSocket_SetupDetect(Models.V275_Events_System ev, bool end)
         {
             SetupDetectEvent = ev;
             SetupDetectEnd = end;
         }
-
 
         private void WebSocket_LabelEnd(Models.V275_Events_System ev)
         {
@@ -89,6 +98,10 @@ namespace V275_Testing.V275
                             V275_JobName = "";
                         }
                     }).Start();
+                }
+                else
+                {
+                    V275_JobName = "";
                 }
             }
         }

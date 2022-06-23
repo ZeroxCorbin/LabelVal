@@ -39,7 +39,7 @@ namespace V275_Testing.RunControllers
         public RunLedgerDatabase.RunEntry RunEntry { get; private set; }
 
         public RunDatabase RunDatabase { get; private set; }
-        public List<RunDatabase.Run> RunLabels { get; private set; } = new List<RunDatabase.Run>();
+        //public List<RunDatabase.Run> RunLabels { get; private set; } = new List<RunDatabase.Run>();
 
         public int LoopCount { get; private set; }
         public int CurrentLoopCount { get; private set; }
@@ -130,19 +130,26 @@ namespace V275_Testing.RunControllers
             if (RequestedState == RunStates.RUNNING && State != RunStates.RUNNING)
                 RunStateChange?.Invoke(State = RunStates.RUNNING);
 
+            await Labels[0].V275.SwitchToEdit();
+
+            int wasLoop = 0;
             for (int i = 0; i < LoopCount; i++)
             {
-                //Switch to edit mode at the start of each loop.
-                //If running a non-GS1 label then this will reset the match to file and sequences.
-                //If running a GS1 label label then edit mode is required.
-                await Labels[0].V275.SwitchToEdit();
-
-                CurrentLoopCount = i + 1;
-                Logger.Info("Job Loop: {loop}", CurrentLoopCount);
-
                 foreach (var label in Labels)
                 {
-                    CurrentLabelCount++;
+                    CurrentLoopCount = i + 1;
+                    if (CurrentLoopCount != wasLoop)
+                    {
+                        //If running a non-GS1 label then this will reset the match to file and sequences.
+                        //If running a GS1 label label then edit mode is required.
+                        if (HasSequencing(label))
+                            await Labels[0].V275.SwitchToEdit();
+                        else if (Labels.Count == 1)
+                            CurrentLoopCount = 1;
+
+                        wasLoop = CurrentLoopCount;
+                        Logger.Info("Job Loop: {loop}", CurrentLoopCount);
+                    }
 
                     if (label.LabelSectors.Count == 0)
                         continue;
@@ -173,18 +180,20 @@ namespace V275_Testing.RunControllers
                     if (sRow == null || string.IsNullOrEmpty(sRow.LabelReport))
                         continue;
 
+                    CurrentLabelCount++;
+
                     var row = new RunDatabase.Run()
                     {
                         LabelTemplate = sRow.LabelTemplate,
                         LabelReport = sRow.LabelReport,
+                        RepeatGoldenImage = sRow.RepeatImage,
                         LabelImageUID = label.LabelImageUID,
                         LabelImage = label.LabelImage,
                         LabelImageOrder = CurrentLabelCount,
-                        RepeatGoldenImage = sRow.RepeatImage,
-                        LoopCount = i + 1
+                        LoopCount = CurrentLoopCount
                     };
 
-                    RunLabels.Add(row);
+                   // RunLabels.Add(row);
                     RunDatabase.InsertOrReplace(row);
 
                     Logger.Info("Job Print");
@@ -211,19 +220,23 @@ namespace V275_Testing.RunControllers
                         Thread.Sleep(1);
                     };
 
-                    PngBitmapEncoder encoder = new PngBitmapEncoder();
-                    using (var ms = new System.IO.MemoryStream(label.RepeatImage))
+                    if(label.RepeatImage != null)
                     {
-                        using (MemoryStream stream = new MemoryStream())
+                        PngBitmapEncoder encoder = new PngBitmapEncoder();
+                        using (var ms = new System.IO.MemoryStream(label.RepeatImage))
                         {
-                            encoder.Frames.Add(BitmapFrame.Create(ms));
-                            encoder.Save(stream);
+                            using (MemoryStream stream = new MemoryStream())
+                            {
+                                encoder.Frames.Add(BitmapFrame.Create(ms));
+                                encoder.Save(stream);
 
-                            row.RepeatImage = stream.ToArray();
+                                row.RepeatImage = stream.ToArray();
 
-                            stream.Close();
+                                stream.Close();
+                            }
                         }
                     }
+
 
                     row.RepeatReport = JsonConvert.SerializeObject(label.Report);
                     RunDatabase.InsertOrReplace(row);
@@ -245,6 +258,20 @@ namespace V275_Testing.RunControllers
 
             return true;
         }
+
+        private bool HasSequencing(LabelControlViewModel label)
+        {
+            foreach(var sect in label.LabelTemplate.sectors)
+            {
+                if (sect.matchSettings != null)
+                    if (sect.matchSettings.matchMode != 0)
+                        return true;
+                
+                 
+            }
+            return false;
+        }
+
 
         private void Stopped()
         {

@@ -37,7 +37,16 @@ Activity indicator for label working stays active if printed to the wrong printe
 Scrollbars do not appear when window is to small on run viewer.
 Display all available data in the popup
 
+beta 8
+The template name is not cleared when the state goes idle.
+Check if the label has a ocv or ocr set to sequential or file and only toggle run if that is the case.
+Consider making a run that has only one label the same loop number.
+
 ----------------------
+
+
+
+Test restoring the sectors to an empty template.
 
 Export images for external use.
 Start a run at a particular label and for a certian number of labels.

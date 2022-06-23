@@ -36,6 +36,8 @@ namespace V275_Testing.WindowViewModels
         private byte[] labelImage;
         public byte[] LabelImage { get => labelImage; set => SetProperty(ref labelImage, value); }
 
+        public V275_Job LabelTemplate { get; set; }
+
         private byte[] repeatImage = null;
         public byte[] RepeatImage { get => repeatImage; set => SetProperty(ref repeatImage, value); }
 
@@ -122,7 +124,7 @@ namespace V275_Testing.WindowViewModels
         private StandardsDatabase StandardsDatabase { get; }
 
         public V275_API_Controller V275 { get; }
-        V275_Job ReadJob { get; set; }
+        public V275_Job ReadJob { get; set; }
         //public string StoredJob { get; private set; }
         public V275_Report Report { get; private set; }
 
@@ -166,7 +168,7 @@ namespace V275_Testing.WindowViewModels
 
         public async Task<MessageDialogResult> OkCancelDialog(string title, string message)
         {
-            
+
             MessageDialogResult result = await this.dialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative);
 
             return result;
@@ -213,12 +215,13 @@ namespace V275_Testing.WindowViewModels
                 return;
             }
 
+            LabelTemplate = JsonConvert.DeserializeObject<V275_Job>(row.LabelTemplate);
             RepeatImage = row.RepeatImage;
             IsGoldenRepeat = true;
 
             List<SectorControlViewModel> tempSectors = new List<SectorControlViewModel>();
             if (!string.IsNullOrEmpty(row.LabelReport) && !string.IsNullOrEmpty(row.LabelTemplate))
-                foreach (var jSec in JsonConvert.DeserializeObject<V275_Job>(row.LabelTemplate).sectors)
+                foreach (var jSec in LabelTemplate.sectors)
                 {
                     bool isWrongStandard = false;
                     if (jSec.type == "verify1D" || jSec.type == "verify2D")
@@ -307,14 +310,17 @@ namespace V275_Testing.WindowViewModels
 
         private void InspectAction(object parameter) => _ = Read(0);
         public void ReadAction(object parameter) => _ = Read(0);
-        public async Task<bool> Read(int repeat)
+        public async Task<bool> Read(int repeat, bool isRunning = false)
         {
             Status = string.Empty;
 
+            //if (!isRunning)
+            //{
             RepeatSectors.Clear();
             ReadJob = null;
             //RepeatImage = null;
             IsStore = false;
+            //}
 
             if (!await V275.Read(repeat))
             {
@@ -325,9 +331,10 @@ namespace V275_Testing.WindowViewModels
             ReadJob = V275.Commands.Job;
             Report = V275.Commands.Report;
             RepeatImage = V275.Commands.Repeatimage;
-
             IsGoldenRepeat = false;
 
+            //if (!isRunning)
+            //{
             List<SectorControlViewModel> tempSectors = new List<SectorControlViewModel>();
             foreach (var jSec in ReadJob.sectors)
             {
@@ -362,7 +369,7 @@ namespace V275_Testing.WindowViewModels
                 foreach (var sec in tempSectors)
                     RepeatSectors.Add(sec);
             }
-
+            //}
             return true;
         }
         private void ClearReadAction(object parameter)
