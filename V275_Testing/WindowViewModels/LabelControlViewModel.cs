@@ -283,7 +283,6 @@ namespace V275_Testing.WindowViewModels
                 StandardsDatabase.DeleteRow(GradingStandard, LabelImageUID);
                 GetStored();
             }
-
         }
 
         private void LoadAction(object parameter) => _ = Load();

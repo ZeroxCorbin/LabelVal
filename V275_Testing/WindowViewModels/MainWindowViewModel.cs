@@ -82,6 +82,8 @@ namespace V275_Testing.WindowViewModels
                 {
                     StoredStandard = value;
                     LoadLabels();
+
+                    CheckTemplateName();
                 }
                 else
                 {
@@ -90,6 +92,13 @@ namespace V275_Testing.WindowViewModels
             }
         }
         private string selectedStandard;
+        public bool IsWrongTemplateName
+        {
+            get => isWrongTemplateName;
+            set { SetProperty(ref isWrongTemplateName, value); OnPropertyChanged("IsNotWrongTemplateName"); }
+        }
+        public bool IsNotWrongTemplateName => !isWrongTemplateName;
+        private bool isWrongTemplateName = false;
 
         public string StoredPrinter { get => App.Settings.GetValue("StoredPrinter", ""); set { App.Settings.SetValue("StoredPrinter", value); } }
         public ObservableCollection<string> Printers { get; } = new ObservableCollection<string>();
@@ -221,6 +230,8 @@ namespace V275_Testing.WindowViewModels
             Logger.Info("Initializing standards database: {name}", $"{App.UserDataDirectory}\\{App.StandardsDatabaseName}");
             StandardsDatabase = new StandardsDatabase($"{App.UserDataDirectory}\\{App.StandardsDatabaseName}");
 
+            V275.PropertyChanged += V275_PropertyChanged;
+
             V275.WebSocket.SetupCapture += WebSocket_SetupCapture;
             V275.WebSocket.SessionStateChange += WebSocket_SessionStateChange;
             //V275.WebSocket.Heartbeat += WebSocket_Heartbeat;
@@ -230,9 +241,52 @@ namespace V275_Testing.WindowViewModels
             SetupGradingStandards();
             LoadPrinters();
         }
+
+        private void V275_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "V275_JobName")
+            {
+                CheckTemplateName();
+            }
+        }
+
+        private void CheckTemplateName()
+        {
+            IsWrongTemplateName = false;
+            if (V275.V275_JobName == "")
+            {
+                return;
+            }
+
+            if (!IsGS1Standard)
+            {
+                if (V275.V275_JobName.ToLower() == SelectedStandard.ToLower())
+                {
+                    return;
+                }
+            }
+            else
+            {
+                if (V275.V275_JobName.ToLower().StartsWith("gs1"))
+                {
+                    return;
+                }
+            }
+
+            IsWrongTemplateName = true;
+            _ = OkDialog("Template Name Mismatch!", "The template name loaded in the V275 software does not match the selected standard.");
+        }
+
         public async Task<MessageDialogResult> OkCancelDialog(string title, string message)
         {
             MessageDialogResult result = await DialogCoordinator.Instance.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative);
+
+            return result;
+        }
+
+        public async Task<MessageDialogResult> OkDialog(string title, string message)
+        {
+            MessageDialogResult result = await DialogCoordinator.Instance.ShowMessageAsync(this, title, message, MessageDialogStyle.Affirmative);
 
             return result;
         }
