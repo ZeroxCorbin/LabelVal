@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace V275_Testing.V275.Models
 {
-    internal class V275_Repeat_Available
+    internal class V275_Repeat_Available : Core.BaseViewModel
     {
 
-        public class Rootobject
+        public class Rootobject : Core.BaseViewModel
         {
             public int[] Property1 { get; set; }
         }

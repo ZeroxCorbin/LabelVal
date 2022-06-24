@@ -466,5 +466,17 @@ namespace V275_Testing.WindowViewModels
             return true;
 
         }
+
+        public void Clear()
+        {
+            GradeValues.Clear();
+            ValueResults.Clear();
+            Gs1ValueResults.Clear();
+            Gs1Grades.Clear();
+            Values.Clear();
+            Alarms.Clear();
+            Blemishes.Clear();
+
+        }
     }
 }

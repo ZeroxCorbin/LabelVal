@@ -213,7 +213,7 @@ namespace V275_Testing.WindowViewModels
             PauseRun = new Core.RelayCommand(PauseRunAction, c => true);
             StopRun = new Core.RelayCommand(StopRunAction, c => true);
 
-            Print = new Core.RelayCommand(PrintAction, c => true);
+            Print = new Core.RelayCommand(EnablePrintAction, c => true);
 
             V275_SwitchRun = new Core.RelayCommand(V275_SwitchRunAction, c => true);
             V275_SwitchEdit = new Core.RelayCommand(V275_SwitchEditAction, c => true);
@@ -266,7 +266,7 @@ namespace V275_Testing.WindowViewModels
         {
             IsGS1Standard = StoredStandard.StartsWith("GS1") ? true : false;
 
-            string std = StoredStandard.Replace(" (300)", "");
+            string std = StoredStandard.Replace(" 300", "");
 
             bool is300 = false;
             if (std.Length < StoredStandard.Length)
@@ -275,36 +275,31 @@ namespace V275_Testing.WindowViewModels
             Logger.Info("Loading label images from standards directory: {name}", $"{App.StandardsRoot}\\{std}\\");
 
             //Labels.Clear();
-            foreach (var lab in Labels.ToArray())
+            foreach (var lab in Labels)
             {
+                lab.Clear();
                 lab.Printing -= Label_Printing;
-                lab.LabelImage = null;
-                lab.RepeatImage = null;
-                lab.LabelSectors.Clear();
-                lab.RepeatSectors.Clear();
-                Labels.Remove(lab);
-
-
+                //Labels.Remove(lab);
             }
+            Labels.Clear();
 
-            List<string> Images = new List<string>();
-            Images.Clear();
+            List<string> images = new List<string>();
 
             if (is300)
             {
                 foreach (var f in Directory.EnumerateFiles($"{App.StandardsRoot}\\{std}\\300\\"))
                     if (Path.GetExtension(f) == ".png")
-                        Images.Add(f);
+                        images.Add(f);
             }
             else
             {
                 foreach (var f in Directory.EnumerateFiles($"{App.StandardsRoot}\\{StoredStandard}\\600\\"))
                     if (Path.GetExtension(f) == ".png")
-                        Images.Add(f);
+                        images.Add(f);
             }
 
 
-            Images.Sort();
+            images.Sort();
 
             //List<string> Images300 = new List<string>();
             //Images300.Clear();
@@ -313,9 +308,9 @@ namespace V275_Testing.WindowViewModels
 
             //Images300.Sort();
 
-            Logger.Info("Found label images: {count}", Images.Count);
+            Logger.Info("Found label images: {count}", images.Count);
 
-            foreach (var img in Images)
+            foreach (var img in images)
             {
                 string comment = string.Empty;
                 if (File.Exists(img.Replace(".png", ".txt")))
@@ -395,6 +390,8 @@ namespace V275_Testing.WindowViewModels
 
         }
 
+        private ObservableCollection<string> OrphandStandards { get; } = new ObservableCollection<string>();
+
         private void SetupGradingStandards()
         {
             Logger.Info("Loading grading standards from file system. {path}", App.StandardsRoot);
@@ -411,7 +408,7 @@ namespace V275_Testing.WindowViewModels
                     if (subdir.EndsWith("600"))
                         Standards.Add(dir.Substring(dir.LastIndexOf("\\") + 1));
                     else if (subdir.EndsWith("300"))
-                        Standards.Add($"{dir.Substring(dir.LastIndexOf("\\") + 1)} (300)");
+                        Standards.Add($"{dir.Substring(dir.LastIndexOf("\\") + 1)} 300");
                 }
             }
             Logger.Info("Processed {count} grading standards.", Standards.Count);
@@ -428,6 +425,10 @@ namespace V275_Testing.WindowViewModels
                 Logger.Debug("Creating table: {name}", standard);
                 StandardsDatabase.CreateTable(standard);
             }
+
+            foreach (var std in tables)
+                if (!Standards.Contains(std))
+                    OrphandStandards.Add(std);
 
             if (Standards.Contains(StoredStandard))
                 SelectedStandard = StoredStandard;
@@ -608,7 +609,10 @@ namespace V275_Testing.WindowViewModels
                         if ((DateTime.Now - start) > TimeSpan.FromMilliseconds(10000))
                         {
                             WaitForRepeat = false;
+
                             PrintingLabel = null;
+
+                            label.IsFaulted = true;
                             label.IsWorking = false;
                             return;
                         }
@@ -619,21 +623,28 @@ namespace V275_Testing.WindowViewModels
                 PrintingLabel = null;
 
             if (V275.V275_State != "Idle" && IsLoggedIn_Control)
-                PrintAction("1");
+                EnablePrintAction("1");
         }
         private async void ProcessRepeat(int repeat)
         {
             WaitForRepeat = false;
 
-            if (SelectedStandard.StartsWith("GS1"))
+            if (Repeats[repeat].Label.IsGS1Standard)
             {
                 if (repeat > 0)
                     if (!await V275.Commands.SetRepeat(repeat))
                     {
+                        ProcessRepeatFault(repeat);
                         return;
                     }
 
                 int i = await Repeats[repeat].Label.Load();
+
+                if (i == 0)
+                {
+                    ProcessRepeatFault(repeat);
+                    return;
+                }
 
                 if (i == 2)
                 {
@@ -642,25 +653,40 @@ namespace V275_Testing.WindowViewModels
                     Logger.Info("Creating sectors.");
 
                     foreach (var sec in sectors)
-                        await V275.AddSector(sec.name, JsonConvert.SerializeObject(sec));
+                        if (!await V275.AddSector(sec.name, JsonConvert.SerializeObject(sec)))
+                        {
+                            ProcessRepeatFault(repeat);
+                            return;
+                        }
                 }
             }
 
             Logger.Info("Reading label results and Image.");
-            await Repeats[repeat].Label.Read(repeat, IsRunRunning);
+            if (!await Repeats[repeat].Label.Read(repeat, IsRunRunning))
+            {
+                ProcessRepeatFault(repeat);
+                return;
+            }
 
+            Repeats[repeat].Label.IsWorking = false;
+            Repeats.Clear();
+        }
+
+        private void ProcessRepeatFault(int repeat)
+        {
+            Repeats[repeat].Label.IsFaulted = true;
             Repeats[repeat].Label.IsWorking = false;
 
             Repeats.Clear();
         }
 
-
-        private async void PrintAction(object parameter)
+        private async void EnablePrintAction(object parameter)
         {
             if (V275_IsBackupVoid)
+            {
                 await V275.Commands.Print(false);
-
-            Thread.Sleep(200);
+                Thread.Sleep(50);
+            }
 
             await V275.Commands.Print((string)parameter == "1");
         }

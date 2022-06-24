@@ -251,7 +251,7 @@ namespace V275_Testing.V275
                 if (gradingStandard.StartsWith("GS1"))
                 {
                     verify.gradingStandard.enabled = true;
-                    verify.gradingStandard.tableId = gradingStandard.Replace("GS1 TABLE ", "").Replace(" (300)", "");
+                    verify.gradingStandard.tableId = gradingStandard.Replace("GS1 TABLE ", "").Replace(" 300", "");
                 }
                 else
                 {

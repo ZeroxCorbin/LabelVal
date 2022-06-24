@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace V275_Testing.V275.Models
 {
-    public class V275_Report_InspectSector_Blemish
+    public class V275_Report_InspectSector_Blemish : Core.BaseViewModel
     {
             public string name { get; set; }
             public string type { get; set; }
@@ -16,7 +17,7 @@ namespace V275_Testing.V275.Models
             public int height { get; set; }
             public Data data { get; set; }
 
-        public class Data
+        public class Data : Core.BaseViewModel
         {
             public V275_Report_InspectSector_Common.Alarm[] alarms { get; set; }
             public int blemishCount { get; set; }
@@ -24,7 +25,7 @@ namespace V275_Testing.V275.Models
             public Blemish[] blemishList { get; set; }
         }
 
-        public class Blemish
+        public class Blemish : Core.BaseViewModel
         {
             public string type { get; set; }
             public int top { get; set; }

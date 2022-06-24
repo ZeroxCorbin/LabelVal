@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace V275_Testing.V275.Models
 {
-    public class V275_Job_Sector_Verify
+    public class V275_Job_Sector_Verify : Core.BaseViewModel
     {
         public string name { get; set; }
         public string username { get; set; }
@@ -26,7 +26,7 @@ namespace V275_Testing.V275.Models
         public int orientation { get; set; }
         public string metaData { get; set; } = string.Empty;
 
-        public class Matchsettings
+        public class Matchsettings : Core.BaseViewModel
         {
             public int dataLength { get; set; } = 0;
             public string fieldMask { get; set; } = String.Empty;
@@ -47,14 +47,14 @@ namespace V275_Testing.V275.Models
             public int uniqueSetNumber { get; set; } = -1;
         }
 
-        public class Stepcharset
+        public class Stepcharset : Core.BaseViewModel
         {
             public string value0 { get; set; } = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             public string value1 { get; set; } = "0123456789";
             public string value2 { get; set; } = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         }
 
-        public class Gradingstandard
+        public class Gradingstandard : Core.BaseViewModel
         {
             public bool enabled { get; set; } = false;
             public string standard { get; set; } = "GS1";
@@ -64,7 +64,7 @@ namespace V275_Testing.V275.Models
             public Specifications specifications { get; set; } = new Specifications();
         }
 
-        public class Specifications
+        public class Specifications : Core.BaseViewModel
         {
             public string symbology { get; set; } = "unknown";
             public string symbolType { get; set; } = "unknown";

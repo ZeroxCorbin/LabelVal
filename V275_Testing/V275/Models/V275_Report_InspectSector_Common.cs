@@ -7,39 +7,39 @@ using System.Threading.Tasks;
 
 namespace V275_Testing.V275.Models
 {
-    public class V275_Report_InspectSector_Common
+    public class V275_Report_InspectSector_Common : Core.BaseViewModel
     { 
 
-        public class Grade
+        public class Grade : Core.BaseViewModel
         {
             public float value { get; set; }
             public string letter { get; set; }
         }
 
-        public class Overallgrade
+        public class Overallgrade : Core.BaseViewModel
         {
             public Grade grade { get; set; }
             public string _string { get; set; }
         }
 
-        public class GradeValue
+        public class GradeValue : Core.BaseViewModel
         {
             public Grade grade { get; set; }
             public int value { get; set; } = -1;
         }
 
-        public class ValueResult
+        public class ValueResult : Core.BaseViewModel
         {
             public float value { get; set; }
             public string result { get; set; }
         }
 
-        public class Value
+        public class Value : Core.BaseViewModel
         {
             public int value { get; set; }
         }
 
-        public class Decode
+        public class Decode : Core.BaseViewModel
         {
             public Grade grade { get; set; }
             //Verify2D only
@@ -49,7 +49,7 @@ namespace V275_Testing.V275.Models
             public ValueResult edgeDetermination { get; set; }
         }
 
-        public class Alarm
+        public class Alarm : Core.BaseViewModel
         {
             public string name { get; set; }
             public int category { get; set; }
@@ -57,7 +57,7 @@ namespace V275_Testing.V275.Models
             public Useraction userAction { get; set; }
         }
 
-        public class SubAlarm
+        public class SubAlarm : Core.BaseViewModel
         {
             public string text { get; set; }
             public int index { get; set; }
@@ -65,7 +65,7 @@ namespace V275_Testing.V275.Models
             public string expected { get; set; }
         }
 
-        public class Useraction
+        public class Useraction : Core.BaseViewModel
         {
             public string action { get; set; }
             public string user { get; set; }

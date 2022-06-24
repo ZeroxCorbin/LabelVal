@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace V275_Testing.V275.Models
 {
-    public class V275_Report
+    public class V275_Report : Core.BaseViewModel
     {
        public Inspectlabel inspectLabel { get; set; }
 
-        public class Inspectlabel
+        public class Inspectlabel : Core.BaseViewModel
         {
             public int repeat { get; set; }
             public int voidRepeat { get; set; }
@@ -23,14 +23,14 @@ namespace V275_Testing.V275.Models
             public object[] ioLines { get; set; }
         }
 
-        public class SubAlarm
+        public class SubAlarm : Core.BaseViewModel
         {
             public string text { get; set; }
             public int index { get; set; }
             public string subAlarm { get; set; }
             public string expected { get; set; }
         }
-        public class Useraction
+        public class Useraction : Core.BaseViewModel
         {
             public string action { get; set; }
             public string user { get; set; }

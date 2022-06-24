@@ -347,16 +347,16 @@
     <Resource Include="Assets\Standards\GS1 TABLE 1\300\SS 600DPI TEST ROLL FOR GS1 TABLE 1_14.png" />
     <Resource Include="Assets\Standards\GS1 TABLE 1\300\SS 600DPI TEST ROLL FOR GS1 TABLE 1_15.png" />
     <Resource Include="Assets\Standards\GS1 TABLE 1\300\SS 600DPI TEST ROLL FOR GS1 TABLE 1_16.png" />
-    <Content Include="Assets\Standards\SYMBOLOGIES - PART A\600\25 All Symbology Part A PDF_01.png">
+    <Content Include="Assets\Standards\SYMBOLOGIES A\600\25 All Symbology Part A PDF_01.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\SYMBOLOGIES - PART B\600\25 Labels All Symbologies Part B 600dpi_01.png">
+    <Content Include="Assets\Standards\SYMBOLOGIES B\600\25 Labels All Symbologies Part B 600dpi_01.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\SYMBOLOGIES - PART C\600\25 Labels All Symbologies Part C 600dpi_01.png">
+    <Content Include="Assets\Standards\SYMBOLOGIES C\600\25 Labels All Symbologies Part C 600dpi_01.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\SYMBOLOGIES - PART D\600\25 Labels All Symbologies Part D 600dpi_01.png">
+    <Content Include="Assets\Standards\SYMBOLOGIES D\600\25 Labels All Symbologies Part D 600dpi_01.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_01.png">

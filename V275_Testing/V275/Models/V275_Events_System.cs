@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace V275_Testing.V275.Models
 {
-    public class V275_Events_System
+    public class V275_Events_System : Core.BaseViewModel
     {
 
 
@@ -16,7 +16,7 @@ namespace V275_Testing.V275.Models
         public string name { get; set; }
         public Data data { get; set; }
 
-        public class Data
+        public class Data : Core.BaseViewModel
         {
             public string token { get; set; }
             public string id { get; set; }
@@ -35,13 +35,13 @@ namespace V275_Testing.V275.Models
             public Detection[] detections { get; set; }
         }
 
-        public class Detection
+        public class Detection : Core.BaseViewModel
         {
             public string symbology { get; set; }
             public Region region { get; set; }
             public int orientation { get; set; }
 
-            public class Region
+            public class Region : Core.BaseViewModel
             {
                 public int x { get; set; }
                 public int y { get; set; }
@@ -51,12 +51,12 @@ namespace V275_Testing.V275.Models
         }
 
 
-        public class Rootobject
+        public class Rootobject : Core.BaseViewModel
         {
             public Event _event { get; set; }
         }
 
-        public class Event
+        public class Event : Core.BaseViewModel
         {
             public string time { get; set; }
             public string source { get; set; }

@@ -220,8 +220,17 @@ namespace V275_Testing.RunControllers
                         Thread.Sleep(1);
                     };
 
+                    if(label.IsFaulted)
+                    {
+                        Logger.Error("Label action faulted.");
+                        RunEntry.Completed = -1;
+                        Stopped();
+                        return false;
+                    }
+
                     if(label.RepeatImage != null)
                     {
+                        //Compress the image to PNG
                         PngBitmapEncoder encoder = new PngBitmapEncoder();
                         using (var ms = new System.IO.MemoryStream(label.RepeatImage))
                         {
@@ -236,7 +245,6 @@ namespace V275_Testing.RunControllers
                             }
                         }
                     }
-
 
                     row.RepeatReport = JsonConvert.SerializeObject(label.Report);
                     RunDatabase.InsertOrReplace(row);

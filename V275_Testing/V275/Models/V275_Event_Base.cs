@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace V275_Testing.V275.Models
 {
-    public class V275_Event_Base
+    public class V275_Event_Base : Core.BaseViewModel
     {
         public Event _event { get; set; }
 
-        public class Event
+        public class Event : Core.BaseViewModel
         {
             public string time { get; set; }
             public string source { get; set; }

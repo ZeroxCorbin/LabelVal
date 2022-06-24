@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace V275_Testing.V275.Models
 {
-    public class V275_Report_InspectSector_OCR
+    public class V275_Report_InspectSector_OCR : Core.BaseViewModel
     {
         public string name { get; set; }
         public string type { get; set; }
@@ -16,7 +16,7 @@ namespace V275_Testing.V275.Models
         public int height { get; set; }
         public Data data { get; set; }
 
-        public class Data
+        public class Data : Core.BaseViewModel
         {
             public V275_Report_InspectSector_Common.Alarm[] alarms { get; set; }
             public string text { get; set; }
@@ -24,7 +24,7 @@ namespace V275_Testing.V275.Models
             public Chardata[] charData { get; set; }
         }
 
-        public class Chardata
+        public class Chardata : Core.BaseViewModel
         {
             public string id { get; set; }
             public int match { get; set; }
@@ -33,7 +33,7 @@ namespace V275_Testing.V275.Models
             public Bestmatch[] bestMatches { get; set; }
         }
 
-        public class Bounds
+        public class Bounds : Core.BaseViewModel
         {
             public int left { get; set; }
             public int top { get; set; }
@@ -41,7 +41,7 @@ namespace V275_Testing.V275.Models
             public int height { get; set; }
         }
 
-        public class Bestmatch
+        public class Bestmatch : Core.BaseViewModel
         {
             public string id { get; set; }
             public int fontIndex { get; set; }

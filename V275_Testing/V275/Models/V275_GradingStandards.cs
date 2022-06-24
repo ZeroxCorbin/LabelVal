@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace V275_Testing.V275.Models
 {
-    public class V275_GradingStandards
+    public class V275_GradingStandards : Core.BaseViewModel
     {
         public GradingStandard[] gradingStandards { get; set; }
 
 
-        public class GradingStandard
+        public class GradingStandard : Core.BaseViewModel
         {
             public string standard { get; set; }
             public string tableId { get; set; }
@@ -19,7 +19,7 @@ namespace V275_Testing.V275.Models
             public Specifications specifications { get; set; }
         }
 
-        public class Specifications
+        public class Specifications : Core.BaseViewModel
         {
             public string symbology { get; set; }
             public string symbolType { get; set; }

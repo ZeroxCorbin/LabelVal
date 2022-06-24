@@ -59,5 +59,15 @@ namespace V275_Testing.WindowViewModels
 
 
         }
+
+        public void Clear()
+        {
+            JobSector = null;
+            ReportSector = null;
+
+            if(SectorResults != null)
+                SectorResults.Clear();
+
+        }
     }
 }

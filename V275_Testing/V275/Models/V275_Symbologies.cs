@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace V275_Testing.V275.Models
 {
-    public class V275_Symbologies
+    public class V275_Symbologies : Core.BaseViewModel
     {
-        public class Symbol
+        public class Symbol : Core.BaseViewModel
         {
             public string symbolType { get; set; }
             public string symbology { get; set; }

@@ -108,6 +108,15 @@ namespace V275_Testing.WindowViewModels
         private bool isWorking = false;
 
 
+        public bool IsFaulted
+        {
+            get => isFaulted;
+            set { SetProperty(ref isFaulted, value); OnPropertyChanged("IsNotFaulted"); }
+        }
+        public bool IsNotFaulted => !isFaulted;
+        private bool isFaulted = false;
+
+
         public string PrinterName { get; set; }
         public string LabelImagePath { get; }
 
@@ -121,9 +130,9 @@ namespace V275_Testing.WindowViewModels
         private string _Status;
 
 
-        private StandardsDatabase StandardsDatabase { get; }
+        private StandardsDatabase StandardsDatabase { get; set; }
 
-        public V275_API_Controller V275 { get; }
+        public V275_API_Controller V275 { get; private set; }
         public V275_Job ReadJob { get; set; }
         //public string StoredJob { get; private set; }
         public V275_Report Report { get; private set; }
@@ -196,6 +205,7 @@ namespace V275_Testing.WindowViewModels
         public void PrintAction(object parameter)
         {
             IsWorking = true;
+            IsFaulted = false;
 
             BringIntoView?.Invoke();
             Printing?.Invoke(this);
@@ -414,6 +424,29 @@ namespace V275_Testing.WindowViewModels
             }
             else
                 return null;
+        }
+
+        public void Clear()
+        {
+            LabelImage = null;
+            RepeatImage = null;
+            ReadJob = null;
+
+            LabelTemplate = null;
+
+            foreach (var sec in RepeatSectors)
+                sec.Clear();
+
+            RepeatSectors.Clear();
+
+            foreach (var sec in LabelSectors)
+                sec.Clear();
+
+            LabelSectors.Clear();
+
+            dialogCoordinator = null;
+            StandardsDatabase = null;
+            V275 = null;
         }
     }
 }
