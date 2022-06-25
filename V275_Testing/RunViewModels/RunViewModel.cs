@@ -87,43 +87,48 @@ namespace V275_Testing.RunViewModels
 
         private void LoadRunEntries()
         {
-            RunLedgerDatabase = new RunLedgerDatabase().Open($"{App.RunsRoot}\\{App.RunLedgerDatabaseName}");
-            var files = Directory.GetFiles(App.RunsRoot);
-
-            if (RunLedgerDatabase != null)
+            using (RunLedgerDatabase = new RunLedgerDatabase().Open($"{App.RunsRoot}\\{App.RunLedgerDatabaseName}"))
             {
-                var list = RunLedgerDatabase.SelectAllRunEntries();
+                    var files = Directory.GetFiles(App.RunsRoot);
 
-                foreach (var runEntry in list)
+                if (RunLedgerDatabase != null)
                 {
-                    if (string.IsNullOrEmpty(files.FirstOrDefault(e => e.EndsWith($"{App.RunDatabaseName(runEntry.TimeDate)}"))))
-                        runEntry.RunDBMissing = true;
+                    var list = RunLedgerDatabase.SelectAllRunEntries();
 
-                    RunEntries.Add(runEntry);
+                    foreach (var runEntry in list)
+                    {
+                        if (string.IsNullOrEmpty(files.FirstOrDefault(e => e.EndsWith($"{App.RunDatabaseName(runEntry.TimeDate)}"))))
+                            runEntry.RunDBMissing = true;
+
+                        RunEntries.Add(runEntry);
+                    }
                 }
-
-                RunLedgerDatabase.Close();
             }
+
         }
 
         private async void LoadRun()
         {
-            await App.Current.Dispatcher.InvokeAsync(() => Labels.Clear());
-
-            RunDatabase db = new RunDatabase().Open($"{App.RunsRoot}\\{App.RunDatabaseName(SelectedRunEntry.TimeDate)}");
-            var runs = db.SelectAllRuns();
-            db.Close();
-
             await App.Current.Dispatcher.InvokeAsync(() =>
             {
-                foreach (var run in runs)
-                {
-                    Labels.Add(new RunLabelControlViewModel(MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance, run, SelectedRunEntry));
-                }
+                foreach (var lab in Labels)
+                    lab.Clear();
+                Labels.Clear();
             });
 
 
+            List<RunDatabase.Run> runs;
+            using (RunDatabase db = new RunDatabase().Open($"{App.RunsRoot}\\{App.RunDatabaseName(SelectedRunEntry.TimeDate)}"))
+                    runs = db.SelectAllRuns();
 
+            if(runs != null)
+                await App.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    foreach (var run in runs)
+                    {
+                        Labels.Add(new RunLabelControlViewModel(MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance, run, SelectedRunEntry));
+                    }
+                });
         }
     }
 }

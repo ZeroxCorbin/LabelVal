@@ -11,7 +11,7 @@
         Dialog:DialogParticipation.Register="{Binding}"
         d:DataContext="{d:DesignInstance Type=ViewModels:MainWindowViewModel}"
         mc:Ignorable="d"
-        Height="429" Width="1087" SaveWindowPosition="True" Closing="MetroWindow_Closing">
+        Height="592" Width="1119" SaveWindowPosition="True" Closing="MetroWindow_Closing">
 
     <mah:MetroWindow.Title>
         <MultiBinding StringFormat="V275 Testing : {0}">

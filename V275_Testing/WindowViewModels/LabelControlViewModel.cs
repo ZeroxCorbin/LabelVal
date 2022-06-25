@@ -213,6 +213,9 @@ namespace V275_Testing.WindowViewModels
 
         private void GetStored()
         {
+            foreach(var sec in LabelSectors)
+                sec.Clear();
+
             LabelSectors.Clear();
             IsLoad = false;
 

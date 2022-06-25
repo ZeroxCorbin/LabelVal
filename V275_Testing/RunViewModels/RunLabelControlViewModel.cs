@@ -184,23 +184,23 @@ namespace V275_Testing.RunViewModels
 
         public void Clear()
         {
+            foreach (var sec in RepeatSectors)
+                sec.Clear();
             RepeatSectors.Clear();
             RepeatSectors = null;
 
+            foreach (var sec in LabelSectors)
+                sec.Clear();
             LabelSectors.Clear();
             LabelSectors = null;
-            
-            //LabelImage.StreamSource = null;
-            //LabelImage = null;
 
-            //RepeatImage.StreamSource = null;
-            //RepeatImage = null;
+            foreach (var sec in DiffSectors)
+                sec.Clear();
+            DiffSectors.Clear();
+            DiffSectors = null;
 
             Run = null;
             RunEntry = null;
-
-            
-            GC.Collect();
         }
 
     }
