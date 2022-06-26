@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using V275_Testing.V275.Models;
@@ -251,7 +252,8 @@ namespace V275_Testing.V275
                 if (gradingStandard.StartsWith("GS1"))
                 {
                     verify.gradingStandard.enabled = true;
-                    verify.gradingStandard.tableId = gradingStandard.Replace("GS1 TABLE ", "").Replace(" 300", "");
+                    verify.gradingStandard.tableId = Regex.Match(gradingStandard, @"\d+").Value;
+                    //verify.gradingStandard.tableId = gradingStandard.Replace("GS1 TABLE ", "").Replace(" 300", "");
                 }
                 else
                 {

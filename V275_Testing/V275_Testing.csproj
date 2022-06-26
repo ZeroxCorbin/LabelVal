@@ -347,6 +347,30 @@
     <Resource Include="Assets\Standards\GS1 TABLE 1\300\SS 600DPI TEST ROLL FOR GS1 TABLE 1_14.png" />
     <Resource Include="Assets\Standards\GS1 TABLE 1\300\SS 600DPI TEST ROLL FOR GS1 TABLE 1_15.png" />
     <Resource Include="Assets\Standards\GS1 TABLE 1\300\SS 600DPI TEST ROLL FOR GS1 TABLE 1_16.png" />
+    <Content Include="Assets\Standards\GS1 TABLE 1 NEW\300\1_EAN13_Label.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\GS1 TABLE 1 NEW\300\2_EAN8_Label.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\GS1 TABLE 1 NEW\300\3_UPC_A_Label.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\GS1 TABLE 1 NEW\600\1_EAN13_Label.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\GS1 TABLE 1 NEW\600\2_EAN8_Label.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\GS1 TABLE 1 NEW\600\3_UPC_A_Label.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\OCR OCV RECOGNITION\300\OCROCV_Recognition.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\OCR OCV RECOGNITION\600\OCROCV_Recognition.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\Standards\SYMBOLOGIES A\600\25 All Symbology Part A PDF_01.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

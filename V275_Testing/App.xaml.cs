@@ -53,7 +53,7 @@ namespace V275_Testing
                 _ = Directory.CreateDirectory(RunsRoot);
             }
 
-            //FixFiducial();
+           // FixFiducial();
             //FixRotation();
 
             var config = new NLog.Config.LoggingConfiguration();
@@ -175,6 +175,7 @@ namespace V275_Testing
                 if (Directory.Exists($"{dir}\\300"))
                     foreach (var imgFile in Directory.EnumerateFiles($"{dir}\\300"))
                     {
+                        if(Path.GetExtension(imgFile) == ".png")
                         RedrawFiducial(imgFile);
                     }
             }
@@ -202,12 +203,12 @@ namespace V275_Testing
                 using (var graphics = Graphics.FromImage(photo))
                 {
 
-                    //graphics.FillRectangle(Brushes.White, 0, 1952, 180, photo.Height - 1952);
-                    //graphics.FillRectangle(Brushes.Black, 39, 2000, 106, 158);
+                    //graphics.FillRectangle(Brushes.White, 0, 1900, 210, photo.Height - 1900);
+                    //graphics.FillRectangle(Brushes.Black, 30, 1950, 90, 90);
 
                     //300 DPI
                     graphics.FillRectangle(Brushes.White, 0, 976, 150, photo.Height - 976);
-                    graphics.FillRectangle(Brushes.Black, 20, 1000, 53, 79);
+                    graphics.FillRectangle(Brushes.Black, 15, 975, 45, 45);
 
                     photo.Save(path, ImageFormat.Png);
                 }

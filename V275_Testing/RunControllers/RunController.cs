@@ -137,6 +137,9 @@ namespace V275_Testing.RunControllers
             {
                 foreach (var label in Labels)
                 {
+                    if (label.LabelSectors.Count == 0)
+                        continue;
+
                     CurrentLoopCount = i + 1;
                     if (CurrentLoopCount != wasLoop)
                     {
@@ -150,9 +153,6 @@ namespace V275_Testing.RunControllers
                         wasLoop = CurrentLoopCount;
                         Logger.Info("Job Loop: {loop}", CurrentLoopCount);
                     }
-
-                    if (label.LabelSectors.Count == 0)
-                        continue;
 
                     if (!IsGS1Standard)
                         await label.V275.SwitchToRun();

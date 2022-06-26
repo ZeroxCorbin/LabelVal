@@ -239,7 +239,7 @@ namespace V275_Testing.WindowViewModels
                     bool isWrongStandard = false;
                     if (jSec.type == "verify1D" || jSec.type == "verify2D")
                         if (jSec.gradingStandard.enabled && IsGS1Standard)
-                            isWrongStandard = !(GradingStandard == $"{jSec.gradingStandard.standard} TABLE {jSec.gradingStandard.tableId}");
+                            isWrongStandard = !(GradingStandard.StartsWith($"{jSec.gradingStandard.standard} TABLE {jSec.gradingStandard.tableId}"));
                         else
                             isWrongStandard = false;
 
@@ -344,7 +344,7 @@ namespace V275_Testing.WindowViewModels
             Report = V275.Commands.Report;
             RepeatImage = V275.Commands.Repeatimage;
             IsGoldenRepeat = false;
-
+             
             //if (!isRunning)
             //{
             List<SectorControlViewModel> tempSectors = new List<SectorControlViewModel>();
@@ -353,7 +353,7 @@ namespace V275_Testing.WindowViewModels
                 bool isWrongStandard = false;
                 if (jSec.type == "verify1D" || jSec.type == "verify2D")
                     if (jSec.gradingStandard.enabled && IsGS1Standard)
-                        isWrongStandard = !(GradingStandard == $"{jSec.gradingStandard.standard} TABLE {jSec.gradingStandard.tableId}");
+                        isWrongStandard = !(GradingStandard.StartsWith($"{jSec.gradingStandard.standard} TABLE {jSec.gradingStandard.tableId}"));
                     else
                         isWrongStandard = false;
 

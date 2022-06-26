@@ -59,7 +59,7 @@ namespace V275_Testing.RunViewModels
                     bool isWrongStandard = false;
                     if (jSec.type == "verify1D" || jSec.type == "verify2D")
                         if (jSec.gradingStandard.enabled && IsGS1Standard)
-                            isWrongStandard = !(RunEntry.GradingStandard == $"{jSec.gradingStandard.standard} TABLE {jSec.gradingStandard.tableId}");
+                            isWrongStandard = !(RunEntry.GradingStandard.StartsWith($"{jSec.gradingStandard.standard} TABLE {jSec.gradingStandard.tableId}"));
                         else
                             isWrongStandard = false;
 
@@ -100,7 +100,7 @@ namespace V275_Testing.RunViewModels
                     bool isWrongStandard = false;
                     if (jSec.type == "verify1D" || jSec.type == "verify2D")
                         if (jSec.gradingStandard.enabled && IsGS1Standard)
-                            isWrongStandard = !(RunEntry.GradingStandard == $"{jSec.gradingStandard.standard} TABLE {jSec.gradingStandard.tableId}");
+                            isWrongStandard = !(RunEntry.GradingStandard.StartsWith($"{jSec.gradingStandard.standard} TABLE {jSec.gradingStandard.tableId}"));
                         else
                             isWrongStandard = false;
 
