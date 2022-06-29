@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
-namespace V275_Testing.Dialogs
+namespace LabelVal.Dialogs
 {
     internal class ImageViewerDialogViewModel : Core.BaseViewModel
     {

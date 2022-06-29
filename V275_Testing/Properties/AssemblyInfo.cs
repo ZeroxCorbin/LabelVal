@@ -7,11 +7,11 @@ using System.Windows;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("V275_Testing")]
+[assembly: AssemblyTitle("LabelVal")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("OMRON")]
-[assembly: AssemblyProduct("V275_Testing")]
+[assembly: AssemblyProduct("LabelVal")]
 [assembly: AssemblyCopyright("Copyright © OMRON 2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -51,5 +51,5 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.1.0.2008")]
-[assembly: AssemblyFileVersion("0.1.0.2008")]
+[assembly: AssemblyVersion("0.1.0.2009")]
+[assembly: AssemblyFileVersion("0.1.0.2009")]

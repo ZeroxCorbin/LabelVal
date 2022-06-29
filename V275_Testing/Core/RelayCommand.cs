@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace V275_Testing.Core
+namespace LabelVal.Core
 {
     public class RelayCommand : ICommand
     {

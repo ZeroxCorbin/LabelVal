@@ -14,10 +14,10 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using V275_Testing.RunViewModels;
-using V275_Testing.WindowViewModels;
+using LabelVal.RunViewModels;
+using LabelVal.WindowViewModels;
 
-namespace V275_Testing.RunViews
+namespace LabelVal.RunViews
 {
     /// <summary>
     /// Interaction logic for RunRunView.xaml

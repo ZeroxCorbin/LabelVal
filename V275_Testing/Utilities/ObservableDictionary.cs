@@ -35,7 +35,7 @@ using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Runtime.InteropServices;
 
-namespace V275_Testing.Utilities
+namespace LabelVal.Utilities
 {
     [Serializable]
     public class ObservableDictionary<TKey, TValue> :

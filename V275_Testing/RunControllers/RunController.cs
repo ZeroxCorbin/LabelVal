@@ -9,11 +9,11 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
-using V275_Testing.Databases;
-using V275_Testing.Utilities;
-using V275_Testing.WindowViewModels;
+using LabelVal.Databases;
+using LabelVal.Utilities;
+using LabelVal.WindowViewModels;
 
-namespace V275_Testing.RunControllers
+namespace LabelVal.RunControllers
 {
     public class RunController
     {

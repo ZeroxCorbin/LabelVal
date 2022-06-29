@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace V275_Testing.Core
+namespace LabelVal.Core
 {
     public class BaseViewModel : INotifyPropertyChanged
     {

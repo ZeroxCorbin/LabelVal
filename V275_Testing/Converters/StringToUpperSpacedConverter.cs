@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Data;
 
-namespace V275_Testing.Converters
+namespace LabelVal.Converters
 {
     internal class StringToUpperSpacedConverter : IValueConverter
     {

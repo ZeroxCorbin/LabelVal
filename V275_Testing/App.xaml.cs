@@ -11,7 +11,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace V275_Testing
+namespace LabelVal
 {
     /// <summary>
     /// Interaction logic for App.xaml
@@ -23,7 +23,7 @@ namespace V275_Testing
         //#if DEBUG
         public static string WorkingDir { get; set; } = System.IO.Directory.GetCurrentDirectory();
         //#else        
-        //        public static string WorkingDir { get; set; } = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\\TDD\\V275_Testing";
+        //        public static string WorkingDir { get; set; } = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\\TDD\\LabelVal";
         //#endif
 
         public static string Version { get; set; }

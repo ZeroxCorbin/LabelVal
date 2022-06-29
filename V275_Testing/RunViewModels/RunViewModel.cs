@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using V275_Testing.Databases;
+using LabelVal.Databases;
 
-namespace V275_Testing.RunViewModels
+namespace LabelVal.RunViewModels
 {
     public class RunViewModel : Core.BaseViewModel
     {

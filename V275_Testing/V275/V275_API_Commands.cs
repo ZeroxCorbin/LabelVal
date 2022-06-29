@@ -5,9 +5,9 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using V275_Testing.V275.Models;
+using LabelVal.V275.Models;
 
-namespace V275_Testing.V275
+namespace LabelVal.V275
 {
     public class V275_API_Commands
     {

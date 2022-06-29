@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace V275_Testing.WindowViews
+namespace LabelVal.WindowViews
 {
     /// <summary>
     /// Interaction logic for SectorDifferenceControlView.xaml

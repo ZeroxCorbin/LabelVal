@@ -5,10 +5,10 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using V275_Testing.Utilities;
-using V275_Testing.V275.Models;
+using LabelVal.Utilities;
+using LabelVal.V275.Models;
 
-namespace V275_Testing.WindowViewModels
+namespace LabelVal.WindowViewModels
 {
     public class SectorDifferenceViewModel : Core.BaseViewModel
     {

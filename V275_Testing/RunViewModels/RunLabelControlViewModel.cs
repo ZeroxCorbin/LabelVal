@@ -9,11 +9,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
-using V275_Testing.Databases;
-using V275_Testing.V275.Models;
-using V275_Testing.WindowViewModels;
+using LabelVal.Databases;
+using LabelVal.V275.Models;
+using LabelVal.WindowViewModels;
 
-namespace V275_Testing.RunViewModels
+namespace LabelVal.RunViewModels
 {
     public class RunLabelControlViewModel : Core.BaseViewModel
     {

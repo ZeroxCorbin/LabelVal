@@ -4,7 +4,7 @@ using System;
 using System.IO;
 #endif
 
-namespace V275_Testing.Core
+namespace LabelVal.Core
 {
     public static class StaticUtils
     {

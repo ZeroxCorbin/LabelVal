@@ -13,10 +13,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using V275_Testing.Dialogs;
-using V275_Testing.WindowViewModels;
+using LabelVal.Dialogs;
+using LabelVal.WindowViewModels;
 
-namespace V275_Testing.WindowViews
+namespace LabelVal.WindowViews
 {
     /// <summary>
     /// Interaction logic for LabelControlView.xaml

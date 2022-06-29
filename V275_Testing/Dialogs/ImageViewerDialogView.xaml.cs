@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace V275_Testing.Dialogs
+namespace LabelVal.Dialogs
 {
     /// <summary>
     /// Interaction logic for ImageViewerDialog.xaml

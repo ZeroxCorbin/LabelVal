@@ -11,13 +11,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using V275_Testing.Databases;
-using V275_Testing.Printer;
-using V275_Testing.Utilities;
-using V275_Testing.V275;
-using V275_Testing.V275.Models;
+using LabelVal.Databases;
+using LabelVal.Printer;
+using LabelVal.Utilities;
+using LabelVal.V275;
+using LabelVal.V275.Models;
 
-namespace V275_Testing.WindowViewModels
+namespace LabelVal.WindowViewModels
 {
     public class LabelControlViewModel : Core.BaseViewModel
     {

@@ -6,17 +6,17 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using V275_Testing.V275;
-using V275_Testing.V275.Models;
+using LabelVal.V275;
+using LabelVal.V275.Models;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.Drawing.Printing;
-using V275_Testing.Databases;
-using V275_Testing.RunControllers;
-using V275_Testing.Printer;
+using LabelVal.Databases;
+using LabelVal.RunControllers;
+using LabelVal.Printer;
 using MahApps.Metro.Controls.Dialogs;
 
-namespace V275_Testing.WindowViewModels
+namespace LabelVal.WindowViewModels
 {
     public class MainWindowViewModel : Core.BaseViewModel
     {

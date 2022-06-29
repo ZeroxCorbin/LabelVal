@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace V275_Testing.Properties {
+namespace LabelVal.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

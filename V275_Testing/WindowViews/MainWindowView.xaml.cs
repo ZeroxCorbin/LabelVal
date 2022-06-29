@@ -14,9 +14,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using V275_Testing.RunViews;
+using LabelVal.RunViews;
 
-namespace V275_Testing.WindowViews
+namespace LabelVal.WindowViews
 {
     /// <summary>
     /// Interaction logic for MainWindowView.xaml

@@ -12,11 +12,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using V275_Testing.Dialogs;
-using V275_Testing.RunViewModels;
-using V275_Testing.WindowViews;
+using LabelVal.Dialogs;
+using LabelVal.RunViewModels;
+using LabelVal.WindowViews;
 
-namespace V275_Testing.RunViews
+namespace LabelVal.RunViews
 {
     /// <summary>
     /// Interaction logic for RunLabelControlView.xaml

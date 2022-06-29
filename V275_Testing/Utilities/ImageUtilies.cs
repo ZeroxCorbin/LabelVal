@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace V275_Testing.Utilities
+namespace LabelVal.Utilities
 {
     public static class ImageUtilities
     {

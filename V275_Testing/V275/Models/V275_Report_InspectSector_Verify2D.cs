@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace V275_Testing.V275.Models
+namespace LabelVal.V275.Models
 {
     public class V275_Report_InspectSector_Verify2D : Core.BaseViewModel
     {

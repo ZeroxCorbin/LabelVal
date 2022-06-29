@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace V275_Testing.Printer
+namespace LabelVal.Printer
 {
     public class PrintControl
     {

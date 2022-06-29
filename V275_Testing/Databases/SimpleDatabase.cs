@@ -10,7 +10,7 @@ using System.Text;
 
 //using System.Windows.Forms;
 
-namespace V275_Testing.Databases
+namespace LabelVal.Databases
 {
     public class SimpleDatabase : IDisposable
     {
