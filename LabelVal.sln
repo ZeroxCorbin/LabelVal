@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LabelVal", "V275_Testing\LabelVal.csproj", "{75146EE2-F21D-480A-AD5D-9CBF3BCA2A03}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LabelVal", "LabelVal\LabelVal.csproj", "{75146EE2-F21D-480A-AD5D-9CBF3BCA2A03}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
