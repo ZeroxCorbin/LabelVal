@@ -18,7 +18,7 @@
                 SaveWindowPosition="True">
 
     <mah:MetroWindow.Title>
-        <MultiBinding StringFormat="V275 Testing : {0}">
+        <MultiBinding StringFormat="Label Validator : {0}">
             <Binding Path="Version"/>
         </MultiBinding>
     </mah:MetroWindow.Title>
