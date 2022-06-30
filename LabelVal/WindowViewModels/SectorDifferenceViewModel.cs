@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LabelVal.Models;
 using LabelVal.Utilities;
 using LabelVal.V275.Models;
 
@@ -12,6 +13,7 @@ namespace LabelVal.WindowViewModels
 {
     public class SectorDifferenceViewModel : Core.BaseViewModel
     {
+        private SectorCompareSettingsModel Settings { get; } = new SectorCompareSettingsModel();
 
         private string userName;
         public string UserName { get => userName; set => SetProperty(ref userName, value); }
@@ -141,7 +143,7 @@ namespace LabelVal.WindowViewModels
                         {
                             if (prop1.Name == "text")
                                 OCVMatchText = (string)prop1.GetValue(prop.GetValue(verify));
-                              
+
                         }
 
                         if (prop1.PropertyType == typeof(V275_Report_InspectSector_Blemish.Blemish[]))
@@ -266,14 +268,14 @@ namespace LabelVal.WindowViewModels
             {
                 if (!OCVMatchText.Equals(compare.OCVMatchText))
                 {
-                    if(compare.OCVMatchText != null)
+                    if (compare.OCVMatchText != null)
                     {
                         results.IsNotEmpty = true;
                         results.IsNotOCVMatch = true;
                         results.OCVMatchText = $"{OCVMatchText} / {compare.OCVMatchText}";
                     }
                 }
-                    
+
             }
 
             //foreach (Blemish src in Blemishes)
@@ -285,7 +287,7 @@ namespace LabelVal.WindowViewModels
             //        //    results.IsNotEmpty = true;
             //        //    continue;
             //        //}
-                        
+
 
             //        //results.Blemishes.Add(cmp);
             //        //results.IsNotEmpty = true;
@@ -389,15 +391,15 @@ namespace LabelVal.WindowViewModels
                 {
                     //if (Type != "blemish")
                     //{
-                        if (aS.name == aC.name)
+                    if (aS.name == aC.name)
+                    {
+                        found = true;
+                        if (!CompareAlarm(aS, aC))
                         {
-                            found = true;
-                            if (!CompareAlarm(aS, aC))
-                            {
-                                results.Alarms.Add(aC);
-                                results.IsNotEmpty = true;
-                            }
+                            results.Alarms.Add(aC);
+                            results.IsNotEmpty = true;
                         }
+                    }
                     //}
                 }
 
@@ -439,20 +441,37 @@ namespace LabelVal.WindowViewModels
 
         private bool CompareGrade(V275_Report_InspectSector_Common.Grade source, V275_Report_InspectSector_Common.Grade compare)
         {
-            return source.letter == compare.letter;
+            if (Settings.Grade_UseGradeLetter)
+                return source.letter == compare.letter;
+            else
+            {
+                return (compare.value <= source.value + Settings.Grade_GradeValueTolerance) && (compare.value >= source.value - Settings.Grade_GradeValueTolerance);
+            }
         }
         private bool CompareGradeValue(V275_Report_InspectSector_Common.GradeValue source, V275_Report_InspectSector_Common.GradeValue compare)
         {
-            return source.grade.letter == compare.grade.letter;
+            if (Settings.GradeValue_UseGradeLetter)
+                return source.grade.letter == compare.grade.letter;
+            else
+            {
+                if (Settings.GradeValue_UseValue)
+                    return (compare.value <= source.value + Settings.GradeValue_ValueTolerance) && (compare.value >= source.value - Settings.GradeValue_ValueTolerance);
+                else
+                    return (compare.grade.value <= source.grade.value + Settings.GradeValue_GradeValueTolerance) && (compare.grade.value >= source.grade.value - Settings.GradeValue_GradeValueTolerance);
+            }
+
         }
         private bool CompareValueResult(V275_Report_InspectSector_Common.ValueResult source, V275_Report_InspectSector_Common.ValueResult compare)
         {
-            return source.result == compare.result;
+            if (Settings.ValueResult_UseResult)
+                return source.result == compare.result;
+            else
+                return (compare.value <= source.value + Settings.ValueResult_ValueTolerance) && (compare.value >= source.value - Settings.ValueResult_ValueTolerance);
         }
 
         private bool CompareValue(V275_Report_InspectSector_Common.Value source, V275_Report_InspectSector_Common.Value compare)
         {
-            return (compare.value <= source.value + 5) && (compare.value >= source.value - 5);
+            return (compare.value <= source.value + Settings.Value_ValueTolerance) && (compare.value >= source.value - Settings.Value_ValueTolerance);
         }
 
         private bool CompareAlarm(V275_Report_InspectSector_Common.Alarm source, V275_Report_InspectSector_Common.Alarm compare)

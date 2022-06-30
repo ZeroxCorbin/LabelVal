@@ -5,7 +5,7 @@
                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                 xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                 xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-                xmlns:local="clr-namespace:LabelVal.WindowViews"
+                xmlns:local="clr-namespace:LabelVal.RunViews"
                  xmlns:RunViews="clr-namespace:LabelVal.RunViews"
                 xmlns:Converters="clr-namespace:LabelVal.Converters"
                 xmlns:ViewModels="clr-namespace:LabelVal.RunViewModels"     
@@ -65,7 +65,7 @@
     </mah:MetroWindow.Resources>
 
     <mah:MetroWindow.RightWindowCommands>
-        <mah:WindowCommands>>
+        <mah:WindowCommands>
 
             <Button BorderThickness="0" 
                         x:Name="btnColorBlind"
@@ -95,6 +95,14 @@
         </mah:WindowCommands>
     </mah:MetroWindow.RightWindowCommands>
 
+    <mah:MetroWindow.Flyouts>
+        <mah:FlyoutsControl>
+            <mah:Flyout x:Name="CompareSettings" Header="Compare Settings" Position="Left" Width="250" AutoCloseInterval="5">
+                <local:CompareSettingsControlView/>
+            </mah:Flyout>
+        </mah:FlyoutsControl>
+    </mah:MetroWindow.Flyouts>
+    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>
@@ -276,18 +284,28 @@
                     </Label>
 
                     <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
-                        <Button x:Name="BtnSortLabels" Click="BtnSortLabels_Click" Margin="3">
+                        <Button x:Name="BtnSortLabels" Click="BtnSortLabels_Click" Margin="3"
+                                ToolTip="Sort">
                             <IconPacks:Material Kind="FormatListGroup"/>
                         </Button>
 
                         <Label/>
 
-                        <Button x:Name="BtnExpandAll" Click="BtnExpandAll_Click" Margin="3">
+                        <Button x:Name="BtnExpandAll" Click="BtnExpandAll_Click" Margin="3"
+                                ToolTip="Expand All">
                             <IconPacks:Material Kind="ExpandAllOutline"/>
                         </Button>
 
-                        <Button x:Name="BtnCollapseAll" Click="BtnCollapseAll_Click" Margin="3">
+                        <Button x:Name="BtnCollapseAll" Click="BtnCollapseAll_Click" Margin="3"
+                                ToolTip="Collapse All">
                             <IconPacks:Material Kind="CollapseAllOutline"/>
+                        </Button>
+                        
+                        <Label/>
+
+                        <Button x:Name="btnCompareSettings" Click="btnCompareSettings_Click" Margin="3"
+                                ToolTip="Compare Settings">
+                            <IconPacks:Material Kind="Cog"/>
                         </Button>
                     </StackPanel>
 

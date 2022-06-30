@@ -177,5 +177,10 @@ namespace LabelVal.RunViews
                     }
             }
         }
+
+        private void btnCompareSettings_Click(object sender, RoutedEventArgs e)
+        {
+            CompareSettings.IsOpen = true;
+        }
     }
 }

@@ -10,16 +10,17 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace LabelVal.WindowViews
+namespace LabelVal.RunViews
 {
     /// <summary>
-    /// Interaction logic for SettingsWindowView.xaml
+    /// Interaction logic for CompareSettingsControlView.xaml
     /// </summary>
-    public partial class SettingsWindowView : MahApps.Metro.Controls.MetroWindow
+    public partial class CompareSettingsControlView : UserControl
     {
-        public SettingsWindowView()
+        public CompareSettingsControlView()
         {
             InitializeComponent();
         }

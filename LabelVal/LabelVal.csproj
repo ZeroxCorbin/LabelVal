@@ -204,8 +204,13 @@
       <DependentUpon>ImageViewerDialogView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\ImageViewerDialogViewModel.cs" />
+    <Compile Include="Models\SectorCompareSettingsModel.cs" />
     <Compile Include="RunControllers\RunController.cs" />
     <Compile Include="Printer\PrintControl.cs" />
+    <Compile Include="RunViewModels\CompareSettingsControlViewModel.cs" />
+    <Compile Include="RunViews\CompareSettingsControlView.xaml.cs">
+      <DependentUpon>CompareSettingsControlView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utilities\ImageUtilies.cs" />
     <Compile Include="Utilities\ObservableDictionary.cs" />
     <Compile Include="V275\Converters\V275_OCMatchModeToString.cs" />
@@ -244,7 +249,6 @@
     <Compile Include="RunViews\RunView.xaml.cs">
       <DependentUpon>RunView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WindowViewModels\SettingsWindowViewModel.cs" />
     <Compile Include="WindowViews\MainWindowView.xaml.cs">
       <DependentUpon>MainWindowView.xaml</DependentUpon>
     </Compile>
@@ -256,9 +260,6 @@
     </Compile>
     <Compile Include="WindowViews\SectorDifferenceControlView.xaml.cs">
       <DependentUpon>SectorDifferenceControlView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="WindowViews\SettingsWindowView.xaml.cs">
-      <DependentUpon>SettingsWindowView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -294,6 +295,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="RunViews\CompareSettingsControlView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="RunViews\RunLabelControlView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -315,10 +320,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="WindowViews\SectorDifferenceControlView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="WindowViews\SettingsWindowView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
