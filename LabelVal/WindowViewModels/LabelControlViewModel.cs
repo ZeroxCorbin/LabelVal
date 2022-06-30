@@ -238,8 +238,13 @@ namespace LabelVal.WindowViewModels
                 {
                     bool isWrongStandard = false;
                     if (jSec.type == "verify1D" || jSec.type == "verify2D")
-                        if (jSec.gradingStandard.enabled && IsGS1Standard)
-                            isWrongStandard = !(GradingStandard.StartsWith($"{jSec.gradingStandard.standard} TABLE {jSec.gradingStandard.tableId}"));
+                        if (IsGS1Standard)
+                        {
+                            if (jSec.gradingStandard.enabled)
+                                isWrongStandard = !(GradingStandard.StartsWith($"{jSec.gradingStandard.standard} TABLE {jSec.gradingStandard.tableId}"));
+                            else
+                                isWrongStandard = true;
+                        }
                         else
                             isWrongStandard = false;
 
@@ -287,6 +292,8 @@ namespace LabelVal.WindowViewModels
                 GetStored();
             }
         }
+
+
 
         private void LoadAction(object parameter) => _ = Load();
         public async Task<int> Load()
@@ -352,8 +359,13 @@ namespace LabelVal.WindowViewModels
             {
                 bool isWrongStandard = false;
                 if (jSec.type == "verify1D" || jSec.type == "verify2D")
-                    if (jSec.gradingStandard.enabled && IsGS1Standard)
-                        isWrongStandard = !(GradingStandard.StartsWith($"{jSec.gradingStandard.standard} TABLE {jSec.gradingStandard.tableId}"));
+                    if (IsGS1Standard)
+                    {
+                        if(jSec.gradingStandard.enabled)
+                            isWrongStandard = !(GradingStandard.StartsWith($"{jSec.gradingStandard.standard} TABLE {jSec.gradingStandard.tableId}"));
+                        else
+                            isWrongStandard = true;
+                    }
                     else
                         isWrongStandard = false;
 

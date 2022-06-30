@@ -219,7 +219,7 @@ namespace LabelVal.V275
             {
                 DateTime start = DateTime.Now;
                 while (!SetupDetectEnd)
-                    if ((DateTime.Now - start) > TimeSpan.FromMilliseconds(10000))
+                    if ((DateTime.Now - start) > TimeSpan.FromMilliseconds(20000))
                         return;
             });
 

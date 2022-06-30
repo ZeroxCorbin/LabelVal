@@ -260,7 +260,7 @@ namespace LabelVal.WindowViewModels
 
             if (!IsGS1Standard)
             {
-                if (V275.V275_JobName.ToLower() == SelectedStandard.ToLower())
+                if (V275.V275_JobName.ToLower().StartsWith(SelectedStandard.ToLower()))
                 {
                     return;
                 }

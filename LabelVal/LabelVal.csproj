@@ -244,6 +244,7 @@
     <Compile Include="RunViews\RunView.xaml.cs">
       <DependentUpon>RunView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WindowViewModels\SettingsWindowViewModel.cs" />
     <Compile Include="WindowViews\MainWindowView.xaml.cs">
       <DependentUpon>MainWindowView.xaml</DependentUpon>
     </Compile>
@@ -255,6 +256,9 @@
     </Compile>
     <Compile Include="WindowViews\SectorDifferenceControlView.xaml.cs">
       <DependentUpon>SectorDifferenceControlView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WindowViews\SettingsWindowView.xaml.cs">
+      <DependentUpon>SettingsWindowView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -311,6 +315,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="WindowViews\SectorDifferenceControlView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WindowViews\SettingsWindowView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
