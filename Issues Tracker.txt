@@ -42,9 +42,16 @@ The template name is not cleared when the state goes idle.
 Check if the label has a ocv or ocr set to sequential or file and only toggle run if that is the case.
 Consider making a run that has only one label the same loop number.
 
+
+rc 1
+Validate the template name "starts" with the standard name.
+Remove run and edit when in monitor.
+Wrong Standard message did not come up in GS1 table when ISO selected.
+Set values for compare results in Test Results viewer.
+
 ----------------------
 
-
+Fault messaging.
 
 Test restoring the sectors to an empty template.
 

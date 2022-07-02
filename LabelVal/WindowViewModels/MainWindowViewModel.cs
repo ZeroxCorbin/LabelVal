@@ -44,6 +44,8 @@ namespace LabelVal.WindowViewModels
         public string V275_Host { get => V275.Host = App.Settings.GetValue("V275_Host", "127.0.0.1"); set { App.Settings.SetValue("V275_Host", value); V275.Host = value; } }
         public uint V275_SystemPort { get => V275.SystemPort = App.Settings.GetValue<uint>("V275_SystemPort", 8080); set { App.Settings.SetValue("V275_SystemPort", value); ; V275.SystemPort = value; } }
         public uint V275_NodeNumber { get => V275.NodeNumber = App.Settings.GetValue<uint>("V275_NodeNumber", 1); set { App.Settings.SetValue("V275_NodeNumber", value); V275.NodeNumber = value; } }
+        public string V275_MAC { get; set; }
+
 
         private ObservableCollection<V275_Devices.Node> nodes = new ObservableCollection<V275_Devices.Node>();
         public ObservableCollection<V275_Devices.Node> Nodes { get => nodes; set => SetProperty(ref nodes, value); }
@@ -58,6 +60,8 @@ namespace LabelVal.WindowViewModels
                 if (value != null)
                 {
                     V275_NodeNumber = (uint)value.enumeration;
+                    V275_MAC = value.cameraMAC;
+
                     IsDeviceSelected = true;
                 }
             }
@@ -151,6 +155,8 @@ namespace LabelVal.WindowViewModels
         public bool IsNotDeviceSelected => !isDeviceSelected;
         private bool isDeviceSelected = false;
 
+        public bool IsDeviceSimulator => V275_MAC.Equals("00:00:00:00:00:00");
+
         public bool IsLoggedIn
         {
             get => IsLoggedIn_Monitor || IsLoggedIn_Control;
@@ -210,6 +216,8 @@ namespace LabelVal.WindowViewModels
         private int LabelCount { get; set; } = 0;
         private RunController CurrentRun { get; set; }
 
+        public ICommand TriggerSim { get; }
+
         public MainWindowViewModel()
         {
             GetDevices = new Core.RelayCommand(GetDevicesAction, c => true);
@@ -226,6 +234,8 @@ namespace LabelVal.WindowViewModels
 
             V275_SwitchRun = new Core.RelayCommand(V275_SwitchRunAction, c => true);
             V275_SwitchEdit = new Core.RelayCommand(V275_SwitchEditAction, c => true);
+
+            TriggerSim = new Core.RelayCommand(TriggerSimAction, c => true);
 
             Logger.Info("Initializing standards database: {name}", $"{App.UserDataDirectory}\\{App.StandardsDatabaseName}");
             StandardsDatabase = new StandardsDatabase($"{App.UserDataDirectory}\\{App.StandardsDatabaseName}");
@@ -410,6 +420,7 @@ namespace LabelVal.WindowViewModels
             Reset();
 
             IsDeviceSelected = false;
+            V275_MAC = "";
             Nodes.Clear();
             SelectedNode = null;
 
@@ -635,19 +646,43 @@ namespace LabelVal.WindowViewModels
         private bool WaitForRepeat;
         private void Label_Printing(LabelControlViewModel label)
         {
-            Task.Run(() =>
+            if(IsDeviceSimulator && IsLoggedIn)
             {
-                PrintControl printer = new PrintControl();
+                var sim = new Simulator.SimulatorFileHandler();
+                if (!sim.DeleteAllImages())
+                {
+                    label.IsWorking = false;
+                    return;
+                }
 
-                string data = String.Empty;
-                if (RunState != RunController.RunStates.IDLE)
-                    data = $"Loop {CurrentRun.CurrentLoopCount} : {CurrentRun.CurrentLabelCount}";
 
-                printer.Print(label.LabelImagePath, label.PrintCount, SelectedPrinter, data);
+                if (!sim.CopyImage(label.LabelImagePath))
+                {
+                    label.IsWorking = false;
+                    return;
+                }
+
+                _ = V275.Commands.TriggerSimulator();
 
                 if (!IsLoggedIn_Control)
                     label.IsWorking = false;
-            });
+            }
+            else
+            {
+                Task.Run(() =>
+                {
+                    PrintControl printer = new PrintControl();
+
+                    string data = String.Empty;
+                    if (RunState != RunController.RunStates.IDLE)
+                        data = $"Loop {CurrentRun.CurrentLoopCount} : {CurrentRun.CurrentLabelCount}";
+
+                    printer.Print(label.LabelImagePath, label.PrintCount, SelectedPrinter, data);
+
+                    if (!IsLoggedIn_Control)
+                        label.IsWorking = false;
+                });
+            }
 
             if (IsLoggedIn_Control)
             {
@@ -745,6 +780,10 @@ namespace LabelVal.WindowViewModels
             await V275.Commands.Print((string)parameter == "1");
         }
 
+        private void TriggerSimAction(object parameter)
+        {
+            _ = V275.Commands.TriggerSimulator();
+        }
         private async void V275_SwitchRunAction(object parameter)
         {
             await V275.SwitchToRun();

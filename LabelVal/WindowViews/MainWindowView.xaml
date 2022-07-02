@@ -200,6 +200,7 @@
                             </Button.Style>
                         </Button>
 
+                        <Button Content="Trigger" Command="{Binding TriggerSim}"/>
 
                     </StackPanel>
 
@@ -350,6 +351,7 @@
                                         </DataTrigger>
                                         <DataTrigger Value="" Binding="{Binding V275.V275_JobName}">
                                             <Setter Property="Content" Value="-----"/>
+                                            <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>

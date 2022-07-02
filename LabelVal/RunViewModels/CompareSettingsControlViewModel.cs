@@ -22,6 +22,6 @@ namespace LabelVal.RunViewModels
         public bool ValueResult_UseResult { get => Settings.ValueResult_UseResult; set { Settings.ValueResult_UseResult = value; OnPropertyChanged("ValueResult_UseResult"); } }
         public double ValueResult_ValueTolerance { get => Settings.ValueResult_ValueTolerance; set { Settings.ValueResult_ValueTolerance = value; OnPropertyChanged("ValueResult_ValueTolerance"); } }
 
-        public int Value_ValueTolerance { get => Settings.Value_ValueTolerance; set { Settings.Value_ValueTolerance = value; OnPropertyChanged("Value_ValueTolerance"); } }
+        public double Value_ValueTolerance { get => Settings.Value_ValueTolerance; set { Settings.Value_ValueTolerance = value; OnPropertyChanged("Value_ValueTolerance"); } }
     }
 }

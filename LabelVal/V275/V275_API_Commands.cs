@@ -335,6 +335,16 @@ namespace LabelVal.V275
             return CheckResults("", true);
         }
 
+        public async Task<bool> TriggerSimulator()
+        {
+            Logger.Info("PUT: {url}", URLs.TriggerSimulator());
+
+            await Connection.Put(URLs.TriggerSimulator(), "", Token);
+
+            return CheckResults("", true);
+        }
+
+
         public async Task<bool> SetRepeat(int repeat)
         {
             Logger.Info("PUT: {url}", URLs.History(repeat.ToString()));

@@ -60,6 +60,9 @@ namespace LabelVal.V275
         public string Remove(int repeat) => $"{NodeBase}/{NodeNumber}/inspection/stopevent/failure/removed/{repeat}";
         public string Detect() => $"{NodeBase}/{NodeNumber}/inspection/setup/detect";
 
+        public string EnhancedLogging(bool enable) => $"{NodeBase}/{NodeNumber}/labelval/enableExtendedLogging={enable}";
+        public string TriggerSimulator() => $"{NodeBase}/{NodeNumber}/labelval/sim";
+
         public string RepeatImage(int repeatNumber) => $"{NodeBase}/{NodeNumber}/inspection/repeat/images/{repeatNumber}?scale=1.0";
 
         public string VerifySymbologies() => $"{NodeBase}/{NodeNumber}/inspection/verify/symbologies";
