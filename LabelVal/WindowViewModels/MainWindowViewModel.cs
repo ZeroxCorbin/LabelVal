@@ -155,7 +155,7 @@ namespace LabelVal.WindowViewModels
         public bool IsNotDeviceSelected => !isDeviceSelected;
         private bool isDeviceSelected = false;
 
-        public bool IsDeviceSimulator => V275_MAC.Equals("00:00:00:00:00:00");
+        public bool IsDeviceSimulator => V275_MAC == null ? false : V275_MAC.Equals("00:00:00:00:00:00");
 
         public bool IsLoggedIn
         {
@@ -384,6 +384,7 @@ namespace LabelVal.WindowViewModels
 
                 tmp.Printing += Label_Printing;
 
+                tmp.IsSimulation = IsDeviceSimulator;
                 tmp.IsLoggedIn_Control = IsLoggedIn_Control;
                 tmp.IsLoggedIn_Monitor = IsLoggedIn_Monitor;
 
@@ -546,6 +547,7 @@ namespace LabelVal.WindowViewModels
 
             foreach (var rep in Labels)
             {
+                rep.IsSimulation = false;
                 rep.IsLoggedIn_Control = IsLoggedIn_Control;
                 rep.IsLoggedIn_Monitor = IsLoggedIn_Monitor;
             }
@@ -572,6 +574,7 @@ namespace LabelVal.WindowViewModels
 
             foreach (var rep in Labels)
             {
+                rep.IsSimulation = IsDeviceSimulator;
                 rep.IsLoggedIn_Monitor = IsLoggedIn_Monitor;
                 rep.IsLoggedIn_Control = IsLoggedIn_Control;
             }
@@ -644,9 +647,9 @@ namespace LabelVal.WindowViewModels
         private LabelControlViewModel PrintingLabel { get; set; } = null;
 
         private bool WaitForRepeat;
-        private void Label_Printing(LabelControlViewModel label)
+        private void Label_Printing(LabelControlViewModel label, string type)
         {
-            if(IsDeviceSimulator && IsLoggedIn)
+            if (IsDeviceSimulator && IsLoggedIn)
             {
                 var sim = new Simulator.SimulatorFileHandler();
                 if (!sim.DeleteAllImages())
@@ -655,8 +658,16 @@ namespace LabelVal.WindowViewModels
                     return;
                 }
 
-
-                if (!sim.CopyImage(label.LabelImagePath))
+                if (type == "label")
+                {
+                    if (!sim.CopyImage(label.LabelImagePath))
+                    {
+                        label.IsWorking = false;
+                        return;
+                    }
+                }
+                else
+                    if (!sim.SaveImage(label.LabelImagePath, label.RepeatImage))
                 {
                     label.IsWorking = false;
                     return;

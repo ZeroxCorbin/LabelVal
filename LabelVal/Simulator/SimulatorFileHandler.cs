@@ -77,5 +77,26 @@ namespace LabelVal.Simulator
             }
 
         }
+
+
+        public bool SaveImage(string file, byte[] imageData)
+        {
+            try
+            {
+                if (SimulatorImageDirectoryExists)
+                {
+                    File.WriteAllBytes(Path.Combine(SimulatorImageDirectory, Path.GetFileName(file)), imageData);
+                    return true;
+                }
+                else
+                    return false;
+
+            }
+            catch
+            {
+                return false;
+            }
+
+        }
     }
 }

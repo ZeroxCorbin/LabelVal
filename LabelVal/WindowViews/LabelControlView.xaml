@@ -13,7 +13,7 @@
               Dialog:DialogParticipation.Register="{Binding}"
             d:DataContext="{d:DesignInstance Type=ViewModels:LabelControlViewModel}"
             mc:Ignorable="d" 
-            d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded" Unloaded="UserControl_Unloaded">
+            d:DesignHeight="450" d:DesignWidth="1024" Loaded="UserControl_Loaded" Unloaded="UserControl_Unloaded">
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="booltovis"/>
@@ -57,7 +57,20 @@
                     <mah:NumericUpDown Value="{Binding PrintCount}" Minimum="1" Maximum="100" Interval="1" Margin="2"
                                            IsEnabled="{Binding IsNotLoggedIn_Control}"/>
 
-                    <Button Content="Print" Command="{Binding PrintCommand}" Margin="2"/>
+                    <Button Margin="2"
+                            Command="{Binding PrintCommand}"
+                            CommandParameter="label">
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+                                <Setter Property="Content" Value="Print"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsSimulation}" Value="True">
+                                        <Setter Property="Content" Value="Process"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
 
                     <mah:ProgressRing IsActive="{Binding IsWorking}" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" Height="30" Width="30"/>
 
@@ -173,6 +186,10 @@
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
 
                 <TextBlock Grid.Column="1" Text="Repeat Image" HorizontalAlignment="Center" Margin="0,0,10,0">
                     <TextBlock.Style>
@@ -191,6 +208,29 @@
 
                 </TextBlock>
 
+                <Button Grid.Column="1" Grid.Row="1" Content="Process" Margin="2"
+                        Command="{Binding PrintCommand}"
+                        CommandParameter="repeat">
+                    <Button.Style>
+                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding IsSimulation}" Value="True"/>
+                                        <Condition Binding="{Binding IsGoldenRepeat}" Value="True"/>
+                                    </MultiDataTrigger.Conditions>
+                                    
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </MultiDataTrigger>
+                                <DataTrigger Binding="{Binding RepeatImage}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                
                 <Label Grid.Column="2" Foreground="Goldenrod" HorizontalAlignment="Left" Padding="0" ToolTip="The 'Golden' Repeat Image stored in the database.">
                     <Label.Style>
                         <Style TargetType="{x:Type Label}" BasedOn="{StaticResource {x:Type Label}}">

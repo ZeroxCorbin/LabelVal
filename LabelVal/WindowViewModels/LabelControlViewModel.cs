@@ -21,7 +21,7 @@ namespace LabelVal.WindowViewModels
 {
     public class LabelControlViewModel : Core.BaseViewModel
     {
-        public delegate void PrintingDelegate(LabelControlViewModel label);
+        public delegate void PrintingDelegate(LabelControlViewModel label, string type);
         public event PrintingDelegate Printing;
 
         public delegate void BringIntoViewDelegate();
@@ -82,6 +82,14 @@ namespace LabelVal.WindowViewModels
         }
         public bool IsNotLoggedIn_Control => !isLoggedIn_Control;
         private bool isLoggedIn_Control = false;
+
+        public bool IsSimulation
+        {
+            get => isSimulation;
+            set { SetProperty(ref isSimulation, value); OnPropertyChanged("IsNotSimulation"); }
+        }
+        public bool IsNotSimulation => !isSimulation;
+        private bool isSimulation = false;
 
         public bool IsStore
         {
@@ -208,7 +216,7 @@ namespace LabelVal.WindowViewModels
             IsFaulted = false;
 
             BringIntoView?.Invoke();
-            Printing?.Invoke(this);
+            Printing?.Invoke(this, (string)parameter);
         }
 
         private void GetStored()
