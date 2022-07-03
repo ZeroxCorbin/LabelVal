@@ -91,6 +91,14 @@ namespace LabelVal.WindowViewModels
         public bool IsNotSimulation => !isSimulation;
         private bool isSimulation = false;
 
+        public bool IsDatabaseLocked
+        {
+            get => isDatabaseLocked;
+            set { SetProperty(ref isDatabaseLocked, value); OnPropertyChanged("IsNotDatabaseLocked"); }
+        }
+        public bool IsNotDatabaseLocked => !isDatabaseLocked;
+        private bool isDatabaseLocked = false;
+
         public bool IsStore
         {
             get => isStore;

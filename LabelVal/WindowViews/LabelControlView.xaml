@@ -96,8 +96,22 @@
 
                 <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center">
 
-                    <Button Content="Clear" Command="{Binding ClearStored}" Margin="2"
-                            Visibility="{Binding IsLoad, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    <Button Content="Clear" Command="{Binding ClearStored}" Margin="2">
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsLoad}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsDatabaseLocked}" Value="True">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                           
 
                     <Button Content="Load" Command="{Binding LoadCommand}" Margin="2">
                         <Button.Style>
@@ -148,6 +162,9 @@
                                 <Style.Triggers>
                                     <DataTrigger Value="True" Binding="{Binding IsStore}">
                                         <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsDatabaseLocked}" Value="True">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>

@@ -37,7 +37,7 @@ namespace LabelVal.WindowViewModels
         public string Version => App.Version;
 
         public V275_API_Controller V275 { get; } = new V275_API_Controller();
-        private StandardsDatabase StandardsDatabase { get; }
+        private StandardsDatabase StandardsDatabase { get; set; }
         //private V275_API_WebSocketEvents WebSocket { get; } = new V275_API_WebSocketEvents();
         //private V275_API_WebSocketEvents SysWebSocket { get; } = new V275_API_WebSocketEvents();
 
@@ -73,6 +73,37 @@ namespace LabelVal.WindowViewModels
         private bool isGS1Standard;
         public bool IsGS1Standard { get => isGS1Standard; set => SetProperty(ref isGS1Standard, value); }
 
+        public string StoredStandardsDatabase { get => App.Settings.GetValue("StoredStandardsDatabase", App.StandardsDatabaseDefaultName); set { App.Settings.SetValue("StoredStandardsDatabase", value); } }
+
+        public ObservableCollection<string> StandardsDatabases { get; } = new ObservableCollection<string>();
+
+        public string SelectedStandardsDatabase
+        {
+            get => selectedStandardsDatabase;
+            set
+            {
+                SetProperty(ref selectedStandardsDatabase, value);
+
+                if (!string.IsNullOrEmpty(value))
+                {
+                    StoredStandardsDatabase = value;
+                    SelectedStandard = null;
+
+                    LoadStandardsDatabase(StoredStandardsDatabase);
+                    SelectStandard();
+                }
+            }
+        }
+        private string selectedStandardsDatabase;
+
+        public bool IsDatabaseLocked
+        {
+            get => isDatabaseLocked;
+            set { SetProperty(ref isDatabaseLocked, value); OnPropertyChanged("IsNotDatabaseLocked"); }
+        }
+        public bool IsNotDatabaseLocked => !isDatabaseLocked;
+        private bool isDatabaseLocked = false;
+
         public string StoredStandard { get => App.Settings.GetValue("StoredStandard", "GS1 TABLE 1"); set { App.Settings.SetValue("StoredStandard", value); } }
         public ObservableCollection<string> Standards { get; } = new ObservableCollection<string>();
         public string SelectedStandard
@@ -91,7 +122,7 @@ namespace LabelVal.WindowViewModels
                 }
                 else
                 {
-                    Labels.Clear();
+                    ClearLabels();
                 }
             }
         }
@@ -237,9 +268,6 @@ namespace LabelVal.WindowViewModels
 
             TriggerSim = new Core.RelayCommand(TriggerSimAction, c => true);
 
-            Logger.Info("Initializing standards database: {name}", $"{App.UserDataDirectory}\\{App.StandardsDatabaseName}");
-            StandardsDatabase = new StandardsDatabase($"{App.UserDataDirectory}\\{App.StandardsDatabaseName}");
-
             V275.PropertyChanged += V275_PropertyChanged;
 
             V275.WebSocket.SetupCapture += WebSocket_SetupCapture;
@@ -248,7 +276,12 @@ namespace LabelVal.WindowViewModels
             V275.WebSocket.LabelEnd += WebSocket_LabelEnd;
             V275.WebSocket.StateChange += WebSocket_StateChange;
 
-            SetupGradingStandards();
+
+            LoadStandardsList();
+            LoadStandardsDatabasesList();
+
+            SelectStandardsDatabase();
+
             LoadPrinters();
         }
 
@@ -293,7 +326,6 @@ namespace LabelVal.WindowViewModels
 
             return result;
         }
-
         public async Task<MessageDialogResult> OkDialog(string title, string message)
         {
             MessageDialogResult result = await DialogCoordinator.Instance.ShowMessageAsync(this, title, message, MessageDialogStyle.Affirmative);
@@ -318,7 +350,6 @@ namespace LabelVal.WindowViewModels
             if (string.IsNullOrEmpty(SelectedPrinter) && Printers.Count > 0)
                 SelectedPrinter = Printers.First();
         }
-
         private void UpdatePrinters()
         {
             foreach (var r in Labels)
@@ -326,19 +357,8 @@ namespace LabelVal.WindowViewModels
 
         }
 
-        private void LoadLabels()
+        private void ClearLabels()
         {
-            IsGS1Standard = StoredStandard.StartsWith("GS1") ? true : false;
-
-            string std = StoredStandard.Replace(" 300", "");
-
-            bool is300 = false;
-            if (std.Length < StoredStandard.Length)
-                is300 = true;
-
-            Logger.Info("Loading label images from standards directory: {name}", $"{App.StandardsRoot}\\{std}\\");
-
-            //Labels.Clear();
             foreach (var lab in Labels)
             {
                 lab.Clear();
@@ -346,6 +366,21 @@ namespace LabelVal.WindowViewModels
                 //Labels.Remove(lab);
             }
             Labels.Clear();
+        }
+
+        private void LoadLabels()
+        {
+            IsGS1Standard = StoredStandard.StartsWith("GS1") ? true : false;
+
+            bool is300 = false;
+            if (StoredStandard.EndsWith("300"))
+                is300 = true;
+
+            string std = StoredStandard.Replace(" 300", "");
+
+            Logger.Info("Loading label images from standards directory: {name}", $"{App.StandardsRoot}\\{std}\\");
+
+            ClearLabels();
 
             List<string> images = new List<string>();
 
@@ -362,15 +397,7 @@ namespace LabelVal.WindowViewModels
                         images.Add(f);
             }
 
-
             images.Sort();
-
-            //List<string> Images300 = new List<string>();
-            //Images300.Clear();
-            //foreach (var f in Directory.EnumerateFiles($"{App.StandardsRoot}\\{StoredStandard}\\300\\"))
-            //    Images300.Add(f);
-
-            //Images300.Sort();
 
             Logger.Info("Found label images: {count}", images.Count);
 
@@ -384,6 +411,7 @@ namespace LabelVal.WindowViewModels
 
                 tmp.Printing += Label_Printing;
 
+                tmp.IsDatabaseLocked = IsDatabaseLocked;
                 tmp.IsSimulation = IsDeviceSimulator;
                 tmp.IsLoggedIn_Control = IsLoggedIn_Control;
                 tmp.IsLoggedIn_Monitor = IsLoggedIn_Monitor;
@@ -458,7 +486,7 @@ namespace LabelVal.WindowViewModels
 
         private ObservableCollection<string> OrphandStandards { get; } = new ObservableCollection<string>();
 
-        private void SetupGradingStandards()
+        private void LoadStandardsList()
         {
             Logger.Info("Loading grading standards from file system. {path}", App.StandardsRoot);
 
@@ -477,11 +505,55 @@ namespace LabelVal.WindowViewModels
                         Standards.Add($"{dir.Substring(dir.LastIndexOf("\\") + 1)} 300");
                 }
             }
+
             Logger.Info("Processed {count} grading standards.", Standards.Count);
+        }
+        private void SelectStandard()
+        {
+            if (Standards.Contains(StoredStandard))
+                SelectedStandard = StoredStandard;
+            else if (Standards.Count > 0)
+                SelectedStandard = Standards.First();
+        }
+
+        private void LoadStandardsDatabasesList()
+        {
+            Logger.Info("Loading grading standards databases from file system. {path}", App.StandardsDatabaseRoot);
+
+            StandardsDatabases.Clear();
+            SelectedStandardsDatabase = null;
+
+            foreach (var file in Directory.EnumerateFiles(App.StandardsDatabaseRoot))
+            {
+                Logger.Debug("Found: {name}", Path.GetFileName(file));
+
+                if (file.EndsWith(App.DatabaseExtension))
+                    StandardsDatabases.Add(Path.GetFileName(file).Replace(App.DatabaseExtension, ""));
+            }
+
+            if (StandardsDatabases.Count == 0)
+                StandardsDatabases.Add(App.StandardsDatabaseDefaultName);
+        }
+        private void SelectStandardsDatabase()
+        {
+            if (StandardsDatabases.Contains(StoredStandardsDatabase))
+                SelectedStandardsDatabase = StoredStandardsDatabase;
+            else if (StandardsDatabases.Count > 0)
+                SelectedStandardsDatabase = StandardsDatabases.First();
+        }
+        private void LoadStandardsDatabase(string fileName)
+        {
+            OrphandStandards.Clear();
+
+            string file = Path.Combine(App.StandardsDatabaseRoot, fileName + App.DatabaseExtension);
+
+            Logger.Info("Initializing standards database: {name}", file);
+            StandardsDatabase = new StandardsDatabase(file);
 
             Logger.Info("Updating standards database.");
 
             List<string> tables = StandardsDatabase.GetAllTables();
+            IsDatabaseLocked = tables.Contains("LOCKED");
 
             foreach (var standard in Standards)
             {
@@ -494,13 +566,14 @@ namespace LabelVal.WindowViewModels
 
             foreach (var std in tables)
                 if (!Standards.Contains(std))
-                    OrphandStandards.Add(std);
-
-            if (Standards.Contains(StoredStandard))
-                SelectedStandard = StoredStandard;
-            else if (Standards.Count > 0)
-                SelectedStandard = Standards.First();
+                {
+                    if (std == "LOCKED")
+                        continue;
+                    else
+                        OrphandStandards.Add(std);
+                }
         }
+
 
         private async void LoginMonitorAction(object parameter)
         {
@@ -574,6 +647,7 @@ namespace LabelVal.WindowViewModels
 
             foreach (var rep in Labels)
             {
+                rep.IsDatabaseLocked = IsDatabaseLocked;
                 rep.IsSimulation = IsDeviceSimulator;
                 rep.IsLoggedIn_Monitor = IsLoggedIn_Monitor;
                 rep.IsLoggedIn_Control = IsLoggedIn_Control;

@@ -34,7 +34,8 @@ namespace LabelVal
         public static string SettingsDatabaseName => $"ApplicationSettings{DatabaseExtension}";
 
         public static string StandardsRoot => $"{WorkingDir}\\Assets\\Standards";
-        public static string StandardsDatabaseName => $"Standards{DatabaseExtension}";
+        public static string StandardsDatabaseRoot => $"{UserDataDirectory}\\StandardsDatabases";
+        public static string StandardsDatabaseDefaultName => $"StandardsDatabase";
 
         public static string RunsRoot => $"{UserDataDirectory}\\Runs";
         public static string RunLedgerDatabaseName => $"RunLedger{DatabaseExtension}";
@@ -52,7 +53,10 @@ namespace LabelVal
             {
                 _ = Directory.CreateDirectory(RunsRoot);
             }
-
+            if (!Directory.Exists(StandardsDatabaseRoot))
+            {
+                _ = Directory.CreateDirectory(StandardsDatabaseRoot);
+            }
            // FixFiducial();
             //FixRotation();
 
