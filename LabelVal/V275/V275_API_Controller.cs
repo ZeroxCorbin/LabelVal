@@ -366,7 +366,13 @@ namespace LabelVal.V275
 
             if (repeat == 0)
             {
-                if (!await Commands.GetRepeatsAvailable())
+                bool ok = false;
+                if (V275_State == "Running")
+                    ok = await Commands.GetRepeatsAvailableRun();
+                else
+                    ok = await Commands.GetRepeatsAvailable();
+
+                if (!ok)
                 {
                     if (Commands.Available == null)
                         repeat = 0;

@@ -649,7 +649,7 @@ namespace LabelVal.WindowViewModels
         private bool WaitForRepeat;
         private void Label_Printing(LabelControlViewModel label, string type)
         {
-            if (IsDeviceSimulator && IsLoggedIn)
+            if (label.IsSimulation)
             {
                 var sim = new Simulator.SimulatorFileHandler();
                 if (!sim.DeleteAllImages())
@@ -667,16 +667,21 @@ namespace LabelVal.WindowViewModels
                     }
                 }
                 else
-                    if (!sim.SaveImage(label.LabelImagePath, label.RepeatImage))
                 {
-                    label.IsWorking = false;
-                    return;
+                    if (!sim.SaveImage(label.LabelImagePath, label.RepeatImage))
+                    {
+                        label.IsWorking = false;
+                        return;
+                    }
                 }
 
                 _ = V275.Commands.TriggerSimulator();
 
                 if (!IsLoggedIn_Control)
+                {
                     label.IsWorking = false;
+                }
+
             }
             else
             {
@@ -762,7 +767,7 @@ namespace LabelVal.WindowViewModels
             }
 
             Logger.Info("Reading label results and Image.");
-            if (!await Repeats[repeat].Label.Read(repeat, IsRunRunning))
+            if (!await Repeats[repeat].Label.Read(repeat))
             {
                 ProcessRepeatFault(repeat);
                 return;

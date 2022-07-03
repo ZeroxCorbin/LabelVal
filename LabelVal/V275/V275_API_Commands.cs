@@ -190,6 +190,21 @@ namespace LabelVal.V275
 
             return res;
         }
+        public async Task<bool> GetRepeatsAvailableRun()
+        {
+            Logger.Info("GET: {url}", URLs.Available());
+
+            string result = await Connection.Get(URLs.AvailableRun(), Token);
+
+            bool res;
+            if (res = CheckResults(result))
+                Available = JsonConvert.DeserializeObject<int[]>(result).ToList();
+            else
+                Available = null;
+
+            return res;
+        }
+
         public async Task<bool> GetRepeatsImage(int repeat)
         {
             Logger.Info("GET: {url}", URLs.RepeatImage(repeat));

@@ -337,7 +337,7 @@ namespace LabelVal.WindowViewModels
 
         private void InspectAction(object parameter) => _ = Read(0);
         public void ReadAction(object parameter) => _ = Read(0);
-        public async Task<bool> Read(int repeat, bool isRunning = false)
+        public async Task<bool> Read(int repeat)
         {
             Status = string.Empty;
 

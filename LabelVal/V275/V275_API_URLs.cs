@@ -46,6 +46,7 @@ namespace LabelVal.V275
         public string History() => $"{NodeBase}/{NodeNumber}/inspection/setup/image/history";
 
         public string Available() => $"{NodeBase}/{NodeNumber}/inspection/setup/image/available";
+public string AvailableRun() => $"{NodeBase}/{NodeNumber}/inspection/repeat/images/available";
 
         public string IsRunReady() => $"{NodeBase}/{NodeNumber}/inspection/job/isrunready";
         public string RunJob(string jobName) => $"{NodeBase}/{NodeNumber}/repository/jobs/design/{jobName}?source=inspection";
@@ -53,6 +54,9 @@ namespace LabelVal.V275
         public string ResumeJob() => $"{NodeBase}/{NodeNumber}/inspection/job/resume";
         public string PauseJob() => $"{NodeBase}/{NodeNumber}/inspection/job/pause";
         public string StopJob() => $"{NodeBase}/{NodeNumber}/inspection/job/stop?finalizeActive=0";
+
+        public string StartSimulation() => $"{NodeBase}/{NodeNumber}/simulation/start";
+        public string StopSimulation() => $"{NodeBase}/{NodeNumber}/simulation/stop";
 
         public string Inspect() => $"{NodeBase}/{NodeNumber}/inspection/setup/inspect";
         public string Report() => $"{NodeBase}/{NodeNumber}/inspection/setup/report";
