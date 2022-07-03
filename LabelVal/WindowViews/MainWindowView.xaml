@@ -219,7 +219,7 @@
                             </Style>
                         </Label.Style>
                     </Label>-->
- 
+
 
                 </StackPanel>
             </Border>
@@ -239,13 +239,32 @@
                     </StackPanel>
                 </Border>
 
-                <Border Grid.Column="1" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="2" Margin="5">
+                <Border Grid.Column="1" BorderThickness="2" Margin="5" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
                     <StackPanel Orientation="Horizontal" Margin="3">
-                        <Label Content="Standards"/> 
+                        <Label Content="Standards"/>
+                        <Button Command="{Binding CreateStandardsDatabase}">
+                            <IconPacks:Material Kind="Plus"/>
+                        </Button>
                         <ComboBox ItemsSource="{Binding StandardsDatabases}" SelectedItem="{Binding SelectedStandardsDatabase}"  IsEnabled="{Binding IsNotRunRunning}"/>
-                        <Label/>
+                        <Label>
+                            <Label.Style>
+                                <Style TargetType="{x:Type Label}">
+                                    <Setter Property="Content" Value=""/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsDatabaseLocked}" Value="True">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <IconPacks:Material Kind="Lock"/>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+
+                                </Style>                                
+                            </Label.Style>
+                        </Label>
                         <ComboBox ItemsSource="{Binding Standards}" SelectedItem="{Binding SelectedStandard}"  IsEnabled="{Binding IsNotRunRunning}"/>
-                       
+
                     </StackPanel>
                 </Border>
 
@@ -338,11 +357,11 @@
                             </Style.Triggers>
                         </Style>
                     </Border.Style>
-                    
+
                     <StackPanel Orientation="Horizontal"  Margin="3">
-                        
+
                         <Label Content="Template:"/>
-                        
+
                         <Label>
                             <Label.Style>
                                 <Style TargetType="{x:Type Label}">
@@ -360,9 +379,9 @@
                                 </Style>
                             </Label.Style>
                         </Label>
-                        
+
                         <Label Content="State:"/>
-                        
+
                         <Label Content="{Binding V275.V275_State}">
                             <Label.Style>
                                 <Style TargetType="{x:Type Label}">

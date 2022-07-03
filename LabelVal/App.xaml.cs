@@ -8,6 +8,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Principal;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -57,7 +58,7 @@ namespace LabelVal
             {
                 _ = Directory.CreateDirectory(StandardsDatabaseRoot);
             }
-           // FixFiducial();
+            // FixFiducial();
             //FixRotation();
 
             var config = new NLog.Config.LoggingConfiguration();
@@ -97,7 +98,7 @@ namespace LabelVal
                 this.Shutdown();
             }
 
-            
+
 
         }
 
@@ -122,7 +123,7 @@ namespace LabelVal
         {
             App.Settings.SetValue("App.IsColorBlind", isColorBlind);
 
-            if(isColorBlind)
+            if (isColorBlind)
                 Application.Current.Resources["CB_Green"] = Application.Current.Resources["ColorBlindBrush1"];
             else
                 Application.Current.Resources["CB_Green"] = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Green);
@@ -179,8 +180,8 @@ namespace LabelVal
                 if (Directory.Exists($"{dir}\\300"))
                     foreach (var imgFile in Directory.EnumerateFiles($"{dir}\\300"))
                     {
-                        if(Path.GetExtension(imgFile) == ".png")
-                        RedrawFiducial(imgFile);
+                        if (Path.GetExtension(imgFile) == ".png")
+                            RedrawFiducial(imgFile);
                     }
             }
         }

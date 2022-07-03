@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -44,59 +45,35 @@ namespace LabelVal.Simulator
         {
             if (HasImages)
             {
-                try
-                {
-                    foreach (string file in Images)
-                        File.Delete(file);
-                }
-                catch
-                {
-                    return false;
-                }
 
+                foreach (string file in Images)
+                    File.Delete(file);
             }
             return true;
         }
 
         public bool CopyImage(string file)
         {
-            try
+
+            if (SimulatorImageDirectoryExists)
             {
-                if (SimulatorImageDirectoryExists)
-                {
-                    File.Copy(file, Path.Combine(SimulatorImageDirectory, Path.GetFileName(file)));
-                    return true;
-                }
-                else
-                    return false;
- 
+                File.Copy(file, Path.Combine(SimulatorImageDirectory, Path.GetFileName(file)));
+                return true;
             }
-            catch
-            {
+            else
                 return false;
-            }
-
         }
-
 
         public bool SaveImage(string file, byte[] imageData)
         {
-            try
-            {
-                if (SimulatorImageDirectoryExists)
-                {
-                    File.WriteAllBytes(Path.Combine(SimulatorImageDirectory, Path.GetFileName(file)), imageData);
-                    return true;
-                }
-                else
-                    return false;
 
-            }
-            catch
+            if (SimulatorImageDirectoryExists)
             {
+                File.WriteAllBytes(Path.Combine(SimulatorImageDirectory, Path.GetFileName(file)), imageData);
+                return true;
+            }
+            else
                 return false;
-            }
-
         }
     }
 }

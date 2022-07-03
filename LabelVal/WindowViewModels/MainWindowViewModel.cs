@@ -15,6 +15,7 @@ using LabelVal.Databases;
 using LabelVal.RunControllers;
 using LabelVal.Printer;
 using MahApps.Metro.Controls.Dialogs;
+using System.Text.RegularExpressions;
 
 namespace LabelVal.WindowViewModels
 {
@@ -74,9 +75,7 @@ namespace LabelVal.WindowViewModels
         public bool IsGS1Standard { get => isGS1Standard; set => SetProperty(ref isGS1Standard, value); }
 
         public string StoredStandardsDatabase { get => App.Settings.GetValue("StoredStandardsDatabase", App.StandardsDatabaseDefaultName); set { App.Settings.SetValue("StoredStandardsDatabase", value); } }
-
         public ObservableCollection<string> StandardsDatabases { get; } = new ObservableCollection<string>();
-
         public string SelectedStandardsDatabase
         {
             get => selectedStandardsDatabase;
@@ -84,10 +83,11 @@ namespace LabelVal.WindowViewModels
             {
                 SetProperty(ref selectedStandardsDatabase, value);
 
+                SelectedStandard = null;
+
                 if (!string.IsNullOrEmpty(value))
                 {
                     StoredStandardsDatabase = value;
-                    SelectedStandard = null;
 
                     LoadStandardsDatabase(StoredStandardsDatabase);
                     SelectStandard();
@@ -95,7 +95,6 @@ namespace LabelVal.WindowViewModels
             }
         }
         private string selectedStandardsDatabase;
-
         public bool IsDatabaseLocked
         {
             get => isDatabaseLocked;
@@ -103,6 +102,7 @@ namespace LabelVal.WindowViewModels
         }
         public bool IsNotDatabaseLocked => !isDatabaseLocked;
         private bool isDatabaseLocked = false;
+        public ICommand CreateStandardsDatabase { get; }
 
         public string StoredStandard { get => App.Settings.GetValue("StoredStandard", "GS1 TABLE 1"); set { App.Settings.SetValue("StoredStandard", value); } }
         public ObservableCollection<string> Standards { get; } = new ObservableCollection<string>();
@@ -268,6 +268,8 @@ namespace LabelVal.WindowViewModels
 
             TriggerSim = new Core.RelayCommand(TriggerSimAction, c => true);
 
+            CreateStandardsDatabase = new Core.RelayCommand(CreateStandardsDatabaseAction, c => true);
+
             V275.PropertyChanged += V275_PropertyChanged;
 
             V275.WebSocket.SetupCapture += WebSocket_SetupCapture;
@@ -333,6 +335,13 @@ namespace LabelVal.WindowViewModels
             return result;
         }
 
+        public async Task<string> GetStringDialog(string title, string message)
+        {
+            string result = await DialogCoordinator.Instance.ShowInputAsync(this, title, message);
+
+            return result;
+        }
+
         private void LoadPrinters()
         {
             Logger.Info("Loading printers.");
@@ -361,7 +370,7 @@ namespace LabelVal.WindowViewModels
         {
             foreach (var lab in Labels)
             {
-                lab.Clear();
+                //lab.Clear();
                 lab.Printing -= Label_Printing;
                 //Labels.Remove(lab);
             }
@@ -555,25 +564,51 @@ namespace LabelVal.WindowViewModels
             List<string> tables = StandardsDatabase.GetAllTables();
             IsDatabaseLocked = tables.Contains("LOCKED");
 
-            foreach (var standard in Standards)
-            {
-                if (tables.Contains(standard))
-                    continue;
+            //if(!IsDatabaseLocked)
+            //    foreach (var standard in Standards)
+            //    {
+            //        if (tables.Contains(standard))
+            //            continue;
 
-                Logger.Debug("Creating table: {name}", standard);
-                StandardsDatabase.CreateTable(standard);
-            }
+            //        Logger.Debug("Creating table: {name}", standard);
+            //        StandardsDatabase.CreateTable(standard);
+            //    }
 
-            foreach (var std in tables)
-                if (!Standards.Contains(std))
+            foreach (var tbl in tables)
+                if (!Standards.Contains(tbl))
                 {
-                    if (std == "LOCKED")
+                    if (tbl == "LOCKED")
                         continue;
                     else
-                        OrphandStandards.Add(std);
+                        OrphandStandards.Add(tbl);
                 }
         }
 
+        private async void CreateStandardsDatabaseAction(object parameter)
+        {
+            string res = await GetStringDialog("New Standards Database", "What is the name of the new database?");
+
+            if (string.IsNullOrEmpty(res)) return;
+
+            Regex containsABadCharacter = new Regex("[" + Regex.Escape(new string(System.IO.Path.GetInvalidPathChars())) + "]");
+            if (containsABadCharacter.IsMatch(res))
+            {
+                _ = OkDialog("Invalid Name", $"The name '{res}' contains invalid characters.");
+                return;
+            }
+
+            string file = Path.Combine(App.StandardsDatabaseRoot, res + App.DatabaseExtension);
+
+            _ = new StandardsDatabase(file);
+
+            SelectedStandardsDatabase = null;
+
+            LoadStandardsDatabasesList();
+
+            StoredStandardsDatabase = res;
+            SelectStandardsDatabase();
+
+        }
 
         private async void LoginMonitorAction(object parameter)
         {
@@ -725,36 +760,45 @@ namespace LabelVal.WindowViewModels
         {
             if (label.IsSimulation)
             {
-                var sim = new Simulator.SimulatorFileHandler();
-                if (!sim.DeleteAllImages())
+                try
                 {
-                    label.IsWorking = false;
-                    return;
-                }
-
-                if (type == "label")
-                {
-                    if (!sim.CopyImage(label.LabelImagePath))
+                    var sim = new Simulator.SimulatorFileHandler();
+                    if (!sim.DeleteAllImages())
                     {
                         label.IsWorking = false;
                         return;
                     }
-                }
-                else
-                {
-                    if (!sim.SaveImage(label.LabelImagePath, label.RepeatImage))
+
+                    if (type == "label")
+                    {
+                        if (!sim.CopyImage(label.LabelImagePath))
+                        {
+                            label.IsWorking = false;
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        if (!sim.SaveImage(label.LabelImagePath, label.RepeatImage))
+                        {
+                            label.IsWorking = false;
+                            return;
+                        }
+                    }
+
+                    _ = V275.Commands.TriggerSimulator();
+
+                    if (!IsLoggedIn_Control)
                     {
                         label.IsWorking = false;
-                        return;
                     }
                 }
-
-                _ = V275.Commands.TriggerSimulator();
-
-                if (!IsLoggedIn_Control)
+                catch(Exception ex)
                 {
                     label.IsWorking = false;
+                    Logger.Error(ex);
                 }
+
 
             }
             else

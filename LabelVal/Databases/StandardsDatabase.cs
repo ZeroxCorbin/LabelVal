@@ -95,7 +95,7 @@ namespace LabelVal.Databases
             if (!Open()) return;
 
             StringBuilder sb = new StringBuilder();
-            sb.Append($"CREATE TABLE '{tableName}'");
+            sb.Append($"CREATE TABLE IF NOT EXISTS '{tableName}'");
             sb.Append(" (");
             sb.Append("LabelImageUID TEXT");
             sb.Append(",");
@@ -117,6 +117,8 @@ namespace LabelVal.Databases
         public void AddRow(string tableName, string imageUID, string template, string report, byte[] repeatImage)
         {
             if (!Open()) return;
+
+            CreateTable(tableName);
 
             StringBuilder sb = new StringBuilder();
             _ = sb.Append($"INSERT OR REPLACE INTO '{tableName}' (LabelImageUID, LabelTemplate, LabelReport, RepeatImage) VALUES (");
@@ -154,7 +156,28 @@ namespace LabelVal.Databases
 
             return lst;
         }
+        public bool TableExists(string tableName)
+        {
+            using (SQLiteCommand command = new SQLiteCommand($"SELECT name FROM sqlite_master WHERE type='table' AND name='{tableName}';", Connection))
 
+                try
+                {
+                    using (SQLiteDataReader rdr = command.ExecuteReader())
+                        if (rdr.HasRows)
+                            return true;
+                        else
+                            return false;
+                }
+                catch(Exception ex)
+                {
+                    
+                }
+
+            if (!IsConnectionPersistent)
+                Close();
+
+            return false;
+        }
         public List<Row> GetAllRows(string tableName)
         {
             List<Row> lst = new List<Row>();
@@ -177,6 +200,8 @@ namespace LabelVal.Databases
             Row row = null;
 
             if (!Open()) return row;
+            if (!TableExists(tableName))
+                return row;
 
             using (SQLiteCommand command = new SQLiteCommand($"SELECT * FROM '{tableName}' WHERE LabelImageUID='{labelImageUID}'", Connection))
 
@@ -198,18 +223,16 @@ namespace LabelVal.Databases
             return row;
         }
 
-        public Row DeleteRow(string tableName, string labelImageUID)
+        public void DeleteRow(string tableName, string labelImageUID)
         {
-            Row row = null;
+            if (!Open()) return;
+            if (!TableExists(tableName)) return;
 
-            if (!Open()) return row;
             using (SQLiteCommand command = new SQLiteCommand($"DELETE FROM '{tableName}' WHERE LabelImageUID='{labelImageUID}'", Connection))
             using (SQLiteDataReader rdr = command.ExecuteReader()) { };
 
             if (!IsConnectionPersistent)
                 Close();
-
-            return row;
         }
 
         private bool disposedValue;
