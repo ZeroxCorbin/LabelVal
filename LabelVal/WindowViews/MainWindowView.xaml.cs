@@ -72,5 +72,11 @@ namespace LabelVal.WindowViews
         {
             App.ChangeColorBlindTheme(!App.Settings.GetValue("App.IsColorBlind", false));
         }
+
+        private void btnShowSettings_Click(object sender, RoutedEventArgs e)
+        {
+            ApplicationSettings.IsOpen = true;
+        }
+
     }
 }

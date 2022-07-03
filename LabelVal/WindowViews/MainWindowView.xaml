@@ -29,30 +29,38 @@
             <Button BorderThickness="0" 
                         x:Name="btnColorBlind"
                         Click="btnColorBlind_Click">
-                <Button.Content>
-                    <IconPacks:PackIconModern Width="20" Height="20" Kind="Eye"/>
-                </Button.Content>
-
+                <IconPacks:PackIconModern Width="20" Height="20" Kind="Eye"/>
             </Button>
 
             <Button BorderThickness="0" 
                         x:Name="btnLightTheme"
                         Click="btnLightTheme_Click">
-                <Button.Content>
-                    <IconPacks:PackIconModern Width="20" Height="20" Kind="WeatherSun"/>
-                </Button.Content>
-
+                <IconPacks:PackIconModern Width="20" Height="20" Kind="WeatherSun"/>
             </Button>
 
             <Button BorderThickness="0" 
                         x:Name="btnDarkTheme"
                         Click="btnDarkTheme_Click">
-                <Button.Content>
-                    <IconPacks:PackIconModern Width="20" Height="20" Kind="MoonWaningCrescent"/>
-                </Button.Content>
+                <IconPacks:PackIconModern Width="20" Height="20" Kind="MoonWaningCrescent"/>
             </Button>
         </mah:WindowCommands>
     </mah:MetroWindow.RightWindowCommands>
+
+    <mah:MetroWindow.LeftWindowCommands>
+        <mah:WindowCommands>
+            <Button Name="btnShowSettings" Click="btnShowSettings_Click">
+                <IconPacks:PackIconModern Width="20" Height="20" Kind="Cog"/>
+            </Button>
+        </mah:WindowCommands>
+    </mah:MetroWindow.LeftWindowCommands>
+
+    <mah:MetroWindow.Flyouts>
+        <mah:FlyoutsControl>
+            <mah:Flyout x:Name="ApplicationSettings" Header="Application Settings" Position="Left">
+                <local:AppSettingsControlView/>
+            </mah:Flyout>
+        </mah:FlyoutsControl>
+    </mah:MetroWindow.Flyouts>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -72,47 +80,8 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
 
+
             <Border Grid.Row="0" Grid.Column="0" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="2" Margin="5">
-                <StackPanel Orientation="Horizontal" Margin="3">
-                    <Label Content="V275 System"/>
-
-                    <TextBox mah:TextBoxHelper.Watermark="Host" 
-                         Text="{Binding V275_Host}" MinWidth="80">
-                        <TextBox.Style>
-                            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
-                                <Setter Property="IsEnabled" Value="True"/>
-                                <Style.Triggers>
-                                    <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Control}">
-                                        <Setter Property="IsEnabled" Value="False"/>
-                                    </DataTrigger>
-                                    <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Monitor}">
-                                        <Setter Property="IsEnabled" Value="False"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBox.Style>
-                    </TextBox>
-
-                    <TextBox mah:TextBoxHelper.Watermark="System Port" 
-                         Text="{Binding V275_SystemPort}" MinWidth="80">
-                        <TextBox.Style>
-                            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
-                                <Setter Property="IsEnabled" Value="True"/>
-                                <Style.Triggers>
-                                    <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Control}">
-                                        <Setter Property="IsEnabled" Value="False"/>
-                                    </DataTrigger>
-                                    <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Monitor}">
-                                        <Setter Property="IsEnabled" Value="False"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBox.Style>
-                    </TextBox>
-                </StackPanel>
-            </Border>
-
-            <Border Grid.Row="0" Grid.Column="1" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="2" Margin="5">
                 <StackPanel Orientation="Horizontal"  Margin="3">
 
                     <Label Content="Node Connection"/>
@@ -200,9 +169,9 @@
                             </Button.Style>
                         </Button>
 
-                        <Button Content="Trigger" Command="{Binding TriggerSim}"/>
 
                     </StackPanel>
+                    
 
                     <!--<Label>
                         <Label.Style>
@@ -224,6 +193,105 @@
                 </StackPanel>
             </Border>
 
+            <Border Grid.Column="1" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="2" Margin="5">
+                <Border.Style>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Value="False" Binding="{Binding IsLoggedIn}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+
+                <StackPanel Orientation="Horizontal"  Margin="3">
+
+                    <Label Content="Template:"/>
+
+                    <Label>
+                        <Label.Style>
+                            <Style TargetType="{x:Type Label}">
+                                <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
+                                <Setter Property="Content" Value="{Binding V275.V275_JobName}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Value="False" Binding="{Binding IsWrongTemplateName}">
+                                        <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
+                                    </DataTrigger>
+                                    <DataTrigger Value="" Binding="{Binding V275.V275_JobName}">
+                                        <Setter Property="Content" Value="-----"/>
+                                        <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Label.Style>
+                    </Label>
+
+                    <Label Content="State:"/>
+
+                    <Label Content="{Binding V275.V275_State}">
+                        <Label.Style>
+                            <Style TargetType="{x:Type Label}">
+                                <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Value="Editing" Binding="{Binding V275.V275_State}" />
+                                            <Condition Value="True" Binding="{Binding IsGS1Standard}" />
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="Background" Value="{DynamicResource CB_Green}" />
+                                    </MultiDataTrigger>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Value="Running" Binding="{Binding V275.V275_State}" />
+                                            <Condition Value="False" Binding="{Binding IsGS1Standard}" />
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="Background" Value="{DynamicResource CB_Green}" />
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Label.Style>
+                    </Label>
+                    <Label/>
+                    <Button Content="Run"
+                            Command="{Binding V275_SwitchRun}">
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+                                <Setter Property="IsEnabled" Value="False"/>
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Control}">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                    <DataTrigger Value="Editing" Binding="{Binding V275.V275_State}">
+                                        <Setter Property="IsEnabled" Value="True"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button Content="Edit"
+                            Command="{Binding V275_SwitchEdit}">
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+                                <Setter Property="IsEnabled" Value="False"/>
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Control}">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                    <DataTrigger Value="Running" Binding="{Binding V275.V275_State}">
+                                        <Setter Property="IsEnabled" Value="True"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </StackPanel>
+            </Border>
+
+            
             <Grid Grid.Row="1" Grid.ColumnSpan="3">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
@@ -260,7 +328,7 @@
                                         </DataTrigger>
                                     </Style.Triggers>
 
-                                </Style>                                
+                                </Style>
                             </Label.Style>
                         </Label>
                         <ComboBox ItemsSource="{Binding Standards}" SelectedItem="{Binding SelectedStandard}"  IsEnabled="{Binding IsNotRunRunning}"/>
@@ -346,103 +414,6 @@
                     </StackPanel>
                 </Border>
 
-                <Border Grid.Column="3" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="2" Margin="5">
-                    <Border.Style>
-                        <Style TargetType="{x:Type Border}">
-                            <Setter Property="Visibility" Value="Visible"/>
-                            <Style.Triggers>
-                                <DataTrigger Value="False" Binding="{Binding IsLoggedIn}">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Border.Style>
-
-                    <StackPanel Orientation="Horizontal"  Margin="3">
-
-                        <Label Content="Template:"/>
-
-                        <Label>
-                            <Label.Style>
-                                <Style TargetType="{x:Type Label}">
-                                    <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
-                                    <Setter Property="Content" Value="{Binding V275.V275_JobName}"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Value="False" Binding="{Binding IsWrongTemplateName}">
-                                            <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
-                                        </DataTrigger>
-                                        <DataTrigger Value="" Binding="{Binding V275.V275_JobName}">
-                                            <Setter Property="Content" Value="-----"/>
-                                            <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Label.Style>
-                        </Label>
-
-                        <Label Content="State:"/>
-
-                        <Label Content="{Binding V275.V275_State}">
-                            <Label.Style>
-                                <Style TargetType="{x:Type Label}">
-                                    <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
-                                    <Setter Property="Visibility" Value="Visible"/>
-                                    <Style.Triggers>
-                                        <MultiDataTrigger>
-                                            <MultiDataTrigger.Conditions>
-                                                <Condition Value="Editing" Binding="{Binding V275.V275_State}" />
-                                                <Condition Value="True" Binding="{Binding IsGS1Standard}" />
-                                            </MultiDataTrigger.Conditions>
-                                            <Setter Property="Background" Value="{DynamicResource CB_Green}" />
-                                        </MultiDataTrigger>
-                                        <MultiDataTrigger>
-                                            <MultiDataTrigger.Conditions>
-                                                <Condition Value="Running" Binding="{Binding V275.V275_State}" />
-                                                <Condition Value="False" Binding="{Binding IsGS1Standard}" />
-                                            </MultiDataTrigger.Conditions>
-                                            <Setter Property="Background" Value="{DynamicResource CB_Green}" />
-                                        </MultiDataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Label.Style>
-                        </Label>
-                        <Label/>
-                        <Button Content="Run"
-                            Command="{Binding V275_SwitchRun}">
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
-                                    <Setter Property="IsEnabled" Value="False"/>
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Control}">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-                                        <DataTrigger Value="Editing" Binding="{Binding V275.V275_State}">
-                                            <Setter Property="IsEnabled" Value="True"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
-                        <Button Content="Edit"
-                            Command="{Binding V275_SwitchEdit}">
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
-                                    <Setter Property="IsEnabled" Value="False"/>
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Control}">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-                                        <DataTrigger Value="Running" Binding="{Binding V275.V275_State}">
-                                            <Setter Property="IsEnabled" Value="True"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
-                    </StackPanel>
-                </Border>
             </Grid>
         </Grid>
 

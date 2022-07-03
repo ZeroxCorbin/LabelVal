@@ -266,6 +266,9 @@
     <Compile Include="RunViews\RunView.xaml.cs">
       <DependentUpon>RunView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WindowViews\AppSettingsControlView.xaml.cs">
+      <DependentUpon>AppSettingsControlView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WindowViews\MainWindowView.xaml.cs">
       <DependentUpon>MainWindowView.xaml</DependentUpon>
     </Compile>
@@ -321,6 +324,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="RunViews\RunView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WindowViews\AppSettingsControlView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
