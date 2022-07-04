@@ -422,6 +422,30 @@ namespace LabelVal.V275
             }
             return true;
         }
+        public async Task<int> GetLatestRepeat()
+        {
+            bool ok;
+            if (V275_State == "Running")
+                ok = await Commands.GetRepeatsAvailableRun();
+            else
+                ok = await Commands.GetRepeatsAvailable();
 
+            if (!ok)
+            {
+                if (Commands.Available == null)
+                    return 0;
+                else
+                {
+                    Status = Commands.Status;
+                }
+            }
+            else
+            {
+                if (Commands.Available.Count > 0)
+                    return Commands.Available.First();
+            }
+
+            return -9999;
+        }
     }
 }

@@ -188,7 +188,7 @@ namespace LabelVal.RunControllers
                         LabelReport = sRow.LabelReport,
                         RepeatGoldenImage = sRow.RepeatImage,
                         LabelImageUID = label.LabelImageUID,
-                        LabelImage = label.LabelImage,
+                        LabelImage = label.IsSimulation ? null : label.LabelImage,
                         LabelImageOrder = CurrentLabelCount,
                         LoopCount = CurrentLoopCount
                     };
@@ -228,23 +228,24 @@ namespace LabelVal.RunControllers
                         return false;
                     }
 
-                    if(label.RepeatImage != null)
-                    {
-                        //Compress the image to PNG
-                        PngBitmapEncoder encoder = new PngBitmapEncoder();
-                        using (var ms = new System.IO.MemoryStream(label.RepeatImage))
+                    if(!label.IsSimulation)
+                        if(label.RepeatImage != null)
                         {
-                            using (MemoryStream stream = new MemoryStream())
+                            //Compress the image to PNG
+                            PngBitmapEncoder encoder = new PngBitmapEncoder();
+                            using (var ms = new System.IO.MemoryStream(label.RepeatImage))
                             {
-                                encoder.Frames.Add(BitmapFrame.Create(ms));
-                                encoder.Save(stream);
+                                using (MemoryStream stream = new MemoryStream())
+                                {
+                                    encoder.Frames.Add(BitmapFrame.Create(ms));
+                                    encoder.Save(stream);
 
-                                row.RepeatImage = stream.ToArray();
+                                    row.RepeatImage = stream.ToArray();
 
-                                stream.Close();
+                                    stream.Close();
+                                }
                             }
                         }
-                    }
 
                     row.RepeatReport = JsonConvert.SerializeObject(label.Report);
                     RunDatabase.InsertOrReplace(row);

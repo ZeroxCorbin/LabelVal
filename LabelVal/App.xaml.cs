@@ -97,9 +97,6 @@ namespace LabelVal
             {
                 this.Shutdown();
             }
-
-
-
         }
 
         protected override void OnStartup(StartupEventArgs e)

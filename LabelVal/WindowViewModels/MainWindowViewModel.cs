@@ -187,6 +187,8 @@ namespace LabelVal.WindowViewModels
         private bool isDeviceSelected = false;
 
         public bool IsDeviceSimulator => V275_MAC == null ? false : V275_MAC.Equals("00:00:00:00:00:00");
+        public string SimulatorImageDirectory { get => App.Settings.GetValue("Simulator_ImageDirectory", @"C:\Program Files\V275\data\images\simulation");
+            set { App.Settings.SetValue("Simulator_ImageDirectory", value); OnPropertyChanged("SimulatorImageDirectory"); } }
 
         public bool IsLoggedIn
         {
@@ -238,6 +240,8 @@ namespace LabelVal.WindowViewModels
 
         public ICommand V275_SwitchRun { get; }
         public ICommand V275_SwitchEdit { get; }
+        public ICommand V275_RemoveRepeat { get; }
+
 
         public RunController.RunStates RunState { get => runState; set => SetProperty(ref runState, value); }
         private RunController.RunStates runState = RunController.RunStates.IDLE;
@@ -265,6 +269,7 @@ namespace LabelVal.WindowViewModels
 
             V275_SwitchRun = new Core.RelayCommand(V275_SwitchRunAction, c => true);
             V275_SwitchEdit = new Core.RelayCommand(V275_SwitchEditAction, c => true);
+            V275_RemoveRepeat = new Core.RelayCommand(V275_RemoveRepeatAction, c => true);
 
             TriggerSim = new Core.RelayCommand(TriggerSimAction, c => true);
 
@@ -614,6 +619,8 @@ namespace LabelVal.WindowViewModels
         {
             Reset();
 
+            if (!PreLogin()) return;
+
             if (await V275.Commands.Login(UserName, Password, true))
             {
                 _ = PostLogin(true);
@@ -627,6 +634,8 @@ namespace LabelVal.WindowViewModels
         private async void LoginControlAction(object parameter)
         {
             Reset();
+
+            if (!PreLogin()) return;
 
             if (await V275.Commands.Login(UserName, Password, false))
             {
@@ -669,6 +678,33 @@ namespace LabelVal.WindowViewModels
                 V275.V275_JobName = "";
             }
             catch { }
+        }
+        private bool PreLogin()
+        {
+            if (IsDeviceSimulator)
+            {
+                if (Directory.Exists(SimulatorImageDirectory))
+                {
+                    try
+                    {
+                        using (File.Create(Path.Combine(SimulatorImageDirectory, "file"))) ;
+
+                        File.Delete(Path.Combine(SimulatorImageDirectory, "file"));
+                    }
+                    catch(Exception ex)
+                    {
+                        return false;
+                    }
+                    return true;
+                }
+                else
+                {
+                    _ = OkDialog("Invalid Simulation Images Directory", $"Please select a valid simulator images directory.\r\n'{SimulatorImageDirectory}'");
+                    return false;
+                }
+                    
+            }
+            return true;
         }
         private async Task PostLogin(bool isLoggedIn_Monitor)
         {
@@ -925,6 +961,24 @@ namespace LabelVal.WindowViewModels
         private async void V275_SwitchEditAction(object parameter)
         {
             await V275.SwitchToEdit();
+        }
+     private async void V275_RemoveRepeatAction(object parameter)
+        {
+            int repeat;
+
+            repeat = await V275.GetLatestRepeat();
+            if (repeat == -9999)
+                return;
+
+            if (!await V275.Commands.RemoveRepeat(repeat))
+            {
+                return;
+            }
+
+            if (!await V275.Commands.ResumeJob())
+            {
+                return;
+            }
         }
 
         private async void StartRunAction(object parameter)

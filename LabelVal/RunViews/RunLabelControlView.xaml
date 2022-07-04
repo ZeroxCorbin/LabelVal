@@ -28,12 +28,23 @@
             </Grid.ColumnDefinitions>
 
             <Grid Grid.Row="0" Grid.Column="0">
-                 <Image Source="{Binding Run.LabelImage, Mode=OneTime, Converter={StaticResource bytesToImage}}" Margin="3" x:Name="LabelImage" MaxHeight="400" Width="400" MouseDown="LabelImage_MouseDown"/>
-                
+                <Image Margin="3" x:Name="LabelImage" MaxHeight="400" Width="400" MouseDown="LabelImage_MouseDown">
+                    <Image.Style>
+                        <Style TargetType="{x:Type Image}">
+                            <Setter Property="Source" Value="{Binding Run.LabelImage, Converter={StaticResource bytesToImage}}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Run.LabelImage}" Value="{x:Null}">
+                                    <Setter Property="Source" Value="{Binding Run.RepeatGoldenImage, Converter={StaticResource bytesToImage}}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
+
                 <StackPanel HorizontalAlignment="Left" Margin="5" Orientation="Horizontal">
                     <TextBlock Text="{Binding Run.LoopCount}" FontSize="16" Foreground="Black" />
                     <TextBlock Text=" : " FontSize="16" Foreground="Black" />
-                    <TextBlock Text="{Binding Run.LabelImageOrder}" FontSize="16" Foreground="Black" />                
+                    <TextBlock Text="{Binding Run.LabelImageOrder}" FontSize="16" Foreground="Black" />
                 </StackPanel >
 
             </Grid>
@@ -41,7 +52,7 @@
             <ScrollViewer x:Name="ScrollLabelSectors"
                           Grid.Row="0" Grid.Column="1" Width="200" Margin="3" Padding="0,0,0,6" MaxHeight="400"
                           ScrollChanged="ScrollLabelSectors_ScrollChanged">
-                <ItemsControl ItemsSource="{Binding LabelSectors, Mode=OneTime}">
+                <ItemsControl ItemsSource="{Binding LabelSectors}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <local:SectorControlView />
@@ -53,7 +64,7 @@
             <ScrollViewer x:Name="ScrollRepeatSectors" 
                           Grid.Row="0" Grid.Column="2" Width="200" Margin="3" Padding="0,0,0,6" MaxHeight="400" 
                           ScrollChanged="ScrollRepeatSectors_ScrollChanged" >
-                <ItemsControl ItemsSource="{Binding RepeatSectors, Mode=OneTime}">
+                <ItemsControl ItemsSource="{Binding RepeatSectors}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <local:SectorControlView />
@@ -63,7 +74,7 @@
             </ScrollViewer>
 
             <ScrollViewer Grid.Row="0" Grid.Column="3" Width="280" Margin="3" Padding="0,0,0,6" MaxHeight="400" >
-                <ItemsControl ItemsSource="{Binding DiffSectors, Mode=OneTime}">
+                <ItemsControl ItemsSource="{Binding DiffSectors}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <local:SectorDifferenceControlView />
@@ -72,8 +83,33 @@
                 </ItemsControl>
             </ScrollViewer>
 
-            <Image x:Name="RepeatImage" Grid.Row="0" Grid.Column="4" Source="{Binding Run.RepeatImage, Mode=OneTime, Converter={StaticResource bytesToImage}}" Margin="3" MaxHeight="400" Width="400" MouseDown="RepeatImage_MouseDown"/>
+            <Image Source="{Binding Run.RepeatImage, Converter={StaticResource bytesToImage}}"
+                   x:Name="RepeatImage" Grid.Row="0" Grid.Column="4" Margin="3" MaxHeight="400" Width="400" MouseDown="RepeatImage_MouseDown">
+                <Image.Style>
+                    <Style TargetType="{x:Type Image}">
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Run.LabelImage}" Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Image.Style>
+            </Image>
 
+            <TextBlock Text="This was a simulation run." Grid.Row="0" Grid.Column="4">
+                <TextBlock.Style>
+                    <Style TargetType="{x:Type TextBlock}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Run.LabelImage}" Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+
+            </TextBlock>
         </Grid>
     </Border>
 </UserControl>

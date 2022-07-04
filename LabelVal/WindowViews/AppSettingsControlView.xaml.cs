@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,6 +26,19 @@ namespace LabelVal.WindowViews
             InitializeComponent();
 
            DataContext = App.Current.MainWindow.DataContext;
+        }
+
+        private void btnSelectDirectory_Click(object sender, RoutedEventArgs e)
+        {
+            using (var fbd = new System.Windows.Forms.FolderBrowserDialog())
+            {
+                System.Windows.Forms.DialogResult result = fbd.ShowDialog();
+
+                if (result == System.Windows.Forms.DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                {
+                    ((WindowViewModels.MainWindowViewModel)DataContext).SimulatorImageDirectory = fbd.SelectedPath;
+                }
+            }
         }
     }
 }

@@ -10,7 +10,7 @@ namespace LabelVal.Simulator
 {
     internal class SimulatorFileHandler
     {
-        public string SimulatorImageDirectory { get => App.Settings.GetValue("Simulator_ImageDirectory", "D:\\V275_Watson_BV_Beta\\Product\\v275\\data\\images\\simulation"); set { App.Settings.SetValue("Simulator_ImageDirectory", value); } }
+        public string SimulatorImageDirectory { get => App.Settings.GetValue("Simulator_ImageDirectory", @"C:\Program Files\V275\data\images\simulation"); set { App.Settings.SetValue("Simulator_ImageDirectory", value); } }
 
         public bool SimulatorImageDirectoryExists => Directory.Exists(SimulatorImageDirectory);
 
@@ -58,7 +58,7 @@ namespace LabelVal.Simulator
             if (SimulatorImageDirectoryExists)
             {
                 File.Copy(file, Path.Combine(SimulatorImageDirectory, Path.GetFileName(file)));
-                return true;
+                    return true;
             }
             else
                 return false;

@@ -42,7 +42,8 @@ namespace LabelVal.RunViews
 
         private void RepeatImage_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            ShowImage(((RunLabelControlViewModel)DataContext).Run.RepeatImage);
+            if (e.LeftButton == MouseButtonState.Pressed)
+                ShowImage(((RunLabelControlViewModel)DataContext).Run.RepeatImage);
         }
 
         private bool ShowImage(byte[] image)
@@ -64,7 +65,8 @@ namespace LabelVal.RunViews
 
         private void LabelImage_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            ShowImage(((RunLabelControlViewModel)DataContext).Run.LabelImage);
+            if (e.LeftButton == MouseButtonState.Pressed)
+                ShowImage(((RunLabelControlViewModel)DataContext).Run.LabelImage);
         }
 
     }
