@@ -187,8 +187,11 @@ namespace LabelVal.WindowViewModels
         private bool isDeviceSelected = false;
 
         public bool IsDeviceSimulator => V275_MAC == null ? false : V275_MAC.Equals("00:00:00:00:00:00");
-        public string SimulatorImageDirectory { get => App.Settings.GetValue("Simulator_ImageDirectory", @"C:\Program Files\V275\data\images\simulation");
-            set { App.Settings.SetValue("Simulator_ImageDirectory", value); OnPropertyChanged("SimulatorImageDirectory"); } }
+        public string SimulatorImageDirectory
+        {
+            get => App.Settings.GetValue("Simulator_ImageDirectory", @"C:\Program Files\V275\data\images\simulation");
+            set { App.Settings.SetValue("Simulator_ImageDirectory", value); OnPropertyChanged("SimulatorImageDirectory"); }
+        }
 
         public bool IsLoggedIn
         {
@@ -561,6 +564,8 @@ namespace LabelVal.WindowViewModels
 
             string file = Path.Combine(App.StandardsDatabaseRoot, fileName + App.DatabaseExtension);
 
+            StandardsDatabase?.Close();
+
             Logger.Info("Initializing standards database: {name}", file);
             StandardsDatabase = new StandardsDatabase(file);
 
@@ -568,16 +573,6 @@ namespace LabelVal.WindowViewModels
 
             List<string> tables = StandardsDatabase.GetAllTables();
             IsDatabaseLocked = tables.Contains("LOCKED");
-
-            //if(!IsDatabaseLocked)
-            //    foreach (var standard in Standards)
-            //    {
-            //        if (tables.Contains(standard))
-            //            continue;
-
-            //        Logger.Debug("Creating table: {name}", standard);
-            //        StandardsDatabase.CreateTable(standard);
-            //    }
 
             foreach (var tbl in tables)
                 if (!Standards.Contains(tbl))
@@ -593,10 +588,7 @@ namespace LabelVal.WindowViewModels
         {
             string res = await GetStringDialog("New Standards Database", "What is the name of the new database?");
 
-            if (string.IsNullOrEmpty(res)) return;
-
-            Regex containsABadCharacter = new Regex("[" + Regex.Escape(new string(System.IO.Path.GetInvalidPathChars())) + "]");
-            if (containsABadCharacter.IsMatch(res))
+            if (string.IsNullOrEmpty(res) || res.IndexOfAny(System.IO.Path.GetInvalidFileNameChars()) >= 0)
             {
                 _ = OkDialog("Invalid Name", $"The name '{res}' contains invalid characters.");
                 return;
@@ -691,7 +683,7 @@ namespace LabelVal.WindowViewModels
 
                         File.Delete(Path.Combine(SimulatorImageDirectory, "file"));
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         return false;
                     }
@@ -702,7 +694,7 @@ namespace LabelVal.WindowViewModels
                     _ = OkDialog("Invalid Simulation Images Directory", $"Please select a valid simulator images directory.\r\n'{SimulatorImageDirectory}'");
                     return false;
                 }
-                    
+
             }
             return true;
         }
@@ -829,7 +821,7 @@ namespace LabelVal.WindowViewModels
                         label.IsWorking = false;
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     label.IsWorking = false;
                     Logger.Error(ex);
@@ -962,7 +954,7 @@ namespace LabelVal.WindowViewModels
         {
             await V275.SwitchToEdit();
         }
-     private async void V275_RemoveRepeatAction(object parameter)
+        private async void V275_RemoveRepeatAction(object parameter)
         {
             int repeat;
 

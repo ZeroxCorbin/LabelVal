@@ -79,7 +79,7 @@
 
             <Grid Grid.Row="1" Grid.Column="0">
                 <Image x:Name="LabelImage" Margin="3" MaxHeight="400" Width="400"
-                       Source="{Binding LabelImage, Mode=OneTime, Converter={StaticResource bytesToImage}}"
+                       Source="{Binding LabelImage, Converter={StaticResource bytesToImage}}"
                        MouseDown="LabelImage_MouseDown"
                        RenderOptions.BitmapScalingMode="NearestNeighbor"/>
                 

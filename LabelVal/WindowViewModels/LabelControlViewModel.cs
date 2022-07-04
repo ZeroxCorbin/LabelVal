@@ -229,8 +229,8 @@ namespace LabelVal.WindowViewModels
 
         private void GetStored()
         {
-            foreach(var sec in LabelSectors)
-                sec.Clear();
+            //foreach (var sec in LabelSectors)
+            //    sec.Clear();
 
             LabelSectors.Clear();
             IsLoad = false;

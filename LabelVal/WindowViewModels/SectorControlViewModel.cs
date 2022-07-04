@@ -11,7 +11,6 @@ namespace LabelVal.WindowViewModels
 {
     public class SectorControlViewModel : Core.BaseViewModel
     {
-
         public V275_Job.Sector JobSector { get => jobSector; set => SetProperty(ref jobSector, value); }
         private V275_Job.Sector jobSector;
 

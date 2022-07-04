@@ -58,7 +58,7 @@
                         </Style>
                     </Border.Style>
 
-                    <ItemsControl ItemsSource="{Binding Alarms, Mode=OneTime}">
+                    <ItemsControl ItemsSource="{Binding Alarms}">
                         <ItemsControl.ItemTemplate>
                             <HierarchicalDataTemplate>
                                 <Grid Margin="2">
@@ -117,7 +117,7 @@
                         </Style>
                     </Border.Style>
 
-                    <ItemsControl ItemsSource="{Binding GradeValues, Mode=OneTime}">
+                    <ItemsControl ItemsSource="{Binding GradeValues}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
@@ -185,7 +185,7 @@
                         </Style>
                     </Border.Style>
 
-                    <ItemsControl ItemsSource="{Binding Values, Mode=OneTime}">
+                    <ItemsControl ItemsSource="{Binding Values}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
@@ -223,7 +223,7 @@
                         </Style>
                     </Border.Style>
 
-                    <ItemsControl ItemsSource="{Binding ValueResults, Mode=OneTime}">
+                    <ItemsControl ItemsSource="{Binding ValueResults}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
@@ -281,7 +281,7 @@
                         </Style>
                     </Border.Style>
 
-                    <ItemsControl ItemsSource="{Binding Gs1ValueResults, Mode=OneTime}">
+                    <ItemsControl ItemsSource="{Binding Gs1ValueResults}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
@@ -332,14 +332,14 @@
                                 <DataTrigger Value="0" Binding="{Binding Gs1Grades.Count, Mode=OneTime}">
                                     <Setter Property="Visibility" Value="Collapsed"/>
                                 </DataTrigger>
-                                <DataTrigger Value="False" Binding="{Binding IsGS1Standard, Mode=OneTime}">
+                                <DataTrigger Value="False" Binding="{Binding IsGS1Standard}">
                                     <Setter Property="Visibility" Value="Collapsed"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </Border.Style>
 
-                    <ItemsControl ItemsSource="{Binding Gs1Grades, Mode=OneTime}">
+                    <ItemsControl ItemsSource="{Binding Gs1Grades}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Grid>

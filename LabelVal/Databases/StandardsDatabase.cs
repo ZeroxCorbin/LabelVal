@@ -159,19 +159,22 @@ namespace LabelVal.Databases
         public bool TableExists(string tableName)
         {
             using (SQLiteCommand command = new SQLiteCommand($"SELECT name FROM sqlite_master WHERE type='table' AND name='{tableName}';", Connection))
-
+            {
                 try
                 {
                     using (SQLiteDataReader rdr = command.ExecuteReader())
+                    {
                         if (rdr.HasRows)
                             return true;
                         else
                             return false;
+                    }
                 }
                 catch(Exception ex)
                 {
                     
                 }
+            }
 
             if (!IsConnectionPersistent)
                 Close();
