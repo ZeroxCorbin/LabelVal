@@ -56,7 +56,7 @@ namespace LabelVal.WindowViewModels
             else if (highCat == 2)
                 IsError = true;
 
-
+            
         }
 
         public void Clear()

@@ -54,13 +54,14 @@ namespace LabelVal.WindowViewModels
         public int PrintCount { get => printCount; set => SetProperty(ref printCount, value); }
 
 
-
         private ObservableCollection<SectorControlViewModel> labelSectors = new ObservableCollection<SectorControlViewModel>();
         public ObservableCollection<SectorControlViewModel> LabelSectors { get => labelSectors; set => SetProperty(ref labelSectors, value); }
 
         private ObservableCollection<SectorControlViewModel> repeatSectors = new ObservableCollection<SectorControlViewModel>();
         public ObservableCollection<SectorControlViewModel> RepeatSectors { get => repeatSectors; set => SetProperty(ref repeatSectors, value); }
 
+        private ObservableCollection<SectorDifferenceViewModel> diffSectors = new ObservableCollection<SectorDifferenceViewModel>();
+        public ObservableCollection<SectorDifferenceViewModel> DiffSectors { get => diffSectors; set => SetProperty(ref diffSectors, value); }
 
         public bool IsLoggedIn_Monitor
         {
@@ -132,11 +133,8 @@ namespace LabelVal.WindowViewModels
         public bool IsNotFaulted => !isFaulted;
         private bool isFaulted = false;
 
-
         public string PrinterName { get; set; }
         public string LabelImagePath { get; }
-
-
 
         public string Status
         {
@@ -144,7 +142,6 @@ namespace LabelVal.WindowViewModels
             set { SetProperty(ref _Status, value); }
         }
         private string _Status;
-
 
         private StandardsDatabase StandardsDatabase { get; set; }
 
@@ -410,6 +407,8 @@ namespace LabelVal.WindowViewModels
                     RepeatSectors.Add(sec);
             }
             //}
+            GetSectorDiff();
+
             return true;
         }
         private void ClearReadAction(object parameter)
@@ -417,6 +416,7 @@ namespace LabelVal.WindowViewModels
             RepeatImage = null;
             IsGoldenRepeat = false;
             RepeatSectors.Clear();
+            DiffSectors.Clear();
             ReadJob = null;
             IsStore = false;
 
@@ -429,6 +429,31 @@ namespace LabelVal.WindowViewModels
             IsGoldenRepeat = true;
         }
 
+        private void GetSectorDiff()
+        {
+            List<SectorDifferenceViewModel> diff = new List<SectorDifferenceViewModel>();
+            foreach (var sec in LabelSectors)
+            {
+                foreach (var cSec in RepeatSectors)
+                    if (sec.JobSector.name == cSec.JobSector.name)
+                    {
+                        diff.Add(sec.SectorResults.Compare(cSec.SectorResults));
+                        continue;
+                    }
+
+                //if (!found)
+                //{
+                //    var dat = sec.SectorResults.Compare(new SectorDifferenceViewModel());
+                //    dat.IsSectorMissing = true;
+                //    diff.Add(dat);
+                //}
+
+            }
+
+            foreach (var d in diff)
+                DiffSectors.Add(d);
+
+        }
 
         private object DeserializeSector(JObject reportSec)
         {

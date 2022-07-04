@@ -28,7 +28,10 @@ namespace LabelVal.RunViewModels
                 SetProperty(ref selectedRunEntry, value);
 
                 if (value != null && !value.RunDBMissing)
+                {
+                    Labels.Clear();
                     Task.Run(() => LoadRun());
+                }
                 else
                     Labels.Clear();
             }
@@ -109,12 +112,12 @@ namespace LabelVal.RunViewModels
 
         private async void LoadRun()
         {
-            await App.Current.Dispatcher.InvokeAsync(() =>
-            {
-                foreach (var lab in Labels)
-                    lab.Clear();
-                Labels.Clear();
-            });
+            //await App.Current.Dispatcher.InvokeAsync(() =>
+            //{
+            //    //foreach (var lab in Labels)
+            //    //    lab.Clear();
+            //    Labels.Clear();
+            //});
 
 
             List<RunDatabase.Run> runs;

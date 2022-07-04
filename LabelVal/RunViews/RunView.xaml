@@ -247,7 +247,7 @@
             </ScrollViewer>
         </Grid>
 
-        <Grid Grid.Column="1">
+        <Grid Grid.Column="1" HorizontalAlignment="Left">
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
