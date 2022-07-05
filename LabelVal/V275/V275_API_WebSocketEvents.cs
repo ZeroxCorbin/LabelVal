@@ -82,12 +82,6 @@ namespace LabelVal.V275
             if (ev.source == "system")
                 if (ev.name == "heartbeat")
                     return;
-            //    else
-            //        using (StreamWriter sw = File.AppendText("capture_system.txt"))
-            //            sw.WriteLine(message);
-
-            //else if (ev.name != "heartbeat")
-
 
             if (ev.name == "heartbeat")
             {
@@ -95,8 +89,8 @@ namespace LabelVal.V275
                 return;
             }
 
-            using (StreamWriter sw = File.AppendText("capture_node.txt"))
-                sw.WriteLine(message);
+            //using (StreamWriter sw = File.AppendText("capture_node.txt"))
+            //    sw.WriteLine(message);
 
             if (ev.name == "setupCapture")
             {

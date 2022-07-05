@@ -35,6 +35,57 @@ namespace LabelVal.WindowViewModels
             public int RepeatNumber { get; set; } = -1;
         }
 
+        public class StandardEntry : Core.BaseViewModel
+        {
+            private string name;
+            public string Name
+            {
+                get => name;
+                set
+                {
+                    SetProperty(ref name, value);
+
+                    Is300 = Name.EndsWith("300");
+                    IsGS1 = Name.ToLower().StartsWith("gs1");
+                    StandardName = name.Replace(" 300", "");
+
+                    if (IsGS1)
+                    {
+                        var val = Regex.Match(Name, @"TABLE (\d*\.?\d+)");
+                        if (val.Groups.Count == 2)
+                            TableID = val.Groups[1].Value;
+                    }
+                }
+            }
+
+            private string standardPath;
+            public string StandardPath { get => standardPath; set => SetProperty(ref standardPath, value); }
+
+            private int numRows;
+            public int NumRows { get => numRows; set => SetProperty(ref numRows, value); }
+
+            public string StandardName { get; private set; }
+
+            public string TableID { get; private set; }
+
+            public bool Is300 { get; private set; }
+
+            public bool IsGS1 { get; private set; }
+
+        }
+
+        public class StandardsDatabaseEntry : Core.BaseViewModel
+        {
+            private string name;
+            public string Name { get => name; set => SetProperty(ref name, value); }
+
+            private string filePath;
+            public string FilePath { get => filePath; set => SetProperty(ref filePath, value); }
+
+
+
+        }
+
         public string Version => App.Version;
 
         public V275_API_Controller V275 { get; } = new V275_API_Controller();
@@ -102,18 +153,26 @@ namespace LabelVal.WindowViewModels
         }
         public bool IsNotDatabaseLocked => !isDatabaseLocked;
         private bool isDatabaseLocked = false;
+        public bool IsDatabasePermLocked
+        {
+            get => isDatabasePermLocked;
+            set { SetProperty(ref isDatabasePermLocked, value); OnPropertyChanged("IsNotDatabasePermLocked"); }
+        }
+        public bool IsNotDatabasePermLocked => !isDatabasePermLocked;
+        private bool isDatabasePermLocked = false;
         public ICommand CreateStandardsDatabase { get; }
+        public ICommand LockStandardsDatabase { get; }
 
-        public string StoredStandard { get => App.Settings.GetValue("StoredStandard", "GS1 TABLE 1"); set { App.Settings.SetValue("StoredStandard", value); } }
-        public ObservableCollection<string> Standards { get; } = new ObservableCollection<string>();
-        public string SelectedStandard
+        public StandardEntry StoredStandard { get => App.Settings.GetValue<StandardEntry>("StoredStandard", null); set { App.Settings.SetValue("StoredStandard", value); } }
+        public ObservableCollection<StandardEntry> Standards { get; } = new ObservableCollection<StandardEntry>();
+        public StandardEntry SelectedStandard
         {
             get => selectedStandard;
             set
             {
                 SetProperty(ref selectedStandard, value);
 
-                if (!string.IsNullOrEmpty(value))
+                if (value != null)
                 {
                     StoredStandard = value;
                     LoadLabels();
@@ -126,7 +185,7 @@ namespace LabelVal.WindowViewModels
                 }
             }
         }
-        private string selectedStandard;
+        private StandardEntry selectedStandard;
         public bool IsWrongTemplateName
         {
             get => isWrongTemplateName;
@@ -277,7 +336,7 @@ namespace LabelVal.WindowViewModels
             TriggerSim = new Core.RelayCommand(TriggerSimAction, c => true);
 
             CreateStandardsDatabase = new Core.RelayCommand(CreateStandardsDatabaseAction, c => true);
-
+            LockStandardsDatabase = new Core.RelayCommand(LockStandardsDatabaseAction, c => true);
             V275.PropertyChanged += V275_PropertyChanged;
 
             V275.WebSocket.SetupCapture += WebSocket_SetupCapture;
@@ -311,9 +370,9 @@ namespace LabelVal.WindowViewModels
                 return;
             }
 
-            if (!IsGS1Standard)
+            if (!SelectedStandard.IsGS1)
             {
-                if (V275.V275_JobName.ToLower().StartsWith(SelectedStandard.ToLower()))
+                if (V275.V275_JobName.ToLower().StartsWith(SelectedStandard.Name.ToLower()))
                 {
                     return;
                 }
@@ -387,32 +446,16 @@ namespace LabelVal.WindowViewModels
 
         private void LoadLabels()
         {
-            IsGS1Standard = StoredStandard.StartsWith("GS1") ? true : false;
+            //IsGS1Standard = SelectedStandard.IsGS1;
 
-            bool is300 = false;
-            if (StoredStandard.EndsWith("300"))
-                is300 = true;
-
-            string std = StoredStandard.Replace(" 300", "");
-
-            Logger.Info("Loading label images from standards directory: {name}", $"{App.StandardsRoot}\\{std}\\");
+            Logger.Info("Loading label images from standards directory: {name}", $"{App.StandardsRoot}\\{SelectedStandard.StandardName}\\");
 
             ClearLabels();
 
             List<string> images = new List<string>();
-
-            if (is300)
-            {
-                foreach (var f in Directory.EnumerateFiles($"{App.StandardsRoot}\\{std}\\300\\"))
-                    if (Path.GetExtension(f) == ".png")
-                        images.Add(f);
-            }
-            else
-            {
-                foreach (var f in Directory.EnumerateFiles($"{App.StandardsRoot}\\{StoredStandard}\\600\\"))
-                    if (Path.GetExtension(f) == ".png")
-                        images.Add(f);
-            }
+            foreach (var f in Directory.EnumerateFiles(SelectedStandard.StandardPath))
+                if (Path.GetExtension(f) == ".png")
+                    images.Add(f);
 
             images.Sort();
 
@@ -424,11 +467,11 @@ namespace LabelVal.WindowViewModels
                 if (File.Exists(img.Replace(".png", ".txt")))
                     comment = File.ReadAllText(img.Replace(".png", ".txt"));
 
-                var tmp = new LabelControlViewModel(img, comment, SelectedPrinter, SelectedStandard, StandardsDatabase, V275, MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance);
+                var tmp = new LabelControlViewModel(img, comment, SelectedPrinter, SelectedStandard.Name, StandardsDatabase, V275, MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance);
 
                 tmp.Printing += Label_Printing;
 
-                tmp.IsDatabaseLocked = IsDatabaseLocked;
+                tmp.IsDatabaseLocked = IsDatabaseLocked || IsDatabasePermLocked;
                 tmp.IsSimulation = IsDeviceSimulator;
                 tmp.IsLoggedIn_Control = IsLoggedIn_Control;
                 tmp.IsLoggedIn_Monitor = IsLoggedIn_Monitor;
@@ -517,9 +560,17 @@ namespace LabelVal.WindowViewModels
                 foreach (var subdir in Directory.EnumerateDirectories(dir))
                 {
                     if (subdir.EndsWith("600"))
-                        Standards.Add(dir.Substring(dir.LastIndexOf("\\") + 1));
+                        Standards.Add(new StandardEntry()
+                        {
+                            Name = dir.Substring(dir.LastIndexOf("\\") + 1),
+                            StandardPath = subdir,
+                        });
                     else if (subdir.EndsWith("300"))
-                        Standards.Add($"{dir.Substring(dir.LastIndexOf("\\") + 1)} 300");
+                        Standards.Add(new StandardEntry()
+                        {
+                            Name = $"{dir.Substring(dir.LastIndexOf("\\") + 1)} 300",
+                            StandardPath = subdir,
+                        });
                 }
             }
 
@@ -527,8 +578,9 @@ namespace LabelVal.WindowViewModels
         }
         private void SelectStandard()
         {
-            if (Standards.Contains(StoredStandard))
-                SelectedStandard = StoredStandard;
+            StandardEntry std;
+            if ((std = Standards.FirstOrDefault((e) => e.Name.Equals(StoredStandard.Name))) != null)
+                SelectedStandard = std;
             else if (Standards.Count > 0)
                 SelectedStandard = Standards.First();
         }
@@ -569,24 +621,31 @@ namespace LabelVal.WindowViewModels
             Logger.Info("Initializing standards database: {name}", file);
             StandardsDatabase = new StandardsDatabase(file);
 
-            Logger.Info("Updating standards database.");
-
             List<string> tables = StandardsDatabase.GetAllTables();
-            IsDatabaseLocked = tables.Contains("LOCKED");
+
+            IsDatabasePermLocked = tables.Contains("LOCKPERM");
+            IsDatabaseLocked = tables.Contains("LOCK");
 
             foreach (var tbl in tables)
-                if (!Standards.Contains(tbl))
+            {
+                StandardEntry std;
+                if ((std = Standards.FirstOrDefault((e) => e.Name.Equals(tbl))) == null)
                 {
-                    if (tbl == "LOCKED")
+                    if (tbl.StartsWith("LOCK"))
                         continue;
                     else
                         OrphandStandards.Add(tbl);
                 }
+                else
+                    std.NumRows = StandardsDatabase.GetAllRowsCount(tbl);
+            }
+
         }
 
         private async void CreateStandardsDatabaseAction(object parameter)
         {
             string res = await GetStringDialog("New Standards Database", "What is the name of the new database?");
+            if (res == null) return;
 
             if (string.IsNullOrEmpty(res) || res.IndexOfAny(System.IO.Path.GetInvalidFileNameChars()) >= 0)
             {
@@ -605,6 +664,26 @@ namespace LabelVal.WindowViewModels
             StoredStandardsDatabase = res;
             SelectStandardsDatabase();
 
+        }
+        private void LockStandardsDatabaseAction(object parameter)
+        { 
+            if (IsDatabasePermLocked) return;
+
+            if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) && (Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt)))
+            {
+                StandardsDatabase.DeleteLockTable(false);
+                StandardsDatabase.CreateLockTable(true);
+            }
+            else
+            {
+                if (IsDatabaseLocked)
+                    StandardsDatabase.DeleteLockTable(false);
+                else
+                    StandardsDatabase.CreateLockTable(false);
+            }
+
+            SelectedStandardsDatabase = null;
+            SelectStandardsDatabase();
         }
 
         private async void LoginMonitorAction(object parameter)
@@ -710,7 +789,7 @@ namespace LabelVal.WindowViewModels
 
             foreach (var rep in Labels)
             {
-                rep.IsDatabaseLocked = IsDatabaseLocked;
+                rep.IsDatabaseLocked = IsDatabaseLocked || IsDatabasePermLocked;
                 rep.IsSimulation = IsDeviceSimulator;
                 rep.IsLoggedIn_Monitor = IsLoggedIn_Monitor;
                 rep.IsLoggedIn_Control = IsLoggedIn_Control;
@@ -899,7 +978,7 @@ namespace LabelVal.WindowViewModels
 
                 if (i == 2)
                 {
-                    var sectors = V275.CreateSectors(V275.SetupDetectEvent, StoredStandard);
+                    var sectors = V275.CreateSectors(V275.SetupDetectEvent, StoredStandard.TableID);
 
                     Logger.Info("Creating sectors.");
 

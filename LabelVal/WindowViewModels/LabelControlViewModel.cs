@@ -229,6 +229,7 @@ namespace LabelVal.WindowViewModels
             //foreach (var sec in LabelSectors)
             //    sec.Clear();
 
+            DiffSectors.Clear();
             LabelSectors.Clear();
             IsLoad = false;
 

@@ -90,7 +90,7 @@
                     Command="{Binding GetDevices}"
                     IsEnabled="{Binding IsNotLoggedIn}"/>
                     <Label/>
-                    <ComboBox ItemsSource="{Binding Nodes}"
+                    <ComboBox ItemsSource="{Binding Nodes}" Margin="0,0,2,0"
                           SelectedValue="{Binding SelectedNode}"
                           IsEnabled="{Binding IsNotLoggedIn}">
                         <ComboBox.ItemTemplate>
@@ -109,19 +109,19 @@
                          Text="{Binding Host}" MinWidth="80"/>-->
                     <!--<TextBox mah:TextBoxHelper.Watermark="Path" 
                          Text="{Binding RootPath}" MinWidth="80"/>-->
-                    <TextBox mah:TextBoxHelper.Watermark="User Name" 
-                         Text="{Binding UserName}" MinWidth="80"
+                    <!--<TextBox mah:TextBoxHelper.Watermark="User Name" 
+                         Text="{Binding UserName}" MinWidth="80" Margin="0,0,2,0"
                      IsEnabled="{Binding IsNotLoggedIn}"/>
                     <TextBox mah:TextBoxHelper.Watermark="Password" 
                          Text="{Binding Password}" MinWidth="80"
-                     IsEnabled="{Binding IsNotLoggedIn}"/>
+                     IsEnabled="{Binding IsNotLoggedIn}"/>-->
                     <Label/>
                     <StackPanel Orientation="Horizontal" IsEnabled="{Binding IsGetDevices}" >
-                        <Button Content="Logout"
+                        <Button Content="Logout" Margin="0,0,2,0"
                             Command="{Binding Logout}"
                             IsEnabled="{Binding IsLoggedIn}"/>
 
-                        <Button Content="Monitor"
+                        <Button Content="Monitor" Margin="0,0,2,0"
                             Command="{Binding LoginMonitor}">
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
@@ -171,24 +171,6 @@
 
 
                     </StackPanel>
-                    
-
-                    <!--<Label>
-                        <Label.Style>
-                            <Style TargetType="{x:Type Label}">
-                                <Setter Property="Content" Value=""/>
-                                <Style.Triggers>
-                                    <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Monitor}">
-                                        <Setter Property="Content" Value="Monitor"/>
-                                    </DataTrigger>
-                                    <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Control}">
-                                        <Setter Property="Content" Value="Control"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Label.Style>
-                    </Label>-->
-
 
                 </StackPanel>
             </Border>
@@ -239,14 +221,14 @@
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
                                             <Condition Value="Editing" Binding="{Binding V275.V275_State}" />
-                                            <Condition Value="True" Binding="{Binding IsGS1Standard}" />
+                                            <Condition Value="True" Binding="{Binding SelectedStandard.IsGS1}" />
                                         </MultiDataTrigger.Conditions>
                                         <Setter Property="Background" Value="{DynamicResource CB_Green}" />
                                     </MultiDataTrigger>
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
                                             <Condition Value="Running" Binding="{Binding V275.V275_State}" />
-                                            <Condition Value="False" Binding="{Binding IsGS1Standard}" />
+                                            <Condition Value="False" Binding="{Binding SelectedStandard.IsGS1}" />
                                         </MultiDataTrigger.Conditions>
                                         <Setter Property="Background" Value="{DynamicResource CB_Green}" />
                                     </MultiDataTrigger>
@@ -255,7 +237,7 @@
                         </Label.Style>
                     </Label>
                     <Label/>
-                    <Button Content="Run"
+                    <Button Content="Run" Margin="0,0,2,0"
                             Command="{Binding V275_SwitchRun}">
                         <Button.Style>
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
@@ -268,11 +250,14 @@
                                     <DataTrigger Value="Editing" Binding="{Binding V275.V275_State}">
                                         <Setter Property="IsEnabled" Value="True"/>
                                     </DataTrigger>
+                                    <DataTrigger Value="True" Binding="{Binding SelectedStandard.IsGS1}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </Button.Style>
                     </Button>
-                    <Button Content="Edit"
+                    <Button Content="Edit" Margin="0,0,2,0"
                             Command="{Binding V275_SwitchEdit}">
                         <Button.Style>
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
@@ -315,7 +300,6 @@
                 </StackPanel>
             </Border>
 
-            
             <Grid Grid.Row="1" Grid.ColumnSpan="3">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
@@ -331,17 +315,27 @@
                     </StackPanel>
                 </Border>
 
+                <!--Standards Database-->
                 <Border Grid.Column="1" BorderThickness="2" Margin="5" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
                     <StackPanel Orientation="Horizontal" Margin="3">
                         <Label Content="Standards"/>
-                        <Button Command="{Binding CreateStandardsDatabase}">
+                        
+                        <Button Command="{Binding CreateStandardsDatabase}"
+                                ToolTip="Create a new standards database."
+                                Margin="0,0,2,0">
                             <IconPacks:Material Kind="Plus"/>
                         </Button>
-                        <ComboBox ItemsSource="{Binding StandardsDatabases}" SelectedItem="{Binding SelectedStandardsDatabase}"  IsEnabled="{Binding IsNotRunRunning}"/>
-                        <Label>
-                            <Label.Style>
-                                <Style TargetType="{x:Type Label}">
-                                    <Setter Property="Content" Value=""/>
+
+                        <Button Command="{Binding LockStandardsDatabase}" Margin="0,0,2,0">
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+                                    <Setter Property="Content">
+                                        <Setter.Value>
+                                            <IconPacks:Material Kind="LockOpenVariant"/>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter Property="IsHitTestVisible" Value="True"/>
+                                    <Setter Property="ToolTip" Value="Database is unlocked. Click to unlock."/>
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding IsDatabaseLocked}" Value="True">
                                             <Setter Property="Content">
@@ -349,25 +343,60 @@
                                                     <IconPacks:Material Kind="Lock"/>
                                                 </Setter.Value>
                                             </Setter>
+                                            <Setter Property="ToolTip" Value="Database is locked. Click to unlock."/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsDatabasePermLocked}" Value="True">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <IconPacks:Material Kind="DatabaseLock"/>
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Setter Property="ToolTip" Value="Database is premanently locked."/>
                                         </DataTrigger>
                                     </Style.Triggers>
-
                                 </Style>
-                            </Label.Style>
-                        </Label>
-                        <ComboBox ItemsSource="{Binding Standards}" SelectedItem="{Binding SelectedStandard}"  IsEnabled="{Binding IsNotRunRunning}"/>
+                            </Button.Style>
+                        </Button>  
+                        
+                        <ComboBox ItemsSource="{Binding StandardsDatabases}" 
+                                  SelectedItem="{Binding SelectedStandardsDatabase}"
+                                  IsEnabled="{Binding IsNotRunRunning}"/>
+
+
+
+                        <Label/>
+
+                        <ComboBox ItemsSource="{Binding Standards}"
+                                  SelectedItem="{Binding SelectedStandard}"
+                                  IsEnabled="{Binding IsNotRunRunning}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Name}">
+                                            <!--<TextBlock.Text>
+                                                <MultiBinding StringFormat="{}{0}   ({1})">
+                                                    <Binding Path="Name"/>
+                                                    <Binding Path="NumRows"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>-->
+                                    </TextBlock>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
 
                     </StackPanel>
                 </Border>
 
+                <!--Test Runs-->
                 <Border Grid.Column="2" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="2" Margin="5">
                     <StackPanel Orientation="Horizontal" Margin="3">
 
                         <Label Content="Run Test"/>
 
                         <mah:NumericUpDown Value="{Binding RunLoopCount}" Minimum="1" Maximum="100" Interval="1"/>
+                        
                         <Label/>
-                        <Button Content="Start"
+
+                        <Button Content="Start" Margin="0,0,2,0"
                             Command="{Binding StartRun}">
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
@@ -385,15 +414,12 @@
                                         <DataTrigger Value="Idle" Binding="{Binding V275.V275_State}">
                                             <Setter Property="IsEnabled" Value="False"/>
                                         </DataTrigger>
-                                        <!--<DataTrigger Value="Running" Binding="{Binding V275.V275_State}">
-                                            <Setter Property="IsEnabled" Value="False"/>
-                                        </DataTrigger>-->
                                     </Style.Triggers>
                                 </Style>
                             </Button.Style>
                         </Button>
 
-                        <Button
+                        <Button Margin="0,0,2,0"
                             Command="{Binding PauseRun}">
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
@@ -430,7 +456,6 @@
                                 </Style>
                             </Button.Style>
                         </Button>
-
 
                         <mah:ProgressRing IsActive="{Binding IsRunRunning}" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" Height="30" Width="30"/>
 

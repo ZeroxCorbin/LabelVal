@@ -237,7 +237,7 @@ namespace LabelVal.V275
                 return true;
         }
 
-        public List<V275_Job_Sector_Verify> CreateSectors(V275_Events_System ev, string gradingStandard)
+        public List<V275_Job_Sector_Verify> CreateSectors(V275_Events_System ev, string tableID)
         {
             int d1 = 1;
             int d2 = 1;
@@ -249,11 +249,10 @@ namespace LabelVal.V275
             {
                 V275_Job_Sector_Verify verify = new V275_Job_Sector_Verify();
 
-                if (gradingStandard.StartsWith("GS1"))
+                if (!string.IsNullOrEmpty(tableID))
                 {
                     verify.gradingStandard.enabled = true;
-                    verify.gradingStandard.tableId = Regex.Match(gradingStandard, @"\d+").Value;
-                    //verify.gradingStandard.tableId = gradingStandard.Replace("GS1 TABLE ", "").Replace(" 300", "");
+                    verify.gradingStandard.tableId = tableID;
                 }
                 else
                 {

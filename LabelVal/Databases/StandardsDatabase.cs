@@ -112,6 +112,20 @@ namespace LabelVal.Databases
             if (!IsConnectionPersistent)
                 Close();
         }
+        public void CreateLockTable(bool isPerminent)
+        {
+            string tableName = isPerminent ? "LOCKPERM" : "LOCK";
+
+            using (SQLiteCommand command = new SQLiteCommand($"CREATE TABLE IF NOT EXISTS '{tableName}' ({tableName} TEXT);", Connection))
+                command.ExecuteNonQuery();
+        }
+        public void DeleteLockTable(bool isPerminent)
+        {
+            string tableName = isPerminent ? "LOCKPERM" : "LOCK";
+
+            using (SQLiteCommand command = new SQLiteCommand($"DROP TABLE IF EXISTS '{tableName}';", Connection))
+                command.ExecuteNonQuery();
+        }
 
         public void AddRow(string tableName, Row row) => AddRow(tableName, row.LabelImageUID, row.LabelTemplate, row.LabelReport, row.RepeatImage);
         public void AddRow(string tableName, string imageUID, string template, string report, byte[] repeatImage)
@@ -139,65 +153,6 @@ namespace LabelVal.Databases
             if (!IsConnectionPersistent)
                 Close();
         }
-
-        public List<string> GetAllTables()
-        {
-            List<string> lst = new List<string>();
-
-            if (!Open()) return lst;
-
-            using (SQLiteCommand command = new SQLiteCommand($"SELECT name FROM sqlite_schema WHERE type='table';", Connection))
-            using (SQLiteDataReader rdr = command.ExecuteReader())
-                while (rdr.Read())
-                    lst.Add(rdr.GetString(0));
-
-            if (!IsConnectionPersistent)
-                Close();
-
-            return lst;
-        }
-        public bool TableExists(string tableName)
-        {
-            using (SQLiteCommand command = new SQLiteCommand($"SELECT name FROM sqlite_master WHERE type='table' AND name='{tableName}';", Connection))
-            {
-                try
-                {
-                    using (SQLiteDataReader rdr = command.ExecuteReader())
-                    {
-                        if (rdr.HasRows)
-                            return true;
-                        else
-                            return false;
-                    }
-                }
-                catch(Exception ex)
-                {
-                    
-                }
-            }
-
-            if (!IsConnectionPersistent)
-                Close();
-
-            return false;
-        }
-        public List<Row> GetAllRows(string tableName)
-        {
-            List<Row> lst = new List<Row>();
-
-            if (!Open()) return lst;
-
-            using (SQLiteCommand command = new SQLiteCommand($"SELECT * FROM '{tableName}'", Connection))
-            using (SQLiteDataReader rdr = command.ExecuteReader())
-                while (rdr.Read())
-                    lst.Add(new Row(rdr));
-
-            if (!IsConnectionPersistent)
-                Close();
-
-            return lst;
-        }
-
         public Row GetRow(string tableName, string labelImageUID)
         {
             Row row = null;
@@ -225,7 +180,6 @@ namespace LabelVal.Databases
 
             return row;
         }
-
         public void DeleteRow(string tableName, string labelImageUID)
         {
             if (!Open()) return;
@@ -237,6 +191,79 @@ namespace LabelVal.Databases
             if (!IsConnectionPersistent)
                 Close();
         }
+
+        public bool TableExists(string tableName)
+        {
+            using (SQLiteCommand command = new SQLiteCommand($"SELECT name FROM sqlite_master WHERE type='table' AND name='{tableName}';", Connection))
+            {
+                try
+                {
+                    using (SQLiteDataReader rdr = command.ExecuteReader())
+                    {
+                        if (rdr.HasRows)
+                            return true;
+                        else
+                            return false;
+                    }
+                }
+                catch(Exception ex)
+                {
+                    
+                }
+            }
+
+            if (!IsConnectionPersistent)
+                Close();
+
+            return false;
+        }
+        public List<string> GetAllTables()
+        {
+            List<string> lst = new List<string>();
+
+            if (!Open()) return lst;
+
+            using (SQLiteCommand command = new SQLiteCommand($"SELECT name FROM sqlite_schema WHERE type='table';", Connection))
+            using (SQLiteDataReader rdr = command.ExecuteReader())
+                while (rdr.Read())
+                    lst.Add(rdr.GetString(0));
+
+            if (!IsConnectionPersistent)
+                Close();
+
+            return lst;
+        }
+
+        public int GetAllRowsCount(string tableName)
+        {
+            int count = 0;
+            if (!Open()) return count;
+
+            using (SQLiteCommand command = new SQLiteCommand($"SELECT COUNT(*) FROM '{tableName}'", Connection))
+                count = Convert.ToInt32(command.ExecuteScalar());
+
+            if (!IsConnectionPersistent)
+                Close();
+
+            return count;
+        }
+        public List<Row> GetAllRows(string tableName)
+        {
+            List<Row> lst = new List<Row>();
+
+            if (!Open()) return lst;
+
+            using (SQLiteCommand command = new SQLiteCommand($"SELECT * FROM '{tableName}'", Connection))
+            using (SQLiteDataReader rdr = command.ExecuteReader())
+                while (rdr.Read())
+                    lst.Add(new Row(rdr));
+
+            if (!IsConnectionPersistent)
+                Close();
+
+            return lst;
+        }
+
 
         private bool disposedValue;
         protected virtual void Dispose(bool disposing)
