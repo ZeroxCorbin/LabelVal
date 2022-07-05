@@ -66,8 +66,12 @@ namespace LabelVal.RunViews
         private void LabelImage_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
-                ShowImage(((RunLabelControlViewModel)DataContext).Run.LabelImage);
+            {
+                if (((RunLabelControlViewModel)DataContext).Run.LabelImage != null)
+                    ShowImage(((RunLabelControlViewModel)DataContext).Run.LabelImage);
+                else
+                    ShowImage(((RunLabelControlViewModel)DataContext).Run.RepeatGoldenImage);
+            }
         }
-
     }
 }

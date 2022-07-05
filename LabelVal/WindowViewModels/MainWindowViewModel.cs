@@ -82,8 +82,6 @@ namespace LabelVal.WindowViewModels
             private string filePath;
             public string FilePath { get => filePath; set => SetProperty(ref filePath, value); }
 
-
-
         }
 
         public string Version => App.Version;
@@ -310,7 +308,6 @@ namespace LabelVal.WindowViewModels
 
         private Dictionary<int, Repeat> Repeats = new Dictionary<int, Repeat>();
 
-        private int LabelCount { get; set; } = 0;
         private RunController CurrentRun { get; set; }
 
         public ICommand TriggerSim { get; }
@@ -360,19 +357,31 @@ namespace LabelVal.WindowViewModels
             {
                 CheckTemplateName();
             }
+            if (e.PropertyName == "V275_State")
+            {
+                if(V275.V275_State == "Idle")
+                    CheckTemplateName();
+            }
         }
 
         private void CheckTemplateName()
         {
             IsWrongTemplateName = false;
+            if (!IsLoggedIn)
+            {
+                return;
+            }
+
             if (V275.V275_JobName == "")
             {
+                IsWrongTemplateName = true;
+                _ = OkDialog("Template Not Loaded!", "There is no template loaded in the V275 software.");
                 return;
             }
 
             if (!SelectedStandard.IsGS1)
             {
-                if (V275.V275_JobName.ToLower().StartsWith(SelectedStandard.Name.ToLower()))
+                if (V275.V275_JobName.ToLower().Equals(SelectedStandard.Name.ToLower()))
                 {
                     return;
                 }
@@ -666,7 +675,7 @@ namespace LabelVal.WindowViewModels
 
         }
         private void LockStandardsDatabaseAction(object parameter)
-        { 
+        {
             if (IsDatabasePermLocked) return;
 
             if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) && (Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt)))
