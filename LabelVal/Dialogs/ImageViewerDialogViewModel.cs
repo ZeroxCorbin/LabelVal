@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace LabelVal.Dialogs
@@ -25,7 +26,10 @@ namespace LabelVal.Dialogs
         private BitmapImage repeatImage;
         public BitmapImage RepeatImage { get => repeatImage; set => SetProperty(ref repeatImage, value); }
 
-        public void CreateImage(byte[] image)
+        private DrawingImage repeatOverlay;
+        public DrawingImage RepeatOverlay { get => repeatOverlay; set => SetProperty(ref repeatOverlay, value); }
+
+        public void CreateImage(byte[] image, DrawingImage overlay)
         {
             if (image == null || image.Length < 2)
                 return;
@@ -39,6 +43,8 @@ namespace LabelVal.Dialogs
                 RepeatImage.EndInit();
                 RepeatImage.Freeze();
             }
+            
+            RepeatOverlay = overlay;
         }
     }
 }

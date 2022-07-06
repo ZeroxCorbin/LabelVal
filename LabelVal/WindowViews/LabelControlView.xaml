@@ -281,6 +281,9 @@
                 <Image Name="RepeatImage" Source="{Binding RepeatImage, Converter={StaticResource bytesToImage}}" 
                        Margin="3" Height="400" Width="400" MouseDown="RepeatImage_MouseDown"
                        RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+                <Image Name="RepeatImageOverlay" Source="{Binding RepeatOverlay}" 
+                       Margin="3" Height="400" Width="400" MouseDown="RepeatImage_MouseDown"
+                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
             </Grid>
 
 

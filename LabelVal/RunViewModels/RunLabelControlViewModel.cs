@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using LabelVal.Databases;
 using LabelVal.V275.Models;
 using LabelVal.WindowViewModels;
+using System.Windows.Media;
 
 namespace LabelVal.RunViewModels
 {
@@ -19,7 +20,10 @@ namespace LabelVal.RunViewModels
     {
         private RunDatabase.Run run;
         public RunDatabase.Run Run { get => run; set => SetProperty(ref run, value); }
-                
+
+        private DrawingImage repeatOverlay;
+        public DrawingImage RepeatOverlay { get => repeatOverlay; set => SetProperty(ref repeatOverlay, value); }
+
         private RunLedgerDatabase.RunEntry runEntry;
         public RunLedgerDatabase.RunEntry RunEntry { get => runEntry; set => SetProperty(ref runEntry, value); }
         

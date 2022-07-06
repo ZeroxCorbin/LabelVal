@@ -43,14 +43,14 @@ namespace LabelVal.RunViews
         private void RepeatImage_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
-                ShowImage(((RunLabelControlViewModel)DataContext).Run.RepeatImage);
+                ShowImage(((RunLabelControlViewModel)DataContext).Run.RepeatImage, ((RunLabelControlViewModel)DataContext).RepeatOverlay);
         }
 
-        private bool ShowImage(byte[] image)
+        private bool ShowImage(byte[] image, DrawingImage overlay)
         {
             var dc = new ImageViewerDialogViewModel();
 
-            dc.CreateImage(image);
+            dc.CreateImage(image, overlay);
             if (dc.RepeatImage == null) return false;
 
             RunView yourParentWindow = (RunView)Window.GetWindow(this);
@@ -68,9 +68,9 @@ namespace LabelVal.RunViews
             if (e.LeftButton == MouseButtonState.Pressed)
             {
                 if (((RunLabelControlViewModel)DataContext).Run.LabelImage != null)
-                    ShowImage(((RunLabelControlViewModel)DataContext).Run.LabelImage);
+                    ShowImage(((RunLabelControlViewModel)DataContext).Run.LabelImage, null);
                 else
-                    ShowImage(((RunLabelControlViewModel)DataContext).Run.RepeatGoldenImage);
+                    ShowImage(((RunLabelControlViewModel)DataContext).Run.RepeatGoldenImage, null);
             }
         }
     }

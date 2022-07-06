@@ -65,14 +65,14 @@ namespace LabelVal.WindowViews
         private void RepeatImage_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if(e.LeftButton == MouseButtonState.Pressed)
-                ShowImage(((LabelControlViewModel)DataContext).RepeatImage);
+                ShowImage(((LabelControlViewModel)DataContext).RepeatImage, ((LabelControlViewModel)DataContext).RepeatOverlay);
         }
 
-        private bool ShowImage(byte[] image)
+        private bool ShowImage(byte[] image, DrawingImage overlay)
         {
             var dc = new ImageViewerDialogViewModel();
 
-            dc.CreateImage(image);
+            dc.CreateImage(image, overlay);
             if (dc.RepeatImage == null) return false;
 
             MainWindowView yourParentWindow = (MainWindowView)Window.GetWindow(this);
@@ -88,7 +88,7 @@ namespace LabelVal.WindowViews
         private void LabelImage_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
-                ShowImage(((LabelControlViewModel)DataContext).LabelImage);
+                ShowImage(((LabelControlViewModel)DataContext).LabelImage, null);
         }
     }
 }

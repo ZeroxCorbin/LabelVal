@@ -22,9 +22,17 @@
     <Dialog:CustomDialog.DialogTop>
         <Grid>
             <paz:ZoomBorder Name="ZoomBorder" Margin="3">
+                <Grid>
+                    
+                
                 <Image Source="{Binding RepeatImage}"  Width="{Binding Width}" Height="{Binding Height}"
                        SnapsToDevicePixels="true"
                        RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+                <Image Name="RepeatImageOverlay" Source="{Binding RepeatOverlay}" 
+                        Width="{Binding Width}" Height="{Binding Height}"
+                       SnapsToDevicePixels="true"
+                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+                </Grid>
             </paz:ZoomBorder>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" >

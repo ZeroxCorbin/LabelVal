@@ -16,6 +16,7 @@ using LabelVal.Printer;
 using LabelVal.Utilities;
 using LabelVal.V275;
 using LabelVal.V275.Models;
+using System.Windows.Media;
 
 namespace LabelVal.WindowViewModels
 {
@@ -36,10 +37,11 @@ namespace LabelVal.WindowViewModels
         private byte[] labelImage;
         public byte[] LabelImage { get => labelImage; set => SetProperty(ref labelImage, value); }
 
-        public V275_Job LabelTemplate { get; set; }
-
         private byte[] repeatImage = null;
         public byte[] RepeatImage { get => repeatImage; set => SetProperty(ref repeatImage, value); }
+
+        private DrawingImage repeatOverlay;
+        public DrawingImage RepeatOverlay { get => repeatOverlay; set => SetProperty(ref repeatOverlay, value); }
 
         private bool isGS1Standard;
         public bool IsGS1Standard { get => isGS1Standard; set => SetProperty(ref isGS1Standard, value); }
@@ -146,8 +148,8 @@ namespace LabelVal.WindowViewModels
         private StandardsDatabase StandardsDatabase { get; set; }
 
         public V275_API_Controller V275 { get; private set; }
+        public V275_Job LabelTemplate { get; set; }
         public V275_Job ReadJob { get; set; }
-        //public string StoredJob { get; private set; }
         public V275_Report Report { get; private set; }
 
         public ICommand PrintCommand { get; }
@@ -188,6 +190,25 @@ namespace LabelVal.WindowViewModels
             GetStored();
         }
 
+        private BitmapImage CreateBitmap(byte[] data)
+        {
+            if (data == null || data.Length < 2)
+                return null;
+
+            BitmapImage img = new BitmapImage();
+
+            using (MemoryStream memStream = new MemoryStream(data))
+            {
+                img.BeginInit();
+                img.CacheOption = BitmapCacheOption.OnLoad;
+                img.StreamSource = memStream;
+                //img.DecodePixelWidth = 400;
+                img.EndInit();
+                img.Freeze();
+
+            }
+            return img;
+        }
         public async Task<MessageDialogResult> OkCancelDialog(string title, string message)
         {
 
@@ -200,19 +221,6 @@ namespace LabelVal.WindowViewModels
         {
             LabelImage = File.ReadAllBytes(imagePath);
             LabelImageUID = ImageUtilities.ImageUID(LabelImage);
-            //LabelImage.BeginInit();
-            //LabelImage.UriSource = new Uri(imagePath);
-
-            //// To save significant application memory, set the DecodePixelWidth or
-            //// DecodePixelHeight of the BitmapImage value of the image source to the desired
-            //// height or width of the rendered image. If you don't do this, the application will
-            //// cache the image as though it were rendered as its normal size rather then just
-            //// the size that is displayed.
-            //// Note: In order to preserve aspect ratio, set DecodePixelWidth
-            //// or DecodePixelHeight but not both.
-            //LabelImage.DecodePixelHeight = 400;
-            //LabelImage.EndInit();
-            //LabelImage.Freeze();
         }
 
         public void PrintAction(object parameter)
@@ -244,6 +252,7 @@ namespace LabelVal.WindowViewModels
 
             LabelTemplate = JsonConvert.DeserializeObject<V275_Job>(row.LabelTemplate);
             RepeatImage = row.RepeatImage;
+            RepeatOverlay = CreateRepeatOverlay(LabelTemplate);
             IsGoldenRepeat = true;
 
             List<SectorControlViewModel> tempSectors = new List<SectorControlViewModel>();
@@ -295,7 +304,7 @@ namespace LabelVal.WindowViewModels
                 if (await OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for this label?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
                     return;
 
-            StandardsDatabase.AddRow(GradingStandard, LabelImageUID, JsonConvert.SerializeObject(ReadJob), JsonConvert.SerializeObject(Report), RepeatImage);
+            StandardsDatabase.AddRow(GradingStandard, LabelImageUID, LabelImage, JsonConvert.SerializeObject(ReadJob), JsonConvert.SerializeObject(Report), RepeatImage);
             GetStored();
         }
         private async void ClearStoredAction(object parameter)
@@ -306,7 +315,6 @@ namespace LabelVal.WindowViewModels
                 GetStored();
             }
         }
-
 
 
         private void LoadAction(object parameter) => _ = Load();
@@ -363,9 +371,10 @@ namespace LabelVal.WindowViewModels
 
             ReadJob = V275.Commands.Job;
             Report = V275.Commands.Report;
-            RepeatImage = V275.Commands.Repeatimage;
+            RepeatImage = ConvertToPng(V275.Commands.Repeatimage);
+            RepeatOverlay = CreateRepeatOverlay(ReadJob);
             IsGoldenRepeat = false;
-             
+
             //if (!isRunning)
             //{
             List<SectorControlViewModel> tempSectors = new List<SectorControlViewModel>();
@@ -375,7 +384,7 @@ namespace LabelVal.WindowViewModels
                 if (jSec.type == "verify1D" || jSec.type == "verify2D")
                     if (IsGS1Standard)
                     {
-                        if(jSec.gradingStandard.enabled)
+                        if (jSec.gradingStandard.enabled)
                             isWrongStandard = !(GradingStandard.StartsWith($"{jSec.gradingStandard.standard} TABLE {jSec.gradingStandard.tableId}"));
                         else
                             isWrongStandard = true;
@@ -412,12 +421,129 @@ namespace LabelVal.WindowViewModels
 
             return true;
         }
+
+        private DrawingImage CreateRepeatOverlay(V275_Job job)
+        {
+            var bmp = CreateBitmap(RepeatImage);
+
+            //Draw the image outline the same size as the repeat image
+            GeometryDrawing border = new GeometryDrawing
+            {
+                Geometry = new RectangleGeometry(new System.Windows.Rect(0, 0, bmp.PixelWidth, bmp.PixelHeight)),
+                Pen = new Pen(Brushes.Transparent, 1)
+            };
+
+            GeometryGroup secAreas = new GeometryGroup();
+
+            foreach (var sec in job.sectors)
+                secAreas.Children.Add(new RectangleGeometry(new System.Windows.Rect(sec.left, sec.top, sec.width, sec.height)));
+
+            GeometryDrawing sectors = new GeometryDrawing
+            {
+                Geometry = secAreas,
+                Pen = new Pen(Brushes.Red, 5)
+            };
+
+            DrawingGroup drwGroup = new DrawingGroup();
+            drwGroup.Children.Add(sectors);
+            drwGroup.Children.Add(border);
+
+            DrawingImage geometryImage = new DrawingImage(drwGroup);
+            geometryImage.Freeze();
+            return geometryImage;
+
+            //System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(bmp.PixelWidth, bmp.PixelHeight);
+            //using (var g = System.Drawing.Graphics.FromImage(bitmap))
+            //{
+            //    System.Drawing.Pen p = new System.Drawing.Pen(System.Drawing.Brushes.Red, 5);
+
+            //    foreach (var sec in job.sectors)
+            //    {
+            //        g.DrawRectangle(p, new System.Drawing.Rectangle(sec.left, sec.top, sec.width, sec.height));
+            //        g.DrawString(sec.username, new System.Drawing.Font("Arial", 84, System.Drawing.FontStyle.Bold), System.Drawing.Brushes.Red, new System.Drawing.PointF(sec.left, sec.top - 100));
+            //    }
+
+            //}
+
+            //using (MemoryStream memory = new MemoryStream())
+            //{
+            //    bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Png);
+            //    memory.Position = 0;
+            //    BitmapImage bitmapImage = new BitmapImage();
+            //    bitmapImage.BeginInit();
+            //    bitmapImage.StreamSource = memory;
+            //    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+            //    bitmapImage.EndInit();
+            //    return bitmapImage;
+            //}
+
+
+            //string text = "Verify1D";
+            //Typeface typeface = new Typeface("Arial");
+            //if (typeface.TryGetGlyphTypeface(out GlyphTypeface _glyphTypeface))
+            //{
+
+            //    GlyphRun gr = new GlyphRun
+            //    {
+            //        PixelsPerDip = 4,
+            //        IsSideways = false,
+            //        FontRenderingEmSize = 1.0,
+            //        BidiLevel = 0,
+            //        GlyphTypeface = _glyphTypeface
+            //    };
+
+            //    double textWidth = 0;
+            //    for (int ix = 0; ix < text.Length; ix++)
+            //    {
+            //        ushort glyphIndex = _glyphTypeface.CharacterToGlyphMap[text[ix]];
+            //       gr.GlyphIndices.Add(glyphIndex);
+
+            //        double width = _glyphTypeface.AdvanceWidths[glyphIndex] * 8;
+            //        gr.AdvanceWidths.Add(width);
+
+            //        textWidth += width;
+            //        double textHeight = _glyphTypeface.Height * 8;
+
+
+            //    }
+            //    gr.BaselineOrigin = new System.Windows.Point(0, 0);
+            //    GlyphRunDrawing grd = new GlyphRunDrawing(Brushes.Black, gr);
+            //    drwGroup.Children.Add(grd);
+            //}
+
+
+
+
+
+
+
+
+        }
+
+        private byte[] ConvertToPng(byte[] img)
+        {
+            PngBitmapEncoder encoder = new PngBitmapEncoder();
+            using (var ms = new System.IO.MemoryStream(img))
+            {
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    encoder.Frames.Add(BitmapFrame.Create(ms));
+                    encoder.Save(stream);
+                    stream.Close();
+
+                    return stream.ToArray();
+
+                }
+            }
+        }
+
         private void ClearReadAction(object parameter)
         {
             RepeatImage = null;
             IsGoldenRepeat = false;
             RepeatSectors.Clear();
             DiffSectors.Clear();
+            RepeatOverlay = null;
             ReadJob = null;
             IsStore = false;
 
@@ -427,6 +553,7 @@ namespace LabelVal.WindowViewModels
                 return;
 
             RepeatImage = row.RepeatImage;
+            RepeatOverlay = CreateRepeatOverlay(LabelTemplate);
             IsGoldenRepeat = true;
         }
 

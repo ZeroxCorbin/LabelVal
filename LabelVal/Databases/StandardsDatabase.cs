@@ -14,12 +14,15 @@ namespace LabelVal.Databases
 
         public class Row : Core.BaseViewModel
         {
+            private byte[] labelImage;
+            public byte[] LabelImage { get => labelImage; set => SetProperty(ref labelImage, value); }
+
             private string labelImageUID;
             public string LabelImageUID { get => labelImageUID; set => SetProperty(ref labelImageUID, value); }
 
             private string labelTemplate;
-            public string LabelTemplate { get => labelTemplate; set => SetProperty(ref labelTemplate, value); }  
-            
+            public string LabelTemplate { get => labelTemplate; set => SetProperty(ref labelTemplate, value); }
+
             private string labelReport;
             public string LabelReport { get => labelReport; set => SetProperty(ref labelReport, value); }
 
@@ -27,12 +30,20 @@ namespace LabelVal.Databases
             public byte[] RepeatImage { get => repeatImage; set => SetProperty(ref repeatImage, value); }
 
             public Row(SQLiteDataReader rdr)
-            { 
+            {
+                for (int i = 0; i < rdr.FieldCount; i++)
+                {
+                    if (rdr.GetName(i).Equals("LabelImage", StringComparison.InvariantCultureIgnoreCase))
+                        LabelImage = (byte[])rdr["LabelImage"];
+
+                }
+
                 LabelImageUID = rdr["LabelImageUID"].ToString();
                 LabelTemplate = rdr["LabelTemplate"].ToString();
                 LabelReport = rdr["LabelReport"].ToString();
                 RepeatImage = (byte[])rdr["RepeatImage"];
             }
+
         }
 
         public string FilePath { get; private set; }
@@ -61,7 +72,7 @@ namespace LabelVal.Databases
                 Logger.Info("Opening Database: {file}", FilePath);
                 Connection.Open();
             }
-            
+
             if (Connection.State != System.Data.ConnectionState.Open)
                 return false;
             else
@@ -99,6 +110,8 @@ namespace LabelVal.Databases
             sb.Append(" (");
             sb.Append("LabelImageUID TEXT");
             sb.Append(",");
+            sb.Append("LabelImage BLOB");
+            sb.Append(",");
             sb.Append("LabelTemplate TEXT");
             sb.Append(",");
             sb.Append("LabelReport TEXT");
@@ -127,16 +140,17 @@ namespace LabelVal.Databases
                 command.ExecuteNonQuery();
         }
 
-        public void AddRow(string tableName, Row row) => AddRow(tableName, row.LabelImageUID, row.LabelTemplate, row.LabelReport, row.RepeatImage);
-        public void AddRow(string tableName, string imageUID, string template, string report, byte[] repeatImage)
+        public void AddRow(string tableName, Row row) => AddRow(tableName, row.LabelImageUID, row.LabelImage, row.LabelTemplate, row.LabelReport, row.RepeatImage);
+        public void AddRow(string tableName, string imageUID, byte[] labelImage, string template, string report, byte[] repeatImage)
         {
             if (!Open()) return;
 
             CreateTable(tableName);
 
             StringBuilder sb = new StringBuilder();
-            _ = sb.Append($"INSERT OR REPLACE INTO '{tableName}' (LabelImageUID, LabelTemplate, LabelReport, RepeatImage) VALUES (");
+            _ = sb.Append($"INSERT OR REPLACE INTO '{tableName}' (LabelImageUID, LabelImage, LabelTemplate, LabelReport, RepeatImage) VALUES (");
             _ = sb.Append($"@LabelImageUID,");
+            _ = sb.Append($"@LabelImage,");
             _ = sb.Append($"@LabelTemplate,");
             _ = sb.Append($"@LabelReport,");
             _ = sb.Append($"@RepeatImage);");
@@ -144,6 +158,7 @@ namespace LabelVal.Databases
             using (SQLiteCommand command = new SQLiteCommand(sb.ToString(), Connection))
             {
                 _ = command.Parameters.AddWithValue("LabelImageUID", imageUID);
+                _ = command.Parameters.AddWithValue("LabelImage", labelImage);
                 _ = command.Parameters.AddWithValue("LabelTemplate", template);
                 _ = command.Parameters.AddWithValue("LabelReport", report);
                 _ = command.Parameters.AddWithValue("RepeatImage", repeatImage);
@@ -169,7 +184,7 @@ namespace LabelVal.Databases
                         while (rdr.Read())
                             row = new Row(rdr);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
 
                 }
@@ -206,9 +221,9 @@ namespace LabelVal.Databases
                             return false;
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
-                    
+
                 }
             }
 
