@@ -29,7 +29,11 @@ namespace LabelVal.WindowViewModels
         public string OCVMatchText { get => oCVMatchText; set => SetProperty(ref oCVMatchText, value); }
 
         private bool isSectorMissing;
-        public bool IsSectorMissing { get => isSectorMissing; set => SetProperty(ref isSectorMissing, value); }
+        public bool IsSectorMissing { get => isSectorMissing; set { SetProperty(ref isSectorMissing, value); IsNotEmpty = true; } }
+
+        private string sectorMissingText;
+        public string SectorMissingText { get => sectorMissingText; set => SetProperty(ref sectorMissingText, value); }
+
 
         private bool isNotEmpty = false;
         public bool IsNotEmpty { get => isNotEmpty; set => SetProperty(ref isNotEmpty, value); }

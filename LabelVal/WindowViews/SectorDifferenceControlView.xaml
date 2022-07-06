@@ -422,9 +422,12 @@
                 </Border>
 
                 <Border Grid.Row="7" BorderThickness="1" Padding="1" CornerRadius="3" Visibility="{Binding IsNotOCVMatch, Converter={StaticResource BooleanToVisibilityConverter}}" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
-                    <TextBlock Text="{Binding OCVMatchText}"/>
+                    <TextBlock Text="{Binding OCVMatchText}" Margin="2"/>
                 </Border>
 
+                <Border Grid.Row="7" BorderThickness="1" Padding="1" CornerRadius="3" Visibility="{Binding IsSectorMissing, Converter={StaticResource BooleanToVisibilityConverter}}" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
+                    <TextBlock Text="{Binding SectorMissingText}" Margin="2"/>
+                </Border>
                 
             </Grid>
 

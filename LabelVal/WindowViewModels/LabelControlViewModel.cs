@@ -358,6 +358,7 @@ namespace LabelVal.WindowViewModels
             //if (!isRunning)
             //{
             RepeatSectors.Clear();
+            DiffSectors.Clear();
             ReadJob = null;
             //RepeatImage = null;
             IsStore = false;
@@ -560,21 +561,77 @@ namespace LabelVal.WindowViewModels
         private void GetSectorDiff()
         {
             List<SectorDifferenceViewModel> diff = new List<SectorDifferenceViewModel>();
+
+            //Compare; Do not check for missing her. To keep found at top of list.
             foreach (var sec in LabelSectors)
             {
                 foreach (var cSec in RepeatSectors)
                     if (sec.JobSector.name == cSec.JobSector.name)
                     {
-                        diff.Add(sec.SectorResults.Compare(cSec.SectorResults));
+                        if (sec.JobSector.symbology == cSec.JobSector.symbology)
+                        {
+                            diff.Add(sec.SectorResults.Compare(cSec.SectorResults));
+                            continue;
+                        }
+                        else
+                        {
+                            var dat = new SectorDifferenceViewModel
+                            {
+                                UserName = $"{sec.JobSector.username} (SYMBOLOGY MISMATCH)",
+                                IsSectorMissing = true,
+                                SectorMissingText = $"Label Sector {sec.JobSector.symbology} : Repeat Sector {cSec.JobSector.symbology}"
+                            };
+                            diff.Add(dat);
+                        }
+                    }
+            }
+
+            //Check for missing
+            foreach (var sec in LabelSectors)
+            {
+                bool found = false;
+                foreach (var cSec in RepeatSectors)
+                    if (sec.JobSector.name == cSec.JobSector.name)
+                    {
+                        found = true;
                         continue;
                     }
 
-                //if (!found)
-                //{
-                //    var dat = sec.SectorResults.Compare(new SectorDifferenceViewModel());
-                //    dat.IsSectorMissing = true;
-                //    diff.Add(dat);
-                //}
+                if (!found)
+                {
+                    var dat = new SectorDifferenceViewModel
+                    {
+                        UserName = $"{sec.JobSector.username} (MISSING)",
+                        IsSectorMissing = true,
+                        SectorMissingText = "Not found in Repeat Sectors"
+                    };
+                    diff.Add(dat);
+                }
+
+            }
+
+            //check for missing
+            if(LabelSectors.Count > 0)
+            foreach (var sec in RepeatSectors)
+            {
+                bool found = false;
+                foreach (var cSec in LabelSectors)
+                    if (sec.JobSector.name == cSec.JobSector.name)
+                    {
+                        found = true;
+                        continue;
+                    }
+
+                if (!found)
+                {
+                    var dat = new SectorDifferenceViewModel
+                    {
+                        UserName = $"{sec.JobSector.username} (MISSING)",
+                        IsSectorMissing = true,
+                        SectorMissingText = "Not found in Label Sectors"
+                    };
+                    diff.Add(dat);
+                }
 
             }
 
