@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LabelVal.V275.Models
 {
-    public class V275_Report_InspectSector_Blemish : Core.BaseViewModel
+    public class V275_Report_InspectSector_Blemish
     {
             public string name { get; set; }
             public string type { get; set; }
@@ -17,7 +17,7 @@ namespace LabelVal.V275.Models
             public int height { get; set; }
             public Data data { get; set; }
 
-        public class Data : Core.BaseViewModel
+        public class Data
         {
             public V275_Report_InspectSector_Common.Alarm[] alarms { get; set; }
             public int blemishCount { get; set; }
@@ -25,7 +25,7 @@ namespace LabelVal.V275.Models
             public Blemish[] blemishList { get; set; }
         }
 
-        public class Blemish : Core.BaseViewModel
+        public class Blemish
         {
             public string type { get; set; }
             public int top { get; set; }

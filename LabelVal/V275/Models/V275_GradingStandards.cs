@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace LabelVal.V275.Models
 {
-    public class V275_GradingStandards : Core.BaseViewModel
+    public class V275_GradingStandards
     {
         public GradingStandard[] gradingStandards { get; set; }
 
 
-        public class GradingStandard : Core.BaseViewModel
+        public class GradingStandard
         {
             public string standard { get; set; }
             public string tableId { get; set; }
@@ -19,7 +19,7 @@ namespace LabelVal.V275.Models
             public Specifications specifications { get; set; }
         }
 
-        public class Specifications : Core.BaseViewModel
+        public class Specifications
         {
             public string symbology { get; set; }
             public string symbolType { get; set; }

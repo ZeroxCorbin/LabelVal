@@ -9,8 +9,7 @@
             xmlns:ViewModels="clr-namespace:LabelVal.WindowViewModels"
             xmlns:Converters="clr-namespace:LabelVal.Converters"
             xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
-             xmlns:paz="clr-namespace:Wpf.Controls.PanAndZoom;assembly=Wpf.Controls.PanAndZoom"
-              Dialog:DialogParticipation.Register="{Binding}"
+            Dialog:DialogParticipation.Register="{Binding}"
             d:DataContext="{d:DesignInstance Type=ViewModels:LabelControlViewModel}"
             mc:Ignorable="d" 
             d:DesignHeight="450" d:DesignWidth="1024" Loaded="UserControl_Loaded" Unloaded="UserControl_Unloaded">

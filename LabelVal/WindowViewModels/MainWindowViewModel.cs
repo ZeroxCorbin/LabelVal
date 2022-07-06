@@ -767,8 +767,7 @@ namespace LabelVal.WindowViewModels
                 {
                     try
                     {
-                        using (File.Create(Path.Combine(SimulatorImageDirectory, "file"))) ;
-
+                        File.Create(Path.Combine(SimulatorImageDirectory, "file")).Close();
                         File.Delete(Path.Combine(SimulatorImageDirectory, "file"));
                     }
                     catch (Exception ex)

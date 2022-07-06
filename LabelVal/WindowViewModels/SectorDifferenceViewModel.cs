@@ -37,7 +37,7 @@ namespace LabelVal.WindowViewModels
         private bool isGS1Standard;
         public bool IsGS1Standard { get => isGS1Standard; set => SetProperty(ref isGS1Standard, value); }
 
-        public class GradeValue : V275_Report_InspectSector_Common.GradeValue, INotifyPropertyChanged
+        public class GradeValue : V275_Report_InspectSector_Common.GradeValue
         {
             public string name { get; set; }
 
@@ -53,7 +53,7 @@ namespace LabelVal.WindowViewModels
         public ObservableCollection<GradeValue> GradeValues { get => gradeValues; set => SetProperty(ref gradeValues, value); }
 
 
-        public class ValueResult : V275_Report_InspectSector_Common.ValueResult, INotifyPropertyChanged
+        public class ValueResult : V275_Report_InspectSector_Common.ValueResult
         {
             public string name { get; set; }
 
@@ -72,7 +72,7 @@ namespace LabelVal.WindowViewModels
         public ObservableCollection<ValueResult> Gs1ValueResults { get => gs1ValueResults; set => SetProperty(ref gs1ValueResults, value); }
 
 
-        public class Grade : V275_Report_InspectSector_Common.Grade, INotifyPropertyChanged
+        public class Grade : V275_Report_InspectSector_Common.Grade
         {
             public string name { get; set; }
 
@@ -88,7 +88,7 @@ namespace LabelVal.WindowViewModels
         public ObservableCollection<Grade> Gs1Grades { get => gs1Grades; set => SetProperty(ref gs1Grades, value); }
 
 
-        public class Value : V275_Report_InspectSector_Common.Value, INotifyPropertyChanged
+        public class Value : V275_Report_InspectSector_Common.Value
         {
             public string name { get; set; }
 
@@ -107,7 +107,7 @@ namespace LabelVal.WindowViewModels
         public ObservableCollection<V275_Report_InspectSector_Common.Alarm> Alarms { get => alarms; set => SetProperty(ref alarms, value); }
 
 
-        public class Blemish : V275_Report_InspectSector_Blemish.Blemish, INotifyPropertyChanged
+        public class Blemish : V275_Report_InspectSector_Blemish.Blemish
         {
             public System.Drawing.Rectangle rectangle => new System.Drawing.Rectangle(this.top, this.left, this.width, this.height);
 
@@ -487,16 +487,16 @@ namespace LabelVal.WindowViewModels
 
         }
 
-        public void Clear()
-        {
-            GradeValues.Clear();
-            ValueResults.Clear();
-            Gs1ValueResults.Clear();
-            Gs1Grades.Clear();
-            Values.Clear();
-            Alarms.Clear();
-            Blemishes.Clear();
+        //public void Clear()
+        //{
+        //    GradeValues.Clear();
+        //    ValueResults.Clear();
+        //    Gs1ValueResults.Clear();
+        //    Gs1Grades.Clear();
+        //    Values.Clear();
+        //    Alarms.Clear();
+        //    Blemishes.Clear();
 
-        }
+        //}
     }
 }

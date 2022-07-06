@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace LabelVal.V275.Models
 {
-    public class V275_Product : Core.BaseViewModel
+    public class V275_Product
     {
         public string name { get; set; }
         public string part { get; set; }
         public Version version { get; set; }
         public string compileDate { get; set; }
 
-        public class Version : Core.BaseViewModel
+        public class Version
         {
             public int major { get; set; }
             public int minor { get; set; }

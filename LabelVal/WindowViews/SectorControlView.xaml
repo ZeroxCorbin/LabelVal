@@ -9,9 +9,7 @@
             xmlns:ViewModels="clr-namespace:LabelVal.WindowViewModels"
             xmlns:V275="clr-namespace:LabelVal.V275.Models"
             xmlns:Converters="clr-namespace:LabelVal.Converters"
-            xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro" 
              xmlns:V275Converters="clr-namespace:LabelVal.V275.Converters"
-             Dialog:DialogParticipation.Register="{Binding}"
             d:DataContext="{d:DesignInstance Type=ViewModels:SectorControlViewModel}"
             mc:Ignorable="d" 
             d:DesignHeight="450" d:DesignWidth="800">

@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace LabelVal.V275.Models
 {
-    public class V275_Event_Base : Core.BaseViewModel
+    public class V275_Event_Base
     {
         public Event _event { get; set; }
 
-        public class Event : Core.BaseViewModel
+        public class Event
         {
             public string time { get; set; }
             public string source { get; set; }

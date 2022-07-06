@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace LabelVal.V275.Models
 {
-    public class V275_Devices : Core.BaseViewModel
+    public class V275_Devices
     {
         public Node[] nodes { get; set; }
         public Camera[] cameras { get; set; }
 
-        public class Node : Core.BaseViewModel
+        public class Node
         {
             public int enumeration { get; set; }
             public string cameraMAC { get; set; }
@@ -23,7 +23,7 @@ namespace LabelVal.V275.Models
             public int packetLimiting { get; set; }
         }
 
-        public class Camera : Core.BaseViewModel
+        public class Camera
         {
             public string type { get; set; }
             public string gateway { get; set; }

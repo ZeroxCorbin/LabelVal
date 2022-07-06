@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using LabelVal.Dialogs;
 using LabelVal.WindowViewModels;
+using MahApps.Metro.Controls.Dialogs;
 
 namespace LabelVal.WindowViews
 {
@@ -38,8 +39,9 @@ namespace LabelVal.WindowViews
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)
         {
+            DialogParticipation.SetRegister(this, null);
+
             viewModel.BringIntoView -= ViewModel_BringIntoView;
-            
             viewModel = null;
         }
 

@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace LabelVal.V275.Models
 {
-    public class V275_DetectResponse : Core.BaseViewModel
+    public class V275_DetectResponse
     {
             public bool active { get; set; }
             public Region region { get; set; }
             public Detection[] detections { get; set; }
-        public class Region : Core.BaseViewModel
+        public class Region
         {
             public int x { get; set; }
             public int y { get; set; }
@@ -19,14 +19,14 @@ namespace LabelVal.V275.Models
             public int height { get; set; }
         }
 
-        public class Detection : Core.BaseViewModel
+        public class Detection
         {
             public string symbology { get; set; }
             public Region1 region { get; set; }
             public int orientation { get; set; }
         }
 
-        public class Region1 : Core.BaseViewModel
+        public class Region1
         {
             public int x { get; set; }
             public int y { get; set; }

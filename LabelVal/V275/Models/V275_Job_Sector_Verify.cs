@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LabelVal.V275.Models
 {
-    public class V275_Job_Sector_Verify : Core.BaseViewModel
+    public class V275_Job_Sector_Verify
     {
         public string name { get; set; }
         public string username { get; set; }
@@ -26,7 +26,7 @@ namespace LabelVal.V275.Models
         public int orientation { get; set; }
         public string metaData { get; set; } = string.Empty;
 
-        public class Matchsettings : Core.BaseViewModel
+        public class Matchsettings
         {
             public int dataLength { get; set; } = 0;
             public string fieldMask { get; set; } = String.Empty;
@@ -47,14 +47,14 @@ namespace LabelVal.V275.Models
             public int uniqueSetNumber { get; set; } = -1;
         }
 
-        public class Stepcharset : Core.BaseViewModel
+        public class Stepcharset
         {
             public string value0 { get; set; } = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             public string value1 { get; set; } = "0123456789";
             public string value2 { get; set; } = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         }
 
-        public class Gradingstandard : Core.BaseViewModel
+        public class Gradingstandard
         {
             public bool enabled { get; set; } = false;
             public string standard { get; set; } = "GS1";
@@ -64,7 +64,7 @@ namespace LabelVal.V275.Models
             public Specifications specifications { get; set; } = new Specifications();
         }
 
-        public class Specifications : Core.BaseViewModel
+        public class Specifications
         {
             public string symbology { get; set; } = "unknown";
             public string symbolType { get; set; } = "unknown";

@@ -482,27 +482,27 @@ namespace LabelVal.WindowViewModels
                 return null;
         }
 
-        public void Clear()
-        {
-            LabelImage = null;
-            RepeatImage = null;
-            ReadJob = null;
+        //public void Clear()
+        //{
+        //    LabelImage = null;
+        //    RepeatImage = null;
+        //    ReadJob = null;
 
-            LabelTemplate = null;
+        //    LabelTemplate = null;
 
-            foreach (var sec in RepeatSectors)
-                sec.Clear();
+        //    foreach (var sec in RepeatSectors)
+        //        sec.Clear();
 
-            RepeatSectors.Clear();
+        //    RepeatSectors.Clear();
 
-            foreach (var sec in LabelSectors)
-                sec.Clear();
+        //    foreach (var sec in LabelSectors)
+        //        sec.Clear();
 
-            LabelSectors.Clear();
+        //    LabelSectors.Clear();
 
-            dialogCoordinator = null;
-            StandardsDatabase = null;
-            V275 = null;
-        }
+        //    dialogCoordinator = null;
+        //    StandardsDatabase = null;
+        //    V275 = null;
+        //}
     }
 }

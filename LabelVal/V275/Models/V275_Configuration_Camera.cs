@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LabelVal.V275.Models
 {
-    public class V275_Configuration_Camera : Core.BaseViewModel
+    public class V275_Configuration_Camera
     {
 
         public TypeValueString flip { get; set; }
@@ -15,13 +15,13 @@ namespace LabelVal.V275.Models
         public TypeValueString backupVoidMode { get; set; }
         public TypeValueInteger backupVoidRepeatCount { get; set; }
 
-        public class TypeValueString : Core.BaseViewModel
+        public class TypeValueString
         {
             public string type { get; set; }
             public string value { get; set; }
         }
 
-        public class TypeValueInteger : Core.BaseViewModel
+        public class TypeValueInteger
         {
             public string type { get; set; }
             public int value { get; set; } = -1;

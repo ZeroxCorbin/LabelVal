@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LabelVal.V275.Models
 {
-    public class V275_Report_InspectSector_OCV : Core.BaseViewModel
+    public class V275_Report_InspectSector_OCV
     {
         public string name { get; set; }
         public string type { get; set; }
@@ -16,7 +16,7 @@ namespace LabelVal.V275.Models
         public int height { get; set; }
         public Data data { get; set; }
 
-        public class Data : Core.BaseViewModel
+        public class Data
         {
             public V275_Report_InspectSector_Common.Alarm[] alarms { get; set; }
             public string text { get; set; }
@@ -24,7 +24,7 @@ namespace LabelVal.V275.Models
             public Chardata[] charData { get; set; }
         }
 
-        public class Chardata : Core.BaseViewModel
+        public class Chardata
         {
             public string id { get; set; }
             public int match { get; set; }
@@ -35,7 +35,7 @@ namespace LabelVal.V275.Models
             public Bestmatch[] bestMatches { get; set; }
         }
 
-        public class Bounds : Core.BaseViewModel
+        public class Bounds
         {
             public int left { get; set; }
             public int top { get; set; }
@@ -43,7 +43,7 @@ namespace LabelVal.V275.Models
             public int height { get; set; }
         }
 
-        public class Bestmatch : Core.BaseViewModel
+        public class Bestmatch
         {
             public string id { get; set; }
             public int fontIndex { get; set; }

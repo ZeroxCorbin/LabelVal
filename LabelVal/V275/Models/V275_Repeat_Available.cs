@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace LabelVal.V275.Models
 {
-    internal class V275_Repeat_Available : Core.BaseViewModel
+    internal class V275_Repeat_Available
     {
 
-        public class Rootobject : Core.BaseViewModel
+        public class Rootobject
         {
             public int[] Property1 { get; set; }
         }

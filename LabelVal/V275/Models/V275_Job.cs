@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LabelVal.V275.Models
 {
-    public class V275_Job : Core.BaseViewModel
+    public class V275_Job
     {
 
         public string name { get; set; }
@@ -19,11 +19,11 @@ namespace LabelVal.V275.Models
         public Iopoints ioPoints { get; set; }
         public string metaData { get; set; }
 
-        public class Goldenimage : Core.BaseViewModel
+        public class Goldenimage
         {
         }
 
-        public class Synchronize : Core.BaseViewModel
+        public class Synchronize
         {
             public string source { get; set; }
             public int x { get; set; }
@@ -33,12 +33,12 @@ namespace LabelVal.V275.Models
             public int labelHeight { get; set; }
         }
 
-        public class Iopoints : Core.BaseViewModel
+        public class Iopoints
         {
             public Iopoint[] ioPoints { get; set; }
         }
 
-        public class Iopoint : Core.BaseViewModel
+        public class Iopoint
         {
             public int ioLine { get; set; }
             public string name { get; set; }
@@ -48,7 +48,7 @@ namespace LabelVal.V275.Models
             public int alarmCategory { get; set; }
         }
 
-        public class Sector : Core.BaseViewModel
+        public class Sector
         {
             public string name { get; set; }
             public string username { get; set; }
@@ -72,7 +72,7 @@ namespace LabelVal.V275.Models
             public string metaData { get; set; }
         }
 
-        public class Matchsettings : Core.BaseViewModel
+        public class Matchsettings
         {
             public int dataLength { get; set; }
             public string fieldMask { get; set; }
@@ -93,7 +93,7 @@ namespace LabelVal.V275.Models
             public int uniqueSetNumber { get; set; }
         }
 
-        public class Gradingstandard : Core.BaseViewModel
+        public class Gradingstandard
         {
             public bool enabled { get; set; }
             public string standard { get; set; }
@@ -103,7 +103,7 @@ namespace LabelVal.V275.Models
             public int barheightFailOption { get; set; }
         }
 
-        public class Specifications : Core.BaseViewModel
+        public class Specifications
         {
             public string symbology { get; set; }
             public string symbolType { get; set; }
@@ -117,7 +117,7 @@ namespace LabelVal.V275.Models
             public float aperture { get; set; }
         }
 
-        public class Alarm : Core.BaseViewModel
+        public class Alarm
         {
             public string alarmId { get; set; }
             public int category { get; set; }

@@ -59,14 +59,14 @@ namespace LabelVal.WindowViewModels
             
         }
 
-        public void Clear()
-        {
-            JobSector = null;
-            ReportSector = null;
+        //public void Clear()
+        //{
+        //    JobSector = null;
+        //    ReportSector = null;
 
-            if(SectorResults != null)
-                SectorResults.Clear();
+        //    if(SectorResults != null)
+        //        SectorResults.Clear();
 
-        }
+        //}
     }
 }

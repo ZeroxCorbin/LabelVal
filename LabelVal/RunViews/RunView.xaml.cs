@@ -16,6 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using LabelVal.RunViewModels;
 using LabelVal.WindowViewModels;
+using MahApps.Metro.Controls.Dialogs;
 
 namespace LabelVal.RunViews
 {
@@ -181,6 +182,11 @@ namespace LabelVal.RunViews
         private void btnCompareSettings_Click(object sender, RoutedEventArgs e)
         {
             CompareSettings.IsOpen = true;
+        }
+
+        private void MetroWindow_Unloaded(object sender, RoutedEventArgs e)
+        {
+            DialogParticipation.SetRegister(this, null);
         }
     }
 }

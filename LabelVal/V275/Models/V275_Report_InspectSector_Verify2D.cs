@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LabelVal.V275.Models
 {
-    public class V275_Report_InspectSector_Verify2D : Core.BaseViewModel
+    public class V275_Report_InspectSector_Verify2D
     {
         public string name { get; set; }
         public string type { get; set; }
@@ -16,7 +16,7 @@ namespace LabelVal.V275.Models
         public int height { get; set; }
         public Data data { get; set; }
 
-        public class Data : Core.BaseViewModel
+        public class Data
         {
             public V275_Report_InspectSector_Common.Alarm[] alarms { get; set; }
             public string symbolType { get; set; }
@@ -45,7 +45,7 @@ namespace LabelVal.V275.Models
             public Gs1results gs1Results { get; set; }
         }
 
-        public class Gs1symbolquality : Core.BaseViewModel
+        public class Gs1symbolquality
         {
             public V275_Report_InspectSector_Common.ValueResult symbolWidth { get; set; }
             public V275_Report_InspectSector_Common.ValueResult symbolHeight { get; set; }
@@ -64,7 +64,7 @@ namespace LabelVal.V275.Models
             public int versionInfo { get; set; }
         }
 
-        public class Gs1results : Core.BaseViewModel
+        public class Gs1results
         {
             public bool validated { get; set; }
             public string input { get; set; }
@@ -73,7 +73,7 @@ namespace LabelVal.V275.Models
             public string error { get; set; }
         }
 
-        public class Fields : Core.BaseViewModel
+        public class Fields
         {
             public string _01 { get; set; }
             public string _90 { get; set; }

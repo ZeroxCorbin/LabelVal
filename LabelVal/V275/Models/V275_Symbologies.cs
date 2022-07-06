@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace LabelVal.V275.Models
 {
-    public class V275_Symbologies : Core.BaseViewModel
+    public class V275_Symbologies
     {
-        public class Symbol : Core.BaseViewModel
+        public class Symbol
         {
             public string symbolType { get; set; }
             public string symbology { get; set; }

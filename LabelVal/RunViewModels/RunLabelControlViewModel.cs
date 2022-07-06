@@ -192,26 +192,26 @@ namespace LabelVal.RunViewModels
                 return null;
         }
 
-        public void Clear()
-        {
-            foreach (var sec in RepeatSectors)
-                sec.Clear();
-            RepeatSectors.Clear();
-            RepeatSectors = null;
+        //public void Clear()
+        //{
+        //    foreach (var sec in RepeatSectors)
+        //        sec.Clear();
+        //    RepeatSectors.Clear();
+        //    RepeatSectors = null;
 
-            foreach (var sec in LabelSectors)
-                sec.Clear();
-            LabelSectors.Clear();
-            LabelSectors = null;
+        //    foreach (var sec in LabelSectors)
+        //        sec.Clear();
+        //    LabelSectors.Clear();
+        //    LabelSectors = null;
 
-            foreach (var sec in DiffSectors)
-                sec.Clear();
-            DiffSectors.Clear();
-            DiffSectors = null;
+        //    foreach (var sec in DiffSectors)
+        //        sec.Clear();
+        //    DiffSectors.Clear();
+        //    DiffSectors = null;
 
-            Run = null;
-            RunEntry = null;
-        }
+        //    Run = null;
+        //    RunEntry = null;
+        //}
 
     }
 }

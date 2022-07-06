@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LabelVal.V275.Models
 {
-    public class V275_Events_System : Core.BaseViewModel
+    public class V275_Events_System
     {
 
 
@@ -16,7 +16,7 @@ namespace LabelVal.V275.Models
         public string name { get; set; }
         public Data data { get; set; }
 
-        public class Data : Core.BaseViewModel
+        public class Data
         {
             public string token { get; set; }
             public string id { get; set; }
@@ -35,13 +35,13 @@ namespace LabelVal.V275.Models
             public Detection[] detections { get; set; }
         }
 
-        public class Detection : Core.BaseViewModel
+        public class Detection
         {
             public string symbology { get; set; }
             public Region region { get; set; }
             public int orientation { get; set; }
 
-            public class Region : Core.BaseViewModel
+            public class Region
             {
                 public int x { get; set; }
                 public int y { get; set; }
@@ -51,12 +51,12 @@ namespace LabelVal.V275.Models
         }
 
 
-        public class Rootobject : Core.BaseViewModel
+        public class Rootobject
         {
             public Event _event { get; set; }
         }
 
-        public class Event : Core.BaseViewModel
+        public class Event
         {
             public string time { get; set; }
             public string source { get; set; }

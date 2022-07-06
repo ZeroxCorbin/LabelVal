@@ -15,7 +15,7 @@
                 d:DataContext="{d:DesignInstance Type=ViewModels:RunViewModel}"
                 mc:Ignorable="d"
                 Height="567" Width="1505"
-                SaveWindowPosition="True">
+                SaveWindowPosition="True" Unloaded="MetroWindow_Unloaded">
 
     <mah:MetroWindow.Title>
         <MultiBinding StringFormat="Label Validator : {0}">
