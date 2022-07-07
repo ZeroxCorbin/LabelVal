@@ -588,7 +588,7 @@ namespace LabelVal.WindowViewModels
         private void SelectStandard()
         {
             StandardEntry std;
-            if ((std = Standards.FirstOrDefault((e) => e.Name.Equals(StoredStandard.Name))) != null)
+            if (StoredStandard != null && (std = Standards.FirstOrDefault((e) => e.Name.Equals(StoredStandard.Name))) != null)
                 SelectedStandard = std;
             else if (Standards.Count > 0)
                 SelectedStandard = Standards.First();

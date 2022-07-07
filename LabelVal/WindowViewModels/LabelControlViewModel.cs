@@ -245,8 +245,13 @@ namespace LabelVal.WindowViewModels
 
             if (row == null)
             {
-                RepeatImage = null;
-                IsGoldenRepeat = false;
+                if (RepeatSectors.Count == 0)
+                {
+                    RepeatImage = null;
+                    RepeatOverlay = null;
+                    IsGoldenRepeat = false;
+                }
+
                 return;
             }
 
@@ -360,7 +365,9 @@ namespace LabelVal.WindowViewModels
             RepeatSectors.Clear();
             DiffSectors.Clear();
             ReadJob = null;
-            //RepeatImage = null;
+
+                //RepeatImage = null;
+
             IsStore = false;
             //}
 

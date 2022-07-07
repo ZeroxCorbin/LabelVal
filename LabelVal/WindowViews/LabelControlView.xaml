@@ -83,8 +83,29 @@
                        Source="{Binding LabelImage, Converter={StaticResource bytesToImage}}"
                        MouseDown="LabelImage_MouseDown"
                        RenderOptions.BitmapScalingMode="NearestNeighbor"/>
-                
-                <TextBlock Text="{Binding LabelComment}" Foreground="Red" Margin="3" HorizontalAlignment="Left"/>
+
+                <Label HorizontalAlignment="Right" VerticalAlignment="Top" Margin="3">
+                    <Label.Style>
+                        <Style TargetType="{x:Type Label}">
+                            <Setter Property="Content">
+                                <Setter.Value>
+                                    <Grid Background="White">
+                                        <IconPacks:PackIconMaterial Width="20" Height="20" Kind="Information" Foreground="Red"/>
+                                    </Grid>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="ToolTip" Value="{Binding LabelComment}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding LabelComment}" Value="">
+                                    <Setter Property="Content" Value=""/>
+                                    <Setter Property="ToolTip" Value="{x:Null}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Label.Style>
+                    
+                </Label>
+                <!--<TextBlock Text="{Binding LabelComment}" Foreground="Red" Margin="3" HorizontalAlignment="Left"/>-->
             </Grid>
 
             <Grid Grid.Row="0" Grid.Column="1">

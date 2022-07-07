@@ -1,0 +1,3 @@
+SO Barcode Quality Errors - Data Matrix : 
+1. UEC - Unused Error Correction 
+2. Reflectance Margin 

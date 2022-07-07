@@ -103,6 +103,7 @@ namespace LabelVal
         {
             base.OnStartup(e);
 
+            //RedrawFiducial(@"D:\OneDrive - OMRON\Omron\OCR\Applications\LabelVal\LabelVal\Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_49a.png");
             ChangeColorBlindTheme(App.Settings.GetValue("App.IsColorBlind", false));
 
             // Set the application theme to Dark.Green
@@ -188,9 +189,10 @@ namespace LabelVal
             // load your photo
             using (FileStream fs = new FileStream(path, FileMode.Open))
             {
-                Image photo = Bitmap.FromStream(fs);
+                Bitmap photo = (Bitmap)Bitmap.FromStream(fs);
                 fs.Close();
-
+                Bitmap newmap = new Bitmap(photo.Width, photo.Height);
+                newmap.SetResolution(photo.HorizontalResolution, photo.VerticalResolution);
                 //if (photo.Height != 2400)
                 //    File.AppendAllText($"{UserDataDirectory}\\Small Images List", Path.GetFileName(path));
 
@@ -202,9 +204,9 @@ namespace LabelVal
                 if ((photo.Height > 1200) || photo.Height < 1000)
                     return;
 
-                using (var graphics = Graphics.FromImage(photo))
+                using (var graphics = Graphics.FromImage(newmap))
                 {
-
+                    graphics.DrawImage(photo, 0, 0, photo.Width, photo.Height);
                     //graphics.FillRectangle(Brushes.White, 0, 1900, 210, photo.Height - 1900);
                     //graphics.FillRectangle(Brushes.Black, 30, 1950, 90, 90);
 
@@ -212,7 +214,7 @@ namespace LabelVal
                     graphics.FillRectangle(Brushes.White, 0, 976, 150, photo.Height - 976);
                     graphics.FillRectangle(Brushes.Black, 15, 975, 45, 45);
 
-                    photo.Save(path, ImageFormat.Png);
+                    newmap.Save(path, ImageFormat.Png);
                 }
             }
 

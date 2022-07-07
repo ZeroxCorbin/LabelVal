@@ -1,1 +1,3 @@
-All sectors bad.
+1. UPC, Decodability Error
+2. QR Code, Reflectance Margin Error 
+3. Upside-Down Text 

@@ -1,1 +1,2 @@
-Mismatch to file (file states 200).
+Mismatch Error: Expected Output 999 (Match File Contains Value of 999) and 
+Actual Output 028 (028 Printed on Label under Inspection)

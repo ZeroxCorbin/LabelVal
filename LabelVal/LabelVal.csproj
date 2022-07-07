@@ -1117,6 +1117,9 @@
     <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_09.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_09.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_10.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -1225,6 +1228,9 @@
     <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_37.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_37.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_38.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -1244,9 +1250,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_43.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_43.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_44.png">
@@ -1273,7 +1276,13 @@
     <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_49.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_49a.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_50.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_39a.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_01.png">
@@ -1304,6 +1313,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_09.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_09.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_10.png">
@@ -1414,6 +1426,9 @@
     <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_37.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_37.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_38.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -1433,9 +1448,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_43.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_43.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_44.png">

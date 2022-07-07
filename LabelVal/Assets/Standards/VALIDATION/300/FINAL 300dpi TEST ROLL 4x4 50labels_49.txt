@@ -1,1 +1,2 @@
-DataMatrix code has a blemish.
+ISO Barcode Quality Error - Reflectance Margin Error  
+(There is a Dot in QR Code Symbol)

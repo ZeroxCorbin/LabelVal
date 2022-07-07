@@ -1,1 +1,1 @@
-Damaged character (1) in serial number.
+ISO Barcode Quality Error - Data Matrix - Fixed Pattern Damage (FPD) 

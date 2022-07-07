@@ -1,1 +1,1 @@
-Bad UPC code.
+ISO Barcode Quality Error - UPC Decodability
