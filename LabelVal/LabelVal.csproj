@@ -223,6 +223,16 @@
       <DependentUpon>ImageViewerDialogView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\ImageViewerDialogViewModel.cs" />
+    <Compile Include="JSON\JsonViewer.xaml.cs">
+      <DependentUpon>JsonViewer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="JSON\TemplateSelectors\JPropertyDataTemplateSelector.cs" />
+    <Compile Include="JSON\ValueConverters\ComplexPropertyMethodToValueConverter.cs" />
+    <Compile Include="JSON\ValueConverters\JArrayLengthConverter.cs" />
+    <Compile Include="JSON\ValueConverters\JPropertyTypeToColorConverter.cs" />
+    <Compile Include="JSON\ValueConverters\JValueConverter.cs" />
+    <Compile Include="JSON\ValueConverters\JValueTypeToColorConverter.cs" />
+    <Compile Include="JSON\ValueConverters\MethodToValueConverter.cs" />
     <Compile Include="Models\SectorCompareSettingsModel.cs" />
     <Compile Include="RunControllers\RunController.cs" />
     <Compile Include="Printer\PrintControl.cs" />
@@ -318,6 +328,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="JSON\JsonViewer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="RunViews\CompareSettingsControlView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -367,52 +381,10 @@
     <Content Include="Assets\Images\OCV.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1 NEW\300\DataBar_Omni_Label.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1 NEW\300\DataBar_Stacked_Omni_Label.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1 NEW\300\EAN13_Label.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1 NEW\300\EAN8_Label.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1 NEW\300\UPC_A_Label.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1 NEW\300\UPC_E_Label.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1 NEW\600\DataBar_Omni_Label.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1 NEW\600\DataBar_Stacked_Omni_Label.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1 NEW\600\EAN13_Label.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1 NEW\600\EAN8_Label.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1 NEW\600\UPC_A_Label.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1 NEW\600\UPC_E_Label.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Assets\Standards\OCR OCV RECOGNITION\300\OCROCV_Recognition.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Standards\OCR OCV RECOGNITION\600\OCROCV_Recognition.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Standards\SYMBOLOGIES A NEW\300\Symbologies A.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Standards\SYMBOLOGIES A NEW\600\Symbologies A.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Standards\SYMBOLOGIES A\600\25 All Symbology Part A PDF_01.png">
@@ -1477,6 +1449,8 @@
     <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_50.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="JSON\Resources\expand28.png" />
+    <Resource Include="JSON\Resources\two326.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Assets\Standards\GS1 TABLE 1\300\" />

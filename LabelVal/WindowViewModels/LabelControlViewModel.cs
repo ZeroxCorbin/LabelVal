@@ -17,6 +17,8 @@ using LabelVal.Utilities;
 using LabelVal.V275;
 using LabelVal.V275.Models;
 using System.Windows.Media;
+using System.Globalization;
+using System.Windows;
 
 namespace LabelVal.WindowViewModels
 {
@@ -42,6 +44,11 @@ namespace LabelVal.WindowViewModels
 
         private DrawingImage repeatOverlay;
         public DrawingImage RepeatOverlay { get => repeatOverlay; set => SetProperty(ref repeatOverlay, value); }
+
+        private StandardsDatabase.Row currentRow;
+        public StandardsDatabase.Row CurrentRow { get => currentRow; set => SetProperty(ref currentRow, value); }
+
+
 
         private bool isGS1Standard;
         public bool IsGS1Standard { get => isGS1Standard; set => SetProperty(ref isGS1Standard, value); }
@@ -149,7 +156,7 @@ namespace LabelVal.WindowViewModels
 
         public V275_API_Controller V275 { get; private set; }
         public V275_Job LabelTemplate { get; set; }
-        public V275_Job ReadJob { get; set; }
+        public V275_Job RepeatTemplate { get; set; }
         public V275_Report Report { get; private set; }
 
         public ICommand PrintCommand { get; }
@@ -241,9 +248,9 @@ namespace LabelVal.WindowViewModels
             LabelSectors.Clear();
             IsLoad = false;
 
-            StandardsDatabase.Row row = StandardsDatabase.GetRow(GradingStandard, LabelImageUID);
+            CurrentRow = StandardsDatabase.GetRow(GradingStandard, LabelImageUID);
 
-            if (row == null)
+            if (CurrentRow == null)
             {
                 if (RepeatSectors.Count == 0)
                 {
@@ -255,13 +262,14 @@ namespace LabelVal.WindowViewModels
                 return;
             }
 
-            LabelTemplate = JsonConvert.DeserializeObject<V275_Job>(row.LabelTemplate);
-            RepeatImage = row.RepeatImage;
-            RepeatOverlay = CreateRepeatOverlay(LabelTemplate);
+            LabelTemplate = JsonConvert.DeserializeObject<V275_Job>(CurrentRow.LabelTemplate);
+
+            RepeatImage = CurrentRow.RepeatImage;
+
             IsGoldenRepeat = true;
 
             List<SectorControlViewModel> tempSectors = new List<SectorControlViewModel>();
-            if (!string.IsNullOrEmpty(row.LabelReport) && !string.IsNullOrEmpty(row.LabelTemplate))
+            if (!string.IsNullOrEmpty(CurrentRow.LabelReport) && !string.IsNullOrEmpty(CurrentRow.LabelTemplate))
                 foreach (var jSec in LabelTemplate.sectors)
                 {
                     bool isWrongStandard = false;
@@ -276,7 +284,7 @@ namespace LabelVal.WindowViewModels
                         else
                             isWrongStandard = false;
 
-                    foreach (JObject rSec in JsonConvert.DeserializeObject<V275_Report>(row.LabelReport).inspectLabel.inspectSector)
+                    foreach (JObject rSec in JsonConvert.DeserializeObject<V275_Report>(CurrentRow.LabelReport).inspectLabel.inspectSector)
                     {
                         if (jSec.name == rSec["name"].ToString())
                         {
@@ -302,6 +310,8 @@ namespace LabelVal.WindowViewModels
 
                 IsLoad = true;
             }
+
+            RepeatOverlay = CreateRepeatOverlay(false, false);
         }
         private async void StoreAction(object parameter)
         {
@@ -309,7 +319,7 @@ namespace LabelVal.WindowViewModels
                 if (await OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for this label?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
                     return;
 
-            StandardsDatabase.AddRow(GradingStandard, LabelImageUID, LabelImage, JsonConvert.SerializeObject(ReadJob), JsonConvert.SerializeObject(Report), RepeatImage);
+            StandardsDatabase.AddRow(GradingStandard, LabelImageUID, LabelImage, JsonConvert.SerializeObject(RepeatTemplate), JsonConvert.SerializeObject(Report), RepeatImage);
             GetStored();
         }
         private async void ClearStoredAction(object parameter)
@@ -364,9 +374,6 @@ namespace LabelVal.WindowViewModels
             //{
             RepeatSectors.Clear();
             DiffSectors.Clear();
-            ReadJob = null;
-
-                //RepeatImage = null;
 
             IsStore = false;
             //}
@@ -374,19 +381,28 @@ namespace LabelVal.WindowViewModels
             if (!await V275.Read(repeat))
             {
                 Status = V275.Status;
+
+                RepeatTemplate = null;
+                Report = null;
+
+                if (!IsGoldenRepeat)
+                {
+                    RepeatImage = null;
+                    RepeatOverlay = null;
+                }
+
                 return false;
             }
 
-            ReadJob = V275.Commands.Job;
+            RepeatTemplate = V275.Commands.Job;
             Report = V275.Commands.Report;
             RepeatImage = ConvertToPng(V275.Commands.Repeatimage);
-            RepeatOverlay = CreateRepeatOverlay(ReadJob);
             IsGoldenRepeat = false;
 
             //if (!isRunning)
             //{
             List<SectorControlViewModel> tempSectors = new List<SectorControlViewModel>();
-            foreach (var jSec in ReadJob.sectors)
+            foreach (var jSec in RepeatTemplate.sectors)
             {
                 bool isWrongStandard = false;
                 if (jSec.type == "verify1D" || jSec.type == "verify2D")
@@ -427,10 +443,12 @@ namespace LabelVal.WindowViewModels
             //}
             GetSectorDiff();
 
+            RepeatOverlay = CreateRepeatOverlay(true, false);
+
             return true;
         }
 
-        private DrawingImage CreateRepeatOverlay(V275_Job job)
+        private DrawingImage CreateRepeatOverlay(bool isRepeat, bool isDetailed)
         {
             var bmp = CreateBitmap(RepeatImage);
 
@@ -442,9 +460,30 @@ namespace LabelVal.WindowViewModels
             };
 
             GeometryGroup secAreas = new GeometryGroup();
+            DrawingGroup drwGroup = new DrawingGroup();
 
-            foreach (var sec in job.sectors)
-                secAreas.Children.Add(new RectangleGeometry(new System.Windows.Rect(sec.left, sec.top, sec.width, sec.height)));
+            if (!isRepeat)
+            {
+                foreach (var sec in LabelTemplate.sectors)
+                {
+                    var area = new RectangleGeometry(new System.Windows.Rect(sec.left, sec.top, sec.width, sec.height));
+                    secAreas.Children.Add(area);
+                }
+
+                if (isDetailed)
+                    drwGroup = GetModuleGrid(LabelTemplate.sectors, LabelSectors);
+            }
+            else
+            {
+                foreach (var sec in RepeatTemplate.sectors)
+                {
+                    var area = new RectangleGeometry(new System.Windows.Rect(sec.left, sec.top, sec.width, sec.height));
+                    secAreas.Children.Add(area);
+                }
+
+                if (isDetailed)
+                    drwGroup = GetModuleGrid(RepeatTemplate.sectors, RepeatSectors);
+            }
 
             GeometryDrawing sectors = new GeometryDrawing
             {
@@ -452,25 +491,32 @@ namespace LabelVal.WindowViewModels
                 Pen = new Pen(Brushes.Red, 5)
             };
 
-            DrawingGroup drwGroup = new DrawingGroup();
+
+
+            //DrawingGroup drwGroup = new DrawingGroup();
             drwGroup.Children.Add(sectors);
+            //drwGroup.Children.Add(mGrid);
             drwGroup.Children.Add(border);
 
             DrawingImage geometryImage = new DrawingImage(drwGroup);
             geometryImage.Freeze();
             return geometryImage;
 
+
             //System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(bmp.PixelWidth, bmp.PixelHeight);
             //using (var g = System.Drawing.Graphics.FromImage(bitmap))
             //{
-            //    System.Drawing.Pen p = new System.Drawing.Pen(System.Drawing.Brushes.Red, 5);
-
-            //    foreach (var sec in job.sectors)
+            //    using (System.Drawing.Pen p = new System.Drawing.Pen(System.Drawing.Brushes.Red, 5))
             //    {
-            //        g.DrawRectangle(p, new System.Drawing.Rectangle(sec.left, sec.top, sec.width, sec.height));
-            //        g.DrawString(sec.username, new System.Drawing.Font("Arial", 84, System.Drawing.FontStyle.Bold), System.Drawing.Brushes.Red, new System.Drawing.PointF(sec.left, sec.top - 100));
+            //        if (!isRepeat)
+            //        {
+            //            DrawModuleGrid(g, LabelTemplate.sectors, LabelSectors);
+            //        }
+            //        else
+            //        {
+            //            DrawModuleGrid(g, RepeatTemplate.sectors, RepeatSectors);
+            //        }
             //    }
-
             //}
 
             //using (MemoryStream memory = new MemoryStream())
@@ -484,7 +530,6 @@ namespace LabelVal.WindowViewModels
             //    bitmapImage.EndInit();
             //    return bitmapImage;
             //}
-
 
             //string text = "Verify1D";
             //Typeface typeface = new Typeface("Arial");
@@ -504,7 +549,7 @@ namespace LabelVal.WindowViewModels
             //    for (int ix = 0; ix < text.Length; ix++)
             //    {
             //        ushort glyphIndex = _glyphTypeface.CharacterToGlyphMap[text[ix]];
-            //       gr.GlyphIndices.Add(glyphIndex);
+            //        gr.GlyphIndices.Add(glyphIndex);
 
             //        double width = _glyphTypeface.AdvanceWidths[glyphIndex] * 8;
             //        gr.AdvanceWidths.Add(width);
@@ -519,14 +564,266 @@ namespace LabelVal.WindowViewModels
             //    drwGroup.Children.Add(grd);
             //}
 
-
-
-
-
-
-
-
         }
+
+        private DrawingGroup GetModuleGrid(V275_Job.Sector[] sectors, ObservableCollection<SectorControlViewModel> parsedSectors)
+        {
+            DrawingGroup drwGroup = new DrawingGroup();
+            //GeometryGroup moduleGrid = new GeometryGroup();
+
+            foreach (var sec in sectors)
+            {
+                if (sec.symbology == "qr" || sec.symbology == "dataMatrix")
+                {
+                    var sect = parsedSectors.FirstOrDefault((e) => e.JobSector.name.Equals(sec.name));
+
+                    if (sect != null)
+                    {
+                        var res = (V275_Report_InspectSector_Verify2D)sect.ReportSector;
+
+                        if (res.data.extendedData != null)
+                        {
+                            if (res.data.extendedData.ModuleReflectance != null)
+                            {
+                                GeometryGroup moduleGrid = new GeometryGroup();
+                                DrawingGroup textGrp = new DrawingGroup();
+
+                                var qzX = (sec.symbology == "dataMatrix") ? 1 : res.data.extendedData.QuietZone;
+                                var qzY = res.data.extendedData.QuietZone;
+
+                                var dX = (sec.symbology == "dataMatrix") ? 0 : (res.data.extendedData.DeltaX / 2);
+                                var dY = (sec.symbology == "dataMatrix") ? (res.data.extendedData.DeltaY * res.data.extendedData.NumRows) : (res.data.extendedData.DeltaY / 2);
+
+                                var startX = 0;// sec.left + res.data.extendedData.Xnw - dX + 1 - (qzX * res.data.extendedData.DeltaX);
+                                var startY = 0;// sec.top + res.data.extendedData.Ynw - dY + 1 - (qzY * res.data.extendedData.DeltaY);
+
+                                int cnt = 0;
+
+                                for (int row = -qzX; row < res.data.extendedData.NumRows + qzX; row++)
+                                {
+                                    for (int col = -qzY; col < res.data.extendedData.NumColumns + qzY; col++)
+                                    {
+                                        var area1 = new RectangleGeometry(new System.Windows.Rect(startX + (res.data.extendedData.DeltaX * (col + qzX)), startY + (res.data.extendedData.DeltaY * (row + qzY)), res.data.extendedData.DeltaX, res.data.extendedData.DeltaY));
+                                        moduleGrid.Children.Add(area1);
+
+                                        string text = res.data.extendedData.ModuleReflectance[cnt].ToString();
+                                        Typeface typeface = new Typeface("Arial");
+                                        if (typeface.TryGetGlyphTypeface(out GlyphTypeface _glyphTypeface))
+                                        {
+                                            ushort[] _glyphIndexes = new ushort[text.Length];
+                                            double[] _advanceWidths = new double[text.Length];
+
+                                            double textWidth = 0;
+                                            for (int ix = 0; ix < text.Length; ix++)
+                                            {
+                                                ushort glyphIndex = _glyphTypeface.CharacterToGlyphMap[text[ix]];
+                                                _glyphIndexes[ix] = glyphIndex;
+
+                                                double width = _glyphTypeface.AdvanceWidths[glyphIndex] * 2;
+                                                _advanceWidths[ix] = width;
+
+                                                textWidth += width;
+                                            }
+
+                                            GlyphRun gr = new GlyphRun(_glyphTypeface, 0, false, 2, 1.0f, _glyphIndexes,
+                                                new System.Windows.Point(startX + (res.data.extendedData.DeltaX * (col + qzX)) + 1,
+                                                startY + (res.data.extendedData.DeltaY * (row + qzY)) + (_glyphTypeface.Height * (res.data.extendedData.DeltaY / 4))),
+                                                _advanceWidths, null, null, null, null, null, null);
+
+
+                                            GlyphRunDrawing grd = new GlyphRunDrawing(Brushes.Blue, gr);
+
+                                            textGrp.Children.Add(grd);
+                                        }
+
+                                        text = res.data.extendedData.ModuleModulation[cnt++].ToString();
+                                        Typeface typeface1 = new Typeface("Arial");
+                                        if (typeface1.TryGetGlyphTypeface(out GlyphTypeface _glyphTypeface1))
+                                        {
+                                            ushort[] _glyphIndexes = new ushort[text.Length];
+                                            double[] _advanceWidths = new double[text.Length];
+
+                                            double textWidth = 0;
+                                            for (int ix = 0; ix < text.Length; ix++)
+                                            {
+                                                ushort glyphIndex = _glyphTypeface1.CharacterToGlyphMap[text[ix]];
+                                                _glyphIndexes[ix] = glyphIndex;
+
+                                                double width = _glyphTypeface1.AdvanceWidths[glyphIndex] * 2;
+                                                _advanceWidths[ix] = width;
+
+                                                textWidth += width;
+                                            }
+
+                                            GlyphRun gr = new GlyphRun(_glyphTypeface1, 0, false, 2, 1.0f, _glyphIndexes,
+                                                new System.Windows.Point(startX + (res.data.extendedData.DeltaX * (col + qzX)) + 1,
+                                                startY + (res.data.extendedData.DeltaY * (row + qzY)) + (_glyphTypeface1.Height * (res.data.extendedData.DeltaY / 2))),
+                                                _advanceWidths, null, null, null, null, null, null);
+
+                                            GlyphRunDrawing grd = new GlyphRunDrawing(Brushes.Blue, gr);
+                                            textGrp.Children.Add(grd);
+                                        }
+
+                                        //FormattedText formattedText = new FormattedText(
+                                        //    res.data.extendedData.ModuleReflectance[row + col].ToString(),
+                                        //    CultureInfo.GetCultureInfo("en-us"),
+                                        //    FlowDirection.LeftToRight,
+                                        //    new Typeface("Arial"),
+                                        //    4,
+                                        //    System.Windows.Media.Brushes.Black // This brush does not matter since we use the geometry of the text.
+                                        //);
+
+                                        //// Build the geometry object that represents the text.
+                                        //Geometry textGeometry = formattedText.BuildGeometry(new System.Windows.Point(startX + (res.data.extendedData.DeltaX * row), startY + (res.data.extendedData.DeltaY * col)));
+                                        //moduleGrid.Children.Add(textGeometry);
+                                    }
+                                }
+
+                                TransformGroup transGroup = new TransformGroup();
+
+
+                                transGroup.Children.Add(new RotateTransform(
+                                    sec.orientation,
+                                    (res.data.extendedData.DeltaX * (res.data.extendedData.NumColumns + (qzX * 2))) / 2,
+                                    (res.data.extendedData.DeltaY * (res.data.extendedData.NumRows + (qzY * 2))) / 2));
+
+                                transGroup.Children.Add(new TranslateTransform(sec.left, sec.top));
+
+                                //transGroup.Children.Add(new TranslateTransform (res.data.extendedData.Xnw - dX + 1 - (qzX * res.data.extendedData.DeltaX), res.data.extendedData.Ynw - dY + 1 - (qzY * res.data.extendedData.DeltaY)));
+                                if (sec.orientation == 0)
+                                    transGroup.Children.Add(new TranslateTransform(
+                                        res.data.extendedData.Xnw - (qzX * res.data.extendedData.DeltaX) - dX + 1,
+                                        res.data.extendedData.Ynw - (qzY * res.data.extendedData.DeltaY) - dY + 1));
+
+                                //works for dataMatrix
+                                //if (sec.orientation == 90)
+                                //    transGroup.Children.Add(new TranslateTransform(
+                                //         sec.width - res.data.extendedData.Ynw - (qzY * res.data.extendedData.DeltaY) - 1, 
+                                //         res.data.extendedData.Xnw - (qzX * res.data.extendedData.DeltaX) - dX + 1));
+
+
+                                if (sec.orientation == 90)
+                                {
+                                    double x;
+                                    if (sec.symbology == "dataMatrix")
+                                        x = sec.width - res.data.extendedData.Ynw - (qzY * res.data.extendedData.DeltaY) - 1;
+                                    else
+                                        x = sec.width - res.data.extendedData.Ynw - dY - (res.data.extendedData.NumColumns + qzY) * res.data.extendedData.DeltaY;
+
+                                    transGroup.Children.Add(new TranslateTransform(
+                                         x,
+                                         res.data.extendedData.Xnw - (qzX * res.data.extendedData.DeltaX) - dX + 1));
+                                }
+
+                                if (sec.orientation == 180)
+                                {
+                                    transGroup.Children.Add(new TranslateTransform(
+                                        res.data.extendedData.Xnw - (qzX * res.data.extendedData.DeltaX) - dX + 1,
+                                        res.data.extendedData.Ynw - (qzY * res.data.extendedData.DeltaY) - dY + 1));
+                                }
+
+
+
+
+                                moduleGrid.Transform = transGroup;
+                                textGrp.Transform = transGroup;
+
+                                GeometryDrawing mGrid = new GeometryDrawing
+                                {
+                                    Geometry = moduleGrid,
+                                    Pen = new Pen(Brushes.Yellow, 0.25)
+                                };
+
+
+                                drwGroup.Children.Add(mGrid);
+                                drwGroup.Children.Add(textGrp);
+                            }
+                        }
+                    }
+                }
+            }
+
+            //GeometryDrawing mGrid = new GeometryDrawing
+            //{
+            //    Geometry = moduleGrid,
+            //    Pen = new Pen(Brushes.Yellow, 0.25)
+            //};
+
+
+            //drwGroup.Children.Add(mGrid);
+
+            return drwGroup;
+        }
+
+        private GeometryGroup DrawModuleGrid(System.Drawing.Graphics g, V275_Job.Sector[] sectors, ObservableCollection<SectorControlViewModel> parsedSectors)
+        {
+            GeometryGroup moduleGrid = new GeometryGroup();
+            using (System.Drawing.Pen p = new System.Drawing.Pen(System.Drawing.Brushes.Red, 5))
+            {
+                using (System.Drawing.Pen p1 = new System.Drawing.Pen(System.Drawing.Brushes.Yellow, 0.025f))
+                {
+                    using (System.Drawing.Brush b = new System.Drawing.SolidBrush(System.Drawing.Color.Yellow))
+                    {
+                        foreach (var sec in sectors)
+                        {
+
+                            g.DrawRectangle(p, new System.Drawing.Rectangle(sec.left, sec.top, sec.width, sec.height));
+                            //g.DrawString(sec.username, new System.Drawing.Font("Arial", 84, System.Drawing.FontStyle.Bold), System.Drawing.Brushes.Red, new System.Drawing.PointF(sec.left, sec.top - 100));
+
+                            if (sec.type == "verify2D")
+                            {
+
+                                var sect = parsedSectors.FirstOrDefault((e) => e.JobSector.name.Equals(sec.name));
+
+                                if (sect != null)
+                                {
+                                    var res = (V275_Report_InspectSector_Verify2D)sect.ReportSector;
+
+                                    if (res.data.extendedData != null)
+                                    {
+                                        if (res.data.extendedData.ModuleReflectance != null)
+                                        {
+                                            //var startX = (area.Rect.Left + (area.Rect.Width / 2)) - ((res.data.extendedData.NumColumns / 2) * res.data.extendedData.DeltaX);
+                                            //var startY = (area.Rect.Top + (area.Rect.Height / 2)) - ((res.data.extendedData.NumRows / 2) * res.data.extendedData.DeltaY);
+                                            var startX = Math.Round(sec.left + res.data.extendedData.Xnw - (res.data.extendedData.DeltaX / 2) + 1);
+                                            var startY = Math.Round(sec.top + res.data.extendedData.Ynw - (res.data.extendedData.DeltaY / 2) + 1);
+                                            //var endX = (area.Rect.Left + (area.Rect.Width / 2)) + ((res.data.extendedData.NumColumns / 2) * res.data.extendedData.DeltaX);
+                                            //var endY = (area.Rect.Top + (area.Rect.Height / 2)) + ((res.data.extendedData.NumRows / 2) * res.data.extendedData.DeltaY);
+
+                                            for (int row = 0; row < res.data.extendedData.NumRows; row++)
+                                            {
+                                                for (int col = 0; col < res.data.extendedData.NumColumns; col++)
+                                                {
+                                                    g.DrawRectangle(p1, new System.Drawing.Rectangle((int)(startX + (res.data.extendedData.DeltaX * row)), (int)(startY + (res.data.extendedData.DeltaY * col)), (int)res.data.extendedData.DeltaX, (int)res.data.extendedData.DeltaX));
+                                                    //var area1 = new RectangleGeometry(new System.Windows.Rect(startX + (res.data.extendedData.DeltaX * row), startY + (res.data.extendedData.DeltaY * col), res.data.extendedData.DeltaX, res.data.extendedData.DeltaX));
+                                                    //moduleGrid.Children.Add(area1);
+
+                                                    //FormattedText formattedText = new FormattedText(
+                                                    //    res.data.extendedData.ModuleReflectance[row+col].ToString(),
+                                                    //    CultureInfo.GetCultureInfo("en-us"),
+                                                    //    FlowDirection.LeftToRight,
+                                                    //    new Typeface("Arial"),
+                                                    //    4,
+                                                    //    System.Windows.Media.Brushes.Black // This brush does not matter since we use the geometry of the text.
+                                                    //);
+                                                    g.DrawString(res.data.extendedData.ModuleReflectance[row + col].ToString(), new System.Drawing.Font("Arial", 4), b, new System.Drawing.Point((int)(startX + (res.data.extendedData.DeltaX * row)), (int)(startY + (res.data.extendedData.DeltaY * col))));
+                                                    //// Build the geometry object that represents the text.
+                                                    //Geometry textGeometry = formattedText.BuildGeometry(new System.Windows.Point(startX + (res.data.extendedData.DeltaX * row), startY + (res.data.extendedData.DeltaY * col)));
+                                                    //moduleGrid.Children.Add(textGeometry);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return moduleGrid;
+        }
+
 
         private byte[] ConvertToPng(byte[] img)
         {
@@ -547,21 +844,27 @@ namespace LabelVal.WindowViewModels
 
         private void ClearReadAction(object parameter)
         {
+            RepeatTemplate = null;
             RepeatImage = null;
-            IsGoldenRepeat = false;
-            RepeatSectors.Clear();
-            DiffSectors.Clear();
             RepeatOverlay = null;
-            ReadJob = null;
+            RepeatSectors.Clear();
+
+            DiffSectors.Clear();
+
             IsStore = false;
 
-            StandardsDatabase.Row row = StandardsDatabase.GetRow(GradingStandard, LabelImageUID);
+            CurrentRow = StandardsDatabase.GetRow(GradingStandard, LabelImageUID);
 
-            if (row == null)
+            if (CurrentRow == null)
+            {
+                IsGoldenRepeat = false;
+                RepeatImage = null;
+                RepeatOverlay = null;
                 return;
+            }
 
-            RepeatImage = row.RepeatImage;
-            RepeatOverlay = CreateRepeatOverlay(LabelTemplate);
+            RepeatImage = CurrentRow.RepeatImage;
+            RepeatOverlay = CreateRepeatOverlay(false, false);
             IsGoldenRepeat = true;
         }
 
@@ -618,29 +921,29 @@ namespace LabelVal.WindowViewModels
             }
 
             //check for missing
-            if(LabelSectors.Count > 0)
-            foreach (var sec in RepeatSectors)
-            {
-                bool found = false;
-                foreach (var cSec in LabelSectors)
-                    if (sec.JobSector.name == cSec.JobSector.name)
+            if (LabelSectors.Count > 0)
+                foreach (var sec in RepeatSectors)
+                {
+                    bool found = false;
+                    foreach (var cSec in LabelSectors)
+                        if (sec.JobSector.name == cSec.JobSector.name)
+                        {
+                            found = true;
+                            continue;
+                        }
+
+                    if (!found)
                     {
-                        found = true;
-                        continue;
+                        var dat = new SectorDifferenceViewModel
+                        {
+                            UserName = $"{sec.JobSector.username} (MISSING)",
+                            IsSectorMissing = true,
+                            SectorMissingText = "Not found in Label Sectors"
+                        };
+                        diff.Add(dat);
                     }
 
-                if (!found)
-                {
-                    var dat = new SectorDifferenceViewModel
-                    {
-                        UserName = $"{sec.JobSector.username} (MISSING)",
-                        IsSectorMissing = true,
-                        SectorMissingText = "Not found in Label Sectors"
-                    };
-                    diff.Add(dat);
                 }
-
-            }
 
             foreach (var d in diff)
                 DiffSectors.Add(d);
@@ -677,7 +980,7 @@ namespace LabelVal.WindowViewModels
         //{
         //    LabelImage = null;
         //    RepeatImage = null;
-        //    ReadJob = null;
+        //    RepeatTemplate = null;
 
         //    LabelTemplate = null;
 

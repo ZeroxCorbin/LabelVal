@@ -43,6 +43,32 @@ namespace LabelVal.V275.Models
 
             public Gs1symbolquality gs1SymbolQuality { get; set; }
             public Gs1results gs1Results { get; set; }
+
+            public ModuleData extendedData { get; set; }
+
+        }
+
+        public class ModuleData
+        {
+            public int[] ModuleModulation { get; set; }
+            public int[] ModuleReflectance { get; set; }
+
+            public int QuietZone { get; set; }
+
+            public int NumRows { get; set; }
+            public int NumColumns { get; set; }
+
+            public double DeltaX { get; set; }
+            public double DeltaY { get; set; }
+
+            public double Xne { get; set; }
+            public double Yne { get; set; }
+
+            public double Xnw { get; set; }
+            public double Ynw { get; set; }
+
+            public double Xsw { get; set; }
+            public double Ysw { get; set; }
         }
 
         public class Gs1symbolquality

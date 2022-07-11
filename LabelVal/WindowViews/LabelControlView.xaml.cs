@@ -83,6 +83,7 @@ namespace LabelVal.WindowViews
             MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance.ShowMetroDialogAsync(yourParentWindow.DataContext, new ImageViewerDialogView() { DataContext = dc });
 
             return true;
+
         }
 
         private void LabelImage_MouseDown(object sender, MouseButtonEventArgs e)
@@ -90,5 +91,44 @@ namespace LabelVal.WindowViews
             if (e.LeftButton == MouseButtonState.Pressed)
                 ShowImage(((LabelControlViewModel)DataContext).LabelImage, null);
         }
+
+        private void LabelSectors_Click(object sender, RoutedEventArgs e)
+        {
+            if (((LabelControlViewModel)DataContext).CurrentRow != null)
+            {
+                LabelJobJsonView.Load(((LabelControlViewModel)DataContext).CurrentRow.LabelTemplate, "Template");
+                LabelResultJsonView.Load(((LabelControlViewModel)DataContext).CurrentRow.LabelReport, "Results");
+                LabelJsonPopup.PlacementTarget = (Button)sender;
+                LabelJsonPopup.IsOpen = true;
+            }
+        }
+
+        private void RepeatSectors_Click(object sender, RoutedEventArgs e)
+        {
+            if(((LabelControlViewModel)DataContext).Report != null)
+            {
+                JsonView.Load(Newtonsoft.Json.JsonConvert.SerializeObject(((LabelControlViewModel)DataContext).Report), "Results");
+
+                JsonPopup.PlacementTarget = (Button)sender;
+
+                JsonPopup.IsOpen = true;
+            }
+
+        }
+
+
+        //        JsonViewer.JsonViewer.JsonViewer jsonViewer { get; set; } = null;
+        //        private void LabelSectors_Click(object sender, RoutedEventArgs e)
+        //        {
+        //            if (jsonViewer == null)
+        //            {
+        //jsonViewer = new JsonViewer.JsonViewer.JsonViewer();
+        //                jsonViewer.Clo
+        //            }
+
+
+
+
+        //        }
     }
 }
