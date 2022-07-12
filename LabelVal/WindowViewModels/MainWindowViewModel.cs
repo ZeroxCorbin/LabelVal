@@ -772,6 +772,9 @@ namespace LabelVal.WindowViewModels
                     }
                     catch (Exception ex)
                     {
+                        UserMessage = ex.Message;
+
+                        Logger.Error(ex);
                         return false;
                     }
                     return true;
@@ -880,6 +883,7 @@ namespace LabelVal.WindowViewModels
                     var sim = new Simulator.SimulatorFileHandler();
                     if (!sim.DeleteAllImages())
                     {
+                        UserMessage = "Could not delete all simulator images.";
                         label.IsWorking = false;
                         return;
                     }
@@ -888,6 +892,7 @@ namespace LabelVal.WindowViewModels
                     {
                         if (!sim.CopyImage(label.LabelImagePath))
                         {
+                            UserMessage = "Could not copy the image to the simulator images directory.";
                             label.IsWorking = false;
                             return;
                         }
@@ -896,6 +901,7 @@ namespace LabelVal.WindowViewModels
                     {
                         if (!sim.SaveImage(label.LabelImagePath, label.RepeatImage))
                         {
+                            UserMessage = "Could not save the image to the simulator images directory.";
                             label.IsWorking = false;
                             return;
                         }
@@ -910,6 +916,7 @@ namespace LabelVal.WindowViewModels
                 }
                 catch (Exception ex)
                 {
+                    UserMessage = ex.Message;
                     label.IsWorking = false;
                     Logger.Error(ex);
                 }

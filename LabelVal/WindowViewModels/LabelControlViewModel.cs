@@ -443,7 +443,7 @@ namespace LabelVal.WindowViewModels
             //}
             GetSectorDiff();
 
-            RepeatOverlay = CreateRepeatOverlay(true, false);
+            RepeatOverlay = CreateRepeatOverlay(true, true);
 
             return true;
         }
