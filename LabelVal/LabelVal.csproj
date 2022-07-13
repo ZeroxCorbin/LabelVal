@@ -291,6 +291,9 @@
     <Compile Include="WindowViews\SectorControlView.xaml.cs">
       <DependentUpon>SectorControlView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WindowViews\SectorDetailsControlView.xaml.cs">
+      <DependentUpon>SectorDetailsControlView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WindowViews\SectorDifferenceControlView.xaml.cs">
       <DependentUpon>SectorDifferenceControlView.xaml</DependentUpon>
     </Compile>
@@ -357,6 +360,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="WindowViews\SectorControlView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WindowViews\SectorDetailsControlView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

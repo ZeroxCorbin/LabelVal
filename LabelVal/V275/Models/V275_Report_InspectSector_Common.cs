@@ -19,6 +19,7 @@ namespace LabelVal.V275.Models
         public class Overallgrade
         {
             public Grade grade { get; set; }
+            [JsonProperty ("string")]
             public string _string { get; set; }
         }
 

@@ -39,6 +39,11 @@ namespace LabelVal.V275.Models
             public V275_Report_InspectSector_Common.ValueResult quietZoneLeft { get; set; }
             public V275_Report_InspectSector_Common.ValueResult quietZoneRight { get; set; }
 
+            public V275_Report_InspectSector_Common.GradeValue unusedErrorCorrection { get; set; }
+
+            public V275_Report_InspectSector_Common.GradeValue cwYeild { get; set; }
+            public V275_Report_InspectSector_Common.GradeValue cwPrintQuality { get; set; }
+
             public V275_Report_InspectSector_Common.GradeValue minimumReflectance { get; set; }
             public V275_Report_InspectSector_Common.Value maximumReflectance { get; set; }
             public Gs1symbolquality gs1SymbolQuality { get; set; }

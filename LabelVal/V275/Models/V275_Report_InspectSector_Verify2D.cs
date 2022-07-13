@@ -58,6 +58,12 @@ namespace LabelVal.V275.Models
             public int NumRows { get; set; }
             public int NumColumns { get; set; }
 
+            public double CosAngle0 { get; set; }
+            public double CosAngle1 { get; set; }
+
+            public double SinAngle0 { get; set; }
+            public double SinAngle1 { get; set; }
+
             public double DeltaX { get; set; }
             public double DeltaY { get; set; }
 

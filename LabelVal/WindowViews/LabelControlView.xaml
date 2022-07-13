@@ -9,16 +9,20 @@
              xmlns:json="clr-namespace:JsonViewer.JsonViewer"
             xmlns:ViewModels="clr-namespace:LabelVal.WindowViewModels"
             xmlns:Converters="clr-namespace:LabelVal.Converters"
+              xmlns:V275Converters="clr-namespace:LabelVal.V275.Converters"
             xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
             Dialog:DialogParticipation.Register="{Binding}"
             d:DataContext="{d:DesignInstance Type=ViewModels:LabelControlViewModel}"
             mc:Ignorable="d" 
-            d:DesignHeight="450" d:DesignWidth="1024" Loaded="UserControl_Loaded" Unloaded="UserControl_Unloaded">
+            d:DesignHeight="450" d:DesignWidth="1424" Loaded="UserControl_Loaded" Unloaded="UserControl_Unloaded">
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="booltovis"/>
         <Converters:BytesToImageConverter x:Key="bytesToImage"/>
         <Converters:ShortenUIDConverter x:Key="shortenUID"/>
+        <Converters:StringToUpperSpacedConverter x:Key="stringToUpper"/>
+        <Converters:FloatStringTrimConverter x:Key="floatTrim"/>
+        <V275Converters:V275_OCMatchModeToString x:Key="matchModeToString"/>
     </UserControl.Resources>
 
     <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="2" Margin="5" HorizontalAlignment="Left">
@@ -30,13 +34,90 @@
                 <ColumnDefinition Width="280"/>
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
-
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition />
             </Grid.RowDefinitions>
 
-            <Grid>
+            <Popup x:Name="LabelSectorsDetailsPopup" StaysOpen="False">
+                <Popup.Style>
+                    <Style TargetType="{x:Type Popup}"/>
+                </Popup.Style>
+
+                <Border Grid.Row="2" Grid.ColumnSpan="4" Padding="3" BorderThickness="2"
+                        BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding LabelSectors}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel IsItemsHost="True" MaxWidth="1024"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <local:SectorDetailsControlView/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Border>
+
+            </Popup>
+            <Popup x:Name="RepeatSectorsDetailsPopup" StaysOpen="False">
+                <Popup.Style>
+                    <Style TargetType="{x:Type Popup}"/>
+                </Popup.Style>
+                <Border Padding="3" BorderThickness="2"
+                        BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding RepeatSectors}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel IsItemsHost="True" MaxWidth="1024"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <local:SectorDetailsControlView />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Border>
+            </Popup>
+            <Popup x:Name="RepeatJsonPopup" StaysOpen="False">
+                <Popup.Style>
+                    <Style TargetType="{x:Type Popup}"/>
+                </Popup.Style>
+                <Border Padding="3" BorderThickness="2"
+                        BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                    <json:JsonViewer x:Name="RepeatResultJsonView"/>
+                </Border>
+            </Popup>
+            <Popup x:Name="LabelJsonPopup" StaysOpen="False">
+                <Popup.Style>
+                    <Style TargetType="{x:Type Popup}"/>
+                </Popup.Style>
+                <StackPanel Orientation="Horizontal">
+                    <Border Padding="3" BorderThickness="2"
+                            BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                            Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                        <json:JsonViewer x:Name="LabelJobJsonView"/>
+                    </Border>
+                    <Border Padding="3" BorderThickness="2"
+                            BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                            Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                        <json:JsonViewer x:Name="LabelResultJsonView"/>
+                    </Border>
+                </StackPanel>
+            </Popup>
+            
+            <Grid Grid.Row="0" Grid.Column="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition/>
@@ -50,11 +131,11 @@
                     <TextBlock Text="Label UID" HorizontalAlignment="Center"/>
                     <TextBlock Text="{Binding LabelImageUID, Converter={StaticResource shortenUID}}" ToolTip="{Binding LabelImageUID}"/>
                 </StackPanel>
-
-                <TextBlock Grid.Column="1" Grid.Row="0" Text="Label Image" HorizontalAlignment="Center" Margin="0,0,30,0"
+                <TextBlock Grid.Column="1" Grid.Row="0"
+                           Text="Label Image" HorizontalAlignment="Center" Margin="0,0,30,0"
                            ToolTip="The Label Image file from the '.\Standards' directory."/>
-
-                <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
+                <StackPanel Grid.Column="1" Grid.Row="1"
+                            Orientation="Horizontal" HorizontalAlignment="Center">
 
                     <mah:NumericUpDown Value="{Binding PrintCount}" Minimum="1" Maximum="100" Interval="1" Margin="2"
                                            IsEnabled="{Binding IsNotLoggedIn_Control}"/>
@@ -78,38 +159,6 @@
 
                 </StackPanel>
             </Grid>
-
-            <Grid Grid.Row="1" Grid.Column="0">
-                <Image x:Name="LabelImage" Margin="3" MaxHeight="400" Width="400"
-                       Source="{Binding LabelImage, Converter={StaticResource bytesToImage}}"
-                       MouseDown="LabelImage_MouseDown"
-                       RenderOptions.BitmapScalingMode="NearestNeighbor"
-                       HorizontalAlignment="Left" VerticalAlignment="Top"/>
-
-                <Label HorizontalAlignment="Right" VerticalAlignment="Top" Margin="3">
-                    <Label.Style>
-                        <Style TargetType="{x:Type Label}">
-                            <Setter Property="Content">
-                                <Setter.Value>
-                                    <Grid Background="White">
-                                        <IconPacks:PackIconMaterial Width="20" Height="20" Kind="Information" Foreground="Red"/>
-                                    </Grid>
-                                </Setter.Value>
-                            </Setter>
-                            <Setter Property="ToolTip" Value="{Binding LabelComment}"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding LabelComment}" Value="">
-                                    <Setter Property="Content" Value=""/>
-                                    <Setter Property="ToolTip" Value="{x:Null}"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Label.Style>
-
-                </Label>
-                <!--<TextBlock Text="{Binding LabelComment}" Foreground="Red" Margin="3" HorizontalAlignment="Left"/>-->
-            </Grid>
-
             <Grid Grid.Row="0" Grid.Column="1">
                 <Grid.RowDefinitions>
                     <RowDefinition/>
@@ -129,36 +178,6 @@
                     </Button.LayoutTransform>
                 </Button>
 
-                <Popup x:Name="JsonPopup" StaysOpen="False">
-                    <Popup.Style>
-                        <Style TargetType="{x:Type Popup}"/>
-                    </Popup.Style>
-                    <Border Padding="3" BorderThickness="2"
-                        BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
-                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-                        <json:JsonViewer x:Name="JsonView"/>
-                    </Border>
-                </Popup>
-
-
-                <Popup x:Name="LabelJsonPopup" StaysOpen="False">
-                    <Popup.Style>
-                        <Style TargetType="{x:Type Popup}"/>
-                    </Popup.Style>
-                    <StackPanel Orientation="Horizontal">
-                        <Border Padding="3" BorderThickness="2"
-                            BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
-                            Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-                            <json:JsonViewer x:Name="LabelJobJsonView"/>
-                        </Border>
-                        <Border Padding="3" BorderThickness="2"
-                            BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
-                            Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-                            <json:JsonViewer x:Name="LabelResultJsonView"/>
-                        </Border>
-                    </StackPanel>
-
-                </Popup>
 
                 <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center">
 
@@ -197,26 +216,12 @@
 
                 </StackPanel>
             </Grid>
-
-            <ScrollViewer x:Name="ScrollLabelSectors"
-                          Grid.Row="1" Grid.Column="1" Width="200" Margin="3" MaxHeight="400" 
-                          mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
-                          ScrollChanged="ScrollLabelSectors_ScrollChanged">
-                <ItemsControl ItemsSource="{Binding LabelSectors}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <local:SectorControlView />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </ScrollViewer>
-
             <Grid Grid.Row="0" Grid.Column="2">
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                
+
                 <Button Content="Repeat Sectors" HorizontalAlignment="Center" Name="RepeatSectors" Click="RepeatSectors_Click"
                         Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
                         Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}">
@@ -258,33 +263,7 @@
                     <Label Content="{Binding Status}"/>
                 </StackPanel>
             </Grid>
-
-            <ScrollViewer x:Name="ScrollRepeatSectors"
-                          Grid.Row="1" Grid.Column="2" Width="200" Margin="3" MaxHeight="400"
-                          mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
-                          ScrollChanged="ScrollRepeatSectors_ScrollChanged">
-
-                <ItemsControl ItemsSource="{Binding RepeatSectors}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <local:SectorControlView />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </ScrollViewer>
-
-            <ScrollViewer Grid.Row="1" Grid.Column="3" Width="280" Margin="3" Padding="0,0,0,6" MaxHeight="400"
-                          mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True">
-                <ItemsControl ItemsSource="{Binding DiffSectors}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <local:SectorDifferenceControlView />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </ScrollViewer>
-
-            <Grid Grid.Column="4" Grid.Row="0">
+            <Grid Grid.Row="0" Grid.Column="4">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition Width="auto"/>
@@ -352,11 +331,77 @@
                 </Label>
             </Grid>
 
+            <Grid Grid.Row="1" Grid.Column="0">
+                <Image x:Name="LabelImage" Margin="3" MaxHeight="400" Width="400"
+                       Source="{Binding LabelImage, Converter={StaticResource bytesToImage}}"
+                       MouseDown="LabelImage_MouseDown"
+                       RenderOptions.BitmapScalingMode="NearestNeighbor"
+                       HorizontalAlignment="Left" VerticalAlignment="Top"/>
+
+                <Label HorizontalAlignment="Right" VerticalAlignment="Top" Margin="3">
+                    <Label.Style>
+                        <Style TargetType="{x:Type Label}">
+                            <Setter Property="Content">
+                                <Setter.Value>
+                                    <Grid Background="White">
+                                        <IconPacks:PackIconMaterial Width="20" Height="20" Kind="Information" Foreground="Red"/>
+                                    </Grid>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="ToolTip" Value="{Binding LabelComment}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding LabelComment}" Value="">
+                                    <Setter Property="Content" Value=""/>
+                                    <Setter Property="ToolTip" Value="{x:Null}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Label.Style>
+
+                </Label>
+                <!--<TextBlock Text="{Binding LabelComment}" Foreground="Red" Margin="3" HorizontalAlignment="Left"/>-->
+            </Grid>
+            <ScrollViewer Grid.Row="1" Grid.Column="1" x:Name="ScrollLabelSectors"
+                          Width="200" Margin="3" MaxHeight="400" 
+                          mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
+                          ScrollChanged="ScrollLabelSectors_ScrollChanged">
+                <ItemsControl ItemsSource="{Binding LabelSectors}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <local:SectorControlView />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+            <ScrollViewer Grid.Row="1" Grid.Column="2" x:Name="ScrollRepeatSectors"
+                          Width="200" Margin="3" MaxHeight="400"
+                          mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
+                          ScrollChanged="ScrollRepeatSectors_ScrollChanged">
+
+                <ItemsControl ItemsSource="{Binding RepeatSectors}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <local:SectorControlView />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+            <ScrollViewer Grid.Row="1" Grid.Column="3"
+                          Width="280" Margin="3" Padding="0,0,0,6" MaxHeight="400"
+                          mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True">
+                <ItemsControl ItemsSource="{Binding DiffSectors}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <local:SectorDifferenceControlView />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
             <Grid Grid.Row="1" Grid.Column="4" Margin="3">
                 <Image Name="RepeatImage" Source="{Binding RepeatImage, Converter={StaticResource bytesToImage}}" 
                        Margin="0" Height="400" Width="400" MouseDown="RepeatImage_MouseDown"
                        RenderOptions.BitmapScalingMode="NearestNeighbor"/>
-                
+
                 <Image Name="RepeatImageOverlay" Source="{Binding RepeatOverlay}" 
                        Margin="0" Height="400" Width="400" MouseDown="RepeatImage_MouseDown"
                        RenderOptions.BitmapScalingMode="NearestNeighbor"/>

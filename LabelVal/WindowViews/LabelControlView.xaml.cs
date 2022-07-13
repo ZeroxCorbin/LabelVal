@@ -36,7 +36,6 @@ namespace LabelVal.WindowViews
             viewModel = (LabelControlViewModel)DataContext;
             viewModel.BringIntoView += ViewModel_BringIntoView;
         }
-
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)
         {
             DialogParticipation.SetRegister(this, null);
@@ -55,16 +54,20 @@ namespace LabelVal.WindowViews
             if (e.VerticalChange != 0)
                 ScrollRepeatSectors.ScrollToVerticalOffset(e.VerticalOffset);
         }
-
         private void ScrollRepeatSectors_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
             if (e.VerticalChange != 0)
                 ScrollLabelSectors.ScrollToVerticalOffset(e.VerticalOffset);
         }
 
+        private void LabelImage_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+                ShowImage(((LabelControlViewModel)DataContext).LabelImage, null);
+        }
         private void RepeatImage_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if(e.LeftButton == MouseButtonState.Pressed)
+            if (e.LeftButton == MouseButtonState.Pressed)
                 ShowImage(((LabelControlViewModel)DataContext).RepeatImage, ((LabelControlViewModel)DataContext).RepeatOverlay);
         }
 
@@ -80,40 +83,54 @@ namespace LabelVal.WindowViews
             dc.Width = yourParentWindow.ActualWidth - 100;
             dc.Height = yourParentWindow.ActualHeight - 100;
 
-            MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance.ShowMetroDialogAsync(yourParentWindow.DataContext, new ImageViewerDialogView() { DataContext = dc });
+            DialogCoordinator.Instance.ShowMetroDialogAsync(yourParentWindow.DataContext, new ImageViewerDialogView() { DataContext = dc });
 
             return true;
 
         }
 
-        private void LabelImage_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.LeftButton == MouseButtonState.Pressed)
-                ShowImage(((LabelControlViewModel)DataContext).LabelImage, null);
-        }
-
         private void LabelSectors_Click(object sender, RoutedEventArgs e)
         {
-            if (((LabelControlViewModel)DataContext).CurrentRow != null)
+            if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
             {
-                LabelJobJsonView.Load(((LabelControlViewModel)DataContext).CurrentRow.LabelTemplate, "Template");
-                LabelResultJsonView.Load(((LabelControlViewModel)DataContext).CurrentRow.LabelReport, "Results");
-                LabelJsonPopup.PlacementTarget = (Button)sender;
-                LabelJsonPopup.IsOpen = true;
+                if (((LabelControlViewModel)DataContext).CurrentRow != null)
+                {
+                    LabelJobJsonView.Load(((LabelControlViewModel)DataContext).CurrentRow.LabelTemplate, "Template");
+                    LabelResultJsonView.Load(((LabelControlViewModel)DataContext).CurrentRow.LabelReport, "Results");
+                    LabelJsonPopup.PlacementTarget = (Button)sender;
+                    LabelJsonPopup.IsOpen = true;
+                }
+            }
+            else
+            {
+                if (((LabelControlViewModel)DataContext).LabelSectors.Count > 0)
+                {
+                    LabelSectorsDetailsPopup.PlacementTarget = (Button)sender;
+                LabelSectorsDetailsPopup.IsOpen = true;
+                }
+
             }
         }
-
         private void RepeatSectors_Click(object sender, RoutedEventArgs e)
         {
-            if(((LabelControlViewModel)DataContext).Report != null)
+            if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
             {
-                JsonView.Load(Newtonsoft.Json.JsonConvert.SerializeObject(((LabelControlViewModel)DataContext).Report), "Results");
-
-                JsonPopup.PlacementTarget = (Button)sender;
-
-                JsonPopup.IsOpen = true;
+                if (((LabelControlViewModel)DataContext).Report != null)
+                {
+                    RepeatResultJsonView.Load(Newtonsoft.Json.JsonConvert.SerializeObject(((LabelControlViewModel)DataContext).Report), "Results");
+                    RepeatJsonPopup.PlacementTarget = (Button)sender;
+                    RepeatJsonPopup.IsOpen = true;
+                }
             }
+            else
+            {
+                if (((LabelControlViewModel)DataContext).RepeatSectors.Count > 0)
+                {
+                    RepeatSectorsDetailsPopup.PlacementTarget = (Button)sender;
+                    RepeatSectorsDetailsPopup.IsOpen = true;
+                }
 
+            }
         }
 
 
