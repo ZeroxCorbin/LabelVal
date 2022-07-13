@@ -573,12 +573,18 @@ namespace LabelVal.WindowViewModels
 
             foreach (var sec in sectors)
             {
-                if (sec.symbology == "qr" || sec.symbology == "dataMatrix")
-                {
-                    var sect = parsedSectors.FirstOrDefault((e) => e.JobSector.name.Equals(sec.name));
+                var sect = parsedSectors.FirstOrDefault((e) => e.JobSector.name.Equals(sec.name));
 
-                    if (sect != null)
+                if (sect != null)
+                {
+                    GeometryGroup secArea = new GeometryGroup();
+
+                    secArea.Children.Add(new RectangleGeometry(new System.Windows.Rect(sec.left, sec.top, sec.width, sec.height)));
+
+
+                    if (sec.symbology == "qr" || sec.symbology == "dataMatrix")
                     {
+
                         var res = (V275_Report_InspectSector_Verify2D)sect.ReportSector;
 
                         if (res.data.extendedData != null)

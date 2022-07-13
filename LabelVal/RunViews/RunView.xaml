@@ -115,10 +115,8 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
-            <StackPanel Orientation="Horizontal" Grid.Row="0">
-                <Button x:Name="BtnSortRuns" Style="{StaticResource MahApps.Styles.Button.Circle}" Width="30" Height="30" Click="BtnSortRuns_Click">
-                    <IconPacks:Modern Kind="Sort"/>
-                </Button>
+            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                <Button x:Name="BtnSortRuns" Style="{StaticResource MahApps.Styles.Button.Flat}" Click="BtnSortRuns_Click"/>
             </StackPanel>
 
             <ScrollViewer Grid.Row="1">

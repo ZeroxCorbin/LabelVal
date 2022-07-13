@@ -17,6 +17,7 @@ using System.Windows.Shapes;
 using LabelVal.RunViewModels;
 using LabelVal.WindowViewModels;
 using MahApps.Metro.Controls.Dialogs;
+using MahApps.Metro.IconPacks;
 
 namespace LabelVal.RunViews
 {
@@ -73,7 +74,27 @@ namespace LabelVal.RunViews
             if (FindResource("RunEntriesDataList") is CollectionViewSource viewSource1)
             {
                 viewSource1.SortDescriptions.RemoveAt(3);
-                viewSource1.SortDescriptions.Add(new System.ComponentModel.SortDescription("TimeDate", App.Settings.GetValue("RunEntriesDataList_Sort", System.ComponentModel.ListSortDirection.Descending)));
+
+                var order = App.Settings.GetValue("RunEntriesDataList_Sort", System.ComponentModel.ListSortDirection.Descending);
+
+                if (order == System.ComponentModel.ListSortDirection.Ascending)
+                {
+                    var packIconMaterial = new PackIconMaterial()
+                    {
+                        Kind = PackIconMaterialKind.SortClockDescending,
+                    };
+                    BtnSortRuns.Content = packIconMaterial;
+                }
+                else
+                {
+                    var packIconMaterial = new PackIconMaterial()
+                    {
+                        Kind = PackIconMaterialKind.SortClockAscending,
+                    };
+                    BtnSortRuns.Content = packIconMaterial;
+                }
+
+                viewSource1.SortDescriptions.Add(new System.ComponentModel.SortDescription("TimeDate", order));
             }
         }
 
@@ -101,13 +122,25 @@ namespace LabelVal.RunViews
                 {
                     viewSource.SortDescriptions.RemoveAt(3);
                     viewSource.SortDescriptions.Add(new System.ComponentModel.SortDescription("TimeDate", System.ComponentModel.ListSortDirection.Descending));
-                    App.Settings.GetValue("RunEntriesDataList_Sort", System.ComponentModel.ListSortDirection.Descending);
+                    App.Settings.SetValue("RunEntriesDataList_Sort", System.ComponentModel.ListSortDirection.Descending);
+
+                    var packIconMaterial = new PackIconMaterial()
+                    {
+                        Kind = PackIconMaterialKind.SortClockAscending,
+
+                    };
+                    BtnSortRuns.Content = packIconMaterial;
                 }
                 else
                 {
                     viewSource.SortDescriptions.RemoveAt(3);
                     viewSource.SortDescriptions.Add(new System.ComponentModel.SortDescription("TimeDate", System.ComponentModel.ListSortDirection.Ascending));
-                    App.Settings.GetValue("RunEntriesDataList_Sort", System.ComponentModel.ListSortDirection.Ascending);
+                    App.Settings.SetValue("RunEntriesDataList_Sort", System.ComponentModel.ListSortDirection.Ascending);
+                    var packIconMaterial = new PackIconMaterial()
+                    {
+                        Kind = PackIconMaterialKind.SortClockDescending,
+                    };
+                    BtnSortRuns.Content = packIconMaterial;
                 }
         }
 

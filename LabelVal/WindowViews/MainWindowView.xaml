@@ -89,13 +89,14 @@
                     <Button Content="Get Nodes"
                     Command="{Binding GetDevices}"
                     IsEnabled="{Binding IsNotLoggedIn}"/>
+
                     <Label/>
+
                     <ComboBox ItemsSource="{Binding Nodes}" Margin="0,0,2,0"
                           SelectedValue="{Binding SelectedNode}"
                           IsEnabled="{Binding IsNotLoggedIn}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
-
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="{Binding Path=enumeration, Mode=OneTime, StringFormat='Slot: {0} Model: '}"/>
                                     <TextBlock Text="{Binding Path=printerModel, Mode=OneTime}" />
@@ -319,7 +320,7 @@
                 <Border Grid.Column="1" BorderThickness="2" Margin="5" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
                     <StackPanel Orientation="Horizontal" Margin="3">
                         <Label Content="Standards"/>
-                        
+
                         <Button Command="{Binding CreateStandardsDatabase}"
                                 ToolTip="Create a new standards database."
                                 Margin="0,0,2,0">
@@ -356,8 +357,8 @@
                                     </Style.Triggers>
                                 </Style>
                             </Button.Style>
-                        </Button>  
-                        
+                        </Button>
+
                         <ComboBox ItemsSource="{Binding StandardsDatabases}" 
                                   SelectedItem="{Binding SelectedStandardsDatabase}"
                                   IsEnabled="{Binding IsNotRunRunning}"/>
@@ -393,7 +394,7 @@
                         <Label Content="Run Test"/>
 
                         <mah:NumericUpDown Value="{Binding RunLoopCount}" Minimum="1" Maximum="100" Interval="1"/>
-                        
+
                         <Label/>
 
                         <Button Content="Start" Margin="0,0,2,0"
