@@ -324,7 +324,7 @@ namespace LabelVal.WindowViewModels
             PauseRun = new Core.RelayCommand(PauseRunAction, c => true);
             StopRun = new Core.RelayCommand(StopRunAction, c => true);
 
-            Print = new Core.RelayCommand(EnablePrintAction, c => true);
+            //Print = new Core.RelayCommand(EnablePrintAction, c => true);
 
             V275_SwitchRun = new Core.RelayCommand(V275_SwitchRunAction, c => true);
             V275_SwitchEdit = new Core.RelayCommand(V275_SwitchEditAction, c => true);
@@ -359,7 +359,7 @@ namespace LabelVal.WindowViewModels
             }
             if (e.PropertyName == "V275_State")
             {
-                if(V275.V275_State == "Idle")
+                if (V275.V275_State == "Idle")
                     CheckTemplateName();
             }
         }
@@ -874,7 +874,7 @@ namespace LabelVal.WindowViewModels
         private LabelControlViewModel PrintingLabel { get; set; } = null;
 
         private bool WaitForRepeat;
-        private void Label_Printing(LabelControlViewModel label, string type)
+        private async void Label_Printing(LabelControlViewModel label, string type)
         {
             if (label.IsSimulation)
             {
@@ -907,7 +907,16 @@ namespace LabelVal.WindowViewModels
                         }
                     }
 
-                    _ = V275.Commands.TriggerSimulator();
+                    //if (!IsLoggedIn_Control )
+                    //{
+                    //    if(!await V275.Commands.TriggerSimulator())
+                    //    {
+                    //        UserMessage = "Error triggering the simulator.";
+                    //        label.IsWorking = false;
+                    //        return;
+                    //    }
+
+                    //}
 
                     if (!IsLoggedIn_Control)
                     {
@@ -925,7 +934,7 @@ namespace LabelVal.WindowViewModels
             }
             else
             {
-                Task.Run(() =>
+                _ = Task.Run(() =>
                 {
                     PrintControl printer = new PrintControl();
 
@@ -944,7 +953,7 @@ namespace LabelVal.WindowViewModels
             {
                 PrintingLabel = label;
 
-                Task.Run(() =>
+                _ = Task.Run(() =>
                 {
                     WaitForRepeat = true;
 
@@ -968,7 +977,20 @@ namespace LabelVal.WindowViewModels
                 PrintingLabel = null;
 
             if (V275.V275_State != "Idle" && IsLoggedIn_Control)
-                EnablePrintAction("1");
+            {
+                if (!await EnablePrintAction("1"))
+                {
+                    WaitForRepeat = false;
+
+                    PrintingLabel = null;
+
+                    label.IsFaulted = true;
+                    label.IsWorking = false;
+                }
+            }
+
+            else
+                await V275.SimulatorTogglePrint();
         }
         private async void ProcessRepeat(int repeat)
         {
@@ -1025,15 +1047,25 @@ namespace LabelVal.WindowViewModels
             Repeats.Clear();
         }
 
-        private async void EnablePrintAction(object parameter)
+        private async Task<bool> EnablePrintAction(object parameter)
         {
-            if (V275_IsBackupVoid)
+            if (!IsDeviceSimulator)
             {
-                await V275.Commands.Print(false);
-                Thread.Sleep(50);
+                if (V275_IsBackupVoid)
+                {
+                    if (!await V275.Commands.Print(false))
+                        return false;
+
+                    Thread.Sleep(50);
+                }
+
+                return await V275.Commands.Print((string)parameter == "1");
+            }
+            else
+            {
+                return await V275.SimulatorTogglePrint();
             }
 
-            await V275.Commands.Print((string)parameter == "1");
         }
 
         private void TriggerSimAction(object parameter)

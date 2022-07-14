@@ -393,7 +393,7 @@
 
                         <Label Content="Run Test"/>
 
-                        <mah:NumericUpDown Value="{Binding RunLoopCount}" Minimum="1" Maximum="100" Interval="1"/>
+                        <mah:NumericUpDown Value="{Binding RunLoopCount}" Minimum="1" Maximum="9999" Interval="1"/>
 
                         <Label/>
 

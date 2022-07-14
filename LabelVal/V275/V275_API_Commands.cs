@@ -359,6 +359,23 @@ namespace LabelVal.V275
             return CheckResults("", true);
         }
 
+        public async Task<bool> SimulatorStart()
+        {
+            Logger.Info("PUT: {url}", URLs.StartSimulation());
+
+            await Connection.Put(URLs.StartSimulation(), "", Token);
+
+            return CheckResults("", true);
+        }
+
+        public async Task<bool> SimulatorStop()
+        {
+            Logger.Info("PUT: {url}", URLs.StopSimulation());
+
+            await Connection.Put(URLs.StopSimulation(), "", Token);
+
+            return CheckResults("", true);
+        }
 
         public async Task<bool> SetRepeat(int repeat)
         {

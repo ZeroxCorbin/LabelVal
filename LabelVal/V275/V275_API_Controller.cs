@@ -11,6 +11,8 @@ namespace LabelVal.V275
 {
     public class V275_API_Controller : Core.BaseViewModel
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         public Dictionary<int, string> MatchModes { get; } = new Dictionary<int, string>()
         {
             {0, "Standard" },
@@ -43,6 +45,7 @@ namespace LabelVal.V275
         public V275_Events_System SetupDetectEvent { get; set; }
         private bool SetupDetectEnd { get; set; } = false;
 
+        bool LabelBegin { get; set; } = false;
         bool LabelEnd { get; set; } = false;
 
         public string Host { get => Commands.Host; set => Commands.Host = value; }
@@ -62,15 +65,24 @@ namespace LabelVal.V275
             //WebSocket.SessionStateChange += WebSocket_SessionStateChange;
             WebSocket.Heartbeat += WebSocket_Heartbeat;
             //WebSocket.SetupDetect += WebSocket_SetupDetect;
+            WebSocket.LabelStart += WebSocket_LabelStart;
             WebSocket.LabelEnd += WebSocket_LabelEnd;
             WebSocket.SetupDetect += WebSocket_SetupDetect;
             WebSocket.StateChange += WebSocket_StateChange;
         }
 
+
+
         private void WebSocket_SetupDetect(Models.V275_Events_System ev, bool end)
         {
             SetupDetectEvent = ev;
             SetupDetectEnd = end;
+            LabelBegin = true;
+        }
+
+        private void WebSocket_LabelStart(V275_Events_System ev)
+        {
+            LabelBegin = true;
         }
 
         private void WebSocket_LabelEnd(Models.V275_Events_System ev)
@@ -351,6 +363,27 @@ namespace LabelVal.V275
             });
 
             return V275_State == "Running";
+        }
+
+        public async Task<bool> SimulatorTogglePrint()
+        {
+            if (!await Commands.SimulatorStart())
+                return false;
+
+
+            LabelBegin = false;
+            await Task.Run(() =>
+            {
+                DateTime start = DateTime.Now;
+                while (!LabelBegin)
+                    if ((DateTime.Now - start) > TimeSpan.FromMilliseconds(10000))
+                        return;
+            });
+
+            if (!await Commands.SimulatorStop())
+                return false;
+
+            return LabelBegin;
         }
 
         private void read()

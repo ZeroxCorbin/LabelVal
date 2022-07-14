@@ -26,6 +26,7 @@ namespace LabelVal.V275
         public delegate void InspectionEventDelegate(V275_Events_System ev);
 
         public event InspectionEventDelegate Heartbeat;
+        public event InspectionEventDelegate LabelStart;
         public event InspectionEventDelegate LabelEnd;
         public event InspectionEventDelegate SetupCapture;
         public event InspectionEventDelegate SessionStateChange;
@@ -115,7 +116,7 @@ namespace LabelVal.V275
 
             if (ev.name == "stateChange")
             {
-                Logger.Debug("WSE: stateChange {node}; {name}", ev.source, ev.name);
+                Logger.Debug("WSE: stateChange : {node}; {name}", ev.source, ev.name);
                 StateChange?.Invoke(ev);
                 return;
             }
@@ -131,6 +132,13 @@ namespace LabelVal.V275
             {
                 Logger.Debug("WSE: labelEnd {node}; {name}", ev.source, ev.name);
                 LabelEnd?.Invoke(ev);
+                return;
+            }
+
+            if (ev.name == "labelBegin")
+            {
+                Logger.Debug("WSE: labelBegin {node}; {name}", ev.source, ev.name);
+                LabelStart?.Invoke(ev);
                 return;
             }
         }
