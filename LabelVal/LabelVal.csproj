@@ -206,6 +206,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Converters\BytesToImageConverter.cs" />
+    <Compile Include="Converters\xDimensionMils.cs" />
     <Compile Include="Converters\DoubleToStringConverter.cs" />
     <Compile Include="Converters\FloatStringTrimConverter.cs" />
     <Compile Include="Converters\ShortenUIDConverter.cs" />
@@ -404,6 +405,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Standards\OCR OCV RECOGNITION\600\OCROCV_Recognition.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES A NEW\300\Symbologies A.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Standards\SYMBOLOGIES A NEW\600\Symbologies A.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Standards\SYMBOLOGIES A\600\25 All Symbology Part A PDF_01.png">

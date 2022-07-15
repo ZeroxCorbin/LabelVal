@@ -11,8 +11,6 @@ namespace LabelVal.V275
 {
     public class V275_API_Controller : Core.BaseViewModel
     {
-        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-
         public Dictionary<int, string> MatchModes { get; } = new Dictionary<int, string>()
         {
             {0, "Standard" },
@@ -248,7 +246,6 @@ namespace LabelVal.V275
             else
                 return true;
         }
-
         public List<V275_Job_Sector_Verify> CreateSectors(V275_Events_System ev, string tableID)
         {
             int d1 = 1;
@@ -324,7 +321,6 @@ namespace LabelVal.V275
 
             return V275_State == "Editing";
         }
-
         public async Task<bool> SwitchToRun()
         {
             if (V275_State == "Idle")

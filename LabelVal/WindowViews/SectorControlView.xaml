@@ -120,7 +120,7 @@
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock Grid.Row="0" Margin="3,1,3,0">
+                <TextBlock Grid.Row="0" TextWrapping="Wrap" Margin="3,1,3,0">
                     <TextBlock.Style>
                         <Style TargetType="{x:Type TextBlock}">
 
@@ -313,7 +313,7 @@
 
                                 <StackPanel Orientation="Horizontal" Grid.Column="2" >
 
-                                    <TextBlock Text="{Binding Path=value, StringFormat=N2, Mode=OneTime}" Grid.Column="1" Margin="3,0,3,0"/>
+                                    <TextBlock Text="{Binding Path=value, StringFormat=N1, Mode=OneTime}" Grid.Column="1" Margin="3,0,3,0"/>
 
                                     <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3" Margin="2,0,2,0">
                                         <Border.Style>

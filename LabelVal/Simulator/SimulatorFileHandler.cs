@@ -45,20 +45,30 @@ namespace LabelVal.Simulator
         {
             if (HasImages)
             {
-
+                bool ok = true;
                 foreach (string file in Images)
-                    File.Delete(file);
+                {
+                    try
+                    {
+                        File.Delete(file);
+                    }
+                    catch (Exception ex)
+                    {
+                        ok = false;
+                    }
+                }
+                return ok;
             }
             return true;
         }
 
-        public bool CopyImage(string file)
+        public bool CopyImage(string file, string prepend)
         {
 
             if (SimulatorImageDirectoryExists)
             {
-                File.Copy(file, Path.Combine(SimulatorImageDirectory, Path.GetFileName(file)));
-                    return true;
+                File.Copy(file, Path.Combine(SimulatorImageDirectory, prepend + Path.GetFileName(file)));
+                return true;
             }
             else
                 return false;

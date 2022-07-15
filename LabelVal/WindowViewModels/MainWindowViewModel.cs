@@ -95,7 +95,7 @@ namespace LabelVal.WindowViewModels
         public uint V275_SystemPort { get => V275.SystemPort = App.Settings.GetValue<uint>("V275_SystemPort", 8080); set { App.Settings.SetValue("V275_SystemPort", value); ; V275.SystemPort = value; } }
         public uint V275_NodeNumber { get => V275.NodeNumber = App.Settings.GetValue<uint>("V275_NodeNumber", 1); set { App.Settings.SetValue("V275_NodeNumber", value); V275.NodeNumber = value; } }
         public string V275_MAC { get; set; }
-
+        public string V275_Version { get => V275.Commands.Product != null ? V275.Commands.Product.part : null; }
 
         private ObservableCollection<V275_Devices.Node> nodes = new ObservableCollection<V275_Devices.Node>();
         public ObservableCollection<V275_Devices.Node> Nodes { get => nodes; set => SetProperty(ref nodes, value); }
@@ -395,7 +395,7 @@ namespace LabelVal.WindowViewModels
             }
 
             IsWrongTemplateName = true;
-            _ = OkDialog("Template Name Mismatch!", "The template name loaded in the V275 software does not match the selected standard.");
+            _ = OkDialog("Template Name Mismatch!", $"The template name loaded in the V275 software '{V275.V275_JobName}' does not match the selected standard. '{SelectedStandard.Name.ToLower()}'");
         }
 
         public async Task<MessageDialogResult> OkCancelDialog(string title, string message)
@@ -543,6 +543,7 @@ namespace LabelVal.WindowViewModels
                 IsGetDevices = true;
 
                 await V275.Commands.GetProduct();
+                OnPropertyChanged("V275_Version");
             }
             else
             {
@@ -880,17 +881,52 @@ namespace LabelVal.WindowViewModels
             {
                 try
                 {
+                    //int verRes = 1;
+                    string prepend = "";
+
                     var sim = new Simulator.SimulatorFileHandler();
+
                     if (!sim.DeleteAllImages())
                     {
+                        //string verCur = V275_Version != null ? V275_Version.Substring(V275_Version.LastIndexOf('-') + 1) : null;
+
+                        //if (verCur != null)
+                        //{
+                        //    System.Version ver = System.Version.Parse(verCur);
+                        //    System.Version verMin = System.Version.Parse("1.1.0.3009");
+                        //    verRes = ver.CompareTo(ver);
+                        //}
+
+                        //if (verRes > 0)
+                        //{
                         UserMessage = "Could not delete all simulator images.";
                         label.IsWorking = false;
                         return;
+                        //}
+                        //else
+                        //{
+                        //    sim.UpdateImageList();
+
+                        //    prepend = "_";
+
+                        //    foreach(var imgFile in sim.Images)
+                        //    {
+                        //        string name = Path.GetFileName(imgFile);
+
+                        //        for(; ; )
+                        //        {
+                        //            if (name.StartsWith(prepend))
+                        //                prepend += prepend;
+                        //            else
+                        //                break;
+                        //        }
+                        //    }
+                        //}
                     }
 
                     if (type == "label")
                     {
-                        if (!sim.CopyImage(label.LabelImagePath))
+                        if (!sim.CopyImage(label.LabelImagePath, prepend))
                         {
                             UserMessage = "Could not copy the image to the simulator images directory.";
                             label.IsWorking = false;

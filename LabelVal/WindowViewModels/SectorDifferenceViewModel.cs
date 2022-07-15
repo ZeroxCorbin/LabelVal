@@ -22,6 +22,9 @@ namespace LabelVal.WindowViewModels
         private string type;
         public string Type { get => type; set => SetProperty(ref type, value); }
 
+        private string units;
+        public string Units { get => units; set => SetProperty(ref units, value); }
+
         private bool isNotOCVMatch = false;
         public bool IsNotOCVMatch { get => isNotOCVMatch; set => SetProperty(ref isNotOCVMatch, value); }
 
@@ -144,6 +147,9 @@ namespace LabelVal.WindowViewModels
                 if (prop.Name == "data")
                     foreach (var prop1 in prop.GetValue(verify).GetType().GetProperties())
                     {
+                        if (prop1.Name == "lengthUnit")
+                            Units = (string)prop1.GetValue(prop.GetValue(verify));
+
                         if (Type == "ocr" || Type == "ocv")
                         {
                             if (prop1.Name == "text")

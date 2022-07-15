@@ -49,12 +49,19 @@ Remove run and edit when in monitor.
 Wrong Standard message did not come up in GS1 table when ISO selected.
 Set values for compare results in Test Results viewer.
 
-----------------------
-
+0.3.0.2002
 The image seems to be processed twice in simulation run mode. Gets stuck in a paused state. The file sequence moves ahead.
 Having issues getting the read to work in simulation.
 
+
+----------------------
+
+
+
 Store the database name used for the test run.
+Add dissimilar settings to the main window.
+
+If the run starts then fails before logging anything delete the run entry.
 
 
 Fault messaging.
