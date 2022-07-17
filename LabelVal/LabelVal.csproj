@@ -206,7 +206,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Converters\BytesToImageConverter.cs" />
-    <Compile Include="Converters\xDimensionMils.cs" />
     <Compile Include="Converters\DoubleToStringConverter.cs" />
     <Compile Include="Converters\FloatStringTrimConverter.cs" />
     <Compile Include="Converters\ShortenUIDConverter.cs" />

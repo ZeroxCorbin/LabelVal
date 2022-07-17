@@ -77,7 +77,7 @@ namespace LabelVal.RunControllers
             if (!OpenDatabases())
                 return null;
 
-            if (!CreateRunEntries())
+            if (!UpdateRunEntries())
                 return null;
 
             return this;
@@ -99,12 +99,28 @@ namespace LabelVal.RunControllers
 
         }
 
-        private bool CreateRunEntries()
+        private bool UpdateRunEntries()
         {
             try
             {
                 RunLedgerDatabase.InsertOrReplace(RunEntry);
                 RunDatabase.InsertOrReplace(RunEntry);
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+
+        }
+
+        private bool RemoveRunEntries()
+        {
+            try
+            {
+                RunLedgerDatabase.DeleteRunEntry(RunEntry.TimeDate);
+                RunDatabase.DeleteRunEntry(RunEntry.TimeDate);
 
                 return true;
             }
@@ -180,21 +196,7 @@ namespace LabelVal.RunControllers
                     if (sRow == null || string.IsNullOrEmpty(sRow.LabelReport))
                         continue;
 
-                    CurrentLabelCount++;
 
-                    var row = new RunDatabase.Run()
-                    {
-                        LabelTemplate = sRow.LabelTemplate,
-                        LabelReport = sRow.LabelReport,
-                        RepeatGoldenImage = sRow.RepeatImage,
-                        LabelImageUID = label.LabelImageUID,
-                        LabelImage = label.IsSimulation ? null : label.LabelImage,
-                        LabelImageOrder = CurrentLabelCount,
-                        LoopCount = CurrentLoopCount
-                    };
-
-                   // RunLabels.Add(row);
-                    RunDatabase.InsertOrReplace(row);
 
                     Logger.Info("Job Print");
 
@@ -228,7 +230,20 @@ namespace LabelVal.RunControllers
                         return false;
                     }
 
-                    if(!label.IsSimulation)
+                    CurrentLabelCount++;
+
+                    var row = new RunDatabase.Run()
+                    {
+                        LabelTemplate = sRow.LabelTemplate,
+                        LabelReport = sRow.LabelReport,
+                        RepeatGoldenImage = sRow.RepeatImage,
+                        LabelImageUID = label.LabelImageUID,
+                        LabelImage = label.IsSimulation ? null : label.LabelImage,
+                        LabelImageOrder = CurrentLabelCount,
+                        LoopCount = CurrentLoopCount
+                    };
+
+                    if (!label.IsSimulation)
                         if(label.RepeatImage != null)
                         {
                             //Compress the image to PNG
@@ -257,8 +272,7 @@ namespace LabelVal.RunControllers
 
             Logger.Info("Job Completed");
 
-            RunLedgerDatabase.InsertOrReplace(RunEntry);
-            RunDatabase.InsertOrReplace(RunEntry);
+            UpdateRunEntries();
 
             RunStateChange?.Invoke(State = RunStates.COMPLETE);
 
@@ -284,9 +298,10 @@ namespace LabelVal.RunControllers
 
         private void Stopped()
         {
-
-            RunLedgerDatabase.InsertOrReplace(RunEntry);
-            RunDatabase.InsertOrReplace(RunEntry);
+            if(CurrentLabelCount != 0)
+                UpdateRunEntries();
+            else
+                RemoveRunEntries();
 
             Logger.Info("Job Stopped");
 

@@ -197,6 +197,10 @@ namespace LabelVal.V275
                         if (Socket.State == WebSocketState.Open && receiveResult.MessageType != WebSocketMessageType.Close)
                         {
                             string message = Encoding.UTF8.GetString(buffer.Array, 0, receiveResult.Count);
+
+                            //using (StreamWriter sw = File.AppendText("capture_node.txt"))
+                            //    sw.WriteLine($"{message} \r\n {receiveResult.Count}");
+
                             if (message.Length > 1)
                                 MessageRecieved?.Invoke(message);
                         }

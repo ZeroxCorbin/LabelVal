@@ -62,19 +62,11 @@
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Visibility" Value="Collapsed"/>
                             <Style.Triggers>
-                                <DataTrigger Value="ocr" Binding="{Binding JobSector.type, Mode=OneTime}">
-                                    <Setter Property="Text">
-                                        <Setter.Value>
-                                            <MultiBinding StringFormat="{}{0} ({1})">
-                                                <Binding Path="JobSector.matchSettings.matchMode" Mode="OneTime" Converter="{StaticResource matchModeToString}"/>
-                                                <Binding Path="JobSector.matchSettings.userDefinedDataTrueSize" Mode="OneTime"/>
-                                            </MultiBinding>
-                                        </Setter.Value>
-                                    </Setter>
-                                    <Setter Property="Visibility" Value="Visible"/>
-                                </DataTrigger>
 
-                                <DataTrigger Value="ocv" Binding="{Binding JobSector.type, Mode=OneTime}">
+                                <MultiDataTrigger >
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Value="ocr" Binding="{Binding JobSector.type, Mode=OneTime}"/>
+                                    </MultiDataTrigger.Conditions>
                                     <Setter Property="Text">
                                         <Setter.Value>
                                             <MultiBinding StringFormat="{}{0} ({1})">
@@ -84,7 +76,53 @@
                                         </Setter.Value>
                                     </Setter>
                                     <Setter Property="Visibility" Value="Visible"/>
-                                </DataTrigger>
+                                </MultiDataTrigger>
+
+                                <MultiDataTrigger >
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Value="ocr" Binding="{Binding JobSector.type, Mode=OneTime}"/>
+                                        <Condition Value="0" Binding="{Binding JobSector.matchSettings.userDefinedDataTrueSize, Mode=OneTime}"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Text">
+                                        <Setter.Value>
+                                            <MultiBinding StringFormat="{}{0}">
+                                                <Binding Path="JobSector.matchSettings.matchMode" Mode="OneTime" Converter="{StaticResource matchModeToString}"/>
+                                            </MultiBinding>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </MultiDataTrigger>
+
+                                <MultiDataTrigger >
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Value="ocv" Binding="{Binding JobSector.type, Mode=OneTime}"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Text">
+                                        <Setter.Value>
+                                            <MultiBinding StringFormat="{}{0} ({1})">
+                                                <Binding Path="JobSector.matchSettings.matchMode" Mode="OneTime" Converter="{StaticResource matchModeToString}"/>
+                                                <Binding Path="JobSector.matchSettings.userDefinedDataTrueSize" Mode="OneTime"/>
+                                            </MultiBinding>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </MultiDataTrigger>
+
+                                <MultiDataTrigger >
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Value="ocv" Binding="{Binding JobSector.type, Mode=OneTime}"/>
+                                        <Condition Value="0" Binding="{Binding JobSector.matchSettings.userDefinedDataTrueSize, Mode=OneTime}"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Text">
+                                        <Setter.Value>
+                                            <MultiBinding StringFormat="{}{0}">
+                                                <Binding Path="JobSector.matchSettings.matchMode" Mode="OneTime" Converter="{StaticResource matchModeToString}"/>
+                                            </MultiBinding>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </MultiDataTrigger>
+
                             </Style.Triggers>
                         </Style>
                     </TextBlock.Style>

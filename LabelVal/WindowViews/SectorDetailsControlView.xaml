@@ -19,7 +19,6 @@
         <Converters:StringToUpperSpacedConverter x:Key="stringToUpper"/>
         <Converters:FloatStringTrimConverter x:Key="floatTrim"/>
         <V275Converters:V275_OCMatchModeToString x:Key="matchModeToString"/>
-        <Converters:xDimensionMils x:Key="xDimension"/>
     </UserControl.Resources>
     
     <Border Padding="3" BorderThickness="2"
