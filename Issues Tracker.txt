@@ -54,13 +54,17 @@ The image seems to be processed twice in simulation run mode. Gets stuck in a pa
 Having issues getting the read to work in simulation.
 
 Add dissimilar settings to the main window.
-
-
+There needs to be a rework of the event message processing. A partial packet can cause a crash.
+Fix matchmode detection in RunController.
 ----------------------
 
-There needs to be a rework of the event message processing. A partial packet can cause a crash.
+
 
 Store the database name used for the test run.
+
+
+Add 300 DPI indicator to the 300 DPI images.
+
 
 
 If the run starts then fails before logging anything delete the run entry.

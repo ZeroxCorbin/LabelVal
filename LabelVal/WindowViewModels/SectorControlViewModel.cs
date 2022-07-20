@@ -33,6 +33,7 @@ namespace LabelVal.WindowViewModels
         private bool isGS1Standard;
         public bool IsGS1Standard { get => isGS1Standard; set => SetProperty(ref isGS1Standard, value); }
 
+        public SectorControlViewModel() { }
         public SectorControlViewModel(V275_Job.Sector jobSector, object reportSector, bool isWrongStandard, bool isGS1Standard)
         {
             ReportSector = reportSector;

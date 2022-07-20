@@ -27,9 +27,12 @@ namespace LabelVal.LVS_95xx
 
         public SectorControlViewModel StoredSectorControl { get; }
 
-        private SectorControlViewModel lvs95xxSectorControl;
+        private SectorControlViewModel lvs95xxSectorControl = new SectorControlViewModel();
         public SectorControlViewModel Lvs95xxSectorControl { get => lvs95xxSectorControl; set => SetProperty(ref lvs95xxSectorControl, value); }
 
+        private bool isConnected;
+        public bool IsConnected { get => isConnected; set { SetProperty(ref isConnected, value); OnPropertyChanged("IsNotConnected"); } }
+        public bool IsNotConnected => !isConnected;
 
         public ICommand WriteData { get; }
         public ICommand OpenPort { get; }
@@ -71,9 +74,17 @@ namespace LabelVal.LVS_95xx
                 PortController.PacketAvailable -= PortController_PacketAvailable;
                 PortController.PacketAvailable += PortController_PacketAvailable;
 
-                PortController.Start();
-            }
+                PortController.Exception -= PortController_Exception;
+                PortController.Exception += PortController_Exception;
 
+                if(PortController.Start())
+                    IsConnected = true;
+            }
+        }
+
+        private void PortController_Exception(object sender, EventArgs e)
+        {
+            ClosePortAction( new object());
         }
 
         private void PortController_SectorAvailable(object sector)
@@ -89,10 +100,12 @@ namespace LabelVal.LVS_95xx
 
         public void ClosePortAction(object parameter)
         {
+            PortController.Exception -= PortController_Exception;
             PortController.SectorAvailable -= PortController_SectorAvailable;
             PortController.PacketAvailable -= PortController_PacketAvailable;
 
             PortController.Stop();
+            IsConnected = false;
         }
         public void WriteDataAction(object parameter)
         {

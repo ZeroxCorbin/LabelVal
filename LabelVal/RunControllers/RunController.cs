@@ -287,10 +287,8 @@ namespace LabelVal.RunControllers
             foreach(var sect in label.LabelTemplate.sectors)
             {
                 if (sect.matchSettings != null)
-                    if (sect.matchSettings.matchMode != 0)
+                    if (sect.matchSettings.matchMode >= 3 && sect.matchSettings.matchMode <= 6)
                         return true;
-                
-                 
             }
             return false;
         }

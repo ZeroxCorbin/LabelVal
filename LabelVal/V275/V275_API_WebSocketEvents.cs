@@ -178,6 +178,7 @@ namespace LabelVal.V275
         private async Task SocketProcessingLoopAsync()
         {
             var cancellationToken = SocketLoopTokenSource.Token;
+            string message = "";
             try
             {
                 var buffer = WebSocket.CreateClientBuffer(4096, 4096);
@@ -196,13 +197,13 @@ namespace LabelVal.V275
                         // display text or binary data
                         if (Socket.State == WebSocketState.Open && receiveResult.MessageType != WebSocketMessageType.Close)
                         {
-                            string message = Encoding.UTF8.GetString(buffer.Array, 0, receiveResult.Count);
+                            message += Encoding.UTF8.GetString(buffer.Array, 0, receiveResult.Count);
 
-                            //using (StreamWriter sw = File.AppendText("capture_node.txt"))
-                            //    sw.WriteLine($"{message} \r\n {receiveResult.Count}");
-
-                            if (message.Length > 1)
+                            if (message.EndsWith("}"))
+                            {
                                 MessageRecieved?.Invoke(message);
+                                message = "";
+                            }
                         }
                     }
                 }

@@ -27,12 +27,12 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
-        <StackPanel Orientation="Horizontal">
-            <ComboBox ItemsSource="{Binding ComNameList}" SelectedItem="{Binding SelectedComName}"/>
-            <Button Command="{Binding OpenPort}"  Width="30" Height="30" Style="{StaticResource MahApps.Styles.Button.Square}">
+        <StackPanel Orientation="Horizontal" Margin="3">
+            <ComboBox ItemsSource="{Binding ComNameList}" SelectedItem="{Binding SelectedComName}" IsEnabled="{Binding IsNotConnected}"/>
+            <Button Command="{Binding OpenPort}"  Width="30" Height="30" Style="{StaticResource MahApps.Styles.Button.Square}" IsEnabled="{Binding IsNotConnected}">
                 <IconPacks:Modern Kind="Connect"/>
             </Button>
-            <Button Command="{Binding ClosePort}" Width="30" Height="30" Style="{StaticResource MahApps.Styles.Button.Square}">
+            <Button Command="{Binding ClosePort}" Width="30" Height="30" Style="{StaticResource MahApps.Styles.Button.Square}" IsEnabled="{Binding IsConnected}">
                 <IconPacks:Modern Kind="Disconnect"/>
             </Button>
         </StackPanel>
@@ -41,25 +41,17 @@
             <IconPacks:Modern Kind="Close"/>
         </Button>
 
-        <MainViews:SectorDetailsControlView Grid.Row="1" Grid.Column="0" DataContext="{Binding StoredSectorControl}"/>
+        <MainViews:SectorDetailsControlView Grid.Row="1" Grid.Column="0" DataContext="{Binding StoredSectorControl}" Margin="3"/>
 
-        <MainViews:SectorDetailsControlView Grid.Row="1" Grid.Column="1" DataContext="{Binding Lvs95xxSectorControl}">
-            <MainViews:SectorDetailsControlView.Style>
-                <Style TargetType="{x:Type MainViews:SectorDetailsControlView}">
-                    <Setter Property="Visibility" Value="Visible"/>
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding}" Value="{x:Null}">
-                            <Setter Property="Visibility" Value="Collapsed"/>
-                        </DataTrigger>
-                    </Style.Triggers>
+        <MainViews:SectorDetailsControlView Grid.Row="1" Grid.Column="1" DataContext="{Binding Lvs95xxSectorControl}" Margin="3" MinWidth="250"/>
 
-                </Style>
-            </MainViews:SectorDetailsControlView.Style>
-        </MainViews:SectorDetailsControlView>
-
-        <ScrollViewer Grid.Row="1" Grid.Column="2" MaxHeight="480">
-            <TextBox Text="{Binding ReadData}" TextWrapping="Wrap" IsReadOnly="True"/>
-        </ScrollViewer>
+        <Border Grid.Row="1" Grid.Column="2" BorderThickness="2" Margin="3"
+                        BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+            <ScrollViewer MaxHeight="500">
+                <TextBox Text="{Binding ReadData}" TextWrapping="Wrap" IsReadOnly="True" BorderThickness="0"/>
+            </ScrollViewer>
+        </Border>
 
     </Grid>
 

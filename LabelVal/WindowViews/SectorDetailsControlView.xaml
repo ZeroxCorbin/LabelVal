@@ -102,6 +102,17 @@
 
                 <Border Grid.Row="1" Grid.Column="0" 
                         Background="White" Height="30" VerticalAlignment="Top" Margin="0,3">
+                    <Border.Style>
+                        <Style TargetType="{x:Type Border}">
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Style.Triggers>
+                                <DataTrigger Value="{x:Null}" Binding="{Binding ReportSector, Mode=OneTime}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    
                     <Image Stretch="Fill" >
                         <Image.Style>
                             <Style TargetType="{x:Type Image}">
@@ -194,15 +205,15 @@
                         <Style.Triggers>
                             <DataTrigger Value="ocr" Binding="{Binding ReportSector.type, Mode=OneTime}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
-                                <Setter Property="IsEnabled" Value="False"/>
                             </DataTrigger>
                             <DataTrigger Value="ocv" Binding="{Binding ReportSector.type, Mode=OneTime}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
-                                <Setter Property="IsEnabled" Value="False"/>
                             </DataTrigger>
                             <DataTrigger Value="blemish" Binding="{Binding ReportSector.type, Mode=OneTime}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
-                                <Setter Property="IsEnabled" Value="False"/>
+                            </DataTrigger>
+                            <DataTrigger Value="{x:Null}" Binding="{Binding ReportSector, Mode=OneTime}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>

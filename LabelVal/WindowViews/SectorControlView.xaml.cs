@@ -38,8 +38,8 @@ namespace LabelVal.WindowViews
 
             var yourParentWindow = Window.GetWindow(this);
 
-            dc.Width = yourParentWindow.ActualWidth - 100;
-            dc.Height = yourParentWindow.ActualHeight - 100;
+            dc.Width = yourParentWindow.ActualWidth - 200;
+            dc.Height = yourParentWindow.ActualHeight - 200;
 
             DialogCoordinator.Instance.ShowMetroDialogAsync(yourParentWindow.DataContext, new LVS_95xx.LVS95xx_SerialPortView() { DataContext = dc });
 

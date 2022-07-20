@@ -51,10 +51,6 @@
             <Button Name="btnShowSettings" Click="btnShowSettings_Click">
                 <IconPacks:PackIconModern Width="20" Height="20" Kind="Cog"/>
             </Button>
-
-            <Button Name="btnShowSerial" Click="btnShowSerial_Click">
-                <IconPacks:PackIconModern Width="20" Height="20" Kind="Cog"/>
-            </Button>
         </mah:WindowCommands>
     </mah:MetroWindow.LeftWindowCommands>
 
