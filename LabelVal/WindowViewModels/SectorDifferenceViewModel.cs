@@ -176,8 +176,9 @@ namespace LabelVal.WindowViewModels
                             {
                                 GradeValues.Add(new GradeValue(prop1.Name, new V275_Report_InspectSector_Common.GradeValue() { grade = dat.grade, value = dat.value }));
 
-                                if (Type == "verify1D")
-                                    ValueResults.Add(new ValueResult("edgeDetermination", dat.edgeDetermination));
+                                if (dat.edgeDetermination != null)
+                                    if (Type == "verify1D")
+                                        ValueResults.Add(new ValueResult("edgeDetermination", dat.edgeDetermination));
 
                                 IsNotEmpty = true;
                             }

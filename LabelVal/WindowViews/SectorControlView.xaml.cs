@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MahApps.Metro.Controls.Dialogs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,6 +28,21 @@ namespace LabelVal.WindowViews
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             DetailsPop.IsOpen = true;
+        }
+
+        private void Show95xxCompare_Click(object sender, RoutedEventArgs e)
+        {
+            //LVS_95xx.LVS95xx_SerialPortView sp = new LVS_95xx.LVS95xx_SerialPortView(this.DataContext);
+
+            var dc = new LVS_95xx.LVS95xx_SerialPortViewModel(this.DataContext);
+
+            var yourParentWindow = Window.GetWindow(this);
+
+            dc.Width = yourParentWindow.ActualWidth - 100;
+            dc.Height = yourParentWindow.ActualHeight - 100;
+
+            DialogCoordinator.Instance.ShowMetroDialogAsync(yourParentWindow.DataContext, new LVS_95xx.LVS95xx_SerialPortView() { DataContext = dc });
+
         }
     }
 }

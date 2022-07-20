@@ -233,6 +233,13 @@
     <Compile Include="JSON\ValueConverters\JValueConverter.cs" />
     <Compile Include="JSON\ValueConverters\JValueTypeToColorConverter.cs" />
     <Compile Include="JSON\ValueConverters\MethodToValueConverter.cs" />
+    <Compile Include="LVS-95xx\LVS95xx_SerialPort.cs" />
+    <Compile Include="LVS-95xx\SerialPortController.cs" />
+    <Compile Include="LVS-95xx\LVS95xx_SerialPortSetup.cs" />
+    <Compile Include="LVS-95xx\LVS95xx_SerialPortView.xaml.cs">
+      <DependentUpon>LVS95xx_SerialPortView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="LVS-95xx\LVS95xx_SerialPortViewModel.cs" />
     <Compile Include="Models\SectorCompareSettingsModel.cs" />
     <Compile Include="RunControllers\RunController.cs" />
     <Compile Include="Printer\PrintControl.cs" />
@@ -317,6 +324,24 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="app.config" />
+    <Content Include="LVS-95xx\com0com\i386\setup.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LVS-95xx\com0com\i386\setupc.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LVS-95xx\com0com\x64\com0com.cat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LVS-95xx\com0com\x64\com0com.sys">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LVS-95xx\com0com\i386\com0com.cat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LVS-95xx\com0com\i386\com0com.sys">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -334,6 +359,10 @@
     <Page Include="JSON\JsonViewer.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="LVS-95xx\LVS95xx_SerialPortView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="RunViews\CompareSettingsControlView.xaml">
       <SubType>Designer</SubType>
@@ -1472,6 +1501,19 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_50.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LVS-95xx\com0com\i386\com0com.inf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="LVS-95xx\com0com\ReadMe.txt" />
+    <Content Include="LVS-95xx\com0com\x64\com0com.inf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LVS-95xx\com0com\x64\setup.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LVS-95xx\com0com\x64\setupc.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Resource Include="JSON\Resources\expand28.png" />

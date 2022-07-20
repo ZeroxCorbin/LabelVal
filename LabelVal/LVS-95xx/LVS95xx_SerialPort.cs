@@ -1,0 +1,568 @@
+﻿using LabelVal.V275.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace LabelVal.LVS_95xx
+{
+    internal class LVS95xx_SerialPort
+    {
+        public delegate void PacketAvailableDelegate(string packet);
+        public event PacketAvailableDelegate PacketAvailable;
+
+        public event EventHandler Exception;
+
+        public delegate void SectorAvailableDelegate(object sector);
+        public event SectorAvailableDelegate SectorAvailable;
+
+        public SerialPortController Controller { get; } = new SerialPortController();
+
+        private bool running;
+        private bool newData;
+        private bool listening;
+
+        private string readData;
+
+        private object dataLock = new object();
+
+
+        public int Init(string portName)
+        {
+            Controller.GetCOMList();
+            var com = Controller.COMPortsAvailable.Find((e) => e.Equals(portName));
+
+            if (com == null)
+                return -1;
+
+            Controller.Init(portName);
+
+            return 0;
+        }
+
+        public bool Start()
+        {
+            ReleaseEvents();
+
+            PacketAvailable += LVS95xx_SerialPort_PacketAvailable;
+            Controller.Exception += Controller_Exception;
+            Controller.DataAvailable += Controller_DataAvailable;
+
+            if (Controller.Connect())
+            {
+                Task.Run(() => PacketThread());
+                return true;
+            }
+
+            ReleaseEvents();
+
+            return false;
+
+        }
+
+        private void ReleaseEvents()
+        {
+            PacketAvailable -= LVS95xx_SerialPort_PacketAvailable;
+            Controller.Exception -= Controller_Exception;
+            Controller.DataAvailable -= Controller_DataAvailable;
+        }
+
+        private void Controller_Exception(object sender, EventArgs e)
+        {
+            Stop();
+
+            Exception?.Invoke(sender, e);
+        }
+
+        private void LVS95xx_SerialPort_PacketAvailable(string packet)
+        {
+            var spl = packet.Split('\r').ToList();
+
+            var elm = spl.Find((e) => e.StartsWith("Cell size"));
+
+            if (elm != null)
+            {
+                V275_Report_InspectSector_Verify2D sect = new V275_Report_InspectSector_Verify2D();
+                sect.data = new V275_Report_InspectSector_Verify2D.Data();
+                sect.data.gs1SymbolQuality = new V275_Report_InspectSector_Verify2D.Gs1symbolquality();
+                sect.type = "verify2D";
+
+                sect.data.decode = new V275_Report_InspectSector_Common.Decode();
+
+                List<V275_Report_InspectSector_Common.Alarm> alarms = new List<V275_Report_InspectSector_Common.Alarm>();
+
+                foreach (var data in spl)
+                {
+                    var spl1 = data.Split(',');
+
+                    if (spl1.Count() != 2)
+                        continue;
+
+                    if (spl1[0].StartsWith("Symbology"))
+                    {
+                        if (spl1[1].Contains("QR"))
+                            sect.data.symbolType = "qr";
+
+                        if (spl1[1].Contains("Data Matrix"))
+                            sect.data.symbolType = "dataMatrix";
+
+                        continue;
+                    }
+
+                    if (spl1[0].StartsWith("Overall"))
+                    {
+                        var spl2 = spl1[1].Split('/');
+
+                        if (spl2.Count() != 4) continue;
+
+                        sect.data.overallGrade = new V275_Report_InspectSector_Common.Overallgrade() { grade = GetGrade(spl2[0]), _string = spl1[1] };
+                        sect.data.aperture = ParseFloat(spl2[1]);
+                        continue;
+                    }
+
+                    if (spl1[0].StartsWith("Warning"))
+                    {
+                        alarms.Add(new V275_Report_InspectSector_Common.Alarm() { name = spl1[1], category = 1 });
+                        continue;
+                    }
+
+                    if (spl1[0].StartsWith("Cell size"))
+                    {
+                        sect.data.xDimension = ParseFloat(spl1[1]);
+                        continue;
+                    }
+
+
+                    if (spl1[0].StartsWith("Decoded text"))
+                    {
+                        sect.data.decodeText = spl1[1];
+                        continue;
+                    }
+
+                    if (spl1[0].Equals("Decode"))
+                    {
+                        sect.data.decode.value = -1;
+                        sect.data.decode.grade = spl1[1].StartsWith("PASS") ?
+                            new V275_Report_InspectSector_Common.Grade() { letter = "A", value = 4.0f } :
+                            new V275_Report_InspectSector_Common.Grade() { letter = "F", value = 0.0f };
+                        continue;
+                    }
+
+                    if (spl1[0].StartsWith("Rmin"))
+                    {
+                        sect.data.minimumReflectance = new V275_Report_InspectSector_Common.Value() { value = ParseInt(spl1[1]) };
+                        continue;
+                    }
+                    if (spl1[0].StartsWith("Rmax"))
+                    {
+                        sect.data.maximumReflectance = new V275_Report_InspectSector_Common.Value() { value = ParseInt(spl1[1]) };
+                        continue;
+                    }
+
+                    if (spl1[0].StartsWith("Modulation"))
+                    {
+                        sect.data.modulation = new V275_Report_InspectSector_Common.GradeValue() { grade = GetGrade(spl1[1]), value = -1 };
+                        continue;
+                    }
+                    if (spl1[0].StartsWith("Reflectance"))
+                    {
+                        sect.data.reflectanceMargin = new V275_Report_InspectSector_Common.GradeValue() { grade = GetGrade(spl1[1]), value = -1 };
+                        continue;
+                    }
+                    if (spl1[0].StartsWith("Fixed"))
+                    {
+                        sect.data.fixedPatternDamage = new V275_Report_InspectSector_Common.GradeValue() { grade = GetGrade(spl1[1]), value = -1 };
+                        continue;
+                    }
+
+
+                    if (spl1[0].Equals("Contrast"))
+                    {
+                        sect.data.symbolContrast = GetGradeValue(spl1[1]);
+                        continue;
+                    }
+                    if (spl1[0].StartsWith("Axial "))
+                    {
+                        sect.data.axialNonUniformity = GetGradeValue(spl1[1]);
+                        continue;
+                    }
+                    if (spl1[0].StartsWith("Grid "))
+                    {
+                        sect.data.gridNonUniformity = GetGradeValue(spl1[1]);
+                        continue;
+                    }
+                    if (spl1[0].StartsWith("Unused "))
+                    {
+                        sect.data.unusedErrorCorrection = GetGradeValue(spl1[1]);
+                        continue;
+                    }
+
+                    if (spl1[0].StartsWith("X print"))
+                    {
+                        sect.data.gs1SymbolQuality.growthX = ParseInt(spl1[1]);
+                        continue;
+                    }
+                    if (spl1[0].StartsWith("Y print"))
+                    {
+                        sect.data.gs1SymbolQuality.growthY = ParseInt(spl1[1]);
+                        continue;
+                    }
+
+                    if (spl1[0].StartsWith("Cell height"))
+                    {
+                        var item = alarms.Find((e) => e.name.Contains("minimum Xdim"));
+                        if (item != null)
+                            sect.data.gs1SymbolQuality.cellSizeX = new V275_Report_InspectSector_Common.ValueResult() { value = ParseFloat(spl1[1]), result = "FAIL" };
+                        else
+                            sect.data.gs1SymbolQuality.cellSizeX = new V275_Report_InspectSector_Common.ValueResult() { value = ParseFloat(spl1[1]), result = "PASS" };
+                        continue;
+                    }
+                    if (spl1[0].StartsWith("Cell width"))
+                    {
+                        var item = alarms.Find((e) => e.name.Contains("minimum Xdim"));
+                        if (item != null)
+                            sect.data.gs1SymbolQuality.cellSizeY = new V275_Report_InspectSector_Common.ValueResult() { value = ParseFloat(spl1[1]), result = "FAIL" };
+                        else
+                            sect.data.gs1SymbolQuality.cellSizeY = new V275_Report_InspectSector_Common.ValueResult() { value = ParseFloat(spl1[1]), result = "PASS" };
+
+                        continue;
+                    }
+                    if (spl1[0].Equals("Size"))
+                    {
+                        var spl2 = spl1[1].Split('x');
+
+                        sect.data.gs1SymbolQuality.symbolWidth = new V275_Report_InspectSector_Common.ValueResult() { value = sect.data.gs1SymbolQuality.cellSizeX.value * ParseInt(spl2[0]), result = "PASS" };
+                        sect.data.gs1SymbolQuality.symbolHeight = new V275_Report_InspectSector_Common.ValueResult() { value = sect.data.gs1SymbolQuality.cellSizeY.value * ParseInt(spl2[1]), result = "PASS" };
+
+                        continue;
+                    }
+
+                    if (spl1[0].StartsWith("L1 ("))
+                    {
+                        sect.data.gs1SymbolQuality.L1 = GetGrade(spl1[1]);
+                        continue;
+                    }
+                    if (spl1[0].StartsWith("L2"))
+                    {
+                        sect.data.gs1SymbolQuality.L2 = GetGrade(spl1[1]);
+                        continue;
+                    }
+                    if (spl1[0].StartsWith("QZL1"))
+                    {
+                        sect.data.gs1SymbolQuality.QZL1 = GetGrade(spl1[1]);
+                        continue;
+                    }
+                    if (spl1[0].StartsWith("QZL2"))
+                    {
+                        sect.data.gs1SymbolQuality.QZL2 = GetGrade(spl1[1]);
+                        continue;
+                    }
+                    if (spl1[0].StartsWith("OCTASA"))
+                    {
+                        sect.data.gs1SymbolQuality.OCTASA = GetGrade(spl1[1]);
+                        continue;
+                    }
+                }
+
+                sect.data.alarms = alarms.ToArray();
+
+                SectorAvailable?.Invoke(sect);
+            }
+            else
+            {
+                V275_Report_InspectSector_Verify1D sect = new V275_Report_InspectSector_Verify1D();
+                sect.data = new V275_Report_InspectSector_Verify1D.Data();
+                sect.data.gs1SymbolQuality = new V275_Report_InspectSector_Verify1D.Gs1symbolquality();
+                sect.type = "verify1D";
+
+                sect.data.decode = new V275_Report_InspectSector_Common.Decode();
+
+                List<V275_Report_InspectSector_Common.Alarm> alarms = new List<V275_Report_InspectSector_Common.Alarm>();
+
+                foreach (var data in spl)
+                {
+                    var spl1 = data.Split(',');
+
+                    if (spl1.Count() != 2)
+                        continue;
+
+                    if (spl1[0].StartsWith("Symbology"))
+                    {
+                        if (spl1[1].Contains("EAN-13"))
+                            sect.data.symbolType = "ean13";
+
+                        if (spl1[1].Contains("EAN-8"))
+                            sect.data.symbolType = "ean8";
+
+                        continue;
+                    }
+
+                    if (spl1[0].StartsWith("Warning"))
+                    {
+                        alarms.Add(new V275_Report_InspectSector_Common.Alarm() { name = spl1[1], category = 1 });
+                        continue;
+                    }
+
+                    if (spl1[0].StartsWith("Overall"))
+                    {
+                        var spl2 = spl1[1].Split('/');
+
+                        if (spl2.Count() != 4) continue;
+
+                        sect.data.overallGrade = new V275_Report_InspectSector_Common.Overallgrade() { grade = GetGrade(spl2[0]), _string = spl1[1] };
+                        sect.data.aperture = ParseFloat(spl2[1]);
+                        continue;
+                    }
+
+                    if (spl1[0].Equals("Decode"))
+                    {
+                        sect.data.decode.value = -1;
+                        sect.data.decode.grade = spl1[1].StartsWith("PASS") ?
+                            new V275_Report_InspectSector_Common.Grade() { letter = "A", value = 4.0f } :
+                            new V275_Report_InspectSector_Common.Grade() { letter = "F", value = 0.0f };
+                        continue;
+                    }
+                    if (spl1[0].StartsWith("Decoded text"))
+                    {
+                        sect.data.decodeText = spl1[1];
+                        continue;
+                    }
+
+                    if (spl1[0].StartsWith("Xdim"))
+                    {
+                        sect.data.xDimension = ParseFloat(spl1[1]);
+
+
+                        var item = alarms.Find((e) => e.name.Contains("minimum Xdim"));
+                        if (item != null)
+                            sect.data.gs1SymbolQuality.symbolXdim = new V275_Report_InspectSector_Common.ValueResult() { value = sect.data.xDimension, result = "FAIL" };
+                        else
+                            sect.data.gs1SymbolQuality.symbolXdim = new V275_Report_InspectSector_Common.ValueResult() { value = sect.data.xDimension, result = "PASS" };
+
+                        continue;
+                    }
+                    if (spl1[0].StartsWith("Bar height"))
+                    {
+                        var val = ParseFloat(spl1[1]) * 1000;
+                        var item = alarms.Find((e) => e.name.Contains("minimum height"));
+                        if (item != null)
+                            sect.data.gs1SymbolQuality.symbolBarHeight = new V275_Report_InspectSector_Common.ValueResult() { value = val, result = "FAIL" };
+                        else
+                            sect.data.gs1SymbolQuality.symbolBarHeight = new V275_Report_InspectSector_Common.ValueResult() { value = val, result = "PASS" };
+
+                        continue;
+                    }
+
+                    if (spl1[0].StartsWith("Edge"))
+                    {
+                        sect.data.decode.edgeDetermination = new V275_Report_InspectSector_Common.ValueResult() { value = 100, result = spl1[1] };
+                        continue;
+                    }
+
+                    if (spl1[0].StartsWith("Quiet"))
+                    {
+                        if (spl1[1].Contains("ERR"))
+                        {
+                            var spl2 = spl1[1].Split(' ');
+
+                            if (spl2.Count() != 2) continue;
+
+                            sect.data.quietZoneLeft = new V275_Report_InspectSector_Common.ValueResult() { value = ParseInt(spl2[0]), result = spl2[1] };
+                            sect.data.quietZoneRight = new V275_Report_InspectSector_Common.ValueResult() { value = ParseInt(spl2[0]), result = spl2[1] };
+
+                        }
+                        else
+                        {
+                            sect.data.quietZoneLeft = new V275_Report_InspectSector_Common.ValueResult() { value = 100, result = spl1[1] };
+                            sect.data.quietZoneRight = new V275_Report_InspectSector_Common.ValueResult() { value = 100, result = spl1[1] };
+                        }
+
+                        continue;
+                    }
+                    //if (spl1[0].Equals("Decode"))
+                    //{
+                    //    sect.data.decode.grade = new V275_Report_InspectSector_Common.Grade() { value = -1, result = spl1[1] };
+                    //    continue;
+                    //}
+
+                    if (spl1[0].Equals("Contrast"))
+                    {
+                        sect.data.symbolContrast = GetGradeValue(spl1[1]);
+                        continue;
+                    }
+                    if (spl1[0].StartsWith("Modulation"))
+                    {
+                        sect.data.modulation = GetGradeValue(spl1[1]);
+                        continue;
+                    }
+                    if (spl1[0].StartsWith("Decodability"))
+                    {
+                        sect.data.decodability = GetGradeValue(spl1[1]);
+                        continue;
+                    }
+                    if (spl1[0].StartsWith("Defects"))
+                    {
+                        sect.data.defects = GetGradeValue(spl1[1]);
+                        continue;
+                    }
+
+
+                    if (spl1[0].StartsWith("Min Ref"))
+                    {
+                        var grd = spl1[1].StartsWith("PASS") ?
+                                    new V275_Report_InspectSector_Common.Grade() { letter = "A", value = 4.0f } :
+                                    new V275_Report_InspectSector_Common.Grade() { letter = "F", value = 0.0f };
+
+                        if (sect.data.minimumReflectance != null)
+                            sect.data.minimumReflectance.grade = grd;
+                        else
+                            sect.data.minimumReflectance = new V275_Report_InspectSector_Common.GradeValue() { grade = grd };
+
+                        continue;
+                    }
+                    if (spl1[0].StartsWith("Rmin"))
+                    {
+                        var val = (int)Math.Ceiling(ParseFloat(spl1[1]));
+
+                        if (sect.data.minimumReflectance != null)
+                            sect.data.minimumReflectance.value = val;
+                        else
+                            sect.data.minimumReflectance = new V275_Report_InspectSector_Common.GradeValue() { value = val };
+
+                        continue;
+                    }
+                    if (spl1[0].StartsWith("Rmax"))
+                    {
+                        sect.data.maximumReflectance = new V275_Report_InspectSector_Common.Value() { value = ParseInt(spl1[1]) };
+                        continue;
+                    }
+                }
+
+                sect.data.alarms = alarms.ToArray();
+
+                SectorAvailable?.Invoke(sect);
+            }
+        }
+
+        private float ParseFloat(string value)
+        {
+            var digits = new string(value.Trim().TakeWhile(c =>
+                                    ("0123456789.").Contains(c)
+                                    ).ToArray());
+
+            if (float.TryParse(digits, out var val))
+                return val;
+            else
+                return 0;
+
+        }
+
+        private int ParseInt(string value)
+        {
+            var digits = new string(value.Trim().TakeWhile(c =>
+                                    ("0123456789").Contains(c)
+                                    ).ToArray());
+
+            if (int.TryParse(digits, out var val))
+                return val;
+            else
+                return 0;
+
+        }
+
+        private V275_Report_InspectSector_Common.GradeValue GetGradeValue(string data)
+        {
+            var spl2 = data.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+            if (spl2.Count() != 2)
+                return null;
+
+            float tmp = ParseFloat(spl2[0]);
+
+            return new V275_Report_InspectSector_Common.GradeValue()
+            {
+                grade = new V275_Report_InspectSector_Common.Grade()
+                {
+                    value = tmp,
+                    letter = GetLetter(tmp)
+                },
+                value = ParseInt(spl2[1])
+            };
+
+        }
+
+        private V275_Report_InspectSector_Common.Grade GetGrade(string data)
+        {
+            float tmp = ParseFloat(data);
+
+            return new V275_Report_InspectSector_Common.Grade()
+            {
+                value = tmp,
+                letter = GetLetter(tmp)
+            };
+        }
+
+        private string GetLetter(float value)
+        {
+            if (value == 4.0f)
+                return "A";
+
+            if (value <= 3.9f && value >= 3.2f)
+                return "B";
+
+            return "F";
+        }
+
+        public async void Stop()
+        {
+            ReleaseEvents();
+
+            Controller.Disconnect();
+
+            await Task.Run(() => { listening = false; while (running) { } });
+        }
+
+        private void Controller_DataAvailable(string data)
+        {
+            lock (dataLock)
+            {
+                readData += data;
+                newData = true;
+            }
+        }
+
+        private void PacketThread()
+        {
+            listening = true;
+            running = true;
+
+            DateTime start = DateTime.MaxValue;
+            while (listening)
+            {
+                if (newData)
+                {
+                    start = DateTime.Now;
+                    newData = false;
+                }
+
+                if ((DateTime.Now - start) > TimeSpan.FromMilliseconds(500))
+                {
+                    lock (dataLock)
+                    {
+                        string cpy = string.Copy(readData);
+                        Task.Run(() => PacketAvailable?.Invoke(cpy));
+                        readData = "";
+
+                        start = DateTime.MaxValue;
+                    }
+                }
+
+                Thread.Sleep(1);
+            }
+            running = false;
+        }
+
+    }
+}

@@ -1,0 +1,66 @@
+﻿<Dialog:CustomDialog x:Class="LabelVal.LVS_95xx.LVS95xx_SerialPortView"
+                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                    xmlns:local="clr-namespace:LabelVal.LVS_95xx"
+                    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+                    xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                    xmlns:ViewModels="clr-namespace:LabelVal.LVS_95xx"   
+                    xmlns:MainViews="clr-namespace:LabelVal.WindowViews"
+                    xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+                    Dialog:DialogParticipation.Register="{Binding}"
+                    d:DataContext="{d:DesignInstance Type=ViewModels:LVS95xx_SerialPortViewModel}"
+                    mc:Ignorable="d"
+                    d:DesignHeight="800" d:DesignWidth="800" Width="{Binding Width}" Height="{Binding Height}"
+                    Style="{StaticResource {x:Type Dialog:BaseMetroDialog}}" 
+                    PreviewKeyDown="CustomDialog_PreviewKeyDown">
+
+    <Grid VerticalAlignment="Center">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Orientation="Horizontal">
+            <ComboBox ItemsSource="{Binding ComNameList}" SelectedItem="{Binding SelectedComName}"/>
+            <Button Command="{Binding OpenPort}"  Width="30" Height="30" Style="{StaticResource MahApps.Styles.Button.Square}">
+                <IconPacks:Modern Kind="Connect"/>
+            </Button>
+            <Button Command="{Binding ClosePort}" Width="30" Height="30" Style="{StaticResource MahApps.Styles.Button.Square}">
+                <IconPacks:Modern Kind="Disconnect"/>
+            </Button>
+        </StackPanel>
+
+        <Button Grid.Column="2" Name="CloseButton" Click="CloseButton_Click" Width="30" Height="30" Style="{StaticResource MahApps.Styles.Button.Square}" HorizontalAlignment="Right">
+            <IconPacks:Modern Kind="Close"/>
+        </Button>
+
+        <MainViews:SectorDetailsControlView Grid.Row="1" Grid.Column="0" DataContext="{Binding StoredSectorControl}"/>
+
+        <MainViews:SectorDetailsControlView Grid.Row="1" Grid.Column="1" DataContext="{Binding Lvs95xxSectorControl}">
+            <MainViews:SectorDetailsControlView.Style>
+                <Style TargetType="{x:Type MainViews:SectorDetailsControlView}">
+                    <Setter Property="Visibility" Value="Visible"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+
+                </Style>
+            </MainViews:SectorDetailsControlView.Style>
+        </MainViews:SectorDetailsControlView>
+
+        <ScrollViewer Grid.Row="1" Grid.Column="2" MaxHeight="480">
+            <TextBox Text="{Binding ReadData}" TextWrapping="Wrap" IsReadOnly="True"/>
+        </ScrollViewer>
+
+    </Grid>
+
+</Dialog:CustomDialog>

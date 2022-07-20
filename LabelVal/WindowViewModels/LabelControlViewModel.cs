@@ -612,7 +612,7 @@ namespace LabelVal.WindowViewModels
                                         var area1 = new RectangleGeometry(new System.Windows.Rect(startX + (res.data.extendedData.DeltaX * (col + qzX)), startY + (res.data.extendedData.DeltaY * (row + qzY)), res.data.extendedData.DeltaX, res.data.extendedData.DeltaY));
                                         moduleGrid.Children.Add(area1);
 
-                                        string text = res.data.extendedData.ModuleReflectance[cnt].ToString();
+                                        string text = res.data.extendedData.ModuleModulation[cnt].ToString();
                                         Typeface typeface = new Typeface("Arial");
                                         if (typeface.TryGetGlyphTypeface(out GlyphTypeface _glyphTypeface))
                                         {
@@ -642,7 +642,7 @@ namespace LabelVal.WindowViewModels
                                             textGrp.Children.Add(grd);
                                         }
 
-                                        text = res.data.extendedData.ModuleModulation[cnt++].ToString();
+                                        text = res.data.extendedData.ModuleReflectance[cnt++].ToString();
                                         Typeface typeface1 = new Typeface("Arial");
                                         if (typeface1.TryGetGlyphTypeface(out GlyphTypeface _glyphTypeface1))
                                         {

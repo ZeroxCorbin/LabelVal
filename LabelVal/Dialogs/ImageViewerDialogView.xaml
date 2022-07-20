@@ -19,6 +19,7 @@
     <Dialog:CustomDialog.Resources>
         <converters:DoubleToStringConverter x:Key="doubleToString"/>
     </Dialog:CustomDialog.Resources>
+    
     <Dialog:CustomDialog.DialogTop>
         <Grid>
             <paz:ZoomBorder Name="ZoomBorder" Margin="3">

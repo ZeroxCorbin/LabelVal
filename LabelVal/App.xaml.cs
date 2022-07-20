@@ -169,7 +169,7 @@ namespace LabelVal
                 NLog.LogManager.GetCurrentClassLogger().Error(exception, message);
             }
 
-            MessageBox.Show(message, "Unhandled Exception!", MessageBoxButton.OK);
+            MessageBox.Show($"{message}\r\n{exception.Message}", "Unhandled Exception!", MessageBoxButton.OK);
             this.Shutdown();
 
         }

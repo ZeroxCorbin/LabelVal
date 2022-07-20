@@ -1,17 +1,17 @@
 ﻿<mah:MetroWindow x:Class="LabelVal.WindowViews.MainWindowView"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-        xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-        xmlns:local="clr-namespace:LabelVal.WindowViews"
-            xmlns:ViewModels="clr-namespace:LabelVal.WindowViewModels"     
-        xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
-        Dialog:DialogParticipation.Register="{Binding}"
-        d:DataContext="{d:DesignInstance Type=ViewModels:MainWindowViewModel}"
-        mc:Ignorable="d"
-        Height="592" Width="1119" SaveWindowPosition="True" Closing="MetroWindow_Closing">
+                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                xmlns:local="clr-namespace:LabelVal.WindowViews"
+                xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+                xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                xmlns:ViewModels="clr-namespace:LabelVal.WindowViewModels"     
+                xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+                Dialog:DialogParticipation.Register="{Binding}"
+                d:DataContext="{d:DesignInstance Type=ViewModels:MainWindowViewModel}"
+                mc:Ignorable="d"
+                Height="592" Width="1119" SaveWindowPosition="True" Closing="MetroWindow_Closing">
 
     <mah:MetroWindow.Title>
         <MultiBinding StringFormat="Label Validator : {0}">
@@ -49,6 +49,10 @@
     <mah:MetroWindow.LeftWindowCommands>
         <mah:WindowCommands>
             <Button Name="btnShowSettings" Click="btnShowSettings_Click">
+                <IconPacks:PackIconModern Width="20" Height="20" Kind="Cog"/>
+            </Button>
+
+            <Button Name="btnShowSerial" Click="btnShowSerial_Click">
                 <IconPacks:PackIconModern Width="20" Height="20" Kind="Cog"/>
             </Button>
         </mah:WindowCommands>

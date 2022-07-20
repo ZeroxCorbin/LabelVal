@@ -1,6 +1,6 @@
-﻿using System;
+﻿using LabelVal.WindowViewModels;
+using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,18 +11,24 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace LabelVal.Dialogs
+namespace LabelVal.LVS_95xx
 {
     /// <summary>
-    /// Interaction logic for ImageViewerDialog.xaml
+    /// Interaction logic for LVS95xx_SerialPortView.xaml
     /// </summary>
-    public partial class ImageViewerDialogView : MahApps.Metro.Controls.Dialogs.CustomDialog
+    public partial class LVS95xx_SerialPortView : MahApps.Metro.Controls.Dialogs.CustomDialog
     {
-        public ImageViewerDialogView()
+        public LVS95xx_SerialPortView()
         {
+            InitializeComponent();
+        }
+
+        public LVS95xx_SerialPortView(object sect)
+        {
+            DataContext = new LVS95xx_SerialPortViewModel(sect);
+
             InitializeComponent();
         }
 
@@ -32,21 +38,20 @@ namespace LabelVal.Dialogs
                 Close();
         }
 
-        private void CloseButton_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
-
         private async void Close()
         {
+            ((LVS95xx_SerialPortViewModel)this.DataContext).ClosePort.Execute(new object());
+
             await MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance.HideMetroDialogAsync(this.DataContext, this);
+
             MahApps.Metro.Controls.Dialogs.DialogParticipation.SetRegister(this, null);
+
             this.DataContext = null;
         }
 
-        private void Reset_Click(object sender, RoutedEventArgs e)
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            ZoomBorder.Reset();
+            Close();
         }
     }
 }

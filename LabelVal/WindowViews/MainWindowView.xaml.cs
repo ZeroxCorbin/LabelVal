@@ -78,5 +78,9 @@ namespace LabelVal.WindowViews
             ApplicationSettings.IsOpen = true;
         }
 
+        private void btnShowSerial_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
