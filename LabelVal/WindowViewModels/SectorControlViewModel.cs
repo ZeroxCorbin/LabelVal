@@ -28,7 +28,8 @@ namespace LabelVal.WindowViewModels
         public bool IsError { get => isError; set => SetProperty(ref isError, value); }
 
         private bool isWrongStandard;
-        public bool IsWrongStandard { get => isWrongStandard; set => SetProperty(ref isWrongStandard, value); }
+        public bool IsWrongStandard { get => isWrongStandard; set { SetProperty(ref isWrongStandard, value); OnPropertyChanged("IsNotWrongStandard"); } }
+        public bool IsNotWrongStandard => !IsWrongStandard;
 
         private bool isGS1Standard;
         public bool IsGS1Standard { get => isGS1Standard; set => SetProperty(ref isGS1Standard, value); }

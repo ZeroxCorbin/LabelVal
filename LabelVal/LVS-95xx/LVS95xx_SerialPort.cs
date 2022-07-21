@@ -89,8 +89,6 @@ namespace LabelVal.LVS_95xx
                 sect.data.gs1SymbolQuality = new V275_Report_InspectSector_Verify2D.Gs1symbolquality();
                 sect.type = "verify2D";
 
-                sect.data.decode = new V275_Report_InspectSector_Common.Decode();
-
                 List<V275_Report_InspectSector_Common.Alarm> alarms = new List<V275_Report_InspectSector_Common.Alarm>();
 
                 foreach (var data in spl)
@@ -102,12 +100,7 @@ namespace LabelVal.LVS_95xx
 
                     if (spl1[0].StartsWith("Symbology"))
                     {
-                        if (spl1[1].Contains("QR"))
-                            sect.data.symbolType = "qr";
-
-                        if (spl1[1].Contains("Data Matrix"))
-                            sect.data.symbolType = "dataMatrix";
-
+                        sect.data.symbolType = GetSymbolType(spl1[1]);
                         continue;
                     }
 
@@ -115,7 +108,7 @@ namespace LabelVal.LVS_95xx
                     {
                         var spl2 = spl1[1].Split('/');
 
-                        if (spl2.Count() != 4) continue;
+                        if (spl2.Count() < 3) continue;
 
                         sect.data.overallGrade = new V275_Report_InspectSector_Common.Overallgrade() { grade = GetGrade(spl2[0]), _string = spl1[1] };
                         sect.data.aperture = ParseFloat(spl2[1]);
@@ -143,6 +136,9 @@ namespace LabelVal.LVS_95xx
 
                     if (spl1[0].Equals("Decode"))
                     {
+                        if (sect.data.decode == null)
+                            sect.data.decode = new V275_Report_InspectSector_Common.Decode();
+
                         sect.data.decode.value = -1;
                         sect.data.decode.grade = spl1[1].StartsWith("PASS") ?
                             new V275_Report_InspectSector_Common.Grade() { letter = "A", value = 4.0f } :
@@ -277,9 +273,7 @@ namespace LabelVal.LVS_95xx
                 sect.data.gs1SymbolQuality = new V275_Report_InspectSector_Verify1D.Gs1symbolquality();
                 sect.type = "verify1D";
 
-                sect.data.decode = new V275_Report_InspectSector_Common.Decode();
-
-                List<V275_Report_InspectSector_Common.Alarm> alarms = new List<V275_Report_InspectSector_Common.Alarm>();
+               List<V275_Report_InspectSector_Common.Alarm> alarms = new List<V275_Report_InspectSector_Common.Alarm>();
 
                 foreach (var data in spl)
                 {
@@ -290,12 +284,22 @@ namespace LabelVal.LVS_95xx
 
                     if (spl1[0].StartsWith("Symbology"))
                     {
-                        if (spl1[1].Contains("EAN-13"))
-                            sect.data.symbolType = "ean13";
+                        sect.data.symbolType = GetSymbolType(spl1[1]);
 
-                        if (spl1[1].Contains("EAN-8"))
-                            sect.data.symbolType = "ean8";
+                        if(sect.data.symbolType == "dataBar")
+                        {
+                            var item = spl.Find((e) => e.StartsWith("DataBar"));
+                            if(item != null)
+                            {
+                                var spl2 = item.Split(',');
 
+                                if (spl2.Count() != 2)
+                                    continue;
+
+                                sect.data.symbolType+= spl2[1];
+                            }
+                                
+                        }
                         continue;
                     }
 
@@ -309,7 +313,7 @@ namespace LabelVal.LVS_95xx
                     {
                         var spl2 = spl1[1].Split('/');
 
-                        if (spl2.Count() != 4) continue;
+                        if (spl2.Count() < 3) continue;
 
                         sect.data.overallGrade = new V275_Report_InspectSector_Common.Overallgrade() { grade = GetGrade(spl2[0]), _string = spl1[1] };
                         sect.data.aperture = ParseFloat(spl2[1]);
@@ -318,6 +322,9 @@ namespace LabelVal.LVS_95xx
 
                     if (spl1[0].Equals("Decode"))
                     {
+                        if (sect.data.decode == null)
+                            sect.data.decode = new V275_Report_InspectSector_Common.Decode();
+
                         sect.data.decode.value = -1;
                         sect.data.decode.grade = spl1[1].StartsWith("PASS") ?
                             new V275_Report_InspectSector_Common.Grade() { letter = "A", value = 4.0f } :
@@ -330,12 +337,20 @@ namespace LabelVal.LVS_95xx
                         continue;
                     }
 
+                    if (spl1[0].StartsWith("Unused "))
+                    {
+                        sect.data.unusedErrorCorrection = GetGradeValue(spl1[1]);
+                        continue;
+                    }
+
                     if (spl1[0].StartsWith("Xdim"))
                     {
                         sect.data.xDimension = ParseFloat(spl1[1]);
 
+                        if (sect.data.symbolType == "pdf417") continue;
 
                         var item = alarms.Find((e) => e.name.Contains("minimum Xdim"));
+
                         if (item != null)
                             sect.data.gs1SymbolQuality.symbolXdim = new V275_Report_InspectSector_Common.ValueResult() { value = sect.data.xDimension, result = "FAIL" };
                         else
@@ -346,6 +361,7 @@ namespace LabelVal.LVS_95xx
                     if (spl1[0].StartsWith("Bar height"))
                     {
                         var val = ParseFloat(spl1[1]) * 1000;
+
                         var item = alarms.Find((e) => e.name.Contains("minimum height"));
                         if (item != null)
                             sect.data.gs1SymbolQuality.symbolBarHeight = new V275_Report_InspectSector_Common.ValueResult() { value = val, result = "FAIL" };
@@ -357,6 +373,9 @@ namespace LabelVal.LVS_95xx
 
                     if (spl1[0].StartsWith("Edge"))
                     {
+                        if(sect.data.decode == null)
+                            sect.data.decode = new V275_Report_InspectSector_Common.Decode();
+
                         sect.data.decode.edgeDetermination = new V275_Report_InspectSector_Common.ValueResult() { value = 100, result = spl1[1] };
                         continue;
                     }
@@ -424,6 +443,8 @@ namespace LabelVal.LVS_95xx
                     }
                     if (spl1[0].StartsWith("Rmin"))
                     {
+                        if (sect.data.symbolType == "pdf417") continue;
+
                         var val = (int)Math.Ceiling(ParseFloat(spl1[1]));
 
                         if (sect.data.minimumReflectance != null)
@@ -435,7 +456,25 @@ namespace LabelVal.LVS_95xx
                     }
                     if (spl1[0].StartsWith("Rmax"))
                     {
+                        if (sect.data.symbolType == "pdf417") continue;
+
                         sect.data.maximumReflectance = new V275_Report_InspectSector_Common.Value() { value = ParseInt(spl1[1]) };
+                        continue;
+                    }
+
+                    if (spl1[0].StartsWith("Codeword y"))
+                    {
+                        var spl2 = spl1[1].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                        if (spl2.Count() != 2) continue;
+
+                        sect.data.cwYeild = new V275_Report_InspectSector_Common.GradeValue() { grade = GetGrade(spl2[0]), value = ParseInt(spl2[1]) };
+                        continue;
+                    }
+
+                    if (spl1[0].StartsWith("Codeword P"))
+                    {
+                        sect.data.cwPrintQuality = new V275_Report_InspectSector_Common.GradeValue() { grade = GetGrade(spl1[1]), value = -1 };
                         continue;
                     }
                 }
@@ -509,10 +548,65 @@ namespace LabelVal.LVS_95xx
             if (value == 4.0f)
                 return "A";
 
-            if (value <= 3.9f && value >= 3.2f)
+            if (value <= 3.9f && value >= 3.0f)
                 return "B";
 
+            if (value <= 2.9f && value >= 2.0f)
+                return "C";
+
+            if (value <= 1.9f && value >= 1.0f)
+                return "D";
+
+            if (value <= 0.9f && value >= 0.0f)
+                return "F";
+
             return "F";
+        }
+
+        private string GetSymbolType(string value)
+        {
+            if (value.Contains("UPC-A"))
+                return "upcA";
+
+            if (value.Contains("UPC-B"))
+                return "upcB";
+
+            if (value.Contains("EAN-13"))
+                return "ean13";
+
+            if (value.Contains("EAN-8"))
+                return "ean8";
+
+            if (value.Contains("DataBar"))
+                return "dataBar";
+
+            if (value.Contains("Code 39"))
+                return "code39";
+
+            if (value.Contains("Code 93"))
+                return "code93";
+
+            if (value.StartsWith("QR"))
+                return "qrCode";
+
+            if (value.StartsWith("Micro"))
+                return "microQrCode";
+
+            if (value.Contains("Data Matrix"))
+                return "dataMatrix";
+
+            if (value.Contains("Aztec"))
+                return "aztec";
+
+            if (value.Contains("Codabar"))
+                return "codaBar";
+
+            if (value.Contains("ITF"))
+                return "i2of5";
+
+            if (value.Contains("PDF417"))
+                return "pdf417";
+            return "";
         }
 
         public async void Stop()

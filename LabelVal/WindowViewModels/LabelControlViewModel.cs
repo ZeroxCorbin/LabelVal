@@ -19,6 +19,9 @@ using LabelVal.V275.Models;
 using System.Windows.Media;
 using System.Globalization;
 using System.Windows;
+using Microsoft.Win32;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace LabelVal.WindowViewModels
 {
@@ -160,6 +163,7 @@ namespace LabelVal.WindowViewModels
         public V275_Report Report { get; private set; }
 
         public ICommand PrintCommand { get; }
+        public ICommand SaveCommand { get; }
         public ICommand ReadCommand { get; }
         public ICommand StoreCommand { get; }
         public ICommand LoadCommand { get; }
@@ -185,6 +189,7 @@ namespace LabelVal.WindowViewModels
             IsGS1Standard = GradingStandard.StartsWith("GS1") ? true : false;
 
             PrintCommand = new Core.RelayCommand(PrintAction, c => true);
+            SaveCommand = new Core.RelayCommand(SaveAction, c => true);
             ReadCommand = new Core.RelayCommand(ReadAction, c => true);
             StoreCommand = new Core.RelayCommand(StoreAction, c => true);
             LoadCommand = new Core.RelayCommand(LoadAction, c => true);
@@ -446,6 +451,66 @@ namespace LabelVal.WindowViewModels
             RepeatOverlay = CreateRepeatOverlay(true, true);
 
             return true;
+        }
+
+        public void SaveAction(object parameter)
+        {
+            string par = (string)parameter;
+
+            SendTo95xxApplication();
+
+            string path = GetSaveFilePath();
+            if (string.IsNullOrEmpty(path)) return;
+
+            try
+            {
+                if (par == "repeat")
+                {
+                    var bmp = ConvertToBmp(RepeatImage);
+                    SaveImageBytesToFile(path,bmp);
+                    Clipboard.SetText(path);
+                }
+                else
+                {
+                    var bmp = ConvertToBmp(LabelImage);
+                    SaveImageBytesToFile(path,bmp);
+                    Clipboard.SetText(path);
+                }
+            }
+            catch(Exception ex)
+            {
+
+            }
+
+        }
+        const UInt32 WM_KEYDOWN = 0x0100;
+        const int VK_F5 = 0x74;
+
+        [DllImport("user32.dll")]
+        static extern bool PostMessage(IntPtr hWnd, UInt32 Msg, int wParam, int lParam);
+
+
+        private void SendTo95xxApplication()
+        {
+            Process[] processes = Process.GetProcessesByName("LVS-95XX");
+
+            //foreach (Process proc in processes)
+            //    PostMessage(proc.MainWindowHandle, WM_KEYDOWN, VK_F5, 0);
+        }
+        private string GetSaveFilePath()
+        {
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.Filter = "Bitmap Image|*.bmp";//|Gif Image|*.gif|JPeg Image|*.jpg";
+            saveFileDialog1.Title = "Save an Image File";
+            saveFileDialog1.ShowDialog();
+
+            return saveFileDialog1.FileName;
+        }
+        private string SaveImageBytesToFile(string path, byte[] img)
+        {
+            File.WriteAllBytes(path, img);
+
+            return "";
         }
 
         private DrawingImage CreateRepeatOverlay(bool isRepeat, bool isDetailed)
@@ -834,6 +899,23 @@ namespace LabelVal.WindowViewModels
         private byte[] ConvertToPng(byte[] img)
         {
             PngBitmapEncoder encoder = new PngBitmapEncoder();
+            using (var ms = new System.IO.MemoryStream(img))
+            {
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    encoder.Frames.Add(BitmapFrame.Create(ms));
+                    encoder.Save(stream);
+                    stream.Close();
+
+                    return stream.ToArray();
+
+                }
+            }
+        }
+
+        private byte[] ConvertToBmp(byte[] img)
+        {
+            BmpBitmapEncoder encoder = new BmpBitmapEncoder();
             using (var ms = new System.IO.MemoryStream(img))
             {
                 using (MemoryStream stream = new MemoryStream())

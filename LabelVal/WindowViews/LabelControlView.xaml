@@ -134,6 +134,23 @@
                 <TextBlock Grid.Column="1" Grid.Row="0"
                            Text="Label Image" HorizontalAlignment="Center" Margin="0,0,30,0"
                            ToolTip="The Label Image file from the '.\Standards' directory."/>
+                <Button Grid.Column="2" Grid.Row="1" Margin="2" HorizontalAlignment="Right"
+                        Command="{Binding SaveCommand}"
+                        CommandParameter="label">
+
+                    <IconPacks:Material Kind="ContentSave"/>
+
+                    <Button.Style>
+                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Flat}">
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding LabelImage}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
                 <StackPanel Grid.Column="1" Grid.Row="1"
                             Orientation="Horizontal" HorizontalAlignment="Center">
 
@@ -329,6 +346,24 @@
                         <IconPacks:Material Kind="Gold"/>
                     </Label.Content>
                 </Label>
+
+                <Button Grid.Column="2" Grid.Row="1" Margin="2" HorizontalAlignment="Right"
+                        Command="{Binding SaveCommand}"
+                        CommandParameter="repeat">
+                    
+                    <IconPacks:Material Kind="ContentSave"/>
+                    
+                    <Button.Style>
+                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Flat}">
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding RepeatImage}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
             </Grid>
 
             <Grid Grid.Row="1" Grid.Column="0">

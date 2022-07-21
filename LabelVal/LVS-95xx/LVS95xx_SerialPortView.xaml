@@ -14,20 +14,38 @@
                     mc:Ignorable="d"
                     d:DesignHeight="800" d:DesignWidth="800" Width="{Binding Width}" Height="{Binding Height}"
                     Style="{StaticResource {x:Type Dialog:BaseMetroDialog}}" 
-                    PreviewKeyDown="CustomDialog_PreviewKeyDown">
+                    PreviewKeyDown="CustomDialog_PreviewKeyDown" DialogContentMargin="100">
 
-    <Grid VerticalAlignment="Center">
+    <Dialog:CustomDialog.DialogTop>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="1" Text="LVS-95xx Comparison" HorizontalAlignment="Center" FontSize="24"/>
+
+            <Button Grid.Column="2" Name="CloseButton" Click="CloseButton_Click" Width="30" Height="30" Style="{StaticResource MahApps.Styles.Button.Square}" HorizontalAlignment="Right">
+                <IconPacks:Modern Kind="Close"/>
+            </Button>
+        </Grid>
+    </Dialog:CustomDialog.DialogTop>
+
+    <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
         <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="auto"/>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="auto"/>
         </Grid.ColumnDefinitions>
-
-        <StackPanel Orientation="Horizontal" Margin="3">
+        
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="3">
             <ComboBox ItemsSource="{Binding ComNameList}" SelectedItem="{Binding SelectedComName}" IsEnabled="{Binding IsNotConnected}"/>
             <Button Command="{Binding OpenPort}"  Width="30" Height="30" Style="{StaticResource MahApps.Styles.Button.Square}" IsEnabled="{Binding IsNotConnected}">
                 <IconPacks:Modern Kind="Connect"/>
@@ -37,19 +55,17 @@
             </Button>
         </StackPanel>
 
-        <Button Grid.Column="2" Name="CloseButton" Click="CloseButton_Click" Width="30" Height="30" Style="{StaticResource MahApps.Styles.Button.Square}" HorizontalAlignment="Right">
-            <IconPacks:Modern Kind="Close"/>
-        </Button>
 
-        <MainViews:SectorDetailsControlView Grid.Row="1" Grid.Column="0" DataContext="{Binding StoredSectorControl}" Margin="3"/>
 
-        <MainViews:SectorDetailsControlView Grid.Row="1" Grid.Column="1" DataContext="{Binding Lvs95xxSectorControl}" Margin="3" MinWidth="250"/>
+        <MainViews:SectorDetailsControlView Grid.Row="2" Grid.Column="0" DataContext="{Binding StoredSectorControl}" Margin="3"/>
 
-        <Border Grid.Row="1" Grid.Column="2" BorderThickness="2" Margin="3"
+        <MainViews:SectorDetailsControlView Grid.Row="2" Grid.Column="1" DataContext="{Binding Lvs95xxSectorControl}" Margin="3" MinWidth="250"/>
+
+        <Border Grid.Row="2" Grid.Column="2" BorderThickness="2" Margin="3"
                         BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
                         Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
             <ScrollViewer MaxHeight="500">
-                <TextBox Text="{Binding ReadData}" TextWrapping="Wrap" IsReadOnly="True" BorderThickness="0"/>
+                <TextBox Text="{Binding ReadData}" IsReadOnly="True" BorderThickness="0"/>
             </ScrollViewer>
         </Border>
 

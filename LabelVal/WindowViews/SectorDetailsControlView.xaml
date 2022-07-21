@@ -11,8 +11,7 @@
             xmlns:Converters="clr-namespace:LabelVal.Converters"
             xmlns:V275Converters="clr-namespace:LabelVal.V275.Converters"
              d:DataContext="{d:DesignInstance Type=ViewModels:SectorControlViewModel}"
-            mc:Ignorable="d" 
-            d:DesignHeight="450" d:DesignWidth="800">
+            mc:Ignorable="d" d:Height="310" d:Width="282">
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="booltovis"/>
@@ -65,6 +64,10 @@
                                                        Background="{DynamicResource ColorBlindBrush5}"
                                                        HorizontalAlignment="Center"
                                                        Visibility="{Binding IsWrongStandard, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneTime}"/>
+
+                    <TextBlock Grid.Column="1" Text="{Binding ReportSector.data.overallGrade._string}" 
+                           HorizontalAlignment="Right"
+                           Visibility="{Binding IsNotWrongStandard, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneTime}"/>
 
                     <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="5,0,0,0">
                         <TextBlock.Style>

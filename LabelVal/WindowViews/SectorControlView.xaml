@@ -58,6 +58,10 @@
                            HorizontalAlignment="Center"
                            Visibility="{Binding IsWrongStandard, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneTime}"/>
 
+                <TextBlock Grid.Column="1" Text="{Binding ReportSector.data.overallGrade._string}" 
+                           HorizontalAlignment="Center"
+                           Visibility="{Binding IsNotWrongStandard, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneTime}"/>
+                
                 <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="5,0,0,0">
                     <TextBlock.Style>
                         <Style TargetType="{x:Type TextBlock}">
@@ -133,6 +137,22 @@
 
             <Border Grid.Row="1" Grid.Column="0" VerticalAlignment="Top" Margin="0,3">
                 <Button Name="Show95xxCompare" Click="Show95xxCompare_Click" Background="White" Padding="0" Margin="0" Height="30">
+                    <Button.Style>
+                        <Style TargetType="{x:Type Button}">
+                            <Setter Property="IsHitTestVisible" Value="True"/>
+                            <Style.Triggers>
+                                <DataTrigger Value="ocr" Binding="{Binding ReportSector.type, Mode=OneTime}">
+                                    <Setter Property="IsHitTestVisible" Value="False"/>
+                                </DataTrigger>
+                                <DataTrigger Value="ocv" Binding="{Binding ReportSector.type, Mode=OneTime}">
+                                    <Setter Property="IsHitTestVisible" Value="False"/>
+                                </DataTrigger>
+                                <DataTrigger Value="blemish" Binding="{Binding ReportSector.type, Mode=OneTime}">
+                                    <Setter Property="IsHitTestVisible" Value="False"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
                     <Image Stretch="Fill">
                         <Image.Style>
                             <Style TargetType="{x:Type Image}">
@@ -146,6 +166,9 @@
                                     </DataTrigger>
                                     <DataTrigger Value="ocv" Binding="{Binding ReportSector.type, Mode=OneTime}">
                                         <Setter Property="Source" Value="/Assets/Images/ocv.png"/>
+                                    </DataTrigger>
+                                    <DataTrigger Value="blemish" Binding="{Binding ReportSector.type, Mode=OneTime}">
+                                        <Setter Property="Source" Value="/Assets/Images/FlawTool.png"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
