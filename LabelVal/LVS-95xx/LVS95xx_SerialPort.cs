@@ -586,7 +586,7 @@ namespace LabelVal.LVS_95xx
             if (value.Contains("Code 93"))
                 return "code93";
 
-            if (value.StartsWith("QR"))
+            if (value.StartsWith("GS1 QR"))
                 return "qrCode";
 
             if (value.StartsWith("Micro"))
