@@ -56,8 +56,8 @@ namespace LabelVal.WindowViewModels
         private bool isGS1Standard;
         public bool IsGS1Standard { get => isGS1Standard; set => SetProperty(ref isGS1Standard, value); }
 
-        private string gradingStandard;
-        public string GradingStandard { get => gradingStandard; set => SetProperty(ref gradingStandard, value); }
+        private MainWindowViewModel.StandardEntry gradingStandard;
+        public MainWindowViewModel.StandardEntry GradingStandard { get => gradingStandard; set => SetProperty(ref gradingStandard, value); }
 
         private bool isGoldenRepeat;
         public bool IsGoldenRepeat { get => isGoldenRepeat; set => SetProperty(ref isGoldenRepeat, value); }
@@ -160,7 +160,7 @@ namespace LabelVal.WindowViewModels
         public V275_API_Controller V275 { get; private set; }
         public V275_Job LabelTemplate { get; set; }
         public V275_Job RepeatTemplate { get; set; }
-        public V275_Report Report { get; private set; }
+        public V275_Report RepeatReport { get; private set; }
 
         public ICommand PrintCommand { get; }
         public ICommand SaveCommand { get; }
@@ -172,21 +172,21 @@ namespace LabelVal.WindowViewModels
         public ICommand ClearStored { get; }
         public ICommand ClearRead { get; }
 
-
+        public ICommand RedoFiducial { get; }
 
         private IDialogCoordinator dialogCoordinator;
-        public LabelControlViewModel(string imagePath, string imageComment, string printerName, string gradingStandard, StandardsDatabase standardsDatabase, V275_API_Controller v275, IDialogCoordinator diag)
+        public LabelControlViewModel(string imagePath, string imageComment, MainWindowViewModel.StandardEntry gradingStandard, StandardsDatabase standardsDatabase, V275_API_Controller v275, IDialogCoordinator diag)
         {
             dialogCoordinator = diag;
 
             LabelImagePath = imagePath;
             LabelComment = imageComment;
-            PrinterName = printerName;
+
             GradingStandard = gradingStandard;
             StandardsDatabase = standardsDatabase;
             V275 = v275;
 
-            IsGS1Standard = GradingStandard.StartsWith("GS1") ? true : false;
+            IsGS1Standard = GradingStandard.IsGS1;
 
             PrintCommand = new Core.RelayCommand(PrintAction, c => true);
             SaveCommand = new Core.RelayCommand(SaveAction, c => true);
@@ -198,29 +198,13 @@ namespace LabelVal.WindowViewModels
             ClearStored = new Core.RelayCommand(ClearStoredAction, c => true);
             ClearRead = new Core.RelayCommand(ClearReadAction, c => true);
 
+            RedoFiducial = new Core.RelayCommand(RedoFiducialAction, c => true);
+
             GetImage(imagePath);
             GetStored();
         }
 
-        private BitmapImage CreateBitmap(byte[] data)
-        {
-            if (data == null || data.Length < 2)
-                return null;
 
-            BitmapImage img = new BitmapImage();
-
-            using (MemoryStream memStream = new MemoryStream(data))
-            {
-                img.BeginInit();
-                img.CacheOption = BitmapCacheOption.OnLoad;
-                img.StreamSource = memStream;
-                //img.DecodePixelWidth = 400;
-                img.EndInit();
-                img.Freeze();
-
-            }
-            return img;
-        }
         public async Task<MessageDialogResult> OkCancelDialog(string title, string message)
         {
 
@@ -253,7 +237,7 @@ namespace LabelVal.WindowViewModels
             LabelSectors.Clear();
             IsLoad = false;
 
-            CurrentRow = StandardsDatabase.GetRow(GradingStandard, LabelImageUID);
+            CurrentRow = StandardsDatabase.GetRow(GradingStandard.StandardName, LabelImageUID);
 
             if (CurrentRow == null)
             {
@@ -270,7 +254,6 @@ namespace LabelVal.WindowViewModels
             LabelTemplate = JsonConvert.DeserializeObject<V275_Job>(CurrentRow.LabelTemplate);
 
             RepeatImage = CurrentRow.RepeatImage;
-
             IsGoldenRepeat = true;
 
             List<SectorControlViewModel> tempSectors = new List<SectorControlViewModel>();
@@ -279,10 +262,10 @@ namespace LabelVal.WindowViewModels
                 {
                     bool isWrongStandard = false;
                     if (jSec.type == "verify1D" || jSec.type == "verify2D")
-                        if (IsGS1Standard)
+                        if (GradingStandard.IsGS1)
                         {
                             if (jSec.gradingStandard.enabled)
-                                isWrongStandard = !(GradingStandard.StartsWith($"{jSec.gradingStandard.standard} TABLE {jSec.gradingStandard.tableId}"));
+                                isWrongStandard = GradingStandard.TableID != jSec.gradingStandard.tableId;
                             else
                                 isWrongStandard = true;
                         }
@@ -324,14 +307,18 @@ namespace LabelVal.WindowViewModels
                 if (await OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for this label?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
                     return;
 
-            StandardsDatabase.AddRow(GradingStandard, LabelImageUID, LabelImage, JsonConvert.SerializeObject(RepeatTemplate), JsonConvert.SerializeObject(Report), RepeatImage);
+            StandardsDatabase.AddRow(GradingStandard.StandardName, LabelImageUID, LabelImage, JsonConvert.SerializeObject(RepeatTemplate), JsonConvert.SerializeObject(RepeatReport), RepeatImage);
+
+            RepeatSectors.Clear();
+            IsStore = false;
+
             GetStored();
         }
         private async void ClearStoredAction(object parameter)
         {
             if (await OkCancelDialog("Clear Stored Sectors", $"Are you sure you want to clear the stored sectors for this label?\r\nThis can not be undone!") == MessageDialogResult.Affirmative)
             {
-                StandardsDatabase.DeleteRow(GradingStandard, LabelImageUID);
+                StandardsDatabase.DeleteRow(GradingStandard.StandardName, LabelImageUID);
                 GetStored();
             }
         }
@@ -375,20 +362,17 @@ namespace LabelVal.WindowViewModels
         {
             Status = string.Empty;
 
-            //if (!isRunning)
-            //{
             RepeatSectors.Clear();
+            IsStore = false;
+
             DiffSectors.Clear();
 
-            IsStore = false;
-            //}
-
-            if (!await V275.Read(repeat))
+            if (!await V275.Read(repeat, !IsSimulation))
             {
                 Status = V275.Status;
 
                 RepeatTemplate = null;
-                Report = null;
+                RepeatReport = null;
 
                 if (!IsGoldenRepeat)
                 {
@@ -400,9 +384,21 @@ namespace LabelVal.WindowViewModels
             }
 
             RepeatTemplate = V275.Commands.Job;
-            Report = V275.Commands.Report;
-            RepeatImage = ConvertToPng(V275.Commands.Repeatimage);
-            IsGoldenRepeat = false;
+            RepeatReport = V275.Commands.Report;
+
+            if (!IsSimulation)
+            {
+                RepeatImage = ImageUtilities.ConvertToPng(V275.Commands.RepeatImage, 600);
+                IsGoldenRepeat = false;
+            }
+            else
+            {
+                if (RepeatImage == null)
+                {
+                    RepeatImage = LabelImage.ToArray();
+                    IsGoldenRepeat = false;
+                }   
+            }
 
             //if (!isRunning)
             //{
@@ -414,14 +410,14 @@ namespace LabelVal.WindowViewModels
                     if (IsGS1Standard)
                     {
                         if (jSec.gradingStandard.enabled)
-                            isWrongStandard = !(GradingStandard.StartsWith($"{jSec.gradingStandard.standard} TABLE {jSec.gradingStandard.tableId}"));
+                            isWrongStandard = GradingStandard.TableID != jSec.gradingStandard.tableId;
                         else
                             isWrongStandard = true;
                     }
                     else
                         isWrongStandard = false;
 
-                foreach (JObject rSec in Report.inspectLabel.inspectSector)
+                foreach (JObject rSec in RepeatReport.inspectLabel.inspectSector)
                 {
                     if (jSec.name == rSec["name"].ToString())
                     {
@@ -453,6 +449,11 @@ namespace LabelVal.WindowViewModels
             return true;
         }
 
+        public void RedoFiducialAction(object parameter)
+        {
+            ImageUtilities.RedrawFiducial(LabelImagePath, false);
+        }
+
         public void SaveAction(object parameter)
         {
             string par = (string)parameter;
@@ -466,18 +467,18 @@ namespace LabelVal.WindowViewModels
             {
                 if (par == "repeat")
                 {
-                    var bmp = ConvertToBmp(RepeatImage);
-                    SaveImageBytesToFile(path,bmp);
+                    var bmp = ImageUtilities.ConvertToBmp(RepeatImage);
+                    SaveImageBytesToFile(path, bmp);
                     Clipboard.SetText(path);
                 }
                 else
                 {
-                    var bmp = ConvertToBmp(LabelImage);
-                    SaveImageBytesToFile(path,bmp);
+                    var bmp = ImageUtilities.ConvertToBmp(LabelImage);
+                    SaveImageBytesToFile(path, bmp);
                     Clipboard.SetText(path);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
 
             }
@@ -515,7 +516,7 @@ namespace LabelVal.WindowViewModels
 
         private DrawingImage CreateRepeatOverlay(bool isRepeat, bool isDetailed)
         {
-            var bmp = CreateBitmap(RepeatImage);
+            var bmp = ImageUtilities.CreateBitmap(RepeatImage);
 
             //Draw the image outline the same size as the repeat image
             GeometryDrawing border = new GeometryDrawing
@@ -895,61 +896,25 @@ namespace LabelVal.WindowViewModels
             return moduleGrid;
         }
 
-
-        private byte[] ConvertToPng(byte[] img)
-        {
-            PngBitmapEncoder encoder = new PngBitmapEncoder();
-            using (var ms = new System.IO.MemoryStream(img))
-            {
-                using (MemoryStream stream = new MemoryStream())
-                {
-                    encoder.Frames.Add(BitmapFrame.Create(ms));
-                    encoder.Save(stream);
-                    stream.Close();
-
-                    return stream.ToArray();
-
-                }
-            }
-        }
-
-        private byte[] ConvertToBmp(byte[] img)
-        {
-            BmpBitmapEncoder encoder = new BmpBitmapEncoder();
-            using (var ms = new System.IO.MemoryStream(img))
-            {
-                using (MemoryStream stream = new MemoryStream())
-                {
-                    encoder.Frames.Add(BitmapFrame.Create(ms));
-                    encoder.Save(stream);
-                    stream.Close();
-
-                    return stream.ToArray();
-
-                }
-            }
-        }
-
         private void ClearReadAction(object parameter)
         {
+            RepeatReport = null;
             RepeatTemplate = null;
+
             RepeatImage = null;
             RepeatOverlay = null;
-            RepeatSectors.Clear();
 
+            IsGoldenRepeat = false;
+
+            RepeatSectors.Clear();
             DiffSectors.Clear();
 
             IsStore = false;
 
-            CurrentRow = StandardsDatabase.GetRow(GradingStandard, LabelImageUID);
+            CurrentRow = StandardsDatabase.GetRow(GradingStandard.StandardName, LabelImageUID);
 
             if (CurrentRow == null)
-            {
-                IsGoldenRepeat = false;
-                RepeatImage = null;
-                RepeatOverlay = null;
                 return;
-            }
 
             RepeatImage = CurrentRow.RepeatImage;
             RepeatOverlay = CreateRepeatOverlay(false, false);

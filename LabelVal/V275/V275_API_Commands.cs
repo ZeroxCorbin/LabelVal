@@ -42,7 +42,7 @@ namespace LabelVal.V275
         public V275_Configuration_Camera ConfigurationCamera { get; private set; }
         public V275_DetectResponse Detected { get; private set; }
         public List<int> Available { get; private set; }
-        public byte[] Repeatimage { get; private set; }
+        public byte[] RepeatImage { get; private set; }
 
         private bool CheckResults(string json, bool ignoreJson = false)
         {
@@ -211,10 +211,10 @@ namespace LabelVal.V275
 
             var result = await Connection.GetBytes(URLs.RepeatImage(repeat), Token);
 
-            Repeatimage = null;
+            RepeatImage = null;
             bool res;
             if (res = CheckResults("", true))
-                Repeatimage = result;
+                RepeatImage = result;
 
             return res;
         }

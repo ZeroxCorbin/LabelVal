@@ -476,14 +476,16 @@ namespace LabelVal.WindowViewModels
                 if (File.Exists(img.Replace(".png", ".txt")))
                     comment = File.ReadAllText(img.Replace(".png", ".txt"));
 
-                var tmp = new LabelControlViewModel(img, comment, SelectedPrinter, SelectedStandard.Name, StandardsDatabase, V275, MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance);
+                var tmp = new LabelControlViewModel(img, comment, SelectedStandard, StandardsDatabase, V275, MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance)
+                {
+                    PrinterName = SelectedPrinter,
+                    IsDatabaseLocked = IsDatabaseLocked || IsDatabasePermLocked,
+                    IsSimulation = IsDeviceSimulator && (IsLoggedIn_Control || IsLoggedIn_Monitor),
+                    IsLoggedIn_Control = IsLoggedIn_Control,
+                    IsLoggedIn_Monitor = IsLoggedIn_Monitor
+                };
 
                 tmp.Printing += Label_Printing;
-
-                tmp.IsDatabaseLocked = IsDatabaseLocked || IsDatabasePermLocked;
-                tmp.IsSimulation = IsDeviceSimulator;
-                tmp.IsLoggedIn_Control = IsLoggedIn_Control;
-                tmp.IsLoggedIn_Monitor = IsLoggedIn_Monitor;
 
                 Labels.Add(tmp);
             }
@@ -563,7 +565,7 @@ namespace LabelVal.WindowViewModels
             Standards.Clear();
             SelectedStandard = null;
 
-            foreach (var dir in Directory.EnumerateDirectories(App.StandardsRoot))
+            foreach (var dir in Directory.EnumerateDirectories(App.StandardsRoot).ToList().OrderBy((e)=> Regex.Replace(e, "[0-9]+", match => match.Value.PadLeft(10, '0'))))
             {
                 Logger.Debug("Found: {name}", dir.Substring(dir.LastIndexOf("\\") + 1));
 
@@ -965,8 +967,6 @@ namespace LabelVal.WindowViewModels
                     label.IsWorking = false;
                     Logger.Error(ex);
                 }
-
-
             }
             else
             {

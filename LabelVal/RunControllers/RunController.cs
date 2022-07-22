@@ -57,7 +57,7 @@ namespace LabelVal.RunControllers
             Labels = labels;
             LoopCount = loopCount;
             StandardsDatabase = standardsDatabase;
-            GradingStandard = Labels[0].GradingStandard;
+            GradingStandard = Labels[0].GradingStandard.StandardName;
             IsGS1Standard = GradingStandard.StartsWith("GS1") ? true : false;
 
             TimeDate = DateTime.UtcNow.Ticks;
@@ -262,7 +262,7 @@ namespace LabelVal.RunControllers
                             }
                         }
 
-                    row.RepeatReport = JsonConvert.SerializeObject(label.Report);
+                    row.RepeatReport = JsonConvert.SerializeObject(label.RepeatReport);
                     RunDatabase.InsertOrReplace(row);
                 }
 

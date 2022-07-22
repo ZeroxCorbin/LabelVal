@@ -23,6 +23,11 @@
         <Converters:StringToUpperSpacedConverter x:Key="stringToUpper"/>
         <Converters:FloatStringTrimConverter x:Key="floatTrim"/>
         <V275Converters:V275_OCMatchModeToString x:Key="matchModeToString"/>
+        <Converters:IsObjectNotNull x:Key="isObjectNotNull"/>
+
+        <ContextMenu x:Key="cmImageModify">
+            <MenuItem Command="{Binding RedoFiducial}" Header="Registration Mark"/>
+        </ContextMenu>
     </UserControl.Resources>
 
     <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="2" Margin="5" HorizontalAlignment="Left">
@@ -116,7 +121,7 @@
                     </Border>
                 </StackPanel>
             </Popup>
-            
+
             <Grid Grid.Row="0" Grid.Column="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
@@ -151,8 +156,24 @@
                         </Style>
                     </Button.Style>
                 </Button>
+
                 <StackPanel Grid.Column="1" Grid.Row="1"
                             Orientation="Horizontal" HorizontalAlignment="Center">
+                    <StackPanel.Style>
+                        <Style TargetType="{x:Type StackPanel}">
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding IsSimulation}" Value="True"/>
+                                        <Condition Binding="{Binding IsGoldenRepeat}" Value="True"/>
+                                    </MultiDataTrigger.Conditions>
+
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
 
                     <mah:NumericUpDown Value="{Binding PrintCount}" Minimum="1" Maximum="100" Interval="1" Margin="2"
                                            IsEnabled="{Binding IsNotLoggedIn_Control}"/>
@@ -173,7 +194,7 @@
                     </Button>
 
                     <mah:ProgressRing IsActive="{Binding IsWorking}" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" Height="30" Width="30"/>
-
+                    
                 </StackPanel>
             </Grid>
             <Grid Grid.Row="0" Grid.Column="1">
@@ -307,12 +328,10 @@
                     </TextBlock.Style>
 
                 </TextBlock>
-
-                <Button Grid.Column="1" Grid.Row="1" Content="Process" Margin="2"
-                        Command="{Binding PrintCommand}"
-                        CommandParameter="repeat">
-                    <Button.Style>
-                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+                
+                <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
+                    <StackPanel.Style>
+                        <Style TargetType="{x:Type StackPanel}">
                             <Setter Property="Visibility" Value="Collapsed"/>
                             <Style.Triggers>
                                 <MultiDataTrigger>
@@ -323,14 +342,18 @@
 
                                     <Setter Property="Visibility" Value="Visible"/>
                                 </MultiDataTrigger>
-                                <DataTrigger Binding="{Binding RepeatImage}" Value="{x:Null}">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                </DataTrigger>
                             </Style.Triggers>
                         </Style>
-                    </Button.Style>
-                </Button>
+                    </StackPanel.Style>
 
+                    <Button Content="Process" Margin="2"
+                        Command="{Binding PrintCommand}"
+                        CommandParameter="repeat"/>
+
+                    <mah:ProgressRing IsActive="{Binding IsWorking}" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" Height="30" Width="30"/>
+
+                </StackPanel>
+                
                 <Label Grid.Column="2" Foreground="Goldenrod" HorizontalAlignment="Left" Padding="0" ToolTip="The 'Golden' Repeat Image stored in the database.">
                     <Label.Style>
                         <Style TargetType="{x:Type Label}" BasedOn="{StaticResource {x:Type Label}}">
@@ -350,9 +373,9 @@
                 <Button Grid.Column="2" Grid.Row="1" Margin="2" HorizontalAlignment="Right"
                         Command="{Binding SaveCommand}"
                         CommandParameter="repeat">
-                    
+
                     <IconPacks:Material Kind="ContentSave"/>
-                    
+
                     <Button.Style>
                         <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Flat}">
                             <Setter Property="Visibility" Value="Visible"/>
@@ -371,7 +394,8 @@
                        Source="{Binding LabelImage, Converter={StaticResource bytesToImage}}"
                        MouseDown="LabelImage_MouseDown"
                        RenderOptions.BitmapScalingMode="NearestNeighbor"
-                       HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                       HorizontalAlignment="Left" VerticalAlignment="Top"
+                       ContextMenu="{StaticResource cmImageModify}" ContextMenuOpening="LabelImage_ContextMenuOpening"/>
 
                 <Label HorizontalAlignment="Right" VerticalAlignment="Top" Margin="3">
                     <Label.Style>

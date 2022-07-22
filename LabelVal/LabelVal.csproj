@@ -208,6 +208,7 @@
     <Compile Include="Converters\BytesToImageConverter.cs" />
     <Compile Include="Converters\DoubleToStringConverter.cs" />
     <Compile Include="Converters\FloatStringTrimConverter.cs" />
+    <Compile Include="Converters\IsObjectNotNull.cs" />
     <Compile Include="Converters\ShortenUIDConverter.cs" />
     <Compile Include="Converters\StringToUpperSpacedConverter.cs" />
     <Compile Include="Converters\TestRunHeaderConverter.cs" />
@@ -399,28 +400,10 @@
     <Content Include="Assets\Images\OCV.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1 ROTATION\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_09 - Copy.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1 ROTATION\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_09.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1 ROTATION\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_10 - Copy.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1 ROTATION\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_10.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Assets\Standards\OCR OCV RECOGNITION\300\OCROCV_Recognition.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Standards\OCR OCV RECOGNITION\600\OCROCV_Recognition.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Standards\SYMBOLOGIES A NEW\300\Symbologies A.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Standards\SYMBOLOGIES A NEW\600\Symbologies A.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Standards\SYMBOLOGIES A\600\25 All Symbology Part A PDF_01.png">

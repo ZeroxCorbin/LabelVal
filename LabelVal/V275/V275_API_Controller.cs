@@ -160,7 +160,7 @@ namespace LabelVal.V275
             return LabelEnd;
         }
 
-        public async Task<bool> GetReport(int repeat)
+        public async Task<bool> GetReport(int repeat, bool getImage)
         {
             if (V275_State == "Editing")
             {
@@ -179,14 +179,15 @@ namespace LabelVal.V275
                 }
             }
 
-            if (!await Commands.GetRepeatsImage(repeat))
-            {
-                if (!Commands.Status.StartsWith("Gone"))
+            if (getImage)
+                if (!await Commands.GetRepeatsImage(repeat))
                 {
-                    Status = Commands.Status;
-                    return false;
+                    if (!Commands.Status.StartsWith("Gone"))
+                    {
+                        Status = Commands.Status;
+                        return false;
+                    }
                 }
-            }
 
             return true;
         }
@@ -388,7 +389,7 @@ namespace LabelVal.V275
 
         }
 
-        public async Task<bool> Read(int repeat)
+        public async Task<bool> Read(int repeat,bool getImage)
         {
             Status = string.Empty;
 
@@ -420,19 +421,13 @@ namespace LabelVal.V275
 
             if (V275_State == "Editing" && repeat != 0)
                 if (!await Inspect(repeat))
-                {
-                    return false;
-                }
+                     return false;
 
-            if (!await GetReport(repeat))
-            {
+            if (!await GetReport(repeat, getImage))
                 return false;
-            }
 
             if (!await GetJob())
-            {
                 return false;
-            }
 
             if (V275_State == "Paused")
             {

@@ -115,9 +115,9 @@ namespace LabelVal.WindowViews
         {
             if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
             {
-                if (((LabelControlViewModel)DataContext).Report != null)
+                if (((LabelControlViewModel)DataContext).RepeatReport != null)
                 {
-                    RepeatResultJsonView.Load(Newtonsoft.Json.JsonConvert.SerializeObject(((LabelControlViewModel)DataContext).Report), "Results");
+                    RepeatResultJsonView.Load(Newtonsoft.Json.JsonConvert.SerializeObject(((LabelControlViewModel)DataContext).RepeatReport), "Results");
                     RepeatJsonPopup.PlacementTarget = (Button)sender;
                     RepeatJsonPopup.IsOpen = true;
                 }
@@ -131,6 +131,12 @@ namespace LabelVal.WindowViews
                 }
 
             }
+        }
+
+        private void LabelImage_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            if (!Keyboard.IsKeyDown(Key.LeftCtrl) && !Keyboard.IsKeyDown(Key.RightCtrl))
+                e.Handled = true;
         }
 
 
