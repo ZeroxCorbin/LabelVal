@@ -16,6 +16,7 @@ using LabelVal.RunControllers;
 using LabelVal.Printer;
 using MahApps.Metro.Controls.Dialogs;
 using System.Text.RegularExpressions;
+using LabelVal.Models;
 
 namespace LabelVal.WindowViewModels
 {
@@ -35,54 +36,54 @@ namespace LabelVal.WindowViewModels
             public int RepeatNumber { get; set; } = -1;
         }
 
-        public class StandardEntry : Core.BaseViewModel
-        {
-            private string name;
-            public string Name
-            {
-                get => name;
-                set
-                {
-                    SetProperty(ref name, value);
+        //public class StandardEntryModel : Core.BaseViewModel
+        //{
+        //    private string name;
+        //    public string Name
+        //    {
+        //        get => name;
+        //        set
+        //        {
+        //            SetProperty(ref name, value);
 
-                    Is300 = Name.EndsWith("300");
-                    IsGS1 = Name.ToLower().StartsWith("gs1");
-                    StandardName = name.Replace(" 300", "");
+        //            Is300 = Name.EndsWith("300");
+        //            IsGS1 = Name.ToLower().StartsWith("gs1");
+        //            StandardName = name.Replace(" 300", "");
 
-                    if (IsGS1)
-                    {
-                        var val = Regex.Match(Name, @"TABLE (\d*\.?\d+)");
-                        if (val.Groups.Count == 2)
-                            TableID = val.Groups[1].Value;
-                    }
-                }
-            }
+        //            if (IsGS1)
+        //            {
+        //                var val = Regex.Match(Name, @"TABLE (\d*\.?\d+)");
+        //                if (val.Groups.Count == 2)
+        //                    TableID = val.Groups[1].Value;
+        //            }
+        //        }
+        //    }
 
-            private string standardPath;
-            public string StandardPath { get => standardPath; set => SetProperty(ref standardPath, value); }
+        //    private string standardPath;
+        //    public string StandardPath { get => standardPath; set => SetProperty(ref standardPath, value); }
 
-            private int numRows;
-            public int NumRows { get => numRows; set => SetProperty(ref numRows, value); }
+        //    private int numRows;
+        //    public int NumRows { get => numRows; set => SetProperty(ref numRows, value); }
 
-            public string StandardName { get; private set; }
+        //    public string StandardName { get; private set; }
 
-            public string TableID { get; private set; }
+        //    public string TableID { get; private set; }
 
-            public bool Is300 { get; private set; }
+        //    public bool Is300 { get; private set; }
 
-            public bool IsGS1 { get; private set; }
+        //    public bool IsGS1 { get; private set; }
 
-        }
+        //}
 
-        public class StandardsDatabaseEntry : Core.BaseViewModel
-        {
-            private string name;
-            public string Name { get => name; set => SetProperty(ref name, value); }
+        //public class StandardsDatabaseEntry : Core.BaseViewModel
+        //{
+        //    private string name;
+        //    public string Name { get => name; set => SetProperty(ref name, value); }
 
-            private string filePath;
-            public string FilePath { get => filePath; set => SetProperty(ref filePath, value); }
+        //    private string filePath;
+        //    public string FilePath { get => filePath; set => SetProperty(ref filePath, value); }
 
-        }
+        //}
 
         public string Version => App.Version;
 
@@ -119,9 +120,6 @@ namespace LabelVal.WindowViewModels
 
         private ObservableCollection<LabelControlViewModel> labels = new ObservableCollection<LabelControlViewModel>();
         public ObservableCollection<LabelControlViewModel> Labels { get => labels; set => SetProperty(ref labels, value); }
-
-        private bool isGS1Standard;
-        public bool IsGS1Standard { get => isGS1Standard; set => SetProperty(ref isGS1Standard, value); }
 
         public string StoredStandardsDatabase { get => App.Settings.GetValue("StoredStandardsDatabase", App.StandardsDatabaseDefaultName); set { App.Settings.SetValue("StoredStandardsDatabase", value); } }
         public ObservableCollection<string> StandardsDatabases { get; } = new ObservableCollection<string>();
@@ -161,9 +159,9 @@ namespace LabelVal.WindowViewModels
         public ICommand CreateStandardsDatabase { get; }
         public ICommand LockStandardsDatabase { get; }
 
-        public StandardEntry StoredStandard { get => App.Settings.GetValue<StandardEntry>("StoredStandard", null); set { App.Settings.SetValue("StoredStandard", value); } }
-        public ObservableCollection<StandardEntry> Standards { get; } = new ObservableCollection<StandardEntry>();
-        public StandardEntry SelectedStandard
+        public StandardEntryModel StoredStandard { get => App.Settings.GetValue<StandardEntryModel>("StoredStandard", null); set { App.Settings.SetValue("StoredStandard", value); } }
+        public ObservableCollection<StandardEntryModel> Standards { get; } = new ObservableCollection<StandardEntryModel>();
+        public StandardEntryModel SelectedStandard
         {
             get => selectedStandard;
             set
@@ -183,7 +181,7 @@ namespace LabelVal.WindowViewModels
                 }
             }
         }
-        private StandardEntry selectedStandard;
+        private StandardEntryModel selectedStandard;
         public bool IsWrongTemplateName
         {
             get => isWrongTemplateName;
@@ -455,8 +453,6 @@ namespace LabelVal.WindowViewModels
 
         private void LoadLabels()
         {
-            //IsGS1Standard = SelectedStandard.IsGS1;
-
             Logger.Info("Loading label images from standards directory: {name}", $"{App.StandardsRoot}\\{SelectedStandard.StandardName}\\");
 
             ClearLabels();
@@ -572,13 +568,13 @@ namespace LabelVal.WindowViewModels
                 foreach (var subdir in Directory.EnumerateDirectories(dir))
                 {
                     if (subdir.EndsWith("600"))
-                        Standards.Add(new StandardEntry()
+                        Standards.Add(new StandardEntryModel()
                         {
                             Name = dir.Substring(dir.LastIndexOf("\\") + 1),
                             StandardPath = subdir,
                         });
                     else if (subdir.EndsWith("300"))
-                        Standards.Add(new StandardEntry()
+                        Standards.Add(new StandardEntryModel()
                         {
                             Name = $"{dir.Substring(dir.LastIndexOf("\\") + 1)} 300",
                             StandardPath = subdir,
@@ -590,7 +586,7 @@ namespace LabelVal.WindowViewModels
         }
         private void SelectStandard()
         {
-            StandardEntry std;
+            StandardEntryModel std;
             if (StoredStandard != null && (std = Standards.FirstOrDefault((e) => e.Name.Equals(StoredStandard.Name))) != null)
                 SelectedStandard = std;
             else if (Standards.Count > 0)
@@ -640,7 +636,7 @@ namespace LabelVal.WindowViewModels
 
             foreach (var tbl in tables)
             {
-                StandardEntry std;
+                StandardEntryModel std;
                 if ((std = Standards.FirstOrDefault((e) => e.Name.Equals(tbl))) == null)
                 {
                     if (tbl.StartsWith("LOCK"))
@@ -648,8 +644,8 @@ namespace LabelVal.WindowViewModels
                     else
                         OrphandStandards.Add(tbl);
                 }
-                else
-                    std.NumRows = StandardsDatabase.GetAllRowsCount(tbl);
+                //else
+                //    std.NumRows = StandardsDatabase.GetAllRowsCount(tbl);
             }
 
         }
@@ -1032,7 +1028,7 @@ namespace LabelVal.WindowViewModels
         {
             WaitForRepeat = false;
 
-            if (Repeats[repeat].Label.IsGS1Standard)
+            if (Repeats[repeat].Label.GradingStandard.IsGS1)
             {
                 if (repeat > 0)
                     if (!await V275.Commands.SetRepeat(repeat))
@@ -1148,7 +1144,7 @@ namespace LabelVal.WindowViewModels
                 CurrentRun = null;
             }
 
-            Logger.Info("Starting Run: {stand}; {count}", Labels[0].GradingStandard, RunLoopCount);
+            Logger.Info("Starting Run: {stand}; {count}", Labels[0].GradingStandard.Name, RunLoopCount);
 
             CurrentRun = new RunController(Labels, RunLoopCount, StandardsDatabase, V275.Commands.Product.part, SelectedNode.cameraMAC).Init();
             CurrentRun.RunStateChange += CurrentRun_RunStateChange;

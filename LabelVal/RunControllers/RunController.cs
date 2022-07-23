@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using LabelVal.Databases;
 using LabelVal.Utilities;
 using LabelVal.WindowViewModels;
+using LabelVal.Models;
 
 namespace LabelVal.RunControllers
 {
@@ -46,23 +47,20 @@ namespace LabelVal.RunControllers
         public int CurrentLabelCount { get; private set; }
 
         private ObservableCollection<LabelControlViewModel> Labels { get; set; }
-        private string GradingStandard { get; }
+        private StandardEntryModel GradingStandard { get; }
         private StandardsDatabase StandardsDatabase { get; }
         //private string JobName { get; }
-
-        public bool IsGS1Standard { get; set; }
 
         public RunController(ObservableCollection<LabelControlViewModel> labels, int loopCount, StandardsDatabase standardsDatabase, string productPart, string cameraMAC)
         {
             Labels = labels;
             LoopCount = loopCount;
             StandardsDatabase = standardsDatabase;
-            GradingStandard = Labels[0].GradingStandard.StandardName;
-            IsGS1Standard = GradingStandard.StartsWith("GS1") ? true : false;
+            GradingStandard = Labels[0].GradingStandard;
 
             TimeDate = DateTime.UtcNow.Ticks;
 
-            RunEntry = new RunLedgerDatabase.RunEntry() { GradingStandard = GradingStandard, TimeDate = TimeDate, Completed = 0, ProductPart = productPart, CameraMAC = cameraMAC };
+            RunEntry = new RunLedgerDatabase.RunEntry() { GradingStandard = GradingStandard.Name, TimeDate = TimeDate, Completed = 0, ProductPart = productPart, CameraMAC = cameraMAC };
         }
 
         public RunController(long timeDate)
@@ -170,7 +168,7 @@ namespace LabelVal.RunControllers
                         Logger.Info("Job Loop: {loop}", CurrentLoopCount);
                     }
 
-                    if (!IsGS1Standard)
+                    if (!GradingStandard.IsGS1)
                         await label.V275.SwitchToRun();
 
                     while (RequestedState == RunStates.PAUSED)
@@ -191,7 +189,7 @@ namespace LabelVal.RunControllers
                         return false;
                     }
 
-                    var sRow = StandardsDatabase.GetRow(GradingStandard, label.LabelImageUID);
+                    var sRow = StandardsDatabase.GetRow(GradingStandard.Name, label.LabelImageUID);
 
                     if (sRow == null || string.IsNullOrEmpty(sRow.LabelReport))
                         continue;

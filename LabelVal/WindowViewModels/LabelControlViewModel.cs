@@ -22,6 +22,7 @@ using System.Windows;
 using Microsoft.Win32;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using LabelVal.Models;
 
 namespace LabelVal.WindowViewModels
 {
@@ -51,13 +52,8 @@ namespace LabelVal.WindowViewModels
         private StandardsDatabase.Row currentRow;
         public StandardsDatabase.Row CurrentRow { get => currentRow; set => SetProperty(ref currentRow, value); }
 
-
-
-        private bool isGS1Standard;
-        public bool IsGS1Standard { get => isGS1Standard; set => SetProperty(ref isGS1Standard, value); }
-
-        private MainWindowViewModel.StandardEntry gradingStandard;
-        public MainWindowViewModel.StandardEntry GradingStandard { get => gradingStandard; set => SetProperty(ref gradingStandard, value); }
+        private StandardEntryModel gradingStandard;
+        public StandardEntryModel GradingStandard { get => gradingStandard; set => SetProperty(ref gradingStandard, value); }
 
         private bool isGoldenRepeat;
         public bool IsGoldenRepeat { get => isGoldenRepeat; set => SetProperty(ref isGoldenRepeat, value); }
@@ -175,7 +171,7 @@ namespace LabelVal.WindowViewModels
         public ICommand RedoFiducial { get; }
 
         private IDialogCoordinator dialogCoordinator;
-        public LabelControlViewModel(string imagePath, string imageComment, MainWindowViewModel.StandardEntry gradingStandard, StandardsDatabase standardsDatabase, V275_API_Controller v275, IDialogCoordinator diag)
+        public LabelControlViewModel(string imagePath, string imageComment, StandardEntryModel gradingStandard, StandardsDatabase standardsDatabase, V275_API_Controller v275, IDialogCoordinator diag)
         {
             dialogCoordinator = diag;
 
@@ -185,8 +181,6 @@ namespace LabelVal.WindowViewModels
             GradingStandard = gradingStandard;
             StandardsDatabase = standardsDatabase;
             V275 = v275;
-
-            IsGS1Standard = GradingStandard.IsGS1;
 
             PrintCommand = new Core.RelayCommand(PrintAction, c => true);
             SaveCommand = new Core.RelayCommand(SaveAction, c => true);
@@ -407,7 +401,7 @@ namespace LabelVal.WindowViewModels
             {
                 bool isWrongStandard = false;
                 if (jSec.type == "verify1D" || jSec.type == "verify2D")
-                    if (IsGS1Standard)
+                    if (GradingStandard.IsGS1)
                     {
                         if (jSec.gradingStandard.enabled)
                             isWrongStandard = GradingStandard.TableID != jSec.gradingStandard.tableId;

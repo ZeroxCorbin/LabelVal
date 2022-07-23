@@ -242,6 +242,7 @@
     </Compile>
     <Compile Include="LVS-95xx\LVS95xx_SerialPortViewModel.cs" />
     <Compile Include="Models\SectorCompareSettingsModel.cs" />
+    <Compile Include="Models\StandardEntryModel.cs" />
     <Compile Include="RunControllers\RunController.cs" />
     <Compile Include="Printer\PrintControl.cs" />
     <Compile Include="RunViewModels\CompareSettingsControlViewModel.cs" />

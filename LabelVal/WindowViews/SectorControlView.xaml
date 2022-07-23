@@ -350,7 +350,7 @@
             </Border>
 
             <Border Grid.Row="2" Grid.ColumnSpan="4"
-                    BorderThickness="1" Padding="1" CornerRadius="3" Visibility="{Binding IsGS1Standard, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    BorderThickness="1" Padding="1" CornerRadius="3" Visibility="{Binding IsGS1Standard, Mode=OneTime, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Border.Style>
                     <Style TargetType="{x:Type Border}">
                         <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}"/>

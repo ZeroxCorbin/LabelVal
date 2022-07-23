@@ -327,9 +327,9 @@
                                 <DataTrigger Value="0" Binding="{Binding Gs1Grades.Count, Mode=OneTime}">
                                     <Setter Property="Visibility" Value="Collapsed"/>
                                 </DataTrigger>
-                                <DataTrigger Value="False" Binding="{Binding IsGS1Standard}">
+                                <!--<DataTrigger Value="False" Binding="{Binding IsGS1Standard}">
                                     <Setter Property="Visibility" Value="Collapsed"/>
-                                </DataTrigger>
+                                </DataTrigger>-->
                             </Style.Triggers>
                         </Style>
                     </Border.Style>
