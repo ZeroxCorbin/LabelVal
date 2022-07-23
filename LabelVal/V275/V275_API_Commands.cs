@@ -94,6 +94,8 @@ namespace LabelVal.V275
             bool res;
             if (res = CheckResults(data))
                 Product = JsonConvert.DeserializeObject<V275_Product>(data);
+            else
+                Product = null;
 
             return res;
         }

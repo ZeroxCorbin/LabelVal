@@ -55,6 +55,9 @@ namespace LabelVal.WindowViewModels
         private StandardEntryModel gradingStandard;
         public StandardEntryModel GradingStandard { get => gradingStandard; set => SetProperty(ref gradingStandard, value); }
 
+        private bool isOldISO;
+        public bool IsOldISO { get => isOldISO; set => SetProperty(ref isOldISO, value); }
+
         private bool isGoldenRepeat;
         public bool IsGoldenRepeat { get => isGoldenRepeat; set => SetProperty(ref isGoldenRepeat, value); }
 
@@ -271,7 +274,7 @@ namespace LabelVal.WindowViewModels
                         if (jSec.name == rSec["name"].ToString())
                         {
 
-                            object fSec = DeserializeSector(rSec);
+                            object fSec = DeserializeSector(rSec, false);
 
                             if (fSec == null)
                                 break;
@@ -415,7 +418,8 @@ namespace LabelVal.WindowViewModels
                 {
                     if (jSec.name == rSec["name"].ToString())
                     {
-                        object fSec = DeserializeSector(rSec);
+                        
+                        object fSec = DeserializeSector(rSec, !GradingStandard.IsGS1 && IsOldISO);
 
                         if (fSec == null)
                             break; //Not yet supported sector type
@@ -997,14 +1001,20 @@ namespace LabelVal.WindowViewModels
 
         }
 
-        private object DeserializeSector(JObject reportSec)
+        private object DeserializeSector(JObject reportSec, bool removeGS1Data)
         {
             if (reportSec["type"].ToString() == "verify1D")
             {
+                if (removeGS1Data)
+                    ((JObject)reportSec["data"]).Remove("gs1SymbolQuality");
+
                 return JsonConvert.DeserializeObject<V275_Report_InspectSector_Verify1D>(reportSec.ToString());
             }
             else if (reportSec["type"].ToString() == "verify2D")
             {
+                if (removeGS1Data)
+                    ((JObject)reportSec["data"]).Remove("gs1SymbolQuality");
+
                 return JsonConvert.DeserializeObject<V275_Report_InspectSector_Verify2D>(reportSec.ToString());
             }
             else if (reportSec["type"].ToString() == "ocr")

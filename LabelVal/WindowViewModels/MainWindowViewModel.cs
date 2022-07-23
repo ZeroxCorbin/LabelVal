@@ -98,6 +98,9 @@ namespace LabelVal.WindowViewModels
         public string V275_MAC { get; set; }
         public string V275_Version { get => V275.Commands.Product != null ? V275.Commands.Product.part : null; }
 
+        private bool isOldISO;
+        public bool IsOldISO { get => isOldISO; set => SetProperty(ref isOldISO, value); }
+
         private ObservableCollection<V275_Devices.Node> nodes = new ObservableCollection<V275_Devices.Node>();
         public ObservableCollection<V275_Devices.Node> Nodes { get => nodes; set => SetProperty(ref nodes, value); }
 
@@ -474,6 +477,7 @@ namespace LabelVal.WindowViewModels
 
                 var tmp = new LabelControlViewModel(img, comment, SelectedStandard, StandardsDatabase, V275, MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance)
                 {
+                    IsOldISO = IsOldISO,
                     PrinterName = SelectedPrinter,
                     IsDatabaseLocked = IsDatabaseLocked || IsDatabasePermLocked,
                     IsSimulation = IsDeviceSimulator && (IsLoggedIn_Control || IsLoggedIn_Monitor),
@@ -541,6 +545,16 @@ namespace LabelVal.WindowViewModels
                 IsGetDevices = true;
 
                 await V275.Commands.GetProduct();
+                if(V275_Version != null)
+                {
+                    var curVer = V275_Version.Remove(0, V275_Version.LastIndexOf("-") + 1);
+                    
+                    if (System.Version.TryParse(curVer, out var result))
+                    {
+                        var baseVer = System.Version.Parse("1.2.0.0000");
+                        IsOldISO = result.CompareTo(baseVer) < 0;
+                    }
+                }
                 OnPropertyChanged("V275_Version");
             }
             else
@@ -803,6 +817,7 @@ namespace LabelVal.WindowViewModels
                 rep.IsSimulation = IsDeviceSimulator;
                 rep.IsLoggedIn_Monitor = IsLoggedIn_Monitor;
                 rep.IsLoggedIn_Control = IsLoggedIn_Control;
+                rep.IsOldISO = IsOldISO;
             }
 
             await V275.Commands.GetCameraConfig();
