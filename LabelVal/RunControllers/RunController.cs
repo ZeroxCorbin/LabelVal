@@ -196,9 +196,10 @@ namespace LabelVal.RunControllers
                     if (sRow == null || string.IsNullOrEmpty(sRow.LabelReport))
                         continue;
 
-
-
                     Logger.Info("Job Print");
+
+                    //this must occur before the print
+                    CurrentLabelCount++;
 
                     label.PrintAction(null);
 
@@ -230,7 +231,7 @@ namespace LabelVal.RunControllers
                         return false;
                     }
 
-                    CurrentLabelCount++;
+                    
 
                     var row = new RunDatabase.Run()
                     {

@@ -142,13 +142,14 @@ namespace LabelVal.V275
                     return false;
                 }
 
+            LabelEnd = false;
             if (!await Commands.Inspect())
             {
                 Status = Commands.Status;
                 return false;
             }
 
-            LabelEnd = false;
+
             await Task.Run(() =>
             {
                 DateTime start = DateTime.Now;

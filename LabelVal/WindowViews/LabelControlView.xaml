@@ -34,8 +34,8 @@
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="200"/>
-                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="240"/>
+                <ColumnDefinition Width="240"/>
                 <ColumnDefinition Width="280"/>
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
@@ -136,17 +136,17 @@
                     <TextBlock Text="Label UID" HorizontalAlignment="Center"/>
                     <TextBlock Text="{Binding LabelImageUID, Converter={StaticResource shortenUID}}" ToolTip="{Binding LabelImageUID}"/>
                 </StackPanel>
-                <TextBlock Grid.Column="1" Grid.Row="0"
+                <!--<TextBlock Grid.Column="1" Grid.Row="0"
                            Text="Label Image" HorizontalAlignment="Center" Margin="0,0,30,0"
-                           ToolTip="The Label Image file from the '.\Standards' directory."/>
-                <Button Grid.Column="2" Grid.Row="1" Margin="2" HorizontalAlignment="Right"
+                           ToolTip="The Label Image file from the '.\Standards' directory."/>-->
+                <Button Grid.Column="2" Grid.Row="1" Margin="5" HorizontalAlignment="Right"
                         Command="{Binding SaveCommand}"
-                        CommandParameter="label">
+                        CommandParameter="label" BorderThickness="0">
 
                     <IconPacks:Material Kind="ContentSave"/>
 
                     <Button.Style>
-                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Flat}">
+                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Circle}">
                             <Setter Property="Visibility" Value="Visible"/>
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding LabelImage}" Value="{x:Null}">
@@ -194,30 +194,19 @@
                     </Button>
 
                     <mah:ProgressRing IsActive="{Binding IsWorking}" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" Height="30" Width="30"/>
-                    
+
                 </StackPanel>
             </Grid>
+            
+            <!--Label Sectors-->
             <Grid Grid.Row="0" Grid.Column="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
 
-                <Button Content="Label Sectors" HorizontalAlignment="Center" Name="LabelSectors" Click="LabelSectors_Click"
-                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
-                        Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}">
-                    <Button.Template>
-                        <ControlTemplate TargetType="Button">
-                            <TextBlock Text="{TemplateBinding Content}"/>
-                        </ControlTemplate>
-                    </Button.Template>
-                    <Button.LayoutTransform>
-                        <ScaleTransform ScaleX="0.86" ScaleY="0.86"/>
-                    </Button.LayoutTransform>
-                </Button>
-
-
-                <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center">
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
 
                     <Button Content="Clear" Command="{Binding ClearStored}" Margin="2">
                         <Button.Style>
@@ -235,7 +224,6 @@
                         </Button.Style>
                     </Button>
 
-
                     <Button Content="Load" Command="{Binding LoadCommand}" Margin="2">
                         <Button.Style>
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
@@ -251,16 +239,33 @@
                             </Style>
                         </Button.Style>
                     </Button>
-
                 </StackPanel>
-            </Grid>
-            <Grid Grid.Row="0" Grid.Column="2">
-                <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
 
-                <Button Content="Repeat Sectors" HorizontalAlignment="Center" Name="RepeatSectors" Click="RepeatSectors_Click"
+                <Button Grid.Column="2" Name="LabelSectors" Click="LabelSectors_Click" Margin="5"
+                            BorderThickness="0" HorizontalAlignment="Right">
+                    <Button.Style>
+                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Circle}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsLoad}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                    <IconPacks:PackIconModern Width="20" Height="20" Kind="Eye"/>
+                </Button>
+            </Grid>
+
+            <!--Repeat Sectors-->
+            <Grid Grid.Row="0" Grid.Column="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <!--<Button Content="Repeat Sectors" HorizontalAlignment="Center" Name="RepeatSectors" Click="RepeatSectors_Click"
                         Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
                         Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}">
                     <Button.Template>
@@ -271,8 +276,9 @@
                     <Button.LayoutTransform>
                         <ScaleTransform ScaleX="0.86" ScaleY="0.86"/>
                     </Button.LayoutTransform>
-                </Button>
-                <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center">
+                </Button>-->
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
 
                     <Button Content="Store" Command="{Binding StoreCommand}" Margin="2">
                         <Button.Style>
@@ -300,7 +306,24 @@
                             Visibility="{Binding IsLoggedIn_Control, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                     <Label Content="{Binding Status}"/>
                 </StackPanel>
+
+                <Button Grid.Column="2" Name="RepeatSectors" Click="RepeatSectors_Click" Margin="5"
+                            BorderThickness="0" HorizontalAlignment="Right">
+                    <Button.Style>
+                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Circle}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsStore}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                    <IconPacks:PackIconModern Width="20" Height="20" Kind="Eye"/>
+                </Button>
             </Grid>
+            
+            
             <Grid Grid.Row="0" Grid.Column="4">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
@@ -312,7 +335,7 @@
                     <RowDefinition/>
                 </Grid.RowDefinitions>
 
-                <TextBlock Grid.Column="1" Text="Repeat Image" HorizontalAlignment="Center" Margin="0,0,10,0">
+                <!--<TextBlock Grid.Column="1" Text="Repeat Image" HorizontalAlignment="Center" Margin="0,0,10,0">
                     <TextBlock.Style>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="ToolTip" Value="The Repeat Image for the current Repeat Sectors."/>
@@ -327,8 +350,8 @@
                         </Style>
                     </TextBlock.Style>
 
-                </TextBlock>
-                
+                </TextBlock>-->
+
                 <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
                     <StackPanel.Style>
                         <Style TargetType="{x:Type StackPanel}">
@@ -353,8 +376,8 @@
                     <mah:ProgressRing IsActive="{Binding IsWorking}" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" Height="30" Width="30"/>
 
                 </StackPanel>
-                
-                <Label Grid.Column="2" Foreground="Goldenrod" HorizontalAlignment="Left" Padding="0" ToolTip="The 'Golden' Repeat Image stored in the database.">
+
+                <!--<Label Grid.Column="2" Foreground="Goldenrod" HorizontalAlignment="Left" Padding="0" ToolTip="The 'Golden' Repeat Image stored in the database.">
                     <Label.Style>
                         <Style TargetType="{x:Type Label}" BasedOn="{StaticResource {x:Type Label}}">
                             <Setter Property="Visibility" Value="Collapsed"/>
@@ -368,16 +391,16 @@
                     <Label.Content>
                         <IconPacks:Material Kind="Gold"/>
                     </Label.Content>
-                </Label>
+                </Label>-->
 
-                <Button Grid.Column="2" Grid.Row="1" Margin="2" HorizontalAlignment="Right"
+                <Button Grid.Column="2" Grid.Row="1" Margin="5" HorizontalAlignment="Right"
                         Command="{Binding SaveCommand}"
-                        CommandParameter="repeat">
+                        CommandParameter="repeat" BorderThickness="0">
 
                     <IconPacks:Material Kind="ContentSave"/>
 
                     <Button.Style>
-                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Flat}">
+                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Circle}">
                             <Setter Property="Visibility" Value="Visible"/>
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding RepeatImage}" Value="{x:Null}">
@@ -421,7 +444,7 @@
                 <!--<TextBlock Text="{Binding LabelComment}" Foreground="Red" Margin="3" HorizontalAlignment="Left"/>-->
             </Grid>
             <ScrollViewer Grid.Row="1" Grid.Column="1" x:Name="ScrollLabelSectors"
-                          Width="200" Margin="3" MaxHeight="400" 
+                          Margin="3" MaxHeight="400" 
                           mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
                           ScrollChanged="ScrollLabelSectors_ScrollChanged">
                 <ItemsControl ItemsSource="{Binding LabelSectors}">
@@ -433,7 +456,7 @@
                 </ItemsControl>
             </ScrollViewer>
             <ScrollViewer Grid.Row="1" Grid.Column="2" x:Name="ScrollRepeatSectors"
-                          Width="200" Margin="3" MaxHeight="400"
+                          Margin="3" MaxHeight="400"
                           mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
                           ScrollChanged="ScrollRepeatSectors_ScrollChanged">
 

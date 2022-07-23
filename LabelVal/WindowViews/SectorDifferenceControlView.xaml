@@ -272,9 +272,6 @@
                                 <DataTrigger Value="0" Binding="{Binding Gs1ValueResults.Count, Mode=OneTime}">
                                     <Setter Property="Visibility" Value="Collapsed"/>
                                 </DataTrigger>
-                                <DataTrigger Value="False" Binding="{Binding IsGS1Standard, Mode=OneTime}">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </Border.Style>
