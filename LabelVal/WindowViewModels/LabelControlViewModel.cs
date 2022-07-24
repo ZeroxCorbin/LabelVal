@@ -482,11 +482,11 @@ namespace LabelVal.WindowViewModels
             }
 
         }
-        const UInt32 WM_KEYDOWN = 0x0100;
-        const int VK_F5 = 0x74;
+        //const UInt32 WM_KEYDOWN = 0x0100;
+        //const int VK_F5 = 0x74;
 
-        [DllImport("user32.dll")]
-        static extern bool PostMessage(IntPtr hWnd, UInt32 Msg, int wParam, int lParam);
+        //[DllImport("user32.dll")]
+        //static extern bool PostMessage(IntPtr hWnd, UInt32 Msg, int wParam, int lParam);
 
 
         private void SendTo95xxApplication()

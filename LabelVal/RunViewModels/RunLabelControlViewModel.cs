@@ -13,6 +13,10 @@ using LabelVal.Databases;
 using LabelVal.V275.Models;
 using LabelVal.WindowViewModels;
 using System.Windows.Media;
+using System.Windows.Input;
+using System.Windows;
+using LabelVal.Utilities;
+using Microsoft.Win32;
 
 namespace LabelVal.RunViewModels
 {
@@ -39,6 +43,9 @@ namespace LabelVal.RunViewModels
         private bool isGS1Standard;
         public bool IsGS1Standard { get => isGS1Standard; set => SetProperty(ref isGS1Standard, value); }
 
+        public ICommand SaveCommand { get; }
+
+
         private IDialogCoordinator dialogCoordinator;
         public RunLabelControlViewModel(IDialogCoordinator diag, RunDatabase.Run run, RunLedgerDatabase.RunEntry runEntry)
         {
@@ -46,6 +53,8 @@ namespace LabelVal.RunViewModels
             Run = run;
             RunEntry = runEntry;
             IsGS1Standard = RunEntry.GradingStandard.StartsWith("GS1") ? true : false;
+
+            SaveCommand = new Core.RelayCommand(SaveAction, c => true);
 
             GetLabelSectors();
             GetRepeatSectors();
@@ -97,7 +106,6 @@ namespace LabelVal.RunViewModels
                     LabelSectors.Add(sec);
             }
         }
-
         private void GetRepeatSectors()
         {
             RepeatSectors.Clear();
@@ -143,7 +151,6 @@ namespace LabelVal.RunViewModels
                     RepeatSectors.Add(sec);
             }
         }
-
         private void GetSectorDiff()
         {
             List<SectorDifferenceViewModel> diff = new List<SectorDifferenceViewModel>();
@@ -168,6 +175,49 @@ namespace LabelVal.RunViewModels
             foreach(var d in diff)
                 DiffSectors.Add(d);
 
+        }
+
+        public void SaveAction(object parameter)
+        {
+            string par = (string)parameter;
+
+            string path = GetSaveFilePath();
+            if (string.IsNullOrEmpty(path)) return;
+
+            try
+            {
+                if (par == "repeat")
+                {
+                    var bmp = ImageUtilities.ConvertToBmp(Run.RepeatImage);
+                    SaveImageBytesToFile(path, bmp);
+                    Clipboard.SetText(path);
+                }
+                else
+                {
+                    var bmp = ImageUtilities.ConvertToBmp(Run.LabelImage);
+                    SaveImageBytesToFile(path, bmp);
+                    Clipboard.SetText(path);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+        private string GetSaveFilePath()
+        {
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.Filter = "Bitmap Image|*.bmp";//|Gif Image|*.gif|JPeg Image|*.jpg";
+            saveFileDialog1.Title = "Save an Image File";
+            saveFileDialog1.ShowDialog();
+
+            return saveFileDialog1.FileName;
+        }
+        private string SaveImageBytesToFile(string path, byte[] img)
+        {
+            File.WriteAllBytes(path, img);
+
+            return "";
         }
 
         private object DeserializeSector(JObject reportSec)

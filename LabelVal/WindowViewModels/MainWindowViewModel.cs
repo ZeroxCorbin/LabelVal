@@ -1085,7 +1085,6 @@ namespace LabelVal.WindowViewModels
             Repeats[repeat].Label.IsWorking = false;
             Repeats.Clear();
         }
-
         private void ProcessRepeatFault(int repeat)
         {
             Repeats[repeat].Label.IsFaulted = true;

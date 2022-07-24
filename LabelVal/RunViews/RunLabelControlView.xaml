@@ -6,6 +6,7 @@
             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
             xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
             xmlns:local="clr-namespace:LabelVal.WindowViews"
+             xmlns:json="clr-namespace:JsonViewer.JsonViewer"
             xmlns:ViewModels="clr-namespace:LabelVal.RunViewModels"
             xmlns:Converters="clr-namespace:LabelVal.Converters"
             d:DataContext="{d:DesignInstance Type=ViewModels:RunLabelControlViewModel}"
@@ -21,37 +22,138 @@
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="240"/>
-                <ColumnDefinition Width="240"/>
+                <ColumnDefinition Width="230"/>
+                <ColumnDefinition Width="230"/>
                 <ColumnDefinition Width="280"/>
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
 
-            <Grid Grid.Row="0" Grid.Column="0">
-                <Image Margin="3" x:Name="LabelImage" MaxHeight="400" Width="400" MouseDown="LabelImage_MouseDown">
-                    <Image.Style>
-                        <Style TargetType="{x:Type Image}">
-                            <Setter Property="Source" Value="{Binding Run.LabelImage, Converter={StaticResource bytesToImage}}"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Run.LabelImage}" Value="{x:Null}">
-                                    <Setter Property="Source" Value="{Binding Run.RepeatGoldenImage, Converter={StaticResource bytesToImage}}"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Image.Style>
-                </Image>
+            <Popup x:Name="LabelSectorsDetailsPopup" StaysOpen="False">
+                <Popup.Style>
+                    <Style TargetType="{x:Type Popup}"/>
+                </Popup.Style>
 
-                <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5" Orientation="Horizontal" Background="White">
-                    <TextBlock Text="{Binding Run.LoopCount}" FontSize="16" Foreground="Black" />
-                    <TextBlock Text=" : " FontSize="16" Foreground="Black" />
-                    <TextBlock Text="{Binding Run.LabelImageOrder}" FontSize="16" Foreground="Black"/>
-                </StackPanel >
+                <Border Grid.Row="2" Grid.ColumnSpan="4" Padding="3" BorderThickness="2"
+                        BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
 
-            </Grid>
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding LabelSectors}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel IsItemsHost="True" MaxWidth="1024"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <local:SectorDetailsControlView/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Border>
 
-            <ScrollViewer x:Name="ScrollLabelSectors"
-                          Grid.Row="0" Grid.Column="1" Margin="3" Padding="0,0,0,6" MaxHeight="400"
+            </Popup>
+            <Popup x:Name="RepeatSectorsDetailsPopup" StaysOpen="False">
+                <Popup.Style>
+                    <Style TargetType="{x:Type Popup}"/>
+                </Popup.Style>
+                <Border Padding="3" BorderThickness="2"
+                        BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding RepeatSectors}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel IsItemsHost="True" MaxWidth="1024"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <local:SectorDetailsControlView />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Border>
+            </Popup>
+            <Popup x:Name="RepeatJsonPopup" StaysOpen="False">
+                <Popup.Style>
+                    <Style TargetType="{x:Type Popup}"/>
+                </Popup.Style>
+                <Border Padding="3" BorderThickness="2"
+                        BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                    <json:JsonViewer x:Name="RepeatResultJsonView"/>
+                </Border>
+            </Popup>
+            <Popup x:Name="LabelJsonPopup" StaysOpen="False">
+                <Popup.Style>
+                    <Style TargetType="{x:Type Popup}"/>
+                </Popup.Style>
+                <StackPanel Orientation="Horizontal">
+                    <Border Padding="3" BorderThickness="2"
+                            BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                            Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                        <json:JsonViewer x:Name="LabelJobJsonView"/>
+                    </Border>
+                    <Border Padding="3" BorderThickness="2"
+                            BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                            Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                        <json:JsonViewer x:Name="LabelResultJsonView"/>
+                    </Border>
+                </StackPanel>
+            </Popup>
+
+            <!--Label Image-->
+            <StackPanel Grid.Row="0" Grid.Column="0" Margin="5,0" HorizontalAlignment="Left" Orientation="Horizontal" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                <TextBlock Text="{Binding Run.LoopCount}" FontSize="16" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
+                <TextBlock Text=" : " FontSize="16" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" />
+                <TextBlock Text="{Binding Run.LabelImageOrder}" FontSize="16" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
+            </StackPanel >
+            <Button Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Top" Height="25" Width="25"
+                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                        Command="{Binding SaveCommand}"
+                        CommandParameter="label" BorderThickness="0" Style="{StaticResource MahApps.Styles.Button.Circle}">
+
+                <IconPacks:Material Kind="ContentSave" Height="12"/>
+            </Button>
+            <Image Grid.Row="1" Grid.Column="0" Margin="3" x:Name="LabelImage" MaxHeight="400" Width="400" MouseDown="LabelImage_MouseDown">
+                <Image.Style>
+                    <Style TargetType="{x:Type Image}">
+                        <Setter Property="Source" Value="{Binding Run.LabelImage, Converter={StaticResource bytesToImage}}"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Run.LabelImage}" Value="{x:Null}">
+                                <Setter Property="Source" Value="{Binding Run.RepeatGoldenImage, Converter={StaticResource bytesToImage}}"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Image.Style>
+            </Image>
+
+            <!--Label Sectors-->
+            <Button Grid.Row="0" Grid.Column="1" Name="LabelSectors" Click="LabelSectors_Click"
+                            BorderThickness="0" HorizontalAlignment="Center" Style="{StaticResource MahApps.Styles.Button.Circle}">
+                <IconPacks:PackIconModern Width="20" Height="20" Kind="Eye"/>
+            </Button>
+            <ScrollViewer Grid.Row="1" Grid.Column="1" x:Name="ScrollLabelSectors"
+                          Margin="3" Padding="0,0,0,6" MaxHeight="400" VerticalScrollBarVisibility="Auto"
                           ScrollChanged="ScrollLabelSectors_ScrollChanged">
+                <ScrollViewer.Style>
+                    <Style TargetType="{x:Type ScrollViewer}">
+                        <Setter Property="mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer" Value="True"/>
+                        <Style.Triggers>
+                            <Trigger Property="ComputedVerticalScrollBarVisibility" Value="Visible">
+                                <Setter Property="mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer" Value="False"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ScrollViewer.Style>
                 <ItemsControl ItemsSource="{Binding LabelSectors}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
@@ -61,9 +163,24 @@
                 </ItemsControl>
             </ScrollViewer>
 
-            <ScrollViewer x:Name="ScrollRepeatSectors" 
-                          Grid.Row="0" Grid.Column="2" Margin="3" Padding="0,0,0,6" MaxHeight="400" 
+            <!--Repeat Sectors-->
+            <Button Grid.Row="0" Grid.Column="2" Name="RepeatSectors" Click="RepeatSectors_Click"
+                            BorderThickness="0" HorizontalAlignment="Center" Style="{StaticResource MahApps.Styles.Button.Circle}">
+                <IconPacks:PackIconModern Width="20" Height="20" Kind="Eye"/>
+            </Button>
+            <ScrollViewer Grid.Row="1" Grid.Column="2" x:Name="ScrollRepeatSectors" 
+                          Margin="3" Padding="0,0,0,6" MaxHeight="400" VerticalScrollBarVisibility="Auto" 
                           ScrollChanged="ScrollRepeatSectors_ScrollChanged" >
+                <ScrollViewer.Style>
+                    <Style TargetType="{x:Type ScrollViewer}">
+                        <Setter Property="mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer" Value="True"/>
+                        <Style.Triggers>
+                            <Trigger Property="ComputedVerticalScrollBarVisibility" Value="Visible">
+                                <Setter Property="mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer" Value="False"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ScrollViewer.Style>
                 <ItemsControl ItemsSource="{Binding RepeatSectors}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
@@ -73,7 +190,18 @@
                 </ItemsControl>
             </ScrollViewer>
 
-            <ScrollViewer Grid.Row="0" Grid.Column="3" Width="280" Margin="3" Padding="0,0,0,6" MaxHeight="400" >
+            <!--Dissimilar Sectors-->
+            <ScrollViewer Grid.Row="1" Grid.Column="3" Margin="3" Padding="0,0,0,6" MaxHeight="400" VerticalScrollBarVisibility="Auto" >
+                <ScrollViewer.Style>
+                    <Style TargetType="{x:Type ScrollViewer}">
+                        <Setter Property="mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer" Value="True"/>
+                        <Style.Triggers>
+                            <Trigger Property="ComputedVerticalScrollBarVisibility" Value="Visible">
+                                <Setter Property="mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer" Value="False"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ScrollViewer.Style>
                 <ItemsControl ItemsSource="{Binding DiffSectors}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
@@ -83,8 +211,27 @@
                 </ItemsControl>
             </ScrollViewer>
 
-            <Image Source="{Binding Run.RepeatImage, Converter={StaticResource bytesToImage}}"
-                   x:Name="RepeatImage" Grid.Row="0" Grid.Column="4" Margin="3" MaxHeight="400" Width="400" MouseDown="RepeatImage_MouseDown">
+            <!--Repeat Image-->
+            <Button Grid.Row="0" Grid.Column="4" HorizontalAlignment="Right" VerticalAlignment="Top" Height="25" Width="25"
+                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                        Command="{Binding SaveCommand}"
+                        CommandParameter="repeat" BorderThickness="0">
+                <Button.Style>
+
+
+                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Circle}">
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Run.LabelImage}" Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+                <IconPacks:Material Kind="ContentSave" Height="12"/>
+            </Button>
+            <Image Grid.Row="1" Grid.Column="4" Source="{Binding Run.RepeatImage, Converter={StaticResource bytesToImage}}"
+                   x:Name="RepeatImage" Margin="3" MaxHeight="400" Width="400" MouseDown="RepeatImage_MouseDown">
                 <Image.Style>
                     <Style TargetType="{x:Type Image}">
                         <Setter Property="Visibility" Value="Visible"/>
@@ -96,6 +243,7 @@
                     </Style>
                 </Image.Style>
             </Image>
+
 
             <TextBlock Text="This was a simulation run." Grid.Row="0" Grid.Column="4">
                 <TextBlock.Style>

@@ -34,8 +34,8 @@
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="240"/>
-                <ColumnDefinition Width="240"/>
+                <ColumnDefinition Width="230"/>
+                <ColumnDefinition Width="230"/>
                 <ColumnDefinition Width="280"/>
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
@@ -197,7 +197,7 @@
 
                 </StackPanel>
             </Grid>
-            
+
             <!--Label Sectors-->
             <Grid Grid.Row="0" Grid.Column="1">
                 <Grid.ColumnDefinitions>
@@ -242,7 +242,7 @@
                 </StackPanel>
 
                 <Button Grid.Column="2" Name="LabelSectors" Click="LabelSectors_Click" Margin="5"
-                            BorderThickness="0" HorizontalAlignment="Right">
+                            BorderThickness="0" HorizontalAlignment="Center">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Circle}">
                             <Setter Property="Visibility" Value="Collapsed"/>
@@ -256,6 +256,18 @@
                     <IconPacks:PackIconModern Width="20" Height="20" Kind="Eye"/>
                 </Button>
             </Grid>
+            <ScrollViewer Grid.Row="1" Grid.Column="1" x:Name="ScrollLabelSectors"
+                          Margin="3" MaxHeight="400" VerticalScrollBarVisibility="Auto"
+                          mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
+                          ScrollChanged="ScrollLabelSectors_ScrollChanged">
+                <ItemsControl ItemsSource="{Binding LabelSectors}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <local:SectorControlView />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
 
             <!--Repeat Sectors-->
             <Grid Grid.Row="0" Grid.Column="2">
@@ -304,11 +316,12 @@
 
                     <Button Content="Read" Command="{Binding InspectCommand}" Margin="2"
                             Visibility="{Binding IsLoggedIn_Control, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
                     <Label Content="{Binding Status}"/>
                 </StackPanel>
 
-                <Button Grid.Column="2" Name="RepeatSectors" Click="RepeatSectors_Click" Margin="5"
-                            BorderThickness="0" HorizontalAlignment="Right">
+                <Button Grid.Column="2" Name="RepeatSectors" Click="RepeatSectors_Click" Margin="0"
+                            BorderThickness="0" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Circle}">
                             <Setter Property="Visibility" Value="Collapsed"/>
@@ -322,8 +335,21 @@
                     <IconPacks:PackIconModern Width="20" Height="20" Kind="Eye"/>
                 </Button>
             </Grid>
-            
-            
+            <ScrollViewer Grid.Row="1" Grid.Column="2" x:Name="ScrollRepeatSectors"
+                          Margin="3" MaxHeight="400" VerticalScrollBarVisibility="Auto"
+                          mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
+                          ScrollChanged="ScrollRepeatSectors_ScrollChanged">
+
+                <ItemsControl ItemsSource="{Binding RepeatSectors}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <local:SectorControlView />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <!--Repeat Image-->
             <Grid Grid.Row="0" Grid.Column="4">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
@@ -334,7 +360,21 @@
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
+                <Grid.Style>
+                    <Style TargetType="{x:Type Grid}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsSimulation}" Value="True"/>
+                                    <Condition Binding="{Binding IsGoldenRepeat}" Value="True"/>
+                                </MultiDataTrigger.Conditions>
 
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </MultiDataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
                 <!--<TextBlock Grid.Column="1" Text="Repeat Image" HorizontalAlignment="Center" Margin="0,0,10,0">
                     <TextBlock.Style>
                         <Style TargetType="{x:Type TextBlock}">
@@ -352,32 +392,13 @@
 
                 </TextBlock>-->
 
-                <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
-                    <StackPanel.Style>
-                        <Style TargetType="{x:Type StackPanel}">
-                            <Setter Property="Visibility" Value="Collapsed"/>
-                            <Style.Triggers>
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsSimulation}" Value="True"/>
-                                        <Condition Binding="{Binding IsGoldenRepeat}" Value="True"/>
-                                    </MultiDataTrigger.Conditions>
-
-                                    <Setter Property="Visibility" Value="Visible"/>
-                                </MultiDataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </StackPanel.Style>
-
-                    <Button Content="Process" Margin="2"
+                <Button Grid.Column="1" Grid.Row="1" Content="Process" Margin="2"
                         Command="{Binding PrintCommand}"
-                        CommandParameter="repeat"/>
+                        CommandParameter="repeat" HorizontalAlignment="Center"/>
 
-                    <mah:ProgressRing IsActive="{Binding IsWorking}" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" Height="30" Width="30"/>
 
-                </StackPanel>
 
-                <!--<Label Grid.Column="2" Foreground="Goldenrod" HorizontalAlignment="Left" Padding="0" ToolTip="The 'Golden' Repeat Image stored in the database.">
+                <Label Grid.Column="0" Grid.Row="1" Foreground="Goldenrod" HorizontalAlignment="Right" VerticalAlignment="Center" ToolTip="The 'Golden' Repeat Image stored in the database.">
                     <Label.Style>
                         <Style TargetType="{x:Type Label}" BasedOn="{StaticResource {x:Type Label}}">
                             <Setter Property="Visibility" Value="Collapsed"/>
@@ -391,7 +412,9 @@
                     <Label.Content>
                         <IconPacks:Material Kind="Gold"/>
                     </Label.Content>
-                </Label>-->
+                </Label>
+
+                <mah:ProgressRing Grid.Column="2" Grid.Row="1" HorizontalAlignment="Left" IsActive="{Binding IsWorking}" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" Height="30" Width="30"/>
 
                 <Button Grid.Column="2" Grid.Row="1" Margin="5" HorizontalAlignment="Right"
                         Command="{Binding SaveCommand}"
@@ -410,6 +433,41 @@
                         </Style>
                     </Button.Style>
                 </Button>
+            </Grid>
+
+            <Button Grid.Row="0" Grid.Column="4" Margin="5" HorizontalAlignment="Right"
+                        Command="{Binding SaveCommand}"
+                        CommandParameter="repeat" BorderThickness="0">
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Circle}">
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsSimulation}" Value="True"/>
+                                    <Condition Binding="{Binding IsGoldenRepeat}" Value="True"/>
+                                </MultiDataTrigger.Conditions>
+
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </MultiDataTrigger>
+                            <DataTrigger Binding="{Binding RepeatImage}" Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+
+                <IconPacks:Material Kind="ContentSave"/>
+            </Button>
+
+            <Grid Grid.Row="1" Grid.Column="4" Margin="3">
+                <Image Name="RepeatImage" Source="{Binding RepeatImage, Converter={StaticResource bytesToImage}}" 
+                       Margin="0" Height="400" Width="400" MouseDown="RepeatImage_MouseDown"
+                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+
+                <Image Name="RepeatImageOverlay" Source="{Binding RepeatOverlay}" 
+                       Margin="0" Height="400" Width="400" MouseDown="RepeatImage_MouseDown"
+                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
             </Grid>
 
             <Grid Grid.Row="1" Grid.Column="0">
@@ -443,33 +501,9 @@
                 </Label>
                 <!--<TextBlock Text="{Binding LabelComment}" Foreground="Red" Margin="3" HorizontalAlignment="Left"/>-->
             </Grid>
-            <ScrollViewer Grid.Row="1" Grid.Column="1" x:Name="ScrollLabelSectors"
-                          Margin="3" MaxHeight="400" 
-                          mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
-                          ScrollChanged="ScrollLabelSectors_ScrollChanged">
-                <ItemsControl ItemsSource="{Binding LabelSectors}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <local:SectorControlView />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </ScrollViewer>
-            <ScrollViewer Grid.Row="1" Grid.Column="2" x:Name="ScrollRepeatSectors"
-                          Margin="3" MaxHeight="400"
-                          mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
-                          ScrollChanged="ScrollRepeatSectors_ScrollChanged">
 
-                <ItemsControl ItemsSource="{Binding RepeatSectors}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <local:SectorControlView />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </ScrollViewer>
             <ScrollViewer Grid.Row="1" Grid.Column="3"
-                          Width="280" Margin="3" Padding="0,0,0,6" MaxHeight="400"
+                          Margin="3" MaxHeight="400" VerticalScrollBarVisibility="Auto"
                           mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True">
                 <ItemsControl ItemsSource="{Binding DiffSectors}">
                     <ItemsControl.ItemTemplate>
@@ -479,15 +513,7 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </ScrollViewer>
-            <Grid Grid.Row="1" Grid.Column="4" Margin="3">
-                <Image Name="RepeatImage" Source="{Binding RepeatImage, Converter={StaticResource bytesToImage}}" 
-                       Margin="0" Height="400" Width="400" MouseDown="RepeatImage_MouseDown"
-                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
 
-                <Image Name="RepeatImageOverlay" Source="{Binding RepeatOverlay}" 
-                       Margin="0" Height="400" Width="400" MouseDown="RepeatImage_MouseDown"
-                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
-            </Grid>
 
 
         </Grid>
