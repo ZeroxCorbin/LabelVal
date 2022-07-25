@@ -545,10 +545,10 @@ namespace LabelVal.WindowViewModels
                 IsGetDevices = true;
 
                 await V275.Commands.GetProduct();
-                if(V275_Version != null)
+                if (V275_Version != null)
                 {
                     var curVer = V275_Version.Remove(0, V275_Version.LastIndexOf("-") + 1);
-                    
+
                     if (System.Version.TryParse(curVer, out var result))
                     {
                         var baseVer = System.Version.Parse("1.2.0.0000");
@@ -575,7 +575,7 @@ namespace LabelVal.WindowViewModels
             Standards.Clear();
             SelectedStandard = null;
 
-            foreach (var dir in Directory.EnumerateDirectories(App.StandardsRoot).ToList().OrderBy((e)=> Regex.Replace(e, "[0-9]+", match => match.Value.PadLeft(10, '0'))))
+            foreach (var dir in Directory.EnumerateDirectories(App.StandardsRoot).ToList().OrderBy((e) => Regex.Replace(e, "[0-9]+", match => match.Value.PadLeft(10, '0'))))
             {
                 Logger.Debug("Found: {name}", dir.Substring(dir.LastIndexOf("\\") + 1));
 
@@ -822,6 +822,7 @@ namespace LabelVal.WindowViewModels
 
             await V275.Commands.GetCameraConfig();
             await V275.Commands.GetSymbologies();
+            await V275.Commands.GetCalibration();
 
             if (!await V275.WebSocket.StartAsync(V275.Commands.URLs.WS_NodeEvents))
                 return;

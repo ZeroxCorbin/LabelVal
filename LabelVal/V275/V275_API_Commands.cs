@@ -43,6 +43,7 @@ namespace LabelVal.V275
         public V275_DetectResponse Detected { get; private set; }
         public List<int> Available { get; private set; }
         public byte[] RepeatImage { get; private set; }
+        public V275_Calibration Calibration { get; private set; }
 
         private bool CheckResults(string json, bool ignoreJson = false)
         {
@@ -174,6 +175,18 @@ namespace LabelVal.V275
             bool res;
             if (res = CheckResults(result))
                 Report = JsonConvert.DeserializeObject<V275_Report>(result);
+
+            return res;
+        }
+        public async Task<bool> GetCalibration()
+        {
+            Logger.Info("GET: {url}", URLs.Calibrate());
+
+            string result = await Connection.Get(URLs.Calibrate(), Token);
+
+            bool res;
+            if (res = CheckResults(result))
+                Calibration = JsonConvert.DeserializeObject<V275_Calibration>(result);
 
             return res;
         }

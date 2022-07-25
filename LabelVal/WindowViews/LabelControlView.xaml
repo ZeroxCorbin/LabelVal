@@ -434,7 +434,6 @@
                     </Button.Style>
                 </Button>
             </Grid>
-
             <Button Grid.Row="0" Grid.Column="4" Margin="5" HorizontalAlignment="Right"
                         Command="{Binding SaveCommand}"
                         CommandParameter="repeat" BorderThickness="0">
@@ -459,7 +458,6 @@
 
                 <IconPacks:Material Kind="ContentSave"/>
             </Button>
-
             <Grid Grid.Row="1" Grid.Column="4" Margin="3">
                 <Image Name="RepeatImage" Source="{Binding RepeatImage, Converter={StaticResource bytesToImage}}" 
                        Margin="0" Height="400" Width="400" MouseDown="RepeatImage_MouseDown"

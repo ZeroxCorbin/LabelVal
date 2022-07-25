@@ -46,7 +46,7 @@ namespace LabelVal.V275
         public string History() => $"{NodeBase}/{NodeNumber}/inspection/setup/image/history";
 
         public string Available() => $"{NodeBase}/{NodeNumber}/inspection/setup/image/available";
-public string AvailableRun() => $"{NodeBase}/{NodeNumber}/inspection/repeat/images/available";
+        public string AvailableRun() => $"{NodeBase}/{NodeNumber}/inspection/repeat/images/available";
 
         public string IsRunReady() => $"{NodeBase}/{NodeNumber}/inspection/job/isrunready";
         public string RunJob(string jobName) => $"{NodeBase}/{NodeNumber}/repository/jobs/design/{jobName}?source=inspection";
@@ -63,6 +63,7 @@ public string AvailableRun() => $"{NodeBase}/{NodeNumber}/inspection/repeat/imag
         public string Report(int repeat) => $"{NodeBase}/{NodeNumber}/inspection/repeat/reports/{repeat}";
         public string Remove(int repeat) => $"{NodeBase}/{NodeNumber}/inspection/stopevent/failure/removed/{repeat}";
         public string Detect() => $"{NodeBase}/{NodeNumber}/inspection/setup/detect";
+        public string Calibrate() => $"{NodeBase}/{NodeNumber}/calibrate/video?showAll=true";
 
         public string EnhancedLogging(bool enable) => $"{NodeBase}/{NodeNumber}/labelval/enableExtendedLogging={enable}";
         public string TriggerSimulator() => $"{NodeBase}/{NodeNumber}/labelval/sim";

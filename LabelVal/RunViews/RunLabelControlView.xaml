@@ -116,12 +116,12 @@
                 <TextBlock Text=" : " FontSize="16" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" />
                 <TextBlock Text="{Binding Run.LabelImageOrder}" FontSize="16" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
             </StackPanel >
-            <Button Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Top" Height="25" Width="25"
+            <Button Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5,0"
                         Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
                         Command="{Binding SaveCommand}"
                         CommandParameter="label" BorderThickness="0" Style="{StaticResource MahApps.Styles.Button.Circle}">
 
-                <IconPacks:Material Kind="ContentSave" Height="12"/>
+                <IconPacks:Material Kind="ContentSave"/>
             </Button>
             <Image Grid.Row="1" Grid.Column="0" Margin="3" x:Name="LabelImage" MaxHeight="400" Width="400" MouseDown="LabelImage_MouseDown">
                 <Image.Style>
@@ -212,7 +212,7 @@
             </ScrollViewer>
 
             <!--Repeat Image-->
-            <Button Grid.Row="0" Grid.Column="4" HorizontalAlignment="Right" VerticalAlignment="Top" Height="25" Width="25"
+            <Button Grid.Row="0" Grid.Column="4" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5,0"
                         Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
                         Command="{Binding SaveCommand}"
                         CommandParameter="repeat" BorderThickness="0">
@@ -228,7 +228,8 @@
                         </Style.Triggers>
                     </Style>
                 </Button.Style>
-                <IconPacks:Material Kind="ContentSave" Height="12"/>
+                
+                <IconPacks:Material Kind="ContentSave"/>
             </Button>
             <Image Grid.Row="1" Grid.Column="4" Source="{Binding Run.RepeatImage, Converter={StaticResource bytesToImage}}"
                    x:Name="RepeatImage" Margin="3" MaxHeight="400" Width="400" MouseDown="RepeatImage_MouseDown">
