@@ -252,6 +252,7 @@
     <Compile Include="Simulator\SimulatorFileHandler.cs" />
     <Compile Include="Utilities\ImageUtilies.cs" />
     <Compile Include="Utilities\ObservableDictionary.cs" />
+    <Compile Include="V275\Converters\V275_GS1FormattedOutput.cs" />
     <Compile Include="V275\Converters\V275_OCMatchModeToString.cs" />
     <Compile Include="V275\Models\V275_Calibration.cs" />
     <Compile Include="V275\Models\V275_Configuration_Camera.cs" />

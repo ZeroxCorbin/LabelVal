@@ -56,19 +56,21 @@ Having issues getting the read to work in simulation.
 Add dissimilar settings to the main window.
 There needs to be a rework of the event message processing. A partial packet can cause a crash.
 Fix matchmode detection in RunController.
+
+0.3.0.2005
+If the run starts then fails before logging anything delete the run entry.
 ----------------------
 
 Create a large V275 Audit trail file for Joyce.
 
 Store the database name used for the test run.
 
+Read registry to get initial simulation images directory.
+return Registry.GetValue("HKEY_LOCAL_MACHINE\\Software\\OMRON\\V275Service", "DataDirectory", "") as string;
+
+Read registry to get initial V75 port number.
 
 Add 300 DPI indicator to the 300 DPI images.
-
-
-
-If the run starts then fails before logging anything delete the run entry.
-
 
 Fault messaging.
 

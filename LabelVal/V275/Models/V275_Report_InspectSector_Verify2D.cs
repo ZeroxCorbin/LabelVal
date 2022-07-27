@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -107,8 +108,12 @@ namespace LabelVal.V275.Models
 
         public class Fields
         {
+            [JsonProperty("01")]
             public string _01 { get; set; }
+            [JsonProperty("90")]
             public string _90 { get; set; }
+            [JsonProperty("10")]
+            public string _10 { get; set; }
         }
     }
 }

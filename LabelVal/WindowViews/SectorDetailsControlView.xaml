@@ -18,6 +18,7 @@
         <Converters:StringToUpperSpacedConverter x:Key="stringToUpper"/>
         <Converters:FloatStringTrimConverter x:Key="floatTrim"/>
         <V275Converters:V275_OCMatchModeToString x:Key="matchModeToString"/>
+        <V275Converters:V275_GS1FormattedOutput x:Key="gs1FormattedOutput"/>
     </UserControl.Resources>
     
     <Border Padding="3" BorderThickness="2"
@@ -176,11 +177,26 @@
 
                                 <Style.Triggers>
                                     <DataTrigger Value="verify1D" Binding="{Binding ReportSector.type, Mode=OneTime}">
-                                        <Setter Property="Text" Value="{Binding ReportSector.data.decodeText, Mode=OneTime}"/>
-
+                                        <!--<Setter Property="Text" Value="{Binding ReportSector.data.decodeText, Mode=OneTime}"/>-->
+                                        <Setter Property="Text">
+                                            <Setter.Value>
+                                                <MultiBinding StringFormat="{}{0}{1}">
+                                                    <Binding Path="ReportSector.data.decodeText" Mode="OneTime"/>
+                                                    <Binding Path="ReportSector.data.gs1Results.formattedOut" Converter="{StaticResource gs1FormattedOutput}" FallbackValue=""/>
+                                                </MultiBinding>
+                                            </Setter.Value>
+                                        </Setter>
                                     </DataTrigger>
                                     <DataTrigger Value="verify2D" Binding="{Binding ReportSector.type, Mode=OneTime}">
-                                        <Setter Property="Text" Value="{Binding ReportSector.data.decodeText, Mode=OneTime}"/>
+                                        <!--<Setter Property="Text" Value="{Binding ReportSector.data.decodeText, Mode=OneTime}"/>-->
+                                        <Setter Property="Text">
+                                            <Setter.Value>
+                                                <MultiBinding StringFormat="{}{0}{1}">
+                                                    <Binding Path="ReportSector.data.decodeText" Mode="OneTime"/>
+                                                    <Binding Path="ReportSector.data.gs1Results.formattedOut" Converter="{StaticResource gs1FormattedOutput}" FallbackValue=""/>
+                                                </MultiBinding>
+                                            </Setter.Value>
+                                        </Setter>
                                     </DataTrigger>
                                     <DataTrigger Value="ocr" Binding="{Binding ReportSector.type, Mode=OneTime}">
                                         <Setter Property="Text" Value="{Binding ReportSector.data.text, Mode=OneTime}"/>

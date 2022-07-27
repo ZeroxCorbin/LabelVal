@@ -53,5 +53,10 @@ namespace LabelVal.LVS_95xx
         {
             Close();
         }
+
+        private void CustomDialog_Loaded(object sender, RoutedEventArgs e)
+        {
+            ((LVS95xx_SerialPortViewModel)this.DataContext).OpenPort.Execute(new object());
+        }
     }
 }

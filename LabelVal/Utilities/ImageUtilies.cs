@@ -126,7 +126,7 @@ namespace LabelVal.Utilities
                     }
                     else
                     {
-                        graphics.FillRectangle(Brushes.White, 0, 1900, 210, photo.Height - 1900);
+                        graphics.FillRectangle(Brushes.White, 0, 1900, 195, photo.Height - 1900);
                         graphics.FillRectangle(Brushes.Black, 30, 1950, 90, 90);
                     }
 

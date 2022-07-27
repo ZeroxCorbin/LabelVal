@@ -84,6 +84,7 @@ namespace LabelVal.LVS_95xx
 
             if (elm != null)
             {
+                //Verify 2D
                 V275_Report_InspectSector_Verify2D sect = new V275_Report_InspectSector_Verify2D();
                 sect.data = new V275_Report_InspectSector_Verify2D.Data();
                 sect.data.gs1SymbolQuality = new V275_Report_InspectSector_Verify2D.Gs1symbolquality();
@@ -93,10 +94,12 @@ namespace LabelVal.LVS_95xx
 
                 foreach (var data in spl)
                 {
-                    var spl1 = data.Split(',');
-
-                    if (spl1.Count() != 2)
+                    if (!data.Contains(','))
                         continue;
+
+                    string[] spl1 = new string[2];
+                    spl1[0] = data.Substring(0, data.IndexOf(','));
+                    spl1[1] = data.Substring(data.IndexOf(',') + 1);
 
                     if (spl1[0].StartsWith("Symbology"))
                     {
@@ -128,7 +131,7 @@ namespace LabelVal.LVS_95xx
                     }
 
 
-                    if (spl1[0].StartsWith("Decoded text"))
+                    if (spl1[0].StartsWith("Decoded"))
                     {
                         sect.data.decodeText = spl1[1];
                         continue;
@@ -273,32 +276,34 @@ namespace LabelVal.LVS_95xx
                 sect.data.gs1SymbolQuality = new V275_Report_InspectSector_Verify1D.Gs1symbolquality();
                 sect.type = "verify1D";
 
-               List<V275_Report_InspectSector_Common.Alarm> alarms = new List<V275_Report_InspectSector_Common.Alarm>();
+                List<V275_Report_InspectSector_Common.Alarm> alarms = new List<V275_Report_InspectSector_Common.Alarm>();
 
                 foreach (var data in spl)
                 {
-                    var spl1 = data.Split(',');
-
-                    if (spl1.Count() != 2)
+                    if (!data.Contains(','))
                         continue;
+
+                    string[] spl1 = new string[2];
+                    spl1[0] = data.Substring(0, data.IndexOf(','));
+                    spl1[1] = data.Substring(data.IndexOf(',') + 1);
 
                     if (spl1[0].StartsWith("Symbology"))
                     {
                         sect.data.symbolType = GetSymbolType(spl1[1]);
 
-                        if(sect.data.symbolType == "dataBar")
+                        if (sect.data.symbolType == "dataBar")
                         {
                             var item = spl.Find((e) => e.StartsWith("DataBar"));
-                            if(item != null)
+                            if (item != null)
                             {
                                 var spl2 = item.Split(',');
 
                                 if (spl2.Count() != 2)
                                     continue;
 
-                                sect.data.symbolType+= spl2[1];
+                                sect.data.symbolType += spl2[1];
                             }
-                                
+
                         }
                         continue;
                     }
@@ -373,7 +378,7 @@ namespace LabelVal.LVS_95xx
 
                     if (spl1[0].StartsWith("Edge"))
                     {
-                        if(sect.data.decode == null)
+                        if (sect.data.decode == null)
                             sect.data.decode = new V275_Report_InspectSector_Common.Decode();
 
                         sect.data.decode.edgeDetermination = new V275_Report_InspectSector_Common.ValueResult() { value = 100, result = spl1[1] };

@@ -14,7 +14,7 @@
                     mc:Ignorable="d"
                     d:DesignHeight="800" d:DesignWidth="800" Width="{Binding Width}" Height="{Binding Height}"
                     Style="{StaticResource {x:Type Dialog:BaseMetroDialog}}" 
-                    PreviewKeyDown="CustomDialog_PreviewKeyDown" DialogContentMargin="100">
+                    PreviewKeyDown="CustomDialog_PreviewKeyDown" DialogContentMargin="100" Loaded="CustomDialog_Loaded">
 
     <Dialog:CustomDialog.DialogTop>
 

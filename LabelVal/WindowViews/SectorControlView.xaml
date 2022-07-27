@@ -19,6 +19,7 @@
         <Converters:StringToUpperSpacedConverter x:Key="stringToUpper"/>
         <Converters:FloatStringTrimConverter x:Key="floatTrim"/>
         <V275Converters:V275_OCMatchModeToString x:Key="matchModeToString"/>
+        <V275Converters:V275_GS1FormattedOutput x:Key="gs1FormattedOutput"/>
     </UserControl.Resources>
 
     <Border BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}" BorderThickness="1" Margin="1" CornerRadius="3">
@@ -37,13 +38,78 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
-            <Popup x:Name="DetailsPop" StaysOpen="False" PlacementTarget="{Binding ElementName=PopupBorder}">
+            <Popup x:Name="popSymbolDetails" StaysOpen="False" PlacementTarget="{Binding ElementName=PopupBorder}">
                 <Popup.Style>
                     <Style TargetType="{x:Type Popup}"/>
                 </Popup.Style>
                 <local:SectorDetailsControlView DataContext="{Binding}"/>
             </Popup>
 
+            <Popup x:Name="popGS1DecodeText"  StaysOpen="False" PlacementTarget="{Binding ElementName=txtGS1DecodeText}">
+
+                <Border Padding="3" BorderThickness="2"
+                        BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+
+                    <Border BorderThickness="1" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" Background="{StaticResource MahApps.Brushes.ThemeBackground}" Margin="2">
+                        <!--<StackPanel>
+                        <TextBlock Padding="5" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                            <TextBlock.Style>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Text">
+                                        <Setter.Value>
+                                            <MultiBinding StringFormat="{}(01){0}">
+                                                <Binding Path="ReportSector.data.gs1Results.fields._01"/>
+                                            </MultiBinding>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+
+                        <TextBlock Padding="5" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                            <TextBlock.Style>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Text">
+                                        <Setter.Value>
+                                            <MultiBinding StringFormat="{}(10){0}">
+                                                <Binding Path="ReportSector.data.gs1Results.fields._10"/>
+                                            </MultiBinding>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ReportSector.data.gs1Results.fields._10}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        
+                        <TextBlock Padding="5" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                            <TextBlock.Style>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Text">
+                                        <Setter.Value>
+                                            <MultiBinding StringFormat="{}(90){0}">
+                                                <Binding Path="ReportSector.data.gs1Results.fields._90"/>
+                                            </MultiBinding>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ReportSector.data.gs1Results.fields._90}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </StackPanel>-->
+                        <TextBlock Text="{Binding ReportSector.data.gs1Results.formattedOut, Converter={StaticResource gs1FormattedOutput}}"  Margin="3,-10,3,3"/>
+                    </Border>
+                </Border>
+            </Popup>
+            
             <Grid Grid.ColumnSpan="3">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
@@ -61,7 +127,7 @@
                 <TextBlock Grid.Column="1" Text="{Binding ReportSector.data.overallGrade._string}" 
                            HorizontalAlignment="Center"
                            Visibility="{Binding IsNotWrongStandard, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneTime}"/>
-                
+
                 <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="5,0,0,0">
                     <TextBlock.Style>
                         <Style TargetType="{x:Type TextBlock}">
@@ -173,7 +239,7 @@
                                 </Style.Triggers>
                             </Style>
                         </Image.Style>
-                    </Image>                    
+                    </Image>
                 </Button>
 
             </Border>
@@ -212,32 +278,55 @@
                     </TextBlock.Style>
                 </TextBlock>
 
-                <TextBlock Grid.Row="1" Margin="3,0,3,0" TextWrapping="Wrap">
-                    <TextBlock.Style>
-                        <Style TargetType="{x:Type TextBlock}">
+                <Grid Grid.Row="1" Margin="3,0,3,0" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <TextBlock TextWrapping="Wrap" Name="txtGS1DecodeText">
+                        <TextBlock.Style>
+                            <Style TargetType="{x:Type TextBlock}">
 
-                            <Style.Triggers>
-                                <DataTrigger Value="verify1D" Binding="{Binding ReportSector.type, Mode=OneTime}">
-                                    <Setter Property="Text" Value="{Binding ReportSector.data.decodeText, Mode=OneTime}"/>
+                                <Style.Triggers>
 
-                                </DataTrigger>
-                                <DataTrigger Value="verify2D" Binding="{Binding ReportSector.type, Mode=OneTime}">
-                                    <Setter Property="Text" Value="{Binding ReportSector.data.decodeText, Mode=OneTime}"/>
-                                </DataTrigger>
-                                <DataTrigger Value="ocr" Binding="{Binding ReportSector.type, Mode=OneTime}">
-                                    <Setter Property="Text" Value="{Binding ReportSector.data.text, Mode=OneTime}"/>
-                                </DataTrigger>
+                                    <DataTrigger Value="verify1D" Binding="{Binding ReportSector.type, Mode=OneTime}">
+                                        <Setter Property="Text" Value="{Binding ReportSector.data.decodeText, Mode=OneTime}"/>
+                                    </DataTrigger>
+                                    <DataTrigger Value="verify2D" Binding="{Binding ReportSector.type, Mode=OneTime}">
+                                        <Setter Property="Text" Value="{Binding ReportSector.data.decodeText, Mode=OneTime}"/>
+                                    </DataTrigger>
+                                    <DataTrigger Value="ocr" Binding="{Binding ReportSector.type, Mode=OneTime}">
+                                        <Setter Property="Text" Value="{Binding ReportSector.data.text, Mode=OneTime}"/>
+                                    </DataTrigger>
 
-                                <DataTrigger Value="ocv" Binding="{Binding ReportSector.type, Mode=OneTime}">
-                                    <Setter Property="Text" Value="{Binding ReportSector.data.text, Mode=OneTime}"/>
-                                </DataTrigger>
-                                <DataTrigger Value="blemish" Binding="{Binding ReportSector.type, Mode=OneTime}">
-                                    <Setter Property="Text" Value=""/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBlock.Style>
-                </TextBlock>
+                                    <DataTrigger Value="ocv" Binding="{Binding ReportSector.type, Mode=OneTime}">
+                                        <Setter Property="Text" Value="{Binding ReportSector.data.text, Mode=OneTime}"/>
+                                    </DataTrigger>
+                                    <DataTrigger Value="blemish" Binding="{Binding ReportSector.type, Mode=OneTime}">
+                                        <Setter Property="Text" Value=""/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+
+                    
+                    <!--<TextBlock Text="{Binding ReportSector.data.gs1Results.formattedOut}"/>-->
+                    <Button Grid.Column="1" Name="btnGS1DecodeText" Margin="0" Click="btnGS1DecodeText_Click">
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Chromeless}">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ReportSector.data.gs1Results, FallbackValue={x:Null}}" Value="{x:Null}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                        <IconPacks:Material Kind="Download"/>
+                    </Button>
+                </Grid>
             </Grid>
 
 

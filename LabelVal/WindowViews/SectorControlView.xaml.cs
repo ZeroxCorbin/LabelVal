@@ -27,7 +27,7 @@ namespace LabelVal.WindowViews
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            DetailsPop.IsOpen = true;
+            popSymbolDetails.IsOpen = true;
         }
 
         private void Show95xxCompare_Click(object sender, RoutedEventArgs e)
@@ -43,6 +43,11 @@ namespace LabelVal.WindowViews
 
             DialogCoordinator.Instance.ShowMetroDialogAsync(yourParentWindow.DataContext, new LVS_95xx.LVS95xx_SerialPortView() { DataContext = dc });
 
+        }
+
+        private void btnGS1DecodeText_Click(object sender, RoutedEventArgs e)
+        {
+            popGS1DecodeText.IsOpen = true;
         }
     }
 }
