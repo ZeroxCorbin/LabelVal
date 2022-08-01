@@ -130,6 +130,19 @@ namespace LabelVal.V275
                 Status = Commands.Status;
                 return false;
             }
+
+            foreach(var sector in Commands.Job.sectors)
+            {
+                if(sector.type == "blemish")
+                {
+                    if (!await Commands.GetMask(sector.name))
+                    {
+                        Status = Commands.Status;
+                        return false;
+                    }
+                    sector.blemishMask = Commands.Mask;
+                }
+            }
             return true;
         }
 
@@ -248,17 +261,29 @@ namespace LabelVal.V275
             else
                 return true;
         }
-        public List<V275_Job_Sector_Verify> CreateSectors(V275_Events_System ev, string tableID)
+
+        public async Task<bool> AddMask(string name, string json)
+        {
+            if (!await Commands.AddMask(name, json))
+            {
+                Status = Commands.Status;
+                return false;
+            }
+            else
+                return true;
+        }
+
+        public List<V275_Sector_New_Verify> CreateSectors(V275_Events_System ev, string tableID)
         {
             int d1 = 1;
             int d2 = 1;
 
-            List<V275_Job_Sector_Verify> lst = new List<V275_Job_Sector_Verify>();
+            List<V275_Sector_New_Verify> lst = new List<V275_Sector_New_Verify>();
 
 
             foreach (var val in ev.data.detections)
             {
-                V275_Job_Sector_Verify verify = new V275_Job_Sector_Verify();
+                V275_Sector_New_Verify verify = new V275_Sector_New_Verify();
 
                 if (!string.IsNullOrEmpty(tableID))
                 {

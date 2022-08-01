@@ -14,7 +14,7 @@ namespace LabelVal.Models
 
                 Is300 = Name.EndsWith("300");
                 IsGS1 = Name.ToLower().StartsWith("gs1");
-                StandardName = name.Replace(" 300", "");
+                StandardName = name;
 
                 if (IsGS1)
                 {

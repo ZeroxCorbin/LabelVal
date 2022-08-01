@@ -348,6 +348,18 @@ namespace LabelVal.WindowViewModels
                     Status = V275.Status;
                     return -1;
                 }
+
+                if(sec.JobSector.type == "blemish")
+                {
+                    foreach(var layer in sec.JobSector.blemishMask.layers)
+                    {
+                        if (!await V275.AddMask(sec.JobSector.name, JsonConvert.SerializeObject(layer)))
+                        {
+                            Status = V275.Status;
+                            return -1;
+                        }
+                    }
+                }
             }
 
             return 1;

@@ -262,7 +262,9 @@
     <Compile Include="V275\Models\V275_Event_Base.cs" />
     <Compile Include="V275\Models\V275_GradingStandards.cs" />
     <Compile Include="V275\Models\V275_Job.cs" />
-    <Compile Include="V275\Models\V275_Job_Sector_Verify.cs" />
+    <Compile Include="V275\Models\V275_Job_Sector_Blemish.cs" />
+    <Compile Include="V275\Models\V275_Sector_New_Verify.cs" />
+    <Compile Include="V275\Models\V275_Job_Sector_Verify1D.cs" />
     <Compile Include="V275\Models\V275_Product.cs" />
     <Compile Include="V275\Models\V275_Repeat_Available.cs" />
     <Compile Include="V275\Models\V275_Report_InspectSector_Blemish.cs" />

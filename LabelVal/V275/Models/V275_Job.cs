@@ -70,6 +70,22 @@ namespace LabelVal.V275.Models
             public int apertureDimension { get; set; }
             public Gradingstandard gradingStandard { get; set; }
             public string metaData { get; set; }
+
+            //Blemsh
+            public int separation { get; set; }
+            public int reduction { get; set; }
+            public int warningPercent { get; set; }
+            public int maxErrorsBeforeQuit { get; set; }
+            public int maxThumbnailsPerSector { get; set; }
+            public int dilation { get; set; }
+            public string unitMeasure { get; set; }
+            public Area foreground { get; set; }
+            public Area background { get; set; }
+            public Area matrix { get; set; }
+            public Area dieCut { get; set; }
+            public Goldenimage goldenImage { get; set; }
+
+            public Mask blemishMask { get; set; }
         }
 
         public class Matchsettings
@@ -123,5 +139,35 @@ namespace LabelVal.V275.Models
             public int category { get; set; }
         }
 
+        public class Area
+        {
+            public int sensitivity { get; set; }
+            public float maximumDimension { get; set; }
+            public float maximumArea { get; set; }
+            public bool checkArea { get; set; }
+        }
+
+        public class Mask
+        {
+            public int width { get; set; }
+            public int height { get; set; }
+            public State[] states { get; set; }
+            public Layer[] layers { get; set; }
+        }
+
+        public class State
+        {
+            public string name { get; set; }
+            public int value { get; set; }
+            public int layer { get; set; }
+        }
+
+        public class Layer
+        {
+            public int value { get; set; }
+            public int[] runLengthEncode { get; set; }
+        }
+
     }
+
 }

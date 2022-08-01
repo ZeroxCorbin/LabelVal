@@ -39,6 +39,8 @@ namespace LabelVal.V275
         public string DeleteSector(string sectorName) => $"{NodeBase}/{NodeNumber}/inspection/job/sectors/{sectorName}";
         public string AddSector(string sectorName) => $"{NodeBase}/{NodeNumber}/inspection/job/sectors/{sectorName}";
 
+        public string Mask(string sectorName) => $"{NodeBase}/{NodeNumber}/inspection/job/sectors/{sectorName}/goldenImage/mask";
+
         public string Print() => $"{NodeBase}/{NodeNumber}/inspection/print";
         public string Print_Body(bool enabled) => $"{{\"enabled\":{(enabled ? "true" : "false")}}}";
 

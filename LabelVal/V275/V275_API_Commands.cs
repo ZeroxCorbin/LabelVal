@@ -38,6 +38,8 @@ namespace LabelVal.V275
         public V275_GradingStandards GradingStandards { get; private set; }
         public List<V275_Symbologies.Symbol> Symbologies { get; private set; }
         public V275_Job Job { get; private set; }
+        public V275_Job.Mask Mask { get; private set; }
+        
         public V275_Report Report { get; private set; }
         public V275_Configuration_Camera ConfigurationCamera { get; private set; }
         public V275_DetectResponse Detected { get; private set; }
@@ -150,10 +152,27 @@ namespace LabelVal.V275
 
             bool res;
             if (res = CheckResults(result))
+            {
                 Job = JsonConvert.DeserializeObject<V275_Job>(result);
+            }
+                
 
             return res;
         }
+
+        public async Task<bool> GetMask(string sectorName)
+        {
+            Logger.Info("GET: {url}", URLs.Mask(sectorName));
+
+            string result = await Connection.Get(URLs.Mask(sectorName), Token);
+
+            bool res;
+            if (res = CheckResults(result))
+                Mask = JsonConvert.DeserializeObject<V275_Job.Mask>(result);
+
+            return res;
+        }
+
         public async Task<bool> GetReport()
         {
             Logger.Info("GET: {url}", URLs.Report());
@@ -316,6 +335,15 @@ namespace LabelVal.V275
             Logger.Info("POST: {url}", URLs.AddSector(sectorName));
 
             _ = await Connection.Post(URLs.AddSector(sectorName), json, Token);
+
+            return CheckResults("", true);
+        }
+
+        public async Task<bool> AddMask(string sectorName, string json)
+        {
+            Logger.Info("PATCH: {url}", URLs.Mask(sectorName));
+
+            _ = await Connection.Patch(URLs.Mask(sectorName), json, Token);
 
             return CheckResults("", true);
         }

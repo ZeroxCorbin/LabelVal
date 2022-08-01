@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LabelVal.V275.Models
 {
-    public class V275_Job_Sector_Verify
+    public class V275_Sector_New_Verify
     {
         public string name { get; set; }
         public string username { get; set; }

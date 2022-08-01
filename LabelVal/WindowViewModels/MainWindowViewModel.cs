@@ -1068,11 +1068,14 @@ namespace LabelVal.WindowViewModels
                     Logger.Info("Creating sectors.");
 
                     foreach (var sec in sectors)
+                    {
                         if (!await V275.AddSector(sec.name, JsonConvert.SerializeObject(sec)))
                         {
                             ProcessRepeatFault(repeat);
                             return;
                         }
+                    }
+
                 }
             }
 
