@@ -198,38 +198,41 @@
 
                 </StackPanel>
             </Grid>
-            <Grid Grid.Row="1" Grid.Column="0">
-                <Image x:Name="LabelImage" Margin="3" MaxHeight="400" Width="400"
+
+            <Border BorderThickness="1" Margin="1" Grid.Row="1" Grid.Column="0" BorderBrush="{StaticResource MahApps.Brushes.Accent}">
+                <Grid>
+                    <Image x:Name="LabelImage" MaxHeight="400" Width="400"
                        Source="{Binding LabelImage, Converter={StaticResource bytesToImage}}"
                        MouseDown="LabelImage_MouseDown"
                        RenderOptions.BitmapScalingMode="NearestNeighbor"
                        HorizontalAlignment="Left" VerticalAlignment="Top"
                        ContextMenu="{StaticResource cmImageModify}" ContextMenuOpening="LabelImage_ContextMenuOpening"/>
 
-                <Label HorizontalAlignment="Right" VerticalAlignment="Top" Margin="3">
-                    <Label.Style>
-                        <Style TargetType="{x:Type Label}">
-                            <Setter Property="Content">
-                                <Setter.Value>
-                                    <Grid Background="White">
-                                        <IconPacks:PackIconMaterial Width="20" Height="20" Kind="Information" Foreground="Red"/>
-                                    </Grid>
-                                </Setter.Value>
-                            </Setter>
-                            <Setter Property="ToolTip" Value="{Binding LabelComment}"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding LabelComment}" Value="">
-                                    <Setter Property="Content" Value=""/>
-                                    <Setter Property="ToolTip" Value="{x:Null}"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Label.Style>
+                    <Label HorizontalAlignment="Right" VerticalAlignment="Top" Margin="3">
+                        <Label.Style>
+                            <Style TargetType="{x:Type Label}">
+                                <Setter Property="Content">
+                                    <Setter.Value>
+                                        <Grid Background="White">
+                                            <IconPacks:PackIconMaterial Width="20" Height="20" Kind="Information" Foreground="Red"/>
+                                        </Grid>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="ToolTip" Value="{Binding LabelComment}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding LabelComment}" Value="">
+                                        <Setter Property="Content" Value=""/>
+                                        <Setter Property="ToolTip" Value="{x:Null}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Label.Style>
 
-                </Label>
-                <!--<TextBlock Text="{Binding LabelComment}" Foreground="Red" Margin="3" HorizontalAlignment="Left"/>-->
-            </Grid>
-            
+                    </Label>
+
+                    <!--<TextBlock Text="{Binding LabelComment}" Foreground="Red" Margin="3" HorizontalAlignment="Left"/>-->
+                </Grid>
+            </Border>
             <!--Label Sectors-->
             <Grid Grid.Row="0" Grid.Column="1">
                 <Grid.ColumnDefinitions>
@@ -496,16 +499,19 @@
 
                 <IconPacks:Material Kind="ContentSave"/>
             </Button>
-            <Grid Grid.Row="1" Grid.Column="4" Margin="3">
-                <Image Name="RepeatImage" Source="{Binding RepeatImage, Converter={StaticResource bytesToImage}}" 
+
+
+            <Border BorderThickness="1" Margin="1" Grid.Row="1" Grid.Column="4" BorderBrush="{StaticResource MahApps.Brushes.Accent}">
+                <Grid>
+                    <Image Name="RepeatImage" Source="{Binding RepeatImage, Converter={StaticResource bytesToImage}}" 
                        Margin="0" Height="400" Width="400" MouseDown="RepeatImage_MouseDown"
                        RenderOptions.BitmapScalingMode="NearestNeighbor"/>
 
-                <Image Name="RepeatImageOverlay" Source="{Binding RepeatOverlay}" 
+                    <Image Name="RepeatImageOverlay" Source="{Binding RepeatOverlay}" 
                        Margin="0" Height="400" Width="400" MouseDown="RepeatImage_MouseDown"
                        RenderOptions.BitmapScalingMode="NearestNeighbor"/>
-            </Grid>
-
+                </Grid>
+            </Border>
 
 
             <ScrollViewer Grid.Row="1" Grid.Column="3"

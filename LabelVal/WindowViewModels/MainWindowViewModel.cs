@@ -222,7 +222,8 @@ namespace LabelVal.WindowViewModels
             get { return userMessage; }
             set { SetProperty(ref userMessage, value); }
         }
-        private string userMessage;
+        private string userMessage = "";
+        public ICommand ClearUserMessage { get; }
 
         public ICommand GetDevices { get; }
         public bool IsGetDevices
@@ -333,6 +334,8 @@ namespace LabelVal.WindowViewModels
             V275_RemoveRepeat = new Core.RelayCommand(V275_RemoveRepeatAction, c => true);
 
             TriggerSim = new Core.RelayCommand(TriggerSimAction, c => true);
+
+            ClearUserMessage = new Core.RelayCommand((par) => { UserMessage = ""; }, c => true) ;
 
             CreateStandardsDatabase = new Core.RelayCommand(CreateStandardsDatabaseAction, c => true);
             LockStandardsDatabase = new Core.RelayCommand(LockStandardsDatabaseAction, c => true);
@@ -758,17 +761,9 @@ namespace LabelVal.WindowViewModels
             IsLoggedIn_Control = false;
             IsLoggedIn_Monitor = false;
 
-            //foreach (var rep in Labels)
-            //{
-            //    rep.IsSimulation = false;
-            //    rep.IsLoggedIn_Control = IsLoggedIn_Control;
-            //    rep.IsLoggedIn_Monitor = IsLoggedIn_Monitor;
-            //}
-
             try
             {
                 await V275.WebSocket.StopAsync();
-                //await SysWebSocket.StopAsync();
 
                 V275.V275_State = "";
                 V275.V275_JobName = "";
@@ -813,15 +808,6 @@ namespace LabelVal.WindowViewModels
 
             IsLoggedIn_Monitor = isLoggedIn_Monitor;
             IsLoggedIn_Control = !isLoggedIn_Monitor;
-
-            //foreach (var rep in Labels)
-            //{
-            //    rep.IsDatabaseLocked = IsDatabaseLocked || IsDatabasePermLocked;
-            //    rep.IsSimulation = IsDeviceSimulator;
-            //    rep.IsLoggedIn_Monitor = IsLoggedIn_Monitor;
-            //    rep.IsLoggedIn_Control = IsLoggedIn_Control;
-            //    rep.IsOldISO = IsOldISO;
-            //}
 
             await V275.Commands.GetCameraConfig();
             await V275.Commands.GetSymbologies();

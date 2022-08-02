@@ -560,8 +560,8 @@
         
         <StatusBar VerticalAlignment="Bottom" Grid.Row="2">
             <StatusBarItem>
-                <Label>
-                    <IconPacks:Material Kind="Exclamation" Width="10" Height="10"/>
+                <Label Margin="0,1,0,0" Padding="0,2,0,2" Background="Red" Foreground="White">
+                    <IconPacks:Material Kind="ExclamationThick" Width="12" Height="12"/>
                     <Label.Style>
                         <Style TargetType="{x:Type Label}">
                             <Setter Property="Visibility" Value="Visible"/>
@@ -578,19 +578,19 @@
                 <TextBlock Text="{Binding UserMessage}"/>
             </StatusBarItem>
             <StatusBarItem>
-                <Label>
-                    <IconPacks:Material Kind="Cancel" Width="10" Height="10"/>
-                    <Label.Style>
-                        <Style TargetType="{x:Type Label}">
+                <Button Command="{Binding ClearUserMessage}">
+                    <IconPacks:Material Kind="Cancel"/>
+                    <Button.Style>
+                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Circle}">
                             <Setter Property="Visibility" Value="Visible"/>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding UserMessage}" Value="{x:Null}">
+                                <DataTrigger Binding="{Binding UserMessage}" Value="">
                                     <Setter Property="Visibility" Value="Collapsed"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
-                    </Label.Style>
-                </Label>
+                    </Button.Style>
+                </Button>
             </StatusBarItem>
         </StatusBar>
     </Grid>
