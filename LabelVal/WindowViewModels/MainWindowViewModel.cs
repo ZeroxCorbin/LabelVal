@@ -14,9 +14,9 @@ using System.Drawing.Printing;
 using LabelVal.Databases;
 using LabelVal.RunControllers;
 using LabelVal.Printer;
-using MahApps.Metro.Controls.Dialogs;
 using System.Text.RegularExpressions;
 using LabelVal.Models;
+using MahApps.Metro.Controls.Dialogs;
 
 namespace LabelVal.WindowViewModels
 {
@@ -36,6 +36,7 @@ namespace LabelVal.WindowViewModels
             public int RepeatNumber { get; set; } = -1;
         }
 
+        public IDialogCoordinator DialogCoordinator { get => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance; }
         //public class StandardEntryModel : Core.BaseViewModel
         //{
         //    private string name;
@@ -88,7 +89,7 @@ namespace LabelVal.WindowViewModels
         public string Version => App.Version;
 
         public V275_API_Controller V275 { get; } = new V275_API_Controller();
-        private StandardsDatabase StandardsDatabase { get; set; }
+        public StandardsDatabase StandardsDatabase { get; private set; }
         //private V275_API_WebSocketEvents WebSocket { get; } = new V275_API_WebSocketEvents();
         //private V275_API_WebSocketEvents SysWebSocket { get; } = new V275_API_WebSocketEvents();
 
@@ -147,7 +148,7 @@ namespace LabelVal.WindowViewModels
         private string selectedStandardsDatabase;
         public bool IsDatabaseLocked
         {
-            get => isDatabaseLocked;
+            get => isDatabaseLocked || isDatabasePermLocked;
             set { SetProperty(ref isDatabaseLocked, value); OnPropertyChanged("IsNotDatabaseLocked"); }
         }
         public bool IsNotDatabaseLocked => !isDatabaseLocked;
@@ -206,7 +207,7 @@ namespace LabelVal.WindowViewModels
                 {
                     StoredPrinter = value;
 
-                    UpdatePrinters();
+                    //UpdatePrinters();
                 }
             }
         }
@@ -244,7 +245,7 @@ namespace LabelVal.WindowViewModels
         public bool IsNotDeviceSelected => !isDeviceSelected;
         private bool isDeviceSelected = false;
 
-        public bool IsDeviceSimulator => V275_MAC == null ? false : V275_MAC.Equals("00:00:00:00:00:00");
+        public bool IsDeviceSimulator => V275_MAC == null ? false : V275_MAC.Equals("00:00:00:00:00:00") && (IsLoggedIn_Control || IsLoggedIn_Monitor);
         public string SimulatorImageDirectory
         {
             get => App.Settings.GetValue("Simulator_ImageDirectory", @"C:\Program Files\V275\data\images\simulation");
@@ -260,7 +261,7 @@ namespace LabelVal.WindowViewModels
         public bool IsLoggedIn_Monitor
         {
             get => isLoggedIn_Monitor;
-            set { SetProperty(ref isLoggedIn_Monitor, value); OnPropertyChanged("IsNotLoggedIn_Monitor"); OnPropertyChanged("IsNotLoggedIn"); OnPropertyChanged("IsLoggedIn"); }
+            set { SetProperty(ref isLoggedIn_Monitor, value); OnPropertyChanged("IsNotLoggedIn_Monitor"); OnPropertyChanged("IsNotLoggedIn"); OnPropertyChanged("IsLoggedIn"); OnPropertyChanged("IsDeviceSimulator"); }
         }
         public bool IsNotLoggedIn_Monitor => !isLoggedIn_Monitor;
         private bool isLoggedIn_Monitor = false;
@@ -268,7 +269,7 @@ namespace LabelVal.WindowViewModels
         public bool IsLoggedIn_Control
         {
             get => isLoggedIn_Control;
-            set { SetProperty(ref isLoggedIn_Control, value); OnPropertyChanged("IsNotLoggedIn_Control"); OnPropertyChanged("IsNotLoggedIn"); OnPropertyChanged("IsLoggedIn"); }
+            set { SetProperty(ref isLoggedIn_Control, value); OnPropertyChanged("IsNotLoggedIn_Control"); OnPropertyChanged("IsNotLoggedIn"); OnPropertyChanged("IsLoggedIn"); OnPropertyChanged("IsDeviceSimulator"); }
         }
         public bool IsNotLoggedIn_Control => !isLoggedIn_Control;
         private bool isLoggedIn_Control = false;
@@ -401,20 +402,20 @@ namespace LabelVal.WindowViewModels
 
         public async Task<MessageDialogResult> OkCancelDialog(string title, string message)
         {
-            MessageDialogResult result = await DialogCoordinator.Instance.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative);
+            MessageDialogResult result = await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative);
 
             return result;
         }
         public async Task<MessageDialogResult> OkDialog(string title, string message)
         {
-            MessageDialogResult result = await DialogCoordinator.Instance.ShowMessageAsync(this, title, message, MessageDialogStyle.Affirmative);
+            MessageDialogResult result = await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.Affirmative);
 
             return result;
         }
 
         public async Task<string> GetStringDialog(string title, string message)
         {
-            string result = await DialogCoordinator.Instance.ShowInputAsync(this, title, message);
+            string result = await DialogCoordinator.ShowInputAsync(this, title, message);
 
             return result;
         }
@@ -436,12 +437,12 @@ namespace LabelVal.WindowViewModels
             if (string.IsNullOrEmpty(SelectedPrinter) && Printers.Count > 0)
                 SelectedPrinter = Printers.First();
         }
-        private void UpdatePrinters()
-        {
-            foreach (var r in Labels)
-                r.PrinterName = StoredPrinter;
+        //private void UpdatePrinters()
+        //{
+        //    foreach (var r in Labels)
+        //        r.PrinterName = StoredPrinter;
 
-        }
+        //}
 
         private void ClearLabels()
         {
@@ -449,6 +450,7 @@ namespace LabelVal.WindowViewModels
             {
                 //lab.Clear();
                 lab.Printing -= Label_Printing;
+                lab.StatusChanged -= Label_StatusChanged;
                 //Labels.Remove(lab);
             }
             Labels.Clear();
@@ -475,20 +477,21 @@ namespace LabelVal.WindowViewModels
                 if (File.Exists(img.Replace(".png", ".txt")))
                     comment = File.ReadAllText(img.Replace(".png", ".txt"));
 
-                var tmp = new LabelControlViewModel(img, comment, SelectedStandard, StandardsDatabase, V275, MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance)
+                var tmp = new LabelControlViewModel(img, comment, this)
                 {
-                    IsOldISO = IsOldISO,
-                    PrinterName = SelectedPrinter,
-                    IsDatabaseLocked = IsDatabaseLocked || IsDatabasePermLocked,
-                    IsSimulation = IsDeviceSimulator && (IsLoggedIn_Control || IsLoggedIn_Monitor),
-                    IsLoggedIn_Control = IsLoggedIn_Control,
-                    IsLoggedIn_Monitor = IsLoggedIn_Monitor
+                    MainWindow = this,
                 };
 
                 tmp.Printing += Label_Printing;
+                tmp.StatusChanged += Label_StatusChanged;
 
                 Labels.Add(tmp);
             }
+        }
+
+        private void Label_StatusChanged(string status)
+        {
+            this.UserMessage = status;
         }
 
         //private async Task ResetRepeats()
@@ -510,7 +513,7 @@ namespace LabelVal.WindowViewModels
 
         private void Reset()
         {
-            UserMessage = "";
+            Label_StatusChanged("");
         }
 
         private async void GetDevicesAction(object parameter)
@@ -559,7 +562,7 @@ namespace LabelVal.WindowViewModels
             }
             else
             {
-                UserMessage = V275.Status;
+                Label_StatusChanged(V275.Status);
                 IsGetDevices = false;
             }
 
@@ -720,7 +723,7 @@ namespace LabelVal.WindowViewModels
             }
             else
             {
-                UserMessage = V275.Status;
+                Label_StatusChanged(V275.Status);
                 IsLoggedIn_Monitor = false;
             }
         }
@@ -736,7 +739,7 @@ namespace LabelVal.WindowViewModels
             }
             else
             {
-                UserMessage = V275.Status;
+                Label_StatusChanged(V275.Status);
                 IsLoggedIn_Control = false;
             }
         }
@@ -745,7 +748,7 @@ namespace LabelVal.WindowViewModels
             Reset();
 
             if (!await V275.Commands.Logout())
-                UserMessage = V275.Status;
+                Label_StatusChanged(V275.Status);
 
             LoginData.accessLevel = "";
             LoginData.token = "";
@@ -755,12 +758,12 @@ namespace LabelVal.WindowViewModels
             IsLoggedIn_Control = false;
             IsLoggedIn_Monitor = false;
 
-            foreach (var rep in Labels)
-            {
-                rep.IsSimulation = false;
-                rep.IsLoggedIn_Control = IsLoggedIn_Control;
-                rep.IsLoggedIn_Monitor = IsLoggedIn_Monitor;
-            }
+            //foreach (var rep in Labels)
+            //{
+            //    rep.IsSimulation = false;
+            //    rep.IsLoggedIn_Control = IsLoggedIn_Control;
+            //    rep.IsLoggedIn_Monitor = IsLoggedIn_Monitor;
+            //}
 
             try
             {
@@ -785,7 +788,7 @@ namespace LabelVal.WindowViewModels
                     }
                     catch (Exception ex)
                     {
-                        UserMessage = ex.Message;
+                        Label_StatusChanged(ex.Message);
 
                         Logger.Error(ex);
                         return false;
@@ -811,14 +814,14 @@ namespace LabelVal.WindowViewModels
             IsLoggedIn_Monitor = isLoggedIn_Monitor;
             IsLoggedIn_Control = !isLoggedIn_Monitor;
 
-            foreach (var rep in Labels)
-            {
-                rep.IsDatabaseLocked = IsDatabaseLocked || IsDatabasePermLocked;
-                rep.IsSimulation = IsDeviceSimulator;
-                rep.IsLoggedIn_Monitor = IsLoggedIn_Monitor;
-                rep.IsLoggedIn_Control = IsLoggedIn_Control;
-                rep.IsOldISO = IsOldISO;
-            }
+            //foreach (var rep in Labels)
+            //{
+            //    rep.IsDatabaseLocked = IsDatabaseLocked || IsDatabasePermLocked;
+            //    rep.IsSimulation = IsDeviceSimulator;
+            //    rep.IsLoggedIn_Monitor = IsLoggedIn_Monitor;
+            //    rep.IsLoggedIn_Control = IsLoggedIn_Control;
+            //    rep.IsOldISO = IsOldISO;
+            //}
 
             await V275.Commands.GetCameraConfig();
             await V275.Commands.GetSymbologies();
@@ -891,7 +894,7 @@ namespace LabelVal.WindowViewModels
         private bool WaitForRepeat;
         private async void Label_Printing(LabelControlViewModel label, string type)
         {
-            if (label.IsSimulation)
+            if (label.MainWindow.IsDeviceSimulator)
             {
                 try
                 {
@@ -913,7 +916,7 @@ namespace LabelVal.WindowViewModels
 
                         //if (verRes > 0)
                         //{
-                        UserMessage = "Could not delete all simulator images.";
+                        Label_StatusChanged("Could not delete all simulator images.");
                         label.IsWorking = false;
                         return;
                         //}
@@ -942,7 +945,7 @@ namespace LabelVal.WindowViewModels
                     {
                         if (!sim.CopyImage(label.LabelImagePath, prepend))
                         {
-                            UserMessage = "Could not copy the image to the simulator images directory.";
+                            Label_StatusChanged("Could not copy the image to the simulator images directory.");
                             label.IsWorking = false;
                             return;
                         }
@@ -951,7 +954,7 @@ namespace LabelVal.WindowViewModels
                     {
                         if (!sim.SaveImage(label.LabelImagePath, label.RepeatImage))
                         {
-                            UserMessage = "Could not save the image to the simulator images directory.";
+                            Label_StatusChanged("Could not save the image to the simulator images directory.");
                             label.IsWorking = false;
                             return;
                         }
@@ -975,7 +978,7 @@ namespace LabelVal.WindowViewModels
                 }
                 catch (Exception ex)
                 {
-                    UserMessage = ex.Message;
+                    Label_StatusChanged(ex.Message);
                     label.IsWorking = false;
                     Logger.Error(ex);
                 }

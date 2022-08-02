@@ -313,7 +313,7 @@
 
                     
                     <!--<TextBlock Text="{Binding ReportSector.data.gs1Results.formattedOut}"/>-->
-                    <Button Grid.Column="1" Name="btnGS1DecodeText" Margin="0" Click="btnGS1DecodeText_Click">
+                    <Button Grid.Column="1" Name="btnGS1DecodeText" Margin="0,-5,3,0" Click="btnGS1DecodeText_Click">
                         <Button.Style>
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Chromeless}">
                                 <Setter Property="Visibility" Value="Visible"/>
@@ -324,7 +324,7 @@
                                 </Style.Triggers>
                             </Style>
                         </Button.Style>
-                        <IconPacks:Material Kind="Download"/>
+                        <IconPacks:Material Kind="ArrowDownBoldBox"/>
                     </Button>
                 </Grid>
             </Grid>

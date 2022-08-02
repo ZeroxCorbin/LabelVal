@@ -237,12 +237,12 @@ namespace LabelVal.RunControllers
                         LabelReport = sRow.LabelReport,
                         RepeatGoldenImage = sRow.RepeatImage,
                         LabelImageUID = label.LabelImageUID,
-                        LabelImage = label.IsSimulation ? null : label.LabelImage,
+                        LabelImage = label.MainWindow.IsDeviceSimulator ? null : label.LabelImage,
                         LabelImageOrder = CurrentLabelCount,
                         LoopCount = CurrentLoopCount
                     };
 
-                    if (!label.IsSimulation)
+                    if (!label.MainWindow.IsDeviceSimulator)
                         if(label.RepeatImage != null)
                         {
                             //Compress the image to PNG

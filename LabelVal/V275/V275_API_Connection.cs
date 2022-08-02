@@ -138,9 +138,9 @@ namespace LabelVal.V275
                     var request = new HttpRequestMessage(new HttpMethod("PATCH"), url)
                     { Content = content };
 
-                    return (await client.SendAsync(request)).IsSuccessStatusCode;
+                    HttpResponseMessage = await client.SendAsync(request);
 
-                    //return HttpResponseMessage.IsSuccessStatusCode;
+                    return HttpResponseMessage.IsSuccessStatusCode;
                 }
             }
             catch (Exception ex)

@@ -560,7 +560,37 @@
         
         <StatusBar VerticalAlignment="Bottom" Grid.Row="2">
             <StatusBarItem>
+                <Label>
+                    <IconPacks:Material Kind="Exclamation" Width="10" Height="10"/>
+                    <Label.Style>
+                        <Style TargetType="{x:Type Label}">
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding UserMessage}" Value="">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Label.Style>
+                </Label>
+            </StatusBarItem>
+            <StatusBarItem>
                 <TextBlock Text="{Binding UserMessage}"/>
+            </StatusBarItem>
+            <StatusBarItem>
+                <Label>
+                    <IconPacks:Material Kind="Cancel" Width="10" Height="10"/>
+                    <Label.Style>
+                        <Style TargetType="{x:Type Label}">
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding UserMessage}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Label.Style>
+                </Label>
             </StatusBarItem>
         </StatusBar>
     </Grid>

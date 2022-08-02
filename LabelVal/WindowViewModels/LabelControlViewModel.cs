@@ -34,6 +34,9 @@ namespace LabelVal.WindowViewModels
         public delegate void BringIntoViewDelegate();
         public event BringIntoViewDelegate BringIntoView;
 
+        public delegate void StatusChange(string status);
+        public event StatusChange StatusChanged;
+
         private string labelImageUID;
         public string LabelImageUID { get => labelImageUID; set => SetProperty(ref labelImageUID, value); }
 
@@ -52,12 +55,10 @@ namespace LabelVal.WindowViewModels
         private StandardsDatabase.Row currentRow;
         public StandardsDatabase.Row CurrentRow { get => currentRow; set => SetProperty(ref currentRow, value); }
 
-        private StandardEntryModel gradingStandard;
-        public StandardEntryModel GradingStandard { get => gradingStandard; set => SetProperty(ref gradingStandard, value); }
+        //private StandardEntryModel gradingStandard;
+        public StandardEntryModel GradingStandard { get => MainWindow.SelectedStandard; }
 
-        private bool isOldISO;
-        public bool IsOldISO { get => isOldISO; set => SetProperty(ref isOldISO, value); }
-
+       
         private bool isGoldenRepeat;
         public bool IsGoldenRepeat { get => isGoldenRepeat; set => SetProperty(ref isGoldenRepeat, value); }
 
@@ -74,42 +75,42 @@ namespace LabelVal.WindowViewModels
         private ObservableCollection<SectorDifferenceViewModel> diffSectors = new ObservableCollection<SectorDifferenceViewModel>();
         public ObservableCollection<SectorDifferenceViewModel> DiffSectors { get => diffSectors; set => SetProperty(ref diffSectors, value); }
 
-        public bool IsLoggedIn_Monitor
-        {
-            get => isLoggedIn_Monitor;
-            set { SetProperty(ref isLoggedIn_Monitor, value); OnPropertyChanged("IsNotLoggedIn_Monitor"); }
-        }
-        public bool IsNotLoggedIn_Monitor => !isLoggedIn_Monitor;
-        private bool isLoggedIn_Monitor = false;
+        //public bool IsLoggedIn_Monitor
+        //{
+        //    get => isLoggedIn_Monitor;
+        //    set { SetProperty(ref isLoggedIn_Monitor, value); OnPropertyChanged("IsNotLoggedIn_Monitor"); }
+        //}
+        //public bool IsNotLoggedIn_Monitor => !isLoggedIn_Monitor;
+        //private bool isLoggedIn_Monitor = false;
 
-        public bool IsLoggedIn_Control
-        {
-            get => isLoggedIn_Control;
-            set
-            {
-                SetProperty(ref isLoggedIn_Control, value);
-                OnPropertyChanged("IsNotLoggedIn_Control");
-                if (value) PrintCount = 1;
-            }
-        }
-        public bool IsNotLoggedIn_Control => !isLoggedIn_Control;
-        private bool isLoggedIn_Control = false;
+        //public bool IsLoggedIn_Control
+        //{
+        //    get => isLoggedIn_Control;
+        //    set
+        //    {
+        //        SetProperty(ref isLoggedIn_Control, value);
+        //        OnPropertyChanged("IsNotLoggedIn_Control");
+        //        if (value) PrintCount = 1;
+        //    }
+        //}
+        //public bool IsNotLoggedIn_Control => !isLoggedIn_Control;
+        //private bool isLoggedIn_Control = false;
 
-        public bool IsSimulation
-        {
-            get => isSimulation;
-            set { SetProperty(ref isSimulation, value); OnPropertyChanged("IsNotSimulation"); }
-        }
-        public bool IsNotSimulation => !isSimulation;
-        private bool isSimulation = false;
+        //public bool IsSimulation
+        //{
+        //    get => isSimulation;
+        //    set { SetProperty(ref isSimulation, value); OnPropertyChanged("IsNotSimulation"); }
+        //}
+        //public bool IsNotSimulation => !isSimulation;
+        //private bool isSimulation = false;
 
-        public bool IsDatabaseLocked
-        {
-            get => isDatabaseLocked;
-            set { SetProperty(ref isDatabaseLocked, value); OnPropertyChanged("IsNotDatabaseLocked"); }
-        }
-        public bool IsNotDatabaseLocked => !isDatabaseLocked;
-        private bool isDatabaseLocked = false;
+        //public bool IsDatabaseLocked
+        //{
+        //    get => isDatabaseLocked;
+        //    set { SetProperty(ref isDatabaseLocked, value); OnPropertyChanged("IsNotDatabaseLocked"); }
+        //}
+        //public bool IsNotDatabaseLocked => !isDatabaseLocked;
+        //private bool isDatabaseLocked = false;
 
         public bool IsStore
         {
@@ -144,19 +145,19 @@ namespace LabelVal.WindowViewModels
         public bool IsNotFaulted => !isFaulted;
         private bool isFaulted = false;
 
-        public string PrinterName { get; set; }
+        //public string PrinterName { get; set; }
         public string LabelImagePath { get; }
 
         public string Status
         {
             get { return _Status; }
-            set { SetProperty(ref _Status, value); }
+            set { SetProperty(ref _Status, value); App.Current.Dispatcher.Invoke(() => StatusChanged?.Invoke(_Status)); }
         }
         private string _Status;
 
-        private StandardsDatabase StandardsDatabase { get; set; }
+        private StandardsDatabase StandardsDatabase { get => MainWindow.StandardsDatabase; }
 
-        public V275_API_Controller V275 { get; private set; }
+        public V275_API_Controller V275 { get => MainWindow.V275; }
         public V275_Job LabelTemplate { get; set; }
         public V275_Job RepeatTemplate { get; set; }
         public V275_Report RepeatReport { get; private set; }
@@ -173,17 +174,21 @@ namespace LabelVal.WindowViewModels
 
         public ICommand RedoFiducial { get; }
 
-        private IDialogCoordinator dialogCoordinator;
-        public LabelControlViewModel(string imagePath, string imageComment, StandardEntryModel gradingStandard, StandardsDatabase standardsDatabase, V275_API_Controller v275, IDialogCoordinator diag)
+        private IDialogCoordinator DialogCoordinator { get => MainWindow.DialogCoordinator; }
+
+        public MainWindowViewModel MainWindow { get; set; }
+
+        public LabelControlViewModel(string imagePath, string imageComment, MainWindowViewModel mainWindow)
         {
-            dialogCoordinator = diag;
+            //dialogCoordinator = diag;
+            MainWindow = mainWindow;
 
             LabelImagePath = imagePath;
             LabelComment = imageComment;
 
-            GradingStandard = gradingStandard;
-            StandardsDatabase = standardsDatabase;
-            V275 = v275;
+            //GradingStandard = gradingStandard;
+            //StandardsDatabase = standardsDatabase;
+            //V275 = v275;
 
             PrintCommand = new Core.RelayCommand(PrintAction, c => true);
             SaveCommand = new Core.RelayCommand(SaveAction, c => true);
@@ -205,7 +210,7 @@ namespace LabelVal.WindowViewModels
         public async Task<MessageDialogResult> OkCancelDialog(string title, string message)
         {
 
-            MessageDialogResult result = await this.dialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative);
+            MessageDialogResult result = await this.DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative);
 
             return result;
         }
@@ -355,8 +360,11 @@ namespace LabelVal.WindowViewModels
                     {
                         if (!await V275.AddMask(sec.JobSector.name, JsonConvert.SerializeObject(layer)))
                         {
-                            Status = V275.Status;
-                            return -1;
+                            if(layer.value != 0)
+                            {
+                                Status = V275.Status;
+                                return -1;
+                            }
                         }
                     }
                 }
@@ -376,7 +384,7 @@ namespace LabelVal.WindowViewModels
 
             DiffSectors.Clear();
 
-            if (!await V275.Read(repeat, !IsSimulation))
+            if (!await V275.Read(repeat, !MainWindow.IsDeviceSimulator))
             {
                 Status = V275.Status;
 
@@ -395,7 +403,7 @@ namespace LabelVal.WindowViewModels
             RepeatTemplate = V275.Commands.Job;
             RepeatReport = V275.Commands.Report;
 
-            if (!IsSimulation)
+            if (!MainWindow.IsDeviceSimulator)
             {
                 RepeatImage = ImageUtilities.ConvertToPng(V275.Commands.RepeatImage, 600);
                 IsGoldenRepeat = false;
@@ -431,7 +439,7 @@ namespace LabelVal.WindowViewModels
                     if (jSec.name == rSec["name"].ToString())
                     {
                         
-                        object fSec = DeserializeSector(rSec, !GradingStandard.IsGS1 && IsOldISO);
+                        object fSec = DeserializeSector(rSec, !GradingStandard.IsGS1 && MainWindow.IsOldISO);
 
                         if (fSec == null)
                             break; //Not yet supported sector type

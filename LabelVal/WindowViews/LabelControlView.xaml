@@ -166,7 +166,7 @@
                             <Style.Triggers>
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsSimulation}" Value="True"/>
+                                        <Condition Binding="{Binding MainWindow.IsDeviceSimulator}" Value="True"/>
                                         <Condition Binding="{Binding IsGoldenRepeat}" Value="True"/>
                                     </MultiDataTrigger.Conditions>
 
@@ -177,7 +177,7 @@
                     </StackPanel.Style>
 
                     <mah:NumericUpDown Value="{Binding PrintCount}" Minimum="1" Maximum="100" Interval="1" Margin="2"
-                                           IsEnabled="{Binding IsNotLoggedIn_Control}"/>
+                                           IsEnabled="{Binding MainWindow.IsNotLoggedIn_Control}"/>
 
                     <Button Margin="2"
                             Command="{Binding PrintCommand}"
@@ -186,7 +186,7 @@
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                                 <Setter Property="Content" Value="Print"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsSimulation}" Value="True">
+                                    <DataTrigger Binding="{Binding MainWindow.IsDeviceSimulator}" Value="True">
                                         <Setter Property="Content" Value="Process"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -248,7 +248,7 @@
                                     <DataTrigger Binding="{Binding IsLoad}" Value="True">
                                         <Setter Property="Visibility" Value="Visible"/>
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding IsDatabaseLocked}" Value="True">
+                                    <DataTrigger Binding="{Binding MainWindow.IsDatabaseLocked}" Value="True">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -261,10 +261,16 @@
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
                                 <Style.Triggers>
-                                    <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Control}">
+                                    <DataTrigger Value="True" Binding="{Binding MainWindow.IsLoggedIn_Control}">
                                         <Setter Property="Visibility" Value="Visible"/>
                                     </DataTrigger>
                                     <DataTrigger Value="False" Binding="{Binding IsLoad}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                    <DataTrigger Value="Running" Binding="{Binding MainWindow.V275.V275_State}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                    <DataTrigger Value="Idle" Binding="{Binding MainWindow.V275.V275_State}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -332,7 +338,7 @@
                                     <DataTrigger Value="True" Binding="{Binding IsStore}">
                                         <Setter Property="Visibility" Value="Visible"/>
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding IsDatabaseLocked}" Value="True">
+                                    <DataTrigger Binding="{Binding MainWindow.IsDatabaseLocked}" Value="True">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -344,12 +350,12 @@
                             Visibility="{Binding IsStore, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
                     <Button Content="Read" Command="{Binding ReadCommand}" Margin="2" 
-                        Visibility="{Binding IsLoggedIn_Monitor, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        Visibility="{Binding MainWindow.IsLoggedIn_Monitor, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
                     <Button Content="Read" Command="{Binding InspectCommand}" Margin="2"
-                            Visibility="{Binding IsLoggedIn_Control, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                            Visibility="{Binding MainWindow.IsLoggedIn_Control, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
-                    <Label Content="{Binding Status}"/>
+                    <!--<Label Content="{Binding Status}"/>-->
                 </StackPanel>
 
                 <Button Grid.Column="2" Name="RepeatSectors" Click="RepeatSectors_Click" Margin="0"
@@ -398,7 +404,7 @@
                         <Style.Triggers>
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding IsSimulation}" Value="True"/>
+                                    <Condition Binding="{Binding MainWindow.IsDeviceSimulator}" Value="True"/>
                                     <Condition Binding="{Binding IsGoldenRepeat}" Value="True"/>
                                 </MultiDataTrigger.Conditions>
 
@@ -475,7 +481,7 @@
                         <Style.Triggers>
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding IsSimulation}" Value="True"/>
+                                    <Condition Binding="{Binding MainWindow.IsDeviceSimulator}" Value="True"/>
                                     <Condition Binding="{Binding IsGoldenRepeat}" Value="True"/>
                                 </MultiDataTrigger.Conditions>
 
