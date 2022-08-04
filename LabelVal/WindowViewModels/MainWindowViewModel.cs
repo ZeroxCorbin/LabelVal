@@ -99,6 +99,11 @@ namespace LabelVal.WindowViewModels
         public uint V275_NodeNumber { get => V275.NodeNumber = App.Settings.GetValue<uint>("V275_NodeNumber", 1); set { App.Settings.SetValue("V275_NodeNumber", value); V275.NodeNumber = value; } }
         public string V275_MAC { get; set; }
         public string V275_Version { get => V275.Commands.Product != null ? V275.Commands.Product.part : null; }
+        public string V275_State { get => v275_State; set => SetProperty(ref v275_State, value); }
+        private string v275_State = "";
+
+        public string V275_JobName { get => v275_JobName; set => SetProperty(ref v275_JobName, value); }
+        private string v275_JobName = "";
 
         private bool isOldISO;
         public bool IsOldISO { get => isOldISO; set => SetProperty(ref isOldISO, value); }
@@ -336,7 +341,7 @@ namespace LabelVal.WindowViewModels
 
             TriggerSim = new Core.RelayCommand(TriggerSimAction, c => true);
 
-            ClearUserMessage = new Core.RelayCommand((par) => { UserMessage = ""; }, c => true) ;
+            ClearUserMessage = new Core.RelayCommand((par) => { UserMessage = ""; }, c => true);
 
             CreateStandardsDatabase = new Core.RelayCommand(CreateStandardsDatabaseAction, c => true);
             LockStandardsDatabase = new Core.RelayCommand(LockStandardsDatabaseAction, c => true);
@@ -348,6 +353,8 @@ namespace LabelVal.WindowViewModels
             V275.WebSocket.LabelEnd += WebSocket_LabelEnd;
             V275.WebSocket.StateChange += WebSocket_StateChange;
 
+            V275.StateChanged += V275_StateChanged;
+
 
             LoadStandardsList();
             LoadStandardsDatabasesList();
@@ -357,17 +364,18 @@ namespace LabelVal.WindowViewModels
             LoadPrinters();
         }
 
-        private void V275_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void V275_StateChanged(string state, string jobName)
         {
-            if (e.PropertyName == "V275_JobName")
+            V275_State = state;
+            V275_JobName = jobName;
+
+            if (V275_JobName != "")
             {
                 CheckTemplateName();
             }
-            if (e.PropertyName == "V275_State")
-            {
-                if (V275.V275_State == "Idle")
-                    CheckTemplateName();
-            }
+
+            if (V275_State == "Idle")
+                CheckTemplateName();
         }
 
         private void CheckTemplateName()
@@ -378,7 +386,7 @@ namespace LabelVal.WindowViewModels
                 return;
             }
 
-            if (V275.V275_JobName == "")
+            if (V275_JobName == "")
             {
                 IsWrongTemplateName = true;
                 _ = OkDialog("Template Not Loaded!", "There is no template loaded in the V275 software.");
@@ -387,21 +395,21 @@ namespace LabelVal.WindowViewModels
 
             if (!SelectedStandard.IsGS1)
             {
-                if (V275.V275_JobName.ToLower().Equals(SelectedStandard.Name.ToLower()))
+                if (V275_JobName.ToLower().Equals(SelectedStandard.Name.ToLower()))
                 {
                     return;
                 }
             }
             else
             {
-                if (V275.V275_JobName.ToLower().StartsWith("gs1"))
+                if (V275_JobName.ToLower().StartsWith("gs1"))
                 {
                     return;
                 }
             }
 
             IsWrongTemplateName = true;
-            _ = OkDialog("Template Name Mismatch!", $"The template name loaded in the V275 software '{V275.V275_JobName}' does not match the selected standard. '{SelectedStandard.Name.ToLower()}'");
+            _ = OkDialog("Template Name Mismatch!", $"The template name loaded in the V275 software '{V275_JobName}' does not match the selected standard. '{SelectedStandard.Name.ToLower()}'");
         }
 
         public async Task<MessageDialogResult> OkCancelDialog(string title, string message)
@@ -766,8 +774,11 @@ namespace LabelVal.WindowViewModels
             {
                 await V275.WebSocket.StopAsync();
 
-                V275.V275_State = "";
-                V275.V275_JobName = "";
+                //V275.V275_State = "";
+                //V275.V275_JobName = "";
+
+                //V275_State = "";
+                //V275_JobName = "";
             }
             catch { }
         }
@@ -857,7 +868,7 @@ namespace LabelVal.WindowViewModels
         }
         private void WebSocket_LabelEnd(Events_System ev)
         {
-            if (V275.V275_State == "Editing")
+            if (V275_State == "Editing")
                 return;
 
             if (PrintingLabel == null)
@@ -872,8 +883,9 @@ namespace LabelVal.WindowViewModels
         }
         private void WebSocket_StateChange(Events_System ev)
         {
-            if (ev.data.toState == "editing" || (ev.data.toState == "running" && ev.data.fromState != "paused"))
-                Repeats.Clear();
+            if (ev != null)
+                if (ev.data.toState == "editing" || (ev.data.toState == "running" && ev.data.fromState != "paused"))
+                    Repeats.Clear();
         }
 
         private LabelControlViewModel PrintingLabel { get; set; } = null;
@@ -1014,7 +1026,7 @@ namespace LabelVal.WindowViewModels
             else
                 PrintingLabel = null;
 
-            if (V275.V275_State != "Idle" && IsLoggedIn_Control)
+            if (V275_State != "Idle" && IsLoggedIn_Control)
             {
                 if (!await EnablePrintAction("1"))
                 {

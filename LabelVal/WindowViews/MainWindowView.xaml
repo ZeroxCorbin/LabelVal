@@ -242,12 +242,12 @@
                         <Label.Style>
                             <Style TargetType="{x:Type Label}">
                                 <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
-                                <Setter Property="Content" Value="{Binding V275.V275_JobName}"/>
+                                <Setter Property="Content" Value="{Binding V275_JobName}"/>
                                 <Style.Triggers>
                                     <DataTrigger Value="False" Binding="{Binding IsWrongTemplateName}">
                                         <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
                                     </DataTrigger>
-                                    <DataTrigger Value="" Binding="{Binding V275.V275_JobName}">
+                                    <DataTrigger Value="" Binding="{Binding V275_JobName}">
                                         <Setter Property="Content" Value="-----"/>
                                         <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
                                     </DataTrigger>
@@ -258,7 +258,7 @@
 
                     <Label Content="State:"/>
 
-                    <Label Content="{Binding V275.V275_State}">
+                    <Label Content="{Binding V275_State}">
                         <Label.Style>
                             <Style TargetType="{x:Type Label}">
                                 <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
@@ -266,14 +266,14 @@
                                 <Style.Triggers>
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
-                                            <Condition Value="Editing" Binding="{Binding V275.V275_State}" />
+                                            <Condition Value="Editing" Binding="{Binding V275_State}" />
                                             <Condition Value="True" Binding="{Binding SelectedStandard.IsGS1}" />
                                         </MultiDataTrigger.Conditions>
                                         <Setter Property="Background" Value="{DynamicResource CB_Green}" />
                                     </MultiDataTrigger>
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
-                                            <Condition Value="Running" Binding="{Binding V275.V275_State}" />
+                                            <Condition Value="Running" Binding="{Binding V275_State}" />
                                             <Condition Value="False" Binding="{Binding SelectedStandard.IsGS1}" />
                                         </MultiDataTrigger.Conditions>
                                         <Setter Property="Background" Value="{DynamicResource CB_Green}" />
@@ -293,7 +293,7 @@
                                     <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Control}">
                                         <Setter Property="Visibility" Value="Visible"/>
                                     </DataTrigger>
-                                    <DataTrigger Value="Editing" Binding="{Binding V275.V275_State}">
+                                    <DataTrigger Value="Editing" Binding="{Binding V275_State}">
                                         <Setter Property="IsEnabled" Value="True"/>
                                     </DataTrigger>
                                     <DataTrigger Value="True" Binding="{Binding SelectedStandard.IsGS1}">
@@ -313,10 +313,10 @@
                                     <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Control}">
                                         <Setter Property="Visibility" Value="Visible"/>
                                     </DataTrigger>
-                                    <DataTrigger Value="Running" Binding="{Binding V275.V275_State}">
+                                    <DataTrigger Value="Running" Binding="{Binding V275_State}">
                                         <Setter Property="IsEnabled" Value="True"/>
                                     </DataTrigger>
-                                    <DataTrigger Value="Paused" Binding="{Binding V275.V275_State}">
+                                    <DataTrigger Value="Paused" Binding="{Binding V275_State}">
                                         <Setter Property="IsEnabled" Value="True"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -334,7 +334,7 @@
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
                                             <Condition Value="True" Binding="{Binding IsLoggedIn_Control}"/>
-                                            <Condition Value="Paused" Binding="{Binding V275.V275_State}"/>
+                                            <Condition Value="Paused" Binding="{Binding V275_State}"/>
                                         </MultiDataTrigger.Conditions>
                                         <Setter Property="Visibility" Value="Visible"/>
                                         <Setter Property="IsEnabled" Value="True"/>
@@ -450,10 +450,10 @@
                                         <DataTrigger Value="True" Binding="{Binding IsRunRunning}">
                                             <Setter Property="IsEnabled" Value="False"/>
                                         </DataTrigger>
-                                        <DataTrigger Value="" Binding="{Binding V275.V275_State}">
+                                        <DataTrigger Value="" Binding="{Binding V275_State}">
                                             <Setter Property="IsEnabled" Value="False"/>
                                         </DataTrigger>
-                                        <DataTrigger Value="Idle" Binding="{Binding V275.V275_State}">
+                                        <DataTrigger Value="Idle" Binding="{Binding V275_State}">
                                             <Setter Property="IsEnabled" Value="False"/>
                                         </DataTrigger>
                                     </Style.Triggers>
