@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LabelVal.Models;
 using LabelVal.Utilities;
-using LabelVal.V275.Models;
+using V725_REST_lib.Models;
 
 namespace LabelVal.WindowViewModels
 {
@@ -44,11 +44,11 @@ namespace LabelVal.WindowViewModels
         private bool isGS1Standard;
         public bool IsGS1Standard { get => isGS1Standard; set => SetProperty(ref isGS1Standard, value); }
 
-        public class GradeValue : V275_Report_InspectSector_Common.GradeValue
+        public class GradeValue : Report_InspectSector_Common.GradeValue
         {
             public string name { get; set; }
 
-            public GradeValue(string name, V275_Report_InspectSector_Common.GradeValue data)
+            public GradeValue(string name, Report_InspectSector_Common.GradeValue data)
             {
                 this.value = data.value;
                 this.grade = data.grade;
@@ -60,11 +60,11 @@ namespace LabelVal.WindowViewModels
         public ObservableCollection<GradeValue> GradeValues { get => gradeValues; set => SetProperty(ref gradeValues, value); }
 
 
-        public class ValueResult : V275_Report_InspectSector_Common.ValueResult
+        public class ValueResult : Report_InspectSector_Common.ValueResult
         {
             public string name { get; set; }
 
-            public ValueResult(string name, V275_Report_InspectSector_Common.ValueResult data)
+            public ValueResult(string name, Report_InspectSector_Common.ValueResult data)
             {
                 this.value = data.value;
                 this.result = data.result;
@@ -79,11 +79,11 @@ namespace LabelVal.WindowViewModels
         public ObservableCollection<ValueResult> Gs1ValueResults { get => gs1ValueResults; set => SetProperty(ref gs1ValueResults, value); }
 
 
-        public class Grade : V275_Report_InspectSector_Common.Grade
+        public class Grade : Report_InspectSector_Common.Grade
         {
             public string name { get; set; }
 
-            public Grade(string name, V275_Report_InspectSector_Common.Grade data)
+            public Grade(string name, Report_InspectSector_Common.Grade data)
             {
                 this.value = data.value;
                 this.letter = data.letter;
@@ -95,11 +95,11 @@ namespace LabelVal.WindowViewModels
         public ObservableCollection<Grade> Gs1Grades { get => gs1Grades; set => SetProperty(ref gs1Grades, value); }
 
 
-        public class Value : V275_Report_InspectSector_Common.Value
+        public class Value : Report_InspectSector_Common.Value
         {
             public string name { get; set; }
 
-            public Value(string name, V275_Report_InspectSector_Common.Value data)
+            public Value(string name, Report_InspectSector_Common.Value data)
             {
                 this.value = data.value;
                 this.name = name;
@@ -110,15 +110,15 @@ namespace LabelVal.WindowViewModels
         public ObservableCollection<Value> Values { get => values; set => SetProperty(ref values, value); }
 
 
-        private ObservableCollection<V275_Report_InspectSector_Common.Alarm> alarms = new ObservableCollection<V275_Report_InspectSector_Common.Alarm>();
-        public ObservableCollection<V275_Report_InspectSector_Common.Alarm> Alarms { get => alarms; set => SetProperty(ref alarms, value); }
+        private ObservableCollection<Report_InspectSector_Common.Alarm> alarms = new ObservableCollection<Report_InspectSector_Common.Alarm>();
+        public ObservableCollection<Report_InspectSector_Common.Alarm> Alarms { get => alarms; set => SetProperty(ref alarms, value); }
 
 
-        public class Blemish : V275_Report_InspectSector_Blemish.Blemish
+        public class Blemish : Report_InspectSector_Blemish.Blemish
         {
             public System.Drawing.Rectangle rectangle => new System.Drawing.Rectangle(this.top, this.left, this.width, this.height);
 
-            public Blemish(V275_Report_InspectSector_Blemish.Blemish data)
+            public Blemish(Report_InspectSector_Blemish.Blemish data)
             {
                 top = data.top;
                 left = data.left;
@@ -157,9 +157,9 @@ namespace LabelVal.WindowViewModels
 
                         }
 
-                        if (prop1.PropertyType == typeof(V275_Report_InspectSector_Blemish.Blemish[]))
+                        if (prop1.PropertyType == typeof(Report_InspectSector_Blemish.Blemish[]))
                         {
-                            if (prop1.GetValue(prop.GetValue(verify)) is V275_Report_InspectSector_Blemish.Blemish[] dat)
+                            if (prop1.GetValue(prop.GetValue(verify)) is Report_InspectSector_Blemish.Blemish[] dat)
                             {
                                 foreach (var d in dat)
                                     Blemishes.Add(new Blemish(d));
@@ -170,11 +170,11 @@ namespace LabelVal.WindowViewModels
                         }
 
 
-                        if (prop1.PropertyType == typeof(V275_Report_InspectSector_Common.Decode))
+                        if (prop1.PropertyType == typeof(Report_InspectSector_Common.Decode))
                         {
-                            if (prop1.GetValue(prop.GetValue(verify)) is V275_Report_InspectSector_Common.Decode dat)
+                            if (prop1.GetValue(prop.GetValue(verify)) is Report_InspectSector_Common.Decode dat)
                             {
-                                GradeValues.Add(new GradeValue(prop1.Name, new V275_Report_InspectSector_Common.GradeValue() { grade = dat.grade, value = dat.value }));
+                                GradeValues.Add(new GradeValue(prop1.Name, new Report_InspectSector_Common.GradeValue() { grade = dat.grade, value = dat.value }));
 
                                 if (dat.edgeDetermination != null)
                                     if (Type == "verify1D")
@@ -185,9 +185,9 @@ namespace LabelVal.WindowViewModels
                             continue;
                         }
 
-                        if (prop1.PropertyType == typeof(V275_Report_InspectSector_Common.GradeValue))
+                        if (prop1.PropertyType == typeof(Report_InspectSector_Common.GradeValue))
                         {
-                            if (prop1.GetValue(prop.GetValue(verify)) is V275_Report_InspectSector_Common.GradeValue dat)
+                            if (prop1.GetValue(prop.GetValue(verify)) is Report_InspectSector_Common.GradeValue dat)
                             {
                                 GradeValues.Add(new GradeValue(prop1.Name, dat));
                                 IsNotEmpty = true;
@@ -196,9 +196,9 @@ namespace LabelVal.WindowViewModels
                             continue;
                         }
 
-                        if (prop1.PropertyType == typeof(V275_Report_InspectSector_Common.ValueResult))
+                        if (prop1.PropertyType == typeof(Report_InspectSector_Common.ValueResult))
                         {
-                            if (prop1.GetValue(prop.GetValue(verify)) is V275_Report_InspectSector_Common.ValueResult dat)
+                            if (prop1.GetValue(prop.GetValue(verify)) is Report_InspectSector_Common.ValueResult dat)
                             {
                                 ValueResults.Add(new ValueResult(prop1.Name, dat));
                                 IsNotEmpty = true;
@@ -206,9 +206,9 @@ namespace LabelVal.WindowViewModels
                             continue;
                         }
 
-                        if (prop1.PropertyType == typeof(V275_Report_InspectSector_Common.Value))
+                        if (prop1.PropertyType == typeof(Report_InspectSector_Common.Value))
                         {
-                            if (prop1.GetValue(prop.GetValue(verify)) is V275_Report_InspectSector_Common.Value dat)
+                            if (prop1.GetValue(prop.GetValue(verify)) is Report_InspectSector_Common.Value dat)
                             {
                                 Values.Add(new Value(prop1.Name, dat));
                                 IsNotEmpty = true;
@@ -216,9 +216,9 @@ namespace LabelVal.WindowViewModels
                             continue;
                         }
 
-                        if (prop1.PropertyType == typeof(V275_Report_InspectSector_Common.Alarm[]))
+                        if (prop1.PropertyType == typeof(Report_InspectSector_Common.Alarm[]))
                         {
-                            if ((prop1.GetValue(prop.GetValue(verify))) is V275_Report_InspectSector_Common.Alarm[] dat)
+                            if ((prop1.GetValue(prop.GetValue(verify))) is Report_InspectSector_Common.Alarm[] dat)
                             {
                                 foreach (var d in dat)
                                     Alarms.Add(d);
@@ -228,23 +228,23 @@ namespace LabelVal.WindowViewModels
                             continue;
                         }
 
-                        if (prop1.PropertyType == typeof(V275_Report_InspectSector_Verify1D.Gs1symbolquality) || prop1.PropertyType == typeof(V275_Report_InspectSector_Verify2D.Gs1symbolquality))
+                        if (prop1.PropertyType == typeof(Report_InspectSector_Verify1D.Gs1symbolquality) || prop1.PropertyType == typeof(Report_InspectSector_Verify2D.Gs1symbolquality))
                         {
                             if (prop1.GetValue(prop.GetValue(verify)) != null)
                                 foreach (var prop2 in prop1.GetValue(prop.GetValue(verify)).GetType().GetProperties())
                                 {
-                                    if (prop2.PropertyType == typeof(V275_Report_InspectSector_Common.ValueResult))
+                                    if (prop2.PropertyType == typeof(Report_InspectSector_Common.ValueResult))
                                     {
-                                        if (prop2.GetValue(prop1.GetValue(prop.GetValue(verify))) is V275_Report_InspectSector_Common.ValueResult dat)
+                                        if (prop2.GetValue(prop1.GetValue(prop.GetValue(verify))) is Report_InspectSector_Common.ValueResult dat)
                                         {
                                             Gs1ValueResults.Add(new ValueResult(prop2.Name, dat));
                                             IsNotEmpty = true;
                                         }
                                         continue;
                                     }
-                                    if (prop2.PropertyType == typeof(V275_Report_InspectSector_Common.Grade))
+                                    if (prop2.PropertyType == typeof(Report_InspectSector_Common.Grade))
                                     {
-                                        if (prop2.GetValue(prop1.GetValue(prop.GetValue(verify))) is V275_Report_InspectSector_Common.Grade dat)
+                                        if (prop2.GetValue(prop1.GetValue(prop.GetValue(verify))) is Report_InspectSector_Common.Grade dat)
                                         {
                                             Gs1Grades.Add(new Grade(prop2.Name, dat));
                                             IsNotEmpty = true;
@@ -252,7 +252,7 @@ namespace LabelVal.WindowViewModels
                                         continue;
                                     }
                                 }
-                            //ValueResults.Add(prop1.Name, (V275_Report_InspectSector_Common.ValueResult)prop1.GetValue(prop.GetValue(verify)));
+                            //ValueResults.Add(prop1.Name, (Report_InspectSector_Common.ValueResult)prop1.GetValue(prop.GetValue(verify)));
                             continue;
                         }
 
@@ -451,7 +451,7 @@ namespace LabelVal.WindowViewModels
             return results;
         }
 
-        private bool CompareGrade(V275_Report_InspectSector_Common.Grade source, V275_Report_InspectSector_Common.Grade compare)
+        private bool CompareGrade(Report_InspectSector_Common.Grade source, Report_InspectSector_Common.Grade compare)
         {
             if (Settings.Grade_UseGradeLetter)
                 return source.letter == compare.letter;
@@ -460,7 +460,7 @@ namespace LabelVal.WindowViewModels
                 return (compare.value <= source.value + Settings.Grade_GradeValueTolerance) && (compare.value >= source.value - Settings.Grade_GradeValueTolerance);
             }
         }
-        private bool CompareGradeValue(V275_Report_InspectSector_Common.GradeValue source, V275_Report_InspectSector_Common.GradeValue compare)
+        private bool CompareGradeValue(Report_InspectSector_Common.GradeValue source, Report_InspectSector_Common.GradeValue compare)
         {
             if (Settings.GradeValue_UseGradeLetter)
                 return source.grade.letter == compare.grade.letter;
@@ -473,7 +473,7 @@ namespace LabelVal.WindowViewModels
             }
 
         }
-        private bool CompareValueResult(V275_Report_InspectSector_Common.ValueResult source, V275_Report_InspectSector_Common.ValueResult compare)
+        private bool CompareValueResult(Report_InspectSector_Common.ValueResult source, Report_InspectSector_Common.ValueResult compare)
         {
             if (Settings.ValueResult_UseResult)
                 return source.result == compare.result;
@@ -481,12 +481,12 @@ namespace LabelVal.WindowViewModels
                 return (compare.value <= source.value + Settings.ValueResult_ValueTolerance) && (compare.value >= source.value - Settings.ValueResult_ValueTolerance);
         }
 
-        private bool CompareValue(V275_Report_InspectSector_Common.Value source, V275_Report_InspectSector_Common.Value compare)
+        private bool CompareValue(Report_InspectSector_Common.Value source, Report_InspectSector_Common.Value compare)
         {
             return (compare.value <= source.value + Settings.Value_ValueTolerance) && (compare.value >= source.value - Settings.Value_ValueTolerance);
         }
 
-        private bool CompareAlarm(V275_Report_InspectSector_Common.Alarm source, V275_Report_InspectSector_Common.Alarm compare)
+        private bool CompareAlarm(Report_InspectSector_Common.Alarm source, Report_InspectSector_Common.Alarm compare)
         {
             if (source.category != compare.category)
                 return false;

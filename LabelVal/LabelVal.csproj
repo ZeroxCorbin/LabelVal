@@ -252,35 +252,9 @@
     <Compile Include="Simulator\SimulatorFileHandler.cs" />
     <Compile Include="Utilities\ImageUtilies.cs" />
     <Compile Include="Utilities\ObservableDictionary.cs" />
-    <Compile Include="V275\Converters\V275_GS1FormattedOutput.cs" />
-    <Compile Include="V275\Converters\V275_OCMatchModeToString.cs" />
-    <Compile Include="V275\Models\V275_Calibration.cs" />
-    <Compile Include="V275\Models\V275_Configuration_Camera.cs" />
-    <Compile Include="V275\Models\V275_DetectResponse.cs" />
-    <Compile Include="V275\Models\V275_Devices.cs" />
-    <Compile Include="V275\Models\V275_Events_System.cs" />
-    <Compile Include="V275\Models\V275_Event_Base.cs" />
-    <Compile Include="V275\Models\V275_GradingStandards.cs" />
-    <Compile Include="V275\Models\V275_Job.cs" />
-    <Compile Include="V275\Models\V275_Job_Sector_Blemish.cs" />
-    <Compile Include="V275\Models\V275_Sector_New_Verify.cs" />
-    <Compile Include="V275\Models\V275_Job_Sector_Verify1D.cs" />
-    <Compile Include="V275\Models\V275_Product.cs" />
-    <Compile Include="V275\Models\V275_Repeat_Available.cs" />
-    <Compile Include="V275\Models\V275_Report_InspectSector_Blemish.cs" />
-    <Compile Include="V275\V275_API_Controller.cs" />
+    <Compile Include="Converters\V275_GS1FormattedOutput.cs" />
+    <Compile Include="Converters\V275_OCMatchModeToString.cs" />
     <Compile Include="WindowViewModels\SectorDifferenceViewModel.cs" />
-    <Compile Include="V275\Models\V275_Report_InspectSector_Common.cs" />
-    <Compile Include="V275\Models\V275_Report_InspectSector_OCR.cs" />
-    <Compile Include="V275\Models\V275_Report_InspectSector_OCV.cs" />
-    <Compile Include="V275\Models\V275_Report_InspectSector_Verify1D.cs" />
-    <Compile Include="V275\Models\V275_Report.cs" />
-    <Compile Include="V275\Models\V275_Report_InspectSector_Verify2D.cs" />
-    <Compile Include="V275\Models\V275_Symbologies.cs" />
-    <Compile Include="V275\V275_API_Commands.cs" />
-    <Compile Include="V275\V275_API_Connection.cs" />
-    <Compile Include="V275\V275_API_URLs.cs" />
-    <Compile Include="V275\V275_API_WebSocketEvents.cs" />
     <Compile Include="RunViewModels\RunLabelControlViewModel.cs" />
     <Compile Include="RunViewModels\RunViewModel.cs" />
     <Compile Include="WindowViewModels\MainWindowViewModel.cs" />
@@ -1499,6 +1473,12 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\V275_REST_Lib\V275_REST_Lib.csproj">
+      <Project>{00eef7d0-c97d-42dd-9d72-6c44346e3afc}</Project>
+      <Name>V275_REST_Lib</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.2.0.7\build\net461\SQLitePCLRaw.lib.e_sqlite3.targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.2.0.7\build\net461\SQLitePCLRaw.lib.e_sqlite3.targets')" />

@@ -1,10 +1,10 @@
-﻿using LabelVal.V275.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using V725_REST_lib.Models;
 
 namespace LabelVal.LVS_95xx
 {
@@ -85,12 +85,12 @@ namespace LabelVal.LVS_95xx
             if (elm != null)
             {
                 //Verify 2D
-                V275_Report_InspectSector_Verify2D sect = new V275_Report_InspectSector_Verify2D();
-                sect.data = new V275_Report_InspectSector_Verify2D.Data();
-                sect.data.gs1SymbolQuality = new V275_Report_InspectSector_Verify2D.Gs1symbolquality();
+                Report_InspectSector_Verify2D sect = new Report_InspectSector_Verify2D();
+                sect.data = new Report_InspectSector_Verify2D.Data();
+                sect.data.gs1SymbolQuality = new Report_InspectSector_Verify2D.Gs1symbolquality();
                 sect.type = "verify2D";
 
-                List<V275_Report_InspectSector_Common.Alarm> alarms = new List<V275_Report_InspectSector_Common.Alarm>();
+                List<Report_InspectSector_Common.Alarm> alarms = new List<Report_InspectSector_Common.Alarm>();
 
                 foreach (var data in spl)
                 {
@@ -113,14 +113,14 @@ namespace LabelVal.LVS_95xx
 
                         if (spl2.Count() < 3) continue;
 
-                        sect.data.overallGrade = new V275_Report_InspectSector_Common.Overallgrade() { grade = GetGrade(spl2[0]), _string = spl1[1] };
+                        sect.data.overallGrade = new Report_InspectSector_Common.Overallgrade() { grade = GetGrade(spl2[0]), _string = spl1[1] };
                         sect.data.aperture = ParseFloat(spl2[1]);
                         continue;
                     }
 
                     if (spl1[0].StartsWith("Warning"))
                     {
-                        alarms.Add(new V275_Report_InspectSector_Common.Alarm() { name = spl1[1], category = 1 });
+                        alarms.Add(new Report_InspectSector_Common.Alarm() { name = spl1[1], category = 1 });
                         continue;
                     }
 
@@ -140,39 +140,39 @@ namespace LabelVal.LVS_95xx
                     if (spl1[0].Equals("Decode"))
                     {
                         if (sect.data.decode == null)
-                            sect.data.decode = new V275_Report_InspectSector_Common.Decode();
+                            sect.data.decode = new Report_InspectSector_Common.Decode();
 
                         sect.data.decode.value = -1;
                         sect.data.decode.grade = spl1[1].StartsWith("PASS") ?
-                            new V275_Report_InspectSector_Common.Grade() { letter = "A", value = 4.0f } :
-                            new V275_Report_InspectSector_Common.Grade() { letter = "F", value = 0.0f };
+                            new Report_InspectSector_Common.Grade() { letter = "A", value = 4.0f } :
+                            new Report_InspectSector_Common.Grade() { letter = "F", value = 0.0f };
                         continue;
                     }
 
                     if (spl1[0].StartsWith("Rmin"))
                     {
-                        sect.data.minimumReflectance = new V275_Report_InspectSector_Common.Value() { value = ParseInt(spl1[1]) };
+                        sect.data.minimumReflectance = new Report_InspectSector_Common.Value() { value = ParseInt(spl1[1]) };
                         continue;
                     }
                     if (spl1[0].StartsWith("Rmax"))
                     {
-                        sect.data.maximumReflectance = new V275_Report_InspectSector_Common.Value() { value = ParseInt(spl1[1]) };
+                        sect.data.maximumReflectance = new Report_InspectSector_Common.Value() { value = ParseInt(spl1[1]) };
                         continue;
                     }
 
                     if (spl1[0].StartsWith("Modulation"))
                     {
-                        sect.data.modulation = new V275_Report_InspectSector_Common.GradeValue() { grade = GetGrade(spl1[1]), value = -1 };
+                        sect.data.modulation = new Report_InspectSector_Common.GradeValue() { grade = GetGrade(spl1[1]), value = -1 };
                         continue;
                     }
                     if (spl1[0].StartsWith("Reflectance"))
                     {
-                        sect.data.reflectanceMargin = new V275_Report_InspectSector_Common.GradeValue() { grade = GetGrade(spl1[1]), value = -1 };
+                        sect.data.reflectanceMargin = new Report_InspectSector_Common.GradeValue() { grade = GetGrade(spl1[1]), value = -1 };
                         continue;
                     }
                     if (spl1[0].StartsWith("Fixed"))
                     {
-                        sect.data.fixedPatternDamage = new V275_Report_InspectSector_Common.GradeValue() { grade = GetGrade(spl1[1]), value = -1 };
+                        sect.data.fixedPatternDamage = new Report_InspectSector_Common.GradeValue() { grade = GetGrade(spl1[1]), value = -1 };
                         continue;
                     }
 
@@ -213,18 +213,18 @@ namespace LabelVal.LVS_95xx
                     {
                         var item = alarms.Find((e) => e.name.Contains("minimum Xdim"));
                         if (item != null)
-                            sect.data.gs1SymbolQuality.cellSizeX = new V275_Report_InspectSector_Common.ValueResult() { value = ParseFloat(spl1[1]), result = "FAIL" };
+                            sect.data.gs1SymbolQuality.cellSizeX = new Report_InspectSector_Common.ValueResult() { value = ParseFloat(spl1[1]), result = "FAIL" };
                         else
-                            sect.data.gs1SymbolQuality.cellSizeX = new V275_Report_InspectSector_Common.ValueResult() { value = ParseFloat(spl1[1]), result = "PASS" };
+                            sect.data.gs1SymbolQuality.cellSizeX = new Report_InspectSector_Common.ValueResult() { value = ParseFloat(spl1[1]), result = "PASS" };
                         continue;
                     }
                     if (spl1[0].StartsWith("Cell width"))
                     {
                         var item = alarms.Find((e) => e.name.Contains("minimum Xdim"));
                         if (item != null)
-                            sect.data.gs1SymbolQuality.cellSizeY = new V275_Report_InspectSector_Common.ValueResult() { value = ParseFloat(spl1[1]), result = "FAIL" };
+                            sect.data.gs1SymbolQuality.cellSizeY = new Report_InspectSector_Common.ValueResult() { value = ParseFloat(spl1[1]), result = "FAIL" };
                         else
-                            sect.data.gs1SymbolQuality.cellSizeY = new V275_Report_InspectSector_Common.ValueResult() { value = ParseFloat(spl1[1]), result = "PASS" };
+                            sect.data.gs1SymbolQuality.cellSizeY = new Report_InspectSector_Common.ValueResult() { value = ParseFloat(spl1[1]), result = "PASS" };
 
                         continue;
                     }
@@ -232,8 +232,8 @@ namespace LabelVal.LVS_95xx
                     {
                         var spl2 = spl1[1].Split('x');
 
-                        sect.data.gs1SymbolQuality.symbolWidth = new V275_Report_InspectSector_Common.ValueResult() { value = sect.data.gs1SymbolQuality.cellSizeX.value * ParseInt(spl2[0]), result = "PASS" };
-                        sect.data.gs1SymbolQuality.symbolHeight = new V275_Report_InspectSector_Common.ValueResult() { value = sect.data.gs1SymbolQuality.cellSizeY.value * ParseInt(spl2[1]), result = "PASS" };
+                        sect.data.gs1SymbolQuality.symbolWidth = new Report_InspectSector_Common.ValueResult() { value = sect.data.gs1SymbolQuality.cellSizeX.value * ParseInt(spl2[0]), result = "PASS" };
+                        sect.data.gs1SymbolQuality.symbolHeight = new Report_InspectSector_Common.ValueResult() { value = sect.data.gs1SymbolQuality.cellSizeY.value * ParseInt(spl2[1]), result = "PASS" };
 
                         continue;
                     }
@@ -271,12 +271,12 @@ namespace LabelVal.LVS_95xx
             }
             else
             {
-                V275_Report_InspectSector_Verify1D sect = new V275_Report_InspectSector_Verify1D();
-                sect.data = new V275_Report_InspectSector_Verify1D.Data();
-                sect.data.gs1SymbolQuality = new V275_Report_InspectSector_Verify1D.Gs1symbolquality();
+                Report_InspectSector_Verify1D sect = new Report_InspectSector_Verify1D();
+                sect.data = new Report_InspectSector_Verify1D.Data();
+                sect.data.gs1SymbolQuality = new Report_InspectSector_Verify1D.Gs1symbolquality();
                 sect.type = "verify1D";
 
-                List<V275_Report_InspectSector_Common.Alarm> alarms = new List<V275_Report_InspectSector_Common.Alarm>();
+                List<Report_InspectSector_Common.Alarm> alarms = new List<Report_InspectSector_Common.Alarm>();
 
                 foreach (var data in spl)
                 {
@@ -310,7 +310,7 @@ namespace LabelVal.LVS_95xx
 
                     if (spl1[0].StartsWith("Warning"))
                     {
-                        alarms.Add(new V275_Report_InspectSector_Common.Alarm() { name = spl1[1], category = 1 });
+                        alarms.Add(new Report_InspectSector_Common.Alarm() { name = spl1[1], category = 1 });
                         continue;
                     }
 
@@ -320,7 +320,7 @@ namespace LabelVal.LVS_95xx
 
                         if (spl2.Count() < 3) continue;
 
-                        sect.data.overallGrade = new V275_Report_InspectSector_Common.Overallgrade() { grade = GetGrade(spl2[0]), _string = spl1[1] };
+                        sect.data.overallGrade = new Report_InspectSector_Common.Overallgrade() { grade = GetGrade(spl2[0]), _string = spl1[1] };
                         sect.data.aperture = ParseFloat(spl2[1]);
                         continue;
                     }
@@ -328,12 +328,12 @@ namespace LabelVal.LVS_95xx
                     if (spl1[0].Equals("Decode"))
                     {
                         if (sect.data.decode == null)
-                            sect.data.decode = new V275_Report_InspectSector_Common.Decode();
+                            sect.data.decode = new Report_InspectSector_Common.Decode();
 
                         sect.data.decode.value = -1;
                         sect.data.decode.grade = spl1[1].StartsWith("PASS") ?
-                            new V275_Report_InspectSector_Common.Grade() { letter = "A", value = 4.0f } :
-                            new V275_Report_InspectSector_Common.Grade() { letter = "F", value = 0.0f };
+                            new Report_InspectSector_Common.Grade() { letter = "A", value = 4.0f } :
+                            new Report_InspectSector_Common.Grade() { letter = "F", value = 0.0f };
                         continue;
                     }
                     if (spl1[0].StartsWith("Decoded text"))
@@ -357,9 +357,9 @@ namespace LabelVal.LVS_95xx
                         var item = alarms.Find((e) => e.name.Contains("minimum Xdim"));
 
                         if (item != null)
-                            sect.data.gs1SymbolQuality.symbolXdim = new V275_Report_InspectSector_Common.ValueResult() { value = sect.data.xDimension, result = "FAIL" };
+                            sect.data.gs1SymbolQuality.symbolXdim = new Report_InspectSector_Common.ValueResult() { value = sect.data.xDimension, result = "FAIL" };
                         else
-                            sect.data.gs1SymbolQuality.symbolXdim = new V275_Report_InspectSector_Common.ValueResult() { value = sect.data.xDimension, result = "PASS" };
+                            sect.data.gs1SymbolQuality.symbolXdim = new Report_InspectSector_Common.ValueResult() { value = sect.data.xDimension, result = "PASS" };
 
                         continue;
                     }
@@ -369,9 +369,9 @@ namespace LabelVal.LVS_95xx
 
                         var item = alarms.Find((e) => e.name.Contains("minimum height"));
                         if (item != null)
-                            sect.data.gs1SymbolQuality.symbolBarHeight = new V275_Report_InspectSector_Common.ValueResult() { value = val, result = "FAIL" };
+                            sect.data.gs1SymbolQuality.symbolBarHeight = new Report_InspectSector_Common.ValueResult() { value = val, result = "FAIL" };
                         else
-                            sect.data.gs1SymbolQuality.symbolBarHeight = new V275_Report_InspectSector_Common.ValueResult() { value = val, result = "PASS" };
+                            sect.data.gs1SymbolQuality.symbolBarHeight = new Report_InspectSector_Common.ValueResult() { value = val, result = "PASS" };
 
                         continue;
                     }
@@ -379,9 +379,9 @@ namespace LabelVal.LVS_95xx
                     if (spl1[0].StartsWith("Edge"))
                     {
                         if (sect.data.decode == null)
-                            sect.data.decode = new V275_Report_InspectSector_Common.Decode();
+                            sect.data.decode = new Report_InspectSector_Common.Decode();
 
-                        sect.data.decode.edgeDetermination = new V275_Report_InspectSector_Common.ValueResult() { value = 100, result = spl1[1] };
+                        sect.data.decode.edgeDetermination = new Report_InspectSector_Common.ValueResult() { value = 100, result = spl1[1] };
                         continue;
                     }
 
@@ -393,21 +393,21 @@ namespace LabelVal.LVS_95xx
 
                             if (spl2.Count() != 2) continue;
 
-                            sect.data.quietZoneLeft = new V275_Report_InspectSector_Common.ValueResult() { value = ParseInt(spl2[0]), result = spl2[1] };
-                            sect.data.quietZoneRight = new V275_Report_InspectSector_Common.ValueResult() { value = ParseInt(spl2[0]), result = spl2[1] };
+                            sect.data.quietZoneLeft = new Report_InspectSector_Common.ValueResult() { value = ParseInt(spl2[0]), result = spl2[1] };
+                            sect.data.quietZoneRight = new Report_InspectSector_Common.ValueResult() { value = ParseInt(spl2[0]), result = spl2[1] };
 
                         }
                         else
                         {
-                            sect.data.quietZoneLeft = new V275_Report_InspectSector_Common.ValueResult() { value = 100, result = spl1[1] };
-                            sect.data.quietZoneRight = new V275_Report_InspectSector_Common.ValueResult() { value = 100, result = spl1[1] };
+                            sect.data.quietZoneLeft = new Report_InspectSector_Common.ValueResult() { value = 100, result = spl1[1] };
+                            sect.data.quietZoneRight = new Report_InspectSector_Common.ValueResult() { value = 100, result = spl1[1] };
                         }
 
                         continue;
                     }
                     //if (spl1[0].Equals("Decode"))
                     //{
-                    //    sect.data.decode.grade = new V275_Report_InspectSector_Common.Grade() { value = -1, result = spl1[1] };
+                    //    sect.data.decode.grade = new Report_InspectSector_Common.Grade() { value = -1, result = spl1[1] };
                     //    continue;
                     //}
 
@@ -436,13 +436,13 @@ namespace LabelVal.LVS_95xx
                     if (spl1[0].StartsWith("Min Ref"))
                     {
                         var grd = spl1[1].StartsWith("PASS") ?
-                                    new V275_Report_InspectSector_Common.Grade() { letter = "A", value = 4.0f } :
-                                    new V275_Report_InspectSector_Common.Grade() { letter = "F", value = 0.0f };
+                                    new Report_InspectSector_Common.Grade() { letter = "A", value = 4.0f } :
+                                    new Report_InspectSector_Common.Grade() { letter = "F", value = 0.0f };
 
                         if (sect.data.minimumReflectance != null)
                             sect.data.minimumReflectance.grade = grd;
                         else
-                            sect.data.minimumReflectance = new V275_Report_InspectSector_Common.GradeValue() { grade = grd };
+                            sect.data.minimumReflectance = new Report_InspectSector_Common.GradeValue() { grade = grd };
 
                         continue;
                     }
@@ -455,7 +455,7 @@ namespace LabelVal.LVS_95xx
                         if (sect.data.minimumReflectance != null)
                             sect.data.minimumReflectance.value = val;
                         else
-                            sect.data.minimumReflectance = new V275_Report_InspectSector_Common.GradeValue() { value = val };
+                            sect.data.minimumReflectance = new Report_InspectSector_Common.GradeValue() { value = val };
 
                         continue;
                     }
@@ -463,7 +463,7 @@ namespace LabelVal.LVS_95xx
                     {
                         if (sect.data.symbolType == "pdf417") continue;
 
-                        sect.data.maximumReflectance = new V275_Report_InspectSector_Common.Value() { value = ParseInt(spl1[1]) };
+                        sect.data.maximumReflectance = new Report_InspectSector_Common.Value() { value = ParseInt(spl1[1]) };
                         continue;
                     }
 
@@ -473,13 +473,13 @@ namespace LabelVal.LVS_95xx
 
                         if (spl2.Count() != 2) continue;
 
-                        sect.data.cwYeild = new V275_Report_InspectSector_Common.GradeValue() { grade = GetGrade(spl2[0]), value = ParseInt(spl2[1]) };
+                        sect.data.cwYeild = new Report_InspectSector_Common.GradeValue() { grade = GetGrade(spl2[0]), value = ParseInt(spl2[1]) };
                         continue;
                     }
 
                     if (spl1[0].StartsWith("Codeword P"))
                     {
-                        sect.data.cwPrintQuality = new V275_Report_InspectSector_Common.GradeValue() { grade = GetGrade(spl1[1]), value = -1 };
+                        sect.data.cwPrintQuality = new Report_InspectSector_Common.GradeValue() { grade = GetGrade(spl1[1]), value = -1 };
                         continue;
                     }
                 }
@@ -516,7 +516,7 @@ namespace LabelVal.LVS_95xx
 
         }
 
-        private V275_Report_InspectSector_Common.GradeValue GetGradeValue(string data)
+        private Report_InspectSector_Common.GradeValue GetGradeValue(string data)
         {
             var spl2 = data.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -525,9 +525,9 @@ namespace LabelVal.LVS_95xx
 
             float tmp = ParseFloat(spl2[0]);
 
-            return new V275_Report_InspectSector_Common.GradeValue()
+            return new Report_InspectSector_Common.GradeValue()
             {
-                grade = new V275_Report_InspectSector_Common.Grade()
+                grade = new Report_InspectSector_Common.Grade()
                 {
                     value = tmp,
                     letter = GetLetter(tmp)
@@ -537,11 +537,11 @@ namespace LabelVal.LVS_95xx
 
         }
 
-        private V275_Report_InspectSector_Common.Grade GetGrade(string data)
+        private Report_InspectSector_Common.Grade GetGrade(string data)
         {
             float tmp = ParseFloat(data);
 
-            return new V275_Report_InspectSector_Common.Grade()
+            return new Report_InspectSector_Common.Grade()
             {
                 value = tmp,
                 letter = GetLetter(tmp)

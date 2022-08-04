@@ -7,7 +7,6 @@
             xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
             xmlns:local="clr-namespace:LabelVal.WindowViews"
             xmlns:ViewModels="clr-namespace:LabelVal.WindowViewModels"
-            xmlns:V275="clr-namespace:LabelVal.V275.Models"
             xmlns:Converters="clr-namespace:LabelVal.Converters"
             d:DataContext="{d:DesignInstance Type=ViewModels:SectorDifferenceViewModel}"
             mc:Ignorable="d" 

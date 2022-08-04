@@ -7,7 +7,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using LabelVal.V275;
-using LabelVal.V275.Models;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.Drawing.Printing;
@@ -17,6 +16,8 @@ using LabelVal.Printer;
 using System.Text.RegularExpressions;
 using LabelVal.Models;
 using MahApps.Metro.Controls.Dialogs;
+using V725_REST_lib;
+using V725_REST_lib.Models;
 
 namespace LabelVal.WindowViewModels
 {
@@ -88,7 +89,7 @@ namespace LabelVal.WindowViewModels
 
         public string Version => App.Version;
 
-        public V275_API_Controller V275 { get; } = new V275_API_Controller();
+        public Controller V275 { get; } = new Controller();
         public StandardsDatabase StandardsDatabase { get; private set; }
         //private V275_API_WebSocketEvents WebSocket { get; } = new V275_API_WebSocketEvents();
         //private V275_API_WebSocketEvents SysWebSocket { get; } = new V275_API_WebSocketEvents();
@@ -102,11 +103,11 @@ namespace LabelVal.WindowViewModels
         private bool isOldISO;
         public bool IsOldISO { get => isOldISO; set => SetProperty(ref isOldISO, value); }
 
-        private ObservableCollection<V275_Devices.Node> nodes = new ObservableCollection<V275_Devices.Node>();
-        public ObservableCollection<V275_Devices.Node> Nodes { get => nodes; set => SetProperty(ref nodes, value); }
+        private ObservableCollection<Devices.Node> nodes = new ObservableCollection<Devices.Node>();
+        public ObservableCollection<Devices.Node> Nodes { get => nodes; set => SetProperty(ref nodes, value); }
 
-        private V275_Devices.Node selectedNode;
-        public V275_Devices.Node SelectedNode
+        private Devices.Node selectedNode;
+        public Devices.Node SelectedNode
         {
             get => selectedNode;
             set
@@ -215,7 +216,7 @@ namespace LabelVal.WindowViewModels
 
         public string UserName { get => App.Settings.GetValue("UserName", "admin"); set => App.Settings.SetValue("UserName", value); }
         public string Password { get => App.Settings.GetValue("Password", "admin"); set => App.Settings.SetValue("Password", value); }
-        private V275_Events_System.Data LoginData { get; } = new V275_Events_System.Data();
+        private Events_System.Data LoginData { get; } = new Events_System.Data();
 
         public string UserMessage
         {
@@ -339,7 +340,7 @@ namespace LabelVal.WindowViewModels
 
             CreateStandardsDatabase = new Core.RelayCommand(CreateStandardsDatabaseAction, c => true);
             LockStandardsDatabase = new Core.RelayCommand(LockStandardsDatabaseAction, c => true);
-            V275.PropertyChanged += V275_PropertyChanged;
+            //V275.PropertyChanged += V275_PropertyChanged;
 
             V275.WebSocket.SetupCapture += WebSocket_SetupCapture;
             V275.WebSocket.SessionStateChange += WebSocket_SessionStateChange;
@@ -833,7 +834,7 @@ namespace LabelVal.WindowViewModels
         //    }
 
         //}
-        private void WebSocket_SessionStateChange(V275_Events_System ev)
+        private void WebSocket_SessionStateChange(Events_System ev)
         {
             //if (ev.data.id == LoginData.id)
             if (ev.data.state == "0")
@@ -842,7 +843,7 @@ namespace LabelVal.WindowViewModels
                         if (ev.data.token != LoginData.token)
                             LogoutAction(new object());
         }
-        private void WebSocket_SetupCapture(V275_Events_System ev)
+        private void WebSocket_SetupCapture(Events_System ev)
         {
             if (PrintingLabel == null)
                 return;
@@ -854,7 +855,7 @@ namespace LabelVal.WindowViewModels
                 if (!Repeats.ContainsKey(ev.data.repeat + 1))
                     App.Current.Dispatcher.Invoke(new Action(() => ProcessRepeat(ev.data.repeat)));
         }
-        private void WebSocket_LabelEnd(V275_Events_System ev)
+        private void WebSocket_LabelEnd(Events_System ev)
         {
             if (V275.V275_State == "Editing")
                 return;
@@ -869,7 +870,7 @@ namespace LabelVal.WindowViewModels
                 if (!Repeats.ContainsKey(ev.data.repeat + 1))
                     App.Current.Dispatcher.Invoke(new Action(() => ProcessRepeat(ev.data.repeat)));
         }
-        private void WebSocket_StateChange(V275_Events_System ev)
+        private void WebSocket_StateChange(Events_System ev)
         {
             if (ev.data.toState == "editing" || (ev.data.toState == "running" && ev.data.fromState != "paused"))
                 Repeats.Clear();

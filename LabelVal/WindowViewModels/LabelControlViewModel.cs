@@ -15,7 +15,6 @@ using LabelVal.Databases;
 using LabelVal.Printer;
 using LabelVal.Utilities;
 using LabelVal.V275;
-using LabelVal.V275.Models;
 using System.Windows.Media;
 using System.Globalization;
 using System.Windows;
@@ -23,6 +22,8 @@ using Microsoft.Win32;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using LabelVal.Models;
+using V725_REST_lib.Models;
+using V725_REST_lib;
 
 namespace LabelVal.WindowViewModels
 {
@@ -157,10 +158,10 @@ namespace LabelVal.WindowViewModels
 
         private StandardsDatabase StandardsDatabase { get => MainWindow.StandardsDatabase; }
 
-        public V275_API_Controller V275 { get => MainWindow.V275; }
-        public V275_Job LabelTemplate { get; set; }
-        public V275_Job RepeatTemplate { get; set; }
-        public V275_Report RepeatReport { get; private set; }
+        public Controller V275 { get => MainWindow.V275; }
+        public Job LabelTemplate { get; set; }
+        public Job RepeatTemplate { get; set; }
+        public Report RepeatReport { get; private set; }
 
         public ICommand PrintCommand { get; }
         public ICommand SaveCommand { get; }
@@ -253,7 +254,7 @@ namespace LabelVal.WindowViewModels
                 return;
             }
 
-            LabelTemplate = JsonConvert.DeserializeObject<V275_Job>(CurrentRow.LabelTemplate);
+            LabelTemplate = JsonConvert.DeserializeObject<Job>(CurrentRow.LabelTemplate);
 
             RepeatImage = CurrentRow.RepeatImage;
             IsGoldenRepeat = true;
@@ -274,7 +275,7 @@ namespace LabelVal.WindowViewModels
                         else
                             isWrongStandard = false;
 
-                    foreach (JObject rSec in JsonConvert.DeserializeObject<V275_Report>(CurrentRow.LabelReport).inspectLabel.inspectSector)
+                    foreach (JObject rSec in JsonConvert.DeserializeObject<Report>(CurrentRow.LabelReport).inspectLabel.inspectSector)
                     {
                         if (jSec.name == rSec["name"].ToString())
                         {
@@ -650,7 +651,7 @@ namespace LabelVal.WindowViewModels
 
         }
 
-        private DrawingGroup GetModuleGrid(V275_Job.Sector[] sectors, ObservableCollection<SectorControlViewModel> parsedSectors)
+        private DrawingGroup GetModuleGrid(Job.Sector[] sectors, ObservableCollection<SectorControlViewModel> parsedSectors)
         {
             DrawingGroup drwGroup = new DrawingGroup();
             //GeometryGroup moduleGrid = new GeometryGroup();
@@ -669,7 +670,7 @@ namespace LabelVal.WindowViewModels
                     if (sec.symbology == "qr" || sec.symbology == "dataMatrix")
                     {
 
-                        var res = (V275_Report_InspectSector_Verify2D)sect.ReportSector;
+                        var res = (Report_InspectSector_Verify2D)sect.ReportSector;
 
                         if (res.data.extendedData != null)
                         {
@@ -845,7 +846,7 @@ namespace LabelVal.WindowViewModels
             return drwGroup;
         }
 
-        private GeometryGroup DrawModuleGrid(System.Drawing.Graphics g, V275_Job.Sector[] sectors, ObservableCollection<SectorControlViewModel> parsedSectors)
+        private GeometryGroup DrawModuleGrid(System.Drawing.Graphics g, Job.Sector[] sectors, ObservableCollection<SectorControlViewModel> parsedSectors)
         {
             GeometryGroup moduleGrid = new GeometryGroup();
             using (System.Drawing.Pen p = new System.Drawing.Pen(System.Drawing.Brushes.Red, 5))
@@ -867,7 +868,7 @@ namespace LabelVal.WindowViewModels
 
                                 if (sect != null)
                                 {
-                                    var res = (V275_Report_InspectSector_Verify2D)sect.ReportSector;
+                                    var res = (Report_InspectSector_Verify2D)sect.ReportSector;
 
                                     if (res.data.extendedData != null)
                                     {
@@ -1028,26 +1029,26 @@ namespace LabelVal.WindowViewModels
                 if (removeGS1Data)
                     ((JObject)reportSec["data"]).Remove("gs1SymbolQuality");
 
-                return JsonConvert.DeserializeObject<V275_Report_InspectSector_Verify1D>(reportSec.ToString());
+                return JsonConvert.DeserializeObject<Report_InspectSector_Verify1D>(reportSec.ToString());
             }
             else if (reportSec["type"].ToString() == "verify2D")
             {
                 if (removeGS1Data)
                     ((JObject)reportSec["data"]).Remove("gs1SymbolQuality");
 
-                return JsonConvert.DeserializeObject<V275_Report_InspectSector_Verify2D>(reportSec.ToString());
+                return JsonConvert.DeserializeObject<Report_InspectSector_Verify2D>(reportSec.ToString());
             }
             else if (reportSec["type"].ToString() == "ocr")
             {
-                return JsonConvert.DeserializeObject<V275_Report_InspectSector_OCR>(reportSec.ToString());
+                return JsonConvert.DeserializeObject<Report_InspectSector_OCR>(reportSec.ToString());
             }
             else if (reportSec["type"].ToString() == "ocv")
             {
-                return JsonConvert.DeserializeObject<V275_Report_InspectSector_OCV>(reportSec.ToString());
+                return JsonConvert.DeserializeObject<Report_InspectSector_OCV>(reportSec.ToString());
             }
             else if (reportSec["type"].ToString() == "blemish")
             {
-                return JsonConvert.DeserializeObject<V275_Report_InspectSector_Blemish>(reportSec.ToString());
+                return JsonConvert.DeserializeObject<Report_InspectSector_Blemish>(reportSec.ToString());
             }
             else
                 return null;

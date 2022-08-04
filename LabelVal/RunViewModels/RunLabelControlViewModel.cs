@@ -10,13 +10,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using LabelVal.Databases;
-using LabelVal.V275.Models;
 using LabelVal.WindowViewModels;
 using System.Windows.Media;
 using System.Windows.Input;
 using System.Windows;
 using LabelVal.Utilities;
 using Microsoft.Win32;
+using V725_REST_lib.Models;
 
 namespace LabelVal.RunViewModels
 {
@@ -67,7 +67,7 @@ namespace LabelVal.RunViewModels
 
             List<SectorControlViewModel> tempSectors = new List<SectorControlViewModel>();
             if (!string.IsNullOrEmpty(Run.LabelReport) && !string.IsNullOrEmpty(Run.LabelTemplate))
-                foreach (var jSec in JsonConvert.DeserializeObject<V275_Job>(Run.LabelTemplate).sectors)
+                foreach (var jSec in JsonConvert.DeserializeObject<Job>(Run.LabelTemplate).sectors)
                 {
                     bool isWrongStandard = false;
                     if (jSec.type == "verify1D" || jSec.type == "verify2D")
@@ -81,7 +81,7 @@ namespace LabelVal.RunViewModels
                         else
                             isWrongStandard = false;
 
-                    foreach (JObject rSec in JsonConvert.DeserializeObject<V275_Report>(Run.LabelReport).inspectLabel.inspectSector)
+                    foreach (JObject rSec in JsonConvert.DeserializeObject<Report>(Run.LabelReport).inspectLabel.inspectSector)
                     {
                         if (jSec.name == rSec["name"].ToString())
                         {
@@ -112,7 +112,7 @@ namespace LabelVal.RunViewModels
 
             List<SectorControlViewModel> tempSectors = new List<SectorControlViewModel>();
             if (!string.IsNullOrEmpty(Run.RepeatReport) && !string.IsNullOrEmpty(Run.LabelTemplate))
-                foreach (var jSec in JsonConvert.DeserializeObject<V275_Job>(Run.LabelTemplate).sectors)
+                foreach (var jSec in JsonConvert.DeserializeObject<Job>(Run.LabelTemplate).sectors)
                 {
                     bool isWrongStandard = false;
                     if (jSec.type == "verify1D" || jSec.type == "verify2D")
@@ -126,7 +126,7 @@ namespace LabelVal.RunViewModels
                         else
                             isWrongStandard = false;
 
-                    foreach (JObject rSec in JsonConvert.DeserializeObject<V275_Report>(Run.RepeatReport).inspectLabel.inspectSector)
+                    foreach (JObject rSec in JsonConvert.DeserializeObject<Report>(Run.RepeatReport).inspectLabel.inspectSector)
                     {
                         if (jSec.name == rSec["name"].ToString())
                         {
@@ -224,23 +224,23 @@ namespace LabelVal.RunViewModels
         {
             if (reportSec["type"].ToString() == "verify1D")
             {
-                return JsonConvert.DeserializeObject<V275_Report_InspectSector_Verify1D>(reportSec.ToString());
+                return JsonConvert.DeserializeObject<Report_InspectSector_Verify1D>(reportSec.ToString());
             }
             else if (reportSec["type"].ToString() == "verify2D")
             {
-                return JsonConvert.DeserializeObject<V275_Report_InspectSector_Verify2D>(reportSec.ToString());
+                return JsonConvert.DeserializeObject<Report_InspectSector_Verify2D>(reportSec.ToString());
             }
             else if (reportSec["type"].ToString() == "ocr")
             {
-                return JsonConvert.DeserializeObject<V275_Report_InspectSector_OCR>(reportSec.ToString());
+                return JsonConvert.DeserializeObject<Report_InspectSector_OCR>(reportSec.ToString());
             }
             else if (reportSec["type"].ToString() == "ocv")
             {
-                return JsonConvert.DeserializeObject<V275_Report_InspectSector_OCV>(reportSec.ToString());
+                return JsonConvert.DeserializeObject<Report_InspectSector_OCV>(reportSec.ToString());
             }
             else if (reportSec["type"].ToString() == "blemish")
             {
-                return JsonConvert.DeserializeObject<V275_Report_InspectSector_Blemish>(reportSec.ToString());
+                return JsonConvert.DeserializeObject<Report_InspectSector_Blemish>(reportSec.ToString());
             }
             else
                 return null;

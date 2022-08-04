@@ -5,21 +5,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using LabelVal.V275.Models;
+using V725_REST_lib.Models;
 
 namespace LabelVal.WindowViewModels
 {
     public class SectorControlViewModel : Core.BaseViewModel
     {
-        public V275_Job.Sector JobSector { get => jobSector; set => SetProperty(ref jobSector, value); }
-        private V275_Job.Sector jobSector;
+        public Job.Sector JobSector { get => jobSector; set => SetProperty(ref jobSector, value); }
+        private Job.Sector jobSector;
 
         public object ReportSector { get => reportSector; set => SetProperty(ref reportSector, value); }
         private object reportSector;
 
         public SectorDifferenceViewModel SectorResults { get => sectorResults; set => SetProperty(ref sectorResults, value); } 
         private SectorDifferenceViewModel sectorResults = new SectorDifferenceViewModel();
-        //public List<V275_Report_InspectSector_Common.Alarm> Alarms { get; } = new List<V275_Report_InspectSector_Common.Alarm>();
+        //public List<Report_InspectSector_Common.Alarm> Alarms { get; } = new List<Report_InspectSector_Common.Alarm>();
 
         private bool isWarning;
         public bool IsWarning { get => isWarning; set => SetProperty(ref isWarning, value); }
@@ -35,7 +35,7 @@ namespace LabelVal.WindowViewModels
         public bool IsGS1Standard { get => isGS1Standard; set => SetProperty(ref isGS1Standard, value); }
 
         public SectorControlViewModel() { }
-        public SectorControlViewModel(V275_Job.Sector jobSector, object reportSector, bool isWrongStandard, bool isGS1Standard)
+        public SectorControlViewModel(Job.Sector jobSector, object reportSector, bool isWrongStandard, bool isGS1Standard)
         {
             ReportSector = reportSector;
             JobSector = jobSector;
