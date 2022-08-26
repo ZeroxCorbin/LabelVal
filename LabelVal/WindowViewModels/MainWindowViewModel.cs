@@ -97,6 +97,7 @@ namespace LabelVal.WindowViewModels
         public string V275_Host { get => V275.Host = App.Settings.GetValue("V275_Host", "127.0.0.1"); set { App.Settings.SetValue("V275_Host", value); V275.Host = value; } }
         public uint V275_SystemPort { get => V275.SystemPort = App.Settings.GetValue<uint>("V275_SystemPort", 8080); set { App.Settings.SetValue("V275_SystemPort", value); ; V275.SystemPort = value; } }
         public uint V275_NodeNumber { get => V275.NodeNumber = App.Settings.GetValue<uint>("V275_NodeNumber", 1); set { App.Settings.SetValue("V275_NodeNumber", value); V275.NodeNumber = value; } }
+ 
         public string V275_MAC { get; set; }
         public string V275_Version { get => V275.Commands.Product != null ? V275.Commands.Product.part : null; }
         public string V275_State { get => v275_State; set => SetProperty(ref v275_State, value); }
@@ -824,6 +825,7 @@ namespace LabelVal.WindowViewModels
             await V275.Commands.GetCameraConfig();
             await V275.Commands.GetSymbologies();
             await V275.Commands.GetCalibration();
+            await V275.Commands.SetSendExtendedData(true);
 
             if (!await V275.WebSocket.StartAsync(V275.Commands.URLs.WS_NodeEvents))
                 return;
