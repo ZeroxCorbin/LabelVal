@@ -224,6 +224,10 @@ namespace LabelVal.WindowViewModels
         public string Password { get => App.Settings.GetValue("Password", "admin"); set => App.Settings.SetValue("Password", value); }
         private Events_System.Data LoginData { get; } = new Events_System.Data();
 
+        public bool ShowTemplateNameMismatchDialog { get => App.Settings.GetValue("ShowTemplateNameMismatchDialog", true); set => App.Settings.SetValue("ShowTemplateNameMismatchDialog", value); }
+        private Task TemplateNameMismatchDialog;
+        private Task TemplateNotLoadedDialog;
+
         public string UserMessage
         {
             get { return userMessage; }
@@ -371,46 +375,56 @@ namespace LabelVal.WindowViewModels
             V275_JobName = jobName;
 
             if (V275_JobName != "")
+                CheckTemplateName();
+            else if (V275_State == "Idle")
+                CheckTemplateName();
+            else
             {
-                CheckTemplateName();
-            }
 
-            if (V275_State == "Idle")
-                CheckTemplateName();
+            }
         }
 
-        private void CheckTemplateName()
+        private int CheckTemplateName()
         {
             IsWrongTemplateName = false;
+
             if (!IsLoggedIn)
-            {
-                return;
-            }
+                return 0;
 
             if (V275_JobName == "")
             {
                 IsWrongTemplateName = true;
-                _ = OkDialog("Template Not Loaded!", "There is no template loaded in the V275 software.");
-                return;
+
+                if (TemplateNotLoadedDialog != null)
+                    if (TemplateNotLoadedDialog.Status != TaskStatus.RanToCompletion)
+                        return -1;
+
+                TemplateNotLoadedDialog = OkDialog("Template Not Loaded!", "There is no template loaded in the V275 software.");
+                return -1;
             }
 
             if (!SelectedStandard.IsGS1)
             {
                 if (V275_JobName.ToLower().Equals(SelectedStandard.Name.ToLower()))
-                {
-                    return;
-                }
+                    return 1;
             }
             else
             {
                 if (V275_JobName.ToLower().StartsWith("gs1"))
-                {
-                    return;
-                }
+                    return 1;
             }
 
+            if (!ShowTemplateNameMismatchDialog)
+                return 1;
+
             IsWrongTemplateName = true;
-            _ = OkDialog("Template Name Mismatch!", $"The template name loaded in the V275 software '{V275_JobName}' does not match the selected standard. '{SelectedStandard.Name.ToLower()}'");
+
+            if (TemplateNameMismatchDialog != null)
+                if (TemplateNameMismatchDialog.Status != TaskStatus.RanToCompletion)
+                    return -2;
+
+            TemplateNameMismatchDialog = OkDialog("Template Name Mismatch!", $"The template name loaded in the V275 software '{V275_JobName}' does not match the selected standard. '{SelectedStandard.Name.ToLower()}'");
+            return -2;
         }
 
         public async Task<MessageDialogResult> OkCancelDialog(string title, string message)
@@ -419,11 +433,10 @@ namespace LabelVal.WindowViewModels
 
             return result;
         }
-        public async Task<MessageDialogResult> OkDialog(string title, string message)
-        {
-            MessageDialogResult result = await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.Affirmative);
 
-            return result;
+        public async Task OkDialog(string title, string message)
+        {
+            _ = await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.Affirmative);
         }
 
         public async Task<string> GetStringDialog(string title, string message)

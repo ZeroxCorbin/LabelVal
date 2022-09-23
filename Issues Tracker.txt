@@ -61,6 +61,8 @@ Fix matchmode detection in RunController.
 If the run starts then fails before logging anything delete the run entry.
 ----------------------
 
+Job run does not ignore print count value.
+
 Create a large V275 Audit trail file for Joyce.
 
 Store the database name used for the test run.
