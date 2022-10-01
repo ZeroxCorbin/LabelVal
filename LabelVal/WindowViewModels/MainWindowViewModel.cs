@@ -97,7 +97,7 @@ namespace LabelVal.WindowViewModels
         public string V275_Host { get => V275.Host = App.Settings.GetValue("V275_Host", "127.0.0.1"); set { App.Settings.SetValue("V275_Host", value); V275.Host = value; } }
         public uint V275_SystemPort { get => V275.SystemPort = App.Settings.GetValue<uint>("V275_SystemPort", 8080); set { App.Settings.SetValue("V275_SystemPort", value); ; V275.SystemPort = value; } }
         public uint V275_NodeNumber { get => V275.NodeNumber = App.Settings.GetValue<uint>("V275_NodeNumber", 1); set { App.Settings.SetValue("V275_NodeNumber", value); V275.NodeNumber = value; } }
- 
+
         public string V275_MAC { get; set; }
         public string V275_Version { get => V275.Commands.Product != null ? V275.Commands.Product.part : null; }
         public string V275_State { get => v275_State; set => SetProperty(ref v275_State, value); }
@@ -1003,11 +1003,13 @@ namespace LabelVal.WindowViewModels
                 {
                     PrintControl printer = new PrintControl();
 
-                    string data = String.Empty;
                     if (RunState != RunController.RunStates.IDLE)
-                        data = $"Loop {CurrentRun.CurrentLoopCount} : {CurrentRun.CurrentLabelCount}";
-
-                    printer.Print(label.LabelImagePath, label.PrintCount, SelectedPrinter, data);
+                    {
+                        var data = $"Loop {CurrentRun.CurrentLoopCount} : {CurrentRun.CurrentLabelCount}";
+                        printer.Print(label.LabelImagePath, 1, SelectedPrinter, data);
+                    }
+                    else
+                        printer.Print(label.LabelImagePath, label.PrintCount, SelectedPrinter, "");
 
                     if (!IsLoggedIn_Control)
                         label.IsWorking = false;

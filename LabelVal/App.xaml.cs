@@ -34,6 +34,8 @@ namespace LabelVal
 
         public static string SettingsDatabaseName => $"ApplicationSettings{DatabaseExtension}";
 
+        public static string AssetsStandardsDatabasesRoot => $"{WorkingDir}\\Assets\\StandardsDatabases";
+
         public static string StandardsRoot => $"{WorkingDir}\\Assets\\Standards";
         public static string StandardsDatabaseRoot => $"{UserDataDirectory}\\StandardsDatabases";
         public static string StandardsDatabaseDefaultName => $"StandardsDatabase";
@@ -46,23 +48,18 @@ namespace LabelVal
         {
             SetupExceptionHandling();
 
+            Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+
             if (!Directory.Exists(UserDataDirectory))
-            {
                 _ = Directory.CreateDirectory(UserDataDirectory);
-            }
+
             if (!Directory.Exists(RunsRoot))
-            {
                 _ = Directory.CreateDirectory(RunsRoot);
-            }
+
             if (!Directory.Exists(StandardsDatabaseRoot))
-            {
                 _ = Directory.CreateDirectory(StandardsDatabaseRoot);
-            }
-            // FixFiducial();
-            //FixRotation();
 
             var config = new NLog.Config.LoggingConfiguration();
-
             // Targets where to log to: File and Console
             var logfile = new NLog.Targets.FileTarget("logfile")
             {
@@ -75,8 +72,6 @@ namespace LabelVal
             };
             config.AddRuleForAllLevels(logfile);
             NLog.LogManager.Configuration = config;
-
-            Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
             NLog.LogManager.GetCurrentClassLogger().Info($"Starting: {Version}");
 
@@ -95,6 +90,7 @@ namespace LabelVal
 
             if (Settings == null)
             {
+                NLog.LogManager.GetCurrentClassLogger().Error("The ApplicationSettings database is null. Shutdown!");
                 this.Shutdown();
             }
         }
