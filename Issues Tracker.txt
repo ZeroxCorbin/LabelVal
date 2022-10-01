@@ -61,14 +61,18 @@ Fix matchmode detection in RunController.
 If the run starts then fails before logging anything delete the run entry.
 ----------------------
 
+0.4.0.3001
 Job run does not ignore print count value.
-
-Create a large V275 Audit trail file for Joyce.
-
-Store the database name used for the test run.
 
 Read registry to get initial simulation images directory.
 return Registry.GetValue("HKEY_LOCAL_MACHINE\\Software\\OMRON\\V275Service", "DataDirectory", "") as string;
+
+Test restoring the sectors to an empty template.
+Export images for external use.
+
+---------------------------------
+Store the database name used for the test run.
+
 
 Read registry to get initial V75 port number.
 
@@ -76,9 +80,8 @@ Add 300 DPI indicator to the 300 DPI images.
 
 Fault messaging.
 
-Test restoring the sectors to an empty template.
 
-Export images for external use.
+
 Start a run at a particular label and for a certian number of labels.
 Blemish tool does not show a problem if the blemish count is not equal.
 

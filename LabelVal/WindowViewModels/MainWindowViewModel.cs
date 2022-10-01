@@ -18,6 +18,7 @@ using LabelVal.Models;
 using MahApps.Metro.Controls.Dialogs;
 using V725_REST_lib;
 using V725_REST_lib.Models;
+using Microsoft.Win32;
 
 namespace LabelVal.WindowViewModels
 {
@@ -100,7 +101,24 @@ namespace LabelVal.WindowViewModels
         //private V275_API_WebSocketEvents SysWebSocket { get; } = new V275_API_WebSocketEvents();
 
         public string V275_Host { get => V275.Host = App.Settings.GetValue("V275_Host", "127.0.0.1"); set { App.Settings.SetValue("V275_Host", value); V275.Host = value; } }
-        public uint V275_SystemPort { get => V275.SystemPort = App.Settings.GetValue<uint>("V275_SystemPort", 8080); set { App.Settings.SetValue("V275_SystemPort", value); ; V275.SystemPort = value; } }
+        public uint V275_SystemPort 
+        { 
+            get => V275.SystemPort = App.Settings.GetValue<uint>("V275_SystemPort", GetV275PortNumber());
+            set 
+            {
+                if (value != 0)
+                {
+                    App.Settings.SetValue("V275_SystemPort", value);
+                    V275.SystemPort = value;
+                }
+                else
+                {
+                    App.Settings.DeleteSetting("V275_SystemPort");
+                    V275.SystemPort = V275_SystemPort;
+                }
+                OnPropertyChanged();
+            }
+        }
         public uint V275_NodeNumber { get => V275.NodeNumber = App.Settings.GetValue<uint>("V275_NodeNumber", 1); set { App.Settings.SetValue("V275_NodeNumber", value); V275.NodeNumber = value; } }
 
         public string V275_MAC { get; set; }
@@ -265,8 +283,16 @@ namespace LabelVal.WindowViewModels
         public bool IsDeviceSimulator => V275_MAC == null ? false : V275_MAC.Equals("00:00:00:00:00:00") && (IsLoggedIn_Control || IsLoggedIn_Monitor);
         public string SimulatorImageDirectory
         {
-            get => App.Settings.GetValue("Simulator_ImageDirectory", @"C:\Program Files\V275\data\images\simulation");
-            set { App.Settings.SetValue("Simulator_ImageDirectory", value); OnPropertyChanged("SimulatorImageDirectory"); }
+            get => App.Settings.GetValue("Simulator_ImageDirectory", GetV275SimulationDirectory());
+            set 
+            {
+                if(!string.IsNullOrEmpty(value))
+                    App.Settings.SetValue("Simulator_ImageDirectory", value);
+                else
+                    App.Settings.DeleteSetting("Simulator_ImageDirectory");
+
+                OnPropertyChanged();
+            }
         }
 
         public bool IsLoggedIn
@@ -387,6 +413,22 @@ namespace LabelVal.WindowViewModels
             {
 
             }
+        }
+
+        private uint GetV275PortNumber()
+        {
+            var res = Registry.GetValue("HKEY_LOCAL_MACHINE\\Software\\OMRON\\V275Service", "SystemServerPort", 8080);
+            return Convert.ToUInt32(res);
+        }
+        private string GetV275SimulationDirectory()
+        {
+            var res = Registry.GetValue("HKEY_LOCAL_MACHINE\\Software\\OMRON\\V275Service", "DataDirectory", "");
+            if (res.ToString() == "")
+                res = @"C:\Program Files\V275\data\images\simulation";
+            else
+                res += @"\images\simulation";
+
+            return res.ToString();
         }
 
         private int CheckTemplateName()
