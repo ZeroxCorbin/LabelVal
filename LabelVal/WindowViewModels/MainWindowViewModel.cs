@@ -37,6 +37,11 @@ namespace LabelVal.WindowViewModels
             public int RepeatNumber { get; set; } = -1;
         }
 
+        public class StandardsDBFile
+        {
+            public string FileName { get; set; }
+            public string FilePath { get; set; }
+        }
         public IDialogCoordinator DialogCoordinator { get => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance; }
         //public class StandardEntryModel : Core.BaseViewModel
         //{
@@ -132,9 +137,9 @@ namespace LabelVal.WindowViewModels
         private ObservableCollection<LabelControlViewModel> labels = new ObservableCollection<LabelControlViewModel>();
         public ObservableCollection<LabelControlViewModel> Labels { get => labels; set => SetProperty(ref labels, value); }
 
-        public string StoredStandardsDatabase { get => App.Settings.GetValue("StoredStandardsDatabase", App.StandardsDatabaseDefaultName); set { App.Settings.SetValue("StoredStandardsDatabase", value); } }
-        public ObservableCollection<string> StandardsDatabases { get; } = new ObservableCollection<string>();
-        public string SelectedStandardsDatabase
+        public StandardsDBFile StoredStandardsDatabase { get => App.Settings.GetValue("StoredStandardsDatabase_1", new StandardsDBFile() { FilePath = Path.Combine(App.StandardsDatabaseRoot, App.StandardsDatabaseDefaultName + App.DatabaseExtension), FileName = App.StandardsDatabaseDefaultName }); set { App.Settings.SetValue("StoredStandardsDatabase_1", value); } }
+        public ObservableCollection<StandardsDBFile> StandardsDatabases { get; } = new ObservableCollection<StandardsDBFile>();
+        public StandardsDBFile SelectedStandardsDatabase
         {
             get => selectedStandardsDatabase;
             set
@@ -143,7 +148,7 @@ namespace LabelVal.WindowViewModels
 
                 SelectedStandard = null;
 
-                if (!string.IsNullOrEmpty(value))
+                if (value != null)
                 {
                     StoredStandardsDatabase = value;
 
@@ -152,7 +157,7 @@ namespace LabelVal.WindowViewModels
                 }
             }
         }
-        private string selectedStandardsDatabase;
+        private StandardsDBFile selectedStandardsDatabase;
         public bool IsDatabaseLocked
         {
             get => isDatabaseLocked || isDatabasePermLocked;
@@ -643,34 +648,46 @@ namespace LabelVal.WindowViewModels
             StandardsDatabases.Clear();
             SelectedStandardsDatabase = null;
 
+            foreach (var file in Directory.EnumerateFiles(App.AssetsStandardsDatabasesRoot))
+            {
+                Logger.Debug("Found: {name}", Path.GetFileName(file));
+
+                if (file.EndsWith(App.DatabaseExtension))
+                    StandardsDatabases.Add(new StandardsDBFile() { FileName = Path.GetFileName(file).Replace(App.DatabaseExtension, ""), FilePath = file });
+            }
+
             foreach (var file in Directory.EnumerateFiles(App.StandardsDatabaseRoot))
             {
                 Logger.Debug("Found: {name}", Path.GetFileName(file));
 
                 if (file.EndsWith(App.DatabaseExtension))
-                    StandardsDatabases.Add(Path.GetFileName(file).Replace(App.DatabaseExtension, ""));
+                    StandardsDatabases.Add(new StandardsDBFile() { FileName = Path.GetFileName(file).Replace(App.DatabaseExtension, ""), FilePath = file });
             }
 
             if (StandardsDatabases.Count == 0)
-                StandardsDatabases.Add(App.StandardsDatabaseDefaultName);
+                StandardsDatabases.Add(new StandardsDBFile() { FilePath = Path.Combine(App.StandardsDatabaseRoot, App.StandardsDatabaseDefaultName + App.DatabaseExtension), FileName = App.StandardsDatabaseDefaultName } );
         }
         private void SelectStandardsDatabase()
         {
-            if (StandardsDatabases.Contains(StoredStandardsDatabase))
-                SelectedStandardsDatabase = StoredStandardsDatabase;
+            var res = StandardsDatabases.Where((a) => a.FilePath == StoredStandardsDatabase.FilePath);
+            if(res.FirstOrDefault() != null)
+                SelectedStandardsDatabase = res.FirstOrDefault();
             else if (StandardsDatabases.Count > 0)
                 SelectedStandardsDatabase = StandardsDatabases.First();
         }
-        private void LoadStandardsDatabase(string fileName)
+        private void LoadStandardsDatabase(StandardsDBFile file)
         {
             OrphandStandards.Clear();
 
-            string file = Path.Combine(App.StandardsDatabaseRoot, fileName + App.DatabaseExtension);
+            //string file = Path.Combine(App.StandardsDatabaseRoot, fileName + App.DatabaseExtension);
+
+            //if (!File.Exists(file))
+            //    file = Path.Combine(App.AssetsStandardsDatabasesRoot, fileName + App.DatabaseExtension);
 
             StandardsDatabase?.Close();
 
-            Logger.Info("Initializing standards database: {name}", file);
-            StandardsDatabase = new StandardsDatabase(file);
+            Logger.Info("Initializing standards database: {name}", file.FileName);
+            StandardsDatabase = new StandardsDatabase(file.FilePath);
 
             List<string> tables = StandardsDatabase.GetAllTables();
 
@@ -704,15 +721,14 @@ namespace LabelVal.WindowViewModels
                 return;
             }
 
-            string file = Path.Combine(App.StandardsDatabaseRoot, res + App.DatabaseExtension);
-
-            _ = new StandardsDatabase(file);
+            var file = new StandardsDBFile() { FilePath = Path.Combine(App.StandardsDatabaseRoot, res + App.DatabaseExtension), FileName = res };
+            _ = new StandardsDatabase(file.FilePath);
 
             SelectedStandardsDatabase = null;
 
             LoadStandardsDatabasesList();
 
-            StoredStandardsDatabase = res;
+            StoredStandardsDatabase = file;
             SelectStandardsDatabase();
 
         }
