@@ -35,9 +35,11 @@ namespace LabelVal
         public static string SettingsDatabaseName => $"ApplicationSettings{DatabaseExtension}";
 
         public static string AssetsStandardsDatabasesRoot => $"{WorkingDir}\\Assets\\StandardsDatabases";
+        public static string AssetsStandardsRoot => $"{WorkingDir}\\Assets\\Standards";
 
-        public static string StandardsRoot => $"{WorkingDir}\\Assets\\Standards";
         public static string StandardsDatabaseRoot => $"{UserDataDirectory}\\StandardsDatabases";
+        public static string StandardsRoot => $"{UserDataDirectory}\\Standards";
+
         public static string StandardsDatabaseDefaultName => $"StandardsDatabase";
 
         public static string RunsRoot => $"{UserDataDirectory}\\Runs";
@@ -52,12 +54,15 @@ namespace LabelVal
 
             if (!Directory.Exists(UserDataDirectory))
                 _ = Directory.CreateDirectory(UserDataDirectory);
+            if (!Directory.Exists(StandardsDatabaseRoot))
+                _ = Directory.CreateDirectory(StandardsDatabaseRoot);
+            if (!Directory.Exists(StandardsRoot))
+                _ = Directory.CreateDirectory(StandardsRoot);
 
             if (!Directory.Exists(RunsRoot))
                 _ = Directory.CreateDirectory(RunsRoot);
 
-            if (!Directory.Exists(StandardsDatabaseRoot))
-                _ = Directory.CreateDirectory(StandardsDatabaseRoot);
+
 
             var config = new NLog.Config.LoggingConfiguration();
             // Targets where to log to: File and Console
@@ -173,7 +178,7 @@ namespace LabelVal
 
         private void FixFiducial()
         {
-            foreach (var dir in Directory.EnumerateDirectories(StandardsRoot))
+            foreach (var dir in Directory.EnumerateDirectories(AssetsStandardsRoot))
             {
                 if (Directory.Exists($"{dir}\\300"))
                     foreach (var imgFile in Directory.EnumerateFiles($"{dir}\\300"))
@@ -222,7 +227,7 @@ namespace LabelVal
 
         private void FixRotation()
         {
-            foreach (var dir in Directory.EnumerateDirectories(StandardsRoot))
+            foreach (var dir in Directory.EnumerateDirectories(AssetsStandardsRoot))
             {
                 foreach (var imgFile in Directory.EnumerateFiles($"{dir}\\600"))
                 {

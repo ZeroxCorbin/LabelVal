@@ -418,13 +418,18 @@ namespace LabelVal.WindowViewModels
         private uint GetV275PortNumber()
         {
             var res = Registry.GetValue("HKEY_LOCAL_MACHINE\\Software\\OMRON\\V275Service", "SystemServerPort", 8080);
-            return Convert.ToUInt32(res);
+
+            if(res == null)
+                return 8080;
+            else
+                return Convert.ToUInt32(res);
         }
         private string GetV275SimulationDirectory()
         {
             var res = Registry.GetValue("HKEY_LOCAL_MACHINE\\Software\\OMRON\\V275Service", "DataDirectory", "");
-            if (res.ToString() == "")
-                res = @"C:\Program Files\V275\data\images\simulation";
+
+            if(string.IsNullOrEmpty((string)res))
+                return @"C:\Program Files\V275\data\images\simulation";
             else
                 res += @"\images\simulation";
 
@@ -531,7 +536,7 @@ namespace LabelVal.WindowViewModels
 
         private void LoadLabels()
         {
-            Logger.Info("Loading label images from standards directory: {name}", $"{App.StandardsRoot}\\{SelectedStandard.StandardName}\\");
+            Logger.Info("Loading label images from standards directory: {name}", $"{App.AssetsStandardsRoot}\\{SelectedStandard.StandardName}\\");
 
             ClearLabels();
 
@@ -646,10 +651,31 @@ namespace LabelVal.WindowViewModels
 
         private void LoadStandardsList()
         {
-            Logger.Info("Loading grading standards from file system. {path}", App.StandardsRoot);
+            Logger.Info("Loading grading standards from file system. {path}", App.AssetsStandardsRoot);
 
             Standards.Clear();
             SelectedStandard = null;
+
+            foreach (var dir in Directory.EnumerateDirectories(App.AssetsStandardsRoot).ToList().OrderBy((e) => Regex.Replace(e, "[0-9]+", match => match.Value.PadLeft(10, '0'))))
+            {
+                Logger.Debug("Found: {name}", dir.Substring(dir.LastIndexOf("\\") + 1));
+
+                foreach (var subdir in Directory.EnumerateDirectories(dir))
+                {
+                    if (subdir.EndsWith("600"))
+                        Standards.Add(new StandardEntryModel()
+                        {
+                            Name = dir.Substring(dir.LastIndexOf("\\") + 1),
+                            StandardPath = subdir,
+                        });
+                    else if (subdir.EndsWith("300"))
+                        Standards.Add(new StandardEntryModel()
+                        {
+                            Name = $"{dir.Substring(dir.LastIndexOf("\\") + 1)} 300",
+                            StandardPath = subdir,
+                        });
+                }
+            }
 
             foreach (var dir in Directory.EnumerateDirectories(App.StandardsRoot).ToList().OrderBy((e) => Regex.Replace(e, "[0-9]+", match => match.Value.PadLeft(10, '0'))))
             {
