@@ -21,11 +21,11 @@ namespace LabelVal
     {
         public static Databases.SimpleDatabase Settings { get; private set; }
 
-        //#if DEBUG
+//#if DEBUG
         public static string WorkingDir { get; set; } = System.IO.Directory.GetCurrentDirectory();
-        //#else        
-        //        public static string WorkingDir { get; set; } = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\\TDD\\LabelVal";
-        //#endif
+//#else
+//                public static string WorkingDir { get; set; } = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\\LabelVal";
+//#endif
 
         public static string Version { get; set; }
 
@@ -34,8 +34,8 @@ namespace LabelVal
 
         public static string SettingsDatabaseName => $"ApplicationSettings{DatabaseExtension}";
 
-        public static string AssetsStandardsDatabasesRoot => $"{WorkingDir}\\Assets\\StandardsDatabases";
-        public static string AssetsStandardsRoot => $"{WorkingDir}\\Assets\\Standards";
+        public static string AssetsStandardsDatabasesRoot => $"{System.IO.Directory.GetCurrentDirectory()}\\Assets\\StandardsDatabases";
+        public static string AssetsStandardsRoot => $"{System.IO.Directory.GetCurrentDirectory()}\\Assets\\Standards";
 
         public static string StandardsDatabaseRoot => $"{UserDataDirectory}\\StandardsDatabases";
         public static string StandardsRoot => $"{UserDataDirectory}\\Standards";
@@ -68,8 +68,8 @@ namespace LabelVal
             // Targets where to log to: File and Console
             var logfile = new NLog.Targets.FileTarget("logfile")
             {
-                FileName = "UserData/log.txt",
-                ArchiveFileName = "UserData/log.${shortdate}.txt",
+                FileName = Path.Combine(UserDataDirectory, "log.txt"),
+                ArchiveFileName = Path.Combine(UserDataDirectory, "log.${shortdate}.txt"),
                 ArchiveAboveSize = 5242880,
                 ArchiveEvery = NLog.Targets.FileArchivePeriod.Day,
                 ArchiveNumbering = NLog.Targets.ArchiveNumberingMode.Rolling,
