@@ -21,11 +21,11 @@ namespace LabelVal
     {
         public static Databases.SimpleDatabase Settings { get; private set; }
 
-//#if DEBUG
+#if DEBUG
         public static string WorkingDir { get; set; } = System.IO.Directory.GetCurrentDirectory();
-//#else
-//                public static string WorkingDir { get; set; } = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\\LabelVal";
-//#endif
+#else
+        public static string WorkingDir { get; set; } = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\\LabelVal_Data";
+#endif
 
         public static string Version { get; set; }
 
