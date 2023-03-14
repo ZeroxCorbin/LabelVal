@@ -6,7 +6,7 @@
             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
             xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
             xmlns:local="clr-namespace:LabelVal.WindowViews"
-             xmlns:json="clr-namespace:JsonViewer.JsonViewer"
+             xmlns:json="clr-namespace:JsonViewer"
             xmlns:ViewModels="clr-namespace:LabelVal.RunViewModels"
             xmlns:Converters="clr-namespace:LabelVal.Converters"
             d:DataContext="{d:DesignInstance Type=ViewModels:RunLabelControlViewModel}"
