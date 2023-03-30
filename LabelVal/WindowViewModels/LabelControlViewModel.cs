@@ -24,6 +24,8 @@ using System.Runtime.InteropServices;
 using LabelVal.Models;
 using V725_REST_lib.Models;
 using V725_REST_lib;
+using LabelVal.ClassMaps;
+using NHibernate;
 
 namespace LabelVal.WindowViewModels
 {
@@ -161,7 +163,7 @@ namespace LabelVal.WindowViewModels
         public Controller V275 { get => MainWindow.V275; }
         public Job LabelTemplate { get; set; }
         public Job RepeatTemplate { get; set; }
-        public Report RepeatReport { get; private set; }
+        public V725_REST_lib.Models.Reports.Report RepeatReport { get; private set; }
 
         public ICommand PrintCommand { get; }
         public ICommand SaveCommand { get; }
@@ -275,7 +277,7 @@ namespace LabelVal.WindowViewModels
                         else
                             isWrongStandard = false;
 
-                    foreach (JObject rSec in JsonConvert.DeserializeObject<Report>(CurrentRow.LabelReport).inspectLabel.inspectSector)
+                    foreach (JObject rSec in JsonConvert.DeserializeObject<V725_REST_lib.Models.Reports.Report>(CurrentRow.LabelReport).inspectLabel.inspectSector)
                     {
                         if (jSec.name == rSec["name"].ToString())
                         {
@@ -404,6 +406,8 @@ namespace LabelVal.WindowViewModels
             RepeatTemplate = V275.Commands.Job;
             RepeatReport = V275.Commands.Report;
 
+            int id = SaveReport();
+
             if (!MainWindow.IsDeviceSimulator)
             {
                 RepeatImage = ImageUtilities.ConvertToPng(V275.Commands.RepeatImage, 600);
@@ -445,6 +449,8 @@ namespace LabelVal.WindowViewModels
                         if (fSec == null)
                             break; //Not yet supported sector type
 
+                        SaveSector(fSec);
+
                         tempSectors.Add(new SectorControlViewModel(jSec, fSec, isWrongStandard, jSec.gradingStandard == null ? false : jSec.gradingStandard.enabled));
 
                         break;
@@ -466,6 +472,37 @@ namespace LabelVal.WindowViewModels
             RepeatOverlay = CreateRepeatOverlay(true, true);
 
             return true;
+        }
+
+        private int SaveReport()
+        {
+            using (var session = NHibernateHelper.OpenSession())
+            {
+                using (var transaction = session.BeginTransaction())
+                {
+
+                    session.SaveOrUpdate(RepeatReport.inspectLabel);
+                    transaction.Commit();
+
+                    return RepeatReport.inspectLabel.id;
+                }
+            }
+        }
+
+        private void SaveSector(object sec)
+        {
+            using (var session = NHibernateHelper.OpenSession())
+            {
+                using (var transaction = session.BeginTransaction())
+                {
+
+                    session.SaveOrUpdate(sec);
+
+
+
+                    transaction.Commit();
+                }
+            }
         }
 
         public void RedoFiducialAction(object parameter)
