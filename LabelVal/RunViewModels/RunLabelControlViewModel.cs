@@ -16,7 +16,7 @@ using System.Windows.Input;
 using System.Windows;
 using LabelVal.Utilities;
 using Microsoft.Win32;
-using V725_REST_lib.Models;
+using V275_REST_lib.Models;
 
 namespace LabelVal.RunViewModels
 {
@@ -81,7 +81,7 @@ namespace LabelVal.RunViewModels
                         else
                             isWrongStandard = false;
 
-                    foreach (JObject rSec in JsonConvert.DeserializeObject<V725_REST_lib.Models.Reports.Report>(Run.LabelReport).inspectLabel.inspectSector)
+                    foreach (JObject rSec in JsonConvert.DeserializeObject<V275_REST_lib.Models.Report>(Run.LabelReport).inspectLabel.inspectSector)
                     {
                         if (jSec.name == rSec["name"].ToString())
                         {
@@ -126,7 +126,7 @@ namespace LabelVal.RunViewModels
                         else
                             isWrongStandard = false;
 
-                    foreach (JObject rSec in JsonConvert.DeserializeObject<V725_REST_lib.Models.Reports.Report>(Run.RepeatReport).inspectLabel.inspectSector)
+                    foreach (JObject rSec in JsonConvert.DeserializeObject<V275_REST_lib.Models.Report>(Run.RepeatReport).inspectLabel.inspectSector)
                     {
                         if (jSec.name == rSec["name"].ToString())
                         {

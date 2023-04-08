@@ -22,10 +22,10 @@ using Microsoft.Win32;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using LabelVal.Models;
-using V725_REST_lib.Models;
-using V725_REST_lib;
-using LabelVal.ClassMaps;
+using V275_REST_lib.Models;
+using V275_REST_lib;
 using NHibernate;
+using LabelVal.ORM_Test;
 
 namespace LabelVal.WindowViewModels
 {
@@ -163,7 +163,7 @@ namespace LabelVal.WindowViewModels
         public Controller V275 { get => MainWindow.V275; }
         public Job LabelTemplate { get; set; }
         public Job RepeatTemplate { get; set; }
-        public V725_REST_lib.Models.Reports.Report RepeatReport { get; private set; }
+        public V275_REST_lib.Models.Report RepeatReport { get; private set; }
 
         public ICommand PrintCommand { get; }
         public ICommand SaveCommand { get; }
@@ -277,7 +277,7 @@ namespace LabelVal.WindowViewModels
                         else
                             isWrongStandard = false;
 
-                    foreach (JObject rSec in JsonConvert.DeserializeObject<V725_REST_lib.Models.Reports.Report>(CurrentRow.LabelReport).inspectLabel.inspectSector)
+                    foreach (JObject rSec in JsonConvert.DeserializeObject<V275_REST_lib.Models.Report>(CurrentRow.LabelReport).inspectLabel.inspectSector)
                     {
                         if (jSec.name == rSec["name"].ToString())
                         {
@@ -406,8 +406,6 @@ namespace LabelVal.WindowViewModels
             RepeatTemplate = V275.Commands.Job;
             RepeatReport = V275.Commands.Report;
 
-            int id = SaveReport();
-
             if (!MainWindow.IsDeviceSimulator)
             {
                 RepeatImage = ImageUtilities.ConvertToPng(V275.Commands.RepeatImage, 600);
@@ -421,6 +419,8 @@ namespace LabelVal.WindowViewModels
                     IsGoldenRepeat = false;
                 }   
             }
+
+            int id = SaveReport();
 
             //if (!isRunning)
             //{
@@ -449,8 +449,6 @@ namespace LabelVal.WindowViewModels
                         if (fSec == null)
                             break; //Not yet supported sector type
 
-                        SaveSector(fSec);
-
                         tempSectors.Add(new SectorControlViewModel(jSec, fSec, isWrongStandard, jSec.gradingStandard == null ? false : jSec.gradingStandard.enabled));
 
                         break;
@@ -476,33 +474,22 @@ namespace LabelVal.WindowViewModels
 
         private int SaveReport()
         {
-            using (var session = NHibernateHelper.OpenSession())
+            using (var session = new NHibernateHelper().OpenSession())
             {
+                if (session == null) return -1;
+
                 using (var transaction = session.BeginTransaction())
                 {
+                    var rep = new ORM_Test.Report(RepeatReport);
+                    rep.repeatImage = RepeatImage;
 
-                    session.SaveOrUpdate(RepeatReport.inspectLabel);
+                    session.Save(rep);
                     transaction.Commit();
 
-                    return RepeatReport.inspectLabel.id;
+                    return rep.id;
                 }
             }
-        }
-
-        private void SaveSector(object sec)
-        {
-            using (var session = NHibernateHelper.OpenSession())
-            {
-                using (var transaction = session.BeginTransaction())
-                {
-
-                    session.SaveOrUpdate(sec);
-
-
-
-                    transaction.Commit();
-                }
-            }
+            
         }
 
         public void RedoFiducialAction(object parameter)

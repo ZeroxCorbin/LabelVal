@@ -1,0 +1,51 @@
+﻿<mah:MetroWindow x:Class="LabelVal.ORM_Test.NHibernateSettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:vm="clr-namespace:LabelVal.ORM_Test"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:local="clr-namespace:LabelVal.ORM_Test"
+             d:DataContext="{d:DesignInstance Type=vm:NHibernateSettingsViewModel}"
+             mc:Ignorable="d" Height="600" Width="500" WindowStartupLocation="CenterOwner">
+    <mah:MetroWindow.DataContext>
+        <vm:NHibernateSettingsViewModel/>
+    </mah:MetroWindow.DataContext>
+    <Grid>
+        <StackPanel Orientation="Horizontal">
+            <ListView ItemsSource="{Binding SQLConfigurations}" SelectedValue="{Binding SQLConfiguration}">
+
+            </ListView>
+            
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Server Address" MinWidth="100"/>
+                    <TextBox Text="{Binding Server}" MinWidth="100"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Port Number" MinWidth="100"/>
+                    <TextBox Text="{Binding Port}" MinWidth="100"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Database Name" MinWidth="100"/>
+                    <TextBox Text="{Binding Database}" MinWidth="100"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="User Name" MinWidth="100"/>
+                    <TextBox Text="{Binding Username}" MinWidth="100"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Password" MinWidth="100"/>
+                    <TextBox Text="{Binding Password}" MinWidth="100"/>
+                </StackPanel>
+
+                <!--<Button Command="{Binding SaveSettingsCommand}" Content="Save"/>-->
+            </StackPanel>
+        </StackPanel>
+
+    </Grid>
+</mah:MetroWindow>

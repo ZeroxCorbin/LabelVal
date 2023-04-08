@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LabelVal.Models;
 using LabelVal.Utilities;
-using V725_REST_lib.Models;
+using V275_REST_lib.Models;
 
 namespace LabelVal.WindowViewModels
 {

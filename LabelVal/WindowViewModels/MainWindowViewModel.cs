@@ -16,8 +16,8 @@ using LabelVal.Printer;
 using System.Text.RegularExpressions;
 using LabelVal.Models;
 using MahApps.Metro.Controls.Dialogs;
-using V725_REST_lib;
-using V725_REST_lib.Models;
+using V275_REST_lib;
+using V275_REST_lib.Models;
 using Microsoft.Win32;
 
 namespace LabelVal.WindowViewModels
