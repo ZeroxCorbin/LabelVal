@@ -17,8 +17,9 @@ namespace LabelVal.ORM_Test
     {
         public ReportMap()
         {
-            Id(x => x.id);
+            Id(x => x.id, "id");
 
+            Map(x => x.created);
             //MySQL considers 'repeat' a reserved word. It can not be used for a column name.
             Map(x => x.repeat, "repeatNumber");
             Map(x => x.voidRepeat, "voidRepeatNumber");

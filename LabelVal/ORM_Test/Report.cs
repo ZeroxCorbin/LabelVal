@@ -25,7 +25,9 @@ namespace LabelVal.ORM_Test
             ioLines = JsonConvert.SerializeObject(report.inspectLabel.ioLines);
         }
 
-        public virtual int id { get; protected set; }
+        public virtual long id { get; protected set; }
+
+        public virtual long createdOn { get; protected set; } = DateTime.Now.Ticks;
 
         public virtual int repeat { get; set; }
         public virtual int voidRepeat { get; set; }

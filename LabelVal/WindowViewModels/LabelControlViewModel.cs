@@ -420,7 +420,7 @@ namespace LabelVal.WindowViewModels
                 }   
             }
 
-            int id = SaveReport();
+            long id = SaveReport();
 
             //if (!isRunning)
             //{
@@ -472,7 +472,7 @@ namespace LabelVal.WindowViewModels
             return true;
         }
 
-        private int SaveReport()
+        private long SaveReport()
         {
             using (var session = new NHibernateHelper().OpenSession())
             {
