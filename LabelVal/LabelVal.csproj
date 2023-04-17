@@ -165,6 +165,9 @@
     <Compile Include="ORM_Test\NHibernateSettingsViewModel.cs" />
     <Compile Include="ORM_Test\Report.cs" />
     <Compile Include="ORM_Test\ReportMap.cs" />
+    <Compile Include="ORM_Test\RunLedger.cs" />
+    <Compile Include="ORM_Test\RunLedgerMap.cs" />
+    <Compile Include="ORM_Test\StandardsDatabase.cs" />
     <Compile Include="RunControllers\RunController.cs" />
     <Compile Include="Printer\PrintControl.cs" />
     <Compile Include="RunViewModels\CompareSettingsControlViewModel.cs" />
@@ -1403,6 +1406,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\JSONViewer_WPF\JSONViewer_WPF.csproj">
+      <Project>{b5d1b59e-e828-46a3-be66-4a9a51bdc562}</Project>
+      <Name>JSONViewer_WPF</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\V275_REST_Lib\V275_REST_Lib.csproj">
       <Project>{00eef7d0-c97d-42dd-9d72-6c44346e3afc}</Project>
       <Name>V275_REST_Lib</Name>

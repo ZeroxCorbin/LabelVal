@@ -353,7 +353,7 @@ namespace LabelVal.WindowViewModels
 
         private Dictionary<int, Repeat> Repeats = new Dictionary<int, Repeat>();
 
-        private RunController CurrentRun { get; set; }
+        public RunController CurrentRun { get; set; } = new RunController();
 
         public ICommand TriggerSim { get; }
 
@@ -1258,20 +1258,22 @@ namespace LabelVal.WindowViewModels
                 if (await OkCancelDialog("Missing Label Sectors", "There are Labels that do not have stored sectors. Are you sure you want to continue?") == MessageDialogResult.Negative)
                     return;
 
-            if (CurrentRun != null)
-            {
-                CurrentRun.RunStateChange -= CurrentRun_RunStateChange;
-                CurrentRun.Close();
-                CurrentRun = null;
-            }
+            //if (CurrentRun.State == )
+            //{
+            //    CurrentRun.RunStateChange -= CurrentRun_RunStateChange;
+            //    CurrentRun.Close();
+            //    CurrentRun = null;
+            //}
 
             Logger.Info("Starting Run: {stand}; {count}", Labels[0].GradingStandard.Name, RunLoopCount);
 
-            CurrentRun = new RunController(Labels, RunLoopCount, StandardsDatabase, V275.Commands.Product.part, SelectedNode.cameraMAC).Init();
+            CurrentRun.Init(Labels, RunLoopCount, StandardsDatabase, V275.Commands.Product.part, SelectedNode.cameraMAC);
+
+            CurrentRun.RunStateChange -= CurrentRun_RunStateChange;
             CurrentRun.RunStateChange += CurrentRun_RunStateChange;
 
-            if (CurrentRun == null)
-                return;
+            //if (CurrentRun == null)
+            //    return;
 
             CurrentRun.StartAsync();
         }

@@ -3,33 +3,23 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace LabelVal.ORM_Test
 {
     public class Report
     {
-        public Report() { }
-        public Report(V275_REST_lib.Models.Report report)
-        {
-            repeat = report.inspectLabel.repeat;
-            voidRepeat = report.inspectLabel.voidRepeat;
-            iteration = report.inspectLabel.iteration;
-            result = report.inspectLabel.result;
-            width = report.inspectLabel.width;
-            height = report.inspectLabel.height;
-
-            userAction = JsonConvert.SerializeObject(report.inspectLabel.userAction);
-
-            inspectSector = JsonConvert.SerializeObject(report.inspectLabel.inspectSector);
-            ioLines = JsonConvert.SerializeObject(report.inspectLabel.ioLines);
-        }
-
         public virtual long id { get; protected set; }
 
-        public virtual long createdOn { get; protected set; } = DateTime.Now.Ticks;
+        public virtual DateTime createdOn { get; set; } = DateTime.Now;
+        public virtual long runId { get; set; }
 
-        public virtual int repeat { get; set; }
+        [JsonProperty("repeatNumber")]
+        public virtual int repeat { get;
+            set; }
+
+        [JsonProperty("voidrepeatNumber")]
         public virtual int voidRepeat { get; set; }
         public virtual int iteration { get; set; }
         public virtual string result { get; set; }
@@ -46,6 +36,22 @@ namespace LabelVal.ORM_Test
         public virtual string ioLines { get; set; }
 
         public virtual byte[] repeatImage { get; set; }
+
+        public Report() { }
+        public Report(V275_REST_lib.Models.Report report)
+        {
+            repeat = report.inspectLabel.repeat;
+            voidRepeat = report.inspectLabel.voidRepeat;
+            iteration = report.inspectLabel.iteration;
+            result = report.inspectLabel.result;
+            width = report.inspectLabel.width;
+            height = report.inspectLabel.height;
+
+            userAction = JsonConvert.SerializeObject(report.inspectLabel.userAction);
+
+            inspectSector = JsonConvert.SerializeObject(report.inspectLabel.inspectSector);
+            ioLines = JsonConvert.SerializeObject(report.inspectLabel.ioLines);
+        }
 
     }
 }

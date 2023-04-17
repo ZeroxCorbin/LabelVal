@@ -13,6 +13,8 @@ using LabelVal.Databases;
 using LabelVal.Utilities;
 using LabelVal.WindowViewModels;
 using LabelVal.Models;
+using LabelVal.ORM_Test;
+using MahApps.Metro.Controls;
 
 namespace LabelVal.RunControllers
 {
@@ -47,20 +49,13 @@ namespace LabelVal.RunControllers
         public int CurrentLabelCount { get; private set; }
 
         private ObservableCollection<LabelControlViewModel> Labels { get; set; }
-        private StandardEntryModel GradingStandard { get; }
-        private StandardsDatabase StandardsDatabase { get; }
+        private StandardEntryModel GradingStandard { get; set; }
+        private StandardsDatabase StandardsDatabase { get; set; }
         //private string JobName { get; }
 
-        public RunController(ObservableCollection<LabelControlViewModel> labels, int loopCount, StandardsDatabase standardsDatabase, string productPart, string cameraMAC)
+        public RunController()
         {
-            Labels = labels;
-            LoopCount = loopCount;
-            StandardsDatabase = standardsDatabase;
-            GradingStandard = Labels[0].GradingStandard;
 
-            TimeDate = DateTime.UtcNow.Ticks;
-
-            RunEntry = new RunLedgerDatabase.RunEntry() { GradingStandard = GradingStandard.Name, TimeDate = TimeDate, Completed = 0, ProductPart = productPart, CameraMAC = cameraMAC };
         }
 
         public RunController(long timeDate)
@@ -70,8 +65,13 @@ namespace LabelVal.RunControllers
             OpenDatabases();
         }
 
-        public RunController Init()
+        public RunController Init(ObservableCollection<LabelControlViewModel> labels, int loopCount, StandardsDatabase standardsDatabase, string productPart, string cameraMAC)
         {
+            Labels = labels;
+            LoopCount = loopCount;
+            StandardsDatabase = standardsDatabase;
+            GradingStandard = Labels[0].GradingStandard;
+
             if (!OpenDatabases())
                 return null;
 
@@ -129,8 +129,32 @@ namespace LabelVal.RunControllers
 
         }
 
+        private long RunId { get; set; }
+
         public void StartAsync()
         {
+            TimeDate = DateTime.UtcNow.Ticks;
+
+            RunEntry = new RunLedgerDatabase.RunEntry() { GradingStandard = GradingStandard.Name, TimeDate = TimeDate, Completed = 0, ProductPart = Labels[0].MainWindow.V275.Commands.Product.part, CameraMAC = Labels[0].MainWindow.V275_MAC };
+
+            using (var session = new NHibernateHelper().OpenSession())
+            {
+                if (session != null)
+                {
+                    using (var transaction = session.BeginTransaction())
+                    {
+                        var run = new ORM_Test.RunLedger(JsonConvert.SerializeObject(Labels[0].LabelTemplate), Labels[0].MainWindow.V275_MAC, Labels[0].MainWindow.V275.Commands.Product.part);
+
+                        session.Save(run);
+                        transaction.Commit();
+
+                        RunId = run.Id;
+                    }
+                }
+
+
+            }
+
             RequestedState = RunStates.RUNNING;
             Task.Run(() => Start());
         }
@@ -221,7 +245,7 @@ namespace LabelVal.RunControllers
                         Thread.Sleep(1);
                     };
 
-                    if(label.IsFaulted)
+                    if (label.IsFaulted)
                     {
                         Logger.Error("Label action faulted.");
                         RunEntry.Completed = -1;
@@ -229,7 +253,7 @@ namespace LabelVal.RunControllers
                         return false;
                     }
 
-                    
+
 
                     var row = new RunDatabase.Run()
                     {
@@ -243,7 +267,7 @@ namespace LabelVal.RunControllers
                     };
 
                     if (!label.MainWindow.IsDeviceSimulator)
-                        if(label.RepeatImage != null)
+                        if (label.RepeatImage != null)
                         {
                             //Compress the image to PNG
                             PngBitmapEncoder encoder = new PngBitmapEncoder();
@@ -263,6 +287,24 @@ namespace LabelVal.RunControllers
 
                     row.RepeatReport = JsonConvert.SerializeObject(label.RepeatReport);
                     RunDatabase.InsertOrReplace(row);
+
+                    using (var session = new NHibernateHelper().OpenSession())
+                    {
+                        if (session == null) break;
+
+                        using (var transaction = session.BeginTransaction())
+                        {
+                            var rep = new ORM_Test.Report(label.RepeatReport);
+                            rep.repeatImage = label.RepeatImage;
+                            rep.voidRepeat = rep.repeat;
+                            rep.runId = RunId;
+                            //var run = new ORM_Test.RunLedger(JsonConvert.SerializeObject(sRow.LabelTemplate), label.MainWindow.V275_MAC, label.MainWindow.V275_NodeNumber.ToString());
+
+
+                            session.Save(rep);
+                            transaction.Commit();
+                        }
+                    }
                 }
 
             }
@@ -281,9 +323,10 @@ namespace LabelVal.RunControllers
             return true;
         }
 
+
         private bool HasSequencing(LabelControlViewModel label)
         {
-            foreach(var sect in label.LabelTemplate.sectors)
+            foreach (var sect in label.LabelTemplate.sectors)
             {
                 if (sect.matchSettings != null)
                     if (sect.matchSettings.matchMode >= 3 && sect.matchSettings.matchMode <= 6)
@@ -295,7 +338,7 @@ namespace LabelVal.RunControllers
 
         private void Stopped()
         {
-            if(CurrentLabelCount != 0)
+            if (CurrentLabelCount != 0)
                 UpdateRunEntries();
             else
                 RemoveRunEntries();

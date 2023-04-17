@@ -40,7 +40,11 @@ namespace LabelVal.ORM_Test
                     .Database(
                         SQLiteConfiguration.Standard.UsingFile($"{App.Settings.GetValue($"ORMTest_ConnectionString_Database{App.Settings.GetValue("ORMTest_SelectedSQLConfiguration", "")}", "")}.sqlite")
                     )
-                    .Mappings(m => m.FluentMappings.Add<LabelVal.ORM_Test.ReportMap>())
+                    .Mappings(m =>
+                    {
+                        m.FluentMappings.Add<LabelVal.ORM_Test.ReportMap>();
+                        m.FluentMappings.Add<LabelVal.ORM_Test.RunLedgerMap>();
+                    })
                     //.Where(t => t.Namespace == "LabelVal.ORM_Test.ClassMaps")))
                     .ExposeConfiguration(cfg => new SchemaUpdate(cfg).Execute(true, true))
                     .BuildSessionFactory();

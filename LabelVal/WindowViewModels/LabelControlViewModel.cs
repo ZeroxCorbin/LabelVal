@@ -420,8 +420,6 @@ namespace LabelVal.WindowViewModels
                 }   
             }
 
-            long id = SaveReport();
-
             //if (!isRunning)
             //{
             List<SectorControlViewModel> tempSectors = new List<SectorControlViewModel>();
@@ -470,26 +468,6 @@ namespace LabelVal.WindowViewModels
             RepeatOverlay = CreateRepeatOverlay(true, true);
 
             return true;
-        }
-
-        private long SaveReport()
-        {
-            using (var session = new NHibernateHelper().OpenSession())
-            {
-                if (session == null) return -1;
-
-                using (var transaction = session.BeginTransaction())
-                {
-                    var rep = new ORM_Test.Report(RepeatReport);
-                    rep.repeatImage = RepeatImage;
-
-                    session.Save(rep);
-                    transaction.Commit();
-
-                    return rep.id;
-                }
-            }
-            
         }
 
         public void RedoFiducialAction(object parameter)
