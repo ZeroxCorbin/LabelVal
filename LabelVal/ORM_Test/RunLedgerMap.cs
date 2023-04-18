@@ -19,7 +19,7 @@ namespace LabelVal.ORM_Test
             Map(x => x.ComputerId);
             Map(x => x.SerialNumber);
             Map(x => x.Mac);
-            Map(x => x.Job);
+            Map(x => x.Job).Length(500000);
 
         }
 

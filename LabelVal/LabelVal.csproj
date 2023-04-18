@@ -167,7 +167,7 @@
     <Compile Include="ORM_Test\ReportMap.cs" />
     <Compile Include="ORM_Test\RunLedger.cs" />
     <Compile Include="ORM_Test\RunLedgerMap.cs" />
-    <Compile Include="ORM_Test\StandardsDatabase.cs" />
+    <Compile Include="ORM_Test\ORMTestingDatabase.cs" />
     <Compile Include="RunControllers\RunController.cs" />
     <Compile Include="Printer\PrintControl.cs" />
     <Compile Include="RunViewModels\CompareSettingsControlViewModel.cs" />

@@ -72,6 +72,8 @@ namespace LabelVal.RunControllers
             StandardsDatabase = standardsDatabase;
             GradingStandard = Labels[0].GradingStandard;
 
+            RunEntry = new RunLedgerDatabase.RunEntry() { GradingStandard = GradingStandard.Name, TimeDate = TimeDate, Completed = 0, ProductPart = Labels[0].MainWindow.V275.Commands.Product.part, CameraMAC = Labels[0].MainWindow.V275_MAC };
+
             if (!OpenDatabases())
                 return null;
 
@@ -135,7 +137,6 @@ namespace LabelVal.RunControllers
         {
             TimeDate = DateTime.UtcNow.Ticks;
 
-            RunEntry = new RunLedgerDatabase.RunEntry() { GradingStandard = GradingStandard.Name, TimeDate = TimeDate, Completed = 0, ProductPart = Labels[0].MainWindow.V275.Commands.Product.part, CameraMAC = Labels[0].MainWindow.V275_MAC };
 
             using (var session = new NHibernateHelper().OpenSession())
             {

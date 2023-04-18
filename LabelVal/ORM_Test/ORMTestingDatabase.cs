@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace LabelVal.ORM_Test
 {
-    public class Database : IDisposable
+    public class ORMTestingDatabase : IDisposable
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -74,7 +74,7 @@ namespace LabelVal.ORM_Test
             Connection = null;
         }
 
-        public Database(string filePath, bool isConnectionPersistent = true)
+        public ORMTestingDatabase(string filePath, bool isConnectionPersistent = true)
         {
             FilePath = filePath;
             IsConnectionPersistent = isConnectionPersistent;
@@ -151,14 +151,14 @@ namespace LabelVal.ORM_Test
         //    if (!IsConnectionPersistent)
         //        Close();
         //}
-        public string Select(string tableName, string statement)
+        public string Select(string statement)
         {
             string json = null;
 
             if (!Open())
                 return json;
-            if (!TableExists(tableName))
-                return json;
+            //if (!TableExists(tableName))
+            //    return json;
 
             using (SQLiteCommand command = new SQLiteCommand(statement, Connection))
 
@@ -183,6 +183,42 @@ namespace LabelVal.ORM_Test
 
             return json;
         }
+
+        public DataTable SelectDataTable (string statement)
+        {
+            var dataTable = new DataTable();
+           // string json = null;
+
+            if (!Open())
+                return dataTable;
+            //if (!TableExists(tableName))
+            //    return json;
+
+            using (SQLiteCommand command = new SQLiteCommand(statement, Connection))
+
+                try
+                {
+                    using (SQLiteDataReader rdr = command.ExecuteReader())
+                        if (rdr.HasRows)
+                        {
+                            
+                            dataTable.Load(rdr);
+                        }
+                    //while (rdr.Read())
+                    //    row = new Row(rdr);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(ex);
+                }
+
+
+            if (!IsConnectionPersistent)
+                Close();
+
+            return dataTable;
+        }
+
 
         private String sqlDatoToJson(SQLiteDataReader dataReader)
         {
