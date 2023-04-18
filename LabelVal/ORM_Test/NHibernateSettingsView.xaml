@@ -59,7 +59,9 @@
 
                     <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="3">
                         <Label Content="SQL Statement" MinWidth="100"/>
-                        <TextBox Text="{Binding SQLStatement}" TextWrapping="Wrap" Width="600"/>
+                        <Border BorderThickness="2" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" Margin="5">
+                            <TextBox Text="{Binding SQLStatement}" TextWrapping="Wrap" Width="600"/>
+                        </Border>
                     </StackPanel>
 
                     <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="3" HorizontalAlignment="Center">
@@ -69,7 +71,10 @@
                     
                     <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="3">
                         <Label Content="SQL Response" MinWidth="100"/>
-                        <json:JsonViewer JSON="{Binding SQLResponse}" Width="600" TitleVisible="False"/>
+                        <!--<json:JsonViewer JSON="{Binding SQLResponse}" Width="600" TitleVisible="False"/>-->
+                        <Border BorderThickness="2" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" Margin="5">
+                            <DataGrid ItemsSource="{Binding DataTable}" MaxWidth="1024" MaxColumnWidth="420"/>
+                        </Border>
                     </StackPanel>
                     
 

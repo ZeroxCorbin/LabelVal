@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data;
 using System.Drawing.Printing;
 using System.Linq;
 using System.Reflection;
@@ -62,6 +63,16 @@ namespace LabelVal.ORM_Test
             }
         }
 
+        public DataTable DataTable
+        {
+            get => App.Settings.GetValue<DataTable>("ORMTest_DataTable", null);
+            set
+            {
+                App.Settings.SetValue("ORMTest_DataTable", value);
+                OnPropertyChanged("DataTable");
+            }
+        }
+
 
         public string Server { get => App.Settings.GetValue($"ORMTest_ConnectionString_Server{SQLConfiguration}", ""); set { App.Settings.SetValue($"ORMTest_ConnectionString_Server{SQLConfiguration}", value); OnPropertyChanged("Server"); } }
         public uint Port { get => App.Settings.GetValue<uint>($"ORMTest_ConnectionString_Port{SQLConfiguration}", 0); set { App.Settings.SetValue($"ORMTest_ConnectionString_Port{SQLConfiguration}", value); OnPropertyChanged("Port"); } }
@@ -80,33 +91,45 @@ namespace LabelVal.ORM_Test
 
         private void ExecuteStatementAction(object obj)
         {
-            if (SQLConfiguration == "SQLiteConfiguration")
+
+            using (var db = new ORMTestingDatabase($"{App.Settings.GetValue($"ORMTest_ConnectionString_DatabaseSQLiteConfiguration", "")}.sqlite", false))
             {
-                using (var db = new Database($"{Database}.sqlite", false))
+                if (SQLStatement.StartsWith("select", StringComparison.CurrentCultureIgnoreCase))
                 {
-                    if (SQLStatement.StartsWith("select", StringComparison.CurrentCultureIgnoreCase))
-                    {
-                        var str = db.Select("Report", SQLStatement);
 
-                        if (string.IsNullOrEmpty(str))
-                        {
-                            SQLResponse = "{}";
-                            return;
-                        }
+                    var dt = db.SelectDataTable(SQLStatement);
 
-                        var data = JsonConvert.DeserializeObject<List<Report>>(str);
+                    if(dt.Columns.Contains("REPEATIMAGE"))
+                        foreach(DataRow row in dt.Rows)
+                            row.SetField<string>("REPEATIMAGE", null);
 
-                        foreach (var dat in data)
-                        {
-                            dat.repeatImage = null;
-                        }
-                        SQLResponse = JsonConvert.SerializeObject(data);
-                    }
+                    DataTable = dt;
+                    //SQLResponse = JsonConvert.SerializeObject(dt);
+                    //if (string.IsNullOrEmpty(str))
+                    //{
+                    //    SQLResponse = "{}";
+                    //    return;
+                    //}
+
+                    //if (SQLStatement.Contains("FROM Report"))
+                    //{
+                    //    var data = JsonConvert.DeserializeObject<List<Report>>(str);
+
+                    //    foreach (var dat in data)
+                    //    {
+                    //        dat.repeatImage = null;
+                    //    }
+
+                    //    SQLResponse = JsonConvert.SerializeObject(data);
+                    //}
+                    //else
+                    //{
+                    //    SQLResponse = str;
+                    //}
+
                 }
 
             }
-
-
         }
 
         private void LoadSQLConfigurations()

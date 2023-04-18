@@ -71,7 +71,11 @@ namespace LabelVal.ORM_Test
                 {
                     _sessionFactory = (ISessionFactory)Fluently.Configure()
                     .Database(connection)
-                    .Mappings(m => m.FluentMappings.Add<LabelVal.ORM_Test.ReportMap>())
+                    .Mappings(m =>
+                    {
+                        m.FluentMappings.Add<LabelVal.ORM_Test.ReportMap>();
+                        m.FluentMappings.Add<LabelVal.ORM_Test.RunLedgerMap>();
+                    })
                     .ExposeConfiguration(cfg => new SchemaUpdate(cfg).Execute(true, true))
                     .BuildSessionFactory();
                 }
@@ -98,7 +102,11 @@ namespace LabelVal.ORM_Test
                 {
                     _sessionFactory = (ISessionFactory)Fluently.Configure()
                     .Database(connection)
-                    .Mappings(m => m.FluentMappings.Add<LabelVal.ORM_Test.ReportMap>())
+                    .Mappings(m =>
+                    {
+                        m.FluentMappings.Add<LabelVal.ORM_Test.ReportMap>();
+                        m.FluentMappings.Add<LabelVal.ORM_Test.RunLedgerMap>();
+                    })
                     .ExposeConfiguration(cfg => new SchemaUpdate(cfg).Execute(true, true))
                     .BuildSessionFactory();
                 }
@@ -123,7 +131,11 @@ namespace LabelVal.ORM_Test
                 {
                     _sessionFactory = (ISessionFactory)Fluently.Configure()
                     .Database(connection)
-                    .Mappings(m => m.FluentMappings.Add<LabelVal.ORM_Test.ReportMap>())
+                    .Mappings(m =>
+                    {
+                        m.FluentMappings.Add<LabelVal.ORM_Test.ReportMap>();
+                        m.FluentMappings.Add<LabelVal.ORM_Test.RunLedgerMap>();
+                    })
                     .ExposeConfiguration(cfg => new SchemaUpdate(cfg).Execute(true, true))
                     .BuildSessionFactory();
                 }
@@ -148,7 +160,11 @@ namespace LabelVal.ORM_Test
                 {
                     _sessionFactory = (ISessionFactory)Fluently.Configure()
                     .Database(connection)
-                    .Mappings(m => m.FluentMappings.Add<LabelVal.ORM_Test.ReportMap>())
+                    .Mappings(m =>
+                    {
+                        m.FluentMappings.Add<LabelVal.ORM_Test.ReportMap>();
+                        m.FluentMappings.Add<LabelVal.ORM_Test.RunLedgerMap>();
+                    })
                     .ExposeConfiguration(cfg => new SchemaUpdate(cfg).Execute(true, true))
                     .BuildSessionFactory();
                 }
