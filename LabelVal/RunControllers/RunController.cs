@@ -72,6 +72,8 @@ namespace LabelVal.RunControllers
             StandardsDatabase = standardsDatabase;
             GradingStandard = Labels[0].GradingStandard;
 
+            TimeDate = DateTime.UtcNow.Ticks;
+
             RunEntry = new RunLedgerDatabase.RunEntry() { GradingStandard = GradingStandard.Name, TimeDate = TimeDate, Completed = 0, ProductPart = Labels[0].MainWindow.V275.Commands.Product.part, CameraMAC = Labels[0].MainWindow.V275_MAC };
 
             if (!OpenDatabases())
@@ -135,9 +137,6 @@ namespace LabelVal.RunControllers
 
         public void StartAsync()
         {
-            TimeDate = DateTime.UtcNow.Ticks;
-
-
             using (var session = new NHibernateHelper().OpenSession())
             {
                 if (session != null)
@@ -291,19 +290,20 @@ namespace LabelVal.RunControllers
 
                     using (var session = new NHibernateHelper().OpenSession())
                     {
-                        if (session == null) break;
-
-                        using (var transaction = session.BeginTransaction())
+                        if (session != null)
                         {
-                            var rep = new ORM_Test.Report(label.RepeatReport);
-                            rep.repeatImage = label.RepeatImage;
-                            rep.voidRepeat = rep.repeat;
-                            rep.runId = RunId;
-                            //var run = new ORM_Test.RunLedger(JsonConvert.SerializeObject(sRow.LabelTemplate), label.MainWindow.V275_MAC, label.MainWindow.V275_NodeNumber.ToString());
+                            using (var transaction = session.BeginTransaction())
+                            {
+                                var rep = new ORM_Test.Report(label.RepeatReport);
+                                rep.repeatImage = label.RepeatImage;
+                                rep.voidRepeat = rep.repeat;
+                                rep.runId = RunId;
+                                //var run = new ORM_Test.RunLedger(JsonConvert.SerializeObject(sRow.LabelTemplate), label.MainWindow.V275_MAC, label.MainWindow.V275_NodeNumber.ToString());
 
 
-                            session.Save(rep);
-                            transaction.Commit();
+                                session.Save(rep);
+                                transaction.Commit();
+                            }
                         }
                     }
                 }
