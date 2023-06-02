@@ -140,16 +140,6 @@
       <DependentUpon>ImageViewerDialogView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\ImageViewerDialogViewModel.cs" />
-    <Compile Include="JSON\JsonViewer.xaml.cs">
-      <DependentUpon>JsonViewer.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="JSON\TemplateSelectors\JPropertyDataTemplateSelector.cs" />
-    <Compile Include="JSON\ValueConverters\ComplexPropertyMethodToValueConverter.cs" />
-    <Compile Include="JSON\ValueConverters\JArrayLengthConverter.cs" />
-    <Compile Include="JSON\ValueConverters\JPropertyTypeToColorConverter.cs" />
-    <Compile Include="JSON\ValueConverters\JValueConverter.cs" />
-    <Compile Include="JSON\ValueConverters\JValueTypeToColorConverter.cs" />
-    <Compile Include="JSON\ValueConverters\MethodToValueConverter.cs" />
     <Compile Include="LVS-95xx\LVS95xx_SerialPort.cs" />
     <Compile Include="LVS-95xx\SerialPortController.cs" />
     <Compile Include="LVS-95xx\LVS95xx_SerialPortSetup.cs" />
@@ -242,10 +232,6 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Dialogs\ImageViewerDialogView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="JSON\JsonViewer.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -1387,8 +1373,6 @@
     <Content Include="LVS-95xx\com0com\Setup_com0com_x86_signed.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Resource Include="JSON\Resources\expand28.png" />
-    <Resource Include="JSON\Resources\two326.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Assets\Standards\GS1 TABLE 1\300\" />

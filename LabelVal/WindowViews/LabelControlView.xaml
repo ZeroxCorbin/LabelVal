@@ -6,7 +6,7 @@
             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
             xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
             xmlns:local="clr-namespace:LabelVal.WindowViews"
-             xmlns:json="clr-namespace:JsonViewer"
+             xmlns:json="clr-namespace:JSONViewer_WPF;assembly=JSONViewer_WPF"
             xmlns:ViewModels="clr-namespace:LabelVal.WindowViewModels"
             xmlns:Converters="clr-namespace:LabelVal.Converters"
               xmlns:V275Converters="clr-namespace:LabelVal.V275.Converters"
@@ -101,7 +101,7 @@
                 <Border Padding="3" BorderThickness="2"
                         BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
                         Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-                    <json:JsonViewer x:Name="RepeatResultJsonView"/>
+                    <json:JsonViewer x:Name="RepeatResultJsonView" MinWidth="300"/>
                 </Border>
             </Popup>
             <Popup x:Name="LabelJsonPopup" StaysOpen="False">
@@ -112,12 +112,12 @@
                     <Border Padding="3" BorderThickness="2"
                             BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
                             Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-                        <json:JsonViewer x:Name="LabelJobJsonView"/>
+                        <json:JsonViewer x:Name="LabelJobJsonView" MinWidth="300"/>
                     </Border>
                     <Border Padding="3" BorderThickness="2"
                             BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
                             Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-                        <json:JsonViewer x:Name="LabelResultJsonView"/>
+                        <json:JsonViewer x:Name="LabelResultJsonView" MinWidth="300"/>
                     </Border>
                 </StackPanel>
             </Popup>

@@ -47,6 +47,7 @@ namespace LabelVal.RunControllers
         public int LoopCount { get; private set; }
         public int CurrentLoopCount { get; private set; }
         public int CurrentLabelCount { get; private set; }
+        private long RunId { get; set; }
 
         private ObservableCollection<LabelControlViewModel> Labels { get; set; }
         private StandardEntryModel GradingStandard { get; set; }
@@ -133,8 +134,6 @@ namespace LabelVal.RunControllers
 
         }
 
-        private long RunId { get; set; }
-
         public void StartAsync()
         {
             using (var session = new NHibernateHelper().OpenSession())
@@ -151,8 +150,6 @@ namespace LabelVal.RunControllers
                         RunId = run.Id;
                     }
                 }
-
-
             }
 
             RequestedState = RunStates.RUNNING;
@@ -253,8 +250,6 @@ namespace LabelVal.RunControllers
                         return false;
                     }
 
-
-
                     var row = new RunDatabase.Run()
                     {
                         LabelTemplate = sRow.LabelTemplate,
@@ -324,7 +319,6 @@ namespace LabelVal.RunControllers
             return true;
         }
 
-
         private bool HasSequencing(LabelControlViewModel label)
         {
             foreach (var sect in label.LabelTemplate.sectors)
@@ -335,7 +329,6 @@ namespace LabelVal.RunControllers
             }
             return false;
         }
-
 
         private void Stopped()
         {
