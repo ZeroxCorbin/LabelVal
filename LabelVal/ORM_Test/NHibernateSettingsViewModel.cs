@@ -92,7 +92,7 @@ namespace LabelVal.ORM_Test
         private void ExecuteStatementAction(object obj)
         {
 
-            using (var db = new ORMTestingDatabase($"{App.Settings.GetValue($"ORMTest_ConnectionString_DatabaseSQLiteConfiguration", "")}.sqlite", false))
+            using (var db = new ORMTestingDatabase($"_ORMTesting.sqlite", false))
             {
                 if (SQLStatement.StartsWith("select", StringComparison.CurrentCultureIgnoreCase))
                 {
