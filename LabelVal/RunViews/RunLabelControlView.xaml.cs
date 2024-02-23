@@ -78,8 +78,8 @@ namespace LabelVal.RunViews
             {
                 if (((RunLabelControlViewModel)DataContext).Run != null)
                 {
-                    LabelJobJsonView.Load(((RunLabelControlViewModel)DataContext).Run.LabelTemplate, "Template");
-                    LabelResultJsonView.Load(((RunLabelControlViewModel)DataContext).Run.LabelReport, "Results");
+                    LabelJobJsonView.Load(((RunLabelControlViewModel)DataContext).Run.LabelTemplate);
+                    LabelResultJsonView.Load(((RunLabelControlViewModel)DataContext).Run.LabelReport);
                     LabelJsonPopup.PlacementTarget = (Button)sender;
                     LabelJsonPopup.IsOpen = true;
                 }
@@ -100,7 +100,7 @@ namespace LabelVal.RunViews
             {
                 if (((RunLabelControlViewModel)DataContext).Run.RepeatReport != null)
                 {
-                    RepeatResultJsonView.Load(((RunLabelControlViewModel)DataContext).Run.RepeatReport, "Results");
+                    RepeatResultJsonView.Load(((RunLabelControlViewModel)DataContext).Run.RepeatReport);
                     RepeatJsonPopup.PlacementTarget = (Button)sender;
                     RepeatJsonPopup.IsOpen = true;
                 }

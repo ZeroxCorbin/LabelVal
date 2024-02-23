@@ -70,6 +70,7 @@
                 </Border>
 
             </Popup>
+            
             <Popup x:Name="RepeatSectorsDetailsPopup" StaysOpen="False">
                 <Popup.Style>
                     <Style TargetType="{x:Type Popup}"/>
@@ -94,6 +95,7 @@
                     </ScrollViewer>
                 </Border>
             </Popup>
+            
             <Popup x:Name="RepeatJsonPopup" StaysOpen="False">
                 <Popup.Style>
                     <Style TargetType="{x:Type Popup}"/>
@@ -104,6 +106,7 @@
                     <json:JsonViewer x:Name="RepeatResultJsonView" MinWidth="300"/>
                 </Border>
             </Popup>
+            
             <Popup x:Name="LabelJsonPopup" StaysOpen="False">
                 <Popup.Style>
                     <Style TargetType="{x:Type Popup}"/>

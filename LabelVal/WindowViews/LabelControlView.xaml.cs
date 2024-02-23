@@ -95,8 +95,8 @@ namespace LabelVal.WindowViews
             {
                 if (((LabelControlViewModel)DataContext).CurrentRow != null)
                 {
-                    LabelJobJsonView.Load(((LabelControlViewModel)DataContext).CurrentRow.LabelTemplate, "Template");
-                    LabelResultJsonView.Load(((LabelControlViewModel)DataContext).CurrentRow.LabelReport, "Results");
+                    LabelJobJsonView.Load(((LabelControlViewModel)DataContext).CurrentRow.LabelTemplate);
+                    LabelResultJsonView.Load(((LabelControlViewModel)DataContext).CurrentRow.LabelReport);
                     LabelJsonPopup.PlacementTarget = (Button)sender;
                     LabelJsonPopup.IsOpen = true;
                 }
@@ -117,7 +117,7 @@ namespace LabelVal.WindowViews
             {
                 if (((LabelControlViewModel)DataContext).RepeatReport != null)
                 {
-                    RepeatResultJsonView.Load(Newtonsoft.Json.JsonConvert.SerializeObject(((LabelControlViewModel)DataContext).RepeatReport), "Results");
+                    RepeatResultJsonView.Load(Newtonsoft.Json.JsonConvert.SerializeObject(((LabelControlViewModel)DataContext).RepeatReport));
                     RepeatJsonPopup.PlacementTarget = (Button)sender;
                     RepeatJsonPopup.IsOpen = true;
                 }
