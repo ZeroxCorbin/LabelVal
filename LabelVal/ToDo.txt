@@ -1,0 +1,3 @@
+﻿
+
+When viewing the run results and it is a simulation run the sector outlines are not shown. Maybe show the repeat and not the label?

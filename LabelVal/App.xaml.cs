@@ -1,16 +1,15 @@
 ﻿using ControlzEx.Theming;
+using LabelVal.Databases;
 using System;
-using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Security.Principal;
 using System.Threading.Tasks;
 using System.Windows;
+using V275_REST_lib.Models;
 
 namespace LabelVal
 {
@@ -48,6 +47,8 @@ namespace LabelVal
 
         public App()
         {
+            //   ExtractRunDetails();
+
             SetupExceptionHandling();
 
             Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
@@ -61,8 +62,6 @@ namespace LabelVal
 
             if (!Directory.Exists(RunsRoot))
                 _ = Directory.CreateDirectory(RunsRoot);
-
-
 
             var config = new NLog.Config.LoggingConfiguration();
             // Targets where to log to: File and Console
@@ -87,7 +86,7 @@ namespace LabelVal
             catch (Exception ex)
             {
                 NLog.LogManager.GetCurrentClassLogger().Error(ex);
-                this.Shutdown();
+                Shutdown();
                 return;
             }
 
@@ -96,7 +95,7 @@ namespace LabelVal
             if (Settings == null)
             {
                 NLog.LogManager.GetCurrentClassLogger().Error("The ApplicationSettings database is null. Shutdown!");
-                this.Shutdown();
+                Shutdown();
             }
         }
 
@@ -113,19 +112,15 @@ namespace LabelVal
             ThemeManager.Current.ThemeChanged += Current_ThemeChanged;
             ThemeManager.Current.ThemeSyncMode = ThemeSyncMode.SyncWithAppMode;
         }
-        private void Current_ThemeChanged(object sender, ThemeChangedEventArgs e)
-        {
-            App.Settings.SetValue("App.Theme", e.NewTheme.Name);
-        }
+        private void Current_ThemeChanged(object sender, ThemeChangedEventArgs e) => App.Settings.SetValue("App.Theme", e.NewTheme.Name);
 
         public static void ChangeColorBlindTheme(bool isColorBlind)
         {
             App.Settings.SetValue("App.IsColorBlind", isColorBlind);
 
-            if (isColorBlind)
-                Application.Current.Resources["CB_Green"] = Application.Current.Resources["ColorBlindBrush1"];
-            else
-                Application.Current.Resources["CB_Green"] = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Green);
+            Application.Current.Resources["CB_Green"] = isColorBlind
+                ? Application.Current.Resources["ColorBlindBrush1"]
+                : new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Green);
         }
 
         protected override void OnExit(ExitEventArgs e)
@@ -155,10 +150,10 @@ namespace LabelVal
 
         private void LogUnhandledException(Exception exception, string source)
         {
-            string message = $"Unhandled exception ({source})";
+            var message = $"Unhandled exception ({source})";
             try
             {
-                System.Reflection.AssemblyName assemblyName = System.Reflection.Assembly.GetExecutingAssembly().GetName();
+                var assemblyName = System.Reflection.Assembly.GetExecutingAssembly().GetName();
                 message = string.Format("Unhandled exception in {0} v{1}", assemblyName.Name, assemblyName.Version);
             }
             catch (Exception ex)
@@ -170,11 +165,10 @@ namespace LabelVal
                 NLog.LogManager.GetCurrentClassLogger().Error(exception, message);
             }
 
-            MessageBox.Show($"{message}\r\n{exception.Message}", "Unhandled Exception!", MessageBoxButton.OK);
-            this.Shutdown();
+            _ = MessageBox.Show($"{message}\r\n{exception.Message}", "Unhandled Exception!", MessageBoxButton.OK);
+            Shutdown();
 
         }
-
 
         private void FixFiducial()
         {
@@ -192,11 +186,11 @@ namespace LabelVal
         private void RedrawFiducial(string path)
         {
             // load your photo
-            using (FileStream fs = new FileStream(path, FileMode.Open))
+            using (var fs = new FileStream(path, FileMode.Open))
             {
-                Bitmap photo = (Bitmap)Bitmap.FromStream(fs);
+                var photo = (Bitmap)Bitmap.FromStream(fs);
                 fs.Close();
-                Bitmap newmap = new Bitmap(photo.Width, photo.Height);
+                var newmap = new Bitmap(photo.Width, photo.Height);
                 newmap.SetResolution(photo.HorizontalResolution, photo.VerticalResolution);
                 //if (photo.Height != 2400)
                 //    File.AppendAllText($"{UserDataDirectory}\\Small Images List", Path.GetFileName(path));
@@ -222,7 +216,6 @@ namespace LabelVal
                     newmap.Save(path, ImageFormat.Png);
                 }
             }
-
         }
 
         private void FixRotation()
@@ -240,19 +233,78 @@ namespace LabelVal
         private void RotateImage(string path)
         {
             // load your photo
-            using (FileStream fs = new FileStream(path, FileMode.Open))
+            using (var fs = new FileStream(path, FileMode.Open))
             {
-                Image photo = Bitmap.FromStream(fs);
+                var photo = Bitmap.FromStream(fs);
                 fs.Close();
 
                 photo.RotateFlip(RotateFlipType.Rotate180FlipNone);
                 photo.Save(path, ImageFormat.Png);
 
             }
-
         }
-        // create an image of the desired size
 
+        private class FinalReport
+        {
+
+            public string LogName { get; set; }
+            public string TemplateName { get; set; }
+            public string Operator { get; set; }
+
+            public string StartTime { get; set; }
+            public string EndTime { get; set; }
+
+            public int Inspected { get; set; }
+            public int GoodAccepted { get; set; }
+            public int Failed { get; set; }
+            public int FailedAccepted { get; set; }
+            public int Removed { get; set; }
+            public int Voided { get; set; }
+        }
+        private void ExtractRunDetails()
+        {
+            var db = new V275RunDatabase().Open(@"C:\Users\Jack\GitHub\LabelVal\LabelVal\bin\Debug\_p-000334 rev. 2_RunLog_Run10.db");
+            var entries = db.SelectAllRunEntries().OrderBy(v => v.cycleID).ToList();
+
+            var final = new FinalReport();
+
+            var first = true;
+            foreach (var entry in entries)
+            {
+                var report = Newtonsoft.Json.JsonConvert.DeserializeObject<Report>(entry.reportData);
+
+                if (first)
+                {
+                    final.LogName = "p-000334 rev. 2_RunLog_Run10";
+                    final.TemplateName = "p-000334 rev. 2";
+                    final.Operator = "epalacio";
+                    final.StartTime = entry.timeStamp;
+                    final.EndTime = entries.Last().timeStamp;
+                    final.Inspected = entries.Count;
+                    first = false;
+                }
+
+                if (report.inspectLabel.result == "pass")
+                {
+                    final.GoodAccepted++;
+                }
+                else
+                {
+                    final.Failed++;
+                    if (report.inspectLabel.userAction.action == "accepted")
+                        final.FailedAccepted++;
+                    else if (report.inspectLabel.userAction.action == "removed")
+                        final.Removed++;
+                    else if (report.inspectLabel.userAction.action == "voided")
+                        final.Voided++;
+                }
+            }
+
+
+            File.WriteAllText("result.json", Newtonsoft.Json.JsonConvert.SerializeObject(final));
+        }
+
+        // create an image of the desired size
 
         // save image to file or stream
 

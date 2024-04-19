@@ -120,6 +120,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Databases\V275RunDatabase.cs" />
     <Compile Include="ORM_Test\NHibernateHelper.cs" />
     <Compile Include="Converters\BytesToImageConverter.cs" />
     <Compile Include="Converters\DoubleToStringConverter.cs" />
@@ -214,6 +215,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Resource Include="ToDo.txt" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -1400,9 +1402,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Clowd.Squirrel">
-      <Version>2.9.42</Version>
-    </PackageReference>
     <PackageReference Include="ControlzEx">
       <Version>5.0.2</Version>
     </PackageReference>
