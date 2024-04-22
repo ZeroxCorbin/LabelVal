@@ -1156,7 +1156,7 @@ namespace LabelVal.WindowViewModels
                         return;
                     }
 
-                int i = await Repeats[repeat].Label.Load();
+                int i = await Repeats[repeat].Label.LoadTask();
 
                 if (i == 0)
                 {
@@ -1183,7 +1183,7 @@ namespace LabelVal.WindowViewModels
             }
 
             Logger.Info("Reading label results and Image.");
-            if (!await Repeats[repeat].Label.Read(repeat))
+            if (!await Repeats[repeat].Label.ReadTask(repeat))
             {
                 ProcessRepeatFault(repeat);
                 return;

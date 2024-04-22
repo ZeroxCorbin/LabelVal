@@ -1159,6 +1159,7 @@
     <ProjectReference Include="..\..\V275_REST_Lib\V275_REST_Lib.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
     <PackageReference Include="ControlzEx">
       <Version>5.0.2</Version>
     </PackageReference>

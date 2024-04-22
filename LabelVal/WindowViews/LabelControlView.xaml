@@ -246,7 +246,7 @@
 
                 <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
 
-                    <Button Content="Clear" Command="{Binding ClearStored}" Margin="2">
+                    <Button Content="Clear" Command="{Binding ClearStoredCommand}" Margin="2">
                         <Button.Style>
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
@@ -352,7 +352,7 @@
                         </Button.Style>
                     </Button>
 
-                    <Button Content="Clear" Command="{Binding ClearRead}" Margin="2"
+                    <Button Content="Clear" Command="{Binding ClearReadCommand}" Margin="2"
                             Visibility="{Binding IsStore, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
                     <Button Content="Read" Command="{Binding ReadCommand}" Margin="2" 

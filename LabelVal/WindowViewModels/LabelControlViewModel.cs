@@ -1,4 +1,6 @@
-﻿using LabelVal.Databases;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using LabelVal.Databases;
 using LabelVal.Models;
 using LabelVal.Utilities;
 using MahApps.Metro.Controls.Dialogs;
@@ -13,14 +15,13 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
 using System.Windows.Media;
 using V275_REST_lib;
 using V275_REST_lib.Models;
 
 namespace LabelVal.WindowViewModels;
 
-public class LabelControlViewModel : Core.BaseViewModel
+public partial class LabelControlViewModel : ObservableObject
 {
     public delegate void PrintingDelegate(LabelControlViewModel label, string type);
     public event PrintingDelegate Printing;
@@ -31,42 +32,21 @@ public class LabelControlViewModel : Core.BaseViewModel
     public delegate void StatusChange(string status);
     public event StatusChange StatusChanged;
 
-    private string labelImageUID;
-    public string LabelImageUID { get => labelImageUID; set => SetProperty(ref labelImageUID, value); }
+    [ObservableProperty] private string labelImageUID;
+    [ObservableProperty] private string labelComment;
+    [ObservableProperty] private byte[] labelImage;
+    [ObservableProperty] private byte[] repeatImage = null;
+    [ObservableProperty] private DrawingImage repeatOverlay;
+    [ObservableProperty] private StandardsDatabase.Row currentRow;
 
-    private string labelComment;
-    public string LabelComment { get => labelComment; set => SetProperty(ref labelComment, value); }
-
-    private byte[] labelImage;
-    public byte[] LabelImage { get => labelImage; set => SetProperty(ref labelImage, value); }
-
-    private byte[] repeatImage = null;
-    public byte[] RepeatImage { get => repeatImage; set => SetProperty(ref repeatImage, value); }
-
-    private DrawingImage repeatOverlay;
-    public DrawingImage RepeatOverlay { get => repeatOverlay; set => SetProperty(ref repeatOverlay, value); }
-
-    private StandardsDatabase.Row currentRow;
-    public StandardsDatabase.Row CurrentRow { get => currentRow; set => SetProperty(ref currentRow, value); }
-
-    //private StandardEntryModel gradingStandard;
     public StandardEntryModel GradingStandard => MainWindow.SelectedStandard;
 
+    [ObservableProperty] private bool isGoldenRepeat;
+    [ObservableProperty] private int printCount = 1;
 
-    private bool isGoldenRepeat;
-    public bool IsGoldenRepeat { get => isGoldenRepeat; set => SetProperty(ref isGoldenRepeat, value); }
-
-    private int printCount = 1;
-    public int PrintCount { get => printCount; set => SetProperty(ref printCount, value); }
-
-    private ObservableCollection<SectorControlViewModel> labelSectors = [];
-    public ObservableCollection<SectorControlViewModel> LabelSectors { get => labelSectors; set => SetProperty(ref labelSectors, value); }
-
-    private ObservableCollection<SectorControlViewModel> repeatSectors = [];
-    public ObservableCollection<SectorControlViewModel> RepeatSectors { get => repeatSectors; set => SetProperty(ref repeatSectors, value); }
-
-    private ObservableCollection<SectorDifferenceViewModel> diffSectors = [];
-    public ObservableCollection<SectorDifferenceViewModel> DiffSectors { get => diffSectors; set => SetProperty(ref diffSectors, value); }
+    [ObservableProperty] private ObservableCollection<SectorControlViewModel> labelSectors = [];
+    [ObservableProperty] private ObservableCollection<SectorControlViewModel> repeatSectors = [];
+    [ObservableProperty] private ObservableCollection<SectorDifferenceViewModel> diffSectors = [];
 
     //public bool IsLoggedIn_Monitor
     //{
@@ -154,22 +134,9 @@ public class LabelControlViewModel : Core.BaseViewModel
     public Job RepeatTemplate { get; set; }
     public V275_REST_lib.Models.Report RepeatReport { get; private set; }
 
-    public ICommand PrintCommand { get; }
-    public ICommand SaveCommand { get; }
-    public ICommand ReadCommand { get; }
-    public ICommand StoreCommand { get; }
-    public ICommand LoadCommand { get; }
-    public ICommand InspectCommand { get; }
-
-    public ICommand ClearStored { get; }
-    public ICommand ClearRead { get; }
-
-    public ICommand RedoFiducial { get; }
-
-    private IDialogCoordinator DialogCoordinator => MainWindow.DialogCoordinator;
-
     public MainWindowViewModel MainWindow { get; set; }
 
+    private IDialogCoordinator DialogCoordinator => MainWindow.DialogCoordinator;
     public LabelControlViewModel(string imagePath, string imageComment, MainWindowViewModel mainWindow)
     {
         //dialogCoordinator = diag;
@@ -181,18 +148,6 @@ public class LabelControlViewModel : Core.BaseViewModel
         //GradingStandard = gradingStandard;
         //StandardsDatabase = standardsDatabase;
         //V275 = v275;
-
-        PrintCommand = new Core.RelayCommand(PrintAction, c => true);
-        SaveCommand = new Core.RelayCommand(SaveAction, c => true);
-        ReadCommand = new Core.RelayCommand(ReadAction, c => true);
-        StoreCommand = new Core.RelayCommand(StoreAction, c => true);
-        LoadCommand = new Core.RelayCommand(LoadAction, c => true);
-        InspectCommand = new Core.RelayCommand(InspectAction, c => true);
-
-        ClearStored = new Core.RelayCommand(ClearStoredAction, c => true);
-        ClearRead = new Core.RelayCommand(ClearReadAction, c => true);
-
-        RedoFiducial = new Core.RelayCommand(RedoFiducialAction, c => true);
 
         GetImage(imagePath);
         GetStored();
@@ -210,15 +165,6 @@ public class LabelControlViewModel : Core.BaseViewModel
     {
         LabelImage = File.ReadAllBytes(imagePath);
         LabelImageUID = ImageUtilities.ImageUID(LabelImage);
-    }
-
-    public void PrintAction(object parameter)
-    {
-        IsWorking = true;
-        IsFaulted = false;
-
-        BringIntoView?.Invoke();
-        Printing?.Invoke(this, (string)parameter);
     }
 
     private void GetStored()
@@ -255,12 +201,7 @@ public class LabelControlViewModel : Core.BaseViewModel
             {
                 var isWrongStandard = false;
                 if (jSec.type is "verify1D" or "verify2D")
-                    if (GradingStandard.IsGS1)
-                    {
-                        isWrongStandard = !jSec.gradingStandard.enabled || GradingStandard.TableID != jSec.gradingStandard.tableId;
-                    }
-                    else
-                        isWrongStandard = false;
+                    isWrongStandard = GradingStandard.IsGS1 && (!jSec.gradingStandard.enabled || GradingStandard.TableID != jSec.gradingStandard.tableId);
 
                 foreach (JObject rSec in JsonConvert.DeserializeObject<V275_REST_lib.Models.Report>(CurrentRow.LabelReport).inspectLabel.inspectSector)
                 {
@@ -291,7 +232,47 @@ public class LabelControlViewModel : Core.BaseViewModel
 
         RepeatOverlay = CreateRepeatOverlay(false, false);
     }
-    private async void StoreAction(object parameter)
+
+    [RelayCommand]
+    private void Print(object parameter)
+    {
+        IsWorking = true;
+        IsFaulted = false;
+
+        BringIntoView?.Invoke();
+        Printing?.Invoke(this, (string)parameter);
+    }
+    [RelayCommand]
+    private void Save(object parameter)
+    {
+        var par = (string)parameter;
+
+        SendTo95xxApplication();
+
+        var path = GetSaveFilePath();
+        if (string.IsNullOrEmpty(path)) return;
+        try
+        {
+            if (par == "repeat")
+            {
+                var bmp = ImageUtilities.ConvertToBmp(RepeatImage);
+                _ = SaveImageBytesToFile(path, bmp);
+                Clipboard.SetText(path);
+            }
+            else
+            {
+                var bmp = ImageUtilities.ConvertToBmp(LabelImage);
+                _ = SaveImageBytesToFile(path, bmp);
+                Clipboard.SetText(path);
+            }
+        }
+        catch (Exception)
+        {
+
+        }
+    }
+    [RelayCommand]
+    private async Task Store()
     {
         if (LabelSectors.Count > 0)
             if (await OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for this label?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
@@ -304,7 +285,11 @@ public class LabelControlViewModel : Core.BaseViewModel
 
         GetStored();
     }
-    private async void ClearStoredAction(object parameter)
+    [RelayCommand] private void Read() => _ = ReadTask(0);
+    [RelayCommand] private void Load() => _ = LoadTask();
+    [RelayCommand] private void Inspect() => _ = ReadTask(0);
+    [RelayCommand]
+    private async Task ClearStored()
     {
         if (await OkCancelDialog("Clear Stored Sectors", $"Are you sure you want to clear the stored sectors for this label?\r\nThis can not be undone!") == MessageDialogResult.Affirmative)
         {
@@ -312,57 +297,35 @@ public class LabelControlViewModel : Core.BaseViewModel
             GetStored();
         }
     }
-
-    private void LoadAction(object parameter) => _ = Load();
-    public async Task<int> Load()
+    [RelayCommand]
+    private void ClearRead()
     {
-        if (!await V275.DeleteSectors())
-        {
-            Status = V275.Status;
-            return -1;
-        }
+        RepeatReport = null;
+        RepeatTemplate = null;
 
-        if (LabelSectors.Count == 0)
-        {
-            if (!await V275.DetectSectors())
-            {
-                Status = V275.Status;
-                return -1;
-            }
+        RepeatImage = null;
+        RepeatOverlay = null;
 
-            return 2;
-        }
+        IsGoldenRepeat = false;
 
-        foreach (var sec in LabelSectors)
-        {
-            if (!await V275.AddSector(sec.JobSector.name, JsonConvert.SerializeObject(sec.JobSector)))
-            {
-                Status = V275.Status;
-                return -1;
-            }
+        RepeatSectors.Clear();
+        DiffSectors.Clear();
 
-            if (sec.JobSector.type == "blemish")
-            {
-                foreach (var layer in sec.JobSector.blemishMask.layers)
-                {
-                    if (!await V275.AddMask(sec.JobSector.name, JsonConvert.SerializeObject(layer)))
-                    {
-                        if (layer.value != 0)
-                        {
-                            Status = V275.Status;
-                            return -1;
-                        }
-                    }
-                }
-            }
-        }
+        IsStore = false;
 
-        return 1;
+        CurrentRow = StandardsDatabase.GetRow(GradingStandard.StandardName, LabelImageUID);
+
+        if (CurrentRow == null)
+            return;
+
+        RepeatImage = CurrentRow.RepeatImage;
+        RepeatOverlay = CreateRepeatOverlay(false, false);
+        IsGoldenRepeat = true;
     }
 
-    private void InspectAction(object parameter) => _ = Read(0);
-    public void ReadAction(object parameter) => _ = Read(0);
-    public async Task<bool> Read(int repeat)
+    [RelayCommand] private void RedoFiducial() => ImageUtilities.RedrawFiducial(LabelImagePath, false);
+
+    public async Task<bool> ReadTask(int repeat)
     {
         Status = string.Empty;
 
@@ -411,12 +374,7 @@ public class LabelControlViewModel : Core.BaseViewModel
         {
             var isWrongStandard = false;
             if (jSec.type is "verify1D" or "verify2D")
-                if (GradingStandard.IsGS1)
-                {
-                    isWrongStandard = !jSec.gradingStandard.enabled || GradingStandard.TableID != jSec.gradingStandard.tableId;
-                }
-                else
-                    isWrongStandard = false;
+                isWrongStandard = GradingStandard.IsGS1 && (!jSec.gradingStandard.enabled || GradingStandard.TableID != jSec.gradingStandard.tableId);
 
             foreach (JObject rSec in RepeatReport.inspectLabel.inspectSector)
             {
@@ -450,50 +408,59 @@ public class LabelControlViewModel : Core.BaseViewModel
 
         return true;
     }
-
-    public void RedoFiducialAction(object parameter) => ImageUtilities.RedrawFiducial(LabelImagePath, false);
-
-    public void SaveAction(object parameter)
+    public async Task<int> LoadTask()
     {
-        var par = (string)parameter;
-
-        SendTo95xxApplication();
-
-        var path = GetSaveFilePath();
-        if (string.IsNullOrEmpty(path)) return;
-        try
+        if (!await V275.DeleteSectors())
         {
-            if (par == "repeat")
+            Status = V275.Status;
+            return -1;
+        }
+
+        if (LabelSectors.Count == 0)
+        {
+            if (!await V275.DetectSectors())
             {
-                var bmp = ImageUtilities.ConvertToBmp(RepeatImage);
-                _ = SaveImageBytesToFile(path, bmp);
-                Clipboard.SetText(path);
+                Status = V275.Status;
+                return -1;
             }
-            else
+
+            return 2;
+        }
+
+        foreach (var sec in LabelSectors)
+        {
+            if (!await V275.AddSector(sec.JobSector.name, JsonConvert.SerializeObject(sec.JobSector)))
             {
-                var bmp = ImageUtilities.ConvertToBmp(LabelImage);
-                _ = SaveImageBytesToFile(path, bmp);
-                Clipboard.SetText(path);
+                Status = V275.Status;
+                return -1;
+            }
+
+            if (sec.JobSector.type == "blemish")
+            {
+                foreach (var layer in sec.JobSector.blemishMask.layers)
+                {
+                    if (!await V275.AddMask(sec.JobSector.name, JsonConvert.SerializeObject(layer)))
+                    {
+                        if (layer.value != 0)
+                        {
+                            Status = V275.Status;
+                            return -1;
+                        }
+                    }
+                }
             }
         }
-        catch (Exception)
-        {
 
-        }
+        return 1;
     }
+
     //const UInt32 WM_KEYDOWN = 0x0100;
     //const int VK_F5 = 0x74;
 
     //[DllImport("user32.dll")]
     //static extern bool PostMessage(IntPtr hWnd, UInt32 Msg, int wParam, int lParam);
 
-    private void SendTo95xxApplication()
-    {
-        _ = Process.GetProcessesByName("LVS-95XX");
-
-        //foreach (Process proc in processes)
-        //    PostMessage(proc.MainWindowHandle, WM_KEYDOWN, VK_F5, 0);
-    }
+    private void SendTo95xxApplication() => _ = Process.GetProcessesByName("LVS-95XX");//foreach (Process proc in processes)//    PostMessage(proc.MainWindowHandle, WM_KEYDOWN, VK_F5, 0);
     private string GetSaveFilePath()
     {
         var saveFileDialog1 = new SaveFileDialog();
@@ -872,31 +839,6 @@ public class LabelControlViewModel : Core.BaseViewModel
         return moduleGrid;
     }
 
-    private void ClearReadAction(object parameter)
-    {
-        RepeatReport = null;
-        RepeatTemplate = null;
-
-        RepeatImage = null;
-        RepeatOverlay = null;
-
-        IsGoldenRepeat = false;
-
-        RepeatSectors.Clear();
-        DiffSectors.Clear();
-
-        IsStore = false;
-
-        CurrentRow = StandardsDatabase.GetRow(GradingStandard.StandardName, LabelImageUID);
-
-        if (CurrentRow == null)
-            return;
-
-        RepeatImage = CurrentRow.RepeatImage;
-        RepeatOverlay = CreateRepeatOverlay(false, false);
-        IsGoldenRepeat = true;
-    }
-
     private void GetSectorDiff()
     {
         List<SectorDifferenceViewModel> diff = [];
@@ -993,19 +935,15 @@ public class LabelControlViewModel : Core.BaseViewModel
 
             return JsonConvert.DeserializeObject<Report_InspectSector_Verify2D>(reportSec.ToString());
         }
-        else if (reportSec["type"].ToString() == "ocr")
-        {
-            return JsonConvert.DeserializeObject<Report_InspectSector_OCR>(reportSec.ToString());
-        }
-        else if (reportSec["type"].ToString() == "ocv")
-        {
-            return JsonConvert.DeserializeObject<Report_InspectSector_OCV>(reportSec.ToString());
-        }
         else
         {
-            return reportSec["type"].ToString() == "blemish"
-                ? JsonConvert.DeserializeObject<Report_InspectSector_Blemish>(reportSec.ToString())
-                : (object)null;
+            return reportSec["type"].ToString() == "ocr"
+                ? JsonConvert.DeserializeObject<Report_InspectSector_OCR>(reportSec.ToString())
+                : reportSec["type"].ToString() == "ocv"
+                            ? JsonConvert.DeserializeObject<Report_InspectSector_OCV>(reportSec.ToString())
+                            : reportSec["type"].ToString() == "blemish"
+                                        ? JsonConvert.DeserializeObject<Report_InspectSector_Blemish>(reportSec.ToString())
+                                        : (object)null;
         }
     }
 

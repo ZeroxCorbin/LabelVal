@@ -63,7 +63,7 @@ namespace LabelVal.RunControllers
         {
             TimeDate = timeDate;
 
-            OpenDatabases();
+            _ = OpenDatabases();
         }
 
         public RunController Init(ObservableCollection<LabelControlViewModel> labels, int loopCount, StandardsDatabase standardsDatabase, string productPart, string cameraMAC)
@@ -106,8 +106,8 @@ namespace LabelVal.RunControllers
         {
             try
             {
-                RunLedgerDatabase.InsertOrReplace(RunEntry);
-                RunDatabase.InsertOrReplace(RunEntry);
+                _ = RunLedgerDatabase.InsertOrReplace(RunEntry);
+                _ = RunDatabase.InsertOrReplace(RunEntry);
 
                 return true;
             }
@@ -122,8 +122,8 @@ namespace LabelVal.RunControllers
         {
             try
             {
-                RunLedgerDatabase.DeleteRunEntry(RunEntry.TimeDate);
-                RunDatabase.DeleteRunEntry(RunEntry.TimeDate);
+                _ = RunLedgerDatabase.DeleteRunEntry(RunEntry.TimeDate);
+                _ = RunDatabase.DeleteRunEntry(RunEntry.TimeDate);
 
                 return true;
             }
@@ -140,20 +140,18 @@ namespace LabelVal.RunControllers
             {
                 if (session != null)
                 {
-                    using (var transaction = session.BeginTransaction())
-                    {
-                        var run = new ORM_Test.RunLedger(JsonConvert.SerializeObject(Labels[0].LabelTemplate), Labels[0].MainWindow.V275_MAC, Labels[0].MainWindow.V275.Commands.Product.part);
+                    using var transaction = session.BeginTransaction();
+                    var run = new ORM_Test.RunLedger(JsonConvert.SerializeObject(Labels[0].LabelTemplate), Labels[0].MainWindow.V275_MAC, Labels[0].MainWindow.V275.Commands.Product.part);
 
-                        session.Save(run);
-                        transaction.Commit();
+                    _ = session.Save(run);
+                    transaction.Commit();
 
-                        RunId = run.Id;
-                    }
+                    RunId = run.Id;
                 }
             }
 
             RequestedState = RunStates.RUNNING;
-            Task.Run(() => Start());
+            _ = Task.Run(() => Start());
         }
 
         public async Task<bool> Start()
@@ -165,7 +163,7 @@ namespace LabelVal.RunControllers
             if (RequestedState == RunStates.RUNNING && State != RunStates.RUNNING)
                 RunStateChange?.Invoke(State = RunStates.RUNNING);
 
-            await Labels[0].V275.SwitchToEdit();
+            _ = await Labels[0].V275.SwitchToEdit();
 
             int wasLoop = 0;
             for (int i = 0; i < LoopCount; i++)
@@ -181,7 +179,7 @@ namespace LabelVal.RunControllers
                         //If running a non-GS1 label then this will reset the match to file and sequences.
                         //If running a GS1 label label then edit mode is required.
                         if (HasSequencing(label))
-                            await Labels[0].V275.SwitchToEdit();
+                            _ = await Labels[0].V275.SwitchToEdit();
                         else if (Labels.Count == 1)
                             CurrentLoopCount = 1;
 
@@ -190,7 +188,7 @@ namespace LabelVal.RunControllers
                     }
 
                     if (!GradingStandard.IsGS1)
-                        await label.V275.SwitchToRun();
+                        _ = await label.V275.SwitchToRun();
 
                     while (RequestedState == RunStates.PAUSED)
                     {
@@ -220,7 +218,7 @@ namespace LabelVal.RunControllers
                     //this must occur before the print
                     CurrentLabelCount++;
 
-                    label.PrintAction(null);
+                    label.PrintCommand.Execute(null);
 
                     DateTime start = DateTime.Now;
                     while (label.IsWorking)
@@ -266,40 +264,32 @@ namespace LabelVal.RunControllers
                         {
                             //Compress the image to PNG
                             PngBitmapEncoder encoder = new PngBitmapEncoder();
-                            using (var ms = new System.IO.MemoryStream(label.RepeatImage))
-                            {
-                                using (MemoryStream stream = new MemoryStream())
-                                {
-                                    encoder.Frames.Add(BitmapFrame.Create(ms));
-                                    encoder.Save(stream);
+                            using var ms = new System.IO.MemoryStream(label.RepeatImage);
+                            using MemoryStream stream = new MemoryStream();
+                            encoder.Frames.Add(BitmapFrame.Create(ms));
+                            encoder.Save(stream);
 
-                                    row.RepeatImage = stream.ToArray();
+                            row.RepeatImage = stream.ToArray();
 
-                                    stream.Close();
-                                }
-                            }
+                            stream.Close();
                         }
 
                     row.RepeatReport = JsonConvert.SerializeObject(label.RepeatReport);
-                    RunDatabase.InsertOrReplace(row);
+                    _ = RunDatabase.InsertOrReplace(row);
 
-                    using (var session = new NHibernateHelper().OpenSession())
+                    using var session = new NHibernateHelper().OpenSession();
+                    if (session != null)
                     {
-                        if (session != null)
-                        {
-                            using (var transaction = session.BeginTransaction())
-                            {
-                                var rep = new ORM_Test.Report(label.RepeatReport);
-                                rep.repeatImage = label.RepeatImage;
-                                rep.voidRepeat = rep.repeat;
-                                rep.runId = RunId;
-                                //var run = new ORM_Test.RunLedger(JsonConvert.SerializeObject(sRow.LabelTemplate), label.MainWindow.V275_MAC, label.MainWindow.V275_NodeNumber.ToString());
+                        using var transaction = session.BeginTransaction();
+                        var rep = new ORM_Test.Report(label.RepeatReport);
+                        rep.repeatImage = label.RepeatImage;
+                        rep.voidRepeat = rep.repeat;
+                        rep.runId = RunId;
+                        //var run = new ORM_Test.RunLedger(JsonConvert.SerializeObject(sRow.LabelTemplate), label.MainWindow.V275_MAC, label.MainWindow.V275_NodeNumber.ToString());
 
 
-                                session.Save(rep);
-                                transaction.Commit();
-                            }
-                        }
+                        _ = session.Save(rep);
+                        transaction.Commit();
                     }
                 }
 
@@ -309,7 +299,7 @@ namespace LabelVal.RunControllers
 
             Logger.Info("Job Completed");
 
-            UpdateRunEntries();
+            _ = UpdateRunEntries();
 
             RunStateChange?.Invoke(State = RunStates.COMPLETE);
 
@@ -319,7 +309,7 @@ namespace LabelVal.RunControllers
             return true;
         }
 
-        private bool HasSequencing(LabelControlViewModel label)
+        private static bool HasSequencing(LabelControlViewModel label)
         {
             foreach (var sect in label.LabelTemplate.sectors)
             {
@@ -333,9 +323,9 @@ namespace LabelVal.RunControllers
         private void Stopped()
         {
             if (CurrentLabelCount != 0)
-                UpdateRunEntries();
+                _ = UpdateRunEntries();
             else
-                RemoveRunEntries();
+                _ = RemoveRunEntries();
 
             Logger.Info("Job Stopped");
 
