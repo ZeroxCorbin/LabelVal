@@ -37,6 +37,9 @@
     <OutputPath>bin\x64\Release\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove=".gitattributes" />
+  </ItemGroup>
+  <ItemGroup>
     <Resource Include="ToDo.txt" />
     <Content Include="Assets\StandardsDatabases\GS1 Golden.sqlite">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
