@@ -129,14 +129,14 @@ public partial class LabelControlViewModel : ObservableObject
 
     private StandardsDatabase StandardsDatabase => MainWindow.StandardsDatabase;
 
-    public Controller V275 => MainWindow.V275;
+    public Controller V275 => MainWindowViewModel.V275;
     public Job LabelTemplate { get; set; }
     public Job RepeatTemplate { get; set; }
     public V275_REST_lib.Models.Report RepeatReport { get; private set; }
 
     public MainWindowViewModel MainWindow { get; set; }
 
-    private IDialogCoordinator DialogCoordinator => MainWindow.DialogCoordinator;
+    private IDialogCoordinator DialogCoordinator => MainWindowViewModel.DialogCoordinator;
     public LabelControlViewModel(string imagePath, string imageComment, MainWindowViewModel mainWindow)
     {
         //dialogCoordinator = diag;

@@ -37,6 +37,9 @@
     <OutputPath>bin\x64\Release\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Databases\SimpleDatabase.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <None Remove=".gitattributes" />
   </ItemGroup>
   <ItemGroup>
@@ -1159,6 +1162,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\JSONViewer_WPF\JSONViewer_WPF.csproj" />
+    <ProjectReference Include="..\..\LibDatabases\LibSimpleDatabase\LibSimpleDatabase.csproj" />
     <ProjectReference Include="..\..\V275_REST_Lib\V275_REST_Lib.csproj" />
   </ItemGroup>
   <ItemGroup>

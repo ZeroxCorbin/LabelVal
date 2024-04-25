@@ -1,5 +1,6 @@
 ﻿using ControlzEx.Theming;
 using LabelVal.Databases;
+using LibSimpleDatabase;
 using System;
 using System.Data;
 using System.Drawing;
@@ -18,7 +19,7 @@ namespace LabelVal
     /// </summary>
     public partial class App : Application
     {
-        public static Databases.SimpleDatabase Settings { get; private set; }
+        public static SimpleDatabase Settings { get; private set; }
 
 #if DEBUG
         public static string WorkingDir { get; set; } = System.IO.Directory.GetCurrentDirectory();
@@ -90,7 +91,7 @@ namespace LabelVal
                 return;
             }
 
-            Settings = new Databases.SimpleDatabase().Open(Path.Combine(UserDataDirectory, SettingsDatabaseName));
+            Settings = new SimpleDatabase().Open(Path.Combine(UserDataDirectory, SettingsDatabaseName));
 
             if (Settings == null)
             {

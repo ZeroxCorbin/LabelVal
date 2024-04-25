@@ -76,7 +76,6 @@
                         <RunViews:CompareSettingsControlView/>
                     </StackPanel>
 
-
                 </Grid>
 
             </mah:Flyout>
@@ -132,7 +131,7 @@
                     <Label Content="Node Connection"/>
 
                     <Button Content="Get Nodes"
-                    Command="{Binding GetDevices}"
+                    Command="{Binding GetDevicesCommand}"
                     IsEnabled="{Binding IsNotLoggedIn}"/>
 
                     <Label/>
@@ -164,11 +163,11 @@
                     <Label/>
                     <StackPanel Orientation="Horizontal" IsEnabled="{Binding IsGetDevices}" >
                         <Button Content="Logout" Margin="0,0,2,0"
-                            Command="{Binding Logout}"
+                            Command="{Binding LogoutCommand}"
                             IsEnabled="{Binding IsLoggedIn}"/>
 
                         <Button Content="Monitor" Margin="0,0,2,0"
-                            Command="{Binding LoginMonitor}">
+                            Command="{Binding LoginMonitorCommand}">
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                                     <Setter Property="IsEnabled" Value="True"/>
@@ -192,7 +191,7 @@
                         </Button>
 
                         <Button Content="Control"
-                            Command="{Binding LoginControl}">
+                            Command="{Binding LoginControlCommand}">
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                                     <Setter Property="IsEnabled" Value="True"/>
@@ -284,7 +283,7 @@
                     </Label>
                     <Label/>
                     <Button Content="Run" Margin="0,0,2,0"
-                            Command="{Binding V275_SwitchRun}">
+                            Command="{Binding V275_SwitchRunCommand}">
                         <Button.Style>
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                                 <Setter Property="IsEnabled" Value="False"/>
@@ -304,7 +303,7 @@
                         </Button.Style>
                     </Button>
                     <Button Content="Edit" Margin="0,0,2,0"
-                            Command="{Binding V275_SwitchEdit}">
+                            Command="{Binding V275_SwitchEditCommand}">
                         <Button.Style>
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                                 <Setter Property="IsEnabled" Value="False"/>
@@ -325,7 +324,7 @@
                     </Button>
 
                     <Button Content="Remove"
-                            Command="{Binding V275_RemoveRepeat}">
+                            Command="{Binding V275_RemoveRepeatCommand}">
                         <Button.Style>
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                                 <Setter Property="IsEnabled" Value="False"/>
@@ -354,25 +353,20 @@
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
 
-                <Border Grid.Column="0" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="2" Margin="5">
-                    <StackPanel Orientation="Horizontal" Margin="3">
-                        <Label Content="Printer"/>
-                        <ComboBox ItemsSource="{Binding Printers}" SelectedItem="{Binding SelectedPrinter}" IsEnabled="{Binding IsNotRunRunning}"/>
-                    </StackPanel>
-                </Border>
+                <local:PrinterControlView Grid.Column="0" Margin="5" DataContext="{Binding PrinterViewModel}"/>
 
                 <!--Standards Database-->
                 <Border Grid.Column="1" BorderThickness="2" Margin="5" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
                     <StackPanel Orientation="Horizontal" Margin="3">
                         <Label Content="Standards"/>
 
-                        <Button Command="{Binding CreateStandardsDatabase}"
+                        <Button Command="{Binding CreateStandardsDatabaseCommand}"
                                 ToolTip="Create a new standards database."
                                 Margin="0,0,2,0">
                             <IconPacks:Material Kind="Plus"/>
                         </Button>
 
-                        <Button Command="{Binding LockStandardsDatabase}" Margin="0,0,2,0">
+                        <Button Command="{Binding LockStandardsDatabaseCommand}" Margin="0,0,2,0">
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                                     <Setter Property="Content">
@@ -445,7 +439,7 @@
                         <Label/>
 
                         <Button Content="Start" Margin="0,0,2,0"
-                            Command="{Binding StartRun}">
+                            Command="{Binding StartRunCommand}">
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                                     <Setter Property="IsEnabled" Value="True"/>
@@ -468,7 +462,7 @@
                         </Button>
 
                         <Button Margin="0,0,2,0"
-                            Command="{Binding PauseRun}">
+                            Command="{Binding PauseRunCommand}">
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                                     <Setter Property="IsEnabled" Value="True"/>
@@ -489,7 +483,7 @@
                         </Button>
 
                         <Button Content="Stop"
-                            Command="{Binding StopRun}">
+                            Command="{Binding StopRunCommand}">
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                                     <Setter Property="IsEnabled" Value="True"/>
@@ -584,7 +578,7 @@
                 <TextBlock Text="{Binding UserMessage}"/>
             </StatusBarItem>
             <StatusBarItem>
-                <Button Command="{Binding ClearUserMessage}">
+                <Button Command="{Binding ClearUserMessageCommand}">
                     <IconPacks:Material Kind="Cancel"/>
                     <Button.Style>
                         <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Circle}">

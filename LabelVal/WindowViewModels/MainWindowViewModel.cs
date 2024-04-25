@@ -1,1334 +1,1164 @@
-﻿using System;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using LabelVal.Databases;
+using LabelVal.Models;
+using LabelVal.Printer;
+using LabelVal.RunControllers;
+using MahApps.Metro.Controls.Dialogs;
+using Microsoft.Win32;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
-using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using LabelVal.V275;
-using Newtonsoft.Json;
-using System.Collections.ObjectModel;
-using System.Drawing.Printing;
-using LabelVal.Databases;
-using LabelVal.RunControllers;
-using LabelVal.Printer;
-using System.Text.RegularExpressions;
-using LabelVal.Models;
-using MahApps.Metro.Controls.Dialogs;
 using V275_REST_lib;
 using V275_REST_lib.Models;
-using Microsoft.Win32;
 
-namespace LabelVal.WindowViewModels
+namespace LabelVal.WindowViewModels;
+
+public partial class MainWindowViewModel : ObservableObject
 {
-    public class MainWindowViewModel : Core.BaseViewModel
+    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
+    public enum V275_States
     {
-        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        editing,
+        running,
+        paused,
+    }
+    public class Repeat
+    {
+        public LabelControlViewModel Label { get; set; }
+        public int RepeatNumber { get; set; } = -1;
+    }
 
-        public enum V275_States
+    public class StandardsDBFile
+    {
+        public string FileName { get; set; }
+        public string FilePath { get; set; }
+    }
+    public static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
+
+    public PrinterViewModel PrinterViewModel { get; } = new PrinterViewModel();
+
+    //public class StandardEntryModel : Core.BaseViewModel
+    //{
+    //    private string name;
+    //    public string Name
+    //    {
+    //        get => name;
+    //        set
+    //        {
+    //            SetProperty(ref name, value);
+
+    //            Is300 = Name.EndsWith("300");
+    //            IsGS1 = Name.ToLower().StartsWith("gs1");
+    //            StandardName = name.Replace(" 300", "");
+
+    //            if (IsGS1)
+    //            {
+    //                var val = Regex.Match(Name, @"TABLE (\d*\.?\d+)");
+    //                if (val.Groups.Count == 2)
+    //                    TableID = val.Groups[1].Value;
+    //            }
+    //        }
+    //    }
+
+    //    private string standardPath;
+    //    public string StandardPath { get => standardPath; set => SetProperty(ref standardPath, value); }
+
+    //    private int numRows;
+    //    public int NumRows { get => numRows; set => SetProperty(ref numRows, value); }
+
+    //    public string StandardName { get; private set; }
+
+    //    public string TableID { get; private set; }
+
+    //    public bool Is300 { get; private set; }
+
+    //    public bool IsGS1 { get; private set; }
+
+    //}
+
+    //public class StandardsDatabaseEntry : Core.BaseViewModel
+    //{
+    //    private string name;
+    //    public string Name { get => name; set => SetProperty(ref name, value); }
+
+    //    private string filePath;
+    //    public string FilePath { get => filePath; set => SetProperty(ref filePath, value); }
+
+    //}
+
+    public static string Version => App.Version;
+
+    public static Controller V275 { get; } = new Controller();
+    public StandardsDatabase StandardsDatabase { get; private set; }
+    //private V275_API_WebSocketEvents WebSocket { get; } = new V275_API_WebSocketEvents();
+    //private V275_API_WebSocketEvents SysWebSocket { get; } = new V275_API_WebSocketEvents();
+
+
+    [ObservableProperty] private string v275_Host = V275.Host = App.Settings.GetValue(nameof(V275_Host), "127.0.0.1", true);
+    partial void OnV275_HostChanged(string value) { App.Settings.SetValue(nameof(V275_Host), value); V275.Host = value; }
+
+
+    [ObservableProperty] private uint v275_SystemPort = V275.SystemPort = App.Settings.GetValue(nameof(V275_SystemPort), GetV275PortNumber(), true);
+    partial void OnV275_SystemPortChanged(uint value)
+    {
+        if (value != 0)
         {
-            editing,
-            running,
-            paused,
+            App.Settings.SetValue(nameof(V275_SystemPort), value);
+            V275.SystemPort = value;
         }
-        public class Repeat
+        else
         {
-            public LabelControlViewModel Label { get; set; }
-            public int RepeatNumber { get; set; } = -1;
-        }
-
-        public class StandardsDBFile
-        {
-            public string FileName { get; set; }
-            public string FilePath { get; set; }
-        }
-        public IDialogCoordinator DialogCoordinator { get => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance; }
-        //public class StandardEntryModel : Core.BaseViewModel
-        //{
-        //    private string name;
-        //    public string Name
-        //    {
-        //        get => name;
-        //        set
-        //        {
-        //            SetProperty(ref name, value);
-
-        //            Is300 = Name.EndsWith("300");
-        //            IsGS1 = Name.ToLower().StartsWith("gs1");
-        //            StandardName = name.Replace(" 300", "");
-
-        //            if (IsGS1)
-        //            {
-        //                var val = Regex.Match(Name, @"TABLE (\d*\.?\d+)");
-        //                if (val.Groups.Count == 2)
-        //                    TableID = val.Groups[1].Value;
-        //            }
-        //        }
-        //    }
-
-        //    private string standardPath;
-        //    public string StandardPath { get => standardPath; set => SetProperty(ref standardPath, value); }
-
-        //    private int numRows;
-        //    public int NumRows { get => numRows; set => SetProperty(ref numRows, value); }
-
-        //    public string StandardName { get; private set; }
-
-        //    public string TableID { get; private set; }
-
-        //    public bool Is300 { get; private set; }
-
-        //    public bool IsGS1 { get; private set; }
-
-        //}
-
-        //public class StandardsDatabaseEntry : Core.BaseViewModel
-        //{
-        //    private string name;
-        //    public string Name { get => name; set => SetProperty(ref name, value); }
-
-        //    private string filePath;
-        //    public string FilePath { get => filePath; set => SetProperty(ref filePath, value); }
-
-        //}
-
-        public string Version => App.Version;
-
-        public Controller V275 { get; } = new Controller();
-        public StandardsDatabase StandardsDatabase { get; private set; }
-        //private V275_API_WebSocketEvents WebSocket { get; } = new V275_API_WebSocketEvents();
-        //private V275_API_WebSocketEvents SysWebSocket { get; } = new V275_API_WebSocketEvents();
-
-        public string V275_Host { get => V275.Host = App.Settings.GetValue("V275_Host", "127.0.0.1"); set { App.Settings.SetValue("V275_Host", value); V275.Host = value; } }
-        public uint V275_SystemPort 
-        { 
-            get => V275.SystemPort = App.Settings.GetValue<uint>("V275_SystemPort", GetV275PortNumber());
-            set 
-            {
-                if (value != 0)
-                {
-                    App.Settings.SetValue("V275_SystemPort", value);
-                    V275.SystemPort = value;
-                }
-                else
-                {
-                    App.Settings.DeleteSetting("V275_SystemPort");
-                    V275.SystemPort = V275_SystemPort;
-                }
-                OnPropertyChanged();
-            }
-        }
-        public uint V275_NodeNumber { get => V275.NodeNumber = App.Settings.GetValue<uint>("V275_NodeNumber", 1); set { App.Settings.SetValue("V275_NodeNumber", value); V275.NodeNumber = value; } }
-
-        public string V275_MAC { get; set; }
-        public string V275_Version { get => V275.Commands.Product != null ? V275.Commands.Product.part : null; }
-        public string V275_State { get => v275_State; set => SetProperty(ref v275_State, value); }
-        private string v275_State = "";
-
-        public string V275_JobName { get => v275_JobName; set => SetProperty(ref v275_JobName, value); }
-        private string v275_JobName = "";
-
-        private bool isOldISO;
-        public bool IsOldISO { get => isOldISO; set => SetProperty(ref isOldISO, value); }
-
-        private ObservableCollection<Devices.Node> nodes = new ObservableCollection<Devices.Node>();
-        public ObservableCollection<Devices.Node> Nodes { get => nodes; set => SetProperty(ref nodes, value); }
-
-        private Devices.Node selectedNode;
-        public Devices.Node SelectedNode
-        {
-            get => selectedNode;
-            set
-            {
-                SetProperty(ref selectedNode, value);
-                if (value != null)
-                {
-                    V275_NodeNumber = (uint)value.enumeration;
-                    V275_MAC = value.cameraMAC;
-
-                    IsDeviceSelected = true;
-                }
-            }
+            _ = App.Settings.DeleteSetting(nameof(V275_SystemPort));
+            V275.SystemPort = V275_SystemPort;
         }
 
-        private ObservableCollection<LabelControlViewModel> labels = new ObservableCollection<LabelControlViewModel>();
-        public ObservableCollection<LabelControlViewModel> Labels { get => labels; set => SetProperty(ref labels, value); }
+        OnPropertyChanged();
+    }
 
-        public StandardsDBFile StoredStandardsDatabase { get => App.Settings.GetValue("StoredStandardsDatabase_1", new StandardsDBFile() { FilePath = Path.Combine(App.StandardsDatabaseRoot, App.StandardsDatabaseDefaultName + App.DatabaseExtension), FileName = App.StandardsDatabaseDefaultName }); set { App.Settings.SetValue("StoredStandardsDatabase_1", value); } }
-        public ObservableCollection<StandardsDBFile> StandardsDatabases { get; } = new ObservableCollection<StandardsDBFile>();
-        public StandardsDBFile SelectedStandardsDatabase
+
+    [ObservableProperty] private uint v275_NodeNumber = V275.NodeNumber = App.Settings.GetValue<uint>(nameof(V275_NodeNumber), 1, true);
+    partial void OnV275_NodeNumberChanged(uint value) { App.Settings.SetValue(nameof(V275_NodeNumber), value); V275.NodeNumber = value; }
+
+
+    [ObservableProperty] private ObservableCollection<Devices.Node> nodes = [];
+    [ObservableProperty] private Devices.Node selectedNode;
+    partial void OnSelectedNodeChanged(Devices.Node value)
+    {
+        if (value != null)
         {
-            get => selectedStandardsDatabase;
-            set
-            {
-                SetProperty(ref selectedStandardsDatabase, value);
+            V275_NodeNumber = (uint)value.enumeration;
+            V275_MAC = value.cameraMAC;
 
-                SelectedStandard = null;
-
-                if (value != null)
-                {
-                    StoredStandardsDatabase = value;
-
-                    LoadStandardsDatabase(StoredStandardsDatabase);
-                    SelectStandard();
-                }
-            }
+            IsDeviceSelected = true;
         }
-        private StandardsDBFile selectedStandardsDatabase;
-        public bool IsDatabaseLocked
+        else
         {
-            get => isDatabaseLocked || isDatabasePermLocked;
-            set { SetProperty(ref isDatabaseLocked, value); OnPropertyChanged("IsNotDatabaseLocked"); }
-        }
-        public bool IsNotDatabaseLocked => !isDatabaseLocked;
-        private bool isDatabaseLocked = false;
-        public bool IsDatabasePermLocked
-        {
-            get => isDatabasePermLocked;
-            set { SetProperty(ref isDatabasePermLocked, value); OnPropertyChanged("IsNotDatabasePermLocked"); }
-        }
-        public bool IsNotDatabasePermLocked => !isDatabasePermLocked;
-        private bool isDatabasePermLocked = false;
-        public ICommand CreateStandardsDatabase { get; }
-        public ICommand LockStandardsDatabase { get; }
-
-        public StandardEntryModel StoredStandard { get => App.Settings.GetValue<StandardEntryModel>("StoredStandard", null); set { App.Settings.SetValue("StoredStandard", value); } }
-        public ObservableCollection<StandardEntryModel> Standards { get; } = new ObservableCollection<StandardEntryModel>();
-        public StandardEntryModel SelectedStandard
-        {
-            get => selectedStandard;
-            set
-            {
-                SetProperty(ref selectedStandard, value);
-
-                if (value != null)
-                {
-                    StoredStandard = value;
-                    LoadLabels();
-
-                    CheckTemplateName();
-                }
-                else
-                {
-                    ClearLabels();
-                }
-            }
-        }
-        private StandardEntryModel selectedStandard;
-        public bool IsWrongTemplateName
-        {
-            get => isWrongTemplateName;
-            set { SetProperty(ref isWrongTemplateName, value); OnPropertyChanged("IsNotWrongTemplateName"); }
-        }
-        public bool IsNotWrongTemplateName => !isWrongTemplateName;
-        private bool isWrongTemplateName = false;
-
-        public string StoredPrinter { get => App.Settings.GetValue("StoredPrinter", ""); set { App.Settings.SetValue("StoredPrinter", value); } }
-        public ObservableCollection<string> Printers { get; } = new ObservableCollection<string>();
-        public string SelectedPrinter
-        {
-            get => selectedPrinter;
-            set
-            {
-                SetProperty(ref selectedPrinter, value);
-
-                if (!string.IsNullOrEmpty(value))
-                {
-                    StoredPrinter = value;
-
-                    //UpdatePrinters();
-                }
-            }
-        }
-        private string selectedPrinter;
-
-        public string UserName { get => App.Settings.GetValue("UserName", "admin"); set => App.Settings.SetValue("UserName", value); }
-        public string Password { get => App.Settings.GetValue("Password", "admin"); set => App.Settings.SetValue("Password", value); }
-        private Events_System.Data LoginData { get; } = new Events_System.Data();
-
-        public bool ShowTemplateNameMismatchDialog { get => App.Settings.GetValue("ShowTemplateNameMismatchDialog", true); set => App.Settings.SetValue("ShowTemplateNameMismatchDialog", value); }
-        private Task TemplateNameMismatchDialog;
-        private Task TemplateNotLoadedDialog;
-
-        public string UserMessage
-        {
-            get { return userMessage; }
-            set { SetProperty(ref userMessage, value); }
-        }
-        private string userMessage = "";
-        public ICommand ClearUserMessage { get; }
-
-        public ICommand GetDevices { get; }
-        public bool IsGetDevices
-        {
-            get => isGetDevices;
-            set { SetProperty(ref isGetDevices, value); OnPropertyChanged("IsNotGetDevices"); }
-        }
-        public bool IsNotGetDevices => !isGetDevices;
-        private bool isGetDevices = false;
-
-        public ICommand LoginMonitor { get; }
-        public ICommand LoginControl { get; }
-        public ICommand Logout { get; }
-
-        public bool IsDeviceSelected
-        {
-            get => isDeviceSelected;
-            set { SetProperty(ref isDeviceSelected, value); OnPropertyChanged("IsNotDeviceSelected"); }
-        }
-        public bool IsNotDeviceSelected => !isDeviceSelected;
-        private bool isDeviceSelected = false;
-
-        public bool IsDeviceSimulator => V275_MAC == null ? false : V275_MAC.Equals("00:00:00:00:00:00") && (IsLoggedIn_Control || IsLoggedIn_Monitor);
-        public string SimulatorImageDirectory
-        {
-            get => App.Settings.GetValue("Simulator_ImageDirectory", GetV275SimulationDirectory());
-            set 
-            {
-                if(!string.IsNullOrEmpty(value))
-                    App.Settings.SetValue("Simulator_ImageDirectory", value);
-                else
-                    App.Settings.DeleteSetting("Simulator_ImageDirectory");
-
-                OnPropertyChanged();
-            }
-        }
-
-        public bool IsLoggedIn
-        {
-            get => IsLoggedIn_Monitor || IsLoggedIn_Control;
-        }
-        public bool IsNotLoggedIn => !(IsLoggedIn_Monitor || IsLoggedIn_Control);
-
-        public bool IsLoggedIn_Monitor
-        {
-            get => isLoggedIn_Monitor;
-            set { SetProperty(ref isLoggedIn_Monitor, value); OnPropertyChanged("IsNotLoggedIn_Monitor"); OnPropertyChanged("IsNotLoggedIn"); OnPropertyChanged("IsLoggedIn"); OnPropertyChanged("IsDeviceSimulator"); }
-        }
-        public bool IsNotLoggedIn_Monitor => !isLoggedIn_Monitor;
-        private bool isLoggedIn_Monitor = false;
-
-        public bool IsLoggedIn_Control
-        {
-            get => isLoggedIn_Control;
-            set { SetProperty(ref isLoggedIn_Control, value); OnPropertyChanged("IsNotLoggedIn_Control"); OnPropertyChanged("IsNotLoggedIn"); OnPropertyChanged("IsLoggedIn"); OnPropertyChanged("IsDeviceSimulator"); }
-        }
-        public bool IsNotLoggedIn_Control => !isLoggedIn_Control;
-        private bool isLoggedIn_Control = false;
-
-        public bool V275_IsBackupVoid => V275.Commands.ConfigurationCamera.backupVoidMode == null ? false : V275.Commands.ConfigurationCamera.backupVoidMode.value == "ON";
-
-        public ICommand Print { get; }
-
-        public int RunLoopCount { get => App.Settings.GetValue("RunLoopCount", 1); set { App.Settings.SetValue("RunLoopCount", value); } }
-
-        public ICommand StartRun { get; }
-        public bool IsRunRunning
-        {
-            get => isRunRunning;
-            set { SetProperty(ref isRunRunning, value); OnPropertyChanged("IsNotRunRunning"); }
-        }
-        public bool IsNotRunRunning => !isRunRunning;
-        private bool isRunRunning = false;
-
-        public ICommand PauseRun { get; }
-        public bool IsRunPaused
-        {
-            get => isRunPaused;
-            set { SetProperty(ref isRunPaused, value); OnPropertyChanged("IsNotRunPaused"); }
-        }
-        public bool IsNotRunPaused => !isRunPaused;
-        private bool isRunPaused = false;
-
-        public ICommand StopRun { get; }
-
-        public ICommand V275_SwitchRun { get; }
-        public ICommand V275_SwitchEdit { get; }
-        public ICommand V275_RemoveRepeat { get; }
-
-
-        public RunController.RunStates RunState { get => runState; set => SetProperty(ref runState, value); }
-        private RunController.RunStates runState = RunController.RunStates.IDLE;
-
-        private Dictionary<int, Repeat> Repeats = new Dictionary<int, Repeat>();
-
-        public RunController CurrentRun { get; set; } = new RunController();
-
-        public ICommand TriggerSim { get; }
-
-        public MainWindowViewModel()
-        {
-            GetDevices = new Core.RelayCommand(GetDevicesAction, c => true);
-
-            LoginMonitor = new Core.RelayCommand(LoginMonitorAction, c => true);
-            LoginControl = new Core.RelayCommand(LoginControlAction, c => true);
-            Logout = new Core.RelayCommand(LogoutAction, c => true);
-
-            StartRun = new Core.RelayCommand(StartRunAction, c => true);
-            PauseRun = new Core.RelayCommand(PauseRunAction, c => true);
-            StopRun = new Core.RelayCommand(StopRunAction, c => true);
-
-            //Print = new Core.RelayCommand(EnablePrintAction, c => true);
-
-            V275_SwitchRun = new Core.RelayCommand(V275_SwitchRunAction, c => true);
-            V275_SwitchEdit = new Core.RelayCommand(V275_SwitchEditAction, c => true);
-            V275_RemoveRepeat = new Core.RelayCommand(V275_RemoveRepeatAction, c => true);
-
-            TriggerSim = new Core.RelayCommand(TriggerSimAction, c => true);
-
-            ClearUserMessage = new Core.RelayCommand((par) => { UserMessage = ""; }, c => true);
-
-            CreateStandardsDatabase = new Core.RelayCommand(CreateStandardsDatabaseAction, c => true);
-            LockStandardsDatabase = new Core.RelayCommand(LockStandardsDatabaseAction, c => true);
-            //V275.PropertyChanged += V275_PropertyChanged;
-
-            V275.WebSocket.SetupCapture += WebSocket_SetupCapture;
-            V275.WebSocket.SessionStateChange += WebSocket_SessionStateChange;
-            //V275.WebSocket.Heartbeat += WebSocket_Heartbeat;
-            V275.WebSocket.LabelEnd += WebSocket_LabelEnd;
-            V275.WebSocket.StateChange += WebSocket_StateChange;
-
-            V275.StateChanged += V275_StateChanged;
-
-
-            LoadStandardsList();
-            LoadStandardsDatabasesList();
-
-            SelectStandardsDatabase();
-
-            LoadPrinters();
-        }
-
-        private void V275_StateChanged(string state, string jobName)
-        {
-            V275_State = state;
-            V275_JobName = jobName;
-
-            if (V275_JobName != "")
-                CheckTemplateName();
-            else if (V275_State == "Idle")
-                CheckTemplateName();
-            else
-            {
-
-            }
-        }
-
-        private uint GetV275PortNumber()
-        {
-            var res = Registry.GetValue("HKEY_LOCAL_MACHINE\\Software\\OMRON\\V275Service", "SystemServerPort", 8080);
-
-            if(res == null)
-                return 8080;
-            else
-                return Convert.ToUInt32(res);
-        }
-        private string GetV275SimulationDirectory()
-        {
-            var res = Registry.GetValue("HKEY_LOCAL_MACHINE\\Software\\OMRON\\V275Service", "DataDirectory", "");
-
-            if(string.IsNullOrEmpty((string)res))
-                return @"C:\Program Files\V275\data\images\simulation";
-            else
-                res += @"\images\simulation";
-
-            return res.ToString();
-        }
-
-        private int CheckTemplateName()
-        {
-            IsWrongTemplateName = false;
-
-            if (!IsLoggedIn)
-                return 0;
-
-            if (V275_JobName == "")
-            {
-                IsWrongTemplateName = true;
-
-                if (TemplateNotLoadedDialog != null)
-                    if (TemplateNotLoadedDialog.Status != TaskStatus.RanToCompletion)
-                        return -1;
-
-                TemplateNotLoadedDialog = OkDialog("Template Not Loaded!", "There is no template loaded in the V275 software.");
-                return -1;
-            }
-
-            if (!SelectedStandard.IsGS1)
-            {
-                if (V275_JobName.ToLower().Equals(SelectedStandard.Name.ToLower()))
-                    return 1;
-            }
-            else
-            {
-                if (V275_JobName.ToLower().StartsWith("gs1"))
-                    return 1;
-            }
-
-            if (!ShowTemplateNameMismatchDialog)
-                return 1;
-
-            IsWrongTemplateName = true;
-
-            if (TemplateNameMismatchDialog != null)
-                if (TemplateNameMismatchDialog.Status != TaskStatus.RanToCompletion)
-                    return -2;
-
-            TemplateNameMismatchDialog = OkDialog("Template Name Mismatch!", $"The template name loaded in the V275 software '{V275_JobName}' does not match the selected standard. '{SelectedStandard.Name.ToLower()}'");
-            return -2;
-        }
-
-        public async Task<MessageDialogResult> OkCancelDialog(string title, string message)
-        {
-            MessageDialogResult result = await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative);
-
-            return result;
-        }
-
-        public async Task OkDialog(string title, string message)
-        {
-            _ = await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.Affirmative);
-        }
-
-        public async Task<string> GetStringDialog(string title, string message)
-        {
-            string result = await DialogCoordinator.ShowInputAsync(this, title, message);
-
-            return result;
-        }
-
-        private void LoadPrinters()
-        {
-            Logger.Info("Loading printers.");
-
-            foreach (string p in PrinterSettings.InstalledPrinters)
-            {
-                Printers.Add(p);
-
-                if (StoredPrinter == p)
-                    SelectedPrinter = p;
-            }
-
-            Logger.Info("Processed {count} printers.", Printers.Count);
-
-            if (string.IsNullOrEmpty(SelectedPrinter) && Printers.Count > 0)
-                SelectedPrinter = Printers.First();
-        }
-        //private void UpdatePrinters()
-        //{
-        //    foreach (var r in Labels)
-        //        r.PrinterName = StoredPrinter;
-
-        //}
-
-        private void ClearLabels()
-        {
-            foreach (var lab in Labels)
-            {
-                //lab.Clear();
-                lab.Printing -= Label_Printing;
-                lab.StatusChanged -= Label_StatusChanged;
-                //Labels.Remove(lab);
-            }
-            Labels.Clear();
-        }
-
-        private void LoadLabels()
-        {
-            Logger.Info("Loading label images from standards directory: {name}", $"{App.AssetsStandardsRoot}\\{SelectedStandard.StandardName}\\");
-
-            ClearLabels();
-
-            List<string> images = new List<string>();
-            foreach (var f in Directory.EnumerateFiles(SelectedStandard.StandardPath))
-                if (Path.GetExtension(f) == ".png")
-                    images.Add(f);
-
-            images.Sort();
-
-            Logger.Info("Found label images: {count}", images.Count);
-
-            foreach (var img in images)
-            {
-                string comment = string.Empty;
-                if (File.Exists(img.Replace(".png", ".txt")))
-                    comment = File.ReadAllText(img.Replace(".png", ".txt"));
-
-                var tmp = new LabelControlViewModel(img, comment, this)
-                {
-                    MainWindow = this,
-                };
-
-                tmp.Printing += Label_Printing;
-                tmp.StatusChanged += Label_StatusChanged;
-
-                Labels.Add(tmp);
-            }
-        }
-
-        private void Label_StatusChanged(string status)
-        {
-            this.UserMessage = status;
-        }
-
-        //private async Task ResetRepeats()
-        //{
-        //    Repeats.Clear();
-
-        //    await V275.Commands.GetRepeatsAvailable();
-
-        //    if (V275.Commands.Available != null && V275.Commands.Available.Count > 0)
-        //    {
-        //        LabelCount = V275.Commands.Available[0];
-        //        if (LabelCount == -1)
-        //            LabelCount = 0;
-        //    }
-
-        //    else
-        //        LabelCount = 0;
-        //}
-
-        private void Reset()
-        {
-            Label_StatusChanged("");
-        }
-
-        private async void GetDevicesAction(object parameter)
-        {
-            Logger.Info("Loading V275 devices.");
-
-            Reset();
+            V275_NodeNumber = 0;
+            V275_MAC = "";
 
             IsDeviceSelected = false;
-            V275_MAC = "";
-            Nodes.Clear();
-            SelectedNode = null;
-
-            if (await V275.Commands.GetDevices())
-            {
-                foreach (var node in V275.Commands.Devices.nodes)
-                {
-                    Logger.Debug("Device MAC: {dev}", node.cameraMAC);
-
-                    Nodes.Add(node);
-
-                    if (node.enumeration == V275_NodeNumber)
-                        SelectedNode = node;
-                }
-
-                Logger.Info("Processed {count} devices.", Nodes.Count);
-
-
-                if (SelectedNode == null && Nodes.Count > 0)
-                    SelectedNode = Nodes.First();
-
-                IsGetDevices = true;
-
-                await V275.Commands.GetProduct();
-                if (V275_Version != null)
-                {
-                    var curVer = V275_Version.Remove(0, V275_Version.LastIndexOf("-") + 1);
-
-                    if (System.Version.TryParse(curVer, out var result))
-                    {
-                        var baseVer = System.Version.Parse("1.2.0.0000");
-                        IsOldISO = result.CompareTo(baseVer) < 0;
-                    }
-                }
-                OnPropertyChanged("V275_Version");
-            }
-            else
-            {
-                Label_StatusChanged(V275.Status);
-                IsGetDevices = false;
-            }
-
-
         }
+    }
 
-        private ObservableCollection<string> OrphandStandards { get; } = new ObservableCollection<string>();
 
-        private void LoadStandardsList()
+    [ObservableProperty] private string v275_MAC;
+    public static string V275_Version => V275.Commands.Product?.part;
+
+    [ObservableProperty] private string v275_State;
+    [ObservableProperty] private string v275_JobName;
+    public static bool V275_IsBackupVoid => V275.Commands.ConfigurationCamera.backupVoidMode != null && V275.Commands.ConfigurationCamera.backupVoidMode.value == "ON";
+
+    [ObservableProperty] private bool isOldISO;
+
+    [ObservableProperty] private ObservableCollection<LabelControlViewModel> labels = [];
+
+    public StandardsDBFile StoredStandardsDatabase { get => App.Settings.GetValue("StoredStandardsDatabase_1", new StandardsDBFile() { FilePath = Path.Combine(App.StandardsDatabaseRoot, App.StandardsDatabaseDefaultName + App.DatabaseExtension), FileName = App.StandardsDatabaseDefaultName }); set => App.Settings.SetValue("StoredStandardsDatabase_1", value); }
+    public ObservableCollection<StandardsDBFile> StandardsDatabases { get; } = [];
+
+    [ObservableProperty] private StandardsDBFile selectedStandardsDatabase;
+    partial void OnSelectedStandardsDatabaseChanged(StandardsDBFile value)
+    {
+        SelectedStandard = null;
+
+        if (value != null)
         {
-            Logger.Info("Loading grading standards from file system. {path}", App.AssetsStandardsRoot);
+            StoredStandardsDatabase = value;
 
-            Standards.Clear();
-            SelectedStandard = null;
-
-            foreach (var dir in Directory.EnumerateDirectories(App.AssetsStandardsRoot).ToList().OrderBy((e) => Regex.Replace(e, "[0-9]+", match => match.Value.PadLeft(10, '0'))))
-            {
-                Logger.Debug("Found: {name}", dir.Substring(dir.LastIndexOf("\\") + 1));
-
-                foreach (var subdir in Directory.EnumerateDirectories(dir))
-                {
-                    if (subdir.EndsWith("600"))
-                        Standards.Add(new StandardEntryModel()
-                        {
-                            Name = dir.Substring(dir.LastIndexOf("\\") + 1),
-                            StandardPath = subdir,
-                        });
-                    else if (subdir.EndsWith("300"))
-                        Standards.Add(new StandardEntryModel()
-                        {
-                            Name = $"{dir.Substring(dir.LastIndexOf("\\") + 1)} 300",
-                            StandardPath = subdir,
-                        });
-                }
-            }
-
-            foreach (var dir in Directory.EnumerateDirectories(App.StandardsRoot).ToList().OrderBy((e) => Regex.Replace(e, "[0-9]+", match => match.Value.PadLeft(10, '0'))))
-            {
-                Logger.Debug("Found: {name}", dir.Substring(dir.LastIndexOf("\\") + 1));
-
-                foreach (var subdir in Directory.EnumerateDirectories(dir))
-                {
-                    if (subdir.EndsWith("600"))
-                        Standards.Add(new StandardEntryModel()
-                        {
-                            Name = dir.Substring(dir.LastIndexOf("\\") + 1),
-                            StandardPath = subdir,
-                        });
-                    else if (subdir.EndsWith("300"))
-                        Standards.Add(new StandardEntryModel()
-                        {
-                            Name = $"{dir.Substring(dir.LastIndexOf("\\") + 1)} 300",
-                            StandardPath = subdir,
-                        });
-                }
-            }
-
-            Logger.Info("Processed {count} grading standards.", Standards.Count);
+            LoadStandardsDatabase(StoredStandardsDatabase);
+            SelectStandard();
         }
-        private void SelectStandard()
+    }
+
+    
+    [ObservableProperty] private StandardEntryModel selectedStandard = App.Settings.GetValue<StandardEntryModel>(nameof(SelectedStandard), null);
+    partial void OnSelectedStandardChanged(StandardEntryModel value)
+    {
+        if (value != null)
+        {
+            App.Settings.SetValue(nameof(SelectedStandard), value);
+
+            LoadLabels();
+
+            _ = CheckTemplateName();
+        }
+        else
+        {
+            ClearLabels();
+        }
+    }
+
+    private ObservableCollection<string> OrphandStandards { get; } = [];
+
+    public bool IsDatabaseLocked
+    {
+        get => isDatabaseLocked || isDatabasePermLocked;
+        set { _ = SetProperty(ref isDatabaseLocked, value); OnPropertyChanged("IsNotDatabaseLocked"); }
+    }
+    public bool IsNotDatabaseLocked => !isDatabaseLocked;
+    private bool isDatabaseLocked = false;
+    public bool IsDatabasePermLocked
+    {
+        get => isDatabasePermLocked;
+        set { _ = SetProperty(ref isDatabasePermLocked, value); OnPropertyChanged("IsNotDatabasePermLocked"); }
+    }
+    public bool IsNotDatabasePermLocked => !isDatabasePermLocked;
+    private bool isDatabasePermLocked = false;
+
+    public ObservableCollection<StandardEntryModel> Standards { get; } = [];
+
+    public bool IsWrongTemplateName
+    {
+        get => isWrongTemplateName;
+        set { _ = SetProperty(ref isWrongTemplateName, value); OnPropertyChanged("IsNotWrongTemplateName"); }
+    }
+    public bool IsNotWrongTemplateName => !isWrongTemplateName;
+    private bool isWrongTemplateName = false;
+
+    [ObservableProperty] private string userName = App.Settings.GetValue(nameof(UserName), "admin", true);
+    partial void OnUserNameChanged(string value) { App.Settings.SetValue(nameof(UserName), value); }
+
+    [ObservableProperty] private string password = App.Settings.GetValue(nameof(Password), "admin", true);
+    partial void OnPasswordChanged(string value) { App.Settings.SetValue(nameof(Password), value); }
+
+    private Events_System.Data LoginData { get; } = new Events_System.Data();
+
+    public bool ShowTemplateNameMismatchDialog { get => App.Settings.GetValue("ShowTemplateNameMismatchDialog", true); set => App.Settings.SetValue("ShowTemplateNameMismatchDialog", value); }
+    private Task TemplateNameMismatchDialog;
+    private Task TemplateNotLoadedDialog;
+
+    [ObservableProperty] private string userMessage = "";
+
+    [ObservableProperty] private bool isGetDevices = false;
+    [ObservableProperty] private bool isDeviceSelected = false;
+
+    [ObservableProperty] private string simulatorImageDirectory = App.Settings.GetValue(nameof(SimulatorImageDirectory), GetV275SimulationDirectory(), true);
+
+
+
+    [ObservableProperty] private bool isLoggedIn_Monitor = false;
+    partial void OnIsLoggedIn_MonitorChanged(bool value) { OnPropertyChanged(nameof(IsLoggedIn)); OnPropertyChanged(nameof(IsNotLoggedIn)); OnPropertyChanged(nameof(IsDeviceSimulator)); }
+ 
+    [ObservableProperty] private bool isLoggedIn_Control = false;
+    partial void OnIsLoggedIn_ControlChanged(bool value) { OnPropertyChanged(nameof(IsLoggedIn)); OnPropertyChanged(nameof(IsNotLoggedIn)); OnPropertyChanged(nameof(IsDeviceSimulator)); }
+    public bool IsLoggedIn => IsLoggedIn_Monitor || IsLoggedIn_Control;
+    public bool IsNotLoggedIn => !(IsLoggedIn_Monitor || IsLoggedIn_Control);
+
+    public bool IsDeviceSimulator => V275_MAC != null && V275_MAC.Equals("00:00:00:00:00:00") && (IsLoggedIn_Control || IsLoggedIn_Monitor);
+
+    public RunController CurrentRun { get; set; } = new RunController();
+    
+    [ObservableProperty] private RunController.RunStates runState = RunController.RunStates.IDLE;
+    
+    [ObservableProperty] private bool isRunRunning = false;
+    [ObservableProperty] private bool isRunPaused = false;
+
+    [ObservableProperty] private int runLoopCount = App.Settings.GetValue(nameof(RunLoopCount), 1);
+    partial void OnRunLoopCountChanged(int value) { App.Settings.SetValue(nameof(RunLoopCount), value); }
+
+    private Dictionary<int, Repeat> Repeats { get; } = [];
+
+
+    public MainWindowViewModel()
+    {
+        V275.WebSocket.SetupCapture += WebSocket_SetupCapture;
+        V275.WebSocket.SessionStateChange += WebSocket_SessionStateChange;
+        //V275.WebSocket.Heartbeat += WebSocket_Heartbeat;
+        V275.WebSocket.LabelEnd += WebSocket_LabelEnd;
+        V275.WebSocket.StateChange += WebSocket_StateChange;
+
+        V275.StateChanged += V275_StateChanged;
+
+        LoadStandardsList();
+        LoadStandardsDatabasesList();
+
+        SelectStandardsDatabase();
+    }
+
+    private void V275_StateChanged(string state, string jobName)
+    {
+        V275_State = state;
+        V275_JobName = jobName;
+
+        if (V275_JobName != "")
+            _ = CheckTemplateName();
+        else if (V275_State == "Idle")
+            _ = CheckTemplateName();
+        else
+        {
+
+        }
+    }
+
+    private static uint GetV275PortNumber()
+    {
+        var res = Registry.GetValue("HKEY_LOCAL_MACHINE\\Software\\OMRON\\V275Service", "SystemServerPort", 8080);
+
+        return res == null ? 8080 : Convert.ToUInt32(res);
+    }
+    private static string GetV275SimulationDirectory()
+    {
+        var res = Registry.GetValue("HKEY_LOCAL_MACHINE\\Software\\OMRON\\V275Service", "DataDirectory", "");
+
+        if (string.IsNullOrEmpty((string)res))
+            return @"C:\Program Files\V275\data\images\simulation";
+        else
+            res += @"\images\simulation";
+
+        return res.ToString();
+    }
+
+    private int CheckTemplateName()
+    {
+        IsWrongTemplateName = false;
+
+        if (!IsLoggedIn)
+            return 0;
+
+        if (V275_JobName == "")
+        {
+            IsWrongTemplateName = true;
+
+            if (TemplateNotLoadedDialog != null)
+                if (TemplateNotLoadedDialog.Status != TaskStatus.RanToCompletion)
+                    return -1;
+
+            TemplateNotLoadedDialog = OkDialog("Template Not Loaded!", "There is no template loaded in the V275 software.");
+            return -1;
+        }
+
+        if (!SelectedStandard.IsGS1)
+        {
+            if (V275_JobName.ToLower().Equals(SelectedStandard.Name.ToLower()))
+                return 1;
+        }
+        else
+        {
+            if (V275_JobName.ToLower().StartsWith("gs1"))
+                return 1;
+        }
+
+        if (!ShowTemplateNameMismatchDialog)
+            return 1;
+
+        IsWrongTemplateName = true;
+
+        if (TemplateNameMismatchDialog != null)
+            if (TemplateNameMismatchDialog.Status != TaskStatus.RanToCompletion)
+                return -2;
+
+        TemplateNameMismatchDialog = OkDialog("Template Name Mismatch!", $"The template name loaded in the V275 software '{V275_JobName}' does not match the selected standard. '{SelectedStandard.Name.ToLower()}'");
+        return -2;
+    }
+
+    public async Task<MessageDialogResult> OkCancelDialog(string title, string message) => await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative);
+    public async Task OkDialog(string title, string message) => _ = await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.Affirmative);
+    public async Task<string> GetStringDialog(string title, string message) => await DialogCoordinator.ShowInputAsync(this, title, message);
+
+
+    //private void UpdatePrinters()
+    //{
+    //    foreach (var r in Labels)
+    //        r.PrinterName = StoredPrinter;
+
+    //}
+
+    private void ClearLabels()
+    {
+        foreach (var lab in Labels)
+        {
+            //lab.Clear();
+            lab.Printing -= Label_Printing;
+            lab.StatusChanged -= Label_StatusChanged;
+            //Labels.Remove(lab);
+        }
+        Labels.Clear();
+    }
+    private void LoadLabels()
+    {
+        Logger.Info("Loading label images from standards directory: {name}", $"{App.AssetsStandardsRoot}\\{SelectedStandard.StandardName}\\");
+
+        ClearLabels();
+
+        List<string> images = [];
+        foreach (var f in Directory.EnumerateFiles(SelectedStandard.StandardPath))
+            if (Path.GetExtension(f) == ".png")
+                images.Add(f);
+
+        images.Sort();
+
+        Logger.Info("Found label images: {count}", images.Count);
+
+        foreach (var img in images)
+        {
+            var comment = string.Empty;
+            if (File.Exists(img.Replace(".png", ".txt")))
+                comment = File.ReadAllText(img.Replace(".png", ".txt"));
+
+            var tmp = new LabelControlViewModel(img, comment, this)
+            {
+                MainWindow = this,
+            };
+
+            tmp.Printing += Label_Printing;
+            tmp.StatusChanged += Label_StatusChanged;
+
+            Labels.Add(tmp);
+        }
+    }
+
+    private void Label_StatusChanged(string status) => UserMessage = status;
+
+    //private async Task ResetRepeats()
+    //{
+    //    Repeats.Clear();
+
+    //    await V275.Commands.GetRepeatsAvailable();
+
+    //    if (V275.Commands.Available != null && V275.Commands.Available.Count > 0)
+    //    {
+    //        LabelCount = V275.Commands.Available[0];
+    //        if (LabelCount == -1)
+    //            LabelCount = 0;
+    //    }
+
+    //    else
+    //        LabelCount = 0;
+    //}
+
+    private void Reset() => Label_StatusChanged("");
+
+    private void LoadStandardsList()
+    {
+        Logger.Info("Loading grading standards from file system. {path}", App.AssetsStandardsRoot);
+
+        Standards.Clear();
+        SelectedStandard = null;
+
+        foreach (var dir in Directory.EnumerateDirectories(App.AssetsStandardsRoot).ToList().OrderBy((e) => Regex.Replace(e, "[0-9]+", match => match.Value.PadLeft(10, '0'))))
+        {
+            Logger.Debug("Found: {name}", dir[(dir.LastIndexOf("\\") + 1)..]);
+
+            foreach (var subdir in Directory.EnumerateDirectories(dir))
+            {
+                if (subdir.EndsWith("600"))
+                    Standards.Add(new StandardEntryModel()
+                    {
+                        Name = dir[(dir.LastIndexOf("\\") + 1)..],
+                        StandardPath = subdir,
+                    });
+                else if (subdir.EndsWith("300"))
+                    Standards.Add(new StandardEntryModel()
+                    {
+                        Name = $"{dir[(dir.LastIndexOf("\\") + 1)..]} 300",
+                        StandardPath = subdir,
+                    });
+            }
+        }
+
+        foreach (var dir in Directory.EnumerateDirectories(App.StandardsRoot).ToList().OrderBy((e) => Regex.Replace(e, "[0-9]+", match => match.Value.PadLeft(10, '0'))))
+        {
+            Logger.Debug("Found: {name}", dir[(dir.LastIndexOf("\\") + 1)..]);
+
+            foreach (var subdir in Directory.EnumerateDirectories(dir))
+            {
+                if (subdir.EndsWith("600"))
+                    Standards.Add(new StandardEntryModel()
+                    {
+                        Name = dir[(dir.LastIndexOf("\\") + 1)..],
+                        StandardPath = subdir,
+                    });
+                else if (subdir.EndsWith("300"))
+                    Standards.Add(new StandardEntryModel()
+                    {
+                        Name = $"{dir[(dir.LastIndexOf("\\") + 1)..]} 300",
+                        StandardPath = subdir,
+                    });
+            }
+        }
+
+        Logger.Info("Processed {count} grading standards.", Standards.Count);
+    }
+    private void SelectStandard()
+    {
+        StandardEntryModel std;
+        if (SelectedStandard != null && (std = Standards.FirstOrDefault((e) => e.Name.Equals(SelectedStandard.Name))) != null)
+            SelectedStandard = std;
+        else if (Standards.Count > 0)
+            SelectedStandard = Standards.First();
+    }
+
+    private void LoadStandardsDatabasesList()
+    {
+        Logger.Info("Loading grading standards databases from file system. {path}", App.StandardsDatabaseRoot);
+
+        StandardsDatabases.Clear();
+        SelectedStandardsDatabase = null;
+
+        foreach (var file in Directory.EnumerateFiles(App.AssetsStandardsDatabasesRoot))
+        {
+            Logger.Debug("Found: {name}", Path.GetFileName(file));
+
+            if (file.EndsWith(App.DatabaseExtension))
+                StandardsDatabases.Add(new StandardsDBFile() { FileName = Path.GetFileName(file).Replace(App.DatabaseExtension, ""), FilePath = file });
+        }
+
+        foreach (var file in Directory.EnumerateFiles(App.StandardsDatabaseRoot))
+        {
+            Logger.Debug("Found: {name}", Path.GetFileName(file));
+
+            if (file.EndsWith(App.DatabaseExtension))
+                StandardsDatabases.Add(new StandardsDBFile() { FileName = Path.GetFileName(file).Replace(App.DatabaseExtension, ""), FilePath = file });
+        }
+
+        if (StandardsDatabases.Count == 0)
+            StandardsDatabases.Add(new StandardsDBFile() { FilePath = Path.Combine(App.StandardsDatabaseRoot, App.StandardsDatabaseDefaultName + App.DatabaseExtension), FileName = App.StandardsDatabaseDefaultName });
+    }
+    private void SelectStandardsDatabase()
+    {
+        var res = StandardsDatabases.Where((a) => a.FilePath == StoredStandardsDatabase.FilePath);
+        if (res.FirstOrDefault() != null)
+            SelectedStandardsDatabase = res.FirstOrDefault();
+        else if (StandardsDatabases.Count > 0)
+            SelectedStandardsDatabase = StandardsDatabases.First();
+    }
+    private void LoadStandardsDatabase(StandardsDBFile file)
+    {
+        OrphandStandards.Clear();
+
+        //string file = Path.Combine(App.StandardsDatabaseRoot, fileName + App.DatabaseExtension);
+
+        //if (!File.Exists(file))
+        //    file = Path.Combine(App.AssetsStandardsDatabasesRoot, fileName + App.DatabaseExtension);
+
+        StandardsDatabase?.Close();
+
+        Logger.Info("Initializing standards database: {name}", file.FileName);
+        StandardsDatabase = new StandardsDatabase(file.FilePath);
+
+        var tables = StandardsDatabase.GetAllTables();
+
+        IsDatabasePermLocked = tables.Contains("LOCKPERM");
+        IsDatabaseLocked = tables.Contains("LOCK");
+
+        foreach (var tbl in tables)
         {
             StandardEntryModel std;
-            if (StoredStandard != null && (std = Standards.FirstOrDefault((e) => e.Name.Equals(StoredStandard.Name))) != null)
-                SelectedStandard = std;
-            else if (Standards.Count > 0)
-                SelectedStandard = Standards.First();
-        }
-
-        private void LoadStandardsDatabasesList()
-        {
-            Logger.Info("Loading grading standards databases from file system. {path}", App.StandardsDatabaseRoot);
-
-            StandardsDatabases.Clear();
-            SelectedStandardsDatabase = null;
-
-            foreach (var file in Directory.EnumerateFiles(App.AssetsStandardsDatabasesRoot))
+            if ((std = Standards.FirstOrDefault((e) => e.Name.Equals(tbl))) == null)
             {
-                Logger.Debug("Found: {name}", Path.GetFileName(file));
+                if (tbl.StartsWith("LOCK"))
+                    continue;
+                else
+                    OrphandStandards.Add(tbl);
+            }
+            //else
+            //    std.NumRows = StandardsDatabase.GetAllRowsCount(tbl);
+        }
+    }
+    
+    [RelayCommand] private async Task GetDevices()
+    {
+        Logger.Info("Loading V275 devices.");
 
-                if (file.EndsWith(App.DatabaseExtension))
-                    StandardsDatabases.Add(new StandardsDBFile() { FileName = Path.GetFileName(file).Replace(App.DatabaseExtension, ""), FilePath = file });
+        Reset();
+
+        IsDeviceSelected = false;
+        V275_MAC = "";
+        Nodes.Clear();
+        SelectedNode = null;
+
+        if (await V275.Commands.GetDevices())
+        {
+            foreach (var node in V275.Commands.Devices.nodes)
+            {
+                Logger.Debug("Device MAC: {dev}", node.cameraMAC);
+
+                Nodes.Add(node);
+
+                if (node.enumeration == V275_NodeNumber)
+                    SelectedNode = node;
             }
 
-            foreach (var file in Directory.EnumerateFiles(App.StandardsDatabaseRoot))
+            Logger.Info("Processed {count} devices.", Nodes.Count);
+
+            if (SelectedNode == null && Nodes.Count > 0)
+                SelectedNode = Nodes.First();
+
+            IsGetDevices = true;
+
+            _ = await V275.Commands.GetProduct();
+            if (V275_Version != null)
             {
-                Logger.Debug("Found: {name}", Path.GetFileName(file));
+                var curVer = V275_Version.Remove(0, V275_Version.LastIndexOf("-") + 1);
 
-                if (file.EndsWith(App.DatabaseExtension))
-                    StandardsDatabases.Add(new StandardsDBFile() { FileName = Path.GetFileName(file).Replace(App.DatabaseExtension, ""), FilePath = file });
-            }
-
-            if (StandardsDatabases.Count == 0)
-                StandardsDatabases.Add(new StandardsDBFile() { FilePath = Path.Combine(App.StandardsDatabaseRoot, App.StandardsDatabaseDefaultName + App.DatabaseExtension), FileName = App.StandardsDatabaseDefaultName } );
-        }
-        private void SelectStandardsDatabase()
-        {
-            var res = StandardsDatabases.Where((a) => a.FilePath == StoredStandardsDatabase.FilePath);
-            if(res.FirstOrDefault() != null)
-                SelectedStandardsDatabase = res.FirstOrDefault();
-            else if (StandardsDatabases.Count > 0)
-                SelectedStandardsDatabase = StandardsDatabases.First();
-        }
-        private void LoadStandardsDatabase(StandardsDBFile file)
-        {
-            OrphandStandards.Clear();
-
-            //string file = Path.Combine(App.StandardsDatabaseRoot, fileName + App.DatabaseExtension);
-
-            //if (!File.Exists(file))
-            //    file = Path.Combine(App.AssetsStandardsDatabasesRoot, fileName + App.DatabaseExtension);
-
-            StandardsDatabase?.Close();
-
-            Logger.Info("Initializing standards database: {name}", file.FileName);
-            StandardsDatabase = new StandardsDatabase(file.FilePath);
-
-            List<string> tables = StandardsDatabase.GetAllTables();
-
-            IsDatabasePermLocked = tables.Contains("LOCKPERM");
-            IsDatabaseLocked = tables.Contains("LOCK");
-
-            foreach (var tbl in tables)
-            {
-                StandardEntryModel std;
-                if ((std = Standards.FirstOrDefault((e) => e.Name.Equals(tbl))) == null)
+                if (System.Version.TryParse(curVer, out var result))
                 {
-                    if (tbl.StartsWith("LOCK"))
-                        continue;
-                    else
-                        OrphandStandards.Add(tbl);
+                    var baseVer = System.Version.Parse("1.2.0.0000");
+                    IsOldISO = result.CompareTo(baseVer) < 0;
                 }
-                //else
-                //    std.NumRows = StandardsDatabase.GetAllRowsCount(tbl);
             }
+            OnPropertyChanged("V275_Version");
+        }
+        else
+        {
+            Label_StatusChanged(V275.Status);
+            IsGetDevices = false;
+        }
+    }
+    [RelayCommand] private async Task CreateStandardsDatabase()
+    {
+        var res = await GetStringDialog("New Standards Database", "What is the name of the new database?");
+        if (res == null) return;
 
+        if (string.IsNullOrEmpty(res) || res.IndexOfAny(System.IO.Path.GetInvalidFileNameChars()) >= 0)
+        {
+            _ = OkDialog("Invalid Name", $"The name '{res}' contains invalid characters.");
+            return;
         }
 
-        private async void CreateStandardsDatabaseAction(object parameter)
+        var file = new StandardsDBFile() { FilePath = Path.Combine(App.StandardsDatabaseRoot, res + App.DatabaseExtension), FileName = res };
+        _ = new StandardsDatabase(file.FilePath);
+
+        SelectedStandardsDatabase = null;
+
+        LoadStandardsDatabasesList();
+
+        StoredStandardsDatabase = file;
+        SelectStandardsDatabase();
+
+    }
+    [RelayCommand] private void LockStandardsDatabase()
+    {
+        if (IsDatabasePermLocked) return;
+
+        if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) && (Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt)))
         {
-            string res = await GetStringDialog("New Standards Database", "What is the name of the new database?");
-            if (res == null) return;
-
-            if (string.IsNullOrEmpty(res) || res.IndexOfAny(System.IO.Path.GetInvalidFileNameChars()) >= 0)
-            {
-                _ = OkDialog("Invalid Name", $"The name '{res}' contains invalid characters.");
-                return;
-            }
-
-            var file = new StandardsDBFile() { FilePath = Path.Combine(App.StandardsDatabaseRoot, res + App.DatabaseExtension), FileName = res };
-            _ = new StandardsDatabase(file.FilePath);
-
-            SelectedStandardsDatabase = null;
-
-            LoadStandardsDatabasesList();
-
-            StoredStandardsDatabase = file;
-            SelectStandardsDatabase();
-
+            StandardsDatabase.DeleteLockTable(false);
+            StandardsDatabase.CreateLockTable(true);
         }
-        private void LockStandardsDatabaseAction(object parameter)
+        else
         {
-            if (IsDatabasePermLocked) return;
-
-            if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) && (Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt)))
-            {
+            if (IsDatabaseLocked)
                 StandardsDatabase.DeleteLockTable(false);
-                StandardsDatabase.CreateLockTable(true);
-            }
             else
-            {
-                if (IsDatabaseLocked)
-                    StandardsDatabase.DeleteLockTable(false);
-                else
-                    StandardsDatabase.CreateLockTable(false);
-            }
-
-            SelectedStandardsDatabase = null;
-            SelectStandardsDatabase();
+                StandardsDatabase.CreateLockTable(false);
         }
 
-        private async void LoginMonitorAction(object parameter)
+        SelectedStandardsDatabase = null;
+        SelectStandardsDatabase();
+    }
+
+    [RelayCommand] private async Task LoginMonitor()
+    {
+        Reset();
+
+        if (!PreLogin()) return;
+
+        if (await V275.Commands.Login(UserName, Password, true))
         {
-            Reset();
-
-            if (!PreLogin()) return;
-
-            if (await V275.Commands.Login(UserName, Password, true))
-            {
-                _ = PostLogin(true);
-            }
-            else
-            {
-                Label_StatusChanged(V275.Status);
-                IsLoggedIn_Monitor = false;
-            }
+            _ = PostLogin(true);
         }
-        private async void LoginControlAction(object parameter)
+        else
         {
-            Reset();
-
-            if (!PreLogin()) return;
-
-            if (await V275.Commands.Login(UserName, Password, false))
-            {
-                _ = PostLogin(false);
-            }
-            else
-            {
-                Label_StatusChanged(V275.Status);
-                IsLoggedIn_Control = false;
-            }
-        }
-        private async void LogoutAction(object parameter)
-        {
-            Reset();
-
-            if (!await V275.Commands.Logout())
-                Label_StatusChanged(V275.Status);
-
-            LoginData.accessLevel = "";
-            LoginData.token = "";
-            LoginData.id = "";
-            LoginData.state = "1";
-
-            IsLoggedIn_Control = false;
+            Label_StatusChanged(V275.Status);
             IsLoggedIn_Monitor = false;
-
-            try
-            {
-                await V275.WebSocket.StopAsync();
-
-                //V275.V275_State = "";
-                //V275.V275_JobName = "";
-
-                //V275_State = "";
-                //V275_JobName = "";
-            }
-            catch { }
         }
-        private bool PreLogin()
+    }
+    [RelayCommand] private async Task LoginControl()
+    {
+        Reset();
+
+        if (!PreLogin()) return;
+
+        if (await V275.Commands.Login(UserName, Password, false))
         {
-            if (IsDeviceSimulator)
-            {
-                if (Directory.Exists(SimulatorImageDirectory))
-                {
-                    try
-                    {
-                        File.Create(Path.Combine(SimulatorImageDirectory, "file")).Close();
-                        File.Delete(Path.Combine(SimulatorImageDirectory, "file"));
-                    }
-                    catch (Exception ex)
-                    {
-                        Label_StatusChanged(ex.Message);
-
-                        Logger.Error(ex);
-                        return false;
-                    }
-                    return true;
-                }
-                else
-                {
-                    _ = OkDialog("Invalid Simulation Images Directory", $"Please select a valid simulator images directory.\r\n'{SimulatorImageDirectory}'");
-                    return false;
-                }
-
-            }
-            return true;
+            _ = PostLogin(false);
         }
-        private async Task PostLogin(bool isLoggedIn_Monitor)
+        else
         {
-            LoginData.accessLevel = isLoggedIn_Monitor ? "monitor" : "control";
-            LoginData.token = V275.Commands.Token;
-            LoginData.id = UserName;
-            LoginData.state = "0";
-
-            IsLoggedIn_Monitor = isLoggedIn_Monitor;
-            IsLoggedIn_Control = !isLoggedIn_Monitor;
-
-            await V275.Commands.GetCameraConfig();
-            await V275.Commands.GetSymbologies();
-            await V275.Commands.GetCalibration();
-            await V275.Commands.SetSendExtendedData(true);
-
-            if (!await V275.WebSocket.StartAsync(V275.Commands.URLs.WS_NodeEvents))
-                return;
-
-            Repeats.Clear();
+            Label_StatusChanged(V275.Status);
+            IsLoggedIn_Control = false;
         }
+    }
+    [RelayCommand] private async Task Logout()
+    {
+        Reset();
 
+        if (!await V275.Commands.Logout())
+            Label_StatusChanged(V275.Status);
 
-        //private void WebSocket_Heartbeat(V275_Events_System ev)
-        //{
-        //    string state = char.ToUpper(ev.data.state[0]) + ev.data.state.Substring(1);
+        LoginData.accessLevel = "";
+        LoginData.token = "";
+        LoginData.id = "";
+        LoginData.state = "1";
 
-        //    if (v275_State != state)
-        //    {
-        //        v275_State = state;
+        IsLoggedIn_Control = false;
+        IsLoggedIn_Monitor = false;
 
-        //        OnPropertyChanged("V275_State");
-        //        OnPropertyChanged("V275_JobName");
-        //    }
-
-        //}
-        private void WebSocket_SessionStateChange(Events_System ev)
+        try
         {
-            //if (ev.data.id == LoginData.id)
-            if (ev.data.state == "0")
-                if (ev.data.accessLevel == "control")
-                    if (LoginData.accessLevel == "control")
-                        if (ev.data.token != LoginData.token)
-                            LogoutAction(new object());
+            await V275.WebSocket.StopAsync();
+
+            //V275.V275_State = "";
+            //V275.V275_JobName = "";
+
+            //V275_State = "";
+            //V275_JobName = "";
         }
-        private void WebSocket_SetupCapture(Events_System ev)
+        catch { }
+    }
+    private bool PreLogin()
+    {
+        if (IsDeviceSimulator)
         {
-            if (PrintingLabel == null)
-                return;
-
-            Repeats.Add(ev.data.repeat, new Repeat() { Label = PrintingLabel, RepeatNumber = ev.data.repeat });
-            PrintingLabel = null;
-
-            if (IsLoggedIn_Control)
-                if (!Repeats.ContainsKey(ev.data.repeat + 1))
-                    App.Current.Dispatcher.Invoke(new Action(() => ProcessRepeat(ev.data.repeat)));
-        }
-        private void WebSocket_LabelEnd(Events_System ev)
-        {
-            if (V275_State == "Editing")
-                return;
-
-            if (PrintingLabel == null)
-                return;
-
-            Repeats.Add(ev.data.repeat, new Repeat() { Label = PrintingLabel, RepeatNumber = ev.data.repeat });
-            PrintingLabel = null;
-
-            if (IsLoggedIn_Control)
-                if (!Repeats.ContainsKey(ev.data.repeat + 1))
-                    App.Current.Dispatcher.Invoke(new Action(() => ProcessRepeat(ev.data.repeat)));
-        }
-        private void WebSocket_StateChange(Events_System ev)
-        {
-            if (ev != null)
-                if (ev.data.toState == "editing" || (ev.data.toState == "running" && ev.data.fromState != "paused"))
-                    Repeats.Clear();
-        }
-
-        private LabelControlViewModel PrintingLabel { get; set; } = null;
-
-        private bool WaitForRepeat;
-        private async void Label_Printing(LabelControlViewModel label, string type)
-        {
-            if (label.MainWindow.IsDeviceSimulator)
+            if (Directory.Exists(SimulatorImageDirectory))
             {
                 try
                 {
-                    //int verRes = 1;
-                    string prepend = "";
-
-                    var sim = new Simulator.SimulatorFileHandler();
-
-                    if (!sim.DeleteAllImages())
-                    {
-                        //string verCur = V275_Version != null ? V275_Version.Substring(V275_Version.LastIndexOf('-') + 1) : null;
-
-                        //if (verCur != null)
-                        //{
-                        //    System.Version ver = System.Version.Parse(verCur);
-                        //    System.Version verMin = System.Version.Parse("1.1.0.3009");
-                        //    verRes = ver.CompareTo(ver);
-                        //}
-
-                        //if (verRes > 0)
-                        //{
-                        Label_StatusChanged("Could not delete all simulator images.");
-                        label.IsWorking = false;
-                        return;
-                        //}
-                        //else
-                        //{
-                        //    sim.UpdateImageList();
-
-                        //    prepend = "_";
-
-                        //    foreach(var imgFile in sim.Images)
-                        //    {
-                        //        string name = Path.GetFileName(imgFile);
-
-                        //        for(; ; )
-                        //        {
-                        //            if (name.StartsWith(prepend))
-                        //                prepend += prepend;
-                        //            else
-                        //                break;
-                        //        }
-                        //    }
-                        //}
-                    }
-
-                    if (type == "label")
-                    {
-                        if (!sim.CopyImage(label.LabelImagePath, prepend))
-                        {
-                            Label_StatusChanged("Could not copy the image to the simulator images directory.");
-                            label.IsWorking = false;
-                            return;
-                        }
-                    }
-                    else
-                    {
-                        if (!sim.SaveImage(label.LabelImagePath, label.RepeatImage))
-                        {
-                            Label_StatusChanged("Could not save the image to the simulator images directory.");
-                            label.IsWorking = false;
-                            return;
-                        }
-                    }
-
-                    //if (!IsLoggedIn_Control )
-                    //{
-                    //    if(!await V275.Commands.TriggerSimulator())
-                    //    {
-                    //        UserMessage = "Error triggering the simulator.";
-                    //        label.IsWorking = false;
-                    //        return;
-                    //    }
-
-                    //}
-
-                    if (!IsLoggedIn_Control)
-                    {
-                        label.IsWorking = false;
-                    }
+                    File.Create(Path.Combine(SimulatorImageDirectory, "file")).Close();
+                    File.Delete(Path.Combine(SimulatorImageDirectory, "file"));
                 }
                 catch (Exception ex)
                 {
                     Label_StatusChanged(ex.Message);
-                    label.IsWorking = false;
+
                     Logger.Error(ex);
+                    return false;
                 }
+                return true;
             }
             else
             {
-                _ = Task.Run(() =>
-                {
-                    PrintControl printer = new PrintControl();
-
-                    if (RunState != RunController.RunStates.IDLE)
-                    {
-                        var data = $"Loop {CurrentRun.CurrentLoopCount} : {CurrentRun.CurrentLabelCount}";
-                        printer.Print(label.LabelImagePath, 1, SelectedPrinter, data);
-                    }
-                    else
-                        printer.Print(label.LabelImagePath, label.PrintCount, SelectedPrinter, "");
-
-                    if (!IsLoggedIn_Control)
-                        label.IsWorking = false;
-                });
+                _ = OkDialog("Invalid Simulation Images Directory", $"Please select a valid simulator images directory.\r\n'{SimulatorImageDirectory}'");
+                return false;
             }
-
-            if (IsLoggedIn_Control)
-            {
-                PrintingLabel = label;
-
-                _ = Task.Run(() =>
-                {
-                    WaitForRepeat = true;
-
-                    DateTime start = DateTime.Now;
-                    while (WaitForRepeat)
-                    {
-                        if ((DateTime.Now - start) > TimeSpan.FromMilliseconds(10000))
-                        {
-                            WaitForRepeat = false;
-
-                            PrintingLabel = null;
-
-                            label.IsFaulted = true;
-                            label.IsWorking = false;
-                            return;
-                        }
-                    }
-                });
-            }
-            else
-                PrintingLabel = null;
-
-            if (V275_State != "Idle" && IsLoggedIn_Control)
-            {
-                if (!await EnablePrintAction("1"))
-                {
-                    WaitForRepeat = false;
-
-                    PrintingLabel = null;
-
-                    label.IsFaulted = true;
-                    label.IsWorking = false;
-                }
-            }
-
-            else
-                await V275.SimulatorTogglePrint();
         }
-        private async void ProcessRepeat(int repeat)
-        {
-            WaitForRepeat = false;
+        return true;
+    }
+    private async Task PostLogin(bool isLoggedIn_Monitor)
+    {
+        LoginData.accessLevel = isLoggedIn_Monitor ? "monitor" : "control";
+        LoginData.token = V275.Commands.Token;
+        LoginData.id = UserName;
+        LoginData.state = "0";
 
-            if (Repeats[repeat].Label.GradingStandard.IsGS1)
+        IsLoggedIn_Monitor = isLoggedIn_Monitor;
+        IsLoggedIn_Control = !isLoggedIn_Monitor;
+
+        _ = await V275.Commands.GetCameraConfig();
+        _ = await V275.Commands.GetSymbologies();
+        _ = await V275.Commands.GetCalibration();
+        _ = await V275.Commands.SetSendExtendedData(true);
+
+        if (!await V275.WebSocket.StartAsync(V275.Commands.URLs.WS_NodeEvents))
+            return;
+
+        Repeats.Clear();
+    }
+
+    [RelayCommand] private static void TriggerSim() => _ = V275.Commands.TriggerSimulator();
+    [RelayCommand] private static async Task V275_SwitchRun() => await V275.SwitchToRun();
+    [RelayCommand] private static async Task V275_SwitchEdit() => await V275.SwitchToEdit();
+    [RelayCommand] private static async Task V275_RemoveRepeat()
+    {
+        int repeat;
+
+        repeat = await V275.GetLatestRepeat();
+        if (repeat == -9999)
+            return;
+
+        if (!await V275.Commands.RemoveRepeat(repeat))
+        {
+            return;
+        }
+
+        if (!await V275.Commands.ResumeJob())
+        {
+            return;
+        }
+    }
+
+    [RelayCommand] private async Task StartRun(object parameter)
+    {
+        if (!StartRunCheck())
+            if (await OkCancelDialog("Missing Label Sectors", "There are Labels that do not have stored sectors. Are you sure you want to continue?") == MessageDialogResult.Negative)
+                return;
+
+        //if (CurrentRun.State == )
+        //{
+        //    CurrentRun.RunStateChange -= CurrentRun_RunStateChange;
+        //    CurrentRun.Close();
+        //    CurrentRun = null;
+        //}
+
+        Logger.Info("Starting Run: {stand}; {count}", Labels[0].GradingStandard.Name, RunLoopCount);
+
+        _ = CurrentRun.Init(Labels, RunLoopCount, StandardsDatabase, V275.Commands.Product.part, SelectedNode.cameraMAC);
+
+        CurrentRun.RunStateChange -= CurrentRun_RunStateChange;
+        CurrentRun.RunStateChange += CurrentRun_RunStateChange;
+
+        //if (CurrentRun == null)
+        //    return;
+
+        CurrentRun.StartAsync();
+    }
+    [RelayCommand] private void PauseRun()
+    {
+        if (CurrentRun == null)
+            return;
+
+        if (CurrentRun.State != RunController.RunStates.PAUSED)
+            CurrentRun.Pause();
+        else
+            CurrentRun.Resume();
+
+    }
+    [RelayCommand] private void StopRun()
+    {
+        if (CurrentRun == null)
+            return;
+
+        CurrentRun.Stop();
+    }
+    [RelayCommand] private void ClearUserMessage() => UserMessage = "";
+
+
+
+    //private void WebSocket_Heartbeat(V275_Events_System ev)
+    //{
+    //    string state = char.ToUpper(ev.data.state[0]) + ev.data.state.Substring(1);
+
+    //    if (v275_State != state)
+    //    {
+    //        v275_State = state;
+
+    //        OnPropertyChanged("V275_State");
+    //        OnPropertyChanged("V275_JobName");
+    //    }
+
+    //}
+    private void WebSocket_SessionStateChange(Events_System ev)
+    {
+        //if (ev.data.id == LoginData.id)
+        if (ev.data.state == "0")
+            if (ev.data.accessLevel == "control")
+                if (LoginData.accessLevel == "control")
+                    if (ev.data.token != LoginData.token)
+                        _ = Logout();
+    }
+    private void WebSocket_SetupCapture(Events_System ev)
+    {
+        if (PrintingLabel == null)
+            return;
+
+        Repeats.Add(ev.data.repeat, new Repeat() { Label = PrintingLabel, RepeatNumber = ev.data.repeat });
+        PrintingLabel = null;
+
+        if (IsLoggedIn_Control)
+            if (!Repeats.ContainsKey(ev.data.repeat + 1))
+                App.Current.Dispatcher.Invoke(new Action(() => ProcessRepeat(ev.data.repeat)));
+    }
+    private void WebSocket_LabelEnd(Events_System ev)
+    {
+        if (V275_State == "Editing")
+            return;
+
+        if (PrintingLabel == null)
+            return;
+
+        Repeats.Add(ev.data.repeat, new Repeat() { Label = PrintingLabel, RepeatNumber = ev.data.repeat });
+        PrintingLabel = null;
+
+        if (IsLoggedIn_Control)
+            if (!Repeats.ContainsKey(ev.data.repeat + 1))
+                App.Current.Dispatcher.Invoke(new Action(() => ProcessRepeat(ev.data.repeat)));
+    }
+    private void WebSocket_StateChange(Events_System ev)
+    {
+        if (ev != null)
+            if (ev.data.toState == "editing" || (ev.data.toState == "running" && ev.data.fromState != "paused"))
+                Repeats.Clear();
+    }
+
+    private LabelControlViewModel PrintingLabel { get; set; } = null;
+
+    private bool WaitForRepeat;
+    private async void Label_Printing(LabelControlViewModel label, string type)
+    {
+        if (label.MainWindow.IsDeviceSimulator)
+        {
+            try
             {
-                if (repeat > 0)
-                    if (!await V275.Commands.SetRepeat(repeat))
+                //int verRes = 1;
+                var prepend = "";
+
+                var sim = new Simulator.SimulatorFileHandler();
+
+                if (!sim.DeleteAllImages())
+                {
+                    //string verCur = V275_Version != null ? V275_Version.Substring(V275_Version.LastIndexOf('-') + 1) : null;
+
+                    //if (verCur != null)
+                    //{
+                    //    System.Version ver = System.Version.Parse(verCur);
+                    //    System.Version verMin = System.Version.Parse("1.1.0.3009");
+                    //    verRes = ver.CompareTo(ver);
+                    //}
+
+                    //if (verRes > 0)
+                    //{
+                    Label_StatusChanged("Could not delete all simulator images.");
+                    label.IsWorking = false;
+                    return;
+                    //}
+                    //else
+                    //{
+                    //    sim.UpdateImageList();
+
+                    //    prepend = "_";
+
+                    //    foreach(var imgFile in sim.Images)
+                    //    {
+                    //        string name = Path.GetFileName(imgFile);
+
+                    //        for(; ; )
+                    //        {
+                    //            if (name.StartsWith(prepend))
+                    //                prepend += prepend;
+                    //            else
+                    //                break;
+                    //        }
+                    //    }
+                    //}
+                }
+
+                if (type == "label")
+                {
+                    if (!sim.CopyImage(label.LabelImagePath, prepend))
                     {
-                        ProcessRepeatFault(repeat);
+                        Label_StatusChanged("Could not copy the image to the simulator images directory.");
+                        label.IsWorking = false;
                         return;
                     }
+                }
+                else
+                {
+                    if (!sim.SaveImage(label.LabelImagePath, label.RepeatImage))
+                    {
+                        Label_StatusChanged("Could not save the image to the simulator images directory.");
+                        label.IsWorking = false;
+                        return;
+                    }
+                }
 
-                int i = await Repeats[repeat].Label.LoadTask();
+                //if (!IsLoggedIn_Control )
+                //{
+                //    if(!await V275.Commands.TriggerSimulator())
+                //    {
+                //        UserMessage = "Error triggering the simulator.";
+                //        label.IsWorking = false;
+                //        return;
+                //    }
 
-                if (i == 0)
+                //}
+
+                if (!IsLoggedIn_Control)
+                {
+                    label.IsWorking = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Label_StatusChanged(ex.Message);
+                label.IsWorking = false;
+                Logger.Error(ex);
+            }
+        }
+        else
+        {
+            _ = Task.Run(() =>
+            {
+                var printer = new PrintControl();
+
+                if (RunState != RunController.RunStates.IDLE)
+                {
+                    var data = $"Loop {CurrentRun.CurrentLoopCount} : {CurrentRun.CurrentLabelCount}";
+                    printer.Print(label.LabelImagePath, 1, PrinterViewModel.SelectedPrinter, data);
+                }
+                else
+                    printer.Print(label.LabelImagePath, label.PrintCount, PrinterViewModel.SelectedPrinter, "");
+
+                if (!IsLoggedIn_Control)
+                    label.IsWorking = false;
+            });
+        }
+
+        if (IsLoggedIn_Control)
+        {
+            PrintingLabel = label;
+
+            _ = Task.Run(() =>
+            {
+                WaitForRepeat = true;
+
+                var start = DateTime.Now;
+                while (WaitForRepeat)
+                {
+                    if ((DateTime.Now - start) > TimeSpan.FromMilliseconds(10000))
+                    {
+                        WaitForRepeat = false;
+
+                        PrintingLabel = null;
+
+                        label.IsFaulted = true;
+                        label.IsWorking = false;
+                        return;
+                    }
+                }
+            });
+        }
+        else
+            PrintingLabel = null;
+
+        if (V275_State != "Idle" && IsLoggedIn_Control)
+        {
+            if (!await EnablePrint("1"))
+            {
+                WaitForRepeat = false;
+
+                PrintingLabel = null;
+
+                label.IsFaulted = true;
+                label.IsWorking = false;
+            }
+        }
+
+        else
+            _ = await V275.SimulatorTogglePrint();
+    }
+    private async void ProcessRepeat(int repeat)
+    {
+        WaitForRepeat = false;
+
+        if (Repeats[repeat].Label.GradingStandard.IsGS1)
+        {
+            if (repeat > 0)
+                if (!await V275.Commands.SetRepeat(repeat))
                 {
                     ProcessRepeatFault(repeat);
                     return;
                 }
 
-                if (i == 2)
-                {
-                    var sectors = V275.CreateSectors(V275.SetupDetectEvent, StoredStandard.TableID);
+            var i = await Repeats[repeat].Label.LoadTask();
 
-                    Logger.Info("Creating sectors.");
-
-                    foreach (var sec in sectors)
-                    {
-                        if (!await V275.AddSector(sec.name, JsonConvert.SerializeObject(sec)))
-                        {
-                            ProcessRepeatFault(repeat);
-                            return;
-                        }
-                    }
-
-                }
-            }
-
-            Logger.Info("Reading label results and Image.");
-            if (!await Repeats[repeat].Label.ReadTask(repeat))
+            if (i == 0)
             {
                 ProcessRepeatFault(repeat);
                 return;
             }
 
-            Repeats[repeat].Label.IsWorking = false;
-            Repeats.Clear();
-        }
-        private void ProcessRepeatFault(int repeat)
-        {
-            Repeats[repeat].Label.IsFaulted = true;
-            Repeats[repeat].Label.IsWorking = false;
-
-            Repeats.Clear();
-        }
-
-        private async Task<bool> EnablePrintAction(object parameter)
-        {
-            if (!IsDeviceSimulator)
+            if (i == 2)
             {
-                if (V275_IsBackupVoid)
+                var sectors = V275.CreateSectors(V275.SetupDetectEvent, SelectedStandard.TableID);
+
+                Logger.Info("Creating sectors.");
+
+                foreach (var sec in sectors)
                 {
-                    if (!await V275.Commands.Print(false))
-                        return false;
-
-                    Thread.Sleep(50);
+                    if (!await V275.AddSector(sec.name, JsonConvert.SerializeObject(sec)))
+                    {
+                        ProcessRepeatFault(repeat);
+                        return;
+                    }
                 }
-
-                return await V275.Commands.Print((string)parameter == "1");
             }
-            else
+        }
+
+        Logger.Info("Reading label results and Image.");
+        if (!await Repeats[repeat].Label.ReadTask(repeat))
+        {
+            ProcessRepeatFault(repeat);
+            return;
+        }
+
+        Repeats[repeat].Label.IsWorking = false;
+        Repeats.Clear();
+    }
+    private void ProcessRepeatFault(int repeat)
+    {
+        Repeats[repeat].Label.IsFaulted = true;
+        Repeats[repeat].Label.IsWorking = false;
+
+        Repeats.Clear();
+    }
+
+    [RelayCommand] private async Task<bool> EnablePrint(object parameter)
+    {
+        if (!IsDeviceSimulator)
+        {
+            if (V275_IsBackupVoid)
             {
-                return await V275.SimulatorTogglePrint();
-            }
-
-        }
-
-        private void TriggerSimAction(object parameter)
-        {
-            _ = V275.Commands.TriggerSimulator();
-        }
-        private async void V275_SwitchRunAction(object parameter)
-        {
-            await V275.SwitchToRun();
-        }
-        private async void V275_SwitchEditAction(object parameter)
-        {
-            await V275.SwitchToEdit();
-        }
-        private async void V275_RemoveRepeatAction(object parameter)
-        {
-            int repeat;
-
-            repeat = await V275.GetLatestRepeat();
-            if (repeat == -9999)
-                return;
-
-            if (!await V275.Commands.RemoveRepeat(repeat))
-            {
-                return;
-            }
-
-            if (!await V275.Commands.ResumeJob())
-            {
-                return;
-            }
-        }
-
-        private async void StartRunAction(object parameter)
-        {
-            if (!StartRunCheck())
-                if (await OkCancelDialog("Missing Label Sectors", "There are Labels that do not have stored sectors. Are you sure you want to continue?") == MessageDialogResult.Negative)
-                    return;
-
-            //if (CurrentRun.State == )
-            //{
-            //    CurrentRun.RunStateChange -= CurrentRun_RunStateChange;
-            //    CurrentRun.Close();
-            //    CurrentRun = null;
-            //}
-
-            Logger.Info("Starting Run: {stand}; {count}", Labels[0].GradingStandard.Name, RunLoopCount);
-
-            CurrentRun.Init(Labels, RunLoopCount, StandardsDatabase, V275.Commands.Product.part, SelectedNode.cameraMAC);
-
-            CurrentRun.RunStateChange -= CurrentRun_RunStateChange;
-            CurrentRun.RunStateChange += CurrentRun_RunStateChange;
-
-            //if (CurrentRun == null)
-            //    return;
-
-            CurrentRun.StartAsync();
-        }
-        private bool StartRunCheck()
-        {
-            foreach (var lab in Labels)
-                if (lab.LabelSectors.Count == 0)
+                if (!await V275.Commands.Print(false))
                     return false;
-            return true;
-        }
-        private void PauseRunAction(object parameter)
-        {
-            if (CurrentRun == null)
-                return;
 
-            if (CurrentRun.State != RunController.RunStates.PAUSED)
-                CurrentRun.Pause();
-            else
-                CurrentRun.Resume();
-
-        }
-        private void StopRunAction(object parameter)
-        {
-            if (CurrentRun == null)
-                return;
-
-            CurrentRun.Stop();
-        }
-
-        private void CurrentRun_RunStateChange(RunController.RunStates state)
-        {
-
-            switch (state)
-            {
-                case RunController.RunStates.RUNNING:
-                    IsRunRunning = true;
-                    IsRunPaused = false;
-                    RunState = state;
-                    break;
-                case RunController.RunStates.PAUSED:
-                    IsRunRunning = true;
-                    IsRunPaused = true;
-                    RunState = state;
-                    break;
-                case RunController.RunStates.STOPPED:
-                    IsRunRunning = false;
-                    IsRunPaused = false;
-                    RunState = RunController.RunStates.IDLE;
-                    break;
-                default:
-                    IsRunRunning = false;
-                    IsRunPaused = false;
-                    RunState = RunController.RunStates.IDLE;
-                    break;
+                Thread.Sleep(50);
             }
+
+            return await V275.Commands.Print((string)parameter == "1");
+        }
+        else
+        {
+            return await V275.SimulatorTogglePrint();
+        }
+    }
+
+
+
+
+    private bool StartRunCheck()
+    {
+        foreach (var lab in Labels)
+            if (lab.LabelSectors.Count == 0)
+                return false;
+        return true;
+    }
+
+
+    private void CurrentRun_RunStateChange(RunController.RunStates state)
+    {
+
+        switch (state)
+        {
+            case RunController.RunStates.RUNNING:
+                IsRunRunning = true;
+                IsRunPaused = false;
+                RunState = state;
+                break;
+            case RunController.RunStates.PAUSED:
+                IsRunRunning = true;
+                IsRunPaused = true;
+                RunState = state;
+                break;
+            case RunController.RunStates.STOPPED:
+                IsRunRunning = false;
+                IsRunPaused = false;
+                RunState = RunController.RunStates.IDLE;
+                break;
+            default:
+                IsRunRunning = false;
+                IsRunPaused = false;
+                RunState = RunController.RunStates.IDLE;
+                break;
         }
     }
 }

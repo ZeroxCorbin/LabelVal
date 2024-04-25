@@ -75,7 +75,7 @@ namespace LabelVal.RunControllers
 
             TimeDate = DateTime.UtcNow.Ticks;
 
-            RunEntry = new RunLedgerDatabase.RunEntry() { GradingStandard = GradingStandard.Name, TimeDate = TimeDate, Completed = 0, ProductPart = Labels[0].MainWindow.V275.Commands.Product.part, CameraMAC = Labels[0].MainWindow.V275_MAC };
+            RunEntry = new RunLedgerDatabase.RunEntry() { GradingStandard = GradingStandard.Name, TimeDate = TimeDate, Completed = 0, ProductPart = MainWindowViewModel.V275.Commands.Product.part, CameraMAC = Labels[0].MainWindow.V275_MAC };
 
             if (!OpenDatabases())
                 return null;
@@ -141,7 +141,7 @@ namespace LabelVal.RunControllers
                 if (session != null)
                 {
                     using var transaction = session.BeginTransaction();
-                    var run = new ORM_Test.RunLedger(JsonConvert.SerializeObject(Labels[0].LabelTemplate), Labels[0].MainWindow.V275_MAC, Labels[0].MainWindow.V275.Commands.Product.part);
+                    var run = new ORM_Test.RunLedger(JsonConvert.SerializeObject(Labels[0].LabelTemplate), Labels[0].MainWindow.V275_MAC, MainWindowViewModel.V275.Commands.Product.part);
 
                     _ = session.Save(run);
                     transaction.Commit();
