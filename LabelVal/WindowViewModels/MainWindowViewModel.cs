@@ -1,16 +1,17 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using LabelVal.Databases;
+using LabelVal.Messages;
 using LabelVal.Models;
 using LabelVal.Printer;
-using LabelVal.RunControllers;
+using LabelVal.Run;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -22,7 +23,7 @@ using V275_REST_lib.Models;
 
 namespace LabelVal.WindowViewModels;
 
-public partial class MainWindowViewModel : ObservableObject
+public partial class MainWindowViewModel : ObservableRecipient, IRecipient<SystemMessages.StatusMessage>
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -45,9 +46,11 @@ public partial class MainWindowViewModel : ObservableObject
     }
     public static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
 
-    public PrinterViewModel PrinterViewModel { get; } = new PrinterViewModel();
+    public ViewModel PrinterViewModel { get; } = new ViewModel();
+    public RunViewModel RunViewModel { get; } = new RunViewModel();
+    private int LoopCount => App.Settings.GetValue(nameof(RunViewModel.LoopCount), 1);
 
-    //public class StandardEntryModel : Core.BaseViewModel
+    //public class StandardEntryModel : ObservableObject
     //{
     //    private string name;
     //    public string Name
@@ -86,7 +89,7 @@ public partial class MainWindowViewModel : ObservableObject
 
     //}
 
-    //public class StandardsDatabaseEntry : Core.BaseViewModel
+    //public class StandardsDatabaseEntry : ObservableObject
     //{
     //    private string name;
     //    public string Name { get => name; set => SetProperty(ref name, value); }
@@ -98,15 +101,13 @@ public partial class MainWindowViewModel : ObservableObject
 
     public static string Version => App.Version;
 
-    public static Controller V275 { get; } = new Controller();
+    public static V275_REST_lib.Controller V275 { get; } = new V275_REST_lib.Controller();
     public StandardsDatabase StandardsDatabase { get; private set; }
     //private V275_API_WebSocketEvents WebSocket { get; } = new V275_API_WebSocketEvents();
     //private V275_API_WebSocketEvents SysWebSocket { get; } = new V275_API_WebSocketEvents();
 
-
     [ObservableProperty] private string v275_Host = V275.Host = App.Settings.GetValue(nameof(V275_Host), "127.0.0.1", true);
     partial void OnV275_HostChanged(string value) { App.Settings.SetValue(nameof(V275_Host), value); V275.Host = value; }
-
 
     [ObservableProperty] private uint v275_SystemPort = V275.SystemPort = App.Settings.GetValue(nameof(V275_SystemPort), GetV275PortNumber(), true);
     partial void OnV275_SystemPortChanged(uint value)
@@ -125,10 +126,8 @@ public partial class MainWindowViewModel : ObservableObject
         OnPropertyChanged();
     }
 
-
     [ObservableProperty] private uint v275_NodeNumber = V275.NodeNumber = App.Settings.GetValue<uint>(nameof(V275_NodeNumber), 1, true);
     partial void OnV275_NodeNumberChanged(uint value) { App.Settings.SetValue(nameof(V275_NodeNumber), value); V275.NodeNumber = value; }
-
 
     [ObservableProperty] private ObservableCollection<Devices.Node> nodes = [];
     [ObservableProperty] private Devices.Node selectedNode;
@@ -149,7 +148,6 @@ public partial class MainWindowViewModel : ObservableObject
             IsDeviceSelected = false;
         }
     }
-
 
     [ObservableProperty] private string v275_MAC;
     public static string V275_Version => V275.Commands.Product?.part;
@@ -179,7 +177,7 @@ public partial class MainWindowViewModel : ObservableObject
         }
     }
 
-    
+
     [ObservableProperty] private StandardEntryModel selectedStandard = App.Settings.GetValue<StandardEntryModel>(nameof(SelectedStandard), null);
     partial void OnSelectedStandardChanged(StandardEntryModel value)
     {
@@ -243,11 +241,9 @@ public partial class MainWindowViewModel : ObservableObject
 
     [ObservableProperty] private string simulatorImageDirectory = App.Settings.GetValue(nameof(SimulatorImageDirectory), GetV275SimulationDirectory(), true);
 
-
-
     [ObservableProperty] private bool isLoggedIn_Monitor = false;
     partial void OnIsLoggedIn_MonitorChanged(bool value) { OnPropertyChanged(nameof(IsLoggedIn)); OnPropertyChanged(nameof(IsNotLoggedIn)); OnPropertyChanged(nameof(IsDeviceSimulator)); }
- 
+
     [ObservableProperty] private bool isLoggedIn_Control = false;
     partial void OnIsLoggedIn_ControlChanged(bool value) { OnPropertyChanged(nameof(IsLoggedIn)); OnPropertyChanged(nameof(IsNotLoggedIn)); OnPropertyChanged(nameof(IsDeviceSimulator)); }
     public bool IsLoggedIn => IsLoggedIn_Monitor || IsLoggedIn_Control;
@@ -255,18 +251,7 @@ public partial class MainWindowViewModel : ObservableObject
 
     public bool IsDeviceSimulator => V275_MAC != null && V275_MAC.Equals("00:00:00:00:00:00") && (IsLoggedIn_Control || IsLoggedIn_Monitor);
 
-    public RunController CurrentRun { get; set; } = new RunController();
-    
-    [ObservableProperty] private RunController.RunStates runState = RunController.RunStates.IDLE;
-    
-    [ObservableProperty] private bool isRunRunning = false;
-    [ObservableProperty] private bool isRunPaused = false;
-
-    [ObservableProperty] private int runLoopCount = App.Settings.GetValue(nameof(RunLoopCount), 1);
-    partial void OnRunLoopCountChanged(int value) { App.Settings.SetValue(nameof(RunLoopCount), value); }
-
     private Dictionary<int, Repeat> Repeats { get; } = [];
-
 
     public MainWindowViewModel()
     {
@@ -282,7 +267,35 @@ public partial class MainWindowViewModel : ObservableObject
         LoadStandardsDatabasesList();
 
         SelectStandardsDatabase();
+
+        IsActive = true;
     }
+
+
+    public void Receive(SystemMessages.StatusMessage message)
+    {
+        switch (message.Value)
+        {
+            case SystemMessages.StatusMessageType.Error:
+                UserMessage = message.Message;
+                break;
+            case SystemMessages.StatusMessageType.Info:
+                UserMessage = message.Message;
+                break;
+            case SystemMessages.StatusMessageType.Warning:
+                UserMessage = message.Message;
+                break;
+            case SystemMessages.StatusMessageType.Control:
+                if (message.Sender == RunViewModel)
+                {
+                    if(message.Message == "StartRun")
+                        _ = StartRun();
+                    
+                }
+                break;
+        }    
+    }
+
 
     private void V275_StateChanged(string state, string jobName)
     {
@@ -363,7 +376,6 @@ public partial class MainWindowViewModel : ObservableObject
     public async Task<MessageDialogResult> OkCancelDialog(string title, string message) => await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative);
     public async Task OkDialog(string title, string message) => _ = await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.Affirmative);
     public async Task<string> GetStringDialog(string title, string message) => await DialogCoordinator.ShowInputAsync(this, title, message);
-
 
     //private void UpdatePrinters()
     //{
@@ -564,8 +576,9 @@ public partial class MainWindowViewModel : ObservableObject
             //    std.NumRows = StandardsDatabase.GetAllRowsCount(tbl);
         }
     }
-    
-    [RelayCommand] private async Task GetDevices()
+
+    [RelayCommand]
+    private async Task GetDevices()
     {
         Logger.Info("Loading V275 devices.");
 
@@ -614,7 +627,8 @@ public partial class MainWindowViewModel : ObservableObject
             IsGetDevices = false;
         }
     }
-    [RelayCommand] private async Task CreateStandardsDatabase()
+    [RelayCommand]
+    private async Task CreateStandardsDatabase()
     {
         var res = await GetStringDialog("New Standards Database", "What is the name of the new database?");
         if (res == null) return;
@@ -636,7 +650,8 @@ public partial class MainWindowViewModel : ObservableObject
         SelectStandardsDatabase();
 
     }
-    [RelayCommand] private void LockStandardsDatabase()
+    [RelayCommand]
+    private void LockStandardsDatabase()
     {
         if (IsDatabasePermLocked) return;
 
@@ -657,7 +672,8 @@ public partial class MainWindowViewModel : ObservableObject
         SelectStandardsDatabase();
     }
 
-    [RelayCommand] private async Task LoginMonitor()
+    [RelayCommand]
+    private async Task LoginMonitor()
     {
         Reset();
 
@@ -673,7 +689,8 @@ public partial class MainWindowViewModel : ObservableObject
             IsLoggedIn_Monitor = false;
         }
     }
-    [RelayCommand] private async Task LoginControl()
+    [RelayCommand]
+    private async Task LoginControl()
     {
         Reset();
 
@@ -689,7 +706,8 @@ public partial class MainWindowViewModel : ObservableObject
             IsLoggedIn_Control = false;
         }
     }
-    [RelayCommand] private async Task Logout()
+    [RelayCommand]
+    private async Task Logout()
     {
         Reset();
 
@@ -768,7 +786,8 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand] private static void TriggerSim() => _ = V275.Commands.TriggerSimulator();
     [RelayCommand] private static async Task V275_SwitchRun() => await V275.SwitchToRun();
     [RelayCommand] private static async Task V275_SwitchEdit() => await V275.SwitchToEdit();
-    [RelayCommand] private static async Task V275_RemoveRepeat()
+    [RelayCommand]
+    private static async Task V275_RemoveRepeat()
     {
         int repeat;
 
@@ -787,52 +806,19 @@ public partial class MainWindowViewModel : ObservableObject
         }
     }
 
-    [RelayCommand] private async Task StartRun(object parameter)
+ 
+    private async Task StartRun()
     {
         if (!StartRunCheck())
             if (await OkCancelDialog("Missing Label Sectors", "There are Labels that do not have stored sectors. Are you sure you want to continue?") == MessageDialogResult.Negative)
                 return;
 
-        //if (CurrentRun.State == )
-        //{
-        //    CurrentRun.RunStateChange -= CurrentRun_RunStateChange;
-        //    CurrentRun.Close();
-        //    CurrentRun = null;
-        //}
+        _ = RunViewModel.RunController.Init(Labels, LoopCount, StandardsDatabase, V275.Commands.Product.part, SelectedNode.cameraMAC);
 
-        Logger.Info("Starting Run: {stand}; {count}", Labels[0].GradingStandard.Name, RunLoopCount);
-
-        _ = CurrentRun.Init(Labels, RunLoopCount, StandardsDatabase, V275.Commands.Product.part, SelectedNode.cameraMAC);
-
-        CurrentRun.RunStateChange -= CurrentRun_RunStateChange;
-        CurrentRun.RunStateChange += CurrentRun_RunStateChange;
-
-        //if (CurrentRun == null)
-        //    return;
-
-        CurrentRun.StartAsync();
+        RunViewModel.StartRunRequest();
     }
-    [RelayCommand] private void PauseRun()
-    {
-        if (CurrentRun == null)
-            return;
 
-        if (CurrentRun.State != RunController.RunStates.PAUSED)
-            CurrentRun.Pause();
-        else
-            CurrentRun.Resume();
-
-    }
-    [RelayCommand] private void StopRun()
-    {
-        if (CurrentRun == null)
-            return;
-
-        CurrentRun.Stop();
-    }
     [RelayCommand] private void ClearUserMessage() => UserMessage = "";
-
-
 
     //private void WebSocket_Heartbeat(V275_Events_System ev)
     //{
@@ -988,11 +974,11 @@ public partial class MainWindowViewModel : ObservableObject
         {
             _ = Task.Run(() =>
             {
-                var printer = new PrintControl();
+                var printer = new Printer.Controller();
 
-                if (RunState != RunController.RunStates.IDLE)
+                if (RunViewModel.State != Run.Controller.RunStates.IDLE)
                 {
-                    var data = $"Loop {CurrentRun.CurrentLoopCount} : {CurrentRun.CurrentLabelCount}";
+                    var data = $"Loop {RunViewModel.RunController.CurrentLoopCount} : {RunViewModel.RunController.CurrentLabelCount}";
                     printer.Print(label.LabelImagePath, 1, PrinterViewModel.SelectedPrinter, data);
                 }
                 else
@@ -1102,7 +1088,8 @@ public partial class MainWindowViewModel : ObservableObject
         Repeats.Clear();
     }
 
-    [RelayCommand] private async Task<bool> EnablePrint(object parameter)
+    [RelayCommand]
+    private async Task<bool> EnablePrint(object parameter)
     {
         if (!IsDeviceSimulator)
         {
@@ -1122,9 +1109,6 @@ public partial class MainWindowViewModel : ObservableObject
         }
     }
 
-
-
-
     private bool StartRunCheck()
     {
         foreach (var lab in Labels)
@@ -1133,32 +1117,4 @@ public partial class MainWindowViewModel : ObservableObject
         return true;
     }
 
-
-    private void CurrentRun_RunStateChange(RunController.RunStates state)
-    {
-
-        switch (state)
-        {
-            case RunController.RunStates.RUNNING:
-                IsRunRunning = true;
-                IsRunPaused = false;
-                RunState = state;
-                break;
-            case RunController.RunStates.PAUSED:
-                IsRunRunning = true;
-                IsRunPaused = true;
-                RunState = state;
-                break;
-            case RunController.RunStates.STOPPED:
-                IsRunRunning = false;
-                IsRunPaused = false;
-                RunState = RunController.RunStates.IDLE;
-                break;
-            default:
-                IsRunRunning = false;
-                IsRunPaused = false;
-                RunState = RunController.RunStates.IDLE;
-                break;
-        }
-    }
 }

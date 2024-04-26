@@ -7,37 +7,28 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Microsoft.AspNetCore.Mvc;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace LabelVal.LVS_95xx
 {
-    internal class LVS95xx_SerialPortViewModel : Core.BaseViewModel
+    public partial class LVS95xx_SerialPortViewModel : ObservableObject
     {
-        private double width;
-        public double Width { get => width; set => SetProperty(ref width, value); }
-
-        private double height;
-        public double Height { get => height; set => SetProperty(ref height, value); }
-
-        private string readData;
-        public string ReadData { get => readData; set => SetProperty(ref readData, value); }
-
-        private ObservableCollection<string> comNameList = new ObservableCollection<string>();
-        public ObservableCollection<string> ComNameList { get => comNameList; set => SetProperty(ref comNameList, value); }
+        [ObservableProperty] private double width;
+        [ObservableProperty] private double height;
+        [ObservableProperty] private string readData;
+        public ObservableCollection<string> ComNameList { get; } = [];
 
         public string SelectedComName { get => App.Settings.GetValue("95xx_COM_Name", ""); set { App.Settings.SetValue("95xx_COM_Name", value); } }
 
         public SectorControlViewModel StoredSectorControl { get; }
 
-        private SectorControlViewModel lvs95xxSectorControl = new SectorControlViewModel();
-        public SectorControlViewModel Lvs95xxSectorControl { get => lvs95xxSectorControl; set => SetProperty(ref lvs95xxSectorControl, value); }
+        [ObservableProperty] private SectorControlViewModel lvs95xxSectorControl = new();
 
-        private bool isConnected;
-        public bool IsConnected { get => isConnected; set { SetProperty(ref isConnected, value); OnPropertyChanged("IsNotConnected"); } }
-        public bool IsNotConnected => !isConnected;
+        [ObservableProperty] private bool isConnected;
+        partial void OnIsConnectedChanged(bool value) => OnPropertyChanged(nameof(IsNotConnected));
+        public bool IsNotConnected => !IsConnected;
 
-        public ICommand WriteData { get; }
-        public ICommand OpenPort { get; }
-        public ICommand ClosePort { get; }
 
         LVS95xx_SerialPort PortController = new LVS95xx_SerialPort();
 
@@ -45,9 +36,6 @@ namespace LabelVal.LVS_95xx
         {
             StoredSectorControl = (SectorControlViewModel)sectorControl;
 
-            WriteData = new Core.RelayCommand(WriteDataAction, a => true);
-            ClosePort = new Core.RelayCommand(ClosePortAction, a => true);
-            OpenPort = new Core.RelayCommand(OpenPortAction, a => true);
             //lVS95Xx_SerialPortSetup.DataAvailable += LVS95Xx_SerialPortSetup_DataAvailable;
             //Task.Run(() => lVS95Xx_SerialPortSetup.StartCancellableProcess("cmd.exe", "", new System.Threading.CancellationToken()));
 
@@ -62,8 +50,9 @@ namespace LabelVal.LVS_95xx
             foreach (var com in PortController.Controller.COMPortsAvailable)
                 ComNameList.Add(com);
         }
- 
-        public void OpenPortAction(object parameter)
+
+        [RelayCommand]
+        public void OpenPort()
         {
             if (!string.IsNullOrEmpty(SelectedComName))
             {
@@ -85,7 +74,7 @@ namespace LabelVal.LVS_95xx
 
         private void PortController_Exception(object sender, EventArgs e)
         {
-            ClosePortAction( new object());
+            ClosePort();
         }
 
         private void PortController_SectorAvailable(object sector)
@@ -99,7 +88,8 @@ namespace LabelVal.LVS_95xx
             ReadData = packet;
         }
 
-        public void ClosePortAction(object parameter)
+        [RelayCommand]
+        public void ClosePort()
         {
             PortController.Exception -= PortController_Exception;
             PortController.SectorAvailable -= PortController_SectorAvailable;
@@ -108,7 +98,8 @@ namespace LabelVal.LVS_95xx
             PortController.Stop();
             IsConnected = false;
         }
-        public void WriteDataAction(object parameter)
+        [RelayCommand]
+        public void WriteData()
         {
             //lVS95Xx_SerialPortSetup.Write(@"cd D:\OneDrive - OMRON\Omron\OCR\Applications\LabelVal\LabelVal\bin\Debug\LVS-95xx\com0com\x64" + "\r\n");
             //lVS95Xx_SerialPortSetup.Write(".\\setupc.exe");

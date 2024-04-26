@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,7 +10,7 @@ using System.Windows.Media.Imaging;
 
 namespace LabelVal.Dialogs
 {
-    internal class ImageViewerDialogViewModel : Core.BaseViewModel
+    internal class ImageViewerDialogViewModel : ObservableObject
     {
         private double width;
         public double Width { get => width; set => SetProperty(ref width, value); }

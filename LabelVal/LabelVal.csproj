@@ -37,7 +37,10 @@
     <OutputPath>bin\x64\Release\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Core\BaseViewModel.cs" />
+    <Compile Remove="Core\RelayCommand.cs" />
     <Compile Remove="Databases\SimpleDatabase.cs" />
+    <Compile Remove="Run\Databases\V2RunEntryDatabase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Remove=".gitattributes" />

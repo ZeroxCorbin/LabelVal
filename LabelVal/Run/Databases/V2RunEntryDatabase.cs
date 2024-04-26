@@ -5,9 +5,9 @@ using SQLite;
 using System;
 using System.Collections.Generic;
 
-namespace LabelVal.Databases
+namespace LabelVal.Run.Databases
 {
-    public class V275RunDatabase : IDisposable
+    public class RunEntryDatabase : IDisposable
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -27,7 +27,7 @@ namespace LabelVal.Databases
 
         private SQLiteConnection Connection { get; set; } = null;
 
-        public V275RunDatabase Open(string dbFilePath)
+        public RunEntryDatabase Open(string dbFilePath)
         {
             Logger.Info("Opening Database: {file}", dbFilePath);
 

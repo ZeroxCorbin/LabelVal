@@ -13,17 +13,18 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using LabelVal.Dialogs;
-using LabelVal.RunViewModels;
+using LabelVal.result.ViewModels;
+using LabelVal.Run.ViewModels;
 using LabelVal.WindowViews;
 
-namespace LabelVal.RunViews
+namespace LabelVal.Run.Views
 {
     /// <summary>
     /// Interaction logic for RunLabelControlView.xaml
     /// </summary>
-    public partial class RunLabelControlView : UserControl
+    public partial class LabelView : UserControl
     {
-        public RunLabelControlView()
+        public LabelView()
         {
             InitializeComponent();
         }
@@ -43,16 +44,16 @@ namespace LabelVal.RunViews
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                if (((RunLabelControlViewModel)DataContext).Run.LabelImage != null)
-                    ShowImage(((RunLabelControlViewModel)DataContext).Run.LabelImage, null);
+                if (((LabelViewModel)DataContext).Result.LabelImage != null)
+                    ShowImage(((LabelViewModel)DataContext).Result.LabelImage, null);
                 else
-                    ShowImage(((RunLabelControlViewModel)DataContext).Run.RepeatGoldenImage, null);
+                    ShowImage(((LabelViewModel)DataContext).Result.RepeatGoldenImage, null);
             }
         }
         private void RepeatImage_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
-                ShowImage(((RunLabelControlViewModel)DataContext).Run.RepeatImage, ((RunLabelControlViewModel)DataContext).RepeatOverlay);
+                ShowImage(((LabelViewModel)DataContext).Result.RepeatImage, ((LabelViewModel)DataContext).RepeatOverlay);
         }
 
         private bool ShowImage(byte[] image, DrawingImage overlay)
@@ -62,7 +63,7 @@ namespace LabelVal.RunViews
             dc.CreateImage(image, overlay);
             if (dc.RepeatImage == null) return false;
 
-            RunView yourParentWindow = (RunView)Window.GetWindow(this);
+            Run.Views.View yourParentWindow = (Run.Views.View)Window.GetWindow(this);
 
             dc.Width = yourParentWindow.ActualWidth - 100;
             dc.Height = yourParentWindow.ActualHeight - 100;
@@ -76,17 +77,17 @@ namespace LabelVal.RunViews
         {
             if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
             {
-                if (((RunLabelControlViewModel)DataContext).Run != null)
+                if (((LabelViewModel)DataContext).Result != null)
                 {
-                    LabelJobJsonView.Load(((RunLabelControlViewModel)DataContext).Run.LabelTemplate);
-                    LabelResultJsonView.Load(((RunLabelControlViewModel)DataContext).Run.LabelReport);
+                    LabelJobJsonView.Load(((LabelViewModel)DataContext).Result.LabelTemplate);
+                    LabelResultJsonView.Load(((LabelViewModel)DataContext).Result.LabelReport);
                     LabelJsonPopup.PlacementTarget = (Button)sender;
                     LabelJsonPopup.IsOpen = true;
                 }
             }
             else
             {
-                if (((RunLabelControlViewModel)DataContext).LabelSectors.Count > 0)
+                if (((LabelViewModel)DataContext).LabelSectors.Count > 0)
                 {
                     LabelSectorsDetailsPopup.PlacementTarget = (Button)sender;
                     LabelSectorsDetailsPopup.IsOpen = true;
@@ -98,16 +99,16 @@ namespace LabelVal.RunViews
         {
             if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
             {
-                if (((RunLabelControlViewModel)DataContext).Run.RepeatReport != null)
+                if (((LabelViewModel)DataContext).Result.RepeatReport != null)
                 {
-                    RepeatResultJsonView.Load(((RunLabelControlViewModel)DataContext).Run.RepeatReport);
+                    RepeatResultJsonView.Load(((LabelViewModel)DataContext).Result.RepeatReport);
                     RepeatJsonPopup.PlacementTarget = (Button)sender;
                     RepeatJsonPopup.IsOpen = true;
                 }
             }
             else
             {
-                if (((RunLabelControlViewModel)DataContext).RepeatSectors.Count > 0)
+                if (((LabelViewModel)DataContext).RepeatSectors.Count > 0)
                 {
                     RepeatSectorsDetailsPopup.PlacementTarget = (Button)sender;
                     RepeatSectorsDetailsPopup.IsOpen = true;

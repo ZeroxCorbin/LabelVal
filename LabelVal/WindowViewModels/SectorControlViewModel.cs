@@ -1,74 +1,47 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using V275_REST_lib.Models;
 
-namespace LabelVal.WindowViewModels
+namespace LabelVal.WindowViewModels;
+
+public partial class SectorControlViewModel : ObservableObject
 {
-    public class SectorControlViewModel : Core.BaseViewModel
+    [ObservableProperty] private Job.Sector jobSector;
+    [ObservableProperty] private object reportSector;
+    [ObservableProperty] private SectorDifferenceViewModel sectorResults = new();
+
+    [ObservableProperty] private bool isWarning;
+    [ObservableProperty] private bool isError;
+
+    [ObservableProperty] private bool isGS1Standard;
+
+    [ObservableProperty] private bool isWrongStandard;
+    partial void OnIsWrongStandardChanged(bool value) => OnPropertyChanged(nameof(IsNotWrongStandard));
+    public bool IsNotWrongStandard => !IsWrongStandard;
+
+    public SectorControlViewModel() { }
+    public SectorControlViewModel(Job.Sector jobSector, object reportSector, bool isWrongStandard, bool isGS1Standard)
     {
-        public Job.Sector JobSector { get => jobSector; set => SetProperty(ref jobSector, value); }
-        private Job.Sector jobSector;
+        ReportSector = reportSector;
+        JobSector = jobSector;
+        IsWrongStandard = isWrongStandard;
+        IsGS1Standard = isGS1Standard;
 
-        public object ReportSector { get => reportSector; set => SetProperty(ref reportSector, value); }
-        private object reportSector;
+        SectorResults.Process(reportSector, jobSector.username, IsGS1Standard);
 
-        public SectorDifferenceViewModel SectorResults { get => sectorResults; set => SetProperty(ref sectorResults, value); } 
-        private SectorDifferenceViewModel sectorResults = new SectorDifferenceViewModel();
-        //public List<Report_InspectSector_Common.Alarm> Alarms { get; } = new List<Report_InspectSector_Common.Alarm>();
+        var highCat = 0;
 
-        private bool isWarning;
-        public bool IsWarning { get => isWarning; set => SetProperty(ref isWarning, value); }
-
-        private bool isError;
-        public bool IsError { get => isError; set => SetProperty(ref isError, value); }
-
-        private bool isWrongStandard;
-        public bool IsWrongStandard { get => isWrongStandard; set { SetProperty(ref isWrongStandard, value); OnPropertyChanged("IsNotWrongStandard"); } }
-        public bool IsNotWrongStandard => !IsWrongStandard;
-
-        private bool isGS1Standard;
-        public bool IsGS1Standard { get => isGS1Standard; set => SetProperty(ref isGS1Standard, value); }
-
-        public SectorControlViewModel() { }
-        public SectorControlViewModel(Job.Sector jobSector, object reportSector, bool isWrongStandard, bool isGS1Standard)
+        foreach (var alm in SectorResults.Alarms)
         {
-            ReportSector = reportSector;
-            JobSector = jobSector;
-            IsWrongStandard = isWrongStandard;
-            IsGS1Standard = isGS1Standard;
-
-            SectorResults.Process(reportSector, jobSector.username, IsGS1Standard);
-
-            int highCat = 0;
-
-            foreach (var alm in SectorResults.Alarms)
-            {
-                //Alarms.Add(alm);
-                if (highCat < alm.category)
-                    highCat = alm.category;
-            }
-
-            if (highCat == 1)
-                IsWarning = true;
-            else if (highCat == 2)
-                IsError = true;
-
-            
+            //Alarms.Add(alm);
+            if (highCat < alm.category)
+                highCat = alm.category;
         }
 
-        //public void Clear()
-        //{
-        //    JobSector = null;
-        //    ReportSector = null;
+        if (highCat == 1)
+            IsWarning = true;
+        else if (highCat == 2)
+            IsError = true;
 
-        //    if(SectorResults != null)
-        //        SectorResults.Clear();
 
-        //}
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.SQLite;
@@ -12,7 +13,7 @@ namespace LabelVal.Databases
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public class Row : Core.BaseViewModel
+        public class Row : ObservableObject
         {
             private byte[] labelImage;
             public byte[] LabelImage { get => labelImage; set => SetProperty(ref labelImage, value); }

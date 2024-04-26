@@ -3,8 +3,8 @@ using System.Collections.ObjectModel;
 using System.Drawing.Printing;
 using System.Linq;
 
-namespace LabelVal.WindowViewModels;
-public partial class PrinterViewModel : ObservableObject
+namespace LabelVal.Printer;
+public partial class ViewModel : ObservableObject
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -13,7 +13,7 @@ public partial class PrinterViewModel : ObservableObject
     [ObservableProperty] private string selectedPrinter = App.Settings.GetValue(nameof(SelectedPrinter), "");
     partial void OnSelectedPrinterChanged(string value) => App.Settings.SetValue(nameof(SelectedPrinter), value);
 
-    public PrinterViewModel() => LoadPrinters();
+    public ViewModel() => LoadPrinters();
 
     private void LoadPrinters()
     {

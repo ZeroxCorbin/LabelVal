@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace LabelVal.RunViews
+namespace LabelVal.Run.Views
 {
     /// <summary>
     /// Interaction logic for CompareSettingsControlView.xaml
     /// </summary>
-    public partial class CompareSettingsControlView : UserControl
+    public partial class CompareSettingsView : UserControl
     {
-        public CompareSettingsControlView()
+        public CompareSettingsView()
         {
             InitializeComponent();
         }

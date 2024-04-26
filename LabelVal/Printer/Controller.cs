@@ -3,7 +3,7 @@ using System.Drawing.Printing;
 
 namespace LabelVal.Printer;
 
-public class PrintControl
+public class Controller
 {
 
     private int Count { get; set; }

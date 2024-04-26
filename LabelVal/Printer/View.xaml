@@ -1,0 +1,34 @@
+﻿<UserControl x:Class="LabelVal.Printer.View"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:LabelVal.WindowViews"
+             xmlns:ViewModels="clr-namespace:LabelVal.Printer"
+             d:DataContext="{d:DesignInstance Type=ViewModels:ViewModel}"
+             mc:Ignorable="d">
+
+    <GroupBox
+            md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+            md:ColorZoneAssist.Foreground="{DynamicResource MahApps.Brushes.Foreground}"
+            md:ColorZoneAssist.Mode="Custom"
+            BorderThickness="0"
+            Margin="3" Padding="3"
+            HorizontalAlignment="Left" VerticalAlignment="Top" 
+            Style="{StaticResource MaterialDesignCardGroupBox}">
+
+        <GroupBox.Header>
+            <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
+                <TextBlock Text="Printer" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+            </md:Card>
+        </GroupBox.Header>
+
+        <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" Padding="2">
+
+            <ComboBox ItemsSource="{Binding Printers}" SelectedItem="{Binding SelectedPrinter}" IsEnabled="{Binding IsNotRunRunning}"/>
+
+        </md:Card>
+
+    </GroupBox>
+</UserControl>

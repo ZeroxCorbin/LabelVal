@@ -40,7 +40,7 @@ namespace LabelVal.LVS_95xx
 
         private async void Close()
         {
-            ((LVS95xx_SerialPortViewModel)this.DataContext).ClosePort.Execute(new object());
+            ((LVS95xx_SerialPortViewModel)this.DataContext).ClosePortCommand.Execute(null);
 
             await MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance.HideMetroDialogAsync(this.DataContext, this);
 
@@ -56,7 +56,7 @@ namespace LabelVal.LVS_95xx
 
         private void CustomDialog_Loaded(object sender, RoutedEventArgs e)
         {
-            ((LVS95xx_SerialPortViewModel)this.DataContext).OpenPort.Execute(new object());
+            ((LVS95xx_SerialPortViewModel)this.DataContext).OpenPortCommand.Execute(null);
         }
     }
 }

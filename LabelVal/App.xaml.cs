@@ -44,7 +44,7 @@ namespace LabelVal
 
         public static string RunsRoot => $"{UserDataDirectory}\\Runs";
         public static string RunLedgerDatabaseName => $"RunLedger{DatabaseExtension}";
-        public static string RunDatabaseName(long timeDate) => $"Run_{timeDate}{DatabaseExtension}";
+        public static string RunResultsDatabaseName(long timeDate) => $"Run_{timeDate}{DatabaseExtension}";
 
         public App()
         {
@@ -262,48 +262,48 @@ namespace LabelVal
             public int Removed { get; set; }
             public int Voided { get; set; }
         }
-        private void ExtractRunDetails()
-        {
-            var db = new V275RunDatabase().Open(@"C:\Users\Jack\GitHub\LabelVal\LabelVal\bin\Debug\_p-000334 rev. 2_RunLog_Run10.db");
-            var entries = db.SelectAllRunEntries().OrderBy(v => v.cycleID).ToList();
+        //private void ExtractRunDetails()
+        //{
+        //    var db = new Run.Database().Open(@"C:\Users\Jack\GitHub\LabelVal\LabelVal\bin\Debug\_p-000334 rev. 2_RunLog_Run10.db");
+        //    var entries = db.SelectAllRunEntries().OrderBy(v => v.cycleID).ToList();
 
-            var final = new FinalReport();
+        //    var final = new FinalReport();
 
-            var first = true;
-            foreach (var entry in entries)
-            {
-                var report = Newtonsoft.Json.JsonConvert.DeserializeObject<Report>(entry.reportData);
+        //    var first = true;
+        //    foreach (var entry in entries)
+        //    {
+        //        var report = Newtonsoft.Json.JsonConvert.DeserializeObject<Report>(entry.reportData);
 
-                if (first)
-                {
-                    final.LogName = "p-000334 rev. 2_RunLog_Run10";
-                    final.TemplateName = "p-000334 rev. 2";
-                    final.Operator = "epalacio";
-                    final.StartTime = entry.timeStamp;
-                    final.EndTime = entries.Last().timeStamp;
-                    final.Inspected = entries.Count;
-                    first = false;
-                }
+        //        if (first)
+        //        {
+        //            final.LogName = "p-000334 rev. 2_RunLog_Run10";
+        //            final.TemplateName = "p-000334 rev. 2";
+        //            final.Operator = "epalacio";
+        //            final.StartTime = entry.timeStamp;
+        //            final.EndTime = entries.Last().timeStamp;
+        //            final.Inspected = entries.Count;
+        //            first = false;
+        //        }
 
-                if (report.inspectLabel.result == "pass")
-                {
-                    final.GoodAccepted++;
-                }
-                else
-                {
-                    final.Failed++;
-                    if (report.inspectLabel.userAction.action == "accepted")
-                        final.FailedAccepted++;
-                    else if (report.inspectLabel.userAction.action == "removed")
-                        final.Removed++;
-                    else if (report.inspectLabel.userAction.action == "voided")
-                        final.Voided++;
-                }
-            }
+        //        if (report.inspectLabel.result == "pass")
+        //        {
+        //            final.GoodAccepted++;
+        //        }
+        //        else
+        //        {
+        //            final.Failed++;
+        //            if (report.inspectLabel.userAction.action == "accepted")
+        //                final.FailedAccepted++;
+        //            else if (report.inspectLabel.userAction.action == "removed")
+        //                final.Removed++;
+        //            else if (report.inspectLabel.userAction.action == "voided")
+        //                final.Voided++;
+        //        }
+        //    }
 
 
-            File.WriteAllText("result.json", Newtonsoft.Json.JsonConvert.SerializeObject(final));
-        }
+        //    File.WriteAllText("result.json", Newtonsoft.Json.JsonConvert.SerializeObject(final));
+        //}
 
         // create an image of the desired size
 
