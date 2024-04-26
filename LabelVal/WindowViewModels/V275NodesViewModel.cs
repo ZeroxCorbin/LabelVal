@@ -15,7 +15,7 @@ public partial class V275NodesViewModel : ObservableObject
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-    private MainWindowViewModel MainWindowViewModel => App.Current.MainWindow.DataContext as MainWindowViewModel;
+    public MainWindowViewModel MainWindow => App.Current.MainWindow.DataContext as MainWindowViewModel;
 
     public static V275_REST_lib.Controller V275 { get; } = new V275_REST_lib.Controller();
 
@@ -333,9 +333,28 @@ public partial class V275NodesViewModel : ObservableObject
         if (!await V275.WebSocket.StartAsync(V275.Commands.URLs.WS_NodeEvents))
             return;
 
-        MainWindowViewModel.Repeats.Clear();
+        MainWindow.Repeats.Clear();
     }
 
+    [RelayCommand]
+    private static async Task V275_RemoveRepeat()
+    {
+        int repeat;
+
+        repeat = await V275.GetLatestRepeat();
+        if (repeat == -9999)
+            return;
+
+        if (!await V275.Commands.RemoveRepeat(repeat))
+        {
+            return;
+        }
+
+        if (!await V275.Commands.ResumeJob())
+        {
+            return;
+        }
+    }
 
     public int CheckTemplateName()
     {
@@ -356,9 +375,9 @@ public partial class V275NodesViewModel : ObservableObject
             return -1;
         }
 
-        if (!MainWindowViewModel.StandardsDatabaseViewModel.SelectedStandard.IsGS1)
+        if (!MainWindow.StandardsDatabaseViewModel.SelectedStandard.IsGS1)
         {
-            if (V275_JobName.ToLower().Equals(MainWindowViewModel.StandardsDatabaseViewModel.SelectedStandard.Name.ToLower()))
+            if (V275_JobName.ToLower().Equals(MainWindow.StandardsDatabaseViewModel.SelectedStandard.Name.ToLower()))
                 return 1;
         }
         else
@@ -376,7 +395,7 @@ public partial class V275NodesViewModel : ObservableObject
             if (TemplateNameMismatchDialog.Status != TaskStatus.RanToCompletion)
                 return -2;
 
-        TemplateNameMismatchDialog = OkDialog("Template Name Mismatch!", $"The template name loaded in the V275 software '{V275_JobName}' does not match the selected standard. '{MainWindowViewModel.StandardsDatabaseViewModel.SelectedStandard.Name.ToLower()}'");
+        TemplateNameMismatchDialog = OkDialog("Template Name Mismatch!", $"The template name loaded in the V275 software '{V275_JobName}' does not match the selected standard. '{MainWindow.StandardsDatabaseViewModel.SelectedStandard.Name.ToLower()}'");
         return -2;
     }
 

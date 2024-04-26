@@ -205,7 +205,7 @@
                                 <DataTrigger Value="Editing" Binding="{Binding V275_State}">
                                     <Setter Property="IsEnabled" Value="True"/>
                                 </DataTrigger>
-                                <DataTrigger Value="True" Binding="{Binding SelectedStandard.IsGS1}">
+                                <DataTrigger Value="True" Binding="{Binding MainWindow.StandardsDatabaseViewModel.SelectedStandard.IsGS1}">
                                     <Setter Property="Visibility" Value="Collapsed"/>
                                 </DataTrigger>
                             </Style.Triggers>

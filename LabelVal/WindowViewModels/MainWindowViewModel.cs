@@ -245,27 +245,6 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
         }
     }
 
-
-    [RelayCommand]
-    private static async Task V275_RemoveRepeat()
-    {
-        int repeat;
-
-        repeat = await V275NodesViewModel.V275.GetLatestRepeat();
-        if (repeat == -9999)
-            return;
-
-        if (!await V275NodesViewModel.V275.Commands.RemoveRepeat(repeat))
-        {
-            return;
-        }
-
-        if (!await V275NodesViewModel.V275.Commands.ResumeJob())
-        {
-            return;
-        }
-    }
-
  
     private async Task StartRun()
     {

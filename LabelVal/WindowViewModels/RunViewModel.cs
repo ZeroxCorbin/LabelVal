@@ -10,6 +10,8 @@ public partial class RunViewModel : ObservableRecipient
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
+    public MainWindowViewModel MainWindow => App.Current.MainWindow.DataContext as MainWindowViewModel;
+
     public Controller RunController { get; set; } = new Controller();
 
     [ObservableProperty] private Controller.RunStates state = Controller.RunStates.IDLE;

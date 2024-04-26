@@ -16,6 +16,8 @@ public partial class StandardsDatabaseViewModel : ObservableObject
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
+    public MainWindowViewModel MainWindow => App.Current.MainWindow.DataContext as MainWindowViewModel;
+
     public class StandardsDBFile
     {
         public string FileName { get; set; }
