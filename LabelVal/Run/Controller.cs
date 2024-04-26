@@ -76,7 +76,7 @@ namespace LabelVal.Run
 
             TimeDate = DateTime.UtcNow.Ticks;
 
-            LedgerEntry = new LedgerDatabase.LedgerEntry() { GradingStandard = GradingStandard.Name, TimeDate = TimeDate, Completed = 0, ProductPart = MainWindowViewModel.V275.Commands.Product.part, CameraMAC = Labels[0].MainWindow.V275_MAC };
+            LedgerEntry = new LedgerDatabase.LedgerEntry() { GradingStandard = GradingStandard.Name, TimeDate = TimeDate, Completed = 0, ProductPart = V275NodesViewModel.V275.Commands.Product.part, CameraMAC = Labels[0].MainWindow.V275NodesViewModel.V275_MAC };
 
             return !OpenDatabases() ? null : !UpdateRunEntries() ? null : this;
         }
@@ -136,7 +136,7 @@ namespace LabelVal.Run
                 if (session != null)
                 {
                     using var transaction = session.BeginTransaction();
-                    var run = new RunLedger(JsonConvert.SerializeObject(Labels[0].LabelTemplate), Labels[0].MainWindow.V275_MAC, MainWindowViewModel.V275.Commands.Product.part);
+                    var run = new RunLedger(JsonConvert.SerializeObject(Labels[0].LabelTemplate), Labels[0].MainWindow.V275NodesViewModel.V275_MAC, V275NodesViewModel.V275.Commands.Product.part);
 
                     _ = session.Save(run);
                     transaction.Commit();
@@ -249,12 +249,12 @@ namespace LabelVal.Run
                         LabelReport = sRow.LabelReport,
                         RepeatGoldenImage = sRow.RepeatImage,
                         LabelImageUID = label.LabelImageUID,
-                        LabelImage = label.MainWindow.IsDeviceSimulator ? null : label.LabelImage,
+                        LabelImage = label.MainWindow.V275NodesViewModel.IsDeviceSimulator ? null : label.LabelImage,
                         LabelImageOrder = CurrentLabelCount,
                         LoopCount = CurrentLoopCount
                     };
 
-                    if (!label.MainWindow.IsDeviceSimulator)
+                    if (!label.MainWindow.V275NodesViewModel.IsDeviceSimulator)
                         if (label.RepeatImage != null)
                         {
                             //Compress the image to PNG

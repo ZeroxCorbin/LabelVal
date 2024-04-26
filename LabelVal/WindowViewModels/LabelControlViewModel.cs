@@ -39,7 +39,7 @@ public partial class LabelControlViewModel : ObservableObject
     [ObservableProperty] private DrawingImage repeatOverlay;
     [ObservableProperty] private StandardsDatabase.Row currentRow;
 
-    public StandardEntryModel GradingStandard => MainWindow.SelectedStandard;
+    public StandardEntryModel GradingStandard => MainWindow.StandardsDatabaseViewModel.SelectedStandard;
 
     [ObservableProperty] private bool isGoldenRepeat;
     [ObservableProperty] private int printCount = 1;
@@ -127,9 +127,9 @@ public partial class LabelControlViewModel : ObservableObject
     }
     private string _Status;
 
-    private StandardsDatabase StandardsDatabase => MainWindow.StandardsDatabase;
+    private StandardsDatabase StandardsDatabase => MainWindow.StandardsDatabaseViewModel.StandardsDatabase;
 
-    public Controller V275 => MainWindowViewModel.V275;
+    public Controller V275 => V275NodesViewModel.V275;
     public Job LabelTemplate { get; set; }
     public Job RepeatTemplate { get; set; }
     public V275_REST_lib.Models.Report RepeatReport { get; private set; }
@@ -334,7 +334,7 @@ public partial class LabelControlViewModel : ObservableObject
 
         DiffSectors.Clear();
 
-        if (!await V275.Read(repeat, !MainWindow.IsDeviceSimulator))
+        if (!await V275.Read(repeat, !MainWindow.V275NodesViewModel.IsDeviceSimulator))
         {
             Status = V275.Status;
 
@@ -353,7 +353,7 @@ public partial class LabelControlViewModel : ObservableObject
         RepeatTemplate = V275.Commands.Job;
         RepeatReport = V275.Commands.Report;
 
-        if (!MainWindow.IsDeviceSimulator)
+        if (!MainWindow.V275NodesViewModel.IsDeviceSimulator)
         {
             RepeatImage = ImageUtilities.ConvertToPng(V275.Commands.RepeatImage, 600);
             IsGoldenRepeat = false;
@@ -381,7 +381,7 @@ public partial class LabelControlViewModel : ObservableObject
                 if (jSec.name == rSec["name"].ToString())
                 {
 
-                    var fSec = DeserializeSector(rSec, !GradingStandard.IsGS1 && MainWindow.IsOldISO);
+                    var fSec = DeserializeSector(rSec, !GradingStandard.IsGS1 && MainWindow.V275NodesViewModel.IsOldISO);
 
                     if (fSec == null)
                         break; //Not yet supported sector type
