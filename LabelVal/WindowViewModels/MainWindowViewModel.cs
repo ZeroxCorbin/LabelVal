@@ -24,24 +24,16 @@ using static LabelVal.WindowViewModels.MainWindowViewModel;
 
 namespace LabelVal.WindowViewModels;
 
-public partial class MainWindowViewModel : ObservableRecipient, IRecipient<SystemMessages.StatusMessage>
+public partial class MainWindowViewModel : ObservableRecipient, IRecipient<SystemMessages.StatusMessage>, IRecipient<NodeMessages.SelectedNodeChanged>
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-    public enum V275_States
-    {
-        editing,
-        running,
-        paused,
-    }
+
     public class Repeat
     {
         public LabelControlViewModel Label { get; set; }
         public int RepeatNumber { get; set; } = -1;
     }
-
-
-
 
     public ViewModel PrinterViewModel { get; } = new ViewModel();
     public RunViewModel RunViewModel { get; } = new RunViewModel();
@@ -49,7 +41,6 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
     public StandardsDatabaseViewModel StandardsDatabaseViewModel { get; }
 
     public V275NodesViewModel V275NodesViewModel { get; } = new V275NodesViewModel();
-
 
     [ObservableProperty] private string userMessage = "";
 
@@ -106,34 +97,39 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
 
     public static string Version => App.Version;
 
-
-
-
-
     [ObservableProperty] private ObservableCollection<LabelControlViewModel> labels = [];
-
-
-
-
 
     public Dictionary<int, Repeat> Repeats { get; } = [];
 
+    private V275Node SelectedNode { get; set; }
 
     public static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
     public MainWindowViewModel()
     {
         StandardsDatabaseViewModel = new StandardsDatabaseViewModel(this);
 
-        V275NodesViewModel.V275.WebSocket.SetupCapture += WebSocket_SetupCapture;
-        //V275NodesViewModel.V275.WebSocket.SessionStateChange += WebSocket_SessionStateChange;
-        //V275.WebSocket.Heartbeat += WebSocket_Heartbeat;
-        V275NodesViewModel.V275.WebSocket.LabelEnd += WebSocket_LabelEnd;
-        V275NodesViewModel.V275.WebSocket.StateChange += WebSocket_StateChange;
-
-
         IsActive = true;
     }
 
+    public void Receive(NodeMessages.SelectedNodeChanged message)
+    {
+        if(SelectedNode != null)
+        {
+            SelectedNode.Connection.WebSocket.SetupCapture -= WebSocket_SetupCapture;
+            SelectedNode.Connection.WebSocket.LabelEnd -= WebSocket_LabelEnd;
+            SelectedNode.Connection.WebSocket.StateChange -= WebSocket_StateChange;
+
+        }
+
+        SelectedNode = message.Value;
+
+        if (SelectedNode != null)
+        {
+            SelectedNode.Connection.WebSocket.SetupCapture += WebSocket_SetupCapture;
+            SelectedNode.Connection.WebSocket.LabelEnd += WebSocket_LabelEnd;
+            SelectedNode.Connection.WebSocket.StateChange += WebSocket_StateChange;
+        }
+    }
 
     public void Receive(SystemMessages.StatusMessage message)
     {
@@ -159,13 +155,6 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
         }    
     }
 
-
-
-
-
-
-
-
     public async Task<MessageDialogResult> OkCancelDialog(string title, string message) => await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative);
     public async Task OkDialog(string title, string message) => _ = await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.Affirmative);
     public async Task<string> GetStringDialog(string title, string message) => await DialogCoordinator.ShowInputAsync(this, title, message);
@@ -176,8 +165,6 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
     //        r.PrinterName = StoredPrinter;
 
     //}
-
-
 
     private void Label_StatusChanged(string status) => UserMessage = status;
 
@@ -245,14 +232,13 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
         }
     }
 
- 
     private async Task StartRun()
     {
         if (!StartRunCheck())
             if (await OkCancelDialog("Missing Label Sectors", "There are Labels that do not have stored sectors. Are you sure you want to continue?") == MessageDialogResult.Negative)
                 return;
 
-        _ = RunViewModel.RunController.Init(Labels, LoopCount, StandardsDatabaseViewModel.StandardsDatabase, V275NodesViewModel.V275.Commands.Product.part, V275NodesViewModel.SelectedNode.cameraMAC);
+        _ = RunViewModel.RunController.Init(Labels, LoopCount, StandardsDatabaseViewModel.StandardsDatabase, SelectedNode);
 
         RunViewModel.StartRunRequest();
     }
@@ -280,13 +266,13 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
         Repeats.Add(ev.data.repeat, new Repeat() { Label = PrintingLabel, RepeatNumber = ev.data.repeat });
         PrintingLabel = null;
 
-        if (V275NodesViewModel.IsLoggedIn_Control)
+        if (SelectedNode.IsLoggedIn_Control)
             if (!Repeats.ContainsKey(ev.data.repeat + 1))
                 App.Current.Dispatcher.Invoke(new Action(() => ProcessRepeat(ev.data.repeat)));
     }
     private void WebSocket_LabelEnd(Events_System ev)
     {
-        if (V275NodesViewModel.V275_State == "Editing")
+        if (SelectedNode.State == NodeStates.Editing)
             return;
         if (PrintingLabel == null)
             return;
@@ -294,7 +280,7 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
         Repeats.Add(ev.data.repeat, new Repeat() { Label = PrintingLabel, RepeatNumber = ev.data.repeat });
         PrintingLabel = null;
 
-        if (V275NodesViewModel.IsLoggedIn_Control)
+        if (SelectedNode.IsLoggedIn_Control)
             if (!Repeats.ContainsKey(ev.data.repeat + 1))
                 App.Current.Dispatcher.Invoke(new Action(() => ProcessRepeat(ev.data.repeat)));
     }
@@ -310,7 +296,7 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
     private bool WaitForRepeat;
     private async void Label_Printing(LabelControlViewModel label, string type)
     {
-        if (V275NodesViewModel.IsDeviceSimulator)
+        if (SelectedNode.IsSimulator)
         {
             try
             {
@@ -387,7 +373,7 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
 
                 //}
 
-                if (!V275NodesViewModel.IsLoggedIn_Control)
+                if (!SelectedNode.IsLoggedIn_Control)
                 {
                     label.IsWorking = false;
                 }
@@ -413,12 +399,12 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
                 else
                     printer.Print(label.LabelImagePath, label.PrintCount, PrinterViewModel.SelectedPrinter, "");
 
-                if (!V275NodesViewModel.IsLoggedIn_Control)
+                if (!SelectedNode.IsLoggedIn_Control)
                     label.IsWorking = false;
             });
         }
 
-        if (V275NodesViewModel.IsLoggedIn_Control)
+        if (SelectedNode.IsLoggedIn_Control)
         {
             PrintingLabel = label;
 
@@ -445,9 +431,9 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
         else
             PrintingLabel = null;
 
-        if (V275NodesViewModel.V275_State != "Idle" && V275NodesViewModel.IsLoggedIn_Control)
+        if (SelectedNode.State != NodeStates.Idle && SelectedNode.IsLoggedIn_Control)
         {
-            if (!await V275NodesViewModel.EnablePrint("1"))
+            if (!await SelectedNode.EnablePrint("1"))
             {
                 WaitForRepeat = false;
 
@@ -459,7 +445,7 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
         }
 
         else
-            _ = await V275NodesViewModel.V275.SimulatorTogglePrint();
+            _ = await SelectedNode.Connection.SimulatorTogglePrint();
     }
     private async void ProcessRepeat(int repeat)
     {
@@ -468,7 +454,7 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
         if (Repeats[repeat].Label.GradingStandard.IsGS1)
         {
             if (repeat > 0)
-                if (!await V275NodesViewModel.V275.Commands.SetRepeat(repeat))
+                if (!await SelectedNode.Connection.Commands.SetRepeat(repeat))
                 {
                     ProcessRepeatFault(repeat);
                     return;
@@ -484,13 +470,13 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
 
             if (i == 2)
             {
-                var sectors = V275NodesViewModel.V275.CreateSectors(V275NodesViewModel.V275.SetupDetectEvent, StandardsDatabaseViewModel.SelectedStandard.TableID);
+                var sectors = SelectedNode.Connection.CreateSectors(SelectedNode.Connection.SetupDetectEvent, StandardsDatabaseViewModel.SelectedStandard.TableID);
 
                 Logger.Info("Creating sectors.");
 
                 foreach (var sec in sectors)
                 {
-                    if (!await V275NodesViewModel.V275.AddSector(sec.name, JsonConvert.SerializeObject(sec)))
+                    if (!await SelectedNode.Connection.AddSector(sec.name, JsonConvert.SerializeObject(sec)))
                     {
                         ProcessRepeatFault(repeat);
                         return;
@@ -526,5 +512,6 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
                 return false;
         return true;
     }
+
 
 }

@@ -1,4 +1,5 @@
 ﻿using LabelVal.ORM_Test;
+using LabelVal.WindowViewModels;
 using MahApps.Metro.SimpleChildWindow;
 using System;
 using System.Collections.Generic;
@@ -38,7 +39,7 @@ namespace LabelVal.WindowViews
 
                 if (result == System.Windows.Forms.DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
                 {
-                    ((WindowViewModels.MainWindowViewModel)DataContext).V275NodesViewModel.SimulatorImageDirectory = fbd.SelectedPath;
+                    ((MainWindowViewModel)DataContext).V275NodesViewModel.SimulatorImageDirectory = fbd.SelectedPath;
                 }
             }
         }

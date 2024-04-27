@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using LabelVal.Messages;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using System;
@@ -9,220 +11,56 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using V275_REST_lib.Models;
+using V275_REST_Lib.Models;
 
 namespace LabelVal.WindowViewModels;
-public partial class V275NodesViewModel : ObservableObject
+
+public enum NodeStates
+{
+    Editing,
+    Idle,
+    Running,
+    Paused,
+}
+
+public partial class V275Node : ObservableObject
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-    public MainWindowViewModel MainWindow => App.Current.MainWindow.DataContext as MainWindowViewModel;
-
-    public static V275_REST_lib.Controller V275 { get; } = new V275_REST_lib.Controller();
-
-    //private V275_API_WebSocketEvents WebSocket { get; } = new V275_API_WebSocketEvents();
-    //private V275_API_WebSocketEvents SysWebSocket { get; } = new V275_API_WebSocketEvents();
-
-    [ObservableProperty] private string v275_Host = V275.Host = App.Settings.GetValue(nameof(V275_Host), "127.0.0.1", true);
-    partial void OnV275_HostChanged(string value) { App.Settings.SetValue(nameof(V275_Host), value); V275.Host = value; }
-
-    [ObservableProperty] private uint v275_SystemPort = V275.SystemPort = App.Settings.GetValue(nameof(V275_SystemPort), GetV275PortNumber(), true);
-    partial void OnV275_SystemPortChanged(uint value)
-    {
-        if (value != 0)
-        {
-            App.Settings.SetValue(nameof(V275_SystemPort), value);
-            V275.SystemPort = value;
-        }
-        else
-        {
-            _ = App.Settings.DeleteSetting(nameof(V275_SystemPort));
-            V275.SystemPort = V275_SystemPort;
-        }
-
-        OnPropertyChanged();
-    }
-
-    [ObservableProperty] private uint v275_NodeNumber = V275.NodeNumber = App.Settings.GetValue<uint>(nameof(V275_NodeNumber), 1, true);
-    partial void OnV275_NodeNumberChanged(uint value) { App.Settings.SetValue(nameof(V275_NodeNumber), value); V275.NodeNumber = value; }
-
-
-
-    [ObservableProperty] private string v275_MAC;
-    public static string V275_Version => V275.Commands.Product?.part;
-
-    [ObservableProperty] private string v275_State;
-    [ObservableProperty] private string v275_JobName;
-    public static bool V275_IsBackupVoid => V275.Commands.ConfigurationCamera.backupVoidMode != null && V275.Commands.ConfigurationCamera.backupVoidMode.value == "ON";
-
-    [ObservableProperty] private ObservableCollection<Devices.Node> nodes = [];
-    [ObservableProperty] private Devices.Node selectedNode;
-    partial void OnSelectedNodeChanged(Devices.Node value)
-    {
-        if (value != null)
-        {
-            V275_NodeNumber = (uint)value.enumeration;
-            V275_MAC = value.cameraMAC;
-
-            IsDeviceSelected = true;
-        }
-        else
-        {
-            V275_NodeNumber = 0;
-            V275_MAC = "";
-
-            IsDeviceSelected = false;
-        }
-    }
-
-    public bool IsWrongTemplateName
-    {
-        get => isWrongTemplateName;
-        set { _ = SetProperty(ref isWrongTemplateName, value); OnPropertyChanged("IsNotWrongTemplateName"); }
-    }
-    public bool IsNotWrongTemplateName => !isWrongTemplateName;
-    private bool isWrongTemplateName = false;
-
-    [ObservableProperty] private string userName = App.Settings.GetValue(nameof(UserName), "admin", true);
-    partial void OnUserNameChanged(string value) { App.Settings.SetValue(nameof(UserName), value); }
-
-    [ObservableProperty] private string password = App.Settings.GetValue(nameof(Password), "admin", true);
-    partial void OnPasswordChanged(string value) { App.Settings.SetValue(nameof(Password), value); }
+    public V275_REST_lib.Controller Connection { get; }
+    private static string UserName => App.Settings.GetValue<string>(nameof(V275NodesViewModel.UserName));
+    private static string Password => App.Settings.GetValue<string>(nameof(V275NodesViewModel.Password));
 
     private Events_System.Data LoginData { get; } = new Events_System.Data();
 
-    public bool ShowTemplateNameMismatchDialog { get => App.Settings.GetValue("ShowTemplateNameMismatchDialog", true); set => App.Settings.SetValue("ShowTemplateNameMismatchDialog", value); }
-    private Task TemplateNameMismatchDialog;
-    private Task TemplateNotLoadedDialog;
+    public Devices.Node Node { get; set; }
+    public Devices.Camera Camera { get; set; }
+    public Inspection Inspection { get; set; }
 
+    public bool IsSimulator => Inspection != null && Inspection.device.Equals("simulator");
+    private static string SimulatorImageDirectory => App.Settings.GetValue<string>(nameof(V275NodesViewModel.SimulatorImageDirectory));
 
+    public string Version => Connection.Commands.Product?.part;
+    [ObservableProperty] NodeStates state = NodeStates.Idle;
+    [ObservableProperty] private string jobName;
+    public bool IsBackupVoid => Connection.Commands.ConfigurationCamera.backupVoidMode != null && Connection.Commands.ConfigurationCamera.backupVoidMode.value == "ON";
 
-    [ObservableProperty] private bool isGetDevices = false;
-    [ObservableProperty] private bool isDeviceSelected = false;
-
-    [ObservableProperty] private string simulatorImageDirectory = App.Settings.GetValue(nameof(SimulatorImageDirectory), GetV275SimulationDirectory(), true);
 
     [ObservableProperty] private bool isLoggedIn_Monitor = false;
-    partial void OnIsLoggedIn_MonitorChanged(bool value) { OnPropertyChanged(nameof(IsLoggedIn)); OnPropertyChanged(nameof(IsNotLoggedIn)); OnPropertyChanged(nameof(IsDeviceSimulator)); }
+    partial void OnIsLoggedIn_MonitorChanged(bool value) { OnPropertyChanged(nameof(IsLoggedIn)); OnPropertyChanged(nameof(IsNotLoggedIn)); }
 
     [ObservableProperty] private bool isLoggedIn_Control = false;
-    partial void OnIsLoggedIn_ControlChanged(bool value) { OnPropertyChanged(nameof(IsLoggedIn)); OnPropertyChanged(nameof(IsNotLoggedIn)); OnPropertyChanged(nameof(IsDeviceSimulator)); }
+    partial void OnIsLoggedIn_ControlChanged(bool value) { OnPropertyChanged(nameof(IsLoggedIn)); OnPropertyChanged(nameof(IsNotLoggedIn)); }
     public bool IsLoggedIn => IsLoggedIn_Monitor || IsLoggedIn_Control;
     public bool IsNotLoggedIn => !(IsLoggedIn_Monitor || IsLoggedIn_Control);
 
-    public bool IsDeviceSimulator => V275_MAC != null && V275_MAC.Equals("00:00:00:00:00:00") && (IsLoggedIn_Control || IsLoggedIn_Monitor);
 
-    [ObservableProperty] private bool isOldISO;
-
-    public static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
-
-    public V275NodesViewModel()
+    public V275Node(string host, uint systemPort, uint nodeNumber)
     {
-        V275.StateChanged += V275_StateChanged;
-        V275.WebSocket.SessionStateChange += WebSocket_SessionStateChange;
-    }
+        Connection = new V275_REST_lib.Controller(host, systemPort, nodeNumber);
 
-    public async Task OkDialog(string title, string message) => _ = await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.Affirmative);
-
-    [RelayCommand] private static void TriggerSim() => _ = V275.Commands.TriggerSimulator();
-    [RelayCommand] private static async Task V275_SwitchRun() => await V275.SwitchToRun();
-    [RelayCommand] private static async Task V275_SwitchEdit() => await V275.SwitchToEdit();
-
-
-    private void WebSocket_SessionStateChange(Events_System ev)
-    {
-        //if (ev.data.id == LoginData.id)
-        if (ev.data.state == "0")
-            if (ev.data.accessLevel == "control")
-                if (LoginData.accessLevel == "control")
-                    if (ev.data.token != LoginData.token)
-                        _ = Logout();
-    }
-
-    private void V275_StateChanged(string state, string jobName)
-    {
-        V275_State = state;
-        V275_JobName = jobName;
-
-        if (V275_JobName != "")
-            _ = CheckTemplateName();
-        else if (V275_State == "Idle")
-            _ = CheckTemplateName();
-        else
-        {
-
-        }
-    }
-
-    [RelayCommand]
-    private async Task GetDevices()
-    {
-        Logger.Info("Loading V275 devices.");
-
-        //Reset();
-
-        IsDeviceSelected = false;
-        V275_MAC = "";
-        Nodes.Clear();
-        SelectedNode = null;
-
-        if (await V275.Commands.GetDevices())
-        {
-            foreach (var node in V275.Commands.Devices.nodes)
-            {
-                Logger.Debug("Device MAC: {dev}", node.cameraMAC);
-
-                Nodes.Add(node);
-
-                if (node.enumeration == V275_NodeNumber)
-                    SelectedNode = node;
-            }
-
-            Logger.Info("Processed {count} devices.", Nodes.Count);
-
-            if (SelectedNode == null && Nodes.Count > 0)
-                SelectedNode = Nodes.First();
-
-            IsGetDevices = true;
-
-            _ = await V275.Commands.GetProduct();
-            if (V275_Version != null)
-            {
-                var curVer = V275_Version.Remove(0, V275_Version.LastIndexOf("-") + 1);
-
-                if (System.Version.TryParse(curVer, out var result))
-                {
-                    var baseVer = System.Version.Parse("1.2.0.0000");
-                    IsOldISO = result.CompareTo(baseVer) < 0;
-                }
-            }
-            OnPropertyChanged("V275_Version");
-        }
-        else
-        {
-            //Label_StatusChanged(V275.Status);
-            IsGetDevices = false;
-        }
-    }
-
-    [RelayCommand]
-    public async Task<bool> EnablePrint(object parameter)
-    {
-        if (!IsDeviceSimulator)
-        {
-            if (V275_IsBackupVoid)
-            {
-                if (!await V275.Commands.Print(false))
-                    return false;
-
-                Thread.Sleep(50);
-            }
-
-            return await V275.Commands.Print((string)parameter == "1");
-        }
-        else
-        {
-            return await V275.SimulatorTogglePrint();
-        }
+        Connection.WebSocket.SessionStateChange += WebSocket_SessionStateChange;
+        Connection.StateChanged += V275_StateChanged;
     }
 
     [RelayCommand]
@@ -232,7 +70,7 @@ public partial class V275NodesViewModel : ObservableObject
 
         if (!PreLogin()) return;
 
-        if (await V275.Commands.Login(UserName, Password, true))
+        if (await Connection.Commands.Login(UserName, Password, true))
         {
             _ = PostLogin(true);
         }
@@ -249,7 +87,7 @@ public partial class V275NodesViewModel : ObservableObject
 
         if (!PreLogin()) return;
 
-        if (await V275.Commands.Login(UserName, Password, false))
+        if (await Connection.Commands.Login(UserName, Password, false))
         {
             _ = PostLogin(false);
         }
@@ -264,20 +102,20 @@ public partial class V275NodesViewModel : ObservableObject
     {
         //Reset();
 
-        if (!await V275.Commands.Logout())
+        if (!await Connection.Commands.Logout())
             //Label_StatusChanged(V275.Status);
 
-        LoginData.accessLevel = "";
-        LoginData.token = "";
-        LoginData.id = "";
-        LoginData.state = "1";
+        //    LoginData.accessLevel = "";
+        //LoginData.token = "";
+        //LoginData.id = "";
+        //LoginData.state = "1";
 
         IsLoggedIn_Control = false;
         IsLoggedIn_Monitor = false;
 
         try
         {
-            await V275.WebSocket.StopAsync();
+            await Connection.WebSocket.StopAsync();
 
             //V275.V275_State = "";
             //V275.V275_JobName = "";
@@ -289,7 +127,7 @@ public partial class V275NodesViewModel : ObservableObject
     }
     private bool PreLogin()
     {
-        if (IsDeviceSimulator)
+        if (IsSimulator)
         {
             if (Directory.Exists(SimulatorImageDirectory))
             {
@@ -309,7 +147,7 @@ public partial class V275NodesViewModel : ObservableObject
             }
             else
             {
-                _ = OkDialog("Invalid Simulation Images Directory", $"Please select a valid simulator images directory.\r\n'{SimulatorImageDirectory}'");
+                // _ = OkDialog("Invalid Simulation Images Directory", $"Please select a valid simulator images directory.\r\n'{SimulatorImageDirectory}'");
                 return false;
             }
         }
@@ -317,87 +155,272 @@ public partial class V275NodesViewModel : ObservableObject
     }
     private async Task PostLogin(bool isLoggedIn_Monitor)
     {
-        LoginData.accessLevel = isLoggedIn_Monitor ? "monitor" : "control";
-        LoginData.token = V275.Commands.Token;
-        LoginData.id = UserName;
-        LoginData.state = "0";
+        //LoginData.accessLevel = isLoggedIn_Monitor ? "monitor" : "control";
+        //LoginData.token = Connection.Commands.Token;
+        //LoginData.id = UserName;
+        //LoginData.state = "0";
 
         IsLoggedIn_Monitor = isLoggedIn_Monitor;
         IsLoggedIn_Control = !isLoggedIn_Monitor;
 
-        _ = await V275.Commands.GetCameraConfig();
-        _ = await V275.Commands.GetSymbologies();
-        _ = await V275.Commands.GetCalibration();
-        _ = await V275.Commands.SetSendExtendedData(true);
+        _ = await Connection.Commands.GetCameraConfig();
+        _ = await Connection.Commands.GetSymbologies();
+        _ = await Connection.Commands.GetCalibration();
+        _ = await Connection.Commands.SetSendExtendedData(true);
 
-        if (!await V275.WebSocket.StartAsync(V275.Commands.URLs.WS_NodeEvents))
+        if (!await Connection.WebSocket.StartAsync(Connection.Commands.URLs.WS_NodeEvents))
             return;
 
-        MainWindow.Repeats.Clear();
+        //MainWindow.Repeats.Clear();
     }
 
     [RelayCommand]
-    private static async Task V275_RemoveRepeat()
+    public async Task<bool> EnablePrint(object parameter)
     {
-        int repeat;
-
-        repeat = await V275.GetLatestRepeat();
-        if (repeat == -9999)
-            return;
-
-        if (!await V275.Commands.RemoveRepeat(repeat))
+        if (!IsSimulator)
         {
-            return;
-        }
+            if (IsBackupVoid)
+            {
+                if (!await Connection.Commands.Print(false))
+                    return false;
 
-        if (!await V275.Commands.ResumeJob())
-        {
-            return;
-        }
-    }
+                Thread.Sleep(50);
+            }
 
-    public int CheckTemplateName()
-    {
-        IsWrongTemplateName = false;
-
-        if (!IsLoggedIn)
-            return 0;
-
-        if (V275_JobName == "")
-        {
-            IsWrongTemplateName = true;
-
-            if (TemplateNotLoadedDialog != null)
-                if (TemplateNotLoadedDialog.Status != TaskStatus.RanToCompletion)
-                    return -1;
-
-            TemplateNotLoadedDialog = OkDialog("Template Not Loaded!", "There is no template loaded in the V275 software.");
-            return -1;
-        }
-
-        if (!MainWindow.StandardsDatabaseViewModel.SelectedStandard.IsGS1)
-        {
-            if (V275_JobName.ToLower().Equals(MainWindow.StandardsDatabaseViewModel.SelectedStandard.Name.ToLower()))
-                return 1;
+            return await Connection.Commands.Print((string)parameter == "1");
         }
         else
         {
-            if (V275_JobName.ToLower().StartsWith("gs1"))
-                return 1;
+            return await Connection.SimulatorTogglePrint();
+        }
+    }
+
+    private void WebSocket_SessionStateChange(Events_System ev)
+    {
+        //if (ev.data.id == LoginData.id)
+        if (ev.data.state == "0")
+            if (ev.data.accessLevel == "control")
+                if (LoginData.accessLevel == "control")
+                    if (ev.data.token != LoginData.token)
+                        _ = Logout();
+    }
+    private void V275_StateChanged(string state, string jobName)
+    {
+        State = Enum.Parse<NodeStates>(state);
+        JobName = jobName;
+
+        //if (JobName != "")
+        //    _ = CheckTemplateName();
+        //else if (State == NodeStates.Idle)
+        //    _ = CheckTemplateName();
+        //else
+        //{
+
+        //}
+    }
+
+}
+
+public partial class V275NodesViewModel : ObservableRecipient
+{
+    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
+    public MainWindowViewModel MainWindow => App.Current.MainWindow.DataContext as MainWindowViewModel;
+
+    //public static V275_REST_lib.Controller V275 { get; } = new V275_REST_lib.Controller();
+
+    //private V275_API_WebSocketEvents WebSocket { get; } = new V275_API_WebSocketEvents();
+    //private V275_API_WebSocketEvents SysWebSocket { get; } = new V275_API_WebSocketEvents();
+
+    [ObservableProperty] private string v275_Host = App.Settings.GetValue(nameof(V275_Host), "127.0.0.1", true);
+    partial void OnV275_HostChanged(string value) { App.Settings.SetValue(nameof(V275_Host), value); }
+
+    [ObservableProperty] private uint v275_SystemPort = App.Settings.GetValue(nameof(V275_SystemPort), GetV275PortNumber(), true);
+    partial void OnV275_SystemPortChanged(uint value)
+    {
+        if (value != 0)
+        {
+            App.Settings.SetValue(nameof(V275_SystemPort), value);
+        }
+        else
+        {
+            _ = App.Settings.DeleteSetting(nameof(V275_SystemPort));
         }
 
-        if (!ShowTemplateNameMismatchDialog)
-            return 1;
-
-        IsWrongTemplateName = true;
-
-        if (TemplateNameMismatchDialog != null)
-            if (TemplateNameMismatchDialog.Status != TaskStatus.RanToCompletion)
-                return -2;
-
-        TemplateNameMismatchDialog = OkDialog("Template Name Mismatch!", $"The template name loaded in the V275 software '{V275_JobName}' does not match the selected standard. '{MainWindow.StandardsDatabaseViewModel.SelectedStandard.Name.ToLower()}'");
-        return -2;
+        OnPropertyChanged();
     }
+
+
+    [ObservableProperty] private string userName = App.Settings.GetValue(nameof(UserName), "admin", true);
+    partial void OnUserNameChanged(string value) => App.Settings.SetValue(nameof(UserName), value);
+
+    [ObservableProperty] private string password = App.Settings.GetValue(nameof(Password), "admin", true);
+    partial void OnPasswordChanged(string value) => App.Settings.SetValue(nameof(Password), value);
+
+
+    [ObservableProperty] private string simulatorImageDirectory = App.Settings.GetValue(nameof(SimulatorImageDirectory), GetV275SimulationDirectory(), true);
+    partial void OnSimulatorImageDirectoryChanged(string value) { if (string.IsNullOrEmpty(value)) { _ = App.Settings.DeleteSetting(nameof(SimulatorImageDirectory)); OnPropertyChanged(nameof(SimulatorImageDirectory)); } }
+
+
+    [ObservableProperty] private ObservableCollection<V275Node> nodes = [];
+    [ObservableProperty] private V275Node selectedNode;
+    partial void OnSelectedNodeChanged(V275Node oldValue, V275Node newValue)
+    {
+        _ = WeakReferenceMessenger.Default.Send(new NodeMessages.SelectedNodeChanged(newValue, oldValue));
+    }
+
+
+    public bool IsWrongTemplateName
+    {
+        get => isWrongTemplateName;
+        set { _ = SetProperty(ref isWrongTemplateName, value); OnPropertyChanged("IsNotWrongTemplateName"); }
+    }
+    public bool IsNotWrongTemplateName => !isWrongTemplateName;
+    private bool isWrongTemplateName = false;
+
+    public bool ShowTemplateNameMismatchDialog { get => App.Settings.GetValue("ShowTemplateNameMismatchDialog", true); set => App.Settings.SetValue("ShowTemplateNameMismatchDialog", value); }
+    private Task TemplateNameMismatchDialog;
+    private Task TemplateNotLoadedDialog;
+
+
+
+    [ObservableProperty] private bool isGetDevices = false;
+
+    [ObservableProperty] private bool isOldISO;
+
+    public static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
+
+    public V275NodesViewModel()
+    {
+
+
+        IsActive = true;
+    }
+
+    public async Task OkDialog(string title, string message) => _ = await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.Affirmative);
+
+    [RelayCommand] private void TriggerSim() => _ = SelectedNode.Connection.Commands.TriggerSimulator();
+    [RelayCommand] private async Task V275_SwitchRun() => await SelectedNode.Connection.SwitchToRun();
+    [RelayCommand] private async Task V275_SwitchEdit() => await SelectedNode.Connection.SwitchToEdit();
+
+    [RelayCommand]
+    private async Task GetDevices()
+    {
+        Logger.Info("Loading V275 devices.");
+
+        //Reset();
+
+        var system = new V275Node(V275_Host, V275_SystemPort, 0);
+
+        if (await system.Connection.Commands.GetDevices())
+        {
+            foreach (var node in system.Connection.Commands.Devices.nodes)
+            {
+                if (Nodes.Any(n => n.Node.cameraMAC == node.cameraMAC))
+                {
+                    Logger.Warn("Duplicate device MAC: {dev}", node.cameraMAC);
+                    continue;
+                }
+
+                Logger.Debug("Adding Device MAC: {dev}", node.cameraMAC);
+
+                Devices.Camera camera = system.Connection.Commands.Devices.cameras.FirstOrDefault(c => c.mac == node.cameraMAC);
+
+                var newNode = new V275Node(V275_Host, V275_SystemPort, (uint)node.enumeration) { Node = node, Camera = camera };
+
+                if (await newNode.Connection.Commands.GetInspection())
+                    newNode.Inspection = newNode.Connection.Commands.Inspection;
+
+
+                Nodes.Add(newNode);
+            }
+
+            if (SelectedNode == null && Nodes.Count > 0)
+                SelectedNode = Nodes.First();
+
+            _ = await SelectedNode.Connection.Commands.GetProduct();
+            if (SelectedNode.Version != null)
+            {
+                var curVer = SelectedNode.Version.Remove(0, SelectedNode.Version.LastIndexOf("-") + 1);
+
+                if (System.Version.TryParse(curVer, out var result))
+                {
+                    var baseVer = System.Version.Parse("1.2.0.0000");
+                    IsOldISO = result.CompareTo(baseVer) < 0;
+                }
+            }
+            OnPropertyChanged("V275_Version");
+        }
+        else
+        {
+            Nodes.Clear();
+        }
+    }
+
+
+
+    [RelayCommand]
+    private async Task V275_RemoveRepeat()
+    {
+        int repeat;
+
+        repeat = await SelectedNode.Connection.GetLatestRepeat();
+        if (repeat == -9999)
+            return;
+
+        if (!await SelectedNode.Connection.Commands.RemoveRepeat(repeat))
+        {
+            return;
+        }
+
+        if (!await SelectedNode.Connection.Commands.ResumeJob())
+        {
+            return;
+        }
+    }
+
+    //public int CheckTemplateName()
+    //{
+    //    IsWrongTemplateName = false;
+
+    //    if (!SelectedNode.IsLoggedIn)
+    //        return 0;
+
+    //    if (V275_JobName == "")
+    //    {
+    //        IsWrongTemplateName = true;
+
+    //        if (TemplateNotLoadedDialog != null)
+    //            if (TemplateNotLoadedDialog.Status != TaskStatus.RanToCompletion)
+    //                return -1;
+
+    //        TemplateNotLoadedDialog = OkDialog("Template Not Loaded!", "There is no template loaded in the V275 software.");
+    //        return -1;
+    //    }
+
+    //    if (!MainWindow.StandardsDatabaseViewModel.SelectedStandard.IsGS1)
+    //    {
+    //        if (V275_JobName.ToLower().Equals(MainWindow.StandardsDatabaseViewModel.SelectedStandard.Name.ToLower()))
+    //            return 1;
+    //    }
+    //    else
+    //    {
+    //        if (V275_JobName.ToLower().StartsWith("gs1"))
+    //            return 1;
+    //    }
+
+    //    if (!ShowTemplateNameMismatchDialog)
+    //        return 1;
+
+    //    IsWrongTemplateName = true;
+
+    //    if (TemplateNameMismatchDialog != null)
+    //        if (TemplateNameMismatchDialog.Status != TaskStatus.RanToCompletion)
+    //            return -2;
+
+    //    TemplateNameMismatchDialog = OkDialog("Template Name Mismatch!", $"The template name loaded in the V275 software '{V275_JobName}' does not match the selected standard. '{MainWindow.StandardsDatabaseViewModel.SelectedStandard.Name.ToLower()}'");
+    //    return -2;
+    //}
 
     private static uint GetV275PortNumber()
     {
@@ -405,6 +428,7 @@ public partial class V275NodesViewModel : ObservableObject
 
         return res == null ? 8080 : Convert.ToUInt32(res);
     }
+
     private static string GetV275SimulationDirectory()
     {
         var res = Registry.GetValue("HKEY_LOCAL_MACHINE\\Software\\OMRON\\V275Service", "DataDirectory", "");
@@ -416,4 +440,6 @@ public partial class V275NodesViewModel : ObservableObject
 
         return res.ToString();
     }
+
+    public void Receive(NodeMessages.SelectedNodeChanged message) => throw new NotImplementedException();
 }

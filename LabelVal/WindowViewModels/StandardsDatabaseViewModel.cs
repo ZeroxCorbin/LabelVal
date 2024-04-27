@@ -56,7 +56,7 @@ public partial class StandardsDatabaseViewModel : ObservableObject
             App.Current.Dispatcher.InvokeAsync(() =>
             {
                 MainWindowViewModel.LoadLabels();
-                _ = MainWindowViewModel.V275NodesViewModel.CheckTemplateName();
+                //_ = MainWindowViewModel.V275NodesViewModel.CheckTemplateName();
             });
         }
         else

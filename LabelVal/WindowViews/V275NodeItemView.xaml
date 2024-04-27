@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="LabelVal.WindowViews.V275NodeItemView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:LabelVal.WindowViews"
+             
+             xmlns:ViewModels="clr-namespace:LabelVal.WindowViewModels"  
+             d:DataContext="{d:DesignInstance Type=ViewModels:V275Node}"
+             mc:Ignorable="d">
+
+    <StackPanel>
+        
+
+    <DockPanel>
+        <TextBlock Text="{Binding Path=Node.printerModel, Mode=OneTime}" />
+        <TextBlock Text="{Binding Path=Node.cameraMAC, Mode=OneTime, StringFormat=' ({0})'}" />
+    </DockPanel> 
+        
+       <DockPanel>
+        <TextBlock Text="{Binding Path=Inspection.device, Mode=OneTime}" />
+    </DockPanel>
+</StackPanel>
+</UserControl>

@@ -86,19 +86,23 @@
 
     <DockPanel>
 
-        <local:StandardsDatabasesView DataContext="{Binding StandardsDatabaseViewModel}"/>
+        <StackPanel>
+            <local:V275NodesView DataContext="{Binding V275NodesViewModel}"/>
+
+            <local:StandardsDatabasesView DataContext="{Binding StandardsDatabaseViewModel}"/>
+
+        </StackPanel>
 
         <StackPanel>
 
-
-            <local:V275NodesView DataContext="{Binding V275NodesViewModel}"/>
-            
             <DockPanel>
 
                 <printer:View Grid.Column="0" DataContext="{Binding PrinterViewModel}"/>
 
                 <!--Test Runs-->
                 <local:RunView Grid.Column="2" DataContext="{Binding RunViewModel}"/>
+
+                <local:V275StateView DataContext="{Binding V275NodesViewModel}"/>
 
             </DockPanel>
 

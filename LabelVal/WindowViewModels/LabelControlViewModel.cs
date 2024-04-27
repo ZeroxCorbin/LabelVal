@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using LabelVal.Databases;
+using LabelVal.Messages;
 using LabelVal.Models;
 using LabelVal.Utilities;
 using MahApps.Metro.Controls.Dialogs;
@@ -21,7 +23,7 @@ using V275_REST_lib.Models;
 
 namespace LabelVal.WindowViewModels;
 
-public partial class LabelControlViewModel : ObservableObject
+public partial class LabelControlViewModel : ObservableRecipient, IRecipient<NodeMessages.SelectedNodeChanged>
 {
     public delegate void PrintingDelegate(LabelControlViewModel label, string type);
     public event PrintingDelegate Printing;
@@ -129,7 +131,8 @@ public partial class LabelControlViewModel : ObservableObject
 
     private StandardsDatabase StandardsDatabase => MainWindow.StandardsDatabaseViewModel.StandardsDatabase;
 
-    public Controller V275 => V275NodesViewModel.V275;
+    public V275Node V275Node { get; set; }
+
     public Job LabelTemplate { get; set; }
     public Job RepeatTemplate { get; set; }
     public V275_REST_lib.Models.Report RepeatReport { get; private set; }
@@ -152,6 +155,9 @@ public partial class LabelControlViewModel : ObservableObject
         GetImage(imagePath);
         GetStored();
     }
+
+
+    public void Receive(NodeMessages.SelectedNodeChanged message) => V275Node = message.Value;
 
     public async Task<MessageDialogResult> OkCancelDialog(string title, string message)
     {
@@ -334,9 +340,9 @@ public partial class LabelControlViewModel : ObservableObject
 
         DiffSectors.Clear();
 
-        if (!await V275.Read(repeat, !MainWindow.V275NodesViewModel.IsDeviceSimulator))
+        if (!await V275Node.Connection.Read(repeat, !V275Node.IsSimulator))
         {
-            Status = V275.Status;
+            Status = V275Node.Connection.Status;
 
             RepeatTemplate = null;
             RepeatReport = null;
@@ -350,12 +356,12 @@ public partial class LabelControlViewModel : ObservableObject
             return false;
         }
 
-        RepeatTemplate = V275.Commands.Job;
-        RepeatReport = V275.Commands.Report;
+        RepeatTemplate = V275Node.Connection.Commands.Job;
+        RepeatReport = V275Node.Connection.Commands.Report;
 
-        if (!MainWindow.V275NodesViewModel.IsDeviceSimulator)
+        if (!V275Node.IsSimulator)
         {
-            RepeatImage = ImageUtilities.ConvertToPng(V275.Commands.RepeatImage, 600);
+            RepeatImage = ImageUtilities.ConvertToPng(V275Node.Connection.Commands.RepeatImage, 600);
             IsGoldenRepeat = false;
         }
         else
@@ -410,17 +416,17 @@ public partial class LabelControlViewModel : ObservableObject
     }
     public async Task<int> LoadTask()
     {
-        if (!await V275.DeleteSectors())
+        if (!await V275Node.Connection.DeleteSectors())
         {
-            Status = V275.Status;
+            Status = V275Node.Connection.Status;
             return -1;
         }
 
         if (LabelSectors.Count == 0)
         {
-            if (!await V275.DetectSectors())
+            if (!await V275Node.Connection.DetectSectors())
             {
-                Status = V275.Status;
+                Status = V275Node.Connection.Status;
                 return -1;
             }
 
@@ -429,9 +435,9 @@ public partial class LabelControlViewModel : ObservableObject
 
         foreach (var sec in LabelSectors)
         {
-            if (!await V275.AddSector(sec.JobSector.name, JsonConvert.SerializeObject(sec.JobSector)))
+            if (!await V275Node.Connection.AddSector(sec.JobSector.name, JsonConvert.SerializeObject(sec.JobSector)))
             {
-                Status = V275.Status;
+                Status = V275Node.Connection.Status;
                 return -1;
             }
 
@@ -439,11 +445,11 @@ public partial class LabelControlViewModel : ObservableObject
             {
                 foreach (var layer in sec.JobSector.blemishMask.layers)
                 {
-                    if (!await V275.AddMask(sec.JobSector.name, JsonConvert.SerializeObject(layer)))
+                    if (!await V275Node.Connection.AddMask(sec.JobSector.name, JsonConvert.SerializeObject(layer)))
                     {
                         if (layer.value != 0)
                         {
-                            Status = V275.Status;
+                            Status = V275Node.Connection.Status;
                             return -1;
                         }
                     }
@@ -946,6 +952,7 @@ public partial class LabelControlViewModel : ObservableObject
                                         : (object)null;
         }
     }
+
 
     //public void Clear()
     //{

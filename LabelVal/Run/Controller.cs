@@ -53,6 +53,8 @@ namespace LabelVal.Run
         private ObservableCollection<LabelControlViewModel> Labels { get; set; }
         public StandardEntryModel GradingStandard { get; private set; }
         private StandardsDatabase StandardsDatabase { get; set; }
+
+        public V275Node V275Node { get; private set; }
         //private string JobName { get; }
 
         public Controller()
@@ -67,16 +69,17 @@ namespace LabelVal.Run
             _ = OpenDatabases();
         }
 
-        public Controller Init(ObservableCollection<LabelControlViewModel> labels, int loopCount, StandardsDatabase standardsDatabase, string productPart, string cameraMAC)
+        public Controller Init(ObservableCollection<LabelControlViewModel> labels, int loopCount, StandardsDatabase standardsDatabase, V275Node v275Node)
         {
             Labels = labels;
             LoopCount = loopCount;
             StandardsDatabase = standardsDatabase;
+            V275Node = v275Node;
             GradingStandard = Labels[0].GradingStandard;
 
             TimeDate = DateTime.UtcNow.Ticks;
 
-            LedgerEntry = new LedgerDatabase.LedgerEntry() { GradingStandard = GradingStandard.Name, TimeDate = TimeDate, Completed = 0, ProductPart = V275NodesViewModel.V275.Commands.Product.part, CameraMAC = Labels[0].MainWindow.V275NodesViewModel.V275_MAC };
+            LedgerEntry = new LedgerDatabase.LedgerEntry() { GradingStandard = GradingStandard.Name, TimeDate = TimeDate, Completed = 0, ProductPart = v275Node.Connection.Commands.Product.part, CameraMAC = v275Node.Node.cameraMAC };
 
             return !OpenDatabases() ? null : !UpdateRunEntries() ? null : this;
         }
@@ -136,7 +139,7 @@ namespace LabelVal.Run
                 if (session != null)
                 {
                     using var transaction = session.BeginTransaction();
-                    var run = new RunLedger(JsonConvert.SerializeObject(Labels[0].LabelTemplate), Labels[0].MainWindow.V275NodesViewModel.V275_MAC, V275NodesViewModel.V275.Commands.Product.part);
+                    var run = new RunLedger(JsonConvert.SerializeObject(Labels[0].LabelTemplate), V275Node.Node.cameraMAC, V275Node.Connection.Commands.Product.part);
 
                     _ = session.Save(run);
                     transaction.Commit();
@@ -158,7 +161,7 @@ namespace LabelVal.Run
             if (RequestedState == RunStates.RUNNING && State != RunStates.RUNNING)
                 RunStateChange?.Invoke(State = RunStates.RUNNING);
 
-            _ = await Labels[0].V275.SwitchToEdit();
+            _ = await V275Node.Connection.SwitchToEdit();
 
             int wasLoop = 0;
             for (int i = 0; i < LoopCount; i++)
@@ -174,7 +177,7 @@ namespace LabelVal.Run
                         //If running a non-GS1 label then this will reset the match to file and sequences.
                         //If running a GS1 label label then edit mode is required.
                         if (HasSequencing(label))
-                            _ = await Labels[0].V275.SwitchToEdit();
+                            _ = await V275Node.Connection.SwitchToEdit();
                         else if (Labels.Count == 1)
                             CurrentLoopCount = 1;
 
@@ -183,7 +186,7 @@ namespace LabelVal.Run
                     }
 
                     if (!GradingStandard.IsGS1)
-                        _ = await label.V275.SwitchToRun();
+                        _ = await V275Node.Connection.SwitchToRun();
 
                     while (RequestedState == RunStates.PAUSED)
                     {
@@ -249,12 +252,12 @@ namespace LabelVal.Run
                         LabelReport = sRow.LabelReport,
                         RepeatGoldenImage = sRow.RepeatImage,
                         LabelImageUID = label.LabelImageUID,
-                        LabelImage = label.MainWindow.V275NodesViewModel.IsDeviceSimulator ? null : label.LabelImage,
+                        LabelImage = V275Node.IsSimulator ? null : label.LabelImage,
                         LabelImageOrder = CurrentLabelCount,
                         LoopCount = CurrentLoopCount
                     };
 
-                    if (!label.MainWindow.V275NodesViewModel.IsDeviceSimulator)
+                    if (!V275Node.IsSimulator)
                         if (label.RepeatImage != null)
                         {
                             //Compress the image to PNG
