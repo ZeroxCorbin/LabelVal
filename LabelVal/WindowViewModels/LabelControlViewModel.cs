@@ -131,7 +131,7 @@ public partial class LabelControlViewModel : ObservableRecipient, IRecipient<Nod
 
     private StandardsDatabase StandardsDatabase => MainWindow.StandardsDatabaseViewModel.StandardsDatabase;
 
-    public V275Node V275Node { get; set; }
+    [ObservableProperty] private V275Node selectedNode;
 
     public Job LabelTemplate { get; set; }
     public Job RepeatTemplate { get; set; }
@@ -154,10 +154,12 @@ public partial class LabelControlViewModel : ObservableRecipient, IRecipient<Nod
 
         GetImage(imagePath);
         GetStored();
+
+        IsActive = true;
     }
 
 
-    public void Receive(NodeMessages.SelectedNodeChanged message) => V275Node = message.Value;
+    public void Receive(NodeMessages.SelectedNodeChanged message) => SelectedNode = message.Value;
 
     public async Task<MessageDialogResult> OkCancelDialog(string title, string message)
     {
@@ -340,9 +342,10 @@ public partial class LabelControlViewModel : ObservableRecipient, IRecipient<Nod
 
         DiffSectors.Clear();
 
-        if (!await V275Node.Connection.Read(repeat, !V275Node.IsSimulator))
+        Controller.FullReport report;
+        if ((report = await SelectedNode.Connection.Read(repeat, !SelectedNode.IsSimulator)) == null)
         {
-            Status = V275Node.Connection.Status;
+            Status = SelectedNode.Connection.Status;
 
             RepeatTemplate = null;
             RepeatReport = null;
@@ -356,12 +359,12 @@ public partial class LabelControlViewModel : ObservableRecipient, IRecipient<Nod
             return false;
         }
 
-        RepeatTemplate = V275Node.Connection.Commands.Job;
-        RepeatReport = V275Node.Connection.Commands.Report;
+        RepeatTemplate = report.job;
+        RepeatReport = report.report;
 
-        if (!V275Node.IsSimulator)
+        if (!SelectedNode.IsSimulator)
         {
-            RepeatImage = ImageUtilities.ConvertToPng(V275Node.Connection.Commands.RepeatImage, 600);
+            RepeatImage = ImageUtilities.ConvertToPng(report.image, 600);
             IsGoldenRepeat = false;
         }
         else
@@ -416,17 +419,17 @@ public partial class LabelControlViewModel : ObservableRecipient, IRecipient<Nod
     }
     public async Task<int> LoadTask()
     {
-        if (!await V275Node.Connection.DeleteSectors())
+        if (!await SelectedNode.Connection.DeleteSectors())
         {
-            Status = V275Node.Connection.Status;
+            Status = SelectedNode.Connection.Status;
             return -1;
         }
 
         if (LabelSectors.Count == 0)
         {
-            if (!await V275Node.Connection.DetectSectors())
+            if (!await SelectedNode.Connection.DetectSectors())
             {
-                Status = V275Node.Connection.Status;
+                Status = SelectedNode.Connection.Status;
                 return -1;
             }
 
@@ -435,9 +438,9 @@ public partial class LabelControlViewModel : ObservableRecipient, IRecipient<Nod
 
         foreach (var sec in LabelSectors)
         {
-            if (!await V275Node.Connection.AddSector(sec.JobSector.name, JsonConvert.SerializeObject(sec.JobSector)))
+            if (!await SelectedNode.Connection.AddSector(sec.JobSector.name, JsonConvert.SerializeObject(sec.JobSector)))
             {
-                Status = V275Node.Connection.Status;
+                Status = SelectedNode.Connection.Status;
                 return -1;
             }
 
@@ -445,11 +448,11 @@ public partial class LabelControlViewModel : ObservableRecipient, IRecipient<Nod
             {
                 foreach (var layer in sec.JobSector.blemishMask.layers)
                 {
-                    if (!await V275Node.Connection.AddMask(sec.JobSector.name, JsonConvert.SerializeObject(layer)))
+                    if (!await SelectedNode.Connection.AddMask(sec.JobSector.name, JsonConvert.SerializeObject(layer)))
                     {
                         if (layer.value != 0)
                         {
-                            Status = V275Node.Connection.Status;
+                            Status = SelectedNode.Connection.Status;
                             return -1;
                         }
                     }

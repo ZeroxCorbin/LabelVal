@@ -50,24 +50,24 @@
                             </Style>
                         </DockPanel.Style>
 
-                        <Button Content="Logout" Command="{Binding LogoutCommand}" IsEnabled="{Binding IsLoggedIn}" Margin="3,0"/>
+                        <Button Content="Logout" Command="{Binding SelectedNode.LogoutCommand}" IsEnabled="{Binding SelectedNode.IsLoggedIn}" Margin="3,0"/>
 
-                        <Button Content="Monitor" Command="{Binding LoginMonitorCommand}" Margin="3,0">
+                        <Button Content="Monitor" Command="{Binding SelectedNode.LoginMonitorCommand}" Margin="3,0">
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                                     <Setter Property="IsEnabled" Value="True"/>
                                     <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Control}"/>
                                     <Style.Triggers>
-                                        <DataTrigger Value="True" Binding="{Binding IsLoggedIn}">
+                                        <DataTrigger Value="True" Binding="{Binding SelectedNode.IsLoggedIn}">
                                             <Setter Property="IsHitTestVisible" Value="False"/>
                                         </DataTrigger>
                                         <DataTrigger Value="{x:Null}" Binding="{Binding SelectedNode}">
                                             <Setter Property="IsEnabled" Value="False"/>
                                         </DataTrigger>
-                                        <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Control}">
+                                        <DataTrigger Value="True" Binding="{Binding SelectedNode.IsLoggedIn_Control}">
                                             <Setter Property="IsEnabled" Value="False"/>
                                         </DataTrigger>
-                                        <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Monitor}">
+                                        <DataTrigger Value="True" Binding="{Binding SelectedNode.IsLoggedIn_Monitor}">
                                             <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -75,22 +75,22 @@
                             </Button.Style>
                         </Button>
 
-                        <Button Content="Control" Command="{Binding LoginControlCommand}" Margin="3,0">
+                        <Button Content="Control" Command="{Binding SelectedNode.LoginControlCommand}" Margin="3,0">
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                                     <Setter Property="IsEnabled" Value="True"/>
                                     <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Control}"/>
                                     <Style.Triggers>
-                                        <DataTrigger Value="True" Binding="{Binding IsLoggedIn}">
+                                        <DataTrigger Value="True" Binding="{Binding SelectedNode.IsLoggedIn}">
                                             <Setter Property="IsHitTestVisible" Value="False"/>
                                         </DataTrigger>
                                         <DataTrigger Value="{x:Null}" Binding="{Binding SelectedNode}">
                                             <Setter Property="IsEnabled" Value="False"/>
                                         </DataTrigger>
-                                        <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Monitor}">
+                                        <DataTrigger Value="True" Binding="{Binding SelectedNode.IsLoggedIn_Monitor}">
                                             <Setter Property="IsEnabled" Value="False"/>
                                         </DataTrigger>
-                                        <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Control}">
+                                        <DataTrigger Value="True" Binding="{Binding SelectedNode.IsLoggedIn_Control}">
                                             <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
                                         </DataTrigger>
                                     </Style.Triggers>

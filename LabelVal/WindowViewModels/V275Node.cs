@@ -1,0 +1,260 @@
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Documents;
+using V275_REST_lib.Models;
+using V275_REST_Lib.Models;
+using static System.ComponentModel.Design.ObjectSelectorEditor;
+
+namespace LabelVal.WindowViewModels;
+
+public enum NodeStates
+{
+    Editing,
+    Idle,
+    Running,
+    Paused,
+}
+
+public partial class V275Node : ObservableObject
+{
+    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
+    public V275_REST_lib.Controller Connection { get; }
+
+
+    private string V275_Host = App.Settings.GetValue<string>(nameof(V275NodesViewModel.V275_Host));
+
+    private uint V275_SystemPort = App.Settings.GetValue<uint>(nameof(V275NodesViewModel.V275_SystemPort));
+
+    private static string UserName => App.Settings.GetValue<string>(nameof(V275NodesViewModel.UserName));
+    private static string Password => App.Settings.GetValue<string>(nameof(V275NodesViewModel.Password));
+
+    private Events_System.Data LoginData { get; } = new Events_System.Data();
+
+    public Devices.Node Node { get; set; }
+    public Devices.Camera Camera { get; set; }
+    public Inspection Inspection { get; set; }
+
+    [ObservableProperty] private Configuration_Camera configurationCamera;
+    [ObservableProperty] private List<Symbologies.Symbol> symbologies;
+    [ObservableProperty] private Calibration calibration;
+    [ObservableProperty] private Product product;
+
+    public bool IsSimulator => Inspection != null && Inspection.device.Equals("simulator");
+    private static string SimulatorImageDirectory => App.Settings.GetValue<string>(nameof(V275NodesViewModel.SimulatorImageDirectory));
+
+    [ObservableProperty] NodeStates state = NodeStates.Idle;
+    [ObservableProperty] private string jobName;
+    public bool IsBackupVoid => ConfigurationCamera != null && ConfigurationCamera.backupVoidMode.value == "ON";
+
+
+    [ObservableProperty] private bool isLoggedIn_Monitor = false;
+    partial void OnIsLoggedIn_MonitorChanged(bool value) { OnPropertyChanged(nameof(IsLoggedIn)); OnPropertyChanged(nameof(IsNotLoggedIn)); }
+
+    [ObservableProperty] private bool isLoggedIn_Control = false;
+    partial void OnIsLoggedIn_ControlChanged(bool value) { OnPropertyChanged(nameof(IsLoggedIn)); OnPropertyChanged(nameof(IsNotLoggedIn)); }
+    public bool IsLoggedIn => IsLoggedIn_Monitor || IsLoggedIn_Control;
+    public bool IsNotLoggedIn => !(IsLoggedIn_Monitor || IsLoggedIn_Control);
+
+
+    public V275Node(string host, uint systemPort, uint nodeNumber)
+    {
+        Connection = new V275_REST_lib.Controller(host, systemPort, nodeNumber);
+
+        Connection.WebSocket.SessionStateChange += WebSocket_SessionStateChange;
+        Connection.StateChanged += V275_StateChanged;
+
+        App.Settings.PropertyChanged += Settings_PropertyChanged;
+    }
+
+    private void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+
+        if (e.PropertyName == nameof(V275NodesViewModel.V275_Host))
+            Connection.Commands.Host = V275_Host;
+        else if (e.PropertyName == nameof(V275NodesViewModel.V275_SystemPort))
+            Connection.Commands.SystemPort = V275_SystemPort;
+    }
+
+    [RelayCommand]
+    private async Task LoginMonitor()
+    {
+        //Reset();
+
+        if (!PreLogin()) return;
+
+        if (await Connection.Commands.Login(UserName, Password, true))
+        {
+            _ = PostLogin(true);
+        }
+        else
+        {
+            //Label_StatusChanged(V275.Status);
+            IsLoggedIn_Monitor = false;
+        }
+    }
+    [RelayCommand]
+    private async Task LoginControl()
+    {
+        //Reset();
+
+        if (!PreLogin()) return;
+
+        if (await Connection.Commands.Login(UserName, Password, false))
+        {
+            _ = PostLogin(false);
+        }
+        else
+        {
+            //Label_StatusChanged(V275.Status);
+            IsLoggedIn_Control = false;
+        }
+    }
+    [RelayCommand]
+    private async Task Logout()
+    {
+        //Reset();
+
+        if (!await Connection.Commands.Logout())
+            //Label_StatusChanged(V275.Status);
+
+        //    LoginData.accessLevel = "";
+        //LoginData.token = "";
+        //LoginData.id = "";
+        //LoginData.state = "1";
+
+        IsLoggedIn_Control = false;
+        IsLoggedIn_Monitor = false;
+
+        try
+        {
+            await Connection.WebSocket.StopAsync();
+
+            //V275.V275_State = "";
+            //V275.V275_JobName = "";
+
+            //V275_State = "";
+            //V275_JobName = "";
+        }
+        catch { }
+    }
+    private bool PreLogin()
+    {
+        if (IsSimulator)
+        {
+            if (Directory.Exists(SimulatorImageDirectory))
+            {
+                try
+                {
+                    File.Create(Path.Combine(SimulatorImageDirectory, "file")).Close();
+                    File.Delete(Path.Combine(SimulatorImageDirectory, "file"));
+                }
+                catch (Exception ex)
+                {
+                    //Label_StatusChanged(ex.Message);
+
+                    Logger.Error(ex);
+                    return false;
+                }
+                return true;
+            }
+            else
+            {
+                // _ = OkDialog("Invalid Simulation Images Directory", $"Please select a valid simulator images directory.\r\n'{SimulatorImageDirectory}'");
+                return false;
+            }
+        }
+        return true;
+    }
+    private async Task PostLogin(bool isLoggedIn_Monitor)
+    {
+        //LoginData.accessLevel = isLoggedIn_Monitor ? "monitor" : "control";
+        //LoginData.token = Connection.Commands.Token;
+        //LoginData.id = UserName;
+        //LoginData.state = "0";
+
+        IsLoggedIn_Monitor = isLoggedIn_Monitor;
+        IsLoggedIn_Control = !isLoggedIn_Monitor;
+
+        ConfigurationCamera = await Connection.Commands.GetCameraConfig();
+        Symbologies = await Connection.Commands.GetSymbologies();
+        Calibration = await Connection.Commands.GetCalibration();
+
+        _ = await Connection.Commands.SetSendExtendedData(true);
+
+        if (!await Connection.WebSocket.StartAsync(Connection.Commands.URLs.WS_NodeEvents))
+            return;
+
+        //MainWindow.Repeats.Clear();
+    }
+
+    [RelayCommand]
+    public async Task<bool> EnablePrint(object parameter)
+    {
+        if (!IsSimulator)
+        {
+            if (IsBackupVoid)
+            {
+                if (!await Connection.Commands.Print(false))
+                    return false;
+
+                Thread.Sleep(50);
+            }
+
+            return await Connection.Commands.Print((string)parameter == "1");
+        }
+        else
+        {
+            return await Connection.SimulatorTogglePrint();
+        }
+    }
+    [RelayCommand]
+    private async Task RemoveRepeat()
+    {
+        int repeat;
+
+        repeat = await Connection.GetLatestRepeat();
+        if (repeat == -9999)
+            return;
+
+        if (!await Connection.Commands.RemoveRepeat(repeat))
+        {
+            return;
+        }
+
+        if (!await Connection.Commands.ResumeJob())
+        {
+            return;
+        }
+    }
+
+    private void WebSocket_SessionStateChange(Events_System ev)
+    {
+        //if (ev.data.id == LoginData.id)
+        if (ev.data.state == "0")
+            if (ev.data.accessLevel == "control")
+                if (LoginData.accessLevel == "control")
+                    if (ev.data.token != LoginData.token)
+                        _ = Logout();
+    }
+    private void V275_StateChanged(string state, string jobName)
+    {
+        State = Enum.Parse<NodeStates>(state);
+        JobName = jobName;
+
+        //if (JobName != "")
+        //    _ = CheckTemplateName();
+        //else if (State == NodeStates.Idle)
+        //    _ = CheckTemplateName();
+        //else
+        //{
+
+        //}
+    }
+
+}

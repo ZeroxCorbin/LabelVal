@@ -5,6 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:LabelVal.WindowViews"
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:ViewModels="clr-namespace:LabelVal.WindowViewModels"  
+             d:DataContext="{d:DesignInstance Type=ViewModels:V275NodesViewModel}"
              mc:Ignorable="d">
 
     <GroupBox
@@ -36,7 +38,7 @@
                     <Style TargetType="{x:Type DockPanel}">
                         <Setter Property="Visibility" Value="Visible"/>
                         <Style.Triggers>
-                            <DataTrigger Value="False" Binding="{Binding IsLoggedIn}">
+                            <DataTrigger Value="False" Binding="{Binding SelectedNode.IsLoggedIn}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
                             </DataTrigger>
                         </Style.Triggers>
@@ -49,12 +51,12 @@
                     <Label.Style>
                         <Style TargetType="{x:Type Label}">
                             <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
-                            <Setter Property="Content" Value="{Binding V275_JobName}"/>
+                            <Setter Property="Content" Value="{Binding SelectedNode.JobName}"/>
                             <Style.Triggers>
                                 <DataTrigger Value="False" Binding="{Binding IsWrongTemplateName}">
                                     <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
                                 </DataTrigger>
-                                <DataTrigger Value="" Binding="{Binding V275_JobName}">
+                                <DataTrigger Value="" Binding="{Binding SelectedNode.JobName}">
                                     <Setter Property="Content" Value="-----"/>
                                     <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
                                 </DataTrigger>
@@ -65,7 +67,7 @@
 
                 <Label Content="State:"/>
 
-                <Label Content="{Binding V275_State}">
+                <Label Content="{Binding SelectedNode.State}">
                     <Label.Style>
                         <Style TargetType="{x:Type Label}">
                             <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
@@ -73,14 +75,14 @@
                             <Style.Triggers>
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
-                                        <Condition Value="Editing" Binding="{Binding V275_State}" />
+                                        <Condition Value="Editing" Binding="{Binding SelectedNode.State}" />
                                         <Condition Value="True" Binding="{Binding SelectedStandard.IsGS1}" />
                                     </MultiDataTrigger.Conditions>
                                     <Setter Property="Background" Value="{DynamicResource CB_Green}" />
                                 </MultiDataTrigger>
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
-                                        <Condition Value="Running" Binding="{Binding V275_State}" />
+                                        <Condition Value="Running" Binding="{Binding SelectedNode.State}" />
                                         <Condition Value="False" Binding="{Binding SelectedStandard.IsGS1}" />
                                     </MultiDataTrigger.Conditions>
                                     <Setter Property="Background" Value="{DynamicResource CB_Green}" />
@@ -96,10 +98,10 @@
                             <Setter Property="IsEnabled" Value="False"/>
                             <Setter Property="Visibility" Value="Collapsed"/>
                             <Style.Triggers>
-                                <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Control}">
+                                <DataTrigger Value="True" Binding="{Binding SelectedNode.IsLoggedIn_Control}">
                                     <Setter Property="Visibility" Value="Visible"/>
                                 </DataTrigger>
-                                <DataTrigger Value="Editing" Binding="{Binding V275_State}">
+                                <DataTrigger Value="Editing" Binding="{Binding SelectedNode.State}">
                                     <Setter Property="IsEnabled" Value="True"/>
                                 </DataTrigger>
                                 <DataTrigger Value="True" Binding="{Binding MainWindow.StandardsDatabaseViewModel.SelectedStandard.IsGS1}">
@@ -116,13 +118,13 @@
                             <Setter Property="IsEnabled" Value="False"/>
                             <Setter Property="Visibility" Value="Collapsed"/>
                             <Style.Triggers>
-                                <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Control}">
+                                <DataTrigger Value="True" Binding="{Binding SelectedNode.IsLoggedIn_Control}">
                                     <Setter Property="Visibility" Value="Visible"/>
                                 </DataTrigger>
-                                <DataTrigger Value="Running" Binding="{Binding V275_State}">
+                                <DataTrigger Value="Running" Binding="{Binding SelectedNode.State}">
                                     <Setter Property="IsEnabled" Value="True"/>
                                 </DataTrigger>
-                                <DataTrigger Value="Paused" Binding="{Binding V275_State}">
+                                <DataTrigger Value="Paused" Binding="{Binding SelectedNode.State}">
                                     <Setter Property="IsEnabled" Value="True"/>
                                 </DataTrigger>
                             </Style.Triggers>
@@ -130,7 +132,7 @@
                     </Button.Style>
                 </Button>
 
-                <Button Content="Remove" Margin="3,0" Command="{Binding V275_RemoveRepeatCommand}">
+                <Button Content="Remove" Margin="3,0" Command="{Binding SelectedNode.RemoveRepeatCommand}">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                             <Setter Property="IsEnabled" Value="False"/>
@@ -138,8 +140,8 @@
                             <Style.Triggers>
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
-                                        <Condition Value="True" Binding="{Binding IsLoggedIn_Control}"/>
-                                        <Condition Value="Paused" Binding="{Binding V275_State}"/>
+                                        <Condition Value="True" Binding="{Binding SelectedNode.IsLoggedIn_Control}"/>
+                                        <Condition Value="Paused" Binding="{Binding SelectedNode.State}"/>
                                     </MultiDataTrigger.Conditions>
                                     <Setter Property="Visibility" Value="Visible"/>
                                     <Setter Property="IsEnabled" Value="True"/>

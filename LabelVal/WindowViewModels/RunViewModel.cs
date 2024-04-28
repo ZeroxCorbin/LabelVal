@@ -6,13 +6,14 @@ using LabelVal.Run;
 using MaterialDesignThemes.Wpf.Converters.CircularProgressBar;
 
 namespace LabelVal.WindowViewModels;
-public partial class RunViewModel : ObservableRecipient
+public partial class RunViewModel : ObservableRecipient, IRecipient<NodeMessages.SelectedNodeChanged>
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-    public MainWindowViewModel MainWindow => App.Current.MainWindow.DataContext as MainWindowViewModel;
-
     public Controller RunController { get; set; } = new Controller();
+
+    [ObservableProperty] private V275Node selectedNode;
+
 
     [ObservableProperty] private Controller.RunStates state = Controller.RunStates.IDLE;
 
@@ -20,6 +21,8 @@ public partial class RunViewModel : ObservableRecipient
     partial void OnLoopCountChanged(int value) { App.Settings.SetValue(nameof(LoopCount), value); }
 
     public RunViewModel() => RunController.RunStateChange += RunController_RunStateChange;
+
+    public void Receive(NodeMessages.SelectedNodeChanged message) => SelectedNode = message.Value;
 
     [RelayCommand]
     private void StartRun()
@@ -74,4 +77,5 @@ public partial class RunViewModel : ObservableRecipient
     }
 
     private void SendStatusMessage(string message, SystemMessages.StatusMessageType type) => WeakReferenceMessenger.Default.Send(new SystemMessages.StatusMessage(this, type, message));
+
 }

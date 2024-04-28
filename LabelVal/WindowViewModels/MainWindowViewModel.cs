@@ -101,7 +101,7 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
 
     public Dictionary<int, Repeat> Repeats { get; } = [];
 
-    private V275Node SelectedNode { get; set; }
+    [ObservableProperty] private V275Node selectedNode;
 
     public static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
     public MainWindowViewModel()
@@ -470,7 +470,7 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
 
             if (i == 2)
             {
-                var sectors = SelectedNode.Connection.CreateSectors(SelectedNode.Connection.SetupDetectEvent, StandardsDatabaseViewModel.SelectedStandard.TableID);
+                var sectors = SelectedNode.Connection.CreateSectors(SelectedNode.Connection.SetupDetectEvent, StandardsDatabaseViewModel.SelectedStandard.TableID, SelectedNode.Symbologies);
 
                 Logger.Info("Creating sectors.");
 

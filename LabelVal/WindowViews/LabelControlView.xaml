@@ -161,16 +161,15 @@
                     </Button.Style>
                 </Button>
 
-                <StackPanel Grid.Column="1" Grid.Row="1"
-                            Orientation="Horizontal" HorizontalAlignment="Center">
+                <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
                     <StackPanel.Style>
                         <Style TargetType="{x:Type StackPanel}">
                             <Setter Property="Visibility" Value="Visible"/>
                             <Style.Triggers>
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding V275Node.IsSimulator}" Value="True"/>
-                                        <Condition Binding="{Binding IsGoldenRepeat}" Value="True"/>
+                                        <Condition Binding="{Binding SelectedNode.IsSimulator}" Value="True"/>
+                                        <!--<Condition Binding="{Binding IsGoldenRepeat}" Value="True"/>-->
                                     </MultiDataTrigger.Conditions>
 
                                     <Setter Property="Visibility" Value="Collapsed"/>
@@ -180,7 +179,7 @@
                     </StackPanel.Style>
 
                     <mah:NumericUpDown Value="{Binding PrintCount}" Minimum="1" Maximum="100" Interval="1" Margin="2"
-                                           IsEnabled="{Binding MainWindow.V275NodesViewModel.IsNotLoggedIn_Control}"/>
+                                           IsEnabled="{Binding SelectedNode.IsNotLoggedIn_Control}"/>
 
                     <Button Margin="2"
                             Command="{Binding PrintCommand}"
@@ -189,7 +188,7 @@
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                                 <Setter Property="Content" Value="Print"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding V275Node.IsSimulator}" Value="True">
+                                    <DataTrigger Binding="{Binding SelectedNode.IsSimulator}" Value="True">
                                         <Setter Property="Content" Value="Process"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -267,16 +266,16 @@
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
                                 <Style.Triggers>
-                                    <DataTrigger Value="True" Binding="{Binding MainWindow.V275NodesViewModel.IsLoggedIn_Control}">
+                                    <DataTrigger Value="True" Binding="{Binding SelectedNode.IsLoggedIn_Control}">
                                         <Setter Property="Visibility" Value="Visible"/>
                                     </DataTrigger>
                                     <DataTrigger Value="False" Binding="{Binding IsLoad}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                     </DataTrigger>
-                                    <DataTrigger Value="Running" Binding="{Binding V275Node.Connection.V275_State}">
+                                    <DataTrigger Value="Running" Binding="{Binding SelectedNode.Connection.V275_State}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                     </DataTrigger>
-                                    <DataTrigger Value="Idle" Binding="{Binding V275Node.Connection.V275_State}">
+                                    <DataTrigger Value="Idle" Binding="{Binding SelectedNode.Connection.V275_State}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -356,10 +355,10 @@
                             Visibility="{Binding IsStore, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
                     <Button Content="Read" Command="{Binding ReadCommand}" Margin="2" 
-                        Visibility="{Binding MainWindow.V275NodesViewModel.IsLoggedIn_Monitor, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        Visibility="{Binding SelectedNode.IsLoggedIn_Monitor, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
                     <Button Content="Read" Command="{Binding InspectCommand}" Margin="2"
-                            Visibility="{Binding MainWindow.V275NodesViewModel.IsLoggedIn_Control, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                            Visibility="{Binding SelectedNode..IsLoggedIn_Control, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
                     <!--<Label Content="{Binding Status}"/>-->
                 </StackPanel>
@@ -410,7 +409,7 @@
                         <Style.Triggers>
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding V275Node.IsSimulator}" Value="True"/>
+                                    <Condition Binding="{Binding SelectedNode.IsSimulator}" Value="True"/>
                                     <Condition Binding="{Binding IsGoldenRepeat}" Value="True"/>
                                 </MultiDataTrigger.Conditions>
 
@@ -487,7 +486,7 @@
                         <Style.Triggers>
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding V275Node.IsSimulator}" Value="True"/>
+                                    <Condition Binding="{Binding SelectedNode.IsSimulator}" Value="True"/>
                                     <Condition Binding="{Binding IsGoldenRepeat}" Value="True"/>
                                 </MultiDataTrigger.Conditions>
 

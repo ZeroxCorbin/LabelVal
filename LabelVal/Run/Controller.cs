@@ -79,7 +79,7 @@ namespace LabelVal.Run
 
             TimeDate = DateTime.UtcNow.Ticks;
 
-            LedgerEntry = new LedgerDatabase.LedgerEntry() { GradingStandard = GradingStandard.Name, TimeDate = TimeDate, Completed = 0, ProductPart = v275Node.Connection.Commands.Product.part, CameraMAC = v275Node.Node.cameraMAC };
+            LedgerEntry = new LedgerDatabase.LedgerEntry() { GradingStandard = GradingStandard.Name, TimeDate = TimeDate, Completed = 0, ProductPart = v275Node.Product.part, CameraMAC = v275Node.Node.cameraMAC };
 
             return !OpenDatabases() ? null : !UpdateRunEntries() ? null : this;
         }
@@ -139,7 +139,7 @@ namespace LabelVal.Run
                 if (session != null)
                 {
                     using var transaction = session.BeginTransaction();
-                    var run = new RunLedger(JsonConvert.SerializeObject(Labels[0].LabelTemplate), V275Node.Node.cameraMAC, V275Node.Connection.Commands.Product.part);
+                    var run = new RunLedger(JsonConvert.SerializeObject(Labels[0].LabelTemplate), V275Node.Node.cameraMAC, V275Node.Product.part);
 
                     _ = session.Save(run);
                     transaction.Commit();

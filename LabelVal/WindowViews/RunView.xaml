@@ -45,7 +45,7 @@
                             </Setter>
 
                             <Style.Triggers>
-                                <DataTrigger Value="False" Binding="{Binding MainWindow.V275NodesViewModel.IsLoggedIn_Control}">
+                                <DataTrigger Value="False" Binding="{Binding SelectedNode.IsLoggedIn_Control}">
                                     <Setter Property="IsEnabled" Value="False"/>
                                 </DataTrigger>
                                 
