@@ -5,6 +5,7 @@
                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                 xmlns:local="clr-namespace:LabelVal.WindowViews"
                 xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+                 xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
                  xmlns:printer="clr-namespace:LabelVal.Printer"
                 xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"  
                  xmlns:RunViews="clr-namespace:LabelVal.Run.Views"
@@ -81,116 +82,127 @@
                 </Grid>
 
             </mah:Flyout>
+
+
         </mah:FlyoutsControl>
     </mah:MetroWindow.Flyouts>
 
-    <DockPanel>
+    <md:DrawerHost x:Name="SelectionDetails" VerticalAlignment="Stretch" OpenMode="Standard">
 
-        <StackPanel>
-            <local:V275NodesView DataContext="{Binding V275NodesViewModel}"/>
+        <md:DrawerHost.LeftDrawerContent>
+            <local:SelectionDetailsView/>
+        </md:DrawerHost.LeftDrawerContent>
 
-            <local:StandardsDatabasesView DataContext="{Binding StandardsDatabaseViewModel}"/>
 
-        </StackPanel>
+        <DockPanel>
 
-        <StackPanel>
 
-            <DockPanel>
+            <StackPanel>
+                <local:V275NodesView DataContext="{Binding V275NodesViewModel}"/>
 
-                <printer:View Grid.Column="0" DataContext="{Binding PrinterViewModel}"/>
+                <local:StandardsDatabasesView DataContext="{Binding StandardsDatabaseViewModel}"/>
 
-                <!--Test Runs-->
-                <local:RunView Grid.Column="2" DataContext="{Binding RunViewModel}"/>
+            </StackPanel>
 
-                <local:V275StateView DataContext="{Binding V275NodesViewModel}"/>
+            <StackPanel>
 
-            </DockPanel>
+                <DockPanel>
 
-            <Grid Grid.Row="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
+                    <printer:View Grid.Column="0" DataContext="{Binding PrinterViewModel}"/>
 
-                <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="2" Margin="5,0,5,0" HorizontalAlignment="Left">
+                    <!--Test Runs-->
+                    <local:RunView Grid.Column="2" DataContext="{Binding RunViewModel}"/>
 
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="406"/>
-                            <ColumnDefinition Width="230"/>
-                            <ColumnDefinition Width="230"/>
-                            <ColumnDefinition Width="280"/>
-                            <ColumnDefinition Width="406"/>
-                        </Grid.ColumnDefinitions>
+                    <!--<local:V275StateView DataContext="{Binding V275NodesViewModel}"/>-->
 
-                        <Label Grid.Column="0" Content="Label Image" HorizontalAlignment="Center"/>
-                        <Label Grid.Column="1" Content="Label Sectors" HorizontalAlignment="Center"/>
-                        <Label Grid.Column="2" Content="Repeat Sectors" HorizontalAlignment="Center"/>
+                </DockPanel>
 
-                        <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Center">
-                            <Label Content="Dissimilar Sector Results"/>
-                            <Button x:Name="btnCompareSettings" Click="btnShowSettings_Click" Margin="3"
+                <Grid Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="2" Margin="5,0,5,0" HorizontalAlignment="Left">
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="406"/>
+                                <ColumnDefinition Width="230"/>
+                                <ColumnDefinition Width="230"/>
+                                <ColumnDefinition Width="280"/>
+                                <ColumnDefinition Width="406"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Label Grid.Column="0" Content="Label Image" HorizontalAlignment="Center"/>
+                            <Label Grid.Column="1" Content="Label Sectors" HorizontalAlignment="Center"/>
+                            <Label Grid.Column="2" Content="Repeat Sectors" HorizontalAlignment="Center"/>
+
+                            <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Label Content="Dissimilar Sector Results"/>
+                                <Button x:Name="btnCompareSettings" Click="btnShowSettings_Click" Margin="3"
                                 ToolTip="Compare Settings" Style="{StaticResource MahApps.Styles.Button.Circle}" BorderThickness="0">
-                                <IconPacks:Material Kind="Cog"/>
-                            </Button>
-                        </StackPanel>
+                                    <IconPacks:Material Kind="Cog"/>
+                                </Button>
+                            </StackPanel>
 
-                        <Label Grid.Column="4" Content="Repeat Image" HorizontalAlignment="Center"/>
-                    </Grid>
-                </Border>
+                            <Label Grid.Column="4" Content="Repeat Image" HorizontalAlignment="Center"/>
+                        </Grid>
+                    </Border>
 
-                <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto">
-                    <ItemsControl ItemsSource="{Binding Labels}">
-                        <!--<ItemsControl.ItemsPanel>
+                    <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding Labels}">
+                            <!--<ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel IsItemsHost="True"/>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>-->
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <local:LabelControlView />
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </ScrollViewer>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <local:LabelControlView />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
 
-            </Grid>
+                </Grid>
 
-            <StatusBar VerticalAlignment="Bottom" Grid.Row="2">
-                <StatusBarItem>
-                    <Label Margin="0,1,0,0" Padding="0,2,0,2" Background="Red" Foreground="White">
-                        <IconPacks:Material Kind="ExclamationThick" Width="12" Height="12"/>
-                        <Label.Style>
-                            <Style TargetType="{x:Type Label}">
-                                <Setter Property="Visibility" Value="Visible"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding UserMessage}" Value="">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Label.Style>
-                    </Label>
-                </StatusBarItem>
-                <StatusBarItem>
-                    <TextBlock Text="{Binding UserMessage}"/>
-                </StatusBarItem>
-                <StatusBarItem>
-                    <Button Command="{Binding ClearUserMessageCommand}">
-                        <IconPacks:Material Kind="Cancel"/>
-                        <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Circle}">
-                                <Setter Property="Visibility" Value="Visible"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding UserMessage}" Value="">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-                </StatusBarItem>
-            </StatusBar>
-        </StackPanel>
-    </DockPanel>
+                <StatusBar VerticalAlignment="Bottom" Grid.Row="2">
+                    <StatusBarItem>
+                        <Label Margin="0,1,0,0" Padding="0,2,0,2" Background="Red" Foreground="White">
+                            <IconPacks:Material Kind="ExclamationThick" Width="12" Height="12"/>
+                            <Label.Style>
+                                <Style TargetType="{x:Type Label}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding UserMessage}" Value="">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Label.Style>
+                        </Label>
+                    </StatusBarItem>
+                    <StatusBarItem>
+                        <TextBlock Text="{Binding UserMessage}"/>
+                    </StatusBarItem>
+                    <StatusBarItem>
+                        <Button Command="{Binding ClearUserMessageCommand}">
+                            <IconPacks:Material Kind="Cancel"/>
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Circle}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding UserMessage}" Value="">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </StatusBarItem>
+                </StatusBar>
+            </StackPanel>
+        </DockPanel>
+    </md:DrawerHost>
 </mah:MetroWindow>

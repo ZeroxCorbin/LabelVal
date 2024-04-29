@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Text.RegularExpressions;
 using MahApps.Metro.Controls.Dialogs;
+using CommunityToolkit.Mvvm.Messaging;
+using LabelVal.Messages;
 
 namespace LabelVal.WindowViewModels;
 public partial class StandardsDatabaseViewModel : ObservableObject
@@ -67,6 +69,7 @@ public partial class StandardsDatabaseViewModel : ObservableObject
             });
         }
     }
+    partial void OnSelectedStandardChanged(StandardEntryModel oldValue, StandardEntryModel newValue) => _ = WeakReferenceMessenger.Default.Send(new StandardMessages.SelectedStandardChanged(newValue, oldValue));
 
     private ObservableCollection<string> OrphandStandards { get; } = [];
 

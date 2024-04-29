@@ -30,6 +30,11 @@
                     <iconPacks:Modern Width="12" Height="12" Kind="Refresh"/>
                 </Button>
 
+                <Button Click="btnShowSelectionDetails_Click" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
+                        Padding="0" Margin="5,0" BorderThickness="0" Height="20" Width="20" HorizontalAlignment="Left">
+                    <iconPacks:Modern Width="12" Height="12" Kind="Refresh"/>
+                </Button>
+
             </DockPanel>
         </GroupBox.Header>
 
@@ -113,11 +118,11 @@
                     </ListBox.ItemTemplate>
                 </ListBox>-->
 
-                <ListView ItemsSource="{Binding Nodes}" SelectedItem="{Binding SelectedNode}">
-
+                <ListView ItemsSource="{Binding Nodes}" SelectedItem="{Binding SelectedNode}" HorizontalAlignment="Center">
+                    
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <md:Card Background="{DynamicResource MahApps.Brushes.Accent4}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-5">
+                            <md:Card Background="{DynamicResource MahApps.Brushes.Accent4}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="-5">
                                 <local:V275NodeItemView DataContext="{Binding }"/>
                             </md:Card>
                         </DataTemplate>

@@ -15,14 +15,12 @@ using System.Windows.Shapes;
 
 namespace LabelVal.WindowViews;
 /// <summary>
-/// Interaction logic for V275NodesView.xaml
+/// Interaction logic for SelectionDetailsView.xaml
 /// </summary>
-public partial class V275NodesView : UserControl
+public partial class SelectionDetailsView : UserControl
 {
-    public V275NodesView()
+    public SelectionDetailsView()
     {
         InitializeComponent();
     }
-
-    public void btnShowSelectionDetails_Click(object sender, RoutedEventArgs e) => ((MainWindowView)App.Current.MainWindow).SelectionDetails.IsLeftDrawerOpen = !((MainWindowView)App.Current.MainWindow).SelectionDetails.IsLeftDrawerOpen;
 }

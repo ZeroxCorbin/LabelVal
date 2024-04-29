@@ -75,7 +75,7 @@ namespace LabelVal.Run
             LoopCount = loopCount;
             StandardsDatabase = standardsDatabase;
             V275Node = v275Node;
-            GradingStandard = Labels[0].GradingStandard;
+            GradingStandard = Labels[0].SelectedStandard;
 
             TimeDate = DateTime.UtcNow.Ticks;
 

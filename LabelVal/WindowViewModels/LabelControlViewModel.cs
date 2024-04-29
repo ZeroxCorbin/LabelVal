@@ -41,8 +41,6 @@ public partial class LabelControlViewModel : ObservableRecipient, IRecipient<Nod
     [ObservableProperty] private DrawingImage repeatOverlay;
     [ObservableProperty] private StandardsDatabase.Row currentRow;
 
-    public StandardEntryModel GradingStandard => MainWindow.StandardsDatabaseViewModel.SelectedStandard;
-
     [ObservableProperty] private bool isGoldenRepeat;
     [ObservableProperty] private int printCount = 1;
 
@@ -130,6 +128,8 @@ public partial class LabelControlViewModel : ObservableRecipient, IRecipient<Nod
     private string _Status;
 
     private StandardsDatabase StandardsDatabase => MainWindow.StandardsDatabaseViewModel.StandardsDatabase;
+    public StandardEntryModel SelectedStandard => MainWindow.StandardsDatabaseViewModel.SelectedStandard;
+
 
     [ObservableProperty] private V275Node selectedNode;
 
@@ -139,18 +139,13 @@ public partial class LabelControlViewModel : ObservableRecipient, IRecipient<Nod
 
     public MainWindowViewModel MainWindow { get; set; }
 
-    private IDialogCoordinator DialogCoordinator => MainWindowViewModel.DialogCoordinator;
+    private static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
     public LabelControlViewModel(string imagePath, string imageComment, MainWindowViewModel mainWindow)
     {
-        //dialogCoordinator = diag;
         MainWindow = mainWindow;
 
         LabelImagePath = imagePath;
         LabelComment = imageComment;
-
-        //GradingStandard = gradingStandard;
-        //StandardsDatabase = standardsDatabase;
-        //V275 = v275;
 
         GetImage(imagePath);
         GetStored();
@@ -184,7 +179,7 @@ public partial class LabelControlViewModel : ObservableRecipient, IRecipient<Nod
         LabelSectors.Clear();
         IsLoad = false;
 
-        CurrentRow = StandardsDatabase.GetRow(GradingStandard.StandardName, LabelImageUID);
+        CurrentRow = StandardsDatabase.GetRow(SelectedStandard.StandardName, LabelImageUID);
 
         if (CurrentRow == null)
         {
@@ -209,7 +204,7 @@ public partial class LabelControlViewModel : ObservableRecipient, IRecipient<Nod
             {
                 var isWrongStandard = false;
                 if (jSec.type is "verify1D" or "verify2D")
-                    isWrongStandard = GradingStandard.IsGS1 && (!jSec.gradingStandard.enabled || GradingStandard.TableID != jSec.gradingStandard.tableId);
+                    isWrongStandard = SelectedStandard.IsGS1 && (!jSec.gradingStandard.enabled || SelectedStandard.TableID != jSec.gradingStandard.tableId);
 
                 foreach (JObject rSec in JsonConvert.DeserializeObject<V275_REST_lib.Models.Report>(CurrentRow.LabelReport).inspectLabel.inspectSector)
                 {
@@ -286,7 +281,7 @@ public partial class LabelControlViewModel : ObservableRecipient, IRecipient<Nod
             if (await OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for this label?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
                 return;
 
-        StandardsDatabase.AddRow(GradingStandard.StandardName, LabelImageUID, LabelImage, JsonConvert.SerializeObject(RepeatTemplate), JsonConvert.SerializeObject(RepeatReport), RepeatImage);
+        StandardsDatabase.AddRow(SelectedStandard.StandardName, LabelImageUID, LabelImage, JsonConvert.SerializeObject(RepeatTemplate), JsonConvert.SerializeObject(RepeatReport), RepeatImage);
 
         RepeatSectors.Clear();
         IsStore = false;
@@ -301,7 +296,7 @@ public partial class LabelControlViewModel : ObservableRecipient, IRecipient<Nod
     {
         if (await OkCancelDialog("Clear Stored Sectors", $"Are you sure you want to clear the stored sectors for this label?\r\nThis can not be undone!") == MessageDialogResult.Affirmative)
         {
-            StandardsDatabase.DeleteRow(GradingStandard.StandardName, LabelImageUID);
+            StandardsDatabase.DeleteRow(SelectedStandard.StandardName, LabelImageUID);
             GetStored();
         }
     }
@@ -321,7 +316,7 @@ public partial class LabelControlViewModel : ObservableRecipient, IRecipient<Nod
 
         IsStore = false;
 
-        CurrentRow = StandardsDatabase.GetRow(GradingStandard.StandardName, LabelImageUID);
+        CurrentRow = StandardsDatabase.GetRow(SelectedStandard.StandardName, LabelImageUID);
 
         if (CurrentRow == null)
             return;
@@ -383,14 +378,14 @@ public partial class LabelControlViewModel : ObservableRecipient, IRecipient<Nod
         {
             var isWrongStandard = false;
             if (jSec.type is "verify1D" or "verify2D")
-                isWrongStandard = GradingStandard.IsGS1 && (!jSec.gradingStandard.enabled || GradingStandard.TableID != jSec.gradingStandard.tableId);
+                isWrongStandard = SelectedStandard.IsGS1 && (!jSec.gradingStandard.enabled || SelectedStandard.TableID != jSec.gradingStandard.tableId);
 
             foreach (JObject rSec in RepeatReport.inspectLabel.inspectSector)
             {
                 if (jSec.name == rSec["name"].ToString())
                 {
 
-                    var fSec = DeserializeSector(rSec, !GradingStandard.IsGS1 && MainWindow.V275NodesViewModel.IsOldISO);
+                    var fSec = DeserializeSector(rSec, !SelectedStandard.IsGS1 && MainWindow.V275NodesViewModel.IsOldISO);
 
                     if (fSec == null)
                         break; //Not yet supported sector type
@@ -955,6 +950,8 @@ public partial class LabelControlViewModel : ObservableRecipient, IRecipient<Nod
                                         : (object)null;
         }
     }
+
+
 
 
     //public void Clear()

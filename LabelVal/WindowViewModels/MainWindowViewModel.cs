@@ -42,58 +42,11 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
 
     public V275NodesViewModel V275NodesViewModel { get; } = new V275NodesViewModel();
 
+    public SelectionDetailsViewModel SelectionDetailsViewModel { get; } = new SelectionDetailsViewModel();
+
     [ObservableProperty] private string userMessage = "";
 
     private int LoopCount => App.Settings.GetValue(nameof(RunViewModel.LoopCount), 1);
-
-    //public class StandardEntryModel : ObservableObject
-    //{
-    //    private string name;
-    //    public string Name
-    //    {
-    //        get => name;
-    //        set
-    //        {
-    //            SetProperty(ref name, value);
-
-    //            Is300 = Name.EndsWith("300");
-    //            IsGS1 = Name.ToLower().StartsWith("gs1");
-    //            StandardName = name.Replace(" 300", "");
-
-    //            if (IsGS1)
-    //            {
-    //                var val = Regex.Match(Name, @"TABLE (\d*\.?\d+)");
-    //                if (val.Groups.Count == 2)
-    //                    TableID = val.Groups[1].Value;
-    //            }
-    //        }
-    //    }
-
-    //    private string standardPath;
-    //    public string StandardPath { get => standardPath; set => SetProperty(ref standardPath, value); }
-
-    //    private int numRows;
-    //    public int NumRows { get => numRows; set => SetProperty(ref numRows, value); }
-
-    //    public string StandardName { get; private set; }
-
-    //    public string TableID { get; private set; }
-
-    //    public bool Is300 { get; private set; }
-
-    //    public bool IsGS1 { get; private set; }
-
-    //}
-
-    //public class StandardsDatabaseEntry : ObservableObject
-    //{
-    //    private string name;
-    //    public string Name { get => name; set => SetProperty(ref name, value); }
-
-    //    private string filePath;
-    //    public string FilePath { get => filePath; set => SetProperty(ref filePath, value); }
-
-    //}
 
     public static string Version => App.Version;
 
@@ -113,7 +66,7 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
 
     public void Receive(NodeMessages.SelectedNodeChanged message)
     {
-        if(SelectedNode != null)
+        if (SelectedNode != null)
         {
             SelectedNode.Connection.WebSocket.SetupCapture -= WebSocket_SetupCapture;
             SelectedNode.Connection.WebSocket.LabelEnd -= WebSocket_LabelEnd;
@@ -130,7 +83,6 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
             SelectedNode.Connection.WebSocket.StateChange += WebSocket_StateChange;
         }
     }
-
     public void Receive(SystemMessages.StatusMessage message)
     {
         switch (message.Value)
@@ -147,12 +99,12 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
             case SystemMessages.StatusMessageType.Control:
                 if (message.Sender == RunViewModel)
                 {
-                    if(message.Message == "StartRun")
+                    if (message.Message == "StartRun")
                         _ = StartRun();
-                    
+
                 }
                 break;
-        }    
+        }
     }
 
     public async Task<MessageDialogResult> OkCancelDialog(string title, string message) => await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative);
@@ -300,47 +252,47 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
         {
             try
             {
-                //int verRes = 1;
+                int verRes = 1;
                 var prepend = "";
 
                 var sim = new Simulator.SimulatorFileHandler();
 
                 if (!sim.DeleteAllImages())
                 {
-                    //string verCur = V275_Version != null ? V275_Version.Substring(V275_Version.LastIndexOf('-') + 1) : null;
+                    string verCur = SelectedNode.Product.part != null ? SelectedNode.Product.part.Substring(SelectedNode.Product.part.LastIndexOf('-') + 1) : null;
 
-                    //if (verCur != null)
-                    //{
-                    //    System.Version ver = System.Version.Parse(verCur);
-                    //    System.Version verMin = System.Version.Parse("1.1.0.3009");
-                    //    verRes = ver.CompareTo(ver);
-                    //}
+                    if (verCur != null)
+                    {
+                        System.Version ver = System.Version.Parse(verCur);
+                        System.Version verMin = System.Version.Parse("1.1.0.3009");
+                        verRes = ver.CompareTo(ver);
+                    }
 
-                    //if (verRes > 0)
-                    //{
-                    Label_StatusChanged("Could not delete all simulator images.");
-                    label.IsWorking = false;
-                    return;
-                    //}
-                    //else
-                    //{
-                    //    sim.UpdateImageList();
+                    if (verRes > 0)
+                    {
+                        Label_StatusChanged("Could not delete all simulator images.");
+                        label.IsWorking = false;
+                        return;
+                    }
+                    else
+                    {
+                        sim.UpdateImageList();
 
-                    //    prepend = "_";
+                        prepend = "_";
 
-                    //    foreach(var imgFile in sim.Images)
-                    //    {
-                    //        string name = Path.GetFileName(imgFile);
+                        foreach (var imgFile in sim.Images)
+                        {
+                            string name = Path.GetFileName(imgFile);
 
-                    //        for(; ; )
-                    //        {
-                    //            if (name.StartsWith(prepend))
-                    //                prepend += prepend;
-                    //            else
-                    //                break;
-                    //        }
-                    //    }
-                    //}
+                            for (; ; )
+                            {
+                                if (name.StartsWith(prepend))
+                                    prepend += prepend;
+                                else
+                                    break;
+                            }
+                        }
+                    }
                 }
 
                 if (type == "label")
@@ -362,16 +314,16 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
                     }
                 }
 
-                //if (!IsLoggedIn_Control )
-                //{
-                //    if(!await V275.Commands.TriggerSimulator())
-                //    {
-                //        UserMessage = "Error triggering the simulator.";
-                //        label.IsWorking = false;
-                //        return;
-                //    }
+                if (!SelectedNode.IsLoggedIn_Control)
+                {
+                    if (!await SelectedNode.Connection.Commands.TriggerSimulator())
+                    {
+                        UserMessage = "Error triggering the simulator.";
+                        label.IsWorking = false;
+                        return;
+                    }
 
-                //}
+                }
 
                 if (!SelectedNode.IsLoggedIn_Control)
                 {
@@ -451,7 +403,7 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
     {
         WaitForRepeat = false;
 
-        if (Repeats[repeat].Label.GradingStandard.IsGS1)
+        if (Repeats[repeat].Label.SelectedStandard.IsGS1)
         {
             if (repeat > 0)
                 if (!await SelectedNode.Connection.Commands.SetRepeat(repeat))

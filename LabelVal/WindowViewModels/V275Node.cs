@@ -1,5 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using LabelVal.Messages;
+using LabelVal.Models;
+using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -20,7 +24,7 @@ public enum NodeStates
     Paused,
 }
 
-public partial class V275Node : ObservableObject
+public partial class V275Node : ObservableRecipient, IRecipient<Messages.StandardMessages.SelectedStandardChanged>
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -40,16 +44,18 @@ public partial class V275Node : ObservableObject
     public Devices.Camera Camera { get; set; }
     public Inspection Inspection { get; set; }
 
+    [ObservableProperty] private Product product;
+
+
     [ObservableProperty] private Configuration_Camera configurationCamera;
     [ObservableProperty] private List<Symbologies.Symbol> symbologies;
     [ObservableProperty] private Calibration calibration;
-    [ObservableProperty] private Product product;
 
     public bool IsSimulator => Inspection != null && Inspection.device.Equals("simulator");
     private static string SimulatorImageDirectory => App.Settings.GetValue<string>(nameof(V275NodesViewModel.SimulatorImageDirectory));
 
     [ObservableProperty] NodeStates state = NodeStates.Idle;
-    [ObservableProperty] private string jobName;
+    [ObservableProperty] private string jobName = "";
     public bool IsBackupVoid => ConfigurationCamera != null && ConfigurationCamera.backupVoidMode.value == "ON";
 
 
@@ -62,6 +68,11 @@ public partial class V275Node : ObservableObject
     public bool IsNotLoggedIn => !(IsLoggedIn_Monitor || IsLoggedIn_Control);
 
 
+    [ObservableProperty] private Models.StandardEntryModel selectedStandard;
+    partial void OnSelectedStandardChanged(StandardEntryModel value) => CheckTemplateName();
+
+    [ObservableProperty] private bool isWrongTemplateName = false;
+
     public V275Node(string host, uint systemPort, uint nodeNumber)
     {
         Connection = new V275_REST_lib.Controller(host, systemPort, nodeNumber);
@@ -70,7 +81,13 @@ public partial class V275Node : ObservableObject
         Connection.StateChanged += V275_StateChanged;
 
         App.Settings.PropertyChanged += Settings_PropertyChanged;
+
+        IsActive = true;
     }
+
+    public async Task OkDialog(string title, string message) => _ = await DialogCoordinator.Instance.ShowMessageAsync(this, title, message, MessageDialogStyle.Affirmative);
+
+    public void Receive(StandardMessages.SelectedStandardChanged message) => SelectedStandard = message.Value;
 
     private void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
@@ -118,30 +135,29 @@ public partial class V275Node : ObservableObject
     [RelayCommand]
     private async Task Logout()
     {
-        //Reset();
-
-        if (!await Connection.Commands.Logout())
-            //Label_StatusChanged(V275.Status);
-
-        //    LoginData.accessLevel = "";
-        //LoginData.token = "";
-        //LoginData.id = "";
-        //LoginData.state = "1";
-
-        IsLoggedIn_Control = false;
-        IsLoggedIn_Monitor = false;
+        _ = await Connection.Commands.Logout();
 
         try
         {
             await Connection.WebSocket.StopAsync();
-
-            //V275.V275_State = "";
-            //V275.V275_JobName = "";
-
-            //V275_State = "";
-            //V275_JobName = "";
         }
         catch { }
+
+        LoginData.accessLevel = "";
+        LoginData.token = "";
+        LoginData.id = "";
+        LoginData.state = "1";
+
+        IsLoggedIn_Control = false;
+        IsLoggedIn_Monitor = false;
+
+        ConfigurationCamera = null;
+        Symbologies = null;
+        Calibration = null;
+
+        JobName = "";
+        State = NodeStates.Idle;
+
     }
     private bool PreLogin()
     {
@@ -173,10 +189,10 @@ public partial class V275Node : ObservableObject
     }
     private async Task PostLogin(bool isLoggedIn_Monitor)
     {
-        //LoginData.accessLevel = isLoggedIn_Monitor ? "monitor" : "control";
-        //LoginData.token = Connection.Commands.Token;
-        //LoginData.id = UserName;
-        //LoginData.state = "0";
+        LoginData.accessLevel = isLoggedIn_Monitor ? "monitor" : "control";
+        LoginData.token = Connection.Commands.Token;
+        LoginData.id = UserName;
+        LoginData.state = "0";
 
         IsLoggedIn_Monitor = isLoggedIn_Monitor;
         IsLoggedIn_Control = !isLoggedIn_Monitor;
@@ -232,6 +248,9 @@ public partial class V275Node : ObservableObject
             return;
         }
     }
+    [RelayCommand] private void TriggerSim() => _ = Connection.Commands.TriggerSimulator();
+    [RelayCommand] private async Task SwitchRun() => await Connection.SwitchToRun();
+    [RelayCommand] private async Task SwitchEdit() => await Connection.SwitchToEdit();
 
     private void WebSocket_SessionStateChange(Events_System ev)
     {
@@ -247,14 +266,40 @@ public partial class V275Node : ObservableObject
         State = Enum.Parse<NodeStates>(state);
         JobName = jobName;
 
-        //if (JobName != "")
-        //    _ = CheckTemplateName();
-        //else if (State == NodeStates.Idle)
-        //    _ = CheckTemplateName();
-        //else
-        //{
+        if (JobName != "")
+            CheckTemplateName();
+        else if (State == NodeStates.Idle)
+            CheckTemplateName();
+        else
+        {
 
-        //}
+        }
     }
 
+    public void CheckTemplateName()
+    {
+        IsWrongTemplateName = false;
+
+        if (!IsLoggedIn)
+            return;
+
+        if (JobName == "")
+        {
+            IsWrongTemplateName = true;
+            return;
+        }
+
+        if (!SelectedStandard.IsGS1)
+        {
+            if (JobName.ToLower().Equals(SelectedStandard.Name.ToLower()))
+                return;
+        }
+        else
+        {
+            if (JobName.ToLower().StartsWith("gs1"))
+                return;
+        }
+
+        IsWrongTemplateName = true;
+    }
 }

@@ -4,21 +4,154 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:LabelVal.WindowViews"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              
              xmlns:ViewModels="clr-namespace:LabelVal.WindowViewModels"  
              d:DataContext="{d:DesignInstance Type=ViewModels:V275Node}"
              mc:Ignorable="d">
 
-    <StackPanel>
-        
-
     <DockPanel>
-        <TextBlock Text="{Binding Path=Node.printerModel, Mode=OneTime}" />
-        <TextBlock Text="{Binding Path=Node.cameraMAC, Mode=OneTime, StringFormat=' ({0})'}" />
-    </DockPanel> 
         
-       <DockPanel>
-        <TextBlock Text="{Binding Path=Inspection.device, Mode=OneTime}" />
-    </DockPanel>
-</StackPanel>
+    
+    <StackPanel Width="220">
+
+        <DockPanel>
+            <TextBox d:Text="camera" Text="{Binding Path=Inspection.device, Mode=OneTime}" MinWidth="56" Margin="3,0" md:HintAssist.Hint="Type" md:HintAssist.IsFloating="True" IsHitTestVisible="False" BorderThickness="0" />
+            <TextBox d:Text="ZT610" Margin="3,0" md:HintAssist.Hint="Model" md:HintAssist.IsFloating="True" IsHitTestVisible="False" BorderThickness="0">
+                <TextBox.Style>
+                    <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                        <Setter Property="Text" Value="{Binding Path=Node.printerModel}"/>
+                        <Style.Triggers>
+                            <DataTrigger Value="False" Binding="{Binding IsWrongTemplateName}">
+                                <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}"/>
+                            </DataTrigger>
+                            <DataTrigger Value="Unknown" Binding="{Binding Path=Node.printerModel}">
+                                <Setter Property="Text" Value="-----"/>
+                            </DataTrigger>
+
+                        </Style.Triggers>
+                    </Style>
+                </TextBox.Style>
+            </TextBox>
+
+            <TextBox d:Text="00:00:00:00:00" Text="{Binding Path=Node.cameraMAC, Mode=OneTime}" Margin="3,0" md:HintAssist.Hint="MAC" md:HintAssist.IsFloating="True" IsHitTestVisible="False" BorderThickness="0" />
+
+        </DockPanel>
+
+        <DockPanel>
+
+            <TextBox d:Text="JobName" Margin="3,0" md:HintAssist.Hint="Template Name" md:HintAssist.IsFloating="True" IsHitTestVisible="False" HorizontalAlignment="Left">
+                <TextBox.Style>
+                    <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                        <Setter Property="BorderBrush" Value="{DynamicResource ColorBlindBrush5}"/>
+                        <Setter Property="Text" Value="{Binding JobName}"/>
+                        <Style.Triggers>
+
+                            <DataTrigger Value="False" Binding="{Binding IsWrongTemplateName}">
+                                <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}"/>
+                            </DataTrigger>
+
+                            <DataTrigger Value="" Binding="{Binding JobName}">
+                                <Setter Property="Text" Value="-----"/>
+                                <Setter Property="BorderBrush" Value="{DynamicResource ColorBlindBrush5}"/>
+                            </DataTrigger>
+
+                        </Style.Triggers>
+                    </Style>
+                </TextBox.Style>
+            </TextBox>
+
+            <TextBox d:Text="State" Text="{Binding State}" Margin="3,0" md:HintAssist.Hint="State" md:HintAssist.IsFloating="True" IsHitTestVisible="False" HorizontalAlignment="Left">
+                <TextBox.Style>
+                    <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                        <Setter Property="BorderBrush" Value="{DynamicResource ColorBlindBrush5}"/>
+                        <Style.Triggers>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Value="Editing" Binding="{Binding State}" />
+                                    <Condition Value="True" Binding="{Binding SelectedStandard.IsGS1}" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}" />
+                            </MultiDataTrigger>
+                            
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Value="Running" Binding="{Binding State}" />
+                                    <Condition Value="False" Binding="{Binding SelectedStandard.IsGS1}" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}" />
+                            </MultiDataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBox.Style>
+            </TextBox>
+
+
+        </DockPanel>
+
+    </StackPanel>
+
+        <StackPanel>
+
+            <Button Content="Run" Margin="3,0" Command="{Binding SwitchRunCommand}">
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+                        <Setter Property="IsEnabled" Value="False"/>
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Control}">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                            <DataTrigger Value="Editing" Binding="{Binding State}">
+                                <Setter Property="IsEnabled" Value="True"/>
+                            </DataTrigger>
+                            <DataTrigger Value="True" Binding="{Binding SelectedStandard.IsGS1}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+
+            <Button Content="Edit" Margin="3,0" Command="{Binding SwitchEditCommand}">
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+                        <Setter Property="IsEnabled" Value="False"/>
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Control}">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                            <DataTrigger Value="Running" Binding="{Binding State}">
+                                <Setter Property="IsEnabled" Value="True"/>
+                            </DataTrigger>
+                            <DataTrigger Value="Paused" Binding="{Binding State}">
+                                <Setter Property="IsEnabled" Value="True"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+
+            <Button Content="Remove" Margin="3,0" Command="{Binding RemoveRepeatCommand}">
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+                        <Setter Property="IsEnabled" Value="False"/>
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Value="True" Binding="{Binding IsLoggedIn_Control}"/>
+                                    <Condition Value="Paused" Binding="{Binding State}"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Setter Property="IsEnabled" Value="True"/>
+                            </MultiDataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+        </StackPanel>
+
+</DockPanel>
 </UserControl>

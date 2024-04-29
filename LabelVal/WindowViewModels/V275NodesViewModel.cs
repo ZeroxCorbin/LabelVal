@@ -57,23 +57,10 @@ public partial class V275NodesViewModel : ObservableRecipient
 
     [ObservableProperty] private ObservableCollection<V275Node> nodes = [];
     [ObservableProperty] private V275Node selectedNode;
-    partial void OnSelectedNodeChanged(V275Node oldValue, V275Node newValue)
-    {
-        _ = WeakReferenceMessenger.Default.Send(new NodeMessages.SelectedNodeChanged(newValue, oldValue));
-    }
+    partial void OnSelectedNodeChanged(V275Node oldValue, V275Node newValue) => _ = WeakReferenceMessenger.Default.Send(new NodeMessages.SelectedNodeChanged(newValue, oldValue));
 
-    public bool IsWrongTemplateName
-    {
-        get => isWrongTemplateName;
-        set { _ = SetProperty(ref isWrongTemplateName, value); OnPropertyChanged("IsNotWrongTemplateName"); }
-    }
-    public bool IsNotWrongTemplateName => !isWrongTemplateName;
-    private bool isWrongTemplateName = false;
 
-    public bool ShowTemplateNameMismatchDialog { get => App.Settings.GetValue("ShowTemplateNameMismatchDialog", true); set => App.Settings.SetValue("ShowTemplateNameMismatchDialog", value); }
-    private Task TemplateNameMismatchDialog;
-    private Task TemplateNotLoadedDialog;
-
+    public bool ShowTemplateNameMismatchDialog { get => App.Settings.GetValue("ShowTemplateNameMismatchDialog", true, true); set => App.Settings.SetValue("ShowTemplateNameMismatchDialog", value); }
 
 
     [ObservableProperty] private bool isGetDevices = false;
@@ -84,16 +71,11 @@ public partial class V275NodesViewModel : ObservableRecipient
 
     public V275NodesViewModel()
     {
-
-
-        IsActive = true;
     }
 
     public async Task OkDialog(string title, string message) => _ = await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.Affirmative);
 
-    [RelayCommand] private void TriggerSim() => _ = SelectedNode.Connection.Commands.TriggerSimulator();
-    [RelayCommand] private async Task V275_SwitchRun() => await SelectedNode.Connection.SwitchToRun();
-    [RelayCommand] private async Task V275_SwitchEdit() => await SelectedNode.Connection.SwitchToEdit();
+
 
     [RelayCommand]
     private async Task GetDevices()
@@ -143,7 +125,11 @@ public partial class V275NodesViewModel : ObservableRecipient
                 }
 
                 foreach (var node in Nodes)
+                {
+                    node.SelectedStandard = MainWindow.StandardsDatabaseViewModel.SelectedStandard;
                     node.Product = product;
+                }
+                    
             }
         }
         else
@@ -151,50 +137,6 @@ public partial class V275NodesViewModel : ObservableRecipient
             Nodes.Clear();
         }
     }
-
-
-    //public int CheckTemplateName()
-    //{
-    //    IsWrongTemplateName = false;
-
-    //    if (!SelectedNode.IsLoggedIn)
-    //        return 0;
-
-    //    if (V275_JobName == "")
-    //    {
-    //        IsWrongTemplateName = true;
-
-    //        if (TemplateNotLoadedDialog != null)
-    //            if (TemplateNotLoadedDialog.Status != TaskStatus.RanToCompletion)
-    //                return -1;
-
-    //        TemplateNotLoadedDialog = OkDialog("Template Not Loaded!", "There is no template loaded in the V275 software.");
-    //        return -1;
-    //    }
-
-    //    if (!MainWindow.StandardsDatabaseViewModel.SelectedStandard.IsGS1)
-    //    {
-    //        if (V275_JobName.ToLower().Equals(MainWindow.StandardsDatabaseViewModel.SelectedStandard.Name.ToLower()))
-    //            return 1;
-    //    }
-    //    else
-    //    {
-    //        if (V275_JobName.ToLower().StartsWith("gs1"))
-    //            return 1;
-    //    }
-
-    //    if (!ShowTemplateNameMismatchDialog)
-    //        return 1;
-
-    //    IsWrongTemplateName = true;
-
-    //    if (TemplateNameMismatchDialog != null)
-    //        if (TemplateNameMismatchDialog.Status != TaskStatus.RanToCompletion)
-    //            return -2;
-
-    //    TemplateNameMismatchDialog = OkDialog("Template Name Mismatch!", $"The template name loaded in the V275 software '{V275_JobName}' does not match the selected standard. '{MainWindow.StandardsDatabaseViewModel.SelectedStandard.Name.ToLower()}'");
-    //    return -2;
-    //}
 
     private static uint GetV275PortNumber()
     {
@@ -215,5 +157,4 @@ public partial class V275NodesViewModel : ObservableRecipient
         return res.ToString();
     }
 
-    public void Receive(NodeMessages.SelectedNodeChanged message) => throw new NotImplementedException();
 }

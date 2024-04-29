@@ -1,0 +1,27 @@
+﻿<UserControl x:Class="LabelVal.WindowViews.SelectionDetailsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:LabelVal.WindowViews"
+             xmlns:json="clr-namespace:JSONViewer_WPF;assembly=JSONViewer_WPF"
+             xmlns:ViewModels="clr-namespace:LabelVal.WindowViewModels"  
+             d:DataContext="{d:DesignInstance Type=ViewModels:MainWindowViewModel}"
+             mc:Ignorable="d">
+    <ScrollViewer>
+
+
+        <StackPanel>
+            <json:JsonViewer JSON="{Binding SelectedNode.Product}" HideButtons="True" Title="Product" />
+            <json:JsonViewer JSON="{Binding SelectedNode.Node}" HideButtons="True" Title="Device.Node" />
+
+            <json:JsonViewer JSON="{Binding SelectedNode.Inspection}" HideButtons="True" Title="Inspection" />
+            <json:JsonViewer JSON="{Binding SelectedNode.Camera}" HideButtons="True" Title="Device.Camera" />
+
+
+            <json:JsonViewer JSON="{Binding SelectedNode.ConfigurationCamera}" HideButtons="True" Title="Camera onfiguration" />
+            <json:JsonViewer JSON="{Binding SelectedNode.Calibration}" HideButtons="True" Title="Calibration" />
+            <json:JsonViewer JSON="{Binding SelectedNode.Symbologies}" HideButtons="True" Title="Symbologies" />
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
