@@ -88,6 +88,7 @@ public partial class StandardsDatabaseViewModel : ObservableObject
     public bool IsNotDatabasePermLocked => !isDatabasePermLocked;
     private bool isDatabasePermLocked = false;
 
+    public ObservableCollection<StandardEntryModel> AssetStandards { get; } = [];
     public ObservableCollection<StandardEntryModel> Standards { get; } = [];
 
     public static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
@@ -107,9 +108,11 @@ public partial class StandardsDatabaseViewModel : ObservableObject
 
     private void LoadStandardsList()
     {
-        Logger.Info("Loading grading standards from file system. {path}", App.AssetsStandardsRoot);
+        Logger.Info("Loading standards from file system. {path}", App.AssetsStandardsRoot);
 
         Standards.Clear();
+        AssetStandards.Clear();
+
         SelectedStandard = null;
 
         foreach (var dir in Directory.EnumerateDirectories(App.AssetsStandardsRoot).ToList().OrderBy((e) => Regex.Replace(e, "[0-9]+", match => match.Value.PadLeft(10, '0'))))
@@ -118,20 +121,11 @@ public partial class StandardsDatabaseViewModel : ObservableObject
 
             foreach (var subdir in Directory.EnumerateDirectories(dir))
             {
-                if (subdir.EndsWith("600"))
-                    Standards.Add(new StandardEntryModel()
-                    {
-                        Name = dir[(dir.LastIndexOf("\\") + 1)..],
-                        StandardPath = subdir,
-                    });
-                else if (subdir.EndsWith("300"))
-                    Standards.Add(new StandardEntryModel()
-                    {
-                        Name = $"{dir[(dir.LastIndexOf("\\") + 1)..]} 300",
-                        StandardPath = subdir,
-                    });
+                AssetStandards.Add(new StandardEntryModel(dir[(dir.LastIndexOf("\\") + 1)..], subdir));
             }
         }
+
+        Logger.Info("Processed {count} asset standards.", AssetStandards.Count);
 
         foreach (var dir in Directory.EnumerateDirectories(App.StandardsRoot).ToList().OrderBy((e) => Regex.Replace(e, "[0-9]+", match => match.Value.PadLeft(10, '0'))))
         {
@@ -139,22 +133,11 @@ public partial class StandardsDatabaseViewModel : ObservableObject
 
             foreach (var subdir in Directory.EnumerateDirectories(dir))
             {
-                if (subdir.EndsWith("600"))
-                    Standards.Add(new StandardEntryModel()
-                    {
-                        Name = dir[(dir.LastIndexOf("\\") + 1)..],
-                        StandardPath = subdir,
-                    });
-                else if (subdir.EndsWith("300"))
-                    Standards.Add(new StandardEntryModel()
-                    {
-                        Name = $"{dir[(dir.LastIndexOf("\\") + 1)..]} 300",
-                        StandardPath = subdir,
-                    });
+                Standards.Add(new StandardEntryModel(dir[(dir.LastIndexOf("\\") + 1)..], subdir));
             }
         }
 
-        Logger.Info("Processed {count} grading standards.", Standards.Count);
+        Logger.Info("Processed {count} asset standards.", Standards.Count);
     }
     private void SelectStandard()
     {

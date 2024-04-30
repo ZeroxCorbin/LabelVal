@@ -153,12 +153,12 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
     }
     public void LoadLabels()
     {
-        Logger.Info("Loading label images from standards directory: {name}", $"{App.AssetsStandardsRoot}\\{StandardsDatabaseViewModel.SelectedStandard.StandardName}\\");
+        Logger.Info("Loading label images from standards directory: {name}", $"{App.AssetsStandardsRoot}\\{StandardsDatabaseViewModel.SelectedStandard.Name}\\");
 
         ClearLabels();
 
         List<string> images = [];
-        foreach (var f in Directory.EnumerateFiles(StandardsDatabaseViewModel.SelectedStandard.StandardPath))
+        foreach (var f in Directory.EnumerateFiles(StandardsDatabaseViewModel.SelectedStandard.Path))
             if (Path.GetExtension(f) == ".png")
                 images.Add(f);
 

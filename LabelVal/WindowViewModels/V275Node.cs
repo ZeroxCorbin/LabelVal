@@ -63,7 +63,8 @@ public partial class V275Node : ObservableRecipient, IRecipient<Messages.Standar
     partial void OnIsLoggedIn_MonitorChanged(bool value) { OnPropertyChanged(nameof(IsLoggedIn)); OnPropertyChanged(nameof(IsNotLoggedIn)); }
 
     [ObservableProperty] private bool isLoggedIn_Control = false;
-    partial void OnIsLoggedIn_ControlChanged(bool value) { OnPropertyChanged(nameof(IsLoggedIn)); OnPropertyChanged(nameof(IsNotLoggedIn)); }
+    public bool IsNotLoggedIn_Control => !IsLoggedIn_Control;
+    partial void OnIsLoggedIn_ControlChanged(bool value) { OnPropertyChanged(nameof(IsLoggedIn)); OnPropertyChanged(nameof(IsNotLoggedIn)); OnPropertyChanged(nameof(IsNotLoggedIn_Control)); }
     public bool IsLoggedIn => IsLoggedIn_Monitor || IsLoggedIn_Control;
     public bool IsNotLoggedIn => !(IsLoggedIn_Monitor || IsLoggedIn_Control);
 

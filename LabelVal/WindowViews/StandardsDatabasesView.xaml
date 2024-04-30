@@ -7,10 +7,37 @@
              xmlns:local="clr-namespace:LabelVal.WindowViews"
              xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"  
              xmlns:ViewModels="clr-namespace:LabelVal.WindowViewModels"  
+             xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
                 d:DataContext="{d:DesignInstance Type=ViewModels:StandardsDatabaseViewModel}"
              mc:Ignorable="d">
 
-    <GroupBox
+    <UserControl.Resources>
+        <CollectionViewSource x:Key="AssetStandards" Source="{Binding AssetStandards}">
+            <CollectionViewSource.SortDescriptions>
+                <componentmodel:SortDescription PropertyName="Name" Direction="Ascending"/>
+                <componentmodel:SortDescription PropertyName="DPI" Direction="Ascending"/>
+            </CollectionViewSource.SortDescriptions>
+
+            <CollectionViewSource.GroupDescriptions>
+                <PropertyGroupDescription PropertyName="DPI" />
+            </CollectionViewSource.GroupDescriptions>
+        </CollectionViewSource>
+
+        <CollectionViewSource x:Key="Standards" Source="{Binding Standards}">
+            <CollectionViewSource.SortDescriptions>
+                <componentmodel:SortDescription PropertyName="Name" Direction="Ascending"/>
+                <componentmodel:SortDescription PropertyName="DPI" Direction="Ascending"/>
+            </CollectionViewSource.SortDescriptions>
+
+            <CollectionViewSource.GroupDescriptions>
+                <PropertyGroupDescription PropertyName="DPI" />
+            </CollectionViewSource.GroupDescriptions>
+        </CollectionViewSource>
+    </UserControl.Resources>
+
+    <StackPanel>
+
+        <GroupBox
             md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
             md:ColorZoneAssist.Foreground="{DynamicResource MahApps.Brushes.Foreground}"
             md:ColorZoneAssist.Mode="Custom"
@@ -19,82 +46,210 @@
             HorizontalAlignment="Left" VerticalAlignment="Top" 
             Style="{StaticResource MaterialDesignCardGroupBox}">
 
-        <GroupBox.Header>
-            <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
-                <TextBlock Text="Standards" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
-            </md:Card>
-        </GroupBox.Header>
+            <GroupBox.Header>
+                <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
+                    <TextBlock Text="Databases" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                </md:Card>
+            </GroupBox.Header>
 
-        <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" Padding="2">
-            <StackPanel Orientation="Horizontal" Margin="3">
+            <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" Padding="2">
+                <StackPanel>
 
-                <Button Command="{Binding CreateStandardsDatabaseCommand}"
+                    <DockPanel>
+
+                        <Button Command="{Binding CreateStandardsDatabaseCommand}"
                     ToolTip="Create a new standards database."
                     Margin="0,0,2,0">
-                    <IconPacks:Material Kind="Plus"/>
-                </Button>
+                            <IconPacks:Material Kind="Plus"/>
+                        </Button>
 
-                <Button Command="{Binding LockStandardsDatabaseCommand}" Margin="0,0,2,0">
-                    <Button.Style>
-                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
-                            <Setter Property="Content">
-                                <Setter.Value>
-                                    <IconPacks:Material Kind="LockOpenVariant"/>
-                                </Setter.Value>
-                            </Setter>
-                            <Setter Property="IsHitTestVisible" Value="True"/>
-                            <Setter Property="ToolTip" Value="Database is unlocked. Click to unlock."/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsDatabaseLocked}" Value="True">
+                        <Button Command="{Binding LockStandardsDatabaseCommand}" Margin="0,0,2,0">
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                                     <Setter Property="Content">
                                         <Setter.Value>
-                                            <IconPacks:Material Kind="Lock"/>
+                                            <IconPacks:Material Kind="LockOpenVariant"/>
                                         </Setter.Value>
                                     </Setter>
-                                    <Setter Property="ToolTip" Value="Database is locked. Click to unlock."/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding IsDatabasePermLocked}" Value="True">
-                                    <Setter Property="Content">
-                                        <Setter.Value>
-                                            <IconPacks:Material Kind="DatabaseLock"/>
-                                        </Setter.Value>
-                                    </Setter>
-                                    <Setter Property="ToolTip" Value="Database is premanently locked."/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
+                                    <Setter Property="IsHitTestVisible" Value="True"/>
+                                    <Setter Property="ToolTip" Value="Database is unlocked. Click to unlock."/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsDatabaseLocked}" Value="True">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <IconPacks:Material Kind="Lock"/>
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Setter Property="ToolTip" Value="Database is locked. Click to unlock."/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsDatabasePermLocked}" Value="True">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <IconPacks:Material Kind="DatabaseLock"/>
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Setter Property="ToolTip" Value="Database is premanently locked."/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
 
-                <ComboBox ItemsSource="{Binding StandardsDatabases}" 
-                        SelectedItem="{Binding SelectedStandardsDatabase}"
-                        IsEnabled="{Binding }"  Margin="0,0,2,0">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding FileName}"/>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
+                    </DockPanel>
 
-                <ComboBox ItemsSource="{Binding Standards}"
+                    <ListView ItemsSource="{Binding StandardsDatabases}" 
+                        SelectedItem="{Binding SelectedStandardsDatabase}">
+                        <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding FileName}"/>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                    </ListView>
+
+                </StackPanel>
+            </md:Card>
+        </GroupBox>
+
+        <GroupBox
+            md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+            md:ColorZoneAssist.Foreground="{DynamicResource MahApps.Brushes.Foreground}"
+            md:ColorZoneAssist.Mode="Custom"
+            BorderThickness="0"
+            Margin="3" Padding="3"
+            HorizontalAlignment="Left" VerticalAlignment="Top" 
+            Style="{StaticResource MaterialDesignCardGroupBox}">
+
+            <GroupBox.Header>
+                <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
+                    <TextBlock Text="Standards" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                </md:Card>
+            </GroupBox.Header>
+
+            <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" Padding="2">
+
+                <ListView ItemsSource="{Binding Source={StaticResource ResourceKey=Standards}}"
                         SelectedItem="{Binding SelectedStandard}"
-                        IsEnabled="{Binding IsNotRunRunning}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Name}">
-                                <!--<TextBlock.Text>
-                                    <MultiBinding StringFormat="{}{0}   ({1})">
-                                        <Binding Path="Name"/>
-                                        <Binding Path="NumRows"/>
-                                    </MultiBinding>
-                                </TextBlock.Text>-->
-                            </TextBlock>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
+                        IsEnabled="{Binding IsNotRunRunning}" Margin="0,0,2,0" ScrollViewer.VerticalScrollBarVisibility="Auto">
 
-            </StackPanel>
-        </md:Card>
-    </GroupBox>
+                    <ListView.GroupStyle>
+
+                        <!--Lens Name-->
+                        <GroupStyle>
+                            <GroupStyle.ContainerStyle>
+                                <Style TargetType="{x:Type GroupItem}">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type GroupItem}">
+                                                <Expander>
+                                                    <Expander.Header>
+                                                        <TextBlock DockPanel.Dock="Top" Text="{Binding Name}" Margin="10,3" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                                                    </Expander.Header>
+
+                                                    <ItemsPresenter />
+
+                                                </Expander>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </GroupStyle.ContainerStyle>
+                        </GroupStyle>
+
+
+                    </ListView.GroupStyle>
+
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <DockPanel Margin="0,0,-2,0"/>
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
+                            <Setter Property="DockPanel.Dock" Value="Top"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" Margin="10,3" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+            </md:Card>
+        </GroupBox>
+
+        <GroupBox
+            md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+            md:ColorZoneAssist.Foreground="{DynamicResource MahApps.Brushes.Foreground}"
+            md:ColorZoneAssist.Mode="Custom"
+            BorderThickness="0"
+            Margin="3" Padding="3"
+            HorizontalAlignment="Left" VerticalAlignment="Top" 
+            Style="{StaticResource MaterialDesignCardGroupBox}">
+
+            <GroupBox.Header>
+                <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
+                    <TextBlock Text="Asset Standards" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                </md:Card>
+            </GroupBox.Header>
+
+            <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" Padding="2">
+
+                <ListView ItemsSource="{Binding Source={StaticResource ResourceKey=AssetStandards}}"
+                        SelectedItem="{Binding SelectedStandard}"
+                        IsEnabled="{Binding IsNotRunRunning}" Margin="0,0,2,0" ScrollViewer.VerticalScrollBarVisibility="Auto">
+
+                    <ListView.GroupStyle>
+
+                        <!--Lens Name-->
+                        <GroupStyle>
+                            <GroupStyle.ContainerStyle>
+                                <Style TargetType="{x:Type GroupItem}">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type GroupItem}">
+                                                <Expander>
+                                                    <Expander.Header>
+                                                        <TextBlock DockPanel.Dock="Top" Text="{Binding Name}" Margin="10,3" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                                                    </Expander.Header>
+
+                                                    <ItemsPresenter />
+
+                                                </Expander>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </GroupStyle.ContainerStyle>
+                        </GroupStyle>
+
+
+                    </ListView.GroupStyle>
+
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <DockPanel Margin="0,0,-2,0"/>
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
+                            <Setter Property="DockPanel.Dock" Value="Top"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" Margin="10,3" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+            </md:Card>
+        </GroupBox>
+
+    </StackPanel>
 
 </UserControl>

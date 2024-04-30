@@ -179,7 +179,7 @@ public partial class LabelControlViewModel : ObservableRecipient, IRecipient<Nod
         LabelSectors.Clear();
         IsLoad = false;
 
-        CurrentRow = StandardsDatabase.GetRow(SelectedStandard.StandardName, LabelImageUID);
+        CurrentRow = StandardsDatabase.GetRow(SelectedStandard.Name, LabelImageUID);
 
         if (CurrentRow == null)
         {
@@ -281,7 +281,7 @@ public partial class LabelControlViewModel : ObservableRecipient, IRecipient<Nod
             if (await OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for this label?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
                 return;
 
-        StandardsDatabase.AddRow(SelectedStandard.StandardName, LabelImageUID, LabelImage, JsonConvert.SerializeObject(RepeatTemplate), JsonConvert.SerializeObject(RepeatReport), RepeatImage);
+        StandardsDatabase.AddRow(SelectedStandard.Name, LabelImageUID, LabelImage, JsonConvert.SerializeObject(RepeatTemplate), JsonConvert.SerializeObject(RepeatReport), RepeatImage);
 
         RepeatSectors.Clear();
         IsStore = false;
@@ -296,7 +296,7 @@ public partial class LabelControlViewModel : ObservableRecipient, IRecipient<Nod
     {
         if (await OkCancelDialog("Clear Stored Sectors", $"Are you sure you want to clear the stored sectors for this label?\r\nThis can not be undone!") == MessageDialogResult.Affirmative)
         {
-            StandardsDatabase.DeleteRow(SelectedStandard.StandardName, LabelImageUID);
+            StandardsDatabase.DeleteRow(SelectedStandard.Name, LabelImageUID);
             GetStored();
         }
     }
@@ -316,7 +316,7 @@ public partial class LabelControlViewModel : ObservableRecipient, IRecipient<Nod
 
         IsStore = false;
 
-        CurrentRow = StandardsDatabase.GetRow(SelectedStandard.StandardName, LabelImageUID);
+        CurrentRow = StandardsDatabase.GetRow(SelectedStandard.Name, LabelImageUID);
 
         if (CurrentRow == null)
             return;
