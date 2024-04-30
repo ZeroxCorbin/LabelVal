@@ -346,10 +346,10 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
                 if (RunViewModel.State != Run.Controller.RunStates.IDLE)
                 {
                     var data = $"Loop {RunViewModel.RunController.CurrentLoopCount} : {RunViewModel.RunController.CurrentLabelCount}";
-                    printer.Print(label.LabelImagePath, 1, PrinterViewModel.SelectedPrinter, data);
+                    printer.Print(label.LabelImagePath, 1, (string)PrinterViewModel.SelectedPrinter.PrinterName, data);
                 }
                 else
-                    printer.Print(label.LabelImagePath, label.PrintCount, PrinterViewModel.SelectedPrinter, "");
+                    printer.Print(label.LabelImagePath, label.PrintCount, (string)PrinterViewModel.SelectedPrinter.PrinterName, "");
 
                 if (!SelectedNode.IsLoggedIn_Control)
                     label.IsWorking = false;

@@ -284,7 +284,7 @@ public partial class V275Node : ObservableRecipient, IRecipient<Messages.Standar
         if (!IsLoggedIn)
             return;
 
-        if (JobName == "")
+        if (JobName == "" || SelectedStandard == null)
         {
             IsWrongTemplateName = true;
             return;

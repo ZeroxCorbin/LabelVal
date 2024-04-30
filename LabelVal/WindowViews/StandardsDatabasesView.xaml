@@ -35,9 +35,9 @@
         </CollectionViewSource>
     </UserControl.Resources>
 
-    <StackPanel>
+    <DockPanel>
 
-        <GroupBox
+        <GroupBox DockPanel.Dock="Top"
             md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
             md:ColorZoneAssist.Foreground="{DynamicResource MahApps.Brushes.Foreground}"
             md:ColorZoneAssist.Mode="Custom"
@@ -110,7 +110,7 @@
             </md:Card>
         </GroupBox>
 
-        <GroupBox
+        <GroupBox DockPanel.Dock="Top"
             md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
             md:ColorZoneAssist.Foreground="{DynamicResource MahApps.Brushes.Foreground}"
             md:ColorZoneAssist.Mode="Custom"
@@ -250,6 +250,6 @@
             </md:Card>
         </GroupBox>
 
-    </StackPanel>
+    </DockPanel>
 
 </UserControl>
