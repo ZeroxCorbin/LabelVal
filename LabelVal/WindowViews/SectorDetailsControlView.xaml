@@ -281,7 +281,7 @@
 
                                 <StackPanel Orientation="Horizontal" Margin="3,0,6,0">
 
-                                    <TextBlock Text="{Binding Path=name, Converter={StaticResource stringToUpper}, Mode=OneTime}" Grid.Column="0"/>
+                                    <TextBlock Text="{Binding Path=Name, Converter={StaticResource stringToUpper}, Mode=OneTime}" Grid.Column="0"/>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal" Grid.Column="2" >
@@ -349,7 +349,7 @@
                                 </Grid.ColumnDefinitions>
 
                                 <StackPanel Orientation="Horizontal" Margin="3,0,6,0">
-                                    <TextBlock Text="{Binding Path=name, Converter={StaticResource stringToUpper}, Mode=OneTime}"/>
+                                    <TextBlock Text="{Binding Path=Name, Converter={StaticResource stringToUpper}, Mode=OneTime}"/>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal" Grid.Column="2" >
@@ -388,7 +388,7 @@
                                 </Grid.ColumnDefinitions>
 
                                 <StackPanel Orientation="Horizontal" Margin="3,0,6,0">
-                                    <TextBlock Text="{Binding Path=name, Converter={StaticResource stringToUpper}, Mode=OneTime}" Grid.Column="0"/>
+                                    <TextBlock Text="{Binding Path=Name, Converter={StaticResource stringToUpper}, Mode=OneTime}" Grid.Column="0"/>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal" Grid.Column="2" >
@@ -450,7 +450,7 @@
                                 </Grid.ColumnDefinitions>
 
                                 <StackPanel Orientation="Horizontal" Margin="3,0,6,0">
-                                    <TextBlock Text="{Binding Path=name, Converter={StaticResource stringToUpper}, Mode=OneTime}" Grid.Column="0"/>
+                                    <TextBlock Text="{Binding Path=Name, Converter={StaticResource stringToUpper}, Mode=OneTime}" Grid.Column="0"/>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal" Grid.Column="2" >

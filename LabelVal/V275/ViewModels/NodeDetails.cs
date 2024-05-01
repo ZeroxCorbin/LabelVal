@@ -2,14 +2,14 @@
 using CommunityToolkit.Mvvm.Messaging;
 using LabelVal.Messages;
 
-namespace LabelVal.WindowViewModels;
-public partial class SelectionDetailsViewModel : ObservableRecipient, IRecipient<NodeMessages.SelectedNodeChanged>
+namespace LabelVal.V275.ViewModels;
+public partial class NodeDetails : ObservableRecipient, IRecipient<NodeMessages.SelectedNodeChanged>
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-    [ObservableProperty] private V275Node selectedNode;
+    [ObservableProperty] private Node selectedNode;
 
-    public SelectionDetailsViewModel() =>
+    public NodeDetails() =>
         //Logger.Info("SelectionDetailsViewModel created");
         IsActive = true;
 

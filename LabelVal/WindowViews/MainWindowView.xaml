@@ -4,6 +4,7 @@
                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                 xmlns:local="clr-namespace:LabelVal.WindowViews"
+                 xmlns:v275="clr-namespace:LabelVal.V275.Views"
                 xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                  xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
                  xmlns:printer="clr-namespace:LabelVal.Printer"
@@ -86,87 +87,94 @@
 
         </mah:FlyoutsControl>
     </mah:MetroWindow.Flyouts>
+    
     <DockPanel>
-        <md:DrawerHost x:Name="SelectionDetails" VerticalAlignment="Stretch" OpenMode="Standard">
+        <md:DrawerHost x:Name="NodeDetails" VerticalAlignment="Stretch" OpenMode="Standard">
 
             <md:DrawerHost.LeftDrawerContent>
-                <local:SelectionDetailsView/>
+                <v275:NodeDetails/>
             </md:DrawerHost.LeftDrawerContent>
 
-            <DockPanel>
+            <md:DrawerHost x:Name="PrinterDetails" VerticalAlignment="Stretch" OpenMode="Standard">
 
-                <DockPanel DockPanel.Dock="Bottom">
-                    <StatusBar>
-                        <StatusBarItem>
-                            <Label Margin="0,1,0,0" Padding="0,2,0,2" Background="Red" Foreground="White">
-                                <IconPacks:Material Kind="ExclamationThick" Width="12" Height="12"/>
-                                <Label.Style>
-                                    <Style TargetType="{x:Type Label}">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding UserMessage}" Value="">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Label.Style>
-                            </Label>
-                        </StatusBarItem>
-                        <StatusBarItem>
-                            <TextBlock Text="{Binding UserMessage}"/>
-                        </StatusBarItem>
-                        <StatusBarItem>
-                            <Button Command="{Binding ClearUserMessageCommand}">
-                                <IconPacks:Material Kind="Cancel"/>
-                                <Button.Style>
-                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Circle}">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding UserMessage}" Value="">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Button.Style>
-                            </Button>
-                        </StatusBarItem>
-                    </StatusBar>
+                <md:DrawerHost.LeftDrawerContent>
+                    <v275:NodeDetails/>
+                </md:DrawerHost.LeftDrawerContent>
+
+                <DockPanel>
+
+                    <DockPanel DockPanel.Dock="Bottom">
+                        <StatusBar>
+                            <StatusBarItem>
+                                <Label Margin="0,1,0,0" Padding="0,2,0,2" Background="Red" Foreground="White">
+                                    <IconPacks:Material Kind="ExclamationThick" Width="12" Height="12"/>
+                                    <Label.Style>
+                                        <Style TargetType="{x:Type Label}">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding UserMessage}" Value="">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Label.Style>
+                                </Label>
+                            </StatusBarItem>
+                            <StatusBarItem>
+                                <TextBlock Text="{Binding UserMessage}"/>
+                            </StatusBarItem>
+                            <StatusBarItem>
+                                <Button Command="{Binding ClearUserMessageCommand}">
+                                    <IconPacks:Material Kind="Cancel"/>
+                                    <Button.Style>
+                                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Circle}">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding UserMessage}" Value="">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                            </StatusBarItem>
+                        </StatusBar>
+                    </DockPanel>
+
+                    <DockPanel  DockPanel.Dock="Top">
+
+                        <DockPanel>
+
+                            <v275:V275 DockPanel.Dock="Top" DataContext="{Binding V275}"/>
+
+                            <local:StandardsDatabasesView DataContext="{Binding StandardsDatabaseViewModel}"/>
+
+                        </DockPanel>
+
+                        <DockPanel DockPanel.Dock="Top">
+
+                            <printer:View DataContext="{Binding PrinterViewModel}"/>
+
+                            <!--Test Runs-->
+                            <local:RunView DataContext="{Binding RunViewModel}"/>
+
+                        </DockPanel>
+
+                        <DockPanel >
+                            <ScrollViewer HorizontalScrollBarVisibility="Auto">
+                                <ItemsControl ItemsSource="{Binding Labels}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <local:LabelControlView />
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+
+                        </DockPanel>
+                    </DockPanel>
                 </DockPanel>
-
-                <DockPanel  DockPanel.Dock="Top">
-
-                    <DockPanel>
-
-                        <local:V275NodesView DockPanel.Dock="Top" DataContext="{Binding V275NodesViewModel}"/>
-
-                        <local:StandardsDatabasesView DataContext="{Binding StandardsDatabaseViewModel}"/>
-
-                    </DockPanel>
-
-                    <DockPanel DockPanel.Dock="Top">
-
-                        <printer:View DataContext="{Binding PrinterViewModel}"/>
-
-                        <!--Test Runs-->
-                        <local:RunView DataContext="{Binding RunViewModel}"/>
-
-                    </DockPanel>
-
-                    <DockPanel >
-                        <ScrollViewer HorizontalScrollBarVisibility="Auto">
-                            <ItemsControl ItemsSource="{Binding Labels}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <local:LabelControlView />
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </ScrollViewer>
-
-                    </DockPanel>
-                </DockPanel>
-            </DockPanel>
-            
+            </md:DrawerHost>
         </md:DrawerHost>
     </DockPanel>
 </mah:MetroWindow>

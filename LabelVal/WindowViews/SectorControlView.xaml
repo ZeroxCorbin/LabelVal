@@ -21,7 +21,7 @@
         <V275Converters:V275_GS1FormattedOutput x:Key="gs1FormattedOutput"/>
     </UserControl.Resources>
 
-    <Border BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}" BorderThickness="1" Margin="1" CornerRadius="3">
+    <Border BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}" Background="{DynamicResource MahApps.Brushes.Control.Background}" BorderThickness="1" Margin="1" CornerRadius="3">
         <Grid Margin="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>

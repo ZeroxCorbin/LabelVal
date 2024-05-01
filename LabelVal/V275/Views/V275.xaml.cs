@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LabelVal.WindowViews;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,16 +14,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace LabelVal.WindowViews;
+namespace LabelVal.V275.Views;
 /// <summary>
 /// Interaction logic for V275NodesView.xaml
 /// </summary>
-public partial class V275NodesView : UserControl
+public partial class V275 : UserControl
 {
-    public V275NodesView()
+    public V275()
     {
         InitializeComponent();
     }
 
-    public void btnShowSelectionDetails_Click(object sender, RoutedEventArgs e) => ((MainWindowView)App.Current.MainWindow).SelectionDetails.IsLeftDrawerOpen = !((MainWindowView)App.Current.MainWindow).SelectionDetails.IsLeftDrawerOpen;
+    public void btnShowSelectionDetails_Click(object sender, RoutedEventArgs e) => ((MainWindowView)App.Current.MainWindow).NodeDetails.IsLeftDrawerOpen = !((MainWindowView)App.Current.MainWindow).NodeDetails.IsLeftDrawerOpen;
 }

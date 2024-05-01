@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using LabelVal.Messages;
 using LabelVal.Run;
+using LabelVal.V275.ViewModels;
 using MaterialDesignThemes.Wpf.Converters.CircularProgressBar;
 
 namespace LabelVal.WindowViewModels;
@@ -12,7 +13,7 @@ public partial class RunViewModel : ObservableRecipient, IRecipient<NodeMessages
 
     public Controller RunController { get; set; } = new Controller();
 
-    [ObservableProperty] private V275Node selectedNode;
+    [ObservableProperty] private Node selectedNode;
 
 
     [ObservableProperty] private Controller.RunStates state = Controller.RunStates.IDLE;

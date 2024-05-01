@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace LabelVal.WindowViews
+namespace LabelVal.V275.Views
 {
     /// <summary>
     /// Interaction logic for V275NodeItemView.xaml
     /// </summary>
-    public partial class V275NodeItemView : UserControl
+    public partial class NodeItem : UserControl
     {
-        public V275NodeItemView()
+        public NodeItem()
         {
             InitializeComponent();
         }

@@ -14,7 +14,7 @@ using V275_REST_lib.Models;
 using V275_REST_Lib.Models;
 using static System.ComponentModel.Design.ObjectSelectorEditor;
 
-namespace LabelVal.WindowViewModels;
+namespace LabelVal.V275.ViewModels;
 
 public enum NodeStates
 {
@@ -24,23 +24,23 @@ public enum NodeStates
     Paused,
 }
 
-public partial class V275Node : ObservableRecipient, IRecipient<Messages.StandardMessages.SelectedStandardChanged>
+public partial class Node : ObservableRecipient, IRecipient<Messages.StandardMessages.SelectedStandardChanged>
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
     public V275_REST_lib.Controller Connection { get; }
 
 
-    private string V275_Host = App.Settings.GetValue<string>(nameof(V275NodesViewModel.V275_Host));
+    private string V275_Host = App.Settings.GetValue<string>(nameof(V275.V275_Host));
 
-    private uint V275_SystemPort = App.Settings.GetValue<uint>(nameof(V275NodesViewModel.V275_SystemPort));
+    private uint V275_SystemPort = App.Settings.GetValue<uint>(nameof(V275.V275_SystemPort));
 
-    private static string UserName => App.Settings.GetValue<string>(nameof(V275NodesViewModel.UserName));
-    private static string Password => App.Settings.GetValue<string>(nameof(V275NodesViewModel.Password));
+    private static string UserName => App.Settings.GetValue<string>(nameof(V275.UserName));
+    private static string Password => App.Settings.GetValue<string>(nameof(V275.Password));
 
     private Events_System.Data LoginData { get; } = new Events_System.Data();
 
-    public Devices.Node Node { get; set; }
+    public Devices.Node Details { get; set; }
     public Devices.Camera Camera { get; set; }
     public Inspection Inspection { get; set; }
 
@@ -52,7 +52,7 @@ public partial class V275Node : ObservableRecipient, IRecipient<Messages.Standar
     [ObservableProperty] private Calibration calibration;
 
     public bool IsSimulator => Inspection != null && Inspection.device.Equals("simulator");
-    private static string SimulatorImageDirectory => App.Settings.GetValue<string>(nameof(V275NodesViewModel.SimulatorImageDirectory));
+    private static string SimulatorImageDirectory => App.Settings.GetValue<string>(nameof(V275.SimulatorImageDirectory));
 
     [ObservableProperty] NodeStates state = NodeStates.Idle;
     [ObservableProperty] private string jobName = "";
@@ -74,7 +74,7 @@ public partial class V275Node : ObservableRecipient, IRecipient<Messages.Standar
 
     [ObservableProperty] private bool isWrongTemplateName = false;
 
-    public V275Node(string host, uint systemPort, uint nodeNumber)
+    public Node(string host, uint systemPort, uint nodeNumber)
     {
         Connection = new V275_REST_lib.Controller(host, systemPort, nodeNumber);
 
@@ -93,9 +93,9 @@ public partial class V275Node : ObservableRecipient, IRecipient<Messages.Standar
     private void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
 
-        if (e.PropertyName == nameof(V275NodesViewModel.V275_Host))
+        if (e.PropertyName == nameof(V275.V275_Host))
             Connection.Commands.Host = V275_Host;
-        else if (e.PropertyName == nameof(V275NodesViewModel.V275_SystemPort))
+        else if (e.PropertyName == nameof(V275.V275_SystemPort))
             Connection.Commands.SystemPort = V275_SystemPort;
     }
 

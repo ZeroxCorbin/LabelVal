@@ -6,12 +6,14 @@ using LabelVal.Messages;
 using LabelVal.Models;
 using LabelVal.Printer;
 using LabelVal.Run;
+using LabelVal.V275.ViewModels;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -24,7 +26,7 @@ using static LabelVal.WindowViewModels.MainWindowViewModel;
 
 namespace LabelVal.WindowViewModels;
 
-public partial class MainWindowViewModel : ObservableRecipient, IRecipient<SystemMessages.StatusMessage>, IRecipient<NodeMessages.SelectedNodeChanged>
+public partial class MainWindowViewModel : ObservableRecipient, IRecipient<SystemMessages.StatusMessage>, IRecipient<NodeMessages.SelectedNodeChanged>, IRecipient<PrinterMessages.SelectedPrinterChanged>
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -40,9 +42,9 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
 
     public StandardsDatabaseViewModel StandardsDatabaseViewModel { get; }
 
-    public V275NodesViewModel V275NodesViewModel { get; } = new V275NodesViewModel();
+    public V275.ViewModels.V275 V275 { get; } = new V275.ViewModels.V275();
 
-    public SelectionDetailsViewModel SelectionDetailsViewModel { get; } = new SelectionDetailsViewModel();
+    public NodeDetails NodeDetails { get; } = new NodeDetails();
 
     [ObservableProperty] private string userMessage = "";
 
@@ -54,7 +56,9 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
 
     public Dictionary<int, Repeat> Repeats { get; } = [];
 
-    [ObservableProperty] private V275Node selectedNode;
+    [ObservableProperty] private Node selectedNode;
+
+    [ObservableProperty] private PrinterSettings selectedPrinter;
 
     public static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
     public MainWindowViewModel()
@@ -83,6 +87,7 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
             SelectedNode.Connection.WebSocket.StateChange += WebSocket_StateChange;
         }
     }
+    public void Receive(PrinterMessages.SelectedPrinterChanged message) => SelectedPrinter = message.Value;
     public void Receive(SystemMessages.StatusMessage message)
     {
         switch (message.Value)
@@ -465,5 +470,5 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
         return true;
     }
 
-
+  
 }

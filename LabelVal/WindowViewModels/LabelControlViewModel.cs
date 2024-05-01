@@ -5,6 +5,7 @@ using LabelVal.Databases;
 using LabelVal.Messages;
 using LabelVal.Models;
 using LabelVal.Utilities;
+using LabelVal.V275.ViewModels;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using Newtonsoft.Json;
@@ -131,7 +132,7 @@ public partial class LabelControlViewModel : ObservableRecipient, IRecipient<Nod
     public StandardEntryModel SelectedStandard => MainWindow.StandardsDatabaseViewModel.SelectedStandard;
 
 
-    [ObservableProperty] private V275Node selectedNode;
+    [ObservableProperty] private Node selectedNode;
 
     public Job LabelTemplate { get; set; }
     public Job RepeatTemplate { get; set; }
@@ -385,7 +386,7 @@ public partial class LabelControlViewModel : ObservableRecipient, IRecipient<Nod
                 if (jSec.name == rSec["name"].ToString())
                 {
 
-                    var fSec = DeserializeSector(rSec, !SelectedStandard.IsGS1 && MainWindow.V275NodesViewModel.IsOldISO);
+                    var fSec = DeserializeSector(rSec, !SelectedStandard.IsGS1 && MainWindow.V275.IsOldISO);
 
                     if (fSec == null)
                         break; //Not yet supported sector type

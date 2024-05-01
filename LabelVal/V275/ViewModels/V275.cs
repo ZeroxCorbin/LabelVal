@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using LabelVal.Messages;
+using LabelVal.WindowViewModels;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using System;
@@ -11,10 +12,10 @@ using System.Threading.Tasks;
 using V275_REST_lib.Models;
 using V275_REST_Lib.Models;
 
-namespace LabelVal.WindowViewModels;
+namespace LabelVal.V275.ViewModels;
 
 
-public partial class V275NodesViewModel : ObservableRecipient
+public partial class V275 : ObservableRecipient
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -55,9 +56,9 @@ public partial class V275NodesViewModel : ObservableRecipient
     partial void OnSimulatorImageDirectoryChanged(string value) { if (string.IsNullOrEmpty(value)) { _ = App.Settings.DeleteSetting(nameof(SimulatorImageDirectory)); OnPropertyChanged(nameof(SimulatorImageDirectory)); } }
 
 
-    [ObservableProperty] private ObservableCollection<V275Node> nodes = [];
-    [ObservableProperty] private V275Node selectedNode;
-    partial void OnSelectedNodeChanged(V275Node oldValue, V275Node newValue) => _ = WeakReferenceMessenger.Default.Send(new NodeMessages.SelectedNodeChanged(newValue, oldValue));
+    [ObservableProperty] private ObservableCollection<Node> nodes = [];
+    [ObservableProperty] private Node selectedNode;
+    partial void OnSelectedNodeChanged(Node oldValue, Node newValue) => _ = WeakReferenceMessenger.Default.Send(new NodeMessages.SelectedNodeChanged(newValue, oldValue));
 
 
     public bool ShowTemplateNameMismatchDialog { get => App.Settings.GetValue("ShowTemplateNameMismatchDialog", true, true); set => App.Settings.SetValue("ShowTemplateNameMismatchDialog", value); }
@@ -69,7 +70,7 @@ public partial class V275NodesViewModel : ObservableRecipient
 
     public static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
 
-    public V275NodesViewModel()
+    public V275()
     {
     }
 
@@ -84,14 +85,14 @@ public partial class V275NodesViewModel : ObservableRecipient
 
         //Reset();
 
-        var system = new V275Node(V275_Host, V275_SystemPort, 0);
+        var system = new Node(V275_Host, V275_SystemPort, 0);
 
         Devices dev;
         if ((dev = await system.Connection.Commands.GetDevices()) != null)
         {
             foreach (var node in dev.nodes)
             {
-                if (Nodes.Any(n => n.Node.cameraMAC == node.cameraMAC))
+                if (Nodes.Any(n => n.Details.cameraMAC == node.cameraMAC))
                 {
                     Logger.Warn("Duplicate device MAC: {dev}", node.cameraMAC);
                     continue;
@@ -101,7 +102,7 @@ public partial class V275NodesViewModel : ObservableRecipient
 
                 Devices.Camera camera = dev.cameras.FirstOrDefault(c => c.mac == node.cameraMAC);
 
-                var newNode = new V275Node(V275_Host, V275_SystemPort, (uint)node.enumeration) { Node = node, Camera = camera };
+                var newNode = new Node(V275_Host, V275_SystemPort, (uint)node.enumeration) { Details = node, Camera = camera };
 
                 Inspection insp;
                 if ((insp = await newNode.Connection.Commands.GetInspection()) != null)

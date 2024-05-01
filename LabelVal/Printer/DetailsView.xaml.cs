@@ -13,16 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace LabelVal.WindowViews
+namespace LabelVal.Printer;
+/// <summary>
+/// Interaction logic for DetailsView.xaml
+/// </summary>
+public partial class DetailsView : UserControl
 {
-    /// <summary>
-    /// Interaction logic for V275StateView.xaml
-    /// </summary>
-    public partial class V275StateView : UserControl
+    public DetailsView()
     {
-        public V275StateView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

@@ -116,7 +116,9 @@
         </Popup>
 
         <!--Label Image-->
-        <GroupBox Margin="3" Padding="3" Style="{StaticResource MaterialDesignCardGroupBox}">
+        <GroupBox Margin="3" Padding="3"
+            HorizontalAlignment="Left" VerticalAlignment="Top" 
+            Style="{StaticResource MaterialDesignCardGroupBox}">
 
             <GroupBox.Header>
                 <DockPanel>
@@ -130,7 +132,7 @@
                         <Button Command="{Binding SaveCommand}" ToolTip="Save Label Image" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
 
                             <IconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
-
+                            
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionButton}">
                                     <Setter Property="Visibility" Value="Visible"/>
@@ -141,97 +143,119 @@
                                     </Style.Triggers>
                                 </Style>
                             </Button.Style>
+
                         </Button>
 
-                        <Button Command="{Binding PrintCommand}" ToolTip="Print Label Image" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
-
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionButton}">
-                                    <Setter Property="Content">
-                                        <Setter.Value>
-                                            <IconPacks:Material Kind="Printer" Height="12" Width="12"/>
-                                        </Setter.Value>
-                                    </Setter>
+                        <DockPanel>
+                            <DockPanel.Style>
+                                <Style TargetType="{x:Type DockPanel}">
+                                    <Setter Property="Visibility" Value="Visible"/>
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding SelectedNode.IsSimulator}" Value="True">
-                                            <Setter Property="Content">
-                                                <Setter.Value>
-                                                    <IconPacks:Material Kind="MessageProcessing" Height="12" Width="12"/>
-                                                </Setter.Value>
-                                            </Setter>
-                                        </DataTrigger>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding SelectedNode.IsSimulator}" Value="True"/>
+                                                <Condition Binding="{Binding IsGoldenRepeat}" Value="True"/>
+                                            </MultiDataTrigger.Conditions>
+
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </MultiDataTrigger>
                                     </Style.Triggers>
                                 </Style>
-                            </Button.Style>
-                        </Button>
+                            </DockPanel.Style>
 
-                        <mah:NumericUpDown Value="{Binding PrintCount}" Minimum="1" Maximum="100" Interval="1" Margin="0" BorderThickness="0"
+                            <Button Command="{Binding PrintCommand}" CommandParameter="label" ToolTip="Print Label Image" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0"
+                                    md:ButtonProgressAssist.IsIndeterminate="True"
+                                    md:ButtonProgressAssist.Value="-1"
+                                    md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsWorking}">
+
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionButton}">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <IconPacks:Material Kind="Printer" Height="12" Width="12"/>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SelectedNode.IsSimulator}" Value="True">
+                                                <Setter Property="Content">
+                                                    <Setter.Value>
+                                                        <IconPacks:Material Kind="MessageProcessing" Height="12" Width="12"/>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+
+
+                            </Button>
+
+                            <mah:NumericUpDown Value="{Binding PrintCount}" Minimum="1" Maximum="100" Interval="1" Margin="0" BorderThickness="0"
                                            IsEnabled="{Binding SelectedNode.IsNotLoggedIn_Control}">
-                            <mah:NumericUpDown.Style>
+                                <mah:NumericUpDown.Style>
+                                    <Style TargetType="{x:Type mah:NumericUpDown}">
+                                        <Setter Property="Visibility" Value="Visible"/>
 
-                                <Style TargetType="{x:Type mah:NumericUpDown}" BasedOn="{StaticResource {x:Type mah:NumericUpDown}}">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding SelectedNode.IsSimulator}" Value="False">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </mah:NumericUpDown.Style>
-                        </mah:NumericUpDown>
+                                        <Style.Triggers>
 
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" >
-                            <Label Content="{Binding Image.PixelWidth}"/>
-                            <TextBlock Text="x" Margin="0,5,0,0"/>
-                            <Label Content="{Binding Image.PixelHeight}"/>
-                        </StackPanel>
+                                            <DataTrigger Binding="{Binding SelectedNode.IsSimulator}" Value="True">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </mah:NumericUpDown.Style>
+                            </mah:NumericUpDown>
 
-                        <TextBlock HorizontalAlignment="Right" Text="{Binding LabelImageUID, Converter={StaticResource shortenUID}}" ToolTip="{Binding LabelImageUID}"/>
+                        </DockPanel>
+                        <!--<DockPanel VerticalAlignment="Center">
+                            <TextBlock Text="{Binding Source.PixelWidth, ElementName=LabelImage}"/>
+                            <TextBlock Text="x" Margin="3,0"/>
+                            <TextBlock Text="{Binding Source.PixelHeight, ElementName=LabelImage}"/>
+                        </DockPanel>-->
+
+                        <TextBlock Text="{Binding LabelImageUID, Converter={StaticResource shortenUID}}" ToolTip="{Binding LabelImageUID}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
 
                     </DockPanel>
                 </DockPanel>
             </GroupBox.Header>
 
-            <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" Margin="3" Padding="3">
-
-                <Grid>
-                    <Image x:Name="LabelImage" MaxHeight="400" Width="400"
+            <Grid Margin="3">
+                <Image x:Name="LabelImage" MaxHeight="400" Width="400"
                            Source="{Binding LabelImage, Converter={StaticResource bytesToImage}}"
                            MouseDown="LabelImage_MouseDown"
                            RenderOptions.BitmapScalingMode="NearestNeighbor"
                            HorizontalAlignment="Left" VerticalAlignment="Top"
                            ContextMenu="{StaticResource cmImageModify}" ContextMenuOpening="LabelImage_ContextMenuOpening"/>
 
-                    <Label HorizontalAlignment="Right" VerticalAlignment="Top" Margin="3">
-                        <Label.Style>
-                            <Style TargetType="{x:Type Label}">
-                                <Setter Property="Content">
-                                    <Setter.Value>
-                                        <Grid Background="White">
-                                            <IconPacks:PackIconMaterial Width="20" Height="20" Kind="Information" Foreground="Red"/>
-                                        </Grid>
-                                    </Setter.Value>
-                                </Setter>
-                                <Setter Property="ToolTip" Value="{Binding LabelComment}"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding LabelComment}" Value="">
-                                        <Setter Property="Content" Value=""/>
-                                        <Setter Property="ToolTip" Value="{x:Null}"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Label.Style>
+                <Label HorizontalAlignment="Right" VerticalAlignment="Top" Margin="3">
+                    <Label.Style>
+                        <Style TargetType="{x:Type Label}">
+                            <Setter Property="Content">
+                                <Setter.Value>
+                                    <Grid Background="White">
+                                        <IconPacks:PackIconMaterial Width="20" Height="20" Kind="Information" Foreground="Red"/>
+                                    </Grid>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="ToolTip" Value="{Binding LabelComment}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding LabelComment}" Value="">
+                                    <Setter Property="Content" Value=""/>
+                                    <Setter Property="ToolTip" Value="{x:Null}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Label.Style>
 
-                    </Label>
-
-                    <!--<TextBlock Text="{Binding LabelComment}" Foreground="Red" Margin="3" HorizontalAlignment="Left"/>-->
-                </Grid>
-            </md:Card>
+                </Label>
+            </Grid>
 
         </GroupBox>
 
         <!--Label Sectors-->
-        <GroupBox Margin="3" Padding="3" Style="{StaticResource MaterialDesignCardGroupBox}">
+        <GroupBox  Margin="3" Padding="3" Width="220"
+            HorizontalAlignment="Left" VerticalAlignment="Top" 
+            Style="{StaticResource MaterialDesignCardGroupBox}">
 
             <GroupBox.Header>
 
@@ -308,24 +332,24 @@
                 </DockPanel>
             </GroupBox.Header>
 
-            <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" Margin="3" Padding="3">
-                <ScrollViewer Grid.Row="1" Grid.Column="1" x:Name="ScrollLabelSectors" MaxHeight="400" VerticalScrollBarVisibility="Auto"
+            <ScrollViewer Margin="3" x:Name="ScrollLabelSectors" MaxHeight="400" VerticalScrollBarVisibility="Auto"
                           mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
                           ScrollChanged="ScrollLabelSectors_ScrollChanged">
-                    <ItemsControl ItemsSource="{Binding LabelSectors}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <local:SectorControlView />
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </ScrollViewer>
-            </md:Card>
+                <ItemsControl ItemsSource="{Binding LabelSectors}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <local:SectorControlView />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
 
         </GroupBox>
 
         <!--Repeat Sectors-->
-        <GroupBox Margin="3" Padding="3" Style="{StaticResource MaterialDesignCardGroupBox}">
+        <GroupBox  Margin="3" Padding="3" Width="220"
+            HorizontalAlignment="Left" VerticalAlignment="Top" 
+            Style="{StaticResource MaterialDesignCardGroupBox}">
 
             <GroupBox.Header>
 
@@ -337,9 +361,12 @@
 
                     <DockPanel>
 
-                        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
+                        <DockPanel>
 
-                            <Button Content="Store" Command="{Binding StoreCommand}" ToolTip="Clear Stored" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                            <Button Command="{Binding StoreCommand}" ToolTip="Store Results" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+
+                                <IconPacks:PackIconMaterial Width="20" Height="20" Kind="DatabaseEdit"/>
+
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionButton}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -355,16 +382,61 @@
                                 </Button.Style>
                             </Button>
 
-                            <Button Content="Clear" Command="{Binding ClearReadCommand}" Style="{StaticResource MaterialDesignFloatingActionButton}" ToolTip="Load Stored" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0"
-                                        Visibility="{Binding IsStore, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                            <Button Command="{Binding ClearReadCommand}"
+                                    ToolTip="Clear Results" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
 
-                            <Button Content="Read" Command="{Binding ReadCommand}" Style="{StaticResource MaterialDesignFloatingActionButton}" ToolTip="Load Stored" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0" 
-                                        Visibility="{Binding SelectedNode.IsLoggedIn_Monitor, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                <IconPacks:Material Width="20" Height="20" Kind="NotificationClearAll"/>
 
-                            <Button Content="Read" Command="{Binding InspectCommand}" Style="{StaticResource MaterialDesignFloatingActionButton}"  ToolTip="Load Stored" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0"
-                                        Visibility="{Binding SelectedNode.IsLoggedIn_Control, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionButton}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Value="True" Binding="{Binding IsStore}">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
 
-                        </StackPanel>
+
+                            </Button>
+
+                            <Button Command="{Binding ReadCommand}"
+                                    ToolTip="Read Results" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
+
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionButton}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Value="True" Binding="{Binding SelectedNode.IsLoggedIn_Monitor}">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+
+                                <IconPacks:PackIconMaterial Width="20" Height="20" Kind="Upload"/>
+                            </Button>
+
+                            <Button Command="{Binding InspectCommand}"
+                                    ToolTip="Inspect" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
+
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionButton}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Value="True" Binding="{Binding SelectedNode.IsLoggedIn_Control}">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+
+                                <IconPacks:PackIconMaterial Width="20" Height="20" Kind="BlenderOutline"/>
+
+                            </Button>
+
+                        </DockPanel>
 
                         <Button Grid.Column="2" Name="RepeatSectors" Click="RepeatSectors_Click" ToolTip="Load Stored" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
                             <Button.Style>
@@ -384,27 +456,25 @@
                 </DockPanel>
             </GroupBox.Header>
 
-            <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" Margin="3" Padding="3">
-                <ScrollViewer Grid.Row="1" Grid.Column="2" x:Name="ScrollRepeatSectors"
-                          Margin="3" MaxHeight="400" VerticalScrollBarVisibility="Auto"
-                          mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
-                          ScrollChanged="ScrollRepeatSectors_ScrollChanged">
+            <ScrollViewer x:Name="ScrollRepeatSectors"
+                            Margin="3" MaxHeight="400" VerticalScrollBarVisibility="Auto"
+                            mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
+                            ScrollChanged="ScrollRepeatSectors_ScrollChanged">
 
-                    <ItemsControl ItemsSource="{Binding RepeatSectors}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <local:SectorControlView />
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </ScrollViewer>
-
-            </md:Card>
-
+                <ItemsControl ItemsSource="{Binding RepeatSectors}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <local:SectorControlView />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
         </GroupBox>
 
-        <!--Repeat Sectors-->
-        <GroupBox Margin="3" Padding="3" Style="{StaticResource MaterialDesignCardGroupBox}">
+        <!--Dissimilar Results-->
+        <GroupBox  Margin="3" Padding="3" Width="240"
+            HorizontalAlignment="Left" VerticalAlignment="Top" 
+            Style="{StaticResource MaterialDesignCardGroupBox}">
 
             <GroupBox.Header>
 
@@ -417,35 +487,31 @@
                 </DockPanel>
             </GroupBox.Header>
 
-            <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" Margin="3" Padding="3">
-
-                <ScrollViewer Grid.Row="1" Grid.Column="3"
-                          Margin="3" MaxHeight="400" VerticalScrollBarVisibility="Auto"
+            <ScrollViewer Margin="3" MaxHeight="400" VerticalScrollBarVisibility="Auto"
                           mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True">
-                    <ItemsControl ItemsSource="{Binding DiffSectors}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <local:SectorDifferenceControlView />
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </ScrollViewer>
-
-            </md:Card>
-
+                <ItemsControl ItemsSource="{Binding DiffSectors}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <local:SectorDifferenceControlView />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
         </GroupBox>
 
         <!--Repeat Image-->
-        <GroupBox Margin="3" Padding="3" Style="{StaticResource MaterialDesignCardGroupBox}">
+        <GroupBox  Margin="3" Padding="3"
+            HorizontalAlignment="Left" VerticalAlignment="Top" 
+            Style="{StaticResource MaterialDesignCardGroupBox}">
 
             <GroupBox.Header>
                 <DockPanel>
 
                     <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
-                        <TextBlock Text="Label Image" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                        <TextBlock Text="Repeat Image" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                     </md:Card>
 
-                    <Button Command="{Binding SaveCommand}" CommandParameter="repeat" ToolTip="Save Label Image" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                    <Button Command="{Binding SaveCommand}" CommandParameter="repeat" ToolTip="Save Repeat Image" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
 
                         <IconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
 
@@ -468,7 +534,7 @@
                             </Style>
                         </Button.Style>
                     </Button>
-                    
+
                     <DockPanel>
                         <DockPanel.Style>
                             <Style TargetType="{x:Type DockPanel}">
@@ -509,7 +575,7 @@
                             md:ButtonProgressAssist.IsIndeterminate="True"
                             md:ButtonProgressAssist.Value="-1"
                             md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsWorking}">
-                            
+
                             <IconPacks:Material Kind="MessageProcessing" Height="12" Width="12"/>
                         </Button>
 
@@ -529,8 +595,6 @@
                             </Label.Content>
                         </Label>
 
-                        <mah:ProgressRing HorizontalAlignment="Left" IsActive="{Binding IsWorking}" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" Height="30" Width="30"/>
-
                     </DockPanel>
 
 
@@ -538,19 +602,15 @@
                 </DockPanel>
             </GroupBox.Header>
 
-            <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" Margin="3" Padding="3">
-
-                <Grid>
-                    <Image Name="RepeatImage" Source="{Binding RepeatImage, Converter={StaticResource bytesToImage}}" 
-                       Margin="0" Height="400" Width="400" MouseDown="RepeatImage_MouseDown"
+            <Grid Margin="3">
+                <Image Name="RepeatImage" Source="{Binding RepeatImage, Converter={StaticResource bytesToImage}}" 
+                       Margin="0" MaxHeight="400" Width="400" MouseDown="RepeatImage_MouseDown"
                        RenderOptions.BitmapScalingMode="NearestNeighbor"/>
 
-                    <Image Name="RepeatImageOverlay" Source="{Binding RepeatOverlay}" 
-                       Margin="0" Height="400" Width="400" MouseDown="RepeatImage_MouseDown"
+                <Image Name="RepeatImageOverlay" Source="{Binding RepeatOverlay}" 
+                       Margin="0" MaxHeight="400" Width="400" MouseDown="RepeatImage_MouseDown"
                        RenderOptions.BitmapScalingMode="NearestNeighbor"/>
-                </Grid>
-
-            </md:Card>
+            </Grid>
 
         </GroupBox>
 

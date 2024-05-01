@@ -39,7 +39,7 @@ namespace LabelVal.WindowViews
 
                 if (result == System.Windows.Forms.DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
                 {
-                    ((MainWindowViewModel)DataContext).V275NodesViewModel.SimulatorImageDirectory = fbd.SelectedPath;
+                    ((MainWindowViewModel)DataContext).V275.SimulatorImageDirectory = fbd.SelectedPath;
                 }
             }
         }
