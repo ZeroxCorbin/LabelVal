@@ -52,7 +52,7 @@ namespace LabelVal.Run
         private long RunId { get; set; }
 
         private ObservableCollection<LabelControlViewModel> Labels { get; set; }
-        public StandardEntryModel GradingStandard { get; private set; }
+        public ImageRoll GradingStandard { get; private set; }
         private StandardsDatabase StandardsDatabase { get; set; }
 
         public Node Node { get; private set; }

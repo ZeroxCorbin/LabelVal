@@ -129,7 +129,7 @@ public partial class LabelControlViewModel : ObservableRecipient, IRecipient<Nod
     private string _Status;
 
     private StandardsDatabase StandardsDatabase => MainWindow.StandardsDatabaseViewModel.StandardsDatabase;
-    public StandardEntryModel SelectedStandard => MainWindow.StandardsDatabaseViewModel.SelectedStandard;
+    public ImageRoll SelectedStandard => MainWindow.StandardsDatabaseViewModel.SelectedStandard;
 
 
     [ObservableProperty] private Node selectedNode;

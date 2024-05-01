@@ -69,8 +69,8 @@ public partial class Node : ObservableRecipient, IRecipient<Messages.StandardMes
     public bool IsNotLoggedIn => !(IsLoggedIn_Monitor || IsLoggedIn_Control);
 
 
-    [ObservableProperty] private Models.StandardEntryModel selectedStandard;
-    partial void OnSelectedStandardChanged(StandardEntryModel value) => CheckTemplateName();
+    [ObservableProperty] private Models.ImageRoll selectedStandard;
+    partial void OnSelectedStandardChanged(ImageRoll value) => CheckTemplateName();
 
     [ObservableProperty] private bool isWrongTemplateName = false;
 

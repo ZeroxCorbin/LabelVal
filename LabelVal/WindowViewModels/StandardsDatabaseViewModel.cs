@@ -48,8 +48,8 @@ public partial class StandardsDatabaseViewModel : ObservableObject
     }
 
 
-    [ObservableProperty] private StandardEntryModel selectedStandard = App.Settings.GetValue<StandardEntryModel>(nameof(SelectedStandard), null);
-    partial void OnSelectedStandardChanged(StandardEntryModel value)
+    [ObservableProperty] private ImageRoll selectedStandard = App.Settings.GetValue<ImageRoll>(nameof(SelectedStandard), null);
+    partial void OnSelectedStandardChanged(ImageRoll value)
     {
         if (value != null)
         {
@@ -69,7 +69,7 @@ public partial class StandardsDatabaseViewModel : ObservableObject
             });
         }
     }
-    partial void OnSelectedStandardChanged(StandardEntryModel oldValue, StandardEntryModel newValue) => _ = WeakReferenceMessenger.Default.Send(new StandardMessages.SelectedStandardChanged(newValue, oldValue));
+    partial void OnSelectedStandardChanged(ImageRoll oldValue, ImageRoll newValue) => _ = WeakReferenceMessenger.Default.Send(new StandardMessages.SelectedStandardChanged(newValue, oldValue));
 
     private ObservableCollection<string> OrphandStandards { get; } = [];
 
@@ -88,8 +88,8 @@ public partial class StandardsDatabaseViewModel : ObservableObject
     public bool IsNotDatabasePermLocked => !isDatabasePermLocked;
     private bool isDatabasePermLocked = false;
 
-    public ObservableCollection<StandardEntryModel> AssetStandards { get; } = [];
-    public ObservableCollection<StandardEntryModel> Standards { get; } = [];
+    public ObservableCollection<ImageRoll> AssetStandards { get; } = [];
+    public ObservableCollection<ImageRoll> Standards { get; } = [];
 
     public static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
 
@@ -121,7 +121,7 @@ public partial class StandardsDatabaseViewModel : ObservableObject
 
             foreach (var subdir in Directory.EnumerateDirectories(dir))
             {
-                AssetStandards.Add(new StandardEntryModel(dir[(dir.LastIndexOf("\\") + 1)..], subdir));
+                AssetStandards.Add(new ImageRoll(dir[(dir.LastIndexOf("\\") + 1)..], subdir));
             }
         }
 
@@ -133,7 +133,7 @@ public partial class StandardsDatabaseViewModel : ObservableObject
 
             foreach (var subdir in Directory.EnumerateDirectories(dir))
             {
-                Standards.Add(new StandardEntryModel(dir[(dir.LastIndexOf("\\") + 1)..], subdir));
+                Standards.Add(new ImageRoll(dir[(dir.LastIndexOf("\\") + 1)..], subdir));
             }
         }
 
@@ -141,7 +141,7 @@ public partial class StandardsDatabaseViewModel : ObservableObject
     }
     private void SelectStandard()
     {
-        StandardEntryModel std;
+        ImageRoll std;
         if (SelectedStandard != null && (std = Standards.FirstOrDefault((e) => e.Name.Equals(SelectedStandard.Name))) != null)
             SelectedStandard = std;
         else if (Standards.Count > 0)
@@ -203,7 +203,7 @@ public partial class StandardsDatabaseViewModel : ObservableObject
 
         foreach (var tbl in tables)
         {
-            StandardEntryModel std;
+            ImageRoll std;
             if ((std = Standards.FirstOrDefault((e) => e.Name.Equals(tbl))) == null)
             {
                 if (tbl.StartsWith("LOCK"))
