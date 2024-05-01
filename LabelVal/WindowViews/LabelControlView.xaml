@@ -131,8 +131,6 @@
 
                         <Button Command="{Binding SaveCommand}" ToolTip="Save Label Image" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
 
-                            <IconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
-                            
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionButton}">
                                     <Setter Property="Visibility" Value="Visible"/>
@@ -143,7 +141,9 @@
                                     </Style.Triggers>
                                 </Style>
                             </Button.Style>
-
+                            
+                            <IconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
+                            
                         </Button>
 
                         <DockPanel>
@@ -364,9 +364,6 @@
                         <DockPanel>
 
                             <Button Command="{Binding StoreCommand}" ToolTip="Store Results" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
-
-                                <IconPacks:PackIconMaterial Width="20" Height="20" Kind="DatabaseEdit"/>
-
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionButton}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -380,12 +377,12 @@
                                         </Style.Triggers>
                                     </Style>
                                 </Button.Style>
+                                
+                                <IconPacks:PackIconMaterial Width="20" Height="20" Kind="DatabaseEdit"/>
                             </Button>
 
                             <Button Command="{Binding ClearReadCommand}"
                                     ToolTip="Clear Results" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
-
-                                <IconPacks:Material Width="20" Height="20" Kind="NotificationClearAll"/>
 
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionButton}">
@@ -398,6 +395,7 @@
                                     </Style>
                                 </Button.Style>
 
+                                <IconPacks:Material Width="20" Height="20" Kind="NotificationClearAll"/>
 
                             </Button>
 
@@ -512,9 +510,6 @@
                     </md:Card>
 
                     <Button Command="{Binding SaveCommand}" CommandParameter="repeat" ToolTip="Save Repeat Image" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
-
-                        <IconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
-
                         <Button.Style>
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionButton}">
                                 <Setter Property="Visibility" Value="Visible"/>
@@ -532,7 +527,10 @@
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
-                        </Button.Style>
+                        </Button.Style> 
+                        
+                        <IconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
+
                     </Button>
 
                     <DockPanel>
@@ -554,9 +552,6 @@
 
 
                         <Button Command="{Binding SaveCommand}" CommandParameter="repeat" ToolTip="Save Repeat Image" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
-
-                            <IconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
-
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionButton}">
                                     <Setter Property="Visibility" Value="Visible"/>
@@ -567,6 +562,8 @@
                                     </Style.Triggers>
                                 </Style>
                             </Button.Style>
+                            
+                            <IconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
                         </Button>
 
 

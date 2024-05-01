@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:LabelVal.V275.Views"
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-             xmlns:ViewModels="clr-namespace:LabelVal.WindowViewModels"  
+             xmlns:ViewModels="clr-namespace:LabelVal.V275.ViewModels"  
              d:DataContext="{d:DesignInstance Type=ViewModels:V275}"
              mc:Ignorable="d">
 

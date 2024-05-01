@@ -1,10 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
+using LabelVal.Messages;
 using System.Collections.ObjectModel;
 using System.Drawing.Printing;
 using System.Linq;
 
-namespace LabelVal.Printer;
-public partial class ViewModel : ObservableObject
+namespace LabelVal.Printer.ViewModels;
+public partial class Printer : ObservableObject
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -13,10 +15,11 @@ public partial class ViewModel : ObservableObject
 
     [ObservableProperty] private PrinterSettings selectedPrinter;
     partial void OnSelectedPrinterChanged(PrinterSettings value) => SelectedPrinterName = value.PrinterName;
+    partial void OnSelectedPrinterChanged(PrinterSettings oldValue, PrinterSettings newValue) => _ = WeakReferenceMessenger.Default.Send(new PrinterMessages.SelectedPrinterChanged(newValue, oldValue));
 
     private string SelectedPrinterName { get => App.Settings.GetValue(nameof(SelectedPrinterName), ""); set => App.Settings.SetValue(nameof(SelectedPrinterName), value); }
 
-    public ViewModel() => LoadPrinters();
+    public Printer() => LoadPrinters();
 
     private void LoadPrinters()
     {

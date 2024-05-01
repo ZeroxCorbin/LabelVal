@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LabelVal.WindowViews;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,14 +14,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace LabelVal.Printer;
+namespace LabelVal.Printer.Views;
 /// <summary>
-/// Interaction logic for DetailsView.xaml
+/// Interaction logic for PrinterControlView.xaml
 /// </summary>
-public partial class DetailsView : UserControl
+public partial class Printer : UserControl
 {
-    public DetailsView()
+    public Printer()
     {
         InitializeComponent();
     }
+
+    private void btnShowPrinterDetails_Click(object sender, RoutedEventArgs e) => ((MainWindowView)App.Current.MainWindow).PrinterDetails.IsLeftDrawerOpen = !((MainWindowView)App.Current.MainWindow).PrinterDetails.IsLeftDrawerOpen;
 }

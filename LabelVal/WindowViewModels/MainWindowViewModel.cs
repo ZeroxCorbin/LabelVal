@@ -37,14 +37,14 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
         public int RepeatNumber { get; set; } = -1;
     }
 
-    public ViewModel PrinterViewModel { get; } = new ViewModel();
+    public V275.ViewModels.V275 V275 { get; }
+
+    public Printer.ViewModels.Printer Printer { get; } 
+
     public RunViewModel RunViewModel { get; } = new RunViewModel();
 
     public StandardsDatabaseViewModel StandardsDatabaseViewModel { get; }
 
-    public V275.ViewModels.V275 V275 { get; } = new V275.ViewModels.V275();
-
-    public NodeDetails NodeDetails { get; } = new NodeDetails();
 
     [ObservableProperty] private string userMessage = "";
 
@@ -63,9 +63,11 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
     public static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
     public MainWindowViewModel()
     {
-        StandardsDatabaseViewModel = new StandardsDatabaseViewModel(this);
-
         IsActive = true;
+
+        StandardsDatabaseViewModel = new StandardsDatabaseViewModel(this);
+        V275 = new V275.ViewModels.V275();
+        Printer = new Printer.ViewModels.Printer();
     }
 
     public void Receive(NodeMessages.SelectedNodeChanged message)
@@ -180,6 +182,7 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
             var tmp = new LabelControlViewModel(img, comment, this)
             {
                 MainWindow = this,
+                SelectedNode = SelectedNode,
             };
 
             tmp.Printing += Label_Printing;
@@ -351,10 +354,10 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
                 if (RunViewModel.State != Run.Controller.RunStates.IDLE)
                 {
                     var data = $"Loop {RunViewModel.RunController.CurrentLoopCount} : {RunViewModel.RunController.CurrentLabelCount}";
-                    printer.Print(label.LabelImagePath, 1, (string)PrinterViewModel.SelectedPrinter.PrinterName, data);
+                    printer.Print(label.LabelImagePath, 1, Printer.SelectedPrinter.PrinterName, data);
                 }
                 else
-                    printer.Print(label.LabelImagePath, label.PrintCount, (string)PrinterViewModel.SelectedPrinter.PrinterName, "");
+                    printer.Print(label.LabelImagePath, label.PrintCount, Printer.SelectedPrinter.PrinterName, "");
 
                 if (!SelectedNode.IsLoggedIn_Control)
                     label.IsWorking = false;

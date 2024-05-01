@@ -13,13 +13,13 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace LabelVal.Printer;
+namespace LabelVal.Printer.Views;
 /// <summary>
-/// Interaction logic for PrinterControlView.xaml
+/// Interaction logic for DetailsView.xaml
 /// </summary>
-public partial class View : UserControl
+public partial class PrinterDetails : UserControl
 {
-    public View()
+    public PrinterDetails()
     {
         InitializeComponent();
     }

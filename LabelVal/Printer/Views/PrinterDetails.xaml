@@ -1,0 +1,19 @@
+﻿<UserControl x:Class="LabelVal.Printer.Views.PrinterDetails"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:LabelVal.Printer"
+             xmlns:json="clr-namespace:JSONViewer_WPF;assembly=JSONViewer_WPF"
+             
+             xmlns:ViewModels="clr-namespace:LabelVal.WindowViewModels"  
+             d:DataContext="{d:DesignInstance Type=ViewModels:MainWindowViewModel}"
+             mc:Ignorable="d">
+    <ScrollViewer>
+
+
+        <StackPanel>
+            <json:JsonViewer JSON="{Binding SelectedPrinter}" HideButtons="False" Title="Printer Settings" />
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
