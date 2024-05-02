@@ -9,12 +9,12 @@
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:json="clr-namespace:JSONViewer_WPF;assembly=JSONViewer_WPF"
              
-            xmlns:ViewModels="clr-namespace:LabelVal.WindowViewModels"
+            xmlns:ViewModels="clr-namespace:LabelVal.ImageRolls.ViewModels"
             xmlns:Converters="clr-namespace:LabelVal.Converters"
-              xmlns:V275Converters="clr-namespace:LabelVal.V275.Converters"
+            xmlns:V275Converters="clr-namespace:LabelVal.V275.Converters"
             xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
             Dialog:DialogParticipation.Register="{Binding}"
-            d:DataContext="{d:DesignInstance Type=ViewModels:LabelControlViewModel}"
+            d:DataContext="{d:DesignInstance Type=ViewModels:ImageResultEntry}"
             mc:Ignorable="d" 
             d:DesignHeight="450" d:DesignWidth="1424" Loaded="UserControl_Loaded" Unloaded="UserControl_Unloaded">
 
@@ -124,13 +124,15 @@
                 <DockPanel>
 
                     <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
-                        <TextBlock Text="Label Image" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                        <TextBlock Text="Source Image" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                     </md:Card>
 
                     <DockPanel>
 
-                        <Button Command="{Binding SaveCommand}" ToolTip="Save Label Image" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
-
+                        <Button Command="{Binding SaveCommand}" ToolTip="Save Source Image" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                            
+                            <IconPacks:PackIconMaterial Kind="ContentSave" Height="12" Width="12"/>
+                            
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionButton}">
                                     <Setter Property="Visibility" Value="Visible"/>
@@ -142,7 +144,7 @@
                                 </Style>
                             </Button.Style>
                             
-                            <IconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
+                            
                             
                         </Button>
 
@@ -172,14 +174,14 @@
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionButton}">
                                         <Setter Property="Content">
                                             <Setter.Value>
-                                                <IconPacks:Material Kind="Printer" Height="12" Width="12"/>
+                                                <IconPacks:PackIconMaterial Kind="Printer" Height="12" Width="12"/>
                                             </Setter.Value>
                                         </Setter>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding SelectedNode.IsSimulator}" Value="True">
                                                 <Setter Property="Content">
                                                     <Setter.Value>
-                                                        <IconPacks:Material Kind="MessageProcessing" Height="12" Width="12"/>
+                                                        <IconPacks:PackIconMaterial Kind="MessageProcessing" Height="12" Width="12"/>
                                                     </Setter.Value>
                                                 </Setter>
                                             </DataTrigger>
@@ -252,7 +254,7 @@
 
         </GroupBox>
 
-        <!--Label Sectors-->
+        <!--Stored Sectors-->
         <GroupBox  Margin="3" Padding="3" Width="220"
             HorizontalAlignment="Left" VerticalAlignment="Top" 
             Style="{StaticResource MaterialDesignCardGroupBox}">
@@ -262,7 +264,7 @@
                 <DockPanel>
 
                     <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
-                        <TextBlock Text="Label Sectors" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                        <TextBlock Text="Stored Sectors" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                     </md:Card>
 
                     <DockPanel>
@@ -270,7 +272,7 @@
                         <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
 
                             <Button Command="{Binding ClearStoredCommand}" ToolTip="Clear Stored" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
-                                <IconPacks:Material Kind="FormatClear" Height="12" Width="12"/>
+                                <IconPacks:PackIconMaterial Kind="FormatClear" Height="12" Width="12"/>
 
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionButton}">
@@ -279,7 +281,7 @@
                                             <DataTrigger Binding="{Binding IsLoad}" Value="True">
                                                 <Setter Property="Visibility" Value="Visible"/>
                                             </DataTrigger>
-                                            <DataTrigger Binding="{Binding MainWindow.StandardsDatabaseViewModel.IsDatabaseLocked}" Value="True">
+                                            <DataTrigger Binding="{Binding SelectedDatabase.IsDatabaseLocked}" Value="True">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -288,7 +290,7 @@
                             </Button>
 
                             <Button Command="{Binding LoadCommand}"  ToolTip="Load Stored" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
-                                <IconPacks:Material Kind="Loading" Height="12" Width="12"/>
+                                <IconPacks:PackIconMaterial Kind="Loading" Height="12" Width="12"/>
 
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionButton}">
@@ -346,7 +348,7 @@
 
         </GroupBox>
 
-        <!--Repeat Sectors-->
+        <!--Current Sectors-->
         <GroupBox  Margin="3" Padding="3" Width="220"
             HorizontalAlignment="Left" VerticalAlignment="Top" 
             Style="{StaticResource MaterialDesignCardGroupBox}">
@@ -356,7 +358,7 @@
                 <DockPanel>
 
                     <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
-                        <TextBlock Text="Repeat Sectors" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                        <TextBlock Text="Current Sectors" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                     </md:Card>
 
                     <DockPanel>
@@ -371,7 +373,7 @@
                                             <DataTrigger Value="True" Binding="{Binding IsStore}">
                                                 <Setter Property="Visibility" Value="Visible"/>
                                             </DataTrigger>
-                                            <DataTrigger Binding="{Binding MainWindow.StandardsDatabaseViewModel.IsDatabaseLocked}" Value="True">
+                                            <DataTrigger Binding="{Binding SelectedDatabase.IsDatabaseLocked}" Value="True">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -395,7 +397,7 @@
                                     </Style>
                                 </Button.Style>
 
-                                <IconPacks:Material Width="20" Height="20" Kind="NotificationClearAll"/>
+                                <IconPacks:PackIconMaterial Width="20" Height="20" Kind="NotificationClearAll"/>
 
                             </Button>
 
@@ -506,10 +508,10 @@
                 <DockPanel>
 
                     <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
-                        <TextBlock Text="Repeat Image" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                        <TextBlock Text="Current Image" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                     </md:Card>
 
-                    <Button Command="{Binding SaveCommand}" CommandParameter="repeat" ToolTip="Save Repeat Image" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                    <Button Command="{Binding SaveCommand}" CommandParameter="repeat" ToolTip="Save Current Image" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
                         <Button.Style>
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionButton}">
                                 <Setter Property="Visibility" Value="Visible"/>

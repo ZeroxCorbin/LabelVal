@@ -6,5 +6,6 @@ namespace LabelVal.V275.ViewModels;
 public partial class NodeDetails : ObservableRecipient, IRecipient<NodeMessages.SelectedNodeChanged>
 {
     [ObservableProperty] private Node selectedNode;
+    public NodeDetails() => IsActive = true;
     public void Receive(NodeMessages.SelectedNodeChanged message) => SelectedNode = message.Value;
 }

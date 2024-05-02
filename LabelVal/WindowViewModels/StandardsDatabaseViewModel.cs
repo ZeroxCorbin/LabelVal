@@ -48,21 +48,6 @@ public partial class StandardsDatabaseViewModel : ObservableObject
 
     private ObservableCollection<string> OrphandStandards { get; } = [];
 
-    public bool IsDatabaseLocked
-    {
-        get => isDatabaseLocked || isDatabasePermLocked;
-        set { _ = SetProperty(ref isDatabaseLocked, value); OnPropertyChanged("IsNotDatabaseLocked"); }
-    }
-    public bool IsNotDatabaseLocked => !isDatabaseLocked;
-    private bool isDatabaseLocked = false;
-    public bool IsDatabasePermLocked
-    {
-        get => isDatabasePermLocked;
-        set { _ = SetProperty(ref isDatabasePermLocked, value); OnPropertyChanged("IsNotDatabasePermLocked"); }
-    }
-    public bool IsNotDatabasePermLocked => !isDatabasePermLocked;
-    private bool isDatabasePermLocked = false;
-
 
     public static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
 
@@ -127,8 +112,6 @@ public partial class StandardsDatabaseViewModel : ObservableObject
 
         var tables = StandardsDatabase.GetAllTables();
 
-        IsDatabasePermLocked = tables.Contains("LOCKPERM");
-        IsDatabaseLocked = tables.Contains("LOCK");
 
         //foreach (var tbl in tables)
         //{
@@ -172,22 +155,18 @@ public partial class StandardsDatabaseViewModel : ObservableObject
     [RelayCommand]
     private void LockStandardsDatabase()
     {
-        if (IsDatabasePermLocked) return;
+        if (StandardsDatabase.IsDatabasePermLocked)
+            return;
 
-        if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) && (Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt)))
-        {
-            StandardsDatabase.DeleteLockTable(false);
-            StandardsDatabase.CreateLockTable(true);
-        }
-        else
-        {
-            if (IsDatabaseLocked)
-                StandardsDatabase.DeleteLockTable(false);
-            else
-                StandardsDatabase.CreateLockTable(false);
-        }
+        //if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) && (Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt)))
+        //{
+        //    StandardsDatabase.DeleteLockTable(false);
+        //    StandardsDatabase.CreateLockTable(true);
+        //}
+        //else
+        //{
+            StandardsDatabase.IsDatabaseLocked=!StandardsDatabase.IsDatabaseLocked;
+        //}
 
-        SelectedStandardsDatabase = null;
-        SelectStandardsDatabase();
     }
 }

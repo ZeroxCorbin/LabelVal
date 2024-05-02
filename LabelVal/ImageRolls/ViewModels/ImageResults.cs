@@ -10,8 +10,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing.Printing;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using V275_REST_lib.Models;
 
@@ -34,17 +32,14 @@ public partial class ImageResults : ObservableRecipient, IRecipient<ImageRollMes
     partial void OnSelectedImageRollChanged(ImageRollEntry value) => LoadLabels();
 
     [ObservableProperty] private PrinterSettings selectedPrinter;
-        [ObservableProperty] private StandardsDatabase selectedDatabase;
+    [ObservableProperty] private StandardsDatabase selectedDatabase;
 
     public RunViewModel RunViewModel { get; } = new RunViewModel();
     private int LoopCount => App.Settings.GetValue(nameof(RunViewModel.LoopCount), 1);
 
-
     public static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
-    public ImageResults()
-    {
-        IsActive = true;
-    }
+
+    public ImageResults() => IsActive = true;
 
     public async Task<MessageDialogResult> OkCancelDialog(string title, string message) => await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative);
 
@@ -144,7 +139,7 @@ public partial class ImageResults : ObservableRecipient, IRecipient<ImageRollMes
 
                 if (!sim.DeleteAllImages())
                 {
-                    var verCur = SelectedNode.Product.part?.Substring(SelectedNode.Product.part.LastIndexOf('-') + 1);
+                    var verCur = SelectedNode.Product.part?[(SelectedNode.Product.part.LastIndexOf('-') + 1)..];
 
                     if (verCur != null)
                     {
@@ -373,7 +368,6 @@ public partial class ImageResults : ObservableRecipient, IRecipient<ImageRollMes
             if (ev.data.toState == "editing" || (ev.data.toState == "running" && ev.data.fromState != "paused"))
                 Repeats.Clear();
     }
-
 
     private async Task StartRun()
     {

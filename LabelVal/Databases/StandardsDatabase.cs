@@ -9,26 +9,17 @@ using System.Threading.Tasks;
 
 namespace LabelVal.Databases
 {
-    public class StandardsDatabase : IDisposable
+    public partial class StandardsDatabase : ObservableObject, IDisposable
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public class Row : ObservableObject
+        public partial class Row : ObservableObject
         {
-            private byte[] labelImage;
-            public byte[] LabelImage { get => labelImage; set => SetProperty(ref labelImage, value); }
-
-            private string labelImageUID;
-            public string LabelImageUID { get => labelImageUID; set => SetProperty(ref labelImageUID, value); }
-
-            private string labelTemplate;
-            public string LabelTemplate { get => labelTemplate; set => SetProperty(ref labelTemplate, value); }
-
-            private string labelReport;
-            public string LabelReport { get => labelReport; set => SetProperty(ref labelReport, value); }
-
-            private byte[] repeatImage;
-            public byte[] RepeatImage { get => repeatImage; set => SetProperty(ref repeatImage, value); }
+            [ObservableProperty] private byte[] labelImage;
+            [ObservableProperty] private string labelImageUID;
+            [ObservableProperty] private string labelTemplate;
+            [ObservableProperty] private string labelReport;
+            [ObservableProperty] private byte[] repeatImage;
 
             public Row(SQLiteDataReader rdr)
             {
@@ -36,7 +27,6 @@ namespace LabelVal.Databases
                 {
                     if (rdr.GetName(i).Equals("LabelImage", StringComparison.InvariantCultureIgnoreCase))
                         LabelImage = (byte[])rdr["LabelImage"];
-
                 }
 
                 LabelImageUID = rdr["LabelImageUID"].ToString();
@@ -53,6 +43,38 @@ namespace LabelVal.Databases
         public bool IsConnectionPersistent { get; set; }
 
 
+        public bool IsDatabaseLocked
+        {
+            get => HasLockTable(false);
+            set => OnIsDatabaseLockedChanged(value);
+        }
+        private void OnIsDatabaseLockedChanged(bool value)
+        {
+            if (value)
+                CreateLockTable(false);
+            else
+                DeleteLockTable(false);
+
+            OnPropertyChanged(nameof(IsDatabaseLocked));
+            OnPropertyChanged(nameof(IsNotDatabaseLocked));
+        }
+        public bool IsNotDatabaseLocked => !IsDatabaseLocked;
+
+
+        public bool IsDatabasePermLocked
+        {
+            get => HasLockTable(true);
+            set => OnIsDatabasePermLockedChanged(value);
+        }
+        private void OnIsDatabasePermLockedChanged(bool value)
+        {
+            if (value)
+                CreateLockTable(true);
+
+            OnPropertyChanged(nameof(IsDatabasePermLocked));
+            OnPropertyChanged(nameof(IsNotDatabasePermLocked));
+        }
+        public bool IsNotDatabasePermLocked => !IsDatabasePermLocked;
 
         private void CreateFile(bool overwrite = false)
         {
@@ -62,7 +84,6 @@ namespace LabelVal.Databases
                 SQLiteConnection.CreateFile(FilePath);
             }
         }
-
         private bool Open()
         {
             if (Connection == null)
@@ -79,7 +100,6 @@ namespace LabelVal.Databases
             else
                 return true;
         }
-
         public void Close()
         {
             Logger.Info("Closing Database: {file}", FilePath);
@@ -128,17 +148,35 @@ namespace LabelVal.Databases
         }
         public void CreateLockTable(bool isPerminent)
         {
+            if (!Open()) return;
+
             string tableName = isPerminent ? "LOCKPERM" : "LOCK";
 
-            using (SQLiteCommand command = new SQLiteCommand($"CREATE TABLE IF NOT EXISTS '{tableName}' ({tableName} TEXT);", Connection))
-                command.ExecuteNonQuery();
+            using SQLiteCommand command = new SQLiteCommand($"CREATE TABLE IF NOT EXISTS '{tableName}' ({tableName} TEXT);", Connection);
+            _ = command.ExecuteNonQuery();
+
+            if (!IsConnectionPersistent)
+                Close();
+        }
+        public bool HasLockTable(bool isPerminent)
+        {
+            if (!Open()) return false;
+
+            string tableName = isPerminent ? "LOCKPERM" : "LOCK";
+
+            return TableExists(tableName);
         }
         public void DeleteLockTable(bool isPerminent)
         {
+            if (!Open()) return;
+
             string tableName = isPerminent ? "LOCKPERM" : "LOCK";
 
-            using (SQLiteCommand command = new SQLiteCommand($"DROP TABLE IF EXISTS '{tableName}';", Connection))
-                command.ExecuteNonQuery();
+            using SQLiteCommand command = new SQLiteCommand($"DROP TABLE IF EXISTS '{tableName}';", Connection);
+            _ = command.ExecuteNonQuery();
+
+            if (!IsConnectionPersistent)
+                Close();
         }
 
         public void AddRow(string tableName, Row row) => AddRow(tableName, row.LabelImageUID, row.LabelImage, row.LabelTemplate, row.LabelReport, row.RepeatImage);

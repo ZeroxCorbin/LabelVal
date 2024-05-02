@@ -18,18 +18,21 @@
             </CollectionViewSource.SortDescriptions>
 
             <CollectionViewSource.GroupDescriptions>
+                <PropertyGroupDescription PropertyName="IsGS1" />
                 <PropertyGroupDescription PropertyName="DPI" />
             </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
 
-        <CollectionViewSource x:Key="ImageRolls" Source="{Binding ImageRolls}">
+        <CollectionViewSource x:Key="ImageRolls" Source="{Binding UserImageRolls}">
             <CollectionViewSource.SortDescriptions>
                 <componentmodel:SortDescription PropertyName="Name" Direction="Ascending"/>
                 <componentmodel:SortDescription PropertyName="DPI" Direction="Ascending"/>
             </CollectionViewSource.SortDescriptions>
 
             <CollectionViewSource.GroupDescriptions>
+                <PropertyGroupDescription PropertyName="IsGS1" />
                 <PropertyGroupDescription PropertyName="DPI" />
+                
             </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
     </UserControl.Resources>
@@ -137,7 +140,41 @@
                                             <ControlTemplate TargetType="{x:Type GroupItem}">
                                                 <Expander>
                                                     <Expander.Header>
-                                                        <TextBlock DockPanel.Dock="Top" Text="{Binding Name}" Margin="10,3" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                                                        <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}">
+                                                            <TextBlock.Style>
+                                                                <Style TargetType="TextBlock">
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding Name}" Value="TRUE">
+                                                                            <Setter Property="Text" Value="GS1"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Name}" Value="FALSE">
+                                                                            <Setter Property="Text" Value="ISO"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </TextBlock.Style>
+                                                        </TextBlock>
+                                                    </Expander.Header>
+
+                                                    <ItemsPresenter />
+
+                                                </Expander>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </GroupStyle.ContainerStyle>
+                        </GroupStyle>
+
+                        <GroupStyle>
+                            <GroupStyle.ContainerStyle>
+                                <Style TargetType="{x:Type GroupItem}">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type GroupItem}">
+                                                <Expander>
+                                                    <Expander.Header>
+                                                        <TextBlock Text="{Binding Name}" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                                                     </Expander.Header>
 
                                                     <ItemsPresenter />

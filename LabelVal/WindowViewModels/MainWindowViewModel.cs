@@ -40,6 +40,8 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
         IsActive = true;
 
         ImageResults = new ImageRolls.ViewModels.ImageResults();
+        NodeDetails = new V275.ViewModels.NodeDetails();
+        PrinterDetails = new Printer.ViewModels.PrinterDetails();
 
         V275 = new V275.ViewModels.V275();
         Printer = new Printer.ViewModels.Printer();

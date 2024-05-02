@@ -50,7 +50,7 @@
                                     <Setter Property="IsHitTestVisible" Value="True"/>
                                     <Setter Property="ToolTip" Value="Database is unlocked. Click to unlock."/>
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsDatabaseLocked}" Value="True">
+                                        <DataTrigger Binding="{Binding  StandardsDatabase.IsDatabaseLocked}" Value="True">
                                             <Setter Property="Content">
                                                 <Setter.Value>
                                                     <IconPacks:Material Kind="Lock"/>
@@ -58,7 +58,7 @@
                                             </Setter>
                                             <Setter Property="ToolTip" Value="Database is locked. Click to unlock."/>
                                         </DataTrigger>
-                                        <DataTrigger Binding="{Binding IsDatabasePermLocked}" Value="True">
+                                        <DataTrigger Binding="{Binding StandardsDatabase.IsDatabasePermLocked}" Value="True">
                                             <Setter Property="Content">
                                                 <Setter.Value>
                                                     <IconPacks:Material Kind="DatabaseLock"/>
