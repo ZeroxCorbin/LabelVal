@@ -55,1072 +55,1072 @@
     <Content Include="Assets\Images\OCV.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\OCR OCV RECOGNITION\300\OCROCV_Recognition.png">
+    <Content Include="Assets\Image Rolls\OCR OCV RECOGNITION\300\OCROCV_Recognition.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\OCR OCV RECOGNITION\600\OCROCV_Recognition.png">
+    <Content Include="Assets\Image Rolls\OCR OCV RECOGNITION\600\OCROCV_Recognition.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\SYMBOLOGIES A\600\25 All Symbology Part A PDF_01.png">
+    <Content Include="Assets\Image Rolls\SYMBOLOGIES A\600\25 All Symbology Part A PDF_01.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\SYMBOLOGIES B\600\25 Labels All Symbologies Part B 600dpi_01.png">
+    <Content Include="Assets\Image Rolls\SYMBOLOGIES B\600\25 Labels All Symbologies Part B 600dpi_01.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\SYMBOLOGIES C\600\25 Labels All Symbologies Part C 600dpi_01.png">
+    <Content Include="Assets\Image Rolls\SYMBOLOGIES C\600\25 Labels All Symbologies Part C 600dpi_01.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\SYMBOLOGIES D\600\25 Labels All Symbologies Part D 600dpi_01.png">
+    <Content Include="Assets\Image Rolls\SYMBOLOGIES D\600\25 Labels All Symbologies Part D 600dpi_01.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_01.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_01.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_02.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_02.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_03.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_03.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_04.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_04.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_05.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_05.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_06.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_06.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_07.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_07.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_08.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_08.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_09.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_09.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_10.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_10.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_11.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_11.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_12.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_12.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_13.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_13.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_14.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 10\600\SS 600DPI FOR GS1 TABLE 10_14.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 11\600\SS 600DPI TEST ROLL FOR GS1 TABLE 11_1.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 11\600\SS 600DPI TEST ROLL FOR GS1 TABLE 11_1.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 11\600\SS 600DPI TEST ROLL FOR GS1 TABLE 11_2.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 11\600\SS 600DPI TEST ROLL FOR GS1 TABLE 11_2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 11\600\SS 600DPI TEST ROLL FOR GS1 TABLE 11_3.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 11\600\SS 600DPI TEST ROLL FOR GS1 TABLE 11_3.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 11\600\SS 600DPI TEST ROLL FOR GS1 TABLE 11_4.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 11\600\SS 600DPI TEST ROLL FOR GS1 TABLE 11_4.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 11\600\SS 600DPI TEST ROLL FOR GS1 TABLE 11_5.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 11\600\SS 600DPI TEST ROLL FOR GS1 TABLE 11_5.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 12.1\600\SS TEST ROLL FOR GS1 TABLE 12-1 600DPI_1.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 12.1\600\SS TEST ROLL FOR GS1 TABLE 12-1 600DPI_1.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 12.1\600\SS TEST ROLL FOR GS1 TABLE 12-1 600DPI_2.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 12.1\600\SS TEST ROLL FOR GS1 TABLE 12-1 600DPI_2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 12.2\600\SS TEST ROLL FOR GS1 TABLE 12-2 600DPI_1.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 12.2\600\SS TEST ROLL FOR GS1 TABLE 12-2 600DPI_1.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 12.2\600\SS TEST ROLL FOR GS1 TABLE 12-2 600DPI_2.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 12.2\600\SS TEST ROLL FOR GS1 TABLE 12-2 600DPI_2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 12.2\600\SS TEST ROLL FOR GS1 TABLE 12-2 600DPI_3.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 12.2\600\SS TEST ROLL FOR GS1 TABLE 12-2 600DPI_3.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 12.3\600\SS TEST ROLL FOR GS1 TABLE 12-3 600DPI_1.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 12.3\600\SS TEST ROLL FOR GS1 TABLE 12-3 600DPI_1.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 12.3\600\SS TEST ROLL FOR GS1 TABLE 12-3 600DPI_2.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 12.3\600\SS TEST ROLL FOR GS1 TABLE 12-3 600DPI_2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 12.3\600\SS TEST ROLL FOR GS1 TABLE 12-3 600DPI_3.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 12.3\600\SS TEST ROLL FOR GS1 TABLE 12-3 600DPI_3.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_01.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_01.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_02.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_02.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_03.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_03.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_04.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_04.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_05.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_05.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_06.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_06.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_07.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_07.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_08.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_08.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_09.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_09.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_10.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_10.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_11.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_11.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_12.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_12.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_13.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_13.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_14.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_14.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_15.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_15.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_16.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 1\600\SS 600DPI TEST ROLL FOR GS1 TABLE 1_16.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _01.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _01.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _02.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _02.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _03.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _03.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _04.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _04.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _05.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _05.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _06.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _06.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _07.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _07.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _08.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _08.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _09.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _09.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _10.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _10.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _11.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _11.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _12.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _12.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _13.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _13.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _14.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _14.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _15.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 2\600\SS 600DPI TEST ROLL FOR GS1 TABLE 2 _15.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 3\600\SS 600DPI TEST ROLL FOR GS1 TABLE 3_1.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 3\600\SS 600DPI TEST ROLL FOR GS1 TABLE 3_1.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 3\600\SS 600DPI TEST ROLL FOR GS1 TABLE 3_2.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 3\600\SS 600DPI TEST ROLL FOR GS1 TABLE 3_2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 3\600\SS 600DPI TEST ROLL FOR GS1 TABLE 3_3.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 3\600\SS 600DPI TEST ROLL FOR GS1 TABLE 3_3.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 3\600\SS 600DPI TEST ROLL FOR GS1 TABLE 3_4.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 3\600\SS 600DPI TEST ROLL FOR GS1 TABLE 3_4.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 3\600\SS 600DPI TEST ROLL FOR GS1 TABLE 3_5.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 3\600\SS 600DPI TEST ROLL FOR GS1 TABLE 3_5.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 3\600\SS 600DPI TEST ROLL FOR GS1 TABLE 3_6.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 3\600\SS 600DPI TEST ROLL FOR GS1 TABLE 3_6.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 3\600\SS 600DPI TEST ROLL FOR GS1 TABLE 3_7.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 3\600\SS 600DPI TEST ROLL FOR GS1 TABLE 3_7.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 3\600\SS 600DPI TEST ROLL FOR GS1 TABLE 3_8.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 3\600\SS 600DPI TEST ROLL FOR GS1 TABLE 3_8.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_01.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_01.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_02.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_02.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_03.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_03.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_04.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_04.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_05.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_05.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_06.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_06.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_07.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_07.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_08.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_08.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_09.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_09.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_10.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_10.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_11.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_11.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_12.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_12.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_13.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_13.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_14.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_14.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_15.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 4\600\SS 600DPI TEST ROLL FOR GS1 TABLE 4_15.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 5\600\SS 600DPI TEST ROLL FOR GS1 TABLE 5_1.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 5\600\SS 600DPI TEST ROLL FOR GS1 TABLE 5_1.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 5\600\SS 600DPI TEST ROLL FOR GS1 TABLE 5_2.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 5\600\SS 600DPI TEST ROLL FOR GS1 TABLE 5_2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 5\600\SS 600DPI TEST ROLL FOR GS1 TABLE 5_3.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 5\600\SS 600DPI TEST ROLL FOR GS1 TABLE 5_3.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_01.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_01.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_02.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_02.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_03.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_03.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_04.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_04.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_05.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_05.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_06.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_06.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_07.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_07.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_08.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_08.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_09.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_09.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_10.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_10.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_11.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_11.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_12.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_12.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_13.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_13.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_14.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 6\600\SS 600DPI  TEST ROLL FOR GS1 TABLE 6_14.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_01.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_01.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_02.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_02.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_03.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_03.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_04.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_04.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_05.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_05.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_06.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_06.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_07.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_07.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_08.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_08.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_09.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_09.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_10.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_10.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_11.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_11.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_12.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_12.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_13.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_13.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_14.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 8\600\SS 600DPI T ROLL FOR GS1 TABLE 8_14.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 9\600\SS 600DPI TEST ROLL GS1 TABLE 9_1.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 9\600\SS 600DPI TEST ROLL GS1 TABLE 9_1.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 9\600\SS 600DPI TEST ROLL GS1 TABLE 9_2.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 9\600\SS 600DPI TEST ROLL GS1 TABLE 9_2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\GS1 TABLE 9\600\SS 600DPI TEST ROLL GS1 TABLE 9_3.png">
+    <Content Include="Assets\Image Rolls\GS1 TABLE 9\600\SS 600DPI TEST ROLL GS1 TABLE 9_3.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_01.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_01.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_02.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_02.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_03.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_03.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_04.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_04.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_05.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_05.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_06.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_06.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_07.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_07.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_08.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_08.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_09.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_09.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_10.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_10.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_11.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_11.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_12.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_12.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_13.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_13.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_14.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_14.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_15.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_15.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_16.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_16.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_17.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_17.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_18.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_18.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_19.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_19.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_20.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 2x1\600\TEST ROLL 2X1 600DPI_20.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_01.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_01.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_02.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_02.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_03.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_03.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_04.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_04.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_05.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_05.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_06.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_06.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_07.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_07.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_08.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_08.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_09.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_09.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_10.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_10.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_11.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_11.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_12.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_12.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_13.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_13.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_14.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_14.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_15.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_15.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_16.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_16.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_17.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_17.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_18.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_18.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_19.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_19.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_20.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_20.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_21.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_21.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_22.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_22.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_23.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_23.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_24.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_24.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_25.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_25.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_26.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_26.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_27.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_27.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_28.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_28.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_29.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_29.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_30.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_30.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_31.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_31.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_32.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_32.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_33.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_33.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_34.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_34.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_35.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_35.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_36.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_36.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_37.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_37.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_38.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_38.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_39.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_39.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_40.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_40.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_41.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_41.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_42.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_42.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_43.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_43.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_44.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_44.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_45.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_45.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_46.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_46.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_47.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_47.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_48.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_48.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_49.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_49.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_50.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 4x8\600\50 PDF Omron Production Test Roll_50.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 6x4\300\TEST ROLL 6x4 10 LABELS_01.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 6x4\300\TEST ROLL 6x4 10 LABELS_01.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 6x4\300\TEST ROLL 6x4 10 LABELS_02.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 6x4\300\TEST ROLL 6x4 10 LABELS_02.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 6x4\300\TEST ROLL 6x4 10 LABELS_03.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 6x4\300\TEST ROLL 6x4 10 LABELS_03.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 6x4\300\TEST ROLL 6x4 10 LABELS_04.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 6x4\300\TEST ROLL 6x4 10 LABELS_04.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 6x4\300\TEST ROLL 6x4 10 LABELS_05.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 6x4\300\TEST ROLL 6x4 10 LABELS_05.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 6x4\300\TEST ROLL 6x4 10 LABELS_06.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 6x4\300\TEST ROLL 6x4 10 LABELS_06.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 6x4\300\TEST ROLL 6x4 10 LABELS_07.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 6x4\300\TEST ROLL 6x4 10 LABELS_07.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 6x4\300\TEST ROLL 6x4 10 LABELS_08.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 6x4\300\TEST ROLL 6x4 10 LABELS_08.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 6x4\300\TEST ROLL 6x4 10 LABELS_09.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 6x4\300\TEST ROLL 6x4 10 LABELS_09.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION 6x4\300\TEST ROLL 6x4 10 LABELS_10.png">
+    <Content Include="Assets\Image Rolls\VALIDATION 6x4\300\TEST ROLL 6x4 10 LABELS_10.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_01.png">
+    <Content Include="Assets\Image Rolls\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_01.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_02.png">
+    <Content Include="Assets\Image Rolls\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_02.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_03.png">
+    <Content Include="Assets\Image Rolls\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_03.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_04.png">
+    <Content Include="Assets\Image Rolls\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_04.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_05.png">
+    <Content Include="Assets\Image Rolls\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_05.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_06.png">
+    <Content Include="Assets\Image Rolls\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_06.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_07.png">
+    <Content Include="Assets\Image Rolls\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_07.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_08.png">
+    <Content Include="Assets\Image Rolls\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_08.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_09.png">
+    <Content Include="Assets\Image Rolls\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_09.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_10.png">
+    <Content Include="Assets\Image Rolls\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_10.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_11.png">
+    <Content Include="Assets\Image Rolls\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_11.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_12.png">
+    <Content Include="Assets\Image Rolls\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_12.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_13.png">
+    <Content Include="Assets\Image Rolls\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_13.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_14.png">
+    <Content Include="Assets\Image Rolls\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_14.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_15.png">
+    <Content Include="Assets\Image Rolls\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_15.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_16.png">
+    <Content Include="Assets\Image Rolls\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_16.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_17.png">
+    <Content Include="Assets\Image Rolls\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_17.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_18.png">
+    <Content Include="Assets\Image Rolls\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_18.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_19.png">
+    <Content Include="Assets\Image Rolls\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_19.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_20.png">
+    <Content Include="Assets\Image Rolls\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_20.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_21.png">
+    <Content Include="Assets\Image Rolls\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_21.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_22.png">
+    <Content Include="Assets\Image Rolls\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_22.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_23.png">
+    <Content Include="Assets\Image Rolls\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_23.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_24.png">
+    <Content Include="Assets\Image Rolls\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_24.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_25.png">
+    <Content Include="Assets\Image Rolls\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_25.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_01.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_01.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_02.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_02.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_03.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_03.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_04.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_04.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_05.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_05.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_05.txt">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_05.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_06.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_06.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_07.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_07.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_08.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_08.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_09.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_09.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_09.txt">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_09.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_10.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_10.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_11.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_11.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_11.txt">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_11.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_12.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_12.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_13.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_13.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_14.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_14.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_15.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_15.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_15.txt">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_15.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_16.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_16.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_16.txt">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_16.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_17.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_17.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_18.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_18.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_19.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_19.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_19.txt">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_19.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_20.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_20.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_21.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_21.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_22.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_22.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_23.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_23.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_24.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_24.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_25.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_25.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_25.txt">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_25.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_26.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_26.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_27.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_27.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_28.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_28.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_28.txt">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_28.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_29.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_29.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_30.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_30.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_30.txt">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_30.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_31.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_31.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_32.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_32.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_33.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_33.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_34.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_34.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_34.txt">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_34.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_35.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_35.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_36.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_36.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_37.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_37.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_37.txt">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_37.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_38.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_38.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_39.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_39.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_39.txt">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_39.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_40.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_40.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_41.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_41.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_42.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_42.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_43.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_43.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_44.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_44.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_44.txt">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_44.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_45.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_45.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_46.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_46.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_47.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_47.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_48.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_48.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_49.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_49.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_49.txt">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_49.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_49a.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_49a.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_50.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_50.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_39a.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_39a.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_01.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_01.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_02.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_02.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_03.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_03.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_04.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_04.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_05.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_05.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_05.txt">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_05.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_06.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_06.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_07.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_07.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_08.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_08.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_09.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_09.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_09.txt">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_09.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_10.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_10.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_11.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_11.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_11.txt">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_11.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_12.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_12.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_13.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_13.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_14.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_14.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_15.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_15.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_15.txt">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_15.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_16.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_16.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_16.txt">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_16.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_17.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_17.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_18.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_18.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_19.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_19.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_19.txt">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_19.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_20.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_20.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_21.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_21.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_22.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_22.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_23.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_23.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_24.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_24.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_25.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_25.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_25.txt">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_25.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_26.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_26.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_27.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_27.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_28.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_28.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_28.txt">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_28.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_29.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_29.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_30.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_30.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_30.txt">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_30.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_31.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_31.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_32.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_32.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_33.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_33.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_34.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_34.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_34.txt">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_34.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_35.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_35.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_36.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_36.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_37.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_37.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_37.txt">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_37.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_38.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_38.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_39.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_39.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_39.txt">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_39.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_40.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_40.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_41.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_41.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_42.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_42.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_43.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_43.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_44.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_44.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_44.txt">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_44.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_45.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_45.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_46.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_46.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_47.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_47.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_48.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_48.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_49.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_49.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_49.txt">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_49.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Standards\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_50.png">
+    <Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_50.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="LVS-95xx\com0com\Setup_com0com_x64_signed.exe">
@@ -1131,7 +1131,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Assets\Standards\GS1 TABLE 1\300\" />
+    <Folder Include="Assets\Image Rolls\GS1 TABLE 1\300\" />
+    <Folder Include="V5\ViewModels\" />
+    <Folder Include="V5\Views\" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.8">
@@ -1149,6 +1151,7 @@
     <ProjectReference Include="..\..\JSONViewer_WPF\JSONViewer_WPF.csproj" />
     <ProjectReference Include="..\..\LibDatabases\LibSimpleDatabase\LibSimpleDatabase.csproj" />
     <ProjectReference Include="..\..\V275_REST_Lib\V275_REST_Lib.csproj" />
+    <ProjectReference Include="..\..\V5_REST_Lib\V5_REST_Lib.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />

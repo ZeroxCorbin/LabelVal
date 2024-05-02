@@ -11,30 +11,6 @@
                 d:DataContext="{d:DesignInstance Type=ViewModels:StandardsDatabaseViewModel}"
              mc:Ignorable="d">
 
-    <UserControl.Resources>
-        <CollectionViewSource x:Key="AssetStandards" Source="{Binding AssetStandards}">
-            <CollectionViewSource.SortDescriptions>
-                <componentmodel:SortDescription PropertyName="Name" Direction="Ascending"/>
-                <componentmodel:SortDescription PropertyName="DPI" Direction="Ascending"/>
-            </CollectionViewSource.SortDescriptions>
-
-            <CollectionViewSource.GroupDescriptions>
-                <PropertyGroupDescription PropertyName="DPI" />
-            </CollectionViewSource.GroupDescriptions>
-        </CollectionViewSource>
-
-        <CollectionViewSource x:Key="Standards" Source="{Binding Standards}">
-            <CollectionViewSource.SortDescriptions>
-                <componentmodel:SortDescription PropertyName="Name" Direction="Ascending"/>
-                <componentmodel:SortDescription PropertyName="DPI" Direction="Ascending"/>
-            </CollectionViewSource.SortDescriptions>
-
-            <CollectionViewSource.GroupDescriptions>
-                <PropertyGroupDescription PropertyName="DPI" />
-            </CollectionViewSource.GroupDescriptions>
-        </CollectionViewSource>
-    </UserControl.Resources>
-
     <DockPanel>
 
         <GroupBox DockPanel.Dock="Top"
@@ -98,7 +74,7 @@
                     </DockPanel>
 
                     <ListView ItemsSource="{Binding StandardsDatabases}" 
-                        SelectedItem="{Binding SelectedStandardsDatabase}">
+                        SelectedItem="{Binding SelectedImageRollsDatabase}">
                         <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding FileName}"/>
@@ -110,145 +86,7 @@
             </md:Card>
         </GroupBox>
 
-        <GroupBox DockPanel.Dock="Top"
-            md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-            md:ColorZoneAssist.Foreground="{DynamicResource MahApps.Brushes.Foreground}"
-            md:ColorZoneAssist.Mode="Custom"
-            BorderThickness="0"
-            Margin="3" Padding="3"
-            HorizontalAlignment="Left" VerticalAlignment="Top" 
-            Style="{StaticResource MaterialDesignCardGroupBox}">
 
-            <GroupBox.Header>
-                <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
-                    <TextBlock Text="Standards" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
-                </md:Card>
-            </GroupBox.Header>
-
-            <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" Padding="2">
-
-                <ListView ItemsSource="{Binding Source={StaticResource ResourceKey=Standards}}"
-                        SelectedItem="{Binding SelectedStandard}"
-                        IsEnabled="{Binding IsNotRunRunning}" Margin="0,0,2,0" ScrollViewer.VerticalScrollBarVisibility="Auto">
-
-                    <ListView.GroupStyle>
-
-                        <!--Lens Name-->
-                        <GroupStyle>
-                            <GroupStyle.ContainerStyle>
-                                <Style TargetType="{x:Type GroupItem}">
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="{x:Type GroupItem}">
-                                                <Expander>
-                                                    <Expander.Header>
-                                                        <TextBlock DockPanel.Dock="Top" Text="{Binding Name}" Margin="10,3" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
-                                                    </Expander.Header>
-
-                                                    <ItemsPresenter />
-
-                                                </Expander>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </GroupStyle.ContainerStyle>
-                        </GroupStyle>
-
-
-                    </ListView.GroupStyle>
-
-                    <ListView.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <DockPanel Margin="0,0,-2,0"/>
-                        </ItemsPanelTemplate>
-                    </ListView.ItemsPanel>
-
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
-                            <Setter Property="DockPanel.Dock" Value="Top"/>
-                        </Style>
-                    </ListView.ItemContainerStyle>
-
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Name}" Margin="10,3" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-
-            </md:Card>
-        </GroupBox>
-
-        <GroupBox
-            md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-            md:ColorZoneAssist.Foreground="{DynamicResource MahApps.Brushes.Foreground}"
-            md:ColorZoneAssist.Mode="Custom"
-            BorderThickness="0"
-            Margin="3" Padding="3"
-            HorizontalAlignment="Left" VerticalAlignment="Top" 
-            Style="{StaticResource MaterialDesignCardGroupBox}">
-
-            <GroupBox.Header>
-                <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
-                    <TextBlock Text="Asset Standards" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
-                </md:Card>
-            </GroupBox.Header>
-
-            <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" Padding="2">
-
-                <ListView ItemsSource="{Binding Source={StaticResource ResourceKey=AssetStandards}}"
-                        SelectedItem="{Binding SelectedStandard}"
-                        IsEnabled="{Binding IsNotRunRunning}" Margin="0,0,2,0" ScrollViewer.VerticalScrollBarVisibility="Auto">
-
-                    <ListView.GroupStyle>
-
-                        <!--Lens Name-->
-                        <GroupStyle>
-                            <GroupStyle.ContainerStyle>
-                                <Style TargetType="{x:Type GroupItem}">
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="{x:Type GroupItem}">
-                                                <Expander>
-                                                    <Expander.Header>
-                                                        <TextBlock DockPanel.Dock="Top" Text="{Binding Name}" Margin="10,3" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
-                                                    </Expander.Header>
-
-                                                    <ItemsPresenter />
-
-                                                </Expander>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </GroupStyle.ContainerStyle>
-                        </GroupStyle>
-
-
-                    </ListView.GroupStyle>
-
-                    <ListView.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <DockPanel Margin="0,0,-2,0"/>
-                        </ItemsPanelTemplate>
-                    </ListView.ItemsPanel>
-
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
-                            <Setter Property="DockPanel.Dock" Value="Top"/>
-                        </Style>
-                    </ListView.ItemContainerStyle>
-
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Name}" Margin="10,3" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-
-            </md:Card>
-        </GroupBox>
 
     </DockPanel>
 

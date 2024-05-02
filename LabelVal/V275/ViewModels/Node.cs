@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Messages;
 using LabelVal.Models;
 using MahApps.Metro.Controls.Dialogs;
@@ -24,7 +25,7 @@ public enum NodeStates
     Paused,
 }
 
-public partial class Node : ObservableRecipient, IRecipient<Messages.StandardMessages.SelectedStandardChanged>
+public partial class Node : ObservableRecipient, IRecipient<Messages.ImageRollMessages.SelectedImageRollChanged>
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -69,8 +70,8 @@ public partial class Node : ObservableRecipient, IRecipient<Messages.StandardMes
     public bool IsNotLoggedIn => !(IsLoggedIn_Monitor || IsLoggedIn_Control);
 
 
-    [ObservableProperty] private Models.ImageRoll selectedStandard;
-    partial void OnSelectedStandardChanged(ImageRoll value) => CheckTemplateName();
+    [ObservableProperty] private ImageRoll selectedImageRoll;
+    partial void OnSelectedImageRollChanged(ImageRoll value) => CheckTemplateName();
 
     [ObservableProperty] private bool isWrongTemplateName = false;
 
@@ -88,7 +89,7 @@ public partial class Node : ObservableRecipient, IRecipient<Messages.StandardMes
 
     public async Task OkDialog(string title, string message) => _ = await DialogCoordinator.Instance.ShowMessageAsync(this, title, message, MessageDialogStyle.Affirmative);
 
-    public void Receive(StandardMessages.SelectedStandardChanged message) => SelectedStandard = message.Value;
+    public void Receive(ImageRollMessages.SelectedImageRollChanged message) => SelectedImageRoll = message.Value;
 
     private void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
@@ -284,15 +285,15 @@ public partial class Node : ObservableRecipient, IRecipient<Messages.StandardMes
         if (!IsLoggedIn)
             return;
 
-        if (JobName == "" || SelectedStandard == null)
+        if (JobName == "" || SelectedImageRoll == null)
         {
             IsWrongTemplateName = true;
             return;
         }
 
-        if (!SelectedStandard.IsGS1)
+        if (!SelectedImageRoll.IsGS1)
         {
-            if (JobName.ToLower().Equals(SelectedStandard.Name.ToLower()))
+            if (JobName.ToLower().Equals(SelectedImageRoll.Name.ToLower()))
                 return;
         }
         else

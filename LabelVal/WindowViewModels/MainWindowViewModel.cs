@@ -1,64 +1,50 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using LabelVal.Databases;
+using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Messages;
-using LabelVal.Models;
-using LabelVal.Printer;
-using LabelVal.Run;
-using LabelVal.V275.ViewModels;
 using MahApps.Metro.Controls.Dialogs;
-using Microsoft.Win32;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing.Printing;
 using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Input;
-using V275_REST_lib;
 using V275_REST_lib.Models;
-using static LabelVal.WindowViewModels.MainWindowViewModel;
 
 namespace LabelVal.WindowViewModels;
 
-public partial class MainWindowViewModel : ObservableRecipient, IRecipient<SystemMessages.StatusMessage>, IRecipient<NodeMessages.SelectedNodeChanged>, IRecipient<PrinterMessages.SelectedPrinterChanged>
+public partial class MainWindowViewModel : ObservableRecipient, IRecipient<SystemMessages.StatusMessage>, IRecipient<NodeMessages.SelectedNodeChanged>, IRecipient<PrinterMessages.SelectedPrinterChanged>, IRecipient<ImageRollMessages.SelectedImageRollChanged>
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-
+    public static string Version => App.Version;
 
     public class Repeat
     {
-        public LabelControlViewModel Label { get; set; }
+        public ImageResult Label { get; set; }
         public int RepeatNumber { get; set; } = -1;
     }
 
     public V275.ViewModels.V275 V275 { get; }
-
-    public Printer.ViewModels.Printer Printer { get; } 
+    public Printer.ViewModels.Printer Printer { get; }
+    public ImageRolls.ViewModels.ImageRolls ImageRolls { get; }
 
     public RunViewModel RunViewModel { get; } = new RunViewModel();
+    private int LoopCount => App.Settings.GetValue(nameof(RunViewModel.LoopCount), 1);
 
     public StandardsDatabaseViewModel StandardsDatabaseViewModel { get; }
 
-
     [ObservableProperty] private string userMessage = "";
 
-    private int LoopCount => App.Settings.GetValue(nameof(RunViewModel.LoopCount), 1);
-
-    public static string Version => App.Version;
-
-    [ObservableProperty] private ObservableCollection<LabelControlViewModel> labels = [];
+    [ObservableProperty] private ObservableCollection<ImageResult> labels = [];
 
     public Dictionary<int, Repeat> Repeats { get; } = [];
 
-    [ObservableProperty] private Node selectedNode;
-
+    [ObservableProperty] private V275.ViewModels.Node selectedNode;
     [ObservableProperty] private PrinterSettings selectedPrinter;
+    [ObservableProperty] private ImageRolls.ViewModels.ImageRoll selectedImageRoll;
+    partial void OnSelectedImageRollChanged(ImageRoll value) => LoadLabels();
 
     public static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
     public MainWindowViewModel()
@@ -66,8 +52,12 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
         IsActive = true;
 
         StandardsDatabaseViewModel = new StandardsDatabaseViewModel(this);
+
         V275 = new V275.ViewModels.V275();
         Printer = new Printer.ViewModels.Printer();
+
+        ImageRolls = new ImageRolls.ViewModels.ImageRolls();
+
     }
 
     public void Receive(NodeMessages.SelectedNodeChanged message)
@@ -90,6 +80,7 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
         }
     }
     public void Receive(PrinterMessages.SelectedPrinterChanged message) => SelectedPrinter = message.Value;
+    public void Receive(ImageRollMessages.SelectedImageRollChanged message) => SelectedImageRoll = message.Value;
     public void Receive(SystemMessages.StatusMessage message)
     {
         switch (message.Value)
@@ -146,7 +137,6 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
 
     private void Reset() => Label_StatusChanged("");
 
-
     public void ClearLabels()
     {
         foreach (var lab in Labels)
@@ -160,12 +150,12 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
     }
     public void LoadLabels()
     {
-        Logger.Info("Loading label images from standards directory: {name}", $"{App.AssetsStandardsRoot}\\{StandardsDatabaseViewModel.SelectedStandard.Name}\\");
+        Logger.Info("Loading label images from standards directory: {name}", $"{App.AssetsImageRollRoot}\\{SelectedImageRoll.Name}\\");
 
         ClearLabels();
 
         List<string> images = [];
-        foreach (var f in Directory.EnumerateFiles(StandardsDatabaseViewModel.SelectedStandard.Path))
+        foreach (var f in Directory.EnumerateFiles(SelectedImageRoll.Path))
             if (Path.GetExtension(f) == ".png")
                 images.Add(f);
 
@@ -179,11 +169,7 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
             if (File.Exists(img.Replace(".png", ".txt")))
                 comment = File.ReadAllText(img.Replace(".png", ".txt"));
 
-            var tmp = new LabelControlViewModel(img, comment, this)
-            {
-                MainWindow = this,
-                SelectedNode = SelectedNode,
-            };
+            var tmp = new ImageResult(img, comment, this);
 
             tmp.Printing += Label_Printing;
             tmp.StatusChanged += Label_StatusChanged;
@@ -232,7 +218,7 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
     }
     private void WebSocket_LabelEnd(Events_System ev)
     {
-        if (SelectedNode.State == NodeStates.Editing)
+        if (SelectedNode.State == LabelVal.V275.ViewModels.NodeStates.Editing)
             return;
         if (PrintingLabel == null)
             return;
@@ -251,28 +237,28 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
                 Repeats.Clear();
     }
 
-    private LabelControlViewModel PrintingLabel { get; set; } = null;
+    private ImageResult PrintingLabel { get; set; } = null;
 
     private bool WaitForRepeat;
-    private async void Label_Printing(LabelControlViewModel label, string type)
+    private async void Label_Printing(ImageResult label, string type)
     {
         if (SelectedNode.IsSimulator)
         {
             try
             {
-                int verRes = 1;
+                var verRes = 1;
                 var prepend = "";
 
                 var sim = new Simulator.SimulatorFileHandler();
 
                 if (!sim.DeleteAllImages())
                 {
-                    string verCur = SelectedNode.Product.part != null ? SelectedNode.Product.part.Substring(SelectedNode.Product.part.LastIndexOf('-') + 1) : null;
+                    var verCur = SelectedNode.Product.part?.Substring(SelectedNode.Product.part.LastIndexOf('-') + 1);
 
                     if (verCur != null)
                     {
-                        System.Version ver = System.Version.Parse(verCur);
-                        System.Version verMin = System.Version.Parse("1.1.0.3009");
+                        var ver = System.Version.Parse(verCur);
+                        var verMin = System.Version.Parse("1.1.0.3009");
                         verRes = ver.CompareTo(ver);
                     }
 
@@ -290,7 +276,7 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
 
                         foreach (var imgFile in sim.Images)
                         {
-                            string name = Path.GetFileName(imgFile);
+                            var name = Path.GetFileName(imgFile);
 
                             for (; ; )
                             {
@@ -330,7 +316,6 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
                         label.IsWorking = false;
                         return;
                     }
-
                 }
 
                 if (!SelectedNode.IsLoggedIn_Control)
@@ -391,7 +376,7 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
         else
             PrintingLabel = null;
 
-        if (SelectedNode.State != NodeStates.Idle && SelectedNode.IsLoggedIn_Control)
+        if (SelectedNode.State != LabelVal.V275.ViewModels.NodeStates.Idle && SelectedNode.IsLoggedIn_Control)
         {
             if (!await SelectedNode.EnablePrint("1"))
             {
@@ -411,7 +396,7 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
     {
         WaitForRepeat = false;
 
-        if (Repeats[repeat].Label.SelectedStandard.IsGS1)
+        if (Repeats[repeat].Label.SelectedImageRoll.IsGS1)
         {
             if (repeat > 0)
                 if (!await SelectedNode.Connection.Commands.SetRepeat(repeat))
@@ -430,7 +415,7 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
 
             if (i == 2)
             {
-                var sectors = SelectedNode.Connection.CreateSectors(SelectedNode.Connection.SetupDetectEvent, StandardsDatabaseViewModel.SelectedStandard.TableID, SelectedNode.Symbologies);
+                var sectors = SelectedNode.Connection.CreateSectors(SelectedNode.Connection.SetupDetectEvent, SelectedImageRoll.TableID, SelectedNode.Symbologies);
 
                 Logger.Info("Creating sectors.");
 
@@ -463,8 +448,6 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
         Repeats.Clear();
     }
 
-
-
     private bool StartRunCheck()
     {
         foreach (var lab in Labels)
@@ -472,6 +455,4 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
                 return false;
         return true;
     }
-
-  
 }

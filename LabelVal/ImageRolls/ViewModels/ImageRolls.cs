@@ -1,0 +1,67 @@
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
+using LabelVal.Messages;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+
+namespace LabelVal.ImageRolls.ViewModels;
+public partial class ImageRolls : ObservableObject
+{
+    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
+    public ObservableCollection<ImageRoll> FixedImageRolls { get; } = [];
+    public ObservableCollection<ImageRoll> UserImageRolls { get; } = [];
+
+
+    [ObservableProperty] private ImageRoll selectedImageRoll = App.Settings.GetValue<ImageRoll>(nameof(SelectedImageRoll), null);
+    partial void OnSelectedImageRollChanged(ImageRoll value) => App.Settings.SetValue(nameof(SelectedImageRoll), value);
+    partial void OnSelectedImageRollChanged(ImageRoll oldValue, ImageRoll newValue) => _ = WeakReferenceMessenger.Default.Send(new ImageRollMessages.SelectedImageRollChanged(newValue, oldValue));
+
+    public ImageRolls()
+    {
+        LoadImageRollsList();
+       // SelectImageRoll();
+    }
+
+    private void LoadImageRollsList()
+    {
+        Logger.Info("Loading image rolls from file system. {path}", App.AssetsImageRollRoot);
+
+        UserImageRolls.Clear();
+        FixedImageRolls.Clear();
+
+        foreach (var dir in Directory.EnumerateDirectories(App.AssetsImageRollRoot).ToList().OrderBy((e) => Regex.Replace(e, "[0-9]+", match => match.Value.PadLeft(10, '0'))))
+        {
+            Logger.Debug("Found: {name}", dir[(dir.LastIndexOf("\\") + 1)..]);
+
+            foreach (var subdir in Directory.EnumerateDirectories(dir))
+            {
+                FixedImageRolls.Add(new ImageRoll(dir[(dir.LastIndexOf("\\") + 1)..], subdir));
+            }
+        }
+
+        Logger.Info("Processed {count} fixed image rolls.", FixedImageRolls.Count);
+
+        foreach (var dir in Directory.EnumerateDirectories(App.ImageRollRoot).ToList().OrderBy((e) => Regex.Replace(e, "[0-9]+", match => match.Value.PadLeft(10, '0'))))
+        {
+            Logger.Debug("Found: {name}", dir[(dir.LastIndexOf("\\") + 1)..]);
+
+            foreach (var subdir in Directory.EnumerateDirectories(dir))
+            {
+                UserImageRolls.Add(new ImageRoll(dir[(dir.LastIndexOf("\\") + 1)..], subdir));
+            }
+        }
+
+        Logger.Info("Processed {count} image rolls.", UserImageRolls.Count);
+    }
+    private void SelectImageRoll()
+    {
+        ImageRoll std;
+        if (SelectedImageRoll != null && (std = UserImageRolls.FirstOrDefault((e) => e.Name.Equals(SelectedImageRoll.Name))) != null)
+            SelectedImageRoll = std;
+        else if (UserImageRolls.Count > 0)
+            SelectedImageRoll = UserImageRolls.First();
+    }
+}

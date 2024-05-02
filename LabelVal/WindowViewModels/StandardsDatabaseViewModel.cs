@@ -36,40 +36,16 @@ public partial class StandardsDatabaseViewModel : ObservableObject
     [ObservableProperty] private StandardsDBFile selectedStandardsDatabase;
     partial void OnSelectedStandardsDatabaseChanged(StandardsDBFile value)
     {
-        SelectedStandard = null;
+       // SelectedImageRoll = null;
 
         if (value != null)
         {
             StoredStandardsDatabase = value;
 
             LoadStandardsDatabase(StoredStandardsDatabase);
-            SelectStandard();
+            //SelectImageRoll();
         }
     }
-
-
-    [ObservableProperty] private ImageRoll selectedStandard = App.Settings.GetValue<ImageRoll>(nameof(SelectedStandard), null);
-    partial void OnSelectedStandardChanged(ImageRoll value)
-    {
-        if (value != null)
-        {
-            App.Settings.SetValue(nameof(SelectedStandard), value);
-
-            App.Current.Dispatcher.InvokeAsync(() =>
-            {
-                MainWindowViewModel.LoadLabels();
-                //_ = MainWindowViewModel.V275NodesViewModel.CheckTemplateName();
-            });
-        }
-        else
-        {
-            App.Current.Dispatcher.InvokeAsync(() =>
-            {
-                MainWindowViewModel.ClearLabels();
-            });
-        }
-    }
-    partial void OnSelectedStandardChanged(ImageRoll oldValue, ImageRoll newValue) => _ = WeakReferenceMessenger.Default.Send(new StandardMessages.SelectedStandardChanged(newValue, oldValue));
 
     private ObservableCollection<string> OrphandStandards { get; } = [];
 
@@ -88,8 +64,7 @@ public partial class StandardsDatabaseViewModel : ObservableObject
     public bool IsNotDatabasePermLocked => !isDatabasePermLocked;
     private bool isDatabasePermLocked = false;
 
-    public ObservableCollection<ImageRoll> AssetStandards { get; } = [];
-    public ObservableCollection<ImageRoll> Standards { get; } = [];
+
 
     public static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
 
@@ -97,56 +72,14 @@ public partial class StandardsDatabaseViewModel : ObservableObject
     {
         MainWindowViewModel = mainWindowViewModel;
 
-        LoadStandardsList();
         LoadStandardsDatabasesList();
-
         SelectStandardsDatabase();
     }
 
     public async Task OkDialog(string title, string message) => _ = await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.Affirmative);
     public async Task<string> GetStringDialog(string title, string message) => await DialogCoordinator.ShowInputAsync(this, title, message);
 
-    private void LoadStandardsList()
-    {
-        Logger.Info("Loading standards from file system. {path}", App.AssetsStandardsRoot);
 
-        Standards.Clear();
-        AssetStandards.Clear();
-
-        SelectedStandard = null;
-
-        foreach (var dir in Directory.EnumerateDirectories(App.AssetsStandardsRoot).ToList().OrderBy((e) => Regex.Replace(e, "[0-9]+", match => match.Value.PadLeft(10, '0'))))
-        {
-            Logger.Debug("Found: {name}", dir[(dir.LastIndexOf("\\") + 1)..]);
-
-            foreach (var subdir in Directory.EnumerateDirectories(dir))
-            {
-                AssetStandards.Add(new ImageRoll(dir[(dir.LastIndexOf("\\") + 1)..], subdir));
-            }
-        }
-
-        Logger.Info("Processed {count} asset standards.", AssetStandards.Count);
-
-        foreach (var dir in Directory.EnumerateDirectories(App.StandardsRoot).ToList().OrderBy((e) => Regex.Replace(e, "[0-9]+", match => match.Value.PadLeft(10, '0'))))
-        {
-            Logger.Debug("Found: {name}", dir[(dir.LastIndexOf("\\") + 1)..]);
-
-            foreach (var subdir in Directory.EnumerateDirectories(dir))
-            {
-                Standards.Add(new ImageRoll(dir[(dir.LastIndexOf("\\") + 1)..], subdir));
-            }
-        }
-
-        Logger.Info("Processed {count} asset standards.", Standards.Count);
-    }
-    private void SelectStandard()
-    {
-        ImageRoll std;
-        if (SelectedStandard != null && (std = Standards.FirstOrDefault((e) => e.Name.Equals(SelectedStandard.Name))) != null)
-            SelectedStandard = std;
-        else if (Standards.Count > 0)
-            SelectedStandard = Standards.First();
-    }
 
     private void LoadStandardsDatabasesList()
     {
@@ -201,19 +134,19 @@ public partial class StandardsDatabaseViewModel : ObservableObject
         IsDatabasePermLocked = tables.Contains("LOCKPERM");
         IsDatabaseLocked = tables.Contains("LOCK");
 
-        foreach (var tbl in tables)
-        {
-            ImageRoll std;
-            if ((std = Standards.FirstOrDefault((e) => e.Name.Equals(tbl))) == null)
-            {
-                if (tbl.StartsWith("LOCK"))
-                    continue;
-                else
-                    OrphandStandards.Add(tbl);
-            }
-            //else
-            //    std.NumRows = StandardsDatabase.GetAllRowsCount(tbl);
-        }
+        //foreach (var tbl in tables)
+        //{
+        //    ImageRoll std;
+        //    if ((std = ImageRolls.FirstOrDefault((e) => e.Name.Equals(tbl))) == null)
+        //    {
+        //        if (tbl.StartsWith("LOCK"))
+        //            continue;
+        //        else
+        //            OrphandStandards.Add(tbl);
+        //    }
+        //    //else
+        //    //    std.NumRows = StandardsDatabase.GetAllRowsCount(tbl);
+        //}
     }
 
     [RelayCommand]

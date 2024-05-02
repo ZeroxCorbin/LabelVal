@@ -10,6 +10,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JSONViewer_WPF", "..\JSONVi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibSimpleDatabase", "..\LibDatabases\LibSimpleDatabase\LibSimpleDatabase.csproj", "{B9F4ED67-9D00-43ED-BBFA-1A0AC0F914ED}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "V5_REST_Lib", "..\V5_REST_Lib\V5_REST_Lib.csproj", "{04223523-CEAC-4C00-9290-ED6145EA5D48}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,14 @@ Global
 		{B9F4ED67-9D00-43ED-BBFA-1A0AC0F914ED}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B9F4ED67-9D00-43ED-BBFA-1A0AC0F914ED}.Release|x64.ActiveCfg = Release|Any CPU
 		{B9F4ED67-9D00-43ED-BBFA-1A0AC0F914ED}.Release|x64.Build.0 = Release|Any CPU
+		{04223523-CEAC-4C00-9290-ED6145EA5D48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04223523-CEAC-4C00-9290-ED6145EA5D48}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04223523-CEAC-4C00-9290-ED6145EA5D48}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{04223523-CEAC-4C00-9290-ED6145EA5D48}.Debug|x64.Build.0 = Debug|Any CPU
+		{04223523-CEAC-4C00-9290-ED6145EA5D48}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04223523-CEAC-4C00-9290-ED6145EA5D48}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04223523-CEAC-4C00-9290-ED6145EA5D48}.Release|x64.ActiveCfg = Release|Any CPU
+		{04223523-CEAC-4C00-9290-ED6145EA5D48}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

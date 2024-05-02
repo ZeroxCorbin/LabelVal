@@ -34,13 +34,13 @@ namespace LabelVal
 
         public static string SettingsDatabaseName => $"ApplicationSettings{DatabaseExtension}";
 
-        public static string AssetsStandardsDatabasesRoot => $"{System.IO.Directory.GetCurrentDirectory()}\\Assets\\StandardsDatabases";
-        public static string AssetsStandardsRoot => $"{System.IO.Directory.GetCurrentDirectory()}\\Assets\\Standards";
-
-        public static string StandardsDatabaseRoot => $"{UserDataDirectory}\\StandardsDatabases";
-        public static string StandardsRoot => $"{UserDataDirectory}\\Standards";
-
         public static string StandardsDatabaseDefaultName => $"StandardsDatabase";
+        public static string AssetsStandardsDatabasesRoot => $"{System.IO.Directory.GetCurrentDirectory()}\\Assets\\StandardsDatabases"; 
+        public static string StandardsDatabaseRoot => $"{UserDataDirectory}\\StandardsDatabases";
+
+        public static string AssetsImageRollRoot => $"{System.IO.Directory.GetCurrentDirectory()}\\Assets\\Image Rolls";
+        public static string ImageRollRoot => $"{UserDataDirectory}\\Image Rolls";
+
 
         public static string RunsRoot => $"{UserDataDirectory}\\Runs";
         public static string RunLedgerDatabaseName => $"RunLedger{DatabaseExtension}";
@@ -58,8 +58,8 @@ namespace LabelVal
                 _ = Directory.CreateDirectory(UserDataDirectory);
             if (!Directory.Exists(StandardsDatabaseRoot))
                 _ = Directory.CreateDirectory(StandardsDatabaseRoot);
-            if (!Directory.Exists(StandardsRoot))
-                _ = Directory.CreateDirectory(StandardsRoot);
+            if (!Directory.Exists(ImageRollRoot))
+                _ = Directory.CreateDirectory(ImageRollRoot);
 
             if (!Directory.Exists(RunsRoot))
                 _ = Directory.CreateDirectory(RunsRoot);
@@ -173,7 +173,7 @@ namespace LabelVal
 
         private void FixFiducial()
         {
-            foreach (var dir in Directory.EnumerateDirectories(AssetsStandardsRoot))
+            foreach (var dir in Directory.EnumerateDirectories(AssetsImageRollRoot))
             {
                 if (Directory.Exists($"{dir}\\300"))
                     foreach (var imgFile in Directory.EnumerateFiles($"{dir}\\300"))
@@ -221,7 +221,7 @@ namespace LabelVal
 
         private void FixRotation()
         {
-            foreach (var dir in Directory.EnumerateDirectories(AssetsStandardsRoot))
+            foreach (var dir in Directory.EnumerateDirectories(AssetsImageRollRoot))
             {
                 foreach (var imgFile in Directory.EnumerateFiles($"{dir}\\600"))
                 {

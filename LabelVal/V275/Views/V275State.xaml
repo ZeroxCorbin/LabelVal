@@ -76,14 +76,14 @@
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
                                         <Condition Value="Editing" Binding="{Binding SelectedNode.State}" />
-                                        <Condition Value="True" Binding="{Binding SelectedStandard.IsGS1}" />
+                                        <Condition Value="True" Binding="{Binding SelectedImageRoll.IsGS1}" />
                                     </MultiDataTrigger.Conditions>
                                     <Setter Property="Background" Value="{DynamicResource CB_Green}" />
                                 </MultiDataTrigger>
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
                                         <Condition Value="Running" Binding="{Binding SelectedNode.State}" />
-                                        <Condition Value="False" Binding="{Binding SelectedStandard.IsGS1}" />
+                                        <Condition Value="False" Binding="{Binding SelectedImageRoll.IsGS1}" />
                                     </MultiDataTrigger.Conditions>
                                     <Setter Property="Background" Value="{DynamicResource CB_Green}" />
                                 </MultiDataTrigger>
@@ -104,7 +104,7 @@
                                 <DataTrigger Value="Editing" Binding="{Binding SelectedNode.State}">
                                     <Setter Property="IsEnabled" Value="True"/>
                                 </DataTrigger>
-                                <DataTrigger Value="True" Binding="{Binding MainWindow.StandardsDatabaseViewModel.SelectedStandard.IsGS1}">
+                                <DataTrigger Value="True" Binding="{Binding MainWindow.StandardsDatabaseViewModel.SelectedImageRoll.IsGS1}">
                                     <Setter Property="Visibility" Value="Collapsed"/>
                                 </DataTrigger>
                             </Style.Triggers>

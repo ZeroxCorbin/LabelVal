@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Messages;
 using LabelVal.WindowViewModels;
 using MahApps.Metro.Controls.Dialogs;
@@ -14,8 +15,7 @@ using V275_REST_Lib.Models;
 
 namespace LabelVal.V275.ViewModels;
 
-
-public partial class V275 : ObservableRecipient
+public partial class V275 : ObservableRecipient, IRecipient<ImageRollMessages.SelectedImageRollChanged>
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -44,29 +44,26 @@ public partial class V275 : ObservableRecipient
         OnPropertyChanged();
     }
 
-
     [ObservableProperty] private string userName = App.Settings.GetValue(nameof(UserName), "admin", true);
     partial void OnUserNameChanged(string value) => App.Settings.SetValue(nameof(UserName), value);
 
     [ObservableProperty] private string password = App.Settings.GetValue(nameof(Password), "admin", true);
     partial void OnPasswordChanged(string value) => App.Settings.SetValue(nameof(Password), value);
 
-
     [ObservableProperty] private string simulatorImageDirectory = App.Settings.GetValue(nameof(SimulatorImageDirectory), GetV275SimulationDirectory(), true);
     partial void OnSimulatorImageDirectoryChanged(string value) { if (string.IsNullOrEmpty(value)) { _ = App.Settings.DeleteSetting(nameof(SimulatorImageDirectory)); OnPropertyChanged(nameof(SimulatorImageDirectory)); } }
-
 
     [ObservableProperty] private ObservableCollection<Node> nodes = [];
     [ObservableProperty] private Node selectedNode;
     partial void OnSelectedNodeChanged(Node oldValue, Node newValue) => _ = WeakReferenceMessenger.Default.Send(new NodeMessages.SelectedNodeChanged(newValue, oldValue));
 
-
     public bool ShowTemplateNameMismatchDialog { get => App.Settings.GetValue("ShowTemplateNameMismatchDialog", true, true); set => App.Settings.SetValue("ShowTemplateNameMismatchDialog", value); }
-
 
     [ObservableProperty] private bool isGetDevices = false;
 
     [ObservableProperty] private bool isOldISO;
+
+    [ObservableProperty] private ImageRoll selectedImageRoll;
 
     public static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
 
@@ -74,9 +71,9 @@ public partial class V275 : ObservableRecipient
     {
     }
 
+    public void Receive(ImageRollMessages.SelectedImageRollChanged message) => SelectedImageRoll = message.Value;
+
     public async Task OkDialog(string title, string message) => _ = await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.Affirmative);
-
-
 
     [RelayCommand]
     private async Task GetDevices()
@@ -100,7 +97,7 @@ public partial class V275 : ObservableRecipient
 
                 Logger.Debug("Adding Device MAC: {dev}", node.cameraMAC);
 
-                Devices.Camera camera = dev.cameras.FirstOrDefault(c => c.mac == node.cameraMAC);
+                var camera = dev.cameras.FirstOrDefault(c => c.mac == node.cameraMAC);
 
                 var newNode = new Node(V275_Host, V275_SystemPort, (uint)node.enumeration) { Details = node, Camera = camera };
 
@@ -127,10 +124,9 @@ public partial class V275 : ObservableRecipient
 
                 foreach (var node in Nodes)
                 {
-                    node.SelectedStandard = MainWindow.StandardsDatabaseViewModel.SelectedStandard;
+                    node.SelectedImageRoll = SelectedImageRoll;
                     node.Product = product;
                 }
-                    
             }
         }
         else
@@ -157,5 +153,4 @@ public partial class V275 : ObservableRecipient
 
         return res.ToString();
     }
-
 }

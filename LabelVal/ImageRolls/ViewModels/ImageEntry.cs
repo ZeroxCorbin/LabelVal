@@ -1,12 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using LabelVal.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace LabelVal.Models;
+namespace LabelVal.ImageRolls.ViewModels;
 public partial class ImageEntry : ObservableObject
 {
     public string Name

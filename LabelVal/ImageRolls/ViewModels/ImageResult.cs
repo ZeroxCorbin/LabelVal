@@ -2,10 +2,11 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using LabelVal.Databases;
+using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Messages;
-using LabelVal.Models;
 using LabelVal.Utilities;
 using LabelVal.V275.ViewModels;
+using LabelVal.WindowViewModels;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using Newtonsoft.Json;
@@ -22,11 +23,11 @@ using System.Windows.Media;
 using V275_REST_lib;
 using V275_REST_lib.Models;
 
-namespace LabelVal.WindowViewModels;
+namespace LabelVal.ImageRolls.ViewModels;
 
-public partial class LabelControlViewModel : ObservableRecipient, IRecipient<NodeMessages.SelectedNodeChanged>
+public partial class ImageResult : ObservableRecipient, IRecipient<NodeMessages.SelectedNodeChanged>
 {
-    public delegate void PrintingDelegate(LabelControlViewModel label, string type);
+    public delegate void PrintingDelegate(ImageResult label, string type);
     public event PrintingDelegate Printing;
 
     public delegate void BringIntoViewDelegate();
@@ -48,43 +49,6 @@ public partial class LabelControlViewModel : ObservableRecipient, IRecipient<Nod
     [ObservableProperty] private ObservableCollection<SectorControlViewModel> labelSectors = [];
     [ObservableProperty] private ObservableCollection<SectorControlViewModel> repeatSectors = [];
     [ObservableProperty] private ObservableCollection<SectorDifferenceViewModel> diffSectors = [];
-
-    //public bool IsLoggedIn_Monitor
-    //{
-    //    get => isLoggedIn_Monitor;
-    //    set { SetProperty(ref isLoggedIn_Monitor, value); OnPropertyChanged("IsNotLoggedIn_Monitor"); }
-    //}
-    //public bool IsNotLoggedIn_Monitor => !isLoggedIn_Monitor;
-    //private bool isLoggedIn_Monitor = false;
-
-    //public bool IsLoggedIn_Control
-    //{
-    //    get => isLoggedIn_Control;
-    //    set
-    //    {
-    //        SetProperty(ref isLoggedIn_Control, value);
-    //        OnPropertyChanged("IsNotLoggedIn_Control");
-    //        if (value) PrintCount = 1;
-    //    }
-    //}
-    //public bool IsNotLoggedIn_Control => !isLoggedIn_Control;
-    //private bool isLoggedIn_Control = false;
-
-    //public bool IsSimulation
-    //{
-    //    get => isSimulation;
-    //    set { SetProperty(ref isSimulation, value); OnPropertyChanged("IsNotSimulation"); }
-    //}
-    //public bool IsNotSimulation => !isSimulation;
-    //private bool isSimulation = false;
-
-    //public bool IsDatabaseLocked
-    //{
-    //    get => isDatabaseLocked;
-    //    set { SetProperty(ref isDatabaseLocked, value); OnPropertyChanged("IsNotDatabaseLocked"); }
-    //}
-    //public bool IsNotDatabaseLocked => !isDatabaseLocked;
-    //private bool isDatabaseLocked = false;
 
     public bool IsStore
     {
@@ -129,10 +93,9 @@ public partial class LabelControlViewModel : ObservableRecipient, IRecipient<Nod
     private string _Status;
 
     private StandardsDatabase StandardsDatabase => MainWindow.StandardsDatabaseViewModel.StandardsDatabase;
-    public ImageRoll SelectedStandard => MainWindow.StandardsDatabaseViewModel.SelectedStandard;
-
 
     [ObservableProperty] private Node selectedNode;
+    [ObservableProperty] private ImageRoll selectedImageRoll;
 
     public Job LabelTemplate { get; set; }
     public Job RepeatTemplate { get; set; }
@@ -141,9 +104,12 @@ public partial class LabelControlViewModel : ObservableRecipient, IRecipient<Nod
     public MainWindowViewModel MainWindow { get; set; }
 
     private static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
-    public LabelControlViewModel(string imagePath, string imageComment, MainWindowViewModel mainWindow)
+    public ImageResult(string imagePath, string imageComment, MainWindowViewModel mainWindow)
     {
         MainWindow = mainWindow;
+
+        SelectedImageRoll = MainWindow.SelectedImageRoll;
+        SelectedNode = MainWindow.SelectedNode;
 
         LabelImagePath = imagePath;
         LabelComment = imageComment;
@@ -153,7 +119,6 @@ public partial class LabelControlViewModel : ObservableRecipient, IRecipient<Nod
 
         IsActive = true;
     }
-
 
     public void Receive(NodeMessages.SelectedNodeChanged message) => SelectedNode = message.Value;
 
@@ -180,7 +145,7 @@ public partial class LabelControlViewModel : ObservableRecipient, IRecipient<Nod
         LabelSectors.Clear();
         IsLoad = false;
 
-        CurrentRow = StandardsDatabase.GetRow(SelectedStandard.Name, LabelImageUID);
+        CurrentRow = StandardsDatabase.GetRow(SelectedImageRoll.Name, LabelImageUID);
 
         if (CurrentRow == null)
         {
@@ -205,7 +170,7 @@ public partial class LabelControlViewModel : ObservableRecipient, IRecipient<Nod
             {
                 var isWrongStandard = false;
                 if (jSec.type is "verify1D" or "verify2D")
-                    isWrongStandard = SelectedStandard.IsGS1 && (!jSec.gradingStandard.enabled || SelectedStandard.TableID != jSec.gradingStandard.tableId);
+                    isWrongStandard = SelectedImageRoll.IsGS1 && (!jSec.gradingStandard.enabled || SelectedImageRoll.TableID != jSec.gradingStandard.tableId);
 
                 foreach (JObject rSec in JsonConvert.DeserializeObject<V275_REST_lib.Models.Report>(CurrentRow.LabelReport).inspectLabel.inspectSector)
                 {
@@ -282,7 +247,7 @@ public partial class LabelControlViewModel : ObservableRecipient, IRecipient<Nod
             if (await OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for this label?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
                 return;
 
-        StandardsDatabase.AddRow(SelectedStandard.Name, LabelImageUID, LabelImage, JsonConvert.SerializeObject(RepeatTemplate), JsonConvert.SerializeObject(RepeatReport), RepeatImage);
+        StandardsDatabase.AddRow(SelectedImageRoll.Name, LabelImageUID, LabelImage, JsonConvert.SerializeObject(RepeatTemplate), JsonConvert.SerializeObject(RepeatReport), RepeatImage);
 
         RepeatSectors.Clear();
         IsStore = false;
@@ -297,7 +262,7 @@ public partial class LabelControlViewModel : ObservableRecipient, IRecipient<Nod
     {
         if (await OkCancelDialog("Clear Stored Sectors", $"Are you sure you want to clear the stored sectors for this label?\r\nThis can not be undone!") == MessageDialogResult.Affirmative)
         {
-            StandardsDatabase.DeleteRow(SelectedStandard.Name, LabelImageUID);
+            StandardsDatabase.DeleteRow(SelectedImageRoll.Name, LabelImageUID);
             GetStored();
         }
     }
@@ -317,7 +282,7 @@ public partial class LabelControlViewModel : ObservableRecipient, IRecipient<Nod
 
         IsStore = false;
 
-        CurrentRow = StandardsDatabase.GetRow(SelectedStandard.Name, LabelImageUID);
+        CurrentRow = StandardsDatabase.GetRow(SelectedImageRoll.Name, LabelImageUID);
 
         if (CurrentRow == null)
             return;
@@ -379,14 +344,14 @@ public partial class LabelControlViewModel : ObservableRecipient, IRecipient<Nod
         {
             var isWrongStandard = false;
             if (jSec.type is "verify1D" or "verify2D")
-                isWrongStandard = SelectedStandard.IsGS1 && (!jSec.gradingStandard.enabled || SelectedStandard.TableID != jSec.gradingStandard.tableId);
+                isWrongStandard = SelectedImageRoll.IsGS1 && (!jSec.gradingStandard.enabled || SelectedImageRoll.TableID != jSec.gradingStandard.tableId);
 
             foreach (JObject rSec in RepeatReport.inspectLabel.inspectSector)
             {
                 if (jSec.name == rSec["name"].ToString())
                 {
 
-                    var fSec = DeserializeSector(rSec, !SelectedStandard.IsGS1 && MainWindow.V275.IsOldISO);
+                    var fSec = DeserializeSector(rSec, !SelectedImageRoll.IsGS1 && MainWindow.V275.IsOldISO);
 
                     if (fSec == null)
                         break; //Not yet supported sector type
@@ -951,9 +916,6 @@ public partial class LabelControlViewModel : ObservableRecipient, IRecipient<Nod
                                         : (object)null;
         }
     }
-
-
-
 
     //public void Clear()
     //{
