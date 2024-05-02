@@ -1,9 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Messaging.Messages;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LabelVal.Messages;
 public class SystemMessages
@@ -27,7 +23,7 @@ public class SystemMessages
         {
             Sender = sender;
             this.message = message;
-            this.Exception = exception;
+            Exception = exception;
         }
     }
 

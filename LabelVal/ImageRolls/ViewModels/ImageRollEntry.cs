@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace LabelVal.ImageRolls.ViewModels;
 
-public partial class ImageRoll : ObservableObject
+public partial class ImageRollEntry : ObservableObject
 {
     [ObservableProperty] private string name;
     [ObservableProperty] private string path;
@@ -24,9 +24,9 @@ public partial class ImageRoll : ObservableObject
 
     public ObservableCollection<ImageEntry> Images { get; set; } = [];
 
-    public ImageRoll() { }
+    public ImageRollEntry() { }
 
-    public ImageRoll(string name, string path)
+    public ImageRollEntry(string name, string path)
     {
         if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(path))
             return;

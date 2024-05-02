@@ -25,9 +25,9 @@ using V275_REST_lib.Models;
 
 namespace LabelVal.ImageRolls.ViewModels;
 
-public partial class ImageResult : ObservableRecipient, IRecipient<NodeMessages.SelectedNodeChanged>
+public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMessages.SelectedNodeChanged>, IRecipient<DatabaseMessages.SelectedDatabseChanged>
 {
-    public delegate void PrintingDelegate(ImageResult label, string type);
+    public delegate void PrintingDelegate(ImageResultEntry label, string type);
     public event PrintingDelegate Printing;
 
     public delegate void BringIntoViewDelegate();
@@ -92,35 +92,33 @@ public partial class ImageResult : ObservableRecipient, IRecipient<NodeMessages.
     }
     private string _Status;
 
-    private StandardsDatabase StandardsDatabase => MainWindow.StandardsDatabaseViewModel.StandardsDatabase;
 
     [ObservableProperty] private Node selectedNode;
-    [ObservableProperty] private ImageRoll selectedImageRoll;
+    [ObservableProperty] private ImageRollEntry selectedImageRoll;
+    [ObservableProperty] private StandardsDatabase selectedDatabase;
+    partial void OnSelectedDatabaseChanged(StandardsDatabase value) => GetStored();
 
     public Job LabelTemplate { get; set; }
     public Job RepeatTemplate { get; set; }
     public V275_REST_lib.Models.Report RepeatReport { get; private set; }
 
-    public MainWindowViewModel MainWindow { get; set; }
-
     private static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
-    public ImageResult(string imagePath, string imageComment, MainWindowViewModel mainWindow)
-    {
-        MainWindow = mainWindow;
-
-        SelectedImageRoll = MainWindow.SelectedImageRoll;
-        SelectedNode = MainWindow.SelectedNode;
-
+    public ImageResultEntry(string imagePath, string imageComment, Node selectedNode, ImageRollEntry selectedImageRoll, StandardsDatabase selectedDatabase)
+    { 
         LabelImagePath = imagePath;
         LabelComment = imageComment;
 
         GetImage(imagePath);
-        GetStored();
+
+        SelectedImageRoll = selectedImageRoll;
+        SelectedNode = selectedNode;
+        SelectedDatabase = selectedDatabase;
 
         IsActive = true;
     }
 
     public void Receive(NodeMessages.SelectedNodeChanged message) => SelectedNode = message.Value;
+    public void Receive(DatabaseMessages.SelectedDatabseChanged message) => SelectedDatabase = message.Value;
 
     public async Task<MessageDialogResult> OkCancelDialog(string title, string message)
     {
@@ -145,7 +143,7 @@ public partial class ImageResult : ObservableRecipient, IRecipient<NodeMessages.
         LabelSectors.Clear();
         IsLoad = false;
 
-        CurrentRow = StandardsDatabase.GetRow(SelectedImageRoll.Name, LabelImageUID);
+        CurrentRow = SelectedDatabase.GetRow(SelectedImageRoll.Name, LabelImageUID);
 
         if (CurrentRow == null)
         {
@@ -247,7 +245,7 @@ public partial class ImageResult : ObservableRecipient, IRecipient<NodeMessages.
             if (await OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for this label?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
                 return;
 
-        StandardsDatabase.AddRow(SelectedImageRoll.Name, LabelImageUID, LabelImage, JsonConvert.SerializeObject(RepeatTemplate), JsonConvert.SerializeObject(RepeatReport), RepeatImage);
+        SelectedDatabase.AddRow(SelectedImageRoll.Name, LabelImageUID, LabelImage, JsonConvert.SerializeObject(RepeatTemplate), JsonConvert.SerializeObject(RepeatReport), RepeatImage);
 
         RepeatSectors.Clear();
         IsStore = false;
@@ -262,7 +260,7 @@ public partial class ImageResult : ObservableRecipient, IRecipient<NodeMessages.
     {
         if (await OkCancelDialog("Clear Stored Sectors", $"Are you sure you want to clear the stored sectors for this label?\r\nThis can not be undone!") == MessageDialogResult.Affirmative)
         {
-            StandardsDatabase.DeleteRow(SelectedImageRoll.Name, LabelImageUID);
+            SelectedDatabase.DeleteRow(SelectedImageRoll.Name, LabelImageUID);
             GetStored();
         }
     }
@@ -282,7 +280,7 @@ public partial class ImageResult : ObservableRecipient, IRecipient<NodeMessages.
 
         IsStore = false;
 
-        CurrentRow = StandardsDatabase.GetRow(SelectedImageRoll.Name, LabelImageUID);
+        CurrentRow = SelectedDatabase.GetRow(SelectedImageRoll.Name, LabelImageUID);
 
         if (CurrentRow == null)
             return;
@@ -351,7 +349,7 @@ public partial class ImageResult : ObservableRecipient, IRecipient<NodeMessages.
                 if (jSec.name == rSec["name"].ToString())
                 {
 
-                    var fSec = DeserializeSector(rSec, !SelectedImageRoll.IsGS1 && MainWindow.V275.IsOldISO);
+                    var fSec = DeserializeSector(rSec, !SelectedImageRoll.IsGS1 && SelectedNode.IsOldISO);
 
                     if (fSec == null)
                         break; //Not yet supported sector type
@@ -916,6 +914,7 @@ public partial class ImageResult : ObservableRecipient, IRecipient<NodeMessages.
                                         : (object)null;
         }
     }
+
 
     //public void Clear()
     //{

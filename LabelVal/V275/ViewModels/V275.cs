@@ -61,9 +61,7 @@ public partial class V275 : ObservableRecipient, IRecipient<ImageRollMessages.Se
 
     [ObservableProperty] private bool isGetDevices = false;
 
-    [ObservableProperty] private bool isOldISO;
-
-    [ObservableProperty] private ImageRoll selectedImageRoll;
+    [ObservableProperty] private ImageRollEntry selectedImageRoll;
 
     public static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
 
@@ -116,16 +114,18 @@ public partial class V275 : ObservableRecipient, IRecipient<ImageRollMessages.Se
             {
                 var curVer = product.part.Remove(0, product.part.LastIndexOf("-") + 1);
 
+                bool res = false;
                 if (Version.TryParse(curVer, out var result))
                 {
                     var baseVer = Version.Parse("1.2.0.0000");
-                    IsOldISO = result.CompareTo(baseVer) < 0;
+                    res = result.CompareTo(baseVer) < 0;
                 }
 
                 foreach (var node in Nodes)
                 {
                     node.SelectedImageRoll = SelectedImageRoll;
                     node.Product = product;
+                    node.IsOldISO = res;
                 }
             }
         }

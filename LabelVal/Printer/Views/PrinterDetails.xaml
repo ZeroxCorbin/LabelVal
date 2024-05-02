@@ -6,8 +6,8 @@
              xmlns:local="clr-namespace:LabelVal.Printer"
              xmlns:json="clr-namespace:JSONViewer_WPF;assembly=JSONViewer_WPF"
              
-             xmlns:ViewModels="clr-namespace:LabelVal.WindowViewModels"  
-             d:DataContext="{d:DesignInstance Type=ViewModels:MainWindowViewModel}"
+             xmlns:ViewModels="clr-namespace:LabelVal.Printer.Views"  
+             d:DataContext="{d:DesignInstance Type=ViewModels:PrinterDetails}"
              mc:Ignorable="d">
     <ScrollViewer>
 

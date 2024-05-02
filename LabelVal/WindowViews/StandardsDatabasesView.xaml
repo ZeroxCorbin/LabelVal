@@ -74,7 +74,7 @@
                     </DockPanel>
 
                     <ListView ItemsSource="{Binding StandardsDatabases}" 
-                        SelectedItem="{Binding SelectedImageRollsDatabase}">
+                        SelectedItem="{Binding SelectedStandardsDatabase}">
                         <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding FileName}"/>

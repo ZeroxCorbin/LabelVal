@@ -11,13 +11,13 @@ public partial class ImageRolls : ObservableObject
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-    public ObservableCollection<ImageRoll> FixedImageRolls { get; } = [];
-    public ObservableCollection<ImageRoll> UserImageRolls { get; } = [];
+    public ObservableCollection<ImageRollEntry> FixedImageRolls { get; } = [];
+    public ObservableCollection<ImageRollEntry> UserImageRolls { get; } = [];
 
 
-    [ObservableProperty] private ImageRoll selectedImageRoll = App.Settings.GetValue<ImageRoll>(nameof(SelectedImageRoll), null);
-    partial void OnSelectedImageRollChanged(ImageRoll value) => App.Settings.SetValue(nameof(SelectedImageRoll), value);
-    partial void OnSelectedImageRollChanged(ImageRoll oldValue, ImageRoll newValue) => _ = WeakReferenceMessenger.Default.Send(new ImageRollMessages.SelectedImageRollChanged(newValue, oldValue));
+    [ObservableProperty] private ImageRollEntry selectedImageRoll = App.Settings.GetValue<ImageRollEntry>(nameof(SelectedImageRoll), null);
+    partial void OnSelectedImageRollChanged(ImageRollEntry value) => App.Settings.SetValue(nameof(SelectedImageRoll), value);
+    partial void OnSelectedImageRollChanged(ImageRollEntry oldValue, ImageRollEntry newValue) => _ = WeakReferenceMessenger.Default.Send(new ImageRollMessages.SelectedImageRollChanged(newValue, oldValue));
 
     public ImageRolls()
     {
@@ -38,7 +38,7 @@ public partial class ImageRolls : ObservableObject
 
             foreach (var subdir in Directory.EnumerateDirectories(dir))
             {
-                FixedImageRolls.Add(new ImageRoll(dir[(dir.LastIndexOf("\\") + 1)..], subdir));
+                FixedImageRolls.Add(new ImageRollEntry(dir[(dir.LastIndexOf("\\") + 1)..], subdir));
             }
         }
 
@@ -50,7 +50,7 @@ public partial class ImageRolls : ObservableObject
 
             foreach (var subdir in Directory.EnumerateDirectories(dir))
             {
-                UserImageRolls.Add(new ImageRoll(dir[(dir.LastIndexOf("\\") + 1)..], subdir));
+                UserImageRolls.Add(new ImageRollEntry(dir[(dir.LastIndexOf("\\") + 1)..], subdir));
             }
         }
 
@@ -58,7 +58,7 @@ public partial class ImageRolls : ObservableObject
     }
     private void SelectImageRoll()
     {
-        ImageRoll std;
+        ImageRollEntry std;
         if (SelectedImageRoll != null && (std = UserImageRolls.FirstOrDefault((e) => e.Name.Equals(SelectedImageRoll.Name))) != null)
             SelectedImageRoll = std;
         else if (UserImageRolls.Count > 0)

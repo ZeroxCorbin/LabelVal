@@ -18,7 +18,6 @@ public partial class StandardsDatabaseViewModel : ObservableObject
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-    public MainWindowViewModel MainWindow => App.Current.MainWindow.DataContext as MainWindowViewModel;
 
     public class StandardsDBFile
     {
@@ -26,9 +25,9 @@ public partial class StandardsDatabaseViewModel : ObservableObject
         public string FilePath { get; set; }
     }
 
-    private MainWindowViewModel MainWindowViewModel { get; }
 
-    public StandardsDatabase StandardsDatabase { get; private set; }
+    [ObservableProperty] private StandardsDatabase standardsDatabase;
+    partial void OnStandardsDatabaseChanged(StandardsDatabase oldValue, StandardsDatabase newValue) => _ = WeakReferenceMessenger.Default.Send(new DatabaseMessages.SelectedDatabseChanged(newValue, oldValue));
 
     public StandardsDBFile StoredStandardsDatabase { get => App.Settings.GetValue("StoredStandardsDatabase_1", new StandardsDBFile() { FilePath = Path.Combine(App.StandardsDatabaseRoot, App.StandardsDatabaseDefaultName + App.DatabaseExtension), FileName = App.StandardsDatabaseDefaultName }); set => App.Settings.SetValue("StoredStandardsDatabase_1", value); }
     public ObservableCollection<StandardsDBFile> StandardsDatabases { get; } = [];
@@ -65,13 +64,10 @@ public partial class StandardsDatabaseViewModel : ObservableObject
     private bool isDatabasePermLocked = false;
 
 
-
     public static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
 
-    public StandardsDatabaseViewModel(MainWindowViewModel mainWindowViewModel)
+    public StandardsDatabaseViewModel()
     {
-        MainWindowViewModel = mainWindowViewModel;
-
         LoadStandardsDatabasesList();
         SelectStandardsDatabase();
     }

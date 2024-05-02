@@ -93,13 +93,13 @@
         <md:DrawerHost x:Name="NodeDetails" VerticalAlignment="Stretch" OpenMode="Standard">
 
             <md:DrawerHost.LeftDrawerContent>
-                <v275:NodeDetails/>
+                <v275:NodeDetails DataContext="{Binding NodeDetails}"/>
             </md:DrawerHost.LeftDrawerContent>
 
             <md:DrawerHost x:Name="PrinterDetails" VerticalAlignment="Stretch" OpenMode="Standard">
 
                 <md:DrawerHost.LeftDrawerContent>
-                    <printer:PrinterDetails/>
+                    <printer:PrinterDetails DataContext="{Binding PrinterDetails}"/>
                 </md:DrawerHost.LeftDrawerContent>
 
                 <DockPanel>
@@ -159,20 +159,13 @@
                             <printer:Printer DataContext="{Binding Printer}"/>
 
                             <!--Test Runs-->
-                            <local:RunView DataContext="{Binding RunViewModel}"/>
+                            <local:RunView DataContext="{Binding ImageResults.RunViewModel}"/>
 
                         </DockPanel>
 
                         <DockPanel >
-                            <ScrollViewer HorizontalScrollBarVisibility="Auto">
-                                <ItemsControl ItemsSource="{Binding Labels}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <imageRolls:ImageResult />
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </ScrollViewer>
+
+                            <imageRolls:ImageResults DataContext="{Binding ImageResults}"/>
 
                         </DockPanel>
                     </DockPanel>

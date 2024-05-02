@@ -5,8 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:LabelVal.V275.Views"
              xmlns:json="clr-namespace:JSONViewer_WPF;assembly=JSONViewer_WPF"
-             xmlns:ViewModels="clr-namespace:LabelVal.WindowViewModels"  
-             d:DataContext="{d:DesignInstance Type=ViewModels:MainWindowViewModel}"
+             xmlns:ViewModels="clr-namespace:LabelVal.V275.ViewModels"  
+             d:DataContext="{d:DesignInstance Type=ViewModels:NodeDetails}"
              mc:Ignorable="d">
     <ScrollViewer>
 

@@ -46,7 +46,7 @@ public partial class Node : ObservableRecipient, IRecipient<Messages.ImageRollMe
     public Inspection Inspection { get; set; }
 
     [ObservableProperty] private Product product;
-
+    [ObservableProperty] private bool isOldISO;
 
     [ObservableProperty] private Configuration_Camera configurationCamera;
     [ObservableProperty] private List<Symbologies.Symbol> symbologies;
@@ -70,8 +70,8 @@ public partial class Node : ObservableRecipient, IRecipient<Messages.ImageRollMe
     public bool IsNotLoggedIn => !(IsLoggedIn_Monitor || IsLoggedIn_Control);
 
 
-    [ObservableProperty] private ImageRoll selectedImageRoll;
-    partial void OnSelectedImageRollChanged(ImageRoll value) => CheckTemplateName();
+    [ObservableProperty] private ImageRollEntry selectedImageRoll;
+    partial void OnSelectedImageRollChanged(ImageRollEntry value) => CheckTemplateName();
 
     [ObservableProperty] private bool isWrongTemplateName = false;
 

@@ -45,8 +45,8 @@ public class Controller
     public int CurrentLabelCount { get; private set; }
     private long RunId { get; set; }
 
-    private ObservableCollection<ImageResult> Labels { get; set; }
-    public ImageRoll GradingStandard { get; private set; }
+    private ObservableCollection<ImageResultEntry> Labels { get; set; }
+    public ImageRollEntry GradingStandard { get; private set; }
     private StandardsDatabase StandardsDatabase { get; set; }
 
     public Node Node { get; private set; }
@@ -64,7 +64,7 @@ public class Controller
         _ = OpenDatabases();
     }
 
-    public Controller Init(ObservableCollection<ImageResult> labels, int loopCount, StandardsDatabase standardsDatabase, Node v275Node)
+    public Controller Init(ObservableCollection<ImageResultEntry> labels, int loopCount, StandardsDatabase standardsDatabase, Node v275Node)
     {
         Labels = labels;
         LoopCount = loopCount;
@@ -297,7 +297,7 @@ public class Controller
         return true;
     }
 
-    private static bool HasSequencing(ImageResult label)
+    private static bool HasSequencing(ImageResultEntry label)
     {
         foreach (var sect in label.LabelTemplate.sectors)
         {

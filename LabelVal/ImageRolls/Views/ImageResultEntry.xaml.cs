@@ -12,14 +12,14 @@ namespace LabelVal.ImageRolls.Views;
 /// <summary>
 /// Interaction logic for LabelControlView.xaml
 /// </summary>
-public partial class ImageResult : UserControl
+public partial class ImageResultEntry : UserControl
 {
-    public ImageResult() => InitializeComponent();
+    public ImageResultEntry() => InitializeComponent();
 
-    private ViewModels.ImageResult viewModel;
+    private ViewModels.ImageResultEntry viewModel;
     private void UserControl_Loaded(object sender, RoutedEventArgs e)
     {
-        viewModel = (ViewModels.ImageResult)DataContext;
+        viewModel = (ViewModels.ImageResultEntry)DataContext;
         viewModel.BringIntoView += ViewModel_BringIntoView;
     }
     private void UserControl_Unloaded(object sender, RoutedEventArgs e)
@@ -46,12 +46,12 @@ public partial class ImageResult : UserControl
     private void LabelImage_MouseDown(object sender, MouseButtonEventArgs e)
     {
         if (e.LeftButton == MouseButtonState.Pressed)
-            _ = ShowImage(((ViewModels.ImageResult)DataContext).LabelImage, null);
+            _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).LabelImage, null);
     }
     private void RepeatImage_MouseDown(object sender, MouseButtonEventArgs e)
     {
         if (e.LeftButton == MouseButtonState.Pressed)
-            _ = ShowImage(((ViewModels.ImageResult)DataContext).RepeatImage, ((ViewModels.ImageResult)DataContext).RepeatOverlay);
+            _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).RepeatImage, ((ViewModels.ImageResultEntry)DataContext).RepeatOverlay);
     }
 
     private bool ShowImage(byte[] image, DrawingImage overlay)
@@ -76,17 +76,17 @@ public partial class ImageResult : UserControl
     {
         if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
         {
-            if (((ViewModels.ImageResult)DataContext).CurrentRow != null)
+            if (((ViewModels.ImageResultEntry)DataContext).CurrentRow != null)
             {
-                LabelJobJsonView.Load(((ViewModels.ImageResult)DataContext).CurrentRow.LabelTemplate);
-                LabelResultJsonView.Load(((ViewModels.ImageResult)DataContext).CurrentRow.LabelReport);
+                LabelJobJsonView.Load(((ViewModels.ImageResultEntry)DataContext).CurrentRow.LabelTemplate);
+                LabelResultJsonView.Load(((ViewModels.ImageResultEntry)DataContext).CurrentRow.LabelReport);
                 LabelJsonPopup.PlacementTarget = (Button)sender;
                 LabelJsonPopup.IsOpen = true;
             }
         }
         else
         {
-            if (((ViewModels.ImageResult)DataContext).LabelSectors.Count > 0)
+            if (((ViewModels.ImageResultEntry)DataContext).LabelSectors.Count > 0)
             {
                 LabelSectorsDetailsPopup.PlacementTarget = (Button)sender;
                 LabelSectorsDetailsPopup.IsOpen = true;
@@ -97,16 +97,16 @@ public partial class ImageResult : UserControl
     {
         if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
         {
-            if (((ViewModels.ImageResult)DataContext).RepeatReport != null)
+            if (((ViewModels.ImageResultEntry)DataContext).RepeatReport != null)
             {
-                RepeatResultJsonView.Load(Newtonsoft.Json.JsonConvert.SerializeObject(((ViewModels.ImageResult)DataContext).RepeatReport));
+                RepeatResultJsonView.Load(Newtonsoft.Json.JsonConvert.SerializeObject(((ViewModels.ImageResultEntry)DataContext).RepeatReport));
                 RepeatJsonPopup.PlacementTarget = (Button)sender;
                 RepeatJsonPopup.IsOpen = true;
             }
         }
         else
         {
-            if (((ViewModels.ImageResult)DataContext).RepeatSectors.Count > 0)
+            if (((ViewModels.ImageResultEntry)DataContext).RepeatSectors.Count > 0)
             {
                 RepeatSectorsDetailsPopup.PlacementTarget = (Button)sender;
                 RepeatSectorsDetailsPopup.IsOpen = true;
