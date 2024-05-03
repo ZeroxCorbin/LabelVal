@@ -80,7 +80,7 @@ public partial class V275 : ObservableRecipient, IRecipient<ImageRollMessages.Se
 
         //Reset();
 
-        var system = new Node(V275_Host, V275_SystemPort, 0);
+        var system = new Node(V275_Host, V275_SystemPort, 0, SelectedImageRoll);
 
         Devices dev;
         if ((dev = await system.Connection.Commands.GetDevices()) != null)
@@ -97,7 +97,7 @@ public partial class V275 : ObservableRecipient, IRecipient<ImageRollMessages.Se
 
                 var camera = dev.cameras.FirstOrDefault(c => c.mac == node.cameraMAC);
 
-                var newNode = new Node(V275_Host, V275_SystemPort, (uint)node.enumeration) { Details = node, Camera = camera };
+                var newNode = new Node(V275_Host, V275_SystemPort, (uint)node.enumeration, SelectedImageRoll) { Details = node, Camera = camera };
 
                 Inspection insp;
                 if ((insp = await newNode.Connection.Commands.GetInspection()) != null)

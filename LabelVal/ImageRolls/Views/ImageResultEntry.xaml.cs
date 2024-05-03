@@ -58,8 +58,8 @@ public partial class ImageResultEntry : UserControl
     {
         var dc = new ImageViewerDialogViewModel();
 
-        dc.CreateImage(image, overlay);
-        if (dc.RepeatImage == null) return false;
+        dc.LoadImage(image, overlay);
+        if (dc.Image == null) return false;
 
         var yourParentWindow = (MainWindowView)Window.GetWindow(this);
 

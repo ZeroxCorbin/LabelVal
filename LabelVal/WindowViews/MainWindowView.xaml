@@ -14,6 +14,7 @@
                 xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
                 Dialog:DialogParticipation.Register="{Binding}"
                  
+                 xmlns:v5="clr-namespace:LabelVal.V5.Views"
                  xmlns:ViewModels="clr-namespace:LabelVal.WindowViewModels"  
                 d:DataContext="{d:DesignInstance Type=ViewModels:MainWindowViewModel}"
                 mc:Ignorable="d"
@@ -88,7 +89,7 @@
 
         </mah:FlyoutsControl>
     </mah:MetroWindow.Flyouts>
-    
+
     <DockPanel>
         <md:DrawerHost x:Name="NodeDetails" VerticalAlignment="Stretch" OpenMode="Standard">
 
@@ -148,10 +149,12 @@
 
                             <v275:V275 DockPanel.Dock="Top" DataContext="{Binding V275}"/>
 
-                            <local:StandardsDatabasesView DockPanel.Dock="Top" DataContext="{Binding StandardsDatabaseViewModel}"/>
+                            <v5:ScannerView DockPanel.Dock="Top" DataContext="{Binding ScannerViewModel}"/>
+                            
+                            <local:StandardsDatabasesView DataContext="{Binding StandardsDatabaseViewModel}"/>
 
                             <imageRolls:ImageRolls DataContext="{Binding ImageRolls}"/>
-                            
+
                         </DockPanel>
 
                         <DockPanel DockPanel.Dock="Top">
@@ -161,13 +164,17 @@
                             <!--Test Runs-->
                             <local:RunView DataContext="{Binding ImageResults.RunViewModel}"/>
 
-                        </DockPanel>
 
+
+                        </DockPanel>
+                            
                         <DockPanel >
 
                             <imageRolls:ImageResults DataContext="{Binding ImageResults}"/>
 
                         </DockPanel>
+
+
                     </DockPanel>
                 </DockPanel>
             </md:DrawerHost>

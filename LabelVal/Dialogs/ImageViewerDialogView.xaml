@@ -19,17 +19,19 @@
     <Dialog:CustomDialog.Resources>
         <converters:DoubleToStringConverter x:Key="doubleToString"/>
     </Dialog:CustomDialog.Resources>
-    
+
     <Dialog:CustomDialog.DialogTop>
         <Grid>
             <paz:ZoomBorder Name="ZoomBorder" Margin="3">
                 <Grid>
-                    
-                
-                <Image Source="{Binding RepeatImage}"  Width="{Binding Width}" Height="{Binding Height}"
+                    <Image Source="{Binding Image}"  Width="{Binding Width}" Height="{Binding Height}"
                        SnapsToDevicePixels="true"
                        RenderOptions.BitmapScalingMode="NearestNeighbor"/>
-                <Image Name="RepeatImageOverlay" Source="{Binding RepeatOverlay}" 
+                    <Image Source="{Binding Overlay}" 
+                        Width="{Binding Width}" Height="{Binding Height}"
+                       SnapsToDevicePixels="true"
+                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+                    <Image Source="{Binding Overlay1}" 
                         Width="{Binding Width}" Height="{Binding Height}"
                        SnapsToDevicePixels="true"
                        RenderOptions.BitmapScalingMode="NearestNeighbor"/>
@@ -47,14 +49,14 @@
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" >
-                <Label Content="{Binding ImageWidth, Mode=OneTime, Converter={StaticResource doubleToString}}" Foreground="{DynamicResource ColorBlindBrush2}"/>
-                <TextBlock Text="x" Margin="0,5,0,0" Foreground="{DynamicResource ColorBlindBrush2}"/>
-                <Label Content="{Binding ImageHeight, Mode=OneTime, Converter={StaticResource doubleToString}}" Foreground="{DynamicResource ColorBlindBrush2}"/>
-                <TextBlock Text="/" Margin="0,5,0,0" Foreground="{DynamicResource ColorBlindBrush2}"/>
+                <Label Content="{Binding Image.PixelWidth, Mode=OneTime}"  Foreground="White"/>
+                <TextBlock Text="x" Margin="0,5,0,0"  Foreground="White"/>
+                <Label Content="{Binding Image.PixelHeight, Mode=OneTime}"  Foreground="White"/>
+                <TextBlock Text="/" Margin="0,5,0,0"  Foreground="White"/>
 
-                <Label Content="{Binding ImageDPIX, Mode=OneTime, Converter={StaticResource doubleToString}}" Foreground="{DynamicResource ColorBlindBrush2}"/>
-                <TextBlock Text="x" Margin="0,5,0,0" Foreground="{DynamicResource ColorBlindBrush2}"/>
-                <Label Content="{Binding ImageDPIY, Mode=OneTime, Converter={StaticResource doubleToString}}" Foreground="{DynamicResource ColorBlindBrush2}"/>
+                <Label Content="{Binding Image.DpiX, Mode=OneTime}"  Foreground="White"/>
+                <TextBlock Text="x" Margin="0,5,0,0"  Foreground="White"/>
+                <Label Content="{Binding Image.DpiY, Mode=OneTime}"  Foreground="White"/>
 
             </StackPanel>
 

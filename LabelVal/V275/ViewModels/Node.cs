@@ -39,6 +39,8 @@ public partial class Node : ObservableRecipient, IRecipient<Messages.ImageRollMe
     private static string UserName => App.Settings.GetValue<string>(nameof(V275.UserName));
     private static string Password => App.Settings.GetValue<string>(nameof(V275.Password));
 
+    [ObservableProperty] private bool loginMonitor;
+
     private Events_System.Data LoginData { get; } = new Events_System.Data();
 
     public Devices.Node Details { get; set; }
@@ -75,8 +77,10 @@ public partial class Node : ObservableRecipient, IRecipient<Messages.ImageRollMe
 
     [ObservableProperty] private bool isWrongTemplateName = false;
 
-    public Node(string host, uint systemPort, uint nodeNumber)
+    public Node(string host, uint systemPort, uint nodeNumber, ImageRollEntry imageRollEntry)
     {
+        SelectedImageRoll = imageRollEntry;
+
         Connection = new V275_REST_lib.Controller(host, systemPort, nodeNumber);
 
         Connection.WebSocket.SessionStateChange += WebSocket_SessionStateChange;
@@ -101,15 +105,19 @@ public partial class Node : ObservableRecipient, IRecipient<Messages.ImageRollMe
     }
 
     [RelayCommand]
-    private async Task LoginMonitor()
+    private async Task Login()
     {
-        //Reset();
+        if (IsLoggedIn)
+        {
+            await Logout();
+            return;
+        }
 
         if (!PreLogin()) return;
 
-        if (await Connection.Commands.Login(UserName, Password, true))
+        if (await Connection.Commands.Login(UserName, Password, LoginMonitor))
         {
-            _ = PostLogin(true);
+            _ = PostLogin(LoginMonitor);
         }
         else
         {
@@ -117,23 +125,41 @@ public partial class Node : ObservableRecipient, IRecipient<Messages.ImageRollMe
             IsLoggedIn_Monitor = false;
         }
     }
-    [RelayCommand]
-    private async Task LoginControl()
-    {
-        //Reset();
 
-        if (!PreLogin()) return;
+    //[RelayCommand]
+    //private async Task LoginMonitor()
+    //{
+    //    //Reset();
 
-        if (await Connection.Commands.Login(UserName, Password, false))
-        {
-            _ = PostLogin(false);
-        }
-        else
-        {
-            //Label_StatusChanged(V275.Status);
-            IsLoggedIn_Control = false;
-        }
-    }
+    //    if (!PreLogin()) return;
+
+    //    if (await Connection.Commands.Login(UserName, Password, true))
+    //    {
+    //        _ = PostLogin(true);
+    //    }
+    //    else
+    //    {
+    //        //Label_StatusChanged(V275.Status);
+    //        IsLoggedIn_Monitor = false;
+    //    }
+    //}
+    //[RelayCommand]
+    //private async Task LoginControl()
+    //{
+    //    //Reset();
+
+    //    if (!PreLogin()) return;
+
+    //    if (await Connection.Commands.Login(UserName, Password, false))
+    //    {
+    //        _ = PostLogin(false);
+    //    }
+    //    else
+    //    {
+    //        //Label_StatusChanged(V275.Status);
+    //        IsLoggedIn_Control = false;
+    //    }
+    //}
     [RelayCommand]
     private async Task Logout()
     {

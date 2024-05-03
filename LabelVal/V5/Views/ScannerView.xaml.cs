@@ -1,0 +1,93 @@
+﻿using LabelVal.Dialogs;
+using LabelVal.V5.ViewModels;
+using LabelVal.WindowViews;
+using MahApps.Metro.Controls.Dialogs;
+using System;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+
+namespace LabelVal.V5.Views
+{
+    /// <summary>
+    /// Interaction logic for ScannerView.xaml
+    /// </summary>
+    public partial class ScannerView : UserControl
+    {
+        //private string? CodeType { get => App.Settings.GetValue<string>(nameof(TestViewModel.TestSettings.CodeType)); set => App.Settings.SetValue(nameof(TestViewModel.TestSettings.CodeType), value); }
+        //private string? ExpectedOutDataUTF8 { get => App.Settings.GetValue<string>(nameof(TestViewModel.TestSettings.ExpectedOutDataUTF8)); set => App.Settings.SetValue(nameof(TestViewModel.TestSettings.ExpectedOutDataUTF8), value); }
+
+        public ScannerView()
+        {
+            InitializeComponent();
+        }
+
+        private void LabelImage_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed && e.ClickCount == 2)
+                ShowImage(((ScannerViewModel)DataContext).Image, ((ScannerViewModel)DataContext).ImageOverlay, ((ScannerViewModel)DataContext).ImageFocusRegionOverlay);
+        }
+
+        private bool ShowImage(byte[] image, DrawingImage overlay, DrawingImage overlay1)
+        {
+            var dc = new ImageViewerDialogViewModel();
+
+            dc.LoadImage(image, overlay, overlay1);
+            if (dc.Image == null) return false;
+
+            MainWindowView yourParentWindow = (MainWindowView)Window.GetWindow(this);
+
+            dc.Width = yourParentWindow.ActualWidth - 100;
+            dc.Height = yourParentWindow.ActualHeight - 100;
+
+            DialogCoordinator.Instance.ShowMetroDialogAsync(yourParentWindow.DataContext, new ImageViewerDialogView() { DataContext = dc });
+
+            return true;
+
+        }
+
+        private bool ShowImage(BitmapImage image, DrawingImage overlay, DrawingImage overlay1)
+        {
+            var dc = new ImageViewerDialogViewModel();
+
+            dc.LoadImage(image, overlay, overlay1);
+            if (dc.Image == null) return false;
+
+            MainWindowView yourParentWindow = (MainWindowView)Window.GetWindow(this);
+
+            dc.Width = yourParentWindow.ActualWidth - 100;
+            dc.Height = yourParentWindow.ActualHeight - 100;
+
+            DialogCoordinator.Instance.ShowMetroDialogAsync(yourParentWindow.DataContext, new ImageViewerDialogView() { DataContext = dc });
+
+            return true;
+
+        }
+
+        private void btnShowRunSettings_Click(object sender, RoutedEventArgs e) => drwRunSettings.IsTopDrawerOpen = !drwRunSettings.IsTopDrawerOpen;
+
+        private void btnResetImageView_Click(object sender, RoutedEventArgs e) => ZoomBorder.Reset();
+
+        private void btnSaveImage_Click(object sender, RoutedEventArgs e)
+        {
+            string path;
+            if ((path = Utilities.FileUtilities.GetSaveFilePath("", "PNG|*.png", "Save Image")) != "")
+            {
+                try
+                {
+                    System.IO.File.WriteAllBytes(path, ((ScannerViewModel)DataContext).RawImage);
+                }
+                catch (Exception ex) { }
+
+            }
+        }
+
+        //private void btnSetResults_Click(object sender, RoutedEventArgs e)
+        //{
+        //    CodeType = ((ScannerViewModel)DataContext).Results[0]["type"].ToString();
+        //    ExpectedOutDataUTF8 = ((ScannerViewModel)DataContext).Results[0]["dataUTF8"].ToString();
+        //}
+    }
+}

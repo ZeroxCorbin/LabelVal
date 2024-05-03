@@ -60,8 +60,8 @@ namespace LabelVal.Run.Views
         {
             var dc = new ImageViewerDialogViewModel();
 
-            dc.CreateImage(image, overlay);
-            if (dc.RepeatImage == null) return false;
+            dc.LoadImage(image, overlay);
+            if (dc.Image == null) return false;
 
             Run.Views.View yourParentWindow = (Run.Views.View)Window.GetWindow(this);
 

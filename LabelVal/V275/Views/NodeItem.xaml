@@ -6,90 +6,116 @@
              xmlns:local="clr-namespace:LabelVal.V275.Views"
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:ViewModels="clr-namespace:LabelVal.V275.ViewModels"  
              d:DataContext="{d:DesignInstance Type=ViewModels:Node}"
              mc:Ignorable="d">
 
     <DockPanel>
+
+            <md:Card VerticalAlignment="Top" Padding="3" Margin="3" Background="{DynamicResource MahApps.Brushes.Accent4}">
+                <Button Command="{Binding LoginCommand}" BorderThickness="0">
+                    <Button.Style>
+                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
+                            <Setter Property="Content">
+                                <Setter.Value>
+                                    <iconPacks:Modern Kind="Connect" Height="16" Width="16"/>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsLoggedIn}" Value="True">
+                                    <Setter Property="Content">
+                                        <Setter.Value>
+                                            <iconPacks:Modern Kind="Disconnect" Height="16" Width="16"/>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </md:Card>
         
-    
-    <StackPanel Width="220">
-
         <DockPanel>
-            <TextBox d:Text="camera" Text="{Binding Path=Inspection.device, Mode=OneTime}" MinWidth="56" Margin="3,0" md:HintAssist.Hint="Type" md:HintAssist.IsFloating="True" IsHitTestVisible="False" BorderThickness="0" />
-            <TextBox d:Text="ZT610" Margin="3,0" md:HintAssist.Hint="Model" md:HintAssist.IsFloating="True" IsHitTestVisible="False" BorderThickness="0">
-                <TextBox.Style>
-                    <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+
+            <DockPanel DockPanel.Dock="Top">
+                <TextBox d:Text="camera" Text="{Binding Path=Inspection.device, Mode=OneTime}" MinWidth="56" Margin="3,0" md:HintAssist.Hint="Type" md:HintAssist.IsFloating="True" IsHitTestVisible="False" BorderThickness="0" />
+                <TextBox d:Text="ZT610" Margin="3,0" md:HintAssist.Hint="Model" md:HintAssist.IsFloating="True" IsHitTestVisible="False" BorderThickness="0">
+                    <TextBox.Style>
+                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                             <Setter Property="Text" Value="{Binding Path=Details.printerModel}"/>
-                        <Style.Triggers>
-                            <DataTrigger Value="False" Binding="{Binding IsWrongTemplateName}">
-                                <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}"/>
-                            </DataTrigger>
+                            <Style.Triggers>
+                                <DataTrigger Value="False" Binding="{Binding IsWrongTemplateName}">
+                                    <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}"/>
+                                </DataTrigger>
                                 <DataTrigger Value="Unknown" Binding="{Binding Path=Details.printerModel}">
-                                <Setter Property="Text" Value="-----"/>
-                            </DataTrigger>
+                                    <Setter Property="Text" Value="-----"/>
+                                </DataTrigger>
 
-                        </Style.Triggers>
-                    </Style>
-                </TextBox.Style>
-            </TextBox>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
 
-            <TextBox d:Text="00:00:00:00:00" Text="{Binding Path=Details.cameraMAC, Mode=OneTime}" Margin="3,0" md:HintAssist.Hint="MAC" md:HintAssist.IsFloating="True" IsHitTestVisible="False" BorderThickness="0" />
+                <TextBox d:Text="00:00:00:00:00" Text="{Binding Path=Details.cameraMAC, Mode=OneTime}" Margin="3,0" md:HintAssist.Hint="MAC" md:HintAssist.IsFloating="True" IsHitTestVisible="False" BorderThickness="0" />
+
+            </DockPanel>
+
+            <DockPanel>
+
+                <TextBox d:Text="JobName" Margin="3,0" md:HintAssist.Hint="Template Name" md:HintAssist.IsFloating="True" IsHitTestVisible="False" HorizontalAlignment="Left">
+                    <TextBox.Style>
+                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                            <Setter Property="BorderBrush" Value="{DynamicResource ColorBlindBrush5}"/>
+                            <Setter Property="Text" Value="{Binding JobName}"/>
+                            <Style.Triggers>
+
+                                <DataTrigger Value="False" Binding="{Binding IsWrongTemplateName}">
+                                    <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}"/>
+                                </DataTrigger>
+
+                                <DataTrigger Value="" Binding="{Binding JobName}">
+                                    <Setter Property="Text" Value="-----"/>
+                                    <Setter Property="BorderBrush" Value="{DynamicResource ColorBlindBrush5}"/>
+                                </DataTrigger>
+
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+
+                <TextBox d:Text="State" Text="{Binding State}" Margin="3,0" md:HintAssist.Hint="State" md:HintAssist.IsFloating="True" IsHitTestVisible="False" HorizontalAlignment="Left">
+                    <TextBox.Style>
+                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                            <Setter Property="BorderBrush" Value="{DynamicResource ColorBlindBrush5}"/>
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Value="Editing" Binding="{Binding State}" />
+                                        <Condition Value="True" Binding="{Binding SelectedImageRoll.IsGS1}" />
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}" />
+                                </MultiDataTrigger>
+
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Value="Running" Binding="{Binding State}" />
+                                        <Condition Value="False" Binding="{Binding SelectedImageRoll.IsGS1}" />
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}" />
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+
+
+            </DockPanel>
 
         </DockPanel>
 
-        <DockPanel>
-
-            <TextBox d:Text="JobName" Margin="3,0" md:HintAssist.Hint="Template Name" md:HintAssist.IsFloating="True" IsHitTestVisible="False" HorizontalAlignment="Left">
-                <TextBox.Style>
-                    <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                        <Setter Property="BorderBrush" Value="{DynamicResource ColorBlindBrush5}"/>
-                        <Setter Property="Text" Value="{Binding JobName}"/>
-                        <Style.Triggers>
-
-                            <DataTrigger Value="False" Binding="{Binding IsWrongTemplateName}">
-                                <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}"/>
-                            </DataTrigger>
-
-                            <DataTrigger Value="" Binding="{Binding JobName}">
-                                <Setter Property="Text" Value="-----"/>
-                                <Setter Property="BorderBrush" Value="{DynamicResource ColorBlindBrush5}"/>
-                            </DataTrigger>
-
-                        </Style.Triggers>
-                    </Style>
-                </TextBox.Style>
-            </TextBox>
-
-            <TextBox d:Text="State" Text="{Binding State}" Margin="3,0" md:HintAssist.Hint="State" md:HintAssist.IsFloating="True" IsHitTestVisible="False" HorizontalAlignment="Left">
-                <TextBox.Style>
-                    <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                        <Setter Property="BorderBrush" Value="{DynamicResource ColorBlindBrush5}"/>
-                        <Style.Triggers>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Value="Editing" Binding="{Binding State}" />
-                                    <Condition Value="True" Binding="{Binding SelectedImageRoll.IsGS1}" />
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}" />
-                            </MultiDataTrigger>
-                            
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Value="Running" Binding="{Binding State}" />
-                                    <Condition Value="False" Binding="{Binding SelectedImageRoll.IsGS1}" />
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}" />
-                            </MultiDataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </TextBox.Style>
-            </TextBox>
 
 
-        </DockPanel>
-
-    </StackPanel>
 
         <StackPanel>
 
@@ -153,5 +179,5 @@
             </Button>
         </StackPanel>
 
-</DockPanel>
+    </DockPanel>
 </UserControl>

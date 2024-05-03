@@ -1,8 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using FluentNHibernate.Diagnostics;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Messages;
+using LabelVal.V5.ViewModels;
 using MahApps.Metro.Controls.Dialogs;
 using Newtonsoft.Json;
 using System;
@@ -29,6 +31,8 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
 
     public ImageRolls.ViewModels.ImageRolls ImageRolls { get; }
     public ImageRolls.ViewModels.ImageResults ImageResults { get; }
+
+    public ScannerViewModel ScannerViewModel { get; } = new ScannerViewModel();
 
     public StandardsDatabaseViewModel StandardsDatabaseViewModel { get; }
 

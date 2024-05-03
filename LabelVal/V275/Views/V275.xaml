@@ -10,14 +10,8 @@
              d:DataContext="{d:DesignInstance Type=ViewModels:V275}"
              mc:Ignorable="d">
 
-    <GroupBox
-            md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-            md:ColorZoneAssist.Foreground="{DynamicResource MahApps.Brushes.Foreground}"
-            md:ColorZoneAssist.Mode="Custom"
-            BorderThickness="0"
-            Margin="3" Padding="3"
-            HorizontalAlignment="Left" VerticalAlignment="Top" 
-            Style="{StaticResource MaterialDesignCardGroupBox}">
+    <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" VerticalAlignment="Top" HorizontalAlignment="Left"
+              Margin="3" Padding="3">
 
         <GroupBox.Header>
             <DockPanel>
@@ -40,12 +34,12 @@
             </DockPanel>
         </GroupBox.Header>
 
-        <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" Padding="2">
+        <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}">
 
             <StackPanel>
                 <!--V275 Node connection-->
 
-                    <DockPanel>
+                    <!--<DockPanel>
                         <DockPanel.Style>
                             <Style TargetType="DockPanel">
                                 <Setter Property="IsEnabled" Value="True"/>
@@ -57,7 +51,9 @@
                             </Style>
                         </DockPanel.Style>
 
-                        <Button Content="Logout" Command="{Binding SelectedNode.LogoutCommand}" IsEnabled="{Binding SelectedNode.IsLoggedIn}" Margin="3,0"/>
+
+
+                    <Button Content="Logout" Command="{Binding SelectedNode.LogoutCommand}" IsEnabled="{Binding SelectedNode.IsLoggedIn}" Margin="3,0"/>
 
                         <Button Content="Monitor" Command="{Binding SelectedNode.LoginMonitorCommand}" Margin="3,0">
                             <Button.Style>
@@ -105,7 +101,7 @@
                             </Button.Style>
                         </Button>
 
-                    </DockPanel>
+                    </DockPanel>-->
 
                 <!--<ListBox ItemsSource="{Binding Nodes}" SelectedValue="{Binding SelectedNode}" IsHitTestVisible="{Binding IsNotLoggedIn}" Margin="3">
                     <ListBox.ItemTemplate>
