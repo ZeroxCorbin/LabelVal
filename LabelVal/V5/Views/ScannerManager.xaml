@@ -1,14 +1,14 @@
-﻿<UserControl x:Class="LabelVal.V275.Views.V275"
+﻿<UserControl x:Class="LabelVal.V5.Views.ScannerManager"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:LabelVal.V275.Views"
+             xmlns:local="clr-namespace:LabelVal.V5.Views"
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-             xmlns:ViewModels="clr-namespace:LabelVal.V275.ViewModels"  
-             d:DataContext="{d:DesignInstance Type=ViewModels:V275}"
-             mc:Ignorable="d">
+                          xmlns:ViewModels="clr-namespace:LabelVal.V5.ViewModels"  
+             d:DataContext="{d:DesignInstance Type=ViewModels:ScannerManager}"
+             mc:Ignorable="d" >
 
     <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" VerticalAlignment="Top" HorizontalAlignment="Left"
               Margin="3" Padding="3">
@@ -16,17 +16,17 @@
         <GroupBox.Header>
             <DockPanel>
                 <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
-                    <TextBlock Text="V275 Nodes" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                    <TextBlock Text="V5 Cameras" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                 </md:Card>
 
-                <Button Command="{Binding GetDevicesCommand}" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
+                <!--<Button Command="{Binding GetDevicesCommand}" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
                         Padding="0" Margin="6,0,3,0" BorderThickness="0" Height="20" Width="20" HorizontalAlignment="Left">
 
                     <iconPacks:Modern Width="12" Height="12" Kind="Refresh"/>
-                </Button>
+                </Button>-->
 
                 <Button Click="btnShowDetails_Click" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
-                        Padding="0" Margin="3,0" BorderThickness="0" Height="20" Width="20" HorizontalAlignment="Left">
+                        Padding="0" Margin="6,0,3,0" BorderThickness="0" Height="20" Width="20" HorizontalAlignment="Left">
 
                     <iconPacks:Material Width="12" Height="12" Kind="CodeJson"/>
                 </Button>
@@ -35,16 +35,15 @@
         </GroupBox.Header>
 
         <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}">
-            <ListView ItemsSource="{Binding Nodes}" SelectedItem="{Binding SelectedNode}" HorizontalAlignment="Center">
+            <ListView ItemsSource="{Binding Scanners}" SelectedItem="{Binding SelectedScanner}" HorizontalAlignment="Center">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <md:Card Background="{DynamicResource MahApps.Brushes.Accent4}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="-5">
-                            <local:NodeItem DataContext="{Binding }"/>
+                            <local:ScannerView DataContext="{Binding }"/>
                         </md:Card>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
         </md:Card>
     </GroupBox>
-
 </UserControl>

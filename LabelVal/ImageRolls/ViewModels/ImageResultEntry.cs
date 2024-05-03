@@ -6,6 +6,7 @@ using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Messages;
 using LabelVal.Utilities;
 using LabelVal.V275.ViewModels;
+using LabelVal.V5.ViewModels;
 using LabelVal.WindowViewModels;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
@@ -25,7 +26,7 @@ using V275_REST_lib.Models;
 
 namespace LabelVal.ImageRolls.ViewModels;
 
-public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMessages.SelectedNodeChanged>, IRecipient<DatabaseMessages.SelectedDatabseChanged>
+public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMessages.SelectedNodeChanged>, IRecipient<DatabaseMessages.SelectedDatabseChanged>, IRecipient<ScannerMessages.SelectedScannerChanged>
 {
     public delegate void PrintingDelegate(ImageResultEntry label, string type);
     public event PrintingDelegate Printing;
@@ -96,6 +97,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
     [ObservableProperty] private Node selectedNode;
     [ObservableProperty] private ImageRollEntry selectedImageRoll;
     [ObservableProperty] private StandardsDatabase selectedDatabase;
+    [ObservableProperty] private Scanner selectedScanner;
     partial void OnSelectedDatabaseChanged(StandardsDatabase value) => GetStored();
 
     public Job LabelTemplate { get; set; }
@@ -103,7 +105,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
     public V275_REST_lib.Models.Report RepeatReport { get; private set; }
 
     private static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
-    public ImageResultEntry(string imagePath, string imageComment, Node selectedNode, ImageRollEntry selectedImageRoll, StandardsDatabase selectedDatabase)
+    public ImageResultEntry(string imagePath, string imageComment, Node selectedNode, ImageRollEntry selectedImageRoll, StandardsDatabase selectedDatabase, Scanner selectedScanner)
     { 
         LabelImagePath = imagePath;
         LabelComment = imageComment;
@@ -113,12 +115,14 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
         SelectedImageRoll = selectedImageRoll;
         SelectedNode = selectedNode;
         SelectedDatabase = selectedDatabase;
+        SelectedScanner = selectedScanner;
 
         IsActive = true;
     }
 
     public void Receive(NodeMessages.SelectedNodeChanged message) => SelectedNode = message.Value;
     public void Receive(DatabaseMessages.SelectedDatabseChanged message) => SelectedDatabase = message.Value;
+    public void Receive(ScannerMessages.SelectedScannerChanged message) => SelectedScanner = message.Value;
 
     public async Task<MessageDialogResult> OkCancelDialog(string title, string message)
     {
@@ -914,6 +918,8 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
                                         : (object)null;
         }
     }
+
+   
 
 
     //public void Clear()

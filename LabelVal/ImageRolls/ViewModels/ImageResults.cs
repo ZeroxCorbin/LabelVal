@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Messaging;
 using LabelVal.Databases;
 using LabelVal.Messages;
+using LabelVal.V5.ViewModels;
 using LabelVal.WindowViewModels;
 using MahApps.Metro.Controls.Dialogs;
 using Newtonsoft.Json;
@@ -14,7 +15,13 @@ using System.Threading.Tasks;
 using V275_REST_lib.Models;
 
 namespace LabelVal.ImageRolls.ViewModels;
-public partial class ImageResults : ObservableRecipient, IRecipient<ImageRollMessages.SelectedImageRollChanged>, IRecipient<NodeMessages.SelectedNodeChanged>, IRecipient<PrinterMessages.SelectedPrinterChanged>, IRecipient<DatabaseMessages.SelectedDatabseChanged>, IRecipient<SystemMessages.StatusMessage>
+public partial class ImageResults : ObservableRecipient,
+    IRecipient<ImageRollMessages.SelectedImageRollChanged>,
+    IRecipient<NodeMessages.SelectedNodeChanged>,
+    IRecipient<PrinterMessages.SelectedPrinterChanged>,
+    IRecipient<DatabaseMessages.SelectedDatabseChanged>,
+    IRecipient<SystemMessages.StatusMessage>,
+    IRecipient<ScannerMessages.SelectedScannerChanged>
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -33,6 +40,7 @@ public partial class ImageResults : ObservableRecipient, IRecipient<ImageRollMes
 
     [ObservableProperty] private PrinterSettings selectedPrinter;
     [ObservableProperty] private StandardsDatabase selectedDatabase;
+    [ObservableProperty] private Scanner selectedScanner;
 
     public RunViewModel RunViewModel { get; } = new RunViewModel();
     private int LoopCount => App.Settings.GetValue(nameof(RunViewModel.LoopCount), 1);
@@ -65,6 +73,7 @@ public partial class ImageResults : ObservableRecipient, IRecipient<ImageRollMes
     public void Receive(ImageRollMessages.SelectedImageRollChanged message) => SelectedImageRoll = message.Value;
     public void Receive(PrinterMessages.SelectedPrinterChanged message) => SelectedPrinter = message.Value;
     public void Receive(DatabaseMessages.SelectedDatabseChanged message) => SelectedDatabase = message.Value;
+    public void Receive(ScannerMessages.SelectedScannerChanged message) => SelectedScanner = message.Value;
     public void Receive(SystemMessages.StatusMessage message)
     {
         switch (message.Value)
@@ -114,7 +123,7 @@ public partial class ImageResults : ObservableRecipient, IRecipient<ImageRollMes
             if (File.Exists(img.Replace(".png", ".txt")))
                 comment = File.ReadAllText(img.Replace(".png", ".txt"));
 
-            var tmp = new ImageResultEntry(img, comment, SelectedNode, SelectedImageRoll, SelectedDatabase);
+            var tmp = new ImageResultEntry(img, comment, SelectedNode, SelectedImageRoll, SelectedDatabase, SelectedScanner);
 
             tmp.Printing += Label_Printing;
             tmp.StatusChanged += Label_StatusChanged;
@@ -386,4 +395,6 @@ public partial class ImageResults : ObservableRecipient, IRecipient<ImageRollMes
                 return false;
         return true;
     }
+
+ 
 }

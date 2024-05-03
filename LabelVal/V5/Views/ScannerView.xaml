@@ -10,7 +10,7 @@
              xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:Converters="clr-namespace:LabelVal.Converters"
              xmlns:json="clr-namespace:JSONViewer_WPF;assembly=JSONViewer_WPF"
-             d:DataContext="{d:DesignInstance Type=ViewModels:ScannerViewModel}"
+             d:DataContext="{d:DesignInstance Type=ViewModels:Scanner}"
              mc:Ignorable="d" >
 
     <UserControl.Resources>

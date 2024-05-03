@@ -39,8 +39,10 @@
         <DockPanel>
 
             <DockPanel DockPanel.Dock="Top">
-                <TextBox d:Text="camera" Text="{Binding Path=Inspection.device, Mode=OneTime}" MinWidth="56" Margin="3,0" md:HintAssist.Hint="Type" md:HintAssist.IsFloating="True" IsHitTestVisible="False" BorderThickness="0" />
-                <TextBox d:Text="ZT610" Margin="3,0" md:HintAssist.Hint="Model" md:HintAssist.IsFloating="True" IsHitTestVisible="False" BorderThickness="0">
+                <TextBox d:Text="camera" Text="{Binding Path=Inspection.device, Mode=OneTime}" Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
+                         MinWidth="56" Margin="3" md:HintAssist.Hint="Type" md:HintAssist.IsFloating="True" IsHitTestVisible="False" BorderThickness="0" />
+               
+                <TextBox d:Text="ZT610" Margin="3" md:HintAssist.Hint="Model" md:HintAssist.IsFloating="True" IsHitTestVisible="False" BorderThickness="0">
                     <TextBox.Style>
                         <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                             <Setter Property="Text" Value="{Binding Path=Details.printerModel}"/>
@@ -57,7 +59,8 @@
                     </TextBox.Style>
                 </TextBox>
 
-                <TextBox d:Text="00:00:00:00:00" Text="{Binding Path=Details.cameraMAC, Mode=OneTime}" Margin="3,0" md:HintAssist.Hint="MAC" md:HintAssist.IsFloating="True" IsHitTestVisible="False" BorderThickness="0" />
+                <TextBox d:Text="00:00:00:00:00" Text="{Binding Path=Details.cameraMAC, Mode=OneTime}" Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                         Margin="3" md:HintAssist.Hint="MAC" md:HintAssist.IsFloating="True" IsHitTestVisible="False" BorderThickness="0" />
 
             </DockPanel>
 

@@ -24,39 +24,41 @@ using V5_REST_Lib.Models;
 
 namespace LabelVal.V5.ViewModels
 {
-    public partial class ScannerViewModel : ObservableObject
+    [JsonObject(MemberSerialization.OptIn)]
+    public partial class Scanner : ObservableObject
     {
         private static readonly Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         public static V5_REST_Lib.Controller ScannerController { get; } = new();
 
 
-        [ObservableProperty] private static string host = ScannerController.Host = App.Settings.GetValue("ScannerHostName", "192.168.188.2");
-        partial void OnHostChanged(string value) { App.Settings.SetValue("ScannerHostName", value); ScannerController.Host = value; }
+        [ObservableProperty] [property: JsonProperty] private static string host = ScannerController.Host;
+        partial void OnHostChanged(string value) { ScannerController.Host = value; }
 
 
-        [ObservableProperty] private static int port = ScannerController.Port = App.Settings.GetValue("ScannerPort", 80);
-        partial void OnPortChanged(int value) { App.Settings.SetValue("ScannerPort", value); ScannerController.Port = value; }
+        [ObservableProperty] [property: JsonProperty] private static int port = ScannerController.Port;
+        partial void OnPortChanged(int value) { ScannerController.Port = value; }
 
 
-        [ObservableProperty] private static bool fullResImages = App.Settings.GetValue(nameof(FullResImages), true);
-        partial void OnFullResImagesChanged(bool value) => App.Settings.SetValue(nameof(FullResImages), value);
+        [ObservableProperty] [property: JsonProperty] private static bool fullResImages = true;
 
+        [JsonProperty]
         public int RepeatedTriggerDelay
         {
-            get => App.Settings.GetValue(nameof(RepeatedTriggerDelay), 50, true);
+            get => repeatedTriggerDelay;
             set
             {
                 if (value < 1)
-                    App.Settings.SetValue(nameof(RepeatedTriggerDelay), 1);
+                    repeatedTriggerDelay = 1;
                 else if (value > 1000)
-                    App.Settings.SetValue(nameof(RepeatedTriggerDelay), 1000);
+                    repeatedTriggerDelay = 1000;
                 else
-                    App.Settings.SetValue(nameof(RepeatedTriggerDelay), value);
+                    repeatedTriggerDelay = value;
 
                 OnPropertyChanged();
             }
         }
+        private int repeatedTriggerDelay = 50;
 
        // private TestViewModel TestViewModel { get; }
 
@@ -83,24 +85,15 @@ namespace LabelVal.V5.ViewModels
 
         public static ObservableCollection<CameraDetails> AvailableCameras => V5_REST_Lib.Cameras.Cameras.Available;
 
-        [ObservableProperty] private CameraDetails? selectedCamera;
+        [ObservableProperty] [property: JsonProperty] private CameraDetails? selectedCamera;
         partial void OnSelectedCameraChanged(CameraDetails? value) => _ = App.Current.Dispatcher.BeginInvoke(() => { ImageFocusRegionOverlay = CreateFocusRegionOverlay(); });
 
-        public double QuickSet_ImagePercent
+
+        [ObservableProperty][property: JsonProperty] private double quickSet_ImagePercent = 0.33d;
+        partial void OnQuickSet_ImagePercentChanged(double value) => _ = App.Current.Dispatcher.BeginInvoke(() =>
         {
-            get => App.Settings.GetValue(nameof(QuickSet_ImagePercent), 0.33d, true);
-            set
-            {
-                App.Settings.SetValue(nameof(QuickSet_ImagePercent), value);
-
-                OnPropertyChanged();
-
-                _ = App.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    ImageFocusRegionOverlay = CreateFocusRegionOverlay();
-                });
-            }
-        }
+            ImageFocusRegionOverlay = CreateFocusRegionOverlay();
+        });
 
         private QuickSet_Photometry QuickSet_Photometry => new            (
                 (float)((SelectedCamera.Sensor.PixelColumns - (SelectedCamera.Sensor.PixelColumns * QuickSet_ImagePercent)) / 2),
@@ -117,21 +110,13 @@ namespace LabelVal.V5.ViewModels
 
         [ObservableProperty] private V5_REST_Lib.Controller.ScannerModes scannerMode;
 
-        public bool RepeatTrigger
-        {
-            get => App.Settings.GetValue(nameof(RepeatTrigger), false);
-            set
-            {
-                App.Settings.SetValue(nameof(RepeatTrigger), value);
-                OnPropertyChanged();
-            }
-        }
+        [ObservableProperty] private bool repeatTrigger;
 
         [ObservableProperty] private JToken capture;
         [ObservableProperty] private string cycleID;
         public ObservableCollection<JToken> Results { get; } = [];
 
-        public ScannerViewModel()
+        public Scanner()
         {
             ScannerController.StateChanged += ScannerController_StateChanged;
             ScannerController.ScannerModeChanged += ScannerController_ScannerModeChanged;
@@ -518,10 +503,12 @@ namespace LabelVal.V5.ViewModels
         [RelayCommand]
         private void WebsocketConnect()
         {
-            if (!ScannerController.IsWSConnected)
-                ScannerController.Connect();
-            else
-                ScannerController.Disconnect();
+           
+                if (!ScannerController.IsWSConnected)
+                    ScannerController.Connect();
+                else
+                    ScannerController.Disconnect();
+
 
             ScannerMode = V5_REST_Lib.Controller.ScannerModes.Offline;
         }

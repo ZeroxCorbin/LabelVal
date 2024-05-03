@@ -167,7 +167,8 @@ namespace LabelVal
             }
 
             _ = MessageBox.Show($"{message}\r\n{exception.Message}", "Unhandled Exception!", MessageBoxButton.OK);
-            Shutdown();
+
+            App.Current.Dispatcher.Invoke(Shutdown);
 
         }
 

@@ -1,18 +1,6 @@
 ﻿using LabelVal.WindowViews;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace LabelVal.V275.Views;
 /// <summary>
@@ -20,10 +8,7 @@ namespace LabelVal.V275.Views;
 /// </summary>
 public partial class V275 : UserControl
 {
-    public V275()
-    {
-        InitializeComponent();
-    }
+    public V275() => InitializeComponent();
 
-    public void btnShowSelectionDetails_Click(object sender, RoutedEventArgs e) => ((MainWindowView)App.Current.MainWindow).NodeDetails.IsLeftDrawerOpen = !((MainWindowView)App.Current.MainWindow).NodeDetails.IsLeftDrawerOpen;
+    public void btnShowDetails_Click(object sender, RoutedEventArgs e) => ((MainWindowView)App.Current.MainWindow).NodeDetails.IsLeftDrawerOpen = !((MainWindowView)App.Current.MainWindow).NodeDetails.IsLeftDrawerOpen;
 }

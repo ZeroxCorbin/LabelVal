@@ -27,7 +27,7 @@ namespace LabelVal.V5.Views
         private void LabelImage_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed && e.ClickCount == 2)
-                ShowImage(((ScannerViewModel)DataContext).Image, ((ScannerViewModel)DataContext).ImageOverlay, ((ScannerViewModel)DataContext).ImageFocusRegionOverlay);
+                ShowImage(((Scanner)DataContext).Image, ((Scanner)DataContext).ImageOverlay, ((Scanner)DataContext).ImageFocusRegionOverlay);
         }
 
         private bool ShowImage(byte[] image, DrawingImage overlay, DrawingImage overlay1)
@@ -77,7 +77,7 @@ namespace LabelVal.V5.Views
             {
                 try
                 {
-                    System.IO.File.WriteAllBytes(path, ((ScannerViewModel)DataContext).RawImage);
+                    System.IO.File.WriteAllBytes(path, ((Scanner)DataContext).RawImage);
                 }
                 catch (Exception ex) { }
 
@@ -86,8 +86,8 @@ namespace LabelVal.V5.Views
 
         //private void btnSetResults_Click(object sender, RoutedEventArgs e)
         //{
-        //    CodeType = ((ScannerViewModel)DataContext).Results[0]["type"].ToString();
-        //    ExpectedOutDataUTF8 = ((ScannerViewModel)DataContext).Results[0]["dataUTF8"].ToString();
+        //    CodeType = ((Scanner)DataContext).Results[0]["type"].ToString();
+        //    ExpectedOutDataUTF8 = ((Scanner)DataContext).Results[0]["dataUTF8"].ToString();
         //}
     }
 }

@@ -1,19 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using FluentNHibernate.Diagnostics;
-using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Messages;
-using LabelVal.V5.ViewModels;
 using MahApps.Metro.Controls.Dialogs;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Drawing.Printing;
-using System.IO;
 using System.Threading.Tasks;
-using V275_REST_lib.Models;
 
 namespace LabelVal.WindowViewModels;
 
@@ -21,7 +11,6 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
     public static string Version => App.Version;
-
 
     public V275.ViewModels.V275 V275 { get; }
     public V275.ViewModels.NodeDetails NodeDetails { get; }
@@ -32,7 +21,8 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
     public ImageRolls.ViewModels.ImageRolls ImageRolls { get; }
     public ImageRolls.ViewModels.ImageResults ImageResults { get; }
 
-    public ScannerViewModel ScannerViewModel { get; } = new ScannerViewModel();
+    public V5.ViewModels.ScannerManager ScannerManager { get; }
+    public V5.ViewModels.ScannerDetails ScannerDetails { get; }
 
     public StandardsDatabaseViewModel StandardsDatabaseViewModel { get; }
 
@@ -44,14 +34,18 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
         IsActive = true;
 
         ImageResults = new ImageRolls.ViewModels.ImageResults();
+
         NodeDetails = new V275.ViewModels.NodeDetails();
         PrinterDetails = new Printer.ViewModels.PrinterDetails();
+        ScannerDetails = new V5.ViewModels.ScannerDetails();
 
         V275 = new V275.ViewModels.V275();
         Printer = new Printer.ViewModels.Printer();
 
         ImageRolls = new ImageRolls.ViewModels.ImageRolls();
         StandardsDatabaseViewModel = new StandardsDatabaseViewModel();
+
+        ScannerManager = new V5.ViewModels.ScannerManager();
 
     }
 
@@ -73,7 +67,7 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
         }
     }
 
-    
+
     public async Task OkDialog(string title, string message) => _ = await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.Affirmative);
     public async Task<string> GetStringDialog(string title, string message) => await DialogCoordinator.ShowInputAsync(this, title, message);
 
@@ -83,8 +77,6 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
     //        r.PrinterName = StoredPrinter;
 
     //}
-
-
 
     //private async Task ResetRepeats()
     //{
@@ -118,7 +110,5 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
     //    }
 
     //}
-
-
 
 }
