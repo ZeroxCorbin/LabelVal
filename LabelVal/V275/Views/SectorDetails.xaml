@@ -1,15 +1,15 @@
-﻿<UserControl x:Class="LabelVal.WindowViews.SectorDetailsControlView"
+﻿<UserControl x:Class="LabelVal.V275.Views.SectorDetails"
             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-            xmlns:local="clr-namespace:LabelVal.WindowViews"
+            xmlns:local="clr-namespace:LabelVal.V275.Views"
             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
             xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-            xmlns:ViewModels="clr-namespace:LabelVal.WindowViewModels"
+            xmlns:ViewModels="clr-namespace:LabelVal.V275.ViewModels"
             xmlns:Converters="clr-namespace:LabelVal.Converters"
             xmlns:V275Converters="clr-namespace:LabelVal.V275.Converters"
-             d:DataContext="{d:DesignInstance Type=ViewModels:SectorControlViewModel}"
+             d:DataContext="{d:DesignInstance Type=ViewModels:Sector}"
             mc:Ignorable="d" d:Height="310" d:Width="282">
 
     <UserControl.Resources>

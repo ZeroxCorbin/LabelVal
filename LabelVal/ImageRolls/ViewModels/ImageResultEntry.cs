@@ -47,9 +47,9 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
     [ObservableProperty] private bool isGoldenRepeat;
     [ObservableProperty] private int printCount = 1;
 
-    [ObservableProperty] private ObservableCollection<SectorControlViewModel> v275StoredSectors = [];
-    [ObservableProperty] private ObservableCollection<SectorControlViewModel> v275CurrentSectors = [];
-    [ObservableProperty] private ObservableCollection<SectorDifferenceViewModel> diffSectors = [];
+    [ObservableProperty] private ObservableCollection<Sectors> v275StoredSectors = [];
+    [ObservableProperty] private ObservableCollection<Sectors> v275CurrentSectors = [];
+    [ObservableProperty] private ObservableCollection<SectorDifferences> diffSectors = [];
 
     public bool IsStore
     {
@@ -166,7 +166,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
         RepeatImage = CurrentRow.RepeatImage;
         IsGoldenRepeat = true;
 
-        List<SectorControlViewModel> tempSectors = [];
+        List<Sectors> tempSectors = [];
         if (!string.IsNullOrEmpty(CurrentRow.LabelReport) && !string.IsNullOrEmpty(CurrentRow.LabelTemplate))
             foreach (var jSec in LabelTemplate.sectors)
             {
@@ -184,7 +184,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
                         if (fSec == null)
                             break;
 
-                        tempSectors.Add(new SectorControlViewModel(jSec, fSec, isWrongStandard, jSec.gradingStandard != null && jSec.gradingStandard.enabled));
+                        tempSectors.Add(new Sectors(jSec, fSec, isWrongStandard, jSec.gradingStandard != null && jSec.gradingStandard.enabled));
 
                         break;
                     }
@@ -341,7 +341,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
 
         //if (!isRunning)
         //{
-        List<SectorControlViewModel> tempSectors = [];
+        List<Sectors> tempSectors = [];
         foreach (var jSec in RepeatTemplate.sectors)
         {
             var isWrongStandard = false;
@@ -358,7 +358,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
                     if (fSec == null)
                         break; //Not yet supported sector type
 
-                    tempSectors.Add(new SectorControlViewModel(jSec, fSec, isWrongStandard, jSec.gradingStandard != null && jSec.gradingStandard.enabled));
+                    tempSectors.Add(new Sectors(jSec, fSec, isWrongStandard, jSec.gradingStandard != null && jSec.gradingStandard.enabled));
 
                     break;
                 }
@@ -563,7 +563,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
 
     }
 
-    private DrawingGroup GetModuleGrid(Job.Sector[] sectors, ObservableCollection<SectorControlViewModel> parsedSectors)
+    private DrawingGroup GetModuleGrid(Job.Sector[] sectors, ObservableCollection<Sectors> parsedSectors)
     {
         var drwGroup = new DrawingGroup();
         //GeometryGroup moduleGrid = new GeometryGroup();
@@ -746,7 +746,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
         return drwGroup;
     }
 
-    private GeometryGroup DrawModuleGrid(System.Drawing.Graphics g, Job.Sector[] sectors, ObservableCollection<SectorControlViewModel> parsedSectors)
+    private GeometryGroup DrawModuleGrid(System.Drawing.Graphics g, Job.Sector[] sectors, ObservableCollection<Sectors> parsedSectors)
     {
         var moduleGrid = new GeometryGroup();
         using (var p = new System.Drawing.Pen(System.Drawing.Brushes.Red, 5))
@@ -813,7 +813,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
 
     private void GetSectorDiff()
     {
-        List<SectorDifferenceViewModel> diff = [];
+        List<SectorDifferences> diff = [];
 
         //Compare; Do not check for missing her. To keep found at top of list.
         foreach (var sec in V275StoredSectors)
@@ -828,7 +828,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
                     }
                     else
                     {
-                        var dat = new SectorDifferenceViewModel
+                        var dat = new SectorDifferences
                         {
                             UserName = $"{sec.JobSector.username} (SYMBOLOGY MISMATCH)",
                             IsSectorMissing = true,
@@ -852,7 +852,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
 
             if (!found)
             {
-                var dat = new SectorDifferenceViewModel
+                var dat = new SectorDifferences
                 {
                     UserName = $"{sec.JobSector.username} (MISSING)",
                     IsSectorMissing = true,
@@ -876,7 +876,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
 
                 if (!found)
                 {
-                    var dat = new SectorDifferenceViewModel
+                    var dat = new SectorDifferences
                     {
                         UserName = $"{sec.JobSector.username} (MISSING)",
                         IsSectorMissing = true,

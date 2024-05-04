@@ -13,35 +13,35 @@
 
     <DockPanel>
 
-            <md:Card VerticalAlignment="Top" Padding="3" Margin="3" Background="{DynamicResource MahApps.Brushes.Accent4}">
-                <Button Command="{Binding LoginCommand}" BorderThickness="0">
-                    <Button.Style>
-                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
-                            <Setter Property="Content">
-                                <Setter.Value>
-                                    <iconPacks:Modern Kind="Connect" Height="16" Width="16"/>
-                                </Setter.Value>
-                            </Setter>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsLoggedIn}" Value="True">
-                                    <Setter Property="Content">
-                                        <Setter.Value>
-                                            <iconPacks:Modern Kind="Disconnect" Height="16" Width="16"/>
-                                        </Setter.Value>
-                                    </Setter>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
-            </md:Card>
-        
+        <md:Card VerticalAlignment="Top" Padding="3" Margin="3" Background="{DynamicResource MahApps.Brushes.Accent4}">
+            <Button Command="{Binding LoginCommand}" BorderThickness="0">
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
+                        <Setter Property="Content">
+                            <Setter.Value>
+                                <iconPacks:Modern Kind="Connect" Height="16" Width="16"/>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsLoggedIn}" Value="True">
+                                <Setter Property="Content">
+                                    <Setter.Value>
+                                        <iconPacks:Modern Kind="Disconnect" Height="16" Width="16"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+        </md:Card>
+
         <DockPanel>
 
-            <DockPanel DockPanel.Dock="Top">
+            <DockPanel DockPanel.Dock="Top" Margin="1">
                 <TextBox d:Text="camera" Text="{Binding Path=Inspection.device, Mode=OneTime}" Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
                          MinWidth="56" Margin="3" md:HintAssist.Hint="Type" md:HintAssist.IsFloating="True" IsHitTestVisible="False" BorderThickness="0" />
-               
+
                 <TextBox d:Text="ZT610" Margin="3" md:HintAssist.Hint="Model" md:HintAssist.IsFloating="True" IsHitTestVisible="False" BorderThickness="0">
                     <TextBox.Style>
                         <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
@@ -64,9 +64,9 @@
 
             </DockPanel>
 
-            <DockPanel>
+            <DockPanel Margin="1">
 
-                <TextBox d:Text="JobName" Margin="3,0" md:HintAssist.Hint="Template Name" md:HintAssist.IsFloating="True" IsHitTestVisible="False" HorizontalAlignment="Left">
+                <TextBox d:Text="JobName" Margin="3,0" md:HintAssist.Hint="Template Name" md:HintAssist.IsFloating="True" IsHitTestVisible="False">
                     <TextBox.Style>
                         <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                             <Setter Property="BorderBrush" Value="{DynamicResource ColorBlindBrush5}"/>
@@ -116,9 +116,6 @@
             </DockPanel>
 
         </DockPanel>
-
-
-
 
         <StackPanel>
 

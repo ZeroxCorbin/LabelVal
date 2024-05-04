@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using LabelVal.Run.Databases;
 using LabelVal.Utilities;
-using LabelVal.WindowViewModels;
+using LabelVal.V275.ViewModels;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -21,9 +21,9 @@ public partial class LabelViewModel : ObservableObject
     [ObservableProperty] private ResultDatabase.Result result;
     [ObservableProperty] private DrawingImage repeatOverlay;
     [ObservableProperty] private LedgerDatabase.LedgerEntry ledgerEntry;
-    public ObservableCollection<SectorControlViewModel> V275CurrentSectors { get; } = [];
-    public ObservableCollection<SectorControlViewModel> V275StoredSectors { get; } = [];
-    public ObservableCollection<SectorDifferenceViewModel> DiffSectors { get; } = [];
+    public ObservableCollection<Sectors> V275CurrentSectors { get; } = [];
+    public ObservableCollection<Sectors> V275StoredSectors { get; } = [];
+    public ObservableCollection<SectorDifferences> DiffSectors { get; } = [];
 
     [ObservableProperty] private bool isGS1Standard;
     public LabelViewModel(ResultDatabase.Result result, LedgerDatabase.LedgerEntry ledgerEntry)
@@ -41,7 +41,7 @@ public partial class LabelViewModel : ObservableObject
     {
         V275StoredSectors.Clear();
 
-        List<SectorControlViewModel> tempSectors = [];
+        List<Sectors> tempSectors = [];
         if (!string.IsNullOrEmpty(Result.LabelReport) && !string.IsNullOrEmpty(Result.LabelTemplate))
             foreach (var jSec in JsonConvert.DeserializeObject<Job>(Result.LabelTemplate).sectors)
             {
@@ -59,7 +59,7 @@ public partial class LabelViewModel : ObservableObject
                         if (fSec == null)
                             break;
 
-                        tempSectors.Add(new SectorControlViewModel(jSec, fSec, isWrongStandard, jSec.gradingStandard != null && jSec.gradingStandard.enabled));
+                        tempSectors.Add(new Sectors(jSec, fSec, isWrongStandard, jSec.gradingStandard != null && jSec.gradingStandard.enabled));
 
                         break;
                     }
@@ -78,7 +78,7 @@ public partial class LabelViewModel : ObservableObject
     {
         V275CurrentSectors.Clear();
 
-        List<SectorControlViewModel> tempSectors = [];
+        List<Sectors> tempSectors = [];
         if (!string.IsNullOrEmpty(Result.RepeatReport) && !string.IsNullOrEmpty(Result.LabelTemplate))
             foreach (var jSec in JsonConvert.DeserializeObject<Job>(Result.LabelTemplate).sectors)
             {
@@ -96,7 +96,7 @@ public partial class LabelViewModel : ObservableObject
                         if (fSec == null)
                             break;
 
-                        tempSectors.Add(new SectorControlViewModel(jSec, fSec, isWrongStandard, jSec.gradingStandard != null && jSec.gradingStandard.enabled));
+                        tempSectors.Add(new Sectors(jSec, fSec, isWrongStandard, jSec.gradingStandard != null && jSec.gradingStandard.enabled));
 
                         break;
                     }
@@ -113,7 +113,7 @@ public partial class LabelViewModel : ObservableObject
     }
     private void GetSectorDiff()
     {
-        List<SectorDifferenceViewModel> diff = [];
+        List<SectorDifferences> diff = [];
         foreach (var sec in V275StoredSectors)
         {
             foreach (var cSec in V275CurrentSectors)
@@ -185,19 +185,17 @@ public partial class LabelViewModel : ObservableObject
         {
             return JsonConvert.DeserializeObject<Report_InspectSector_Verify1D>(reportSec.ToString());
         }
-        else if (reportSec["type"].ToString() == "verify2D")
-        {
-            return JsonConvert.DeserializeObject<Report_InspectSector_Verify2D>(reportSec.ToString());
-        }
         else
         {
-            return reportSec["type"].ToString() == "ocr"
-                ? JsonConvert.DeserializeObject<Report_InspectSector_OCR>(reportSec.ToString())
-                : reportSec["type"].ToString() == "ocv"
-                            ? JsonConvert.DeserializeObject<Report_InspectSector_OCV>(reportSec.ToString())
-                            : reportSec["type"].ToString() == "blemish"
-                                        ? JsonConvert.DeserializeObject<Report_InspectSector_Blemish>(reportSec.ToString())
-                                        : (object)null;
+            return reportSec["type"].ToString() == "verify2D"
+                ? JsonConvert.DeserializeObject<Report_InspectSector_Verify2D>(reportSec.ToString())
+                : reportSec["type"].ToString() == "ocr"
+                            ? JsonConvert.DeserializeObject<Report_InspectSector_OCR>(reportSec.ToString())
+                            : reportSec["type"].ToString() == "ocv"
+                                        ? JsonConvert.DeserializeObject<Report_InspectSector_OCV>(reportSec.ToString())
+                                        : reportSec["type"].ToString() == "blemish"
+                                                    ? JsonConvert.DeserializeObject<Report_InspectSector_Blemish>(reportSec.ToString())
+                                                    : (object)null;
         }
     }
 

@@ -15,8 +15,8 @@
 
         <GroupBox.Header>
             <DockPanel>
-                <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
-                    <TextBlock Text="V5 Cameras" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" Padding="1">
+                    <TextBlock Text="V5 Cameras" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Margin="3,0"/>
                 </md:Card>
 
                 <!--<Button Command="{Binding GetDevicesCommand}" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
@@ -28,7 +28,7 @@
                 <Button Click="btnShowDetails_Click" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
                         Padding="0" Margin="6,0,3,0" BorderThickness="0" Height="20" Width="20" HorizontalAlignment="Left">
 
-                    <iconPacks:Material Width="12" Height="12" Kind="CodeJson"/>
+                    <iconPacks:PackIconMaterial Kind="CodeJson" Width="12" Height="12"/>
                 </Button>
 
             </DockPanel>

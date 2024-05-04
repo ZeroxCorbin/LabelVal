@@ -7,6 +7,7 @@
             xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
             xmlns:local="clr-namespace:LabelVal.WindowViews"
              xmlns:json="clr-namespace:JSONViewer_WPF;assembly=JSONViewer_WPF"
+             xmlns:v275="clr-namespace:LabelVal.V275.Views"
             xmlns:ViewModels="clr-namespace:LabelVal.Run.ViewModels"
             xmlns:Converters="clr-namespace:LabelVal.Converters"
             d:DataContext="{d:DesignInstance Type=ViewModels:LabelViewModel}"
@@ -50,7 +51,7 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <local:SectorDetailsControlView/>
+                                    <v275:SectorDetails/>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
@@ -75,7 +76,7 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <local:SectorDetailsControlView />
+                                    <v275:SectorDetails />
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
@@ -158,7 +159,7 @@
                 <ItemsControl ItemsSource="{Binding V275StoredSectors}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <local:SectorControlView />
+                            <v275:Sectors />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
@@ -185,7 +186,7 @@
                 <ItemsControl ItemsSource="{Binding V275CurrentSectors}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <local:SectorControlView />
+                            <v275:Sectors />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
@@ -206,7 +207,7 @@
                 <ItemsControl ItemsSource="{Binding DiffSectors}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <local:SectorDifferenceControlView />
+                            <v275:SectorDifferences />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>

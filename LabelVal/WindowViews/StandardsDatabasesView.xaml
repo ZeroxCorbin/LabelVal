@@ -14,17 +14,13 @@
     <DockPanel>
 
         <GroupBox DockPanel.Dock="Top"
-            md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-            md:ColorZoneAssist.Foreground="{DynamicResource MahApps.Brushes.Foreground}"
-            md:ColorZoneAssist.Mode="Custom"
-            BorderThickness="0"
             Margin="3" Padding="3"
             HorizontalAlignment="Left" VerticalAlignment="Top" 
             Style="{StaticResource MaterialDesignCardGroupBox}">
 
             <GroupBox.Header>
-                <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
-                    <TextBlock Text="Databases" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" Padding="1">
+                    <TextBlock Text="Databases" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Margin="3,0"/>
                 </md:Card>
             </GroupBox.Header>
 
@@ -34,12 +30,12 @@
                     <DockPanel>
 
                         <Button Command="{Binding CreateStandardsDatabaseCommand}"
-                    ToolTip="Create a new standards database."
-                    Margin="0,0,2,0">
+                            ToolTip="Create a new standards database."
+                            Margin="1">
                             <IconPacks:Material Kind="Plus"/>
                         </Button>
 
-                        <Button Command="{Binding LockStandardsDatabaseCommand}" Margin="0,0,2,0">
+                        <Button Command="{Binding LockStandardsDatabaseCommand}" Margin="1">
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                                     <Setter Property="Content">

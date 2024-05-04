@@ -134,26 +134,28 @@ namespace LabelVal
         private void SetupExceptionHandling()
         {
             AppDomain.CurrentDomain.UnhandledException += (s, e) =>
-                LogUnhandledException((Exception)e.ExceptionObject, "AppDomain.CurrentDomain.UnhandledException");
+                LogUnhandledException((Exception)e.ExceptionObject, "AppDomain.CurrentDomain.UnhandledException", true);
 
             DispatcherUnhandledException += (s, e) =>
             {
-                LogUnhandledException(e.Exception, "Application.Current.DispatcherUnhandledException");
+                LogUnhandledException(e.Exception, "Application.Current.DispatcherUnhandledException", false);
                 e.Handled = true;
             };
 
             TaskScheduler.UnobservedTaskException += (s, e) =>
             {
-                LogUnhandledException(e.Exception, "TaskScheduler.UnobservedTaskException");
+                LogUnhandledException(e.Exception, "TaskScheduler.UnobservedTaskException", false);
                 e.SetObserved();
             };
         }
 
-        private void LogUnhandledException(Exception exception, string source)
+        private void LogUnhandledException(Exception exception, string source, bool shutdown)
         {
             var message = $"Unhandled exception ({source})";
             try
             {
+                //NLog.LogManager.GetCurrentClassLogger().Error(exception);
+
                 var assemblyName = System.Reflection.Assembly.GetExecutingAssembly().GetName();
                 message = string.Format("Unhandled exception in {0} v{1}", assemblyName.Name, assemblyName.Version);
             }
@@ -168,7 +170,8 @@ namespace LabelVal
 
             _ = MessageBox.Show($"{message}\r\n{exception.Message}", "Unhandled Exception!", MessageBoxButton.OK);
 
-            App.Current.Dispatcher.Invoke(Shutdown);
+            if(shutdown)
+                App.Current.Dispatcher.Invoke(Shutdown);
 
         }
 

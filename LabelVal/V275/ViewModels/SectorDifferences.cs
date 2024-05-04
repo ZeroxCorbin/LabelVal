@@ -4,9 +4,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using V275_REST_lib.Models;
 
-namespace LabelVal.WindowViewModels;
+namespace LabelVal.V275.ViewModels;
 
-public partial class SectorDifferenceViewModel : ObservableObject
+public partial class SectorDifferences : ObservableObject
 {
 
     public class GradeValue : Report_InspectSector_Common.GradeValue
@@ -219,9 +219,9 @@ public partial class SectorDifferenceViewModel : ObservableObject
         return $"{char.ToUpper(tmp[0])}{tmp[1..]}";
     }
 
-    public SectorDifferenceViewModel Compare(SectorDifferenceViewModel compare)
+    public SectorDifferences Compare(SectorDifferences compare)
     {
-        var results = new SectorDifferenceViewModel
+        var results = new SectorDifferences
         {
             UserName = UserName,
             Type = Type,

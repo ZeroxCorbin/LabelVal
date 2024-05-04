@@ -33,30 +33,30 @@ namespace LabelVal.V5.ViewModels
         public static V5_REST_Lib.FTP.FTPClient FTPClient { get; } = new();
 
 
-        [ObservableProperty] [property: JsonProperty] private static string host = ScannerController.Host;
+        [ObservableProperty][property: JsonProperty] private static string host = ScannerController.Host;
         partial void OnHostChanged(string value) { ScannerController.Host = value; }
 
 
-        [ObservableProperty] [property: JsonProperty] private static int port = ScannerController.Port;
+        [ObservableProperty][property: JsonProperty] private static int port = ScannerController.Port;
         partial void OnPortChanged(int value) { ScannerController.Port = value; }
 
-        [ObservableProperty] [property: JsonProperty] private static bool fullResImages = true;
+        [ObservableProperty][property: JsonProperty] private static bool fullResImages = true;
 
 
-        
-        [ObservableProperty] [property: JsonProperty] private static string fTPUsername = FTPClient.Username;
+
+        [ObservableProperty][property: JsonProperty] private static string fTPUsername = FTPClient.Username;
         partial void OnFTPUsernameChanged(string value) { FTPClient.Username = value; }
 
-        [ObservableProperty] [property: JsonProperty] private static string fTPPassword = FTPClient.Password;
+        [ObservableProperty][property: JsonProperty] private static string fTPPassword = FTPClient.Password;
         partial void OnFTPPasswordChanged(string value) { FTPClient.Password = value; }
-        
-        [ObservableProperty] [property: JsonProperty] private static string fTPHost = FTPClient.Host;
+
+        [ObservableProperty][property: JsonProperty] private static string fTPHost = FTPClient.Host;
         partial void OnFTPHostChanged(string value) { FTPClient.Host = value; }
 
         [ObservableProperty][property: JsonProperty] private static int fTPPort = FTPClient.Port;
         partial void OnFTPPortChanged(int value) { FTPClient.Port = value; }
 
-        [ObservableProperty] [property: JsonProperty] private static string fTPRemotePath = FTPClient.RemotePath;
+        [ObservableProperty][property: JsonProperty] private static string fTPRemotePath = FTPClient.RemotePath;
         partial void OnFTPRemotePathChanged(string value) { FTPClient.RemotePath = value; }
 
 
@@ -78,7 +78,7 @@ namespace LabelVal.V5.ViewModels
         }
         private int repeatedTriggerDelay = 50;
 
-       // private TestViewModel TestViewModel { get; }
+        // private TestViewModel TestViewModel { get; }
 
         [ObservableProperty] private bool isEventWSConnected;
         partial void OnIsEventWSConnectedChanged(bool value) => OnPropertyChanged(nameof(IsWSConnected));
@@ -103,7 +103,7 @@ namespace LabelVal.V5.ViewModels
 
         public static ObservableCollection<CameraDetails> AvailableCameras => V5_REST_Lib.Cameras.Cameras.Available;
 
-        [ObservableProperty] [property: JsonProperty] private CameraDetails? selectedCamera;
+        [ObservableProperty][property: JsonProperty] private CameraDetails? selectedCamera;
         partial void OnSelectedCameraChanged(CameraDetails? value) => _ = App.Current.Dispatcher.BeginInvoke(() => { ImageFocusRegionOverlay = CreateFocusRegionOverlay(); });
 
 
@@ -113,13 +113,13 @@ namespace LabelVal.V5.ViewModels
             ImageFocusRegionOverlay = CreateFocusRegionOverlay();
         });
 
-        private QuickSet_Photometry QuickSet_Photometry => new            (
+        private QuickSet_Photometry QuickSet_Photometry => new(
                 (float)((SelectedCamera.Sensor.PixelColumns - (SelectedCamera.Sensor.PixelColumns * QuickSet_ImagePercent)) / 2),
                 (float)((SelectedCamera.Sensor.PixelRows - (SelectedCamera.Sensor.PixelRows * QuickSet_ImagePercent)) / 2),
                 (float)((SelectedCamera.Sensor.PixelColumns * QuickSet_ImagePercent)),
                 (float)((SelectedCamera.Sensor.PixelRows * QuickSet_ImagePercent))
             );
-        private QuickSet_Focus QuickSet_Focus => new            (
+        private QuickSet_Focus QuickSet_Focus => new(
                 (float)((SelectedCamera.Sensor.PixelColumns - (SelectedCamera.Sensor.PixelColumns * QuickSet_ImagePercent)) / 2),
                 (float)((SelectedCamera.Sensor.PixelRows - (SelectedCamera.Sensor.PixelRows * QuickSet_ImagePercent)) / 2),
                 (float)((SelectedCamera.Sensor.PixelColumns * QuickSet_ImagePercent)),
@@ -188,7 +188,7 @@ namespace LabelVal.V5.ViewModels
                 RawImage = null;
                 return;
             }
-               
+
 
             if (FullResImages)
             {
@@ -519,16 +519,17 @@ namespace LabelVal.V5.ViewModels
         //}
 
         [RelayCommand]
-        private void WebsocketConnect()
+        private async Task WebsocketConnect()
         {
-           
-                if (!ScannerController.IsWSConnected)
-                    ScannerController.Connect();
-                else
-                    ScannerController.Disconnect();
-
-
             ScannerMode = V5_REST_Lib.Controller.ScannerModes.Offline;
+
+           
+            if (!ScannerController.IsWSConnected)
+                await Task.Run(ScannerController.Connect);
+            else
+                await Task.Run(ScannerController.Disconnect);
+            
+
         }
 
         private bool running;

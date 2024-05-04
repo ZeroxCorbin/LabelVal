@@ -1,13 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using V275_REST_lib.Models;
 
-namespace LabelVal.WindowViewModels;
+namespace LabelVal.V275.ViewModels;
 
-public partial class SectorControlViewModel : ObservableObject
+public partial class Sectors : ObservableObject
 {
     [ObservableProperty] private Job.Sector jobSector;
     [ObservableProperty] private object reportSector;
-    [ObservableProperty] private SectorDifferenceViewModel sectorResults = new();
+    [ObservableProperty] private SectorDifferences sectorResults = new();
 
     [ObservableProperty] private bool isWarning;
     [ObservableProperty] private bool isError;
@@ -18,8 +18,8 @@ public partial class SectorControlViewModel : ObservableObject
     partial void OnIsWrongStandardChanged(bool value) => OnPropertyChanged(nameof(IsNotWrongStandard));
     public bool IsNotWrongStandard => !IsWrongStandard;
 
-    public SectorControlViewModel() { }
-    public SectorControlViewModel(Job.Sector jobSector, object reportSector, bool isWrongStandard, bool isGS1Standard)
+    public Sectors() { }
+    public Sectors(Job.Sector jobSector, object reportSector, bool isWrongStandard, bool isGS1Standard)
     {
         ReportSector = reportSector;
         JobSector = jobSector;

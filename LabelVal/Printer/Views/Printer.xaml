@@ -10,21 +10,15 @@
              d:DataContext="{d:DesignInstance Type=ViewModels:Printer}"
              mc:Ignorable="d">
 
-    <GroupBox
-            md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-            md:ColorZoneAssist.Foreground="{DynamicResource MahApps.Brushes.Foreground}"
-            md:ColorZoneAssist.Mode="Custom"
-            BorderThickness="0"
-            Margin="3" Padding="3"
-            HorizontalAlignment="Left" VerticalAlignment="Top" 
+    <GroupBox Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top" 
             Style="{StaticResource MaterialDesignCardGroupBox}">
 
         <GroupBox.Header>
 
             <DockPanel>
 
-                <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
-                    <TextBlock Text="Printer" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" Padding="1">
+                    <TextBlock Text="Printers" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Margin="3,0"/>
                 </md:Card>
 
                 <Button Click="btnShowPrinterDetails_Click" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
@@ -38,7 +32,7 @@
 
         <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" Padding="2">
 
-            <ComboBox ItemsSource="{Binding Printers}" SelectedItem="{Binding SelectedPrinter}">
+            <ComboBox ItemsSource="{Binding Printers}" SelectedItem="{Binding SelectedPrinter}" Margin="1">
                 <ComboBox.Style>
                     <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}">
                         <Setter Property="md:HintAssist.Hint">
