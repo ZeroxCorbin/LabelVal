@@ -15,6 +15,12 @@
 
         <GroupBox.Header>
             <DockPanel>
+                
+                <Button Click="btnShowSettings_Click" Style="{StaticResource MaterialDesignFloatingActionButton}"
+                        ToolTip="Show Settings" Width="20" Height="20" BorderThickness="0" Margin="3,0,6,0">
+                    <iconPacks:PackIconMaterial Kind="Cog" Height="14" Width="14"/>
+                </Button>
+                
                 <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
                     <TextBlock Text="V275 Nodes" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                 </md:Card>
@@ -34,17 +40,115 @@
             </DockPanel>
         </GroupBox.Header>
 
-        <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}">
-            <ListView ItemsSource="{Binding Nodes}" SelectedItem="{Binding SelectedNode}" HorizontalAlignment="Center">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <md:Card Background="{DynamicResource MahApps.Brushes.Accent4}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="-5">
-                            <local:NodeItem DataContext="{Binding }"/>
-                        </md:Card>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-        </md:Card>
+        <md:DrawerHost x:Name="drwSettings">
+
+            <md:DrawerHost.TopDrawerContent>
+
+                <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" Margin="3" Padding="2" HorizontalAlignment="Left">
+                    <md:Card.Style>
+                        <Style TargetType="{x:Type md:Card}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=IsTopDrawerOpen, ElementName=drwSettings}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </md:Card.Style>
+                    <DockPanel>
+
+                        <DockPanel DockPanel.Dock="Top" Margin="3">
+
+                            <TextBox Text="{Binding V275_Host}" MinWidth="50" Margin="3,0" HorizontalAlignment="Center"
+                                         md:HintAssist.Hint="IP Address" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
+                                <TextBox.Style>
+                                    <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                                        <Setter Property="IsEnabled" Value="True"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsWSConnected}" Value="True">
+                                                <Setter Property="IsEnabled" Value="False"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBox.Style>
+                            </TextBox>
+
+                            <TextBox Text="{Binding V275_SystemPort}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center"
+                                         md:HintAssist.Hint="Port" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
+                                <TextBox.Style>
+                                    <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                                        <Setter Property="IsEnabled" Value="True"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsWSConnected}" Value="True">
+                                                <Setter Property="IsEnabled" Value="False"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBox.Style>
+                            </TextBox>
+
+                            <TextBox Text="{Binding UserName}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center"
+                                 md:HintAssist.Hint="User name" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
+                                <TextBox.Style>
+                                    <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                                        <Setter Property="IsEnabled" Value="True"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsWSConnected}" Value="True">
+                                                <Setter Property="IsEnabled" Value="False"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBox.Style>
+                            </TextBox>
+
+                            <TextBox Text="{Binding Password}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center" HorizontalAlignment="Left"
+                                 md:HintAssist.Hint="Password" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
+                                <TextBox.Style>
+                                    <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                                        <Setter Property="IsEnabled" Value="True"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsWSConnected}" Value="True">
+                                                <Setter Property="IsEnabled" Value="False"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBox.Style>
+                            </TextBox>
+
+                        </DockPanel>
+
+                        <DockPanel Margin="3">
+                            <TextBox Text="{Binding SimulatorImageDirectory}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center" HorizontalAlignment="Left"
+                                        md:HintAssist.Hint="Simulator Image Directory" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
+                                <TextBox.Style>
+                                    <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                                        <Setter Property="IsEnabled" Value="True"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsWSConnected}" Value="True">
+                                                <Setter Property="IsEnabled" Value="False"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBox.Style>
+                            </TextBox>
+                        </DockPanel>
+                    </DockPanel>
+                </md:Card>
+            </md:DrawerHost.TopDrawerContent>
+
+            <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}">
+                <ListView ItemsSource="{Binding Nodes}" SelectedItem="{Binding SelectedNode}" HorizontalAlignment="Center">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <md:Card Background="{DynamicResource MahApps.Brushes.Accent4}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="-5">
+                                <local:NodeItem DataContext="{Binding }"/>
+                            </md:Card>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </md:Card>
+            
+        </md:DrawerHost>
     </GroupBox>
 
 </UserControl>

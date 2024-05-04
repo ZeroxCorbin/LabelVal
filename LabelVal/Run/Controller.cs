@@ -160,7 +160,7 @@ public class Controller
         {
             foreach (var label in Labels)
             {
-                if (label.LabelSectors.Count == 0)
+                if (label.V275StoredSectors.Count == 0)
                     continue;
 
                 CurrentLoopCount = i + 1;
@@ -198,7 +198,7 @@ public class Controller
                     return false;
                 }
 
-                var sRow = StandardsDatabase.GetRow(GradingStandard.Name, label.LabelImageUID);
+                var sRow = StandardsDatabase.GetRow(GradingStandard.Name, label.SourceImageUID);
 
                 if (sRow == null || string.IsNullOrEmpty(sRow.LabelReport))
                     continue;
@@ -243,8 +243,8 @@ public class Controller
                     LabelTemplate = sRow.LabelTemplate,
                     LabelReport = sRow.LabelReport,
                     RepeatGoldenImage = sRow.RepeatImage,
-                    LabelImageUID = label.LabelImageUID,
-                    LabelImage = Node.IsSimulator ? null : label.LabelImage,
+                    LabelImageUID = label.SourceImageUID,
+                    LabelImage = Node.IsSimulator ? null : label.SourceImage,
                     LabelImageOrder = CurrentLabelCount,
                     LoopCount = CurrentLoopCount
                 };

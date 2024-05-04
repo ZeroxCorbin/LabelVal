@@ -26,7 +26,7 @@
 
                 <DockPanel >
 
-                    <Button x:Name="btnShowRunSettings" Click="btnShowRunSettings_Click" Style="{StaticResource MaterialDesignFloatingActionButton}"
+                    <Button Click="btnShowSettings_Click" Style="{StaticResource MaterialDesignFloatingActionButton}"
                         ToolTip="Show Settings" Width="20" Height="20" BorderThickness="0" Margin="3,0,6,0">
                         <IconPacks:PackIconMaterial Kind="Cog" Height="14" Width="14"/>
                     </Button>
@@ -95,7 +95,7 @@
 
             </GroupBox.Header>
 
-            <md:DrawerHost x:Name="drwRunSettings">
+            <md:DrawerHost x:Name="drwSettings">
 
                 <md:DrawerHost.TopDrawerContent>
 
@@ -104,60 +104,151 @@
                             <Style TargetType="{x:Type md:Card}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Path=IsTopDrawerOpen, ElementName=drwRunSettings}" Value="True">
+                                    <DataTrigger Binding="{Binding Path=IsTopDrawerOpen, ElementName=drwSettings}" Value="True">
                                         <Setter Property="Visibility" Value="Visible"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </md:Card.Style>
-                        
-                        <StackPanel Orientation="Horizontal">
 
-                            <TextBox Text="{Binding Host}" MinWidth="50" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="3,0"
-                                 md:HintAssist.Hint="IP Address" md:HintAssist.IsFloating="True" HorizontalContentAlignment="Center">
-                                <TextBox.Style>
-                                    <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                                        <Setter Property="IsEnabled" Value="True"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsWSConnected}" Value="True">
-                                                <Setter Property="IsEnabled" Value="False"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBox.Style>
-                            </TextBox>
+                        <DockPanel>
 
-                            <TextBox Text="{Binding Port}" MinWidth="50" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="3,0"
-                                  md:HintAssist.Hint="Port" md:HintAssist.IsFloating="True" HorizontalContentAlignment="Center">
-                                <TextBox.Style>
-                                    <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
-                                        <Setter Property="IsEnabled" Value="True"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsWSConnected}" Value="True">
-                                                <Setter Property="IsEnabled" Value="False"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBox.Style>
-                            </TextBox>
+                            <DockPanel DockPanel.Dock="Top" Margin="3">
+                                <TextBox Text="{Binding Host}" MinWidth="50" Margin="3,0" HorizontalAlignment="Center"
+                                         md:HintAssist.Hint="IP Address" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
+                                    <TextBox.Style>
+                                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                                            <Setter Property="IsEnabled" Value="True"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsWSConnected}" Value="True">
+                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
 
-                            <mah:NumericUpDown StringFormat="N2" Value="{Binding QuickSet_ImagePercent}" Interval="0.01" Maximum="1.0" Minimum="0.01"
-                                           md:HintAssist.Hint="Focus ROI" md:HintAssist.IsFloating="True" HorizontalContentAlignment="Right"
-                                           MinWidth="40" Margin="3,0" BorderThickness="0"/>
+                                <TextBox Text="{Binding Port}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center"
+                                         md:HintAssist.Hint="Port" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
+                                    <TextBox.Style>
+                                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                                            <Setter Property="IsEnabled" Value="True"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsWSConnected}" Value="True">
+                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
 
-                            <TextBox Text="{Binding RepeatedTriggerDelay}"
-                                             md:HintAssist.Hint="Inter. Trigger Delay" md:HintAssist.IsFloating="True" HorizontalContentAlignment="Center"
+                                <TextBox Text="{Binding QuickSet_ImagePercent}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center"
+                                         md:HintAssist.Hint="Focus ROI" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
+                                    <TextBox.Style>
+                                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                                            <Setter Property="IsEnabled" Value="True"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsWSConnected}" Value="True">
+                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
+                                
+                                <!--<mah:NumericUpDown Value="{Binding QuickSet_ImagePercent}" StringFormat="N2" Interval="0.01" Maximum="1.0" Minimum="0.01"
+                                           md:HintAssist.Hint="Focus ROI" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Right" HorizontalContentAlignment="Left"
+                                           MinWidth="40" Margin="0,0" BorderThickness="0"/>-->
+
+                                <TextBox Text="{Binding RepeatedTriggerDelay}" Style="{StaticResource MaterialDesignFloatingHintTextBox}" HorizontalContentAlignment="Center"
+                                             md:HintAssist.Hint="Trigger Delay" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left"
                                              md:TextFieldAssist.SuffixText="ms"/>
 
-                            <mah:ToggleSwitch IsOn="{Binding FullResImages}"
+                                <mah:ToggleSwitch IsOn="{Binding FullResImages}"
                                           Content="Full Res. Images"
                                           Margin="3" >
-                                <mah:ToggleSwitch.RenderTransform>
-                                    <ScaleTransform ScaleX="0.8" ScaleY="0.8"/>
-                                </mah:ToggleSwitch.RenderTransform>
-                            </mah:ToggleSwitch>
+                                    <mah:ToggleSwitch.RenderTransform>
+                                        <ScaleTransform ScaleX="0.8" ScaleY="0.8"/>
+                                    </mah:ToggleSwitch.RenderTransform>
+                                </mah:ToggleSwitch>
 
-                        </StackPanel>
+                            </DockPanel>
+
+                            <DockPanel DockPanel.Dock="Top" Margin="3">
+                                <TextBox Text="{Binding FTPHost}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center"
+                                            md:HintAssist.Hint="IP Address" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
+                                    <TextBox.Style>
+                                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                                            <Setter Property="IsEnabled" Value="True"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsWSConnected}" Value="True">
+                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
+
+                                <TextBox Text="{Binding FTPPort}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center"
+                                  md:HintAssist.Hint="Port" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
+                                    <TextBox.Style>
+                                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                                            <Setter Property="IsEnabled" Value="True"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsWSConnected}" Value="True">
+                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
+
+                                <TextBox Text="{Binding FTPUsername}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center"
+                                 md:HintAssist.Hint="User name" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
+                                    <TextBox.Style>
+                                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                                            <Setter Property="IsEnabled" Value="True"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsWSConnected}" Value="True">
+                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
+
+                                <TextBox Text="{Binding FTPPassword}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center" HorizontalAlignment="Left"
+                                 md:HintAssist.Hint="Password" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
+                                    <TextBox.Style>
+                                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                                            <Setter Property="IsEnabled" Value="True"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsWSConnected}" Value="True">
+                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
+
+                            </DockPanel>
+
+                            <DockPanel Margin="3">
+                                <TextBox Text="{Binding FTPRemotePath}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center" HorizontalAlignment="Left"
+                                        md:HintAssist.Hint="Remote Path" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
+                                    <TextBox.Style>
+                                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                                            <Setter Property="IsEnabled" Value="True"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsWSConnected}" Value="True">
+                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
+                            </DockPanel>
+                        </DockPanel>
                     </md:Card>
                 </md:DrawerHost.TopDrawerContent>
 
@@ -344,7 +435,7 @@
                             </DockPanel>
 
                         </Expander.Header>
-                        
+
                         <DockPanel>
 
                             <DockPanel DockPanel.Dock="Top">
@@ -378,7 +469,7 @@
                                     </StackPanel>
                                 </md:Card>
                             </DockPanel>
-                            
+
                             <DockPanel >
 
                                 <!--JSON-->
@@ -513,7 +604,7 @@
 
                                     <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" Padding="2" Margin="3">
                                         <Grid Height="332" Width="400">
-                                            <paz:ZoomBorder Name="ZoomBorder" Margin="3" ClipToBounds="True" MouseDown="LabelImage_MouseDown">
+                                            <paz:ZoomBorder Name="ZoomBorder" Margin="3" ClipToBounds="True" MouseDown="SourceImage_MouseDown">
                                                 <Grid>
                                                     <Image x:Name="Image" 
                                                    Source="{Binding RawImage, Converter={StaticResource bytesToImage}}"

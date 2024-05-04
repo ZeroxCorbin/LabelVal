@@ -30,6 +30,7 @@ namespace LabelVal.V5.ViewModels
         private static readonly Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         public static V5_REST_Lib.Controller ScannerController { get; } = new();
+        public static V5_REST_Lib.FTP.FTPClient FTPClient { get; } = new();
 
 
         [ObservableProperty] [property: JsonProperty] private static string host = ScannerController.Host;
@@ -39,8 +40,25 @@ namespace LabelVal.V5.ViewModels
         [ObservableProperty] [property: JsonProperty] private static int port = ScannerController.Port;
         partial void OnPortChanged(int value) { ScannerController.Port = value; }
 
-
         [ObservableProperty] [property: JsonProperty] private static bool fullResImages = true;
+
+
+        
+        [ObservableProperty] [property: JsonProperty] private static string fTPUsername = FTPClient.Username;
+        partial void OnFTPUsernameChanged(string value) { FTPClient.Username = value; }
+
+        [ObservableProperty] [property: JsonProperty] private static string fTPPassword = FTPClient.Password;
+        partial void OnFTPPasswordChanged(string value) { FTPClient.Password = value; }
+        
+        [ObservableProperty] [property: JsonProperty] private static string fTPHost = FTPClient.Host;
+        partial void OnFTPHostChanged(string value) { FTPClient.Host = value; }
+
+        [ObservableProperty][property: JsonProperty] private static int fTPPort = FTPClient.Port;
+        partial void OnFTPPortChanged(int value) { FTPClient.Port = value; }
+
+        [ObservableProperty] [property: JsonProperty] private static string fTPRemotePath = FTPClient.RemotePath;
+        partial void OnFTPRemotePathChanged(string value) { FTPClient.RemotePath = value; }
+
 
         [JsonProperty]
         public int RepeatedTriggerDelay
@@ -334,11 +352,11 @@ namespace LabelVal.V5.ViewModels
             //    {
             //        if (!isRepeat)
             //        {
-            //            DrawModuleGrid(g, LabelTemplate.sectors, LabelSectors);
+            //            DrawModuleGrid(g, LabelTemplate.sectors, V275StoredSectors);
             //        }
             //        else
             //        {
-            //            DrawModuleGrid(g, RepeatTemplate.sectors, RepeatSectors);
+            //            DrawModuleGrid(g, RepeatTemplate.sectors, V275CurrentSectors);
             //        }
             //    }
             //}

@@ -48,7 +48,7 @@
 
         <CollectionViewSource x:Key="LabelsDataList" Source="{Binding Labels}">
             <CollectionViewSource.SortDescriptions>
-                <componentmodel:SortDescription PropertyName="Run.LabelImageOrder" Direction="Ascending"/>
+                <componentmodel:SortDescription PropertyName="Run.SourceImageOrder" Direction="Ascending"/>
             </CollectionViewSource.SortDescriptions>
             <!--<CollectionViewSource.GroupDescriptions>
                 <PropertyGroupDescription PropertyName="Run.LoopCount" />
@@ -430,8 +430,8 @@
                                                                     </StackPanel>
                                                                 </Grid>
 
-                                                                <TextBlock Grid.Column="1" Name="LabelSectors" Margin="5 2 5 2" HorizontalAlignment="Center"/>
-                                                                <TextBlock Grid.Column="2" Name="RepeatSectors" Margin="5 2 5 2" HorizontalAlignment="Center"/>
+                                                                <TextBlock Grid.Column="1" Name="V275StoredSectors" Margin="5 2 5 2" HorizontalAlignment="Center"/>
+                                                                <TextBlock Grid.Column="2" Name="V275CurrentSectors" Margin="5 2 5 2" HorizontalAlignment="Center"/>
                                                                 <TextBlock Grid.Column="3" Name="DissimilarSectors" Margin="5 2 5 2" HorizontalAlignment="Center"/>
                                                             </Grid>
 

@@ -11,4 +11,6 @@ public partial class V275 : UserControl
     public V275() => InitializeComponent();
 
     public void btnShowDetails_Click(object sender, RoutedEventArgs e) => ((MainWindowView)App.Current.MainWindow).NodeDetails.IsLeftDrawerOpen = !((MainWindowView)App.Current.MainWindow).NodeDetails.IsLeftDrawerOpen;
+
+    private void btnShowSettings_Click(object sender, RoutedEventArgs e) => drwSettings.IsTopDrawerOpen = !drwSettings.IsTopDrawerOpen;
 }

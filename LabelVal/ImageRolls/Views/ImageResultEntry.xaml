@@ -35,7 +35,7 @@
 
     <DockPanel>
 
-        <!--Label Image-->
+        <!--Source Image-->
         <GroupBox Margin="3" Padding="3"
             HorizontalAlignment="Left" VerticalAlignment="Top" 
             Style="{StaticResource MaterialDesignCardGroupBox}">
@@ -56,7 +56,7 @@
                                 <Setter Property="Visibility" Value="Visible"/>
                                 
                                 <Style.Triggers>
-                                    <DataTrigger Value="{x:Null}" Binding="{Binding LabelImage}">
+                                    <DataTrigger Value="{x:Null}" Binding="{Binding SourceImage}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -64,7 +64,7 @@
                             </Style>
                         </Button.Style>
 
-                        <IconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
+                        <IconPacks:PackIconMaterial Kind="ContentSave"  Margin="0,-2,0,0" Height="12" Width="12"/>
 
                     </Button>
 
@@ -94,14 +94,14 @@
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
                                     <Setter Property="Content">
                                         <Setter.Value>
-                                            <IconPacks:PackIconMaterial Kind="Printer" Height="12" Width="12"/>
+                                            <IconPacks:PackIconMaterial Kind="Printer"  Margin="-1,-1,0,0" Height="14" Width="14"/>
                                         </Setter.Value>
                                     </Setter>
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding SelectedNode.IsSimulator}" Value="True">
                                             <Setter Property="Content">
                                                 <Setter.Value>
-                                                    <IconPacks:PackIconMaterial Kind="MessageProcessing" Height="12" Width="12"/>
+                                                    <IconPacks:PackIconMaterial Kind="CameraImage"  Margin="-1,-1,0,0" Height="14" Width="14"/>
                                                 </Setter.Value>
                                             </Setter>
                                         </DataTrigger>
@@ -130,24 +130,24 @@
 
                     </DockPanel>
                     <!--<DockPanel VerticalAlignment="Center">
-                            <TextBlock Text="{Binding Source.PixelWidth, ElementName=LabelImage}"/>
+                            <TextBlock Text="{Binding Source.PixelWidth, ElementName=SourceImage}"/>
                             <TextBlock Text="x" Margin="3,0"/>
-                            <TextBlock Text="{Binding Source.PixelHeight, ElementName=LabelImage}"/>
+                            <TextBlock Text="{Binding Source.PixelHeight, ElementName=SourceImage}"/>
                         </DockPanel>-->
 
-                    <TextBlock Text="{Binding LabelImageUID, Converter={StaticResource shortenUID}}" ToolTip="{Binding LabelImageUID}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding SourceImageUID, Converter={StaticResource shortenUID}}" ToolTip="{Binding SourceImageUID}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
 
                 </DockPanel>
 
             </GroupBox.Header>
 
             <Grid Margin="3">
-                <Image x:Name="LabelImage" MaxHeight="400" Width="400"
-                           Source="{Binding LabelImage, Converter={StaticResource bytesToImage}}"
-                           MouseDown="LabelImage_MouseDown"
+                <Image x:Name="SourceImage" MaxHeight="400" Width="400"
+                           Source="{Binding SourceImage, Converter={StaticResource bytesToImage}}"
+                           MouseDown="SourceImage_MouseDown"
                            RenderOptions.BitmapScalingMode="NearestNeighbor"
                            HorizontalAlignment="Left" VerticalAlignment="Top"
-                           ContextMenu="{StaticResource cmImageModify}" ContextMenuOpening="LabelImage_ContextMenuOpening"/>
+                           ContextMenu="{StaticResource cmImageModify}" ContextMenuOpening="SourceImage_ContextMenuOpening"/>
 
                 <Label HorizontalAlignment="Right" VerticalAlignment="Top" Margin="3">
                     <Label.Style>
@@ -191,7 +191,7 @@
                     <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
 
                         <Button Command="{Binding ClearStoredCommand}" ToolTip="Clear Stored" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
-                            <IconPacks:PackIconMaterial Kind="FormatClear" Height="12" Width="12"/>
+                            <IconPacks:PackIconModern Kind="Delete" Margin="-1,-1,0,0" Height="14" Width="14"/>
 
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
@@ -209,7 +209,7 @@
                         </Button>
 
                         <Button Command="{Binding LoadCommand}"  ToolTip="Load Stored" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
-                            <IconPacks:PackIconMaterial Kind="Loading" Height="12" Width="12"/>
+                            <IconPacks:PackIconUnicons Kind="Edit" Margin="-1,-1,0,0" Height="14" Width="14"/>
 
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
@@ -233,8 +233,9 @@
                         </Button>
                     </StackPanel>
 
-                    <Button Grid.Column="2" Name="LabelSectors" Click="LabelSectors_Click" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
-                        <IconPacks:PackIconModern Width="20" Height="20" Kind="Eye"/>
+                    <Button Grid.Column="2" Name="V275StoredSectors" Click="V275StoredSectors_Click" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Right" Margin="3,0,3,0">
+
+                        <IconPacks:PackIconModern Kind="Eye" Margin="-1,-1,0,0" Height="14" Width="14"/>
 
                         <Button.Style>
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
@@ -252,10 +253,10 @@
                 </DockPanel>
             </GroupBox.Header>
 
-            <ScrollViewer Margin="3" x:Name="ScrollLabelSectors" MaxHeight="400" VerticalScrollBarVisibility="Auto"
+            <ScrollViewer Margin="3" x:Name="ScrollV275StoredSectors" MaxHeight="400" VerticalScrollBarVisibility="Auto"
                           mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
-                          ScrollChanged="ScrollLabelSectors_ScrollChanged">
-                <ItemsControl ItemsSource="{Binding LabelSectors}">
+                          ScrollChanged="ScrollV275StoredSectors_ScrollChanged">
+                <ItemsControl ItemsSource="{Binding V275StoredSectors}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <local:SectorControlView />
@@ -281,7 +282,31 @@
 
                     <DockPanel>
 
-                        <Button Command="{Binding StoreCommand}" ToolTip="Store Results" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                        <Button Command="{Binding PrintCommand}" CommandParameter="repeat"
+                                ToolTip="Process Repeat Image" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0"
+                            md:ButtonProgressAssist.IsIndeterminate="True"
+                            md:ButtonProgressAssist.Value="-1"
+                            md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsWorking}">
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding SelectedNode.IsSimulator}" Value="True"/>
+                                                <Condition Binding="{Binding IsGoldenRepeat}" Value="True"/>
+                                            </MultiDataTrigger.Conditions>
+
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </MultiDataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+
+                            <IconPacks:PackIconMaterial Kind="CameraImage" Margin="-1,-1,0,0" Height="14" Width="14"/>
+                        </Button>
+                        
+                        <Button Command="{Binding StoreCommand}" ToolTip="Store Results" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
                                     <Setter Property="Visibility" Value="Collapsed"/>
@@ -296,7 +321,7 @@
                                 </Style>
                             </Button.Style>
 
-                            <IconPacks:PackIconMaterial Width="20" Height="20" Kind="DatabaseEdit"/>
+                            <IconPacks:PackIconMaterial Kind="StorePlusOutline" Margin="0,0,-1,-1" Height="14" Width="14"/>
                         </Button>
 
                         <Button Command="{Binding ClearReadCommand}"
@@ -313,7 +338,7 @@
                                 </Style>
                             </Button.Style>
 
-                            <IconPacks:PackIconMaterial Width="20" Height="20" Kind="NotificationClearAll"/>
+                            <IconPacks:PackIconModern Kind="Delete" Margin="-1,-1,0,0" Height="14" Width="14"/>
 
                         </Button>
 
@@ -331,10 +356,10 @@
                                 </Style>
                             </Button.Style>
 
-                            <IconPacks:PackIconMaterial Width="20" Height="20" Kind="Upload"/>
+                            <IconPacks:PackIconMaterial Kind="Upload" Margin="-1,-1,0,0" Height="14" Width="14"/>
                         </Button>
 
-                        <Button Command="{Binding InspectCommand}"
+                        <!--<Button Command="{Binding InspectCommand}"
                                     ToolTip="Inspect" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
 
                             <Button.Style>
@@ -348,15 +373,15 @@
                                 </Style>
                             </Button.Style>
 
-                            <IconPacks:PackIconMaterial Width="20" Height="20" Kind="BlenderOutline"/>
+                            <IconPacks:PackIconMaterialDesign Kind="TouchApp" Margin="-1,-1,0,0" Height="14" Width="14"/>
 
-                        </Button>
+                        </Button>-->
 
                     </DockPanel>
 
-                    <Button Grid.Column="2" Name="RepeatSectors" Click="RepeatSectors_Click" ToolTip="Load Stored" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
+                    <Button Click="RepeatSectorDetails_Click" ToolTip="View All Sector Details" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Right" Margin="3,0,3,0">
                         <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Circle}">
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsStore}" Value="True">
@@ -365,18 +390,18 @@
                                 </Style.Triggers>
                             </Style>
                         </Button.Style>
-                        <IconPacks:PackIconModern Width="20" Height="20" Kind="Eye"/>
+                        <IconPacks:PackIconModern Kind="Eye" Margin="-1,-1,-0,0" Width="14" Height="14"/>
                     </Button>
 
                 </DockPanel>
             </GroupBox.Header>
 
-            <ScrollViewer x:Name="ScrollRepeatSectors"
+            <ScrollViewer x:Name="ScrollV275CurrentSectors"
                             Margin="3" MaxHeight="400" VerticalScrollBarVisibility="Auto"
                             mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
-                            ScrollChanged="ScrollRepeatSectors_ScrollChanged">
+                            ScrollChanged="ScrollV275CurrentSectors_ScrollChanged">
 
-                <ItemsControl ItemsSource="{Binding RepeatSectors}">
+                <ItemsControl ItemsSource="{Binding V275CurrentSectors}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <local:SectorControlView />
@@ -414,7 +439,7 @@
             </ScrollViewer>
         </GroupBox>
 
-        <!--Repeat Image-->
+        <!--Stored Image-->
         <GroupBox  Margin="3" Padding="3"
             HorizontalAlignment="Left" VerticalAlignment="Top" 
             Style="{StaticResource MaterialDesignCardGroupBox}">
@@ -423,10 +448,10 @@
                 <DockPanel>
 
                     <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
-                        <TextBlock Text="Current Image" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                        <TextBlock Text="Stored Image" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                     </md:Card>
 
-                    <Button Command="{Binding SaveCommand}" CommandParameter="repeat" ToolTip="Save Current Image" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                    <Button Command="{Binding SaveCommand}" CommandParameter="repeat" ToolTip="Save Stored Image" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
                         <Button.Style>
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
                                 <Setter Property="Visibility" Value="Visible"/>
@@ -446,7 +471,7 @@
                             </Style>
                         </Button.Style>
 
-                        <IconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
+                        <IconPacks:PackIconMaterial Kind="ContentSave"  Margin="0,-2,0,0" Height="12" Width="12"/>
 
                     </Button>
 
@@ -484,15 +509,6 @@
                         </Button>
 
 
-                        <Button Command="{Binding PrintCommand}" CommandParameter="repeat" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
-                                ToolTip="Process Repeat Image" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0"
-                            md:ButtonProgressAssist.IsIndeterminate="True"
-                            md:ButtonProgressAssist.Value="-1"
-                            md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsWorking}">
-
-                            <IconPacks:Material Kind="MessageProcessing" Height="12" Width="12"/>
-                        </Button>
-
                         <Label Foreground="Goldenrod" HorizontalAlignment="Right" VerticalAlignment="Center" ToolTip="The 'Golden' Repeat Image stored in the database.">
                             <Label.Style>
                                 <Style TargetType="{x:Type Label}" BasedOn="{StaticResource {x:Type Label}}">
@@ -528,7 +544,7 @@
 
         </GroupBox>
 
-        <Popup x:Name="LabelSectorsDetailsPopup" StaysOpen="False">
+        <Popup x:Name="V275StoredSectorsDetailsPopup" StaysOpen="False">
             <Popup.Style>
                 <Style TargetType="{x:Type Popup}"/>
             </Popup.Style>
@@ -538,7 +554,7 @@
                         Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
 
                 <ScrollViewer HorizontalScrollBarVisibility="Auto">
-                    <ItemsControl ItemsSource="{Binding LabelSectors}">
+                    <ItemsControl ItemsSource="{Binding V275StoredSectors}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <WrapPanel IsItemsHost="True" MaxWidth="1024"/>
@@ -555,7 +571,7 @@
 
         </Popup>
 
-        <Popup x:Name="RepeatSectorsDetailsPopup" StaysOpen="False">
+        <Popup x:Name="V275CurrentSectorsDetailsPopup" StaysOpen="False">
             <Popup.Style>
                 <Style TargetType="{x:Type Popup}"/>
             </Popup.Style>
@@ -564,7 +580,7 @@
                         Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
 
                 <ScrollViewer HorizontalScrollBarVisibility="Auto">
-                    <ItemsControl ItemsSource="{Binding RepeatSectors}">
+                    <ItemsControl ItemsSource="{Binding V275CurrentSectors}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <WrapPanel IsItemsHost="True" MaxWidth="1024"/>

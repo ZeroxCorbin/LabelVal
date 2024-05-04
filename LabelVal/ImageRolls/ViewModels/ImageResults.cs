@@ -186,7 +186,7 @@ public partial class ImageResults : ObservableRecipient,
 
                 if (type == "label")
                 {
-                    if (!sim.CopyImage(label.LabelImagePath, prepend))
+                    if (!sim.CopyImage(label.SourceImagePath, prepend))
                     {
                         Label_StatusChanged("Could not copy the image to the simulator images directory.");
                         label.IsWorking = false;
@@ -195,7 +195,7 @@ public partial class ImageResults : ObservableRecipient,
                 }
                 else
                 {
-                    if (!sim.SaveImage(label.LabelImagePath, label.RepeatImage))
+                    if (!sim.SaveImage(label.SourceImagePath, label.RepeatImage))
                     {
                         Label_StatusChanged("Could not save the image to the simulator images directory.");
                         label.IsWorking = false;
@@ -234,10 +234,10 @@ public partial class ImageResults : ObservableRecipient,
                 if (RunViewModel.State != Run.Controller.RunStates.IDLE)
                 {
                     var data = $"Loop {RunViewModel.RunController.CurrentLoopCount} : {RunViewModel.RunController.CurrentLabelCount}";
-                    printer.Print(label.LabelImagePath, 1, SelectedPrinter.PrinterName, data);
+                    printer.Print(label.SourceImagePath, 1, SelectedPrinter.PrinterName, data);
                 }
                 else
-                    printer.Print(label.LabelImagePath, label.PrintCount, SelectedPrinter.PrinterName, "");
+                    printer.Print(label.SourceImagePath, label.PrintCount, SelectedPrinter.PrinterName, "");
 
                 if (!SelectedNode.IsLoggedIn_Control)
                     label.IsWorking = false;
@@ -391,7 +391,7 @@ public partial class ImageResults : ObservableRecipient,
     private bool StartRunCheck()
     {
         foreach (var lab in Labels)
-            if (lab.LabelSectors.Count == 0)
+            if (lab.V275StoredSectors.Count == 0)
                 return false;
         return true;
     }

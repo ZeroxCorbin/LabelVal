@@ -29,18 +29,18 @@ namespace LabelVal.Run.Views
             InitializeComponent();
         }
 
-        private void ScrollLabelSectors_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        private void ScrollV275StoredSectors_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
             if (e.VerticalChange != 0)
-                ScrollRepeatSectors.ScrollToVerticalOffset(e.VerticalOffset);
+                ScrollV275CurrentSectors.ScrollToVerticalOffset(e.VerticalOffset);
         }
-        private void ScrollRepeatSectors_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        private void ScrollV275CurrentSectors_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
             if (e.VerticalChange != 0)
-                ScrollLabelSectors.ScrollToVerticalOffset(e.VerticalOffset);
+                ScrollV275StoredSectors.ScrollToVerticalOffset(e.VerticalOffset);
         }
 
-        private void LabelImage_MouseDown(object sender, MouseButtonEventArgs e)
+        private void SourceImage_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
@@ -73,7 +73,7 @@ namespace LabelVal.Run.Views
             return true;
         }
 
-        private void LabelSectors_Click(object sender, RoutedEventArgs e)
+        private void V275StoredSectors_Click(object sender, RoutedEventArgs e)
         {
             if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
             {
@@ -87,15 +87,15 @@ namespace LabelVal.Run.Views
             }
             else
             {
-                if (((LabelViewModel)DataContext).LabelSectors.Count > 0)
+                if (((LabelViewModel)DataContext).V275StoredSectors.Count > 0)
                 {
-                    LabelSectorsDetailsPopup.PlacementTarget = (Button)sender;
-                    LabelSectorsDetailsPopup.IsOpen = true;
+                    V275StoredSectorsDetailsPopup.PlacementTarget = (Button)sender;
+                    V275StoredSectorsDetailsPopup.IsOpen = true;
                 }
 
             }
         }
-        private void RepeatSectors_Click(object sender, RoutedEventArgs e)
+        private void V275CurrentSectors_Click(object sender, RoutedEventArgs e)
         {
             if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
             {
@@ -108,10 +108,10 @@ namespace LabelVal.Run.Views
             }
             else
             {
-                if (((LabelViewModel)DataContext).RepeatSectors.Count > 0)
+                if (((LabelViewModel)DataContext).V275CurrentSectors.Count > 0)
                 {
-                    RepeatSectorsDetailsPopup.PlacementTarget = (Button)sender;
-                    RepeatSectorsDetailsPopup.IsOpen = true;
+                    V275CurrentSectorsDetailsPopup.PlacementTarget = (Button)sender;
+                    V275CurrentSectorsDetailsPopup.IsOpen = true;
                 }
 
             }

@@ -67,6 +67,7 @@ public partial class V275 : ObservableRecipient, IRecipient<ImageRollMessages.Se
 
     public V275()
     {
+        IsActive = true;
     }
 
     public void Receive(ImageRollMessages.SelectedImageRollChanged message) => SelectedImageRoll = message.Value;

@@ -37,9 +37,9 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
     public delegate void StatusChange(string status);
     public event StatusChange StatusChanged;
 
-    [ObservableProperty] private string labelImageUID;
+    [ObservableProperty] private string sourceImageUID;
     [ObservableProperty] private string labelComment;
-    [ObservableProperty] private byte[] labelImage;
+    [ObservableProperty] private byte[] sourceImage;
     [ObservableProperty] private byte[] repeatImage = null;
     [ObservableProperty] private DrawingImage repeatOverlay;
     [ObservableProperty] private StandardsDatabase.Row currentRow;
@@ -47,8 +47,8 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
     [ObservableProperty] private bool isGoldenRepeat;
     [ObservableProperty] private int printCount = 1;
 
-    [ObservableProperty] private ObservableCollection<SectorControlViewModel> labelSectors = [];
-    [ObservableProperty] private ObservableCollection<SectorControlViewModel> repeatSectors = [];
+    [ObservableProperty] private ObservableCollection<SectorControlViewModel> v275StoredSectors = [];
+    [ObservableProperty] private ObservableCollection<SectorControlViewModel> v275CurrentSectors = [];
     [ObservableProperty] private ObservableCollection<SectorDifferenceViewModel> diffSectors = [];
 
     public bool IsStore
@@ -84,7 +84,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
     private bool isFaulted = false;
 
     //public string PrinterName { get; set; }
-    public string LabelImagePath { get; }
+    public string SourceImagePath { get; }
 
     public string Status
     {
@@ -107,7 +107,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
     private static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
     public ImageResultEntry(string imagePath, string imageComment, Node selectedNode, ImageRollEntry selectedImageRoll, StandardsDatabase selectedDatabase, Scanner selectedScanner)
     { 
-        LabelImagePath = imagePath;
+        SourceImagePath = imagePath;
         LabelComment = imageComment;
 
         GetImage(imagePath);
@@ -134,24 +134,24 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
 
     private void GetImage(string imagePath)
     {
-        LabelImage = File.ReadAllBytes(imagePath);
-        LabelImageUID = ImageUtilities.ImageUID(LabelImage);
+        SourceImage = File.ReadAllBytes(imagePath);
+        SourceImageUID = ImageUtilities.ImageUID(SourceImage);
     }
 
     private void GetStored()
     {
-        //foreach (var sec in LabelSectors)
+        //foreach (var sec in V275StoredSectors)
         //    sec.Clear();
 
         DiffSectors.Clear();
-        LabelSectors.Clear();
+        V275StoredSectors.Clear();
         IsLoad = false;
 
-        CurrentRow = SelectedDatabase.GetRow(SelectedImageRoll.Name, LabelImageUID);
+        CurrentRow = SelectedDatabase.GetRow(SelectedImageRoll.Name, SourceImageUID);
 
         if (CurrentRow == null)
         {
-            if (RepeatSectors.Count == 0)
+            if (V275CurrentSectors.Count == 0)
             {
                 RepeatImage = null;
                 RepeatOverlay = null;
@@ -196,7 +196,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
             tempSectors = tempSectors.OrderBy(x => x.JobSector.top).ToList();
 
             foreach (var sec in tempSectors)
-                LabelSectors.Add(sec);
+                V275StoredSectors.Add(sec);
 
             IsLoad = true;
         }
@@ -232,7 +232,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
             }
             else
             {
-                var bmp = ImageUtilities.ConvertToBmp(LabelImage);
+                var bmp = ImageUtilities.ConvertToBmp(SourceImage);
                 _ = SaveImageBytesToFile(path, bmp);
                 Clipboard.SetText(path);
             }
@@ -245,13 +245,13 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
     [RelayCommand]
     private async Task Store()
     {
-        if (LabelSectors.Count > 0)
+        if (V275StoredSectors.Count > 0)
             if (await OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for this label?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
                 return;
 
-        SelectedDatabase.AddRow(SelectedImageRoll.Name, LabelImageUID, LabelImage, JsonConvert.SerializeObject(RepeatTemplate), JsonConvert.SerializeObject(RepeatReport), RepeatImage);
+        SelectedDatabase.AddRow(SelectedImageRoll.Name, SourceImageUID, SourceImage, JsonConvert.SerializeObject(RepeatTemplate), JsonConvert.SerializeObject(RepeatReport), RepeatImage);
 
-        RepeatSectors.Clear();
+        V275CurrentSectors.Clear();
         IsStore = false;
 
         GetStored();
@@ -264,7 +264,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
     {
         if (await OkCancelDialog("Clear Stored Sectors", $"Are you sure you want to clear the stored sectors for this label?\r\nThis can not be undone!") == MessageDialogResult.Affirmative)
         {
-            SelectedDatabase.DeleteRow(SelectedImageRoll.Name, LabelImageUID);
+            SelectedDatabase.DeleteRow(SelectedImageRoll.Name, SourceImageUID);
             GetStored();
         }
     }
@@ -279,12 +279,12 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
 
         IsGoldenRepeat = false;
 
-        RepeatSectors.Clear();
+        V275CurrentSectors.Clear();
         DiffSectors.Clear();
 
         IsStore = false;
 
-        CurrentRow = SelectedDatabase.GetRow(SelectedImageRoll.Name, LabelImageUID);
+        CurrentRow = SelectedDatabase.GetRow(SelectedImageRoll.Name, SourceImageUID);
 
         if (CurrentRow == null)
             return;
@@ -294,13 +294,13 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
         IsGoldenRepeat = true;
     }
 
-    [RelayCommand] private void RedoFiducial() => ImageUtilities.RedrawFiducial(LabelImagePath, false);
+    [RelayCommand] private void RedoFiducial() => ImageUtilities.RedrawFiducial(SourceImagePath, false);
 
     public async Task<bool> ReadTask(int repeat)
     {
         Status = string.Empty;
 
-        RepeatSectors.Clear();
+        V275CurrentSectors.Clear();
         IsStore = false;
 
         DiffSectors.Clear();
@@ -334,7 +334,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
         {
             if (RepeatImage == null)
             {
-                RepeatImage = LabelImage.ToArray();
+                RepeatImage = SourceImage.ToArray();
                 IsGoldenRepeat = false;
             }
         }
@@ -371,7 +371,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
             tempSectors = tempSectors.OrderBy(x => x.JobSector.top).ToList();
 
             foreach (var sec in tempSectors)
-                RepeatSectors.Add(sec);
+                V275CurrentSectors.Add(sec);
         }
         //}
         GetSectorDiff();
@@ -388,7 +388,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
             return -1;
         }
 
-        if (LabelSectors.Count == 0)
+        if (V275StoredSectors.Count == 0)
         {
             if (!await SelectedNode.Connection.DetectSectors())
             {
@@ -399,7 +399,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
             return 2;
         }
 
-        foreach (var sec in LabelSectors)
+        foreach (var sec in V275StoredSectors)
         {
             if (!await SelectedNode.Connection.AddSector(sec.JobSector.name, JsonConvert.SerializeObject(sec.JobSector)))
             {
@@ -472,7 +472,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
             }
 
             if (isDetailed)
-                drwGroup = GetModuleGrid(LabelTemplate.sectors, LabelSectors);
+                drwGroup = GetModuleGrid(LabelTemplate.sectors, V275StoredSectors);
         }
         else
         {
@@ -483,7 +483,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
             }
 
             if (isDetailed)
-                drwGroup = GetModuleGrid(RepeatTemplate.sectors, RepeatSectors);
+                drwGroup = GetModuleGrid(RepeatTemplate.sectors, V275CurrentSectors);
         }
 
         var sectors = new GeometryDrawing
@@ -508,11 +508,11 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
         //    {
         //        if (!isRepeat)
         //        {
-        //            DrawModuleGrid(g, LabelTemplate.sectors, LabelSectors);
+        //            DrawModuleGrid(g, LabelTemplate.sectors, V275StoredSectors);
         //        }
         //        else
         //        {
-        //            DrawModuleGrid(g, RepeatTemplate.sectors, RepeatSectors);
+        //            DrawModuleGrid(g, RepeatTemplate.sectors, V275CurrentSectors);
         //        }
         //    }
         //}
@@ -816,9 +816,9 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
         List<SectorDifferenceViewModel> diff = [];
 
         //Compare; Do not check for missing her. To keep found at top of list.
-        foreach (var sec in LabelSectors)
+        foreach (var sec in V275StoredSectors)
         {
-            foreach (var cSec in RepeatSectors)
+            foreach (var cSec in V275CurrentSectors)
                 if (sec.JobSector.name == cSec.JobSector.name)
                 {
                     if (sec.JobSector.symbology == cSec.JobSector.symbology)
@@ -840,10 +840,10 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
         }
 
         //Check for missing
-        foreach (var sec in LabelSectors)
+        foreach (var sec in V275StoredSectors)
         {
             var found = false;
-            foreach (var cSec in RepeatSectors)
+            foreach (var cSec in V275CurrentSectors)
                 if (sec.JobSector.name == cSec.JobSector.name)
                 {
                     found = true;
@@ -863,11 +863,11 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
         }
 
         //check for missing
-        if (LabelSectors.Count > 0)
-            foreach (var sec in RepeatSectors)
+        if (V275StoredSectors.Count > 0)
+            foreach (var sec in V275CurrentSectors)
             {
                 var found = false;
-                foreach (var cSec in LabelSectors)
+                foreach (var cSec in V275StoredSectors)
                     if (sec.JobSector.name == cSec.JobSector.name)
                     {
                         found = true;
@@ -924,21 +924,21 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
 
     //public void Clear()
     //{
-    //    LabelImage = null;
+    //    SourceImage = null;
     //    RepeatImage = null;
     //    RepeatTemplate = null;
 
     //    LabelTemplate = null;
 
-    //    foreach (var sec in RepeatSectors)
+    //    foreach (var sec in V275CurrentSectors)
     //        sec.Clear();
 
-    //    RepeatSectors.Clear();
+    //    V275CurrentSectors.Clear();
 
-    //    foreach (var sec in LabelSectors)
+    //    foreach (var sec in V275StoredSectors)
     //        sec.Clear();
 
-    //    LabelSectors.Clear();
+    //    V275StoredSectors.Clear();
 
     //    dialogCoordinator = null;
     //    StandardsDatabase = null;

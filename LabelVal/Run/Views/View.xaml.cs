@@ -90,8 +90,8 @@ public partial class View : MetroWindow
             if (((PropertyGroupDescription)viewSource.GroupDescriptions[0]).PropertyName == "Run.LoopCount")
             {
                 viewSource.GroupDescriptions.Clear();
-                viewSource.GroupDescriptions.Add(new PropertyGroupDescription("Run.LabelImageUID"));
-                App.Settings.SetValue("LabelsDataList_Group", "Run.LabelImageUID");
+                viewSource.GroupDescriptions.Add(new PropertyGroupDescription("Run.SourceImageUID"));
+                App.Settings.SetValue("LabelsDataList_Group", "Run.SourceImageUID");
             }
             else
             {
@@ -160,14 +160,14 @@ public partial class View : MetroWindow
                     {
                         if (expander.Header is Grid grid1)
                         {
-                            if (grid1.FindChild<TextBlock>("LabelSectors") is var res)
+                            if (grid1.FindChild<TextBlock>("V275StoredSectors") is var res)
                             {
-                                res.Text = item.LabelSectors.Count.ToString();
+                                res.Text = item.V275StoredSectors.Count.ToString();
                             }
 
-                            if (grid1.FindChild<TextBlock>("RepeatSectors") is var res1)
+                            if (grid1.FindChild<TextBlock>("V275CurrentSectors") is var res1)
                             {
-                                res1.Text = item.RepeatSectors.Count.ToString();
+                                res1.Text = item.V275CurrentSectors.Count.ToString();
                             }
                         }
 

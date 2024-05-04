@@ -21,8 +21,8 @@ public partial class LabelViewModel : ObservableObject
     [ObservableProperty] private ResultDatabase.Result result;
     [ObservableProperty] private DrawingImage repeatOverlay;
     [ObservableProperty] private LedgerDatabase.LedgerEntry ledgerEntry;
-    public ObservableCollection<SectorControlViewModel> RepeatSectors { get; } = [];
-    public ObservableCollection<SectorControlViewModel> LabelSectors { get; } = [];
+    public ObservableCollection<SectorControlViewModel> V275CurrentSectors { get; } = [];
+    public ObservableCollection<SectorControlViewModel> V275StoredSectors { get; } = [];
     public ObservableCollection<SectorDifferenceViewModel> DiffSectors { get; } = [];
 
     [ObservableProperty] private bool isGS1Standard;
@@ -32,14 +32,14 @@ public partial class LabelViewModel : ObservableObject
         LedgerEntry = ledgerEntry;
         IsGS1Standard = LedgerEntry.GradingStandard.StartsWith("GS1");
 
-        GetLabelSectors();
-        GetRepeatSectors();
+        GetV275StoredSectors();
+        GetV275CurrentSectors();
         GetSectorDiff();
     }
 
-    private void GetLabelSectors()
+    private void GetV275StoredSectors()
     {
-        LabelSectors.Clear();
+        V275StoredSectors.Clear();
 
         List<SectorControlViewModel> tempSectors = [];
         if (!string.IsNullOrEmpty(Result.LabelReport) && !string.IsNullOrEmpty(Result.LabelTemplate))
@@ -71,12 +71,12 @@ public partial class LabelViewModel : ObservableObject
             tempSectors = tempSectors.OrderBy(x => x.JobSector.top).ToList();
 
             foreach (var sec in tempSectors)
-                LabelSectors.Add(sec);
+                V275StoredSectors.Add(sec);
         }
     }
-    private void GetRepeatSectors()
+    private void GetV275CurrentSectors()
     {
-        RepeatSectors.Clear();
+        V275CurrentSectors.Clear();
 
         List<SectorControlViewModel> tempSectors = [];
         if (!string.IsNullOrEmpty(Result.RepeatReport) && !string.IsNullOrEmpty(Result.LabelTemplate))
@@ -108,15 +108,15 @@ public partial class LabelViewModel : ObservableObject
             tempSectors = tempSectors.OrderBy(x => x.JobSector.top).ToList();
 
             foreach (var sec in tempSectors)
-                RepeatSectors.Add(sec);
+                V275CurrentSectors.Add(sec);
         }
     }
     private void GetSectorDiff()
     {
         List<SectorDifferenceViewModel> diff = [];
-        foreach (var sec in LabelSectors)
+        foreach (var sec in V275StoredSectors)
         {
-            foreach (var cSec in RepeatSectors)
+            foreach (var cSec in V275CurrentSectors)
                 if (sec.JobSector.name == cSec.JobSector.name)
                 {
                     diff.Add(sec.SectorResults.Compare(cSec.SectorResults));
@@ -203,15 +203,15 @@ public partial class LabelViewModel : ObservableObject
 
     //public void Clear()
     //{
-    //    foreach (var sec in RepeatSectors)
+    //    foreach (var sec in V275CurrentSectors)
     //        sec.Clear();
-    //    RepeatSectors.Clear();
-    //    RepeatSectors = null;
+    //    V275CurrentSectors.Clear();
+    //    V275CurrentSectors = null;
 
-    //    foreach (var sec in LabelSectors)
+    //    foreach (var sec in V275StoredSectors)
     //        sec.Clear();
-    //    LabelSectors.Clear();
-    //    LabelSectors = null;
+    //    V275StoredSectors.Clear();
+    //    V275StoredSectors = null;
 
     //    foreach (var sec in DiffSectors)
     //        sec.Clear();

@@ -24,7 +24,7 @@ namespace LabelVal.V5.Views
             InitializeComponent();
         }
 
-        private void LabelImage_MouseDown(object sender, MouseButtonEventArgs e)
+        private void SourceImage_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed && e.ClickCount == 2)
                 ShowImage(((Scanner)DataContext).Image, ((Scanner)DataContext).ImageOverlay, ((Scanner)DataContext).ImageFocusRegionOverlay);
@@ -66,7 +66,6 @@ namespace LabelVal.V5.Views
 
         }
 
-        private void btnShowRunSettings_Click(object sender, RoutedEventArgs e) => drwRunSettings.IsTopDrawerOpen = !drwRunSettings.IsTopDrawerOpen;
 
         private void btnResetImageView_Click(object sender, RoutedEventArgs e) => ZoomBorder.Reset();
 
@@ -83,6 +82,8 @@ namespace LabelVal.V5.Views
 
             }
         }
+
+        private void btnShowSettings_Click(object sender, RoutedEventArgs e) => drwSettings.IsTopDrawerOpen = !drwSettings.IsTopDrawerOpen;
 
         //private void btnSetResults_Click(object sender, RoutedEventArgs e)
         //{

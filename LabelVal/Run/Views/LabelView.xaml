@@ -32,7 +32,7 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
-            <Popup x:Name="LabelSectorsDetailsPopup" StaysOpen="False">
+            <Popup x:Name="V275StoredSectorsDetailsPopup" StaysOpen="False">
                 <Popup.Style>
                     <Style TargetType="{x:Type Popup}"/>
                 </Popup.Style>
@@ -42,7 +42,7 @@
                         Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
 
                     <ScrollViewer HorizontalScrollBarVisibility="Auto">
-                        <ItemsControl ItemsSource="{Binding LabelSectors}">
+                        <ItemsControl ItemsSource="{Binding V275StoredSectors}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <WrapPanel IsItemsHost="True" MaxWidth="1024"/>
@@ -58,7 +58,7 @@
                 </Border>
 
             </Popup>
-            <Popup x:Name="RepeatSectorsDetailsPopup" StaysOpen="False">
+            <Popup x:Name="V275CurrentSectorsDetailsPopup" StaysOpen="False">
                 <Popup.Style>
                     <Style TargetType="{x:Type Popup}"/>
                 </Popup.Style>
@@ -67,7 +67,7 @@
                         Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
 
                     <ScrollViewer HorizontalScrollBarVisibility="Auto">
-                        <ItemsControl ItemsSource="{Binding RepeatSectors}">
+                        <ItemsControl ItemsSource="{Binding V275CurrentSectors}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <WrapPanel IsItemsHost="True" MaxWidth="1024"/>
@@ -114,7 +114,7 @@
             <StackPanel Grid.Row="0" Grid.Column="0" Margin="5,0" HorizontalAlignment="Left" Orientation="Horizontal" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
                 <TextBlock Text="{Binding Run.LoopCount}" FontSize="16" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
                 <TextBlock Text=" : " FontSize="16" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" />
-                <TextBlock Text="{Binding Run.LabelImageOrder}" FontSize="16" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
+                <TextBlock Text="{Binding Run.SourceImageOrder}" FontSize="16" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
             </StackPanel >
             <Button Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5,0"
                         Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
@@ -124,12 +124,12 @@
                 <IconPacks:Material Kind="ContentSave"/>
             </Button>
             <Border BorderThickness="1" Margin="1" Grid.Row="1" Grid.Column="0" BorderBrush="{StaticResource MahApps.Brushes.Accent}">
-                <Image x:Name="LabelImage" MaxHeight="400" Width="400" MouseDown="LabelImage_MouseDown">
+                <Image x:Name="SourceImage" MaxHeight="400" Width="400" MouseDown="SourceImage_MouseDown">
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
-                            <Setter Property="Source" Value="{Binding Run.LabelImage, Converter={StaticResource bytesToImage}}"/>
+                            <Setter Property="Source" Value="{Binding Run.SourceImage, Converter={StaticResource bytesToImage}}"/>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Run.LabelImage}" Value="{x:Null}">
+                                <DataTrigger Binding="{Binding Run.SourceImage}" Value="{x:Null}">
                                     <Setter Property="Source" Value="{Binding Run.RepeatGoldenImage, Converter={StaticResource bytesToImage}}"/>
                                 </DataTrigger>
                             </Style.Triggers>
@@ -138,13 +138,13 @@
                 </Image>
             </Border>
             <!--Label Sectors-->
-            <Button Grid.Row="0" Grid.Column="1" Name="LabelSectors" Click="LabelSectors_Click"
+            <Button Grid.Row="0" Grid.Column="1" Name="V275StoredSectors" Click="V275StoredSectors_Click"
                             BorderThickness="0" HorizontalAlignment="Center" Style="{StaticResource MahApps.Styles.Button.Circle}">
                 <IconPacks:PackIconModern Width="20" Height="20" Kind="Eye"/>
             </Button>
-            <ScrollViewer Grid.Row="1" Grid.Column="1" x:Name="ScrollLabelSectors"
+            <ScrollViewer Grid.Row="1" Grid.Column="1" x:Name="ScrollV275StoredSectors"
                           Margin="3" Padding="0,0,0,6" MaxHeight="400" VerticalScrollBarVisibility="Auto"
-                          ScrollChanged="ScrollLabelSectors_ScrollChanged">
+                          ScrollChanged="ScrollV275StoredSectors_ScrollChanged">
                 <ScrollViewer.Style>
                     <Style TargetType="{x:Type ScrollViewer}">
                         <Setter Property="mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer" Value="True"/>
@@ -155,7 +155,7 @@
                         </Style.Triggers>
                     </Style>
                 </ScrollViewer.Style>
-                <ItemsControl ItemsSource="{Binding LabelSectors}">
+                <ItemsControl ItemsSource="{Binding V275StoredSectors}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <local:SectorControlView />
@@ -165,13 +165,13 @@
             </ScrollViewer>
 
             <!--Repeat Sectors-->
-            <Button Grid.Row="0" Grid.Column="2" Name="RepeatSectors" Click="RepeatSectors_Click"
+            <Button Grid.Row="0" Grid.Column="2" Name="V275CurrentSectors" Click="V275CurrentSectors_Click"
                             BorderThickness="0" HorizontalAlignment="Center" Style="{StaticResource MahApps.Styles.Button.Circle}">
                 <IconPacks:PackIconModern Width="20" Height="20" Kind="Eye"/>
             </Button>
-            <ScrollViewer Grid.Row="1" Grid.Column="2" x:Name="ScrollRepeatSectors" 
+            <ScrollViewer Grid.Row="1" Grid.Column="2" x:Name="ScrollV275CurrentSectors" 
                           Margin="3" Padding="0,0,0,6" MaxHeight="400" VerticalScrollBarVisibility="Auto" 
-                          ScrollChanged="ScrollRepeatSectors_ScrollChanged" >
+                          ScrollChanged="ScrollV275CurrentSectors_ScrollChanged" >
                 <ScrollViewer.Style>
                     <Style TargetType="{x:Type ScrollViewer}">
                         <Setter Property="mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer" Value="True"/>
@@ -182,7 +182,7 @@
                         </Style.Triggers>
                     </Style>
                 </ScrollViewer.Style>
-                <ItemsControl ItemsSource="{Binding RepeatSectors}">
+                <ItemsControl ItemsSource="{Binding V275CurrentSectors}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <local:SectorControlView />
@@ -223,7 +223,7 @@
                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Circle}">
                         <Setter Property="Visibility" Value="Visible"/>
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Run.LabelImage}" Value="{x:Null}">
+                            <DataTrigger Binding="{Binding Run.SourceImage}" Value="{x:Null}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
                             </DataTrigger>
                         </Style.Triggers>
@@ -240,7 +240,7 @@
                         <Style TargetType="{x:Type Image}">
                             <Setter Property="Visibility" Value="Visible"/>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Run.LabelImage}" Value="{x:Null}">
+                                <DataTrigger Binding="{Binding Run.SourceImage}" Value="{x:Null}">
                                     <Setter Property="Visibility" Value="Collapsed"/>
                                 </DataTrigger>
                             </Style.Triggers>
@@ -254,7 +254,7 @@
                     <Style TargetType="{x:Type TextBlock}">
                         <Setter Property="Visibility" Value="Collapsed"/>
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Run.LabelImage}" Value="{x:Null}">
+                            <DataTrigger Binding="{Binding Run.SourceImage}" Value="{x:Null}">
                                 <Setter Property="Visibility" Value="Visible"/>
                             </DataTrigger>
                         </Style.Triggers>
