@@ -1,13 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using LabelVal.Databases;
-using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Messages;
 using LabelVal.Utilities;
 using LabelVal.V275.ViewModels;
 using LabelVal.V5.ViewModels;
-using LabelVal.WindowViewModels;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using Newtonsoft.Json;
@@ -35,80 +32,69 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
     public event BringIntoViewDelegate BringIntoView;
 
     public delegate void StatusChange(string status);
-    public event StatusChange StatusChanged;
+    public event StatusChange StatusChanged; 
 
-    [ObservableProperty] private string sourceImageUID;
-    [ObservableProperty] private string labelComment;
+    [ObservableProperty] private Databases.ImageResults.V275Result currentRow;
+
     [ObservableProperty] private byte[] sourceImage;
-    [ObservableProperty] private byte[] repeatImage = null;
-    [ObservableProperty] private DrawingImage repeatOverlay;
-    [ObservableProperty] private StandardsDatabase.Row currentRow;
-
-    [ObservableProperty] private bool isGoldenRepeat;
-    [ObservableProperty] private int printCount = 1;
-
-    [ObservableProperty] private ObservableCollection<Sectors> v275StoredSectors = [];
-    [ObservableProperty] private ObservableCollection<Sectors> v275CurrentSectors = [];
-    [ObservableProperty] private ObservableCollection<SectorDifferences> diffSectors = [];
-
-    public bool IsStore
-    {
-        get => isStore;
-        set { _ = SetProperty(ref isStore, value); OnPropertyChanged("IsNotStore"); }
-    }
-    public bool IsNotStore => !isStore;
-    private bool isStore = false;
-
-    public bool IsLoad
-    {
-        get => isLoad;
-        set { _ = SetProperty(ref isLoad, value); OnPropertyChanged("IsNotLoad"); }
-    }
-    public bool IsNotLoad => !isLoad;
-    private bool isLoad = false;
-
-    public bool IsWorking
-    {
-        get => isWorking;
-        set { _ = SetProperty(ref isWorking, value); OnPropertyChanged("IsNotWorking"); }
-    }
-    public bool IsNotWorking => !isWorking;
-    private bool isWorking = false;
-
-    public bool IsFaulted
-    {
-        get => isFaulted;
-        set { _ = SetProperty(ref isFaulted, value); OnPropertyChanged("IsNotFaulted"); }
-    }
-    public bool IsNotFaulted => !isFaulted;
-    private bool isFaulted = false;
-
-    //public string PrinterName { get; set; }
-    public string SourceImagePath { get; }
-
-    public string Status
-    {
-        get => _Status;
-        set { _ = SetProperty(ref _Status, value); App.Current.Dispatcher.Invoke(() => StatusChanged?.Invoke(_Status)); }
-    }
-    private string _Status;
-
-
-    [ObservableProperty] private Node selectedNode;
-    [ObservableProperty] private ImageRollEntry selectedImageRoll;
-    [ObservableProperty] private StandardsDatabase selectedDatabase;
-    [ObservableProperty] private Scanner selectedScanner;
-    partial void OnSelectedDatabaseChanged(StandardsDatabase value) => GetStored();
+    [ObservableProperty] private string sourceImageUID;
+    [ObservableProperty] private string sourceImageComment;
 
     public Job LabelTemplate { get; set; }
     public Job RepeatTemplate { get; set; }
     public V275_REST_lib.Models.Report RepeatReport { get; private set; }
 
+    [ObservableProperty] private ObservableCollection<Sectors> v275StoredSectors = [];
+    [ObservableProperty] private ObservableCollection<Sectors> v275CurrentSectors = [];
+    [ObservableProperty] private ObservableCollection<SectorDifferences> v275DiffSectors = [];
+
+    [ObservableProperty] private byte[] v275Image = null;
+    [ObservableProperty] private DrawingImage v275ImageStoredSectorsOverlay;
+    [ObservableProperty] private bool isV275ImageStored;
+
+    [ObservableProperty] private ObservableCollection<Sectors> v5StoredSectors = [];
+    [ObservableProperty] private ObservableCollection<Sectors> v5CurrentSectors = [];
+    [ObservableProperty] private ObservableCollection<SectorDifferences> v5DiffSectors = [];
+
+    [ObservableProperty] private int printCount = 1;
+
+
+    [ObservableProperty] private bool isStore = false;
+    partial void OnIsStoreChanged(bool value) => OnPropertyChanged(nameof(IsNotStore));
+    public bool IsNotStore => !IsStore;
+
+
+    [ObservableProperty] private bool isLoad = false;
+    partial void OnIsLoadChanged(bool value) => OnPropertyChanged(nameof(IsNotLoad));
+    public bool IsNotLoad => !IsLoad;
+
+    [ObservableProperty] private bool isWorking = false;
+    partial void OnIsWorkingChanged(bool value) => OnPropertyChanged(nameof(IsNotWorking));
+    public bool IsNotWorking => !IsWorking;
+
+
+    [ObservableProperty] private bool isFaulted = false;
+    partial void OnIsFaultedChanged(bool value) => OnPropertyChanged(nameof(IsNotFaulted));
+    public bool IsNotFaulted => !IsFaulted;
+
+    public string SourceImagePath { get; }
+
+
+    [ObservableProperty] private string status;
+    partial void OnStatusChanged(string value) => App.Current.Dispatcher.Invoke(() => StatusChanged?.Invoke(Status));
+
+    [ObservableProperty] private Node selectedNode;
+    [ObservableProperty] private ImageRollEntry selectedImageRoll;
+    [ObservableProperty] private Scanner selectedScanner; 
+    [ObservableProperty] private Databases.ImageResults selectedDatabase;
+    partial void OnSelectedDatabaseChanged(Databases.ImageResults value) => GetStored();
+
+
     private static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
-    public ImageResultEntry(string imagePath, string imageComment, Node selectedNode, ImageRollEntry selectedImageRoll, StandardsDatabase selectedDatabase, Scanner selectedScanner)
-    { 
+    public ImageResultEntry(string imagePath, string imageComment, Node selectedNode, ImageRollEntry selectedImageRoll, Databases.ImageResults selectedDatabase, Scanner selectedScanner)
+    {
         SourceImagePath = imagePath;
-        LabelComment = imageComment;
+        SourceImageComment = imageComment;
 
         GetImage(imagePath);
 
@@ -143,38 +129,38 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
         //foreach (var sec in V275StoredSectors)
         //    sec.Clear();
 
-        DiffSectors.Clear();
+        V275DiffSectors.Clear();
         V275StoredSectors.Clear();
         IsLoad = false;
 
-        CurrentRow = SelectedDatabase.GetRow(SelectedImageRoll.Name, SourceImageUID);
+        CurrentRow = SelectedDatabase.Select_V275Result(SelectedImageRoll.Name, SourceImageUID);
 
         if (CurrentRow == null)
         {
             if (V275CurrentSectors.Count == 0)
             {
-                RepeatImage = null;
-                RepeatOverlay = null;
-                IsGoldenRepeat = false;
+                V275Image = null;
+                V275ImageStoredSectorsOverlay = null;
+                IsV275ImageStored = false;
             }
 
             return;
         }
 
-        LabelTemplate = JsonConvert.DeserializeObject<Job>(CurrentRow.LabelTemplate);
+        LabelTemplate = JsonConvert.DeserializeObject<Job>(CurrentRow.SourceImageTemplate);
 
-        RepeatImage = CurrentRow.RepeatImage;
-        IsGoldenRepeat = true;
+        V275Image = CurrentRow.StoredImage;
+        IsV275ImageStored = true;
 
         List<Sectors> tempSectors = [];
-        if (!string.IsNullOrEmpty(CurrentRow.LabelReport) && !string.IsNullOrEmpty(CurrentRow.LabelTemplate))
+        if (!string.IsNullOrEmpty(CurrentRow.SourceImageReport) && !string.IsNullOrEmpty(CurrentRow.SourceImageTemplate))
             foreach (var jSec in LabelTemplate.sectors)
             {
                 var isWrongStandard = false;
                 if (jSec.type is "verify1D" or "verify2D")
                     isWrongStandard = SelectedImageRoll.IsGS1 && (!jSec.gradingStandard.enabled || SelectedImageRoll.TableID != jSec.gradingStandard.tableId);
 
-                foreach (JObject rSec in JsonConvert.DeserializeObject<V275_REST_lib.Models.Report>(CurrentRow.LabelReport).inspectLabel.inspectSector)
+                foreach (JObject rSec in JsonConvert.DeserializeObject<V275_REST_lib.Models.Report>(CurrentRow.SourceImageReport).inspectLabel.inspectSector)
                 {
                     if (jSec.name == rSec["name"].ToString())
                     {
@@ -201,7 +187,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
             IsLoad = true;
         }
 
-        RepeatOverlay = CreateRepeatOverlay(false, false);
+        V275ImageStoredSectorsOverlay = CreateV275ImageStoredSectorsOverlay(false, false);
     }
 
     [RelayCommand]
@@ -226,7 +212,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
         {
             if (par == "repeat")
             {
-                var bmp = ImageUtilities.ConvertToBmp(RepeatImage);
+                var bmp = ImageUtilities.ConvertToBmp(V275Image);
                 _ = SaveImageBytesToFile(path, bmp);
                 Clipboard.SetText(path);
             }
@@ -249,7 +235,15 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
             if (await OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for this label?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
                 return;
 
-        SelectedDatabase.AddRow(SelectedImageRoll.Name, SourceImageUID, SourceImage, JsonConvert.SerializeObject(RepeatTemplate), JsonConvert.SerializeObject(RepeatReport), RepeatImage);
+        _ = SelectedDatabase.InsertOrReplace_V275Result(new Databases.ImageResults.V275Result
+        {
+            ImageRollName = SelectedImageRoll.Name,
+            SourceImageUID = SourceImageUID,
+            SourceImage = SourceImage,
+            SourceImageTemplate = JsonConvert.SerializeObject(LabelTemplate),
+            SourceImageReport = JsonConvert.SerializeObject(RepeatReport),
+            StoredImage = V275Image
+        });
 
         V275CurrentSectors.Clear();
         IsStore = false;
@@ -264,7 +258,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
     {
         if (await OkCancelDialog("Clear Stored Sectors", $"Are you sure you want to clear the stored sectors for this label?\r\nThis can not be undone!") == MessageDialogResult.Affirmative)
         {
-            SelectedDatabase.DeleteRow(SelectedImageRoll.Name, SourceImageUID);
+            SelectedDatabase.Delete_V275Result(SelectedImageRoll.Name, SourceImageUID);
             GetStored();
         }
     }
@@ -274,24 +268,24 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
         RepeatReport = null;
         RepeatTemplate = null;
 
-        RepeatImage = null;
-        RepeatOverlay = null;
+        V275Image = null;
+        V275ImageStoredSectorsOverlay = null;
 
-        IsGoldenRepeat = false;
+        IsV275ImageStored = false;
 
         V275CurrentSectors.Clear();
-        DiffSectors.Clear();
+        V275DiffSectors.Clear();
 
         IsStore = false;
 
-        CurrentRow = SelectedDatabase.GetRow(SelectedImageRoll.Name, SourceImageUID);
+        CurrentRow = SelectedDatabase.Select_V275Result(SelectedImageRoll.Name, SourceImageUID);
 
         if (CurrentRow == null)
             return;
 
-        RepeatImage = CurrentRow.RepeatImage;
-        RepeatOverlay = CreateRepeatOverlay(false, false);
-        IsGoldenRepeat = true;
+        V275Image = CurrentRow.StoredImage;
+        V275ImageStoredSectorsOverlay = CreateV275ImageStoredSectorsOverlay(false, false);
+        IsV275ImageStored = true;
     }
 
     [RelayCommand] private void RedoFiducial() => ImageUtilities.RedrawFiducial(SourceImagePath, false);
@@ -303,7 +297,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
         V275CurrentSectors.Clear();
         IsStore = false;
 
-        DiffSectors.Clear();
+        V275DiffSectors.Clear();
 
         Controller.FullReport report;
         if ((report = await SelectedNode.Connection.Read(repeat, !SelectedNode.IsSimulator)) == null)
@@ -313,10 +307,10 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
             RepeatTemplate = null;
             RepeatReport = null;
 
-            if (!IsGoldenRepeat)
+            if (!IsV275ImageStored)
             {
-                RepeatImage = null;
-                RepeatOverlay = null;
+                V275Image = null;
+                V275ImageStoredSectorsOverlay = null;
             }
 
             return false;
@@ -327,15 +321,15 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
 
         if (!SelectedNode.IsSimulator)
         {
-            RepeatImage = ImageUtilities.ConvertToPng(report.image, 600);
-            IsGoldenRepeat = false;
+            V275Image = ImageUtilities.ConvertToPng(report.image, 600);
+            IsV275ImageStored = false;
         }
         else
         {
-            if (RepeatImage == null)
+            if (V275Image == null)
             {
-                RepeatImage = SourceImage.ToArray();
-                IsGoldenRepeat = false;
+                V275Image = SourceImage.ToArray();
+                IsV275ImageStored = false;
             }
         }
 
@@ -376,7 +370,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
         //}
         GetSectorDiff();
 
-        RepeatOverlay = CreateRepeatOverlay(true, true);
+        V275ImageStoredSectorsOverlay = CreateV275ImageStoredSectorsOverlay(true, true);
 
         return true;
     }
@@ -449,9 +443,9 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
         return "";
     }
 
-    private DrawingImage CreateRepeatOverlay(bool isRepeat, bool isDetailed)
+    private DrawingImage CreateV275ImageStoredSectorsOverlay(bool isRepeat, bool isDetailed)
     {
-        var bmp = ImageUtilities.CreateBitmap(RepeatImage);
+        var bmp = ImageUtilities.CreateBitmap(V275Image);
 
         //Draw the image outline the same size as the repeat image
         var border = new GeometryDrawing
@@ -887,7 +881,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
             }
 
         foreach (var d in diff)
-            DiffSectors.Add(d);
+            V275DiffSectors.Add(d);
 
     }
 
@@ -919,13 +913,12 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
         }
     }
 
-   
 
 
     //public void Clear()
     //{
     //    SourceImage = null;
-    //    RepeatImage = null;
+    //    V275Image = null;
     //    RepeatTemplate = null;
 
     //    LabelTemplate = null;

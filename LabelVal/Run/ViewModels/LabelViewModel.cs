@@ -19,13 +19,17 @@ namespace LabelVal.result.ViewModels;
 public partial class LabelViewModel : ObservableObject
 {
     [ObservableProperty] private ResultDatabase.Result result;
-    [ObservableProperty] private DrawingImage repeatOverlay;
+
     [ObservableProperty] private LedgerDatabase.LedgerEntry ledgerEntry;
+
     public ObservableCollection<Sectors> V275CurrentSectors { get; } = [];
     public ObservableCollection<Sectors> V275StoredSectors { get; } = [];
-    public ObservableCollection<SectorDifferences> DiffSectors { get; } = [];
+    public ObservableCollection<SectorDifferences> V275DiffSectors { get; } = []; 
+
+    [ObservableProperty] private DrawingImage v275ImageStoredSectorsOverlay;
 
     [ObservableProperty] private bool isGS1Standard;
+
     public LabelViewModel(ResultDatabase.Result result, LedgerDatabase.LedgerEntry ledgerEntry)
     {
         Result = result;
@@ -133,7 +137,7 @@ public partial class LabelViewModel : ObservableObject
         }
 
         foreach (var d in diff)
-            DiffSectors.Add(d);
+            V275DiffSectors.Add(d);
 
     }
 
@@ -211,10 +215,10 @@ public partial class LabelViewModel : ObservableObject
     //    V275StoredSectors.Clear();
     //    V275StoredSectors = null;
 
-    //    foreach (var sec in DiffSectors)
+    //    foreach (var sec in V275DiffSectors)
     //        sec.Clear();
-    //    DiffSectors.Clear();
-    //    DiffSectors = null;
+    //    V275DiffSectors.Clear();
+    //    V275DiffSectors = null;
 
     //    result = null;
     //    LedgerEntry = null;

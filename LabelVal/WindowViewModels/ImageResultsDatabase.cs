@@ -1,23 +1,18 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using LabelVal.Models;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using LabelVal.ImageRolls.Databases;
+using LabelVal.Messages;
+using MahApps.Metro.Controls.Dialogs;
 using System.Collections.ObjectModel;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using LabelVal.Databases;
-using CommunityToolkit.Mvvm.Input;
 using System.Threading.Tasks;
-using System.Windows.Input;
-using System.Text.RegularExpressions;
-using MahApps.Metro.Controls.Dialogs;
-using CommunityToolkit.Mvvm.Messaging;
-using LabelVal.Messages;
 
 namespace LabelVal.WindowViewModels;
-public partial class StandardsDatabaseViewModel : ObservableObject
+public partial class ImageResultsDatabase : ObservableObject
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-
 
     public class StandardsDBFile
     {
@@ -25,9 +20,8 @@ public partial class StandardsDatabaseViewModel : ObservableObject
         public string FilePath { get; set; }
     }
 
-
-    [ObservableProperty] private StandardsDatabase standardsDatabase;
-    partial void OnStandardsDatabaseChanged(StandardsDatabase oldValue, StandardsDatabase newValue) => _ = WeakReferenceMessenger.Default.Send(new DatabaseMessages.SelectedDatabseChanged(newValue, oldValue));
+    [ObservableProperty] private ImageResults selectedDatabase;
+    partial void OnSelectedDatabaseChanged(ImageResults oldValue, ImageResults newValue) => _ = WeakReferenceMessenger.Default.Send(new DatabaseMessages.SelectedDatabseChanged(newValue, oldValue));
 
     public StandardsDBFile StoredStandardsDatabase { get => App.Settings.GetValue("StoredStandardsDatabase_1", new StandardsDBFile() { FilePath = Path.Combine(App.StandardsDatabaseRoot, App.StandardsDatabaseDefaultName + App.DatabaseExtension), FileName = App.StandardsDatabaseDefaultName }); set => App.Settings.SetValue("StoredStandardsDatabase_1", value); }
     public ObservableCollection<StandardsDBFile> StandardsDatabases { get; } = [];
@@ -35,7 +29,7 @@ public partial class StandardsDatabaseViewModel : ObservableObject
     [ObservableProperty] private StandardsDBFile selectedStandardsDatabase;
     partial void OnSelectedStandardsDatabaseChanged(StandardsDBFile value)
     {
-       // SelectedImageRoll = null;
+        // SelectedImageRoll = null;
 
         if (value != null)
         {
@@ -48,10 +42,9 @@ public partial class StandardsDatabaseViewModel : ObservableObject
 
     private ObservableCollection<string> OrphandStandards { get; } = [];
 
-
     public static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
 
-    public StandardsDatabaseViewModel()
+    public ImageResultsDatabase()
     {
         LoadStandardsDatabasesList();
         SelectStandardsDatabase();
@@ -59,8 +52,6 @@ public partial class StandardsDatabaseViewModel : ObservableObject
 
     public async Task OkDialog(string title, string message) => _ = await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.Affirmative);
     public async Task<string> GetStringDialog(string title, string message) => await DialogCoordinator.ShowInputAsync(this, title, message);
-
-
 
     private void LoadStandardsDatabasesList()
     {
@@ -105,13 +96,13 @@ public partial class StandardsDatabaseViewModel : ObservableObject
         //if (!File.Exists(file))
         //    file = Path.Combine(App.AssetsStandardsDatabasesRoot, fileName + App.DatabaseExtension);
 
-        StandardsDatabase?.Close();
+        SelectedDatabase?.Close();
 
         Logger.Info("Initializing standards database: {name}", file.FileName);
-        StandardsDatabase = new StandardsDatabase(file.FilePath);
+        SelectedDatabase = new ImageResults();
+        SelectedDatabase.Open(file.FilePath);
 
-        var tables = StandardsDatabase.GetAllTables();
-
+        //var tables = SelectedDatabase.GetAllTables();
 
         //foreach (var tbl in tables)
         //{
@@ -141,10 +132,8 @@ public partial class StandardsDatabaseViewModel : ObservableObject
         }
 
         var file = new StandardsDBFile() { FilePath = Path.Combine(App.StandardsDatabaseRoot, res + App.DatabaseExtension), FileName = res };
-        _ = new StandardsDatabase(file.FilePath);
 
         SelectedStandardsDatabase = null;
-
         LoadStandardsDatabasesList();
 
         StoredStandardsDatabase = file;
@@ -155,7 +144,7 @@ public partial class StandardsDatabaseViewModel : ObservableObject
     [RelayCommand]
     private void LockStandardsDatabase()
     {
-        if (StandardsDatabase.IsDatabasePermLocked)
+        if (SelectedDatabase.IsPermLocked)
             return;
 
         //if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) && (Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt)))
@@ -165,7 +154,7 @@ public partial class StandardsDatabaseViewModel : ObservableObject
         //}
         //else
         //{
-            StandardsDatabase.IsDatabaseLocked=!StandardsDatabase.IsDatabaseLocked;
+        SelectedDatabase.IsLocked = !SelectedDatabase.IsLocked;
         //}
 
     }

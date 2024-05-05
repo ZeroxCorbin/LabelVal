@@ -8,7 +8,7 @@
              xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"  
              xmlns:ViewModels="clr-namespace:LabelVal.WindowViewModels"  
              xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
-                d:DataContext="{d:DesignInstance Type=ViewModels:StandardsDatabaseViewModel}"
+                d:DataContext="{d:DesignInstance Type=ViewModels:ImageResultsDatabase}"
              mc:Ignorable="d">
 
     <DockPanel>
@@ -46,7 +46,7 @@
                                     <Setter Property="IsHitTestVisible" Value="True"/>
                                     <Setter Property="ToolTip" Value="Database is unlocked. Click to unlock."/>
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding  StandardsDatabase.IsDatabaseLocked}" Value="True">
+                                        <DataTrigger Binding="{Binding  SelectedDatabase.IsLocked}" Value="True">
                                             <Setter Property="Content">
                                                 <Setter.Value>
                                                     <IconPacks:Material Kind="Lock"/>
@@ -54,7 +54,7 @@
                                             </Setter>
                                             <Setter Property="ToolTip" Value="Database is locked. Click to unlock."/>
                                         </DataTrigger>
-                                        <DataTrigger Binding="{Binding StandardsDatabase.IsDatabasePermLocked}" Value="True">
+                                        <DataTrigger Binding="{Binding SelectedDatabase.IsPermLocked}" Value="True">
                                             <Setter Property="Content">
                                                 <Setter.Value>
                                                     <IconPacks:Material Kind="DatabaseLock"/>

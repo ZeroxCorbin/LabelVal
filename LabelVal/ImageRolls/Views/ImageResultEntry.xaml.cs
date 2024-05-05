@@ -48,10 +48,10 @@ public partial class ImageResultEntry : UserControl
         if (e.LeftButton == MouseButtonState.Pressed)
             _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).SourceImage, null);
     }
-    private void RepeatImage_MouseDown(object sender, MouseButtonEventArgs e)
+    private void V275Image_MouseDown(object sender, MouseButtonEventArgs e)
     {
         if (e.LeftButton == MouseButtonState.Pressed)
-            _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).RepeatImage, ((ViewModels.ImageResultEntry)DataContext).RepeatOverlay);
+            _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).V275Image, ((ViewModels.ImageResultEntry)DataContext).V275ImageStoredSectorsOverlay);
     }
 
     private bool ShowImage(byte[] image, DrawingImage overlay)
@@ -78,8 +78,8 @@ public partial class ImageResultEntry : UserControl
         {
             if (((ViewModels.ImageResultEntry)DataContext).CurrentRow != null)
             {
-                LabelJobJsonView.Load(((ViewModels.ImageResultEntry)DataContext).CurrentRow.LabelTemplate);
-                LabelResultJsonView.Load(((ViewModels.ImageResultEntry)DataContext).CurrentRow.LabelReport);
+                LabelJobJsonView.Load(((ViewModels.ImageResultEntry)DataContext).CurrentRow.SourceImageTemplate);
+                LabelResultJsonView.Load(((ViewModels.ImageResultEntry)DataContext).CurrentRow.SourceImageReport);
                 LabelJsonPopup.PlacementTarget = (Button)sender;
                 LabelJsonPopup.IsOpen = true;
             }

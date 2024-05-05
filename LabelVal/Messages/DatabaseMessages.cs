@@ -1,11 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.Messaging.Messages;
-using LabelVal.Databases;
+using LabelVal.ImageRolls.Databases;
 
 namespace LabelVal.Messages;
 public class DatabaseMessages
 {
-    public class SelectedDatabseChanged(StandardsDatabase newDatabase, StandardsDatabase oldDatabase) : ValueChangedMessage<StandardsDatabase>(newDatabase)
+    public class SelectedDatabseChanged(ImageResults newDatabase, ImageResults oldDatabase) : ValueChangedMessage<ImageResults>(newDatabase)
     {
-        public StandardsDatabase OldDatabase { get; } = oldDatabase;
+        public ImageResults OldDatabase { get; } = oldDatabase;
     }
 }

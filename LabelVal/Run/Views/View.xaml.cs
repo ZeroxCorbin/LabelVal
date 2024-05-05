@@ -171,7 +171,7 @@ public partial class View : MetroWindow
                             }
                         }
 
-                        foreach (var diff in item.DiffSectors)
+                        foreach (var diff in item.V275DiffSectors)
                         {
                             if (diff.IsNotEmpty)
                             {

@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
-using LabelVal.Databases;
 using LabelVal.Messages;
 using LabelVal.V5.ViewModels;
 using LabelVal.WindowViewModels;
@@ -39,7 +38,7 @@ public partial class ImageResults : ObservableRecipient,
     partial void OnSelectedImageRollChanged(ImageRollEntry value) => LoadLabels();
 
     [ObservableProperty] private PrinterSettings selectedPrinter;
-    [ObservableProperty] private StandardsDatabase selectedDatabase;
+    [ObservableProperty] private Databases.ImageResults selectedDatabase;
     [ObservableProperty] private Scanner selectedScanner;
 
     public RunViewModel RunViewModel { get; } = new RunViewModel();
@@ -195,7 +194,7 @@ public partial class ImageResults : ObservableRecipient,
                 }
                 else
                 {
-                    if (!sim.SaveImage(label.SourceImagePath, label.RepeatImage))
+                    if (!sim.SaveImage(label.SourceImagePath, label.V275Image))
                     {
                         Label_StatusChanged("Could not save the image to the simulator images directory.");
                         label.IsWorking = false;

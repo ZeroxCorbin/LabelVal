@@ -77,7 +77,7 @@
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
                                             <Condition Binding="{Binding SelectedNode.IsSimulator}" Value="True"/>
-                                            <Condition Binding="{Binding IsGoldenRepeat}" Value="True"/>
+                                            <Condition Binding="{Binding IsV275ImageStored}" Value="True"/>
                                         </MultiDataTrigger.Conditions>
 
                                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -160,9 +160,9 @@
                                     </Grid>
                                 </Setter.Value>
                             </Setter>
-                            <Setter Property="ToolTip" Value="{Binding LabelComment}"/>
+                            <Setter Property="ToolTip" Value="{Binding SourceImageComment}"/>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding LabelComment}" Value="">
+                                <DataTrigger Binding="{Binding SourceImageComment}" Value="">
                                     <Setter Property="Content" Value=""/>
                                     <Setter Property="ToolTip" Value="{x:Null}"/>
                                 </DataTrigger>
@@ -295,7 +295,7 @@
                                         <MultiDataTrigger>
                                             <MultiDataTrigger.Conditions>
                                                 <Condition Binding="{Binding SelectedNode.IsSimulator}" Value="True"/>
-                                                <Condition Binding="{Binding IsGoldenRepeat}" Value="True"/>
+                                                <Condition Binding="{Binding IsV275ImageStored}" Value="True"/>
                                             </MultiDataTrigger.Conditions>
 
                                             <Setter Property="Visibility" Value="Visible"/>
@@ -430,7 +430,7 @@
 
             <ScrollViewer Margin="3" MaxHeight="400" VerticalScrollBarVisibility="Auto"
                           mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True">
-                <ItemsControl ItemsSource="{Binding DiffSectors}">
+                <ItemsControl ItemsSource="{Binding V275DiffSectors}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <v275:SectorDifferences />
@@ -460,12 +460,12 @@
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
                                             <Condition Binding="{Binding SelectedNode.IsSimulator}" Value="True"/>
-                                            <Condition Binding="{Binding IsGoldenRepeat}" Value="True"/>
+                                            <Condition Binding="{Binding IsV275ImageStored}" Value="True"/>
                                         </MultiDataTrigger.Conditions>
 
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                     </MultiDataTrigger>
-                                    <DataTrigger Binding="{Binding RepeatImage}" Value="{x:Null}">
+                                    <DataTrigger Binding="{Binding V275Image}" Value="{x:Null}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -484,7 +484,7 @@
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
                                             <Condition Binding="{Binding SelectedNode.IsSimulator}" Value="True"/>
-                                            <Condition Binding="{Binding IsGoldenRepeat}" Value="True"/>
+                                            <Condition Binding="{Binding IsV275ImageStored}" Value="True"/>
                                         </MultiDataTrigger.Conditions>
 
                                         <Setter Property="Visibility" Value="Visible"/>
@@ -499,7 +499,7 @@
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
                                     <Setter Property="Visibility" Value="Visible"/>
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding RepeatImage}" Value="{x:Null}">
+                                        <DataTrigger Binding="{Binding V275Image}" Value="{x:Null}">
                                             <Setter Property="Visibility" Value="Collapsed"/>
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -515,7 +515,7 @@
                                 <Style TargetType="{x:Type Label}" BasedOn="{StaticResource {x:Type Label}}">
                                     <Setter Property="Visibility" Value="Collapsed"/>
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsGoldenRepeat}" Value="True">
+                                        <DataTrigger Binding="{Binding IsV275ImageStored}" Value="True">
                                             <Setter Property="Visibility" Value="Visible"/>
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -534,12 +534,12 @@
             </GroupBox.Header>
 
             <Grid Margin="3">
-                <Image Name="RepeatImage" Source="{Binding RepeatImage, Converter={StaticResource bytesToImage}}" 
-                       Margin="0" MaxHeight="400" Width="400" MouseDown="RepeatImage_MouseDown"
+                <Image Name="V275Image" Source="{Binding V275Image, Converter={StaticResource bytesToImage}}" 
+                       Margin="0" MaxHeight="400" Width="400" MouseDown="V275Image_MouseDown"
                        RenderOptions.BitmapScalingMode="NearestNeighbor"/>
 
-                <Image Name="RepeatImageOverlay" Source="{Binding RepeatOverlay}" 
-                       Margin="0" MaxHeight="400" Width="400" MouseDown="RepeatImage_MouseDown"
+                <Image Name="V275ImageOverlay" Source="{Binding V275ImageStoredSectorsOverlay}" 
+                       Margin="0" MaxHeight="400" Width="400" MouseDown="V275Image_MouseDown"
                        RenderOptions.BitmapScalingMode="NearestNeighbor"/>
             </Grid>
 

@@ -204,7 +204,7 @@
                         </Style.Triggers>
                     </Style>
                 </ScrollViewer.Style>
-                <ItemsControl ItemsSource="{Binding DiffSectors}">
+                <ItemsControl ItemsSource="{Binding V275DiffSectors}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <v275:SectorDifferences />

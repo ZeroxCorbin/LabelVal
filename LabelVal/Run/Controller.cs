@@ -1,5 +1,4 @@
-﻿using LabelVal.Databases;
-using LabelVal.ImageRolls.ViewModels;
+﻿using LabelVal.ImageRolls.ViewModels;
 using LabelVal.ORM_Test;
 using LabelVal.Run.Databases;
 using LabelVal.V275.ViewModels;
@@ -47,7 +46,7 @@ public class Controller
 
     private ObservableCollection<ImageResultEntry> Labels { get; set; }
     public ImageRollEntry GradingStandard { get; private set; }
-    private StandardsDatabase StandardsDatabase { get; set; }
+    private ImageRolls.Databases.ImageResults StandardsDatabase { get; set; }
 
     public Node Node { get; private set; }
     //private string JobName { get; }
@@ -64,7 +63,7 @@ public class Controller
         _ = OpenDatabases();
     }
 
-    public Controller Init(ObservableCollection<ImageResultEntry> labels, int loopCount, StandardsDatabase standardsDatabase, Node v275Node)
+    public Controller Init(ObservableCollection<ImageResultEntry> labels, int loopCount, ImageRolls.Databases.ImageResults standardsDatabase, Node v275Node)
     {
         Labels = labels;
         LoopCount = loopCount;
@@ -198,9 +197,9 @@ public class Controller
                     return false;
                 }
 
-                var sRow = StandardsDatabase.GetRow(GradingStandard.Name, label.SourceImageUID);
+                var sRow = StandardsDatabase.Select_V275Result(GradingStandard.Name, label.SourceImageUID);
 
-                if (sRow == null || string.IsNullOrEmpty(sRow.LabelReport))
+                if (sRow == null || string.IsNullOrEmpty(sRow.SourceImageReport))
                     continue;
 
                 Logger.Info("Job Print");
@@ -240,9 +239,9 @@ public class Controller
 
                 var row = new ResultDatabase.Result()
                 {
-                    LabelTemplate = sRow.LabelTemplate,
-                    LabelReport = sRow.LabelReport,
-                    RepeatGoldenImage = sRow.RepeatImage,
+                    LabelTemplate = sRow.SourceImageTemplate,
+                    LabelReport = sRow.SourceImageReport,
+                    RepeatGoldenImage = sRow.StoredImage,
                     LabelImageUID = label.SourceImageUID,
                     LabelImage = Node.IsSimulator ? null : label.SourceImage,
                     LabelImageOrder = CurrentLabelCount,
@@ -250,11 +249,11 @@ public class Controller
                 };
 
                 if (!Node.IsSimulator)
-                    if (label.RepeatImage != null)
+                    if (label.V275Image != null)
                     {
                         //Compress the image to PNG
                         var encoder = new PngBitmapEncoder();
-                        using var ms = new MemoryStream(label.RepeatImage);
+                        using var ms = new MemoryStream(label.V275Image);
                         using var stream = new MemoryStream();
                         encoder.Frames.Add(BitmapFrame.Create(ms));
                         encoder.Save(stream);
@@ -272,7 +271,7 @@ public class Controller
                 {
                     using var transaction = session.BeginTransaction();
                     var rep = new Report(label.RepeatReport);
-                    rep.repeatImage = label.RepeatImage;
+                    rep.repeatImage = label.V275Image;
                     rep.voidRepeat = rep.repeat;
                     rep.runId = RunId;
                     //var run = new ORM_Test.RunLedger(JsonConvert.SerializeObject(sRow.LabelTemplate), label.MainWindow.V275_MAC, label.MainWindow.V275_NodeNumber.ToString());
