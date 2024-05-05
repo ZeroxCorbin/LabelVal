@@ -2,14 +2,22 @@
 using SQLite;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
+using System.Windows.Controls;
+using CommunityToolkit.Mvvm.Input;
+using System.Windows.Forms;
 
 namespace LabelVal.ImageRolls.Databases
 {
-    public partial class ImageResults : IDisposable
+    public partial class ImageResults : ObservableObject, IDisposable
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private string filePath;
+        public string FilePath { get; private set; }
+        public string FileName => System.IO.Path.GetFileNameWithoutExtension(FilePath);
+
         public partial class V275Result : ObservableObject
         {
             [ObservableProperty] private string imageRollName;
@@ -18,21 +26,6 @@ namespace LabelVal.ImageRolls.Databases
             [ObservableProperty] private string sourceImageTemplate;
             [ObservableProperty] private string sourceImageReport;
             [ObservableProperty] private byte[] storedImage;
-
-            //public Result(SQLiteDataReader rdr)
-            //{
-            //    for (int i = 0; i < rdr.FieldCount; i++)
-            //    {
-            //        if (rdr.GetName(i).Equals("LabelImage", StringComparison.InvariantCultureIgnoreCase))
-            //            LabelImage = (byte[])rdr["LabelImage"];
-            //    }
-
-            //    LabelImageUID = rdr["LabelImageUID"].ToString();
-            //    LabelTemplate = rdr["LabelTemplate"].ToString();
-            //    LabelReport = rdr["LabelReport"].ToString();
-            //    RepeatImage = (byte[])rdr["RepeatImage"];
-            //}
-
         }
 
         public partial class V5Result : ObservableObject
@@ -69,48 +62,31 @@ namespace LabelVal.ImageRolls.Databases
         private SQLiteConnection Connection { get; set; } = null;
 
         public ImageResults() { }
-        public ImageResults(string dbFilePath) => filePath = dbFilePath;
+        public ImageResults(string dbFilePath) => FilePath = dbFilePath;
 
         public ImageResults Open(string dbFilePath)
         {
-            Logger.Info("Opening Database: {file}", dbFilePath);
-
-            if (string.IsNullOrEmpty(dbFilePath))
-                return null;
-
-            filePath = dbFilePath;
-
-            try
-            {
-                Connection ??= new SQLiteConnection(dbFilePath);
-
-                _ = Connection.CreateTable<V275Result>();
-                _ = Connection.CreateTable<V5Result>();
-                _ = Connection.CreateTable<LockTable>();
-
-                return this;
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-                return null;
-            }
+            FilePath = dbFilePath;
+            return Open();
         }
 
         public ImageResults Open()
         {
-            Logger.Info("Opening Database: {file}", filePath);
+            Logger.Info("Opening Database: {file}", FilePath);
 
-            if (string.IsNullOrEmpty(filePath))
+            if (string.IsNullOrEmpty(FilePath))
                 return null;
 
             try
             {
-                Connection ??= new SQLiteConnection(filePath);
+                Connection ??= new SQLiteConnection(FilePath);
 
                 _ = Connection.CreateTable<V275Result>();
                 _ = Connection.CreateTable<V5Result>();
                 _ = Connection.CreateTable<LockTable>();
+
+                OnPropertyChanged(nameof(IsLocked));
+                OnPropertyChanged(nameof(IsNotLocked));
 
                 return this;
             }
@@ -128,6 +104,21 @@ namespace LabelVal.ImageRolls.Databases
         public List<V275Result> SelectAll_V275Result() => Connection?.Query<V275Result>("select * from V275Result");
         public int? Delete_V275Result(string imageRollName, string imageUID) => Connection?.Table<V275Result>().Delete(v => v.SourceImageUID == imageUID && v.ImageRollName == imageRollName);
 
+        public List<string> AllTableNames()
+        {
+            using var con = new System.Data.SQLite.SQLiteConnection($"Data Source={FilePath}; Version=3;");
+            con.Open();
+
+            using System.Data.SQLite.SQLiteCommand command = new System.Data.SQLite.SQLiteCommand("SELECT name FROM sqlite_master WHERE type='table';", con);
+
+            var tables = new List<string>();
+            using (System.Data.SQLite.SQLiteDataReader rdr = command.ExecuteReader())
+                while (rdr.Read())
+                    tables.Add(rdr.GetString(0));
+
+            return tables;
+        }
+
         public bool IsLocked
         {
             get => HasLock();
@@ -135,15 +126,23 @@ namespace LabelVal.ImageRolls.Databases
         }
         private void OnIsDatabaseLockedChanged(bool value)
         {
-            if (HasPerminentLock()) return;
+            if (HasPerminentLock())
+            {
+                OnPropertyChanged(nameof(IsLocked));
+                OnPropertyChanged(nameof(IsNotLocked));
+                return;
+            }
+
 
             if (value)
                 Lock(false);
             else
                 Unlock();
+
+            OnPropertyChanged(nameof(IsLocked));
+            OnPropertyChanged(nameof(IsNotLocked));
         }
         public bool IsNotLocked => !IsLocked;
-
 
         public bool IsPermLocked
         {
@@ -152,20 +151,53 @@ namespace LabelVal.ImageRolls.Databases
         }
         private void OnIsPermLockedChanged(bool value)
         {
-            if (HasPerminentLock()) return;
+            if (HasPerminentLock())
+            {
+                OnPropertyChanged(nameof(IsPermLocked));
+                OnPropertyChanged(nameof(IsNotPermLocked));
+                return;
+            }
 
             if (value)
                 Lock(true);
+
+            OnPropertyChanged(nameof(IsPermLocked));
+            OnPropertyChanged(nameof(IsNotPermLocked));
         }
         public bool IsNotPermLocked => !IsPermLocked;
 
-        public void Lock(bool isPerminent) => Connection.InsertOrReplace(new LockTable { IsPerminent = isPerminent });
-        public bool HasLock() => HasPerminentLock() || Connection?.Table<LockTable>().Count() > 0;
-        private bool HasPerminentLock() => Connection?.Table<LockTable>().Where(v => v.IsPerminent).Count() > 0;
 
-        public void Unlock()
+        public bool NeedsConversion => NeedsConversionCheck();
+
+        private void Lock(bool isPerminent) => Connection.InsertOrReplace(new LockTable { IsPerminent = isPerminent });
+        private bool HasLock() => HasPerminentLock() || Connection?.Table<LockTable>().Count() > 0;
+        private bool HasPerminentLock() => Connection?.Table<LockTable>().Where(v => v.IsPerminent).Count() > 0;
+        private void Unlock() => _ = Connection.DeleteAll<LockTable>();
+
+        [RelayCommand]
+        public async Task ConvertDatabase()
         {
-            _ = Connection.DropTable<LockTable>();
+
+        }
+        private bool NeedsConversionCheck()
+        {
+            var tables = AllTableNames();
+            if (tables.Count > 3)
+                return true;
+
+            foreach (var table in tables)
+            {
+                if (table.Equals("V275Result", StringComparison.InvariantCultureIgnoreCase))
+                    continue;
+                else if (table.Equals("V5Result", StringComparison.InvariantCultureIgnoreCase))
+                    continue;
+                else if (table.Equals("LockTable", StringComparison.InvariantCultureIgnoreCase))
+                    continue;
+
+                return false;
+            }
+
+            return true;
         }
 
         public void Dispose()

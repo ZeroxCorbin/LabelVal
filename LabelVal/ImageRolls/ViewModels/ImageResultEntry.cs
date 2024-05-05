@@ -934,7 +934,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
     //    V275StoredSectors.Clear();
 
     //    dialogCoordinator = null;
-    //    StandardsDatabase = null;
+    //    ImageResultsDatabase = null;
     //    V275 = null;
     //}
 }

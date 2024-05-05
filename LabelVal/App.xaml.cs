@@ -33,9 +33,9 @@ namespace LabelVal
 
         public static string SettingsDatabaseName => $"ApplicationSettings{DatabaseExtension}";
 
-        public static string StandardsDatabaseDefaultName => $"StandardsDatabase";
-        public static string AssetsStandardsDatabasesRoot => $"{System.IO.Directory.GetCurrentDirectory()}\\Assets\\StandardsDatabases"; 
-        public static string StandardsDatabaseRoot => $"{UserDataDirectory}\\StandardsDatabases";
+        public static string ImageResultsDatabaseDefaultName => $"ImageResultsDatabase";
+        public static string AssetsImageResultsDatabasesRoot => $"{System.IO.Directory.GetCurrentDirectory()}\\Assets\\ImageResultsDatabases"; 
+        public static string ImageResultsDatabaseRoot => $"{UserDataDirectory}\\ImageResultsDatabases";
 
         public static string AssetsImageRollRoot => $"{System.IO.Directory.GetCurrentDirectory()}\\Assets\\Image Rolls";
         public static string ImageRollRoot => $"{UserDataDirectory}\\Image Rolls";
@@ -55,8 +55,8 @@ namespace LabelVal
 
             if (!Directory.Exists(UserDataDirectory))
                 _ = Directory.CreateDirectory(UserDataDirectory);
-            if (!Directory.Exists(StandardsDatabaseRoot))
-                _ = Directory.CreateDirectory(StandardsDatabaseRoot);
+            if (!Directory.Exists(ImageResultsDatabaseRoot))
+                _ = Directory.CreateDirectory(ImageResultsDatabaseRoot);
             if (!Directory.Exists(ImageRollRoot))
                 _ = Directory.CreateDirectory(ImageRollRoot);
 
@@ -173,6 +173,14 @@ namespace LabelVal
                 App.Current.Dispatcher.Invoke(Shutdown);
 
         }
+
+
+        private void ConvertDatabases()
+        {
+
+        }
+
+
 
         private void FixFiducial()
         {
@@ -313,5 +321,7 @@ namespace LabelVal
         // save image to file or stream
 
         //}
+
+
     }
 }

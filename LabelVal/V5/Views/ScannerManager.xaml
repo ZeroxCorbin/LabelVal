@@ -39,7 +39,7 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <md:Card Background="{DynamicResource MahApps.Brushes.Accent4}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="-5">
-                            <local:ScannerView DataContext="{Binding }"/>
+                            <local:Scanner DataContext="{Binding }"/>
                         </md:Card>
                     </DataTemplate>
                 </ListView.ItemTemplate>

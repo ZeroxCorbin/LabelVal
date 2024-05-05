@@ -12,14 +12,14 @@ using System.Windows.Media.Imaging;
 namespace LabelVal.V5.Views
 {
     /// <summary>
-    /// Interaction logic for ScannerView.xaml
+    /// Interaction logic for Scanner.xaml
     /// </summary>
-    public partial class ScannerView : UserControl
+    public partial class Scanner : UserControl
     {
         //private string? CodeType { get => App.Settings.GetValue<string>(nameof(TestViewModel.TestSettings.CodeType)); set => App.Settings.SetValue(nameof(TestViewModel.TestSettings.CodeType), value); }
         //private string? ExpectedOutDataUTF8 { get => App.Settings.GetValue<string>(nameof(TestViewModel.TestSettings.ExpectedOutDataUTF8)); set => App.Settings.SetValue(nameof(TestViewModel.TestSettings.ExpectedOutDataUTF8), value); }
 
-        public ScannerView()
+        public Scanner()
         {
             InitializeComponent();
         }
@@ -27,7 +27,7 @@ namespace LabelVal.V5.Views
         private void SourceImage_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed && e.ClickCount == 2)
-                ShowImage(((Scanner)DataContext).Image, ((Scanner)DataContext).ImageOverlay, ((Scanner)DataContext).ImageFocusRegionOverlay);
+                ShowImage(((ViewModels.Scanner)DataContext).Image, ((ViewModels.Scanner)DataContext).ImageOverlay, ((ViewModels.Scanner)DataContext).ImageFocusRegionOverlay);
         }
 
         private bool ShowImage(byte[] image, DrawingImage overlay, DrawingImage overlay1)
@@ -76,7 +76,7 @@ namespace LabelVal.V5.Views
             {
                 try
                 {
-                    System.IO.File.WriteAllBytes(path, ((Scanner)DataContext).RawImage);
+                    System.IO.File.WriteAllBytes(path, ((ViewModels.Scanner)DataContext).RawImage);
                 }
                 catch (Exception ex) { }
 

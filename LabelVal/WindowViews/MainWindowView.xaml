@@ -157,7 +157,7 @@
 
                                 <v5:ScannerManager DockPanel.Dock="Top" DataContext="{Binding ScannerManager}"/>
 
-                                <local:StandardsDatabasesView DockPanel.Dock="Top" DataContext="{Binding StandardsDatabaseViewModel}"/>
+                                <imageRolls:ImageResultsDatabases DockPanel.Dock="Top" DataContext="{Binding ImageResultsDatabases}"/>
 
                                 <imageRolls:ImageRolls DataContext="{Binding ImageRolls}"/>
 

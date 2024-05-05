@@ -46,7 +46,7 @@ public class Controller
 
     private ObservableCollection<ImageResultEntry> Labels { get; set; }
     public ImageRollEntry GradingStandard { get; private set; }
-    private ImageRolls.Databases.ImageResults StandardsDatabase { get; set; }
+    private ImageRolls.Databases.ImageResults ImageResultsDatabase { get; set; }
 
     public Node Node { get; private set; }
     //private string JobName { get; }
@@ -67,7 +67,7 @@ public class Controller
     {
         Labels = labels;
         LoopCount = loopCount;
-        StandardsDatabase = standardsDatabase;
+        ImageResultsDatabase = standardsDatabase;
         Node = v275Node;
         GradingStandard = Labels[0].SelectedImageRoll;
 
@@ -197,7 +197,7 @@ public class Controller
                     return false;
                 }
 
-                var sRow = StandardsDatabase.Select_V275Result(GradingStandard.Name, label.SourceImageUID);
+                var sRow = ImageResultsDatabase.Select_V275Result(GradingStandard.Name, label.SourceImageUID);
 
                 if (sRow == null || string.IsNullOrEmpty(sRow.SourceImageReport))
                     continue;

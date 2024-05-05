@@ -1,0 +1,118 @@
+﻿<UserControl x:Class="LabelVal.ImageRolls.Views.ImageResultsDatabases"
+                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+                xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+                xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+                xmlns:local="clr-namespace:LabelVal.ImageRolls.Views"
+                xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"  
+                xmlns:ViewModels="clr-namespace:LabelVal.ImageRolls.ViewModels"  
+
+                xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+                Dialog:DialogParticipation.Register="{Binding}"
+             
+                d:DataContext="{d:DesignInstance Type=ViewModels:ImageResultsDatabases}"
+                mc:Ignorable="d">
+
+    <DockPanel>
+
+        <GroupBox DockPanel.Dock="Top"
+            Margin="3" Padding="3"
+            HorizontalAlignment="Left" VerticalAlignment="Top" 
+            Style="{StaticResource MaterialDesignCardGroupBox}">
+
+            <GroupBox.Header>
+                <DockPanel>
+
+
+                    <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" Padding="1">
+                        <TextBlock Text="Databases" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Margin="3,0"/>
+                    </md:Card>
+
+                    <Button Command="{Binding CreateImageResultsDatabaseCommand}" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
+                                    ToolTip="New Database" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+
+                        <IconPacks:PackIconMaterial Kind="Plus" Margin="-1,0,0,0" Height="14" Width="14"/>
+                    </Button>
+                </DockPanel>
+            </GroupBox.Header>
+
+            <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" Padding="2">
+                <StackPanel>
+
+                    <ListView ItemsSource="{Binding Databases}" SelectedItem="{Binding SelectedDatabase}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+
+                                <DockPanel>
+
+                                    <Button Click="btnLockImageResultsDatabase_Click"
+                                            Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0">
+                                        <Button.Style>
+                                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                                <Setter Property="Content">
+                                                    <Setter.Value>
+                                                        <IconPacks:PackIconMaterial Kind="LockOpenVariant" Height="12" Width="12"/>
+                                                    </Setter.Value>
+                                                </Setter>
+
+                                                <Setter Property="ToolTip" Value="Database is unlocked. Click to lock."/>
+
+                                                <Style.Triggers>
+
+                                                    <DataTrigger Binding="{Binding IsLocked}" Value="True">
+                                                        <Setter Property="Content">
+                                                            <Setter.Value>
+                                                                <IconPacks:PackIconMaterial Kind="Lock" Height="12" Width="12"/>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                        <Setter Property="ToolTip" Value="Database is locked. Click to unlock."/>
+                                                    </DataTrigger>
+
+                                                    <DataTrigger Binding="{Binding IsPermLocked}" Value="True">
+                                                        <Setter Property="Content">
+                                                            <Setter.Value>
+                                                                <IconPacks:PackIconMaterial Kind="DatabaseLock" Height="12" Width="12"/>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                        <Setter Property="ToolTip" Value="Database is premanently locked."/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+
+                                    <Button Command="{Binding ConvertDatabaseCommand}"
+                                            Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0">
+                                        
+                                        <IconPacks:PackIconMaterial Kind="Exclamation" Height="14" Width="14"/>
+                                        
+                                        <Button.Style>
+                                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+
+                                                    <DataTrigger Binding="{Binding NeedsConversion}" Value="True">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+
+                                    <TextBlock Text="{Binding FileName}" Margin="3,0"/>
+
+                                </DockPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
+                </StackPanel>
+            </md:Card>
+        </GroupBox>
+
+
+
+    </DockPanel>
+
+</UserControl>

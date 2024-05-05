@@ -201,7 +201,7 @@
                                         <DataTrigger Binding="{Binding IsLoad}" Value="True">
                                             <Setter Property="Visibility" Value="Visible"/>
                                         </DataTrigger>
-                                        <DataTrigger Binding="{Binding SelectedDatabase.IsDatabaseLocked}" Value="True">
+                                        <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
                                             <Setter Property="Visibility" Value="Collapsed"/>
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -315,7 +315,7 @@
                                         <DataTrigger Value="True" Binding="{Binding IsStore}">
                                             <Setter Property="Visibility" Value="Visible"/>
                                         </DataTrigger>
-                                        <DataTrigger Binding="{Binding SelectedDatabase.IsDatabaseLocked}" Value="True">
+                                        <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
                                             <Setter Property="Visibility" Value="Collapsed"/>
                                         </DataTrigger>
                                     </Style.Triggers>
