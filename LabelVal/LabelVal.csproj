@@ -23,6 +23,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Run\Databases\V2RunEntryDatabase.cs" />
+    <Compile Remove="V275\ViewModels\ImageResultEntry.cs" />
+    <Compile Remove="V275\ViewModels\ImageResults.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Remove=".gitattributes" />

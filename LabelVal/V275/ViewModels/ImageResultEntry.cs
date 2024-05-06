@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Messages;
 using LabelVal.Utilities;
 using LabelVal.V275.ViewModels;
@@ -21,10 +22,12 @@ using System.Windows.Media;
 using V275_REST_lib;
 using V275_REST_lib.Models;
 
-namespace LabelVal.ImageRolls.ViewModels;
+namespace LabelVal.V275.ViewModels;
 
 public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMessages.SelectedNodeChanged>, IRecipient<DatabaseMessages.SelectedDatabseChanged>, IRecipient<ScannerMessages.SelectedScannerChanged>
 {
+    public delegate void PrintingDelegate(ImageResultEntry label, string type);
+    public event PrintingDelegate Printing;
 
     public delegate void BringIntoViewDelegate();
     public event BringIntoViewDelegate BringIntoView;
@@ -32,27 +35,15 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
     public delegate void StatusChange(string status);
     public event StatusChange StatusChanged;
 
-    [ObservableProperty] private string status;
-    partial void OnStatusChanged(string value) => App.Current.Dispatcher.Invoke(() => StatusChanged?.Invoke(Status));
+    [ObservableProperty] private ImageRolls.Databases.ImageResults.V275Result currentRow;
 
-
-    [ObservableProperty] private Databases.ImageResults.V275Result currentRow;
-
-    public string SourceImagePath { get; }
     [ObservableProperty] private byte[] sourceImage;
     [ObservableProperty] private string sourceImageUID;
     [ObservableProperty] private string sourceImageComment;
 
-    #region V275
-
-    public delegate void V275ProcessImageDelegate(ImageResultEntry imageResults, string type);
-    public event V275ProcessImageDelegate V275ProcessImage;
-
     public Job LabelTemplate { get; set; }
     public Job RepeatTemplate { get; set; }
     public V275_REST_lib.Models.Report RepeatReport { get; private set; }
-
-    [ObservableProperty] private int printCount = 1;
 
     [ObservableProperty] private ObservableCollection<Sectors> v275StoredSectors = [];
     [ObservableProperty] private ObservableCollection<Sectors> v275CurrentSectors = [];
@@ -62,52 +53,42 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
     [ObservableProperty] private DrawingImage v275ImageStoredSectorsOverlay;
     [ObservableProperty] private bool isV275ImageStored;
 
-    [ObservableProperty] private bool isV275Working = false;
-    partial void OnIsV275WorkingChanged(bool value) => OnPropertyChanged(nameof(IsNotV275Working));
-    public bool IsNotV275Working => !IsV275Working;
-
-
-    [ObservableProperty] private bool isV275Faulted = false;
-    partial void OnIsV275FaultedChanged(bool value) => OnPropertyChanged(nameof(IsNotV275Faulted));
-    public bool IsNotV275Faulted => !IsV275Faulted;
-    #endregion
-
-    #region V5
-
-    public delegate void V5ProcessImageDelegate(ImageResultEntry imageResults, string type);
-    public event V5ProcessImageDelegate V5ProcessImage;
-
     [ObservableProperty] private ObservableCollection<Sectors> v5StoredSectors = [];
     [ObservableProperty] private ObservableCollection<Sectors> v5CurrentSectors = [];
     [ObservableProperty] private ObservableCollection<SectorDifferences> v5DiffSectors = [];
 
-    [ObservableProperty] private byte[] v5Image = null;
-    [ObservableProperty] private DrawingImage v5ImageStoredSectorsOverlay;
-    [ObservableProperty] private bool isV5ImageStored;
+    [ObservableProperty] private int printCount = 1;
 
-    [ObservableProperty] private bool isV5Working = false;
-    partial void OnIsV5WorkingChanged(bool value) => OnPropertyChanged(nameof(IsNotV5Working));
-    public bool IsNotV5Working => !IsV5Working;
-
-
-    [ObservableProperty] private bool isV5Faulted = false;
-    partial void OnIsV5FaultedChanged(bool value) => OnPropertyChanged(nameof(IsNotV5Faulted));
-    public bool IsNotV5Faulted => !IsV5Faulted;
-    #endregion
 
     //[ObservableProperty] private bool v275SectorsNeedStored = false;
     //partial void OnV275SectorsNeedStoredChanged(bool value) => OnPropertyChanged(nameof(NotV275SectorsNeedStored));
     //public bool NotV275SectorsNeedStored => !V275SectorsNeedStored;
 
+
+    [ObservableProperty] private bool isWorking = false;
+    partial void OnIsWorkingChanged(bool value) => OnPropertyChanged(nameof(IsNotWorking));
+    public bool IsNotWorking => !IsWorking;
+
+
+    [ObservableProperty] private bool isFaulted = false;
+    partial void OnIsFaultedChanged(bool value) => OnPropertyChanged(nameof(IsNotFaulted));
+    public bool IsNotFaulted => !IsFaulted;
+
+    public string SourceImagePath { get; }
+
+
+    [ObservableProperty] private string status;
+    partial void OnStatusChanged(string value) => App.Current.Dispatcher.Invoke(() => StatusChanged?.Invoke(Status));
+
     [ObservableProperty] private Node selectedNode;
     [ObservableProperty] private ImageRollEntry selectedImageRoll;
     [ObservableProperty] private Scanner selectedScanner;
-    [ObservableProperty] private Databases.ImageResults selectedDatabase;
-    partial void OnSelectedDatabaseChanged(Databases.ImageResults value) => GetStored("V275");
+    [ObservableProperty] private ImageRolls.Databases.ImageResults selectedDatabase;
+    partial void OnSelectedDatabaseChanged(ImageRolls.Databases.ImageResults value) => GetStored("V275");
 
 
     private static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
-    public ImageResultEntry(string imagePath, string imageComment, Node selectedNode, ImageRollEntry selectedImageRoll, Databases.ImageResults selectedDatabase, Scanner selectedScanner)
+    public ImageResultEntry(string imagePath, string imageComment, Node selectedNode, ImageRollEntry selectedImageRoll, ImageRolls.Databases.ImageResults selectedDatabase, Scanner selectedScanner)
     {
         SourceImagePath = imagePath;
         SourceImageComment = imageComment;
@@ -211,22 +192,22 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
     }
 
     [RelayCommand]
-    private void V275Process(string imageType)
+    private void Print(object parameter)
     {
-        IsV275Working = true;
-        IsV275Faulted = false;
+        IsWorking = true;
+        IsFaulted = false;
 
         BringIntoView?.Invoke();
-        V275ProcessImage?.Invoke(this, imageType);
+        Printing?.Invoke(this, (string)parameter);
     }
     [RelayCommand]
-    private void V5Process(object parameter)
+    private void PrintV5(object parameter)
     {
-        IsV5Working = true;
-        IsV5Faulted = false;
+        IsWorking = true;
+        IsFaulted = false;
 
         BringIntoView?.Invoke();
-        V5ProcessImage?.Invoke(this, (string)parameter);
+        Printing?.Invoke(this, (string)parameter);
     }
     [RelayCommand]
     private void Save(object parameter)
@@ -266,7 +247,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
                 if (await OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for this image?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
                     return;
 
-            _ = SelectedDatabase.InsertOrReplace_V275Result(new Databases.ImageResults.V275Result
+            _ = SelectedDatabase.InsertOrReplace_V275Result(new ImageRolls.Databases.ImageResults.V275Result
             {
                 ImageRollName = SelectedImageRoll.Name,
                 SourceImageUID = SourceImageUID,
@@ -284,7 +265,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
                 if (await OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for this image?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
                     return;
 
-            _ = SelectedDatabase.InsertOrReplace_V5Result(new Databases.ImageResults.V5Result
+            _ = SelectedDatabase.InsertOrReplace_V5Result(new ImageRolls.Databases.ImageResults.V5Result
             {
                 ImageRollName = SelectedImageRoll.Name,
                 SourceImageUID = SourceImageUID,

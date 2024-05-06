@@ -1,7 +1,5 @@
-﻿using LabelVal.ImageRolls.ViewModels;
-using LabelVal.ORM_Test;
+﻿using LabelVal.ORM_Test;
 using LabelVal.Run.Databases;
-using LabelVal.V275.ViewModels;
 using LabelVal.WindowViewModels;
 using Newtonsoft.Json;
 using System;
@@ -37,18 +35,18 @@ public class Controller
     public LedgerDatabase.LedgerEntry LedgerEntry { get; private set; }
 
     public ResultDatabase RunEntryDatabase { get; private set; }
-    //public List<RunEntryDatabase.Run> RunLabels { get; private set; } = new List<RunEntryDatabase.Run>();
+    //public List<RunEntryDatabase.Run> RunImageResultsList { get; private set; } = new List<RunEntryDatabase.Run>();
 
     public int LoopCount { get; private set; }
     public int CurrentLoopCount { get; private set; }
     public int CurrentLabelCount { get; private set; }
     private long RunId { get; set; }
 
-    private ObservableCollection<ImageResultEntry> Labels { get; set; }
-    public ImageRollEntry GradingStandard { get; private set; }
+    private ObservableCollection<ImageRolls.ViewModels.ImageResultEntry> ImageResultsList { get; set; }
+    public ImageRolls.ViewModels.ImageRollEntry GradingStandard { get; private set; }
     private ImageRolls.Databases.ImageResults ImageResultsDatabase { get; set; }
 
-    public Node Node { get; private set; }
+    public V275.ViewModels.Node Node { get; private set; }
     //private string JobName { get; }
 
     public Controller()
@@ -63,13 +61,13 @@ public class Controller
         _ = OpenDatabases();
     }
 
-    public Controller Init(ObservableCollection<ImageResultEntry> labels, int loopCount, ImageRolls.Databases.ImageResults standardsDatabase, Node v275Node)
+    public Controller Init(ObservableCollection<ImageRolls.ViewModels.ImageResultEntry> imageResultsList, int loopCount, ImageRolls.Databases.ImageResults standardsDatabase, V275.ViewModels.Node v275Node)
     {
-        Labels = labels;
+        ImageResultsList = imageResultsList;
         LoopCount = loopCount;
         ImageResultsDatabase = standardsDatabase;
         Node = v275Node;
-        GradingStandard = Labels[0].SelectedImageRoll;
+        GradingStandard = ImageResultsList[0].SelectedImageRoll;
 
         TimeDate = DateTime.UtcNow.Ticks;
 
@@ -130,7 +128,7 @@ public class Controller
             if (session != null)
             {
                 using var transaction = session.BeginTransaction();
-                var run = new RunLedger(JsonConvert.SerializeObject(Labels[0].LabelTemplate), Node.Details.cameraMAC, Node.Product.part);
+                var run = new RunLedger(JsonConvert.SerializeObject(ImageResultsList[0].LabelTemplate), Node.Details.cameraMAC, Node.Product.part);
 
                 _ = session.Save(run);
                 transaction.Commit();
@@ -157,7 +155,7 @@ public class Controller
         var wasLoop = 0;
         for (var i = 0; i < LoopCount; i++)
         {
-            foreach (var label in Labels)
+            foreach (var label in ImageResultsList)
             {
                 if (label.V275StoredSectors.Count == 0)
                     continue;
@@ -169,7 +167,7 @@ public class Controller
                     //If running a GS1 label label then edit mode is required.
                     if (HasSequencing(label))
                         _ = await Node.Connection.SwitchToEdit();
-                    else if (Labels.Count == 1)
+                    else if (ImageResultsList.Count == 1)
                         CurrentLoopCount = 1;
 
                     wasLoop = CurrentLoopCount;
@@ -207,10 +205,10 @@ public class Controller
                 //this must occur before the print
                 CurrentLabelCount++;
 
-                label.PrintCommand.Execute(null);
+                label.V275ProcessCommand.Execute(null);
 
                 var start = DateTime.Now;
-                while (label.IsWorking)
+                while (label.IsV275Working)
                 {
                     if (RequestedState == RunStates.STOPPED)
                     {
@@ -229,7 +227,7 @@ public class Controller
                     Thread.Sleep(1);
                 };
 
-                if (label.IsFaulted)
+                if (label.IsV275Faulted)
                 {
                     Logger.Error("Label action faulted.");
                     LedgerEntry.Completed = -1;
@@ -296,7 +294,7 @@ public class Controller
         return true;
     }
 
-    private static bool HasSequencing(ImageResultEntry label)
+    private static bool HasSequencing(ImageRolls.ViewModels.ImageResultEntry label)
     {
         foreach (var sect in label.LabelTemplate.sectors)
         {

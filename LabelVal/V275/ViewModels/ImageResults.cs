@@ -1,7 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
+using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Messages;
-using LabelVal.Utilities;
+using LabelVal.V5.ViewModels;
 using LabelVal.WindowViewModels;
 using MahApps.Metro.Controls.Dialogs;
 using Newtonsoft.Json;
@@ -13,7 +14,7 @@ using System.IO;
 using System.Threading.Tasks;
 using V275_REST_lib.Models;
 
-namespace LabelVal.ImageRolls.ViewModels;
+namespace LabelVal.V275.ViewModels;
 public partial class ImageResults : ObservableRecipient,
     IRecipient<ImageRollMessages.SelectedImageRollChanged>,
     IRecipient<NodeMessages.SelectedNodeChanged>,
@@ -30,23 +31,16 @@ public partial class ImageResults : ObservableRecipient,
         public int RepeatNumber { get; set; } = -1;
     }
 
-    //public partial class AllImageResults : ObservableObject
-    //{
-    //    [ObservableProperty] private V275.ViewModels.ImageResultEntry v275_ImageResult;
-    //    [ObservableProperty] private ImageResultEntry source_ImageResult;
-
-    //}
-
     [ObservableProperty] private ObservableCollection<ImageResultEntry> imageResultsList = [];
     public Dictionary<int, Repeat> Repeats { get; } = [];
 
-    [ObservableProperty] private V275.ViewModels.Node selectedNode;
+    [ObservableProperty] private Node selectedNode;
     [ObservableProperty] private ImageRollEntry selectedImageRoll;
     partial void OnSelectedImageRollChanged(ImageRollEntry value) => LoadImageResultsList();
 
     [ObservableProperty] private PrinterSettings selectedPrinter;
-    [ObservableProperty] private Databases.ImageResults selectedDatabase;
-    [ObservableProperty] private V5.ViewModels.Scanner selectedScanner;
+    [ObservableProperty] private ImageRolls.Databases.ImageResults selectedDatabase;
+    [ObservableProperty] private Scanner selectedScanner;
 
     public RunViewModel RunViewModel { get; } = new RunViewModel();
     private int LoopCount => App.Settings.GetValue(nameof(RunViewModel.LoopCount), 1);
@@ -79,22 +73,7 @@ public partial class ImageResults : ObservableRecipient,
     public void Receive(ImageRollMessages.SelectedImageRollChanged message) => SelectedImageRoll = message.Value;
     public void Receive(PrinterMessages.SelectedPrinterChanged message) => SelectedPrinter = message.Value;
     public void Receive(DatabaseMessages.SelectedDatabseChanged message) => SelectedDatabase = message.Value;
-    public void Receive(ScannerMessages.SelectedScannerChanged message)
-    {
-        if(SelectedScanner != null)
-        {
-            SelectedScanner.ScannerController.ImageUpdate -= ScannerController_ImageUpdate;
-            SelectedScanner.ScannerController.ResultUpdate -= ScannerController_ResultUpdate;
-        }
-
-        SelectedScanner = message.Value;
-
-        if (SelectedScanner != null)
-        {
-            SelectedScanner.ScannerController.ImageUpdate += ScannerController_ImageUpdate;
-            SelectedScanner.ScannerController.ResultUpdate += ScannerController_ResultUpdate;
-        }
-    }
+    public void Receive(ScannerMessages.SelectedScannerChanged message) => SelectedScanner = message.Value;
     public void Receive(SystemMessages.StatusMessage message)
     {
         switch (message.Value)
@@ -109,6 +88,7 @@ public partial class ImageResults : ObservableRecipient,
                 break;
         }
     }
+
     private void SendStatusMessage(string message, SystemMessages.StatusMessageType type) => WeakReferenceMessenger.Default.Send(new SystemMessages.StatusMessage(this, type, message));
 
     public void ClearImageResultsList()
@@ -116,7 +96,7 @@ public partial class ImageResults : ObservableRecipient,
         foreach (var lab in ImageResultsList)
         {
             //lab.Clear();
-            lab.V275ProcessImage -= V275ProcessImage;
+            lab.Printing -= ImageResult_Printing;
             lab.StatusChanged -= ImageResult_StatusChanged;
             //ImageResultsList.Remove(lab);
         }
@@ -146,19 +126,17 @@ public partial class ImageResults : ObservableRecipient,
 
             var tmp = new ImageResultEntry(img, comment, SelectedNode, SelectedImageRoll, SelectedDatabase, SelectedScanner);
 
-            tmp.V275ProcessImage += V275ProcessImage;
-            tmp.V5ProcessImage += V5ProcessImage;
+            tmp.Printing += ImageResult_Printing;
             tmp.StatusChanged += ImageResult_StatusChanged;
 
             ImageResultsList.Add(tmp);
         }
     }
 
-    #region V275 Image Results
     private ImageResultEntry PrintingImageResult { get; set; } = null;
 
     private bool WaitForRepeat;
-    private async void V275ProcessImage(ImageResultEntry imageResults, string type)
+    private async void ImageResult_Printing(ImageResultEntry label, string type)
     {
         if (SelectedNode.IsSimulator)
         {
@@ -183,7 +161,7 @@ public partial class ImageResults : ObservableRecipient,
                     if (verRes > 0)
                     {
                         ImageResult_StatusChanged("Could not delete all simulator images.");
-                        imageResults.IsV275Working = false;
+                        label.IsWorking = false;
                         return;
                     }
                     else
@@ -209,19 +187,19 @@ public partial class ImageResults : ObservableRecipient,
 
                 if (type == "source")
                 {
-                    if (!sim.CopyImage(imageResults.SourceImagePath, prepend))
+                    if (!sim.CopyImage(label.SourceImagePath, prepend))
                     {
                         ImageResult_StatusChanged("Could not copy the image to the simulator images directory.");
-                        imageResults.IsV275Working = false;
+                        label.IsWorking = false;
                         return;
                     }
                 }
                 else
                 {
-                    if (!sim.SaveImage(imageResults.SourceImagePath, imageResults.V275Image))
+                    if (!sim.SaveImage(label.SourceImagePath, label.V275Image))
                     {
                         ImageResult_StatusChanged("Could not save the image to the simulator images directory.");
-                        imageResults.IsV275Working = false;
+                        label.IsWorking = false;
                         return;
                     }
                 }
@@ -231,20 +209,20 @@ public partial class ImageResults : ObservableRecipient,
                     if (!await SelectedNode.Connection.Commands.TriggerSimulator())
                     {
                         SendStatusMessage("Error triggering the simulator.", SystemMessages.StatusMessageType.Error);
-                        imageResults.IsV275Working = false;
+                        label.IsWorking = false;
                         return;
                     }
                 }
 
                 if (!SelectedNode.IsLoggedIn_Control)
                 {
-                    imageResults.IsV275Working = false;
+                    label.IsWorking = false;
                 }
             }
             catch (Exception ex)
             {
                 ImageResult_StatusChanged(ex.Message);
-                imageResults.IsV275Working = false;
+                label.IsWorking = false;
                 Logger.Error(ex);
             }
         }
@@ -257,19 +235,19 @@ public partial class ImageResults : ObservableRecipient,
                 if (RunViewModel.State != Run.Controller.RunStates.IDLE)
                 {
                     var data = $"Loop {RunViewModel.RunController.CurrentLoopCount} : {RunViewModel.RunController.CurrentLabelCount}";
-                    printer.Print(imageResults.SourceImagePath, 1, SelectedPrinter.PrinterName, data);
+                    printer.Print(label.SourceImagePath, 1, SelectedPrinter.PrinterName, data);
                 }
                 else
-                    printer.Print(imageResults.SourceImagePath, imageResults.PrintCount, SelectedPrinter.PrinterName, "");
+                    printer.Print(label.SourceImagePath, label.PrintCount, SelectedPrinter.PrinterName, "");
 
                 if (!SelectedNode.IsLoggedIn_Control)
-                    imageResults.IsV275Working = false;
+                    label.IsWorking = false;
             });
         }
 
         if (SelectedNode.IsLoggedIn_Control)
         {
-            PrintingImageResult = imageResults;
+            PrintingImageResult = label;
 
             _ = Task.Run(() =>
             {
@@ -284,8 +262,8 @@ public partial class ImageResults : ObservableRecipient,
 
                         PrintingImageResult = null;
 
-                        imageResults.IsV275Faulted = true;
-                        imageResults.IsV275Working = false;
+                        label.IsFaulted = true;
+                        label.IsWorking = false;
                         return;
                     }
                 }
@@ -302,8 +280,8 @@ public partial class ImageResults : ObservableRecipient,
 
                 PrintingImageResult = null;
 
-                imageResults.IsV275Faulted = true;
-                imageResults.IsV275Working = false;
+                label.IsFaulted = true;
+                label.IsWorking = false;
             }
         }
 
@@ -355,13 +333,13 @@ public partial class ImageResults : ObservableRecipient,
             return;
         }
 
-        Repeats[repeat].ImageResult.IsV275Working = false;
+        Repeats[repeat].ImageResult.IsWorking = false;
         Repeats.Clear();
     }
     private void ProcessRepeatFault(int repeat)
     {
-        Repeats[repeat].ImageResult.IsV275Faulted = true;
-        Repeats[repeat].ImageResult.IsV275Working = false;
+        Repeats[repeat].ImageResult.IsFaulted = true;
+        Repeats[repeat].ImageResult.IsWorking = false;
 
         Repeats.Clear();
     }
@@ -400,46 +378,6 @@ public partial class ImageResults : ObservableRecipient,
             if (ev.data.toState == "editing" || (ev.data.toState == "running" && ev.data.fromState != "paused"))
                 Repeats.Clear();
     }
-    #endregion
-
-    #region V5 Image Results
-    private ImageResultEntry V5ProcessingImageResult { get; set; } = null;
-
-    private void V5ProcessImage(ImageResultEntry imageResults, string type)
-    {
-        V5ProcessingImageResult = imageResults;
-
-    }
-
-    private void ScannerController_ResultUpdate(Newtonsoft.Json.Linq.JObject json)
-    {
-        if (V5ProcessingImageResult == null)
-            return;
-
-        if (json == null)
-        {
-            return;
-        }
-    }
-    private async void ScannerController_ImageUpdate(Newtonsoft.Json.Linq.JObject json)
-    {
-        if (V5ProcessingImageResult == null)
-            return;
-
-        if (json == null)
-        {
-            V5ProcessingImageResult.V5Image = null;
-            return;
-        }
-
-        try
-        {
-            V5ProcessingImageResult.V5Image = ImageUtilities.ConvertToPng(await SelectedScanner.ScannerController.GetImageFullRes(json));
-            return;
-        }
-        catch { V5ProcessingImageResult.V5Image = null; }
-    }
-    #endregion
 
     private async Task StartRun()
     {
@@ -459,5 +397,5 @@ public partial class ImageResults : ObservableRecipient,
         return true;
     }
 
- 
+
 }

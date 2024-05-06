@@ -46,7 +46,7 @@
             </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
 
-        <CollectionViewSource x:Key="LabelsDataList" Source="{Binding Labels}">
+        <CollectionViewSource x:Key="ImageResultsDataList" Source="{Binding ImageResultsList}">
             <CollectionViewSource.SortDescriptions>
                 <componentmodel:SortDescription PropertyName="Run.SourceImageOrder" Direction="Ascending"/>
             </CollectionViewSource.SortDescriptions>
@@ -303,7 +303,7 @@
                         </Label>
 
                         <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
-                            <Button x:Name="BtnSortLabels" Click="BtnSortLabels_Click" Margin="3"
+                            <Button Click="BtnSortImageResultsList_Click" Margin="3"
                                 ToolTip="Sort">
                                 <IconPacks:Material Kind="FormatListGroup"/>
                             </Button>
@@ -381,7 +381,7 @@
             </StackPanel>
             <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto">
                 <StackPanel>
-                    <ItemsControl ItemsSource="{Binding Source={StaticResource ResourceKey=LabelsDataList}}" x:Name="RunList">
+                    <ItemsControl ItemsSource="{Binding Source={StaticResource ResourceKey=ImageResultsDataList}}" x:Name="RunList">
                         <!--<ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <ListView/>

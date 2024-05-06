@@ -149,7 +149,7 @@ public partial class LabelViewModel : ObservableObject
         if (string.IsNullOrEmpty(path)) return;
         try
         {
-            if (par == "repeat")
+            if (par == "stored")
             {
                 var bmp = ImageUtilities.ConvertToBmp(Result.RepeatImage);
                 _ = SaveImageBytesToFile(path, bmp);

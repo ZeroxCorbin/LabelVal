@@ -51,10 +51,10 @@ public partial class View : MetroWindow
     {
         InitializeComponent();
 
-        if (FindResource("LabelsDataList") is CollectionViewSource viewSource)
+        if (FindResource("ImageResultsDataList") is CollectionViewSource viewSource)
         {
             viewSource.GroupDescriptions.Clear();
-            viewSource.GroupDescriptions.Add(new PropertyGroupDescription(App.Settings.GetValue("LabelsDataList_Group", "Run.LoopCount")));
+            viewSource.GroupDescriptions.Add(new PropertyGroupDescription(App.Settings.GetValue("ImageResultsDataList_Group", "Run.LoopCount")));
         }
 
         if (FindResource("RunEntriesDataList") is CollectionViewSource viewSource1)
@@ -84,20 +84,20 @@ public partial class View : MetroWindow
         }
     }
 
-    private void BtnSortLabels_Click(object sender, RoutedEventArgs e)
+    private void BtnSortImageResultsList_Click(object sender, RoutedEventArgs e)
     {
-        if (FindResource("LabelsDataList") is CollectionViewSource viewSource)
+        if (FindResource("ImageResultsDataList") is CollectionViewSource viewSource)
             if (((PropertyGroupDescription)viewSource.GroupDescriptions[0]).PropertyName == "Run.LoopCount")
             {
                 viewSource.GroupDescriptions.Clear();
                 viewSource.GroupDescriptions.Add(new PropertyGroupDescription("Run.SourceImageUID"));
-                App.Settings.SetValue("LabelsDataList_Group", "Run.SourceImageUID");
+                App.Settings.SetValue("ImageResultsDataList_Group", "Run.SourceImageUID");
             }
             else
             {
                 viewSource.GroupDescriptions.Clear();
                 viewSource.GroupDescriptions.Add(new PropertyGroupDescription("Run.LoopCount"));
-                App.Settings.SetValue("LabelsDataList_Group", "Run.LoopCount");
+                App.Settings.SetValue("ImageResultsDataList_Group", "Run.LoopCount");
             }
     }
 

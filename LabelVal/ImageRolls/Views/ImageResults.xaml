@@ -7,7 +7,7 @@
              mc:Ignorable="d" >
     
     <ScrollViewer HorizontalScrollBarVisibility="Auto">
-        <ItemsControl ItemsSource="{Binding Labels}">
+        <ItemsControl ItemsSource="{Binding ImageResultsList}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <local:ImageResultEntry />

@@ -26,14 +26,14 @@ namespace LabelVal.Run.ViewModels
         {
             if (value != null && !value.RunDBMissing)
             {
-                Labels.Clear();
+                ImageResultsList.Clear();
                 _ = Task.Run(() => LoadRun());
             }
             else
-                Labels.Clear();
+                ImageResultsList.Clear();
         }
 
-        public ObservableCollection<LabelViewModel> Labels { get; } = [];
+        public ObservableCollection<LabelViewModel> ImageResultsList { get; } = [];
 
 
         private IDialogCoordinator dialogCoordinator;
@@ -114,7 +114,7 @@ namespace LabelVal.Run.ViewModels
                 {
                     foreach (var run in runs)
                     {
-                        Labels.Add(new LabelViewModel(run, SelectedRunEntry));
+                        ImageResultsList.Add(new LabelViewModel(run, SelectedRunEntry));
                     }
                 });
         }

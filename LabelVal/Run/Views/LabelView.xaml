@@ -217,7 +217,7 @@
             <Button Grid.Row="0" Grid.Column="4" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5,0"
                         Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
                         Command="{Binding SaveCommand}"
-                        CommandParameter="repeat" BorderThickness="0">
+                        CommandParameter="stored" BorderThickness="0">
                 <Button.Style>
 
 

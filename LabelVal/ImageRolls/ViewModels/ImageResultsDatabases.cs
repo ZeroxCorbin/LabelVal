@@ -13,15 +13,6 @@ public partial class ImageResultsDatabases : ObservableObject
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-    //public class StandardsDBFile
-    //{
-    //    public string FileName { get; set; }
-    //    public string FilePath { get; set; }
-
-    //    public bool IsLocked { get; set; }
-    //    public bool IsPermLocked { get; set; }
-    //}
-
     public ObservableCollection<Databases.ImageResults> Databases { get; } = [];
 
     [ObservableProperty] private Databases.ImageResults selectedDatabase;
@@ -63,7 +54,6 @@ public partial class ImageResultsDatabases : ObservableObject
 
                 Databases.Add(new Databases.ImageResults(file));
             }
-
         }
 
         foreach (var file in Directory.EnumerateFiles(App.ImageResultsDatabaseRoot))
@@ -83,11 +73,8 @@ public partial class ImageResultsDatabases : ObservableObject
         {
             _ = db.Open();
 
-
         }
-
     }
-
     private void SelectImageResultsDatabase()
     {
         var res = Databases.Where((a) => a.FilePath == SelectedDatabaseFilePath);
@@ -131,13 +118,6 @@ public partial class ImageResultsDatabases : ObservableObject
         //{
         SelectedDatabase.IsLocked = !SelectedDatabase.IsLocked;
         //}
-
-    }
-
-    [RelayCommand]
-    private void ConvertStandardsDatabase()
-    {
-        var res = SelectedDatabase.AllTableNames();
 
     }
 }

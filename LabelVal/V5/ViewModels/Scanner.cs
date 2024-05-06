@@ -29,34 +29,34 @@ namespace LabelVal.V5.ViewModels
     {
         private static readonly Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public static V5_REST_Lib.Controller ScannerController { get; } = new();
-        public static V5_REST_Lib.FTP.FTPClient FTPClient { get; } = new();
+        public V5_REST_Lib.Controller ScannerController { get; } = new();
+        public V5_REST_Lib.FTP.FTPClient FTPClient { get; } = new();
 
 
-        [ObservableProperty][property: JsonProperty] private static string host = ScannerController.Host;
+        [ObservableProperty][property: JsonProperty] private static string host;
         partial void OnHostChanged(string value) { ScannerController.Host = value; }
 
 
-        [ObservableProperty][property: JsonProperty] private static int port = ScannerController.Port;
+        [ObservableProperty][property: JsonProperty] private static int port;
         partial void OnPortChanged(int value) { ScannerController.Port = value; }
 
         [ObservableProperty][property: JsonProperty] private static bool fullResImages = true;
 
 
 
-        [ObservableProperty][property: JsonProperty] private static string fTPUsername = FTPClient.Username;
+        [ObservableProperty][property: JsonProperty] private static string fTPUsername;
         partial void OnFTPUsernameChanged(string value) { FTPClient.Username = value; }
 
-        [ObservableProperty][property: JsonProperty] private static string fTPPassword = FTPClient.Password;
+        [ObservableProperty][property: JsonProperty] private static string fTPPassword;
         partial void OnFTPPasswordChanged(string value) { FTPClient.Password = value; }
 
-        [ObservableProperty][property: JsonProperty] private static string fTPHost = FTPClient.Host;
+        [ObservableProperty][property: JsonProperty] private static string fTPHost;
         partial void OnFTPHostChanged(string value) { FTPClient.Host = value; }
 
-        [ObservableProperty][property: JsonProperty] private static int fTPPort = FTPClient.Port;
+        [ObservableProperty][property: JsonProperty] private static int fTPPort;
         partial void OnFTPPortChanged(int value) { FTPClient.Port = value; }
 
-        [ObservableProperty][property: JsonProperty] private static string fTPRemotePath = FTPClient.RemotePath;
+        [ObservableProperty][property: JsonProperty] private static string fTPRemotePath;
         partial void OnFTPRemotePathChanged(string value) { FTPClient.RemotePath = value; }
 
 
@@ -103,8 +103,8 @@ namespace LabelVal.V5.ViewModels
 
         public static ObservableCollection<CameraDetails> AvailableCameras => V5_REST_Lib.Cameras.Cameras.Available;
 
-        [ObservableProperty][property: JsonProperty] private CameraDetails? selectedCamera;
-        partial void OnSelectedCameraChanged(CameraDetails? value) => _ = App.Current.Dispatcher.BeginInvoke(() => { ImageFocusRegionOverlay = CreateFocusRegionOverlay(); });
+        [ObservableProperty][property: JsonProperty] private CameraDetails selectedCamera;
+        partial void OnSelectedCameraChanged(CameraDetails value) => _ = App.Current.Dispatcher.BeginInvoke(() => { ImageFocusRegionOverlay = CreateFocusRegionOverlay(); });
 
 
         [ObservableProperty][property: JsonProperty] private double quickSet_ImagePercent = 0.33d;
@@ -142,6 +142,15 @@ namespace LabelVal.V5.ViewModels
             ScannerController.ResultUpdate += ScannerController_ResultUpdate;
 
             SelectedCamera = Cameras.Available.FirstOrDefault();
+
+            Host = ScannerController.Host;
+            Port = ScannerController.Port;
+
+            FTPUsername = FTPClient.Username;
+            FTPPassword = FTPClient.Password;
+            FTPHost = FTPClient.Host;
+            FTPPort = FTPClient.Port;
+            FTPRemotePath = FTPClient.RemotePath;
             //App.RunController.StateChanged += RunController_StateChanged;
         }
 
@@ -252,7 +261,7 @@ namespace LabelVal.V5.ViewModels
 
             DrawingGroup drwGroup = new();
 
-            //Draw the image outline the same size as the repeat image
+            //Draw the image outline the same size as the stored image
             GeometryDrawing border = new()
             {
                 Geometry = new RectangleGeometry(new System.Windows.Rect(0, 0, Image.PixelWidth, Image.PixelHeight)),
@@ -432,7 +441,7 @@ namespace LabelVal.V5.ViewModels
             if (QuickSet_Photometry == null || Image == null)
                 return null;
 
-            //Draw the image outline the same size as the repeat image
+            //Draw the image outline the same size as the stored image
             GeometryDrawing border = new()
             {
                 Geometry = new RectangleGeometry(new System.Windows.Rect(0, 0, Image.PixelWidth, Image.PixelHeight)),

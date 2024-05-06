@@ -104,6 +104,13 @@ namespace LabelVal.ImageRolls.Databases
         public List<V275Result> SelectAll_V275Result() => Connection?.Query<V275Result>("select * from V275Result");
         public int? Delete_V275Result(string imageRollName, string imageUID) => Connection?.Table<V275Result>().Delete(v => v.SourceImageUID == imageUID && v.ImageRollName == imageRollName);
 
+
+        public int? InsertOrReplace_V5Result(V5Result result) => Connection?.InsertOrReplace(result);
+        public bool Exists_V5Result(string imageRollName, string imageUID) => Connection?.Table<V5Result>().Where(v => v.SourceImageUID == imageUID && v.ImageRollName == imageRollName).Count() > 0;
+        public V5Result Select_V5Result(string imageRollName, string imageUID) => Connection?.Table<V5Result>().Where(v => v.SourceImageUID == imageUID && v.ImageRollName == imageRollName).FirstOrDefault();
+        public List<V5Result> SelectAll_V5Result() => Connection?.Query<V5Result>("select * from V5Result");
+        public int? Delete_V5Result(string imageRollName, string imageUID) => Connection?.Table<V5Result>().Delete(v => v.SourceImageUID == imageUID && v.ImageRollName == imageRollName);
+
         public List<string> AllTableNames()
         {
             using var con = new System.Data.SQLite.SQLiteConnection($"Data Source={FilePath}; Version=3;");
