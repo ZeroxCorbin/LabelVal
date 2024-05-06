@@ -19,6 +19,9 @@ public partial class Printer : ObservableObject
 
     private string SelectedPrinterName { get => App.Settings.GetValue(nameof(SelectedPrinterName), ""); set => App.Settings.SetValue(nameof(SelectedPrinterName), value); }
 
+    [ObservableProperty] private int printCount = App.Settings.GetValue<int>(nameof(PrintCount), 1, true);
+    partial void OnPrintCountChanged(int value) => App.Settings.SetValue(nameof(PrintCount), value);
+
     public Printer() => LoadPrinters();
 
     private void LoadPrinters()

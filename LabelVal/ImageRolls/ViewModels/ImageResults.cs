@@ -24,6 +24,8 @@ public partial class ImageResults : ObservableRecipient,
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
+    private int PrintCount => App.Settings.GetValue<int>(nameof(PrintCount));
+
     public class Repeat
     {
         public ImageResultEntry ImageResult { get; set; }
@@ -160,6 +162,19 @@ public partial class ImageResults : ObservableRecipient,
     private bool WaitForRepeat;
     private async void V275ProcessImage(ImageResultEntry imageResults, string type)
     {
+        if(SelectedNode == null)
+        {
+            ImageResult_StatusChanged("No node selected.");
+
+            var printer = new Printer.Controller();
+
+            printer.Print(imageResults.SourceImagePath, PrintCount, SelectedPrinter.PrinterName, "");
+
+            imageResults.IsV275Working = false;
+
+            return;
+        }
+
         if (SelectedNode.IsSimulator)
         {
             try
@@ -260,7 +275,7 @@ public partial class ImageResults : ObservableRecipient,
                     printer.Print(imageResults.SourceImagePath, 1, SelectedPrinter.PrinterName, data);
                 }
                 else
-                    printer.Print(imageResults.SourceImagePath, imageResults.PrintCount, SelectedPrinter.PrinterName, "");
+                    printer.Print(imageResults.SourceImagePath, PrintCount, SelectedPrinter.PrinterName, "");
 
                 if (!SelectedNode.IsLoggedIn_Control)
                     imageResults.IsV275Working = false;
@@ -307,7 +322,7 @@ public partial class ImageResults : ObservableRecipient,
             }
         }
 
-        else
+        else if(SelectedNode.IsSimulator)
             _ = await SelectedNode.Connection.SimulatorTogglePrint();
     }
     private async void ProcessRepeat(int repeat)

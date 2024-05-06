@@ -52,8 +52,6 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
     public Job RepeatTemplate { get; set; }
     public V275_REST_lib.Models.Report RepeatReport { get; private set; }
 
-    [ObservableProperty] private int printCount = 1;
-
     [ObservableProperty] private ObservableCollection<Sectors> v275StoredSectors = [];
     [ObservableProperty] private ObservableCollection<Sectors> v275CurrentSectors = [];
     [ObservableProperty] private ObservableCollection<SectorDifferences> v275DiffSectors = [];
@@ -213,8 +211,9 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
     [RelayCommand]
     private void V275Process(string imageType)
     {
-        IsV275Working = true;
-        IsV275Faulted = false;
+
+            IsV275Working = true;
+            IsV275Faulted = false;
 
         BringIntoView?.Invoke();
         V275ProcessImage?.Invoke(this, imageType);

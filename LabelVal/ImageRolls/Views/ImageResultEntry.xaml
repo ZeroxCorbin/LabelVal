@@ -85,10 +85,10 @@
                             </Style>
                         </DockPanel.Style>
 
-                        <Button Command="{Binding PrintCommand}" CommandParameter="source" ToolTip="Print Source Image" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0"
+                        <Button Command="{Binding V275ProcessCommand}" CommandParameter="source" ToolTip="Print Source Image" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0"
                                 md:ButtonProgressAssist.IsIndeterminate="True"
                                 md:ButtonProgressAssist.Value="-1"
-                                md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsWorking}">
+                                md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV275Working}">
 
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
@@ -111,22 +111,6 @@
 
 
                         </Button>
-
-                        <mah:NumericUpDown Value="{Binding PrintCount}" Minimum="1" Maximum="100" Interval="1" Margin="0" BorderThickness="0"
-                                        IsEnabled="{Binding SelectedNode.IsNotLoggedIn_Control}">
-                            <mah:NumericUpDown.Style>
-                                <Style TargetType="{x:Type mah:NumericUpDown}">
-                                    <Setter Property="Visibility" Value="Visible"/>
-
-                                    <Style.Triggers>
-
-                                        <DataTrigger Binding="{Binding SelectedNode.IsSimulator}" Value="True">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </mah:NumericUpDown.Style>
-                        </mah:NumericUpDown>
 
                     </DockPanel>
                     <!--<DockPanel VerticalAlignment="Center">
@@ -258,11 +242,11 @@
                                 <IconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
                             </Button>
 
-                            <Button Command="{Binding PrintCommand}" CommandParameter="stored"
+                            <Button Command="{Binding V275ProcessCommand}" CommandParameter="stored"
                                     ToolTip="Process Repeat Image" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0"
                                     md:ButtonProgressAssist.IsIndeterminate="True"
                                     md:ButtonProgressAssist.Value="-1"
-                                    md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsWorking}">
+                                    md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV275Working}">
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -651,11 +635,11 @@
                                 <IconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
                             </Button>
 
-                            <Button Command="{Binding PrintCommand}" CommandParameter="stored"
+                            <Button Command="{Binding V5ProcessCommand}" CommandParameter="stored"
                                     ToolTip="Process Repeat Image" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0"
                                     md:ButtonProgressAssist.IsIndeterminate="True"
                                     md:ButtonProgressAssist.Value="-1"
-                                    md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsWorking}">
+                                    md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV5Working}">
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
                                         <Setter Property="Visibility" Value="Collapsed"/>

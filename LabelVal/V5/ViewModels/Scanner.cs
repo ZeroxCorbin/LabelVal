@@ -59,6 +59,8 @@ namespace LabelVal.V5.ViewModels
         [ObservableProperty][property: JsonProperty] private static string fTPRemotePath;
         partial void OnFTPRemotePathChanged(string value) { FTPClient.RemotePath = value; }
 
+        
+        [ObservableProperty] [property: JsonProperty] private  bool isSimulator;
 
         [JsonProperty]
         public int RepeatedTriggerDelay
