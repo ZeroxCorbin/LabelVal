@@ -36,7 +36,7 @@
                                 </Setter.Value>
                             </Setter>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsWSConnected}" Value="True">
+                                <DataTrigger Binding="{Binding IsConnected}" Value="True">
                                     <Setter Property="Content">
                                         <Setter.Value>
                                             <iconPacks:Modern Kind="Disconnect" Height="16" Width="16"/>
@@ -76,7 +76,7 @@
                                     <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                         <Setter Property="IsEnabled" Value="True"/>
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsWSConnected}" Value="True">
+                                            <DataTrigger Binding="{Binding IsConnected}" Value="True">
                                                 <Setter Property="IsEnabled" Value="False"/>
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -90,7 +90,7 @@
                                     <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                         <Setter Property="IsEnabled" Value="True"/>
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsWSConnected}" Value="True">
+                                            <DataTrigger Binding="{Binding IsConnected}" Value="True">
                                                 <Setter Property="IsEnabled" Value="False"/>
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -104,7 +104,7 @@
                                     <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                         <Setter Property="IsEnabled" Value="True"/>
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsWSConnected}" Value="True">
+                                            <DataTrigger Binding="{Binding IsConnected}" Value="True">
                                                 <Setter Property="IsEnabled" Value="False"/>
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -137,7 +137,7 @@
                                     <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                         <Setter Property="IsEnabled" Value="True"/>
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsWSConnected}" Value="True">
+                                            <DataTrigger Binding="{Binding IsConnected}" Value="True">
                                                 <Setter Property="IsEnabled" Value="False"/>
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -151,7 +151,7 @@
                                     <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                         <Setter Property="IsEnabled" Value="True"/>
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsWSConnected}" Value="True">
+                                            <DataTrigger Binding="{Binding IsConnected}" Value="True">
                                                 <Setter Property="IsEnabled" Value="False"/>
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -165,7 +165,7 @@
                                     <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                         <Setter Property="IsEnabled" Value="True"/>
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsWSConnected}" Value="True">
+                                            <DataTrigger Binding="{Binding IsConnected}" Value="True">
                                                 <Setter Property="IsEnabled" Value="False"/>
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -179,7 +179,7 @@
                                     <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                         <Setter Property="IsEnabled" Value="True"/>
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsWSConnected}" Value="True">
+                                            <DataTrigger Binding="{Binding IsConnected}" Value="True">
                                                 <Setter Property="IsEnabled" Value="False"/>
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -196,7 +196,7 @@
                                     <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                         <Setter Property="IsEnabled" Value="True"/>
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsWSConnected}" Value="True">
+                                            <DataTrigger Binding="{Binding IsConnected}" Value="True">
                                                 <Setter Property="IsEnabled" Value="False"/>
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -663,7 +663,7 @@
                 </DockPanel>
             </Expander>
 
-            <CheckBox IsChecked="{Binding IsSimulator}" Content="Simulator"/>
+            <!--<CheckBox IsChecked="{Binding IsSimulator}" Content="Simulator"/>-->
         </DockPanel>
 
 

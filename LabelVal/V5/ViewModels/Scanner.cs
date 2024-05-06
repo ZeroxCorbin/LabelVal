@@ -21,6 +21,7 @@ using Newtonsoft.Json.Linq;
 using NLog;
 using V5_REST_Lib.Cameras;
 using V5_REST_Lib.Models;
+using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace LabelVal.V5.ViewModels
 {
@@ -60,7 +61,7 @@ namespace LabelVal.V5.ViewModels
         partial void OnFTPRemotePathChanged(string value) { FTPClient.RemotePath = value; }
 
         
-        [ObservableProperty] [property: JsonProperty] private  bool isSimulator;
+        [ObservableProperty] private bool isSimulator;
 
         [JsonProperty]
         public int RepeatedTriggerDelay
@@ -83,15 +84,15 @@ namespace LabelVal.V5.ViewModels
         // private TestViewModel TestViewModel { get; }
 
         [ObservableProperty] private bool isEventWSConnected;
-        partial void OnIsEventWSConnectedChanged(bool value) => OnPropertyChanged(nameof(IsWSConnected));
+        partial void OnIsEventWSConnectedChanged(bool value) => OnPropertyChanged(nameof(IsConnected));
 
         [ObservableProperty] private bool isImageWSConnected;
-        partial void OnIsImageWSConnectedChanged(bool value) => OnPropertyChanged(nameof(IsWSConnected));
+        partial void OnIsImageWSConnectedChanged(bool value) => OnPropertyChanged(nameof(IsConnected));
 
         [ObservableProperty] private bool isResultWSConnected;
-        partial void OnIsResultWSConnectedChanged(bool value) => OnPropertyChanged(nameof(IsWSConnected));
+        partial void OnIsResultWSConnectedChanged(bool value) => OnPropertyChanged(nameof(IsConnected));
 
-        public bool IsWSConnected { get => IsEventWSConnected || IsImageWSConnected || IsResultWSConnected; }
+        public bool IsConnected { get => IsEventWSConnected || IsImageWSConnected || IsResultWSConnected; }
 
         [ObservableProperty] private string eventMessages;
         [ObservableProperty] private string explicitMessages;
@@ -142,6 +143,7 @@ namespace LabelVal.V5.ViewModels
             ScannerController.ScannerModeChanged += ScannerController_ScannerModeChanged;
             ScannerController.ImageUpdate += ScannerController_ImageUpdate;
             ScannerController.ResultUpdate += ScannerController_ResultUpdate;
+            ScannerController.ConfigUpdate += ScannerController_ConfigUpdate;
 
             SelectedCamera = Cameras.Available.FirstOrDefault();
 
@@ -156,13 +158,27 @@ namespace LabelVal.V5.ViewModels
             //App.RunController.StateChanged += RunController_StateChanged;
         }
 
+        private async void ScannerController_ConfigUpdate(JObject json)
+        {
+            var res = await ScannerController.GetConfig();
+            if (res.OK)
+            {
+                var config = (V5_REST_Lib.Models.Config)res.Object;
+                IsSimulator = config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource != null;
+            }
+        }
+
         //private void RunController_StateChanged(RunController.States state, string msg)
         //{
         //    if (state == RunController.States.Running)
         //        stop = true;
         //}
 
-        private void ScannerController_ScannerModeChanged(V5_REST_Lib.Controller.ScannerModes mode) => ScannerMode = mode;
+        private void ScannerController_ScannerModeChanged(V5_REST_Lib.Controller.ScannerModes mode)
+        {
+
+            ScannerMode = mode;
+        }
         private void ScannerController_ResultUpdate(JObject json)
         {
             if (json != null)
@@ -242,6 +258,8 @@ namespace LabelVal.V5.ViewModels
             IsEventWSConnected = eventWS;
             IsResultWSConnected = resultsWS;
             IsImageWSConnected = imageWS;
+
+            ScannerController_ConfigUpdate(null);
         }
 
         private void CheckOverlay()
@@ -363,11 +381,11 @@ namespace LabelVal.V5.ViewModels
             //    {
             //        if (!isRepeat)
             //        {
-            //            DrawModuleGrid(g, LabelTemplate.sectors, V275StoredSectors);
+            //            DrawModuleGrid(g, V275StoredTemplate.sectors, V275StoredSectors);
             //        }
             //        else
             //        {
-            //            DrawModuleGrid(g, RepeatTemplate.sectors, V275CurrentSectors);
+            //            DrawModuleGrid(g, V275CurrentTemplate.sectors, V275CurrentSectors);
             //        }
             //    }
             //}
@@ -535,7 +553,7 @@ namespace LabelVal.V5.ViewModels
             ScannerMode = V5_REST_Lib.Controller.ScannerModes.Offline;
 
            
-            if (!ScannerController.IsWSConnected)
+            if (!ScannerController.IsConnected)
                 await Task.Run(ScannerController.Connect);
             else
                 await Task.Run(ScannerController.Disconnect);

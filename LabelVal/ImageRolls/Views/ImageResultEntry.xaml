@@ -113,6 +113,34 @@
                         </Button>
 
                     </DockPanel>
+
+                    <DockPanel>
+                        <DockPanel.Style>
+                            <Style TargetType="{x:Type DockPanel}">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding SelectedScanner.IsSimulator}" Value="True"/>
+                                            <Condition Binding="{Binding IsV5ImageStored}" Value="True"/>
+                                        </MultiDataTrigger.Conditions>
+
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DockPanel.Style>
+
+                        <Button Command="{Binding V5ProcessCommand}" Style="{StaticResource MaterialDesignFloatingActionDarkButton}" CommandParameter="source" ToolTip="Process Source Image" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0"
+                                md:ButtonProgressAssist.IsIndeterminate="True"
+                                md:ButtonProgressAssist.Value="-1"
+                                md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV5Working}">
+
+                            <IconPacks:PackIconMaterial Kind="CameraImage"  Margin="-1,-1,0,0" Height="14" Width="14"/>
+
+                        </Button>
+
+                    </DockPanel>
                     <!--<DockPanel VerticalAlignment="Center">
                         <TextBlock Text="{Binding Source.PixelWidth, ElementName=SourceImage}"/>
                         <TextBlock Text="x" Margin="3,0"/>
@@ -184,7 +212,7 @@
                             </TextBlock>
                         </md:Card>
 
-                        <Button Command="{Binding SaveCommand}" CommandParameter="stored" ToolTip="Save Stored Image"
+                        <Button Command="{Binding SaveCommand}" CommandParameter="v275stored" ToolTip="Save Stored Image"
                             Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
@@ -227,7 +255,7 @@
                             </DockPanel.Style>
 
 
-                            <Button Command="{Binding SaveCommand}" CommandParameter="stored" ToolTip="Save Repeat Image" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                            <Button Command="{Binding SaveCommand}" CommandParameter="v5stored" ToolTip="Save Repeat Image" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
                                         <Setter Property="Visibility" Value="Visible"/>
@@ -336,7 +364,7 @@
                                 </Button.Style>
                             </Button>
 
-                            <Button Command="{Binding LoadCommand}"  ToolTip="Load Stored" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
+                            <Button Command="{Binding V275LoadCommand}"  ToolTip="Load Stored" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
                                 <IconPacks:PackIconUnicons Kind="Edit" Margin="-1,-1,0,0" Height="14" Width="14"/>
 
                                 <Button.Style>
@@ -452,7 +480,7 @@
 
                             </Button>
 
-                            <Button Command="{Binding ReadCommand}"
+                            <Button Command="{Binding V275ReadCommand}"
                                     ToolTip="Read Results" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
 
                                 <Button.Style>
@@ -460,6 +488,9 @@
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                         <Style.Triggers>
                                             <DataTrigger Value="True" Binding="{Binding SelectedNode.IsLoggedIn_Monitor}">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                            <DataTrigger Value="True" Binding="{Binding SelectedNode.IsLoggedIn_Control}">
                                                 <Setter Property="Visibility" Value="Visible"/>
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -489,7 +520,7 @@
 
                         </DockPanel>
 
-                        <Button Click="V275SectorDetails_Click" ToolTip="View All Sector Details" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Right" Margin="3,0,3,0">
+                        <Button Click="V275CurrentSectorDetails_Click" ToolTip="View All Sector Details" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Right" Margin="3,0,3,0">
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
                                     <Setter Property="Visibility" Value="Visible"/>
@@ -585,7 +616,7 @@
                                     <Style.Triggers>
                                         <MultiDataTrigger>
                                             <MultiDataTrigger.Conditions>
-                                                <Condition Binding="{Binding SelectedNode.IsSimulator}" Value="True"/>
+                                                <Condition Binding="{Binding SelectedScanner.IsSimulator}" Value="True"/>
                                                 <Condition Binding="{Binding IsV5ImageStored}" Value="True"/>
                                             </MultiDataTrigger.Conditions>
 
@@ -609,7 +640,7 @@
                                     <Style.Triggers>
                                         <MultiDataTrigger>
                                             <MultiDataTrigger.Conditions>
-                                                <Condition Binding="{Binding SelectedNode.IsSimulator}" Value="True"/>
+                                                <Condition Binding="{Binding SelectedScanner.IsSimulator}" Value="True"/>
                                                 <Condition Binding="{Binding IsV5ImageStored}" Value="True"/>
                                             </MultiDataTrigger.Conditions>
 
@@ -646,7 +677,7 @@
                                         <Style.Triggers>
                                             <MultiDataTrigger>
                                                 <MultiDataTrigger.Conditions>
-                                                    <Condition Binding="{Binding SelectedNode.IsSimulator}" Value="True"/>
+                                                    <Condition Binding="{Binding SelectedScanner.IsSimulator}" Value="True"/>
                                                     <Condition Binding="{Binding IsV5ImageStored}" Value="True"/>
                                                 </MultiDataTrigger.Conditions>
 
@@ -729,23 +760,23 @@
                                 </Button.Style>
                             </Button>
 
-                            <Button Command="{Binding LoadCommand}"  ToolTip="Load Stored" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
+                            <Button Command="{Binding V5LoadCommand}"  ToolTip="Load Stored" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
                                 <IconPacks:PackIconUnicons Kind="Edit" Margin="-1,-1,0,0" Height="14" Width="14"/>
 
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
                                         <Setter Property="Visibility" Value="Visible"/>
                                         <Style.Triggers>
-                                            <DataTrigger Value="True" Binding="{Binding SelectedNode.IsLoggedIn_Control}">
+                                            <DataTrigger Value="True" Binding="{Binding SelectedScanner.IsLoggedIn_Control}">
                                                 <Setter Property="Visibility" Value="Visible"/>
                                             </DataTrigger>
                                             <DataTrigger Value="0" Binding="{Binding V5StoredSectors.Count}">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
-                                            <DataTrigger Value="Running" Binding="{Binding SelectedNode.Connection.V275_State}">
+                                            <DataTrigger Value="Run" Binding="{Binding SelectedScanner.ScannerMode}">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
-                                            <DataTrigger Value="Idle" Binding="{Binding SelectedNode.Connection.V275_State}">
+                                            <DataTrigger Value="Offline" Binding="{Binding SelectedScanner.ScannerMode}">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -840,14 +871,14 @@
 
                             </Button>
 
-                            <Button Command="{Binding ReadCommand}"
+                            <Button Command="{Binding V5ReadCommand}"
                                     ToolTip="Read Results" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
 
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                         <Style.Triggers>
-                                            <DataTrigger Value="True" Binding="{Binding SelectedNode.IsLoggedIn_Monitor}">
+                                            <DataTrigger Value="True" Binding="{Binding SelectedScanner.IsConnected}">
                                                 <Setter Property="Visibility" Value="Visible"/>
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -877,7 +908,7 @@
 
                         </DockPanel>
 
-                        <Button Click="V5SectorDetails_Click" ToolTip="View All Sector Details" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Right" Margin="3,0,3,0">
+                        <Button Click="V5CurrentSectorDetails_Click" ToolTip="View All Sector Details" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Right" Margin="3,0,3,0">
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
                                     <Setter Property="Visibility" Value="Visible"/>
@@ -991,18 +1022,19 @@
             </Border>
         </Popup>
 
-        <Popup x:Name="RepeatJsonPopup" StaysOpen="False">
+        <Popup x:Name="V275CurrentReportJsonPopup" StaysOpen="False">
             <Popup.Style>
                 <Style TargetType="{x:Type Popup}"/>
             </Popup.Style>
             <Border Padding="3" BorderThickness="2"
                         BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
                         Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-                <json:JsonViewer x:Name="RepeatResultJsonView" MinWidth="300"/>
+
+                <json:JsonViewer x:Name="V275CurrentReportJsonView" MinWidth="300"/>
             </Border>
         </Popup>
 
-        <Popup x:Name="SourceJsonPopup" StaysOpen="False">
+        <Popup x:Name="V275StoredJsonPopup" StaysOpen="False">
             <Popup.Style>
                 <Style TargetType="{x:Type Popup}"/>
             </Popup.Style>
@@ -1010,12 +1042,12 @@
                 <Border Padding="3" BorderThickness="2"
                             BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
                             Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-                    <json:JsonViewer x:Name="SourceJobJsonView" MinWidth="300"/>
+                    <json:JsonViewer x:Name="V275StoredTemplateJsonView" MinWidth="300"/>
                 </Border>
                 <Border Padding="3" BorderThickness="2"
                             BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
                             Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-                    <json:JsonViewer x:Name="SourceResultJsonView" MinWidth="300"/>
+                    <json:JsonViewer x:Name="V275StoredReportJsonView" MinWidth="300"/>
                 </Border>
             </StackPanel>
         </Popup>

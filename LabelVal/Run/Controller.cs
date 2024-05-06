@@ -128,7 +128,7 @@ public class Controller
             if (session != null)
             {
                 using var transaction = session.BeginTransaction();
-                var run = new RunLedger(JsonConvert.SerializeObject(ImageResultsList[0].LabelTemplate), Node.Details.cameraMAC, Node.Product.part);
+                var run = new RunLedger(JsonConvert.SerializeObject(ImageResultsList[0].V275StoredTemplate), Node.Details.cameraMAC, Node.Product.part);
 
                 _ = session.Save(run);
                 transaction.Commit();
@@ -197,7 +197,7 @@ public class Controller
 
                 var sRow = ImageResultsDatabase.Select_V275Result(GradingStandard.Name, label.SourceImageUID);
 
-                if (sRow == null || string.IsNullOrEmpty(sRow.SourceImageReport))
+                if (sRow == null || string.IsNullOrEmpty(sRow.Report))
                     continue;
 
                 Logger.Info("Job Print");
@@ -237,8 +237,8 @@ public class Controller
 
                 var row = new ResultDatabase.Result()
                 {
-                    LabelTemplate = sRow.SourceImageTemplate,
-                    LabelReport = sRow.SourceImageReport,
+                    LabelTemplate = sRow.Template,
+                    LabelReport = sRow.Report,
                     RepeatGoldenImage = sRow.StoredImage,
                     LabelImageUID = label.SourceImageUID,
                     LabelImage = Node.IsSimulator ? null : label.SourceImage,
@@ -261,14 +261,14 @@ public class Controller
                         stream.Close();
                     }
 
-                row.RepeatReport = JsonConvert.SerializeObject(label.RepeatReport);
+                row.RepeatReport = JsonConvert.SerializeObject(label.V275CurrentReport);
                 _ = RunEntryDatabase.InsertOrReplace(row);
 
                 using var session = new NHibernateHelper().OpenSession();
                 if (session != null)
                 {
                     using var transaction = session.BeginTransaction();
-                    var rep = new Report(label.RepeatReport);
+                    var rep = new Report(label.V275CurrentReport);
                     rep.repeatImage = label.V275Image;
                     rep.voidRepeat = rep.repeat;
                     rep.runId = RunId;
@@ -296,7 +296,7 @@ public class Controller
 
     private static bool HasSequencing(ImageRolls.ViewModels.ImageResultEntry label)
     {
-        foreach (var sect in label.LabelTemplate.sectors)
+        foreach (var sect in label.V275StoredTemplate.sectors)
         {
             if (sect.matchSettings != null)
                 if (sect.matchSettings.matchMode is >= 3 and <= 6)

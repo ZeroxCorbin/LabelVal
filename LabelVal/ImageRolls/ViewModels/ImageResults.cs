@@ -83,18 +83,16 @@ public partial class ImageResults : ObservableRecipient,
     public void Receive(DatabaseMessages.SelectedDatabseChanged message) => SelectedDatabase = message.Value;
     public void Receive(ScannerMessages.SelectedScannerChanged message)
     {
-        if(SelectedScanner != null)
+        if (SelectedScanner != null)
         {
-            SelectedScanner.ScannerController.ImageUpdate -= ScannerController_ImageUpdate;
-            SelectedScanner.ScannerController.ResultUpdate -= ScannerController_ResultUpdate;
+            //SelectedScanner.ScannerController.ConfigUpdate -= ScannerController_ConfigUpdate;
         }
 
         SelectedScanner = message.Value;
 
         if (SelectedScanner != null)
         {
-            SelectedScanner.ScannerController.ImageUpdate += ScannerController_ImageUpdate;
-            SelectedScanner.ScannerController.ResultUpdate += ScannerController_ResultUpdate;
+            //SelectedScanner.ScannerController.ConfigUpdate += ScannerController_ConfigUpdate;
         }
     }
     public void Receive(SystemMessages.StatusMessage message)
@@ -112,6 +110,7 @@ public partial class ImageResults : ObservableRecipient,
         }
     }
     private void SendStatusMessage(string message, SystemMessages.StatusMessageType type) => WeakReferenceMessenger.Default.Send(new SystemMessages.StatusMessage(this, type, message));
+    private void SendErrorMessage(string message) => WeakReferenceMessenger.Default.Send(new SystemMessages.StatusMessage(this, SystemMessages.StatusMessageType.Error, message));
 
     public void ClearImageResultsList()
     {
@@ -162,9 +161,9 @@ public partial class ImageResults : ObservableRecipient,
     private bool WaitForRepeat;
     private async void V275ProcessImage(ImageResultEntry imageResults, string type)
     {
-        if(SelectedNode == null)
+        if (SelectedNode == null)
         {
-            ImageResult_StatusChanged("No node selected.");
+            SendStatusMessage("No node selected.", SystemMessages.StatusMessageType.Warning);
 
             var printer = new Printer.Controller();
 
@@ -197,7 +196,7 @@ public partial class ImageResults : ObservableRecipient,
 
                     if (verRes > 0)
                     {
-                        ImageResult_StatusChanged("Could not delete all simulator images.");
+                        SendErrorMessage("Could not delete all simulator images.");
                         imageResults.IsV275Working = false;
                         return;
                     }
@@ -226,7 +225,7 @@ public partial class ImageResults : ObservableRecipient,
                 {
                     if (!sim.CopyImage(imageResults.SourceImagePath, prepend))
                     {
-                        ImageResult_StatusChanged("Could not copy the image to the simulator images directory.");
+                        SendErrorMessage("Could not copy the image to the simulator images directory.");
                         imageResults.IsV275Working = false;
                         return;
                     }
@@ -235,7 +234,7 @@ public partial class ImageResults : ObservableRecipient,
                 {
                     if (!sim.SaveImage(imageResults.SourceImagePath, imageResults.V275Image))
                     {
-                        ImageResult_StatusChanged("Could not save the image to the simulator images directory.");
+                        SendErrorMessage("Could not save the image to the simulator images directory.");
                         imageResults.IsV275Working = false;
                         return;
                     }
@@ -245,7 +244,7 @@ public partial class ImageResults : ObservableRecipient,
                 {
                     if (!await SelectedNode.Connection.Commands.TriggerSimulator())
                     {
-                        SendStatusMessage("Error triggering the simulator.", SystemMessages.StatusMessageType.Error);
+                        SendErrorMessage("Error triggering the simulator.");
                         imageResults.IsV275Working = false;
                         return;
                     }
@@ -258,7 +257,7 @@ public partial class ImageResults : ObservableRecipient,
             }
             catch (Exception ex)
             {
-                ImageResult_StatusChanged(ex.Message);
+                SendErrorMessage(ex.Message);
                 imageResults.IsV275Working = false;
                 Logger.Error(ex);
             }
@@ -322,7 +321,7 @@ public partial class ImageResults : ObservableRecipient,
             }
         }
 
-        else if(SelectedNode.IsSimulator)
+        else if (SelectedNode.IsSimulator)
             _ = await SelectedNode.Connection.SimulatorTogglePrint();
     }
     private async void ProcessRepeat(int repeat)
@@ -338,7 +337,7 @@ public partial class ImageResults : ObservableRecipient,
                     return;
                 }
 
-            var i = await Repeats[repeat].ImageResult.LoadTask();
+            var i = await Repeats[repeat].ImageResult.V275LoadTask();
 
             if (i == 0)
             {
@@ -364,7 +363,7 @@ public partial class ImageResults : ObservableRecipient,
         }
 
         Logger.Info("Reading results and Image.");
-        if (!await Repeats[repeat].ImageResult.ReadTask(repeat))
+        if (!await Repeats[repeat].ImageResult.V275ReadTask(repeat))
         {
             ProcessRepeatFault(repeat);
             return;
@@ -420,40 +419,58 @@ public partial class ImageResults : ObservableRecipient,
     #region V5 Image Results
     private ImageResultEntry V5ProcessingImageResult { get; set; } = null;
 
-    private void V5ProcessImage(ImageResultEntry imageResults, string type)
+    private async void V5ProcessImage(ImageResultEntry imageResults, string type)
     {
         V5ProcessingImageResult = imageResults;
 
-    }
-
-    private void ScannerController_ResultUpdate(Newtonsoft.Json.Linq.JObject json)
-    {
-        if (V5ProcessingImageResult == null)
-            return;
-
-        if (json == null)
+        if (SelectedScanner == null)
         {
-            return;
-        }
-    }
-    private async void ScannerController_ImageUpdate(Newtonsoft.Json.Linq.JObject json)
-    {
-        if (V5ProcessingImageResult == null)
-            return;
-
-        if (json == null)
-        {
-            V5ProcessingImageResult.V5Image = null;
+            SendStatusMessage("No scanner selected.", SystemMessages.StatusMessageType.Error);
+            imageResults.IsV5Working = false;
             return;
         }
 
-        try
+        if (SelectedScanner.IsSimulator)
         {
-            V5ProcessingImageResult.V5Image = ImageUtilities.ConvertToPng(await SelectedScanner.ScannerController.GetImageFullRes(json));
-            return;
+            var res = await SelectedScanner.ScannerController.GetConfig();
+
+            if (!res.OK)
+            {
+                SendErrorMessage("Could not get scanner configuration.");
+                imageResults.IsV5Working = false;
+                return;
+            }
+
+            var config = (V5_REST_Lib.Models.Config)res.Object;
+            if (config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource == null)
+            {
+                SendErrorMessage("The scanner is not in file aquire mode.");
+                imageResults.IsV5Working = false;
+                return;
+            }
+
+            var isFirst = config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource.directory != SelectedScanner.FTPClient.ImagePath1Root;
+
+            var path = isFirst
+                ? SelectedScanner.FTPClient.ImagePath1
+                : SelectedScanner.FTPClient.ImagePath2;
+
+            config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource.directory = isFirst
+                ? SelectedScanner.FTPClient.ImagePath1Root
+                : SelectedScanner.FTPClient.ImagePath2Root;
+
+            SelectedScanner.FTPClient.DeleteRemoteFiles(path);
+
+            path = $"{path}/image{Path.GetExtension(imageResults.SourceImagePath)}";
+
+            SelectedScanner.FTPClient.UploadFile(imageResults.SourceImagePath, path);
+
+            _ = await SelectedScanner.ScannerController.SendJob(config.response.data);
+
+            var results = await SelectedScanner.ScannerController.Trigger_Wait_Return(true);
         }
-        catch { V5ProcessingImageResult.V5Image = null; }
     }
+
     #endregion
 
     private async Task StartRun()
@@ -474,5 +491,5 @@ public partial class ImageResults : ObservableRecipient,
         return true;
     }
 
- 
+
 }
