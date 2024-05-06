@@ -127,6 +127,10 @@
 
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                     </MultiDataTrigger>
+
+                                    <DataTrigger Value="False" Binding="{Binding SelectedScanner.IsConnected}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </DockPanel.Style>
@@ -322,7 +326,7 @@
                        Margin="0" MaxHeight="400" Width="400" MouseDown="V275Image_MouseDown"
                        RenderOptions.BitmapScalingMode="NearestNeighbor"/>
 
-                    <Image Name="V275ImageOverlay" Source="{Binding V275ImageStoredSectorsOverlay}" 
+                    <Image Name="V275ImageOverlay" Source="{Binding V275StoredSectorsImageOverlay}" 
                        Margin="0" MaxHeight="400" Width="400" MouseDown="V275Image_MouseDown"
                        RenderOptions.BitmapScalingMode="NearestNeighbor"/>
                 </Grid>
@@ -582,6 +586,88 @@
 
         </DockPanel>
 
+        <Popup x:Name="V275StoredSectorsDetailsPopup" StaysOpen="False">
+            <Popup.Style>
+                <Style TargetType="{x:Type Popup}"/>
+            </Popup.Style>
+
+            <Border Grid.Row="2" Grid.ColumnSpan="4" Padding="3" BorderThickness="2"
+                        BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+
+                <ScrollViewer HorizontalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding V275StoredSectors}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel IsItemsHost="True" MaxWidth="1024"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <v275:SectorDetails/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Border>
+
+        </Popup>
+
+        <Popup x:Name="V275CurrentSectorsDetailsPopup" StaysOpen="False">
+            <Popup.Style>
+                <Style TargetType="{x:Type Popup}"/>
+            </Popup.Style>
+            <Border Padding="3" BorderThickness="2"
+                        BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+
+                <ScrollViewer HorizontalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding V275CurrentSectors}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel IsItemsHost="True" MaxWidth="1024"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <v275:SectorDetails />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Border>
+        </Popup>
+
+        <Popup x:Name="V275CurrentReportJsonPopup" StaysOpen="False">
+            <Popup.Style>
+                <Style TargetType="{x:Type Popup}"/>
+            </Popup.Style>
+            <Border Padding="3" BorderThickness="2"
+                        BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+
+                <json:JsonViewer x:Name="V275CurrentReportJsonView" MinWidth="300"/>
+            </Border>
+        </Popup>
+
+        <Popup x:Name="V275StoredJsonPopup" StaysOpen="False">
+            <Popup.Style>
+                <Style TargetType="{x:Type Popup}"/>
+            </Popup.Style>
+            <StackPanel Orientation="Horizontal">
+                <Border Padding="3" BorderThickness="2"
+                            BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                            Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                    <json:JsonViewer x:Name="V275StoredTemplateJsonView" MinWidth="300"/>
+                </Border>
+                <Border Padding="3" BorderThickness="2"
+                            BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                            Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                    <json:JsonViewer x:Name="V275StoredReportJsonView" MinWidth="300"/>
+                </Border>
+            </StackPanel>
+        </Popup>
+        
         <!--V5 Sectors-->
         <DockPanel>
 
@@ -718,7 +804,7 @@
                        Margin="0" MaxHeight="400" Width="400" MouseDown="V5Image_MouseDown"
                        RenderOptions.BitmapScalingMode="NearestNeighbor"/>
 
-                    <Image Name="V5ImageOverlay" Source="{Binding V5ImageStoredSectorsOverlay}" 
+                    <Image Name="V5ImageOverlay" Source="{Binding V5StoredSectorsImageOverlay}" 
                        Margin="0" MaxHeight="400" Width="400" MouseDown="V5Image_MouseDown"
                        RenderOptions.BitmapScalingMode="NearestNeighbor"/>
                 </Grid>
@@ -767,8 +853,8 @@
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
                                         <Setter Property="Visibility" Value="Visible"/>
                                         <Style.Triggers>
-                                            <DataTrigger Value="True" Binding="{Binding SelectedScanner.IsLoggedIn_Control}">
-                                                <Setter Property="Visibility" Value="Visible"/>
+                                            <DataTrigger Value="False" Binding="{Binding SelectedScanner.IsConnected}">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
                                             <DataTrigger Value="0" Binding="{Binding V5StoredSectors.Count}">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
@@ -970,7 +1056,7 @@
 
         </DockPanel>
 
-        <Popup x:Name="V275StoredSectorsDetailsPopup" StaysOpen="False">
+        <Popup x:Name="V5StoredSectorsDetailsPopup" StaysOpen="False">
             <Popup.Style>
                 <Style TargetType="{x:Type Popup}"/>
             </Popup.Style>
@@ -997,7 +1083,7 @@
 
         </Popup>
 
-        <Popup x:Name="V275CurrentSectorsDetailsPopup" StaysOpen="False">
+        <Popup x:Name="V5CurrentSectorsDetailsPopup" StaysOpen="False">
             <Popup.Style>
                 <Style TargetType="{x:Type Popup}"/>
             </Popup.Style>
@@ -1006,7 +1092,7 @@
                         Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
 
                 <ScrollViewer HorizontalScrollBarVisibility="Auto">
-                    <ItemsControl ItemsSource="{Binding V275CurrentSectors}">
+                    <ItemsControl ItemsSource="{Binding V5CurrentSectors}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <WrapPanel IsItemsHost="True" MaxWidth="1024"/>
@@ -1022,7 +1108,7 @@
             </Border>
         </Popup>
 
-        <Popup x:Name="V275CurrentReportJsonPopup" StaysOpen="False">
+        <Popup x:Name="V5CurrentReportJsonPopup" StaysOpen="False">
             <Popup.Style>
                 <Style TargetType="{x:Type Popup}"/>
             </Popup.Style>
@@ -1030,11 +1116,11 @@
                         BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
                         Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
 
-                <json:JsonViewer x:Name="V275CurrentReportJsonView" MinWidth="300"/>
+                <json:JsonViewer x:Name="V5CurrentReportJsonView" MinWidth="300"/>
             </Border>
         </Popup>
 
-        <Popup x:Name="V275StoredJsonPopup" StaysOpen="False">
+        <Popup x:Name="V5StoredJsonPopup" StaysOpen="False">
             <Popup.Style>
                 <Style TargetType="{x:Type Popup}"/>
             </Popup.Style>
@@ -1042,12 +1128,12 @@
                 <Border Padding="3" BorderThickness="2"
                             BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
                             Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-                    <json:JsonViewer x:Name="V275StoredTemplateJsonView" MinWidth="300"/>
+                    <json:JsonViewer x:Name="V5StoredTemplateJsonView" MinWidth="300"/>
                 </Border>
                 <Border Padding="3" BorderThickness="2"
                             BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
                             Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-                    <json:JsonViewer x:Name="V275StoredReportJsonView" MinWidth="300"/>
+                    <json:JsonViewer x:Name="V5StoredReportJsonView" MinWidth="300"/>
                 </Border>
             </StackPanel>
         </Popup>

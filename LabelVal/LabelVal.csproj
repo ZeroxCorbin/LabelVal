@@ -1134,6 +1134,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Assets\Image Rolls\GS1 TABLE 1\300\" />
+    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.8">

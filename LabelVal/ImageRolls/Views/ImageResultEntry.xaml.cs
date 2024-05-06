@@ -87,7 +87,7 @@ public partial class ImageResultEntry : UserControl
     private void V275Image_MouseDown(object sender, MouseButtonEventArgs e)
     {
         if (e.LeftButton == MouseButtonState.Pressed)
-            _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).V275Image, ((ViewModels.ImageResultEntry)DataContext).V275ImageStoredSectorsOverlay);
+            _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).V275Image, ((ViewModels.ImageResultEntry)DataContext).V275StoredSectorsImageOverlay);
     }
     private void ScrollV275StoredSectors_ScrollChanged(object sender, ScrollChangedEventArgs e)
     {
@@ -104,20 +104,20 @@ public partial class ImageResultEntry : UserControl
     {
         if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
         {
-            if (((ViewModels.ImageResultEntry)DataContext).V275ResultRow != null)
+            if (((ViewModels.ImageResultEntry)DataContext).V5ResultRow != null)
             {
-                V275StoredTemplateJsonView.Load(((ViewModels.ImageResultEntry)DataContext).V275ResultRow.Template);
-                V275StoredReportJsonView.Load(((ViewModels.ImageResultEntry)DataContext).V275ResultRow.Report);
-                V275StoredJsonPopup.PlacementTarget = (Button)sender;
-                V275StoredJsonPopup.IsOpen = true;
+                V5StoredTemplateJsonView.Load(((ViewModels.ImageResultEntry)DataContext).V5ResultRow.Template);
+                V5StoredReportJsonView.Load(((ViewModels.ImageResultEntry)DataContext).V5ResultRow.Report);
+                V5StoredJsonPopup.PlacementTarget = (Button)sender;
+                V5StoredJsonPopup.IsOpen = true;
             }
         }
         else
         {
-            if (((ViewModels.ImageResultEntry)DataContext).V275StoredSectors.Count > 0)
+            if (((ViewModels.ImageResultEntry)DataContext).V5StoredSectors.Count > 0)
             {
-                V275StoredSectorsDetailsPopup.PlacementTarget = (Button)sender;
-                V275StoredSectorsDetailsPopup.IsOpen = true;
+                V5StoredSectorsDetailsPopup.PlacementTarget = (Button)sender;
+                V5StoredSectorsDetailsPopup.IsOpen = true;
             }
         }
     }  
@@ -125,26 +125,26 @@ public partial class ImageResultEntry : UserControl
     {
         if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
         {
-            if (((ViewModels.ImageResultEntry)DataContext).V275CurrentReport != null)
+            if (((ViewModels.ImageResultEntry)DataContext).V5CurrentReport != null)
             {
-                V275CurrentReportJsonView.Load(Newtonsoft.Json.JsonConvert.SerializeObject(((ViewModels.ImageResultEntry)DataContext).V275CurrentReport));
-                V275CurrentReportJsonPopup.PlacementTarget = (Button)sender;
-                V275CurrentReportJsonPopup.IsOpen = true;
+                V5CurrentReportJsonView.Load(Newtonsoft.Json.JsonConvert.SerializeObject(((ViewModels.ImageResultEntry)DataContext).V5CurrentReport));
+                V5CurrentReportJsonPopup.PlacementTarget = (Button)sender;
+                V5CurrentReportJsonPopup.IsOpen = true;
             }
         }
         else
         {
-            if (((ViewModels.ImageResultEntry)DataContext).V275CurrentSectors.Count > 0)
+            if (((ViewModels.ImageResultEntry)DataContext).V5CurrentSectors.Count > 0)
             {
-                V275CurrentSectorsDetailsPopup.PlacementTarget = (Button)sender;
-                V275CurrentSectorsDetailsPopup.IsOpen = true;
+                V5CurrentSectorsDetailsPopup.PlacementTarget = (Button)sender;
+                V5CurrentSectorsDetailsPopup.IsOpen = true;
             }
         }
     }
     private void V5Image_MouseDown(object sender, MouseButtonEventArgs e)
     {
         if (e.LeftButton == MouseButtonState.Pressed)
-            _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).V5Image, ((ViewModels.ImageResultEntry)DataContext).V5ImageStoredSectorsOverlay);
+            _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).V5Image, ((ViewModels.ImageResultEntry)DataContext).V5StoredSectorsImageOverlay);
     }
     private void ScrollV5StoredSectors_ScrollChanged(object sender, ScrollChangedEventArgs e)
     {

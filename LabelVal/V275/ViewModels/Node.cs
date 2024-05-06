@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Messages;
-using LabelVal.Models;
 using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Collections.Generic;

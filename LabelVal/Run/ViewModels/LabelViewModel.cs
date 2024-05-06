@@ -26,7 +26,7 @@ public partial class LabelViewModel : ObservableObject
     public ObservableCollection<Sectors> V275StoredSectors { get; } = [];
     public ObservableCollection<SectorDifferences> V275DiffSectors { get; } = []; 
 
-    [ObservableProperty] private DrawingImage v275ImageStoredSectorsOverlay;
+    [ObservableProperty] private DrawingImage v275StoredSectorsImageOverlay;
 
     [ObservableProperty] private bool isGS1Standard;
 

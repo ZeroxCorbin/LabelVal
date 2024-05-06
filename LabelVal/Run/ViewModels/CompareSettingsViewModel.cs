@@ -1,11 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using LabelVal.Models;
+using LabelVal.ImageRolls.ViewModels;
 
 namespace LabelVal.Run.ViewModels;
 
 internal class CompareSettingsViewModel : ObservableObject
 {
-    private SectorCompareSettingsModel Settings { get; } = new SectorCompareSettingsModel();
+    private ImageResultSectorDifferencesSettings Settings { get; } = new ImageResultSectorDifferencesSettings();
 
     public bool Grade_UseGradeLetter { get => Settings.Grade_UseGradeLetter; set { Settings.Grade_UseGradeLetter = value; OnPropertyChanged("Grade_UseGradeLetter"); } }
     public double Grade_GradeValueTolerance { get => Settings.Grade_GradeValueTolerance; set { Settings.Grade_GradeValueTolerance = value; OnPropertyChanged("Grade_GradeValueTolerance"); } }
