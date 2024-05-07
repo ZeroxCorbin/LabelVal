@@ -26,21 +26,7 @@ public partial class ImageResults : ObservableRecipient,
 
     private int PrintCount => App.Settings.GetValue<int>(nameof(PrintCount));
 
-    public class Repeat
-    {
-        public ImageResultEntry ImageResult { get; set; }
-        public int RepeatNumber { get; set; } = -1;
-    }
-
-    //public partial class AllImageResults : ObservableObject
-    //{
-    //    [ObservableProperty] private V275.ViewModels.ImageResultEntry v275_ImageResult;
-    //    [ObservableProperty] private ImageResultEntry source_ImageResult;
-
-    //}
-
-    [ObservableProperty] private ObservableCollection<ImageResultEntry> imageResultsList = [];
-    public Dictionary<int, Repeat> Repeats { get; } = [];
+    [ObservableProperty] private ObservableCollection<ImageResultEntry> imageResultsList = []; 
 
     [ObservableProperty] private V275.ViewModels.Node selectedNode;
     [ObservableProperty] private ImageRollEntry selectedImageRoll;
@@ -52,6 +38,13 @@ public partial class ImageResults : ObservableRecipient,
 
     public RunViewModel RunViewModel { get; } = new RunViewModel();
     private int LoopCount => App.Settings.GetValue(nameof(RunViewModel.LoopCount), 1);
+
+    private class V275Repeat
+    {
+        public ImageResultEntry ImageResult { get; set; }
+        public int RepeatNumber { get; set; } = -1;
+    }
+    private Dictionary<int, V275Repeat> TempV275Repeat { get; } = [];
 
     public static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
 
@@ -115,13 +108,8 @@ public partial class ImageResults : ObservableRecipient,
     public void ClearImageResultsList()
     {
         foreach (var lab in ImageResultsList)
-        {
-            //lab.Clear();
             lab.V275ProcessImage -= V275ProcessImage;
-            lab.StatusChanged -= ImageResult_StatusChanged;
-            //ImageResultsList.Remove(lab);
-        }
-
+        
         ImageResultsList.Clear();
     }
     public void LoadImageResultsList()
@@ -148,12 +136,11 @@ public partial class ImageResults : ObservableRecipient,
             var tmp = new ImageResultEntry(img, comment, SelectedNode, SelectedImageRoll, SelectedDatabase, SelectedScanner);
 
             tmp.V275ProcessImage += V275ProcessImage;
-            tmp.V5ProcessImage += V5ProcessImage;
-            tmp.StatusChanged += ImageResult_StatusChanged;
-
             ImageResultsList.Add(tmp);
         }
     }
+
+
 
     #region V275 Image Results
     private ImageResultEntry PrintingImageResult { get; set; } = null;
@@ -328,7 +315,7 @@ public partial class ImageResults : ObservableRecipient,
     {
         WaitForRepeat = false;
 
-        if (Repeats[repeat].ImageResult.SelectedImageRoll.IsGS1)
+        if (TempV275Repeat[repeat].ImageResult.SelectedImageRoll.IsGS1)
         {
             if (repeat > 0)
                 if (!await SelectedNode.Connection.Commands.SetRepeat(repeat))
@@ -337,7 +324,7 @@ public partial class ImageResults : ObservableRecipient,
                     return;
                 }
 
-            var i = await Repeats[repeat].ImageResult.V275LoadTask();
+            var i = await TempV275Repeat[repeat].ImageResult.V275LoadTask();
 
             if (i == 0)
             {
@@ -363,35 +350,33 @@ public partial class ImageResults : ObservableRecipient,
         }
 
         Logger.Info("Reading results and Image.");
-        if (!await Repeats[repeat].ImageResult.V275ReadTask(repeat))
+        if (!await TempV275Repeat[repeat].ImageResult.V275ReadTask(repeat))
         {
             ProcessRepeatFault(repeat);
             return;
         }
 
-        Repeats[repeat].ImageResult.IsV275Working = false;
-        Repeats.Clear();
+        TempV275Repeat[repeat].ImageResult.IsV275Working = false;
+        TempV275Repeat.Clear();
     }
     private void ProcessRepeatFault(int repeat)
     {
-        Repeats[repeat].ImageResult.IsV275Faulted = true;
-        Repeats[repeat].ImageResult.IsV275Working = false;
+        TempV275Repeat[repeat].ImageResult.IsV275Faulted = true;
+        TempV275Repeat[repeat].ImageResult.IsV275Working = false;
 
-        Repeats.Clear();
+        TempV275Repeat.Clear();
     }
-
-    private void ImageResult_StatusChanged(string status) => SendStatusMessage(status, SystemMessages.StatusMessageType.Info);
 
     private void WebSocket_SetupCapture(Events_System ev)
     {
         if (PrintingImageResult == null)
             return;
 
-        Repeats.Add(ev.data.repeat, new Repeat() { ImageResult = PrintingImageResult, RepeatNumber = ev.data.repeat });
+        TempV275Repeat.Add(ev.data.repeat, new V275Repeat() { ImageResult = PrintingImageResult, RepeatNumber = ev.data.repeat });
         PrintingImageResult = null;
 
         if (SelectedNode.IsLoggedIn_Control)
-            if (!Repeats.ContainsKey(ev.data.repeat + 1))
+            if (!TempV275Repeat.ContainsKey(ev.data.repeat + 1))
                 App.Current.Dispatcher.Invoke(new Action(() => ProcessRepeat(ev.data.repeat)));
     }
     private void WebSocket_LabelEnd(Events_System ev)
@@ -401,76 +386,19 @@ public partial class ImageResults : ObservableRecipient,
         if (PrintingImageResult == null)
             return;
 
-        Repeats.Add(ev.data.repeat, new Repeat() { ImageResult = PrintingImageResult, RepeatNumber = ev.data.repeat });
+        TempV275Repeat.Add(ev.data.repeat, new V275Repeat() { ImageResult = PrintingImageResult, RepeatNumber = ev.data.repeat });
         PrintingImageResult = null;
 
         if (SelectedNode.IsLoggedIn_Control)
-            if (!Repeats.ContainsKey(ev.data.repeat + 1))
+            if (!TempV275Repeat.ContainsKey(ev.data.repeat + 1))
                 App.Current.Dispatcher.Invoke(new Action(() => ProcessRepeat(ev.data.repeat)));
     }
     private void WebSocket_StateChange(Events_System ev)
     {
         if (ev != null)
             if (ev.data.toState == "editing" || (ev.data.toState == "running" && ev.data.fromState != "paused"))
-                Repeats.Clear();
+                TempV275Repeat.Clear();
     }
-    #endregion
-
-    #region V5 Image Results
-    private ImageResultEntry V5ProcessingImageResult { get; set; } = null;
-
-    private async void V5ProcessImage(ImageResultEntry imageResults, string type)
-    {
-        V5ProcessingImageResult = imageResults;
-
-        if (SelectedScanner == null)
-        {
-            SendStatusMessage("No scanner selected.", SystemMessages.StatusMessageType.Error);
-            imageResults.IsV5Working = false;
-            return;
-        }
-
-        if (SelectedScanner.IsSimulator)
-        {
-            var res = await SelectedScanner.ScannerController.GetConfig();
-
-            if (!res.OK)
-            {
-                SendErrorMessage("Could not get scanner configuration.");
-                imageResults.IsV5Working = false;
-                return;
-            }
-
-            var config = (V5_REST_Lib.Models.Config)res.Object;
-            if (config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource == null)
-            {
-                SendErrorMessage("The scanner is not in file aquire mode.");
-                imageResults.IsV5Working = false;
-                return;
-            }
-
-            var isFirst = config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource.directory != SelectedScanner.FTPClient.ImagePath1Root;
-
-            var path = isFirst
-                ? SelectedScanner.FTPClient.ImagePath1
-                : SelectedScanner.FTPClient.ImagePath2;
-
-            config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource.directory = isFirst
-                ? SelectedScanner.FTPClient.ImagePath1Root
-                : SelectedScanner.FTPClient.ImagePath2Root;
-
-            SelectedScanner.FTPClient.DeleteRemoteFiles(path);
-
-            path = $"{path}/image{Path.GetExtension(imageResults.SourceImagePath)}";
-
-            SelectedScanner.FTPClient.UploadFile(imageResults.SourceImagePath, path);
-
-            _ = await SelectedScanner.ScannerController.SendJob(config.response.data);
-
-            var results = await SelectedScanner.ScannerController.Trigger_Wait_Return(true);
-        }
-    }
-
     #endregion
 
     private async Task StartRun()

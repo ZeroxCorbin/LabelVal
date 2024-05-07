@@ -9,6 +9,7 @@
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:json="clr-namespace:JSONViewer_WPF;assembly=JSONViewer_WPF"
              xmlns:v275="clr-namespace:LabelVal.V275.Views"
+             xmlns:sectors="clr-namespace:LabelVal.Sectors.Views"
              
             xmlns:ViewModels="clr-namespace:LabelVal.ImageRolls.ViewModels"
             xmlns:Converters="clr-namespace:LabelVal.Converters"
@@ -422,7 +423,7 @@
                     <ItemsControl ItemsSource="{Binding V275StoredSectors}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <v275:Sectors />
+                                <sectors:Sectors />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -549,7 +550,7 @@
                     <ItemsControl ItemsSource="{Binding V275CurrentSectors}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <v275:Sectors />
+                                <sectors:Sectors />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -577,7 +578,7 @@
                     <ItemsControl ItemsSource="{Binding V275DiffSectors}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <v275:SectorDifferences />
+                                <sectors:SectorDifferences />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -604,7 +605,7 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <v275:SectorDetails/>
+                                <sectors:SectorDetails/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -630,7 +631,7 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <v275:SectorDetails />
+                                <sectors:SectorDetails />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -897,7 +898,7 @@
                     <ItemsControl ItemsSource="{Binding V5StoredSectors}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <v275:Sectors />
+                                <sectors:Sectors />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -945,10 +946,21 @@
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
                                         <Setter Property="Visibility" Value="Visible"/>
+
                                         <Style.Triggers>
-                                            <DataTrigger Value="0" Binding="{Binding V5CurrentSectors.Count}">
+                                            <DataTrigger Binding="{Binding IsV5ImageStored}" Value="True">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
+ 
+                                            <MultiDataTrigger>
+                                                <MultiDataTrigger.Conditions>
+                                                    <Condition Binding="{Binding V5Image}" Value="{x:Null}"/>
+                                                    <Condition Binding="{Binding V5CurrentSectors.Count}" Value="0"/>
+                                                </MultiDataTrigger.Conditions>
+
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </MultiDataTrigger>
+                                            
                                         </Style.Triggers>
                                     </Style>
                                 </Button.Style>
@@ -957,7 +969,7 @@
 
                             </Button>
 
-                            <Button Command="{Binding V5ReadCommand}"
+                            <!--<Button Command="{Binding V5ReadCommand}"
                                     ToolTip="Read Results" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
 
                                 <Button.Style>
@@ -972,7 +984,7 @@
                                 </Button.Style>
 
                                 <IconPacks:PackIconMaterial Kind="Upload" Margin="-1,-1,0,0" Height="14" Width="14"/>
-                            </Button>
+                            </Button>-->
 
                             <!--<Button Command="{Binding InspectCommand}"
                                     ToolTip="Inspect" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
@@ -1019,7 +1031,7 @@
                     <ItemsControl ItemsSource="{Binding V5CurrentSectors}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <v275:Sectors />
+                                <sectors:Sectors />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -1047,7 +1059,7 @@
                     <ItemsControl ItemsSource="{Binding V5DiffSectors}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <v275:SectorDifferences />
+                                <sectors:SectorDifferences />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -1074,7 +1086,7 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <v275:SectorDetails/>
+                                <sectors:SectorDetails/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -1100,7 +1112,7 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <v275:SectorDetails />
+                                <sectors:SectorDetails />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>

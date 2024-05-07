@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using LabelVal.Messages;
+using LabelVal.Printer;
 using LabelVal.Utilities;
 using LabelVal.V275.ViewModels;
 using LabelVal.V5.ViewModels;
@@ -18,7 +19,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using V275_REST_lib;
 using V275_REST_lib.Models;
 using V5_REST_Lib.Models;
 
@@ -30,11 +30,11 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
     public delegate void BringIntoViewDelegate();
     public event BringIntoViewDelegate BringIntoView;
 
-    public delegate void StatusChange(string status);
-    public event StatusChange StatusChanged;
+    //public delegate void StatusChange(string status);
+    //public event StatusChange StatusChanged;
 
-    [ObservableProperty] private string status;
-    partial void OnStatusChanged(string value) => App.Current.Dispatcher.Invoke(() => StatusChanged?.Invoke(Status));
+    //[ObservableProperty] private string status;
+    //partial void OnStatusChanged(string value) => App.Current.Dispatcher.Invoke(() => StatusChanged?.Invoke(Status));
 
     public string SourceImagePath { get; }
     [ObservableProperty] private byte[] sourceImage;
@@ -52,9 +52,9 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
     public Job V275StoredTemplate { get; set; }
 
 
-    [ObservableProperty] private ObservableCollection<Sectors> v275CurrentSectors = [];
-    [ObservableProperty] private ObservableCollection<Sectors> v275StoredSectors = [];
-    [ObservableProperty] private ObservableCollection<SectorDifferences> v275DiffSectors = [];
+    [ObservableProperty] private ObservableCollection<Sectors.ViewModels.Sectors> v275CurrentSectors = [];
+    [ObservableProperty] private ObservableCollection<Sectors.ViewModels.Sectors> v275StoredSectors = [];
+    [ObservableProperty] private ObservableCollection<Sectors.ViewModels.SectorDifferences> v275DiffSectors = [];
 
     [ObservableProperty] private byte[] v275Image = null;
     [ObservableProperty] private DrawingImage v275StoredSectorsImageOverlay;
@@ -74,16 +74,13 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
 
     [ObservableProperty] private Databases.ImageResults.V5Result v5ResultRow;
 
-    public delegate void V5ProcessImageDelegate(ImageResultEntry imageResults, string type);
-    public event V5ProcessImageDelegate V5ProcessImage;
-
     public Config V5CurrentTemplate { get; set; }
     public Results V5CurrentReport { get; private set; }
     public Config V5StoredTemplate { get; set; }
 
-    [ObservableProperty] private ObservableCollection<Sectors> v5CurrentSectors = [];
-    [ObservableProperty] private ObservableCollection<Sectors> v5StoredSectors = [];
-    [ObservableProperty] private ObservableCollection<SectorDifferences> v5DiffSectors = [];
+    [ObservableProperty] private ObservableCollection<Sectors.ViewModels.Sectors> v5CurrentSectors = [];
+    [ObservableProperty] private ObservableCollection<Sectors.ViewModels.Sectors> v5StoredSectors = [];
+    [ObservableProperty] private ObservableCollection<Sectors.ViewModels.SectorDifferences> v5DiffSectors = [];
 
     [ObservableProperty] private byte[] v5Image = null;
     [ObservableProperty] private DrawingImage v5StoredSectorsImageOverlay;
@@ -125,6 +122,9 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
 
         IsActive = true;
     }
+
+    private void SendStatusMessage(string message, SystemMessages.StatusMessageType type) => WeakReferenceMessenger.Default.Send(new SystemMessages.StatusMessage(this, type, message));
+    private void SendErrorMessage(string message) => WeakReferenceMessenger.Default.Send(new SystemMessages.StatusMessage(this, SystemMessages.StatusMessageType.Error, message));
 
     public void Receive(NodeMessages.SelectedNodeChanged message) => SelectedNode = message.Value;
     public void Receive(DatabaseMessages.SelectedDatabseChanged message) => SelectedDatabase = message.Value;
@@ -275,13 +275,14 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
 
             V5CurrentSectors.Clear();
             V5DiffSectors.Clear();
+
             V5ResultRow = SelectedDatabase.Select_V5Result(SelectedImageRoll.Name, SourceImageUID);
 
             if (V5ResultRow == null)
                 return;
 
             V5Image = V5ResultRow.StoredImage;
-            V5StoredSectorsImageOverlay = V5CreateStoredSectorsImageOverlay(false, false);
+            V5StoredSectorsImageOverlay = V5CreateStoredSectorsImageOverlay();
             IsV5ImageStored = true;
         }
 
@@ -329,7 +330,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
             V275Image = V275ResultRow.StoredImage;
             IsV275ImageStored = true;
 
-            List<Sectors> tempSectors = [];
+            List<Sectors.ViewModels.Sectors> tempSectors = [];
             if (!string.IsNullOrEmpty(V275ResultRow.Report) && !string.IsNullOrEmpty(V275ResultRow.Template))
                 foreach (var jSec in V275StoredTemplate.sectors)
                 {
@@ -347,7 +348,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
                             if (fSec == null)
                                 break;
 
-                            tempSectors.Add(new Sectors(jSec, fSec, isWrongStandard, jSec.gradingStandard != null && jSec.gradingStandard.enabled));
+                            tempSectors.Add(new Sectors.ViewModels.Sectors(jSec, fSec, isWrongStandard, jSec.gradingStandard != null && jSec.gradingStandard.enabled));
 
                             break;
                         }
@@ -356,7 +357,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
 
             if (tempSectors.Count > 0)
             {
-                tempSectors = tempSectors.OrderBy(x => x.JobSector.top).ToList();
+                tempSectors = tempSectors.OrderBy(x => x.TemplateSector.top).ToList();
 
                 foreach (var sec in tempSectors)
                     V275StoredSectors.Add(sec);
@@ -368,15 +369,13 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
     }
     public async Task<bool> V275ReadTask(int repeat)
     {
-        Status = string.Empty;
-
         V275CurrentSectors.Clear();
         V275DiffSectors.Clear();
 
-        Controller.FullReport report;
+        V275_REST_lib.Controller.FullReport report;
         if ((report = await SelectedNode.Connection.Read(repeat, !SelectedNode.IsSimulator)) == null)
         {
-            Status = SelectedNode.Connection.Status;
+            SendStatusMessage(SelectedNode.Connection.Status, SystemMessages.StatusMessageType.Error);
 
             V275CurrentTemplate = null;
             V275CurrentReport = null;
@@ -409,7 +408,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
 
         //if (!isRunning)
         //{
-        List<Sectors> tempSectors = [];
+        List<Sectors.ViewModels.Sectors> tempSectors = [];
         foreach (var jSec in V275CurrentTemplate.sectors)
         {
             var isWrongStandard = false;
@@ -426,7 +425,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
                     if (fSec == null)
                         break; //Not yet supported sector type
 
-                    tempSectors.Add(new Sectors(jSec, fSec, isWrongStandard, jSec.gradingStandard != null && jSec.gradingStandard.enabled));
+                    tempSectors.Add(new Sectors.ViewModels.Sectors(jSec, fSec, isWrongStandard, jSec.gradingStandard != null && jSec.gradingStandard.enabled));
 
                     break;
                 }
@@ -435,7 +434,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
 
         if (tempSectors.Count > 0)
         {
-            tempSectors = tempSectors.OrderBy(x => x.JobSector.top).ToList();
+            tempSectors = tempSectors.OrderBy(x => x.TemplateSector.top).ToList();
 
             foreach (var sec in tempSectors)
                 V275CurrentSectors.Add(sec);
@@ -449,26 +448,26 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
     }
     private void V275GetSectorDiff()
     {
-        List<SectorDifferences> diff = [];
+        List<Sectors.ViewModels.SectorDifferences> diff = [];
 
         //Compare; Do not check for missing her. To keep found at top of list.
         foreach (var sec in V275StoredSectors)
         {
             foreach (var cSec in V275CurrentSectors)
-                if (sec.JobSector.name == cSec.JobSector.name)
+                if (sec.TemplateSector.name == cSec.TemplateSector.name)
                 {
-                    if (sec.JobSector.symbology == cSec.JobSector.symbology)
+                    if (sec.TemplateSector.symbology == cSec.TemplateSector.symbology)
                     {
                         diff.Add(sec.SectorResults.Compare(cSec.SectorResults));
                         continue;
                     }
                     else
                     {
-                        var dat = new SectorDifferences
+                        var dat = new Sectors.ViewModels.SectorDifferences
                         {
-                            UserName = $"{sec.JobSector.username} (SYMBOLOGY MISMATCH)",
+                            UserName = $"{sec.TemplateSector.username} (SYMBOLOGY MISMATCH)",
                             IsSectorMissing = true,
-                            SectorMissingText = $"Stored Sector {sec.JobSector.symbology} : Current Sector {cSec.JobSector.symbology}"
+                            SectorMissingText = $"Stored Sector {sec.TemplateSector.symbology} : Current Sector {cSec.TemplateSector.symbology}"
                         };
                         diff.Add(dat);
                     }
@@ -480,7 +479,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
         {
             var found = false;
             foreach (var cSec in V275CurrentSectors)
-                if (sec.JobSector.name == cSec.JobSector.name)
+                if (sec.TemplateSector.name == cSec.TemplateSector.name)
                 {
                     found = true;
                     continue;
@@ -488,11 +487,11 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
 
             if (!found)
             {
-                var dat = new SectorDifferences
+                var dat = new Sectors.ViewModels.SectorDifferences
                 {
-                    UserName = $"{sec.JobSector.username} (MISSING)",
+                    UserName = $"{sec.TemplateSector.username} (MISSING)",
                     IsSectorMissing = true,
-                    SectorMissingText = "Not found in Repeat Sectors"
+                    SectorMissingText = "Not found in current Sectors"
                 };
                 diff.Add(dat);
             }
@@ -504,7 +503,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
             {
                 var found = false;
                 foreach (var cSec in V275StoredSectors)
-                    if (sec.JobSector.name == cSec.JobSector.name)
+                    if (sec.TemplateSector.name == cSec.TemplateSector.name)
                     {
                         found = true;
                         continue;
@@ -512,9 +511,9 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
 
                 if (!found)
                 {
-                    var dat = new SectorDifferences
+                    var dat = new Sectors.ViewModels.SectorDifferences
                     {
-                        UserName = $"{sec.JobSector.username} (MISSING)",
+                        UserName = $"{sec.TemplateSector.username} (MISSING)",
                         IsSectorMissing = true,
                         SectorMissingText = "Not found in Stored Sectors"
                     };
@@ -530,7 +529,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
     {
         if (!await SelectedNode.Connection.DeleteSectors())
         {
-            Status = SelectedNode.Connection.Status;
+            SendStatusMessage(SelectedNode.Connection.Status, SystemMessages.StatusMessageType.Error);
             return -1;
         }
 
@@ -538,7 +537,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
         {
             if (!await SelectedNode.Connection.DetectSectors())
             {
-                Status = SelectedNode.Connection.Status;
+                SendStatusMessage(SelectedNode.Connection.Status, SystemMessages.StatusMessageType.Error);
                 return -1;
             }
 
@@ -547,21 +546,21 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
 
         foreach (var sec in V275StoredSectors)
         {
-            if (!await SelectedNode.Connection.AddSector(sec.JobSector.name, JsonConvert.SerializeObject(sec.JobSector)))
+            if (!await SelectedNode.Connection.AddSector(sec.TemplateSector.name, JsonConvert.SerializeObject(sec.TemplateSector)))
             {
-                Status = SelectedNode.Connection.Status;
+                SendStatusMessage(SelectedNode.Connection.Status, SystemMessages.StatusMessageType.Error);
                 return -1;
             }
 
-            if (sec.JobSector.type == "blemish")
+            if (sec.TemplateSector.type == "blemish")
             {
-                foreach (var layer in sec.JobSector.blemishMask.layers)
+                foreach (var layer in sec.TemplateSector.blemishMask.layers)
                 {
-                    if (!await SelectedNode.Connection.AddMask(sec.JobSector.name, JsonConvert.SerializeObject(layer)))
+                    if (!await SelectedNode.Connection.AddMask(sec.TemplateSector.name, JsonConvert.SerializeObject(layer)))
                     {
                         if (layer.value != 0)
                         {
-                            Status = SelectedNode.Connection.Status;
+                            SendStatusMessage(SelectedNode.Connection.Status, SystemMessages.StatusMessageType.Error);
                             return -1;
                         }
                     }
@@ -578,7 +577,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
         //Draw the image outline the same size as the stored image
         var border = new GeometryDrawing
         {
-            Geometry = new RectangleGeometry(new System.Windows.Rect(0, 0, bmp.PixelWidth, bmp.PixelHeight)),
+            Geometry = new RectangleGeometry(new Rect(0, 0, bmp.PixelWidth, bmp.PixelHeight)),
             Pen = new Pen(Brushes.Transparent, 1)
         };
 
@@ -589,7 +588,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
         {
             foreach (var sec in V275StoredTemplate.sectors)
             {
-                var area = new RectangleGeometry(new System.Windows.Rect(sec.left, sec.top, sec.width, sec.height));
+                var area = new RectangleGeometry(new Rect(sec.left, sec.top, sec.width, sec.height));
                 secAreas.Children.Add(area);
             }
 
@@ -600,7 +599,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
         {
             foreach (var sec in V275CurrentTemplate.sectors)
             {
-                var area = new RectangleGeometry(new System.Windows.Rect(sec.left, sec.top, sec.width, sec.height));
+                var area = new RectangleGeometry(new Rect(sec.left, sec.top, sec.width, sec.height));
                 secAreas.Children.Add(area);
             }
 
@@ -684,20 +683,20 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
         //}
 
     }
-    private DrawingGroup V275GetModuleGrid(Job.Sector[] sectors, ObservableCollection<Sectors> parsedSectors)
+    private DrawingGroup V275GetModuleGrid(Job.Sector[] sectors, ObservableCollection<Sectors.ViewModels.Sectors> parsedSectors)
     {
         var drwGroup = new DrawingGroup();
         //GeometryGroup moduleGrid = new GeometryGroup();
 
         foreach (var sec in sectors)
         {
-            var sect = parsedSectors.FirstOrDefault((e) => e.JobSector.name.Equals(sec.name));
+            var sect = parsedSectors.FirstOrDefault((e) => e.TemplateSector.name.Equals(sec.name));
 
             if (sect != null)
             {
                 var secArea = new GeometryGroup();
 
-                secArea.Children.Add(new RectangleGeometry(new System.Windows.Rect(sec.left, sec.top, sec.width, sec.height)));
+                secArea.Children.Add(new RectangleGeometry(new Rect(sec.left, sec.top, sec.width, sec.height)));
 
                 if (sec.symbology is "qr" or "dataMatrix")
                 {
@@ -726,7 +725,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
                             {
                                 for (var col = -qzY; col < res.data.extendedData.NumColumns + qzY; col++)
                                 {
-                                    var area1 = new RectangleGeometry(new System.Windows.Rect(startX + (res.data.extendedData.DeltaX * (col + qzX)), startY + (res.data.extendedData.DeltaY * (row + qzY)), res.data.extendedData.DeltaX, res.data.extendedData.DeltaY));
+                                    var area1 = new RectangleGeometry(new Rect(startX + (res.data.extendedData.DeltaX * (col + qzX)), startY + (res.data.extendedData.DeltaY * (row + qzY)), res.data.extendedData.DeltaX, res.data.extendedData.DeltaY));
                                     moduleGrid.Children.Add(area1);
 
                                     var text = res.data.extendedData.ModuleModulation[cnt].ToString();
@@ -749,7 +748,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
                                         }
 
                                         var gr = new GlyphRun(_glyphTypeface, 0, false, 2, 1.0f, _glyphIndexes,
-                                            new System.Windows.Point(startX + (res.data.extendedData.DeltaX * (col + qzX)) + 1,
+                                            new Point(startX + (res.data.extendedData.DeltaX * (col + qzX)) + 1,
                                             startY + (res.data.extendedData.DeltaY * (row + qzY)) + (_glyphTypeface.Height * (res.data.extendedData.DeltaY / 4))),
                                             _advanceWidths, null, null, null, null, null, null);
 
@@ -778,7 +777,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
                                         }
 
                                         var gr = new GlyphRun(_glyphTypeface1, 0, false, 2, 1.0f, _glyphIndexes,
-                                            new System.Windows.Point(startX + (res.data.extendedData.DeltaX * (col + qzX)) + 1,
+                                            new Point(startX + (res.data.extendedData.DeltaX * (col + qzX)) + 1,
                                             startY + (res.data.extendedData.DeltaY * (row + qzY)) + (_glyphTypeface1.Height * (res.data.extendedData.DeltaY / 2))),
                                             _advanceWidths, null, null, null, null, null, null);
 
@@ -894,16 +893,156 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
         }
     }
 
+    
     [RelayCommand]
-    private void V5Process(string imageType)
+    private async Task V5Process()
     {
-        IsV5Working = true;
         IsV5Faulted = false;
 
         BringIntoView?.Invoke();
-        V5ProcessImage?.Invoke(this, imageType);
+
+        if (SelectedScanner == null)
+        {
+            SendStatusMessage("No scanner selected.", SystemMessages.StatusMessageType.Error);
+            return;
+        }
+
+        if (SelectedScanner.IsSimulator)
+        {
+            var res = await SelectedScanner.ScannerController.GetConfig();
+
+            if (!res.OK)
+            {
+                SendErrorMessage("Could not get scanner configuration.");
+                return;
+            }
+
+            var config = (V5_REST_Lib.Models.Config)res.Object;
+            if (config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource == null)
+            {
+                SendErrorMessage("The scanner is not in file aquire mode.");
+                return;
+            }
+
+            //Rotate directory names to accomadate V5 
+            var isFirst = config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource.directory != SelectedScanner.FTPClient.ImagePath1Root;
+
+            var path = isFirst
+                ? SelectedScanner.FTPClient.ImagePath1
+                : SelectedScanner.FTPClient.ImagePath2;
+
+            config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource.directory = isFirst
+                ? SelectedScanner.FTPClient.ImagePath1Root
+                : SelectedScanner.FTPClient.ImagePath2Root;
+
+            SelectedScanner.FTPClient.Connect();
+
+            if(!SelectedScanner.FTPClient.DirectoryExists(path))
+                SelectedScanner.FTPClient.CreateRemoteDir(path);
+            else
+                SelectedScanner.FTPClient.DeleteRemoteFiles(path);
+
+            path = $"{path}/image{Path.GetExtension(SourceImagePath)}";
+
+            SelectedScanner.FTPClient.UploadFile(SourceImagePath, path);
+            SelectedScanner.FTPClient.Disconnect();
+
+            //Attempt to update the directory in the FileAcquisitionSource
+            _ = await SelectedScanner.ScannerController.SendJob(config.response.data);
+
+
+            if (!V5ProcessResults(await SelectedScanner.ScannerController.Trigger_Wait_Return(true), config))
+            {
+
+                return;
+            }
+
+        }
+
+
+        IsV5Working = false;
     }
-    [RelayCommand] private void V5Read() => _ = V5ReadTask();
+
+    public bool V5ProcessResults(V5_REST_Lib.Controller.TriggerResults triggerResults, Config config)
+    {
+        V5CurrentSectors.Clear();
+        V5DiffSectors.Clear();
+
+        if (!triggerResults.OK)
+        {
+            SendErrorMessage("Could not trigger the scanner.");
+
+            V275CurrentTemplate = null;
+            V275CurrentReport = null;
+
+            if (!IsV275ImageStored)
+            {
+                V275Image = null;
+                V275StoredSectorsImageOverlay = null;
+            }
+
+            return false;
+        }
+
+        V5CurrentTemplate = config;
+        V5CurrentReport = JsonConvert.DeserializeObject<Results>(triggerResults.ReportJSON);
+
+        if (!SelectedScanner.IsSimulator)
+        {
+            V5Image = ImageUtilities.ConvertToPng(triggerResults.FullImage);
+            IsV275ImageStored = false;
+        }
+        else
+        {
+            if (V5Image == null)
+            {
+                V5Image = SourceImage.ToArray();
+                IsV5ImageStored = false;
+            }
+        }
+
+        ////if (!isRunning)
+        ////{
+        //List<Sectors> tempSectors = [];
+        //foreach (var jSec in V275CurrentTemplate.sectors)
+        //{
+        //    var isWrongStandard = false;
+        //    if (jSec.type is "verify1D" or "verify2D")
+        //        isWrongStandard = SelectedImageRoll.IsGS1 && (!jSec.gradingStandard.enabled || SelectedImageRoll.TableID != jSec.gradingStandard.tableId);
+
+        //    foreach (JObject rSec in V275CurrentReport.inspectLabel.inspectSector)
+        //    {
+        //        if (jSec.name == rSec["name"].ToString())
+        //        {
+
+        //            var fSec = DeserializeSector(rSec, !SelectedImageRoll.IsGS1 && SelectedNode.IsOldISO);
+
+        //            if (fSec == null)
+        //                break; //Not yet supported sector type
+
+        //            tempSectors.Add(new Sectors(jSec, fSec, isWrongStandard, jSec.gradingStandard != null && jSec.gradingStandard.enabled));
+
+        //            break;
+        //        }
+        //    }
+        //}
+
+        //if (tempSectors.Count > 0)
+        //{
+        //    tempSectors = tempSectors.OrderBy(x => x.TemplateSector.top).ToList();
+
+        //    foreach (var sec in tempSectors)
+        //        V275CurrentSectors.Add(sec);
+        //}
+        ////}
+        //GetSectorDiff();
+
+        V5StoredSectorsImageOverlay = V5CreateStoredSectorsImageOverlay();
+
+        return true;
+    }
+
+    //[RelayCommand] private void V5Read() => _ = V5ReadTask();
     [RelayCommand] private void V5Load() => _ = V5LoadTask();
     //[RelayCommand] private void V5Inspect() => _ = V275ReadTask(0);
     private void V5GetStored()
@@ -961,7 +1100,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
 
         //if (tempSectors.Count > 0)
         //{
-        //    tempSectors = tempSectors.OrderBy(x => x.JobSector.top).ToList();
+        //    tempSectors = tempSectors.OrderBy(x => x.TemplateSector.top).ToList();
 
         //    foreach (var sec in tempSectors)
         //        V275StoredSectors.Add(sec);
@@ -971,99 +1110,20 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
 
 
     }
-    public async Task<bool> V5ReadTask()
-    {
-        Status = string.Empty;
 
-        //V5CurrentSectors.Clear();
-        //V5DiffSectors.Clear();
 
-        //Controller.FullReport report;
-        //if ((report = await SelectedNode.Connection.Read(0, !SelectedNode.IsSimulator)) == null)
-        //{
-        //    Status = SelectedNode.Connection.Status;
-
-        //    V275CurrentTemplate = null;
-        //    V275CurrentReport = null;
-
-        //    if (!IsV275ImageStored)
-        //    {
-        //        V275Image = null;
-        //        V275StoredSectorsImageOverlay = null;
-        //    }
-
-        //    return false;
-        //}
-
-        //V275CurrentTemplate = report.job;
-        //V275CurrentReport = report.report;
-
-        //if (!SelectedNode.IsSimulator)
-        //{
-        //    V275Image = ImageUtilities.ConvertToPng(report.image, 600);
-        //    IsV275ImageStored = false;
-        //}
-        //else
-        //{
-        //    if (V275Image == null)
-        //    {
-        //        V275Image = SourceImage.ToArray();
-        //        IsV275ImageStored = false;
-        //    }
-        //}
-
-        ////if (!isRunning)
-        ////{
-        //List<Sectors> tempSectors = [];
-        //foreach (var jSec in V275CurrentTemplate.sectors)
-        //{
-        //    var isWrongStandard = false;
-        //    if (jSec.type is "verify1D" or "verify2D")
-        //        isWrongStandard = SelectedImageRoll.IsGS1 && (!jSec.gradingStandard.enabled || SelectedImageRoll.TableID != jSec.gradingStandard.tableId);
-
-        //    foreach (JObject rSec in V275CurrentReport.inspectLabel.inspectSector)
-        //    {
-        //        if (jSec.name == rSec["name"].ToString())
-        //        {
-
-        //            var fSec = DeserializeSector(rSec, !SelectedImageRoll.IsGS1 && SelectedNode.IsOldISO);
-
-        //            if (fSec == null)
-        //                break; //Not yet supported sector type
-
-        //            tempSectors.Add(new Sectors(jSec, fSec, isWrongStandard, jSec.gradingStandard != null && jSec.gradingStandard.enabled));
-
-        //            break;
-        //        }
-        //    }
-        //}
-
-        //if (tempSectors.Count > 0)
-        //{
-        //    tempSectors = tempSectors.OrderBy(x => x.JobSector.top).ToList();
-
-        //    foreach (var sec in tempSectors)
-        //        V275CurrentSectors.Add(sec);
-        //}
-        ////}
-        //GetSectorDiff();
-
-        //V275StoredSectorsImageOverlay = CreateV275StoredSectorsImageOverlay(true, true);
-
-        return true;
-    }
     public async Task<int> V5LoadTask()
     {
         return 1;
     }
-    private DrawingImage V5CreateStoredSectorsImageOverlay(bool isRepeat, bool isDetailed)
+    private DrawingImage V5CreateStoredSectorsImageOverlay()
     {
         var bmp = ImageUtilities.CreateBitmap(V5Image);
 
         //Draw the image outline the same size as the stored image
         var border = new GeometryDrawing
         {
-            Geometry = new RectangleGeometry(new System.Windows.Rect(0, 0, bmp.PixelWidth, bmp.PixelHeight)),
+            Geometry = new RectangleGeometry(new Rect(0, 0, bmp.PixelWidth, bmp.PixelHeight)),
             Pen = new Pen(Brushes.Transparent, 1)
         };
 

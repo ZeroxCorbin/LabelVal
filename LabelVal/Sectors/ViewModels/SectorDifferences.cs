@@ -1,138 +1,15 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using LabelVal.ImageRolls.ViewModels;
+using LabelVal.Sectors.ViewModels;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.Linq;
+using V275_REST_lib.Models;
 
-namespace LabelVal.ImageRolls.ViewModels;
-public class Report_InspectSector_Common
+namespace LabelVal.Sectors.ViewModels;
+
+
+public partial class SectorDifferences : ObservableObject
 {
-    public class Verify1DGs1symbolquality
-    {
-        public Report_InspectSector_Common.ValueResult symbolXdim { get; set; }
-        public Report_InspectSector_Common.ValueResult symbolBarHeight { get; set; }
-    }
-
-    public class Verify2DGs1symbolquality
-    {
-        public Report_InspectSector_Common.ValueResult symbolWidth { get; set; }
-        public Report_InspectSector_Common.ValueResult symbolHeight { get; set; }
-        public Report_InspectSector_Common.ValueResult cellSizeX { get; set; }
-        public Report_InspectSector_Common.ValueResult cellSizeY { get; set; }
-
-        public Report_InspectSector_Common.Grade L1 { get; set; }
-        public Report_InspectSector_Common.Grade L2 { get; set; }
-        public Report_InspectSector_Common.Grade QZL1 { get; set; }
-        public Report_InspectSector_Common.Grade QZL2 { get; set; }
-        public Report_InspectSector_Common.Grade OCTASA { get; set; }
-
-        public int growthX { get; set; }
-        public int growthY { get; set; }
-        public int formatInfo { get; set; }
-        public int versionInfo { get; set; }
-    }
-
-    public class Grade
-    {
-        public float value { get; set; }
-        public string letter { get; set; }
-    }
-
-    public class Overallgrade
-    {
-        public Grade grade { get; set; }
-        [JsonProperty("string")]
-        public string _string { get; set; }
-    }
-
-    public class GradeValue
-    {
-        public Grade grade { get; set; }
-        public int value { get; set; } = -1;
-    }
-
-    public class ValueResult
-    {
-        public float value { get; set; }
-        public string result { get; set; }
-    }
-
-    public class Value
-    {
-        public int value { get; set; }
-    }
-
-    public class Decode
-    {
-        public Grade grade { get; set; }
-        //Verify2D only
-        public int value { get; set; } = -1;
-
-        //Verify1D only
-        public ValueResult edgeDetermination { get; set; }
-    }
-
-    public class Alarm
-    {
-        public string name { get; set; }
-        public int category { get; set; }
-        public SubAlarm data { get; set; }
-        public Useraction userAction { get; set; }
-    }
-
-    public class SubAlarm
-    {
-        public string text { get; set; }
-        public int index { get; set; }
-        public string subAlarm { get; set; }
-        public string expected { get; set; }
-    }
-
-    public class Useraction
-    {
-        public string action { get; set; }
-        public string user { get; set; }
-        public string note { get; set; }
-    }
-
-}
-
-public class Report_InspectSector_Blemish
-{
-    public string name { get; set; }
-    public string type { get; set; }
-    public int top { get; set; }
-    public int left { get; set; }
-    public int width { get; set; }
-    public int height { get; set; }
-    public Data data { get; set; }
-
-    public class Data
-    {
-        public Report_InspectSector_Common.Alarm[] alarms { get; set; }
-        public int blemishCount { get; set; }
-        public int reportCount { get; set; }
-        public Blemish[] blemishList { get; set; }
-    }
-
-    public class Blemish
-    {
-        public string type { get; set; }
-        public int top { get; set; }
-        public int left { get; set; }
-        public int width { get; set; }
-        public int height { get; set; }
-        public float maximumDimension { get; set; }
-        public float residualArea { get; set; }
-        public int maxTolerancePercent { get; set; }
-        public int artifactId { get; set; }
-    }
-
-}
-
-public partial class ImageResultSectorDifferences : ObservableObject
-{
-
 
     public class GradeValue : Report_InspectSector_Common.GradeValue
     {
@@ -142,7 +19,7 @@ public partial class ImageResultSectorDifferences : ObservableObject
         {
             value = data.value;
             grade = data.grade;
-            this.Name = name;
+            Name = name;
         }
     }
     public class Grade : Report_InspectSector_Common.Grade
@@ -153,7 +30,7 @@ public partial class ImageResultSectorDifferences : ObservableObject
         {
             value = data.value;
             letter = data.letter;
-            this.Name = name;
+            Name = name;
         }
     }
     public class ValueResult : Report_InspectSector_Common.ValueResult
@@ -164,7 +41,7 @@ public partial class ImageResultSectorDifferences : ObservableObject
         {
             value = data.value;
             result = data.result;
-            this.Name = name;
+            Name = name;
         }
     }
     public class Value : Report_InspectSector_Common.Value
@@ -174,7 +51,7 @@ public partial class ImageResultSectorDifferences : ObservableObject
         public Value(string name, Report_InspectSector_Common.Value data)
         {
             value = data.value;
-            this.Name = name;
+            Name = name;
         }
     }
     public class Blemish : Report_InspectSector_Blemish.Blemish
@@ -191,8 +68,7 @@ public partial class ImageResultSectorDifferences : ObservableObject
         }
     }
 
-    private ImageResultSectorDifferencesSettings Settings { get; } = new ImageResultSectorDifferencesSettings();
-
+    private SectorDifferencesSettings Settings { get; } = new SectorDifferencesSettings();
 
     [ObservableProperty] private string userName;
     [ObservableProperty] private string type;
@@ -307,7 +183,7 @@ public partial class ImageResultSectorDifferences : ObservableObject
                         continue;
                     }
 
-                    if (prop1.PropertyType == typeof(Report_InspectSector_Common.Verify1DGs1symbolquality) || prop1.PropertyType == typeof(Report_InspectSector_Common.Verify2DGs1symbolquality))
+                    if (prop1.PropertyType == typeof(Report_InspectSector_Verify1D.Gs1symbolquality) || prop1.PropertyType == typeof(Report_InspectSector_Verify2D.Gs1symbolquality))
                     {
                         if (prop1.GetValue(prop.GetValue(verify)) != null)
                             foreach (var prop2 in prop1.GetValue(prop.GetValue(verify)).GetType().GetProperties())
@@ -344,9 +220,9 @@ public partial class ImageResultSectorDifferences : ObservableObject
         return $"{char.ToUpper(tmp[0])}{tmp[1..]}";
     }
 
-    public ImageResultSectorDifferences Compare(ImageResultSectorDifferences compare)
+    public SectorDifferences Compare(SectorDifferences compare)
     {
-        var results = new ImageResultSectorDifferences
+        var results = new SectorDifferences
         {
             UserName = UserName,
             Type = Type,
@@ -534,14 +410,11 @@ public partial class ImageResultSectorDifferences : ObservableObject
     }
     private bool CompareGradeValue(Report_InspectSector_Common.GradeValue source, Report_InspectSector_Common.GradeValue compare)
     {
-        if (Settings.GradeValue_UseGradeLetter)
-            return source.grade.letter == compare.grade.letter;
-        else
-        {
-            return Settings.GradeValue_UseValue
+        return Settings.GradeValue_UseGradeLetter
+            ? source.grade.letter == compare.grade.letter
+            : Settings.GradeValue_UseValue
                 ? (compare.value <= source.value + Settings.GradeValue_ValueTolerance) && (compare.value >= source.value - Settings.GradeValue_ValueTolerance)
                 : (compare.grade.value <= source.grade.value + Settings.GradeValue_GradeValueTolerance) && (compare.grade.value >= source.grade.value - Settings.GradeValue_GradeValueTolerance);
-        }
     }
     private bool CompareValueResult(Report_InspectSector_Common.ValueResult source, Report_InspectSector_Common.ValueResult compare)
     {
@@ -550,13 +423,7 @@ public partial class ImageResultSectorDifferences : ObservableObject
             : (compare.value <= source.value + Settings.ValueResult_ValueTolerance) && (compare.value >= source.value - Settings.ValueResult_ValueTolerance);
     }
     private bool CompareValue(Report_InspectSector_Common.Value source, Report_InspectSector_Common.Value compare) => (compare.value <= source.value + Settings.Value_ValueTolerance) && (compare.value >= source.value - Settings.Value_ValueTolerance);
-    private bool CompareAlarm(Report_InspectSector_Common.Alarm source, Report_InspectSector_Common.Alarm compare)
-    {
-        if (source.category != compare.category)
-            return false;
-
-        return source.data.subAlarm == compare.data.subAlarm;
-    }
+    private bool CompareAlarm(Report_InspectSector_Common.Alarm source, Report_InspectSector_Common.Alarm compare) => source.category == compare.category && source.data.subAlarm == compare.data.subAlarm;
 
     //public void Clear()
     //{

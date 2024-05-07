@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace LabelVal.V275.Views;
+namespace LabelVal.Sectors.Views;
 
 /// <summary>
 /// Interaction logic for SectorDifferenceControlView.xaml

@@ -15,9 +15,9 @@ public partial class LVS95xx_SerialPortViewModel : ObservableObject
 
     public string SelectedComName { get => App.Settings.GetValue("95xx_COM_Name", ""); set => App.Settings.SetValue("95xx_COM_Name", value); }
 
-    public Sectors StoredSectorControl { get; }
+    public Sectors.ViewModels.Sectors StoredSectorControl { get; }
 
-    [ObservableProperty] private Sectors lvs95xxSectorControl = new();
+    [ObservableProperty] private Sectors.ViewModels.Sectors lvs95xxSectorControl = new();
 
     [ObservableProperty] private bool isConnected;
     partial void OnIsConnectedChanged(bool value) => OnPropertyChanged(nameof(IsNotConnected));
@@ -27,7 +27,7 @@ public partial class LVS95xx_SerialPortViewModel : ObservableObject
 
     public LVS95xx_SerialPortViewModel(object sectorControl)
     {
-        StoredSectorControl = (Sectors)sectorControl;
+        StoredSectorControl = (Sectors.ViewModels.Sectors)sectorControl;
 
         //lVS95Xx_SerialPortSetup.DataAvailable += LVS95Xx_SerialPortSetup_DataAvailable;
         //Task.Run(() => lVS95Xx_SerialPortSetup.StartCancellableProcess("cmd.exe", "", new System.Threading.CancellationToken()));
@@ -70,7 +70,7 @@ public partial class LVS95xx_SerialPortViewModel : ObservableObject
     private void PortController_SectorAvailable(object sector)
     {
         _ = App.Current.Dispatcher.BeginInvoke(new Action(() =>
-        Lvs95xxSectorControl = new Sectors(StoredSectorControl.JobSector, sector, false, true)));
+        Lvs95xxSectorControl = new Sectors.ViewModels.Sectors(StoredSectorControl.TemplateSector, sector, false, true)));
     }
 
     private void PortController_PacketAvailable(string packet) => ReadData = packet;

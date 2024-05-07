@@ -9,6 +9,7 @@
                     xmlns:ViewModels="clr-namespace:LabelVal.LVS_95xx"   
                     xmlns:MainViews="clr-namespace:LabelVal.WindowViews"
                      xmlns:v275="clr-namespace:LabelVal.V275.Views"
+                     xmlns:sectors="clr-namespace:LabelVal.Sectors.Views"
                     xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
                     Dialog:DialogParticipation.Register="{Binding}"
                     d:DataContext="{d:DesignInstance Type=ViewModels:LVS95xx_SerialPortViewModel}"
@@ -58,9 +59,9 @@
 
 
 
-        <v275:SectorDetails Grid.Row="2" Grid.Column="0" DataContext="{Binding StoredSectorControl}" Margin="3"/>
+        <sectors:SectorDetails Grid.Row="2" Grid.Column="0" DataContext="{Binding StoredSectorControl}" Margin="3"/>
 
-        <v275:SectorDetails Grid.Row="2" Grid.Column="1" DataContext="{Binding Lvs95xxSectorControl}" Margin="3" MinWidth="250"/>
+        <sectors:SectorDetails Grid.Row="2" Grid.Column="1" DataContext="{Binding Lvs95xxSectorControl}" Margin="3" MinWidth="250"/>
 
         <Border Grid.Row="2" Grid.Column="2" BorderThickness="2" Margin="3"
                         BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"

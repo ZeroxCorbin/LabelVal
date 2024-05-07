@@ -1,12 +1,12 @@
-﻿<UserControl x:Class="LabelVal.V275.Views.Sectors"
+﻿<UserControl x:Class="LabelVal.Sectors.Views.Sectors"
             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
             xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-            xmlns:local="clr-namespace:LabelVal.V275.Views"
-            xmlns:ViewModels="clr-namespace:LabelVal.V275.ViewModels"
+            xmlns:local="clr-namespace:LabelVal.Sectors.Views"
+            xmlns:ViewModels="clr-namespace:LabelVal.Sectors.ViewModels"
             xmlns:Converters="clr-namespace:LabelVal.Converters"
              xmlns:V275Converters="clr-namespace:LabelVal.V275.Converters"
             d:DataContext="{d:DesignInstance Type=ViewModels:Sectors}"
@@ -116,7 +116,7 @@
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Text="{Binding JobSector.username, Mode=OneTime}" Margin="3,0,3,0"/>
+                <TextBlock Text="{Binding TemplateSector.username, Mode=OneTime}" Margin="3,0,3,0"/>
 
                 <TextBlock Grid.Column="1" Text="WRONG STANDARD" 
                            Background="{DynamicResource ColorBlindBrush5}"
@@ -140,8 +140,8 @@
                                     <Setter Property="Text">
                                         <Setter.Value>
                                             <MultiBinding StringFormat="{}{0} ({1})">
-                                                <Binding Path="JobSector.matchSettings.matchMode" Mode="OneTime" Converter="{StaticResource matchModeToString}"/>
-                                                <Binding Path="JobSector.matchSettings.userDefinedDataTrueSize" Mode="OneTime"/>
+                                                <Binding Path="TemplateSector.matchSettings.matchMode" Mode="OneTime" Converter="{StaticResource matchModeToString}"/>
+                                                <Binding Path="TemplateSector.matchSettings.userDefinedDataTrueSize" Mode="OneTime"/>
                                             </MultiBinding>
                                         </Setter.Value>
                                     </Setter>
@@ -151,12 +151,12 @@
                                 <MultiDataTrigger >
                                     <MultiDataTrigger.Conditions>
                                         <Condition Value="ocr" Binding="{Binding ReportSector.type, Mode=OneTime}"/>
-                                        <Condition Value="0" Binding="{Binding JobSector.matchSettings.userDefinedDataTrueSize, Mode=OneTime}"/>
+                                        <Condition Value="0" Binding="{Binding TemplateSector.matchSettings.userDefinedDataTrueSize, Mode=OneTime}"/>
                                     </MultiDataTrigger.Conditions>
                                     <Setter Property="Text">
                                         <Setter.Value>
                                             <MultiBinding StringFormat="{}{0}">
-                                                <Binding Path="JobSector.matchSettings.matchMode" Mode="OneTime" Converter="{StaticResource matchModeToString}"/>
+                                                <Binding Path="TemplateSector.matchSettings.matchMode" Mode="OneTime" Converter="{StaticResource matchModeToString}"/>
                                             </MultiBinding>
                                         </Setter.Value>
                                     </Setter>
@@ -170,8 +170,8 @@
                                     <Setter Property="Text">
                                         <Setter.Value>
                                             <MultiBinding StringFormat="{}{0} ({1})">
-                                                <Binding Path="JobSector.matchSettings.matchMode" Mode="OneTime" Converter="{StaticResource matchModeToString}"/>
-                                                <Binding Path="JobSector.matchSettings.userDefinedDataTrueSize" Mode="OneTime"/>
+                                                <Binding Path="TemplateSector.matchSettings.matchMode" Mode="OneTime" Converter="{StaticResource matchModeToString}"/>
+                                                <Binding Path="TemplateSector.matchSettings.userDefinedDataTrueSize" Mode="OneTime"/>
                                             </MultiBinding>
                                         </Setter.Value>
                                     </Setter>
@@ -181,12 +181,12 @@
                                 <MultiDataTrigger >
                                     <MultiDataTrigger.Conditions>
                                         <Condition Value="ocv" Binding="{Binding ReportSector.type, Mode=OneTime}"/>
-                                        <Condition Value="0" Binding="{Binding JobSector.matchSettings.userDefinedDataTrueSize, Mode=OneTime}"/>
+                                        <Condition Value="0" Binding="{Binding TemplateSector.matchSettings.userDefinedDataTrueSize, Mode=OneTime}"/>
                                     </MultiDataTrigger.Conditions>
                                     <Setter Property="Text">
                                         <Setter.Value>
                                             <MultiBinding StringFormat="{}{0}">
-                                                <Binding Path="JobSector.matchSettings.matchMode" Mode="OneTime" Converter="{StaticResource matchModeToString}"/>
+                                                <Binding Path="TemplateSector.matchSettings.matchMode" Mode="OneTime" Converter="{StaticResource matchModeToString}"/>
                                             </MultiBinding>
                                         </Setter.Value>
                                     </Setter>
@@ -263,11 +263,11 @@
                                 </DataTrigger>
 
                                 <DataTrigger Value="ocr" Binding="{Binding ReportSector.type, Mode=OneTime}">
-                                    <Setter Property="Text" Value="{Binding JobSector.matchSettings.fixedText, Mode=OneTime}"/>
+                                    <Setter Property="Text" Value="{Binding TemplateSector.matchSettings.fixedText, Mode=OneTime}"/>
                                     <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Text}"/>
                                 </DataTrigger>
                                 <DataTrigger Value="ocv" Binding="{Binding ReportSector.type, Mode=OneTime}">
-                                    <Setter Property="Text" Value="{Binding JobSector.matchSettings.fixedText, Mode=OneTime}"/>
+                                    <Setter Property="Text" Value="{Binding TemplateSector.matchSettings.fixedText, Mode=OneTime}"/>
                                 </DataTrigger>
                                 <DataTrigger Value="blemish" Binding="{Binding ReportSector.type, Mode=OneTime}">
                                     <Setter Property="Text" Value=""/>

@@ -1,8 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace LabelVal.ImageRolls.ViewModels;
+namespace LabelVal.Sectors.ViewModels;
 
-public partial class ImageResultSectorDifferencesSettings : ObservableObject
+public partial class SectorDifferencesSettings : ObservableObject
 {
     public bool GradeValue_UseGradeLetter { get => App.Settings.GetValue("Diff_GradeValue_UseGradeLetter", true); set => App.Settings.SetValue("Diff_GradeValue_UseGradeLetter", value); }
     public double GradeValue_GradeValueTolerance { get => App.Settings.GetValue("Diff_GradeValue_GradeValueTolerance", 0.01); set => App.Settings.SetValue("Diff_GradeValue_GradeValueTolerance", value); }

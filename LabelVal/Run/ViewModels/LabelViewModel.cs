@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using LabelVal.Run.Databases;
 using LabelVal.Utilities;
-using LabelVal.V275.ViewModels;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -12,7 +11,6 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
-using V275_REST_lib.Models;
 
 namespace LabelVal.result.ViewModels;
 
@@ -22,9 +20,9 @@ public partial class LabelViewModel : ObservableObject
 
     [ObservableProperty] private LedgerDatabase.LedgerEntry ledgerEntry;
 
-    public ObservableCollection<Sectors> V275CurrentSectors { get; } = [];
-    public ObservableCollection<Sectors> V275StoredSectors { get; } = [];
-    public ObservableCollection<SectorDifferences> V275DiffSectors { get; } = []; 
+    public ObservableCollection<Sectors.ViewModels.Sectors> V275CurrentSectors { get; } = [];
+    public ObservableCollection<Sectors.ViewModels.Sectors> V275StoredSectors { get; } = [];
+    public ObservableCollection<Sectors.ViewModels.SectorDifferences> V275DiffSectors { get; } = []; 
 
     [ObservableProperty] private DrawingImage v275StoredSectorsImageOverlay;
 
@@ -45,15 +43,15 @@ public partial class LabelViewModel : ObservableObject
     {
         V275StoredSectors.Clear();
 
-        List<Sectors> tempSectors = [];
+        List<Sectors.ViewModels.Sectors> tempSectors = [];
         if (!string.IsNullOrEmpty(Result.LabelReport) && !string.IsNullOrEmpty(Result.LabelTemplate))
-            foreach (var jSec in JsonConvert.DeserializeObject<Job>(Result.LabelTemplate).sectors)
+            foreach (var jSec in JsonConvert.DeserializeObject<V275_REST_lib.Models.Job>(Result.LabelTemplate).sectors)
             {
                 var isWrongStandard = false;
                 if (jSec.type is "verify1D" or "verify2D")
                     isWrongStandard = IsGS1Standard && (!jSec.gradingStandard.enabled || !LedgerEntry.GradingStandard.StartsWith($"{jSec.gradingStandard.standard} TABLE {jSec.gradingStandard.tableId}"));
 
-                foreach (var rSec in JsonConvert.DeserializeObject<Report>(Result.LabelReport).inspectLabel.inspectSector.Cast<JObject>())
+                foreach (var rSec in JsonConvert.DeserializeObject<V275_REST_lib.Models.Report>(Result.LabelReport).inspectLabel.inspectSector.Cast<JObject>())
                 {
                     if (jSec.name == rSec["name"].ToString())
                     {
@@ -63,7 +61,7 @@ public partial class LabelViewModel : ObservableObject
                         if (fSec == null)
                             break;
 
-                        tempSectors.Add(new Sectors(jSec, fSec, isWrongStandard, jSec.gradingStandard != null && jSec.gradingStandard.enabled));
+                        tempSectors.Add(new Sectors.ViewModels.Sectors(jSec, fSec, isWrongStandard, jSec.gradingStandard != null && jSec.gradingStandard.enabled));
 
                         break;
                     }
@@ -72,7 +70,7 @@ public partial class LabelViewModel : ObservableObject
 
         if (tempSectors.Count > 0)
         {
-            tempSectors = tempSectors.OrderBy(x => x.JobSector.top).ToList();
+            tempSectors = tempSectors.OrderBy(x => x.TemplateSector.top).ToList();
 
             foreach (var sec in tempSectors)
                 V275StoredSectors.Add(sec);
@@ -82,15 +80,15 @@ public partial class LabelViewModel : ObservableObject
     {
         V275CurrentSectors.Clear();
 
-        List<Sectors> tempSectors = [];
+        List<Sectors.ViewModels.Sectors> tempSectors = [];
         if (!string.IsNullOrEmpty(Result.RepeatReport) && !string.IsNullOrEmpty(Result.LabelTemplate))
-            foreach (var jSec in JsonConvert.DeserializeObject<Job>(Result.LabelTemplate).sectors)
+            foreach (var jSec in JsonConvert.DeserializeObject<V275_REST_lib.Models.Job>(Result.LabelTemplate).sectors)
             {
                 var isWrongStandard = false;
                 if (jSec.type is "verify1D" or "verify2D")
                     isWrongStandard = IsGS1Standard && (!jSec.gradingStandard.enabled || !LedgerEntry.GradingStandard.StartsWith($"{jSec.gradingStandard.standard} TABLE {jSec.gradingStandard.tableId}"));
 
-                foreach (var rSec in JsonConvert.DeserializeObject<Report>(Result.RepeatReport).inspectLabel.inspectSector.Cast<JObject>())
+                foreach (var rSec in JsonConvert.DeserializeObject<V275_REST_lib.Models.Report>(Result.RepeatReport).inspectLabel.inspectSector.Cast<JObject>())
                 {
                     if (jSec.name == rSec["name"].ToString())
                     {
@@ -100,7 +98,7 @@ public partial class LabelViewModel : ObservableObject
                         if (fSec == null)
                             break;
 
-                        tempSectors.Add(new Sectors(jSec, fSec, isWrongStandard, jSec.gradingStandard != null && jSec.gradingStandard.enabled));
+                        tempSectors.Add(new Sectors.ViewModels.Sectors(jSec, fSec, isWrongStandard, jSec.gradingStandard != null && jSec.gradingStandard.enabled));
 
                         break;
                     }
@@ -109,7 +107,7 @@ public partial class LabelViewModel : ObservableObject
 
         if (tempSectors.Count > 0)
         {
-            tempSectors = tempSectors.OrderBy(x => x.JobSector.top).ToList();
+            tempSectors = tempSectors.OrderBy(x => x.TemplateSector.top).ToList();
 
             foreach (var sec in tempSectors)
                 V275CurrentSectors.Add(sec);
@@ -117,11 +115,11 @@ public partial class LabelViewModel : ObservableObject
     }
     private void GetSectorDiff()
     {
-        List<SectorDifferences> diff = [];
+        List<Sectors.ViewModels.SectorDifferences> diff = [];
         foreach (var sec in V275StoredSectors)
         {
             foreach (var cSec in V275CurrentSectors)
-                if (sec.JobSector.name == cSec.JobSector.name)
+                if (sec.TemplateSector.name == cSec.TemplateSector.name)
                 {
                     diff.Add(sec.SectorResults.Compare(cSec.SectorResults));
                     continue;
@@ -187,18 +185,18 @@ public partial class LabelViewModel : ObservableObject
     {
         if (reportSec["type"].ToString() == "verify1D")
         {
-            return JsonConvert.DeserializeObject<Report_InspectSector_Verify1D>(reportSec.ToString());
+            return JsonConvert.DeserializeObject<V275_REST_lib.Models.Report_InspectSector_Verify1D>(reportSec.ToString());
         }
         else
         {
             return reportSec["type"].ToString() == "verify2D"
-                ? JsonConvert.DeserializeObject<Report_InspectSector_Verify2D>(reportSec.ToString())
+                ? JsonConvert.DeserializeObject<V275_REST_lib.Models.Report_InspectSector_Verify2D>(reportSec.ToString())
                 : reportSec["type"].ToString() == "ocr"
-                            ? JsonConvert.DeserializeObject<Report_InspectSector_OCR>(reportSec.ToString())
+                            ? JsonConvert.DeserializeObject<V275_REST_lib.Models.Report_InspectSector_OCR>(reportSec.ToString())
                             : reportSec["type"].ToString() == "ocv"
-                                        ? JsonConvert.DeserializeObject<Report_InspectSector_OCV>(reportSec.ToString())
+                                        ? JsonConvert.DeserializeObject<V275_REST_lib.Models.Report_InspectSector_OCV>(reportSec.ToString())
                                         : reportSec["type"].ToString() == "blemish"
-                                                    ? JsonConvert.DeserializeObject<Report_InspectSector_Blemish>(reportSec.ToString())
+                                                    ? JsonConvert.DeserializeObject<V275_REST_lib.Models.Report_InspectSector_Blemish>(reportSec.ToString())
                                                     : (object)null;
         }
     }

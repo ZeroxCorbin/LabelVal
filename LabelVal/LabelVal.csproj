@@ -25,6 +25,8 @@
     <Compile Remove="Run\Databases\V2RunEntryDatabase.cs" />
     <Compile Remove="V275\ViewModels\ImageResultEntry.cs" />
     <Compile Remove="V275\ViewModels\ImageResults.cs" />
+    <Compile Remove="V275\ViewModels\SectorDifferences.cs" />
+    <Compile Remove="V275\ViewModels\Sectors.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Remove=".gitattributes" />
