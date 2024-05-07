@@ -58,7 +58,7 @@
                                     <Setter Property="Text">
                                         <Setter.Value>
                                             <MultiBinding StringFormat="{}(01){0}">
-                                                <Binding Path="ReportSector.data.gs1Results.fields._01"/>
+                                                <Binding Path="Report.data.gs1Results.fields._01"/>
                                             </MultiBinding>
                                         </Setter.Value>
                                     </Setter>
@@ -72,12 +72,12 @@
                                     <Setter Property="Text">
                                         <Setter.Value>
                                             <MultiBinding StringFormat="{}(10){0}">
-                                                <Binding Path="ReportSector.data.gs1Results.fields._10"/>
+                                                <Binding Path="Report.data.gs1Results.fields._10"/>
                                             </MultiBinding>
                                         </Setter.Value>
                                     </Setter>
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ReportSector.data.gs1Results.fields._10}" Value="{x:Null}">
+                                        <DataTrigger Binding="{Binding Report.data.gs1Results.fields._10}" Value="{x:Null}">
                                             <Setter Property="Visibility" Value="Collapsed"/>
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -91,12 +91,12 @@
                                     <Setter Property="Text">
                                         <Setter.Value>
                                             <MultiBinding StringFormat="{}(90){0}">
-                                                <Binding Path="ReportSector.data.gs1Results.fields._90"/>
+                                                <Binding Path="Report.data.gs1Results.fields._90"/>
                                             </MultiBinding>
                                         </Setter.Value>
                                     </Setter>
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ReportSector.data.gs1Results.fields._90}" Value="{x:Null}">
+                                        <DataTrigger Binding="{Binding Report.data.gs1Results.fields._90}" Value="{x:Null}">
                                             <Setter Property="Visibility" Value="Collapsed"/>
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -104,7 +104,7 @@
                             </TextBlock.Style>
                         </TextBlock>
                     </StackPanel>-->
-                        <TextBlock Text="{Binding ReportSector.data.gs1Results.formattedOut, Converter={StaticResource gs1FormattedOutput}}"  Margin="3,-10,3,3"/>
+                        <TextBlock Text="{Binding Report.FormattedOut, Converter={StaticResource gs1FormattedOutput}}"  Margin="3,-10,3,3"/>
                     </Border>
                 </Border>
             </Popup>
@@ -116,14 +116,14 @@
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Text="{Binding TemplateSector.Username, Mode=OneTime}" Margin="3,0,3,0"/>
+                <TextBlock Text="{Binding Template.Username, Mode=OneTime}" Margin="3,0,3,0"/>
 
                 <TextBlock Grid.Column="1" Text="WRONG STANDARD" 
                            Background="{DynamicResource ColorBlindBrush5}"
                            HorizontalAlignment="Center"
                            Visibility="{Binding IsWrongStandard, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneTime}"/>
 
-                <TextBlock Grid.Column="1" Text="{Binding ReportSector.data.overallGrade._string}" 
+                <TextBlock Grid.Column="1" Text="{Binding Report.OverallGradeString}" 
                            HorizontalAlignment="Center"
                            Visibility="{Binding IsNotWrongStandard, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneTime}"/>
 
@@ -135,13 +135,13 @@
 
                                 <MultiDataTrigger >
                                     <MultiDataTrigger.Conditions>
-                                        <Condition Value="ocr" Binding="{Binding ReportSector.type, Mode=OneTime}"/>
+                                        <Condition Value="ocr" Binding="{Binding Report.Type, Mode=OneTime}"/>
                                     </MultiDataTrigger.Conditions>
                                     <Setter Property="Text">
                                         <Setter.Value>
                                             <MultiBinding StringFormat="{}{0} ({1})">
-                                                <Binding Path="TemplateSector.MatchSettings.MatchMode" Mode="OneTime" Converter="{StaticResource matchModeToString}"/>
-                                                <Binding Path="TemplateSector.MatchSettings.UserDefinedDataTrueSize" Mode="OneTime"/>
+                                                <Binding Path="Template.MatchSettings.MatchMode" Mode="OneTime" Converter="{StaticResource matchModeToString}"/>
+                                                <Binding Path="Template.MatchSettings.UserDefinedDataTrueSize" Mode="OneTime"/>
                                             </MultiBinding>
                                         </Setter.Value>
                                     </Setter>
@@ -150,13 +150,13 @@
 
                                 <MultiDataTrigger >
                                     <MultiDataTrigger.Conditions>
-                                        <Condition Value="ocr" Binding="{Binding ReportSector.type, Mode=OneTime}"/>
-                                        <Condition Value="0" Binding="{Binding TemplateSector.MatchSettings.UserDefinedDataTrueSize, Mode=OneTime}"/>
+                                        <Condition Value="ocr" Binding="{Binding Report.Type, Mode=OneTime}"/>
+                                        <Condition Value="0" Binding="{Binding Template.MatchSettings.UserDefinedDataTrueSize, Mode=OneTime}"/>
                                     </MultiDataTrigger.Conditions>
                                     <Setter Property="Text">
                                         <Setter.Value>
                                             <MultiBinding StringFormat="{}{0}">
-                                                <Binding Path="TemplateSector.MatchSettings.MatchMode" Mode="OneTime" Converter="{StaticResource matchModeToString}"/>
+                                                <Binding Path="Template.MatchSettings.MatchMode" Mode="OneTime" Converter="{StaticResource matchModeToString}"/>
                                             </MultiBinding>
                                         </Setter.Value>
                                     </Setter>
@@ -165,13 +165,13 @@
 
                                 <MultiDataTrigger >
                                     <MultiDataTrigger.Conditions>
-                                        <Condition Value="ocv" Binding="{Binding ReportSector.type, Mode=OneTime}"/>
+                                        <Condition Value="ocv" Binding="{Binding Report.Type, Mode=OneTime}"/>
                                     </MultiDataTrigger.Conditions>
                                     <Setter Property="Text">
                                         <Setter.Value>
                                             <MultiBinding StringFormat="{}{0} ({1})">
-                                                <Binding Path="TemplateSector.MatchSettings.MatchMode" Mode="OneTime" Converter="{StaticResource matchModeToString}"/>
-                                                <Binding Path="TemplateSector.MatchSettings.UserDefinedDataTrueSize" Mode="OneTime"/>
+                                                <Binding Path="Template.MatchSettings.MatchMode" Mode="OneTime" Converter="{StaticResource matchModeToString}"/>
+                                                <Binding Path="Template.MatchSettings.UserDefinedDataTrueSize" Mode="OneTime"/>
                                             </MultiBinding>
                                         </Setter.Value>
                                     </Setter>
@@ -180,13 +180,13 @@
 
                                 <MultiDataTrigger >
                                     <MultiDataTrigger.Conditions>
-                                        <Condition Value="ocv" Binding="{Binding ReportSector.type, Mode=OneTime}"/>
-                                        <Condition Value="0" Binding="{Binding TemplateSector.MatchSettings.UserDefinedDataTrueSize, Mode=OneTime}"/>
+                                        <Condition Value="ocv" Binding="{Binding Report.Type, Mode=OneTime}"/>
+                                        <Condition Value="0" Binding="{Binding Template.MatchSettings.UserDefinedDataTrueSize, Mode=OneTime}"/>
                                     </MultiDataTrigger.Conditions>
                                     <Setter Property="Text">
                                         <Setter.Value>
                                             <MultiBinding StringFormat="{}{0}">
-                                                <Binding Path="TemplateSector.MatchSettings.MatchMode" Mode="OneTime" Converter="{StaticResource matchModeToString}"/>
+                                                <Binding Path="Template.MatchSettings.MatchMode" Mode="OneTime" Converter="{StaticResource matchModeToString}"/>
                                             </MultiBinding>
                                         </Setter.Value>
                                     </Setter>
@@ -206,13 +206,13 @@
                         <Style TargetType="{x:Type Button}">
                             <Setter Property="IsHitTestVisible" Value="True"/>
                             <Style.Triggers>
-                                <DataTrigger Value="ocr" Binding="{Binding ReportSector.type, Mode=OneTime}">
+                                <DataTrigger Value="ocr" Binding="{Binding Report.Type, Mode=OneTime}">
                                     <Setter Property="IsHitTestVisible" Value="False"/>
                                 </DataTrigger>
-                                <DataTrigger Value="ocv" Binding="{Binding ReportSector.type, Mode=OneTime}">
+                                <DataTrigger Value="ocv" Binding="{Binding Report.Type, Mode=OneTime}">
                                     <Setter Property="IsHitTestVisible" Value="False"/>
                                 </DataTrigger>
-                                <DataTrigger Value="blemish" Binding="{Binding ReportSector.type, Mode=OneTime}">
+                                <DataTrigger Value="blemish" Binding="{Binding Report.Type, Mode=OneTime}">
                                     <Setter Property="IsHitTestVisible" Value="False"/>
                                 </DataTrigger>
                             </Style.Triggers>
@@ -223,16 +223,16 @@
                             <Style TargetType="{x:Type Image}">
                                 <Setter Property="Source" Value="/Assets/Images/barcode-1d.png"/>
                                 <Style.Triggers>
-                                    <DataTrigger Value="verify2D" Binding="{Binding ReportSector.type, Mode=OneTime}">
+                                    <DataTrigger Value="verify2D" Binding="{Binding Report.Type, Mode=OneTime}">
                                         <Setter Property="Source" Value="/Assets/Images/barcode-2d.png"/>
                                     </DataTrigger>
-                                    <DataTrigger Value="ocr" Binding="{Binding ReportSector.type, Mode=OneTime}">
+                                    <DataTrigger Value="ocr" Binding="{Binding Report.Type, Mode=OneTime}">
                                         <Setter Property="Source" Value="/Assets/Images/ocr.png"/>
                                     </DataTrigger>
-                                    <DataTrigger Value="ocv" Binding="{Binding ReportSector.type, Mode=OneTime}">
+                                    <DataTrigger Value="ocv" Binding="{Binding Report.Type, Mode=OneTime}">
                                         <Setter Property="Source" Value="/Assets/Images/ocv.png"/>
                                     </DataTrigger>
-                                    <DataTrigger Value="blemish" Binding="{Binding ReportSector.type, Mode=OneTime}">
+                                    <DataTrigger Value="blemish" Binding="{Binding Report.Type, Mode=OneTime}">
                                         <Setter Property="Source" Value="/Assets/Images/FlawTool.png"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -255,21 +255,21 @@
                         <Style TargetType="{x:Type TextBlock}">
 
                             <Style.Triggers>
-                                <DataTrigger Value="verify1D" Binding="{Binding ReportSector.type, Mode=OneTime}">
-                                    <Setter Property="Text" Value="{Binding ReportSector.data.symbolType, Converter={StaticResource stringToUpper}, Mode=OneTime}"/>
+                                <DataTrigger Value="verify1D" Binding="{Binding Report.Type, Mode=OneTime}">
+                                    <Setter Property="Text" Value="{Binding Report.SymbolType, Converter={StaticResource stringToUpper}, Mode=OneTime}"/>
                                 </DataTrigger>
-                                <DataTrigger Value="verify2D" Binding="{Binding ReportSector.type, Mode=OneTime}">
-                                    <Setter Property="Text" Value="{Binding ReportSector.data.symbolType, Converter={StaticResource stringToUpper}, Mode=OneTime}"/>
+                                <DataTrigger Value="verify2D" Binding="{Binding Report.Type, Mode=OneTime}">
+                                    <Setter Property="Text" Value="{Binding Report.SymbolType, Converter={StaticResource stringToUpper}, Mode=OneTime}"/>
                                 </DataTrigger>
 
-                                <DataTrigger Value="ocr" Binding="{Binding ReportSector.type, Mode=OneTime}">
-                                    <Setter Property="Text" Value="{Binding TemplateSector.MatchSettings.fixedText, Mode=OneTime}"/>
+                                <DataTrigger Value="ocr" Binding="{Binding Report.Type, Mode=OneTime}">
+                                    <Setter Property="Text" Value="{Binding Template.MatchSettings.FixedText, Mode=OneTime}"/>
                                     <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Text}"/>
                                 </DataTrigger>
-                                <DataTrigger Value="ocv" Binding="{Binding ReportSector.type, Mode=OneTime}">
-                                    <Setter Property="Text" Value="{Binding TemplateSector.MatchSettings.fixedText, Mode=OneTime}"/>
+                                <DataTrigger Value="ocv" Binding="{Binding Report.Type, Mode=OneTime}">
+                                    <Setter Property="Text" Value="{Binding Template.MatchSettings.FixedText, Mode=OneTime}"/>
                                 </DataTrigger>
-                                <DataTrigger Value="blemish" Binding="{Binding ReportSector.type, Mode=OneTime}">
+                                <DataTrigger Value="blemish" Binding="{Binding Report.Type, Mode=OneTime}">
                                     <Setter Property="Text" Value=""/>
                                 </DataTrigger>
                             </Style.Triggers>
@@ -289,20 +289,20 @@
 
                                 <Style.Triggers>
 
-                                    <DataTrigger Value="verify1D" Binding="{Binding ReportSector.type, Mode=OneTime}">
-                                        <Setter Property="Text" Value="{Binding ReportSector.data.decodeText, Mode=OneTime}"/>
+                                    <DataTrigger Value="verify1D" Binding="{Binding Report.Type, Mode=OneTime}">
+                                        <Setter Property="Text" Value="{Binding Report.DecodeText, Mode=OneTime}"/>
                                     </DataTrigger>
-                                    <DataTrigger Value="verify2D" Binding="{Binding ReportSector.type, Mode=OneTime}">
-                                        <Setter Property="Text" Value="{Binding ReportSector.data.decodeText, Mode=OneTime}"/>
+                                    <DataTrigger Value="verify2D" Binding="{Binding Report.Type, Mode=OneTime}">
+                                        <Setter Property="Text" Value="{Binding Report.DecodeText, Mode=OneTime}"/>
                                     </DataTrigger>
-                                    <DataTrigger Value="ocr" Binding="{Binding ReportSector.type, Mode=OneTime}">
-                                        <Setter Property="Text" Value="{Binding ReportSector.data.text, Mode=OneTime}"/>
+                                    <DataTrigger Value="ocr" Binding="{Binding Report.Type, Mode=OneTime}">
+                                        <Setter Property="Text" Value="{Binding Report.Text, Mode=OneTime}"/>
                                     </DataTrigger>
 
-                                    <DataTrigger Value="ocv" Binding="{Binding ReportSector.type, Mode=OneTime}">
-                                        <Setter Property="Text" Value="{Binding ReportSector.data.text, Mode=OneTime}"/>
+                                    <DataTrigger Value="ocv" Binding="{Binding Report.Type, Mode=OneTime}">
+                                        <Setter Property="Text" Value="{Binding Report.Text, Mode=OneTime}"/>
                                     </DataTrigger>
-                                    <DataTrigger Value="blemish" Binding="{Binding ReportSector.type, Mode=OneTime}">
+                                    <DataTrigger Value="blemish" Binding="{Binding Report.Type, Mode=OneTime}">
                                         <Setter Property="Text" Value=""/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -311,13 +311,13 @@
                     </TextBlock>
 
                     
-                    <!--<TextBlock Text="{Binding ReportSector.data.gs1Results.formattedOut}"/>-->
+                    <!--<TextBlock Text="{Binding Report.data.gs1Results.formattedOut}"/>-->
                     <Button Grid.Column="1" Name="btnGS1DecodeText" Margin="0,-5,3,0" Click="btnGS1DecodeText_Click">
                         <Button.Style>
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Chromeless}">
                                 <Setter Property="Visibility" Value="Visible"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ReportSector.data.gs1Results, FallbackValue={x:Null}}" Value="{x:Null}">
+                                    <DataTrigger Binding="{Binding Report.GS1Results, FallbackValue={x:Null}}" Value="{x:Null}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -344,10 +344,10 @@
                                     <Setter Property="Background" Value="{DynamicResource ColorBlindBrush6}"/>
                                 </DataTrigger>
 
-                                <DataTrigger Value="ocr" Binding="{Binding ReportSector.type, Mode=OneTime}">
+                                <DataTrigger Value="ocr" Binding="{Binding Report.Type, Mode=OneTime}">
                                     <Setter Property="IsHitTestVisible" Value="False"/>
                                 </DataTrigger>
-                                <DataTrigger Value="ocv" Binding="{Binding ReportSector.type, Mode=OneTime}">
+                                <DataTrigger Value="ocv" Binding="{Binding Report.Type, Mode=OneTime}">
                                     <Setter Property="IsHitTestVisible" Value="False"/>
                                 </DataTrigger>
                             </Style.Triggers>
@@ -359,21 +359,21 @@
                                 <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
 
                                     <Style.Triggers>
-                                        <DataTrigger Value="verify1D" Binding="{Binding ReportSector.type, Mode=OneTime}">
-                                            <Setter Property="Text" Value="{Binding ReportSector.data.overallGrade.grade.value, StringFormat=N1, Mode=OneTime}"/>
+                                        <DataTrigger Value="verify1D" Binding="{Binding Report.Type, Mode=OneTime}">
+                                            <Setter Property="Text" Value="{Binding Report.OverallGradeValue, StringFormat=N1, Mode=OneTime}"/>
                                         </DataTrigger>
-                                        <DataTrigger Value="verify2D" Binding="{Binding ReportSector.type, Mode=OneTime}">
-                                            <Setter Property="Text" Value="{Binding ReportSector.data.overallGrade.grade.value, StringFormat=N1, Mode=OneTime}"/>
+                                        <DataTrigger Value="verify2D" Binding="{Binding Report.Type, Mode=OneTime}">
+                                            <Setter Property="Text" Value="{Binding Report.OverallGradeValue, StringFormat=N1, Mode=OneTime}"/>
                                         </DataTrigger>
 
-                                        <DataTrigger Value="blemish" Binding="{Binding ReportSector.type, Mode=OneTime}">
-                                            <Setter Property="Text" Value="{Binding ReportSector.data.blemishCount, Mode=OneTime}"/>
+                                        <DataTrigger Value="blemish" Binding="{Binding Report.Type, Mode=OneTime}">
+                                            <Setter Property="Text" Value="{Binding Report.BlemishCount, Mode=OneTime}"/>
                                         </DataTrigger>
-                                        <DataTrigger Value="ocr" Binding="{Binding ReportSector.type, Mode=OneTime}">
-                                            <Setter Property="Text" Value="{Binding ReportSector.data.score, Mode=OneTime}"/>
+                                        <DataTrigger Value="ocr" Binding="{Binding Report.Type, Mode=OneTime}">
+                                            <Setter Property="Text" Value="{Binding Report.Score, Mode=OneTime}"/>
                                         </DataTrigger>
-                                        <DataTrigger Value="ocv" Binding="{Binding ReportSector.type, Mode=OneTime}">
-                                            <Setter Property="Text" Value="{Binding ReportSector.data.score, Mode=OneTime}"/>
+                                        <DataTrigger Value="ocv" Binding="{Binding Report.Type, Mode=OneTime}">
+                                            <Setter Property="Text" Value="{Binding Report.Score, Mode=OneTime}"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -390,7 +390,7 @@
                         <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}"/>
                         <Setter Property="Margin" Value="0,3"/>
                         <Style.Triggers>
-                            <DataTrigger Value="0" Binding="{Binding SectorResults.Alarms.Count, Mode=OneTime}">
+                            <DataTrigger Value="0" Binding="{Binding SectorDifferences.Alarms.Count, Mode=OneTime}">
                                 <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.ThemeBackground}"/>
                                 <Setter Property="Margin" Value="0"/>
                             </DataTrigger>
@@ -398,7 +398,7 @@
                     </Style>
                 </Border.Style>
 
-                <ItemsControl ItemsSource="{Binding SectorResults.Alarms, Mode=OneTime}">
+                <ItemsControl ItemsSource="{Binding SectorDifferences.Alarms, Mode=OneTime}">
                     <ItemsControl.ItemTemplate>
                         <HierarchicalDataTemplate>
                             <Grid Margin="2">
@@ -443,7 +443,7 @@
                     <Style TargetType="{x:Type Border}">
                         <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}"/>
                         <Style.Triggers>
-                            <DataTrigger Value="0" Binding="{Binding SectorResults.Gs1ValueResults.Count, Mode=OneTime}">
+                            <DataTrigger Value="0" Binding="{Binding SectorDifferences.Gs1ValueResults.Count, Mode=OneTime}">
                                 <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.ThemeBackground}"/>
                                 <Setter Property="Margin" Value="0"/>
                             </DataTrigger>
@@ -451,7 +451,7 @@
                     </Style>
                 </Border.Style>
 
-                <ItemsControl ItemsSource="{Binding SectorResults.Gs1ValueResults, Mode=OneTime}">
+                <ItemsControl ItemsSource="{Binding SectorDifferences.Gs1ValueResults, Mode=OneTime}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Grid>

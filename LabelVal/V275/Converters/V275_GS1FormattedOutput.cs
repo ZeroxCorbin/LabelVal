@@ -9,6 +9,9 @@ internal class V275_GS1FormattedOutput : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
+        if (value == null)
+            return null;
+
         var val = (string)value;
 
         var spl = val.Split('(');

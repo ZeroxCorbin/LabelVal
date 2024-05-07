@@ -50,34 +50,162 @@ public class Template
         };
     }
 
-    public Template(Results_QualifiedResult reportSector, string name)
+    public Template(Results_QualifiedResult Report, string name)
     {
-        V5Template = reportSector;
+        V5Template = Report;
 
         Name = name;
         Username = name;
-        Top = reportSector.x;
+        Top = Report.x;
 
-        Symbology = GetV5Symbology(reportSector);
+        Symbology = GetV5Symbology(Report);
 
     }
 
-    private string GetV5Symbology(Results_QualifiedResult reportSector)
+    private string GetV5Symbology(Results_QualifiedResult Report)
     {
-        if (reportSector.Code128 != null)
+        if (Report.Code128 != null)
             return "Code128";
-        else if (reportSector.Datamatrix != null)
+        else if (Report.Datamatrix != null)
             return "DataMatrix";
-        else if (reportSector.QR != null)
+        else if (Report.QR != null)
             return "QR";
-        else if (reportSector.PDF417 != null)
+        else if (Report.PDF417 != null)
             return "PDF417";
-        else if (reportSector.UPC != null)
+        else if (Report.UPC != null)
             return "UPC";
         else
             return "Unknown";
     }
 
+}
+
+
+//Report.Type
+//Report.SymbolType
+//Report.DecodeText
+//Report.Text
+//Report.BlemishCount
+//Report.Score
+//Report.data.xDimension
+//Report.data.aperture
+
+//Report.OverallGradeString
+//Report.OverallGradeValue
+
+//Report.data.gs1Results
+//Report.data.gs1Results.formattedOut
+
+public class Report
+{
+
+    public string Type { get; set; }
+    public string SymbolType { get; set; }
+    public string DecodeText { get; set; }
+    public string Text { get; set; }
+    public int BlemishCount { get; set; }
+    public double Score { get; set; }
+    public double XDimension { get; set; }
+    public double Aperture { get; set; }
+
+    public string OverallGradeString { get; set; }
+    public double OverallGradeValue { get; set; }
+
+    public V275_REST_lib.Models.Report_InspectSector_Common.Gs1results GS1Results { get; set; }
+    public string FormattedOut { get; set; }
+
+    public Report(object report)
+    {
+        switch (report)
+        {
+            case V275_REST_lib.Models.Report_InspectSector_Verify1D:
+                var v1D = (V275_REST_lib.Models.Report_InspectSector_Verify1D)report;
+                Type = v1D.type;
+                SymbolType = v1D.data.symbolType;
+                DecodeText = v1D.data.decodeText;
+                //OCR/V Only: Text = v1D.data.text;
+                //OCR/V Only: Score = v1D.data.score;
+                //Blemish Only: BlemishCount = v1D.data.blemishCount;
+                XDimension = v1D.data.xDimension;
+                Aperture = v1D.data.aperture;
+
+                OverallGradeString = v1D.data.overallGrade._string;
+                OverallGradeValue = v1D.data.overallGrade.grade.value;
+
+                if(v1D.data.gs1Results != null)
+                {
+                    GS1Results = v1D.data.gs1Results;
+                    FormattedOut = v1D.data.gs1Results.formattedOut;
+                }
+
+                break;
+
+            case V275_REST_lib.Models.Report_InspectSector_Verify2D:
+                var v2D = (V275_REST_lib.Models.Report_InspectSector_Verify2D)report;
+                Type = v2D.type;
+                SymbolType = v2D.data.symbolType;
+                DecodeText = v2D.data.decodeText;
+                //OCR/V Only: Text = v1D.data.text;
+                //OCR/V Only: Score = v1D.data.score;
+                //Blemish Only: BlemishCount = v1D.data.blemishCount;
+                XDimension = v2D.data.xDimension;
+                Aperture = v2D.data.aperture;
+
+                OverallGradeString = v2D.data.overallGrade._string;
+                OverallGradeValue = v2D.data.overallGrade.grade.value;
+
+                if (v2D.data.gs1Results != null)
+                {
+                    GS1Results = v2D.data.gs1Results;
+                    FormattedOut = v2D.data.gs1Results.formattedOut;
+                }
+
+                break;
+
+            case Results_QualifiedResult:
+
+                var v5 = (Results_QualifiedResult)report;
+                Type = GetV5Type(v5);
+                SymbolType = GetV5Symbology(v5);
+                DecodeText = v5.dataUTF8;
+                //XDimension = v5.ppe;
+
+                break;
+        }
+
+    }
+
+    private string GetV5Symbology(Results_QualifiedResult Report)
+    {
+        if (Report.Code128 != null)
+            return "Code128";
+        else if (Report.Datamatrix != null)
+            return "DataMatrix";
+        else if (Report.QR != null)
+            return "QR";
+        else if (Report.PDF417 != null)
+            return "PDF417";
+        else if (Report.UPC != null)
+            return "UPC";
+        else
+            return "Unknown";
+    }
+
+    private string GetV5Type(Results_QualifiedResult Report)
+    {
+        if (Report.Code128 != null)
+            return "verify1D";
+        else if (Report.Datamatrix != null)
+            return "verify2D";
+        else if (Report.QR != null)
+            return "verify2D";
+        else if (Report.PDF417 != null)
+            return "verify1D";
+        else if (Report.UPC != null)
+            return "verify1D";
+        else
+            return "Unknown";
+    }
 }
 
 public partial class Sectors : ObservableObject
@@ -87,9 +215,9 @@ public partial class Sectors : ObservableObject
     /// Used for Blemish: blemishMask.layers
     /// Many uses: name, username, top, symbology,
     /// </summary>
-    [ObservableProperty] private Template templateSector;
-    [ObservableProperty] private object reportSector;
-    [ObservableProperty] private SectorDifferences sectorResults = new();
+    [ObservableProperty] private Template template;
+    [ObservableProperty] private object report;
+    [ObservableProperty] private SectorDifferences sectorDifferences = new();
 
     public V275_REST_lib.Models.Job.Sector V275Template { get; }
 
@@ -103,20 +231,21 @@ public partial class Sectors : ObservableObject
     public bool IsNotWrongStandard => !IsWrongStandard;
 
     public Sectors() { }
-    public Sectors(V275_REST_lib.Models.Job.Sector templateSector, object reportSector, bool isWrongStandard, bool isGS1Standard)
+    public Sectors(V275_REST_lib.Models.Job.Sector template, object report, bool isWrongStandard, bool isGS1Standard)
     {
-        ReportSector = reportSector;
-        V275Template = templateSector;
-        TemplateSector = new Template(templateSector);
+        Report = new Report(report);
+
+        V275Template = template;
+        Template = new Template(template);
 
         IsWrongStandard = isWrongStandard;
         IsGS1Standard = isGS1Standard;
 
-        SectorResults.Process(reportSector, TemplateSector.Username, IsGS1Standard);
+        SectorDifferences.V275Process(report, Template.Username, IsGS1Standard);
 
         var highCat = 0;
 
-        foreach (var alm in SectorResults.Alarms)
+        foreach (var alm in SectorDifferences.Alarms)
         {
             //Alarms.Add(alm);
             if (highCat < alm.category)
@@ -130,19 +259,19 @@ public partial class Sectors : ObservableObject
 
     }
 
-    public Sectors(Results_QualifiedResult reportSector, string name, bool isWrongStandard = false, bool isGS1Standard = false)
+    public Sectors(Results_QualifiedResult results, string name, bool isWrongStandard = false, bool isGS1Standard = false)
     {
-        ReportSector = reportSector;
-        TemplateSector = new Template(reportSector, name);
+        Report = new Report(results);
+        Template = new Template(results, name);
 
         IsWrongStandard = isWrongStandard;
         IsGS1Standard = isGS1Standard;
 
-        //SectorResults.Process(reportSector, TemplateSector.Username, IsGS1Standard);
+        SectorDifferences.V5Process(results, Template.Username, IsGS1Standard);
 
         //var highCat = 0;
 
-        //foreach (var alm in SectorResults.Alarms)
+        //foreach (var alm in SectorDifferences.Alarms)
         //{
         //    //Alarms.Add(alm);
         //    if (highCat < alm.category)
@@ -156,19 +285,19 @@ public partial class Sectors : ObservableObject
 
     }
 
-    public Sectors(Template templateSector, object reportSector, bool isWrongStandard, bool isGS1Standard)
+    public Sectors(Template template, object report, bool isWrongStandard, bool isGS1Standard)
     {
-        ReportSector = reportSector;
-        TemplateSector = templateSector;
+        Report = report;
+        Template = template;
 
         IsWrongStandard = isWrongStandard;
         IsGS1Standard = isGS1Standard;
 
-        SectorResults.Process(reportSector, TemplateSector.Username, IsGS1Standard);
+        SectorDifferences.V275Process(Report, Template.Username, IsGS1Standard);
 
         var highCat = 0;
 
-        foreach (var alm in SectorResults.Alarms)
+        foreach (var alm in SectorDifferences.Alarms)
         {
             //Alarms.Add(alm);
             if (highCat < alm.category)
@@ -182,19 +311,20 @@ public partial class Sectors : ObservableObject
 
     }
 
-    //public Sectors(Config templateSector, Results_QualifiedResult reportSector, bool isWrongStandard, bool isGS1Standard)
+
+    //public Sectors(Config Template, Results_QualifiedResult Report, bool isWrongStandard, bool isGS1Standard)
     //{
-    //    ReportSector = reportSector;
-    //    TemplateSector = templateSector;
+    //    Report = Report;
+    //    Template = Template;
 
     //    IsWrongStandard = isWrongStandard;
     //    IsGS1Standard = isGS1Standard;
 
-    //    SectorResults.Process(reportSector, TemplateSector.Username, IsGS1Standard);
+    //    SectorDifferences.Process(Report, Template.Username, IsGS1Standard);
 
     //    var highCat = 0;
 
-    //    foreach (var alm in SectorResults.Alarms)
+    //    foreach (var alm in SectorDifferences.Alarms)
     //    {
     //        //Alarms.Add(alm);
     //        if (highCat < alm.category)

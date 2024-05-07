@@ -143,6 +143,11 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
         SourceImageUID = ImageUtilities.ImageUID(SourceImage);
     }
 
+    private void GetStored()
+    {
+        V275GetStored();
+        V5GetStored();
+    }
 
     [RelayCommand]
     private void Save(string type)
@@ -300,12 +305,6 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
     [RelayCommand] private Task<int> V275Load() => V275LoadTask();
     //[RelayCommand] private void V275Inspect() => _ = V275ReadTask(0);
 
-    private void GetStored()
-    {
-        V275GetStored();
-        V5GetStored();
-    }
-
     private void V275GetStored()
     {
 
@@ -361,7 +360,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
 
             if (tempSectors.Count > 0)
             {
-                tempSectors = tempSectors.OrderBy(x => x.TemplateSector.Top).ToList();
+                tempSectors = tempSectors.OrderBy(x => x.Template.Top).ToList();
 
                 foreach (var sec in tempSectors)
                     V275StoredSectors.Add(sec);
@@ -438,7 +437,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
 
         if (tempSectors.Count > 0)
         {
-            tempSectors = tempSectors.OrderBy(x => x.TemplateSector.Top).ToList();
+            tempSectors = tempSectors.OrderBy(x => x.Template.Top).ToList();
 
             foreach (var sec in tempSectors)
                 V275CurrentSectors.Add(sec);
@@ -458,20 +457,20 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
         foreach (var sec in V275StoredSectors)
         {
             foreach (var cSec in V275CurrentSectors)
-                if (sec.TemplateSector.Name == cSec.TemplateSector.Name)
+                if (sec.Template.Name == cSec.Template.Name)
                 {
-                    if (sec.TemplateSector.Symbology == cSec.TemplateSector.Symbology)
+                    if (sec.Template.Symbology == cSec.Template.Symbology)
                     {
-                        diff.Add(sec.SectorResults.Compare(cSec.SectorResults));
+                        diff.Add(sec.SectorDifferences.Compare(cSec.SectorDifferences));
                         continue;
                     }
                     else
                     {
                         var dat = new Sectors.ViewModels.SectorDifferences
                         {
-                            UserName = $"{sec.TemplateSector.Username} (SYMBOLOGY MISMATCH)",
+                            UserName = $"{sec.Template.Username} (SYMBOLOGY MISMATCH)",
                             IsSectorMissing = true,
-                            SectorMissingText = $"Stored Sector {sec.TemplateSector.Symbology} : Current Sector {cSec.TemplateSector.Symbology}"
+                            SectorMissingText = $"Stored Sector {sec.Template.Symbology} : Current Sector {cSec.Template.Symbology}"
                         };
                         diff.Add(dat);
                     }
@@ -483,7 +482,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
         {
             var found = false;
             foreach (var cSec in V275CurrentSectors)
-                if (sec.TemplateSector.Name == cSec.TemplateSector.Name)
+                if (sec.Template.Name == cSec.Template.Name)
                 {
                     found = true;
                     continue;
@@ -493,7 +492,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
             {
                 var dat = new Sectors.ViewModels.SectorDifferences
                 {
-                    UserName = $"{sec.TemplateSector.Username} (MISSING)",
+                    UserName = $"{sec.Template.Username} (MISSING)",
                     IsSectorMissing = true,
                     SectorMissingText = "Not found in current Sectors"
                 };
@@ -507,7 +506,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
             {
                 var found = false;
                 foreach (var cSec in V275StoredSectors)
-                    if (sec.TemplateSector.Name == cSec.TemplateSector.Name)
+                    if (sec.Template.Name == cSec.Template.Name)
                     {
                         found = true;
                         continue;
@@ -517,7 +516,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
                 {
                     var dat = new Sectors.ViewModels.SectorDifferences
                     {
-                        UserName = $"{sec.TemplateSector.Username} (MISSING)",
+                        UserName = $"{sec.Template.Username} (MISSING)",
                         IsSectorMissing = true,
                         SectorMissingText = "Not found in Stored Sectors"
                     };
@@ -550,17 +549,17 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
 
         foreach (var sec in V275StoredSectors)
         {
-            if (!await SelectedNode.Connection.AddSector(sec.TemplateSector.Name, JsonConvert.SerializeObject(sec.V275Template)))
+            if (!await SelectedNode.Connection.AddSector(sec.Template.Name, JsonConvert.SerializeObject(sec.V275Template)))
             {
                 SendStatusMessage(SelectedNode.Connection.Status, SystemMessages.StatusMessageType.Error);
                 return -1;
             }
 
-            if (sec.TemplateSector.BlemishMask.Layers != null)
+            if (sec.Template.BlemishMask.Layers != null)
             {
-                foreach (var layer in sec.TemplateSector.BlemishMask.Layers)
+                foreach (var layer in sec.Template.BlemishMask.Layers)
                 {
-                    if (!await SelectedNode.Connection.AddMask(sec.TemplateSector.Name, JsonConvert.SerializeObject(layer)))
+                    if (!await SelectedNode.Connection.AddMask(sec.Template.Name, JsonConvert.SerializeObject(layer)))
                     {
                         if (layer.value != 0)
                         {
@@ -694,7 +693,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
 
         foreach (var sec in sectors)
         {
-            var sect = parsedSectors.FirstOrDefault((e) => e.TemplateSector.Name.Equals(sec.name));
+            var sect = parsedSectors.FirstOrDefault((e) => e.Template.Name.Equals(sec.name));
 
             if (sect != null)
             {
@@ -705,7 +704,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
                 if (sec.symbology is "qr" or "dataMatrix")
                 {
 
-                    var res = (Report_InspectSector_Verify2D)sect.ReportSector;
+                    var res = (Report_InspectSector_Verify2D)sect.Report;
 
                     if (res.data.extendedData != null)
                     {
@@ -966,7 +965,6 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
 
         IsV5Working = false;
     }
-
     public bool V5ProcessResults(V5_REST_Lib.Controller.TriggerResults triggerResults, Config config)
     {
         V5CurrentSectors.Clear();
@@ -1010,27 +1008,29 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
         {
             var isWrongStandard = SelectedImageRoll.IsGS1;
 
-            tempSectors.Add(new Sectors.ViewModels.Sectors(rSec, $"DecodeTool{i}"));
+            tempSectors.Add(new Sectors.ViewModels.Sectors(rSec, $"DecodeTool{i++}"));
         }
 
         if (tempSectors.Count > 0)
         {
-            tempSectors = tempSectors.OrderBy(x => x.TemplateSector.Top).ToList();
+            tempSectors = tempSectors.OrderBy(x => x.Template.Top).ToList();
 
             foreach (var sec in tempSectors)
                 V5CurrentSectors.Add(sec);
         }
 
+        V5GetSectorDiff();
 
         V5StoredSectorsImageOverlay = V5CreateStoredSectorsImageOverlay();
 
+
+
         return true;
     }
-
-
     //[RelayCommand] private void V5Read() => _ = V5ReadTask();
     [RelayCommand] private void V5Load() => _ = V5LoadTask();
     //[RelayCommand] private void V5Inspect() => _ = V5ReadTask(0);
+
     private void V5GetStored()
     {
         //foreach (var sec in V5StoredSectors)
@@ -1064,12 +1064,12 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
         {
             var isWrongStandard = SelectedImageRoll.IsGS1;
 
-            tempSectors.Add(new Sectors.ViewModels.Sectors(rSec, $"DecodeTool{i}"));
+            tempSectors.Add(new Sectors.ViewModels.Sectors(rSec, $"DecodeTool{i++}"));
         }
 
         if (tempSectors.Count > 0)
         {
-            tempSectors = tempSectors.OrderBy(x => x.TemplateSector.Top).ToList();
+            tempSectors = tempSectors.OrderBy(x => x.Template.Top).ToList();
 
             foreach (var sec in tempSectors)
                 V5StoredSectors.Add(sec);
@@ -1078,7 +1078,84 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
         V5StoredSectorsImageOverlay = V5CreateStoredSectorsImageOverlay();
     }
 
+    private void V5GetSectorDiff()
+    {
+        List<Sectors.ViewModels.SectorDifferences> diff = [];
 
+        //Compare; Do not check for missing her. To keep found at top of list.
+        foreach (var sec in V5StoredSectors)
+        {
+            foreach (var cSec in V5CurrentSectors)
+                if (sec.Template.Name == cSec.Template.Name)
+                {
+                    if (sec.Template.Symbology == cSec.Template.Symbology)
+                    {
+                        diff.Add(sec.SectorDifferences.Compare(cSec.SectorDifferences));
+                        continue;
+                    }
+                    else
+                    {
+                        var dat = new Sectors.ViewModels.SectorDifferences
+                        {
+                            UserName = $"{sec.Template.Username} (SYMBOLOGY MISMATCH)",
+                            IsSectorMissing = true,
+                            SectorMissingText = $"Stored Sector {sec.Template.Symbology} : Current Sector {cSec.Template.Symbology}"
+                        };
+                        diff.Add(dat);
+                    }
+                }
+        }
+
+        //Check for missing
+        foreach (var sec in V5StoredSectors)
+        {
+            var found = false;
+            foreach (var cSec in V5CurrentSectors)
+                if (sec.Template.Name == cSec.Template.Name)
+                {
+                    found = true;
+                    continue;
+                }
+
+            if (!found)
+            {
+                var dat = new Sectors.ViewModels.SectorDifferences
+                {
+                    UserName = $"{sec.Template.Username} (MISSING)",
+                    IsSectorMissing = true,
+                    SectorMissingText = "Not found in current Sectors"
+                };
+                diff.Add(dat);
+            }
+        }
+
+        //check for missing
+        if (V5StoredSectors.Count > 0)
+            foreach (var sec in V5CurrentSectors)
+            {
+                var found = false;
+                foreach (var cSec in V5StoredSectors)
+                    if (sec.Template.Name == cSec.Template.Name)
+                    {
+                        found = true;
+                        continue;
+                    }
+
+                if (!found)
+                {
+                    var dat = new Sectors.ViewModels.SectorDifferences
+                    {
+                        UserName = $"{sec.Template.Username} (MISSING)",
+                        IsSectorMissing = true,
+                        SectorMissingText = "Not found in Stored Sectors"
+                    };
+                    diff.Add(dat);
+                }
+            }
+
+        foreach (var d in diff)
+            V5DiffSectors.Add(d);
+    }
     public async Task<int> V5LoadTask()
     {
         return 1;

@@ -88,7 +88,7 @@ public partial class SectorDifferences : ObservableObject
     public ObservableCollection<Report_InspectSector_Common.Alarm> Alarms { get; } = [];
     public ObservableCollection<Blemish> Blemishes { get; } = [];
 
-    public void Process(object verify, string userName, bool isGS1Standard)
+    public void V275Process(object verify, string userName, bool isGS1Standard)
     {
         IsGS1Standard = isGS1Standard;
 
@@ -212,6 +212,50 @@ public partial class SectorDifferences : ObservableObject
                     }
                 }
         }
+    }
+
+    public void V5Process(V5_REST_Lib.Models.Results_QualifiedResult results, string userName, bool isGS1Standard)
+    {
+        IsGS1Standard = isGS1Standard;
+
+        UserName = userName;
+        IsNotEmpty = false;
+
+        Type = V5GetSymbolType(results);
+
+
+    }
+
+    private string V5GetSymbology(V5_REST_Lib.Models.Results_QualifiedResult results)
+    {
+        if (results.Code128 != null)
+            return "Code128";
+        else if (results.Datamatrix != null)
+            return "DataMatrix";
+        else if (results.QR != null)
+            return "QR";
+        else if (results.PDF417 != null)
+            return "PDF417";
+        else if (results.UPC != null)
+            return "UPC";
+        else
+            return "Unknown";
+    }
+
+    private string V5GetSymbolType(V5_REST_Lib.Models.Results_QualifiedResult results)
+    {
+        if (results.Code128 != null)
+            return "verify1D";
+        else if (results.Datamatrix != null)
+            return "verify2D";
+        else if (results.QR != null)
+            return "verify2D";
+        else if (results.PDF417 != null)
+            return "verify1D";
+        else if (results.UPC != null)
+            return "verify1D";
+        else
+            return "Unknown";
     }
 
     private string FormatName(string name)

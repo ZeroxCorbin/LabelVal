@@ -70,7 +70,7 @@ public partial class LVS95xx_SerialPortViewModel : ObservableObject
     private void PortController_SectorAvailable(object sector)
     {
         _ = App.Current.Dispatcher.BeginInvoke(new Action(() =>
-        Lvs95xxSectorControl = new Sectors.ViewModels.Sectors(StoredSectorControl.TemplateSector, sector, false, true)));
+        Lvs95xxSectorControl = new Sectors.ViewModels.Sectors(StoredSectorControl.Template, sector, false, true)));
     }
 
     private void PortController_PacketAvailable(string packet) => ReadData = packet;
