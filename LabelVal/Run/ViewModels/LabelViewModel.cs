@@ -70,7 +70,7 @@ public partial class LabelViewModel : ObservableObject
 
         if (tempSectors.Count > 0)
         {
-            tempSectors = tempSectors.OrderBy(x => x.TemplateSector.top).ToList();
+            tempSectors = tempSectors.OrderBy(x => x.TemplateSector.Top).ToList();
 
             foreach (var sec in tempSectors)
                 V275StoredSectors.Add(sec);
@@ -107,7 +107,7 @@ public partial class LabelViewModel : ObservableObject
 
         if (tempSectors.Count > 0)
         {
-            tempSectors = tempSectors.OrderBy(x => x.TemplateSector.top).ToList();
+            tempSectors = tempSectors.OrderBy(x => x.TemplateSector.Top).ToList();
 
             foreach (var sec in tempSectors)
                 V275CurrentSectors.Add(sec);
@@ -119,7 +119,7 @@ public partial class LabelViewModel : ObservableObject
         foreach (var sec in V275StoredSectors)
         {
             foreach (var cSec in V275CurrentSectors)
-                if (sec.TemplateSector.name == cSec.TemplateSector.name)
+                if (sec.TemplateSector.Name == cSec.TemplateSector.Name)
                 {
                     diff.Add(sec.SectorResults.Compare(cSec.SectorResults));
                     continue;

@@ -22,7 +22,7 @@ namespace LabelVal.ImageRolls.Databases
         {
             [ObservableProperty] private string imageRollName;
             [ObservableProperty] private byte[] sourceImage;
-            [ObservableProperty] private string sourceImageUID;
+            [ObservableProperty] [property: PrimaryKey] private string sourceImageUID;
             [ObservableProperty] private string template;
             [ObservableProperty] private string report;
             [ObservableProperty] private byte[] storedImage;
@@ -32,7 +32,7 @@ namespace LabelVal.ImageRolls.Databases
         {
             [ObservableProperty] private string imageRollName;
             [ObservableProperty] private byte[] sourceImage;
-            [ObservableProperty] private string sourceImageUID;
+            [ObservableProperty] [property: PrimaryKey] private string sourceImageUID;
             [ObservableProperty] private string template;
             [ObservableProperty] private string report;
             [ObservableProperty] private byte[] storedImage;

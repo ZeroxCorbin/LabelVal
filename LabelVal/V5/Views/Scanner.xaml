@@ -503,18 +503,21 @@
                     <DockPanel >
 
                         <!--JSON-->
-                        <json:JsonViewer Title="JSON" JSON="{Binding ExplicitMessages}" ShowSaveButton="True" MinWidth="200" MaxHeight="390" MaxWidth="400"/>
+                        <json:JsonViewer Title="JSON" JSON="{Binding ExplicitMessages}" ShowSaveButton="True" MinWidth="200" MaxWidth="400"/>
 
                         <!--Results-->
                         <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}"
                                   Background="{DynamicResource MahApps.Brushes.Accent4}"
-                                  VerticalAlignment="Top" Margin="3" Padding="3">
+                                  VerticalAlignment="Top" Margin="3" Padding="3" Height="390">
 
                             <GroupBox.Header>
                                 <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="2,1">
                                     <TextBlock Text="Results" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                                 </md:Card>
                             </GroupBox.Header>
+
+
+
 
                             <DockPanel Width="166">
 
@@ -535,54 +538,57 @@
 
                                     </StackPanel>
                                 </md:Card>
+                                <ScrollViewer>
+                                    <ListView ItemsSource="{Binding Results}" HorizontalContentAlignment="Stretch" IsHitTestVisible="False">
 
-                                <ListView ItemsSource="{Binding Results}" HorizontalContentAlignment="Stretch">
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <md:Card Foreground="{DynamicResource MahApps.Brushes.Text}" Background="{DynamicResource MahApps.Brushes.Control.Background}" Margin="-5" Padding="2" Width="160">
+                                                    <DockPanel>
 
-                                    <ListView.ItemTemplate>
-                                        <DataTemplate>
-                                            <md:Card Foreground="{DynamicResource MahApps.Brushes.Text}" Background="{DynamicResource MahApps.Brushes.Control.Background}" Margin="-5" Padding="2" Width="160">
-                                                <DockPanel>
-
-                                                    <DockPanel DockPanel.Dock="Top">
+                                                        <DockPanel DockPanel.Dock="Top">
 
 
-                                                        <TextBlock DockPanel.Dock="Top" Text="{Binding [type]}"/>
+                                                            <TextBlock DockPanel.Dock="Top" Text="{Binding [type]}"/>
 
-                                                        <TextBox Text="{Binding [dataUTF8], Mode=OneWay}" IsReadOnly="True" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" TextWrapping="Wrap"/>
+                                                            <TextBox Text="{Binding [dataUTF8], Mode=OneWay}" IsReadOnly="True" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" TextWrapping="Wrap"/>
 
+
+                                                        </DockPanel>
+
+
+
+                                                        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                                                            <TextBlock Text="PPE: "/>
+                                                            <TextBlock Text="{Binding [ppe], StringFormat=N2}"/>
+                                                        </StackPanel>
+
+                                                        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                                                            <TextBlock Text="Position: "/>
+                                                            <TextBlock>
+                                                                <TextBlock.Text>
+                                                                    <MultiBinding StringFormat="{}{0} x {1}">
+                                                                        <Binding Path="[x]"/>
+                                                                        <Binding Path="[y]"/>
+                                                                    </MultiBinding>
+                                                                </TextBlock.Text>
+                                                            </TextBlock>
+                                                        </StackPanel>
+
+                                                        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                                                            <TextBlock Text="Angle: "/>
+                                                            <TextBlock Text="{Binding [angleDeg], StringFormat=N2}"/>
+                                                        </StackPanel>
 
                                                     </DockPanel>
-
-
-
-                                                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
-                                                        <TextBlock Text="PPE: "/>
-                                                        <TextBlock Text="{Binding [ppe], StringFormat=N2}"/>
-                                                    </StackPanel>
-
-                                                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
-                                                        <TextBlock Text="Position: "/>
-                                                        <TextBlock>
-                                                            <TextBlock.Text>
-                                                                <MultiBinding StringFormat="{}{0} x {1}">
-                                                                    <Binding Path="[x]"/>
-                                                                    <Binding Path="[y]"/>
-                                                                </MultiBinding>
-                                                            </TextBlock.Text>
-                                                        </TextBlock>
-                                                    </StackPanel>
-
-                                                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
-                                                        <TextBlock Text="Angle: "/>
-                                                        <TextBlock Text="{Binding [angleDeg], StringFormat=N2}"/>
-                                                    </StackPanel>
-
-                                                </DockPanel>
-                                            </md:Card>
-                                        </DataTemplate>
-                                    </ListView.ItemTemplate>
-                                </ListView>
+                                                </md:Card>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                    </ListView>
+                                </ScrollViewer>
                             </DockPanel>
+
+
                         </GroupBox>
 
                         <!--Image-->

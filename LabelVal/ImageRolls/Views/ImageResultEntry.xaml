@@ -1078,7 +1078,7 @@
                         Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
 
                 <ScrollViewer HorizontalScrollBarVisibility="Auto">
-                    <ItemsControl ItemsSource="{Binding V275StoredSectors}">
+                    <ItemsControl ItemsSource="{Binding V5StoredSectors}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <WrapPanel IsItemsHost="True" MaxWidth="1024"/>

@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using LabelVal.Messages;
-using LabelVal.Printer;
 using LabelVal.Utilities;
 using LabelVal.V275.ViewModels;
 using LabelVal.V5.ViewModels;
@@ -74,9 +73,9 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
 
     [ObservableProperty] private Databases.ImageResults.V5Result v5ResultRow;
 
-    public Config V5CurrentTemplate { get; set; }
+    //public Config V5CurrentTemplate { get; set; }
     public Results V5CurrentReport { get; private set; }
-    public Config V5StoredTemplate { get; set; }
+    public Results V5StoredReport { get; set; }
 
     [ObservableProperty] private ObservableCollection<Sectors.ViewModels.Sectors> v5CurrentSectors = [];
     [ObservableProperty] private ObservableCollection<Sectors.ViewModels.Sectors> v5StoredSectors = [];
@@ -104,7 +103,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
     [ObservableProperty] private ImageRollEntry selectedImageRoll;
     [ObservableProperty] private Scanner selectedScanner;
     [ObservableProperty] private Databases.ImageResults selectedDatabase;
-    partial void OnSelectedDatabaseChanged(Databases.ImageResults value) => V275GetStored();
+    partial void OnSelectedDatabaseChanged(Databases.ImageResults value) => GetStored();
 
 
     private static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
@@ -212,9 +211,8 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
                 ImageRollName = SelectedImageRoll.Name,
                 SourceImageUID = SourceImageUID,
                 SourceImage = SourceImage,
-                Template = JsonConvert.SerializeObject(V275CurrentTemplate),
-                Report = JsonConvert.SerializeObject(V275CurrentReport),
-                StoredImage = V275Image
+                Report = JsonConvert.SerializeObject(V5CurrentReport),
+                StoredImage = V5Image
             });
 
             V5CurrentSectors.Clear();
@@ -266,7 +264,6 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
         else if (device == "V5")
         {
             V5CurrentReport = null;
-            V5CurrentTemplate = null;
 
             V5Image = null;
             V5StoredSectorsImageOverlay = null;
@@ -302,6 +299,13 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
     [RelayCommand] private Task<bool> V275Read() => V275ReadTask(0);
     [RelayCommand] private Task<int> V275Load() => V275LoadTask();
     //[RelayCommand] private void V275Inspect() => _ = V275ReadTask(0);
+
+    private void GetStored()
+    {
+        V275GetStored();
+        V5GetStored();
+    }
+
     private void V275GetStored()
     {
 
@@ -357,7 +361,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
 
             if (tempSectors.Count > 0)
             {
-                tempSectors = tempSectors.OrderBy(x => x.TemplateSector.top).ToList();
+                tempSectors = tempSectors.OrderBy(x => x.TemplateSector.Top).ToList();
 
                 foreach (var sec in tempSectors)
                     V275StoredSectors.Add(sec);
@@ -434,7 +438,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
 
         if (tempSectors.Count > 0)
         {
-            tempSectors = tempSectors.OrderBy(x => x.TemplateSector.top).ToList();
+            tempSectors = tempSectors.OrderBy(x => x.TemplateSector.Top).ToList();
 
             foreach (var sec in tempSectors)
                 V275CurrentSectors.Add(sec);
@@ -454,9 +458,9 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
         foreach (var sec in V275StoredSectors)
         {
             foreach (var cSec in V275CurrentSectors)
-                if (sec.TemplateSector.name == cSec.TemplateSector.name)
+                if (sec.TemplateSector.Name == cSec.TemplateSector.Name)
                 {
-                    if (sec.TemplateSector.symbology == cSec.TemplateSector.symbology)
+                    if (sec.TemplateSector.Symbology == cSec.TemplateSector.Symbology)
                     {
                         diff.Add(sec.SectorResults.Compare(cSec.SectorResults));
                         continue;
@@ -465,9 +469,9 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
                     {
                         var dat = new Sectors.ViewModels.SectorDifferences
                         {
-                            UserName = $"{sec.TemplateSector.username} (SYMBOLOGY MISMATCH)",
+                            UserName = $"{sec.TemplateSector.Username} (SYMBOLOGY MISMATCH)",
                             IsSectorMissing = true,
-                            SectorMissingText = $"Stored Sector {sec.TemplateSector.symbology} : Current Sector {cSec.TemplateSector.symbology}"
+                            SectorMissingText = $"Stored Sector {sec.TemplateSector.Symbology} : Current Sector {cSec.TemplateSector.Symbology}"
                         };
                         diff.Add(dat);
                     }
@@ -479,7 +483,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
         {
             var found = false;
             foreach (var cSec in V275CurrentSectors)
-                if (sec.TemplateSector.name == cSec.TemplateSector.name)
+                if (sec.TemplateSector.Name == cSec.TemplateSector.Name)
                 {
                     found = true;
                     continue;
@@ -489,7 +493,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
             {
                 var dat = new Sectors.ViewModels.SectorDifferences
                 {
-                    UserName = $"{sec.TemplateSector.username} (MISSING)",
+                    UserName = $"{sec.TemplateSector.Username} (MISSING)",
                     IsSectorMissing = true,
                     SectorMissingText = "Not found in current Sectors"
                 };
@@ -503,7 +507,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
             {
                 var found = false;
                 foreach (var cSec in V275StoredSectors)
-                    if (sec.TemplateSector.name == cSec.TemplateSector.name)
+                    if (sec.TemplateSector.Name == cSec.TemplateSector.Name)
                     {
                         found = true;
                         continue;
@@ -513,7 +517,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
                 {
                     var dat = new Sectors.ViewModels.SectorDifferences
                     {
-                        UserName = $"{sec.TemplateSector.username} (MISSING)",
+                        UserName = $"{sec.TemplateSector.Username} (MISSING)",
                         IsSectorMissing = true,
                         SectorMissingText = "Not found in Stored Sectors"
                     };
@@ -546,17 +550,17 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
 
         foreach (var sec in V275StoredSectors)
         {
-            if (!await SelectedNode.Connection.AddSector(sec.TemplateSector.name, JsonConvert.SerializeObject(sec.TemplateSector)))
+            if (!await SelectedNode.Connection.AddSector(sec.TemplateSector.Name, JsonConvert.SerializeObject(sec.V275Template)))
             {
                 SendStatusMessage(SelectedNode.Connection.Status, SystemMessages.StatusMessageType.Error);
                 return -1;
             }
 
-            if (sec.TemplateSector.type == "blemish")
+            if (sec.TemplateSector.BlemishMask.Layers != null)
             {
-                foreach (var layer in sec.TemplateSector.blemishMask.layers)
+                foreach (var layer in sec.TemplateSector.BlemishMask.Layers)
                 {
-                    if (!await SelectedNode.Connection.AddMask(sec.TemplateSector.name, JsonConvert.SerializeObject(layer)))
+                    if (!await SelectedNode.Connection.AddMask(sec.TemplateSector.Name, JsonConvert.SerializeObject(layer)))
                     {
                         if (layer.value != 0)
                         {
@@ -690,7 +694,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
 
         foreach (var sec in sectors)
         {
-            var sect = parsedSectors.FirstOrDefault((e) => e.TemplateSector.name.Equals(sec.name));
+            var sect = parsedSectors.FirstOrDefault((e) => e.TemplateSector.Name.Equals(sec.name));
 
             if (sect != null)
             {
@@ -972,25 +976,23 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
         {
             SendErrorMessage("Could not trigger the scanner.");
 
-            V275CurrentTemplate = null;
-            V275CurrentReport = null;
+            V5CurrentReport = null;
 
-            if (!IsV275ImageStored)
+            if (!IsV5ImageStored)
             {
-                V275Image = null;
-                V275StoredSectorsImageOverlay = null;
+                V5Image = null;
+                V5StoredSectorsImageOverlay = null;
             }
 
             return false;
         }
 
-        V5CurrentTemplate = config;
-        V5CurrentReport = JsonConvert.DeserializeObject<Results>(triggerResults.ReportJSON);
+        V5CurrentReport = JsonConvert.DeserializeObject<Results>(triggerResults.ReportJSON, new JsonSerializerSettings() { });
 
         if (!SelectedScanner.IsSimulator)
         {
             V5Image = ImageUtilities.ConvertToPng(triggerResults.FullImage);
-            IsV275ImageStored = false;
+            IsV5ImageStored = false;
         }
         else
         {
@@ -1001,54 +1003,37 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
             }
         }
 
-        ////if (!isRunning)
-        ////{
-        //List<Sectors> tempSectors = [];
-        //foreach (var jSec in V275CurrentTemplate.sectors)
-        //{
-        //    var isWrongStandard = false;
-        //    if (jSec.type is "verify1D" or "verify2D")
-        //        isWrongStandard = SelectedImageRoll.IsGS1 && (!jSec.gradingStandard.enabled || SelectedImageRoll.TableID != jSec.gradingStandard.tableId);
 
-        //    foreach (JObject rSec in V275CurrentReport.inspectLabel.inspectSector)
-        //    {
-        //        if (jSec.name == rSec["name"].ToString())
-        //        {
+        List<Sectors.ViewModels.Sectors> tempSectors = [];
+        int i = 1;
+        foreach (var rSec in V5CurrentReport._event.data.cycleConfig.qualifiedResults)
+        {
+            var isWrongStandard = SelectedImageRoll.IsGS1;
 
-        //            var fSec = DeserializeSector(rSec, !SelectedImageRoll.IsGS1 && SelectedNode.IsOldISO);
+            tempSectors.Add(new Sectors.ViewModels.Sectors(rSec, $"DecodeTool{i}"));
+        }
 
-        //            if (fSec == null)
-        //                break; //Not yet supported sector type
+        if (tempSectors.Count > 0)
+        {
+            tempSectors = tempSectors.OrderBy(x => x.TemplateSector.Top).ToList();
 
-        //            tempSectors.Add(new Sectors(jSec, fSec, isWrongStandard, jSec.gradingStandard != null && jSec.gradingStandard.enabled));
+            foreach (var sec in tempSectors)
+                V5CurrentSectors.Add(sec);
+        }
 
-        //            break;
-        //        }
-        //    }
-        //}
-
-        //if (tempSectors.Count > 0)
-        //{
-        //    tempSectors = tempSectors.OrderBy(x => x.TemplateSector.top).ToList();
-
-        //    foreach (var sec in tempSectors)
-        //        V275CurrentSectors.Add(sec);
-        //}
-        ////}
-        //GetSectorDiff();
 
         V5StoredSectorsImageOverlay = V5CreateStoredSectorsImageOverlay();
 
         return true;
     }
 
+
     //[RelayCommand] private void V5Read() => _ = V5ReadTask();
     [RelayCommand] private void V5Load() => _ = V5LoadTask();
-    //[RelayCommand] private void V5Inspect() => _ = V275ReadTask(0);
+    //[RelayCommand] private void V5Inspect() => _ = V5ReadTask(0);
     private void V5GetStored()
     {
-
-        //foreach (var sec in V275StoredSectors)
+        //foreach (var sec in V5StoredSectors)
         //    sec.Clear();
 
         V5DiffSectors.Clear();
@@ -1068,47 +1053,29 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
             return;
         }
 
-        V5StoredTemplate = JsonConvert.DeserializeObject<Config>(V5ResultRow.Template);
+        V5StoredReport = JsonConvert.DeserializeObject<Results>(V5ResultRow.Report);
 
         V5Image = V5ResultRow.StoredImage;
         IsV5ImageStored = true;
 
-        //List<Sectors> tempSectors = [];
-        //if (!string.IsNullOrEmpty(V275ResultRow.Report) && !string.IsNullOrEmpty(V275ResultRow.Template))
-        //    foreach (var jSec in V275StoredTemplate.sectors)
-        //    {
-        //        var isWrongStandard = false;
-        //        if (jSec.type is "verify1D" or "verify2D")
-        //            isWrongStandard = SelectedImageRoll.IsGS1 && (!jSec.gradingStandard.enabled || SelectedImageRoll.TableID != jSec.gradingStandard.tableId);
+        List<Sectors.ViewModels.Sectors> tempSectors = [];
+        int i = 1;
+        foreach (var rSec in V5StoredReport._event.data.cycleConfig.qualifiedResults)
+        {
+            var isWrongStandard = SelectedImageRoll.IsGS1;
 
-        //        foreach (JObject rSec in JsonConvert.DeserializeObject<Report>(V275ResultRow.Report).inspectLabel.inspectSector)
-        //        {
-        //            if (jSec.name == rSec["name"].ToString())
-        //            {
+            tempSectors.Add(new Sectors.ViewModels.Sectors(rSec, $"DecodeTool{i}"));
+        }
 
-        //                var fSec = DeserializeSector(rSec, false);
+        if (tempSectors.Count > 0)
+        {
+            tempSectors = tempSectors.OrderBy(x => x.TemplateSector.Top).ToList();
 
-        //                if (fSec == null)
-        //                    break;
+            foreach (var sec in tempSectors)
+                V5StoredSectors.Add(sec);
+        }
 
-        //                tempSectors.Add(new Sectors(jSec, fSec, isWrongStandard, jSec.gradingStandard != null && jSec.gradingStandard.enabled));
-
-        //                break;
-        //            }
-        //        }
-        //    }
-
-        //if (tempSectors.Count > 0)
-        //{
-        //    tempSectors = tempSectors.OrderBy(x => x.TemplateSector.top).ToList();
-
-        //    foreach (var sec in tempSectors)
-        //        V275StoredSectors.Add(sec);
-        //}
-
-        V5StoredSectorsImageOverlay = V275CreateStoredSectorsImageOverlay(false, false);
-
-
+        V5StoredSectorsImageOverlay = V5CreateStoredSectorsImageOverlay();
     }
 
 
@@ -1139,7 +1106,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
         //    }
 
         //    if (isDetailed)
-        //        drwGroup = GetModuleGrid(V5StoredTemplate.sectors, V275StoredSectors);
+        //        drwGroup = GetModuleGrid(V5StoredTemplate.sectors, V5StoredSectors);
         //}
         //else
         //{
@@ -1150,7 +1117,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
         //    }
 
         //    if (isDetailed)
-        //        drwGroup = GetModuleGrid(V5CurrentTemplate.sectors, V275CurrentSectors);
+        //        drwGroup = GetModuleGrid(V5CurrentTemplate.sectors, V5CurrentSectors);
         //}
 
         var sectors = new GeometryDrawing
@@ -1175,11 +1142,11 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
         //    {
         //        if (!isRepeat)
         //        {
-        //            DrawModuleGrid(g, V275StoredTemplate.sectors, V275StoredSectors);
+        //            DrawModuleGrid(g, V5StoredTemplate.sectors, V5StoredSectors);
         //        }
         //        else
         //        {
-        //            DrawModuleGrid(g, V275CurrentTemplate.sectors, V275CurrentSectors);
+        //            DrawModuleGrid(g, V5CurrentTemplate.sectors, V5CurrentSectors);
         //        }
         //    }
         //}
