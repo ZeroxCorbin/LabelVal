@@ -10,6 +10,7 @@
              d:DataContext="{d:DesignInstance Type=ViewModels:ScannerManager}"
              mc:Ignorable="d" >
 
+    
     <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" VerticalAlignment="Top" HorizontalAlignment="Left"
               Margin="3" Padding="3">
 
@@ -38,9 +39,8 @@
             <ListView ItemsSource="{Binding Scanners}" SelectedItem="{Binding SelectedScanner}" HorizontalAlignment="Center">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <md:Card Background="{DynamicResource MahApps.Brushes.Accent4}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="-5">
-                            <local:Scanner DataContext="{Binding }"/>
-                        </md:Card>
+                        <local:Scanner DataContext="{Binding }"/>
+                 
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

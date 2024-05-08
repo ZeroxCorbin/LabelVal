@@ -30,10 +30,19 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove=".gitattributes" />
+    <None Remove="Assets\Images\V275WhiteIcon.ico" />
+    <None Remove="Assets\Images\V275WhiteIcon.png" />
+    <None Remove="Assets\Images\V275_Icon.xcf" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="ToDo.txt" />
     <Content Include="Assets\ImageResultsDatabases\GS1 Golden.sqlite">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\V275WhiteIcon.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\V275WhiteIcon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

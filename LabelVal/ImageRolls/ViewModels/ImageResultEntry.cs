@@ -46,8 +46,8 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
     public delegate void V275ProcessImageDelegate(ImageResultEntry imageResults, string type);
     public event V275ProcessImageDelegate V275ProcessImage;
 
-    public Job V275CurrentTemplate { get; set; } 
-    public Report V275CurrentReport { get; private set; }   
+    public Job V275CurrentTemplate { get; set; }
+    public Report V275CurrentReport { get; private set; }
     public Job V275StoredTemplate { get; set; }
 
 
@@ -163,7 +163,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
                 var bmp = ImageUtilities.ConvertToBmp(V275Image);
                 _ = SaveImageBytesToFile(path, bmp);
                 Clipboard.SetText(path);
-            } 
+            }
             else if (type == "v5Stored")
             {
                 var bmp = ImageUtilities.ConvertToBmp(V5Image);
@@ -308,65 +308,65 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
     private void V275GetStored()
     {
 
-            //foreach (var sec in V275StoredSectors)
-            //    sec.Clear();
+        //foreach (var sec in V275StoredSectors)
+        //    sec.Clear();
 
-            V275DiffSectors.Clear();
-            V275StoredSectors.Clear();
+        V275DiffSectors.Clear();
+        V275StoredSectors.Clear();
 
-            V275ResultRow = SelectedDatabase.Select_V275Result(SelectedImageRoll.Name, SourceImageUID);
+        V275ResultRow = SelectedDatabase.Select_V275Result(SelectedImageRoll.Name, SourceImageUID);
 
-            if (V275ResultRow == null)
+        if (V275ResultRow == null)
+        {
+            if (V275CurrentSectors.Count == 0)
             {
-                if (V275CurrentSectors.Count == 0)
-                {
-                    V275Image = null;
-                    V275StoredSectorsImageOverlay = null;
-                    IsV275ImageStored = false;
-                }
-
-                return;
+                V275Image = null;
+                V275StoredSectorsImageOverlay = null;
+                IsV275ImageStored = false;
             }
 
-            V275StoredTemplate = JsonConvert.DeserializeObject<Job>(V275ResultRow.Template);
+            return;
+        }
 
-            V275Image = V275ResultRow.StoredImage;
-            IsV275ImageStored = true;
+        V275StoredTemplate = JsonConvert.DeserializeObject<Job>(V275ResultRow.Template);
 
-            List<Sectors.ViewModels.Sectors> tempSectors = [];
-            if (!string.IsNullOrEmpty(V275ResultRow.Report) && !string.IsNullOrEmpty(V275ResultRow.Template))
-                foreach (var jSec in V275StoredTemplate.sectors)
+        V275Image = V275ResultRow.StoredImage;
+        IsV275ImageStored = true;
+
+        List<Sectors.ViewModels.Sectors> tempSectors = [];
+        if (!string.IsNullOrEmpty(V275ResultRow.Report) && !string.IsNullOrEmpty(V275ResultRow.Template))
+            foreach (var jSec in V275StoredTemplate.sectors)
+            {
+                var isWrongStandard = false;
+                if (jSec.type is "verify1D" or "verify2D")
+                    isWrongStandard = SelectedImageRoll.IsGS1 && (!jSec.gradingStandard.enabled || SelectedImageRoll.TableID != jSec.gradingStandard.tableId);
+
+                foreach (JObject rSec in JsonConvert.DeserializeObject<Report>(V275ResultRow.Report).inspectLabel.inspectSector)
                 {
-                    var isWrongStandard = false;
-                    if (jSec.type is "verify1D" or "verify2D")
-                        isWrongStandard = SelectedImageRoll.IsGS1 && (!jSec.gradingStandard.enabled || SelectedImageRoll.TableID != jSec.gradingStandard.tableId);
-
-                    foreach (JObject rSec in JsonConvert.DeserializeObject<Report>(V275ResultRow.Report).inspectLabel.inspectSector)
+                    if (jSec.name == rSec["name"].ToString())
                     {
-                        if (jSec.name == rSec["name"].ToString())
-                        {
 
-                            var fSec = V275DeserializeSector(rSec, false);
+                        var fSec = V275DeserializeSector(rSec, false);
 
-                            if (fSec == null)
-                                break;
-
-                            tempSectors.Add(new Sectors.ViewModels.Sectors(jSec, fSec, isWrongStandard, jSec.gradingStandard != null && jSec.gradingStandard.enabled));
-
+                        if (fSec == null)
                             break;
-                        }
+
+                        tempSectors.Add(new Sectors.ViewModels.Sectors(jSec, fSec, isWrongStandard, jSec.gradingStandard != null && jSec.gradingStandard.enabled));
+
+                        break;
                     }
                 }
-
-            if (tempSectors.Count > 0)
-            {
-                tempSectors = tempSectors.OrderBy(x => x.Template.Top).ToList();
-
-                foreach (var sec in tempSectors)
-                    V275StoredSectors.Add(sec);
             }
 
-            V275StoredSectorsImageOverlay = V275CreateStoredSectorsImageOverlay(false, false);
+        if (tempSectors.Count > 0)
+        {
+            tempSectors = tempSectors.OrderBy(x => x.Template.Top).ToList();
+
+            foreach (var sec in tempSectors)
+                V275StoredSectors.Add(sec);
+        }
+
+        V275StoredSectorsImageOverlay = V275CreateStoredSectorsImageOverlay(false, false);
 
 
     }
@@ -704,34 +704,34 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
                 if (sec.symbology is "qr" or "dataMatrix")
                 {
 
-                    var res = (Report_InspectSector_Verify2D)sect.Report;
+                    var res = (Sectors.ViewModels.Report)sect.Report;
 
-                    if (res.data.extendedData != null)
+                    if (res.ExtendedData != null)
                     {
-                        if (res.data.extendedData.ModuleReflectance != null)
+                        if (res.ExtendedData.ModuleReflectance != null)
                         {
                             var moduleGrid = new GeometryGroup();
                             var textGrp = new DrawingGroup();
 
-                            var qzX = (sec.symbology == "dataMatrix") ? 1 : res.data.extendedData.QuietZone;
-                            var qzY = res.data.extendedData.QuietZone;
+                            var qzX = (sec.symbology == "dataMatrix") ? 1 : res.ExtendedData.QuietZone;
+                            var qzY = res.ExtendedData.QuietZone;
 
-                            var dX = (sec.symbology == "dataMatrix") ? 0 : (res.data.extendedData.DeltaX / 2);
-                            var dY = (sec.symbology == "dataMatrix") ? (res.data.extendedData.DeltaY * res.data.extendedData.NumRows) : (res.data.extendedData.DeltaY / 2);
+                            var dX = (sec.symbology == "dataMatrix") ? 0 : (res.ExtendedData.DeltaX / 2);
+                            var dY = (sec.symbology == "dataMatrix") ? (res.ExtendedData.DeltaY * res.ExtendedData.NumRows) : (res.ExtendedData.DeltaY / 2);
 
-                            var startX = 0;// sec.left + res.data.extendedData.Xnw - dX + 1 - (qzX * res.data.extendedData.DeltaX);
-                            var startY = 0;// sec.top + res.data.extendedData.Ynw - dY + 1 - (qzY * res.data.extendedData.DeltaY);
+                            var startX = 0;// sec.left + res.ExtendedData.Xnw - dX + 1 - (qzX * res.ExtendedData.DeltaX);
+                            var startY = 0;// sec.top + res.ExtendedData.Ynw - dY + 1 - (qzY * res.ExtendedData.DeltaY);
 
                             var cnt = 0;
 
-                            for (var row = -qzX; row < res.data.extendedData.NumRows + qzX; row++)
+                            for (var row = -qzX; row < res.ExtendedData.NumRows + qzX; row++)
                             {
-                                for (var col = -qzY; col < res.data.extendedData.NumColumns + qzY; col++)
+                                for (var col = -qzY; col < res.ExtendedData.NumColumns + qzY; col++)
                                 {
-                                    var area1 = new RectangleGeometry(new Rect(startX + (res.data.extendedData.DeltaX * (col + qzX)), startY + (res.data.extendedData.DeltaY * (row + qzY)), res.data.extendedData.DeltaX, res.data.extendedData.DeltaY));
+                                    var area1 = new RectangleGeometry(new Rect(startX + (res.ExtendedData.DeltaX * (col + qzX)), startY + (res.ExtendedData.DeltaY * (row + qzY)), res.ExtendedData.DeltaX, res.ExtendedData.DeltaY));
                                     moduleGrid.Children.Add(area1);
 
-                                    var text = res.data.extendedData.ModuleModulation[cnt].ToString();
+                                    var text = res.ExtendedData.ModuleModulation[cnt].ToString();
                                     var typeface = new Typeface("Arial");
                                     if (typeface.TryGetGlyphTypeface(out var _glyphTypeface))
                                     {
@@ -751,8 +751,8 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
                                         }
 
                                         var gr = new GlyphRun(_glyphTypeface, 0, false, 2, 1.0f, _glyphIndexes,
-                                            new Point(startX + (res.data.extendedData.DeltaX * (col + qzX)) + 1,
-                                            startY + (res.data.extendedData.DeltaY * (row + qzY)) + (_glyphTypeface.Height * (res.data.extendedData.DeltaY / 4))),
+                                            new Point(startX + (res.ExtendedData.DeltaX * (col + qzX)) + 1,
+                                            startY + (res.ExtendedData.DeltaY * (row + qzY)) + (_glyphTypeface.Height * (res.ExtendedData.DeltaY / 4))),
                                             _advanceWidths, null, null, null, null, null, null);
 
                                         var grd = new GlyphRunDrawing(Brushes.Blue, gr);
@@ -760,7 +760,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
                                         textGrp.Children.Add(grd);
                                     }
 
-                                    text = res.data.extendedData.ModuleReflectance[cnt++].ToString();
+                                    text = res.ExtendedData.ModuleReflectance[cnt++].ToString();
                                     var typeface1 = new Typeface("Arial");
                                     if (typeface1.TryGetGlyphTypeface(out var _glyphTypeface1))
                                     {
@@ -780,8 +780,8 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
                                         }
 
                                         var gr = new GlyphRun(_glyphTypeface1, 0, false, 2, 1.0f, _glyphIndexes,
-                                            new Point(startX + (res.data.extendedData.DeltaX * (col + qzX)) + 1,
-                                            startY + (res.data.extendedData.DeltaY * (row + qzY)) + (_glyphTypeface1.Height * (res.data.extendedData.DeltaY / 2))),
+                                            new Point(startX + (res.ExtendedData.DeltaX * (col + qzX)) + 1,
+                                            startY + (res.ExtendedData.DeltaY * (row + qzY)) + (_glyphTypeface1.Height * (res.ExtendedData.DeltaY / 2))),
                                             _advanceWidths, null, null, null, null, null, null);
 
                                         var grd = new GlyphRunDrawing(Brushes.Blue, gr);
@@ -789,7 +789,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
                                     }
 
                                     //FormattedText formattedText = new FormattedText(
-                                    //    res.data.extendedData.ModuleReflectance[row + col].ToString(),
+                                    //    res.ExtendedData.ModuleReflectance[row + col].ToString(),
                                     //    CultureInfo.GetCultureInfo("en-us"),
                                     //    FlowDirection.LeftToRight,
                                     //    new Typeface("Arial"),
@@ -798,7 +798,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
                                     //);
 
                                     //// Build the geometry object that represents the text.
-                                    //Geometry textGeometry = formattedText.BuildGeometry(new System.Windows.Point(startX + (res.data.extendedData.DeltaX * row), startY + (res.data.extendedData.DeltaY * col)));
+                                    //Geometry textGeometry = formattedText.BuildGeometry(new System.Windows.Point(startX + (res.ExtendedData.DeltaX * row), startY + (res.ExtendedData.DeltaY * col)));
                                     //moduleGrid.Children.Add(textGeometry);
                                 }
                             }
@@ -807,38 +807,38 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
 
                             transGroup.Children.Add(new RotateTransform(
                                 sec.orientation,
-                                res.data.extendedData.DeltaX * (res.data.extendedData.NumColumns + (qzX * 2)) / 2,
-                                res.data.extendedData.DeltaY * (res.data.extendedData.NumRows + (qzY * 2)) / 2));
+                                res.ExtendedData.DeltaX * (res.ExtendedData.NumColumns + (qzX * 2)) / 2,
+                                res.ExtendedData.DeltaY * (res.ExtendedData.NumRows + (qzY * 2)) / 2));
 
                             transGroup.Children.Add(new TranslateTransform(sec.left, sec.top));
 
-                            //transGroup.Children.Add(new TranslateTransform (res.data.extendedData.Xnw - dX + 1 - (qzX * res.data.extendedData.DeltaX), res.data.extendedData.Ynw - dY + 1 - (qzY * res.data.extendedData.DeltaY)));
+                            //transGroup.Children.Add(new TranslateTransform (res.ExtendedData.Xnw - dX + 1 - (qzX * res.ExtendedData.DeltaX), res.ExtendedData.Ynw - dY + 1 - (qzY * res.ExtendedData.DeltaY)));
                             if (sec.orientation == 0)
                                 transGroup.Children.Add(new TranslateTransform(
-                                    res.data.extendedData.Xnw - (qzX * res.data.extendedData.DeltaX) - dX + 1,
-                                    res.data.extendedData.Ynw - (qzY * res.data.extendedData.DeltaY) - dY + 1));
+                                    res.ExtendedData.Xnw - (qzX * res.ExtendedData.DeltaX) - dX + 1,
+                                    res.ExtendedData.Ynw - (qzY * res.ExtendedData.DeltaY) - dY + 1));
 
                             //works for dataMatrix
                             //if (sec.orientation == 90)
                             //    transGroup.Children.Add(new TranslateTransform(
-                            //         sec.width - res.data.extendedData.Ynw - (qzY * res.data.extendedData.DeltaY) - 1, 
-                            //         res.data.extendedData.Xnw - (qzX * res.data.extendedData.DeltaX) - dX + 1));
+                            //         sec.width - res.ExtendedData.Ynw - (qzY * res.ExtendedData.DeltaY) - 1, 
+                            //         res.ExtendedData.Xnw - (qzX * res.ExtendedData.DeltaX) - dX + 1));
 
                             if (sec.orientation == 90)
                             {
                                 var x = sec.symbology == "dataMatrix"
-                                    ? sec.width - res.data.extendedData.Ynw - (qzY * res.data.extendedData.DeltaY) - 1
-                                    : sec.width - res.data.extendedData.Ynw - dY - ((res.data.extendedData.NumColumns + qzY) * res.data.extendedData.DeltaY);
+                                    ? sec.width - res.ExtendedData.Ynw - (qzY * res.ExtendedData.DeltaY) - 1
+                                    : sec.width - res.ExtendedData.Ynw - dY - ((res.ExtendedData.NumColumns + qzY) * res.ExtendedData.DeltaY);
                                 transGroup.Children.Add(new TranslateTransform(
                                      x,
-                                     res.data.extendedData.Xnw - (qzX * res.data.extendedData.DeltaX) - dX + 1));
+                                     res.ExtendedData.Xnw - (qzX * res.ExtendedData.DeltaX) - dX + 1));
                             }
 
                             if (sec.orientation == 180)
                             {
                                 transGroup.Children.Add(new TranslateTransform(
-                                    res.data.extendedData.Xnw - (qzX * res.data.extendedData.DeltaX) - dX + 1,
-                                    res.data.extendedData.Ynw - (qzY * res.data.extendedData.DeltaY) - dY + 1));
+                                    res.ExtendedData.Xnw - (qzX * res.ExtendedData.DeltaX) - dX + 1,
+                                    res.ExtendedData.Ynw - (qzY * res.ExtendedData.DeltaY) - dY + 1));
                             }
 
                             moduleGrid.Transform = transGroup;
@@ -896,9 +896,9 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
         }
     }
 
-    
+
     [RelayCommand]
-    private async Task V5Process()
+    private async Task V5Process(string imageType)
     {
         IsV5Faulted = false;
 
@@ -910,17 +910,20 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
             return;
         }
 
+        var res = await SelectedScanner.ScannerController.GetConfig();
+
+        if (!res.OK)
+        {
+            SendErrorMessage("Could not get scanner configuration.");
+            return;
+        }
+
+        var config = (V5_REST_Lib.Models.Config)res.Object;
+
+
         if (SelectedScanner.IsSimulator)
         {
-            var res = await SelectedScanner.ScannerController.GetConfig();
 
-            if (!res.OK)
-            {
-                SendErrorMessage("Could not get scanner configuration.");
-                return;
-            }
-
-            var config = (V5_REST_Lib.Models.Config)res.Object;
             if (config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource == null)
             {
                 SendErrorMessage("The scanner is not in file aquire mode.");
@@ -940,28 +943,35 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
 
             SelectedScanner.FTPClient.Connect();
 
-            if(!SelectedScanner.FTPClient.DirectoryExists(path))
+            if (!SelectedScanner.FTPClient.DirectoryExists(path))
                 SelectedScanner.FTPClient.CreateRemoteDir(path);
             else
                 SelectedScanner.FTPClient.DeleteRemoteFiles(path);
 
             path = $"{path}/image{Path.GetExtension(SourceImagePath)}";
 
-            SelectedScanner.FTPClient.UploadFile(SourceImagePath, path);
+            if(imageType == "source")
+                SelectedScanner.FTPClient.UploadFile(SourceImagePath, path);
+            else if(imageType == "stored")
+                SelectedScanner.FTPClient.UploadFile(V5Image, path);
+            else if(imageType == "v275stored")
+                SelectedScanner.FTPClient.UploadFile(V275Image, path);
+
+
             SelectedScanner.FTPClient.Disconnect();
 
             //Attempt to update the directory in the FileAcquisitionSource
             _ = await SelectedScanner.ScannerController.SendJob(config.response.data);
 
 
-            if (!V5ProcessResults(await SelectedScanner.ScannerController.Trigger_Wait_Return(true), config))
-            {
-
-                return;
-            }
+            _ = V5ProcessResults(await SelectedScanner.ScannerController.Trigger_Wait_Return(true), config);
 
         }
+        else
+        {
+            _ = V5ProcessResults(await SelectedScanner.ScannerController.Trigger_Wait_Return(true), config);
 
+        }
 
         IsV5Working = false;
     }
@@ -1274,6 +1284,18 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
 
     }
 
+
+    [RelayCommand]
+    private async Task L95xxProcess()
+    {
+        IsV5Faulted = false;
+
+        BringIntoView?.Invoke();
+
+
+
+        IsV5Working = false;
+    }
 
 
     [RelayCommand] private void RedoFiducial() => ImageUtilities.RedrawFiducial(SourceImagePath, false);

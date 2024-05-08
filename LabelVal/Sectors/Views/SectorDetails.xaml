@@ -136,8 +136,7 @@
                     </Image>
                 </Border>
 
-                <Grid Grid.Row="1" Grid.Column="1"
-                                                    Margin="0">
+                <Grid Grid.Row="1" Grid.Column="1" Margin="0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
@@ -250,7 +249,7 @@
 
                     <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left">
                         <TextBlock Text="X Dimension  "/>
-                        <TextBlock Text="{Binding Report.XDimension}"/>
+                        <TextBlock Text="{Binding Report.XDimension, StringFormat=N1}"/>
                     </StackPanel>
 
                 </Grid>
@@ -522,7 +521,7 @@
 
                                 <StackPanel Orientation="Horizontal" Margin="3,0,6,0">
 
-                                    <TextBlock Text="{Binding Path=name, Converter={StaticResource stringToUpper}, Mode=OneTime}" Grid.Column="0"/>
+                                    <TextBlock Text="{Binding Path=Name, Converter={StaticResource stringToUpper}, Mode=OneTime}" Grid.Column="0"/>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal" Grid.Column="2" >

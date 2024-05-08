@@ -140,9 +140,9 @@
                 <ListView ItemsSource="{Binding Nodes}" SelectedItem="{Binding SelectedNode}" HorizontalAlignment="Center">
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <md:Card Background="{DynamicResource MahApps.Brushes.Accent4}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="-5">
+
                                 <local:NodeItem DataContext="{Binding }"/>
-                            </md:Card>
+                 
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>

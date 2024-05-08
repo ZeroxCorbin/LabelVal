@@ -32,6 +32,9 @@
             <MenuItem Command="{Binding RedoFiducial}" Header="Registration Mark"/>
         </ContextMenu>
 
+        <Image x:Key="V275Icon" Source="/Assets/Images/V275WhiteIcon.ico" />
+        <Image x:Key="V275Png" Source="/Assets/Images/V275WhiteIcon.png" />
+
     </UserControl.Resources>
 
     <DockPanel>
@@ -49,7 +52,8 @@
                         <TextBlock Text="Source Image" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                     </md:Card>
 
-                    <Button Command="{Binding SaveCommand}" Padding="0" ToolTip="Save Source Image" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                    <Button Command="{Binding SaveCommand}" Padding="0" ToolTip="Save the image."
+                            Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
                         <Button.Style>
 
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
@@ -86,31 +90,58 @@
                             </Style>
                         </DockPanel.Style>
 
-                        <Button Command="{Binding V275ProcessCommand}" CommandParameter="source" ToolTip="Print Source Image" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0"
+                        <Button Command="{Binding V275ProcessCommand}" CommandParameter="source" Width="20" Height="20" HorizontalAlignment="Left" Margin="3,0,3,0"
                                 md:ButtonProgressAssist.IsIndeterminate="True"
                                 md:ButtonProgressAssist.Value="-1"
-                                md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV275Working}">
+                                md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV275Working}" >
 
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                    <Setter Property="ToolTip" Value="Print the image."/>
                                     <Setter Property="Content">
                                         <Setter.Value>
-                                            <IconPacks:PackIconMaterial Kind="Printer"  Margin="-1,-1,0,0" Height="14" Width="14"/>
+                                            <IconPacks:PackIconMaterial Kind="Printer"  Margin="0,0,0,0" Height="12" Width="12"/>
                                         </Setter.Value>
                                     </Setter>
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding SelectedNode.IsSimulator}" Value="True">
+
+                                        <DataTrigger Binding="{Binding SelectedNode.IsLoggedIn}" Value="True">
+                                            <Setter Property="ToolTip" Value="V275: Print the image and read the results."/>
                                             <Setter Property="Content">
                                                 <Setter.Value>
-                                                    <IconPacks:PackIconMaterial Kind="CameraImage"  Margin="-1,-1,0,0" Height="14" Width="14"/>
+                                                    <Rectangle Width="14" Height="14">
+                                                        <Rectangle.OpacityMask>
+                                                            <VisualBrush Stretch="Fill" Visual="{DynamicResource V275Png}" />
+                                                        </Rectangle.OpacityMask>
+                                                    </Rectangle>
                                                 </Setter.Value>
                                             </Setter>
                                         </DataTrigger>
+
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding SelectedNode.IsSimulator}" Value="True"/>
+                                                <Condition Binding="{Binding SelectedNode.IsLoggedIn}" Value="True"/>
+                                            </MultiDataTrigger.Conditions>
+
+                                            <Setter Property="BorderBrush" Value="Blue"/>
+                                            <Setter Property="ToolTip" Value="V275: Process the image with the simulator."/>
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Rectangle Width="14" Height="14">
+                                                        <Rectangle.OpacityMask>
+                                                            <VisualBrush Stretch="Fill" Visual="{DynamicResource V275Png}" />
+                                                        </Rectangle.OpacityMask>
+                                                    </Rectangle>
+                                                </Setter.Value>
+                                            </Setter>
+
+                                        </MultiDataTrigger>
+
+
                                     </Style.Triggers>
                                 </Style>
                             </Button.Style>
-
-
                         </Button>
 
                     </DockPanel>
@@ -136,13 +167,25 @@
                             </Style>
                         </DockPanel.Style>
 
-                        <Button Command="{Binding V5ProcessCommand}" Style="{StaticResource MaterialDesignFloatingActionDarkButton}" CommandParameter="source" ToolTip="Process Source Image" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0"
+                        <Button Command="{Binding V5ProcessCommand}" CommandParameter="source"
+                                Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0"
                                 md:ButtonProgressAssist.IsIndeterminate="True"
                                 md:ButtonProgressAssist.Value="-1"
                                 md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV5Working}">
 
                             <IconPacks:PackIconMaterial Kind="CameraImage"  Margin="-1,-1,0,0" Height="14" Width="14"/>
 
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                    <Setter Property="ToolTip" Value="V5: Trigger and read the results and image."/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SelectedScanner.IsSimulator}" Value="True">
+                                            <Setter Property="BorderBrush" Value="#F05039"/>
+                                            <Setter Property="ToolTip" Value="V5: Trigger and process the image with the simulator.&#x0a;Then read the results"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
                         </Button>
 
                     </DockPanel>
@@ -217,7 +260,7 @@
                             </TextBlock>
                         </md:Card>
 
-                        <Button Command="{Binding SaveCommand}" CommandParameter="v275stored" ToolTip="Save Stored Image"
+                        <Button Command="{Binding SaveCommand}" CommandParameter="v275stored" ToolTip="Save the image."
                             Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
@@ -260,7 +303,7 @@
                             </DockPanel.Style>
 
 
-                            <Button Command="{Binding SaveCommand}" CommandParameter="v5stored" ToolTip="Save Repeat Image" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                            <Button Command="{Binding SaveCommand}" CommandParameter="v5stored" ToolTip="Save the iamge." Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
                                         <Setter Property="Visibility" Value="Visible"/>
@@ -275,11 +318,18 @@
                                 <IconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
                             </Button>
 
-                            <Button Command="{Binding V275ProcessCommand}" CommandParameter="stored"
-                                    ToolTip="Process Repeat Image" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0"
+                            <Button Command="{Binding V275ProcessCommand}" CommandParameter="stored" ToolTip="V275: Process the stored image with the simulator." 
+                                    Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0"
                                     md:ButtonProgressAssist.IsIndeterminate="True"
                                     md:ButtonProgressAssist.Value="-1"
                                     md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV275Working}">
+
+                                <Rectangle Width="14" Height="14" Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill" Visual="{DynamicResource V275Png}" />
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -292,11 +342,14 @@
 
                                                 <Setter Property="Visibility" Value="Visible"/>
                                             </MultiDataTrigger>
+
+                                            <DataTrigger Binding="{Binding SelectedNode.IsSimulator}" Value="True">
+                                                <Setter Property="BorderBrush" Value="Blue"/>
+                                            </DataTrigger>
+
                                         </Style.Triggers>
                                     </Style>
                                 </Button.Style>
-
-                                <IconPacks:PackIconMaterial Kind="CameraImage" Margin="-1,-1,0,0" Height="14" Width="14"/>
                             </Button>
 
                             <!--<Label Foreground="Goldenrod" HorizontalAlignment="Right" VerticalAlignment="Center" ToolTip="The 'Golden' Repeat Image stored in the database.">
@@ -350,7 +403,7 @@
 
                         <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
 
-                            <Button Command="{Binding ClearStoredCommand}" CommandParameter="V275" ToolTip="Clear Stored" 
+                            <Button Command="{Binding ClearStoredCommand}" CommandParameter="V275" ToolTip="Remove the stored sectors from the database, permanently.&#x0a;(CAUTION) This can not be undone!" 
                                 Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
                                 <IconPacks:PackIconModern Kind="Delete" Margin="-1,-1,0,0" Height="14" Width="14"/>
 
@@ -369,7 +422,8 @@
                                 </Button.Style>
                             </Button>
 
-                            <Button Command="{Binding V275LoadCommand}"  ToolTip="Load Stored" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
+                            <Button Command="{Binding V275LoadCommand}"  ToolTip="Overwrite the template sectors with the stored data."
+                                    Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
                                 <IconPacks:PackIconUnicons Kind="Edit" Margin="-1,-1,0,0" Height="14" Width="14"/>
 
                                 <Button.Style>
@@ -397,9 +451,10 @@
                             </Button>
                         </StackPanel>
 
-                        <Button Grid.Column="2" Name="V275StoredSectors" Click="V275StoredSectors_Click" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Right" Margin="3,0,3,0">
+                        <Button Grid.Column="2" Click="V275StoredSectors_Click" ToolTip="The all seeing eye! Click it...&#x0a;Hold Shift and click for more."
+                                Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Right" Margin="3,0,3,0">
 
-                            <IconPacks:PackIconModern Kind="Eye" Margin="-1,-1,0,0" Height="14" Width="14"/>
+                            <IconPacks:PackIconModern Kind="Eye" Margin="0,-1,0,0" Height="14" Width="14"/>
 
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
@@ -448,7 +503,7 @@
 
 
 
-                            <Button Command="{Binding StoreCommand}" CommandParameter="V275" ToolTip="Store Results"
+                            <Button Command="{Binding StoreCommand}" CommandParameter="V275" ToolTip="Store the current sectors and images to the database."
                                 Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
@@ -467,17 +522,29 @@
                                 <IconPacks:PackIconMaterial Kind="StorePlusOutline" Margin="0,0,-1,-1" Height="14" Width="14"/>
                             </Button>
 
-                            <Button Command="{Binding ClearReadCommand}" CommandParameter="V275"
-                                    ToolTip="Clear Results" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
+                            <Button Command="{Binding ClearReadCommand}" CommandParameter="V275" ToolTip="Clear the current sectors and image."
+                                    Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
 
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
                                         <Setter Property="Visibility" Value="Visible"/>
+
                                         <Style.Triggers>
-                                            <DataTrigger Value="0" Binding="{Binding V275CurrentSectors.Count}">
+                                            <DataTrigger Binding="{Binding V275CurrentSectors.Count}" Value="0">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
+
+                                            <MultiDataTrigger>
+                                                <MultiDataTrigger.Conditions>
+                                                    <Condition Binding="{Binding V275Image, Converter={StaticResource isObjectNotNull}}" Value="True"/>
+                                                    <Condition Binding="{Binding IsV275ImageStored}" Value="False"/>
+                                                </MultiDataTrigger.Conditions>
+
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </MultiDataTrigger>
+
                                         </Style.Triggers>
+
                                     </Style>
                                 </Button.Style>
 
@@ -485,8 +552,8 @@
 
                             </Button>
 
-                            <Button Command="{Binding V275ReadCommand}"
-                                    ToolTip="Read Results" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
+                            <Button Command="{Binding V275ReadCommand}" ToolTip="Read the last results and image from the V275.&#x0a;Just reads the data. No processing." 
+                                    Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
 
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
@@ -525,7 +592,8 @@
 
                         </DockPanel>
 
-                        <Button Click="V275CurrentSectorDetails_Click" ToolTip="View All Sector Details" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Right" Margin="3,0,3,0">
+                        <Button Click="V275CurrentSectorDetails_Click" ToolTip="The all seeing eye! Click it...&#x0a;Hold Shift and click for more."
+                                Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Right" Margin="3,0,3,0">
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
                                     <Setter Property="Visibility" Value="Visible"/>
@@ -536,7 +604,7 @@
                                     </Style.Triggers>
                                 </Style>
                             </Button.Style>
-                            <IconPacks:PackIconModern Kind="Eye" Margin="-1,-1,-0,0" Width="14" Height="14"/>
+                            <IconPacks:PackIconModern Kind="Eye" Margin="0,-1,-0,0" Width="14" Height="14"/>
                         </Button>
 
                     </DockPanel>
@@ -668,7 +736,7 @@
                 </Border>
             </StackPanel>
         </Popup>
-        
+
         <!--V5 Sectors-->
         <DockPanel>
 
@@ -695,7 +763,7 @@
                             </TextBlock>
                         </md:Card>
 
-                        <Button Command="{Binding SaveCommand}" CommandParameter="stored" ToolTip="Save Stored Image"
+                        <Button Command="{Binding SaveCommand}" CommandParameter="stored" ToolTip="Save the image."
                             Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
@@ -738,7 +806,7 @@
                             </DockPanel.Style>
 
 
-                            <Button Command="{Binding SaveCommand}" CommandParameter="stored" ToolTip="Save Repeat Image" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                            <Button Command="{Binding SaveCommand}" CommandParameter="stored" ToolTip="Save the image." Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
                                         <Setter Property="Visibility" Value="Visible"/>
@@ -753,50 +821,17 @@
                                 <IconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
                             </Button>
 
-                            <Button Command="{Binding V5ProcessCommand}" CommandParameter="stored"
-                                    ToolTip="Process Repeat Image" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0"
+                            <Button Command="{Binding V5ProcessCommand}" CommandParameter="stored" ToolTip="V5: Trigger and process the image with the simulator.&#x0a;Then read the results"
+                                    BorderBrush="#F05039" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
+                                    Width="20" Height="20" HorizontalAlignment="Left" Margin="3,0,3,0"
                                     md:ButtonProgressAssist.IsIndeterminate="True"
                                     md:ButtonProgressAssist.Value="-1"
                                     md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV5Working}">
-                                <Button.Style>
-                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                        <Style.Triggers>
-                                            <MultiDataTrigger>
-                                                <MultiDataTrigger.Conditions>
-                                                    <Condition Binding="{Binding SelectedScanner.IsSimulator}" Value="True"/>
-                                                    <Condition Binding="{Binding IsV5ImageStored}" Value="True"/>
-                                                </MultiDataTrigger.Conditions>
-
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                            </MultiDataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Button.Style>
 
                                 <IconPacks:PackIconMaterial Kind="CameraImage" Margin="-1,-1,0,0" Height="14" Width="14"/>
                             </Button>
 
-                            <!--<Label Foreground="Goldenrod" HorizontalAlignment="Right" VerticalAlignment="Center" ToolTip="The 'Golden' Repeat Image stored in the database.">
-                                <Label.Style>
-                                    <Style TargetType="{x:Type Label}" BasedOn="{StaticResource {x:Type Label}}">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsV5ImageStored}" Value="True">
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Label.Style>
-                                <Label.Content>
-                                    <IconPacks:Material Kind="Gold"/>
-                                </Label.Content>
-                            </Label>-->
-
                         </DockPanel>
-
-
-
                     </DockPanel>
                 </GroupBox.Header>
 
@@ -828,7 +863,7 @@
 
                         <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
 
-                            <Button Command="{Binding ClearStoredCommand}" CommandParameter="V5" ToolTip="Clear Stored"
+                            <Button Command="{Binding ClearStoredCommand}" CommandParameter="V5" ToolTip="Remove the stored sectors from the database, permanently.&#x0a;(CAUTION) This can not be undone!" 
                                 Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
                                 <IconPacks:PackIconModern Kind="Delete" Margin="-1,-1,0,0" Height="14" Width="14"/>
 
@@ -847,7 +882,7 @@
                                 </Button.Style>
                             </Button>
 
-                            <Button Command="{Binding V5LoadCommand}"  ToolTip="Load Stored" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
+                            <!--<Button Command="{Binding V5LoadCommand}"  ToolTip="Load Stored" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
                                 <IconPacks:PackIconUnicons Kind="Edit" Margin="-1,-1,0,0" Height="14" Width="14"/>
 
                                 <Button.Style>
@@ -869,12 +904,13 @@
                                         </Style.Triggers>
                                     </Style>
                                 </Button.Style>
-                            </Button>
+                            </Button>-->
                         </StackPanel>
 
-                        <Button Grid.Column="2" Click="V5StoredSectors_Click" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Right" Margin="3,0,3,0">
+                        <Button Grid.Column="2" Click="V5StoredSectors_Click" ToolTip="The all seeing eye! Click it...&#x0a;Hold Shift and click for more."
+                                Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Right" Margin="3,0,3,0">
 
-                            <IconPacks:PackIconModern Kind="Eye" Margin="-1,-1,0,0" Height="14" Width="14"/>
+                            <IconPacks:PackIconModern Kind="Eye" Margin="0,-1,0,0" Height="14" Width="14"/>
 
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
@@ -921,7 +957,7 @@
 
                         <DockPanel Margin="3,0">
 
-                            <Button Command="{Binding StoreCommand}" CommandParameter="V5" ToolTip="Store Results" 
+                            <Button Command="{Binding StoreCommand}" CommandParameter="V5" ToolTip="Store the current sectors and images to the database."
                                 Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
@@ -940,27 +976,27 @@
                                 <IconPacks:PackIconMaterial Kind="StorePlusOutline" Margin="0,0,-1,-1" Height="14" Width="14"/>
                             </Button>
 
-                            <Button Command="{Binding ClearReadCommand}" CommandParameter="V5"
-                                    ToolTip="Clear Results" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
+                            <Button Command="{Binding ClearReadCommand}" CommandParameter="V5" ToolTip="Clear the current sectors and image."
+                                    Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
 
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
                                         <Setter Property="Visibility" Value="Visible"/>
 
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsV5ImageStored}" Value="True">
+                                            <DataTrigger Binding="{Binding V5CurrentSectors.Count}" Value="0">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
- 
+
                                             <MultiDataTrigger>
                                                 <MultiDataTrigger.Conditions>
-                                                    <Condition Binding="{Binding V5Image}" Value="{x:Null}"/>
-                                                    <Condition Binding="{Binding V5CurrentSectors.Count}" Value="0"/>
+                                                    <Condition Binding="{Binding V5Image, Converter={StaticResource isObjectNotNull}}" Value="True"/>
+                                                    <Condition Binding="{Binding IsV5ImageStored}" Value="False"/>
                                                 </MultiDataTrigger.Conditions>
 
-                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Setter Property="Visibility" Value="Visible"/>
                                             </MultiDataTrigger>
-                                            
+
                                         </Style.Triggers>
                                     </Style>
                                 </Button.Style>
@@ -1006,7 +1042,8 @@
 
                         </DockPanel>
 
-                        <Button Click="V5CurrentSectorDetails_Click" ToolTip="View All Sector Details" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Right" Margin="3,0,3,0">
+                        <Button Click="V5CurrentSectorDetails_Click" ToolTip="The all seeing eye! Click it...&#x0a;Hold Shift and click for more." 
+                                Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Right" Margin="3,0,3,0">
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
                                     <Setter Property="Visibility" Value="Visible"/>
@@ -1017,7 +1054,7 @@
                                     </Style.Triggers>
                                 </Style>
                             </Button.Style>
-                            <IconPacks:PackIconModern Kind="Eye" Margin="-1,-1,-0,0" Width="14" Height="14"/>
+                            <IconPacks:PackIconModern Kind="Eye" Margin="0,-1,-0,0" Width="14" Height="14"/>
                         </Button>
 
                     </DockPanel>

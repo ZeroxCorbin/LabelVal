@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Newtonsoft.Json;
 using V5_REST_Lib.Models;
 
 namespace LabelVal.Sectors.ViewModels;
@@ -99,6 +100,36 @@ public class Template
 public class Report
 {
 
+    public class ModuleData
+    {
+        public int[] ModuleModulation { get; set; }
+        public int[] ModuleReflectance { get; set; }
+
+        public int QuietZone { get; set; }
+
+        public int NumRows { get; set; }
+        public int NumColumns { get; set; }
+
+        public double CosAngle0 { get; set; }
+        public double CosAngle1 { get; set; }
+
+        public double SinAngle0 { get; set; }
+        public double SinAngle1 { get; set; }
+
+        public double DeltaX { get; set; }
+        public double DeltaY { get; set; }
+
+        public double Xne { get; set; }
+        public double Yne { get; set; }
+
+        public double Xnw { get; set; }
+        public double Ynw { get; set; }
+
+        public double Xsw { get; set; }
+        public double Ysw { get; set; }
+    }
+
+
     public string Type { get; set; }
     public string SymbolType { get; set; }
     public string DecodeText { get; set; }
@@ -113,6 +144,8 @@ public class Report
 
     public V275_REST_lib.Models.Report_InspectSector_Common.Gs1results GS1Results { get; set; }
     public string FormattedOut { get; set; }
+
+    public ModuleData ExtendedData { get; set; }
 
     public Report(object report)
     {
@@ -132,7 +165,7 @@ public class Report
                 OverallGradeString = v1D.data.overallGrade._string;
                 OverallGradeValue = v1D.data.overallGrade.grade.value;
 
-                if(v1D.data.gs1Results != null)
+                if (v1D.data.gs1Results != null)
                 {
                     GS1Results = v1D.data.gs1Results;
                     FormattedOut = v1D.data.gs1Results.formattedOut;
@@ -160,6 +193,9 @@ public class Report
                     FormattedOut = v2D.data.gs1Results.formattedOut;
                 }
 
+                if (v2D.data.extendedData != null)
+                    ExtendedData = JsonConvert.DeserializeObject<ModuleData>(JsonConvert.SerializeObject(v2D.data.extendedData));
+
                 break;
 
             case Results_QualifiedResult:
@@ -170,6 +206,37 @@ public class Report
                 DecodeText = v5.dataUTF8;
                 //XDimension = v5.ppe;
 
+                if (v5.grading != null)
+                    if (Type == "verify1D")
+                    {
+                        if(v5.grading.iso15416 == null)
+                        {
+                            OverallGradeString = "No Grade";
+                            OverallGradeValue = 0;
+                        }
+                        else
+                        {
+                            OverallGradeString = $"{v5.grading.iso15416.overall.grade:f1}/00/600";
+                            OverallGradeValue = v5.grading.iso15416.overall.grade;
+                        }
+                    }
+                    else if (Type == "verify2D")
+                    {
+                        if(v5.grading.iso15415 == null)
+                        {
+                            OverallGradeString = "No Grade";
+                            OverallGradeValue = 0;
+                        }
+                        else
+                        {
+                            OverallGradeString = $"{v5.grading.iso15415.overall.grade:f1}/00/600";
+                            OverallGradeValue = v5.grading.iso15415.overall.grade;
+                        }
+                    }
+
+                {
+
+                }
                 break;
         }
 
@@ -231,6 +298,8 @@ public partial class Sectors : ObservableObject
     public bool IsNotWrongStandard => !IsWrongStandard;
 
     public Sectors() { }
+
+    //V275
     public Sectors(V275_REST_lib.Models.Job.Sector template, object report, bool isWrongStandard, bool isGS1Standard)
     {
         Report = new Report(report);
@@ -259,6 +328,7 @@ public partial class Sectors : ObservableObject
 
     }
 
+    //V5
     public Sectors(Results_QualifiedResult results, string name, bool isWrongStandard = false, bool isGS1Standard = false)
     {
         Report = new Report(results);
@@ -285,6 +355,7 @@ public partial class Sectors : ObservableObject
 
     }
 
+    //L95xx
     public Sectors(Template template, object report, bool isWrongStandard, bool isGS1Standard)
     {
         Report = report;

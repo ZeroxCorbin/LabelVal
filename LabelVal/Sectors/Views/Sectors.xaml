@@ -382,7 +382,8 @@
                     </Button.Content>
                 </Button>
             </Border>
-
+            
+            <!--Alarms-->
             <Border Grid.Row="3" Grid.ColumnSpan="4"
                     BorderThickness="1" Padding="1" CornerRadius="3">
                 <Border.Style>
@@ -437,6 +438,7 @@
                 </ItemsControl>
             </Border>
 
+            <!--Gs1ValueResults-->
             <Border Grid.Row="2" Grid.ColumnSpan="4"
                     BorderThickness="1" Padding="1" CornerRadius="3" Visibility="{Binding IsGS1Standard, Mode=OneTime, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Border.Style>
