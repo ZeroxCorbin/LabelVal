@@ -124,7 +124,7 @@
                                                 <Condition Binding="{Binding SelectedNode.IsLoggedIn}" Value="True"/>
                                             </MultiDataTrigger.Conditions>
 
-                                            <Setter Property="BorderBrush" Value="Blue"/>
+                                            <Setter Property="BorderBrush" Value="{DynamicResource ColorBlindBrush7}"/>
                                             <Setter Property="ToolTip" Value="V275: Process the image with the simulator."/>
                                             <Setter Property="Content">
                                                 <Setter.Value>
@@ -180,7 +180,7 @@
                                     <Setter Property="ToolTip" Value="V5: Trigger and read the results and image."/>
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding SelectedScanner.IsSimulator}" Value="True">
-                                            <Setter Property="BorderBrush" Value="#F05039"/>
+                                            <Setter Property="BorderBrush" Value="{DynamicResource ColorBlindBrush7}"/>
                                             <Setter Property="ToolTip" Value="V5: Trigger and process the image with the simulator.&#x0a;Then read the results"/>
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -245,7 +245,7 @@
                 <GroupBox.Header>
                     <DockPanel>
 
-                        <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
+                        <md:Card Background="{DynamicResource ColorBlindBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
                             <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}">
                                 <TextBlock.Style>
                                     <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource MahApps.Styles.TextBlock}">
@@ -344,7 +344,7 @@
                                             </MultiDataTrigger>
 
                                             <DataTrigger Binding="{Binding SelectedNode.IsSimulator}" Value="True">
-                                                <Setter Property="BorderBrush" Value="Blue"/>
+                                                <Setter Property="BorderBrush" Value="{DynamicResource ColorBlindBrush7}"/>
                                             </DataTrigger>
 
                                         </Style.Triggers>
@@ -396,7 +396,7 @@
 
                     <DockPanel>
 
-                        <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
+                        <md:Card Background="{DynamicResource ColorBlindBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
                             <TextBlock Text="Stored Sectors" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                         </md:Card>
 
@@ -495,7 +495,7 @@
 
                     <DockPanel>
 
-                        <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
+                        <md:Card Background="{DynamicResource ColorBlindBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
                             <TextBlock Text="Current Sectors" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                         </md:Card>
 
@@ -634,7 +634,7 @@
 
                     <DockPanel>
 
-                        <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
+                        <md:Card Background="{DynamicResource ColorBlindBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
                             <TextBlock Text="Dissimilar Results" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                         </md:Card>
 
@@ -769,7 +769,7 @@
                 <GroupBox.Header>
                     <DockPanel>
 
-                        <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
+                        <md:Card Background="{DynamicResource ColorBlindBrush5}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
                             <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}">
                                 <TextBlock.Style>
                                     <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource MahApps.Styles.TextBlock}">
@@ -843,7 +843,7 @@
                             </Button>
 
                             <Button Command="{Binding V5ProcessCommand}" CommandParameter="stored" ToolTip="V5: Trigger and process the image with the simulator.&#x0a;Then read the results"
-                                    BorderBrush="#F05039" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
+                                    BorderBrush="{DynamicResource ColorBlindBrush7}" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
                                     Width="20" Height="20" HorizontalAlignment="Left" Margin="3,0,3,0"
                                     md:ButtonProgressAssist.IsIndeterminate="True"
                                     md:ButtonProgressAssist.Value="-1"
@@ -877,7 +877,7 @@
 
                     <DockPanel>
 
-                        <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
+                        <md:Card Background="{DynamicResource ColorBlindBrush5}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
                             <TextBlock Text="Stored Sectors" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                         </md:Card>
 
@@ -972,7 +972,7 @@
 
                     <DockPanel>
 
-                        <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
+                        <md:Card Background="{DynamicResource ColorBlindBrush5}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
                             <TextBlock Text="Current Sectors" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                         </md:Card>
 
@@ -1105,7 +1105,7 @@
 
                     <DockPanel>
 
-                        <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
+                        <md:Card Background="{DynamicResource ColorBlindBrush5}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
                             <TextBlock Text="Dissimilar Results" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                         </md:Card>
 

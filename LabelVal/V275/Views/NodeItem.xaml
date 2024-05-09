@@ -17,7 +17,7 @@
                 <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent4}"/>
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding IsSimulator}" Value="True">
-                        <Setter Property="Background" Value="Blue"/>
+                        <Setter Property="Background" Value="{DynamicResource ColorBlindBrush7}"/>
                     </DataTrigger>
                 </Style.Triggers>
             </Style>

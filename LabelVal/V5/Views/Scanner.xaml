@@ -23,7 +23,7 @@
                 <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent4}"/>
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding IsSimulator}" Value="True">
-                        <Setter Property="Background" Value="#F05039"/>
+                        <Setter Property="Background" Value="{DynamicResource ColorBlindBrush7}"/>
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
@@ -146,7 +146,7 @@
 
                                 <DockPanel DockPanel.Dock="Top" Margin="3">
                                     <TextBox Text="{Binding FTPHost}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center"
-                                            md:HintAssist.Hint="IP Address" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
+                                            md:HintAssist.Hint="SFTP IP Address" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
                                         <TextBox.Style>
                                             <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                                 <Setter Property="IsEnabled" Value="True"/>
@@ -160,7 +160,7 @@
                                     </TextBox>
 
                                     <TextBox Text="{Binding FTPPort}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center"
-                                  md:HintAssist.Hint="Port" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
+                                  md:HintAssist.Hint="SFTP Port" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
                                         <TextBox.Style>
                                             <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                                 <Setter Property="IsEnabled" Value="True"/>
@@ -174,7 +174,7 @@
                                     </TextBox>
 
                                     <TextBox Text="{Binding FTPUsername}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center"
-                                 md:HintAssist.Hint="User name" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
+                                 md:HintAssist.Hint="SFTP User name" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
                                         <TextBox.Style>
                                             <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                                 <Setter Property="IsEnabled" Value="True"/>
@@ -188,7 +188,7 @@
                                     </TextBox>
 
                                     <TextBox Text="{Binding FTPPassword}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center" HorizontalAlignment="Left"
-                                 md:HintAssist.Hint="Password" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
+                                 md:HintAssist.Hint="SFTP Password" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
                                         <TextBox.Style>
                                             <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                                 <Setter Property="IsEnabled" Value="True"/>

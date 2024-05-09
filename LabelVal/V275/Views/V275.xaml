@@ -20,8 +20,8 @@
                         ToolTip="Show Settings" Width="20" Height="20" BorderThickness="0" Margin="3,0,6,0">
                     <iconPacks:PackIconMaterial Kind="Cog" Height="14" Width="14"/>
                 </Button>
-                
-                <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
+
+                <md:Card Background="{DynamicResource ColorBlindBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
                     <TextBlock Text="V275 Nodes" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                 </md:Card>
 

@@ -16,7 +16,7 @@
 
         <GroupBox.Header>
             <DockPanel>
-                <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" Padding="1">
+                <md:Card Background="{DynamicResource ColorBlindBrush5}" HorizontalAlignment="Left" Padding="1">
                     <TextBlock Text="V5 Cameras" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Margin="3,0"/>
                 </md:Card>
 
