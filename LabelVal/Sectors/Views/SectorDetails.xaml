@@ -5,6 +5,8 @@
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
             xmlns:local="clr-namespace:LabelVal.Sectors.Views"
             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+            
             xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
             xmlns:ViewModels="clr-namespace:LabelVal.Sectors.ViewModels"
             xmlns:Converters="clr-namespace:LabelVal.Converters"
@@ -19,12 +21,8 @@
         <V275Converters:V275_OCMatchModeToString x:Key="MatchModeToString"/>
         <V275Converters:V275_GS1FormattedOutput x:Key="gs1FormattedOutput"/>
     </UserControl.Resources>
-    
-    <Border Padding="3" BorderThickness="2"
-                        BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
-                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
 
-        <!--<Border BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}" BorderThickness="1" Margin="3" CornerRadius="3" >-->
+    <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" Margin="3" Padding="3">
         <Grid >
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
@@ -621,5 +619,5 @@
             </Border>
 
         </Grid>
-    </Border>
+    </md:Card>
 </UserControl>

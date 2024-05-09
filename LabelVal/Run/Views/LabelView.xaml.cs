@@ -53,7 +53,7 @@ namespace LabelVal.Run.Views
         private void RepeatImage_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
-                ShowImage(((LabelViewModel)DataContext).Result.RepeatImage, ((LabelViewModel)DataContext).V275StoredSectorsImageOverlay);
+                ShowImage(((LabelViewModel)DataContext).Result.RepeatImage, ((LabelViewModel)DataContext).V275SectorsImageOverlay);
         }
 
         private bool ShowImage(byte[] image, DrawingImage overlay)

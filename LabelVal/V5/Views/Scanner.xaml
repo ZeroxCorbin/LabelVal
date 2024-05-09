@@ -224,6 +224,7 @@
 
                     <DockPanel>
 
+                        
                         <DockPanel DockPanel.Dock="Top" Margin="1">
 
                             <TextBox d:Text="camera" md:HintAssist.Hint="Type" MinWidth="56" Margin="3,0" HorizontalContentAlignment="Center"
@@ -345,136 +346,8 @@
                 </md:DrawerHost>
 
                 <DockPanel>
-                    <!--<Expander DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Left" md:ExpanderAssist.HorizontalHeaderPadding="6">
 
-                <Expander.Header>
-                    <TextBlock Text="Details" MinWidth="48"/>
-                </Expander.Header>
-
-                <DockPanel>
-
-                    <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" Margin="3" Padding="3">
-
-                        <GroupBox.Header>
-                            <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" Padding="2,1">
-                                <TextBlock Text="Sensor Details" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
-                            </md:Card>
-                        </GroupBox.Header>
-
-                        <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" Margin="3" Padding="1">
-                            <StackPanel Orientation="Horizontal">
-
-                                <StackPanel Margin="3">
-                                    <TextBox Text="{Binding SelectedCamera.Sensor.PixelCount, Mode=OneWay}"
-                                                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" md:HintAssist.Hint="Pixel Count" md:HintAssist.IsFloating="True"
-                                                             md:TextFieldAssist.SuffixText="mil"
-                                                             IsReadOnly="True" BorderThickness="0"/>
-
-                                    <TextBox Text="{Binding SelectedCamera.Sensor.PixelColumns, Mode=OneWay}"
-                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}" md:HintAssist.Hint="Columns" md:HintAssist.IsFloating="True"
-                                 md:TextFieldAssist.SuffixText="px"
-                                 IsReadOnly="True" BorderThickness="0"/>
-
-                                    <TextBox Text="{Binding SelectedCamera.Sensor.Width, Mode=OneWay}"
-                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}" md:HintAssist.Hint="CCD Width" md:HintAssist.IsFloating="True"
-                                 md:TextFieldAssist.SuffixText="mm"
-                                 IsReadOnly="True" BorderThickness="0"/>
-                                </StackPanel>
-
-                                <StackPanel Margin="3">
-
-                                    <TextBox Text="{Binding SelectedCamera.Sensor.PixelSize, Mode=OneWay}"
-                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}" md:HintAssist.Hint="Pixel Size" md:HintAssist.IsFloating="True"
-                                 md:TextFieldAssist.SuffixText="mm"
-                                 IsReadOnly="True" BorderThickness="0"/>
-
-                                    <TextBox Text="{Binding SelectedCamera.Sensor.PixelRows, Mode=OneWay}"
-                                                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" md:HintAssist.Hint="Rows" md:HintAssist.IsFloating="True"
-                                                             md:TextFieldAssist.SuffixText="px"
-                                                             IsReadOnly="True" BorderThickness="0"/>
-
-                                    <TextBox Text="{Binding SelectedCamera.Sensor.Height, Mode=OneWay}"
-                                                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" md:HintAssist.Hint="CCD Height" md:HintAssist.IsFloating="True"
-                                                             md:TextFieldAssist.SuffixText="mm"
-                                                             IsReadOnly="True" BorderThickness="0"/>
-                                </StackPanel>
-
-                                <StackPanel Margin="3">
-
-
-
-                                </StackPanel>
-
-                            </StackPanel>
-                        </md:Card>
-                    </GroupBox>
-
-                    <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" Margin="3" Padding="3">
-
-                        <GroupBox.Header>
-                            <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
-                                <TextBlock Text="Lens Details" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
-                            </md:Card>
-                        </GroupBox.Header>
-
-                        <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" Margin="3" Padding="1">
-                            <StackPanel Orientation="Horizontal">
-
-                                <StackPanel Margin="3">
-                                    <TextBox Text="{Binding SelectedCamera.Aperture, Mode=OneWay}"
-                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" md:HintAssist.Hint="Aperture" md:HintAssist.IsFloating="True" HorizontalContentAlignment="Center"
-                             IsReadOnly="True" BorderThickness="0"/>
-
-                                    <TextBox Text="{Binding SelectedCamera.FocalLength, Mode=OneWay}"
-                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" md:HintAssist.Hint="Focal Length" md:HintAssist.IsFloating="True" HorizontalContentAlignment="Center"
-                             IsReadOnly="True" BorderThickness="0"/>
-
-                                    <TextBox Text="{Binding SelectedCamera.CircleOfConfusion, Mode=OneWay}"
-                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" md:HintAssist.Hint="Circle of Confusion" md:HintAssist.IsFloating="True" HorizontalContentAlignment="Center"
-                             IsReadOnly="True" BorderThickness="0"/>
-                                </StackPanel>
-
-                                <StackPanel Margin="3" Width="55">
-                                    <TextBox Text="{Binding SelectedCamera.MaxFocalDistance, Mode=OneWay, StringFormat=F0}"
-                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" md:HintAssist.Hint="Max FD" md:HintAssist.IsFloating="True" HorizontalContentAlignment="Center"
-                             md:TextFieldAssist.SuffixText="mm"
-                             IsReadOnly="True" BorderThickness="0"/>
-
-                                    <TextBox Text="{Binding SelectedCamera.FocalDistance, Mode=OneWay, StringFormat=F0}"
-                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" md:HintAssist.Hint="Target FD" md:HintAssist.IsFloating="True" HorizontalContentAlignment="Center"
-                             md:TextFieldAssist.SuffixText="mm"
-                             IsReadOnly="True" BorderThickness="0"/>
-
-                                    <TextBox Text="{Binding SelectedCamera.MinFocalDistance, Mode=OneWay, StringFormat=F0}"
-                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" md:HintAssist.Hint="Min FD" md:HintAssist.IsFloating="True" HorizontalContentAlignment="Center"
-                             md:TextFieldAssist.SuffixText="mm"
-                             IsReadOnly="True" BorderThickness="0"/>
-                                </StackPanel>
-
-                                <StackPanel Margin="3">
-                                    <TextBox Text="{Binding SelectedCamera.CalMaxFocalDistance, Mode=OneWay, StringFormat=N2}"
-                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" md:HintAssist.Hint="Calc. Max FD" md:HintAssist.IsFloating="True" HorizontalContentAlignment="Center"
-                             md:TextFieldAssist.SuffixText="mm"
-                             IsReadOnly="True" BorderThickness="0"/>
-
-                                    <TextBox Text="{Binding SelectedCamera.DepthOfField, Mode=OneWay, StringFormat=N2}"
-                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" md:HintAssist.Hint="Depth of Field" md:HintAssist.IsFloating="True" HorizontalContentAlignment="Center"
-                             md:TextFieldAssist.SuffixText="mm"
-                             IsReadOnly="True" BorderThickness="0"/>
-
-                                    <TextBox Text="{Binding SelectedCamera.CalMinFocalDistance, Mode=OneWay, StringFormat=N2}"
-                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" md:HintAssist.Hint="Calc. Min FD" md:HintAssist.IsFloating="True" HorizontalContentAlignment="Center"
-                             md:TextFieldAssist.SuffixText="mm"
-                             IsReadOnly="True" BorderThickness="0"/>
-                                </StackPanel>
-
-                            </StackPanel>
-                        </md:Card>
-                    </GroupBox>
-                </DockPanel>
-            </Expander>-->
-
-                    <Expander DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Left" md:ExpanderAssist.HorizontalHeaderPadding="6">
+                    <Expander DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Left" md:ExpanderAssist.HorizontalHeaderPadding="6" MaxHeight="450">
 
                         <Expander.Header>
                             <TextBlock Text="Control" MinWidth="48"/>

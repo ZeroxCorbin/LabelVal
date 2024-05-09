@@ -60,8 +60,10 @@ public partial class ImageResultEntry : UserControl
             if (((ViewModels.ImageResultEntry)DataContext).V275StoredSectors.Count > 0)
             {
                 V275StoredSectorsDetailsPopup.PlacementTarget = (Button)sender;
-                V275StoredSectorsDetailsPopup.IsOpen = true;
+                V275StoredSectorsDetailsPopup.IsOpen = !V275StoredSectorsDetailsPopup.IsOpen;
             }
+            else
+                V275StoredSectorsDetailsPopup.IsOpen = false;
         }
     }
     private void V275CurrentSectorDetails_Click(object sender, RoutedEventArgs e)
@@ -87,7 +89,7 @@ public partial class ImageResultEntry : UserControl
     private void V275Image_MouseDown(object sender, MouseButtonEventArgs e)
     {
         if (e.LeftButton == MouseButtonState.Pressed)
-            _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).V275Image, ((ViewModels.ImageResultEntry)DataContext).V275StoredSectorsImageOverlay);
+            _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).V275Image, ((ViewModels.ImageResultEntry)DataContext).V275SectorsImageOverlay);
     }
     private void ScrollV275StoredSectors_ScrollChanged(object sender, ScrollChangedEventArgs e)
     {
@@ -120,7 +122,7 @@ public partial class ImageResultEntry : UserControl
                 V5StoredSectorsDetailsPopup.IsOpen = true;
             }
         }
-    }  
+    }
     private void V5CurrentSectorDetails_Click(object sender, RoutedEventArgs e)
     {
         if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
@@ -144,7 +146,7 @@ public partial class ImageResultEntry : UserControl
     private void V5Image_MouseDown(object sender, MouseButtonEventArgs e)
     {
         if (e.LeftButton == MouseButtonState.Pressed)
-            _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).V5Image, ((ViewModels.ImageResultEntry)DataContext).V5StoredSectorsImageOverlay);
+            _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).V5Image, ((ViewModels.ImageResultEntry)DataContext).V5SectorsImageOverlay);
     }
     private void ScrollV5StoredSectors_ScrollChanged(object sender, ScrollChangedEventArgs e)
     {

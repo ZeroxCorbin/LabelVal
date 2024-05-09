@@ -9,6 +9,7 @@ using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NHibernate.Util;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -56,7 +57,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
     [ObservableProperty] private ObservableCollection<Sectors.ViewModels.SectorDifferences> v275DiffSectors = [];
 
     [ObservableProperty] private byte[] v275Image = null;
-    [ObservableProperty] private DrawingImage v275StoredSectorsImageOverlay;
+    [ObservableProperty] private DrawingImage v275SectorsImageOverlay;
     [ObservableProperty] private bool isV275ImageStored;
 
     [ObservableProperty] private bool isV275Working = false;
@@ -82,7 +83,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
     [ObservableProperty] private ObservableCollection<Sectors.ViewModels.SectorDifferences> v5DiffSectors = [];
 
     [ObservableProperty] private byte[] v5Image = null;
-    [ObservableProperty] private DrawingImage v5StoredSectorsImageOverlay;
+    [ObservableProperty] private DrawingImage v5SectorsImageOverlay;
     [ObservableProperty] private bool isV5ImageStored;
 
     [ObservableProperty] private bool isV5Working = false;
@@ -251,7 +252,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
             V275CurrentTemplate = null;
 
             V275Image = null;
-            V275StoredSectorsImageOverlay = null;
+            V275SectorsImageOverlay = null;
 
             IsV275ImageStored = false;
 
@@ -263,7 +264,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
                 return;
 
             V275Image = V275ResultRow.StoredImage;
-            V275StoredSectorsImageOverlay = V275CreateStoredSectorsImageOverlay(false, false);
+            V275SectorsImageOverlay = V275CreateSectorsImageOverlay(true, false);
             IsV275ImageStored = true;
         }
         else if (device == "V5")
@@ -271,7 +272,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
             V5CurrentReport = null;
 
             V5Image = null;
-            V5StoredSectorsImageOverlay = null;
+            V5SectorsImageOverlay = null;
 
             IsV5ImageStored = false;
 
@@ -284,7 +285,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
                 return;
 
             V5Image = V5ResultRow.StoredImage;
-            V5StoredSectorsImageOverlay = V5CreateStoredSectorsImageOverlay();
+            V5SectorsImageOverlay = V5CreateSectorsImageOverlay(true);
             IsV5ImageStored = true;
         }
 
@@ -321,7 +322,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
             if (V275CurrentSectors.Count == 0)
             {
                 V275Image = null;
-                V275StoredSectorsImageOverlay = null;
+                V275SectorsImageOverlay = null;
                 IsV275ImageStored = false;
             }
 
@@ -366,7 +367,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
                 V275StoredSectors.Add(sec);
         }
 
-        V275StoredSectorsImageOverlay = V275CreateStoredSectorsImageOverlay(false, false);
+        V275SectorsImageOverlay = V275CreateSectorsImageOverlay(true, false);
 
 
     }
@@ -386,7 +387,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
             if (!IsV275ImageStored)
             {
                 V275Image = null;
-                V275StoredSectorsImageOverlay = null;
+                V275SectorsImageOverlay = null;
             }
 
             return false;
@@ -445,7 +446,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
         //}
         V275GetSectorDiff();
 
-        V275StoredSectorsImageOverlay = V275CreateStoredSectorsImageOverlay(true, true);
+        V275SectorsImageOverlay = V275CreateSectorsImageOverlay(false, true);
 
         return true;
     }
@@ -573,7 +574,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
 
         return 1;
     }
-    private DrawingImage V275CreateStoredSectorsImageOverlay(bool isRepeat, bool isDetailed)
+    private DrawingImage V275CreateSectorsImageOverlay(bool useStored, bool isDetailed)
     {
         var bmp = ImageUtilities.CreateBitmap(V275Image);
 
@@ -587,7 +588,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
         var secAreas = new GeometryGroup();
         var drwGroup = new DrawingGroup();
 
-        if (!isRepeat)
+        if (useStored)
         {
             foreach (var sec in V275StoredTemplate.sectors)
             {
@@ -950,11 +951,11 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
 
             path = $"{path}/image{Path.GetExtension(SourceImagePath)}";
 
-            if(imageType == "source")
+            if (imageType == "source")
                 SelectedScanner.FTPClient.UploadFile(SourceImagePath, path);
-            else if(imageType == "stored")
+            else if (imageType == "stored")
                 SelectedScanner.FTPClient.UploadFile(V5Image, path);
-            else if(imageType == "v275stored")
+            else if (imageType == "v275stored")
                 SelectedScanner.FTPClient.UploadFile(V275Image, path);
 
 
@@ -989,7 +990,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
             if (!IsV5ImageStored)
             {
                 V5Image = null;
-                V5StoredSectorsImageOverlay = null;
+                V5SectorsImageOverlay = null;
             }
 
             return false;
@@ -1031,7 +1032,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
 
         V5GetSectorDiff();
 
-        V5StoredSectorsImageOverlay = V5CreateStoredSectorsImageOverlay();
+        V5SectorsImageOverlay = V5CreateSectorsImageOverlay(false);
 
 
 
@@ -1056,7 +1057,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
             if (V5CurrentSectors.Count == 0)
             {
                 V5Image = null;
-                V5StoredSectorsImageOverlay = null;
+                V5SectorsImageOverlay = null;
                 IsV5ImageStored = false;
             }
 
@@ -1085,7 +1086,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
                 V5StoredSectors.Add(sec);
         }
 
-        V5StoredSectorsImageOverlay = V5CreateStoredSectorsImageOverlay();
+        V5SectorsImageOverlay = V5CreateSectorsImageOverlay(true);
     }
 
     private void V5GetSectorDiff()
@@ -1170,7 +1171,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
     {
         return 1;
     }
-    private DrawingImage V5CreateStoredSectorsImageOverlay()
+    private DrawingImage V5CreateSectorsImageOverlay(bool useStored)
     {
         var bmp = ImageUtilities.CreateBitmap(V5Image);
 
@@ -1182,30 +1183,41 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
         };
 
         var secAreas = new GeometryGroup();
+        var bndAreas = new GeometryGroup();
+
         var drwGroup = new DrawingGroup();
 
-        //if (!isRepeat)
-        //{
-        //    foreach (var sec in V5StoredTemplate.sectors)
-        //    {
-        //        var area = new RectangleGeometry(new System.Windows.Rect(sec.left, sec.top, sec.width, sec.height));
-        //        secAreas.Children.Add(area);
-        //    }
+        if (useStored)
+        {
+            foreach (var sec in V5StoredReport._event.data.cycleConfig.qualifiedResults)
+            {
+                if (sec.boundingBox == null)
+                    continue;
 
-        //    if (isDetailed)
-        //        drwGroup = GetModuleGrid(V5StoredTemplate.sectors, V5StoredSectors);
-        //}
-        //else
-        //{
-        //    foreach (var sec in V5CurrentTemplate.sectors)
-        //    {
-        //        var area = new RectangleGeometry(new System.Windows.Rect(sec.left, sec.top, sec.width, sec.height));
-        //        secAreas.Children.Add(area);
-        //    }
+                secAreas.Children.Add(new RectangleGeometry(new Rect(new Point(sec.boundingBox[0].x, sec.boundingBox[0].y), new Point(sec.boundingBox[2].x, sec.boundingBox[2].y))));
+            }
 
-        //    if (isDetailed)
-        //        drwGroup = GetModuleGrid(V5CurrentTemplate.sectors, V5CurrentSectors);
-        //}
+            foreach (var sec in V5StoredReport._event.data.cycleConfig.job.toolList)
+                foreach (var r in sec.SymbologyTool.regionList)
+                    bndAreas.Children.Add(new RectangleGeometry(new Rect(r.Region.shape.RectShape.x, r.Region.shape.RectShape.y, r.Region.shape.RectShape.width, r.Region.shape.RectShape.height)));
+
+            
+        }
+        else
+        {
+            foreach (var sec in V5CurrentReport._event.data.cycleConfig.qualifiedResults)
+            {
+                if (sec.boundingBox == null)
+                    continue;
+
+                secAreas.Children.Add(new RectangleGeometry(new Rect(new Point(sec.boundingBox[0].x, sec.boundingBox[0].y), new Point(sec.boundingBox[2].x, sec.boundingBox[2].y))));
+            }
+
+            foreach (var sec in V5CurrentReport._event.data.cycleConfig.job.toolList)
+                foreach (var r in sec.SymbologyTool.regionList)
+                    bndAreas.Children.Add(new RectangleGeometry(new Rect(r.Region.shape.RectShape.x, r.Region.shape.RectShape.y, r.Region.shape.RectShape.width, r.Region.shape.RectShape.height)));
+
+        }
 
         var sectors = new GeometryDrawing
         {
@@ -1213,75 +1225,20 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<NodeMess
             Pen = new Pen(Brushes.Red, 5)
         };
 
-        //DrawingGroup drwGroup = new DrawingGroup();
+
+        var bounding = new GeometryDrawing
+        {
+            Geometry = bndAreas,
+            Pen = new Pen(Brushes.Purple, 5)
+        };
+
+        drwGroup.Children.Add(bounding);
         drwGroup.Children.Add(sectors);
-        //drwGroup.Children.Add(mGrid);
         drwGroup.Children.Add(border);
 
         var geometryImage = new DrawingImage(drwGroup);
         geometryImage.Freeze();
         return geometryImage;
-
-        //System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(bmp.PixelWidth, bmp.PixelHeight);
-        //using (var g = System.Drawing.Graphics.FromImage(bitmap))
-        //{
-        //    using (System.Drawing.Pen p = new System.Drawing.Pen(System.Drawing.Brushes.Red, 5))
-        //    {
-        //        if (!isRepeat)
-        //        {
-        //            DrawModuleGrid(g, V5StoredTemplate.sectors, V5StoredSectors);
-        //        }
-        //        else
-        //        {
-        //            DrawModuleGrid(g, V5CurrentTemplate.sectors, V5CurrentSectors);
-        //        }
-        //    }
-        //}
-
-        //using (MemoryStream memory = new MemoryStream())
-        //{
-        //    bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Png);
-        //    memory.Position = 0;
-        //    BitmapImage bitmapImage = new BitmapImage();
-        //    bitmapImage.BeginInit();
-        //    bitmapImage.StreamSource = memory;
-        //    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-        //    bitmapImage.EndInit();
-        //    return bitmapImage;
-        //}
-
-        //string text = "Verify1D";
-        //Typeface typeface = new Typeface("Arial");
-        //if (typeface.TryGetGlyphTypeface(out GlyphTypeface _glyphTypeface))
-        //{
-
-        //    GlyphRun gr = new GlyphRun
-        //    {
-        //        PixelsPerDip = 4,
-        //        IsSideways = false,
-        //        FontRenderingEmSize = 1.0,
-        //        BidiLevel = 0,
-        //        GlyphTypeface = _glyphTypeface
-        //    };
-
-        //    double textWidth = 0;
-        //    for (int ix = 0; ix < text.Length; ix++)
-        //    {
-        //        ushort glyphIndex = _glyphTypeface.CharacterToGlyphMap[text[ix]];
-        //        gr.GlyphIndices.Add(glyphIndex);
-
-        //        double width = _glyphTypeface.AdvanceWidths[glyphIndex] * 8;
-        //        gr.AdvanceWidths.Add(width);
-
-        //        textWidth += width;
-        //        double textHeight = _glyphTypeface.Height * 8;
-
-        //    }
-        //    gr.BaselineOrigin = new System.Windows.Point(0, 0);
-        //    GlyphRunDrawing grd = new GlyphRunDrawing(Brushes.Black, gr);
-        //    drwGroup.Children.Add(grd);
-        //}
-
     }
 
 

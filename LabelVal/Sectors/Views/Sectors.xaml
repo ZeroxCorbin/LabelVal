@@ -4,6 +4,8 @@
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+             
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
             xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
             xmlns:local="clr-namespace:LabelVal.Sectors.Views"
             xmlns:ViewModels="clr-namespace:LabelVal.Sectors.ViewModels"
@@ -21,7 +23,7 @@
         <V275Converters:V275_GS1FormattedOutput x:Key="gs1FormattedOutput"/>
     </UserControl.Resources>
 
-    <Border BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}" Background="{DynamicResource MahApps.Brushes.Control.Background}" BorderThickness="1" Margin="1" CornerRadius="3">
+    <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" Margin="3" Padding="0">
         <Grid Margin="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
@@ -491,5 +493,5 @@
                 </ItemsControl>
             </Border>
         </Grid>
-    </Border>
+    </md:Card>
 </UserControl>
