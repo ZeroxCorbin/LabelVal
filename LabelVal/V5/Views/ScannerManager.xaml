@@ -16,7 +16,7 @@
 
         <GroupBox.Header>
             <DockPanel>
-                <md:Card Background="{DynamicResource ColorBlindBrush5}" HorizontalAlignment="Left" Padding="1">
+                <md:Card Background="{DynamicResource OrangeBrush1}" HorizontalAlignment="Left" Padding="1">
                     <TextBlock Text="V5 Cameras" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Margin="3,0"/>
                 </md:Card>
 
@@ -36,7 +36,13 @@
         </GroupBox.Header>
 
         <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}">
-            <ListView ItemsSource="{Binding Scanners}" SelectedItem="{Binding SelectedScanner}" HorizontalAlignment="Center">
+            <ListView ItemsSource="{Binding Scanners}" SelectedItem="{Binding SelectedScanner}">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+                
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <local:Scanner DataContext="{Binding }"/>

@@ -157,12 +157,16 @@
 
                                 <v5:ScannerManager DockPanel.Dock="Top" DataContext="{Binding ScannerManager}"/>
 
-                                <imageRolls:ImageResultsDatabases DockPanel.Dock="Top" DataContext="{Binding ImageResultsDatabases}"/>
 
-                                <imageRolls:ImageRolls DataContext="{Binding ImageRolls}"/>
 
                             </DockPanel>
 
+                            <DockPanel>
+                                <imageRolls:ImageResultsDatabases DockPanel.Dock="Top" DataContext="{Binding ImageResultsDatabases}"/>
+
+                                <imageRolls:ImageRolls DataContext="{Binding ImageRolls}"/>
+                                
+                            </DockPanel>
                             <DockPanel DockPanel.Dock="Top">
 
                                 <printer:Printer DataContext="{Binding Printer}"/>

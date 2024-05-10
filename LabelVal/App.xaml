@@ -41,6 +41,25 @@
             <SolidColorBrush x:Key="MahApps.Metro.Brushes.ToggleSwitchButton.OnSwitchMouseOverBrush.Win10" Color="{DynamicResource Primary400}" />
             <SolidColorBrush x:Key="MahApps.Metro.Brushes.ToggleSwitchButton.ThumbIndicatorCheckedBrush.Win10" Color="{DynamicResource Primary500Foreground}" />
 
+
+            <Color x:Key="Orange0">#4F000B</Color>
+            <SolidColorBrush x:Key="OrangeBrush0" Color="{StaticResource Orange0}"/>
+            
+            <Color x:Key="Orange1">#B7410E</Color>
+            <SolidColorBrush x:Key="OrangeBrush1" Color="{StaticResource Orange1}"/>
+
+            <Color x:Key="Orange2">#CC5500</Color>
+            <SolidColorBrush x:Key="OrangeBrush2" Color="{StaticResource Orange2}"/>
+
+            <Color x:Key="Orange3">#DF6F00</Color>
+            <SolidColorBrush x:Key="OrangeBrush3" Color="{StaticResource Orange3}"/>
+
+            <Color x:Key="Yellow2">#FFC107</Color>
+            <SolidColorBrush x:Key="YellowBrush2" Color="{StaticResource Yellow2}"/>
+
+
+
+
             <Color x:Key="ColorBlind1">#193cbc</Color>
             <SolidColorBrush x:Key="ColorBlindBrush1" Color="{StaticResource ColorBlind1}"/>
 
@@ -53,11 +72,18 @@
             <Color x:Key="ColorBlind4">#89c3ef</Color>
             <SolidColorBrush x:Key="ColorBlindBrush4" Color="{StaticResource ColorBlind4}"/>
 
+
+
             <Color x:Key="ColorBlind5">#ea594e</Color>
             <SolidColorBrush x:Key="ColorBlindBrush5" Color="{StaticResource ColorBlind5}"/>
 
-            <Color x:Key="ColorBlind6">#e5b039</Color>
+            <Color x:Key="ColorBlind5a">#FF6600</Color>
+            <SolidColorBrush x:Key="ColorBlindBrush5a" Color="{StaticResource ColorBlind5a}"/>
+            
+            
+            <Color x:Key="ColorBlind6">#FFC20A</Color>
             <SolidColorBrush x:Key="ColorBlindBrush6" Color="{StaticResource ColorBlind6}"/>
+
 
             <Color x:Key="ColorBlind7">#ede65a</Color>
             <SolidColorBrush x:Key="ColorBlindBrush7" Color="{StaticResource ColorBlind7}"/>
@@ -83,6 +109,63 @@
 
             <Color x:Key="ColorNormal7">#ede65a</Color>
             <SolidColorBrush x:Key="ColorNormalBrush7" Color="{StaticResource ColorNormal7}"/>
+            
+            <Color x:Key="PrimaryColor">#FFC107</Color>
+            <SolidColorBrush x:Key="PrimaryColorBrush" Color="{StaticResource PrimaryColor}"/>
+            <Color x:Key="SecondaryColor">#FF9800</Color>
+            <SolidColorBrush x:Key="SecondaryColorBrush" Color="{StaticResource SecondaryColor}"/>
+            <Color x:Key="PrimaryColorDark">#FFA000</Color>
+            <SolidColorBrush x:Key="PrimaryColorDarkBrush" Color="{StaticResource PrimaryColorDark}"/>
+            <Color x:Key="PrimaryColorLight">#FFD54F</Color>
+            <SolidColorBrush x:Key="PrimaryColorLightBrush" Color="{StaticResource PrimaryColorLight}"/>
+            <Color x:Key="SecondaryColorDark">#F57C00</Color>
+            <SolidColorBrush x:Key="SecondaryColorDarkBrush" Color="{StaticResource SecondaryColorDark}"/>
+            <Color x:Key="SecondaryColorLight">#FFB74D</Color>
+            <SolidColorBrush x:Key="SecondaryColorLightBrush" Color="{StaticResource SecondaryColorLight}"/>
+
+
+            <Color x:Key="PrimaryColorBlind">#FFC107</Color>
+            <SolidColorBrush x:Key="PrimaryColorBlindBrush" Color="{StaticResource PrimaryColorBlind}"/>
+            <Color x:Key="SecondaryColorBlind">#FF9800</Color>
+            <SolidColorBrush x:Key="SecondaryColorBlindBrush" Color="{StaticResource SecondaryColorBlind}"/>
+            <Color x:Key="PrimaryColorBlindDark">#FFA000</Color>
+            <SolidColorBrush x:Key="PrimaryColorBlindDarkBrush" Color="{StaticResource PrimaryColorBlindDark}"/>
+            <Color x:Key="PrimaryColorBlindLight">#FFD54F</Color>
+            <SolidColorBrush x:Key="PrimaryColorBlindLightBrush" Color="{StaticResource PrimaryColorBlindLight}"/>
+            <Color x:Key="SecondaryColorBlindDark">#F57C00</Color>
+            <SolidColorBrush x:Key="SecondaryColorBlindDarkBrush" Color="{StaticResource SecondaryColorBlindDark}"/>
+            <Color x:Key="SecondaryColorBlindLight">#FFB74D</Color>
+            <SolidColorBrush x:Key="SecondaryColorBlindLightBrush" Color="{StaticResource SecondaryColorBlindLight}"/>
+
+            <Color x:Key="PrimaryColorForeground">#212121</Color>
+            <SolidColorBrush x:Key="PrimaryColorForegroundBrush" Color="{StaticResource PrimaryColorForeground}"/>
+            <Color x:Key="SecondaryColorForeground">#212121</Color>
+            <SolidColorBrush x:Key="SecondaryColorForegroundBrush" Color="{StaticResource SecondaryColorForeground}"/>
+            <Color x:Key="PrimaryColorForegroundLight">#757575</Color>
+            <SolidColorBrush x:Key="PrimaryColorForegroundLightBrush" Color="{StaticResource PrimaryColorForegroundLight}"/>
+            <Color x:Key="SecondaryColorForegroundLight">#757575</Color>
+            <SolidColorBrush x:Key="SecondaryColorForegroundLightBrush" Color="{StaticResource SecondaryColorForegroundLight}"/>
+            <Color x:Key="PrimaryColorForegroundDark">#000000</Color>
+            <SolidColorBrush x:Key="PrimaryColorForegroundDarkBrush" Color="{StaticResource PrimaryColorForegroundDark}"/>
+            <Color x:Key="SecondaryColorForegroundDark">#000000</Color>
+            <SolidColorBrush x:Key="SecondaryColorForegroundDarkBrush" Color="{StaticResource SecondaryColorForegroundDark}"/>
+            
+            
+            <Color x:Key="PrimaryColorBackground">#FFFFFF</Color>
+            <SolidColorBrush x:Key="PrimaryColorBackgroundBrush" Color="{StaticResource PrimaryColorBackground}"/>
+            <Color x:Key="SecondaryColorBackground">#FFFFFF</Color>
+            <SolidColorBrush x:Key="SecondaryColorBackgroundBrush" Color="{StaticResource SecondaryColorBackground}"/>
+            <Color x:Key="PrimaryColorBackgroundDark">#F5F5F5</Color>
+            <SolidColorBrush x:Key="PrimaryColorBackgroundDarkBrush" Color="{StaticResource PrimaryColorBackgroundDark}"/>
+            <Color x:Key="SecondaryColorBackgroundDark">#F5F5F5</Color>
+            <SolidColorBrush x:Key="SecondaryColorBackgroundDarkBrush" Color="{StaticResource SecondaryColorBackgroundDark}"/>
+            <Color x:Key="PrimaryColorBackgroundLight">#FAFAFA</Color>
+            <SolidColorBrush x:Key="PrimaryColorBackgroundLightBrush" Color="{StaticResource PrimaryColorBackgroundLight}"/>
+            <Color x:Key="SecondaryColorBackgroundLight">#FAFAFA</Color>
+            <SolidColorBrush x:Key="SecondaryColorBackgroundLightBrush" Color="{StaticResource SecondaryColorBackgroundLight}"/>
+
+           
+
             
 
         </ResourceDictionary>

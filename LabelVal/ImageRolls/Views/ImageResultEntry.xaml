@@ -124,7 +124,7 @@
                                                 <Condition Binding="{Binding SelectedNode.IsLoggedIn}" Value="True"/>
                                             </MultiDataTrigger.Conditions>
 
-                                            <Setter Property="BorderBrush" Value="{DynamicResource ColorBlindBrush7}"/>
+                                            <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}"/>
                                             <Setter Property="ToolTip" Value="V275: Process the image with the simulator."/>
                                             <Setter Property="Content">
                                                 <Setter.Value>
@@ -173,14 +173,14 @@
                                 md:ButtonProgressAssist.Value="-1"
                                 md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV5Working}">
 
-                            <IconPacks:PackIconMaterial Kind="CameraImage"  Margin="-1,-1,0,0" Height="14" Width="14"/>
+                            <IconPacks:PackIconMaterial Kind="Camera"  Margin="-1,-1,0,0" Height="12" Width="12"/>
 
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
                                     <Setter Property="ToolTip" Value="V5: Trigger and read the results and image."/>
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding SelectedScanner.IsSimulator}" Value="True">
-                                            <Setter Property="BorderBrush" Value="{DynamicResource ColorBlindBrush7}"/>
+                                            <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}"/>
                                             <Setter Property="ToolTip" Value="V5: Trigger and process the image with the simulator.&#x0a;Then read the results"/>
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -344,7 +344,7 @@
                                             </MultiDataTrigger>
 
                                             <DataTrigger Binding="{Binding SelectedNode.IsSimulator}" Value="True">
-                                                <Setter Property="BorderBrush" Value="{DynamicResource ColorBlindBrush7}"/>
+                                                <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}"/>
                                             </DataTrigger>
 
                                         </Style.Triggers>
@@ -762,14 +762,12 @@
         <DockPanel>
 
             <!--V5 Stored Image-->
-            <GroupBox  Margin="3" Padding="3"
-            HorizontalAlignment="Left" VerticalAlignment="Top" 
-            Style="{StaticResource MaterialDesignCardGroupBox}">
-
+            <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top">
                 <GroupBox.Header>
+                    
                     <DockPanel>
 
-                        <md:Card Background="{DynamicResource ColorBlindBrush5}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
+                        <md:Card Background="{DynamicResource OrangeBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
                             <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}">
                                 <TextBlock.Style>
                                     <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource MahApps.Styles.TextBlock}">
@@ -843,13 +841,13 @@
                             </Button>
 
                             <Button Command="{Binding V5ProcessCommand}" CommandParameter="stored" ToolTip="V5: Trigger and process the image with the simulator.&#x0a;Then read the results"
-                                    BorderBrush="{DynamicResource ColorBlindBrush7}" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
+                                    BorderBrush="{DynamicResource YellowBrush2}" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
                                     Width="20" Height="20" HorizontalAlignment="Left" Margin="3,0,3,0"
                                     md:ButtonProgressAssist.IsIndeterminate="True"
                                     md:ButtonProgressAssist.Value="-1"
                                     md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV5Working}">
 
-                                <IconPacks:PackIconMaterial Kind="CameraImage" Margin="-1,-1,0,0" Height="14" Width="14"/>
+                                <IconPacks:PackIconMaterial Kind="Camera"  Margin="-1,-1,0,0" Height="12" Width="12"/>
                             </Button>
 
                         </DockPanel>
@@ -877,7 +875,7 @@
 
                     <DockPanel>
 
-                        <md:Card Background="{DynamicResource ColorBlindBrush5}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
+                        <md:Card Background="{DynamicResource OrangeBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
                             <TextBlock Text="Stored Sectors" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                         </md:Card>
 
@@ -972,7 +970,7 @@
 
                     <DockPanel>
 
-                        <md:Card Background="{DynamicResource ColorBlindBrush5}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
+                        <md:Card Background="{DynamicResource OrangeBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
                             <TextBlock Text="Current Sectors" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                         </md:Card>
 
@@ -1105,7 +1103,7 @@
 
                     <DockPanel>
 
-                        <md:Card Background="{DynamicResource ColorBlindBrush5}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
+                        <md:Card Background="{DynamicResource OrangeBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
                             <TextBlock Text="Dissimilar Results" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                         </md:Card>
 

@@ -11,13 +11,13 @@
              d:DataContext="{d:DesignInstance Type=ViewModels:Node}"
              mc:Ignorable="d">
 
-    <md:Card HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="-5">
+    <md:Card HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3">
         <md:Card.Style>
             <Style TargetType="md:Card" BasedOn="{StaticResource {x:Type md:Card}}">
                 <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent4}"/>
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding IsSimulator}" Value="True">
-                        <Setter Property="Background" Value="{DynamicResource ColorBlindBrush7}"/>
+                        <Setter Property="Background" Value="{DynamicResource YellowBrush2}"/>
                     </DataTrigger>
                 </Style.Triggers>
             </Style>

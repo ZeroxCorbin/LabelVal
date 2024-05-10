@@ -10,8 +10,7 @@
              d:DataContext="{d:DesignInstance Type=ViewModels:V275}"
              mc:Ignorable="d">
 
-    <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" VerticalAlignment="Top" HorizontalAlignment="Left"
-              Margin="3" Padding="3">
+    <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="3" Padding="3">
 
         <GroupBox.Header>
             <DockPanel>
@@ -138,6 +137,12 @@
 
             <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}">
                 <ListView ItemsSource="{Binding Nodes}" SelectedItem="{Binding SelectedNode}" HorizontalAlignment="Center">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
+
                     <ListView.ItemTemplate>
                         <DataTemplate>
 

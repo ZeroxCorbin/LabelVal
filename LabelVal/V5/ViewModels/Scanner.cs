@@ -60,7 +60,7 @@ namespace LabelVal.V5.ViewModels
         [ObservableProperty][property: JsonProperty] private static string fTPRemotePath;
         partial void OnFTPRemotePathChanged(string value) { FTPClient.RemotePath = value; }
 
-        
+
         [ObservableProperty] private bool isSimulator;
 
         [JsonProperty]
@@ -552,13 +552,12 @@ namespace LabelVal.V5.ViewModels
         {
             ScannerMode = V5_REST_Lib.Controller.ScannerModes.Offline;
 
-           
-            if (!ScannerController.IsConnected)
-                await Task.Run(ScannerController.Connect);
-            else
-                await Task.Run(ScannerController.Disconnect);
-            
 
+            if (!ScannerController.IsConnected)
+                if (!await Task.Run(ScannerController.Connect))
+                    await Task.Run(ScannerController.Disconnect);
+                else
+                    await Task.Run(ScannerController.Disconnect);
         }
 
         private bool running;
