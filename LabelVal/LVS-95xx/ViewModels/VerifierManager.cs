@@ -1,0 +1,34 @@
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using LabelVal.Messages;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace LabelVal.LVS_95xx.ViewModels;
+public partial class VerifierManager : ObservableObject
+{
+
+    public ObservableCollection<Verifier> Verifiers { get; } = App.Settings.GetValue(nameof(Verifiers), new ObservableCollection<Verifier>(), true);
+
+    [ObservableProperty] public Verifier selectedVerifier;
+    partial void OnSelectedVerifierChanged(Verifier oldValue, Verifier newValue) => _ = WeakReferenceMessenger.Default.Send(new VerifierMessages.SelectedVerifierChanged(newValue, oldValue));
+
+    public VerifierManager()
+    {
+        if (Verifiers.Count == 0)
+        {
+            Verifiers.Add(new Verifier());
+            SelectedVerifier = Verifiers[0];
+        }
+    }
+
+    [RelayCommand] private void AddVerifier() => Verifiers.Add(new Verifier());
+    [RelayCommand] private void RemoveVerifier(Verifier scanner) => Verifiers.Remove(scanner);
+    [RelayCommand] private void SaveVerifiers() => App.Settings.SetValue(nameof(Verifiers), Verifiers);
+
+}

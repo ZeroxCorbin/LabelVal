@@ -12,11 +12,11 @@
 
 
         <StackPanel>
-            <json:JsonViewer JSON="{Binding SelectedNode.Product}" HideButtons="True" Title="Product" />
-            <json:JsonViewer JSON="{Binding SelectedNode.Details}" HideButtons="True" Title="Device.Node" />
+            <json:JsonViewer Title="Product" JSON="{Binding SelectedNode.Product}" HideButtons="True" />
+            <json:JsonViewer Title="Device.Node" JSON="{Binding SelectedNode.Details}" HideButtons="True" />
 
-            <json:JsonViewer JSON="{Binding SelectedNode.Inspection}" HideButtons="True" Title="Inspection" />
-            <json:JsonViewer JSON="{Binding SelectedNode.Camera}" HideButtons="True" Title="Device.Camera" />
+            <json:JsonViewer Title="Inspection" JSON="{Binding SelectedNode.Inspection}" HideButtons="True" />
+            <json:JsonViewer Title="Device.Camera" JSON="{Binding SelectedNode.Camera}" HideButtons="True" />
 
 
             <json:JsonViewer JSON="{Binding SelectedNode.ConfigurationCamera}" HideButtons="True" Title="Camera onfiguration" />

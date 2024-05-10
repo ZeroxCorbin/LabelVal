@@ -1,15 +1,14 @@
-﻿using System;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using V275_REST_lib.Models;
-using Microsoft.AspNetCore.Mvc;
 
 namespace LabelVal.LVS_95xx
 {
-    internal class LVS95xx_SerialPort
+    public class SerialPort
     {
         public delegate void PacketAvailableDelegate(string packet);
         public event PacketAvailableDelegate PacketAvailable;
@@ -21,7 +20,8 @@ namespace LabelVal.LVS_95xx
 
         public SerialPortController Controller { get; } = new SerialPortController();
 
-        private bool running;
+        public bool IsConnected { get; set; }
+
         private bool newData;
         private bool listening;
 
@@ -30,17 +30,17 @@ namespace LabelVal.LVS_95xx
         private object dataLock = new object();
 
 
-        public int Init(string portName)
+        public bool Init(string portName)
         {
             Controller.GetCOMList();
             var com = Controller.COMPortsAvailable.Find((e) => e.Equals(portName));
 
             if (com == null)
-                return -1;
+                return false;
 
             Controller.Init(portName);
 
-            return 0;
+            return true;
         }
 
         public bool Start()
@@ -53,7 +53,7 @@ namespace LabelVal.LVS_95xx
 
             if (Controller.Connect())
             {
-                Task.Run(() => PacketThread());
+                Task.Run(PacketThread);
                 return true;
             }
 
@@ -621,7 +621,7 @@ namespace LabelVal.LVS_95xx
 
             Controller.Disconnect();
 
-            await Task.Run(() => { listening = false; while (running) { } });
+            await Task.Run(() => { listening = false; while (IsConnected) { } });
         }
 
         private void Controller_DataAvailable(string data)
@@ -633,10 +633,11 @@ namespace LabelVal.LVS_95xx
             }
         }
 
+
         private void PacketThread()
         {
             listening = true;
-            running = true;
+            IsConnected = true;
 
             DateTime start = DateTime.MaxValue;
             while (listening)
@@ -651,17 +652,14 @@ namespace LabelVal.LVS_95xx
                 {
                     lock (dataLock)
                     {
-                        string cpy = string.Copy(readData);
-                        Task.Run(() => PacketAvailable?.Invoke(cpy));
-                        readData = "";
-
+                        PacketAvailable?.Invoke(readData);
                         start = DateTime.MaxValue;
                     }
                 }
 
                 Thread.Sleep(1);
             }
-            running = false;
+            IsConnected = false;
         }
 
     }

@@ -24,6 +24,8 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
     public V5.ViewModels.ScannerManager ScannerManager { get; }
     public V5.ViewModels.ScannerDetails ScannerDetails { get; }
 
+    public LVS_95xx.ViewModels.VerifierManager VerifierManager { get; }
+
     public ImageRolls.ViewModels.ImageResultsDatabases ImageResultsDatabases { get; }
 
     [ObservableProperty] private string userMessage = "";
@@ -41,6 +43,7 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
 
         V275 = new V275.ViewModels.V275();
         Printer = new Printer.ViewModels.Printer();
+        VerifierManager = new LVS_95xx.ViewModels.VerifierManager();
 
         ImageRolls = new ImageRolls.ViewModels.ImageRolls();
         ImageResultsDatabases = new ImageRolls.ViewModels.ImageResultsDatabases();

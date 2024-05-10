@@ -1,4 +1,5 @@
-﻿using LabelVal.WindowViewModels;
+﻿using LabelVal.LVS_95xx.ViewModels;
+using LabelVal.WindowViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +28,7 @@ namespace LabelVal.LVS_95xx
 
         public LVS95xx_SerialPortView(object sect)
         {
-            DataContext = new LVS95xx_SerialPortViewModel(sect);
+            DataContext = new Verifier();
 
             InitializeComponent();
         }
@@ -40,7 +41,7 @@ namespace LabelVal.LVS_95xx
 
         private async void Close()
         {
-            ((LVS95xx_SerialPortViewModel)this.DataContext).ClosePortCommand.Execute(null);
+            ((Verifier)this.DataContext).ClosePortCommand.Execute(null);
 
             await MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance.HideMetroDialogAsync(this.DataContext, this);
 
@@ -56,7 +57,7 @@ namespace LabelVal.LVS_95xx
 
         private void CustomDialog_Loaded(object sender, RoutedEventArgs e)
         {
-            ((LVS95xx_SerialPortViewModel)this.DataContext).OpenPortCommand.Execute(null);
+            //((Verifier)this.DataContext).OpenPortCommand.Execute(null);
         }
     }
 }

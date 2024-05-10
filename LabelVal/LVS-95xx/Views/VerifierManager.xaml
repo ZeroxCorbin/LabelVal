@@ -1,0 +1,49 @@
+﻿<UserControl x:Class="LabelVal.LVS_95xx.Views.VerifierManager"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:LabelVal.LVS_95xx.Views"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:ViewModels="clr-namespace:LabelVal.LVS_95xx.ViewModels"  
+             d:DataContext="{d:DesignInstance Type=ViewModels:VerifierManager}"
+             mc:Ignorable="d" >
+
+
+    <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" VerticalAlignment="Top" HorizontalAlignment="Left"
+              Margin="3" Padding="3">
+
+        <GroupBox.Header>
+            <DockPanel>
+                <md:Card Background="{DynamicResource OrangeBrush0}" HorizontalAlignment="Left" Padding="1">
+                    <TextBlock Text="LVS_95xx Verifiers" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Margin="3,0"/>
+                </md:Card>
+
+                <!--<Button Click="btnShowDetails_Click" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
+                        Padding="0" Margin="6,0,3,0" BorderThickness="0" Height="20" Width="20" HorizontalAlignment="Left">
+
+                    <iconPacks:PackIconMaterial Kind="CodeJson" Width="12" Height="12"/>
+                </Button>-->
+
+            </DockPanel>
+        </GroupBox.Header>
+
+        <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}">
+            <ListView ItemsSource="{Binding Verifiers}" SelectedItem="{Binding SelectedVerifier}">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <local:Verifier DataContext="{Binding }"/>
+
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </md:Card>
+    </GroupBox>
+</UserControl>

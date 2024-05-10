@@ -6,13 +6,13 @@
                     xmlns:local="clr-namespace:LabelVal.LVS_95xx"
                     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                     xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-                    xmlns:ViewModels="clr-namespace:LabelVal.LVS_95xx"   
+                    xmlns:ViewModels="clr-namespace:LabelVal.LVS_95xx.ViewModels"   
                     xmlns:MainViews="clr-namespace:LabelVal.WindowViews"
                      xmlns:v275="clr-namespace:LabelVal.V275.Views"
                      xmlns:sectors="clr-namespace:LabelVal.Sectors.Views"
                     xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
                     Dialog:DialogParticipation.Register="{Binding}"
-                    d:DataContext="{d:DesignInstance Type=ViewModels:LVS95xx_SerialPortViewModel}"
+                    d:DataContext="{d:DesignInstance Type=ViewModels:Verifier}"
                     mc:Ignorable="d"
                     d:DesignHeight="800" d:DesignWidth="800" Width="{Binding Width}" Height="{Binding Height}"
                     Style="{StaticResource {x:Type Dialog:BaseMetroDialog}}" 
@@ -66,7 +66,7 @@
         <Border Grid.Row="2" Grid.Column="2" BorderThickness="2" Margin="3"
                         BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
                         Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-            <ScrollViewer MaxHeight="500">
+            <ScrollViewer Height="400">
                 <TextBox Text="{Binding ReadData}" IsReadOnly="True" BorderThickness="0"/>
             </ScrollViewer>
         </Border>

@@ -1,16 +1,12 @@
 ﻿using Microsoft.Win32.SafeHandles;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace LabelVal.LVS_95xx
 {
-    internal class LVS95xx_SerialPortSetup
+    public class SerialPortSetup
     {
         public delegate void DataAvailableDelegate(string data);
         public event DataAvailableDelegate DataAvailable;

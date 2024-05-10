@@ -17,8 +17,9 @@ namespace LabelVal.V275.ViewModels;
 
 public enum NodeStates
 {
-    Editing,
+    Offline,
     Idle,
+    Editing,
     Running,
     Paused,
 }
@@ -55,7 +56,7 @@ public partial class Node : ObservableRecipient, IRecipient<Messages.ImageRollMe
     public bool IsSimulator => Inspection != null && Inspection.device.Equals("simulator");
     private static string SimulatorImageDirectory => App.Settings.GetValue<string>(nameof(V275.SimulatorImageDirectory));
 
-    [ObservableProperty] NodeStates state = NodeStates.Idle;
+    [ObservableProperty] NodeStates state = NodeStates.Offline;
     [ObservableProperty] private string jobName = "";
     public bool IsBackupVoid => ConfigurationCamera != null && ConfigurationCamera.backupVoidMode.value == "ON";
 
@@ -182,7 +183,7 @@ public partial class Node : ObservableRecipient, IRecipient<Messages.ImageRollMe
         Calibration = null;
 
         JobName = "";
-        State = NodeStates.Idle;
+        State = NodeStates.Offline;
 
     }
     private bool PreLogin()

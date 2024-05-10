@@ -16,7 +16,7 @@ public partial class Sectors : UserControl
     {
         //LVS_95xx.LVS95xx_SerialPortView sp = new LVS_95xx.LVS95xx_SerialPortView(this.DataContext);
 
-        var dc = new LVS_95xx.LVS95xx_SerialPortViewModel(DataContext);
+        var dc = new LVS_95xx.ViewModels.Verifier();
 
         var yourParentWindow = Window.GetWindow(this);
 

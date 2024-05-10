@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO.Ports;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace LabelVal.LVS_95xx
 {
-    internal class SerialPortController
+    public class SerialPortController
     {
         public delegate void DataAvailableDelegate(string data);
         public event DataAvailableDelegate DataAvailable;
@@ -17,7 +15,7 @@ namespace LabelVal.LVS_95xx
 
         public List<string> COMPortsAvailable { get; } = new List<string>();
 
-        private SerialPort SerialPort { get; set; } = new SerialPort();
+        private System.IO.Ports.SerialPort SerialPort { get; set; } = new System.IO.Ports.SerialPort();
         private bool running;
         private bool listening;
 
@@ -25,7 +23,7 @@ namespace LabelVal.LVS_95xx
         {
             COMPortsAvailable.Clear();
 
-            foreach (var name in SerialPort.GetPortNames())
+            foreach (var name in System.IO.Ports.SerialPort.GetPortNames())
                 COMPortsAvailable.Add(name);
         }
 
@@ -50,7 +48,7 @@ namespace LabelVal.LVS_95xx
                     SerialPort.Open();
                     Task.Run(() => ReadThread());
                 }
-                catch(Exception ex)
+                catch (Exception)
                 {
                     return false;
                 }
@@ -84,11 +82,11 @@ namespace LabelVal.LVS_95xx
                 {
                     string message = SerialPort.ReadExisting();
 
-                    if(!string.IsNullOrEmpty(message))
+                    if (!string.IsNullOrEmpty(message))
                         DataAvailable?.Invoke(message);
                 }
                 catch (TimeoutException) { }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Task.Run(() => Exception?.Invoke(ex, new EventArgs()));
 

@@ -1,12 +1,14 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using LabelVal.V275.ViewModels;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace LabelVal.LVS_95xx;
-
-public partial class LVS95xx_SerialPortViewModel : ObservableObject
+namespace LabelVal.LVS_95xx.ViewModels;
+public partial class Verifier : ObservableRecipient
 {
     [ObservableProperty] private double width;
     [ObservableProperty] private double height;
@@ -23,17 +25,9 @@ public partial class LVS95xx_SerialPortViewModel : ObservableObject
     partial void OnIsConnectedChanged(bool value) => OnPropertyChanged(nameof(IsNotConnected));
     public bool IsNotConnected => !IsConnected;
 
-    private LVS95xx_SerialPort PortController = new();
+    private SerialPort PortController = new();
 
-    public LVS95xx_SerialPortViewModel(object sectorControl)
-    {
-        StoredSectorControl = (Sectors.ViewModels.Sectors)sectorControl;
-
-        //lVS95Xx_SerialPortSetup.DataAvailable += LVS95Xx_SerialPortSetup_DataAvailable;
-        //Task.Run(() => lVS95Xx_SerialPortSetup.StartCancellableProcess("cmd.exe", "", new System.Threading.CancellationToken()));
-
-        LoadComList();
-    }
+    public Verifier() => LoadComList();
 
     private void LoadComList()
     {
@@ -45,9 +39,9 @@ public partial class LVS95xx_SerialPortViewModel : ObservableObject
     }
 
     [RelayCommand]
-    public void OpenPort()
+    private void Connect()
     {
-        if (!string.IsNullOrEmpty(SelectedComName))
+        if (!string.IsNullOrEmpty(SelectedComName) && !PortController.IsConnected)
         {
             _ = PortController.Init(SelectedComName);
 
@@ -63,6 +57,8 @@ public partial class LVS95xx_SerialPortViewModel : ObservableObject
             if (PortController.Start())
                 IsConnected = true;
         }
+        else
+            ClosePort();
     }
 
     private void PortController_Exception(object sender, EventArgs e) => ClosePort();

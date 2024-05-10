@@ -15,6 +15,7 @@
                 Dialog:DialogParticipation.Register="{Binding}"
                  
                  xmlns:v5="clr-namespace:LabelVal.V5.Views"
+                 xmlns:L95xx="clr-namespace:LabelVal.LVS_95xx.Views"
                  xmlns:ViewModels="clr-namespace:LabelVal.WindowViewModels"  
                 d:DataContext="{d:DesignInstance Type=ViewModels:MainWindowViewModel}"
                 mc:Ignorable="d"
@@ -157,7 +158,7 @@
 
                                 <v5:ScannerManager DockPanel.Dock="Top" DataContext="{Binding ScannerManager}"/>
 
-
+                                <L95xx:VerifierManager DockPanel.Dock="Top" DataContext="{Binding VerifierManager}"/>
 
                             </DockPanel>
 

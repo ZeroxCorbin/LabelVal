@@ -554,10 +554,13 @@ namespace LabelVal.V5.ViewModels
 
 
             if (!ScannerController.IsConnected)
+            {
                 if (!await Task.Run(ScannerController.Connect))
                     await Task.Run(ScannerController.Disconnect);
-                else
-                    await Task.Run(ScannerController.Disconnect);
+            }
+
+            else
+                await Task.Run(ScannerController.Disconnect);
         }
 
         private bool running;
