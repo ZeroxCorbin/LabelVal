@@ -160,7 +160,7 @@
                 <ItemsControl ItemsSource="{Binding V275StoredSectors}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <sectors:Sectors />
+                            <sectors:Sector />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
@@ -187,7 +187,7 @@
                 <ItemsControl ItemsSource="{Binding V275CurrentSectors}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <sectors:Sectors />
+                            <sectors:Sector />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>

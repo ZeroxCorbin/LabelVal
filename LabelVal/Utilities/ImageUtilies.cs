@@ -108,7 +108,22 @@ namespace LabelVal.Utilities
 
             return stream.ToArray();
         }
+        public static byte[] ConvertToBmp(byte[] img, int dpi)
+        {
+            System.Windows.Media.Imaging.BmpBitmapEncoder encoder = new();
+            using var ms = new System.IO.MemoryStream(img);
+            using MemoryStream stream = new();
+            encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(ms));
+            encoder.Save(stream);
+            stream.Close();
 
+            byte[] ret = stream.ToArray();
+
+            if (dpi > 0)
+                SetImageDPI(ret, dpi);
+
+            return ret;
+        }
         public static System.Windows.Media.Imaging.BitmapImage CreateBitmap(byte[] data, int decodePixelWidth = 0)
         {
             if (data == null || data.Length < 2)

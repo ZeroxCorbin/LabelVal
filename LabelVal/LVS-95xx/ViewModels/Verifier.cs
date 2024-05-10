@@ -1,31 +1,26 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using LabelVal.Messages;
+using LabelVal.Sectors.ViewModels;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LabelVal.LVS_95xx.ViewModels;
 public partial class Verifier : ObservableRecipient
-{
-    [ObservableProperty] private double width;
-    [ObservableProperty] private double height;
-    [ObservableProperty] private string readData;
-    public ObservableCollection<string> ComNameList { get; } = [];
+{  
+    private SerialPort PortController = new();
 
-    public string SelectedComName { get => App.Settings.GetValue("95xx_COM_Name", ""); set => App.Settings.SetValue("95xx_COM_Name", value); }
-
-    public Sectors.ViewModels.Sectors StoredSectorControl { get; }
-
-    [ObservableProperty] private Sectors.ViewModels.Sectors lvs95xxSectorControl = new();
 
     [ObservableProperty] private bool isConnected;
     partial void OnIsConnectedChanged(bool value) => OnPropertyChanged(nameof(IsNotConnected));
     public bool IsNotConnected => !IsConnected;
 
-    private SerialPort PortController = new();
+
+    [ObservableProperty] private string readData;
+    public ObservableCollection<string> ComNameList { get; } = [];
+
+    public string SelectedComName { get => App.Settings.GetValue("95xx_COM_Name", ""); set => App.Settings.SetValue("95xx_COM_Name", value); }
 
     public Verifier() => LoadComList();
 
@@ -62,17 +57,11 @@ public partial class Verifier : ObservableRecipient
     }
 
     private void PortController_Exception(object sender, EventArgs e) => ClosePort();
-
-    private void PortController_SectorAvailable(object sector)
-    {
-        _ = App.Current.Dispatcher.BeginInvoke(new Action(() =>
-        Lvs95xxSectorControl = new Sectors.ViewModels.Sectors(StoredSectorControl.Template, sector, false, true)));
-    }
-
+    private void PortController_SectorAvailable(object sector) => WeakReferenceMessenger.Default.Send(new VerifierMessages.NewPacket(sector));
     private void PortController_PacketAvailable(string packet) => ReadData = packet;
 
     [RelayCommand]
-    public void ClosePort()
+    private void ClosePort()
     {
         PortController.Exception -= PortController_Exception;
         PortController.SectorAvailable -= PortController_SectorAvailable;
@@ -81,11 +70,5 @@ public partial class Verifier : ObservableRecipient
         PortController.Stop();
         IsConnected = false;
     }
-    [RelayCommand]
-    public void WriteData()
-    {
-        //lVS95Xx_SerialPortSetup.Write(@"cd D:\OneDrive - OMRON\Omron\OCR\Applications\LabelVal\LabelVal\bin\Debug\LVS-95xx\com0com\x64" + "\r\n");
-        //lVS95Xx_SerialPortSetup.Write(".\\setupc.exe");
-        //lVS95Xx_SerialPortSetup.Write("\r\n");
-    }
+
 }

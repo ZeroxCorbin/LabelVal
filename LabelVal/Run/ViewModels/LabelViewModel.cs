@@ -20,8 +20,8 @@ public partial class LabelViewModel : ObservableObject
 
     [ObservableProperty] private LedgerDatabase.LedgerEntry ledgerEntry;
 
-    public ObservableCollection<Sectors.ViewModels.Sectors> V275CurrentSectors { get; } = [];
-    public ObservableCollection<Sectors.ViewModels.Sectors> V275StoredSectors { get; } = [];
+    public ObservableCollection<Sectors.ViewModels.Sector> V275CurrentSectors { get; } = [];
+    public ObservableCollection<Sectors.ViewModels.Sector> V275StoredSectors { get; } = [];
     public ObservableCollection<Sectors.ViewModels.SectorDifferences> V275DiffSectors { get; } = []; 
 
     [ObservableProperty] private DrawingImage v275SectorsImageOverlay;
@@ -43,7 +43,7 @@ public partial class LabelViewModel : ObservableObject
     {
         V275StoredSectors.Clear();
 
-        List<Sectors.ViewModels.Sectors> tempSectors = [];
+        List<Sectors.ViewModels.Sector> tempSectors = [];
         if (!string.IsNullOrEmpty(Result.LabelReport) && !string.IsNullOrEmpty(Result.LabelTemplate))
             foreach (var jSec in JsonConvert.DeserializeObject<V275_REST_lib.Models.Job>(Result.LabelTemplate).sectors)
             {
@@ -61,7 +61,7 @@ public partial class LabelViewModel : ObservableObject
                         if (fSec == null)
                             break;
 
-                        tempSectors.Add(new Sectors.ViewModels.Sectors(jSec, fSec, isWrongStandard, jSec.gradingStandard != null && jSec.gradingStandard.enabled));
+                        tempSectors.Add(new Sectors.ViewModels.Sector(jSec, fSec, isWrongStandard, jSec.gradingStandard != null && jSec.gradingStandard.enabled));
 
                         break;
                     }
@@ -80,7 +80,7 @@ public partial class LabelViewModel : ObservableObject
     {
         V275CurrentSectors.Clear();
 
-        List<Sectors.ViewModels.Sectors> tempSectors = [];
+        List<Sectors.ViewModels.Sector> tempSectors = [];
         if (!string.IsNullOrEmpty(Result.RepeatReport) && !string.IsNullOrEmpty(Result.LabelTemplate))
             foreach (var jSec in JsonConvert.DeserializeObject<V275_REST_lib.Models.Job>(Result.LabelTemplate).sectors)
             {
@@ -98,7 +98,7 @@ public partial class LabelViewModel : ObservableObject
                         if (fSec == null)
                             break;
 
-                        tempSectors.Add(new Sectors.ViewModels.Sectors(jSec, fSec, isWrongStandard, jSec.gradingStandard != null && jSec.gradingStandard.enabled));
+                        tempSectors.Add(new Sectors.ViewModels.Sector(jSec, fSec, isWrongStandard, jSec.gradingStandard != null && jSec.gradingStandard.enabled));
 
                         break;
                     }

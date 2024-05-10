@@ -1,4 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using LabelVal.Messages;
 using Newtonsoft.Json;
 using V5_REST_Lib.Models;
 
@@ -275,7 +278,7 @@ public class Report
     }
 }
 
-public partial class Sectors : ObservableObject
+public partial class Sector : ObservableObject
 {
     /// <summary>
     /// Used for OCV, OCR: matchSettings.matchMode, matchSettings.userDefinedDataTrueSize, matchSettings.fixedText
@@ -297,10 +300,10 @@ public partial class Sectors : ObservableObject
     partial void OnIsWrongStandardChanged(bool value) => OnPropertyChanged(nameof(IsNotWrongStandard));
     public bool IsNotWrongStandard => !IsWrongStandard;
 
-    public Sectors() { }
+    public Sector() { }
 
     //V275
-    public Sectors(V275_REST_lib.Models.Job.Sector template, object report, bool isWrongStandard, bool isGS1Standard)
+    public Sector(V275_REST_lib.Models.Job.Sector template, object report, bool isWrongStandard, bool isGS1Standard)
     {
         Report = new Report(report);
 
@@ -329,7 +332,7 @@ public partial class Sectors : ObservableObject
     }
 
     //V5
-    public Sectors(Results_QualifiedResult results, string name, bool isWrongStandard = false, bool isGS1Standard = false)
+    public Sector(Results_QualifiedResult results, string name, bool isWrongStandard = false, bool isGS1Standard = false)
     {
         Report = new Report(results);
         Template = new Template(results, name);
@@ -356,7 +359,7 @@ public partial class Sectors : ObservableObject
     }
 
     //L95xx
-    public Sectors(Template template, object report, bool isWrongStandard, bool isGS1Standard)
+    public Sector(Template template, object report, bool isWrongStandard, bool isGS1Standard)
     {
         Report = report;
         Template = template;
