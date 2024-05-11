@@ -140,13 +140,12 @@
             </GroupBox>
 
             <!--V5 Stored Sectors-->
-            <GroupBox  Margin="3" Padding="3" Width="220"
-                HorizontalAlignment="Left" VerticalAlignment="Top" 
-                Style="{StaticResource MaterialDesignCardGroupBox}">
+            <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}"
+                      Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top">
 
                 <GroupBox.Header>
 
-                    <DockPanel>
+                    <DockPanel Margin="3">
 
                         <md:Card Background="{DynamicResource OrangeBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
                             <TextBlock Text="Stored Sectors" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
@@ -220,13 +219,24 @@
                     </DockPanel>
                 </GroupBox.Header>
 
-                <ScrollViewer Margin="3" x:Name="ScrollV5StoredSectors" MaxHeight="400" VerticalScrollBarVisibility="Auto"
+                <ScrollViewer Margin="3" x:Name="ScrollV5StoredSectors" VerticalScrollBarVisibility="Auto"
                           mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
                           ScrollChanged="ScrollV5StoredSectors_ScrollChanged">
-                    <ItemsControl ItemsSource="{Binding V5StoredSectors}">
+                    <ScrollViewer.Style>
+                        <Style TargetType="{x:Type ScrollViewer}">
+                            <Setter Property="Height" Value="393"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding V5StoredSectors.Count}" Value="0">
+                                    <Setter Property="Height" Value="0"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ScrollViewer.Style>
+
+                    <ItemsControl ItemsSource="{Binding V5StoredSectors}" Background="{StaticResource MahApps.Brushes.Control.Background}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <sectors:Sector />
+                                <sectors:Sector Width="220" Background="{StaticResource AccentColorBrush}" Margin="6,1"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -235,13 +245,13 @@
             </GroupBox>
 
             <!--V5 Current Sectors-->
-            <GroupBox  Margin="3" Padding="3" Width="220"
+            <GroupBox  Margin="3" Padding="0"
                 HorizontalAlignment="Left" VerticalAlignment="Top" 
                 Style="{StaticResource MaterialDesignCardGroupBox}">
 
                 <GroupBox.Header>
 
-                    <DockPanel>
+                    <DockPanel Margin="3">
 
                         <md:Card Background="{DynamicResource OrangeBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
                             <TextBlock Text="Current Sectors" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
@@ -353,14 +363,24 @@
                 </GroupBox.Header>
 
                 <ScrollViewer x:Name="ScrollV5CurrentSectors"
-                        Margin="3" MaxHeight="400" VerticalScrollBarVisibility="Auto"
+                        Margin="3" VerticalScrollBarVisibility="Auto"
                         mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
                         ScrollChanged="ScrollV5CurrentSectors_ScrollChanged">
+                    <ScrollViewer.Style>
+                        <Style TargetType="{x:Type ScrollViewer}">
+                            <Setter Property="Height" Value="393"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding V5CurrentSectors.Count}" Value="0">
+                                    <Setter Property="Height" Value="0"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ScrollViewer.Style>
 
                     <ItemsControl ItemsSource="{Binding V5CurrentSectors}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <sectors:Sector />
+                                <sectors:Sector Width="220" Background="{StaticResource AccentColorBrush}" Margin="6,1" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -368,13 +388,13 @@
             </GroupBox>
 
             <!--V5 Dissimilar Results-->
-            <GroupBox  Margin="3" Padding="3" Width="240"
+            <GroupBox  Margin="3" Padding="0"
                 HorizontalAlignment="Left" VerticalAlignment="Top" 
                 Style="{StaticResource MaterialDesignCardGroupBox}">
 
                 <GroupBox.Header>
 
-                    <DockPanel>
+                    <DockPanel Margin="3">
 
                         <md:Card Background="{DynamicResource OrangeBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
                             <TextBlock Text="Dissimilar Results" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
@@ -383,12 +403,23 @@
                     </DockPanel>
                 </GroupBox.Header>
 
-                <ScrollViewer Margin="3" MaxHeight="400" VerticalScrollBarVisibility="Auto"
+                <ScrollViewer Margin="3" VerticalScrollBarVisibility="Auto"
                           mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True">
+                    <ScrollViewer.Style>
+                        <Style TargetType="{x:Type ScrollViewer}">
+                            <Setter Property="Height" Value="393"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding V5DiffSectors.Count}" Value="0">
+                                    <Setter Property="Height" Value="0"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ScrollViewer.Style>
+                    
                     <ItemsControl ItemsSource="{Binding V5DiffSectors}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <sectors:SectorDifferences />
+                                <sectors:SectorDifferences  Width="220" Background="{StaticResource AccentColorBrush}" Margin="3,0"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>

@@ -10,6 +10,6 @@ public class VerifierMessages
         public Verifier OldVerifier { get; } = oldVerifier;
     }
 
-    public class NewPacket(object sector) : ValueChangedMessage<object>(sector) { }
+    public class NewPacket(string packet) : ValueChangedMessage<string>(packet) { }
 
 }

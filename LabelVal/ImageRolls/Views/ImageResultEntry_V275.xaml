@@ -15,7 +15,7 @@
              xmlns:ViewModels="clr-namespace:LabelVal.ImageRolls.ViewModels"
              d:DataContext="{d:DesignInstance Type=ViewModels:ImageResultEntry}"
              mc:Ignorable="d">
-    
+
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="booltovis"/>
         <Converters:BytesToImageConverter x:Key="bytesToImage"/>
@@ -29,84 +29,50 @@
         <Image x:Key="V275Png" Source="/Assets/Images/V275WhiteIcon.png" />
 
     </UserControl.Resources>
-    
+
     <DockPanel>
-        
 
-    <!--V275-->
-    <DockPanel DockPanel.Dock="Top">
 
-        <!--V275 Stored Image-->
-        <GroupBox  Margin="3" Padding="3"
+        <!--V275-->
+        <DockPanel DockPanel.Dock="Top">
+
+            <!--V275 Stored Image-->
+            <GroupBox  Margin="3" Padding="3"
             HorizontalAlignment="Left" VerticalAlignment="Top" 
             Style="{StaticResource MaterialDesignCardGroupBox}">
 
-            <GroupBox.Header>
-                <DockPanel>
-
-                    <md:Card Background="{DynamicResource ColorBlindBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
-                        <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}">
-                            <TextBlock.Style>
-                                <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource MahApps.Styles.TextBlock}">
-                                    <Setter Property="Text" Value="Current Image"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsV275ImageStored}" Value="True">
-                                            <Setter Property="Text" Value="Stored Image"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                    </md:Card>
-
-                    <Button Command="{Binding SaveCommand}" CommandParameter="v275stored" ToolTip="Save the image."
-                            Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
-                        <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
-                                <Setter Property="Visibility" Value="Visible"/>
-                                <Style.Triggers>
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding SelectedNode.IsSimulator}" Value="True"/>
-                                            <Condition Binding="{Binding IsV275ImageStored}" Value="True"/>
-                                        </MultiDataTrigger.Conditions>
-
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                    </MultiDataTrigger>
-                                    <DataTrigger Binding="{Binding V275Image}" Value="{x:Null}">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-
-                        <IconPacks:PackIconMaterial Kind="ContentSave"  Margin="0,-2,0,0" Height="12" Width="12"/>
-
-                    </Button>
-
+                <GroupBox.Header>
                     <DockPanel>
-                        <DockPanel.Style>
-                            <Style TargetType="{x:Type DockPanel}">
-                                <Setter Property="Visibility" Value="Collapsed"/>
-                                <Style.Triggers>
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding SelectedNode.IsSimulator}" Value="True"/>
-                                            <Condition Binding="{Binding IsV275ImageStored}" Value="True"/>
-                                        </MultiDataTrigger.Conditions>
 
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                    </MultiDataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </DockPanel.Style>
+                        <md:Card Background="{DynamicResource ColorBlindBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
+                            <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}">
+                                <TextBlock.Style>
+                                    <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource MahApps.Styles.TextBlock}">
+                                        <Setter Property="Text" Value="Current Image"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsV275ImageStored}" Value="True">
+                                                <Setter Property="Text" Value="Stored Image"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </md:Card>
 
-
-                        <Button Command="{Binding SaveCommand}" CommandParameter="v5stored" ToolTip="Save the iamge." Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                        <Button Command="{Binding SaveCommand}" CommandParameter="v275stored" ToolTip="Save the image."
+                            Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
                                     <Setter Property="Visibility" Value="Visible"/>
                                     <Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding SelectedNode.IsSimulator}" Value="True"/>
+                                                <Condition Binding="{Binding IsV275ImageStored}" Value="True"/>
+                                            </MultiDataTrigger.Conditions>
+
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </MultiDataTrigger>
                                         <DataTrigger Binding="{Binding V275Image}" Value="{x:Null}">
                                             <Setter Property="Visibility" Value="Collapsed"/>
                                         </DataTrigger>
@@ -114,23 +80,13 @@
                                 </Style>
                             </Button.Style>
 
-                            <IconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
+                            <IconPacks:PackIconMaterial Kind="ContentSave"  Margin="0,-2,0,0" Height="12" Width="12"/>
+
                         </Button>
 
-                        <Button Command="{Binding V275ProcessCommand}" CommandParameter="stored" ToolTip="V275: Process the stored image with the simulator." 
-                                    Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0"
-                                    md:ButtonProgressAssist.IsIndeterminate="True"
-                                    md:ButtonProgressAssist.Value="-1"
-                                    md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV275Working}">
-
-                            <Rectangle Width="14" Height="14" Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
-                                <Rectangle.OpacityMask>
-                                    <VisualBrush Stretch="Fill" Visual="{DynamicResource V275Png}" />
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                        <DockPanel>
+                            <DockPanel.Style>
+                                <Style TargetType="{x:Type DockPanel}">
                                     <Setter Property="Visibility" Value="Collapsed"/>
                                     <Style.Triggers>
                                         <MultiDataTrigger>
@@ -141,17 +97,61 @@
 
                                             <Setter Property="Visibility" Value="Visible"/>
                                         </MultiDataTrigger>
-
-                                        <DataTrigger Binding="{Binding SelectedNode.IsSimulator}" Value="True">
-                                            <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}"/>
-                                        </DataTrigger>
-
                                     </Style.Triggers>
                                 </Style>
-                            </Button.Style>
-                        </Button>
+                            </DockPanel.Style>
 
-                        <!--<Label Foreground="Goldenrod" HorizontalAlignment="Right" VerticalAlignment="Center" ToolTip="The 'Golden' Repeat Image stored in the database.">
+
+                            <Button Command="{Binding SaveCommand}" CommandParameter="v5stored" ToolTip="Save the iamge." Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding V275Image}" Value="{x:Null}">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+
+                                <IconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
+                            </Button>
+
+                            <Button Command="{Binding V275ProcessCommand}" CommandParameter="stored" ToolTip="V275: Process the stored image with the simulator." 
+                                    Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0"
+                                    md:ButtonProgressAssist.IsIndeterminate="True"
+                                    md:ButtonProgressAssist.Value="-1"
+                                    md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV275Working}">
+
+                                <Rectangle Width="14" Height="14" Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill" Visual="{DynamicResource V275Png}" />
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <MultiDataTrigger>
+                                                <MultiDataTrigger.Conditions>
+                                                    <Condition Binding="{Binding SelectedNode.IsSimulator}" Value="True"/>
+                                                    <Condition Binding="{Binding IsV275ImageStored}" Value="True"/>
+                                                </MultiDataTrigger.Conditions>
+
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </MultiDataTrigger>
+
+                                            <DataTrigger Binding="{Binding SelectedNode.IsSimulator}" Value="True">
+                                                <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}"/>
+                                            </DataTrigger>
+
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+
+                            <!--<Label Foreground="Goldenrod" HorizontalAlignment="Right" VerticalAlignment="Center" ToolTip="The 'Golden' Repeat Image stored in the database.">
                                 <Label.Style>
                                     <Style TargetType="{x:Type Label}" BasedOn="{StaticResource {x:Type Label}}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -167,219 +167,226 @@
                                 </Label.Content>
                             </Label>-->
 
+                        </DockPanel>
+
+
+
                     </DockPanel>
+                </GroupBox.Header>
 
-
-
-                </DockPanel>
-            </GroupBox.Header>
-
-            <Grid Margin="3">
-                <Image Name="V275Image" Source="{Binding V275Image, Converter={StaticResource bytesToImage}}" 
+                <Grid Margin="3">
+                    <Image Name="V275Image" Source="{Binding V275Image, Converter={StaticResource bytesToImage}}" 
                        Margin="0" MaxHeight="400" Width="400" MouseDown="V275Image_MouseDown"
                        RenderOptions.BitmapScalingMode="NearestNeighbor"/>
 
-                <Image Name="V275ImageOverlay" Source="{Binding V275SectorsImageOverlay}" 
+                    <Image Name="V275ImageOverlay" Source="{Binding V275SectorsImageOverlay}" 
                        Margin="0" MaxHeight="400" Width="400" MouseDown="V275Image_MouseDown"
                        RenderOptions.BitmapScalingMode="NearestNeighbor"/>
-            </Grid>
+                </Grid>
 
-        </GroupBox>
+            </GroupBox>
 
-        <!--V275 Stored Sectors-->
-        <GroupBox  Margin="3" Padding="3" Width="220"
-            HorizontalAlignment="Left" VerticalAlignment="Top" 
-            Style="{StaticResource MaterialDesignCardGroupBox}">
+            <!--V275 Stored Sectors-->
+            <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}"
+                      Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top">
 
-            <GroupBox.Header>
+                <GroupBox.Header>
 
-                <DockPanel>
+                    <DockPanel Margin="3">
 
-                    <md:Card Background="{DynamicResource ColorBlindBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
-                        <TextBlock Text="Stored Sectors" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
-                    </md:Card>
+                        <md:Card Background="{DynamicResource ColorBlindBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
+                            <TextBlock Text="Stored Sectors" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                        </md:Card>
 
 
-                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
 
-                        <Button Command="{Binding ClearStoredCommand}" CommandParameter="V275" ToolTip="Remove the stored sectors from the database, permanently.&#x0a;(CAUTION) This can not be undone!" 
+                            <Button Command="{Binding ClearStoredCommand}" CommandParameter="V275" ToolTip="Remove the stored sectors from the database, permanently.&#x0a;(CAUTION) This can not be undone!" 
                                 Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
-                            <IconPacks:PackIconModern Kind="Delete" Margin="-1,-1,0,0" Height="14" Width="14"/>
+                                <IconPacks:PackIconModern Kind="Delete" Margin="-1,-1,0,0" Height="14" Width="14"/>
 
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
-                                    <Setter Property="Visibility" Value="Visible"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Value="0" Binding="{Binding V275StoredSectors.Count}">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Value="0" Binding="{Binding V275StoredSectors.Count}">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
 
-                        <Button Command="{Binding V275LoadCommand}"  ToolTip="Overwrite the template sectors with the stored data."
+                            <Button Command="{Binding V275LoadCommand}"  ToolTip="Overwrite the template sectors with the stored data."
                                     Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
 
-                            <IconPacks:PackIconMaterial Kind="Download" Margin="-1,-1,0,0" Height="14" Width="14"/>
+                                <IconPacks:PackIconMaterial Kind="Download" Margin="-1,-1,0,0" Height="14" Width="14"/>
 
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
-                                    <Setter Property="Visibility" Value="Visible"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Value="{x:Null}" Binding="{Binding SelectedNode}">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                        </DataTrigger>
-                                        <DataTrigger Value="False" Binding="{Binding SelectedNode.IsLoggedIn_Control}">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                        </DataTrigger>
-                                        <DataTrigger Value="0" Binding="{Binding V275StoredSectors.Count}">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                        </DataTrigger>
-                                        <DataTrigger Value="Running" Binding="{Binding SelectedNode.Connection.V275_State}">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                        </DataTrigger>
-                                        <DataTrigger Value="Idle" Binding="{Binding SelectedNode.Connection.V275_State}">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
-                    </StackPanel>
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Value="{x:Null}" Binding="{Binding SelectedNode}">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                            <DataTrigger Value="False" Binding="{Binding SelectedNode.IsLoggedIn_Control}">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                            <DataTrigger Value="0" Binding="{Binding V275StoredSectors.Count}">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                            <DataTrigger Value="Running" Binding="{Binding SelectedNode.Connection.V275_State}">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                            <DataTrigger Value="Idle" Binding="{Binding SelectedNode.Connection.V275_State}">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </StackPanel>
 
-                    <Button Grid.Column="2" Click="V275StoredSectors_Click" ToolTip="The all seeing eye! Click it...&#x0a;Hold Shift and click for more."
+                        <Button Grid.Column="2" Click="V275StoredSectors_Click" ToolTip="The all seeing eye! Click it...&#x0a;Hold Shift and click for more."
                                 Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Right" Margin="3,0,3,0">
 
-                        <IconPacks:PackIconModern Kind="Eye" Margin="0,-1,0,0" Height="14" Width="14"/>
+                            <IconPacks:PackIconModern Kind="Eye" Margin="0,-1,0,0" Height="14" Width="14"/>
 
-                        <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
-                                <Setter Property="Visibility" Value="Visible"/>
-                                <Style.Triggers>
-                                    <DataTrigger Value="0" Binding="{Binding V275StoredSectors.Count}">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Value="0" Binding="{Binding V275StoredSectors.Count}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
 
-                    </Button>
+                        </Button>
 
-                </DockPanel>
-            </GroupBox.Header>
+                    </DockPanel>
+                </GroupBox.Header>
 
-            <ScrollViewer Margin="3" x:Name="ScrollV275StoredSectors" MaxHeight="400" VerticalScrollBarVisibility="Auto"
+                <ScrollViewer Margin="3" x:Name="ScrollV275StoredSectors" VerticalScrollBarVisibility="Auto"
                           mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
                           ScrollChanged="ScrollV275StoredSectors_ScrollChanged">
-                
-                <ListView ItemsSource="{Binding V275StoredSectors}" SelectedItem="{Binding SelectedSector}" >
-                        <ListView.ItemContainerStyle>
-                            <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
-                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                            </Style>
-                        </ListView.ItemContainerStyle>
-                    
-                        <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <sectors:Sector Width="180"/>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </ScrollViewer>
+                    <ScrollViewer.Style>
+                        <Style TargetType="{x:Type ScrollViewer}">
+                            <Setter Property="Height" Value="393"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding V275StoredSectors.Count}" Value="0">
+                                    <Setter Property="Height" Value="0"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ScrollViewer.Style>
 
-        </GroupBox>
+                    <ListView ItemsSource="{Binding V275StoredSectors}" SelectedItem="{Binding SelectedSector}">
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                </Style>
+                            </ListView.ItemContainerStyle>
 
-        <!--V275 Current Sectors-->
-        <GroupBox  Margin="3" Padding="3" Width="220"
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <sectors:Sector Width="220" Background="{StaticResource AccentColorBrush}" Margin="3,0"/>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                </ScrollViewer>
+
+            </GroupBox>
+
+            <!--V275 Current Sectors-->
+            <GroupBox  Margin="3" Padding="0"
             HorizontalAlignment="Left" VerticalAlignment="Top" 
             Style="{StaticResource MaterialDesignCardGroupBox}">
 
-            <GroupBox.Header>
+                <GroupBox.Header>
 
-                <DockPanel>
+                    <DockPanel Margin="3">
 
-                    <md:Card Background="{DynamicResource ColorBlindBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
-                        <TextBlock Text="Current Sectors" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
-                    </md:Card>
+                        <md:Card Background="{DynamicResource ColorBlindBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
+                            <TextBlock Text="Current Sectors" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                        </md:Card>
 
-                    <DockPanel Margin="3,0">
+                        <DockPanel Margin="3,0">
 
-
-
-                        <Button Command="{Binding StoreCommand}" CommandParameter="V275" ToolTip="Store the current sectors and images to the database."
+                            <Button Command="{Binding StoreCommand}" CommandParameter="V275" ToolTip="Store the current sectors and images to the database."
                                 Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
-                                    <Setter Property="Visibility" Value="Visible"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Value="0" Binding="{Binding V275CurrentSectors.Count}">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Value="0" Binding="{Binding V275CurrentSectors.Count}">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
 
-                            <IconPacks:PackIconMaterial Kind="StorePlusOutline" Margin="0,0,-1,-1" Height="14" Width="14"/>
-                        </Button>
+                                <IconPacks:PackIconMaterial Kind="StorePlusOutline" Margin="0,0,-1,-1" Height="14" Width="14"/>
+                            </Button>
 
-                        <Button Command="{Binding ClearReadCommand}" CommandParameter="V275" ToolTip="Clear the current sectors and image."
+                            <Button Command="{Binding ClearReadCommand}" CommandParameter="V275" ToolTip="Clear the current sectors and image."
                                     Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
 
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
-                                    <Setter Property="Visibility" Value="Visible"/>
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                        <Setter Property="Visibility" Value="Visible"/>
 
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding V275CurrentSectors.Count}" Value="0">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                        </DataTrigger>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding V275CurrentSectors.Count}" Value="0">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
 
-                                        <MultiDataTrigger>
-                                            <MultiDataTrigger.Conditions>
-                                                <Condition Binding="{Binding V275Image, Converter={StaticResource isObjectNotNull}}" Value="True"/>
-                                                <Condition Binding="{Binding IsV275ImageStored}" Value="False"/>
-                                            </MultiDataTrigger.Conditions>
+                                            <MultiDataTrigger>
+                                                <MultiDataTrigger.Conditions>
+                                                    <Condition Binding="{Binding V275Image, Converter={StaticResource isObjectNotNull}}" Value="True"/>
+                                                    <Condition Binding="{Binding IsV275ImageStored}" Value="False"/>
+                                                </MultiDataTrigger.Conditions>
 
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </MultiDataTrigger>
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </MultiDataTrigger>
 
-                                    </Style.Triggers>
+                                        </Style.Triggers>
 
-                                </Style>
-                            </Button.Style>
+                                    </Style>
+                                </Button.Style>
 
-                            <IconPacks:PackIconModern Kind="Delete" Margin="-1,-1,0,0" Height="14" Width="14"/>
+                                <IconPacks:PackIconModern Kind="Delete" Margin="-1,-1,0,0" Height="14" Width="14"/>
 
-                        </Button>
+                            </Button>
 
-                        <Button Command="{Binding V275ReadCommand}" ToolTip="Read the last results and image from the V275.&#x0a;Just reads the data. No processing." 
+                            <Button Command="{Binding V275ReadCommand}" ToolTip="Read the last results and image from the V275.&#x0a;Just reads the data. No processing." 
                                     Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
 
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Value="True" Binding="{Binding SelectedNode.IsLoggedIn_Monitor}">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-                                        <DataTrigger Value="True" Binding="{Binding SelectedNode.IsLoggedIn_Control}">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Value="True" Binding="{Binding SelectedNode.IsLoggedIn_Monitor}">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                            <DataTrigger Value="True" Binding="{Binding SelectedNode.IsLoggedIn_Control}">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
 
-                            <IconPacks:PackIconMaterial Kind="Upload" Margin="-1,-1,0,0" Height="14" Width="14"/>
-                        </Button>
+                                <IconPacks:PackIconMaterial Kind="Upload" Margin="-1,-1,0,0" Height="14" Width="14"/>
+                            </Button>
 
-                        <!--<Button Command="{Binding InspectCommand}"
+                            <!--<Button Command="{Binding InspectCommand}"
                                     ToolTip="Inspect" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
 
                             <Button.Style>
@@ -397,102 +404,150 @@
 
                         </Button>-->
 
-                    </DockPanel>
+                        </DockPanel>
 
-                    <Button Click="V275CurrentSectorDetails_Click" ToolTip="The all seeing eye! Click it...&#x0a;Hold Shift and click for more."
+                        <Button Click="V275CurrentSectorDetails_Click" ToolTip="The all seeing eye! Click it...&#x0a;Hold Shift and click for more."
                                 Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Right" Margin="3,0,3,0">
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Value="0" Binding="{Binding V275CurrentSectors.Count}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                            <IconPacks:PackIconModern Kind="Eye" Margin="0,-1,-0,0" Width="14" Height="14"/>
+                        </Button>
+
+                    </DockPanel>
+                </GroupBox.Header>
+
+                <ScrollViewer x:Name="ScrollV275CurrentSectors"
+                            Margin="3" VerticalScrollBarVisibility="Auto"
+                            mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
+                            ScrollChanged="ScrollV275CurrentSectors_ScrollChanged">
+                    <ScrollViewer.Style>
+                        <Style TargetType="{x:Type ScrollViewer}">
+                            <Setter Property="Height" Value="393"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding V275CurrentSectors.Count}" Value="0">
+                                    <Setter Property="Height" Value="0"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ScrollViewer.Style>
+
+                    <ItemsControl ItemsSource="{Binding V275CurrentSectors}" Background="{StaticResource MahApps.Brushes.Control.Background}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <sectors:Sector Width="220" Background="{StaticResource AccentColorBrush}" Margin="6,1"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </GroupBox>
+
+            <!--V275 Dissimilar Results-->
+            <GroupBox  Margin="3" Padding="0"
+            HorizontalAlignment="Left" VerticalAlignment="Top" 
+            Style="{StaticResource MaterialDesignCardGroupBox}">
+
+                <GroupBox.Header>
+
+                    <DockPanel Margin="3">
+
+                        <md:Card Background="{DynamicResource ColorBlindBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
+                            <TextBlock Text="Dissimilar Results" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                        </md:Card>
+
+                    </DockPanel>
+                </GroupBox.Header>
+
+                <ScrollViewer Margin="3" VerticalScrollBarVisibility="Auto"
+                          mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True">
+                    <ScrollViewer.Style>
+                        <Style TargetType="{x:Type ScrollViewer}">
+                            <Setter Property="Height" Value="393"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding V275DiffSectors.Count}" Value="0">
+                                    <Setter Property="Height" Value="0"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ScrollViewer.Style>
+                    
+                    <ItemsControl ItemsSource="{Binding V275DiffSectors}" Background="{StaticResource MahApps.Brushes.Control.Background}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <sectors:SectorDifferences Width="220" Background="{StaticResource AccentColorBrush}" Margin="6,1"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </GroupBox>
+
+        </DockPanel>
+
+        <Popup x:Name="V275StoredSectorsDetailsPopup" StaysOpen="False">
+            <Popup.Style>
+                <Style TargetType="{x:Type Popup}"/>
+            </Popup.Style>
+
+            <GroupBox  Margin="3" Padding="3"
+            HorizontalAlignment="Left" VerticalAlignment="Top" 
+            Style="{StaticResource MaterialDesignCardGroupBox}">
+
+                <GroupBox.Header>
+                    <Button Command="{Binding SaveCommand}" CommandParameter="stored" ToolTip="Save the image." Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
                         <Button.Style>
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
                                 <Setter Property="Visibility" Value="Visible"/>
                                 <Style.Triggers>
-                                    <DataTrigger Value="0" Binding="{Binding V275CurrentSectors.Count}">
+                                    <DataTrigger Binding="{Binding V5Image}" Value="{x:Null}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </Button.Style>
-                        <IconPacks:PackIconModern Kind="Eye" Margin="0,-1,-0,0" Width="14" Height="14"/>
+
+                        <IconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
                     </Button>
-
-                </DockPanel>
-            </GroupBox.Header>
-
-            <ScrollViewer x:Name="ScrollV275CurrentSectors"
-                            Margin="3" MaxHeight="400" VerticalScrollBarVisibility="Auto"
-                            mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
-                            ScrollChanged="ScrollV275CurrentSectors_ScrollChanged">
-
-                <ItemsControl ItemsSource="{Binding V275CurrentSectors}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <sectors:Sector />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </ScrollViewer>
-        </GroupBox>
-
-        <!--V275 Dissimilar Results-->
-        <GroupBox  Margin="3" Padding="3" Width="240"
-            HorizontalAlignment="Left" VerticalAlignment="Top" 
-            Style="{StaticResource MaterialDesignCardGroupBox}">
-
-            <GroupBox.Header>
+                </GroupBox.Header>
 
                 <DockPanel>
 
-                    <md:Card Background="{DynamicResource ColorBlindBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
-                        <TextBlock Text="Dissimilar Results" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
-                    </md:Card>
+
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding V275StoredSectors}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel IsItemsHost="True" MaxWidth="1024"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <sectors:SectorDetails/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
 
                 </DockPanel>
-            </GroupBox.Header>
+            </GroupBox>
+        </Popup>
 
-            <ScrollViewer Margin="3" MaxHeight="400" VerticalScrollBarVisibility="Auto"
-                          mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True">
-                <ItemsControl ItemsSource="{Binding V275DiffSectors}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <sectors:SectorDifferences />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </ScrollViewer>
-        </GroupBox>
-
-    </DockPanel>
-
-    <Popup x:Name="V275StoredSectorsDetailsPopup" StaysOpen="False">
-        <Popup.Style>
-            <Style TargetType="{x:Type Popup}"/>
-        </Popup.Style>
-
-        <GroupBox  Margin="3" Padding="3"
-            HorizontalAlignment="Left" VerticalAlignment="Top" 
-            Style="{StaticResource MaterialDesignCardGroupBox}">
-
-            <GroupBox.Header>
-                <Button Command="{Binding SaveCommand}" CommandParameter="stored" ToolTip="Save the image." Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
-                    <Button.Style>
-                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
-                            <Setter Property="Visibility" Value="Visible"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding V5Image}" Value="{x:Null}">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-
-                    <IconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
-                </Button>
-            </GroupBox.Header>
-
-            <DockPanel>
-
+        <Popup x:Name="V275CurrentSectorsDetailsPopup" StaysOpen="False">
+            <Popup.Style>
+                <Style TargetType="{x:Type Popup}"/>
+            </Popup.Style>
+            <Border Padding="3" BorderThickness="2"
+                        BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
 
                 <ScrollViewer HorizontalScrollBarVisibility="Auto">
-                    <ItemsControl ItemsSource="{Binding V275StoredSectors}">
+                    <ItemsControl ItemsSource="{Binding V275CurrentSectors}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <WrapPanel IsItemsHost="True" MaxWidth="1024"/>
@@ -500,70 +555,43 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <sectors:SectorDetails/>
+                                <sectors:SectorDetails />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </ScrollViewer>
+            </Border>
+        </Popup>
 
-            </DockPanel>
-        </GroupBox>
-    </Popup>
-
-    <Popup x:Name="V275CurrentSectorsDetailsPopup" StaysOpen="False">
-        <Popup.Style>
-            <Style TargetType="{x:Type Popup}"/>
-        </Popup.Style>
-        <Border Padding="3" BorderThickness="2"
+        <Popup x:Name="V275CurrentReportJsonPopup" StaysOpen="False">
+            <Popup.Style>
+                <Style TargetType="{x:Type Popup}"/>
+            </Popup.Style>
+            <Border Padding="3" BorderThickness="2"
                         BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
                         Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
 
-            <ScrollViewer HorizontalScrollBarVisibility="Auto">
-                <ItemsControl ItemsSource="{Binding V275CurrentSectors}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel IsItemsHost="True" MaxWidth="1024"/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <sectors:SectorDetails />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </ScrollViewer>
-        </Border>
-    </Popup>
+                <json:JsonViewer x:Name="V275CurrentReportJsonView" MinWidth="300"/>
+            </Border>
+        </Popup>
 
-    <Popup x:Name="V275CurrentReportJsonPopup" StaysOpen="False">
-        <Popup.Style>
-            <Style TargetType="{x:Type Popup}"/>
-        </Popup.Style>
-        <Border Padding="3" BorderThickness="2"
-                        BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
-                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-
-            <json:JsonViewer x:Name="V275CurrentReportJsonView" MinWidth="300"/>
-        </Border>
-    </Popup>
-
-    <Popup x:Name="V275StoredJsonPopup" StaysOpen="False">
-        <Popup.Style>
-            <Style TargetType="{x:Type Popup}"/>
-        </Popup.Style>
-        <StackPanel Orientation="Horizontal">
-            <Border Padding="3" BorderThickness="2"
+        <Popup x:Name="V275StoredJsonPopup" StaysOpen="False">
+            <Popup.Style>
+                <Style TargetType="{x:Type Popup}"/>
+            </Popup.Style>
+            <StackPanel Orientation="Horizontal">
+                <Border Padding="3" BorderThickness="2"
                             BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
                             Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-                <json:JsonViewer x:Name="V275StoredTemplateJsonView" MinWidth="300"/>
-            </Border>
-            <Border Padding="3" BorderThickness="2"
+                    <json:JsonViewer x:Name="V275StoredTemplateJsonView" MinWidth="300"/>
+                </Border>
+                <Border Padding="3" BorderThickness="2"
                             BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
                             Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-                <json:JsonViewer x:Name="V275StoredReportJsonView" MinWidth="300"/>
-            </Border>
-        </StackPanel>
-    </Popup>
+                    <json:JsonViewer x:Name="V275StoredReportJsonView" MinWidth="300"/>
+                </Border>
+            </StackPanel>
+        </Popup>
 
     </DockPanel>
 </UserControl>

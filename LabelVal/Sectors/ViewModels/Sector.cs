@@ -1,8 +1,14 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using ControlzEx.Standard;
 using LabelVal.Messages;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Documents;
+using V275_REST_lib.Models;
 using V5_REST_Lib.Models;
 
 namespace LabelVal.Sectors.ViewModels;
@@ -204,15 +210,15 @@ public class Report
             case Results_QualifiedResult:
 
                 var v5 = (Results_QualifiedResult)report;
-                Type = GetV5Type(v5);
-                SymbolType = GetV5Symbology(v5);
+                Type = V5GetType(v5);
+                SymbolType = V5GetSymbology(v5);
                 DecodeText = v5.dataUTF8;
                 //XDimension = v5.ppe;
 
                 if (v5.grading != null)
                     if (Type == "verify1D")
                     {
-                        if(v5.grading.iso15416 == null)
+                        if (v5.grading.iso15416 == null)
                         {
                             OverallGradeString = "No Grade";
                             OverallGradeValue = 0;
@@ -225,7 +231,7 @@ public class Report
                     }
                     else if (Type == "verify2D")
                     {
-                        if(v5.grading.iso15415 == null)
+                        if (v5.grading.iso15415 == null)
                         {
                             OverallGradeString = "No Grade";
                             OverallGradeValue = 0;
@@ -236,16 +242,173 @@ public class Report
                             OverallGradeValue = v5.grading.iso15415.overall.grade;
                         }
                     }
+                break;
+            case List<string>:
 
+                Type = ((List<string>)report).Find((e) => e.StartsWith("Cell size")) == null ? "verify1D" : "verify2D";
+
+                foreach (var data in (List<string>)report)
                 {
+                    if (!data.Contains(','))
+                        continue;
+
+                    string[] spl1 = new string[2];
+                    spl1[0] = data.Substring(0, data.IndexOf(','));
+                    spl1[1] = data.Substring(data.IndexOf(',') + 1);
+
+                    if (spl1[0].StartsWith("Symbology"))
+                    {
+                        SymbolType = L95xxGetSymbolType(spl1[1]);
+
+                        //verify1D
+                        if (SymbolType == "dataBar")
+                        {
+                            var item = ((List<string>)report).Find((e) => e.StartsWith("DataBar"));
+                            if (item != null)
+                            {
+                                var spl2 = item.Split(',');
+
+                                if (spl2.Count() != 2)
+                                    continue;
+
+                                SymbolType += spl2[1];
+                            }
+                        }
+                        continue;
+                    }
+
+                    if (spl1[0].StartsWith("Decoded"))
+                    {
+                        DecodeText = spl1[1];
+                        continue;
+                    }
+
+                    //Verify2D
+                    if (spl1[0].StartsWith("Cell size"))
+                    {
+                        XDimension = L95xxParseFloat(spl1[1]);
+                        continue;
+                    }
+
+                    //Verify1D
+                    if (spl1[0].StartsWith("Xdim"))
+                    {
+                        XDimension = L95xxParseFloat(spl1[1]);
+                        continue;
+                    }
+
+
+                    if (spl1[0].StartsWith("Overall"))
+                    {
+                        var spl2 = spl1[1].Split('/');
+
+                        if (spl2.Count() < 3) continue;
+
+                        OverallGradeValue = L95xxGetGrade(spl2[0]).value;// new Report_InspectSector_Common.Overallgrade() { grade = GetGrade(spl2[0]), _string = spl1[1] };
+                        OverallGradeString = spl1[1];
+
+                        Aperture = L95xxParseFloat(spl2[1]);
+                        continue;
+                    }
 
                 }
+
+
+
                 break;
         }
 
     }
 
-    private string GetV5Symbology(Results_QualifiedResult Report)
+    private string L95xxGetLetter(float value)
+    {
+        if (value == 4.0f)
+            return "A";
+
+        if (value <= 3.9f && value >= 3.0f)
+            return "B";
+
+        if (value <= 2.9f && value >= 2.0f)
+            return "C";
+
+        if (value <= 1.9f && value >= 1.0f)
+            return "D";
+
+        if (value <= 0.9f && value >= 0.0f)
+            return "F";
+
+        return "F";
+    }
+    private float L95xxParseFloat(string value)
+    {
+        var digits = new string(value.Trim().TakeWhile(c =>
+                                ("0123456789.").Contains(c)
+                                ).ToArray());
+
+        if (float.TryParse(digits, out var val))
+            return val;
+        else
+            return 0;
+
+    }
+    private Report_InspectSector_Common.Grade L95xxGetGrade(string data)
+    {
+        float tmp = L95xxParseFloat(data);
+
+        return new Report_InspectSector_Common.Grade()
+        {
+            value = tmp,
+            letter = L95xxGetLetter(tmp)
+        };
+    }
+
+
+    private string L95xxGetSymbolType(string value)
+    {
+        if (value.Contains("UPC-A"))
+            return "upcA";
+
+        if (value.Contains("UPC-B"))
+            return "upcB";
+
+        if (value.Contains("EAN-13"))
+            return "ean13";
+
+        if (value.Contains("EAN-8"))
+            return "ean8";
+
+        if (value.Contains("DataBar"))
+            return "dataBar";
+
+        if (value.Contains("Code 39"))
+            return "code39";
+
+        if (value.Contains("Code 93"))
+            return "code93";
+
+        if (value.StartsWith("GS1 QR"))
+            return "qrCode";
+
+        if (value.StartsWith("Micro"))
+            return "microQrCode";
+
+        if (value.Contains("Data Matrix"))
+            return "dataMatrix";
+
+        if (value.Contains("Aztec"))
+            return "aztec";
+
+        if (value.Contains("Codabar"))
+            return "codaBar";
+
+        if (value.Contains("ITF"))
+            return "i2of5";
+
+        if (value.Contains("PDF417"))
+            return "pdf417";
+        return "";
+    }
+    private string V5GetSymbology(Results_QualifiedResult Report)
     {
         if (Report.Code128 != null)
             return "Code128";
@@ -260,8 +423,7 @@ public class Report
         else
             return "Unknown";
     }
-
-    private string GetV5Type(Results_QualifiedResult Report)
+    private string V5GetType(Results_QualifiedResult Report)
     {
         if (Report.Code128 != null)
             return "verify1D";
@@ -286,7 +448,7 @@ public partial class Sector : ObservableObject
     /// Many uses: name, username, top, symbology,
     /// </summary>
     [ObservableProperty] private Template template;
-    [ObservableProperty] private object report;
+    [ObservableProperty] private Report report;
     [ObservableProperty] private SectorDifferences sectorDifferences = new();
 
     public V275_REST_lib.Models.Job.Sector V275Template { get; }
@@ -359,15 +521,18 @@ public partial class Sector : ObservableObject
     }
 
     //L95xx
-    public Sector(Template template, object report, bool isWrongStandard, bool isGS1Standard)
+    public Sector(Template template, string packet, bool isWrongStandard, bool isGS1Standard)
     {
-        Report = report;
+        var spl = packet.Split('\r').ToList();
+
+        Report = new Report(spl);
+
         Template = template;
 
         IsWrongStandard = isWrongStandard;
         IsGS1Standard = isGS1Standard;
 
-        SectorDifferences.V275Process(Report, Template.Username, IsGS1Standard);
+        SectorDifferences.L95xxProcess(spl, Template.Username, IsGS1Standard, Report.SymbolType == "pdf417");
 
         var highCat = 0;
 

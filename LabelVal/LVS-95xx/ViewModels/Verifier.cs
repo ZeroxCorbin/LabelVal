@@ -9,7 +9,7 @@ using System.Collections.ObjectModel;
 namespace LabelVal.LVS_95xx.ViewModels;
 public partial class Verifier : ObservableRecipient
 {  
-    private SerialPort PortController = new();
+    private SerialPortController PortController = new();
 
 
     [ObservableProperty] private bool isConnected;
@@ -22,34 +22,34 @@ public partial class Verifier : ObservableRecipient
 
     public string SelectedComName { get => App.Settings.GetValue("95xx_COM_Name", ""); set => App.Settings.SetValue("95xx_COM_Name", value); }
 
-    public Verifier() => LoadComList();
+    public Verifier()
+    {
+        PortController.PacketAvailable -= PortController_PacketAvailable;
+        PortController.PacketAvailable += PortController_PacketAvailable;
+
+        PortController.Exception -= PortController_Exception;
+        PortController.Exception += PortController_Exception;
+
+        LoadComList();
+    }
 
     private void LoadComList()
     {
         ComNameList.Clear();
-        PortController.Controller.GetCOMList();
+        PortController.GetCOMList();
 
-        foreach (var com in PortController.Controller.COMPortsAvailable)
+        foreach (var com in PortController.COMPortsAvailable)
             ComNameList.Add(com);
     }
 
     [RelayCommand]
     private void Connect()
     {
-        if (!string.IsNullOrEmpty(SelectedComName) && !PortController.IsConnected)
+        if (!string.IsNullOrEmpty(SelectedComName) && !IsConnected)
         {
-            _ = PortController.Init(SelectedComName);
+            PortController.Init(SelectedComName);
 
-            PortController.SectorAvailable -= PortController_SectorAvailable;
-            PortController.SectorAvailable += PortController_SectorAvailable;
-
-            PortController.PacketAvailable -= PortController_PacketAvailable;
-            PortController.PacketAvailable += PortController_PacketAvailable;
-
-            PortController.Exception -= PortController_Exception;
-            PortController.Exception += PortController_Exception;
-
-            if (PortController.Start())
+            if (PortController.Connect())
                 IsConnected = true;
         }
         else
@@ -57,17 +57,12 @@ public partial class Verifier : ObservableRecipient
     }
 
     private void PortController_Exception(object sender, EventArgs e) => ClosePort();
-    private void PortController_SectorAvailable(object sector) => WeakReferenceMessenger.Default.Send(new VerifierMessages.NewPacket(sector));
-    private void PortController_PacketAvailable(string packet) => ReadData = packet;
+    private void PortController_PacketAvailable(string packet) { ReadData = packet; WeakReferenceMessenger.Default.Send(new VerifierMessages.NewPacket(packet)); }
 
     [RelayCommand]
     private void ClosePort()
     {
-        PortController.Exception -= PortController_Exception;
-        PortController.SectorAvailable -= PortController_SectorAvailable;
-        PortController.PacketAvailable -= PortController_PacketAvailable;
-
-        PortController.Stop();
+        PortController.Disconnect();
         IsConnected = false;
     }
 

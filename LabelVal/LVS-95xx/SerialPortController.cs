@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO.Ports;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -8,14 +9,15 @@ namespace LabelVal.LVS_95xx
 {
     public class SerialPortController
     {
-        public delegate void DataAvailableDelegate(string data);
-        public event DataAvailableDelegate DataAvailable;
+        public delegate void PacketAvailableDelegate(string packet);
+        public event PacketAvailableDelegate PacketAvailable;
 
         public event EventHandler Exception;
 
         public List<string> COMPortsAvailable { get; } = new List<string>();
 
         private System.IO.Ports.SerialPort SerialPort { get; set; } = new System.IO.Ports.SerialPort();
+
         private bool running;
         private bool listening;
 
@@ -38,7 +40,13 @@ namespace LabelVal.LVS_95xx
 
             SerialPort.ReadTimeout = 500;
             SerialPort.WriteTimeout = 500;
+
+            SerialPort.ErrorReceived -= SerialPort_ErrorReceived;
+            SerialPort.ErrorReceived += SerialPort_ErrorReceived;
         }
+
+        private void SerialPort_ErrorReceived(object sender, SerialErrorReceivedEventArgs e) => Disconnect();
+
         public bool Connect()
         {
             if (!SerialPort.IsOpen)
@@ -54,7 +62,6 @@ namespace LabelVal.LVS_95xx
                 }
             }
             return true;
-
         }
 
         public async void Disconnect()
@@ -64,18 +71,23 @@ namespace LabelVal.LVS_95xx
                 try
                 {
                     SerialPort.Close();
+                    await Task.Run(() => { listening = false; while (running) { } });
                 }
                 catch { }
-
-                await Task.Run(() => { listening = false; while (running) { } });
             }
+
+            running = false;
+            listening = false;
         }
+
 
         public void ReadThread()
         {
-            listening = true;
             running = true;
+            listening = true;
 
+            StringBuilder sb = new StringBuilder();
+            DateTime start = DateTime.MaxValue;
             while (listening)
             {
                 try
@@ -83,7 +95,16 @@ namespace LabelVal.LVS_95xx
                     string message = SerialPort.ReadExisting();
 
                     if (!string.IsNullOrEmpty(message))
-                        DataAvailable?.Invoke(message);
+                    {
+                        sb.Append(message);
+                        start = DateTime.Now;
+                    }
+                    else if(sb.Length > 0 && (DateTime.Now - start) > TimeSpan.FromMilliseconds(500))
+                    {
+                        
+                        PacketAvailable?.Invoke(sb.ToString());
+                        sb.Clear();
+                    }
                 }
                 catch (TimeoutException) { }
                 catch (Exception ex)
@@ -91,14 +112,13 @@ namespace LabelVal.LVS_95xx
                     Task.Run(() => Exception?.Invoke(ex, new EventArgs()));
 
                     Disconnect();
-
-                    listening = false;
                 }
 
                 Thread.Sleep(1);
             }
             running = false;
         }
+
 
     }
 }

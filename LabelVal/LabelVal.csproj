@@ -31,6 +31,7 @@
     <IsPublishable>False</IsPublishable>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="LVS-95xx\ViewModels\SerialPort.cs" />
     <Compile Remove="Run\Databases\V2RunEntryDatabase.cs" />
     <Compile Remove="V275\ViewModels\ImageResultEntry.cs" />
     <Compile Remove="V275\ViewModels\ImageResults.cs" />
