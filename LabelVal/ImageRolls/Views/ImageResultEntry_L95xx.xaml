@@ -211,7 +211,7 @@
                             </Style.Triggers>
                         </Style>
                     </ScrollViewer.Style>
-                    
+
                     <ItemsControl ItemsSource="{Binding L95xxStoredSectors}" Background="{StaticResource MahApps.Brushes.Control.Background}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
@@ -412,25 +412,32 @@
                 <Style TargetType="{x:Type Popup}"/>
             </Popup.Style>
 
-            <Border Grid.Row="2" Grid.ColumnSpan="4" Padding="3" BorderThickness="2"
-                        BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
-                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+            <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top">
 
-                <ScrollViewer HorizontalScrollBarVisibility="Auto">
-                    <ItemsControl ItemsSource="{Binding L95xxStoredSectors}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel IsItemsHost="True" MaxWidth="1024"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <sectors:SectorDetails/>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </ScrollViewer>
-            </Border>
+                <GroupBox.Header>
+                    <Button Style="{StaticResource MaterialDesignFloatingActionDarkButton}" ToolTip="Save as image." Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                        <IconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
+                    </Button>
+                </GroupBox.Header>
+
+                <DockPanel>
+
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding L95xxStoredSectors}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel IsItemsHost="True" MaxWidth="1024"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <sectors:SectorDetails/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </DockPanel>
+            </GroupBox>
 
         </Popup>
 
@@ -438,55 +445,51 @@
             <Popup.Style>
                 <Style TargetType="{x:Type Popup}"/>
             </Popup.Style>
-            <Border Padding="3" BorderThickness="2"
-                        BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
-                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
 
-                <ScrollViewer HorizontalScrollBarVisibility="Auto">
-                    <ItemsControl ItemsSource="{Binding L95xxCurrentSectors}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel IsItemsHost="True" MaxWidth="1024"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <sectors:SectorDetails />
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </ScrollViewer>
-            </Border>
+            <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top">
+
+                <GroupBox.Header>
+                    <Button Style="{StaticResource MaterialDesignFloatingActionDarkButton}" ToolTip="Save as image." Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                        <IconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
+                    </Button>
+                </GroupBox.Header>
+
+                <DockPanel>
+
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding L95xxCurrentSectors}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel IsItemsHost="True" MaxWidth="1024"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <sectors:SectorDetails />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </DockPanel>
+            </GroupBox>
         </Popup>
 
         <Popup x:Name="L95xxCurrentReportJsonPopup" StaysOpen="False">
             <Popup.Style>
                 <Style TargetType="{x:Type Popup}"/>
             </Popup.Style>
-            <Border Padding="3" BorderThickness="2"
-                        BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
-                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
 
-                <json:JsonViewer x:Name="L95xxCurrentReportJsonView" MinWidth="300"/>
-            </Border>
+            <json:JsonViewer x:Name="L95xxCurrentReportJsonView" MinWidth="300"/>
+
         </Popup>
 
         <Popup x:Name="L95xxStoredJsonPopup" StaysOpen="False">
             <Popup.Style>
                 <Style TargetType="{x:Type Popup}"/>
             </Popup.Style>
-            <StackPanel Orientation="Horizontal">
-                <Border Padding="3" BorderThickness="2"
-                            BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
-                            Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-                    <json:JsonViewer x:Name="L95xxStoredTemplateJsonView" MinWidth="300"/>
-                </Border>
-                <Border Padding="3" BorderThickness="2"
-                            BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
-                            Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-                    <json:JsonViewer x:Name="L95xxStoredReportJsonView" MinWidth="300"/>
-                </Border>
-            </StackPanel>
+
+            <json:JsonViewer x:Name="L95xxStoredReportJsonView" MinWidth="300"/>
+
         </Popup>
 
     </DockPanel>

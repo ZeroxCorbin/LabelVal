@@ -494,29 +494,15 @@
                 <Style TargetType="{x:Type Popup}"/>
             </Popup.Style>
 
-            <GroupBox  Margin="3" Padding="3"
-            HorizontalAlignment="Left" VerticalAlignment="Top" 
-            Style="{StaticResource MaterialDesignCardGroupBox}">
+            <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top">
 
                 <GroupBox.Header>
-                    <Button Command="{Binding SaveCommand}" CommandParameter="stored" ToolTip="Save the image." Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
-                        <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
-                                <Setter Property="Visibility" Value="Visible"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding V5Image}" Value="{x:Null}">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-
+                    <Button Style="{StaticResource MaterialDesignFloatingActionDarkButton}" ToolTip="Save as image." Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
                         <IconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
                     </Button>
                 </GroupBox.Header>
 
                 <DockPanel>
-
 
                     <ScrollViewer HorizontalScrollBarVisibility="Auto">
                         <ItemsControl ItemsSource="{Binding V275StoredSectors}">
@@ -541,25 +527,33 @@
             <Popup.Style>
                 <Style TargetType="{x:Type Popup}"/>
             </Popup.Style>
-            <Border Padding="3" BorderThickness="2"
-                        BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
-                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
 
-                <ScrollViewer HorizontalScrollBarVisibility="Auto">
-                    <ItemsControl ItemsSource="{Binding V275CurrentSectors}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel IsItemsHost="True" MaxWidth="1024"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <sectors:SectorDetails />
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </ScrollViewer>
-            </Border>
+            <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top">
+
+                <GroupBox.Header>
+                    <Button Style="{StaticResource MaterialDesignFloatingActionDarkButton}" ToolTip="Save as image." Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                        <IconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
+                    </Button>
+                </GroupBox.Header>
+
+                <DockPanel>
+
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding V275CurrentSectors}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel IsItemsHost="True" MaxWidth="1024"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <sectors:SectorDetails />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </DockPanel>
+            </GroupBox>
         </Popup>
 
         <Popup x:Name="V275CurrentReportJsonPopup" StaysOpen="False">

@@ -11,7 +11,7 @@
             xmlns:ViewModels="clr-namespace:LabelVal.Sectors.ViewModels"
             xmlns:Converters="clr-namespace:LabelVal.Converters"
             xmlns:V275Converters="clr-namespace:LabelVal.V275.Converters"
-             d:DataContext="{d:DesignInstance Type=ViewModels:Sectors}"
+             d:DataContext="{d:DesignInstance Type=ViewModels:Sector}"
             mc:Ignorable="d" d:Height="310" d:Width="282">
 
     <UserControl.Resources>

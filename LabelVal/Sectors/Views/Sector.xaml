@@ -44,7 +44,18 @@
                     <Style TargetType="{x:Type Popup}"/>
                 </Popup.Style>
 
-                <local:SectorDetails DataContext="{Binding}"/>
+                <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top">
+
+                    <GroupBox.Header>
+                        <Button Style="{StaticResource MaterialDesignFloatingActionDarkButton}" ToolTip="Save as image." Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                            <IconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
+                        </Button>
+                    </GroupBox.Header>
+
+                    <local:SectorDetails DataContext="{Binding}"/>
+
+                </GroupBox>
+
 
             </Popup>
 
@@ -119,7 +130,7 @@
                 </Popup.Style>
 
                 <DockPanel>
-                    
+
                 </DockPanel>
             </Popup>
 
