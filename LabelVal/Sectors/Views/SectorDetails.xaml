@@ -12,7 +12,7 @@
             xmlns:Converters="clr-namespace:LabelVal.Converters"
             xmlns:V275Converters="clr-namespace:LabelVal.V275.Converters"
              d:DataContext="{d:DesignInstance Type=ViewModels:Sector}"
-            mc:Ignorable="d" d:Height="310" d:Width="282">
+            mc:Ignorable="d">
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="booltovis"/>
@@ -23,34 +23,11 @@
     </UserControl.Resources>
 
     <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" Margin="3" Padding="3">
-        <Grid >
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-            </Grid.RowDefinitions>
+        <DockPanel >
 
-            <Grid Margin="3">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="auto"/>
+            <DockPanel DockPanel.Dock="Top" Margin="3">
 
-                </Grid.ColumnDefinitions>
-
-                <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
-
-                <Grid Grid.ColumnSpan="3">
+                <Grid DockPanel.Dock="Top">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition/>
@@ -101,119 +78,119 @@
                     </TextBlock>
                 </Grid>
 
-                <Border Grid.Row="1" Grid.Column="0" 
-                        Background="White" Height="30" VerticalAlignment="Top" Margin="0,3">
-                    <Border.Style>
-                        <Style TargetType="{x:Type Border}">
-                            <Setter Property="Visibility" Value="Visible"/>
-                            <Style.Triggers>
-                                <DataTrigger Value="{x:Null}" Binding="{Binding Report, Mode=OneTime}">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Border.Style>
+                <DockPanel>
                     
-                    <Image Stretch="Fill" >
-                        <Image.Style>
-                            <Style TargetType="{x:Type Image}">
-                                <Setter Property="Source" Value="/Assets/Images/barcode-1d.png"/>
+                    <Border Background="White" Height="30" VerticalAlignment="Top" Margin="0,3">
+                        <Border.Style>
+                            <Style TargetType="{x:Type Border}">
+                                <Setter Property="Visibility" Value="Visible"/>
                                 <Style.Triggers>
-                                    <DataTrigger Value="verify2D" Binding="{Binding Report.Type, Mode=OneTime}">
-                                        <Setter Property="Source" Value="/Assets/Images/barcode-2d.png"/>
-                                    </DataTrigger>
-                                    <DataTrigger Value="ocr" Binding="{Binding Report.Type, Mode=OneTime}">
-                                        <Setter Property="Source" Value="/Assets/Images/ocr.png"/>
-                                    </DataTrigger>
-                                    <DataTrigger Value="ocv" Binding="{Binding Report.Type, Mode=OneTime}">
-                                        <Setter Property="Source" Value="/Assets/Images/ocv.png"/>
+                                    <DataTrigger Value="{x:Null}" Binding="{Binding Report, Mode=OneTime}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
-                        </Image.Style>
-                    </Image>
-                </Border>
+                        </Border.Style>
+                    
+                        <Image Stretch="Fill" >
+                            <Image.Style>
+                                <Style TargetType="{x:Type Image}">
+                                    <Setter Property="Source" Value="/Assets/Images/barcode-1d.png"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Value="verify2D" Binding="{Binding Report.Type, Mode=OneTime}">
+                                            <Setter Property="Source" Value="/Assets/Images/barcode-2d.png"/>
+                                        </DataTrigger>
+                                        <DataTrigger Value="ocr" Binding="{Binding Report.Type, Mode=OneTime}">
+                                            <Setter Property="Source" Value="/Assets/Images/ocr.png"/>
+                                        </DataTrigger>
+                                        <DataTrigger Value="ocv" Binding="{Binding Report.Type, Mode=OneTime}">
+                                            <Setter Property="Source" Value="/Assets/Images/ocv.png"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                    </Border>
 
-                <Grid Grid.Row="1" Grid.Column="1" Margin="0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                    </Grid.RowDefinitions>
+                    <DockPanel Margin="0">
 
-                    <TextBlock Grid.Row="0" Margin="3,1,3,0" TextWrapping="Wrap" MaxWidth="200" HorizontalAlignment="Left">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}">
+                        <TextBlock DockPanel.Dock="Top" Margin="3,1,3,0" TextWrapping="Wrap" MaxWidth="200" HorizontalAlignment="Left">
+                            <TextBlock.Style>
+                                <Style TargetType="{x:Type TextBlock}">
 
-                                <Style.Triggers>
-                                    <DataTrigger Value="verify1D" Binding="{Binding Report.Type, Mode=OneTime}">
-                                        <Setter Property="Text" Value="{Binding Report.SymbolType, Converter={StaticResource stringToUpper}, Mode=OneTime}"/>
-                                    </DataTrigger>
-                                    <DataTrigger Value="verify2D" Binding="{Binding Report.Type, Mode=OneTime}">
-                                        <Setter Property="Text" Value="{Binding Report.SymbolType, Converter={StaticResource stringToUpper}, Mode=OneTime}"/>
-                                    </DataTrigger>
+                                    <Style.Triggers>
+                                        <DataTrigger Value="verify1D" Binding="{Binding Report.Type, Mode=OneTime}">
+                                            <Setter Property="Text" Value="{Binding Report.SymbolType, Converter={StaticResource stringToUpper}, Mode=OneTime}"/>
+                                        </DataTrigger>
+                                        <DataTrigger Value="verify2D" Binding="{Binding Report.Type, Mode=OneTime}">
+                                            <Setter Property="Text" Value="{Binding Report.SymbolType, Converter={StaticResource stringToUpper}, Mode=OneTime}"/>
+                                        </DataTrigger>
 
-                                    <DataTrigger Value="ocr" Binding="{Binding Report.Type, Mode=OneTime}">
-                                        <Setter Property="Text" Value="{Binding Template.MatchSettings.FixedText, Mode=OneTime}"/>
-                                        <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Text}"/>
-                                    </DataTrigger>
-                                    <DataTrigger Value="ocv" Binding="{Binding Report.Type, Mode=OneTime}">
-                                        <Setter Property="Text" Value="{Binding Template.MatchSettings.FixedText, Mode=OneTime}"/>
-                                    </DataTrigger>
-                                    <DataTrigger Value="blemish" Binding="{Binding Report.Type, Mode=OneTime}">
-                                        <Setter Property="Text" Value=""/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
+                                        <DataTrigger Value="ocr" Binding="{Binding Report.Type, Mode=OneTime}">
+                                            <Setter Property="Text" Value="{Binding Template.MatchSettings.FixedText, Mode=OneTime}"/>
+                                            <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Text}"/>
+                                        </DataTrigger>
+                                        <DataTrigger Value="ocv" Binding="{Binding Report.Type, Mode=OneTime}">
+                                            <Setter Property="Text" Value="{Binding Template.MatchSettings.FixedText, Mode=OneTime}"/>
+                                        </DataTrigger>
+                                        <DataTrigger Value="blemish" Binding="{Binding Report.Type, Mode=OneTime}">
+                                            <Setter Property="Text" Value=""/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
 
-                    <TextBlock Grid.Row="1" Margin="3,0,3,0" TextWrapping="Wrap" MaxWidth="200" HorizontalAlignment="Left">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}">
+                        <TextBlock DockPanel.Dock="Top" Margin="3,0,3,0" TextWrapping="Wrap" MaxWidth="200" HorizontalAlignment="Left">
+                            <TextBlock.Style>
+                                <Style TargetType="{x:Type TextBlock}">
 
-                                <Style.Triggers>
-                                    <DataTrigger Value="verify1D" Binding="{Binding Report.Type, Mode=OneTime}">
-                                        <!--<Setter Property="Text" Value="{Binding Report.DecodeText, Mode=OneTime}"/>-->
-                                        <Setter Property="Text">
-                                            <Setter.Value>
-                                                <MultiBinding StringFormat="{}{0}{1}">
-                                                    <Binding Path="Report.DecodeText" Mode="OneTime"/>
-                                                    <Binding Path="Report.FormattedOut" Converter="{StaticResource gs1FormattedOutput}" FallbackValue=""/>
-                                                </MultiBinding>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </DataTrigger>
-                                    <DataTrigger Value="verify2D" Binding="{Binding Report.Type, Mode=OneTime}">
-                                        <!--<Setter Property="Text" Value="{Binding Report.DecodeText, Mode=OneTime}"/>-->
-                                        <Setter Property="Text">
-                                            <Setter.Value>
-                                                <MultiBinding StringFormat="{}{0}{1}">
-                                                    <Binding Path="Report.DecodeText" Mode="OneTime"/>
-                                                    <Binding Path="Report.FormattedOut" Converter="{StaticResource gs1FormattedOutput}" FallbackValue=""/>
-                                                </MultiBinding>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </DataTrigger>
-                                    <DataTrigger Value="ocr" Binding="{Binding Report.Type, Mode=OneTime}">
-                                        <Setter Property="Text" Value="{Binding Report.Text, Mode=OneTime}"/>
-                                    </DataTrigger>
+                                    <Style.Triggers>
+                                        <DataTrigger Value="verify1D" Binding="{Binding Report.Type, Mode=OneTime}">
+                                            <!--<Setter Property="Text" Value="{Binding Report.DecodeText, Mode=OneTime}"/>-->
+                                            <Setter Property="Text">
+                                                <Setter.Value>
+                                                    <MultiBinding StringFormat="{}{0}{1}">
+                                                        <Binding Path="Report.DecodeText" Mode="OneTime"/>
+                                                        <Binding Path="Report.FormattedOut" Converter="{StaticResource gs1FormattedOutput}" FallbackValue=""/>
+                                                    </MultiBinding>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Value="verify2D" Binding="{Binding Report.Type, Mode=OneTime}">
+                                            <!--<Setter Property="Text" Value="{Binding Report.DecodeText, Mode=OneTime}"/>-->
+                                            <Setter Property="Text">
+                                                <Setter.Value>
+                                                    <MultiBinding StringFormat="{}{0}{1}">
+                                                        <Binding Path="Report.DecodeText" Mode="OneTime"/>
+                                                        <Binding Path="Report.FormattedOut" Converter="{StaticResource gs1FormattedOutput}" FallbackValue=""/>
+                                                    </MultiBinding>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Value="ocr" Binding="{Binding Report.Type, Mode=OneTime}">
+                                            <Setter Property="Text" Value="{Binding Report.Text, Mode=OneTime}"/>
+                                        </DataTrigger>
 
-                                    <DataTrigger Value="ocv" Binding="{Binding Report.Type, Mode=OneTime}">
-                                        <Setter Property="Text" Value="{Binding Report.Text, Mode=OneTime}"/>
-                                    </DataTrigger>
-                                    <DataTrigger Value="blemish" Binding="{Binding Report.Type, Mode=OneTime}">
-                                        <Setter Property="Text" Value=""/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                </Grid>
+                                        <DataTrigger Value="ocv" Binding="{Binding Report.Type, Mode=OneTime}">
+                                            <Setter Property="Text" Value="{Binding Report.Text, Mode=OneTime}"/>
+                                        </DataTrigger>
+                                        <DataTrigger Value="blemish" Binding="{Binding Report.Type, Mode=OneTime}">
+                                            <Setter Property="Text" Value=""/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </DockPanel>        
+                    
+                </DockPanel>
 
 
-            </Grid>
+
+            </DockPanel>
             
-            <Border Grid.Row="1" BorderThickness="1" Padding="2" Margin="2" CornerRadius="3" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
+            <Border DockPanel.Dock="Top" BorderThickness="1" Padding="2" Margin="2" CornerRadius="3" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
                 <Border.Style>
                     <Style TargetType="{x:Type Border}">
                         <Setter Property="Visibility" Value="Visible"/>
@@ -234,27 +211,23 @@
                     </Style>
                 </Border.Style>
 
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
+                <UniformGrid Rows="1">
 
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <DockPanel HorizontalAlignment="Center">
                         <TextBlock Text="Aperture  "/>
                         <TextBlock Text="{Binding Report.Aperture}"/>
-                    </StackPanel>
+                    </DockPanel>
 
-                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left">
+                    <DockPanel HorizontalAlignment="Left">
                         <TextBlock Text="X Dimension  "/>
                         <TextBlock Text="{Binding Report.XDimension, StringFormat=N1}"/>
-                    </StackPanel>
+                    </DockPanel>
 
-                </Grid>
+                </UniformGrid>
             </Border>
 
             <!--Grade Values-->
-            <Border Grid.Row="2" BorderThickness="1" Padding="2" Margin="2,0,2,2" CornerRadius="3" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
+            <Border DockPanel.Dock="Top" BorderThickness="1" Padding="2" Margin="2,0,2,2" CornerRadius="3" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
                 <Border.Style>
                     <Style TargetType="{x:Type Border}">
                         <Setter Property="Visibility" Value="Visible"/>
@@ -323,7 +296,7 @@
             </Border>
 
             <!--Values-->
-            <Border Grid.Row="3" BorderThickness="1" Padding="2" Margin="2,0,2,2" CornerRadius="3" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
+            <Border DockPanel.Dock="Top" BorderThickness="1" Padding="2" Margin="2,0,2,2" CornerRadius="3" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
                 <Border.Style>
                     <Style TargetType="{x:Type Border}">
                         <Setter Property="Visibility" Value="Visible"/>
@@ -362,7 +335,7 @@
             </Border>
 
             <!--Value Results-->
-            <Border Grid.Row="4" BorderThickness="1" Padding="2" Margin="2,0,2,2" CornerRadius="3" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
+            <Border DockPanel.Dock="Top" BorderThickness="1" Padding="2" Margin="2,0,2,2" CornerRadius="3" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
                 <Border.Style>
                     <Style TargetType="{x:Type Border}">
                         <Setter Property="Visibility" Value="Visible"/>
@@ -421,7 +394,7 @@
             </Border>
 
             <!--GS1 Value Results-->
-            <Border Grid.Row="5" BorderThickness="1" Padding="2" Margin="2,0,2,2" CornerRadius="3" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
+            <Border DockPanel.Dock="Top" BorderThickness="1" Padding="2" Margin="2,0,2,2" CornerRadius="3" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
                 <Border.Style>
                     <Style TargetType="{x:Type Border}">
                         <Setter Property="Visibility" Value="Visible"/>
@@ -492,7 +465,7 @@
             </Border>
 
             <!--GS1 Grades-->
-            <Border Grid.Row="6" BorderThickness="1" Padding="2" Margin="2,0,2,2" CornerRadius="3" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
+            <Border DockPanel.Dock="Top" BorderThickness="1" Padding="2" Margin="2,0,2,2" CornerRadius="3" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
                 <Border.Style>
                     <Style TargetType="{x:Type Border}">
                         <Setter Property="Visibility" Value="Visible"/>
@@ -559,7 +532,7 @@
             </Border>
 
             <!--Alarms-->
-            <Border Grid.Row="7" BorderThickness="1" Padding="2" Margin="2,0,2,2" CornerRadius="3" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
+            <Border DockPanel.Dock="Top" BorderThickness="1" Padding="2" Margin="2,0,2,2" CornerRadius="3" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
                 <Border.Style>
                     <Style TargetType="{x:Type Border}">
                         <Setter Property="Visibility" Value="Visible"/>
@@ -618,6 +591,6 @@
                 </ItemsControl>
             </Border>
 
-        </Grid>
+        </DockPanel>
     </md:Card>
 </UserControl>
