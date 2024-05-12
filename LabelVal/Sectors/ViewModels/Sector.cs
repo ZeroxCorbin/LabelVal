@@ -73,6 +73,8 @@ public class Template
 
     }
 
+    public Template() { }
+
     private string GetV5Symbology(Results_QualifiedResult Report)
     {
         if (Report.Code128 != null)

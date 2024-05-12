@@ -97,6 +97,7 @@ public partial class ImageResultEntry : ObservableRecipient,
     {
         V275GetStored();
         V5GetStored();
+        L95xxGetStored();
     }
 
 
@@ -181,18 +182,22 @@ public partial class ImageResultEntry : ObservableRecipient,
                 if (await OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for this image?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
                     return;
 
+            var temp = new List<L95xxReport>();
+            foreach (var sec in L95xxCurrentSectors)
+                temp.Add(new L95xxReport() { Report = sec.L95xxPacket, Template = sec.Template });
+
             _ = SelectedDatabase.InsertOrReplace_L95xxResult(new Databases.ImageResults.L95xxResult
             {
                 ImageRollName = SelectedImageRoll.Name,
                 SourceImageUID = SourceImageUID,
                 SourceImage = SourceImage,
-                Report = JsonConvert.SerializeObject(L95xxCurrentReport),
-                StoredImage = L95xxImage
+                Report = JsonConvert.SerializeObject(temp),
+                //StoredImage = L95xxImage
             });
 
             L95xxCurrentSectors.Clear();
 
-            //L95xxGetStored();
+            L95xxGetStored();
         }
     }
     [RelayCommand]
@@ -209,6 +214,11 @@ public partial class ImageResultEntry : ObservableRecipient,
             {
                 _ = SelectedDatabase.Delete_V5Result(SelectedImageRoll.Name, SourceImageUID);
                 V5GetStored();
+            }
+            else if (device == "L95xx")
+            {
+                _ = SelectedDatabase.Delete_L95xxResult(SelectedImageRoll.Name, SourceImageUID);
+                L95xxGetStored();
             }
         }
     }

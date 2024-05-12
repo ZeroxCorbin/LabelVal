@@ -17,12 +17,15 @@ using System.Windows.Media;
 namespace LabelVal.ImageRolls.ViewModels;
 public partial class ImageResultEntry : ObservableRecipient, IRecipient<VerifierMessages.NewPacket>
 {
+    public class L95xxReport
+    {
+        public Template Template { get; set; }
+        public string Report { get; set; }
+    }
 
     [ObservableProperty] private Databases.ImageResults.L95xxResult l95xxResultRow;
 
-    public Template L95xxCurrentTemplate { get; set; }
-    public List<string> L95xxCurrentReport { get; private set; }
-    //public List<string> L95xxStoredReport { get; set; }
+    public List<L95xxReport> L95xxCurrentReport { get; private set; }
 
     public ObservableCollection<Sectors.ViewModels.Sector> L95xxCurrentSectors { get; } = [];
     public ObservableCollection<Sectors.ViewModels.Sector> L95xxStoredSectors { get; }= [];
@@ -66,13 +69,14 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Verifier
         L95xxImage = L95xxResultRow.StoredImage;
         IsL95xxImageStored = true;
 
+        var report = JsonConvert.DeserializeObject<List<L95xxReport>>(L95xxResultRow.Report);
+
         List<Sectors.ViewModels.Sector> tempSectors = [];
-        int i = 1;
-        foreach (var rSec in JsonConvert.DeserializeObject<List<string>>(L95xxResultRow.Report))
+        foreach (var rSec in report)
         {
             var isWrongStandard = SelectedImageRoll.IsGS1;
 
-            tempSectors.Add(new Sectors.ViewModels.Sector(JsonConvert.DeserializeObject<Template>(L95xxResultRow.Template), $"DecodeTool{i++}", false, false));
+            tempSectors.Add(new Sectors.ViewModels.Sector(rSec.Template, rSec.Report, false, false));
         }
 
         if (tempSectors.Count > 0)
