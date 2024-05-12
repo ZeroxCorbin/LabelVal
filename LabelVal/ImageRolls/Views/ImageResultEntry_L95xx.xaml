@@ -115,7 +115,7 @@
                                 <IconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
                             </Button>
 
-                            <Button Command="{Binding L95xxProcessCommand}" CommandParameter="stored" ToolTip="L95xx: Trigger and process the image with the simulator.&#x0a;Then read the results"
+                            <!--<Button Command="{Binding L95xxProcessCommand}" CommandParameter="stored" ToolTip="L95xx: Trigger and process the image with the simulator.&#x0a;Then read the results"
                                     BorderBrush="{DynamicResource YellowBrush2}" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
                                     Width="20" Height="20" HorizontalAlignment="Left" Margin="3,0,3,0"
                                     md:ButtonProgressAssist.IsIndeterminate="True"
@@ -123,7 +123,7 @@
                                     md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsL95xxWorking}">
 
                                 <IconPacks:PackIconMaterial Kind="Camera"  Margin="-1,-1,0,0" Height="12" Width="12"/>
-                            </Button>
+                            </Button>-->
 
                         </DockPanel>
                     </DockPanel>
@@ -212,7 +212,7 @@
                         </Style>
                     </ScrollViewer.Style>
                     
-                    <ItemsControl ItemsSource="{Binding L95xxStoredSectors}">
+                    <ItemsControl ItemsSource="{Binding L95xxStoredSectors}" Background="{StaticResource MahApps.Brushes.Control.Background}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <sectors:Sector Width="220" Background="{StaticResource AccentColorBrush}" Margin="6,1"/>
@@ -394,8 +394,8 @@
                             </Style.Triggers>
                         </Style>
                     </ScrollViewer.Style>
-                    
-                    <ItemsControl ItemsSource="{Binding L95xxDiffSectors}">
+
+                    <ItemsControl ItemsSource="{Binding L95xxDiffSectors}" Background="{StaticResource MahApps.Brushes.Control.Background}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <sectors:SectorDifferences Width="220" Background="{StaticResource AccentColorBrush}" Margin="6,1"/>

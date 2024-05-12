@@ -100,7 +100,6 @@ public partial class ImageResultEntry : ObservableRecipient,
         L95xxGetStored();
     }
 
-
     [RelayCommand]
     private void Save(string type)
     {

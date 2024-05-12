@@ -32,7 +32,6 @@
 
     <DockPanel>
 
-
         <!--V275-->
         <DockPanel DockPanel.Dock="Top">
 

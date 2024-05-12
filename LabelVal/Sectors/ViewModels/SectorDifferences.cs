@@ -755,125 +755,7 @@ public partial class SectorDifferences : ObservableObject
             foreach (var item in alarms)
                 Alarms.Add(item);
 
-        }
-
-        //foreach (var prop in verify.GetType().GetProperties())
-        //{
-        //    if (prop.Name == "type")
-        //        Type = prop.GetValue(verify).ToString();
-
-        //    if (prop.Name == "data")
-        //        foreach (var prop1 in prop.GetValue(verify).GetType().GetProperties())
-        //        {
-        //            if (prop1.Name == "lengthUnit")
-        //                Units = (string)prop1.GetValue(prop.GetValue(verify));
-
-        //            if (Type is "ocr" or "ocv")
-        //            {
-        //                if (prop1.Name == "text")
-        //                    OCVMatchText = (string)prop1.GetValue(prop.GetValue(verify));
-
-        //            }
-
-        //            if (prop1.PropertyType == typeof(Report_InspectSector_Blemish.Blemish[]))
-        //            {
-        //                if (prop1.GetValue(prop.GetValue(verify)) is Report_InspectSector_Blemish.Blemish[] dat)
-        //                {
-        //                    foreach (var d in dat)
-        //                        Blemishes.Add(new Blemish(d));
-
-        //                    IsNotEmpty = Blemishes.Count > 0;
-        //                }
-        //                continue;
-        //            }
-
-        //            if (prop1.PropertyType == typeof(Report_InspectSector_Common.Decode))
-        //            {
-        //                if (prop1.GetValue(prop.GetValue(verify)) is Report_InspectSector_Common.Decode dat)
-        //                {
-        //                    GradeValues.Add(new GradeValue(prop1.Name, new Report_InspectSector_Common.GradeValue() { grade = dat.grade, value = dat.value }));
-
-        //                    if (dat.edgeDetermination != null)
-        //                        if (Type == "verify1D")
-        //                            ValueResults.Add(new ValueResult("edgeDetermination", dat.edgeDetermination));
-
-        //                    IsNotEmpty = true;
-        //                }
-        //                continue;
-        //            }
-
-        //            if (prop1.PropertyType == typeof(Report_InspectSector_Common.GradeValue))
-        //            {
-        //                if (prop1.GetValue(prop.GetValue(verify)) is Report_InspectSector_Common.GradeValue dat)
-        //                {
-        //                    GradeValues.Add(new GradeValue(prop1.Name, dat));
-        //                    IsNotEmpty = true;
-
-        //                }
-        //                continue;
-        //            }
-
-        //            if (prop1.PropertyType == typeof(Report_InspectSector_Common.ValueResult))
-        //            {
-        //                if (prop1.GetValue(prop.GetValue(verify)) is Report_InspectSector_Common.ValueResult dat)
-        //                {
-        //                    ValueResults.Add(new ValueResult(prop1.Name, dat));
-        //                    IsNotEmpty = true;
-        //                }
-        //                continue;
-        //            }
-
-        //            if (prop1.PropertyType == typeof(Report_InspectSector_Common.Value))
-        //            {
-        //                if (prop1.GetValue(prop.GetValue(verify)) is Report_InspectSector_Common.Value dat)
-        //                {
-        //                    Values.Add(new Value(prop1.Name, dat));
-        //                    IsNotEmpty = true;
-        //                }
-        //                continue;
-        //            }
-
-        //            if (prop1.PropertyType == typeof(Report_InspectSector_Common.Alarm[]))
-        //            {
-        //                if (prop1.GetValue(prop.GetValue(verify)) is Report_InspectSector_Common.Alarm[] dat)
-        //                {
-        //                    foreach (var d in dat)
-        //                        Alarms.Add(d);
-
-        //                    IsNotEmpty = Alarms.Count > 0;
-        //                }
-        //                continue;
-        //            }
-
-        //            if (prop1.PropertyType == typeof(Report_InspectSector_Verify1D.Gs1symbolquality) || prop1.PropertyType == typeof(Report_InspectSector_Verify2D.Gs1symbolquality))
-        //            {
-        //                if (prop1.GetValue(prop.GetValue(verify)) != null)
-        //                    foreach (var prop2 in prop1.GetValue(prop.GetValue(verify)).GetType().GetProperties())
-        //                    {
-        //                        if (prop2.PropertyType == typeof(Report_InspectSector_Common.ValueResult))
-        //                        {
-        //                            if (prop2.GetValue(prop1.GetValue(prop.GetValue(verify))) is Report_InspectSector_Common.ValueResult dat)
-        //                            {
-        //                                Gs1ValueResults.Add(new ValueResult(prop2.Name, dat));
-        //                                IsNotEmpty = true;
-        //                            }
-        //                            continue;
-        //                        }
-        //                        if (prop2.PropertyType == typeof(Report_InspectSector_Common.Grade))
-        //                        {
-        //                            if (prop2.GetValue(prop1.GetValue(prop.GetValue(verify))) is Report_InspectSector_Common.Grade dat)
-        //                            {
-        //                                Gs1Grades.Add(new Grade(prop2.Name, dat));
-        //                                IsNotEmpty = true;
-        //                            }
-        //                            continue;
-        //                        }
-        //                    }
-        //                //ValueResults.Add(prop1.Name, (Report_InspectSector_Common.ValueResult)prop1.GetValue(prop.GetValue(verify)));
-        //                continue;
-        //            }
-        //        }
-        //}
+        }    
     }
 
     private float ParseFloat(string value)
@@ -934,20 +816,6 @@ public partial class SectorDifferences : ObservableObject
         };
     }
 
-    private Report_InspectSector_Common.ValueResult GetValueResult(string data)
-    {
-        var spl2 = data.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-        if (spl2.Count() != 2)
-            return null;
-
-        return new Report_InspectSector_Common.ValueResult()
-        {
-            value = ParseInt(spl2[0]),
-            result = spl2[1]
-        };
-    }
-
     private string GetLetter(float value)
     {
         if (value == 4.0f)
@@ -968,54 +836,8 @@ public partial class SectorDifferences : ObservableObject
         return "F";
     }
 
-    private string GetSymbolType(string value)
-    {
-        if (value.Contains("UPC-A"))
-            return "upcA";
-
-        if (value.Contains("UPC-B"))
-            return "upcB";
-
-        if (value.Contains("EAN-13"))
-            return "ean13";
-
-        if (value.Contains("EAN-8"))
-            return "ean8";
-
-        if (value.Contains("DataBar"))
-            return "dataBar";
-
-        if (value.Contains("Code 39"))
-            return "code39";
-
-        if (value.Contains("Code 93"))
-            return "code93";
-
-        if (value.StartsWith("GS1 QR"))
-            return "qrCode";
-
-        if (value.StartsWith("Micro"))
-            return "microQrCode";
-
-        if (value.Contains("Data Matrix"))
-            return "dataMatrix";
-
-        if (value.Contains("Aztec"))
-            return "aztec";
-
-        if (value.Contains("Codabar"))
-            return "codaBar";
-
-        if (value.Contains("ITF"))
-            return "i2of5";
-
-        if (value.Contains("PDF417"))
-            return "pdf417";
-        return "";
-    }
-
-
     #endregion
+
     private string V5GetGradeLetter(int grade) => grade switch
     {
         65 => "A",
@@ -1025,19 +847,6 @@ public partial class SectorDifferences : ObservableObject
         70 => "F",
         _ => throw new System.NotImplementedException(),
     };
-
-    private string V5GetSymbology(V5_REST_Lib.Models.Results_QualifiedResult results)
-    {
-        if (results.Code128 != null)
-            return "Code128";
-        else if (results.Datamatrix != null)
-            return "DataMatrix";
-        else if (results.QR != null)
-            return "QR";
-        else if (results.PDF417 != null)
-            return "PDF417";
-        else return results.UPC != null ? "UPC" : "Unknown";
-    }
     private string V5GetSymbolType(V5_REST_Lib.Models.Results_QualifiedResult results)
     {
         if (results.Code128 != null)
