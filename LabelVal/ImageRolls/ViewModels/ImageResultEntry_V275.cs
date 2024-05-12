@@ -60,13 +60,6 @@ public partial class ImageResultEntry
 
     private void V275GetStored()
     {
-
-        //foreach (var sec in V275StoredSectors)
-        //    sec.Clear();
-
-        V275DiffSectors.Clear();
-        V275StoredSectors.Clear();
-
         V275ResultRow = SelectedDatabase.Select_V275Result(SelectedImageRoll.Name, SourceImageUID);
 
         if (V275ResultRow == null)
@@ -88,6 +81,7 @@ public partial class ImageResultEntry
         V275Image = V275ResultRow.StoredImage;
         IsV275ImageStored = true;
 
+        V275StoredSectors.Clear();
         List<Sectors.ViewModels.Sector> tempSectors = [];
         if (!string.IsNullOrEmpty(V275ResultRow.Report) && template != null)
             foreach (var jSec in JsonConvert.DeserializeObject<Job>(V275ResultRow.Template).sectors)
@@ -121,14 +115,11 @@ public partial class ImageResultEntry
                 V275StoredSectors.Add(sec);
         }
 
-        V275SectorsImageOverlay = V275CreateSectorsImageOverlay(template, true, false);
+        V275SectorsImageOverlay = V275CreateSectorsImageOverlay(template, false);
 
     }
     public async Task<bool> V275ReadTask(int repeat)
     {
-        V275CurrentSectors.Clear();
-        V275DiffSectors.Clear();
-
         V275_REST_lib.Controller.FullReport report;
         if ((report = await SelectedNode.Connection.Read(repeat, !SelectedNode.IsSimulator)) == null)
         {
@@ -162,6 +153,8 @@ public partial class ImageResultEntry
                 IsV275ImageStored = false;
             }
         }
+
+        V275CurrentSectors.Clear();
 
         List<Sectors.ViewModels.Sector> tempSectors = [];
         foreach (var jSec in V275CurrentTemplate.sectors)
@@ -197,12 +190,14 @@ public partial class ImageResultEntry
 
         V275GetSectorDiff();
 
-        V275SectorsImageOverlay = V275CreateSectorsImageOverlay(V275CurrentTemplate, false, true);
+        V275SectorsImageOverlay = V275CreateSectorsImageOverlay(V275CurrentTemplate, true);
 
         return true;
     }
     private void V275GetSectorDiff()
     {
+        V275DiffSectors.Clear();
+
         List<Sectors.ViewModels.SectorDifferences> diff = [];
 
         //Compare; Do not check for missing her. To keep found at top of list.
@@ -277,7 +272,8 @@ public partial class ImageResultEntry
             }
 
         foreach (var d in diff)
-            V275DiffSectors.Add(d);
+            if(d.IsNotEmpty)
+               V275DiffSectors.Add(d);
 
     }
     public async Task<int> V275LoadTask()
@@ -325,7 +321,7 @@ public partial class ImageResultEntry
 
         return 1;
     }
-    private DrawingImage V275CreateSectorsImageOverlay(Job template, bool useStored, bool isDetailed)
+    private DrawingImage V275CreateSectorsImageOverlay(Job template, bool isDetailed)
     {
         var bmp = ImageUtilities.CreateBitmap(V275Image);
 
@@ -339,32 +335,16 @@ public partial class ImageResultEntry
         var secAreas = new GeometryGroup();
         var drwGroup = new DrawingGroup();
 
-        if (useStored)
+        foreach (var sec in template.sectors)
         {
-            foreach (var sec in template.sectors)
-            {
-                var area = new RectangleGeometry(new Rect(sec.left, sec.top, sec.width, sec.height));
-                secAreas.Children.Add(area);
+            var area = new RectangleGeometry(new Rect(sec.left, sec.top, sec.width, sec.height));
+            secAreas.Children.Add(area);
 
-                drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun(sec.username, new Typeface("Arial"), 30.0, new Point(sec.left - 8, sec.top - 8))));
-            }
-
-            if (isDetailed)
-                drwGroup = V275GetModuleGrid(template.sectors, V275StoredSectors);
+            drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun(sec.username, new Typeface("Arial"), 30.0, new Point(sec.left - 8, sec.top - 8))));
         }
-        else
-        {
-            foreach (var sec in template.sectors)
-            {
-                var area = new RectangleGeometry(new Rect(sec.left, sec.top, sec.width, sec.height));
-                secAreas.Children.Add(area);
 
-                drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun(sec.username, new Typeface("Arial"), 30.0, new Point(sec.left - 8, sec.top - 8))));
-            }
-
-            if (isDetailed)
-                drwGroup = V275GetModuleGrid(template.sectors, V275CurrentSectors);
-        }
+        if (isDetailed)
+            drwGroup = V275GetModuleGrid(template.sectors, V275StoredSectors);
 
         var sectors = new GeometryDrawing
         {

@@ -118,9 +118,6 @@ public partial class ImageResultEntry
     }
     public bool V5ProcessResults(V5_REST_Lib.Controller.TriggerResults triggerResults, Config config)
     {
-        V5CurrentSectors.Clear();
-        V5DiffSectors.Clear();
-
         if (!triggerResults.OK)
         {
             SendErrorMessage("Could not trigger the scanner.");
@@ -152,9 +149,9 @@ public partial class ImageResultEntry
             }
         }
 
+        V5CurrentSectors.Clear();
 
         List<Sectors.ViewModels.Sector> tempSectors = [];
-        int i = 1;
         foreach (var rSec in V5CurrentReport._event.data.cycleConfig.qualifiedResults)
         {
             var isWrongStandard = SelectedImageRoll.IsGS1;
@@ -172,9 +169,7 @@ public partial class ImageResultEntry
 
         V5GetSectorDiff();
 
-        V5SectorsImageOverlay = V5CreateSectorsImageOverlay(false);
-
-
+        V5SectorsImageOverlay = V5CreateSectorsImageOverlay(V5CurrentReport);
 
         return true;
     }
@@ -184,12 +179,6 @@ public partial class ImageResultEntry
 
     private void V5GetStored()
     {
-        //foreach (var sec in V5StoredSectors)
-        //    sec.Clear();
-
-        V5DiffSectors.Clear();
-        V5StoredSectors.Clear();
-
         V5ResultRow = SelectedDatabase.Select_V5Result(SelectedImageRoll.Name, SourceImageUID);
 
         if (V5ResultRow == null)
@@ -204,14 +193,15 @@ public partial class ImageResultEntry
             return;
         }
 
-        V5StoredReport = JsonConvert.DeserializeObject<Results>(V5ResultRow.Report);
+        var results = JsonConvert.DeserializeObject<Results>(V5ResultRow.Report);
 
         V5Image = V5ResultRow.StoredImage;
         IsV5ImageStored = true;
 
+        V5StoredSectors.Clear();
+
         List<Sectors.ViewModels.Sector> tempSectors = [];
-        int i = 1;
-        foreach (var rSec in V5StoredReport._event.data.cycleConfig.qualifiedResults)
+        foreach (var rSec in results._event.data.cycleConfig.qualifiedResults)
         {
             var isWrongStandard = SelectedImageRoll.IsGS1;
 
@@ -226,11 +216,13 @@ public partial class ImageResultEntry
                 V5StoredSectors.Add(sec);
         }
 
-        V5SectorsImageOverlay = V5CreateSectorsImageOverlay(true);
+        V5SectorsImageOverlay = V5CreateSectorsImageOverlay(results);
     }
 
     private void V5GetSectorDiff()
     {
+        V5DiffSectors.Clear();
+
         List<Sectors.ViewModels.SectorDifferences> diff = [];
 
         //Compare; Do not check for missing her. To keep found at top of list.
@@ -305,13 +297,14 @@ public partial class ImageResultEntry
             }
 
         foreach (var d in diff)
-            V5DiffSectors.Add(d);
+            if (d.IsNotEmpty)
+                V5DiffSectors.Add(d);
     }
     public int V5LoadTask()
     {
         return 1;
     }
-    private DrawingImage V5CreateSectorsImageOverlay(bool useStored)
+    private DrawingImage V5CreateSectorsImageOverlay(Results results)
     {
         var bmp = ImageUtilities.CreateBitmap(V5Image);
 
@@ -327,40 +320,20 @@ public partial class ImageResultEntry
 
         var drwGroup = new DrawingGroup();
 
-        if (useStored)
+        foreach (var sec in results._event.data.cycleConfig.qualifiedResults)
         {
-            foreach (var sec in V5StoredReport._event.data.cycleConfig.qualifiedResults)
-            {
-                if (sec.boundingBox == null)
-                    continue;
+            if (sec.boundingBox == null)
+                continue;
 
-                secAreas.Children.Add(new RectangleGeometry(new Rect(new Point(sec.boundingBox[0].x, sec.boundingBox[0].y), new Point(sec.boundingBox[2].x, sec.boundingBox[2].y))));
+            secAreas.Children.Add(new RectangleGeometry(new Rect(new Point(sec.boundingBox[0].x, sec.boundingBox[0].y), new Point(sec.boundingBox[2].x, sec.boundingBox[2].y))));
 
-                drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun($"DecodeTool{sec.toolSlot}", new Typeface("Arial"), 30.0, new Point(sec.boundingBox[2].x - 8, sec.boundingBox[2].y - 8))));
-            }
-
-            foreach (var sec in V5StoredReport._event.data.cycleConfig.job.toolList)
-            {
-                foreach (var r in sec.SymbologyTool.regionList)
-                    bndAreas.Children.Add(new RectangleGeometry(new Rect(r.Region.shape.RectShape.x, r.Region.shape.RectShape.y, r.Region.shape.RectShape.width, r.Region.shape.RectShape.height)));
-            }
+            drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun($"DecodeTool{sec.toolSlot}", new Typeface("Arial"), 30.0, new Point(sec.boundingBox[2].x - 8, sec.boundingBox[2].y - 8))));
         }
-        else
+
+        foreach (var sec in results._event.data.cycleConfig.job.toolList)
         {
-            foreach (var sec in V5CurrentReport._event.data.cycleConfig.qualifiedResults)
-            {
-                if (sec.boundingBox == null)
-                    continue;
-
-                secAreas.Children.Add(new RectangleGeometry(new Rect(new Point(sec.boundingBox[0].x, sec.boundingBox[0].y), new Point(sec.boundingBox[2].x, sec.boundingBox[2].y))));
-
-                drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun($"DecodeTool{sec.toolSlot}", new Typeface("Arial"), 30.0, new Point(sec.boundingBox[2].x - 8, sec.boundingBox[2].y - 8))));
-
-            }
-
-            foreach (var sec in V5CurrentReport._event.data.cycleConfig.job.toolList)
-                foreach (var r in sec.SymbologyTool.regionList)
-                    bndAreas.Children.Add(new RectangleGeometry(new Rect(r.Region.shape.RectShape.x, r.Region.shape.RectShape.y, r.Region.shape.RectShape.width, r.Region.shape.RectShape.height)));
+            foreach (var r in sec.SymbologyTool.regionList)
+                bndAreas.Children.Add(new RectangleGeometry(new Rect(r.Region.shape.RectShape.x, r.Region.shape.RectShape.y, r.Region.shape.RectShape.width, r.Region.shape.RectShape.height)));
         }
 
         var sectors = new GeometryDrawing

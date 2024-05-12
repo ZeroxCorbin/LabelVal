@@ -35,7 +35,8 @@
         <DockPanel>
 
             <!--V5 Stored Image-->
-            <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <!--<GroupBox DockPanel.Dock="Top" Style="{StaticResource MaterialDesignCardGroupBox}" Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top">
+
                 <GroupBox.Header>
 
                     <DockPanel>
@@ -137,11 +138,10 @@
                        RenderOptions.BitmapScalingMode="NearestNeighbor"/>
                 </Grid>
 
-            </GroupBox>
+            </GroupBox>-->
 
             <!--V5 Stored Sectors-->
-            <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}"
-                      Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top">
 
                 <GroupBox.Header>
 
@@ -236,7 +236,7 @@
                     <ItemsControl ItemsSource="{Binding V5StoredSectors}" Background="{DynamicResource MahApps.Brushes.Control.Background}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <sectors:Sector Width="220" Background="{DynamicResource AccentColorBrush}" Margin="6,1"/>
+                                <sectors:Sector Width="180" Background="{DynamicResource AccentColorBrush}" Margin="6,1"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -245,9 +245,17 @@
             </GroupBox>
 
             <!--V5 Current Sectors-->
-            <GroupBox  Margin="3" Padding="0"
-                HorizontalAlignment="Left" VerticalAlignment="Top" 
-                Style="{StaticResource MaterialDesignCardGroupBox}">
+            <GroupBox Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top">
+                <GroupBox.Style>
+                    <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding V5CurrentSectors.Count}" Value="0">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </GroupBox.Style>
 
                 <GroupBox.Header>
 
@@ -380,7 +388,7 @@
                     <ItemsControl ItemsSource="{Binding V5CurrentSectors}" Background="{DynamicResource MahApps.Brushes.Control.Background}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <sectors:Sector Width="220" Background="{DynamicResource AccentColorBrush}" Margin="6,1" />
+                                <sectors:Sector Width="180" Background="{DynamicResource AccentColorBrush}" Margin="6,1" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -388,9 +396,17 @@
             </GroupBox>
 
             <!--V5 Dissimilar Results-->
-            <GroupBox  Margin="3" Padding="0"
-                HorizontalAlignment="Left" VerticalAlignment="Top" 
-                Style="{StaticResource MaterialDesignCardGroupBox}">
+            <GroupBox Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top">
+                <GroupBox.Style>
+                    <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding V5DiffSectors.Count}" Value="0">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </GroupBox.Style>
 
                 <GroupBox.Header>
 

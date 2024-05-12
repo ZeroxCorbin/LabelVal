@@ -242,7 +242,7 @@ public partial class ImageResultEntry : ObservableRecipient,
                 return;
 
             V275Image = V275ResultRow.StoredImage;
-            V275SectorsImageOverlay = V275CreateSectorsImageOverlay(JsonConvert.DeserializeObject<Job>(V275ResultRow.Template), true, false);
+            V275SectorsImageOverlay = V275CreateSectorsImageOverlay(JsonConvert.DeserializeObject<Job>(V275ResultRow.Template), false);
             IsV275ImageStored = true;
         }
         else if (device == "V5")
@@ -263,7 +263,7 @@ public partial class ImageResultEntry : ObservableRecipient,
                 return;
 
             V5Image = V5ResultRow.StoredImage;
-            V5SectorsImageOverlay = V5CreateSectorsImageOverlay(true);
+            V5SectorsImageOverlay = V5CreateSectorsImageOverlay(JsonConvert.DeserializeObject<Results>(V5ResultRow.Template));
             IsV5ImageStored = true;
         }
         else if (device == "L95xx")

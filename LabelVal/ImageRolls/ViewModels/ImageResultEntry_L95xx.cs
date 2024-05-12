@@ -49,9 +49,6 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Verifier
 
     private void L95xxGetStored()
     {
-        L95xxDiffSectors.Clear();
-        L95xxStoredSectors.Clear();
-
         L95xxResultRow = SelectedDatabase.Select_L95xxResult(SelectedImageRoll.Name, SourceImageUID);
 
         if (L95xxResultRow == null)
@@ -71,6 +68,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Verifier
 
         var report = JsonConvert.DeserializeObject<List<L95xxReport>>(L95xxResultRow.Report);
 
+        L95xxStoredSectors.Clear();
         List<Sectors.ViewModels.Sector> tempSectors = [];
         foreach (var rSec in report)
         {
@@ -90,84 +88,87 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Verifier
         //L95xxSectorsImageOverlay = L95xxCreateSectorsImageOverlay(true);
     }
 
-    //private void L95xxGetSectorDiff()
-    //{
-    //    List<Sectors.ViewModels.SectorDifferences> diff = [];
+    private void L95xxGetSectorDiff()
+    {
+        L95xxDiffSectors.Clear();
 
-    //    //Compare; Do not check for missing her. To keep found at top of list.
-    //    foreach (var sec in L95xxStoredSectors)
-    //    {
-    //        foreach (var cSec in L95xxCurrentSectors)
-    //            if (sec.Template.Name == cSec.Template.Name)
-    //            {
-    //                if (sec.Template.Symbology == cSec.Template.Symbology)
-    //                {
-    //                    diff.Add(sec.SectorDifferences.Compare(cSec.SectorDifferences));
-    //                    continue;
-    //                }
-    //                else
-    //                {
-    //                    var dat = new Sectors.ViewModels.SectorDifferences
-    //                    {
-    //                        UserName = $"{sec.Template.Username} (SYMBOLOGY MISMATCH)",
-    //                        IsSectorMissing = true,
-    //                        SectorMissingText = $"Stored Sector {sec.Template.Symbology} : Current Sector {cSec.Template.Symbology}"
-    //                    };
-    //                    diff.Add(dat);
-    //                }
-    //            }
-    //    }
+        List<Sectors.ViewModels.SectorDifferences> diff = [];
 
-    //    //Check for missing
-    //    foreach (var sec in L95xxStoredSectors)
-    //    {
-    //        var found = false;
-    //        foreach (var cSec in L95xxCurrentSectors)
-    //            if (sec.Template.Name == cSec.Template.Name)
-    //            {
-    //                found = true;
-    //                continue;
-    //            }
+        //Compare; Do not check for missing her. To keep found at top of list.
+        foreach (var sec in L95xxStoredSectors)
+        {
+            foreach (var cSec in L95xxCurrentSectors)
+                if (sec.Template.Name == cSec.Template.Name)
+                {
+                    if (sec.Template.Symbology == cSec.Template.Symbology)
+                    {
+                        diff.Add(sec.SectorDifferences.Compare(cSec.SectorDifferences));
+                        continue;
+                    }
+                    else
+                    {
+                        var dat = new Sectors.ViewModels.SectorDifferences
+                        {
+                            UserName = $"{sec.Template.Username} (SYMBOLOGY MISMATCH)",
+                            IsSectorMissing = true,
+                            SectorMissingText = $"Stored Sector {sec.Template.Symbology} : Current Sector {cSec.Template.Symbology}"
+                        };
+                        diff.Add(dat);
+                    }
+                }
+        }
 
-    //        if (!found)
-    //        {
-    //            var dat = new Sectors.ViewModels.SectorDifferences
-    //            {
-    //                UserName = $"{sec.Template.Username} (MISSING)",
-    //                IsSectorMissing = true,
-    //                SectorMissingText = "Not found in current Sectors"
-    //            };
-    //            diff.Add(dat);
-    //        }
-    //    }
+        //Check for missing
+        foreach (var sec in L95xxStoredSectors)
+        {
+            var found = false;
+            foreach (var cSec in L95xxCurrentSectors)
+                if (sec.Template.Name == cSec.Template.Name)
+                {
+                    found = true;
+                    continue;
+                }
 
-    //    //check for missing
-    //    if (L95xxStoredSectors.Count > 0)
-    //        foreach (var sec in L95xxCurrentSectors)
-    //        {
-    //            var found = false;
-    //            foreach (var cSec in L95xxStoredSectors)
-    //                if (sec.Template.Name == cSec.Template.Name)
-    //                {
-    //                    found = true;
-    //                    continue;
-    //                }
+            if (!found)
+            {
+                var dat = new Sectors.ViewModels.SectorDifferences
+                {
+                    UserName = $"{sec.Template.Username} (MISSING)",
+                    IsSectorMissing = true,
+                    SectorMissingText = "Not found in current Sectors"
+                };
+                diff.Add(dat);
+            }
+        }
 
-    //            if (!found)
-    //            {
-    //                var dat = new Sectors.ViewModels.SectorDifferences
-    //                {
-    //                    UserName = $"{sec.Template.Username} (MISSING)",
-    //                    IsSectorMissing = true,
-    //                    SectorMissingText = "Not found in Stored Sectors"
-    //                };
-    //                diff.Add(dat);
-    //            }
-    //        }
+        //check for missing
+        if (L95xxStoredSectors.Count > 0)
+            foreach (var sec in L95xxCurrentSectors)
+            {
+                var found = false;
+                foreach (var cSec in L95xxStoredSectors)
+                    if (sec.Template.Name == cSec.Template.Name)
+                    {
+                        found = true;
+                        continue;
+                    }
 
-    //    foreach (var d in diff)
-    //        L95xxDiffSectors.Add(d);
-    //}
+                if (!found)
+                {
+                    var dat = new Sectors.ViewModels.SectorDifferences
+                    {
+                        UserName = $"{sec.Template.Username} (MISSING)",
+                        IsSectorMissing = true,
+                        SectorMissingText = "Not found in Stored Sectors"
+                    };
+                    diff.Add(dat);
+                }
+            }
+
+        foreach (var d in diff)
+            if (d.IsNotEmpty)
+                L95xxDiffSectors.Add(d);
+    }
     //public int L95xxLoadTask()
     //{
     //    return 1;

@@ -68,11 +68,6 @@ public partial class ImageResultEntry_L95xx : UserControl
             }
         }
     }
-    private void L95xxImage_MouseDown(object sender, MouseButtonEventArgs e)
-    {
-        if (e.LeftButton == MouseButtonState.Pressed)
-            _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).L95xxImage, ((ViewModels.ImageResultEntry)DataContext).L95xxSectorsImageOverlay);
-    }
     private void ScrollL95xxStoredSectors_ScrollChanged(object sender, ScrollChangedEventArgs e)
     {
         if (e.VerticalChange != 0)
@@ -84,21 +79,4 @@ public partial class ImageResultEntry_L95xx : UserControl
             ScrollL95xxStoredSectors.ScrollToVerticalOffset(e.VerticalOffset);
     }
 
-    private bool ShowImage(byte[] image, DrawingImage overlay)
-    {
-        var dc = new ImageViewerDialogViewModel();
-
-        dc.LoadImage(image, overlay);
-        if (dc.Image == null) return false;
-
-        var yourParentWindow = (MainWindowView)Window.GetWindow(this);
-
-        dc.Width = yourParentWindow.ActualWidth - 100;
-        dc.Height = yourParentWindow.ActualHeight - 100;
-
-        _ = DialogCoordinator.Instance.ShowMetroDialogAsync(yourParentWindow.DataContext, new ImageViewerDialogView() { DataContext = dc });
-
-        return true;
-
-    }
 }

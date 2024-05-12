@@ -32,33 +32,8 @@ public partial class ImageResultEntry : UserControl
 
     private void ViewModel_BringIntoView() => App.Current.Dispatcher.Invoke(new Action(BringIntoView));
 
-    private void SourceImage_MouseDown(object sender, MouseButtonEventArgs e)
-    {
-        if (e.LeftButton == MouseButtonState.Pressed)
-            _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).SourceImage, null);
-    }
-    private void SourceImage_ContextMenuOpening(object sender, ContextMenuEventArgs e)
-    {
-        if (!Keyboard.IsKeyDown(Key.LeftCtrl) && !Keyboard.IsKeyDown(Key.RightCtrl))
-            e.Handled = true;
-    }
 
-    private bool ShowImage(byte[] image, DrawingImage overlay)
-    {
-        var dc = new ImageViewerDialogViewModel();
 
-        dc.LoadImage(image, overlay);
-        if (dc.Image == null) return false;
 
-        var yourParentWindow = (MainWindowView)Window.GetWindow(this);
-
-        dc.Width = yourParentWindow.ActualWidth - 100;
-        dc.Height = yourParentWindow.ActualHeight - 100;
-
-        _ = DialogCoordinator.Instance.ShowMetroDialogAsync(yourParentWindow.DataContext, new ImageViewerDialogView() { DataContext = dc });
-
-        return true;
-
-    }
 
 }

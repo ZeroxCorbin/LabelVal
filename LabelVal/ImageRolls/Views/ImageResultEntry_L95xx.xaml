@@ -35,9 +35,8 @@
         <!--L95xx Sectors-->
         <DockPanel>
 
-            <!--L95xx Stored Image-->
-            <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}"
-                      Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <!--L95xx Stored Image--><!--
+            <GroupBox DockPanel.Dock="Top" Style="{StaticResource MaterialDesignCardGroupBox}" Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top">
                 <GroupBox.Header>
 
                     <DockPanel>
@@ -115,7 +114,7 @@
                                 <IconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
                             </Button>
 
-                            <!--<Button Command="{Binding L95xxProcessCommand}" CommandParameter="stored" ToolTip="L95xx: Trigger and process the image with the simulator.&#x0a;Then read the results"
+                            --><!--<Button Command="{Binding L95xxProcessCommand}" CommandParameter="stored" ToolTip="L95xx: Trigger and process the image with the simulator.&#x0a;Then read the results"
                                     BorderBrush="{DynamicResource YellowBrush2}" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
                                     Width="20" Height="20" HorizontalAlignment="Left" Margin="3,0,3,0"
                                     md:ButtonProgressAssist.IsIndeterminate="True"
@@ -123,7 +122,7 @@
                                     md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsL95xxWorking}">
 
                                 <IconPacks:PackIconMaterial Kind="Camera"  Margin="-1,-1,0,0" Height="12" Width="12"/>
-                            </Button>-->
+                            </Button>--><!--
 
                         </DockPanel>
                     </DockPanel>
@@ -139,11 +138,20 @@
                        RenderOptions.BitmapScalingMode="NearestNeighbor"/>
                 </Grid>
 
-            </GroupBox>
+            </GroupBox>-->
 
             <!--L95xx Stored Sectors-->
-            <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}"
-                      Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <GroupBox Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top">
+                <GroupBox.Style>
+                    <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding L95xxStoredSectors.Count}" Value="0">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </GroupBox.Style>
 
                 <GroupBox.Header>
 
@@ -215,7 +223,7 @@
                     <ItemsControl ItemsSource="{Binding L95xxStoredSectors}" Background="{DynamicResource MahApps.Brushes.Control.Background}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <sectors:Sector Width="220" Background="{DynamicResource AccentColorBrush}" Margin="6,1"/>
+                                <sectors:Sector Width="180" Background="{DynamicResource AccentColorBrush}" Margin="6,1"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -224,10 +232,18 @@
             </GroupBox>
 
             <!--L95xx Current Sectors-->
-            <GroupBox  Margin="3" Padding="0"
-                HorizontalAlignment="Left" VerticalAlignment="Top" 
-                Style="{StaticResource MaterialDesignCardGroupBox}">
-
+            <GroupBox Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top">
+                <GroupBox.Style>
+                    <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding L95xxCurrentSectors.Count}" Value="0">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </GroupBox.Style>
+                
                 <GroupBox.Header>
 
                     <DockPanel Margin="3">
@@ -359,7 +375,7 @@
                     <ItemsControl ItemsSource="{Binding L95xxCurrentSectors}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <sectors:Sector  Width="220" Background="{DynamicResource AccentColorBrush}" Margin="6,1"/>
+                                <sectors:Sector  Width="180" Background="{DynamicResource AccentColorBrush}" Margin="6,1"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -367,9 +383,17 @@
             </GroupBox>
 
             <!--L95xx Dissimilar Results-->
-            <GroupBox  Margin="3" Padding="0"
-                HorizontalAlignment="Left" VerticalAlignment="Top" 
-                Style="{StaticResource MaterialDesignCardGroupBox}">
+            <GroupBox Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top">
+                <GroupBox.Style>
+                    <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding L95xxDiffSectors.Count}" Value="0">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </GroupBox.Style>
 
                 <GroupBox.Header>
 

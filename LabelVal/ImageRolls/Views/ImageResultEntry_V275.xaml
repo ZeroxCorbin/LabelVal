@@ -36,9 +36,7 @@
         <DockPanel DockPanel.Dock="Top">
 
             <!--V275 Stored Image-->
-            <GroupBox  Margin="3" Padding="3"
-            HorizontalAlignment="Left" VerticalAlignment="Top" 
-            Style="{StaticResource MaterialDesignCardGroupBox}">
+            <!--<GroupBox DockPanel.Dock="Top" Style="{StaticResource MaterialDesignCardGroupBox}" Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top">
 
                 <GroupBox.Header>
                     <DockPanel>
@@ -150,7 +148,7 @@
                                 </Button.Style>
                             </Button>
 
-                            <!--<Label Foreground="Goldenrod" HorizontalAlignment="Right" VerticalAlignment="Center" ToolTip="The 'Golden' Repeat Image stored in the database.">
+                            --><!--<Label Foreground="Goldenrod" HorizontalAlignment="Right" VerticalAlignment="Center" ToolTip="The 'Golden' Repeat Image stored in the database.">
                                 <Label.Style>
                                     <Style TargetType="{x:Type Label}" BasedOn="{StaticResource {x:Type Label}}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -164,7 +162,7 @@
                                 <Label.Content>
                                     <IconPacks:Material Kind="Gold"/>
                                 </Label.Content>
-                            </Label>-->
+                            </Label>--><!--
 
                         </DockPanel>
 
@@ -183,11 +181,10 @@
                        RenderOptions.BitmapScalingMode="NearestNeighbor"/>
                 </Grid>
 
-            </GroupBox>
+            </GroupBox>-->
 
             <!--V275 Stored Sectors-->
-            <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}"
-                      Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top">
 
                 <GroupBox.Header>
 
@@ -293,7 +290,7 @@
 
                             <ListView.ItemTemplate>
                                 <DataTemplate>
-                                    <sectors:Sector Width="220" Background="{DynamicResource AccentColorBrush}" Margin="3,0"/>
+                                    <sectors:Sector Width="180" Background="{DynamicResource AccentColorBrush}" Margin="3,0"/>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                         </ListView>
@@ -302,9 +299,7 @@
             </GroupBox>
 
             <!--V275 Current Sectors-->
-            <GroupBox  Margin="3" Padding="0"
-            HorizontalAlignment="Left" VerticalAlignment="Top" 
-            Style="{StaticResource MaterialDesignCardGroupBox}">
+            <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top">
 
                 <GroupBox.Header>
 
@@ -441,7 +436,7 @@
                     <ItemsControl ItemsSource="{Binding V275CurrentSectors}" Background="{DynamicResource MahApps.Brushes.Control.Background}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <sectors:Sector Width="220" Background="{DynamicResource AccentColorBrush}" Margin="6,1"/>
+                                <sectors:Sector Width="180" Background="{DynamicResource AccentColorBrush}" Margin="6,1"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -449,9 +444,17 @@
             </GroupBox>
 
             <!--V275 Dissimilar Results-->
-            <GroupBox  Margin="3" Padding="0"
-            HorizontalAlignment="Left" VerticalAlignment="Top" 
-            Style="{StaticResource MaterialDesignCardGroupBox}">
+            <GroupBox Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top">
+                <GroupBox.Style>
+                    <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding V275DiffSectors.Count}" Value="0">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </GroupBox.Style>
 
                 <GroupBox.Header>
 

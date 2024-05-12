@@ -1,0 +1,592 @@
+﻿<UserControl x:Class="LabelVal.ImageRolls.Views.ImageResultEntry_Images"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:LabelVal.ImageRolls.Views"
+                          xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:sectors="clr-namespace:LabelVal.Sectors.Views"
+             xmlns:json="clr-namespace:JSONViewer_WPF;assembly=JSONViewer_WPF"
+             xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:Converters="clr-namespace:LabelVal.Converters"
+             xmlns:V275Converters="clr-namespace:LabelVal.V275.Converters"
+             
+             xmlns:ViewModels="clr-namespace:LabelVal.ImageRolls.ViewModels"
+             d:DataContext="{d:DesignInstance Type=ViewModels:ImageResultEntry}"
+             mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="booltovis"/>
+        <Converters:BytesToImageConverter x:Key="bytesToImage"/>
+        <Converters:ShortenUIDConverter x:Key="shortenUID"/>
+        <Converters:StringToUpperSpacedConverter x:Key="stringToUpper"/>
+        <Converters:FloatStringTrimConverter x:Key="floatTrim"/>
+        <Converters:IsObjectNotNull x:Key="isObjectNotNull"/>
+
+        <Image x:Key="V275Icon" Source="/Assets/Images/V275WhiteIcon.ico" />
+        <Image x:Key="V275Png" Source="/Assets/Images/V275WhiteIcon.png" />
+
+
+        <ContextMenu x:Key="cmImageModify">
+            <MenuItem Command="{Binding RedoFiducial}" Header="Registration Mark"/>
+        </ContextMenu>
+
+    </UserControl.Resources>
+    
+    <DockPanel>
+
+        <!--Source Image-->
+        <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top">
+
+            <GroupBox.Header>
+
+                <DockPanel>
+
+                    <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
+                        <TextBlock Text="Source Image" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                    </md:Card>
+
+                    <Button Command="{Binding SaveCommand}" Padding="0" ToolTip="Save the image."
+                            Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                        <Button.Style>
+
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+
+                                <Setter Property="Visibility" Value="Visible"/>
+
+                                <Style.Triggers>
+                                    <DataTrigger Value="{x:Null}" Binding="{Binding SourceImage}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+
+                            </Style>
+                        </Button.Style>
+
+                        <IconPacks:PackIconMaterial Kind="ContentSave"  Margin="0,-2,0,0" Height="12" Width="12"/>
+
+                    </Button>
+
+                    <DockPanel>
+                        <DockPanel.Style>
+                            <Style TargetType="{x:Type DockPanel}">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding SelectedNode.IsSimulator}" Value="True"/>
+                                            <Condition Binding="{Binding IsV275ImageStored}" Value="True"/>
+                                        </MultiDataTrigger.Conditions>
+
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DockPanel.Style>
+
+                        <Button Command="{Binding V275ProcessCommand}" CommandParameter="source" Width="20" Height="20" HorizontalAlignment="Left" Margin="3,0,3,0"
+                                md:ButtonProgressAssist.IsIndeterminate="True"
+                                md:ButtonProgressAssist.Value="-1"
+                                md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV275Working}" >
+
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                    <Setter Property="ToolTip" Value="Print the image."/>
+                                    <Setter Property="Content">
+                                        <Setter.Value>
+                                            <IconPacks:PackIconMaterial Kind="Printer"  Margin="0,0,0,0" Height="12" Width="12"/>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+
+                                        <DataTrigger Binding="{Binding SelectedNode.IsLoggedIn}" Value="True">
+                                            <Setter Property="ToolTip" Value="V275: Print the image and read the results."/>
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Rectangle Width="14" Height="14">
+                                                        <Rectangle.OpacityMask>
+                                                            <VisualBrush Stretch="Fill" Visual="{DynamicResource V275Png}" />
+                                                        </Rectangle.OpacityMask>
+                                                    </Rectangle>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding SelectedNode.IsSimulator}" Value="True"/>
+                                                <Condition Binding="{Binding SelectedNode.IsLoggedIn}" Value="True"/>
+                                            </MultiDataTrigger.Conditions>
+
+                                            <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}"/>
+                                            <Setter Property="ToolTip" Value="V275: Process the image with the simulator."/>
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Rectangle Width="14" Height="14">
+                                                        <Rectangle.OpacityMask>
+                                                            <VisualBrush Stretch="Fill" Visual="{DynamicResource V275Png}" />
+                                                        </Rectangle.OpacityMask>
+                                                    </Rectangle>
+                                                </Setter.Value>
+                                            </Setter>
+
+                                        </MultiDataTrigger>
+
+
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+
+                    </DockPanel>
+
+                    <DockPanel>
+                        <DockPanel.Style>
+                            <Style TargetType="{x:Type DockPanel}">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding SelectedScanner.IsSimulator}" Value="True"/>
+                                            <Condition Binding="{Binding IsV5ImageStored}" Value="True"/>
+                                        </MultiDataTrigger.Conditions>
+
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </MultiDataTrigger>
+
+                                    <DataTrigger Value="False" Binding="{Binding SelectedScanner.IsConnected}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DockPanel.Style>
+
+                        <Button Command="{Binding V5ProcessCommand}" CommandParameter="source"
+                                Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0"
+                                md:ButtonProgressAssist.IsIndeterminate="True"
+                                md:ButtonProgressAssist.Value="-1"
+                                md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV5Working}">
+
+                            <IconPacks:PackIconMaterial Kind="Camera"  Margin="-1,-1,0,0" Height="12" Width="12"/>
+
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                    <Setter Property="ToolTip" Value="V5: Trigger and read the results and image."/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SelectedScanner.IsSimulator}" Value="True">
+                                            <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}"/>
+                                            <Setter Property="ToolTip" Value="V5: Trigger and process the image with the simulator.&#x0a;Then read the results"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+
+                    </DockPanel>
+                    <!--<DockPanel VerticalAlignment="Center">
+                        <TextBlock Text="{Binding Source.PixelWidth, ElementName=SourceImage}"/>
+                        <TextBlock Text="x" Margin="3,0"/>
+                        <TextBlock Text="{Binding Source.PixelHeight, ElementName=SourceImage}"/>
+                    </DockPanel>-->
+
+                    <TextBlock Text="{Binding SourceImageUID, Converter={StaticResource shortenUID}}" ToolTip="{Binding SourceImageUID}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+
+                </DockPanel>
+
+            </GroupBox.Header>
+
+            <Grid Margin="3">
+                <Image x:Name="SourceImage" MaxHeight="400" Width="400"
+                        Source="{Binding SourceImage, Converter={StaticResource bytesToImage}}"
+                        MouseDown="SourceImage_MouseDown"
+                        RenderOptions.BitmapScalingMode="NearestNeighbor"
+                        HorizontalAlignment="Left" VerticalAlignment="Top"
+                        ContextMenu="{StaticResource cmImageModify}" ContextMenuOpening="SourceImage_ContextMenuOpening"/>
+
+                <Label HorizontalAlignment="Right" VerticalAlignment="Top" Margin="3">
+                    <Label.Style>
+                        <Style TargetType="{x:Type Label}">
+                            <Setter Property="Content">
+                                <Setter.Value>
+                                    <Grid Background="White">
+                                        <IconPacks:PackIconMaterial Width="20" Height="20" Kind="Information" Foreground="Red"/>
+                                    </Grid>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="ToolTip" Value="{Binding SourceImageComment}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SourceImageComment}" Value="">
+                                    <Setter Property="Content" Value=""/>
+                                    <Setter Property="ToolTip" Value="{x:Null}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Label.Style>
+
+                </Label>
+            </Grid>
+
+        </GroupBox>
+        
+        <!--V275 Stored Image-->
+        <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top">
+
+            <GroupBox.Header>
+                <DockPanel>
+
+                    <md:Card Background="{DynamicResource ColorBlindBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
+                        <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}">
+                            <TextBlock.Style>
+                                <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource MahApps.Styles.TextBlock}">
+                                    <Setter Property="Text" Value="Current Image"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsV275ImageStored}" Value="True">
+                                            <Setter Property="Text" Value="Stored Image"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </md:Card>
+
+                    <Button Command="{Binding SaveCommand}" CommandParameter="v275stored" ToolTip="Save the image."
+                            Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding SelectedNode.IsSimulator}" Value="True"/>
+                                            <Condition Binding="{Binding IsV275ImageStored}" Value="True"/>
+                                        </MultiDataTrigger.Conditions>
+
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </MultiDataTrigger>
+                                    <DataTrigger Binding="{Binding V275Image}" Value="{x:Null}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+
+                        <IconPacks:PackIconMaterial Kind="ContentSave"  Margin="0,-2,0,0" Height="12" Width="12"/>
+
+                    </Button>
+
+                    <DockPanel>
+                        <DockPanel.Style>
+                            <Style TargetType="{x:Type DockPanel}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding SelectedNode.IsSimulator}" Value="True"/>
+                                            <Condition Binding="{Binding IsV275ImageStored}" Value="True"/>
+                                        </MultiDataTrigger.Conditions>
+
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DockPanel.Style>
+
+
+                        <Button Command="{Binding SaveCommand}" CommandParameter="v5stored" ToolTip="Save the iamge." Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding V275Image}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+
+                            <IconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
+                        </Button>
+
+                        <Button Command="{Binding V275ProcessCommand}" CommandParameter="stored" ToolTip="V275: Process the stored image with the simulator." 
+                                    Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0"
+                                    md:ButtonProgressAssist.IsIndeterminate="True"
+                                    md:ButtonProgressAssist.Value="-1"
+                                    md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV275Working}">
+
+                            <Rectangle Width="14" Height="14" Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill" Visual="{DynamicResource V275Png}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding SelectedNode.IsSimulator}" Value="True"/>
+                                                <Condition Binding="{Binding IsV275ImageStored}" Value="True"/>
+                                            </MultiDataTrigger.Conditions>
+
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </MultiDataTrigger>
+
+                                        <DataTrigger Binding="{Binding SelectedNode.IsSimulator}" Value="True">
+                                            <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}"/>
+                                        </DataTrigger>
+
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+
+                        <!--<Label Foreground="Goldenrod" HorizontalAlignment="Right" VerticalAlignment="Center" ToolTip="The 'Golden' Repeat Image stored in the database.">
+                                <Label.Style>
+                                    <Style TargetType="{x:Type Label}" BasedOn="{StaticResource {x:Type Label}}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsV275ImageStored}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Label.Style>
+                                <Label.Content>
+                                    <IconPacks:Material Kind="Gold"/>
+                                </Label.Content>
+                            </Label>-->
+
+                    </DockPanel>
+
+
+
+                </DockPanel>
+            </GroupBox.Header>
+
+            <Grid Margin="3">
+                <Image Name="V275Image" Source="{Binding V275Image, Converter={StaticResource bytesToImage}}" 
+                       Margin="0" MaxHeight="400" Width="400" MouseDown="V275Image_MouseDown"
+                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+
+                <Image Name="V275ImageOverlay" Source="{Binding V275SectorsImageOverlay}" 
+                       Margin="0" MaxHeight="400" Width="400" MouseDown="V275Image_MouseDown"
+                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+            </Grid>
+
+        </GroupBox>
+
+        <!--V5 Stored Image-->
+        <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <GroupBox.Header>
+
+                <DockPanel>
+
+                    <md:Card Background="{DynamicResource OrangeBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
+                        <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}">
+                            <TextBlock.Style>
+                                <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource MahApps.Styles.TextBlock}">
+                                    <Setter Property="Text" Value="Current Image"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsV5ImageStored}" Value="True">
+                                            <Setter Property="Text" Value="Stored Image"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </md:Card>
+
+                    <Button Command="{Binding SaveCommand}" CommandParameter="stored" ToolTip="Save the image."
+                            Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding SelectedScanner.IsSimulator}" Value="True"/>
+                                            <Condition Binding="{Binding IsV5ImageStored}" Value="True"/>
+                                        </MultiDataTrigger.Conditions>
+
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </MultiDataTrigger>
+                                    <DataTrigger Binding="{Binding V5Image}" Value="{x:Null}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+
+                        <IconPacks:PackIconMaterial Kind="ContentSave"  Margin="0,-2,0,0" Height="12" Width="12"/>
+
+                    </Button>
+
+                    <DockPanel>
+                        <DockPanel.Style>
+                            <Style TargetType="{x:Type DockPanel}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding SelectedScanner.IsSimulator}" Value="True"/>
+                                            <Condition Binding="{Binding IsV5ImageStored}" Value="True"/>
+                                        </MultiDataTrigger.Conditions>
+
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DockPanel.Style>
+
+
+                        <Button Command="{Binding SaveCommand}" CommandParameter="stored" ToolTip="Save the image." Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding V5Image}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+
+                            <IconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
+                        </Button>
+
+                        <Button Command="{Binding V5ProcessCommand}" CommandParameter="stored" ToolTip="V5: Trigger and process the image with the simulator.&#x0a;Then read the results"
+                                    BorderBrush="{DynamicResource YellowBrush2}" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
+                                    Width="20" Height="20" HorizontalAlignment="Left" Margin="3,0,3,0"
+                                    md:ButtonProgressAssist.IsIndeterminate="True"
+                                    md:ButtonProgressAssist.Value="-1"
+                                    md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV5Working}">
+
+                            <IconPacks:PackIconMaterial Kind="Camera"  Margin="-1,-1,0,0" Height="12" Width="12"/>
+                        </Button>
+
+                    </DockPanel>
+                </DockPanel>
+            </GroupBox.Header>
+
+            <Grid Margin="3">
+                <Image Name="V5Image" Source="{Binding V5Image, Converter={StaticResource bytesToImage}}" 
+                       Margin="0" MaxHeight="400" Width="400" MouseDown="V5Image_MouseDown"
+                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+
+                <Image Name="V5ImageOverlay" Source="{Binding V5SectorsImageOverlay}" 
+                       Margin="0" MaxHeight="400" Width="400" MouseDown="V5Image_MouseDown"
+                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+            </Grid>
+
+        </GroupBox>
+
+        <!--L95xx Stored Image-->
+        <!--<GroupBox Style="{StaticResource MaterialDesignCardGroupBox}"
+                      Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <GroupBox.Header>
+
+                <DockPanel>
+
+                    <md:Card Background="{DynamicResource OrangeBrush0}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
+                        <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}">
+                            <TextBlock.Style>
+                                <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource MahApps.Styles.TextBlock}">
+                                    <Setter Property="Text" Value="Current Image"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsL95xxImageStored}" Value="True">
+                                            <Setter Property="Text" Value="Stored Image"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </md:Card>
+
+                    <Button Command="{Binding SaveCommand}" CommandParameter="stored" ToolTip="Save the image."
+                            Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding SelectedScanner.IsSimulator}" Value="True"/>
+                                            <Condition Binding="{Binding IsL95xxImageStored}" Value="True"/>
+                                        </MultiDataTrigger.Conditions>
+
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </MultiDataTrigger>
+                                    <DataTrigger Binding="{Binding L95xxImage}" Value="{x:Null}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+
+                        <IconPacks:PackIconMaterial Kind="ContentSave"  Margin="0,-2,0,0" Height="12" Width="12"/>
+
+                    </Button>
+
+                    <DockPanel>
+                        <DockPanel.Style>
+                            <Style TargetType="{x:Type DockPanel}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding SelectedScanner.IsSimulator}" Value="True"/>
+                                            <Condition Binding="{Binding IsL95xxImageStored}" Value="True"/>
+                                        </MultiDataTrigger.Conditions>
+
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DockPanel.Style>
+
+
+                        <Button Command="{Binding SaveCommand}" CommandParameter="stored" ToolTip="Save the image." Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding L95xxImage}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+
+                            <IconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
+                        </Button>
+
+                        --><!--<Button Command="{Binding L95xxProcessCommand}" CommandParameter="stored" ToolTip="L95xx: Trigger and process the image with the simulator.&#x0a;Then read the results"
+                                    BorderBrush="{DynamicResource YellowBrush2}" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
+                                    Width="20" Height="20" HorizontalAlignment="Left" Margin="3,0,3,0"
+                                    md:ButtonProgressAssist.IsIndeterminate="True"
+                                    md:ButtonProgressAssist.Value="-1"
+                                    md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsL95xxWorking}">
+
+                                <IconPacks:PackIconMaterial Kind="Camera"  Margin="-1,-1,0,0" Height="12" Width="12"/>
+                            </Button>--><!--
+
+                    </DockPanel>
+                </DockPanel>
+            </GroupBox.Header>
+
+            <Grid Margin="3">
+                <Image Name="L95xxImage" Source="{Binding L95xxImage, Converter={StaticResource bytesToImage}}" 
+                       Margin="0" MaxHeight="400" Width="400" MouseDown="L95xxImage_MouseDown"
+                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+
+                <Image Name="L95xxImageOverlay" Source="{Binding L95xxSectorsImageOverlay}" 
+                       Margin="0" MaxHeight="400" Width="400" MouseDown="L95xxImage_MouseDown"
+                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+            </Grid>
+
+        </GroupBox>-->
+        
+    </DockPanel>
+</UserControl>
