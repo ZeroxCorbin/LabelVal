@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using LabelVal.Messages;
+using LabelVal.Sectors.ViewModels;
 using LabelVal.Utilities;
 using Newtonsoft.Json;
 using System;
@@ -19,9 +20,9 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Verifier
 
     [ObservableProperty] private Databases.ImageResults.L95xxResult l95xxResultRow;
 
-    //public Config L95xxCurrentTemplate { get; set; }
+    public Template L95xxCurrentTemplate { get; set; }
     public List<string> L95xxCurrentReport { get; private set; }
-    public List<string> L95xxStoredReport { get; set; }
+    //public List<string> L95xxStoredReport { get; set; }
 
     public ObservableCollection<Sectors.ViewModels.Sector> L95xxCurrentSectors { get; } = [];
     public ObservableCollection<Sectors.ViewModels.Sector> L95xxStoredSectors { get; }= [];
@@ -40,200 +41,50 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Verifier
     partial void OnIsL95xxFaultedChanged(bool value) => OnPropertyChanged(nameof(IsNotL95xxFaulted));
     public bool IsNotL95xxFaulted => !IsL95xxFaulted;
 
-    //[ObservableProperty] Sectors.ViewModels.Sector selectedSector;
-
     public void Receive(VerifierMessages.NewPacket message) { if (SelectedSector != null) App.Current.Dispatcher.BeginInvoke(() => L95xxCurrentSectors.Add(new Sectors.ViewModels.Sector(SelectedSector.Template, message.Value, false, true))); }
-    //public void Receive(SectorMessages.SelectedSectorChanged message) => SelectedSector = message.Value;
-
-    //private async Task L95xxProcess(string imageType)
-    //{
-    //    IsL95xxFaulted = false;
-
-    //    BringIntoView?.Invoke();
-
-    //    if (SelectedScanner == null)
-    //    {
-    //        SendStatusMessage("No scanner selected.", SystemMessages.StatusMessageType.Error);
-    //        return;
-    //    }
-
-    //    var res = await SelectedScanner.ScannerController.GetConfig();
-
-    //    if (!res.OK)
-    //    {
-    //        SendErrorMessage("Could not get scanner configuration.");
-    //        return;
-    //    }
-
-    //    var config = (L95xx_REST_Lib.Models.Config)res.Object;
 
 
-    //    if (SelectedScanner.IsSimulator)
-    //    {
+    private void L95xxGetStored()
+    {
+        L95xxDiffSectors.Clear();
+        L95xxStoredSectors.Clear();
 
-    //        if (config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource == null)
-    //        {
-    //            SendErrorMessage("The scanner is not in file aquire mode.");
-    //            return;
-    //        }
+        L95xxResultRow = SelectedDatabase.Select_L95xxResult(SelectedImageRoll.Name, SourceImageUID);
 
-    //        //Rotate directory names to accomadate L95xx 
-    //        var isFirst = config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource.directory != SelectedScanner.FTPClient.ImagePath1Root;
+        if (L95xxResultRow == null)
+        {
+            if (L95xxCurrentSectors.Count == 0)
+            {
+                L95xxImage = null;
+                L95xxSectorsImageOverlay = null;
+                IsL95xxImageStored = false;
+            }
 
-    //        var path = isFirst
-    //            ? SelectedScanner.FTPClient.ImagePath1
-    //            : SelectedScanner.FTPClient.ImagePath2;
+            return;
+        }
 
-    //        config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource.directory = isFirst
-    //            ? SelectedScanner.FTPClient.ImagePath1Root
-    //            : SelectedScanner.FTPClient.ImagePath2Root;
+        L95xxImage = L95xxResultRow.StoredImage;
+        IsL95xxImageStored = true;
 
-    //        SelectedScanner.FTPClient.Connect();
+        List<Sectors.ViewModels.Sector> tempSectors = [];
+        int i = 1;
+        foreach (var rSec in JsonConvert.DeserializeObject<List<string>>(L95xxResultRow.Report))
+        {
+            var isWrongStandard = SelectedImageRoll.IsGS1;
 
-    //        if (!SelectedScanner.FTPClient.DirectoryExists(path))
-    //            SelectedScanner.FTPClient.CreateRemoteDir(path);
-    //        else
-    //            SelectedScanner.FTPClient.DeleteRemoteFiles(path);
+            tempSectors.Add(new Sectors.ViewModels.Sector(JsonConvert.DeserializeObject<Template>(L95xxResultRow.Template), $"DecodeTool{i++}", false, false));
+        }
 
-    //        path = $"{path}/image{System.IO.Path.GetExtension(SourceImagePath)}";
+        if (tempSectors.Count > 0)
+        {
+            tempSectors = tempSectors.OrderBy(x => x.Template.Top).ToList();
 
-    //        if (imageType == "source")
-    //            SelectedScanner.FTPClient.UploadFile(SourceImagePath, path);
-    //        else if (imageType == "stored")
-    //            SelectedScanner.FTPClient.UploadFile(L95xxImage, path);
-    //        else if (imageType == "v275stored")
-    //            SelectedScanner.FTPClient.UploadFile(V275Image, path);
+            foreach (var sec in tempSectors)
+                L95xxStoredSectors.Add(sec);
+        }
 
-
-    //        SelectedScanner.FTPClient.Disconnect();
-
-    //        //Attempt to update the directory in the FileAcquisitionSource
-    //        _ = await SelectedScanner.ScannerController.SendJob(config.response.data);
-
-
-    //        _ = L95xxProcessResults(await SelectedScanner.ScannerController.Trigger_Wait_Return(true), config);
-
-    //    }
-    //    else
-    //    {
-    //        _ = L95xxProcessResults(await SelectedScanner.ScannerController.Trigger_Wait_Return(true), config);
-
-    //    }
-
-    //    IsL95xxWorking = false;
-    //}
-    //public bool L95xxProcessResults(L95xx_REST_Lib.Controller.TriggerResults triggerResults, Config config)
-    //{
-    //    L95xxCurrentSectors.Clear();
-    //    L95xxDiffSectors.Clear();
-
-    //    if (!triggerResults.OK)
-    //    {
-    //        SendErrorMessage("Could not trigger the scanner.");
-
-    //        L95xxCurrentReport = null;
-
-    //        if (!IsL95xxImageStored)
-    //        {
-    //            L95xxImage = null;
-    //            L95xxSectorsImageOverlay = null;
-    //        }
-
-    //        return false;
-    //    }
-
-    //    L95xxCurrentReport = JsonConvert.DeserializeObject<Results>(triggerResults.ReportJSON, new JsonSerializerSettings() { });
-
-    //    if (!SelectedScanner.IsSimulator)
-    //    {
-    //        L95xxImage = ImageUtilities.ConvertToPng(triggerResults.FullImage);
-    //        IsL95xxImageStored = false;
-    //    }
-    //    else
-    //    {
-    //        if (L95xxImage == null)
-    //        {
-    //            L95xxImage = SourceImage.ToArray();
-    //            IsL95xxImageStored = false;
-    //        }
-    //    }
-
-
-    //    List<Sectors.ViewModels.Sector> tempSectors = [];
-    //    int i = 1;
-    //    foreach (var rSec in L95xxCurrentReport._event.data.cycleConfig.qualifiedResults)
-    //    {
-    //        var isWrongStandard = SelectedImageRoll.IsGS1;
-
-    //        tempSectors.Add(new Sectors.ViewModels.Sector(rSec, $"DecodeTool{i++}"));
-    //    }
-
-    //    if (tempSectors.Count > 0)
-    //    {
-    //        tempSectors = tempSectors.OrderBy(x => x.Template.Top).ToList();
-
-    //        foreach (var sec in tempSectors)
-    //            L95xxCurrentSectors.Add(sec);
-    //    }
-
-    //    L95xxGetSectorDiff();
-
-    //    L95xxSectorsImageOverlay = L95xxCreateSectorsImageOverlay(false);
-
-
-
-    //    return true;
-    //}
-    ////[RelayCommand] private void L95xxRead() => _ = L95xxReadTask();
-    //[RelayCommand] private void L95xxLoad() => _ = L95xxLoadTask();
-    ////[RelayCommand] private void L95xxInspect() => _ = L95xxReadTask(0);
-
-    //private void L95xxGetStored()
-    //{
-    //    //foreach (var sec in L95xxStoredSectors)
-    //    //    sec.Clear();
-
-    //    L95xxDiffSectors.Clear();
-    //    L95xxStoredSectors.Clear();
-
-    //    L95xxResultRow = SelectedDatabase.Select_L95xxResult(SelectedImageRoll.Name, SourceImageUID);
-
-    //    if (L95xxResultRow == null)
-    //    {
-    //        if (L95xxCurrentSectors.Count == 0)
-    //        {
-    //            L95xxImage = null;
-    //            L95xxSectorsImageOverlay = null;
-    //            IsL95xxImageStored = false;
-    //        }
-
-    //        return;
-    //    }
-
-    //    L95xxStoredReport = JsonConvert.DeserializeObject<Results>(L95xxResultRow.Report);
-
-    //    L95xxImage = L95xxResultRow.StoredImage;
-    //    IsL95xxImageStored = true;
-
-    //    List<Sectors.ViewModels.Sector> tempSectors = [];
-    //    int i = 1;
-    //    foreach (var rSec in L95xxStoredReport._event.data.cycleConfig.qualifiedResults)
-    //    {
-    //        var isWrongStandard = SelectedImageRoll.IsGS1;
-
-    //        tempSectors.Add(new Sectors.ViewModels.Sector(rSec, $"DecodeTool{i++}"));
-    //    }
-
-    //    if (tempSectors.Count > 0)
-    //    {
-    //        tempSectors = tempSectors.OrderBy(x => x.Template.Top).ToList();
-
-    //        foreach (var sec in tempSectors)
-    //            L95xxStoredSectors.Add(sec);
-    //    }
-
-    //    L95xxSectorsImageOverlay = L95xxCreateSectorsImageOverlay(true);
-    //}
+        //L95xxSectorsImageOverlay = L95xxCreateSectorsImageOverlay(true);
+    }
 
     //private void L95xxGetSectorDiff()
     //{

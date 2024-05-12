@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using ControlzEx.Standard;
 using LabelVal.Messages;
 using Newtonsoft.Json;
+using Org.BouncyCastle.Bcpg;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -211,7 +212,7 @@ public class Report
 
                 var v5 = (Results_QualifiedResult)report;
                 Type = V5GetType(v5);
-                SymbolType = V5GetSymbology(v5);
+                SymbolType = V5GetSymbology(v5.type);
                 DecodeText = v5.dataUTF8;
                 //XDimension = v5.ppe;
 
@@ -408,20 +409,12 @@ public class Report
             return "pdf417";
         return "";
     }
-    private string V5GetSymbology(Results_QualifiedResult Report)
+    private string V5GetSymbology(string type)
     {
-        if (Report.Code128 != null)
-            return "Code128";
-        else if (Report.Datamatrix != null)
+        if(type == "Datamatrix")
             return "DataMatrix";
-        else if (Report.QR != null)
-            return "QR";
-        else if (Report.PDF417 != null)
-            return "PDF417";
-        else if (Report.UPC != null)
-            return "UPC";
-        else
-            return "Unknown";
+        else 
+            return type;
     }
     private string V5GetType(Results_QualifiedResult Report)
     {
@@ -450,6 +443,8 @@ public partial class Sector : ObservableObject
     [ObservableProperty] private Template template;
     [ObservableProperty] private Report report;
     [ObservableProperty] private SectorDifferences sectorDifferences = new();
+
+    [ObservableProperty] string l95xxPacket;
 
     public V275_REST_lib.Models.Job.Sector V275Template { get; }
 
@@ -520,13 +515,13 @@ public partial class Sector : ObservableObject
 
     }
 
-    //L95xx
+    //L95xx; The template is the currently selected sector.
     public Sector(Template template, string packet, bool isWrongStandard, bool isGS1Standard)
     {
+        l95xxPacket = packet;
         var spl = packet.Split('\r').ToList();
 
-        Report = new Report(spl);
-
+        report = new Report(spl);
         Template = template;
 
         IsWrongStandard = isWrongStandard;

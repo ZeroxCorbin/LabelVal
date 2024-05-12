@@ -5,6 +5,7 @@ using LabelVal.Messages;
 using LabelVal.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -25,15 +26,11 @@ public partial class ImageResultEntry
 
     public Job V275CurrentTemplate { get; set; }
     public Report V275CurrentReport { get; private set; }
-    public Job V275StoredTemplate { get; set; }
-
+    //public Job V275StoredTemplate { get; set; }
 
     [ObservableProperty] private ObservableCollection<Sectors.ViewModels.Sector> v275CurrentSectors = [];
     [ObservableProperty] private ObservableCollection<Sectors.ViewModels.Sector> v275StoredSectors = [];
     [ObservableProperty] private ObservableCollection<Sectors.ViewModels.SectorDifferences> v275DiffSectors = [];
-
-
-    //partial void OnV275SelectedSectorChanged(Sectors.ViewModels.Sector value) => _ = WeakReferenceMessenger.Default.Send(new SectorMessages.SelectedSectorChanged(value));
 
     [ObservableProperty] private byte[] v275Image = null;
     [ObservableProperty] private DrawingImage v275SectorsImageOverlay;
@@ -42,7 +39,6 @@ public partial class ImageResultEntry
     [ObservableProperty] private bool isV275Working = false;
     partial void OnIsV275WorkingChanged(bool value) => OnPropertyChanged(nameof(IsNotV275Working));
     public bool IsNotV275Working => !IsV275Working;
-
 
     [ObservableProperty] private bool isV275Faulted = false;
     partial void OnIsV275FaultedChanged(bool value) => OnPropertyChanged(nameof(IsNotV275Faulted));
@@ -85,14 +81,16 @@ public partial class ImageResultEntry
             return;
         }
 
-        V275StoredTemplate = JsonConvert.DeserializeObject<Job>(V275ResultRow.Template);
+        Job template = null;
+        if (!string.IsNullOrEmpty(V275ResultRow.Template))
+            template = JsonConvert.DeserializeObject<Job>(V275ResultRow.Template);
 
         V275Image = V275ResultRow.StoredImage;
         IsV275ImageStored = true;
 
         List<Sectors.ViewModels.Sector> tempSectors = [];
-        if (!string.IsNullOrEmpty(V275ResultRow.Report) && !string.IsNullOrEmpty(V275ResultRow.Template))
-            foreach (var jSec in V275StoredTemplate.sectors)
+        if (!string.IsNullOrEmpty(V275ResultRow.Report) && template != null)
+            foreach (var jSec in JsonConvert.DeserializeObject<Job>(V275ResultRow.Template).sectors)
             {
                 var isWrongStandard = false;
                 if (jSec.type is "verify1D" or "verify2D")
@@ -114,7 +112,7 @@ public partial class ImageResultEntry
                     }
                 }
             }
-
+        
         if (tempSectors.Count > 0)
         {
             tempSectors = tempSectors.OrderBy(x => x.Template.Top).ToList();
@@ -123,8 +121,7 @@ public partial class ImageResultEntry
                 V275StoredSectors.Add(sec);
         }
 
-        V275SectorsImageOverlay = V275CreateSectorsImageOverlay(true, false);
-
+        V275SectorsImageOverlay = V275CreateSectorsImageOverlay(template, true, false);
 
     }
     public async Task<bool> V275ReadTask(int repeat)
@@ -166,8 +163,6 @@ public partial class ImageResultEntry
             }
         }
 
-        //if (!isRunning)
-        //{
         List<Sectors.ViewModels.Sector> tempSectors = [];
         foreach (var jSec in V275CurrentTemplate.sectors)
         {
@@ -199,10 +194,10 @@ public partial class ImageResultEntry
             foreach (var sec in tempSectors)
                 V275CurrentSectors.Add(sec);
         }
-        //}
+
         V275GetSectorDiff();
 
-        V275SectorsImageOverlay = V275CreateSectorsImageOverlay(false, true);
+        V275SectorsImageOverlay = V275CreateSectorsImageOverlay(V275CurrentTemplate, false, true);
 
         return true;
     }
@@ -330,7 +325,7 @@ public partial class ImageResultEntry
 
         return 1;
     }
-    private DrawingImage V275CreateSectorsImageOverlay(bool useStored, bool isDetailed)
+    private DrawingImage V275CreateSectorsImageOverlay(Job template, bool useStored, bool isDetailed)
     {
         var bmp = ImageUtilities.CreateBitmap(V275Image);
 
@@ -346,25 +341,29 @@ public partial class ImageResultEntry
 
         if (useStored)
         {
-            foreach (var sec in V275StoredTemplate.sectors)
+            foreach (var sec in template.sectors)
             {
                 var area = new RectangleGeometry(new Rect(sec.left, sec.top, sec.width, sec.height));
                 secAreas.Children.Add(area);
+
+                drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun(sec.username, new Typeface("Arial"), 30.0, new Point(sec.left - 8, sec.top - 8))));
             }
 
             if (isDetailed)
-                drwGroup = V275GetModuleGrid(V275StoredTemplate.sectors, V275StoredSectors);
+                drwGroup = V275GetModuleGrid(template.sectors, V275StoredSectors);
         }
         else
         {
-            foreach (var sec in V275CurrentTemplate.sectors)
+            foreach (var sec in template.sectors)
             {
                 var area = new RectangleGeometry(new Rect(sec.left, sec.top, sec.width, sec.height));
                 secAreas.Children.Add(area);
+
+                drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun(sec.username, new Typeface("Arial"), 30.0, new Point(sec.left - 8, sec.top - 8))));
             }
 
             if (isDetailed)
-                drwGroup = V275GetModuleGrid(V275CurrentTemplate.sectors, V275CurrentSectors);
+                drwGroup = V275GetModuleGrid(template.sectors, V275CurrentSectors);
         }
 
         var sectors = new GeometryDrawing
@@ -373,9 +372,7 @@ public partial class ImageResultEntry
             Pen = new Pen(Brushes.Red, 5)
         };
 
-        //DrawingGroup drwGroup = new DrawingGroup();
         drwGroup.Children.Add(sectors);
-        //drwGroup.Children.Add(mGrid);
         drwGroup.Children.Add(border);
 
         var geometryImage = new DrawingImage(drwGroup);
@@ -410,38 +407,33 @@ public partial class ImageResultEntry
         //    return bitmapImage;
         //}
 
-        //string text = "Verify1D";
-        //Typeface typeface = new Typeface("Arial");
-        //if (typeface.TryGetGlyphTypeface(out GlyphTypeface _glyphTypeface))
-        //{
 
-        //    GlyphRun gr = new GlyphRun
-        //    {
-        //        PixelsPerDip = 4,
-        //        IsSideways = false,
-        //        FontRenderingEmSize = 1.0,
-        //        BidiLevel = 0,
-        //        GlyphTypeface = _glyphTypeface
-        //    };
 
-        //    double textWidth = 0;
-        //    for (int ix = 0; ix < text.Length; ix++)
-        //    {
-        //        ushort glyphIndex = _glyphTypeface.CharacterToGlyphMap[text[ix]];
-        //        gr.GlyphIndices.Add(glyphIndex);
+    }
+    public static GlyphRun CreateGlyphRun(string text, Typeface typeface, double emSize, Point baselineOrigin)
+    {
+        GlyphTypeface glyphTypeface;
 
-        //        double width = _glyphTypeface.AdvanceWidths[glyphIndex] * 8;
-        //        gr.AdvanceWidths.Add(width);
+        if (!typeface.TryGetGlyphTypeface(out glyphTypeface))
+        {
+            throw new ArgumentException(string.Format(
+                "{0}: no GlyphTypeface found", typeface.FontFamily));
+        }
 
-        //        textWidth += width;
-        //        double textHeight = _glyphTypeface.Height * 8;
+        var glyphIndices = new ushort[text.Length];
+        var advanceWidths = new double[text.Length];
 
-        //    }
-        //    gr.BaselineOrigin = new System.Windows.Point(0, 0);
-        //    GlyphRunDrawing grd = new GlyphRunDrawing(Brushes.Black, gr);
-        //    drwGroup.Children.Add(grd);
-        //}
+        for (int i = 0; i < text.Length; i++)
+        {
+            var glyphIndex = glyphTypeface.CharacterToGlyphMap[text[i]];
+            glyphIndices[i] = glyphIndex;
+            advanceWidths[i] = glyphTypeface.AdvanceWidths[glyphIndex] * emSize;
+        }
 
+        return new GlyphRun(
+            glyphTypeface, 0, false, emSize,
+            glyphIndices, baselineOrigin, advanceWidths,
+            null, null, null, null, null, null);
     }
     private DrawingGroup V275GetModuleGrid(Job.Sector[] sectors, ObservableCollection<Sectors.ViewModels.Sector> parsedSectors)
     {

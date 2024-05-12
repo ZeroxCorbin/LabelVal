@@ -175,6 +175,25 @@ public partial class ImageResultEntry : ObservableRecipient,
 
             V5GetStored();
         }
+        else if (device == "L95xx")
+        {
+            if (L95xxStoredSectors.Count > 0)
+                if (await OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for this image?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
+                    return;
+
+            _ = SelectedDatabase.InsertOrReplace_L95xxResult(new Databases.ImageResults.L95xxResult
+            {
+                ImageRollName = SelectedImageRoll.Name,
+                SourceImageUID = SourceImageUID,
+                SourceImage = SourceImage,
+                Report = JsonConvert.SerializeObject(L95xxCurrentReport),
+                StoredImage = L95xxImage
+            });
+
+            L95xxCurrentSectors.Clear();
+
+            //L95xxGetStored();
+        }
     }
     [RelayCommand]
     private async Task ClearStored(string device)
@@ -214,7 +233,7 @@ public partial class ImageResultEntry : ObservableRecipient,
                 return;
 
             V275Image = V275ResultRow.StoredImage;
-            V275SectorsImageOverlay = V275CreateSectorsImageOverlay(true, false);
+            V275SectorsImageOverlay = V275CreateSectorsImageOverlay(JsonConvert.DeserializeObject<Job>(V275ResultRow.Template), true, false);
             IsV275ImageStored = true;
         }
         else if (device == "V5")

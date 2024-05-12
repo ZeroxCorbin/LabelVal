@@ -128,7 +128,7 @@ public class Controller
             if (session != null)
             {
                 using var transaction = session.BeginTransaction();
-                var run = new RunLedger(JsonConvert.SerializeObject(ImageResultsList[0].V275StoredTemplate), Node.Details.cameraMAC, Node.Product.part);
+                var run = new RunLedger(ImageResultsList[0].V275ResultRow.Template, Node.Details.cameraMAC, Node.Product.part);
 
                 _ = session.Save(run);
                 transaction.Commit();
@@ -296,7 +296,9 @@ public class Controller
 
     private static bool HasSequencing(ImageRolls.ViewModels.ImageResultEntry label)
     {
-        foreach (var sect in label.V275StoredTemplate.sectors)
+        var template = JsonConvert.DeserializeObject<V275_REST_lib.Models.Job>(label.V275ResultRow.Template);
+
+        foreach (var sect in template.sectors)
         {
             if (sect.matchSettings != null)
                 if (sect.matchSettings.matchMode is >= 3 and <= 6)

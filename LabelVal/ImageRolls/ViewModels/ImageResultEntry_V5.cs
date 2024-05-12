@@ -159,7 +159,7 @@ public partial class ImageResultEntry
         {
             var isWrongStandard = SelectedImageRoll.IsGS1;
 
-            tempSectors.Add(new Sectors.ViewModels.Sector(rSec, $"DecodeTool{i++}"));
+            tempSectors.Add(new Sectors.ViewModels.Sector(rSec, $"DecodeTool{rSec.toolSlot}"));
         }
 
         if (tempSectors.Count > 0)
@@ -215,7 +215,7 @@ public partial class ImageResultEntry
         {
             var isWrongStandard = SelectedImageRoll.IsGS1;
 
-            tempSectors.Add(new Sectors.ViewModels.Sector(rSec, $"DecodeTool{i++}"));
+            tempSectors.Add(new Sectors.ViewModels.Sector(rSec, $"DecodeTool{rSec.toolSlot}"));
         }
 
         if (tempSectors.Count > 0)
@@ -335,13 +335,15 @@ public partial class ImageResultEntry
                     continue;
 
                 secAreas.Children.Add(new RectangleGeometry(new Rect(new Point(sec.boundingBox[0].x, sec.boundingBox[0].y), new Point(sec.boundingBox[2].x, sec.boundingBox[2].y))));
+
+                drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun($"DecodeTool{sec.toolSlot}", new Typeface("Arial"), 30.0, new Point(sec.boundingBox[2].x - 8, sec.boundingBox[2].y - 8))));
             }
 
             foreach (var sec in V5StoredReport._event.data.cycleConfig.job.toolList)
+            {
                 foreach (var r in sec.SymbologyTool.regionList)
                     bndAreas.Children.Add(new RectangleGeometry(new Rect(r.Region.shape.RectShape.x, r.Region.shape.RectShape.y, r.Region.shape.RectShape.width, r.Region.shape.RectShape.height)));
-
-
+            }
         }
         else
         {
@@ -351,12 +353,14 @@ public partial class ImageResultEntry
                     continue;
 
                 secAreas.Children.Add(new RectangleGeometry(new Rect(new Point(sec.boundingBox[0].x, sec.boundingBox[0].y), new Point(sec.boundingBox[2].x, sec.boundingBox[2].y))));
+
+                drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun($"DecodeTool{sec.toolSlot}", new Typeface("Arial"), 30.0, new Point(sec.boundingBox[2].x - 8, sec.boundingBox[2].y - 8))));
+
             }
 
             foreach (var sec in V5CurrentReport._event.data.cycleConfig.job.toolList)
                 foreach (var r in sec.SymbologyTool.regionList)
                     bndAreas.Children.Add(new RectangleGeometry(new Rect(r.Region.shape.RectShape.x, r.Region.shape.RectShape.y, r.Region.shape.RectShape.width, r.Region.shape.RectShape.height)));
-
         }
 
         var sectors = new GeometryDrawing
@@ -364,7 +368,6 @@ public partial class ImageResultEntry
             Geometry = secAreas,
             Pen = new Pen(Brushes.Red, 5)
         };
-
 
         var bounding = new GeometryDrawing
         {
