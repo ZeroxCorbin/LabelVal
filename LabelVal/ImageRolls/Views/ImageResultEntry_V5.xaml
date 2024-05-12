@@ -233,10 +233,10 @@
                         </Style>
                     </ScrollViewer.Style>
 
-                    <ItemsControl ItemsSource="{Binding V5StoredSectors}" Background="{StaticResource MahApps.Brushes.Control.Background}">
+                    <ItemsControl ItemsSource="{Binding V5StoredSectors}" Background="{DynamicResource MahApps.Brushes.Control.Background}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <sectors:Sector Width="220" Background="{StaticResource AccentColorBrush}" Margin="6,1"/>
+                                <sectors:Sector Width="220" Background="{DynamicResource AccentColorBrush}" Margin="6,1"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -377,10 +377,10 @@
                         </Style>
                     </ScrollViewer.Style>
 
-                    <ItemsControl ItemsSource="{Binding V5CurrentSectors}" Background="{StaticResource MahApps.Brushes.Control.Background}">
+                    <ItemsControl ItemsSource="{Binding V5CurrentSectors}" Background="{DynamicResource MahApps.Brushes.Control.Background}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <sectors:Sector Width="220" Background="{StaticResource AccentColorBrush}" Margin="6,1" />
+                                <sectors:Sector Width="220" Background="{DynamicResource AccentColorBrush}" Margin="6,1" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -416,10 +416,10 @@
                         </Style>
                     </ScrollViewer.Style>
 
-                    <ItemsControl ItemsSource="{Binding V5DiffSectors}" Background="{StaticResource MahApps.Brushes.Control.Background}">
+                    <ItemsControl ItemsSource="{Binding V5DiffSectors}" Background="{DynamicResource MahApps.Brushes.Control.Background}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <sectors:SectorDifferences  Width="220" Background="{StaticResource AccentColorBrush}" Margin="3,0"/>
+                                <sectors:SectorDifferences  Width="220" Background="{DynamicResource AccentColorBrush}" Margin="3,0"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>

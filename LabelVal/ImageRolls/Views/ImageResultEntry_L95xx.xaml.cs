@@ -33,7 +33,7 @@ public partial class ImageResultEntry_L95xx : UserControl
         {
             if (((ViewModels.ImageResultEntry)DataContext).L95xxResultRow != null)
             {
-                L95xxStoredTemplateJsonView.Load(((ViewModels.ImageResultEntry)DataContext).L95xxResultRow.Template);
+                //L95xxStoredTemplateJsonView.Load(((ViewModels.ImageResultEntry)DataContext).L95xxResultRow.Template);
                 L95xxStoredReportJsonView.Load(((ViewModels.ImageResultEntry)DataContext).L95xxResultRow.Report);
                 L95xxStoredJsonPopup.PlacementTarget = (Button)sender;
                 L95xxStoredJsonPopup.IsOpen = true;

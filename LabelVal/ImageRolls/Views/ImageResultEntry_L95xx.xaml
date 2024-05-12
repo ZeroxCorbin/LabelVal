@@ -212,10 +212,10 @@
                         </Style>
                     </ScrollViewer.Style>
 
-                    <ItemsControl ItemsSource="{Binding L95xxStoredSectors}" Background="{StaticResource MahApps.Brushes.Control.Background}">
+                    <ItemsControl ItemsSource="{Binding L95xxStoredSectors}" Background="{DynamicResource MahApps.Brushes.Control.Background}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <sectors:Sector Width="220" Background="{StaticResource AccentColorBrush}" Margin="6,1"/>
+                                <sectors:Sector Width="220" Background="{DynamicResource AccentColorBrush}" Margin="6,1"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -359,7 +359,7 @@
                     <ItemsControl ItemsSource="{Binding L95xxCurrentSectors}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <sectors:Sector  Width="220" Background="{StaticResource AccentColorBrush}" Margin="6,1"/>
+                                <sectors:Sector  Width="220" Background="{DynamicResource AccentColorBrush}" Margin="6,1"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -395,10 +395,10 @@
                         </Style>
                     </ScrollViewer.Style>
 
-                    <ItemsControl ItemsSource="{Binding L95xxDiffSectors}" Background="{StaticResource MahApps.Brushes.Control.Background}">
+                    <ItemsControl ItemsSource="{Binding L95xxDiffSectors}" Background="{DynamicResource MahApps.Brushes.Control.Background}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <sectors:SectorDifferences Width="220" Background="{StaticResource AccentColorBrush}" Margin="6,1"/>
+                                <sectors:SectorDifferences Width="220" Background="{DynamicResource AccentColorBrush}" Margin="6,1"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
