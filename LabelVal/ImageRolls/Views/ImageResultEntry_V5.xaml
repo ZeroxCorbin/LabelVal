@@ -141,7 +141,17 @@
             </GroupBox>-->
 
             <!--V5 Stored Sectors-->
-            <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <GroupBox Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top">
+                <GroupBox.Style>
+                    <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding V5StoredSectors.Count}" Value="0">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </GroupBox.Style>
 
                 <GroupBox.Header>
 

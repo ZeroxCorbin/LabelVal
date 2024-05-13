@@ -184,8 +184,18 @@
             </GroupBox>-->
 
             <!--V275 Stored Sectors-->
-            <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top">
-
+            <GroupBox Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top">
+                <GroupBox.Style>
+                    <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding V275StoredSectors.Count}" Value="0">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </GroupBox.Style>
+                
                 <GroupBox.Header>
 
                     <DockPanel Margin="3">
@@ -299,8 +309,18 @@
             </GroupBox>
 
             <!--V275 Current Sectors-->
-            <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top">
-
+            <GroupBox Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top">
+                <GroupBox.Style>
+                    <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding V275CurrentSectors.Count}" Value="0">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </GroupBox.Style>
+                
                 <GroupBox.Header>
 
                     <DockPanel Margin="3">
