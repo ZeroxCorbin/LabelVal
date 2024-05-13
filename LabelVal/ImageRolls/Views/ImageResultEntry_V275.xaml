@@ -508,15 +508,17 @@
                 <DockPanel>
 
                     <ScrollViewer HorizontalScrollBarVisibility="Auto">
+                        
                         <ItemsControl ItemsSource="{Binding V275StoredSectors}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <WrapPanel IsItemsHost="True" MaxWidth="1024"/>
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
+                            
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <sectors:SectorDetails/>
+                                    <sectors:SectorDetails />
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
@@ -539,7 +541,6 @@
                     </Button>
                 </GroupBox.Header>
 
-                <DockPanel>
 
                     <ScrollViewer HorizontalScrollBarVisibility="Auto">
                         <ItemsControl ItemsSource="{Binding V275CurrentSectors}">
@@ -550,12 +551,12 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <sectors:SectorDetails />
+                                    <sectors:SectorDetails/>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
                     </ScrollViewer>
-                </DockPanel>
+         
             </GroupBox>
         </Popup>
 

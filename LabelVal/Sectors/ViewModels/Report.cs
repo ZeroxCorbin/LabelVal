@@ -67,10 +67,8 @@ namespace LabelVal.Sectors.ViewModels
                     var v1D = (V275_REST_lib.Models.Report_InspectSector_Verify1D)report;
                     Type = v1D.type;
                     SymbolType = v1D.data.symbolType;
+
                     DecodeText = v1D.data.decodeText;
-                    //OCR/V Only: Text = v1D.data.text;
-                    //OCR/V Only: Score = v1D.data.score;
-                    //Blemish Only: BlemishCount = v1D.data.blemishCount;
                     XDimension = v1D.data.xDimension;
                     Aperture = v1D.data.aperture;
 
@@ -89,10 +87,8 @@ namespace LabelVal.Sectors.ViewModels
                     var v2D = (V275_REST_lib.Models.Report_InspectSector_Verify2D)report;
                     Type = v2D.type;
                     SymbolType = v2D.data.symbolType;
+
                     DecodeText = v2D.data.decodeText;
-                    //OCR/V Only: Text = v1D.data.text;
-                    //OCR/V Only: Score = v1D.data.score;
-                    //Blemish Only: BlemishCount = v1D.data.blemishCount;
                     XDimension = v2D.data.xDimension;
                     Aperture = v2D.data.aperture;
 
@@ -108,6 +104,29 @@ namespace LabelVal.Sectors.ViewModels
                     if (v2D.data.extendedData != null)
                         ExtendedData = JsonConvert.DeserializeObject<ModuleData>(JsonConvert.SerializeObject(v2D.data.extendedData));
 
+                    break;
+
+                case V275_REST_lib.Models.Report_InspectSector_OCR:
+                    var ocr = (V275_REST_lib.Models.Report_InspectSector_OCR)report;
+                    Type = ocr.type;
+                    Text = ocr.data.text;
+                    Score = ocr.data.score;
+
+                    break;
+
+                case V275_REST_lib.Models.Report_InspectSector_OCV:
+                    var ocv = (V275_REST_lib.Models.Report_InspectSector_OCV)report;
+                    Type = ocv.type;
+                    Text = ocv.data.text;
+                    Score = ocv.data.score;
+                    
+                    break;
+
+                case V275_REST_lib.Models.Report_InspectSector_Blemish:
+                    var blem = (V275_REST_lib.Models.Report_InspectSector_Blemish)report;
+                    Type = blem.type;
+                    BlemishCount = blem.data.blemishCount;
+                    
                     break;
 
                 case Results_QualifiedResult:
@@ -146,6 +165,7 @@ namespace LabelVal.Sectors.ViewModels
                             }
                         }
                     break;
+
                 case List<string>:
 
                     Type = ((List<string>)report).Find((e) => e.StartsWith("Cell size")) == null ? "verify1D" : "verify2D";

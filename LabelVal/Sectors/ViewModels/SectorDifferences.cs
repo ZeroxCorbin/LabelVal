@@ -419,7 +419,7 @@ public partial class SectorDifferences : ObservableObject
                 Values.Add(new Value("columns", new Report_InspectSector_Common.Value() { value = results.PDF417.columns }));
 
                 Values.Add(new Value("ecc", new Report_InspectSector_Common.Value() { value = results.PDF417.ecc }));
-            }  
+            }
             else if (results.UPC != null)
             {
                 Values.Add(new Value("barCount", new Report_InspectSector_Common.Value() { value = results.UPC.barCount }));
@@ -543,9 +543,9 @@ public partial class SectorDifferences : ObservableObject
                 if (spl1[0].StartsWith("Cell height"))
                 {
                     var item = alarms.Find((e) => e.name.Contains("minimum Xdim"));
-                    
+
                     cellSizeX = ParseFloat(spl1[1]);
-                    
+
                     ValueResults.Add(new ValueResult("cellHeight", new Report_InspectSector_Common.ValueResult() { value = cellSizeX, result = item == null ? "PASS" : "FAIL" }));
                     continue;
                 }
@@ -586,7 +586,7 @@ public partial class SectorDifferences : ObservableObject
                 }
                 if (spl1[0].StartsWith("QZL2"))
                 {
-                    
+
                     Gs1Grades.Add(new Grade("QZL2", GetGrade(spl1[1])));
                     continue;
                 }
@@ -602,6 +602,30 @@ public partial class SectorDifferences : ObservableObject
         }
         else
         {
+            GradeValues.Add(new GradeValue("decode",
+                new Report_InspectSector_Common.GradeValue()
+                {
+                    grade = GetValues("Decode,", splitPacket)[0].StartsWith("PASS") ? new Report_InspectSector_Common.Grade() { letter = "A", value = 4.0f } : new Report_InspectSector_Common.Grade() { letter = "F", value = 0.0f },
+                    value = -1
+                }));
+
+            GradeValues.Add(new GradeValue("symbolContrast", GetGradeValue(GetValues("Contrast", splitPacket)[0])));
+            // GradeValues.Add(new GradeValue("edgeContrast", GetGradeValue(GetValues("Contrast", splitPacket)[0])));
+            GradeValues.Add(new GradeValue("modulation", GetGradeValue(GetValues("Modulation", splitPacket)[0])));
+            GradeValues.Add(new GradeValue("defects", GetGradeValue(GetValues("Defects", splitPacket)[0])));
+            GradeValues.Add(new GradeValue("decodability", GetGradeValue(GetValues("Decodability", splitPacket)[0])));
+            GradeValues.Add(new GradeValue("MinRef",
+                new Report_InspectSector_Common.GradeValue()
+                {
+                    grade = GetValues("Min Ref", splitPacket)[0].StartsWith("PASS") ? new Report_InspectSector_Common.Grade() { letter = "A", value = 4.0f } : new Report_InspectSector_Common.Grade() { letter = "F", value = 0.0f },
+                    value = -1
+                }));
+
+            if (!isPDF417)
+                Values.Add(new Value("maximumReflectance", new Report_InspectSector_Common.Value() { value = ParseInt(GetValues("Rmax", splitPacket)[0]) }));
+
+            ValueResults.Add(new ValueResult("edgeDetermination", new Report_InspectSector_Common.ValueResult() { value = 100, result = GetValues("Edge", splitPacket)[0] }));
+
             foreach (var data in splitPacket)
             {
                 if (!data.Contains(','))
@@ -617,51 +641,6 @@ public partial class SectorDifferences : ObservableObject
                     continue;
                 }
 
-                if (spl1[0].Equals("Decode"))
-                {
-                    GradeValues.Add(new GradeValue("decode",
-                        new Report_InspectSector_Common.GradeValue()
-                        {
-                            grade = spl1[1].StartsWith("PASS") ? new Report_InspectSector_Common.Grade() { letter = "A", value = 4.0f } : new Report_InspectSector_Common.Grade() { letter = "F", value = 0.0f },
-                            value = -1
-                        }));
-                    continue;
-                }
-
-                if (spl1[0].Equals("Contrast"))
-                {
-                    GradeValues.Add(new GradeValue("contrast", GetGradeValue(spl1[1])));
-                    continue;
-                }
-
-                if (spl1[0].StartsWith("Modulation"))
-                {
-                    GradeValues.Add(new GradeValue("modulation", GetGradeValue(spl1[1])));
-                    continue;
-                }
-
-                if (spl1[0].StartsWith("Defects"))
-                {
-                    GradeValues.Add(new GradeValue("defects", GetGradeValue(spl1[1])));
-                    continue;
-                }
-                if (spl1[0].StartsWith("Decodability"))
-                {
-                    GradeValues.Add(new GradeValue("decodability", GetGradeValue(spl1[1])));
-                    continue;
-                }
-
-                if (spl1[0].StartsWith("Min Ref"))
-                {
-                    GradeValues.Add(new GradeValue("MinRef",
-                        new Report_InspectSector_Common.GradeValue()
-                        {
-                            grade = spl1[1].StartsWith("PASS") ? new Report_InspectSector_Common.Grade() { letter = "A", value = 4.0f } : new Report_InspectSector_Common.Grade() { letter = "F", value = 0.0f },
-                            value = -1
-                        }));
-                    continue;
-                }
-
                 if (spl1[0].StartsWith("Rmin"))
                 {
                     if (isPDF417) continue;
@@ -669,15 +648,9 @@ public partial class SectorDifferences : ObservableObject
                     var val = (int)Math.Ceiling(ParseFloat(spl1[1]));
 
                     Values.Add(new Value("minimumReflectance", new Report_InspectSector_Common.Value() { value = val }));
-                   continue;
-                }
-                if (spl1[0].StartsWith("Rmax"))
-                {
-                    if (isPDF417) continue;
-
-                    Values.Add(new Value("maximumReflectance", new Report_InspectSector_Common.Value() { value = ParseInt(spl1[1]) }));
                     continue;
                 }
+
 
                 if (spl1[0].StartsWith("Unused "))
                 {
@@ -705,12 +678,6 @@ public partial class SectorDifferences : ObservableObject
                     var item = alarms.Find((e) => e.name.Contains("minimum height"));
 
                     ValueResults.Add(new ValueResult("barHeight", new Report_InspectSector_Common.ValueResult() { value = val, result = item == null ? "PASS" : "FAIL" }));
-                    continue;
-                }
-
-                if (spl1[0].StartsWith("Edge"))
-                {
-                    ValueResults.Add(new ValueResult("edgeDetermination", new Report_InspectSector_Common.ValueResult() { value = 100, result = spl1[1] }));
                     continue;
                 }
 
@@ -755,9 +722,21 @@ public partial class SectorDifferences : ObservableObject
             foreach (var item in alarms)
                 Alarms.Add(item);
 
-        }    
+        }
     }
+    private string[] GetValues(string name, List<string> splitPacket)
+    {
+        var warn = splitPacket.FindAll((e) => e.StartsWith(name));
 
+        List<string> ret = new List<string>();
+        foreach (var line in warn)
+        {
+            //string[] spl1 = new string[2];
+            //spl1[0] = line.Substring(0, line.IndexOf(','));
+            ret.Add(line.Substring(line.IndexOf(',') + 1));
+        }
+        return ret.ToArray();
+    }
     private float ParseFloat(string value)
     {
         var digits = new string(value.Trim().TakeWhile(c =>

@@ -38,8 +38,7 @@
     </UserControl.Resources>
 
     <DockPanel>
-
-
+        
         <local:ImageResultEntry_Images DataContext="{Binding }" DockPanel.Dock="Top"/>
 
         <local:ImageResultEntry_V275 DataContext="{Binding }"/>

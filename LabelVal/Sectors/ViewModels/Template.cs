@@ -42,12 +42,15 @@ namespace LabelVal.Sectors.ViewModels
             Top = sectorTemplate.top;
             Symbology = sectorTemplate.symbology;
 
-            MatchSettings = new Template.TemplateMatchMode
-            {
-                MatchMode = sectorTemplate.matchSettings.matchMode,
-                UserDefinedDataTrueSize = sectorTemplate.matchSettings.userDefinedDataTrueSize,
-                FixedText = sectorTemplate.matchSettings.fixedText
-            };
+            if(sectorTemplate.matchSettings != null)
+                MatchSettings = new Template.TemplateMatchMode
+                {
+                    MatchMode = sectorTemplate.matchSettings.matchMode,
+                    UserDefinedDataTrueSize = sectorTemplate.matchSettings.userDefinedDataTrueSize,
+                    FixedText = sectorTemplate.matchSettings.fixedText
+                };
+
+            
             BlemishMask = new Template.BlemishMaskLayers
             {
                 Layers = sectorTemplate.blemishMask?.layers

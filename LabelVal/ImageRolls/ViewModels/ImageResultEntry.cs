@@ -8,17 +8,12 @@ using LabelVal.V5.ViewModels;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using NHibernate.Util;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Media;
 using V275_REST_lib.Models;
 using V5_REST_Lib.Models;
 
@@ -229,30 +224,27 @@ public partial class ImageResultEntry : ObservableRecipient,
             V275CurrentReport = null;
             V275CurrentTemplate = null;
 
-            V275Image = null;
-            V275SectorsImageOverlay = null;
-
-            IsV275ImageStored = false;
-
             V275CurrentSectors.Clear();
             V275DiffSectors.Clear();
+
             V275ResultRow = SelectedDatabase.Select_V275Result(SelectedImageRoll.Name, SourceImageUID);
 
             if (V275ResultRow == null)
-                return;
-
-            V275Image = V275ResultRow.StoredImage;
-            V275SectorsImageOverlay = V275CreateSectorsImageOverlay(JsonConvert.DeserializeObject<Job>(V275ResultRow.Template), false);
-            IsV275ImageStored = true;
+            {
+                V275Image = null;
+                V275SectorsImageOverlay = null;
+                IsV275ImageStored = false;
+            }
+            else
+            {
+                V275Image = V275ResultRow.StoredImage;
+                V275SectorsImageOverlay = V275CreateSectorsImageOverlay(JsonConvert.DeserializeObject<Job>(V275ResultRow.Template), false);
+                IsV275ImageStored = true;
+            }
         }
         else if (device == "V5")
         {
             V5CurrentReport = null;
-
-            V5Image = null;
-            V5SectorsImageOverlay = null;
-
-            IsV5ImageStored = false;
 
             V5CurrentSectors.Clear();
             V5DiffSectors.Clear();
@@ -260,20 +252,21 @@ public partial class ImageResultEntry : ObservableRecipient,
             V5ResultRow = SelectedDatabase.Select_V5Result(SelectedImageRoll.Name, SourceImageUID);
 
             if (V5ResultRow == null)
-                return;
-
-            V5Image = V5ResultRow.StoredImage;
-            V5SectorsImageOverlay = V5CreateSectorsImageOverlay(JsonConvert.DeserializeObject<Results>(V5ResultRow.Template));
-            IsV5ImageStored = true;
+            {
+                V5Image = null;
+                V5SectorsImageOverlay = null;
+                IsV5ImageStored = false;
+            }
+            else
+            {
+                V5Image = V5ResultRow.StoredImage;
+                V5SectorsImageOverlay = V5CreateSectorsImageOverlay(JsonConvert.DeserializeObject<Results>(V5ResultRow.Template));
+                IsV5ImageStored = true;
+            }
         }
         else if (device == "L95xx")
         {
             L95xxCurrentReport = null;
-
-            L95xxImage = null;
-            L95xxSectorsImageOverlay = null;
-
-            IsL95xxImageStored = false;
 
             L95xxCurrentSectors.Clear();
             L95xxDiffSectors.Clear();
@@ -281,15 +274,18 @@ public partial class ImageResultEntry : ObservableRecipient,
             L95xxResultRow = SelectedDatabase.Select_L95xxResult(SelectedImageRoll.Name, SourceImageUID);
 
             if (L95xxResultRow == null)
-                return;
-
-            L95xxImage = L95xxResultRow.StoredImage;
-            //L95xxSectorsImageOverlay = L95xxCreateSectorsImageOverlay(true);
-            IsL95xxImageStored = true;
+            {
+                L95xxImage = null;
+                L95xxSectorsImageOverlay = null;
+                IsL95xxImageStored = false;
+            }
+            else
+            {
+                //L95xxImage = L95xxResultRow.StoredImage;
+                //L95xxSectorsImageOverlay = L95xxCreateSectorsImageOverlay(true);
+                //IsL95xxImageStored = true;
+            }
         }
-
-
-
     }
 
 
