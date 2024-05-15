@@ -44,7 +44,8 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Verifier
     partial void OnIsL95xxFaultedChanged(bool value) => OnPropertyChanged(nameof(IsNotL95xxFaulted));
     public bool IsNotL95xxFaulted => !IsL95xxFaulted;
 
-    public void Receive(VerifierMessages.NewPacket message) { if (SelectedSector != null) App.Current.Dispatcher.BeginInvoke(() => L95xxCurrentSectors.Add(new Sectors.ViewModels.Sector(SelectedSector.Template, message.Value, false, true))); }
+    public void Receive(VerifierMessages.NewPacket message) { if (SelectedSector != null) App.Current.Dispatcher.BeginInvoke(() => 
+        L95xxCurrentSectors.Add(new Sectors.ViewModels.Sector(SelectedSector.Template, message.Value, SelectedSector.DesiredStandard, SelectedSector.DesiredGS1Table))); }
 
 
     private void L95xxGetStored()
@@ -71,13 +72,10 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Verifier
         L95xxStoredSectors.Clear();
         List<Sectors.ViewModels.Sector> tempSectors = [];
         foreach (var rSec in report)
-        {
-            var isWrongStandard = SelectedImageRoll.IsGS1;
+            tempSectors.Add(new Sectors.ViewModels.Sector(rSec.Template, rSec.Report, StandardsTypes.None, GS1TableTypes.None));
+        
 
-            tempSectors.Add(new Sectors.ViewModels.Sector(rSec.Template, rSec.Report, false, false));
-        }
-
-        if (tempSectors.Count > 0)
+        if (tempSectors.Count > 0) 
         {
             tempSectors = tempSectors.OrderBy(x => x.Template.Top).ToList();
 

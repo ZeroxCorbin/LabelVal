@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using LabelVal.Messages;
+using LabelVal.Sectors.ViewModels;
 using LabelVal.Utilities;
 using LabelVal.WindowViewModels;
 using MahApps.Metro.Controls.Dialogs;
@@ -315,7 +316,7 @@ public partial class ImageResults : ObservableRecipient,
     {
         WaitForRepeat = false;
 
-        if (TempV275Repeat[repeat].ImageResult.SelectedImageRoll.IsGS1)
+        if (TempV275Repeat[repeat].ImageResult.SelectedImageRoll.WriteSectorsBeforeProcess)
         {
             if (repeat > 0)
                 if (!await SelectedNode.Connection.Commands.SetRepeat(repeat))
@@ -334,7 +335,7 @@ public partial class ImageResults : ObservableRecipient,
 
             if (i == 2)
             {
-                var sectors = SelectedNode.Connection.CreateSectors(SelectedNode.Connection.SetupDetectEvent, SelectedImageRoll.TableID, SelectedNode.Symbologies);
+                var sectors = SelectedNode.Connection.CreateSectors(SelectedNode.Connection.SetupDetectEvent, V275GetTableID(SelectedImageRoll.SelectedGS1Table), SelectedNode.Symbologies);
 
                 Logger.Info("Creating sectors.");
 
@@ -359,6 +360,23 @@ public partial class ImageResults : ObservableRecipient,
         TempV275Repeat[repeat].ImageResult.IsV275Working = false;
         TempV275Repeat.Clear();
     }
+
+    private string V275GetTableID(GS1TableTypes gS1TableTypes)
+        => gS1TableTypes switch
+        {
+            GS1TableTypes.Tabel_2 => "2",
+            GS1TableTypes.Tabel_4 => "4",
+            GS1TableTypes.Tabel_5 => "5",
+            GS1TableTypes.Tabel_6 => "6",
+            GS1TableTypes.Tabel_8 => "8",
+            GS1TableTypes.Tabel_9 => "9",
+            GS1TableTypes.Tabel_10 => "10",
+            GS1TableTypes.Tabel_11 => "11",
+            GS1TableTypes.Tabel_12_2 => "12.2",
+            GS1TableTypes.Tabel_12_3 => "12.3",
+            _ => "0",
+        };
+
     private void ProcessRepeatFault(int repeat)
     {
         TempV275Repeat[repeat].ImageResult.IsV275Faulted = true;

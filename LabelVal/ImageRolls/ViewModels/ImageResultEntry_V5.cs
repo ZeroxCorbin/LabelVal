@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using LabelVal.Messages;
 using LabelVal.Utilities;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -59,26 +60,26 @@ public partial class ImageResultEntry
             return;
         }
 
-        var config = (V5_REST_Lib.Models.Config)res.Object;
+        var config = (JObject)res.Object;
 
 
         if (SelectedScanner.IsSimulator)
         {
-
-            if (config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource == null)
+            var fas = config["response"]["data"]["job"]["channelMap"]["acquisition"]["AcquisitionChannel"]["source"]["FileAcquisitionSource"];
+            if (fas == null)
             {
                 SendErrorMessage("The scanner is not in file aquire mode.");
                 return;
             }
 
             //Rotate directory names to accomadate V5 
-            var isFirst = config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource.directory != SelectedScanner.FTPClient.ImagePath1Root;
+            var isFirst = fas["directory"].ToString() != SelectedScanner.FTPClient.ImagePath1Root;
 
             var path = isFirst
                 ? SelectedScanner.FTPClient.ImagePath1
                 : SelectedScanner.FTPClient.ImagePath2;
 
-            config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource.directory = isFirst
+            fas["directory"] = isFirst
                 ? SelectedScanner.FTPClient.ImagePath1Root
                 : SelectedScanner.FTPClient.ImagePath2Root;
 
@@ -102,21 +103,18 @@ public partial class ImageResultEntry
             SelectedScanner.FTPClient.Disconnect();
 
             //Attempt to update the directory in the FileAcquisitionSource
-            _ = await SelectedScanner.ScannerController.SendJob(config.response.data);
+            _ = await SelectedScanner.ScannerController.SendJob(config["response"]["data"]);
 
 
-            _ = V5ProcessResults(await SelectedScanner.ScannerController.Trigger_Wait_Return(true), config);
-
+            _ = V5ProcessResults(await SelectedScanner.ScannerController.Trigger_Wait_Return(true));
         }
         else
-        {
-            _ = V5ProcessResults(await SelectedScanner.ScannerController.Trigger_Wait_Return(true), config);
-
-        }
+            _ = V5ProcessResults(await SelectedScanner.ScannerController.Trigger_Wait_Return(true));
+        
 
         IsV5Working = false;
     }
-    public bool V5ProcessResults(V5_REST_Lib.Controller.TriggerResults triggerResults, Config config)
+    public bool V5ProcessResults(V5_REST_Lib.Controller.TriggerResults triggerResults)
     {
         if (!triggerResults.OK)
         {
@@ -153,11 +151,7 @@ public partial class ImageResultEntry
 
         List<Sectors.ViewModels.Sector> tempSectors = [];
         foreach (var rSec in V5CurrentReport._event.data.cycleConfig.qualifiedResults)
-        {
-            var isWrongStandard = SelectedImageRoll.IsGS1;
-
-            tempSectors.Add(new Sectors.ViewModels.Sector(rSec, $"DecodeTool{rSec.toolSlot}"));
-        }
+            tempSectors.Add(new Sectors.ViewModels.Sector(rSec, $"DecodeTool{rSec.toolSlot}", SelectedImageRoll.SelectedStandard, selectedImageRoll.SelectedGS1Table));
 
         if (tempSectors.Count > 0)
         {
@@ -202,11 +196,7 @@ public partial class ImageResultEntry
 
         List<Sectors.ViewModels.Sector> tempSectors = [];
         foreach (var rSec in results._event.data.cycleConfig.qualifiedResults)
-        {
-            var isWrongStandard = SelectedImageRoll.IsGS1;
-
-            tempSectors.Add(new Sectors.ViewModels.Sector(rSec, $"DecodeTool{rSec.toolSlot}"));
-        }
+            tempSectors.Add(new Sectors.ViewModels.Sector(rSec, $"DecodeTool{rSec.toolSlot}", SelectedImageRoll.SelectedStandard, selectedImageRoll.SelectedGS1Table));
 
         if (tempSectors.Count > 0)
         {

@@ -1,26 +1,42 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
+using LabelVal.Messages;
+using LabelVal.Sectors.ViewModels;
+using Newtonsoft.Json;
 using System.Collections.ObjectModel;
+using System.Drawing.Printing;
 using System.Text.RegularExpressions;
 
 namespace LabelVal.ImageRolls.ViewModels;
 
-public partial class ImageRollEntry : ObservableObject
+[JsonObject(MemberSerialization.OptIn)]
+public partial class ImageRollEntry : ObservableRecipient, IRecipient<PrinterMessages.SelectedPrinterChanged>
 {
-    [ObservableProperty] private string name;
+    [ObservableProperty][property: JsonProperty] private string name;
     [ObservableProperty] private string path;
-    [ObservableProperty] private string dPI;
 
-    [ObservableProperty] private bool isGS1;
-    partial void OnIsGS1Changed(bool value) => OnPropertyChanged(nameof(ImagesShareTemplate));
+    [ObservableProperty] private int imageCount;
 
-    [ObservableProperty] private string tableID;
+    [ObservableProperty] private double imageDPI;
+    [ObservableProperty] private bool isImageDPIConsistent;
 
-    public bool ImagesShareTemplate
+    [ObservableProperty][property: JsonProperty("Standard")] private StandardsTypes selectedStandard;
+    [ObservableProperty][property: JsonProperty("GS1Table")] private GS1TableTypes selectedGS1Table;
+
+    [ObservableProperty] private PrinterSettings selectedPrinter;
+    partial void OnSelectedPrinterChanged(PrinterSettings value)
     {
-        get => !IsGS1 && imagesShareTemplate;
-        set => SetProperty(ref imagesShareTemplate, value);
+        foreach (var image in Images)
+        {
+            
+        }
     }
-    private bool imagesShareTemplate = true;
+
+    //If writeSectorsBeforeProcess is true the system will write the templates sectors before processing an image.
+    //Normally the template is left untouched. I.e. When using a sequential OCR tool.
+    [ObservableProperty][property: JsonProperty] private bool writeSectorsBeforeProcess = false;
+
+    [ObservableProperty][property: JsonProperty] private bool isLocked = false;
 
     public ObservableCollection<ImageEntry> Images { get; set; } = [];
 
@@ -28,22 +44,11 @@ public partial class ImageRollEntry : ObservableObject
 
     public ImageRollEntry(string name, string path)
     {
-        if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(path))
-            return;
-
         Name = name;
         Path = path;
 
-        DPI = Path[(Path.LastIndexOf('\\') + 1)..];
-        IsGS1 = Name.StartsWith("gs1", System.StringComparison.CurrentCultureIgnoreCase);
-        ImagesShareTemplate = !IsGS1;
-
-        if (IsGS1)
-        {
-            var val = Regex.Match(Name, @"TABLE (\d*\.?\d+)");
-
-            if (val.Groups.Count == 2)
-                TableID = val.Groups[1].Value;
-        }
+        Images.CollectionChanged += (s, e) => ImageCount = Images.Count;
     }
+
+    public void Receive(PrinterMessages.SelectedPrinterChanged message) => SelectedPrinter = message.Value;
 }

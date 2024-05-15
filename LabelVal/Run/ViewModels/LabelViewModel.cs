@@ -47,9 +47,9 @@ public partial class LabelViewModel : ObservableObject
         if (!string.IsNullOrEmpty(Result.LabelReport) && !string.IsNullOrEmpty(Result.LabelTemplate))
             foreach (var jSec in JsonConvert.DeserializeObject<V275_REST_lib.Models.Job>(Result.LabelTemplate).sectors)
             {
-                var isWrongStandard = false;
-                if (jSec.type is "verify1D" or "verify2D")
-                    isWrongStandard = IsGS1Standard && (!jSec.gradingStandard.enabled || !LedgerEntry.GradingStandard.StartsWith($"{jSec.gradingStandard.standard} TABLE {jSec.gradingStandard.tableId}"));
+                //var isWrongStandard = false;
+                //if (jSec.type is "verify1D" or "verify2D")
+                //    isWrongStandard = IsGS1Standard && (!jSec.gradingStandard.enabled || !LedgerEntry.GradingStandard.StartsWith($"{jSec.gradingStandard.standard} TABLE {jSec.gradingStandard.tableId}"));
 
                 foreach (var rSec in JsonConvert.DeserializeObject<V275_REST_lib.Models.Report>(Result.LabelReport).inspectLabel.inspectSector.Cast<JObject>())
                 {
@@ -61,7 +61,7 @@ public partial class LabelViewModel : ObservableObject
                         if (fSec == null)
                             break;
 
-                        tempSectors.Add(new Sectors.ViewModels.Sector(jSec, fSec, isWrongStandard, jSec.gradingStandard != null && jSec.gradingStandard.enabled));
+                        //tempSectors.Add(new Sectors.ViewModels.Sector(jSec, fSec, isWrongStandard, jSec.gradingStandard != null && jSec.gradingStandard.enabled));
 
                         break;
                     }
@@ -84,9 +84,9 @@ public partial class LabelViewModel : ObservableObject
         if (!string.IsNullOrEmpty(Result.RepeatReport) && !string.IsNullOrEmpty(Result.LabelTemplate))
             foreach (var jSec in JsonConvert.DeserializeObject<V275_REST_lib.Models.Job>(Result.LabelTemplate).sectors)
             {
-                var isWrongStandard = false;
-                if (jSec.type is "verify1D" or "verify2D")
-                    isWrongStandard = IsGS1Standard && (!jSec.gradingStandard.enabled || !LedgerEntry.GradingStandard.StartsWith($"{jSec.gradingStandard.standard} TABLE {jSec.gradingStandard.tableId}"));
+                //var isWrongStandard = false;
+                //if (jSec.type is "verify1D" or "verify2D")
+                //    isWrongStandard = IsGS1Standard && (!jSec.gradingStandard.enabled || !LedgerEntry.GradingStandard.StartsWith($"{jSec.gradingStandard.standard} TABLE {jSec.gradingStandard.tableId}"));
 
                 foreach (var rSec in JsonConvert.DeserializeObject<V275_REST_lib.Models.Report>(Result.RepeatReport).inspectLabel.inspectSector.Cast<JObject>())
                 {
@@ -98,7 +98,7 @@ public partial class LabelViewModel : ObservableObject
                         if (fSec == null)
                             break;
 
-                        tempSectors.Add(new Sectors.ViewModels.Sector(jSec, fSec, isWrongStandard, jSec.gradingStandard != null && jSec.gradingStandard.enabled));
+                        //tempSectors.Add(new Sectors.ViewModels.Sector(jSec, fSec, isWrongStandard, jSec.gradingStandard != null && jSec.gradingStandard.enabled));
 
                         break;
                     }

@@ -33,7 +33,7 @@ public partial class RunViewModel : ObservableRecipient, IRecipient<NodeMessages
 
     public void StartRunRequest()
     {
-        Logger.Info($"Starting Run: {RunController.GradingStandard.Name}; {RunController.LoopCount}");
+        Logger.Info($"Starting Run: {RunController.SelectedImageRoll.Name}; {RunController.LoopCount}");
 
         RunController.StartAsync();
     }

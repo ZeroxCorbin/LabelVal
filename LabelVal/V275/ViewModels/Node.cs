@@ -316,7 +316,7 @@ public partial class Node : ObservableRecipient, IRecipient<Messages.ImageRollMe
             return;
         }
 
-        if (!SelectedImageRoll.IsGS1)
+        if (SelectedImageRoll.SelectedStandard != Sectors.ViewModels.StandardsTypes.GS1)
         {
             if (JobName.ToLower().Equals(SelectedImageRoll.Name.ToLower()))
                 return;

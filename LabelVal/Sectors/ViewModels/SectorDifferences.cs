@@ -77,7 +77,7 @@ public partial class SectorDifferences : ObservableObject
     [ObservableProperty] private bool isSectorMissing;
     [ObservableProperty] private string sectorMissingText;
     [ObservableProperty] private bool isNotEmpty = false;
-    [ObservableProperty] private bool isGS1Standard;
+    //[ObservableProperty] private bool isGS1Standard;
 
     public ObservableCollection<GradeValue> GradeValues { get; } = [];
     public ObservableCollection<ValueResult> ValueResults { get; } = [];
@@ -87,10 +87,8 @@ public partial class SectorDifferences : ObservableObject
     public ObservableCollection<Report_InspectSector_Common.Alarm> Alarms { get; } = [];
     public ObservableCollection<Blemish> Blemishes { get; } = [];
 
-    public void V275Process(object verify, string userName, bool isGS1Standard)
+    public void V275Process(object verify, string userName)
     {
-        IsGS1Standard = isGS1Standard;
-
         UserName = userName;
         IsNotEmpty = false;
 
@@ -213,10 +211,8 @@ public partial class SectorDifferences : ObservableObject
         }
     }
 
-    public void V5Process(V5_REST_Lib.Models.Results_QualifiedResult results, string userName, bool isGS1Standard)
+    public void V5Process(V5_REST_Lib.Models.Results_QualifiedResult results, string userName)
     {
-        IsGS1Standard = isGS1Standard;
-
         UserName = userName;
         IsNotEmpty = false;
 
@@ -432,10 +428,8 @@ public partial class SectorDifferences : ObservableObject
     }
 
     #region L95xx
-    public void L95xxProcess(List<string> splitPacket, string userName, bool isGS1Standard, bool isPDF417)
+    public void L95xxProcess(List<string> splitPacket, string userName, bool isPDF417)
     {
-        IsGS1Standard = isGS1Standard;
-
         UserName = userName;
         IsNotEmpty = false;
 
@@ -850,8 +844,7 @@ public partial class SectorDifferences : ObservableObject
         var results = new SectorDifferences
         {
             UserName = UserName,
-            Type = Type,
-            IsGS1Standard = IsGS1Standard,
+            Type = Type
         };
 
         if (Type is "ocr" or "ocr")

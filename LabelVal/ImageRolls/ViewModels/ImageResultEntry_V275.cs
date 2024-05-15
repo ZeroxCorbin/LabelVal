@@ -86,10 +86,6 @@ public partial class ImageResultEntry
         if (!string.IsNullOrEmpty(V275ResultRow.Report) && template != null)
             foreach (var jSec in JsonConvert.DeserializeObject<Job>(V275ResultRow.Template).sectors)
             {
-                var isWrongStandard = false;
-                if (jSec.type is "verify1D" or "verify2D")
-                    isWrongStandard = SelectedImageRoll.IsGS1 && (!jSec.gradingStandard.enabled || SelectedImageRoll.TableID != jSec.gradingStandard.tableId);
-
                 foreach (JObject rSec in JsonConvert.DeserializeObject<Report>(V275ResultRow.Report).inspectLabel.inspectSector)
                 {
                     if (jSec.name == rSec["name"].ToString())
@@ -100,7 +96,7 @@ public partial class ImageResultEntry
                         if (fSec == null)
                             break;
 
-                        tempSectors.Add(new Sectors.ViewModels.Sector(jSec, fSec, isWrongStandard, jSec.gradingStandard != null && jSec.gradingStandard.enabled));
+                        tempSectors.Add(new Sectors.ViewModels.Sector(jSec, fSec, SelectedImageRoll.SelectedStandard, SelectedImageRoll.SelectedGS1Table));
 
                         break;
                     }
@@ -159,21 +155,17 @@ public partial class ImageResultEntry
         List<Sectors.ViewModels.Sector> tempSectors = [];
         foreach (var jSec in V275CurrentTemplate.sectors)
         {
-            var isWrongStandard = false;
-            if (jSec.type is "verify1D" or "verify2D")
-                isWrongStandard = SelectedImageRoll.IsGS1 && (!jSec.gradingStandard.enabled || SelectedImageRoll.TableID != jSec.gradingStandard.tableId);
-
             foreach (JObject rSec in V275CurrentReport.inspectLabel.inspectSector)
             {
                 if (jSec.name == rSec["name"].ToString())
                 {
 
-                    var fSec = V275DeserializeSector(rSec, !SelectedImageRoll.IsGS1 && SelectedNode.IsOldISO);
+                    var fSec = V275DeserializeSector(rSec, SelectedImageRoll.SelectedStandard != Sectors.ViewModels.StandardsTypes.GS1 && SelectedNode.IsOldISO);
 
                     if (fSec == null)
                         break; //Not yet supported sector type
 
-                    tempSectors.Add(new Sectors.ViewModels.Sector(jSec, fSec, isWrongStandard, jSec.gradingStandard != null && jSec.gradingStandard.enabled));
+                    tempSectors.Add(new Sectors.ViewModels.Sector(jSec, fSec, SelectedImageRoll.SelectedStandard, SelectedImageRoll.SelectedGS1Table));
 
                     break;
                 }
@@ -297,7 +289,7 @@ public partial class ImageResultEntry
 
         foreach (var sec in V275StoredSectors)
         {
-            if (!await SelectedNode.Connection.AddSector(sec.Template.Name, JsonConvert.SerializeObject(sec.V275Template)))
+            if (!await SelectedNode.Connection.AddSector(sec.Template.Name, JsonConvert.SerializeObject(sec.V275Sector)))
             {
                 SendStatusMessage(SelectedNode.Connection.Status, SystemMessages.StatusMessageType.Error);
                 return -1;

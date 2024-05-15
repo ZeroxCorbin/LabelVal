@@ -43,7 +43,8 @@ public class Controller
     private long RunId { get; set; }
 
     private ObservableCollection<ImageRolls.ViewModels.ImageResultEntry> ImageResultsList { get; set; }
-    public ImageRolls.ViewModels.ImageRollEntry GradingStandard { get; private set; }
+
+    public ImageRolls.ViewModels.ImageRollEntry SelectedImageRoll { get; private set; }
     private ImageRolls.Databases.ImageResults ImageResultsDatabase { get; set; }
 
     public V275.ViewModels.Node Node { get; private set; }
@@ -67,11 +68,11 @@ public class Controller
         LoopCount = loopCount;
         ImageResultsDatabase = standardsDatabase;
         Node = v275Node;
-        GradingStandard = ImageResultsList[0].SelectedImageRoll;
+        SelectedImageRoll = ImageResultsList[0].SelectedImageRoll;
 
         TimeDate = DateTime.UtcNow.Ticks;
 
-        LedgerEntry = new LedgerDatabase.LedgerEntry() { GradingStandard = GradingStandard.Name, TimeDate = TimeDate, Completed = 0, ProductPart = v275Node.Product.part, CameraMAC = v275Node.Details.cameraMAC };
+        LedgerEntry = new LedgerDatabase.LedgerEntry() { GradingStandard = SelectedImageRoll.Name, TimeDate = TimeDate, Completed = 0, ProductPart = v275Node.Product.part, CameraMAC = v275Node.Details.cameraMAC };
 
         return !OpenDatabases() ? null : !UpdateRunEntries() ? null : this;
     }
@@ -174,7 +175,7 @@ public class Controller
                     Logger.Info("Job Loop: {loop}", CurrentLoopCount);
                 }
 
-                if (!GradingStandard.IsGS1)
+                if (!SelectedImageRoll.WriteSectorsBeforeProcess)
                     _ = await Node.Connection.SwitchToRun();
 
                 while (RequestedState == RunStates.PAUSED)
@@ -195,7 +196,7 @@ public class Controller
                     return false;
                 }
 
-                var sRow = ImageResultsDatabase.Select_V275Result(GradingStandard.Name, label.SourceImageUID);
+                var sRow = ImageResultsDatabase.Select_V275Result(SelectedImageRoll.Name, label.SourceImageUID);
 
                 if (sRow == null || string.IsNullOrEmpty(sRow.Report))
                     continue;
