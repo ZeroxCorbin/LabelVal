@@ -1,0 +1,8 @@
+{
+  "Name": "Validation 300",
+  "Standard": "ISO15415_15416",
+  "GS1Table": "None",
+  "WriteSectorsBeforeProcess": false,
+  "TargetDPI": 300,
+  "IsLocked": true
+}

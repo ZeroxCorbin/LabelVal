@@ -55,6 +55,8 @@
     <None Remove="Assets\Image Rolls\GS1 TABLE 8\600\setting.imgr" />
     <None Remove="Assets\Image Rolls\GS1 TABLE 9\600\setting.imgr" />
     <None Remove="Assets\Image Rolls\VALIDATION 6x4\300\setting.imgr" />
+    <None Remove="Assets\Image Rolls\VALIDATION\300\setting.imgr" />
+    <None Remove="Assets\Image Rolls\VALIDATION\600\setting.imgr" />
     <None Remove="Assets\Images\V275WhiteIcon.ico" />
     <None Remove="Assets\Images\V275WhiteIcon.png" />
     <None Remove="Assets\Images\V275_Icon.xcf" />
@@ -101,6 +103,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Image Rolls\VALIDATION 6x4\300\setting.imgr">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Image Rolls\VALIDATION\300\setting.imgr">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Image Rolls\VALIDATION\600\setting.imgr">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\ImageResultsDatabases\GS1 Golden.sqlite">

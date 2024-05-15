@@ -64,6 +64,8 @@ public partial class ImageResultEntry
 
         if (V275ResultRow == null)
         {
+            V275StoredSectors.Clear();
+
             if (V275CurrentSectors.Count == 0)
             {
                 V275Image = null;
