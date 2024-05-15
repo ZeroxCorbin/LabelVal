@@ -289,7 +289,7 @@ public partial class SectorDifferences : ObservableObject
                     value = results.grading.iso15415.fixedPatternDamage.value
                 }));
         }
-        else if (Type == "verify1D" && results.grading.iso15416 != null)
+        else if (Type == "verify1D" && results.grading.iso15416 != null && results.grading.iso15416.overall != null)
         {
             IsNotEmpty = true;
 

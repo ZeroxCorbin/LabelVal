@@ -28,13 +28,12 @@
             <!--Name, Wrong Standard, Overall Grade String-->
             <DockPanel DockPanel.Dock="Top">
 
-                <TextBlock Text="{Binding Template.Username, Mode=OneTime}" Margin="3"/>
-
-                <TextBlock Text="WRONG STANDARD" HorizontalAlignment="Center" Background="{DynamicResource ColorBlindBrush5}"
+                <TextBlock DockPanel.Dock="Top" Text="WRONG STANDARD" HorizontalAlignment="Center" Background="{DynamicResource ColorBlindBrush5}"
                        Visibility="{Binding IsWrongStandard, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneTime}"/>
 
-                <TextBlock Text="{Binding Report.OverallGradeString}" HorizontalAlignment="Right"
-                       Visibility="{Binding IsNotWrongStandard, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneTime}"/>
+                <TextBlock Text="{Binding Template.Username, Mode=OneTime}"/>
+
+                <TextBlock Text="{Binding Report.OverallGradeString}" HorizontalAlignment="Right"/>
             </DockPanel>
 
             <!--Icon, Symbology, Decode Text-->

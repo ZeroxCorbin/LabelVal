@@ -119,14 +119,14 @@ namespace LabelVal.Sectors.ViewModels
                     Type = ocv.type;
                     Text = ocv.data.text;
                     Score = ocv.data.score;
-                    
+
                     break;
 
                 case V275_REST_lib.Models.Report_InspectSector_Blemish:
                     var blem = (V275_REST_lib.Models.Report_InspectSector_Blemish)report;
                     Type = blem.type;
                     BlemishCount = blem.data.blemishCount;
-                    
+
                     break;
 
                 case Results_QualifiedResult:
@@ -140,7 +140,7 @@ namespace LabelVal.Sectors.ViewModels
                     if (v5.grading != null)
                         if (Type == "verify1D")
                         {
-                            if (v5.grading.iso15416 == null)
+                            if (v5.grading.iso15416 == null || v5.grading.iso15416.overall == null)
                             {
                                 OverallGradeString = "No Grade";
                                 OverallGradeValue = 0;

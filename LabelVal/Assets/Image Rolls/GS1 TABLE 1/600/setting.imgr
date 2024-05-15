@@ -1,0 +1,8 @@
+{
+  "Name": "GS1 Table 1",
+  "Standard": "GS1",
+  "GS1Table": "_1",
+  "WriteSectorsBeforeProcess": true,
+  "TargetDPI": 600,
+  "IsLocked": true
+}

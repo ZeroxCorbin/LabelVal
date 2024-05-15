@@ -19,7 +19,7 @@ public partial class ImageResultEntry
     [ObservableProperty] private Databases.ImageResults.V5Result v5ResultRow;
 
     //public Config V5CurrentTemplate { get; set; }
-    public Results V5CurrentReport { get; private set; }
+    public JObject V5CurrentReport { get; private set; }
     public Results V5StoredReport { get; set; }
 
     [ObservableProperty] private ObservableCollection<Sectors.ViewModels.Sector> v5CurrentSectors = [];
@@ -110,7 +110,7 @@ public partial class ImageResultEntry
         }
         else
             _ = V5ProcessResults(await SelectedScanner.ScannerController.Trigger_Wait_Return(true));
-        
+
 
         IsV5Working = false;
     }
@@ -131,7 +131,7 @@ public partial class ImageResultEntry
             return false;
         }
 
-        V5CurrentReport = JsonConvert.DeserializeObject<Results>(triggerResults.ReportJSON, new JsonSerializerSettings() { });
+        V5CurrentReport = JsonConvert.DeserializeObject<JObject>(triggerResults.ReportJSON);
 
         if (!SelectedScanner.IsSimulator)
         {
@@ -150,8 +150,19 @@ public partial class ImageResultEntry
         V5CurrentSectors.Clear();
 
         List<Sectors.ViewModels.Sector> tempSectors = [];
-        foreach (var rSec in V5CurrentReport._event.data.cycleConfig.qualifiedResults)
-            tempSectors.Add(new Sectors.ViewModels.Sector(rSec, $"DecodeTool{rSec.toolSlot}", SelectedImageRoll.SelectedStandard, selectedImageRoll.SelectedGS1Table));
+
+
+        if (V5CurrentReport["event"]?["name"].ToString() == "cycle-report-alt")
+        {
+           foreach (var rSec in V5CurrentReport["event"]?["data"]?["decodeData"])
+                tempSectors.Add(new Sectors.ViewModels.Sector(rSec.ToObject<Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", SelectedImageRoll.SelectedStandard, selectedImageRoll.SelectedGS1Table));
+
+        }
+        else if (V5CurrentReport["event"]?["name"].ToString() == "cycle-report")
+        {
+            foreach (var rSec in V5CurrentReport["event"]["data"]["cycleConfig"]["qualifiedResults"])
+                tempSectors.Add(new Sectors.ViewModels.Sector(rSec.ToObject<Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", SelectedImageRoll.SelectedStandard, selectedImageRoll.SelectedGS1Table));
+        }
 
         if (tempSectors.Count > 0)
         {
@@ -187,7 +198,7 @@ public partial class ImageResultEntry
             return;
         }
 
-        var results = JsonConvert.DeserializeObject<Results>(V5ResultRow.Report);
+        var results = JsonConvert.DeserializeObject<JObject>(V5ResultRow.Report);
 
         V5Image = V5ResultRow.StoredImage;
         IsV5ImageStored = true;
@@ -195,8 +206,18 @@ public partial class ImageResultEntry
         V5StoredSectors.Clear();
 
         List<Sectors.ViewModels.Sector> tempSectors = [];
-        foreach (var rSec in results._event.data.cycleConfig.qualifiedResults)
-            tempSectors.Add(new Sectors.ViewModels.Sector(rSec, $"DecodeTool{rSec.toolSlot}", SelectedImageRoll.SelectedStandard, selectedImageRoll.SelectedGS1Table));
+
+        if (results["event"]?["name"].ToString() == "cycle-report-alt")
+        {
+            foreach (var rSec in results["event"]?["data"]?["decodeData"])
+                tempSectors.Add(new Sectors.ViewModels.Sector(rSec.ToObject<Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", SelectedImageRoll.SelectedStandard, selectedImageRoll.SelectedGS1Table));
+
+        }
+        else if (results["event"]?["name"].ToString() == "cycle-report")
+        {
+            foreach (var rSec in results["event"]["data"]["cycleConfig"]["qualifiedResults"])
+                tempSectors.Add(new Sectors.ViewModels.Sector(rSec.ToObject<Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", SelectedImageRoll.SelectedStandard, selectedImageRoll.SelectedGS1Table));
+        }
 
         if (tempSectors.Count > 0)
         {
@@ -294,7 +315,7 @@ public partial class ImageResultEntry
     {
         return 1;
     }
-    private DrawingImage V5CreateSectorsImageOverlay(Results results)
+    private DrawingImage V5CreateSectorsImageOverlay(JObject results)
     {
         var bmp = ImageUtilities.CreateBitmap(V5Image);
 
@@ -310,21 +331,44 @@ public partial class ImageResultEntry
 
         var drwGroup = new DrawingGroup();
 
-        foreach (var sec in results._event.data.cycleConfig.qualifiedResults)
+
+        if (results["event"]?["name"].ToString() == "cycle-report-alt")
         {
-            if (sec.boundingBox == null)
-                continue;
+            foreach (var sec in results["event"]?["data"]?["decodeData"])
+            {
+                if (sec["boundingBox"] == null)
+                    continue;
 
-            secAreas.Children.Add(new RectangleGeometry(new Rect(new Point(sec.boundingBox[0].x, sec.boundingBox[0].y), new Point(sec.boundingBox[2].x, sec.boundingBox[2].y))));
+                secAreas.Children.Add(new RectangleGeometry(new Rect(new Point(sec["boundingBox"][0]["x"].Value<double>(), sec["boundingBox"][0]["y"].Value<double>()), new Point(sec["boundingBox"][2]["x"].Value<double>(), sec["boundingBox"][2]["y"].Value<double>()))));
 
-            drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun($"DecodeTool{sec.toolSlot}", new Typeface("Arial"), 30.0, new Point(sec.boundingBox[2].x - 8, sec.boundingBox[2].y - 8))));
+                drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun($"DecodeTool{sec["toolSlot"]}", new Typeface("Arial"), 30.0, new Point(sec["boundingBox"][2]["x"].Value<double>() - 8, sec["boundingBox"][2]["y"].Value<double>() - 8))));
+            }
+
+            //foreach (var sec in results["event"]["data"]["cycleConfig"]["job"]["toolList"])
+            //{
+            //    foreach (var r in sec["SymbologyTool"]["regionList"])
+            //        bndAreas.Children.Add(new RectangleGeometry(new Rect(r["Region"]["shape"]["RectShape"]["x"].Value<double>(), r["Region"]["shape"]["RectShape"]["y"].Value<double>(), r["Region"]["shape"]["RectShape"]["width"].Value<double>(), r["Region"]["shape"]["RectShape"]["height"].Value<double>())));
+            //}
+        }
+        else if (results["event"]?["name"].ToString() == "cycle-report")
+        {
+            foreach (var sec in results["event"]["data"]["cycleConfig"]["qualifiedResults"])
+            {
+                if (sec["boundingBox"] == null)
+                    continue;
+
+                secAreas.Children.Add(new RectangleGeometry(new Rect(new Point(sec["boundingBox"][0]["x"].Value<double>(), sec["boundingBox"][0]["y"].Value<double>()), new Point(sec["boundingBox"][2]["x"].Value<double>(), sec["boundingBox"][2]["y"].Value<double>()))));
+
+                drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun($"DecodeTool{sec["toolSlot"]}", new Typeface("Arial"), 30.0, new Point(sec["boundingBox"][2]["x"].Value<double>() - 8, sec["boundingBox"][2]["y"].Value<double>() - 8))));
+            }
+
+            foreach (var sec in results["event"]["data"]["cycleConfig"]["job"]["toolList"])
+            {
+                foreach (var r in sec["SymbologyTool"]["regionList"])
+                    bndAreas.Children.Add(new RectangleGeometry(new Rect(r["Region"]["shape"]["RectShape"]["x"].Value<double>(), r["Region"]["shape"]["RectShape"]["y"].Value<double>(), r["Region"]["shape"]["RectShape"]["width"].Value<double>(), r["Region"]["shape"]["RectShape"]["height"].Value<double>())));
+            }
         }
 
-        foreach (var sec in results._event.data.cycleConfig.job.toolList)
-        {
-            foreach (var r in sec.SymbologyTool.regionList)
-                bndAreas.Children.Add(new RectangleGeometry(new Rect(r.Region.shape.RectShape.x, r.Region.shape.RectShape.y, r.Region.shape.RectShape.width, r.Region.shape.RectShape.height)));
-        }
 
         var sectors = new GeometryDrawing
         {

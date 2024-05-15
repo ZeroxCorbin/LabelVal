@@ -1,5 +1,6 @@
 ﻿using ControlzEx.Theming;
 using LibSimpleDatabase;
+using Newtonsoft.Json;
 using System;
 using System.Data;
 using System.Drawing;
@@ -48,7 +49,7 @@ namespace LabelVal
         public App()
         {
             //   ExtractRunDetails();
-
+           // File.WriteAllText("setting.imgr", JsonConvert.SerializeObject(new ImageRolls.ViewModels.ImageRollEntry(), new Newtonsoft.Json.Converters.StringEnumConverter()));
             SetupExceptionHandling();
 
             Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();

@@ -14,12 +14,12 @@
         <CollectionViewSource x:Key="FixedImageRolls" Source="{Binding FixedImageRolls}">
             <CollectionViewSource.SortDescriptions>
                 <componentmodel:SortDescription PropertyName="Name" Direction="Ascending"/>
-                <componentmodel:SortDescription PropertyName="DPI" Direction="Ascending"/>
+                <componentmodel:SortDescription PropertyName="SelectedStandard" Direction="Ascending"/>
             </CollectionViewSource.SortDescriptions>
 
             <CollectionViewSource.GroupDescriptions>
-                <PropertyGroupDescription PropertyName="IsGS1" />
-                <PropertyGroupDescription PropertyName="DPI" />
+                <PropertyGroupDescription PropertyName="SelectedStandard" />
+                <PropertyGroupDescription PropertyName="TargetDPI" />
             </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
 

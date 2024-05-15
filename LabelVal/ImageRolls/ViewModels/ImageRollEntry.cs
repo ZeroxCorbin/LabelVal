@@ -21,7 +21,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PrinterMes
     [ObservableProperty] private bool isImageDPIConsistent;
 
     [ObservableProperty][property: JsonProperty("Standard")] private StandardsTypes selectedStandard;
-    [ObservableProperty][property: JsonProperty("GS1Table")] private GS1TableTypes selectedGS1Table;
+    [ObservableProperty][property: JsonProperty("GS1Table")] private GS1TableNames selectedGS1Table;
 
     [ObservableProperty] private PrinterSettings selectedPrinter;
     partial void OnSelectedPrinterChanged(PrinterSettings value)
@@ -35,12 +35,13 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PrinterMes
     //If writeSectorsBeforeProcess is true the system will write the templates sectors before processing an image.
     //Normally the template is left untouched. I.e. When using a sequential OCR tool.
     [ObservableProperty][property: JsonProperty] private bool writeSectorsBeforeProcess = false;
+    [ObservableProperty][property: JsonProperty] private int targetDPI;
 
     [ObservableProperty][property: JsonProperty] private bool isLocked = false;
 
     public ObservableCollection<ImageEntry> Images { get; set; } = [];
 
-    public ImageRollEntry() { }
+    public ImageRollEntry() => Images.CollectionChanged += (s, e) => ImageCount = Images.Count;
 
     public ImageRollEntry(string name, string path)
     {

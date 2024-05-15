@@ -8,6 +8,7 @@ using LabelVal.V5.ViewModels;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -260,7 +261,7 @@ public partial class ImageResultEntry : ObservableRecipient,
             else
             {
                 V5Image = V5ResultRow.StoredImage;
-                V5SectorsImageOverlay = V5CreateSectorsImageOverlay(JsonConvert.DeserializeObject<Results>(V5ResultRow.Template));
+                V5SectorsImageOverlay = V5CreateSectorsImageOverlay(JsonConvert.DeserializeObject<JObject>(V5ResultRow.Report));
                 IsV5ImageStored = true;
             }
         }

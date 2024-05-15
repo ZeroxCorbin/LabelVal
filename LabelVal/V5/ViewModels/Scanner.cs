@@ -163,8 +163,8 @@ namespace LabelVal.V5.ViewModels
             var res = await ScannerController.GetConfig();
             if (res.OK)
             {
-                var config = (V5_REST_Lib.Models.Config)res.Object;
-                IsSimulator = config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource != null;
+                var config = (JObject)res.Object;
+                IsSimulator = config["response"]?["data"]?["job"]?["channelMap"]?["acquisition"]?["AcquisitionChannel"]?["source"]?["FileAcquisitionSource"] != null;
             }
         }
 
@@ -187,23 +187,47 @@ namespace LabelVal.V5.ViewModels
                 {
                     ExplicitMessages = JsonConvert.SerializeObject(json);
 
-                    CycleID = json["event"]?["data"]?["cycleConfig"]?["cycleId"].ToString();
-
-                    var data1 = json["event"]?["data"]?["cycleConfig"]?["job"]?["captureList"];
-                    if (data1 != null)
-                        if (data1.HasValues)
-                            Capture = data1[0]?["Capture"];
-
-                    App.Current.Dispatcher.Invoke(() =>
+                    if (json["event"]?["name"].ToString() == "cycle-report-alt")
                     {
-                        Results.Clear();
+                        CycleID = json["event"]?["data"]?["cycleId"].ToString();
 
-                        data1 = json["event"]?["data"]?["cycleConfig"]?["qualifiedResults"];
+                        //var data1 = json["event"]?["data"]?["job"]?["captureList"];
+                        //if (data1 != null)
+                        //    if (data1.HasValues)
+                        //        Capture = data1[0]?["Capture"];
+
+                        App.Current.Dispatcher.Invoke(() =>
+                        {
+                            Results.Clear();
+
+                            var data1 = json["event"]?["data"]?["decodeData"];
+                            if (data1 != null)
+                                if (data1.HasValues)
+                                    foreach (var b in data1)
+                                        Results.Add(b);
+                        });
+                    }
+                    else if (json["event"]?["name"].ToString() == "cycle-report")
+                    {
+                        CycleID = json["event"]?["data"]?["cycleConfig"]?["cycleId"].ToString();
+
+                        var data1 = json["event"]?["data"]?["cycleConfig"]?["job"]?["captureList"];
                         if (data1 != null)
                             if (data1.HasValues)
-                                foreach (var b in data1)
-                                    Results.Add(b);
-                    });
+                                Capture = data1[0]?["Capture"];
+
+                        App.Current.Dispatcher.Invoke(() =>
+                        {
+                            Results.Clear();
+
+                            data1 = json["event"]?["data"]?["cycleConfig"]?["qualifiedResults"];
+                            if (data1 != null)
+                                if (data1.HasValues)
+                                    foreach (var b in data1)
+                                        Results.Add(b);
+                        });
+                    }
+
                 }
                 catch (Exception ex) { Logger.Error(ex); }
             }

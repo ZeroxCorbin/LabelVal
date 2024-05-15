@@ -361,19 +361,26 @@ public partial class ImageResults : ObservableRecipient,
         TempV275Repeat.Clear();
     }
 
-    private string V275GetTableID(GS1TableTypes gS1TableTypes)
+    private string V275GetTableID(GS1TableNames gS1TableTypes)
         => gS1TableTypes switch
         {
-            GS1TableTypes.Tabel_2 => "2",
-            GS1TableTypes.Tabel_4 => "4",
-            GS1TableTypes.Tabel_5 => "5",
-            GS1TableTypes.Tabel_6 => "6",
-            GS1TableTypes.Tabel_8 => "8",
-            GS1TableTypes.Tabel_9 => "9",
-            GS1TableTypes.Tabel_10 => "10",
-            GS1TableTypes.Tabel_11 => "11",
-            GS1TableTypes.Tabel_12_2 => "12.2",
-            GS1TableTypes.Tabel_12_3 => "12.3",
+            GS1TableNames._1 => "1",
+            GS1TableNames._2 => "2",
+            GS1TableNames._3 => "3",
+            GS1TableNames._4 => "4",
+            GS1TableNames._5 => "5",
+            GS1TableNames._6 => "6",
+            GS1TableNames._7_1 => "7.1",
+            GS1TableNames._7_2 => "7.2",
+            GS1TableNames._7_3 => "7.3",
+            GS1TableNames._7_4 => "7.4",
+            GS1TableNames._8 => "8",
+            GS1TableNames._9 => "9",
+            GS1TableNames._10 => "10",
+            GS1TableNames._11 => "11",
+            GS1TableNames._12_1 => "12.1",
+            GS1TableNames._12_2 => "12.2",
+            GS1TableNames._12_3 => "12.3",
             _ => "0",
         };
 

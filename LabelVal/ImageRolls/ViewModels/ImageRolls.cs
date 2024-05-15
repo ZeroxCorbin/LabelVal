@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using LabelVal.Messages;
+using Newtonsoft.Json;
+using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -38,23 +40,38 @@ public partial class ImageRolls : ObservableObject
 
             foreach (var subdir in Directory.EnumerateDirectories(dir))
             {
-                FixedImageRolls.Add(new ImageRollEntry(dir[(dir.LastIndexOf("\\") + 1)..], subdir));
+                var files = Directory.EnumerateFiles(subdir, "*.imgr").ToList();
+                if (files.Count == 0)
+                    continue;
+
+                try
+                {
+                    var imgr = JsonConvert.DeserializeObject<ImageRollEntry>(File.ReadAllText(files.First()));
+                    imgr.Path = subdir;
+                    FixedImageRolls.Add(imgr);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(ex, "Failed to load image roll from {path}", files.First());
+                    continue;
+                }
+               // FixedImageRolls.Add(new ImageRollEntry(dir[(dir.LastIndexOf("\\") + 1)..], subdir));
             }
         }
 
         Logger.Info("Processed {count} fixed image rolls.", FixedImageRolls.Count);
 
-        foreach (var dir in Directory.EnumerateDirectories(App.ImageRollRoot).ToList().OrderBy((e) => Regex.Replace(e, "[0-9]+", match => match.Value.PadLeft(10, '0'))))
-        {
-            Logger.Debug("Found: {name}", dir[(dir.LastIndexOf("\\") + 1)..]);
+        //foreach (var dir in Directory.EnumerateDirectories(App.ImageRollRoot).ToList().OrderBy((e) => Regex.Replace(e, "[0-9]+", match => match.Value.PadLeft(10, '0'))))
+        //{
+        //    Logger.Debug("Found: {name}", dir[(dir.LastIndexOf("\\") + 1)..]);
 
-            foreach (var subdir in Directory.EnumerateDirectories(dir))
-            {
-                UserImageRolls.Add(new ImageRollEntry(dir[(dir.LastIndexOf("\\") + 1)..], subdir));
-            }
-        }
+        //    foreach (var subdir in Directory.EnumerateDirectories(dir))
+        //    {
+        //        UserImageRolls.Add(new ImageRollEntry(dir[(dir.LastIndexOf("\\") + 1)..], subdir));
+        //    }
+        //}
 
-        Logger.Info("Processed {count} image rolls.", UserImageRolls.Count);
+        //Logger.Info("Processed {count} image rolls.", UserImageRolls.Count);
     }
     private void SelectImageRoll()
     {

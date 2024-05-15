@@ -72,7 +72,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Verifier
         L95xxStoredSectors.Clear();
         List<Sectors.ViewModels.Sector> tempSectors = [];
         foreach (var rSec in report)
-            tempSectors.Add(new Sectors.ViewModels.Sector(rSec.Template, rSec.Report, StandardsTypes.None, GS1TableTypes.None));
+            tempSectors.Add(new Sectors.ViewModels.Sector(rSec.Template, rSec.Report, StandardsTypes.None, GS1TableNames.None));
         
 
         if (tempSectors.Count > 0) 

@@ -16,30 +16,28 @@ public enum StandardsTypes
     GS1,
 }
 
-public enum GS1TableTypes
+public enum GS1TableNames
 {
     None,
     Unsupported, //Unsupported table
-    Tabel_1, //Trade items scanned in General Retail POS and NOT General Distribution.
-    Tabel_1_8200, //AI (8200)
-    Tabel_2, //Trade items scanned in General Distribution.
-    Tabel_3, //Trade items scanned in General Retail POS and General Distribution.
-    Tabel_4,
-    Tabel_5,
-    Tabel_6,
-    Tabel_7_1,
-    Tabel_7_2,
-    Tabel_7_3,
-    Tabel_7_4,
-    Tabel_8,
-    Tabel_9,
-    Tabel_10,
-    Tabel_11,
-    Tabel_12_1,
-    Tabel_12_2,
-    Tabel_12_3,
-
-
+    _1, //Trade items scanned in General Retail POS and NOT General Distribution.
+    _1_8200, //AI (8200)
+    _2, //Trade items scanned in General Distribution.
+    _3, //Trade items scanned in General Retail POS and General Distribution.
+    _4,
+    _5,
+    _6,
+    _7_1,
+    _7_2,
+    _7_3,
+    _7_4,
+    _8,
+    _9,
+    _10,
+    _11,
+    _12_1,
+    _12_2,
+    _12_3,
 }
 
 public partial class Sector : ObservableObject
@@ -56,19 +54,77 @@ public partial class Sector : ObservableObject
     public SectorDifferences SectorDifferences { get; } = new();
 
     public StandardsTypes Standard { get; }
-    public GS1TableTypes GS1Table { get; }
+    public GS1TableNames GS1Table { get; }
 
     public StandardsTypes DesiredStandard { get; }
-    public GS1TableTypes DesiredGS1Table { get; }
+    public GS1TableNames DesiredGS1Table { get; }
 
 
     public bool IsGS1Standard => Standard == StandardsTypes.GS1;
-    public bool IsWrongStandard => Standard != DesiredStandard || GS1Table != DesiredGS1Table;
+    public bool IsWrongStandard
+    {
+        get
+        {
+            switch (DesiredStandard)
+            {
+                case StandardsTypes.None:
+                    return false;
+                case StandardsTypes.Unsupported:
+                    return true;
+                case StandardsTypes.ISO15415_15416:
+                    {
+                        switch (Standard)
+                        {
+                            case StandardsTypes.ISO15415_15416:
+                            case StandardsTypes.ISO15415:
+                            case StandardsTypes.ISO15416:
+                                return false;
+                            default:
+                                return true;
+                        }
+                    }
+                case StandardsTypes.ISO15415:
+                    {
+                        switch (Standard)
+                        {
+                            case StandardsTypes.ISO15415_15416:
+                            case StandardsTypes.ISO15415:
+                                return false;
+                            default:
+                                return true;
+                        }
+                    }
+                case StandardsTypes.ISO15416:
+                    {
+                        switch (Standard)
+                        {
+                            case StandardsTypes.ISO15415_15416:
+                            case StandardsTypes.ISO15416:
+                                return false;
+                            default:
+                                return true;
+                        }
+                    }
+                    case StandardsTypes.GS1:
+                    {
+                        switch (Standard)
+                        {
+                            case StandardsTypes.GS1:
+                                return GS1Table != DesiredGS1Table;
+                            default:
+                                return true;
+                        }
+                    }
+                default:
+                    return true;
+            }
+        }
+    }
 
     public Sector() { }
 
     //V275
-    public Sector(V275_REST_lib.Models.Job.Sector sector, object report, StandardsTypes standard, GS1TableTypes table)
+    public Sector(V275_REST_lib.Models.Job.Sector sector, object report, StandardsTypes standard, GS1TableNames table)
     {
         V275Sector = sector;
 
@@ -97,24 +153,31 @@ public partial class Sector : ObservableObject
             IsError = true;
     }
 
-    private GS1TableTypes V275GetGS1Table(string tableId)
+    private GS1TableNames V275GetGS1Table(string tableId)
         => tableId switch
         {
-            "2" => GS1TableTypes.Tabel_2,
-            "4" => GS1TableTypes.Tabel_4,
-            "5" => GS1TableTypes.Tabel_5,
-            "6" => GS1TableTypes.Tabel_6,
-            "8" => GS1TableTypes.Tabel_8,
-            "9" => GS1TableTypes.Tabel_9,
-            "10" => GS1TableTypes.Tabel_10,
-            "11" => GS1TableTypes.Tabel_11,
-            "12.2" => GS1TableTypes.Tabel_12_2,
-            "12.3" => GS1TableTypes.Tabel_12_3,
-            _ => GS1TableTypes.Unsupported,
+            "1" => GS1TableNames._1,
+            "2" => GS1TableNames._2,
+            "3" => GS1TableNames._3,
+            "4" => GS1TableNames._4,
+            "5" => GS1TableNames._5,
+            "6" => GS1TableNames._6,
+            "7.1" => GS1TableNames._7_1,
+            "7.2" => GS1TableNames._7_2,
+            "7.3" => GS1TableNames._7_3,
+            "7.4" => GS1TableNames._7_4,
+            "8" => GS1TableNames._8,
+            "9" => GS1TableNames._9,
+            "10" => GS1TableNames._10,
+            "11" => GS1TableNames._11,
+            "12.1" => GS1TableNames._12_1,
+            "12.2" => GS1TableNames._12_2,
+            "12.3" => GS1TableNames._12_3,
+            _ => GS1TableNames.Unsupported,
         };
 
     //V5
-    public Sector(Results_QualifiedResult results, string name, StandardsTypes standard, GS1TableTypes table)
+    public Sector(Results_QualifiedResult results, string name, StandardsTypes standard, GS1TableNames table)
     {
         Report = new Report(results);
         Template = new Template(results, name);
@@ -125,7 +188,7 @@ public partial class Sector : ObservableObject
         DesiredGS1Table = table;
 
         Standard = results.grading != null ? V5GetStandard(results.grading) : StandardsTypes.None;
-        GS1Table = GS1TableTypes.None;
+        GS1Table = GS1TableNames.None;
         //if (Standard == StandardsTypes.GS1)
         //    GS1Table = V275GetGS1Table(sector.gradingStandard.tableId);
 
@@ -148,7 +211,7 @@ public partial class Sector : ObservableObject
         } : StandardsTypes.None;
 
     //L95xx; The template is the currently selected sector.
-    public Sector(Template template, string packet, StandardsTypes standard, GS1TableTypes table)
+    public Sector(Template template, string packet, StandardsTypes standard, GS1TableNames table)
     {
         L95xxPacket = packet;
         var spl = packet.Split('\r').ToList();
@@ -178,5 +241,5 @@ public partial class Sector : ObservableObject
     {
         return StandardsTypes.None;
     }
-    
+
 }
