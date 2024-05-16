@@ -17,7 +17,7 @@
                 <componentmodel:SortDescription PropertyName="SelectedStandard" Direction="Ascending"/>
             </CollectionViewSource.SortDescriptions>
 
-            <CollectionViewSource.GroupDescriptions>
+            <CollectionViewSource.GroupDescriptions>             
                 <PropertyGroupDescription PropertyName="SelectedStandard" />
                 <PropertyGroupDescription PropertyName="TargetDPI" />
             </CollectionViewSource.GroupDescriptions>
@@ -130,7 +130,8 @@
                                     <Setter Property="Template">
                                         <Setter.Value>
                                             <ControlTemplate TargetType="{x:Type GroupItem}">
-                                                <Expander>
+                                                <Expander md:ExpanderAssist.ExpanderButtonPosition="Start"
+                                                       BorderThickness="0" Padding="0" md:ExpanderAssist.HorizontalHeaderPadding="3">
                                                     <Expander.Header>
                                                         <TextBlock Text="{Binding Name}" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                                                     </Expander.Header>
@@ -151,7 +152,8 @@
                                     <Setter Property="Template">
                                         <Setter.Value>
                                             <ControlTemplate TargetType="{x:Type GroupItem}">
-                                                <Expander>
+                                                <Expander md:ExpanderAssist.ExpanderButtonPosition="Start" Margin="10,0"
+                                                       BorderThickness="0" Padding="0" md:ExpanderAssist.HorizontalHeaderPadding="3">
                                                     <Expander.Header>
                                                         <TextBlock Text="{Binding Name}" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                                                     </Expander.Header>

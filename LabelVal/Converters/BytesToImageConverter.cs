@@ -22,7 +22,6 @@ namespace LabelVal.Converters
                 img.BeginInit();
                 img.CacheOption = BitmapCacheOption.OnLoad;
                 img.StreamSource = memStream;
-                img.DecodePixelWidth = 400;
                 img.EndInit();
                 img.Freeze();
 

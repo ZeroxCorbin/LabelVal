@@ -1,6 +1,6 @@
 {
   "UID": "a07011de-9bbd-4b7d-8011-c433a4815f08",
-  "Name": "GS1 Table 4",
+  "Name": "Table 4",
   "Standard": "GS1",
   "GS1Table": "_4",
   "WriteSectorsBeforeProcess": true,
