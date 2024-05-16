@@ -184,7 +184,7 @@ public partial class ImageResultEntry
 
     private void V5GetStored()
     {
-        V5ResultRow = SelectedDatabase.Select_V5Result(SelectedImageRoll.Name, SourceImageUID);
+        V5ResultRow = SelectedDatabase.Select_V5Result(SelectedImageRoll.UID, SourceImageUID);
 
         if (V5ResultRow == null)
         {

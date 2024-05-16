@@ -34,6 +34,12 @@
 
                         <IconPacks:PackIconMaterial Kind="Plus" Margin="-1,0,0,0" Height="14" Width="14"/>
                     </Button>
+
+                    <Button Command="{Binding UIDToClipboardCommand}" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
+                                    ToolTip="New UID to Clipboard" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+
+                        <IconPacks:PackIconFontAwesome Kind="FingerprintSolid" Margin="-1,0,0,0" Height="14" Width="14"/>
+                    </Button>
                 </DockPanel>
             </GroupBox.Header>
 

@@ -20,7 +20,7 @@ namespace LabelVal.ImageRolls.Databases
 
         public partial class V275Result : ObservableObject
         {
-            [ObservableProperty] private string imageRollName;
+            [ObservableProperty] private string imageRollUID;
             [ObservableProperty] private byte[] sourceImage;
             [ObservableProperty] [property: PrimaryKey] private string sourceImageUID;
             [ObservableProperty] private string template;
@@ -30,7 +30,7 @@ namespace LabelVal.ImageRolls.Databases
 
         public partial class V5Result : ObservableObject
         {
-            [ObservableProperty] private string imageRollName;
+            [ObservableProperty] private string imageRollUID;
             [ObservableProperty] private byte[] sourceImage;
             [ObservableProperty] [property: PrimaryKey] private string sourceImageUID;
             [ObservableProperty] private string template;
@@ -55,7 +55,7 @@ namespace LabelVal.ImageRolls.Databases
 
         public partial class L95xxResult : ObservableObject
         {
-            [ObservableProperty] private string imageRollName;
+            [ObservableProperty] private string imageRollUID;
             [ObservableProperty] private byte[] sourceImage;
             [ObservableProperty][property: PrimaryKey] private string sourceImageUID;
             [ObservableProperty] private string template;
@@ -125,24 +125,24 @@ namespace LabelVal.ImageRolls.Databases
         public void Close() => Connection?.Close();
 
         public int? InsertOrReplace_V275Result(V275Result result) => Connection?.InsertOrReplace(result);
-        public bool Exists_V275Result(string imageRollName, string imageUID) => Connection?.Table<V275Result>().Where(v => v.SourceImageUID == imageUID && v.ImageRollName == imageRollName).Count() > 0;
-        public V275Result Select_V275Result(string imageRollName, string imageUID) => Connection?.Table<V275Result>().Where(v => v.SourceImageUID == imageUID && v.ImageRollName == imageRollName).FirstOrDefault();
+        public bool Exists_V275Result(string imageRollUID, string imageUID) => Connection?.Table<V275Result>().Where(v => v.SourceImageUID == imageUID && v.ImageRollUID == imageRollUID).Count() > 0;
+        public V275Result Select_V275Result(string imageRollUID, string imageUID) => Connection?.Table<V275Result>().Where(v => v.SourceImageUID == imageUID && v.ImageRollUID == imageRollUID).FirstOrDefault();
         public List<V275Result> SelectAll_V275Result() => Connection?.Query<V275Result>("select * from V275Result");
-        public int? Delete_V275Result(string imageRollName, string imageUID) => Connection?.Table<V275Result>().Delete(v => v.SourceImageUID == imageUID && v.ImageRollName == imageRollName);
+        public int? Delete_V275Result(string imageRollUID, string imageUID) => Connection?.Table<V275Result>().Delete(v => v.SourceImageUID == imageUID && v.ImageRollUID == imageRollUID);
 
 
         public int? InsertOrReplace_V5Result(V5Result result) => Connection?.InsertOrReplace(result);
-        public bool Exists_V5Result(string imageRollName, string imageUID) => Connection?.Table<V5Result>().Where(v => v.SourceImageUID == imageUID && v.ImageRollName == imageRollName).Count() > 0;
-        public V5Result Select_V5Result(string imageRollName, string imageUID) => Connection?.Table<V5Result>().Where(v => v.SourceImageUID == imageUID && v.ImageRollName == imageRollName).FirstOrDefault();
+        public bool Exists_V5Result(string imageRollUID, string imageUID) => Connection?.Table<V5Result>().Where(v => v.SourceImageUID == imageUID && v.ImageRollUID == imageRollUID).Count() > 0;
+        public V5Result Select_V5Result(string imageRollUID, string imageUID) => Connection?.Table<V5Result>().Where(v => v.SourceImageUID == imageUID && v.ImageRollUID == imageRollUID).FirstOrDefault();
         public List<V5Result> SelectAll_V5Result() => Connection?.Query<V5Result>("select * from V5Result");
-        public int? Delete_V5Result(string imageRollName, string imageUID) => Connection?.Table<V5Result>().Delete(v => v.SourceImageUID == imageUID && v.ImageRollName == imageRollName);
+        public int? Delete_V5Result(string imageRollUID, string imageUID) => Connection?.Table<V5Result>().Delete(v => v.SourceImageUID == imageUID && v.ImageRollUID == imageRollUID);
 
 
         public int? InsertOrReplace_L95xxResult(L95xxResult result) => Connection?.InsertOrReplace(result);
-        public bool Exists_L95xxResult(string imageRollName, string imageUID) => Connection?.Table<L95xxResult>().Where(v => v.SourceImageUID == imageUID && v.ImageRollName == imageRollName).Count() > 0;
-        public L95xxResult Select_L95xxResult(string imageRollName, string imageUID) => Connection?.Table<L95xxResult>().Where(v => v.SourceImageUID == imageUID && v.ImageRollName == imageRollName).FirstOrDefault();
+        public bool Exists_L95xxResult(string imageRollUID, string imageUID) => Connection?.Table<L95xxResult>().Where(v => v.SourceImageUID == imageUID && v.ImageRollUID == imageRollUID).Count() > 0;
+        public L95xxResult Select_L95xxResult(string imageRollUID, string imageUID) => Connection?.Table<L95xxResult>().Where(v => v.SourceImageUID == imageUID && v.ImageRollUID == imageRollUID).FirstOrDefault();
         public List<L95xxResult> SelectAll_L95xxResult() => Connection?.Query<L95xxResult>("select * from L95xxResult");
-        public int? Delete_L95xxResult(string imageRollName, string imageUID) => Connection?.Table<L95xxResult>().Delete(v => v.SourceImageUID == imageUID && v.ImageRollName == imageRollName);
+        public int? Delete_L95xxResult(string imageRollUID, string imageUID) => Connection?.Table<L95xxResult>().Delete(v => v.SourceImageUID == imageUID && v.ImageRollUID == imageRollUID);
 
 
         public List<string> AllTableNames()

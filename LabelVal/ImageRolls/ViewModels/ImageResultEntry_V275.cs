@@ -60,7 +60,7 @@ public partial class ImageResultEntry
 
     private void V275GetStored()
     {
-        V275ResultRow = SelectedDatabase.Select_V275Result(SelectedImageRoll.Name, SourceImageUID);
+        V275ResultRow = SelectedDatabase.Select_V275Result(SelectedImageRoll.UID, SourceImageUID);
 
         if (V275ResultRow == null)
         {

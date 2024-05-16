@@ -72,7 +72,7 @@ public class Controller
 
         TimeDate = DateTime.UtcNow.Ticks;
 
-        LedgerEntry = new LedgerDatabase.LedgerEntry() { GradingStandard = SelectedImageRoll.Name, TimeDate = TimeDate, Completed = 0, ProductPart = v275Node.Product.part, CameraMAC = v275Node.Details.cameraMAC };
+        LedgerEntry = new LedgerDatabase.LedgerEntry() { GradingStandard = SelectedImageRoll.UID, TimeDate = TimeDate, Completed = 0, ProductPart = v275Node.Product.part, CameraMAC = v275Node.Details.cameraMAC };
 
         return !OpenDatabases() ? null : !UpdateRunEntries() ? null : this;
     }
@@ -196,7 +196,7 @@ public class Controller
                     return false;
                 }
 
-                var sRow = ImageResultsDatabase.Select_V275Result(SelectedImageRoll.Name, label.SourceImageUID);
+                var sRow = ImageResultsDatabase.Select_V275Result(SelectedImageRoll.UID, label.SourceImageUID);
 
                 if (sRow == null || string.IsNullOrEmpty(sRow.Report))
                     continue;

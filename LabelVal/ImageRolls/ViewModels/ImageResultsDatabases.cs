@@ -3,10 +3,12 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using LabelVal.Messages;
 using MahApps.Metro.Controls.Dialogs;
+using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace LabelVal.ImageRolls.ViewModels;
 public partial class ImageResultsDatabases : ObservableObject
@@ -120,4 +122,7 @@ public partial class ImageResultsDatabases : ObservableObject
         //}
 
     }
+
+    [RelayCommand]
+    private void UIDToClipboard() => Clipboard.SetText(Guid.NewGuid().ToString());
 }

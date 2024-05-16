@@ -54,6 +54,14 @@
     <None Remove="Assets\Image Rolls\GS1 TABLE 6\600\setting.imgr" />
     <None Remove="Assets\Image Rolls\GS1 TABLE 8\600\setting.imgr" />
     <None Remove="Assets\Image Rolls\GS1 TABLE 9\600\setting.imgr" />
+    <None Remove="Assets\Image Rolls\OCR OCV RECOGNITION\300\setting.imgr" />
+    <None Remove="Assets\Image Rolls\OCR OCV RECOGNITION\600\setting.imgr" />
+    <None Remove="Assets\Image Rolls\SYMBOLOGIES A NEW\300\setting.imgr" />
+    <None Remove="Assets\Image Rolls\SYMBOLOGIES A NEW\600\setting.imgr" />
+    <None Remove="Assets\Image Rolls\SYMBOLOGIES A\600\setting.imgr" />
+    <None Remove="Assets\Image Rolls\SYMBOLOGIES B\600\setting.imgr" />
+    <None Remove="Assets\Image Rolls\SYMBOLOGIES C\600\setting.imgr" />
+    <None Remove="Assets\Image Rolls\SYMBOLOGIES D\600\setting.imgr" />
     <None Remove="Assets\Image Rolls\VALIDATION 6x4\300\setting.imgr" />
     <None Remove="Assets\Image Rolls\VALIDATION\300\setting.imgr" />
     <None Remove="Assets\Image Rolls\VALIDATION\600\setting.imgr" />
@@ -100,6 +108,30 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Image Rolls\GS1 TABLE 9\600\setting.imgr">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Image Rolls\OCR OCV RECOGNITION\300\setting.imgr">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Image Rolls\OCR OCV RECOGNITION\600\setting.imgr">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Image Rolls\SYMBOLOGIES A NEW\300\setting.imgr">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Image Rolls\SYMBOLOGIES A NEW\600\setting.imgr">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Image Rolls\SYMBOLOGIES A\600\setting.imgr">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Image Rolls\SYMBOLOGIES B\600\setting.imgr">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Image Rolls\SYMBOLOGIES C\600\setting.imgr">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Image Rolls\SYMBOLOGIES D\600\setting.imgr">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Image Rolls\VALIDATION 6x4\300\setting.imgr">

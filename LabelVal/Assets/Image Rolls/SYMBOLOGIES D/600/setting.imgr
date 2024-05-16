@@ -1,6 +1,6 @@
 {
-  "UID": "a07011de-9bbd-4b7d-8011-c433a4815f16",
-  "Name": "Validation",
+  "UID": "a07011de-9bbd-4b7d-8011-c433a4815f29",
+  "Name": "Symbologies D",
   "Standard": "ISO15415_15416",
   "GS1Table": "None",
   "WriteSectorsBeforeProcess": false,

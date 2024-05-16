@@ -73,12 +73,5 @@ public partial class ImageRolls : ObservableObject
 
         //Logger.Info("Processed {count} image rolls.", UserImageRolls.Count);
     }
-    private void SelectImageRoll()
-    {
-        ImageRollEntry std;
-        if (SelectedImageRoll != null && (std = UserImageRolls.FirstOrDefault((e) => e.Name.Equals(SelectedImageRoll.Name))) != null)
-            SelectedImageRoll = std;
-        else if (UserImageRolls.Count > 0)
-            SelectedImageRoll = UserImageRolls.First();
-    }
+
 }

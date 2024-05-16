@@ -132,20 +132,7 @@
                                             <ControlTemplate TargetType="{x:Type GroupItem}">
                                                 <Expander>
                                                     <Expander.Header>
-                                                        <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}">
-                                                            <TextBlock.Style>
-                                                                <Style TargetType="TextBlock">
-                                                                    <Style.Triggers>
-                                                                        <DataTrigger Binding="{Binding Name}" Value="TRUE">
-                                                                            <Setter Property="Text" Value="GS1"/>
-                                                                        </DataTrigger>
-                                                                        <DataTrigger Binding="{Binding Name}" Value="FALSE">
-                                                                            <Setter Property="Text" Value="ISO"/>
-                                                                        </DataTrigger>
-                                                                    </Style.Triggers>
-                                                                </Style>
-                                                            </TextBlock.Style>
-                                                        </TextBlock>
+                                                        <TextBlock Text="{Binding Name}" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                                                     </Expander.Header>
 
                                                     <ItemsPresenter />

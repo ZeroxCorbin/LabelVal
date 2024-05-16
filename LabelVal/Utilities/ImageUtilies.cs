@@ -17,7 +17,8 @@ namespace LabelVal.Utilities
             return res;
         }
 
-        public static void SetImageDPI(byte[] image, int dpi)
+        //Set DPI for 95xx systems
+        public static void SetBitmapDPI(byte[] image, int dpi)
         {
             var value = BitConverter.GetBytes(SetDPI(dpi));
 
@@ -29,10 +30,26 @@ namespace LabelVal.Utilities
                 image[i++] = b;
         }
 
+      //Seek #FileIndex, 7   ' position of balance information
+      //Get #FileIndex, , BalanceInfo
+      //If BalanceInfo = Asc("C") Or BalanceInfo = Asc("3") Then
+      //  ColorFlag = Chr(BalanceInfo)
+      //End If
+        public static void SetBitmapColorFlag(byte[] image, char balanceInfo)
+        {
+            var value = BitConverter.GetBytes(balanceInfo);
+
+            int i = 7;
+            foreach (byte b in value)
+                image[i++] = b;
+        }
+
+
+
         public static byte[] ConvertToPng(byte[] img, int dpi)
         {
             if (dpi > 0)
-                SetImageDPI(img, dpi);
+                SetBitmapDPI(img, dpi);
 
             System.Windows.Media.Imaging.PngBitmapEncoder encoder = new();
 
@@ -120,7 +137,7 @@ namespace LabelVal.Utilities
             byte[] ret = stream.ToArray();
 
             if (dpi > 0)
-                SetImageDPI(ret, dpi);
+                SetBitmapDPI(ret, dpi);
 
             return ret;
         }

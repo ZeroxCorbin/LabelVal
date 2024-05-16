@@ -140,7 +140,7 @@ public partial class ImageResultEntry : ObservableRecipient,
 
             _ = SelectedDatabase.InsertOrReplace_V275Result(new Databases.ImageResults.V275Result
             {
-                ImageRollName = SelectedImageRoll.Name,
+                ImageRollUID = SelectedImageRoll.UID,
                 SourceImageUID = SourceImageUID,
                 SourceImage = SourceImage,
                 Template = JsonConvert.SerializeObject(V275CurrentTemplate),
@@ -160,7 +160,7 @@ public partial class ImageResultEntry : ObservableRecipient,
 
             _ = SelectedDatabase.InsertOrReplace_V5Result(new Databases.ImageResults.V5Result
             {
-                ImageRollName = SelectedImageRoll.Name,
+                ImageRollUID = SelectedImageRoll.UID,
                 SourceImageUID = SourceImageUID,
                 SourceImage = SourceImage,
                 Report = JsonConvert.SerializeObject(V5CurrentReport),
@@ -183,7 +183,7 @@ public partial class ImageResultEntry : ObservableRecipient,
 
             _ = SelectedDatabase.InsertOrReplace_L95xxResult(new Databases.ImageResults.L95xxResult
             {
-                ImageRollName = SelectedImageRoll.Name,
+                ImageRollUID = SelectedImageRoll.UID,
                 SourceImageUID = SourceImageUID,
                 SourceImage = SourceImage,
                 Report = JsonConvert.SerializeObject(temp),
@@ -202,17 +202,17 @@ public partial class ImageResultEntry : ObservableRecipient,
         {
             if (device == "V275")
             {
-                _ = SelectedDatabase.Delete_V275Result(SelectedImageRoll.Name, SourceImageUID);
+                _ = SelectedDatabase.Delete_V275Result(SelectedImageRoll.UID, SourceImageUID);
                 V275GetStored();
             }
             else if (device == "V5")
             {
-                _ = SelectedDatabase.Delete_V5Result(SelectedImageRoll.Name, SourceImageUID);
+                _ = SelectedDatabase.Delete_V5Result(SelectedImageRoll.UID, SourceImageUID);
                 V5GetStored();
             }
             else if (device == "L95xx")
             {
-                _ = SelectedDatabase.Delete_L95xxResult(SelectedImageRoll.Name, SourceImageUID);
+                _ = SelectedDatabase.Delete_L95xxResult(SelectedImageRoll.UID, SourceImageUID);
                 L95xxGetStored();
             }
         }
@@ -228,7 +228,7 @@ public partial class ImageResultEntry : ObservableRecipient,
             V275CurrentSectors.Clear();
             V275DiffSectors.Clear();
 
-            V275ResultRow = SelectedDatabase.Select_V275Result(SelectedImageRoll.Name, SourceImageUID);
+            V275ResultRow = SelectedDatabase.Select_V275Result(SelectedImageRoll.UID, SourceImageUID);
 
             if (V275ResultRow == null)
             {
@@ -250,7 +250,7 @@ public partial class ImageResultEntry : ObservableRecipient,
             V5CurrentSectors.Clear();
             V5DiffSectors.Clear();
 
-            V5ResultRow = SelectedDatabase.Select_V5Result(SelectedImageRoll.Name, SourceImageUID);
+            V5ResultRow = SelectedDatabase.Select_V5Result(SelectedImageRoll.UID, SourceImageUID);
 
             if (V5ResultRow == null)
             {
@@ -272,7 +272,7 @@ public partial class ImageResultEntry : ObservableRecipient,
             L95xxCurrentSectors.Clear();
             L95xxDiffSectors.Clear();
 
-            L95xxResultRow = SelectedDatabase.Select_L95xxResult(SelectedImageRoll.Name, SourceImageUID);
+            L95xxResultRow = SelectedDatabase.Select_L95xxResult(SelectedImageRoll.UID, SourceImageUID);
 
             if (L95xxResultRow == null)
             {

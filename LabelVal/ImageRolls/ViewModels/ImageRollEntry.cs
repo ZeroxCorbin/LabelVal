@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using LabelVal.Messages;
 using LabelVal.Sectors.ViewModels;
 using Newtonsoft.Json;
+using System;
 using System.Collections.ObjectModel;
 using System.Drawing.Printing;
 using System.Text.RegularExpressions;
@@ -12,6 +13,7 @@ namespace LabelVal.ImageRolls.ViewModels;
 [JsonObject(MemberSerialization.OptIn)]
 public partial class ImageRollEntry : ObservableRecipient, IRecipient<PrinterMessages.SelectedPrinterChanged>
 {
+    [ObservableProperty][property: JsonProperty] private string uID = new Guid().ToString();
     [ObservableProperty][property: JsonProperty] private string name;
     [ObservableProperty] private string path;
 
