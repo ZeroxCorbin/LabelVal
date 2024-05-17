@@ -27,7 +27,7 @@ public partial class ImageResults : ObservableRecipient,
 
     private int PrintCount => App.Settings.GetValue<int>(nameof(PrintCount));
 
-    [ObservableProperty] private ObservableCollection<ImageResultEntry> imageResultsList = []; 
+    [ObservableProperty] private ObservableCollection<ImageResultEntry> imageResultsList = [];
 
     [ObservableProperty] private V275.ViewModels.Node selectedNode;
     [ObservableProperty] private ImageRollEntry selectedImageRoll;
@@ -72,7 +72,7 @@ public partial class ImageResults : ObservableRecipient,
             SelectedNode.Connection.WebSocket.StateChange += WebSocket_StateChange;
         }
     }
-    public void Receive(ImageRollMessages.SelectedImageRollChanged message) => SelectedImageRoll = message.Value;
+    public void Receive(ImageRollMessages.SelectedImageRollChanged message) { if (SelectedImageRoll != null) SelectedImageRoll.Images.Clear(); SelectedImageRoll = message.Value; }
     public void Receive(PrinterMessages.SelectedPrinterChanged message) => SelectedPrinter = message.Value;
     public void Receive(DatabaseMessages.SelectedDatabseChanged message) => SelectedDatabase = message.Value;
     public void Receive(ScannerMessages.SelectedScannerChanged message)
@@ -110,37 +110,33 @@ public partial class ImageResults : ObservableRecipient,
     {
         foreach (var lab in ImageResultsList)
             lab.V275ProcessImage -= V275ProcessImage;
-        
+
         ImageResultsList.Clear();
     }
-    public void LoadImageResultsList()
+    public async void LoadImageResultsList()
     {
-        Logger.Info("Loading label images from standards directory: {name}", $"{App.AssetsImageRollRoot}\\{SelectedImageRoll.Name}\\");
+        App.Current.Dispatcher.Invoke(() => ClearImageResultsList());
 
-        ClearImageResultsList();
+        if (SelectedImageRoll.Images.Count == 0)
+           await SelectedImageRoll.LoadImages(); 
 
-        List<string> images = [];
-        foreach (var f in Directory.EnumerateFiles(SelectedImageRoll.Path))
-            if (Path.GetExtension(f) == ".png")
-                images.Add(f);
-
-        images.Sort();
-
-        Logger.Info("Found label images: {count}", images.Count);
-
-        foreach (var img in images)
+        List<Task> taskList = new List<Task>();
+        foreach (var img in SelectedImageRoll.Images)
         {
-            var comment = string.Empty;
-            if (File.Exists(img.Replace(".png", ".txt")))
-                comment = File.ReadAllText(img.Replace(".png", ".txt"));
-
-            var tmp = new ImageResultEntry(img, comment, SelectedNode, SelectedImageRoll, SelectedDatabase, SelectedScanner);
-
-            tmp.V275ProcessImage += V275ProcessImage;
-            ImageResultsList.Add(tmp);
+            var tsk = App.Current.Dispatcher.BeginInvoke(() => LoadResultEntries(img)).Task;
+            taskList.Add(tsk);
         }
+
+       await Task.WhenAll(taskList.ToArray());
     }
 
+    private void LoadResultEntries(ImageEntry img)
+    {
+        var tmp = new ImageResultEntry(img, SelectedNode, SelectedImageRoll, SelectedDatabase, SelectedScanner);
+
+        tmp.V275ProcessImage += V275ProcessImage;
+        ImageResultsList.Add(tmp);
+    }
 
 
     #region V275 Image Results
@@ -155,7 +151,7 @@ public partial class ImageResults : ObservableRecipient,
 
             var printer = new Printer.Controller();
 
-            printer.Print(imageResults.SourceImagePath, PrintCount, SelectedPrinter.PrinterName, "");
+            printer.Print(imageResults.SourceImage.Path, PrintCount, SelectedPrinter.PrinterName, "");
 
             imageResults.IsV275Working = false;
 
@@ -211,7 +207,7 @@ public partial class ImageResults : ObservableRecipient,
 
                 if (type == "source")
                 {
-                    if (!sim.CopyImage(imageResults.SourceImagePath, prepend))
+                    if (!sim.CopyImage(imageResults.SourceImage.Path, prepend))
                     {
                         SendErrorMessage("Could not copy the image to the simulator images directory.");
                         imageResults.IsV275Working = false;
@@ -220,7 +216,7 @@ public partial class ImageResults : ObservableRecipient,
                 }
                 else
                 {
-                    if (!sim.SaveImage(imageResults.SourceImagePath, imageResults.V275Image))
+                    if (!sim.SaveImage(imageResults.SourceImage.Path, imageResults.V275Image))
                     {
                         SendErrorMessage("Could not save the image to the simulator images directory.");
                         imageResults.IsV275Working = false;
@@ -259,10 +255,10 @@ public partial class ImageResults : ObservableRecipient,
                 if (RunViewModel.State != Run.Controller.RunStates.IDLE)
                 {
                     var data = $"Loop {RunViewModel.RunController.CurrentLoopCount} : {RunViewModel.RunController.CurrentLabelCount}";
-                    printer.Print(imageResults.SourceImagePath, 1, SelectedPrinter.PrinterName, data);
+                    printer.Print(imageResults.SourceImage.Path, 1, SelectedPrinter.PrinterName, data);
                 }
                 else
-                    printer.Print(imageResults.SourceImagePath, PrintCount, SelectedPrinter.PrinterName, "");
+                    printer.Print(imageResults.SourceImage.Path, PrintCount, SelectedPrinter.PrinterName, "");
 
                 if (!SelectedNode.IsLoggedIn_Control)
                     imageResults.IsV275Working = false;

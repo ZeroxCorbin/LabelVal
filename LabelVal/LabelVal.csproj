@@ -1268,6 +1268,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\JSONViewer_WPF\JSONViewer_WPF.csproj" />
     <ProjectReference Include="..\..\LibDatabases\LibSimpleDatabase\LibSimpleDatabase.csproj" />
+    <ProjectReference Include="..\..\TaskQueue\TaskQueue.csproj" />
     <ProjectReference Include="..\..\V275_REST_Lib\V275_REST_Lib.csproj" />
     <ProjectReference Include="..\..\V5_REST_Lib\V5_REST_Lib.csproj" />
   </ItemGroup>

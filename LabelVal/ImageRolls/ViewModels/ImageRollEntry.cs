@@ -3,16 +3,25 @@ using CommunityToolkit.Mvvm.Messaging;
 using LabelVal.Messages;
 using LabelVal.Sectors.ViewModels;
 using Newtonsoft.Json;
+using NHibernate.Util;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing.Printing;
+using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Windows.Threading;
+using TaskQueue;
 
 namespace LabelVal.ImageRolls.ViewModels;
 
 [JsonObject(MemberSerialization.OptIn)]
 public partial class ImageRollEntry : ObservableRecipient, IRecipient<PrinterMessages.SelectedPrinterChanged>
 {
+    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
     [ObservableProperty][property: JsonProperty] private string uID = new Guid().ToString();
     [ObservableProperty][property: JsonProperty] private string name;
     [ObservableProperty] private string path;
@@ -54,4 +63,43 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PrinterMes
     }
 
     public void Receive(PrinterMessages.SelectedPrinterChanged message) => SelectedPrinter = message.Value;
+
+    private List<ImageEntry> entries = new List<ImageEntry>();
+    public async Task LoadImages()
+    {
+        if (Images.Count > 0)
+            return;
+
+        Logger.Info("Loading label images from standards directory: {name}", $"{App.AssetsImageRollRoot}\\{Name}\\");
+
+        List<string> images = [];
+        foreach (var f in Directory.EnumerateFiles(Path))
+            if (System.IO.Path.GetExtension(f) == ".png")
+                images.Add(f);
+
+
+        entries.Clear();
+        List<Task> taskList = new List<Task>();
+        foreach (var f in images)
+        {
+            var tsk = App.Current.Dispatcher.BeginInvoke(() => LoadImage(f)).Task;
+            taskList.Add(tsk);
+        }
+
+        await Task.WhenAll(taskList.ToArray());
+
+    }
+
+    private void LoadImage(string path)
+    {
+        try
+        {
+            var image = new ImageEntry(path, targetDPI, targetDPI);
+            Images.Add(image);
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(ex, "Failed to load image: {name}", path);
+        }
+    }
 }

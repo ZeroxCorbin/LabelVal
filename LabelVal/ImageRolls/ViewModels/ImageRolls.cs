@@ -31,7 +31,6 @@ public partial class ImageRolls : ObservableObject
     {
         Logger.Info("Loading image rolls from file system. {path}", App.AssetsImageRollRoot);
 
-        UserImageRolls.Clear();
         FixedImageRolls.Clear();
 
         foreach (var dir in Directory.EnumerateDirectories(App.AssetsImageRollRoot).ToList().OrderBy((e) => Regex.Replace(e, "[0-9]+", match => match.Value.PadLeft(10, '0'))))

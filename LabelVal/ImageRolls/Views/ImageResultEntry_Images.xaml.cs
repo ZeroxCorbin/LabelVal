@@ -1,4 +1,5 @@
 ﻿using LabelVal.Dialogs;
+using LabelVal.ImageRolls.ViewModels;
 using LabelVal.WindowViews;
 using MahApps.Metro.Controls.Dialogs;
 using System;
@@ -62,6 +63,23 @@ namespace LabelVal.ImageRolls.Views
             var dc = new ImageViewerDialogViewModel();
 
             dc.LoadImage(image, overlay);
+            if (dc.Image == null) return false;
+
+            var yourParentWindow = (MainWindowView)Window.GetWindow(this);
+
+            dc.Width = yourParentWindow.ActualWidth - 100;
+            dc.Height = yourParentWindow.ActualHeight - 100;
+
+            _ = DialogCoordinator.Instance.ShowMetroDialogAsync(yourParentWindow.DataContext, new ImageViewerDialogView() { DataContext = dc });
+
+            return true;
+
+        }
+        private bool ShowImage(ImageEntry image, DrawingImage overlay)
+        {
+            var dc = new ImageViewerDialogViewModel();
+
+            dc.LoadImage(image.Image, overlay);
             if (dc.Image == null) return false;
 
             var yourParentWindow = (MainWindowView)Window.GetWindow(this);

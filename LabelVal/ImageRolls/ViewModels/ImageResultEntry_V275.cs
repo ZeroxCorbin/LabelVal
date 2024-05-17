@@ -60,7 +60,7 @@ public partial class ImageResultEntry
 
     private void V275GetStored()
     {
-        V275ResultRow = SelectedDatabase.Select_V275Result(SelectedImageRoll.UID, SourceImageUID);
+        V275ResultRow = SelectedDatabase.Select_V275Result(SelectedImageRoll.UID, SourceImage.UID);
 
         if (V275ResultRow == null)
         {
@@ -147,7 +147,7 @@ public partial class ImageResultEntry
         {
             if (V275Image == null)
             {
-                V275Image = SourceImage.ToArray();
+                V275Image = SourceImage.GetBitmapBytes();
                 IsV275ImageStored = false;
             }
         }

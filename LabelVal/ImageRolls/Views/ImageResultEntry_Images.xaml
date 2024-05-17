@@ -195,7 +195,7 @@
                         <TextBlock Text="{Binding Source.DpiY, ElementName=SourceImage, StringFormat=N, Converter={StaticResource doubleToString}}"/>
                     </DockPanel>-->
 
-                    <TextBlock Text="{Binding SourceImageUID, Converter={StaticResource shortenUID}}" ToolTip="{Binding SourceImageUID}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding SourceImage.UID, Converter={StaticResource shortenUID}}" ToolTip="{Binding SourceImage.UID}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
 
                 </DockPanel>
 
@@ -203,7 +203,7 @@
 
             <Grid Margin="3">
                 <Image x:Name="SourceImage" MaxHeight="400" Width="400"
-                        Source="{Binding SourceImage, Converter={StaticResource bytesToImage}}"
+                        Source="{Binding SourceImage.ImageLow, Mode=OneTime}"
                         MouseDown="SourceImage_MouseDown"
                         RenderOptions.BitmapScalingMode="NearestNeighbor"
                         HorizontalAlignment="Left" VerticalAlignment="Top"
@@ -219,9 +219,9 @@
                                     </Grid>
                                 </Setter.Value>
                             </Setter>
-                            <Setter Property="ToolTip" Value="{Binding SourceImageComment}"/>
+                            <Setter Property="ToolTip" Value="{Binding SourceImage.Comment}"/>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding SourceImageComment}" Value="">
+                                <DataTrigger Binding="{Binding SourceImage.Comment}" Value="{x:Null}">
                                     <Setter Property="Content" Value=""/>
                                     <Setter Property="ToolTip" Value="{x:Null}"/>
                                 </DataTrigger>

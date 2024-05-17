@@ -196,7 +196,7 @@ public class Controller
                     return false;
                 }
 
-                var sRow = ImageResultsDatabase.Select_V275Result(SelectedImageRoll.UID, label.SourceImageUID);
+                var sRow = ImageResultsDatabase.Select_V275Result(SelectedImageRoll.UID, label.SourceImage.UID);
 
                 if (sRow == null || string.IsNullOrEmpty(sRow.Report))
                     continue;
@@ -241,8 +241,8 @@ public class Controller
                     LabelTemplate = sRow.Template,
                     LabelReport = sRow.Report,
                     RepeatGoldenImage = sRow.StoredImage,
-                    LabelImageUID = label.SourceImageUID,
-                    LabelImage = Node.IsSimulator ? null : label.SourceImage,
+                    LabelImageUID = label.SourceImage.UID,
+                    LabelImage = Node.IsSimulator ? null : label.SourceImage.GetBitmapBytes(),
                     LabelImageOrder = CurrentLabelCount,
                     LoopCount = CurrentLoopCount
                 };

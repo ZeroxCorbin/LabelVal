@@ -50,7 +50,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Verifier
 
     private void L95xxGetStored()
     {
-        L95xxResultRow = SelectedDatabase.Select_L95xxResult(SelectedImageRoll.UID, SourceImageUID);
+        L95xxResultRow = SelectedDatabase.Select_L95xxResult(SelectedImageRoll.UID, SourceImage.UID);
 
         if (L95xxResultRow == null)
         {

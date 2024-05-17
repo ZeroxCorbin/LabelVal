@@ -90,10 +90,10 @@ public partial class ImageResultEntry
             else
                 SelectedScanner.FTPClient.DeleteRemoteFiles(path);
 
-            path = $"{path}/image{System.IO.Path.GetExtension(SourceImagePath)}";
+            path = $"{path}/image{System.IO.Path.GetExtension(SourceImage.Path)}";
 
             if (imageType == "source")
-                SelectedScanner.FTPClient.UploadFile(SourceImagePath, path);
+                SelectedScanner.FTPClient.UploadFile(SourceImage.Path, path);
             else if (imageType == "stored")
                 SelectedScanner.FTPClient.UploadFile(V5Image, path);
             else if (imageType == "v275stored")
@@ -142,7 +142,7 @@ public partial class ImageResultEntry
         {
             if (V5Image == null)
             {
-                V5Image = SourceImage.ToArray();
+                V5Image = SourceImage.GetBitmapBytes();
                 IsV5ImageStored = false;
             }
         }
@@ -184,7 +184,7 @@ public partial class ImageResultEntry
 
     private void V5GetStored()
     {
-        V5ResultRow = SelectedDatabase.Select_V5Result(SelectedImageRoll.UID, SourceImageUID);
+        V5ResultRow = SelectedDatabase.Select_V5Result(SelectedImageRoll.UID, SourceImage.UID);
 
         if (V5ResultRow == null)
         {
