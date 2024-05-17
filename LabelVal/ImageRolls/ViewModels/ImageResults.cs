@@ -113,7 +113,7 @@ public partial class ImageResults : ObservableRecipient,
 
         ImageResultsList.Clear();
     }
-    public async void LoadImageResultsList()
+    public async Task LoadImageResultsList()
     {
         App.Current.Dispatcher.Invoke(() => ClearImageResultsList());
 
@@ -127,7 +127,7 @@ public partial class ImageResults : ObservableRecipient,
             taskList.Add(tsk);
         }
 
-       await Task.WhenAll(taskList.ToArray());
+      // await Task.WhenAll(taskList.ToArray());
     }
 
     private void LoadResultEntries(ImageEntry img)

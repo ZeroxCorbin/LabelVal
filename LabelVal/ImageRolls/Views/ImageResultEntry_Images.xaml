@@ -50,25 +50,11 @@
                     </md:Card>
 
                     <!--Save Image-->
-                    <Button Command="{Binding SaveCommand}" Padding="0" ToolTip="Save the source image."
-                            Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
-                        <Button.Style>
-
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
-
-                                <Setter Property="Visibility" Value="Visible"/>
-
-                                <Style.Triggers>
-                                    <DataTrigger Value="{x:Null}" Binding="{Binding SourceImage}">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-
-                            </Style>
-                        </Button.Style>
-
-                        <IconPacks:PackIconMaterial Kind="ContentSave"  Margin="0,-2,0,0" Height="12" Width="12"/>
-
+                    <Button Command="{Binding SaveCommand}" Style="{StaticResource MaterialDesignFloatingActionDarkButton}" Padding="0" ToolTip="Save the source image."
+                            Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">        
+                        
+                        <IconPacks:PackIconMaterial Kind="ContentSave" Height="12" Width="12"/>
+                        
                     </Button>
 
                     <!--V275 Process Source Image-->
@@ -104,7 +90,7 @@
                     </Button>
 
                     <!--V275 Print Source Image-->
-                    <Button Command="{Binding V275ProcessCommand}" CommandParameter="print" 
+                    <Button Command="{Binding V275ProcessCommand}" CommandParameter="print" ToolTip="V275: Print the source image and read the results."
                                     Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0"
                                     md:ButtonProgressAssist.IsIndeterminate="True"
                                     md:ButtonProgressAssist.Value="-1"
@@ -120,17 +106,40 @@
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
                                             <Condition Binding="{Binding SelectedNode.IsSimulator}" Value="False"/>
+                                            <Condition Binding="{Binding SelectedNode.IsLoggedIn_Control}" Value="True"/>
                                         </MultiDataTrigger.Conditions>
 
-                                        <Setter Property="ToolTip" Value="V275: Print the source image and read the results."/>
                                         <Setter Property="Visibility" Value="Visible"/>
                                     </MultiDataTrigger>
 
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <!--Print Source Image-->
+                    <Button Command="{Binding V275ProcessCommand}" CommandParameter="print" ToolTip="Print the source image."
+                                    Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0"
+                                    md:ButtonProgressAssist.IsIndeterminate="True"
+                                    md:ButtonProgressAssist.Value="-1"
+                                    md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV275Working}">
+
+                        <IconPacks:PackIconMaterial Kind="Printer" Height="12" Width="12"/>
+
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+
+                                <Style.Triggers>
+
                                     <DataTrigger Binding="{Binding SelectedNode.IsLoggedIn_Control}" Value="False">
-                                        <Setter Property="ToolTip" Value="Print the source image."/>
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+
+                                    <DataTrigger Binding="{Binding SelectedNode}" Value="{x:Null}">
+                                        <Setter Property="Visibility" Value="Visible"/>
                                     </DataTrigger>
                                 </Style.Triggers>
-                                    
                             </Style>
                         </Button.Style>
                     </Button>
@@ -140,7 +149,7 @@
                                     Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0" BorderBrush="{DynamicResource YellowBrush2}"
                                     md:ButtonProgressAssist.IsIndeterminate="True"
                                     md:ButtonProgressAssist.Value="-1"
-                                    md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV275Working}">
+                                    md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV5Working}">
 
                         <IconPacks:PackIconMaterial Kind="Camera"  Margin="-1,-1,0,0" Height="12" Width="12"/>
 
@@ -409,6 +418,9 @@
 
                     <!--Save Image-->
                     <Button Command="{Binding SaveCommand}" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                        
+                        <IconPacks:PackIconMaterial Kind="ContentSave" Height="12" Width="12"/>
+                        
                         <Button.Style>
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
                                 <Setter Property="CommandParameter" Value="v275Stored"/>
@@ -427,9 +439,6 @@
                                 </Style.Triggers>
                             </Style>
                         </Button.Style>
-
-                        <IconPacks:PackIconMaterial Kind="ContentSave"  Margin="0,-2,0,0" Height="12" Width="12"/>
-
                     </Button>
 
                     <!--Process V275 Stored Image-->
