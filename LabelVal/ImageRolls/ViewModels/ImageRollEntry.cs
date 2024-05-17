@@ -13,7 +13,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Threading;
-using TaskQueue;
 
 namespace LabelVal.ImageRolls.ViewModels;
 
@@ -52,14 +51,18 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PrinterMes
 
     public ObservableCollection<ImageEntry> Images { get; set; } = [];
 
-    public ImageRollEntry() => Images.CollectionChanged += (s, e) => ImageCount = Images.Count;
+    public ImageRollEntry() { Images.CollectionChanged += (s, e) => ImageCount = Images.Count; IsActive = true; }
 
-    public ImageRollEntry(string name, string path)
+    public ImageRollEntry(string name, string path, PrinterSettings printerSettings)
     {
+        SelectedPrinter = printerSettings;
+
         Name = name;
         Path = path;
 
         Images.CollectionChanged += (s, e) => ImageCount = Images.Count;
+
+        IsActive = true;
     }
 
     public void Receive(PrinterMessages.SelectedPrinterChanged message) => SelectedPrinter = message.Value;
@@ -94,7 +97,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PrinterMes
     {
         try
         {
-            var image = new ImageEntry(path, targetDPI, targetDPI);
+            var image = new ImageEntry(path, targetDPI, targetDPI, SelectedPrinter);
             Images.Add(image);
         }
         catch (Exception ex)

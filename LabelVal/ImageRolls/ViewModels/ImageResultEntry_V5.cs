@@ -94,10 +94,10 @@ public partial class ImageResultEntry
 
             if (imageType == "source")
                 SelectedScanner.FTPClient.UploadFile(SourceImage.Path, path);
-            else if (imageType == "stored")
-                SelectedScanner.FTPClient.UploadFile(V5Image, path);
-            else if (imageType == "v275stored")
-                SelectedScanner.FTPClient.UploadFile(V275Image, path);
+            else if (imageType == "v5Stored")
+                SelectedScanner.FTPClient.UploadFile(V5ResultRow.StoredImage, path);
+            else if (imageType == "v275Stored")
+                SelectedScanner.FTPClient.UploadFile(V275ResultRow.StoredImage, path);
 
 
             SelectedScanner.FTPClient.Disconnect();
@@ -140,11 +140,8 @@ public partial class ImageResultEntry
         }
         else
         {
-            if (V5Image == null)
-            {
-                V5Image = SourceImage.GetBitmapBytes();
-                IsV5ImageStored = false;
-            }
+            V5Image = SourceImage.GetBitmapBytes();
+            IsV5ImageStored = false;
         }
 
         V5CurrentSectors.Clear();
@@ -154,7 +151,7 @@ public partial class ImageResultEntry
 
         if (V5CurrentReport["event"]?["name"].ToString() == "cycle-report-alt")
         {
-           foreach (var rSec in V5CurrentReport["event"]?["data"]?["decodeData"])
+            foreach (var rSec in V5CurrentReport["event"]?["data"]?["decodeData"])
                 tempSectors.Add(new Sectors.ViewModels.Sector(rSec.ToObject<Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", SelectedImageRoll.SelectedStandard, selectedImageRoll.SelectedGS1Table));
 
         }
@@ -188,6 +185,8 @@ public partial class ImageResultEntry
 
         if (V5ResultRow == null)
         {
+            V5StoredSectors.Clear();
+
             if (V5CurrentSectors.Count == 0)
             {
                 V5Image = null;

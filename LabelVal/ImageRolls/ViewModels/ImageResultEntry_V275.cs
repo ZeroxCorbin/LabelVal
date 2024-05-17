@@ -145,11 +145,8 @@ public partial class ImageResultEntry
         }
         else
         {
-            if (V275Image == null)
-            {
-                V275Image = SourceImage.GetBitmapBytes();
-                IsV275ImageStored = false;
-            }
+            V275Image = SourceImage.GetBitmapBytes();
+            IsV275ImageStored = false;
         }
 
         V275CurrentSectors.Clear();

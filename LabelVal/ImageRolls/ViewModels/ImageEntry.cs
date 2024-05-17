@@ -24,27 +24,53 @@ public partial class ImageEntry : ObservableRecipient, IRecipient<PrinterMessage
     public BitmapImage ImageLow { get; }
     public string Comment { get; }
 
-    [ObservableProperty] int pixelWidth;
-    [ObservableProperty] int pixelHeight;
-
-    [ObservableProperty] double pageWidth;
-    [ObservableProperty] double pageHeight;
-
     [ObservableProperty] int targetDpiWidth;
     [ObservableProperty] int targetDpiHeight;
 
-    public int DpiWidth => (int)Math.Round(PixelWidth / (PageWidth / 100));
-    public int DpiHeight => (int)Math.Round(PixelHeight / (PageHeight / 100));
+    public double ImageWidth => Math.Round(Image.PixelWidth / Image.DpiX, 2);
+    public double ImageHeight => Math.Round(Image.PixelHeight / Image.DpiY, 2);
+    public long ImageTotalPixels => Image.PixelWidth * Image.PixelHeight;
+
+    public double PrinterWidth => Math.Round(SelectedPrinter.DefaultPageSettings.PrintableArea.Width / 100, 2);
+    public double PrinterHeight => Math.Round(SelectedPrinter.DefaultPageSettings.PrintableArea.Height / 100, 2);
+
+    public int PrinterPixelWidth => (int)Math.Round((SelectedPrinter.DefaultPageSettings.PrintableArea.Width / 100) * SelectedPrinter.DefaultPageSettings.PrinterResolution.X, 0);
+    public int PrinterPixelHeight => (int)Math.Round((SelectedPrinter.DefaultPageSettings.PrintableArea.Height / 100) * SelectedPrinter.DefaultPageSettings.PrinterResolution.Y, 0);
+    public long PrinterTotalPixels => PrinterPixelWidth * PrinterPixelHeight;
+
+    public double DeviationWidth => PrinterPixelWidth - Image.PixelWidth;
+    public double DeviationHeight => PrinterPixelHeight - Image.PixelHeight;
+
+    public double DeviationWidthPercent => Math.Round((DeviationWidth / Image.PixelWidth) * 100, 2);
+    public double DeviationHeightPercent => Math.Round((DeviationHeight / Image.PixelHeight) * 100, 2);
+
+    public double Printer2ImageTotalPixelDeviation => PrinterTotalPixels - ImageTotalPixels;
+
+    public double V52ImageTotalPixelDeviation => 5488640 - ImageTotalPixels;
 
     public string UID { get; }
 
+
     [ObservableProperty] PrinterSettings selectedPrinter;
-    partial void OnSelectedPrinterChanged(PrinterSettings value) => throw new System.NotImplementedException();
-
-    public ImageEntry() { }  
-
-    public ImageEntry(string path, int targetDpiWidth, int targetDpiHeight)
+    partial void OnSelectedPrinterChanged(PrinterSettings value)
     {
+        OnPropertyChanged(nameof(PrinterWidth));
+        OnPropertyChanged(nameof(PrinterHeight));
+
+        OnPropertyChanged(nameof(PrinterPixelWidth)); 
+        OnPropertyChanged(nameof(PrinterPixelHeight));
+        OnPropertyChanged(nameof(PrinterTotalPixels));
+
+        OnPropertyChanged(nameof(DeviationWidth));
+        OnPropertyChanged(nameof(DeviationHeight));
+    }
+
+    public ImageEntry() { IsActive = true; }  
+
+    public ImageEntry(string path, int targetDpiWidth, int targetDpiHeight, PrinterSettings selectedPrinter)
+    {
+        SelectedPrinter = selectedPrinter;
+
         Path = path;
         TargetDpiHeight = targetDpiHeight;
         TargetDpiWidth = targetDpiWidth;
@@ -56,17 +82,19 @@ public partial class ImageEntry : ObservableRecipient, IRecipient<PrinterMessage
         var cmt = Path.Replace(System.IO.Path.GetExtension(Path), ".txt");
         if (File.Exists(cmt))
             Comment = File.ReadAllText(cmt);
+        
+        IsActive = true;
     }
     
-    public ImageEntry(byte[] image, string comment, double pageWidth, double pageHeight, int targetDpiWidth, int targetDpiHeight)
+    public ImageEntry(byte[] image, string comment, int targetDpiWidth, int targetDpiHeight, PrinterSettings selectedPrinter)
     {
+        SelectedPrinter = selectedPrinter;
+
         Image = BitmapImageUtilities.CreateBitmap(image);
         ImageLow = BitmapImageUtilities.CreateBitmap(image, 400);
         UID = ImageUtilities.ImageUID(image);
 
         Comment = comment;
-        PageWidth = pageWidth;
-        PageHeight = pageHeight;
         TargetDpiWidth = targetDpiWidth;
         TargetDpiHeight = targetDpiHeight;
     }

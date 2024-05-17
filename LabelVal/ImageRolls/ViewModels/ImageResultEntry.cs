@@ -15,9 +15,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Media.Imaging;
 using V275_REST_lib.Models;
-using V5_REST_Lib.Models;
 
 namespace LabelVal.ImageRolls.ViewModels;
 
@@ -56,11 +54,11 @@ public partial class ImageResultEntry : ObservableRecipient,
     [ObservableProperty] private Sectors.ViewModels.Sector selectedSector;
 
     private static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
-    public ImageResultEntry(ImageEntry sourceImage , Node selectedNode, ImageRollEntry selectedImageRoll, Databases.ImageResults selectedDatabase, Scanner selectedScanner)
+    public ImageResultEntry(ImageEntry sourceImage, Node selectedNode, ImageRollEntry selectedImageRoll, Databases.ImageResults selectedDatabase, Scanner selectedScanner)
     {
         SourceImage = sourceImage;
 
-       // GetImage(imagePath);
+        // GetImage(imagePath);
 
         SelectedImageRoll = selectedImageRoll;
         SelectedNode = selectedNode;
@@ -106,21 +104,21 @@ public partial class ImageResultEntry : ObservableRecipient,
         if (string.IsNullOrEmpty(path)) return;
         try
         {
-            if (type == "v275stored")
-            {
-                var bmp = ImageUtilities.ConvertToBmp(V275Image);
-                _ = SaveImageBytesToFile(path, bmp);
-                Clipboard.SetText(path);
-            }
+            byte[] bmp = null;
+            if (type == "v275Stored")
+                bmp = ImageUtilities.ConvertToBmp(V275ResultRow.StoredImage);
+            else if (type == "v275Current")
+                bmp = ImageUtilities.ConvertToBmp(V275Image);
             else if (type == "v5Stored")
-            {
-                var bmp = ImageUtilities.ConvertToBmp(V5Image);
-                _ = SaveImageBytesToFile(path, bmp);
-                Clipboard.SetText(path);
-            }
+                bmp = ImageUtilities.ConvertToBmp(V5ResultRow.StoredImage);
+            else if (type == "v5Current")
+                bmp = ImageUtilities.ConvertToBmp(V5Image);
             else
+                bmp = SourceImage.GetBitmapBytes();
+
+            if (bmp != null)
             {
-                _ = SaveImageBytesToFile(path, SourceImage.GetBitmapBytes());
+                _ = SaveImageBytesToFile(path, bmp);
                 Clipboard.SetText(path);
             }
         }
@@ -148,9 +146,7 @@ public partial class ImageResultEntry : ObservableRecipient,
                 StoredImage = V275Image
             });
 
-            V275CurrentSectors.Clear();
-
-            V275GetStored();
+            ClearRead(device, true);
         }
         else if (device == "V5")
         {
@@ -167,9 +163,7 @@ public partial class ImageResultEntry : ObservableRecipient,
                 StoredImage = V5Image
             });
 
-            V5CurrentSectors.Clear();
-
-            V5GetStored();
+            ClearRead(device, true);
         }
         else if (device == "L95xx")
         {
@@ -190,9 +184,7 @@ public partial class ImageResultEntry : ObservableRecipient,
                 //StoredImage = L95xxImage
             });
 
-            L95xxCurrentSectors.Clear();
-
-            L95xxGetStored();
+            ClearRead(device, true);
         }
     }
     [RelayCommand]
@@ -218,7 +210,8 @@ public partial class ImageResultEntry : ObservableRecipient,
         }
     }
     [RelayCommand]
-    private void ClearRead(string device)
+    private void ClearRead(string device) => ClearRead(device, false);
+    private void ClearRead(string device, bool getStored)
     {
         if (device == "V275")
         {
@@ -238,9 +231,14 @@ public partial class ImageResultEntry : ObservableRecipient,
             }
             else
             {
-                V275Image = V275ResultRow.StoredImage;
-                V275SectorsImageOverlay = V275CreateSectorsImageOverlay(JsonConvert.DeserializeObject<Job>(V275ResultRow.Template), false);
-                IsV275ImageStored = true;
+                if (getStored)
+                    V275GetStored();
+                else
+                {
+                    V275Image = V275ResultRow.StoredImage;
+                    V275SectorsImageOverlay = V275CreateSectorsImageOverlay(JsonConvert.DeserializeObject<Job>(V275ResultRow.Template), false);
+                    IsV275ImageStored = true;
+                }
             }
         }
         else if (device == "V5")
@@ -260,9 +258,14 @@ public partial class ImageResultEntry : ObservableRecipient,
             }
             else
             {
-                V5Image = V5ResultRow.StoredImage;
-                V5SectorsImageOverlay = V5CreateSectorsImageOverlay(JsonConvert.DeserializeObject<JObject>(V5ResultRow.Report));
-                IsV5ImageStored = true;
+                if (getStored)
+                    V5GetStored();
+                else
+                {
+                    V5Image = V5ResultRow.StoredImage;
+                    V5SectorsImageOverlay = V5CreateSectorsImageOverlay(JsonConvert.DeserializeObject<JObject>(V5ResultRow.Report));
+                    IsV5ImageStored = true;
+                }
             }
         }
         else if (device == "L95xx")
@@ -282,6 +285,9 @@ public partial class ImageResultEntry : ObservableRecipient,
             }
             else
             {
+                if (getStored)
+                    L95xxGetStored();
+
                 //L95xxImage = L95xxResultRow.StoredImage;
                 //L95xxSectorsImageOverlay = L95xxCreateSectorsImageOverlay(true);
                 //IsL95xxImageStored = true;

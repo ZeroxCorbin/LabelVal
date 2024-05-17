@@ -45,7 +45,7 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
         Printer = new Printer.ViewModels.Printer();
         VerifierManager = new LVS_95xx.ViewModels.VerifierManager();
 
-        ImageRolls = new ImageRolls.ViewModels.ImageRolls();
+        ImageRolls = new ImageRolls.ViewModels.ImageRolls(Printer.SelectedPrinter);
         ImageResultsDatabases = new ImageRolls.ViewModels.ImageResultsDatabases();
 
         ScannerManager = new V5.ViewModels.ScannerManager();

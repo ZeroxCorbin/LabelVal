@@ -53,7 +53,7 @@ public class BitmapImageUtilities
         try
         {
             using SHA256 md5 = SHA256.Create();
-            return BitConverter.ToString(md5.ComputeHash(ImageToBytesPNG(image)));
+            return BitConverter.ToString(md5.ComputeHash(ImageToBytesPNG(image))).Replace("-", String.Empty);
         }
         catch (Exception)
         {

@@ -4,12 +4,13 @@ using LabelVal.Messages;
 using Newtonsoft.Json;
 using System;
 using System.Collections.ObjectModel;
+using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace LabelVal.ImageRolls.ViewModels;
-public partial class ImageRolls : ObservableObject
+public partial class ImageRolls : ObservableRecipient, IRecipient<PrinterMessages.SelectedPrinterChanged>
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -21,11 +22,19 @@ public partial class ImageRolls : ObservableObject
     partial void OnSelectedImageRollChanged(ImageRollEntry value) => App.Settings.SetValue(nameof(SelectedImageRoll), value);
     partial void OnSelectedImageRollChanged(ImageRollEntry oldValue, ImageRollEntry newValue) => _ = WeakReferenceMessenger.Default.Send(new ImageRollMessages.SelectedImageRollChanged(newValue, oldValue));
 
-    public ImageRolls()
+    private PrinterSettings selectedPrinter;
+
+    public ImageRolls(PrinterSettings selectedPrinter)
     {
+        this.selectedPrinter = selectedPrinter;
+
         LoadImageRollsList();
-       // SelectImageRoll();
+
+        IsActive = true;
+        // SelectImageRoll();
     }
+
+    public void Receive(PrinterMessages.SelectedPrinterChanged message) => selectedPrinter = message.Value;
 
     private void LoadImageRollsList()
     {
@@ -47,6 +56,7 @@ public partial class ImageRolls : ObservableObject
                 {
                     var imgr = JsonConvert.DeserializeObject<ImageRollEntry>(File.ReadAllText(files.First()));
                     imgr.Path = subdir;
+                    imgr.SelectedPrinter = selectedPrinter;
                     FixedImageRolls.Add(imgr);
                 }
                 catch (Exception ex)
@@ -73,4 +83,5 @@ public partial class ImageRolls : ObservableObject
         //Logger.Info("Processed {count} image rolls.", UserImageRolls.Count);
     }
 
+   
 }
