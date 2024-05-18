@@ -209,11 +209,11 @@
 
                     <Grid DockPanel.Dock="Top" Margin="3">
                         <Image x:Name="SourceImage" MaxHeight="400" Width="400"
-                        Source="{Binding SourceImage.ImageLow, Mode=OneTime}"
-                        MouseDown="SourceImage_MouseDown"
-                        RenderOptions.BitmapScalingMode="NearestNeighbor"
-                        HorizontalAlignment="Left" VerticalAlignment="Top"
-                        ContextMenu="{StaticResource cmImageModify}" ContextMenuOpening="SourceImage_ContextMenuOpening"/>
+                                Source="{Binding SourceImage.ImageLow, Mode=OneTime}"
+                                MouseDown="SourceImage_MouseDown"
+                                RenderOptions.BitmapScalingMode="NearestNeighbor"
+                                HorizontalAlignment="Left" VerticalAlignment="Top"
+                                ContextMenu="{StaticResource cmImageModify}" ContextMenuOpening="SourceImage_ContextMenuOpening"/>
 
                         <Label HorizontalAlignment="Right" VerticalAlignment="Top" Margin="3">
                             <Label.Style>
@@ -433,7 +433,7 @@
                                         <Setter Property="ToolTip" Value="Save the current image."/>
                                     </DataTrigger>
 
-                                    <DataTrigger Binding="{Binding V275Image.}" Value="{x:Null}">
+                                    <DataTrigger Binding="{Binding V275Image, Converter={StaticResource objectIsNull}}" Value="True">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -563,7 +563,7 @@
                                         <Setter Property="ToolTip" Value="Save the current image."/>
                                     </DataTrigger>
 
-                                    <DataTrigger Binding="{Binding V5Image}" Value="{x:Null}">
+                                    <DataTrigger Binding="{Binding V5Image, Converter={StaticResource objectIsNull}}" Value="True">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -638,7 +638,7 @@
             </GroupBox.Header>
 
             <Grid Margin="3">
-                <Image Name="V5Image" Source="{Binding V5Image, Converter={StaticResource bytesToImage}}" 
+                <Image Name="V5Image" Source="{Binding V5Image.ImageLow}" 
                        Margin="0" MaxHeight="400" Width="400" MouseDown="V5Image_MouseDown"
                        RenderOptions.BitmapScalingMode="NearestNeighbor"/>
 

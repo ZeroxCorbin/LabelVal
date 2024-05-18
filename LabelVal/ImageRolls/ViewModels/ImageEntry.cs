@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 using System;
 using System.Drawing.Printing;
 using System.IO;
-using System.Text.Json.Serialization;
 using System.Windows.Media.Imaging;
 
 namespace LabelVal.ImageRolls.ViewModels;
@@ -24,13 +23,14 @@ public partial class ImageEntry : ObservableRecipient, IRecipient<PrinterMessage
     }
     private string name;
 
-    [JsonProperty]
-    public string Path { get; private set; }
+
+    [JsonProperty] public string Path { get; private set; }
+    [JsonProperty] public string Comment { get; private set; }
+
     public BitmapImage Image { get; private set; }
     public BitmapImage ImageLow { get; private set; }
 
-    [JsonProperty]
-    public string Comment { get; private set; }
+    [JsonProperty] public string UID { get; private set; }
 
     [JsonProperty]
     public byte[] ImageBytes
@@ -48,14 +48,14 @@ public partial class ImageEntry : ObservableRecipient, IRecipient<PrinterMessage
     [ObservableProperty][property: JsonProperty] int targetDpiWidth;
     [ObservableProperty][property: JsonProperty] int targetDpiHeight;
 
-    [JsonProperty]
-    public double ImageWidth { get;  private set; }
-    [JsonProperty]
-    public double ImageHeight { get; private set; }
-    [JsonProperty]
-    public long ImageTotalPixels { get; private set; }
-    [JsonProperty]
-    public double V52ImageTotalPixelDeviation { get; private set; }
+    [JsonProperty] public double ImageWidth { get; private set; }
+    [JsonProperty] public double ImageHeight { get; private set; }
+    [JsonProperty] public long ImageTotalPixels { get; private set; }
+    [JsonProperty] public double V52ImageTotalPixelDeviation { get; private set; }
+
+
+    [ObservableProperty] PrinterSettings selectedPrinter;
+    partial void OnSelectedPrinterChanged(PrinterSettings value) => InitPrinterVariables();
 
     [ObservableProperty] private double printerWidth;
     [ObservableProperty] private double printerHeight;
@@ -70,13 +70,6 @@ public partial class ImageEntry : ObservableRecipient, IRecipient<PrinterMessage
     [ObservableProperty] private double deviationHeightPercent;
 
     [ObservableProperty] private double printer2ImageTotalPixelDeviation;
-
-    [JsonProperty]
-    public string UID { get; private set; }
-
-
-    [ObservableProperty] PrinterSettings selectedPrinter;
-    partial void OnSelectedPrinterChanged(PrinterSettings value) => InitPrinterVariables();
 
     public ImageEntry() { IsActive = true; }
 

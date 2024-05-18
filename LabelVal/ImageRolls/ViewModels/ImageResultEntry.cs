@@ -110,9 +110,9 @@ public partial class ImageResultEntry : ObservableRecipient,
             else if (type == "v275Current")
                 bmp = V275Image.GetBitmapBytes();
             else if (type == "v5Stored")
-                bmp = ImageUtilities.ConvertToBmp(V5ResultRow.StoredImage);
+                bmp = V5ResultRow.Stored.GetBitmapBytes();
             else if (type == "v5Current")
-                bmp = ImageUtilities.ConvertToBmp(V5Image);
+                bmp = V5Image.GetBitmapBytes();
             else
                 bmp = SourceImage.GetBitmapBytes();
 
@@ -158,11 +158,13 @@ public partial class ImageResultEntry : ObservableRecipient,
 
             _ = SelectedDatabase.InsertOrReplace_V5Result(new Databases.ImageResults.V5Result
             {
-                ImageRollUID = SelectedImageRoll.UID,
                 SourceImageUID = SourceImage.UID,
-                SourceImage = SourceImage.GetBitmapBytes(),
+                ImageRollUID = SelectedImageRoll.UID,
+                
+                SourceImage = JsonConvert.SerializeObject(SourceImage),
+                StoredImage = JsonConvert.SerializeObject(V5Image),
+
                 Report = JsonConvert.SerializeObject(V5CurrentReport),
-                StoredImage = V5Image
             });
 
             ClearRead(device, true);
@@ -238,7 +240,7 @@ public partial class ImageResultEntry : ObservableRecipient,
                 else
                 {
                     V275Image = V275ResultRow.Stored;
-                    V275SectorsImageOverlay = V275CreateSectorsImageOverlay(V275ResultRow.Job, false);
+                    V275SectorsImageOverlay = V275CreateSectorsImageOverlay(V275ResultRow._Job, false);
                     IsV275ImageStored = true;
                 }
             }
@@ -264,8 +266,8 @@ public partial class ImageResultEntry : ObservableRecipient,
                     V5GetStored();
                 else
                 {
-                    V5Image = V5ResultRow.StoredImage;
-                    V5SectorsImageOverlay = V5CreateSectorsImageOverlay(JsonConvert.DeserializeObject<JObject>(V5ResultRow.Report));
+                    V5Image = V5ResultRow.Stored;
+                    V5SectorsImageOverlay = V5CreateSectorsImageOverlay(V5ResultRow._Report);
                     IsV5ImageStored = true;
                 }
             }

@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using LabelVal.ImageRolls.ViewModels;
 using Newtonsoft.Json;
 using V275_REST_lib.Models;
+using Newtonsoft.Json.Linq;
 
 namespace LabelVal.ImageRolls.Databases
 {
@@ -35,32 +36,26 @@ namespace LabelVal.ImageRolls.Databases
             public ImageEntry Source => JsonConvert.DeserializeObject<ImageEntry>(sourceImage);
             public ImageEntry Stored => JsonConvert.DeserializeObject<ImageEntry>(storedImage);
 
-            public Job Job => JsonConvert.DeserializeObject<Job>(template);
+            public Job _Job => JsonConvert.DeserializeObject<Job>(template);
+            public Report _Report => JsonConvert.DeserializeObject<Report>(report);
 
         }
 
         public partial class V5Result : ObservableObject
-        {
-            [ObservableProperty] private string imageRollUID;
-            [ObservableProperty] private byte[] sourceImage;
+        {  
             [ObservableProperty] [property: PrimaryKey] private string sourceImageUID;
+            [ObservableProperty] private string imageRollUID;
+
+            [ObservableProperty] private string sourceImage;
+            [ObservableProperty] private string storedImage;
+
             [ObservableProperty] private string template;
             [ObservableProperty] private string report;
-            [ObservableProperty] private byte[] storedImage;
 
-            //public Result(SQLiteDataReader rdr)
-            //{
-            //    for (int i = 0; i < rdr.FieldCount; i++)
-            //    {
-            //        if (rdr.GetName(i).Equals("LabelImage", StringComparison.InvariantCultureIgnoreCase))
-            //            LabelImage = (byte[])rdr["LabelImage"];
-            //    }
+            public ImageEntry Source => JsonConvert.DeserializeObject<ImageEntry>(sourceImage);
+            public ImageEntry Stored => JsonConvert.DeserializeObject<ImageEntry>(storedImage);
 
-            //    LabelImageUID = rdr["LabelImageUID"].ToString();
-            //    LabelTemplate = rdr["LabelTemplate"].ToString();
-            //    LabelReport = rdr["LabelReport"].ToString();
-            //    RepeatImage = (byte[])rdr["RepeatImage"];
-            //}
+            public JObject _Report => JsonConvert.DeserializeObject<JObject>(Report);
 
         }
 

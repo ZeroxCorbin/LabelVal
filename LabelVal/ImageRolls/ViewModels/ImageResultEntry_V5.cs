@@ -26,7 +26,7 @@ public partial class ImageResultEntry
     [ObservableProperty] private ObservableCollection<Sectors.ViewModels.Sector> v5StoredSectors = [];
     [ObservableProperty] private ObservableCollection<Sectors.ViewModels.SectorDifferences> v5DiffSectors = [];
 
-    [ObservableProperty] private byte[] v5Image = null;
+    [ObservableProperty] private ImageEntry v5Image = null;
     [ObservableProperty] private DrawingImage v5SectorsImageOverlay;
     [ObservableProperty] private bool isV5ImageStored;
 
@@ -90,14 +90,14 @@ public partial class ImageResultEntry
             else
                 SelectedScanner.FTPClient.DeleteRemoteFiles(path);
 
-            path = $"{path}/image{System.IO.Path.GetExtension(SourceImage.Path)}";
+            path = $"{path}/image.png";
 
             if (imageType == "source")
-                SelectedScanner.FTPClient.UploadFile(SourceImage.Path, path);
+                SelectedScanner.FTPClient.UploadFile(SourceImage.GetPngBytes(), path);
             else if (imageType == "v5Stored")
-                SelectedScanner.FTPClient.UploadFile(V5ResultRow.StoredImage, path);
+                SelectedScanner.FTPClient.UploadFile(V5ResultRow.Stored.GetPngBytes(), path);
             else if (imageType == "v275Stored")
-                SelectedScanner.FTPClient.UploadFile(V275ResultRow.StoredImage, path);
+                SelectedScanner.FTPClient.UploadFile(V275ResultRow.Stored.GetPngBytes(), path);
 
 
             SelectedScanner.FTPClient.Disconnect();
@@ -135,12 +135,13 @@ public partial class ImageResultEntry
 
         if (!SelectedScanner.IsSimulator)
         {
-            V5Image = ImageUtilities.ConvertToPng(triggerResults.FullImage);
+            V5Image = new ImageEntry(triggerResults.FullImage, 600, SelectedImageRoll.SelectedPrinter);
+            //ImageUtilities.ConvertToPng(triggerResults.FullImage);
             IsV5ImageStored = false;
         }
         else
         {
-            V5Image = SourceImage.GetBitmapBytes();
+            V5Image = SourceImage.Clone();
             IsV5ImageStored = false;
         }
 
@@ -197,25 +198,29 @@ public partial class ImageResultEntry
             return;
         }
 
-        var results = JsonConvert.DeserializeObject<JObject>(V5ResultRow.Report);
-
-        V5Image = V5ResultRow.StoredImage;
+        V5Image = JsonConvert.DeserializeObject<ImageEntry>(V5ResultRow.StoredImage);
         IsV5ImageStored = true;
 
         V5StoredSectors.Clear();
 
         List<Sectors.ViewModels.Sector> tempSectors = [];
-
-        if (results["event"]?["name"].ToString() == "cycle-report-alt")
+        if (!string.IsNullOrEmpty(V275ResultRow.Report))
         {
-            foreach (var rSec in results["event"]?["data"]?["decodeData"])
-                tempSectors.Add(new Sectors.ViewModels.Sector(rSec.ToObject<Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", SelectedImageRoll.SelectedStandard, selectedImageRoll.SelectedGS1Table));
+            var results = V5ResultRow._Report;
 
-        }
-        else if (results["event"]?["name"].ToString() == "cycle-report")
-        {
-            foreach (var rSec in results["event"]["data"]["cycleConfig"]["qualifiedResults"])
-                tempSectors.Add(new Sectors.ViewModels.Sector(rSec.ToObject<Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", SelectedImageRoll.SelectedStandard, selectedImageRoll.SelectedGS1Table));
+            V5SectorsImageOverlay = V5CreateSectorsImageOverlay(results);
+            
+            if (results["event"]?["name"].ToString() == "cycle-report-alt")
+            {
+                foreach (var rSec in results["event"]?["data"]?["decodeData"])
+                    tempSectors.Add(new Sectors.ViewModels.Sector(rSec.ToObject<Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", SelectedImageRoll.SelectedStandard, selectedImageRoll.SelectedGS1Table));
+
+            }
+            else if (results["event"]?["name"].ToString() == "cycle-report")
+            {
+                foreach (var rSec in results["event"]["data"]["cycleConfig"]["qualifiedResults"])
+                    tempSectors.Add(new Sectors.ViewModels.Sector(rSec.ToObject<Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", SelectedImageRoll.SelectedStandard, selectedImageRoll.SelectedGS1Table));
+            }
         }
 
         if (tempSectors.Count > 0)
@@ -225,8 +230,6 @@ public partial class ImageResultEntry
             foreach (var sec in tempSectors)
                 V5StoredSectors.Add(sec);
         }
-
-        V5SectorsImageOverlay = V5CreateSectorsImageOverlay(results);
     }
 
     private void V5GetSectorDiff()
@@ -316,12 +319,10 @@ public partial class ImageResultEntry
     }
     private DrawingImage V5CreateSectorsImageOverlay(JObject results)
     {
-        var bmp = ImageUtilities.CreateBitmap(V5Image);
-
         //Draw the image outline the same size as the stored image
         var border = new GeometryDrawing
         {
-            Geometry = new RectangleGeometry(new Rect(0, 0, bmp.PixelWidth, bmp.PixelHeight)),
+            Geometry = new RectangleGeometry(new Rect(0, 0, V5Image.Image.PixelWidth, V5Image.Image.PixelHeight)),
             Pen = new Pen(Brushes.Transparent, 1)
         };
 

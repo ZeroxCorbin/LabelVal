@@ -76,20 +76,20 @@ public partial class ImageResultEntry
             return;
         }
 
-        Job template = null;
-        if (!string.IsNullOrEmpty(V275ResultRow.Template))
-            template = JsonConvert.DeserializeObject<Job>(V275ResultRow.Template);
-        
-
         V275Image = JsonConvert.DeserializeObject<ImageEntry>(V275ResultRow.StoredImage);
         IsV275ImageStored = true;
 
         V275StoredSectors.Clear();
+
         List<Sectors.ViewModels.Sector> tempSectors = [];
-        if (!string.IsNullOrEmpty(V275ResultRow.Report) && template != null)
-            foreach (var jSec in JsonConvert.DeserializeObject<Job>(V275ResultRow.Template).sectors)
+        if (!string.IsNullOrEmpty(V275ResultRow.Report) && !string.IsNullOrEmpty(V275ResultRow.Template))
+        {
+
+            V275SectorsImageOverlay = V275CreateSectorsImageOverlay(V275ResultRow._Job, false);
+
+            foreach (var jSec in V275ResultRow._Job.sectors)
             {
-                foreach (JObject rSec in JsonConvert.DeserializeObject<Report>(V275ResultRow.Report).inspectLabel.inspectSector)
+                foreach (JObject rSec in V275ResultRow._Report.inspectLabel.inspectSector)
                 {
                     if (jSec.name == rSec["name"].ToString())
                     {
@@ -105,7 +105,9 @@ public partial class ImageResultEntry
                     }
                 }
             }
-        
+
+        }
+
         if (tempSectors.Count > 0)
         {
             tempSectors = tempSectors.OrderBy(x => x.Template.Top).ToList();
@@ -113,9 +115,6 @@ public partial class ImageResultEntry
             foreach (var sec in tempSectors)
                 V275StoredSectors.Add(sec);
         }
-
-        V275SectorsImageOverlay = V275CreateSectorsImageOverlay(template, false);
-
     }
     public async Task<bool> V275ReadTask(int repeat)
     {
