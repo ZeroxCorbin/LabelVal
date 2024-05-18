@@ -25,7 +25,7 @@
                 <DockPanel>
 
 
-                    <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" Padding="1">
+                    <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="1">
                         <TextBlock Text="Databases" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Margin="3,0"/>
                     </md:Card>
 
@@ -43,7 +43,7 @@
                 </DockPanel>
             </GroupBox.Header>
 
-            <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" Padding="2">
+            <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Padding="2">
                 <StackPanel>
 
                     <ListView ItemsSource="{Binding Databases}" SelectedItem="{Binding SelectedDatabase}">

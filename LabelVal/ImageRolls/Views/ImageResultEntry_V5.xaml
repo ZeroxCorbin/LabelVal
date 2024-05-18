@@ -136,7 +136,7 @@
                         </Style>
                     </ScrollViewer.Style>
 
-                    <ItemsControl ItemsSource="{Binding V5StoredSectors}" Background="{DynamicResource MahApps.Brushes.Control.Background}">
+                    <ItemsControl ItemsSource="{Binding V5StoredSectors}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <sectors:Sector Width="180" Background="{DynamicResource AccentColorBrush}" Margin="6,1"/>
@@ -289,7 +289,7 @@
                         </Style>
                     </ScrollViewer.Style>
 
-                    <ItemsControl ItemsSource="{Binding V5CurrentSectors}" Background="{DynamicResource MahApps.Brushes.Control.Background}">
+                    <ItemsControl ItemsSource="{Binding V5CurrentSectors}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <sectors:Sector Width="180" Background="{DynamicResource AccentColorBrush}" Margin="6,1" />
@@ -336,7 +336,7 @@
                         </Style>
                     </ScrollViewer.Style>
 
-                    <ItemsControl ItemsSource="{Binding V5DiffSectors}" Background="{DynamicResource MahApps.Brushes.Control.Background}">
+                    <ItemsControl ItemsSource="{Binding V5DiffSectors}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <sectors:SectorDifferences  Width="220" Background="{DynamicResource AccentColorBrush}" Margin="3,0"/>

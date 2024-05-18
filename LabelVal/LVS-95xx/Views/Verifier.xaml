@@ -57,7 +57,7 @@
 
                 <md:DrawerHost.TopDrawerContent>
 
-                    <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" Margin="3" Padding="2" HorizontalAlignment="Left">
+                    <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="3" Padding="2" HorizontalAlignment="Left">
                         <md:Card.Style>
                             <Style TargetType="{x:Type md:Card}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
@@ -134,7 +134,7 @@
 
                         <GroupBox.Header>
                             <DockPanel>
-                                <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" Padding="1">
+                                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="1">
                                     <TextBlock Text="Results" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Margin="3,0"/>
                                 </md:Card>
 

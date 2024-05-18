@@ -39,7 +39,7 @@
                 <DockPanel>
 
                     <!--Title-->
-                    <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
+                    <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
                         <TextBlock Text="Source Image" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                     </md:Card>
 
@@ -233,7 +233,7 @@
                     </Grid>
 
                     <DockPanel>
-                        <GroupBox VerticalAlignment="Top" HorizontalAlignment="Left" Margin="3,0">
+                        <GroupBox VerticalAlignment="Top" HorizontalAlignment="Left" Margin="3,0" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
                             <GroupBox.Header>
                                 <TextBlock Text="Image to Printer" Margin="-6"/>
                             </GroupBox.Header>
@@ -257,9 +257,10 @@
                                 </DockPanel>
 
                             </DockPanel>
+
                         </GroupBox>
 
-                        <GroupBox VerticalAlignment="Top" HorizontalAlignment="Left" Margin="3,0">
+                        <GroupBox VerticalAlignment="Top" HorizontalAlignment="Left" Margin="3,0" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
                             <GroupBox.Header>
                                 <TextBlock Text="Image to V5" Margin="-6"/>
                             </GroupBox.Header>
@@ -275,11 +276,12 @@
                         </GroupBox>
 
                     </DockPanel>
+
                 </DockPanel>
 
                 <DockPanel>
 
-                    <GroupBox DockPanel.Dock="Top" VerticalAlignment="Top" Margin="3">
+                    <GroupBox Background="{DynamicResource MahApps.Brushes.ThemeBackground}" DockPanel.Dock="Top" VerticalAlignment="Top" Margin="3">
                         <GroupBox.Header>
                             <TextBlock Text="Image Details" Margin="-6"/>
                         </GroupBox.Header>
@@ -325,7 +327,7 @@
                         </DockPanel>
                     </GroupBox>
 
-                    <GroupBox VerticalAlignment="Top" Margin="3,0,3,3">
+                    <GroupBox Background="{DynamicResource MahApps.Brushes.ThemeBackground}" VerticalAlignment="Top" Margin="3,0,3,3">
                         <GroupBox.Header>
                             <TextBlock Text="Printer Details" Margin="-6"/>
                         </GroupBox.Header>
@@ -370,7 +372,7 @@
 
                         </DockPanel>
                     </GroupBox>
-                    
+
                 </DockPanel>
 
             </DockPanel>
@@ -497,71 +499,20 @@
             </GroupBox.Header>
 
             <DockPanel>
-                
-                <DockPanel>
 
-                    <Grid DockPanel.Dock="Top" Margin="3">
-                        <Image Name="V275Image" Source="{Binding V275Image.ImageLow}" 
+                <Grid VerticalAlignment="Top" Margin="3">
+                    <Image Name="V275Image" Source="{Binding V275Image.ImageLow}" 
                        Margin="0" MaxHeight="400" Width="400" MouseDown="V275Image_MouseDown"
                        RenderOptions.BitmapScalingMode="NearestNeighbor"/>
 
-                        <Image Name="V275ImageOverlay" Source="{Binding V275SectorsImageOverlay}" 
+                    <Image Name="V275ImageOverlay" Source="{Binding V275SectorsImageOverlay}" 
                        Margin="0" MaxHeight="400" Width="400" MouseDown="V275Image_MouseDown"
                        RenderOptions.BitmapScalingMode="NearestNeighbor"/>
-                    </Grid>
+                </Grid>
 
-                    <DockPanel>
-                        <GroupBox VerticalAlignment="Top" HorizontalAlignment="Left" Margin="3,0">
-                            <GroupBox.Header>
-                                <TextBlock Text="Image to Printer" Margin="-6"/>
-                            </GroupBox.Header>
-
-                            <DockPanel>
-
-                                <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,3">
-                                    <TextBox Text="{Binding V275Image.Printer2ImageTotalPixelDeviation, Mode=OneTime}"
-                                         BorderThickness="0" HorizontalContentAlignment="Center"
-                                         md:HintAssist.Hint="Total Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
-                                </DockPanel>
-
-
-                                <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" Margin="0,3">
-                                    <TextBox Text="{Binding V275Image.DeviationWidth, Mode=OneWay}"
-                                         Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                         md:HintAssist.Hint="Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
-                                    <TextBox Margin="0" BorderThickness="0" Text="X" IsHitTestVisible="False"/>
-                                    <TextBox Text="{Binding V275Image.DeviationHeight, Mode=OneWay}"
-                                          Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                         md:HintAssist.Hint="" md:HintAssist.IsFloating="True" IsHitTestVisible="False"/>
-                                </DockPanel>
-
-
-
-                            </DockPanel>
-                        </GroupBox>
-
-                        <GroupBox VerticalAlignment="Top" HorizontalAlignment="Left" Margin="3,0">
-                            <GroupBox.Header>
-                                <TextBlock Text="Image to V5" Margin="-6"/>
-                            </GroupBox.Header>
-
-                            <DockPanel>
-                                <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,3">
-                                    <TextBox Text="{Binding V275Image.V52ImageTotalPixelDeviation, Mode=OneTime}"
-                                         BorderThickness="0" HorizontalContentAlignment="Center"
-                                         md:HintAssist.Hint="Total Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
-                                </DockPanel>
-
-                            </DockPanel>
-                        </GroupBox>
-
-                    </DockPanel>
-                    
-                </DockPanel>
-                
                 <DockPanel>
 
-                    <GroupBox DockPanel.Dock="Top" VerticalAlignment="Top" Margin="3">
+                    <GroupBox DockPanel.Dock="Top" VerticalAlignment="Top" Margin="3" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
                         <GroupBox.Header>
                             <TextBlock Text="Image Details" Margin="-6"/>
                         </GroupBox.Header>
@@ -607,53 +558,52 @@
                         </DockPanel>
                     </GroupBox>
 
-                    <GroupBox VerticalAlignment="Top" Margin="3,0,3,3">
+                    <GroupBox DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="3,0" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
                         <GroupBox.Header>
-                            <TextBlock Text="Printer Details" Margin="-6"/>
+                            <TextBlock Text="Image to Printer" Margin="-6"/>
                         </GroupBox.Header>
 
                         <DockPanel>
 
                             <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,3">
-                                <TextBox Text="{Binding V275Image.PrinterTotalPixels, Mode=OneTime}"
-                                     BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="Total Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
+                                <TextBox Text="{Binding V275Image.Printer2ImageTotalPixelDeviation, Mode=OneTime}"
+                                         BorderThickness="0" HorizontalContentAlignment="Center"
+                                         md:HintAssist.Hint="Total Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
                             </DockPanel>
 
-                            <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" Margin="0,3">
-                                <TextBox Text="{Binding V275Image.PrinterPixelWidth, Mode=OneWay}"
-                                     Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
-                                <TextBox Margin="0" BorderThickness="0" Text="X" IsHitTestVisible="False"/>
-                                <TextBox Text="{Binding V275Image.PrinterPixelHeight, Mode=OneWay}"
-                                      Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="" md:HintAssist.IsFloating="True" IsHitTestVisible="False"/>
-                            </DockPanel>
 
                             <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" Margin="0,3">
-                                <TextBox Text="{Binding V275Image.SelectedPrinter.DefaultPageSettings.PrinterResolution.X, Mode=OneWay}"
-                                     Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="DPI" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
+                                <TextBox Text="{Binding V275Image.DeviationWidth, Mode=OneWay}"
+                                         Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
+                                         md:HintAssist.Hint="Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
                                 <TextBox Margin="0" BorderThickness="0" Text="X" IsHitTestVisible="False"/>
-                                <TextBox Text="{Binding V275Image.SelectedPrinter.DefaultPageSettings.PrinterResolution.Y, Mode=OneWay}"
-                                      Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="" md:HintAssist.IsFloating="True" IsHitTestVisible="False"/>
+                                <TextBox Text="{Binding V275Image.DeviationHeight, Mode=OneWay}"
+                                          Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
+                                         md:HintAssist.Hint="" md:HintAssist.IsFloating="True" IsHitTestVisible="False"/>
                             </DockPanel>
 
-                            <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" Margin="0,3">
-                                <TextBox Text="{Binding V275Image.PrinterWidth, Mode=OneWay, StringFormat=N2}"
-                                     Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="Inches" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
-                                <TextBox Margin="0" BorderThickness="0" Text="X" IsHitTestVisible="False"/>
-                                <TextBox Text="{Binding V275Image.PrinterHeight, Mode=OneWay, StringFormat=N2}"
-                                     Width="40" BorderThickness="0"  HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="" md:HintAssist.IsFloating="True" IsHitTestVisible="False"/>
+
+
+                        </DockPanel>
+                    </GroupBox>
+
+                    <GroupBox DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="3,3" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                        <GroupBox.Header>
+                            <TextBlock Text="Image to V5" Margin="-6"/>
+                        </GroupBox.Header>
+
+                        <DockPanel>
+                            <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,3">
+                                <TextBox Text="{Binding V275Image.V52ImageTotalPixelDeviation, Mode=OneTime}"
+                                         BorderThickness="0" HorizontalContentAlignment="Center"
+                                         md:HintAssist.Hint="Total Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
                             </DockPanel>
 
                         </DockPanel>
                     </GroupBox>
-                    
+
                 </DockPanel>
+
             </DockPanel>
         </GroupBox>
 
@@ -780,70 +730,19 @@
 
             <DockPanel>
 
-                <DockPanel>
-                    
-                    <Grid DockPanel.Dock="Top" Margin="3">
-                        <Image Name="V5Image" Source="{Binding V5Image.ImageLow, Mode=OneWay}" 
+                <Grid VerticalAlignment="Top" Margin="3">
+                    <Image Name="V5Image" Source="{Binding V5Image.ImageLow, Mode=OneWay}" 
                        Margin="0" MaxHeight="400" Width="400" MouseDown="V5Image_MouseDown"
                        RenderOptions.BitmapScalingMode="NearestNeighbor"/>
 
-                        <Image Name="V5ImageOverlay" Source="{Binding V5SectorsImageOverlay}" 
+                    <Image Name="V5ImageOverlay" Source="{Binding V5SectorsImageOverlay}" 
                        Margin="0" MaxHeight="400" Width="400" MouseDown="V5Image_MouseDown"
                        RenderOptions.BitmapScalingMode="NearestNeighbor"/>
-                    </Grid>
-                    
-                    <DockPanel>
-                        <GroupBox VerticalAlignment="Top" HorizontalAlignment="Left" Margin="3,0">
-                            <GroupBox.Header>
-                                <TextBlock Text="Image to Printer" Margin="-6"/>
-                            </GroupBox.Header>
-
-                            <DockPanel>
-
-                                <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,3">
-                                    <TextBox Text="{Binding V5Image.Printer2ImageTotalPixelDeviation, Mode=OneWay}"
-                                         BorderThickness="0" HorizontalContentAlignment="Center"
-                                         md:HintAssist.Hint="Total Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
-                                </DockPanel>
-
-
-                                <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" Margin="0,3">
-                                    <TextBox Text="{Binding V5Image.DeviationWidth, Mode=OneWay}"
-                                         Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                         md:HintAssist.Hint="Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
-                                    <TextBox Margin="0" BorderThickness="0" Text="X" IsHitTestVisible="False"/>
-                                    <TextBox Text="{Binding V5Image.DeviationHeight, Mode=OneWay}"
-                                          Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                         md:HintAssist.Hint="" md:HintAssist.IsFloating="True" IsHitTestVisible="False"/>
-                                </DockPanel>
-
-
-
-                            </DockPanel>
-                        </GroupBox>
-
-                        <GroupBox VerticalAlignment="Top" HorizontalAlignment="Left" Margin="3,0">
-                            <GroupBox.Header>
-                                <TextBlock Text="Image to V5" Margin="-6"/>
-                            </GroupBox.Header>
-
-                            <DockPanel>
-                                <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,3">
-                                    <TextBox Text="{Binding V5Image.V52ImageTotalPixelDeviation, Mode=OneWay}"
-                                         BorderThickness="0" HorizontalContentAlignment="Center"
-                                         md:HintAssist.Hint="Total Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
-                                </DockPanel>
-
-                            </DockPanel>
-                        </GroupBox>
-
-                    </DockPanel>
-
-                </DockPanel>
-
+                </Grid>
+                
                 <DockPanel>
 
-                    <GroupBox DockPanel.Dock="Top" VerticalAlignment="Top" Margin="3">
+                    <GroupBox DockPanel.Dock="Top" VerticalAlignment="Top" Margin="3" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
                         <GroupBox.Header>
                             <TextBlock Text="Image Details" Margin="-6"/>
                         </GroupBox.Header>
@@ -889,7 +788,51 @@
                         </DockPanel>
                     </GroupBox>
 
-                    <GroupBox VerticalAlignment="Top" Margin="3,0,3,3">
+                    <GroupBox DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="3,0" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                        <GroupBox.Header>
+                            <TextBlock Text="Image to Printer" Margin="-6"/>
+                        </GroupBox.Header>
+
+                        <DockPanel>
+
+                            <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,3">
+                                <TextBox Text="{Binding V5Image.Printer2ImageTotalPixelDeviation, Mode=OneWay}"
+                                         BorderThickness="0" HorizontalContentAlignment="Center"
+                                         md:HintAssist.Hint="Total Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
+                            </DockPanel>
+
+
+                            <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" Margin="0,3">
+                                <TextBox Text="{Binding V5Image.DeviationWidth, Mode=OneWay}"
+                                         Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
+                                         md:HintAssist.Hint="Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
+                                <TextBox Margin="0" BorderThickness="0" Text="X" IsHitTestVisible="False"/>
+                                <TextBox Text="{Binding V5Image.DeviationHeight, Mode=OneWay}"
+                                          Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
+                                         md:HintAssist.Hint="" md:HintAssist.IsFloating="True" IsHitTestVisible="False"/>
+                            </DockPanel>
+
+
+
+                        </DockPanel>
+                    </GroupBox>
+
+                    <GroupBox DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="3,3" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                        <GroupBox.Header>
+                            <TextBlock Text="Image to V5" Margin="-6"/>
+                        </GroupBox.Header>
+
+                        <DockPanel>
+                            <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,3">
+                                <TextBox Text="{Binding V5Image.V52ImageTotalPixelDeviation, Mode=OneWay}"
+                                         BorderThickness="0" HorizontalContentAlignment="Center"
+                                         md:HintAssist.Hint="Total Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
+                            </DockPanel>
+
+                        </DockPanel>
+                    </GroupBox>
+
+                    <!--<GroupBox VerticalAlignment="Top" Margin="3,0,3,3" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
                         <GroupBox.Header>
                             <TextBlock Text="Printer Details" Margin="-6"/>
                         </GroupBox.Header>
@@ -933,7 +876,7 @@
                             </DockPanel>
 
                         </DockPanel>
-                    </GroupBox>
+                    </GroupBox>-->
 
                 </DockPanel>
             </DockPanel>

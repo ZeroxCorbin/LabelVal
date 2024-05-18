@@ -50,7 +50,7 @@ namespace LabelVal
         {
             //   ExtractRunDetails();
            // File.WriteAllText("setting.imgr", JsonConvert.SerializeObject(new ImageRolls.ViewModels.ImageRollEntry(), new Newtonsoft.Json.Converters.StringEnumConverter()));
-           // SetupExceptionHandling();
+           SetupExceptionHandling();
 
             Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 

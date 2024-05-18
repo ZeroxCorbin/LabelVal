@@ -19,7 +19,7 @@
             Style="{StaticResource MaterialDesignCardGroupBox}">
 
         <GroupBox.Header>
-            <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
+            <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
 
                 <DockPanel>
 
@@ -31,7 +31,7 @@
             </md:Card>
         </GroupBox.Header>
 
-        <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" Padding="2">
+        <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Padding="2">
 
             <DockPanel>
                 <DockPanel.Style>

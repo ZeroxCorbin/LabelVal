@@ -44,12 +44,12 @@
             Style="{StaticResource MaterialDesignCardGroupBox}">
 
             <GroupBox.Header>
-                <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" Padding="1">
+                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Padding="1">
                     <TextBlock Text="Image Rolls" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Margin="3,0"/>
                 </md:Card>
             </GroupBox.Header>
 
-            <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" Padding="2">
+            <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Padding="2">
 
                 <ListView ItemsSource="{Binding Source={StaticResource ResourceKey=ImageRolls}}"
                         SelectedItem="{Binding SelectedImageRoll}"
@@ -110,12 +110,12 @@
             Style="{StaticResource MaterialDesignCardGroupBox}">
 
             <GroupBox.Header>
-                <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" Padding="1" HorizontalAlignment="Left">
+                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Padding="1" HorizontalAlignment="Left">
                     <TextBlock Text="Fixed Image Rolls" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Margin="3,0"/>
                 </md:Card>
             </GroupBox.Header>
 
-            <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" Padding="2">
+            <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Padding="2">
 
                 <ListView ItemsSource="{Binding Source={StaticResource ResourceKey=FixedImageRolls}}"
                         SelectedItem="{Binding SelectedImageRoll}"

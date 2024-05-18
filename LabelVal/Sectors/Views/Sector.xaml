@@ -23,7 +23,7 @@
         <V275Converters:V275_GS1FormattedOutput x:Key="gs1FormattedOutput"/>
     </UserControl.Resources>
 
-    <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" Margin="3" Padding="0">
+    <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="3" Padding="0">
         <DockPanel Margin="3">
 
             <DockPanel DockPanel.Dock="Top">

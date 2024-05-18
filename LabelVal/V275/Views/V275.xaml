@@ -43,7 +43,7 @@
 
             <md:DrawerHost.TopDrawerContent>
 
-                <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" Margin="3" Padding="2" HorizontalAlignment="Left">
+                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="3" Padding="2" HorizontalAlignment="Left">
                     <md:Card.Style>
                         <Style TargetType="{x:Type md:Card}">
                             <Setter Property="Visibility" Value="Collapsed"/>
@@ -135,7 +135,7 @@
                 </md:Card>
             </md:DrawerHost.TopDrawerContent>
 
-            <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}">
+            <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
                 <ListView ItemsSource="{Binding Nodes}" SelectedItem="{Binding SelectedNode}" HorizontalAlignment="Center">
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">

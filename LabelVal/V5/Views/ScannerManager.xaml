@@ -35,7 +35,7 @@
             </DockPanel>
         </GroupBox.Header>
 
-        <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}">
+        <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
             <ListView ItemsSource="{Binding Scanners}" SelectedItem="{Binding SelectedScanner}">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">

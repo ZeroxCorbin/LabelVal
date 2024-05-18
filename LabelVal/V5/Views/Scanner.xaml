@@ -69,7 +69,7 @@
 
                     <md:DrawerHost.TopDrawerContent>
 
-                        <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" Margin="3" Padding="2" HorizontalAlignment="Left">
+                        <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="3" Padding="2" HorizontalAlignment="Left">
                             <md:Card.Style>
                                 <Style TargetType="{x:Type md:Card}">
                                     <Setter Property="Visibility" Value="Collapsed"/>
@@ -356,7 +356,7 @@
                         <DockPanel>
 
                             <DockPanel DockPanel.Dock="Top">
-                                <md:Card Padding="3" Margin="3" Background="{DynamicResource MahApps.Brushes.Control.Background}">
+                                <md:Card Padding="3" Margin="3" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
                                     <StackPanel Orientation="Horizontal">
 
                                         <Button Content="Trigger" Command="{Binding TriggerCommand}" Style="{StaticResource MahApps.Styles.Button}" Margin="3,0" BorderThickness="0"/>
@@ -370,14 +370,14 @@
                                     </StackPanel>
                                 </md:Card>
 
-                                <md:Card Padding="3" Margin="3" Background="{DynamicResource MahApps.Brushes.Control.Background}">
+                                <md:Card Padding="3" Margin="3" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
                                     <StackPanel Orientation="Horizontal">
                                         <Button Content="QS Focus" Command="{Binding QuickSetFocusCommand}" Style="{StaticResource MahApps.Styles.Button}" Margin="3,0" BorderThickness="0"/>
                                         <Button Content="QS Photometry" Command="{Binding QuickSetPhotometryCommand}" Style="{StaticResource MahApps.Styles.Button}" Margin="3,0" BorderThickness="0"/>
                                     </StackPanel>
                                 </md:Card>
 
-                                <md:Card Padding="3" Margin="3" Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left">
+                                <md:Card Padding="3" Margin="3" Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left">
                                     <StackPanel Orientation="Horizontal">
                                         <Button Content="SysInfo" Command="{Binding SysInfoCommand}" Style="{StaticResource MahApps.Styles.Button}" Margin="3,0" BorderThickness="0"/>
 
@@ -398,7 +398,7 @@
                                   VerticalAlignment="Top" Margin="3" Padding="3" Height="390">
 
                                     <GroupBox.Header>
-                                        <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="2,1">
+                                        <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="2,1">
                                             <TextBlock Text="Results" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                                         </md:Card>
                                     </GroupBox.Header>
@@ -408,7 +408,7 @@
 
                                     <DockPanel Width="166">
 
-                                        <md:Card DockPanel.Dock="Top" Background="{DynamicResource MahApps.Brushes.Control.Background}" Margin="3" Padding="2">
+                                        <md:Card DockPanel.Dock="Top" Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="3" Padding="2">
                                             <StackPanel>
                                                 <StackPanel Orientation="Horizontal">
                                                     <TextBlock Text="Cycle ID: "/>
@@ -430,7 +430,7 @@
 
                                                 <ListView.ItemTemplate>
                                                     <DataTemplate>
-                                                        <md:Card Foreground="{DynamicResource MahApps.Brushes.Text}" Background="{DynamicResource MahApps.Brushes.Control.Background}" Margin="-5" Padding="2" Width="160">
+                                                        <md:Card Foreground="{DynamicResource MahApps.Brushes.Text}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="-5" Padding="2" Width="160">
                                                             <DockPanel>
 
                                                                 <DockPanel DockPanel.Dock="Top">
@@ -486,7 +486,7 @@
                                     <GroupBox.Header>
                                         <DockPanel>
 
-                                            <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="2,1">
+                                            <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="2,1">
                                                 <TextBlock Text="Image" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                                             </md:Card>
 
@@ -525,7 +525,7 @@
                                         </DockPanel>
                                     </GroupBox.Header>
 
-                                    <md:Card Background="{DynamicResource MahApps.Brushes.Control.Background}" Padding="2" Margin="3">
+                                    <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Padding="2" Margin="3">
                                         <Grid Height="332" Width="400">
                                             <paz:ZoomBorder Name="ZoomBorder" Margin="3" ClipToBounds="True" MouseDown="SourceImage_MouseDown">
                                                 <Grid>
