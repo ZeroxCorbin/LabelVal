@@ -27,50 +27,36 @@ public partial class ImageEntry : ObservableRecipient, IRecipient<PrinterMessage
     [ObservableProperty] int targetDpiWidth;
     [ObservableProperty] int targetDpiHeight;
 
-    public double ImageWidth => Math.Round(Image.PixelWidth / Image.DpiX, 2);
-    public double ImageHeight => Math.Round(Image.PixelHeight / Image.DpiY, 2);
-    public long ImageTotalPixels => Image.PixelWidth * Image.PixelHeight;
+    public double ImageWidth { get; }
+    public double ImageHeight { get; }
+    public long ImageTotalPixels { get; }
+    public double V52ImageTotalPixelDeviation { get; private set; }
 
-    public double PrinterWidth => Math.Round(SelectedPrinter.DefaultPageSettings.PrintableArea.Width / 100, 2);
-    public double PrinterHeight => Math.Round(SelectedPrinter.DefaultPageSettings.PrintableArea.Height / 100, 2);
+    [ObservableProperty] private double printerWidth;
+    [ObservableProperty] private double printerHeight;
 
-    public int PrinterPixelWidth => (int)Math.Round((SelectedPrinter.DefaultPageSettings.PrintableArea.Width / 100) * SelectedPrinter.DefaultPageSettings.PrinterResolution.X, 0);
-    public int PrinterPixelHeight => (int)Math.Round((SelectedPrinter.DefaultPageSettings.PrintableArea.Height / 100) * SelectedPrinter.DefaultPageSettings.PrinterResolution.Y, 0);
-    public long PrinterTotalPixels => PrinterPixelWidth * PrinterPixelHeight;
+    [ObservableProperty] private int printerPixelWidth;
+    [ObservableProperty] private int printerPixelHeight;
+    [ObservableProperty] private long printerTotalPixels;
 
-    public double DeviationWidth => PrinterPixelWidth - Image.PixelWidth;
-    public double DeviationHeight => PrinterPixelHeight - Image.PixelHeight;
+    [ObservableProperty] private double deviationWidth;
+    [ObservableProperty] private double deviationHeight;
+    [ObservableProperty] private double deviationWidthPercent;
+    [ObservableProperty] private double deviationHeightPercent;
 
-    public double DeviationWidthPercent => Math.Round((DeviationWidth / Image.PixelWidth) * 100, 2);
-    public double DeviationHeightPercent => Math.Round((DeviationHeight / Image.PixelHeight) * 100, 2);
+    [ObservableProperty] private double printer2ImageTotalPixelDeviation;
 
-    public double Printer2ImageTotalPixelDeviation => PrinterTotalPixels - ImageTotalPixels;
-
-    public double V52ImageTotalPixelDeviation => 5488640 - ImageTotalPixels;
 
     public string UID { get; }
 
 
     [ObservableProperty] PrinterSettings selectedPrinter;
-    partial void OnSelectedPrinterChanged(PrinterSettings value)
-    {
-        OnPropertyChanged(nameof(PrinterWidth));
-        OnPropertyChanged(nameof(PrinterHeight));
-
-        OnPropertyChanged(nameof(PrinterPixelWidth)); 
-        OnPropertyChanged(nameof(PrinterPixelHeight));
-        OnPropertyChanged(nameof(PrinterTotalPixels));
-
-        OnPropertyChanged(nameof(DeviationWidth));
-        OnPropertyChanged(nameof(DeviationHeight));
-    }
+    partial void OnSelectedPrinterChanged(PrinterSettings value) => InitPrinterVariables();
 
     public ImageEntry() { IsActive = true; }  
 
     public ImageEntry(string path, int targetDpiWidth, int targetDpiHeight, PrinterSettings selectedPrinter)
     {
-        SelectedPrinter = selectedPrinter;
-
         Path = path;
         TargetDpiHeight = targetDpiHeight;
         TargetDpiWidth = targetDpiWidth;
@@ -82,8 +68,33 @@ public partial class ImageEntry : ObservableRecipient, IRecipient<PrinterMessage
         var cmt = Path.Replace(System.IO.Path.GetExtension(Path), ".txt");
         if (File.Exists(cmt))
             Comment = File.ReadAllText(cmt);
-        
+
+        ImageWidth = Math.Round(Image.PixelWidth / Image.DpiX, 2);
+        ImageHeight = Math.Round(Image.PixelHeight / Image.DpiY, 2);
+        ImageTotalPixels = Image.PixelWidth * Image.PixelHeight;
+
+        V52ImageTotalPixelDeviation = 5488640 - ImageTotalPixels;
+
+        SelectedPrinter = selectedPrinter;
+
         IsActive = true;
+    }
+
+    private void InitPrinterVariables()
+    {
+        PrinterWidth = Math.Round(SelectedPrinter.DefaultPageSettings.PrintableArea.Width / 100, 2);
+        PrinterHeight = Math.Round(SelectedPrinter.DefaultPageSettings.PrintableArea.Height / 100, 2);    
+
+        PrinterPixelWidth = (int)Math.Round((SelectedPrinter.DefaultPageSettings.PrintableArea.Width / 100) * SelectedPrinter.DefaultPageSettings.PrinterResolution.X, 0);
+        PrinterPixelHeight = (int)Math.Round((SelectedPrinter.DefaultPageSettings.PrintableArea.Height / 100) * SelectedPrinter.DefaultPageSettings.PrinterResolution.Y, 0);
+        PrinterTotalPixels = PrinterPixelWidth * PrinterPixelHeight;
+
+        DeviationWidth = PrinterPixelWidth - Image.PixelWidth;
+        DeviationHeight = PrinterPixelHeight - Image.PixelHeight;
+        DeviationWidthPercent = Math.Round((DeviationWidth / Image.PixelWidth) * 100, 2);
+        DeviationHeightPercent = Math.Round((DeviationHeight / Image.PixelHeight) * 100, 2);
+
+        Printer2ImageTotalPixelDeviation = PrinterTotalPixels - ImageTotalPixels;
     }
     
     public ImageEntry(byte[] image, string comment, int targetDpiWidth, int targetDpiHeight, PrinterSettings selectedPrinter)

@@ -43,11 +43,11 @@ public partial class ImageResultEntry_L95xx : UserControl
         }
         else
         {
-            if (((ViewModels.ImageResultEntry)DataContext).L95xxStoredSectors.Count > 0)
-            {
-                L95xxStoredSectorsDetailsPopup.PlacementTarget = (Button)sender;
-                L95xxStoredSectorsDetailsPopup.IsOpen = true;
-            }
+            var pop = new PopupSectorsDetails();
+            pop.ItemsControl.ItemsSource = ((ViewModels.ImageResultEntry)DataContext).L95xxStoredSectors;
+
+            pop.Popup.PlacementTarget = (Button)sender;
+            pop.Popup.IsOpen = true;
         }
     }
     private void L95xxCurrentSectorDetails_Click(object sender, RoutedEventArgs e)
@@ -63,11 +63,11 @@ public partial class ImageResultEntry_L95xx : UserControl
         }
         else
         {
-            if (((ViewModels.ImageResultEntry)DataContext).L95xxCurrentSectors.Count > 0)
-            {
-                L95xxCurrentSectorsDetailsPopup.PlacementTarget = (Button)sender;
-                L95xxCurrentSectorsDetailsPopup.IsOpen = true;
-            }
+            var pop = new PopupSectorsDetails();
+            pop.ItemsControl.ItemsSource = ((ViewModels.ImageResultEntry)DataContext).L95xxCurrentSectors;
+
+            pop.Popup.PlacementTarget = (Button)sender;
+            pop.Popup.IsOpen = true;
         }
     }
     private void ScrollL95xxStoredSectors_ScrollChanged(object sender, ScrollChangedEventArgs e)

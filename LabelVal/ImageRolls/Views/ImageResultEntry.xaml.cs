@@ -17,6 +17,7 @@ public partial class ImageResultEntry : UserControl
     public ImageResultEntry() => InitializeComponent();
 
     private ViewModels.ImageResultEntry viewModel;
+
     private void UserControl_Loaded(object sender, RoutedEventArgs e)
     {
         viewModel = (ViewModels.ImageResultEntry)DataContext;
@@ -24,7 +25,7 @@ public partial class ImageResultEntry : UserControl
     }
     private void UserControl_Unloaded(object sender, RoutedEventArgs e)
     {
-        DialogParticipation.SetRegister(this, null);
+        //DialogParticipation.SetRegister(this, null);
 
         viewModel.BringIntoView -= ViewModel_BringIntoView;
         viewModel = null;

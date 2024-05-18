@@ -22,7 +22,9 @@
         <Converters:StringToUpperSpacedConverter x:Key="stringToUpper"/>
         <Converters:FloatStringTrimConverter x:Key="floatTrim"/>
         <V275Converters:V275_OCMatchModeToString x:Key="matchModeToString"/>
-        <Converters:IsObjectNotNull x:Key="isObjectNotNull"/>
+        
+        <Converters:ObjectIsNull x:Key="objectIsNull"/>
+        <Converters:EnumerationIsEmpty x:Key="enumerationIsEmpty"/>
 
         <Image x:Key="V275Icon" Source="/Assets/Images/V275WhiteIcon.ico" />
         <Image x:Key="V275Png" Source="/Assets/Images/V275WhiteIcon.png" />
@@ -35,13 +37,13 @@
         <DockPanel DockPanel.Dock="Top">
 
             <!--V275 Stored Sectors-->
-            <GroupBox Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <GroupBox d:Visibility="Visible" Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top">
                 <GroupBox.Style>
                     <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
-                        <Setter Property="Visibility" Value="Visible"/>
+                        <Setter Property="Visibility" Value="Collapsed"/>
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding V275StoredSectors.Count}" Value="0">
-                                <Setter Property="Visibility" Value="Collapsed"/>
+                            <DataTrigger Binding="{Binding V275StoredSectors, Converter={StaticResource enumerationIsEmpty}}" Value="False">
+                                <Setter Property="Visibility" Value="Visible"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -160,13 +162,13 @@
             </GroupBox>
 
             <!--V275 Current Sectors-->
-            <GroupBox Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <GroupBox d:Visibility="Visible" Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top">
                 <GroupBox.Style>
                     <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
-                        <Setter Property="Visibility" Value="Visible"/>
+                        <Setter Property="Visibility" Value="Collapsed"/>
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding V275CurrentSectors.Count}" Value="0">
-                                <Setter Property="Visibility" Value="Collapsed"/>
+                            <DataTrigger Binding="{Binding V275CurrentSectors, Converter={StaticResource enumerationIsEmpty}}" Value="False">
+                                <Setter Property="Visibility" Value="Visible"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -215,7 +217,7 @@
 
                                             <MultiDataTrigger>
                                                 <MultiDataTrigger.Conditions>
-                                                    <Condition Binding="{Binding V275Image, Converter={StaticResource isObjectNotNull}}" Value="True"/>
+                                                    <Condition Binding="{Binding V275Image, Converter={StaticResource objectIsNull}}" Value="False"/>
                                                     <Condition Binding="{Binding IsV275ImageStored}" Value="False"/>
                                                 </MultiDataTrigger.Conditions>
 
@@ -315,13 +317,13 @@
             </GroupBox>
 
             <!--V275 Dissimilar Results-->
-            <GroupBox Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <GroupBox d:Visibility="Visible" Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top">
                 <GroupBox.Style>
                     <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
-                        <Setter Property="Visibility" Value="Visible"/>
+                        <Setter Property="Visibility" Value="Collapsed"/>
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding V275DiffSectors.Count}" Value="0">
-                                <Setter Property="Visibility" Value="Collapsed"/>
+                            <DataTrigger Binding="{Binding V275DiffSectors, Converter={StaticResource enumerationIsEmpty}}" Value="False">
+                                <Setter Property="Visibility" Value="Visible"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -362,74 +364,6 @@
             </GroupBox>
 
         </DockPanel>
-
-        <Popup x:Name="V275StoredSectorsDetailsPopup" StaysOpen="False">
-            <Popup.Style>
-                <Style TargetType="{x:Type Popup}"/>
-            </Popup.Style>
-
-            <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top">
-
-                <GroupBox.Header>
-                    <Button Style="{StaticResource MaterialDesignFloatingActionDarkButton}" ToolTip="Save as image." Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
-                        <IconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
-                    </Button>
-                </GroupBox.Header>
-
-                <DockPanel>
-
-                    <ScrollViewer HorizontalScrollBarVisibility="Auto">
-                        
-                        <ItemsControl ItemsSource="{Binding V275StoredSectors}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <WrapPanel IsItemsHost="True" MaxWidth="1024"/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <sectors:SectorDetails />
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </ScrollViewer>
-
-                </DockPanel>
-            </GroupBox>
-        </Popup>
-
-        <Popup x:Name="V275CurrentSectorsDetailsPopup" StaysOpen="False">
-            <Popup.Style>
-                <Style TargetType="{x:Type Popup}"/>
-            </Popup.Style>
-
-            <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top">
-
-                <GroupBox.Header>
-                    <Button Style="{StaticResource MaterialDesignFloatingActionDarkButton}" ToolTip="Save as image." Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
-                        <IconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
-                    </Button>
-                </GroupBox.Header>
-
-
-                    <ScrollViewer HorizontalScrollBarVisibility="Auto">
-                        <ItemsControl ItemsSource="{Binding V275CurrentSectors}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <WrapPanel IsItemsHost="True" MaxWidth="1024"/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <sectors:SectorDetails/>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </ScrollViewer>
-         
-            </GroupBox>
-        </Popup>
 
     </DockPanel>
 </UserControl>
