@@ -33,10 +33,12 @@ public partial class ImageResultEntry_L95xx : UserControl
         {
             if (((ViewModels.ImageResultEntry)DataContext).L95xxResultRow != null)
             {
-                //L95xxStoredTemplateJsonView.Load(((ViewModels.ImageResultEntry)DataContext).L95xxResultRow.Template);
-                L95xxStoredReportJsonView.Load(((ViewModels.ImageResultEntry)DataContext).L95xxResultRow.Report);
-                L95xxStoredJsonPopup.PlacementTarget = (Button)sender;
-                L95xxStoredJsonPopup.IsOpen = true;
+                var pop = new PopupJSONViewer();
+                pop.Viewer1.JSON = ((ViewModels.ImageResultEntry)DataContext).L95xxResultRow.Report;
+                pop.Viewer1.Title = "Report";
+
+                pop.Popup.PlacementTarget = (Button)sender;
+                pop.Popup.IsOpen = true;
             }
         }
         else
@@ -52,12 +54,12 @@ public partial class ImageResultEntry_L95xx : UserControl
     {
         if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
         {
-            if (((ViewModels.ImageResultEntry)DataContext).L95xxCurrentReport != null)
-            {
-                L95xxCurrentReportJsonView.Load(Newtonsoft.Json.JsonConvert.SerializeObject(((ViewModels.ImageResultEntry)DataContext).L95xxCurrentReport));
-                L95xxCurrentReportJsonPopup.PlacementTarget = (Button)sender;
-                L95xxCurrentReportJsonPopup.IsOpen = true;
-            }
+            var pop = new PopupJSONViewer();
+            pop.Viewer1.JSON = ((ViewModels.ImageResultEntry)DataContext).L95xxCurrentReport;
+            pop.Viewer1.Title = "Report";
+
+            pop.Popup.PlacementTarget = (Button)sender;
+            pop.Popup.IsOpen = true;
         }
         else
         {

@@ -7,7 +7,6 @@
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:sectors="clr-namespace:LabelVal.Sectors.Views"
-             xmlns:json="clr-namespace:JSONViewer_WPF;assembly=JSONViewer_WPF"
              xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:Converters="clr-namespace:LabelVal.Converters"
              xmlns:V275Converters="clr-namespace:LabelVal.V275.Converters"
@@ -430,36 +429,6 @@
                     </ScrollViewer>
          
             </GroupBox>
-        </Popup>
-
-        <Popup x:Name="V275CurrentReportJsonPopup" StaysOpen="False">
-            <Popup.Style>
-                <Style TargetType="{x:Type Popup}"/>
-            </Popup.Style>
-            <Border Padding="3" BorderThickness="2"
-                        BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
-                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-
-                <json:JsonViewer x:Name="V275CurrentReportJsonView" MinWidth="300"/>
-            </Border>
-        </Popup>
-
-        <Popup x:Name="V275StoredJsonPopup" StaysOpen="False">
-            <Popup.Style>
-                <Style TargetType="{x:Type Popup}"/>
-            </Popup.Style>
-            <StackPanel Orientation="Horizontal">
-                <Border Padding="3" BorderThickness="2"
-                            BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
-                            Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-                    <json:JsonViewer x:Name="V275StoredTemplateJsonView" MinWidth="300"/>
-                </Border>
-                <Border Padding="3" BorderThickness="2"
-                            BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
-                            Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-                    <json:JsonViewer x:Name="V275StoredReportJsonView" MinWidth="300"/>
-                </Border>
-            </StackPanel>
         </Popup>
 
     </DockPanel>

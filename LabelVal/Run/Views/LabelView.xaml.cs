@@ -79,8 +79,8 @@ namespace LabelVal.Run.Views
             {
                 if (((LabelViewModel)DataContext).Result != null)
                 {
-                    LabelJobJsonView.Load(((LabelViewModel)DataContext).Result.LabelTemplate);
-                    LabelResultJsonView.Load(((LabelViewModel)DataContext).Result.LabelReport);
+                    LabelJobJsonView.JSON = ((LabelViewModel)DataContext).Result.LabelTemplate;
+                    LabelResultJsonView.JSON = ((LabelViewModel)DataContext).Result.LabelReport;
                     LabelJsonPopup.PlacementTarget = (Button)sender;
                     LabelJsonPopup.IsOpen = true;
                 }
@@ -101,7 +101,7 @@ namespace LabelVal.Run.Views
             {
                 if (((LabelViewModel)DataContext).Result.RepeatReport != null)
                 {
-                    RepeatResultJsonView.Load(((LabelViewModel)DataContext).Result.RepeatReport);
+                    RepeatResultJsonView.JSON = ((LabelViewModel)DataContext).Result.RepeatReport;
                     RepeatJsonPopup.PlacementTarget = (Button)sender;
                     RepeatJsonPopup.IsOpen = true;
                 }

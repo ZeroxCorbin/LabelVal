@@ -23,10 +23,14 @@ public partial class ImageResultEntry_V275 : UserControl
         {
             if (((ViewModels.ImageResultEntry)DataContext).V275ResultRow != null)
             {
-                V275StoredTemplateJsonView.Load(((ViewModels.ImageResultEntry)DataContext).V275ResultRow.Template);
-                V275StoredReportJsonView.Load(((ViewModels.ImageResultEntry)DataContext).V275ResultRow.Report);
-                V275StoredJsonPopup.PlacementTarget = (Button)sender;
-                V275StoredJsonPopup.IsOpen = true;
+                var pop = new PopupJSONViewer();
+                pop.Viewer1.JSON = ((ViewModels.ImageResultEntry)DataContext).V275ResultRow.Template;
+                pop.Viewer1.Title = "Template";
+                pop.Viewer2.JSON = ((ViewModels.ImageResultEntry)DataContext).V275ResultRow.Report;
+                pop.Viewer2.Title = "Report";
+
+                pop.Popup.PlacementTarget = (Button)sender;
+                pop.Popup.IsOpen = true;
             }
         }
         else
@@ -44,12 +48,14 @@ public partial class ImageResultEntry_V275 : UserControl
     {
         if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
         {
-            if (((ViewModels.ImageResultEntry)DataContext).V275CurrentReport != null)
-            {
-                V275CurrentReportJsonView.Load(Newtonsoft.Json.JsonConvert.SerializeObject(((ViewModels.ImageResultEntry)DataContext).V275CurrentReport));
-                V275CurrentReportJsonPopup.PlacementTarget = (Button)sender;
-                V275CurrentReportJsonPopup.IsOpen = true;
-            }
+            var pop = new PopupJSONViewer();
+            pop.Viewer1.JSON = ((ViewModels.ImageResultEntry)DataContext).V275CurrentTemplate;
+            pop.Viewer1.Title = "Template";
+            pop.Viewer2.JSON = ((ViewModels.ImageResultEntry)DataContext).V275CurrentReport;
+            pop.Viewer2.Title = "Report";
+
+            pop.Popup.PlacementTarget = (Button)sender;
+            pop.Popup.IsOpen = true;
         }
         else
         {

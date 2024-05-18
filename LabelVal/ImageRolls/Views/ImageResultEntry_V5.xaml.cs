@@ -23,10 +23,12 @@ public partial class ImageResultEntry_V5 : UserControl
         {
             if (((ViewModels.ImageResultEntry)DataContext).V5ResultRow != null)
             {
-                V5StoredTemplateJsonView.Load(((ViewModels.ImageResultEntry)DataContext).V5ResultRow.Template);
-                V5StoredReportJsonView.Load(((ViewModels.ImageResultEntry)DataContext).V5ResultRow.Report);
-                V5StoredJsonPopup.PlacementTarget = (Button)sender;
-                V5StoredJsonPopup.IsOpen = true;
+                var pop = new PopupJSONViewer();
+                pop.Viewer1.JSON = ((ViewModels.ImageResultEntry)DataContext).V5ResultRow.Report;
+                pop.Viewer1.Title = "Report";
+
+                pop.Popup.PlacementTarget = (Button)sender;
+                pop.Popup.IsOpen = true;
             }
         }
         else
@@ -44,9 +46,12 @@ public partial class ImageResultEntry_V5 : UserControl
         {
             if (((ViewModels.ImageResultEntry)DataContext).V5CurrentReport != null)
             {
-                V5CurrentReportJsonView.Load(Newtonsoft.Json.JsonConvert.SerializeObject(((ViewModels.ImageResultEntry)DataContext).V5CurrentReport));
-                V5CurrentReportJsonPopup.PlacementTarget = (Button)sender;
-                V5CurrentReportJsonPopup.IsOpen = true;
+                var pop = new PopupJSONViewer();
+                pop.Viewer1.JSON = ((ViewModels.ImageResultEntry)DataContext).V5CurrentReport;
+                pop.Viewer1.Title = "Report";
+
+                pop.Popup.PlacementTarget = (Button)sender;
+                pop.Popup.IsOpen = true;
             }
         }
         else

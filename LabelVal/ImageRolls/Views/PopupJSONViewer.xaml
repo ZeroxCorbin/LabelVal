@@ -1,0 +1,39 @@
+﻿<UserControl x:Class="LabelVal.ImageRolls.Views.PopupJSONViewer"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:LabelVal.ImageRolls.Views"
+             xmlns:md="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
+             xmlns:json="clr-namespace:JSONViewer_WPF;assembly=JSONViewer_WPF"
+             mc:Ignorable="d">
+
+    <Popup x:Name="Popup" StaysOpen="False">
+        <Popup.Style>
+            <Style TargetType="{x:Type Popup}"/>
+        </Popup.Style>
+        
+        <DockPanel>
+            
+            <md:Card>
+                <json:JsonViewer x:Name="Viewer1" MinWidth="300"/>
+            </md:Card>
+            
+            <md:Card>
+                <md:Card.Style>
+                    <Style TargetType="{x:Type md:Card}">
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=Viewer2, Path=JSON}" Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </md:Card.Style>
+                
+                <json:JsonViewer x:Name="Viewer2" MinWidth="300"/>
+            </md:Card>
+            
+        </DockPanel>
+    </Popup>
+</UserControl>

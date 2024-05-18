@@ -7,7 +7,6 @@
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:sectors="clr-namespace:LabelVal.Sectors.Views"
-             xmlns:json="clr-namespace:JSONViewer_WPF;assembly=JSONViewer_WPF"
              xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:Converters="clr-namespace:LabelVal.Converters"
              xmlns:V275Converters="clr-namespace:LabelVal.V275.Converters"
@@ -34,111 +33,6 @@
 
         <!--L95xx Sectors-->
         <DockPanel>
-
-            <!--L95xx Stored Image--><!--
-            <GroupBox DockPanel.Dock="Top" Style="{StaticResource MaterialDesignCardGroupBox}" Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top">
-                <GroupBox.Header>
-
-                    <DockPanel>
-
-                        <md:Card Background="{DynamicResource OrangeBrush0}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
-                            <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}">
-                                <TextBlock.Style>
-                                    <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource MahApps.Styles.TextBlock}">
-                                        <Setter Property="Text" Value="Current Image"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsL95xxImageStored}" Value="True">
-                                                <Setter Property="Text" Value="Stored Image"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                        </md:Card>
-
-                        <Button Command="{Binding SaveCommand}" CommandParameter="stored" ToolTip="Save the image."
-                            Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
-                                    <Setter Property="Visibility" Value="Visible"/>
-                                    <Style.Triggers>
-                                        <MultiDataTrigger>
-                                            <MultiDataTrigger.Conditions>
-                                                <Condition Binding="{Binding SelectedScanner.IsSimulator}" Value="True"/>
-                                                <Condition Binding="{Binding IsL95xxImageStored}" Value="True"/>
-                                            </MultiDataTrigger.Conditions>
-
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                        </MultiDataTrigger>
-                                        <DataTrigger Binding="{Binding L95xxImage}" Value="{x:Null}">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-
-                            <IconPacks:PackIconMaterial Kind="ContentSave"  Margin="0,-2,0,0" Height="12" Width="12"/>
-
-                        </Button>
-
-                        <DockPanel>
-                            <DockPanel.Style>
-                                <Style TargetType="{x:Type DockPanel}">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                    <Style.Triggers>
-                                        <MultiDataTrigger>
-                                            <MultiDataTrigger.Conditions>
-                                                <Condition Binding="{Binding SelectedScanner.IsSimulator}" Value="True"/>
-                                                <Condition Binding="{Binding IsL95xxImageStored}" Value="True"/>
-                                            </MultiDataTrigger.Conditions>
-
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </MultiDataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </DockPanel.Style>
-
-
-                            <Button Command="{Binding SaveCommand}" CommandParameter="stored" ToolTip="Save the image." Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
-                                <Button.Style>
-                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding L95xxImage}" Value="{x:Null}">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Button.Style>
-
-                                <IconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
-                            </Button>
-
-                            --><!--<Button Command="{Binding L95xxProcessCommand}" CommandParameter="stored" ToolTip="L95xx: Trigger and process the image with the simulator.&#x0a;Then read the results"
-                                    BorderBrush="{DynamicResource YellowBrush2}" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
-                                    Width="20" Height="20" HorizontalAlignment="Left" Margin="3,0,3,0"
-                                    md:ButtonProgressAssist.IsIndeterminate="True"
-                                    md:ButtonProgressAssist.Value="-1"
-                                    md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsL95xxWorking}">
-
-                                <IconPacks:PackIconMaterial Kind="Camera"  Margin="-1,-1,0,0" Height="12" Width="12"/>
-                            </Button>--><!--
-
-                        </DockPanel>
-                    </DockPanel>
-                </GroupBox.Header>
-
-                <Grid Margin="3">
-                    <Image Name="L95xxImage" Source="{Binding L95xxImage, Converter={StaticResource bytesToImage}}" 
-                       Margin="0" MaxHeight="400" Width="400" MouseDown="L95xxImage_MouseDown"
-                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
-
-                    <Image Name="L95xxImageOverlay" Source="{Binding L95xxSectorsImageOverlay}" 
-                       Margin="0" MaxHeight="400" Width="400" MouseDown="L95xxImage_MouseDown"
-                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
-                </Grid>
-
-            </GroupBox>-->
 
             <!--L95xx Stored Sectors-->
             <GroupBox Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top">
@@ -496,24 +390,6 @@
                     </ScrollViewer>
                 </DockPanel>
             </GroupBox>
-        </Popup>
-
-        <Popup x:Name="L95xxCurrentReportJsonPopup" StaysOpen="False">
-            <Popup.Style>
-                <Style TargetType="{x:Type Popup}"/>
-            </Popup.Style>
-
-            <json:JsonViewer x:Name="L95xxCurrentReportJsonView" MinWidth="300"/>
-
-        </Popup>
-
-        <Popup x:Name="L95xxStoredJsonPopup" StaysOpen="False">
-            <Popup.Style>
-                <Style TargetType="{x:Type Popup}"/>
-            </Popup.Style>
-
-            <json:JsonViewer x:Name="L95xxStoredReportJsonView" MinWidth="300"/>
-
         </Popup>
 
     </DockPanel>
