@@ -77,6 +77,8 @@ public partial class ImageResultEntry
         }
 
         V275Image = JsonConvert.DeserializeObject<ImageEntry>(V275ResultRow.StoredImage);
+        V275Image.SelectedPrinter = SelectedImageRoll.SelectedPrinter;
+
         IsV275ImageStored = true;
 
         V275StoredSectors.Clear();

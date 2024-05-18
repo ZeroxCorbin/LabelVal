@@ -52,11 +52,11 @@ namespace LabelVal.ImageRolls.Views
                 _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).V5Image, ((ViewModels.ImageResultEntry)DataContext).V5SectorsImageOverlay);
         }
 
-        private void L95xxImage_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.LeftButton == MouseButtonState.Pressed)
-                _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).L95xxImage, ((ViewModels.ImageResultEntry)DataContext).L95xxSectorsImageOverlay);
-        }
+        //private void L95xxImage_MouseDown(object sender, MouseButtonEventArgs e)
+        //{
+        //    if (e.LeftButton == MouseButtonState.Pressed)
+        //        _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).L95xxImage, ((ViewModels.ImageResultEntry)DataContext).L95xxSectorsImageOverlay);
+        //}
 
         private bool ShowImage(byte[] image, DrawingImage overlay)
         {

@@ -31,9 +31,9 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Verifier
     public ObservableCollection<Sectors.ViewModels.Sector> L95xxStoredSectors { get; }= [];
     public ObservableCollection<Sectors.ViewModels.SectorDifferences> L95xxDiffSectors { get; }= [];
 
-    [ObservableProperty] private byte[] l95xxImage = null;
-    [ObservableProperty] private DrawingImage l95xxSectorsImageOverlay;
-    [ObservableProperty] private bool isL95xxImageStored;
+    //[ObservableProperty] private byte[] l95xxImage = null;
+    //[ObservableProperty] private DrawingImage l95xxSectorsImageOverlay;
+    //[ObservableProperty] private bool isL95xxImageStored;
 
     [ObservableProperty] private bool isL95xxWorking = false;
     partial void OnIsL95xxWorkingChanged(bool value) => OnPropertyChanged(nameof(IsNotL95xxWorking));
@@ -54,18 +54,9 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Verifier
 
         if (L95xxResultRow == null)
         {
-            if (L95xxCurrentSectors.Count == 0)
-            {
-                L95xxImage = null;
-                L95xxSectorsImageOverlay = null;
-                IsL95xxImageStored = false;
-            }
-
+            L95xxStoredSectors.Clear();
             return;
         }
-
-        L95xxImage = L95xxResultRow.StoredImage;
-        IsL95xxImageStored = true;
 
         var report = JsonConvert.DeserializeObject<List<L95xxReport>>(L95xxResultRow.Report);
 
@@ -82,8 +73,6 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Verifier
             foreach (var sec in tempSectors)
                 L95xxStoredSectors.Add(sec);
         }
-
-        //L95xxSectorsImageOverlay = L95xxCreateSectorsImageOverlay(true);
     }
 
     private void L95xxGetSectorDiff()

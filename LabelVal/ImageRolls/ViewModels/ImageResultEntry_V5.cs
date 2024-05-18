@@ -199,6 +199,8 @@ public partial class ImageResultEntry
         }
 
         V5Image = JsonConvert.DeserializeObject<ImageEntry>(V5ResultRow.StoredImage);
+        V5Image.SelectedPrinter = SelectedImageRoll.SelectedPrinter;
+
         IsV5ImageStored = true;
 
         V5StoredSectors.Clear();

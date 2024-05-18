@@ -55,33 +55,23 @@ namespace LabelVal.ImageRolls.Databases
             public ImageEntry Source => JsonConvert.DeserializeObject<ImageEntry>(sourceImage);
             public ImageEntry Stored => JsonConvert.DeserializeObject<ImageEntry>(storedImage);
 
+            public JObject _Config => JsonConvert.DeserializeObject<JObject>(Template);
             public JObject _Report => JsonConvert.DeserializeObject<JObject>(Report);
 
         }
 
         public partial class L95xxResult : ObservableObject
-        {
-            [ObservableProperty] private string imageRollUID;
-            [ObservableProperty] private byte[] sourceImage;
+        { 
             [ObservableProperty][property: PrimaryKey] private string sourceImageUID;
+            [ObservableProperty] private string imageRollUID;
+
+
             [ObservableProperty] private string template;
             [ObservableProperty] private string report;
+
+            //Not used for L95xx
+            [ObservableProperty] private byte[] sourceImage;
             [ObservableProperty] private byte[] storedImage;
-
-            //public Result(SQLiteDataReader rdr)
-            //{
-            //    for (int i = 0; i < rdr.FieldCount; i++)
-            //    {
-            //        if (rdr.GetName(i).Equals("LabelImage", StringComparison.InvariantCultureIgnoreCase))
-            //            LabelImage = (byte[])rdr["LabelImage"];
-            //    }
-
-            //    LabelImageUID = rdr["LabelImageUID"].ToString();
-            //    LabelTemplate = rdr["LabelTemplate"].ToString();
-            //    LabelReport = rdr["LabelReport"].ToString();
-            //    RepeatImage = (byte[])rdr["RepeatImage"];
-            //}
-
         }
 
         public partial class LockTable : ObservableObject

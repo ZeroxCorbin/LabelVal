@@ -181,15 +181,6 @@
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
 
-                                            <MultiDataTrigger>
-                                                <MultiDataTrigger.Conditions>
-                                                    <Condition Binding="{Binding L95xxImage, Converter={StaticResource objectIsNull}}" Value="False"/>
-                                                    <Condition Binding="{Binding IsL95xxImageStored}" Value="False"/>
-                                                </MultiDataTrigger.Conditions>
-
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                            </MultiDataTrigger>
-
                                         </Style.Triggers>
                                     </Style>
                                 </Button.Style>

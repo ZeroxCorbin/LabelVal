@@ -281,21 +281,9 @@ public partial class ImageResultEntry : ObservableRecipient,
 
             L95xxResultRow = SelectedDatabase.Select_L95xxResult(SelectedImageRoll.UID, SourceImage.UID);
 
-            if (L95xxResultRow == null)
-            {
-                L95xxImage = null;
-                L95xxSectorsImageOverlay = null;
-                IsL95xxImageStored = false;
-            }
-            else
-            {
+            if (L95xxResultRow != null)
                 if (getStored)
                     L95xxGetStored();
-
-                //L95xxImage = L95xxResultRow.StoredImage;
-                //L95xxSectorsImageOverlay = L95xxCreateSectorsImageOverlay(true);
-                //IsL95xxImageStored = true;
-            }
         }
     }
 
