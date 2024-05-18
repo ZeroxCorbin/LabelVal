@@ -25,7 +25,7 @@ public partial class ImageResultEntry : UserControl
     }
     private void UserControl_Unloaded(object sender, RoutedEventArgs e)
     {
-        //DialogParticipation.SetRegister(this, null);
+        DialogParticipation.SetRegister(this, null);
 
         viewModel.BringIntoView -= ViewModel_BringIntoView;
         viewModel = null;

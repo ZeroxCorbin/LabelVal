@@ -240,7 +240,7 @@ public class Controller
                 {
                     LabelTemplate = sRow.Template,
                     LabelReport = sRow.Report,
-                    RepeatGoldenImage = sRow.StoredImage,
+                    RepeatGoldenImage = sRow.Stored.GetBitmapBytes(),
                     LabelImageUID = label.SourceImage.UID,
                     LabelImage = Node.IsSimulator ? null : label.SourceImage.GetBitmapBytes(),
                     LabelImageOrder = CurrentLabelCount,
@@ -251,15 +251,7 @@ public class Controller
                     if (label.V275Image != null)
                     {
                         //Compress the image to PNG
-                        var encoder = new PngBitmapEncoder();
-                        using var ms = new MemoryStream(label.V275Image);
-                        using var stream = new MemoryStream();
-                        encoder.Frames.Add(BitmapFrame.Create(ms));
-                        encoder.Save(stream);
-
-                        row.RepeatImage = stream.ToArray();
-
-                        stream.Close();
+                        row.RepeatImage = label.V275Image.GetPngBytes();
                     }
 
                 row.RepeatReport = JsonConvert.SerializeObject(label.V275CurrentReport);
@@ -270,7 +262,7 @@ public class Controller
                 {
                     using var transaction = session.BeginTransaction();
                     var rep = new Report(label.V275CurrentReport);
-                    rep.repeatImage = label.V275Image;
+                    rep.repeatImage = label.V275Image.GetPngBytes();
                     rep.voidRepeat = rep.repeat;
                     rep.runId = RunId;
                     //var run = new ORM_Test.RunLedger(JsonConvert.SerializeObject(sRow.LabelTemplate), label.MainWindow.V275_MAC, label.MainWindow.V275_NodeNumber.ToString());

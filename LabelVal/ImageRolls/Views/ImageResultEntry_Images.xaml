@@ -385,13 +385,13 @@
         </GroupBox>
 
         <!--V275 Image-->
-        <GroupBox Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top">
+        <GroupBox d:Visibility="Visible" Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top">
             <GroupBox.Style>
                 <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
-                    <Setter Property="Visibility" Value="Visible"/>
+                    <Setter Property="Visibility" Value="Collapsed"/>
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding V275Image}" Value="{x:Null}">
-                            <Setter Property="Visibility" Value="Collapsed"/>
+                        <DataTrigger Binding="{Binding V275Image, Converter={StaticResource objectIsNull}}" Value="False">
+                            <Setter Property="Visibility" Value="Visible"/>
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -433,7 +433,7 @@
                                         <Setter Property="ToolTip" Value="Save the current image."/>
                                     </DataTrigger>
 
-                                    <DataTrigger Binding="{Binding V275Image}" Value="{x:Null}">
+                                    <DataTrigger Binding="{Binding V275Image.}" Value="{x:Null}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -505,7 +505,7 @@
             </GroupBox.Header>
 
             <Grid Margin="3">
-                <Image Name="V275Image" Source="{Binding V275Image, Converter={StaticResource bytesToImage}}" 
+                <Image Name="V275Image" Source="{Binding V275Image.ImageLow}" 
                        Margin="0" MaxHeight="400" Width="400" MouseDown="V275Image_MouseDown"
                        RenderOptions.BitmapScalingMode="NearestNeighbor"/>
 

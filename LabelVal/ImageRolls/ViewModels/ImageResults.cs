@@ -216,7 +216,7 @@ public partial class ImageResults : ObservableRecipient,
                 }
                 else if (type == "v275Stored")
                 {
-                    if (!sim.SaveImage(imageResults.SourceImage.Path, imageResults.V275ResultRow.StoredImage))
+                    if (!sim.SaveImage(imageResults.SourceImage.Path, imageResults.V275ResultRow.Stored.GetPngBytes()))
                     {
                         SendErrorMessage("Could not save the image to the simulator images directory.");
                         imageResults.IsV275Working = false;

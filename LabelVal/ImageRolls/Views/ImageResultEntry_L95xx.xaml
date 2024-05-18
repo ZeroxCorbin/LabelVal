@@ -24,7 +24,7 @@
         <V275Converters:V275_OCMatchModeToString x:Key="matchModeToString"/>
         
         <Converters:ObjectIsNull x:Key="objectIsNull"/>
-        <Converters:EnumerationIsEmpty x:Key="enumerationIsEmpty"/>
+        <Converters:EqualZeroOrNull x:Key="equalZeroOrNull"/>
 
         <Image x:Key="V275Icon" Source="/Assets/Images/V275WhiteIcon.ico" />
         <Image x:Key="V275Png" Source="/Assets/Images/V275WhiteIcon.png" />
@@ -42,7 +42,7 @@
                     <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
                         <Setter Property="Visibility" Value="Collapsed"/>
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding L95xxStoredSectors, Converter={StaticResource enumerationIsEmpty}}" Value="False">
+                            <DataTrigger Binding="{Binding L95xxStoredSectors.Count, Converter={StaticResource equalZeroOrNull}}" Value="False">
                                 <Setter Property="Visibility" Value="Visible"/>
                             </DataTrigger>
                         </Style.Triggers>
@@ -133,7 +133,7 @@
                     <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
                         <Setter Property="Visibility" Value="Collapsed"/>
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding L95xxCurrentSectors, Converter={StaticResource enumerationIsEmpty}}" Value="False">
+                            <DataTrigger Binding="{Binding L95xxCurrentSectors.Count, Converter={StaticResource equalZeroOrNull}}" Value="False">
                                 <Setter Property="Visibility" Value="Visible"/>
                             </DataTrigger>
                         </Style.Triggers>
@@ -284,7 +284,7 @@
                     <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
                         <Setter Property="Visibility" Value="Collapsed"/>
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding L95xxDiffSectors, Converter={StaticResource enumerationIsEmpty}}" Value="False">
+                            <DataTrigger Binding="{Binding L95xxDiffSectors.Count, Converter={StaticResource equalZeroOrNull}}" Value="False">
                                 <Setter Property="Visibility" Value="Visible"/>
                             </DataTrigger>
                         </Style.Triggers>

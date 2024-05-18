@@ -106,9 +106,9 @@ public partial class ImageResultEntry : ObservableRecipient,
         {
             byte[] bmp = null;
             if (type == "v275Stored")
-                bmp = ImageUtilities.ConvertToBmp(V275ResultRow.StoredImage);
+                bmp = V275ResultRow.Stored.GetBitmapBytes();
             else if (type == "v275Current")
-                bmp = ImageUtilities.ConvertToBmp(V275Image);
+                bmp = V275Image.GetBitmapBytes();
             else if (type == "v5Stored")
                 bmp = ImageUtilities.ConvertToBmp(V5ResultRow.StoredImage);
             else if (type == "v5Current")
@@ -138,12 +138,14 @@ public partial class ImageResultEntry : ObservableRecipient,
 
             _ = SelectedDatabase.InsertOrReplace_V275Result(new Databases.ImageResults.V275Result
             {
-                ImageRollUID = SelectedImageRoll.UID,
                 SourceImageUID = SourceImage.UID,
-                SourceImage = SourceImage.GetBitmapBytes(),
+                ImageRollUID = SelectedImageRoll.UID,
+
+                SourceImage = JsonConvert.SerializeObject(SourceImage), 
+                StoredImage = JsonConvert.SerializeObject(V275Image),
+
                 Template = JsonConvert.SerializeObject(V275CurrentTemplate),
                 Report = JsonConvert.SerializeObject(V275CurrentReport),
-                StoredImage = V275Image
             });
 
             ClearRead(device, true);
@@ -235,8 +237,8 @@ public partial class ImageResultEntry : ObservableRecipient,
                     V275GetStored();
                 else
                 {
-                    V275Image = V275ResultRow.StoredImage;
-                    V275SectorsImageOverlay = V275CreateSectorsImageOverlay(JsonConvert.DeserializeObject<Job>(V275ResultRow.Template), false);
+                    V275Image = V275ResultRow.Stored;
+                    V275SectorsImageOverlay = V275CreateSectorsImageOverlay(V275ResultRow.Job, false);
                     IsV275ImageStored = true;
                 }
             }

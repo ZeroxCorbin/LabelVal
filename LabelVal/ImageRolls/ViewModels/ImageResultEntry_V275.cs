@@ -32,7 +32,7 @@ public partial class ImageResultEntry
     [ObservableProperty] private ObservableCollection<Sectors.ViewModels.Sector> v275StoredSectors = [];
     [ObservableProperty] private ObservableCollection<Sectors.ViewModels.SectorDifferences> v275DiffSectors = [];
 
-    [ObservableProperty] private byte[] v275Image = null;
+    [ObservableProperty] private ImageEntry v275Image;
     [ObservableProperty] private DrawingImage v275SectorsImageOverlay;
     [ObservableProperty] private bool isV275ImageStored;
 
@@ -79,8 +79,9 @@ public partial class ImageResultEntry
         Job template = null;
         if (!string.IsNullOrEmpty(V275ResultRow.Template))
             template = JsonConvert.DeserializeObject<Job>(V275ResultRow.Template);
+        
 
-        V275Image = V275ResultRow.StoredImage;
+        V275Image = JsonConvert.DeserializeObject<ImageEntry>(V275ResultRow.StoredImage);
         IsV275ImageStored = true;
 
         V275StoredSectors.Clear();
@@ -140,12 +141,12 @@ public partial class ImageResultEntry
 
         if (!SelectedNode.IsSimulator)
         {
-            V275Image = ImageUtilities.ConvertToPng(report.image, 600);
+            V275Image = new ImageEntry(report.image, 600, SelectedImageRoll.SelectedPrinter);//ImageUtilities.ConvertToPng(report.image, 600);
             IsV275ImageStored = false;
         }
         else
         {
-            V275Image = SourceImage.GetBitmapBytes();
+            V275Image = SourceImage.Clone();
             IsV275ImageStored = false;
         }
 
@@ -314,12 +315,11 @@ public partial class ImageResultEntry
     }
     private DrawingImage V275CreateSectorsImageOverlay(Job template, bool isDetailed)
     {
-        var bmp = ImageUtilities.CreateBitmap(V275Image);
 
         //Draw the image outline the same size as the stored image
         var border = new GeometryDrawing
         {
-            Geometry = new RectangleGeometry(new Rect(0, 0, bmp.PixelWidth, bmp.PixelHeight)),
+            Geometry = new RectangleGeometry(new Rect(0, 0, V275Image.Image.PixelWidth, V275Image.Image.PixelHeight)),
             Pen = new Pen(Brushes.Transparent, 1)
         };
 

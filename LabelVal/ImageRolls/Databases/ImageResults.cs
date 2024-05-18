@@ -8,6 +8,9 @@ using static System.Net.Mime.MediaTypeNames;
 using System.Windows.Controls;
 using CommunityToolkit.Mvvm.Input;
 using System.Windows.Forms;
+using LabelVal.ImageRolls.ViewModels;
+using Newtonsoft.Json;
+using V275_REST_lib.Models;
 
 namespace LabelVal.ImageRolls.Databases
 {
@@ -19,13 +22,21 @@ namespace LabelVal.ImageRolls.Databases
         public string FileName => System.IO.Path.GetFileNameWithoutExtension(FilePath);
 
         public partial class V275Result : ObservableObject
-        {
-            [ObservableProperty] private string imageRollUID;
-            [ObservableProperty] private byte[] sourceImage;
+        {    
             [ObservableProperty] [property: PrimaryKey] private string sourceImageUID;
+            [ObservableProperty] private string imageRollUID;
+
+            [ObservableProperty] private string sourceImage;
+            [ObservableProperty] private string storedImage;
+
             [ObservableProperty] private string template;
             [ObservableProperty] private string report;
-            [ObservableProperty] private byte[] storedImage;
+
+            public ImageEntry Source => JsonConvert.DeserializeObject<ImageEntry>(sourceImage);
+            public ImageEntry Stored => JsonConvert.DeserializeObject<ImageEntry>(storedImage);
+
+            public Job Job => JsonConvert.DeserializeObject<Job>(template);
+
         }
 
         public partial class V5Result : ObservableObject

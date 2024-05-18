@@ -6,18 +6,15 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 
 namespace LabelVal.Converters;
-internal class EnumerationIsEmpty : IValueConverter
+internal class EqualZeroOrNull : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
     {
-        if(value is IEnumerable<object> enumerable)
-            return !enumerable.Any();
-        
-        return false;
+        return (value == null || (int)value == 0);
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
     {
-        return value;
+        throw new NotImplementedException();
     }
 }
