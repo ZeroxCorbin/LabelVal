@@ -35,7 +35,7 @@ public partial class ImageEntry : ObservableRecipient, IRecipient<PrinterMessage
     [JsonProperty]
     public byte[] ImageBytes
     {
-        get => GetBitmapBytes();
+        get => GetPngBytes();
         set
         {
             Image = BitmapImageUtilities.CreateBitmap(value);

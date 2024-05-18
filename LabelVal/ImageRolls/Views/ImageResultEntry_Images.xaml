@@ -246,7 +246,6 @@
                                          md:HintAssist.Hint="Total Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
                                 </DockPanel>
 
-
                                 <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" Margin="0,3">
                                     <TextBox Text="{Binding SourceImage.DeviationWidth, Mode=OneWay}"
                                          Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
@@ -256,8 +255,6 @@
                                           Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
                                          md:HintAssist.Hint="" md:HintAssist.IsFloating="True" IsHitTestVisible="False"/>
                                 </DockPanel>
-
-
 
                             </DockPanel>
                         </GroupBox>
@@ -373,6 +370,7 @@
 
                         </DockPanel>
                     </GroupBox>
+                    
                 </DockPanel>
 
             </DockPanel>
