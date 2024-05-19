@@ -101,7 +101,11 @@
             <md:DrawerHost x:Name="PrinterDetails" VerticalAlignment="Stretch" OpenMode="Standard">
 
                 <md:DrawerHost.LeftDrawerContent>
+                    <DockPanel>
+                        
+                   
                     <printer:PrinterDetails DataContext="{Binding PrinterDetails}"/>
+                    </DockPanel>
                 </md:DrawerHost.LeftDrawerContent>
 
                 <md:DrawerHost x:Name="ScannerDetails" VerticalAlignment="Stretch" OpenMode="Standard">

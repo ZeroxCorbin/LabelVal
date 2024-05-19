@@ -1,5 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -9,11 +12,11 @@ public partial class ImageViewerDialogViewModel : ObservableObject
 {
     [ObservableProperty] private double width;
     [ObservableProperty] private double height;
-    [ObservableProperty] private BitmapImage image;
-    [ObservableProperty] private DrawingImage overlay;
-    [ObservableProperty] private DrawingImage overlay1;
 
-    public void LoadImage(byte[] image, DrawingImage overlay, DrawingImage overlay1)
+    [ObservableProperty] private BitmapImage image;
+    public List<DrawingImage> Overlays { get; set; } = new();
+
+    public void LoadImage(byte[] image, List<DrawingImage> overlays)
     {
         if (image == null || image.Length < 2)
             return;
@@ -28,8 +31,8 @@ public partial class ImageViewerDialogViewModel : ObservableObject
             Image.Freeze();
         }
 
-        Overlay = overlay;
-        Overlay1 = overlay1;
+        foreach (var overlay in overlays)
+            Overlays.Add(overlay);
     }
 
     public void LoadImage(byte[] image, DrawingImage overlay)
@@ -47,18 +50,19 @@ public partial class ImageViewerDialogViewModel : ObservableObject
             Image.Freeze();
         }
 
-        Overlay = overlay;
+        Overlays.Add(overlay);
     }
 
-    public void LoadImage(BitmapImage image, DrawingImage overlay, DrawingImage overlay1)
+    public void LoadImage(BitmapImage image, List<DrawingImage> overlays)
     {
         Image = image;
-        Overlay = overlay;
-        Overlay1 = overlay1;
+        foreach (var overlay in overlays)
+            Overlays.Add(overlay);
     }
     public void LoadImage(BitmapImage image, DrawingImage overlay)
     {
         Image = image;
-        Overlay = overlay;
+        Overlays.Add(overlay);
     }
+
 }

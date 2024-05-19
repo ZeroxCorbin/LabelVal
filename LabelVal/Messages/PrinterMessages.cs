@@ -5,8 +5,7 @@ namespace LabelVal.Messages;
 
 public class PrinterMessages
 {
-    public class SelectedPrinterChanged(PrinterSettings newPrinter, PrinterSettings oldPrinter) : ValueChangedMessage<PrinterSettings>(newPrinter)
+    public class SelectedPrinterChanged(PrinterSettings newPrinter) : ValueChangedMessage<PrinterSettings>(newPrinter)
     {
-        public PrinterSettings OldPrinter { get; } = oldPrinter;
     }
 }

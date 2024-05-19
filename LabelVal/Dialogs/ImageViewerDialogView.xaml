@@ -15,7 +15,7 @@
                     mc:Ignorable="d" 
                     d:DesignHeight="800" d:DesignWidth="800" Width="{Binding Width}" Height="{Binding Height}"
                     PreviewKeyDown="CustomDialog_PreviewKeyDown"
-                    Style="{StaticResource {x:Type Dialog:BaseMetroDialog}}">
+                    Style="{StaticResource {x:Type Dialog:BaseMetroDialog}}" Loaded="CustomDialog_Loaded">
     <Dialog:CustomDialog.Resources>
         <converters:DoubleToStringConverter x:Key="doubleToString"/>
     </Dialog:CustomDialog.Resources>
@@ -23,18 +23,8 @@
     <Dialog:CustomDialog.DialogTop>
         <Grid>
             <paz:ZoomBorder Name="ZoomBorder" Margin="3">
-                <Grid>
-                    <Image Source="{Binding Image}"  Width="{Binding Width}" Height="{Binding Height}"
-                       SnapsToDevicePixels="true"
-                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
-                    <Image Source="{Binding Overlay}" 
-                        Width="{Binding Width}" Height="{Binding Height}"
-                       SnapsToDevicePixels="true"
-                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
-                    <Image Source="{Binding Overlay1}" 
-                        Width="{Binding Width}" Height="{Binding Height}"
-                       SnapsToDevicePixels="true"
-                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+                <Grid x:Name="grdOverlays" HorizontalAlignment="Left" VerticalAlignment="Top">
+
                 </Grid>
             </paz:ZoomBorder>
 

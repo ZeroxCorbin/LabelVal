@@ -331,11 +331,11 @@ public partial class ImageResultEntry : ObservableRecipient,
         var xRatio =(double)SourceImage.ImageLow.PixelWidth/ SourceImage.Image.PixelWidth ;
         var yRatio =(double)SourceImage.ImageLow.PixelHeight /SourceImage.Image.PixelHeight ;
 
-        var border = new System.Windows.Media.GeometryDrawing
-        {
-            Geometry = new System.Windows.Media.RectangleGeometry(new Rect(0, 0, SourceImage.Image.PixelWidth * xRatio, SourceImage.Image.PixelHeight * yRatio)),
-            Pen = new System.Windows.Media.Pen(System.Windows.Media.Brushes.Transparent, 1)
-        };
+        //var border = new System.Windows.Media.GeometryDrawing
+        //{
+        //    Geometry = new System.Windows.Media.RectangleGeometry(new Rect(0, 0, SourceImage.Image.PixelWidth * xRatio, SourceImage.Image.PixelHeight * yRatio)),
+        //    Pen = new System.Windows.Media.Pen(System.Windows.Media.Brushes.Transparent, 1)
+        //};
 
         var printer = new System.Windows.Media.GeometryDrawing
         {
@@ -365,7 +365,7 @@ public partial class ImageResultEntry : ObservableRecipient,
         //};
 
         // drwGroup.Children.Add(sectors);
-        drwGroup.Children.Add(border);
+        //drwGroup.Children.Add(border);
         drwGroup.Children.Add(printer);
 
         var geometryImage = new System.Windows.Media.DrawingImage(drwGroup);

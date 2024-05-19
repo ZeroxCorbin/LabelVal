@@ -36,7 +36,7 @@
             <DockPanel>
                 
             
-            <ComboBox ItemsSource="{Binding Printers}" SelectedItem="{Binding SelectedPrinter}" Margin="1">
+            <ComboBox ItemsSource="{Binding Printers}" SelectedItem="{Binding SelectedPrinterName}" Margin="1">
                 <ComboBox.Style>
                     <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}">
                         <Setter Property="md:HintAssist.Hint">
@@ -57,7 +57,7 @@
 
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding PrinterName}" />
+                        <TextBlock Text="{Binding }" />
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>

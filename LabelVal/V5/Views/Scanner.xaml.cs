@@ -34,7 +34,7 @@ namespace LabelVal.V5.Views
         {
             var dc = new ImageViewerDialogViewModel();
 
-            dc.LoadImage(image, overlay, overlay1);
+            dc.LoadImage(image, [overlay, overlay1]);
             if (dc.Image == null) return false;
 
             MainWindowView yourParentWindow = (MainWindowView)Window.GetWindow(this);
@@ -52,7 +52,7 @@ namespace LabelVal.V5.Views
         {
             var dc = new ImageViewerDialogViewModel();
 
-            dc.LoadImage(image, overlay, overlay1);
+            dc.LoadImage(image, [overlay, overlay1]);
             if (dc.Image == null) return false;
 
             MainWindowView yourParentWindow = (MainWindowView)Window.GetWindow(this);

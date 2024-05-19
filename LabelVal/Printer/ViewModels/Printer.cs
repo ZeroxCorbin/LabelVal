@@ -10,14 +10,21 @@ public partial class Printer : ObservableObject
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-    public ObservableCollection<PrinterSettings> Printers { get; } = [];
-
-
+    public ObservableCollection<string> Printers { get; } = [];
     [ObservableProperty] private PrinterSettings selectedPrinter;
-    partial void OnSelectedPrinterChanged(PrinterSettings value) => SelectedPrinterName = value.PrinterName;
-    partial void OnSelectedPrinterChanged(PrinterSettings oldValue, PrinterSettings newValue) => _ = WeakReferenceMessenger.Default.Send(new PrinterMessages.SelectedPrinterChanged(newValue, oldValue));
+    partial void OnSelectedPrinterChanged(PrinterSettings value) => _ = WeakReferenceMessenger.Default.Send(new PrinterMessages.SelectedPrinterChanged(value));
 
-    private string SelectedPrinterName { get => App.Settings.GetValue(nameof(SelectedPrinterName), ""); set => App.Settings.SetValue(nameof(SelectedPrinterName), value); }
+    [ObservableProperty] private string selectedPrinterName;
+    partial void OnSelectedPrinterNameChanged(string value)
+    {
+        if (!string.IsNullOrEmpty(value))
+        {
+            App.Settings.SetValue(nameof(SelectedPrinterName), value);
+            SelectedPrinter = new PrinterSettings() { PrinterName = value };
+        }
+        else
+            SelectedPrinter = null;
+    }
 
     [ObservableProperty] private int printCount = App.Settings.GetValue<int>(nameof(PrintCount), 1, true);
     partial void OnPrintCountChanged(int value) => App.Settings.SetValue(nameof(PrintCount), value);
@@ -26,21 +33,29 @@ public partial class Printer : ObservableObject
 
     private void LoadPrinters()
     {
+        Printers.Clear();
+
         Logger.Info("Loading printers.");
 
         foreach (string p in PrinterSettings.InstalledPrinters)
-        {
-            PrinterSettings printerSettings = new PrinterSettings { PrinterName = p };
-
-            Printers.Add(printerSettings);
-        }
+            Printers.Add(p);
 
         Logger.Info("Processed {count} printers.", Printers.Count);
 
-        SelectedPrinter = Printers.FirstOrDefault(p => p.PrinterName == SelectedPrinterName);
+        if (Printers.Contains(App.Settings.GetValue<string>(nameof(SelectedPrinterName))))
+            SelectedPrinterName = App.Settings.GetValue<string>(nameof(SelectedPrinterName));
+        else
+        {
+            if (Printers.Count == 0)
+                Logger.Warn("No printers found.");
+            else
+            {
+                Logger.Warn("Selected printer not found. Defaulting to first printer.");
+                SelectedPrinterName = Printers.First();
+            }
 
-        if (SelectedPrinter == null && Printers.Count > 0)
-            SelectedPrinter = Printers.First();
+        }
+
 
     }
 

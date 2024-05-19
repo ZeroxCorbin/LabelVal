@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -24,7 +25,8 @@ namespace LabelVal.Dialogs
         public ImageViewerDialogView()
         {
             InitializeComponent();
-        }
+                    }
+        
 
         private void CustomDialog_PreviewKeyDown(object sender, KeyEventArgs e)
         {
@@ -47,6 +49,37 @@ namespace LabelVal.Dialogs
         private void Reset_Click(object sender, RoutedEventArgs e)
         {
             ZoomBorder.Reset();
+        }
+
+        private void CustomDialog_Loaded(object sender, RoutedEventArgs e)
+        {
+            var img = new Image
+            {
+                Source = ((ImageViewerDialogViewModel)DataContext).Image,
+                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalAlignment = HorizontalAlignment.Left,
+            };
+            RenderOptions.SetBitmapScalingMode(img, BitmapScalingMode.NearestNeighbor);
+
+            grdOverlays.Children.Add(img);
+
+            AddOverlaysToGrid();
+        }
+
+        private void AddOverlaysToGrid()
+        {
+            foreach (var overlay in ((ImageViewerDialogViewModel)DataContext).Overlays)
+            {
+                var img = new Image
+                {
+                    Source = overlay,
+                    VerticalAlignment = VerticalAlignment.Top,
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                };
+                RenderOptions.SetBitmapScalingMode(img, BitmapScalingMode.NearestNeighbor);
+
+                grdOverlays.Children.Add(img);
+            }
         }
     }
 }

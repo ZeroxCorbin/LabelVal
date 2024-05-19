@@ -31,13 +31,13 @@ public class Controller
     {
         using (var img = System.Drawing.Image.FromFile(ImagePath))
         {
-            if (!string.IsNullOrEmpty(Data))
-            {
+            //if (!string.IsNullOrEmpty(Data))
+            //{
 
-                using var g = Graphics.FromImage(img);
-                var dataLength = g.MeasureString(Data, new Font("Arial", 8));
-                g.DrawString(Data, new Font("Arial", 8), Brushes.Black, new Point(img.Width - (int)dataLength.Width - 100, 20));
-            }
+            //    using var g = Graphics.FromImage(img);
+            //    var dataLength = g.MeasureString(Data, new Font("Arial", 8));
+            //    g.DrawString(Data, new Font("Arial", 8), Brushes.Black, new Point(img.Width - (int)dataLength.Width - 100, 20));
+            //}
             e.Graphics.DrawImage(img, new Point(0, 0));
         }
 
