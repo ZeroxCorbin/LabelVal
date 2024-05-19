@@ -78,7 +78,6 @@ public partial class ImageResultEntry
 
         V275Image = JsonConvert.DeserializeObject<ImageEntry>(V275ResultRow.StoredImage);
         V275Image.SelectedPrinter = SelectedImageRoll.SelectedPrinter;
-
         IsV275ImageStored = true;
 
         V275StoredSectors.Clear();
@@ -142,7 +141,7 @@ public partial class ImageResultEntry
 
         if (!SelectedNode.IsSimulator)
         {
-            V275Image = new ImageEntry(report.image, 600, SelectedImageRoll.SelectedPrinter);//ImageUtilities.ConvertToPng(report.image, 600);
+            V275Image = new ImageEntry(report.image, 600, SelectedPrinter);//ImageUtilities.ConvertToPng(report.image, 600);
             IsV275ImageStored = false;
         }
         else

@@ -12,9 +12,12 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Printing;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media.Imaging;
 using V275_REST_lib.Models;
 
 namespace LabelVal.ImageRolls.ViewModels;
@@ -22,7 +25,8 @@ namespace LabelVal.ImageRolls.ViewModels;
 public partial class ImageResultEntry : ObservableRecipient,
     IRecipient<NodeMessages.SelectedNodeChanged>,
     IRecipient<DatabaseMessages.SelectedDatabseChanged>,
-    IRecipient<ScannerMessages.SelectedScannerChanged>
+    IRecipient<ScannerMessages.SelectedScannerChanged>,
+    IRecipient<PrinterMessages.SelectedPrinterChanged>
 {
 
     public delegate void BringIntoViewDelegate();
@@ -35,6 +39,7 @@ public partial class ImageResultEntry : ObservableRecipient,
     //partial void OnStatusChanged(string value) => App.Current.Dispatcher.Invoke(() => StatusChanged?.Invoke(Status));
 
     public ImageEntry SourceImage { get; }
+    [ObservableProperty] System.Windows.Media.DrawingImage printerAreaOverlay;
     //public string SourceImagePath { get; }
     //[ObservableProperty] private byte[] sourceImage;
     //[ObservableProperty] private string sourceImageUID;
@@ -48,13 +53,16 @@ public partial class ImageResultEntry : ObservableRecipient,
     [ObservableProperty] private Node selectedNode;
     [ObservableProperty] private ImageRollEntry selectedImageRoll;
     [ObservableProperty] private Scanner selectedScanner;
+    [ObservableProperty] private PrinterSettings selectedPrinter;
+    partial void OnSelectedPrinterChanged(PrinterSettings value) => CreatePrinterAreaOverlay();
+
     [ObservableProperty] private Databases.ImageResults selectedDatabase;
     partial void OnSelectedDatabaseChanged(Databases.ImageResults value) => GetStored();
 
     [ObservableProperty] private Sectors.ViewModels.Sector selectedSector;
 
     private static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
-    public ImageResultEntry(ImageEntry sourceImage, Node selectedNode, ImageRollEntry selectedImageRoll, Databases.ImageResults selectedDatabase, Scanner selectedScanner)
+    public ImageResultEntry(ImageEntry sourceImage, Node selectedNode, ImageRollEntry selectedImageRoll, Databases.ImageResults selectedDatabase, Scanner selectedScanner, PrinterSettings selectedPrinter)
     {
         SourceImage = sourceImage;
 
@@ -64,6 +72,7 @@ public partial class ImageResultEntry : ObservableRecipient,
         SelectedNode = selectedNode;
         SelectedDatabase = selectedDatabase;
         SelectedScanner = selectedScanner;
+        SelectedPrinter = selectedPrinter;
 
         IsActive = true;
     }
@@ -74,6 +83,8 @@ public partial class ImageResultEntry : ObservableRecipient,
     public void Receive(NodeMessages.SelectedNodeChanged message) => SelectedNode = message.Value;
     public void Receive(DatabaseMessages.SelectedDatabseChanged message) => SelectedDatabase = message.Value;
     public void Receive(ScannerMessages.SelectedScannerChanged message) => SelectedScanner = message.Value;
+    public void Receive(PrinterMessages.SelectedPrinterChanged message) => SelectedPrinter = message.Value;
+
 
     public async Task<MessageDialogResult> OkCancelDialog(string title, string message)
     {
@@ -141,7 +152,7 @@ public partial class ImageResultEntry : ObservableRecipient,
                 SourceImageUID = SourceImage.UID,
                 ImageRollUID = SelectedImageRoll.UID,
 
-                SourceImage = JsonConvert.SerializeObject(SourceImage), 
+                SourceImage = JsonConvert.SerializeObject(SourceImage),
                 StoredImage = JsonConvert.SerializeObject(V275Image),
 
                 Template = JsonConvert.SerializeObject(V275CurrentTemplate),
@@ -160,7 +171,7 @@ public partial class ImageResultEntry : ObservableRecipient,
             {
                 SourceImageUID = SourceImage.UID,
                 ImageRollUID = SelectedImageRoll.UID,
-                
+
                 SourceImage = JsonConvert.SerializeObject(SourceImage),
                 StoredImage = JsonConvert.SerializeObject(V5Image),
 
@@ -313,6 +324,55 @@ public partial class ImageResultEntry : ObservableRecipient,
         return "";
     }
 
+    private void CreatePrinterAreaOverlay()
+    {
+        if (SelectedPrinter == null) return;
+
+        var xRatio =(double)SourceImage.ImageLow.PixelWidth/ SourceImage.Image.PixelWidth ;
+        var yRatio =(double)SourceImage.ImageLow.PixelHeight /SourceImage.Image.PixelHeight ;
+
+        var border = new System.Windows.Media.GeometryDrawing
+        {
+            Geometry = new System.Windows.Media.RectangleGeometry(new Rect(0, 0, SourceImage.Image.PixelWidth * xRatio, SourceImage.Image.PixelHeight * yRatio)),
+            Pen = new System.Windows.Media.Pen(System.Windows.Media.Brushes.Transparent, 1)
+        };
+
+        var printer = new System.Windows.Media.GeometryDrawing
+        {
+            Geometry = new System.Windows.Media.RectangleGeometry(new Rect(0, 0,
+            (SelectedPrinter.DefaultPageSettings.PaperSize.Width / 100) * SelectedPrinter.DefaultPageSettings.PrinterResolution.X * xRatio,
+            (SelectedPrinter.DefaultPageSettings.PaperSize.Height / 100) * SelectedPrinter.DefaultPageSettings.PrinterResolution.Y * yRatio)),
+            Pen = new System.Windows.Media.Pen(System.Windows.Media.Brushes.Red, 5)
+        };
+
+
+        //var secAreas = new System.Windows.Media.GeometryGroup();
+        var drwGroup = new System.Windows.Media.DrawingGroup();
+
+        //foreach (var sec in template.sectors)
+        //{
+        //    var area = new System.Windows.Media.RectangleGeometry(new Rect(sec.left, sec.top, sec.width, sec.height));
+        //    secAreas.Children.Add(area);
+
+        //    //drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun(sec.username, new Typeface("Arial"), 30.0, new Point(sec.left - 8, sec.top - 8))));
+        //}
+
+
+        //var sectors = new System.Windows.Media.GeometryDrawing
+        //{
+        //    Geometry = secAreas,
+        //    Pen = new System.Windows.Media.Pen(System.Windows.Media.Brushes.Red, 5)
+        //};
+
+        // drwGroup.Children.Add(sectors);
+        drwGroup.Children.Add(border);
+        drwGroup.Children.Add(printer);
+
+        var geometryImage = new System.Windows.Media.DrawingImage(drwGroup);
+        geometryImage.Freeze();
+        PrinterAreaOverlay = geometryImage;
+
+    }
 
 
 

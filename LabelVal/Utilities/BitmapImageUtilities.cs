@@ -37,6 +37,33 @@ public class BitmapImageUtilities
         return bitmap;
     }
 
+    public static System.Windows.Media.Imaging.BitmapImage CreatePNG(System.Drawing.Bitmap png)
+    {
+        using (var stream = new System.IO.MemoryStream())
+        {
+            png.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+            stream.Position = 0;
+            var wpfBitmap = new System.Windows.Media.Imaging.BitmapImage();
+            wpfBitmap.BeginInit();
+            wpfBitmap.StreamSource = stream;
+            wpfBitmap.EndInit();
+            return wpfBitmap;
+        }
+    }
+    public static System.Windows.Media.Imaging.BitmapImage CreateBitmap(System.Drawing.Bitmap bitmap)
+    {
+        using (var stream = new System.IO.MemoryStream())
+        {
+            bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Bmp);
+            stream.Position = 0;
+            var wpfBitmap = new System.Windows.Media.Imaging.BitmapImage();
+            wpfBitmap.BeginInit();
+            wpfBitmap.StreamSource = stream;
+            wpfBitmap.EndInit();
+            return wpfBitmap;
+        }
+    }
+
     public static System.Windows.Media.Imaging.BitmapImage CreateBitmap(byte[] data, int decodePixelWidth, int decodePixelHeight = 0)
     {
         var bitmap = new System.Windows.Media.Imaging.BitmapImage();

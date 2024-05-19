@@ -132,7 +132,7 @@ public partial class ImageResults : ObservableRecipient,
 
     private void LoadResultEntries(ImageEntry img)
     {
-        var tmp = new ImageResultEntry(img, SelectedNode, SelectedImageRoll, SelectedDatabase, SelectedScanner);
+        var tmp = new ImageResultEntry(img, SelectedNode, SelectedImageRoll, SelectedDatabase, SelectedScanner, SelectedPrinter);
 
         tmp.V275ProcessImage += V275ProcessImage;
         ImageResultsList.Add(tmp);

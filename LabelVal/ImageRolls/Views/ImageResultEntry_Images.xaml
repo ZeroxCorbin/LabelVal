@@ -197,17 +197,21 @@
             </GroupBox.Header>
 
             <DockPanel>
-
-
                 <DockPanel>
 
-                    <Grid DockPanel.Dock="Top" Margin="3">
+                    <Grid DockPanel.Dock="Top" Margin="3">   
+                        
                         <Image x:Name="SourceImage" MaxHeight="400" Width="400"
                                 Source="{Binding SourceImage.ImageLow, Mode=OneTime}"
                                 MouseDown="SourceImage_MouseDown"
                                 RenderOptions.BitmapScalingMode="NearestNeighbor"
                                 HorizontalAlignment="Left" VerticalAlignment="Top"
                                 ContextMenu="{StaticResource cmImageModify}" ContextMenuOpening="SourceImage_ContextMenuOpening"/>
+
+                        <Image
+                                Source="{Binding PrinterAreaOverlay, Mode=OneWay}"
+                                RenderOptions.BitmapScalingMode="HighQuality"
+                                HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
                         <Label HorizontalAlignment="Right" VerticalAlignment="Top" Margin="3">
                             <Label.Style>

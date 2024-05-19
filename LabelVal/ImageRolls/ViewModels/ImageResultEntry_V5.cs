@@ -135,7 +135,7 @@ public partial class ImageResultEntry
 
         if (!SelectedScanner.IsSimulator)
         {
-            V5Image = new ImageEntry(triggerResults.FullImage, 600, SelectedImageRoll.SelectedPrinter);
+            V5Image = new ImageEntry(triggerResults.FullImage, 600, SelectedPrinter);
             //ImageUtilities.ConvertToPng(triggerResults.FullImage);
             IsV5ImageStored = false;
         }
@@ -153,13 +153,13 @@ public partial class ImageResultEntry
         if (V5CurrentReport["event"]?["name"].ToString() == "cycle-report-alt")
         {
             foreach (var rSec in V5CurrentReport["event"]?["data"]?["decodeData"])
-                tempSectors.Add(new Sectors.ViewModels.Sector(rSec.ToObject<Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", SelectedImageRoll.SelectedStandard, selectedImageRoll.SelectedGS1Table));
+                tempSectors.Add(new Sectors.ViewModels.Sector(rSec.ToObject<Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", SelectedImageRoll.SelectedStandard, SelectedImageRoll.SelectedGS1Table));
 
         }
         else if (V5CurrentReport["event"]?["name"].ToString() == "cycle-report")
         {
             foreach (var rSec in V5CurrentReport["event"]["data"]["cycleConfig"]["qualifiedResults"])
-                tempSectors.Add(new Sectors.ViewModels.Sector(rSec.ToObject<Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", SelectedImageRoll.SelectedStandard, selectedImageRoll.SelectedGS1Table));
+                tempSectors.Add(new Sectors.ViewModels.Sector(rSec.ToObject<Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", SelectedImageRoll.SelectedStandard, SelectedImageRoll.SelectedGS1Table));
         }
 
         if (tempSectors.Count > 0)
@@ -199,7 +199,7 @@ public partial class ImageResultEntry
         }
 
         V5Image = JsonConvert.DeserializeObject<ImageEntry>(V5ResultRow.StoredImage);
-        V5Image.SelectedPrinter = SelectedImageRoll.SelectedPrinter;
+        V5Image.SelectedPrinter = SelectedPrinter;
 
         IsV5ImageStored = true;
 
