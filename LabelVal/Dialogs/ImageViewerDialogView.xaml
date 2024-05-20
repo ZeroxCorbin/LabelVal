@@ -24,30 +24,33 @@
 
         <DockPanel>
 
-            <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Right">
-                <DockPanel>
-                    <Label Content="{Binding Image.PixelWidth, Mode=OneTime}"  Foreground="White"/>
-                    <TextBlock Text="x" Margin="0,5,0,0"  Foreground="White"/>
-                    <Label Content="{Binding Image.PixelHeight, Mode=OneTime}"  Foreground="White"/>
-                    <TextBlock Text="/" Margin="0,5,0,0"  Foreground="White"/>
-
-                    <Label Content="{Binding Image.DpiX, StringFormat=N, Converter={StaticResource doubleToString}, Mode=OneTime}"  Foreground="White"/>
-                    <TextBlock Text="x" Margin="0,5,0,0"  Foreground="White"/>
-                    <Label Content="{Binding Image.DpiY, StringFormat=N, Converter={StaticResource doubleToString}, Mode=OneTime}"  Foreground="White"/>
-
+            <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                <DockPanel Margin="3"> 
+                    
+                    <DockPanel DockPanel.Dock="Top">
+                        <TextBlock Text="{Binding Image.PixelWidth, Mode=OneTime}"  Foreground="White"/>
+                        <TextBlock Text="x" Foreground="White" Margin="3,0"/>
+                        <TextBlock Text="{Binding Image.PixelHeight, Mode=OneTime}"  Foreground="White"/>
+                    </DockPanel>
+                    
+                    <DockPanel HorizontalAlignment="Center">
+                        <TextBlock Text="{Binding Image.DpiX, StringFormat=N, Converter={StaticResource doubleToString}, Mode=OneTime}"  Foreground="White"/>
+                        <TextBlock Text="x" Foreground="White" Margin="3,0"/>
+                        <TextBlock Text="{Binding Image.DpiY, StringFormat=N, Converter={StaticResource doubleToString}, Mode=OneTime}"  Foreground="White"/>
+                    </DockPanel>
                 </DockPanel>
 
                 <DockPanel>
-                    <Button Name="Reset" Click="Reset_Click" Width="30" Height="30" Style="{StaticResource MahApps.Styles.Button.Square}">
-                        <IconPacks:Modern Kind="Reset"/>
+                    <Button Name="Reset" Click="Reset_Click" Margin="3" Width="30" Height="30" Style="{StaticResource MahApps.Styles.Button.Square}">
+                        <IconPacks:PackIconMaterial Kind="ArrowExpandAll"/>
                     </Button>
 
-                    <Button Name="CloseButton" Click="CloseButton_Click" Width="30" Height="30" Style="{StaticResource MahApps.Styles.Button.Square}">
+                    <Button Name="CloseButton" Click="CloseButton_Click" Margin="3" Width="30" Height="30" Style="{StaticResource MahApps.Styles.Button.Square}">
                         <IconPacks:Modern Kind="Close"/>
                     </Button>
                 </DockPanel>
             </DockPanel>
-            
+
             <paz:ZoomBorder Name="ZoomBorder" Margin="3" HorizontalAlignment="Center" VerticalAlignment="Top" ClipToBounds="True">
                 <Grid x:Name="grdOverlays"/>
             </paz:ZoomBorder>

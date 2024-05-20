@@ -18,12 +18,11 @@ namespace LabelVal.ImageRolls.Views
         {
             InitializeComponent();
         }
-        private bool ShowPrinterAreaOverSource => App.Settings.GetValue<bool>(nameof(ShowPrinterAreaOverSource), false, true);
         private void SourceImage_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).SourceImage, ShowPrinterAreaOverSource ? ((ViewModels.ImageResultEntry)DataContext).CreatePrinterAreaOverlay(false) : null);
+                _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).SourceImage, ((ViewModels.ImageResultEntry)DataContext).ShowPrinterAreaOverSource ? ((ViewModels.ImageResultEntry)DataContext).CreatePrinterAreaOverlay(false) : null);
             }
 
         }
