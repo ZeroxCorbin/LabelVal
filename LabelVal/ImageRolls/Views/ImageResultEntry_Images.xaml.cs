@@ -32,7 +32,10 @@ namespace LabelVal.ImageRolls.Views
         private void SourceImage_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
-                _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).SourceImage, ((ViewModels.ImageResultEntry)DataContext).PrinterAreaOverlay);
+            {
+                _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).SourceImage, ((ViewModels.ImageResultEntry)DataContext).CreatePrinterAreaOverlay(false));
+            }
+                
         }
         private void SourceImage_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {

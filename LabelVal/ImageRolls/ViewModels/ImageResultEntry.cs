@@ -17,6 +17,7 @@ using System.Drawing.Printing;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using V275_REST_lib.Models;
 
@@ -54,7 +55,7 @@ public partial class ImageResultEntry : ObservableRecipient,
     [ObservableProperty] private ImageRollEntry selectedImageRoll;
     [ObservableProperty] private Scanner selectedScanner;
     [ObservableProperty] private PrinterSettings selectedPrinter;
-    partial void OnSelectedPrinterChanged(PrinterSettings value) => CreatePrinterAreaOverlay();
+    partial void OnSelectedPrinterChanged(PrinterSettings value) => PrinterAreaOverlay = CreatePrinterAreaOverlay(true);
 
     [ObservableProperty] private Databases.ImageResults selectedDatabase;
     partial void OnSelectedDatabaseChanged(Databases.ImageResults value) => GetStored();
@@ -324,53 +325,38 @@ public partial class ImageResultEntry : ObservableRecipient,
         return "";
     }
 
-    private void CreatePrinterAreaOverlay()
+    public DrawingImage CreatePrinterAreaOverlay(bool useRatio)
     {
-        if (SelectedPrinter == null) return;
+        if (SelectedPrinter == null) return null;
 
-        var xRatio =(double)SourceImage.ImageLow.PixelWidth/ SourceImage.Image.PixelWidth ;
-        var yRatio =(double)SourceImage.ImageLow.PixelHeight /SourceImage.Image.PixelHeight ;
+        double xRatio, yRatio;
+        if(useRatio)
+        {
+            xRatio = (double)SourceImage.ImageLow.PixelWidth / SourceImage.Image.PixelWidth;
+            yRatio = (double)SourceImage.ImageLow.PixelHeight / SourceImage.Image.PixelHeight;
+        }
+        else
+        {
+            xRatio = 1;
+            yRatio = 1;
+        }
 
-        //var border = new System.Windows.Media.GeometryDrawing
-        //{
-        //    Geometry = new System.Windows.Media.RectangleGeometry(new Rect(0, 0, SourceImage.Image.PixelWidth * xRatio, SourceImage.Image.PixelHeight * yRatio)),
-        //    Pen = new System.Windows.Media.Pen(System.Windows.Media.Brushes.Transparent, 1)
-        //};
+        var lineWidth = 10 * xRatio;
 
         var printer = new System.Windows.Media.GeometryDrawing
         {
-            Geometry = new System.Windows.Media.RectangleGeometry(new Rect(0, 0,
-            (SelectedPrinter.DefaultPageSettings.PaperSize.Width / 100) * SelectedPrinter.DefaultPageSettings.PrinterResolution.X * xRatio,
-            (SelectedPrinter.DefaultPageSettings.PaperSize.Height / 100) * SelectedPrinter.DefaultPageSettings.PrinterResolution.Y * yRatio)),
-            Pen = new System.Windows.Media.Pen(System.Windows.Media.Brushes.Red, 5)
+            Geometry = new System.Windows.Media.RectangleGeometry(new Rect(lineWidth/2, lineWidth/2,
+            ((SelectedPrinter.DefaultPageSettings.PaperSize.Width / 100) * SelectedPrinter.DefaultPageSettings.PrinterResolution.X * xRatio) - lineWidth,
+            ((SelectedPrinter.DefaultPageSettings.PaperSize.Height / 100) * SelectedPrinter.DefaultPageSettings.PrinterResolution.Y * yRatio) - lineWidth)),
+            Pen = new System.Windows.Media.Pen(System.Windows.Media.Brushes.Red, lineWidth)
         };
 
-
-        //var secAreas = new System.Windows.Media.GeometryGroup();
         var drwGroup = new System.Windows.Media.DrawingGroup();
-
-        //foreach (var sec in template.sectors)
-        //{
-        //    var area = new System.Windows.Media.RectangleGeometry(new Rect(sec.left, sec.top, sec.width, sec.height));
-        //    secAreas.Children.Add(area);
-
-        //    //drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun(sec.username, new Typeface("Arial"), 30.0, new Point(sec.left - 8, sec.top - 8))));
-        //}
-
-
-        //var sectors = new System.Windows.Media.GeometryDrawing
-        //{
-        //    Geometry = secAreas,
-        //    Pen = new System.Windows.Media.Pen(System.Windows.Media.Brushes.Red, 5)
-        //};
-
-        // drwGroup.Children.Add(sectors);
-        //drwGroup.Children.Add(border);
         drwGroup.Children.Add(printer);
 
         var geometryImage = new System.Windows.Media.DrawingImage(drwGroup);
         geometryImage.Freeze();
-        PrinterAreaOverlay = geometryImage;
+        return geometryImage;
 
     }
 

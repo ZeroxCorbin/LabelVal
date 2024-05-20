@@ -25,8 +25,8 @@ namespace LabelVal.Dialogs
         public ImageViewerDialogView()
         {
             InitializeComponent();
-                    }
-        
+        }
+
 
         private void CustomDialog_PreviewKeyDown(object sender, KeyEventArgs e)
         {
@@ -46,27 +46,32 @@ namespace LabelVal.Dialogs
             this.DataContext = null;
         }
 
-        private void Reset_Click(object sender, RoutedEventArgs e)
-        {
-            ZoomBorder.Reset();
-        }
+        private void Reset_Click(object sender, RoutedEventArgs e) => ZoomBorder.Reset();
 
         private void CustomDialog_Loaded(object sender, RoutedEventArgs e)
         {
+            var high = ((ImageViewerDialogViewModel)DataContext).Image.PixelWidth;
+            foreach (var overlay in ((ImageViewerDialogViewModel)DataContext).Overlays)
+                high = Math.Max(high, (int)overlay.Width);
+
+            var ratio = (this.ActualWidth - 100) / high;
+
             var img = new Image
             {
                 Source = ((ImageViewerDialogViewModel)DataContext).Image,
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalAlignment = HorizontalAlignment.Left,
+                Width = ((ImageViewerDialogViewModel)DataContext).Image.PixelWidth * ratio,
+                Height = ((ImageViewerDialogViewModel)DataContext).Image.PixelHeight * ratio,
             };
             RenderOptions.SetBitmapScalingMode(img, BitmapScalingMode.NearestNeighbor);
 
             grdOverlays.Children.Add(img);
 
-            AddOverlaysToGrid();
+            AddOverlaysToGrid(ratio);
         }
 
-        private void AddOverlaysToGrid()
+        private void AddOverlaysToGrid(double ratio)
         {
             foreach (var overlay in ((ImageViewerDialogViewModel)DataContext).Overlays)
             {
@@ -75,6 +80,9 @@ namespace LabelVal.Dialogs
                     Source = overlay,
                     VerticalAlignment = VerticalAlignment.Top,
                     HorizontalAlignment = HorizontalAlignment.Left,
+                    Width = overlay.Width * ratio,
+                    Height = overlay.Height * ratio,
+
                 };
                 RenderOptions.SetBitmapScalingMode(img, BitmapScalingMode.NearestNeighbor);
 
