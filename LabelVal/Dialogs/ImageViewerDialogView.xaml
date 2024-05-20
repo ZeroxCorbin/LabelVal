@@ -21,8 +21,8 @@
     </Dialog:CustomDialog.Resources>
 
     <Dialog:CustomDialog.DialogTop>
-        
-        <DockPanel VerticalAlignment="Top">
+
+        <DockPanel>
 
             <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Right">
                 <DockPanel>
@@ -36,7 +36,7 @@
                     <Label Content="{Binding Image.DpiY, StringFormat=N, Converter={StaticResource doubleToString}, Mode=OneTime}"  Foreground="White"/>
 
                 </DockPanel>
-                
+
                 <DockPanel>
                     <Button Name="Reset" Click="Reset_Click" Width="30" Height="30" Style="{StaticResource MahApps.Styles.Button.Square}">
                         <IconPacks:Modern Kind="Reset"/>
@@ -46,19 +46,15 @@
                         <IconPacks:Modern Kind="Close"/>
                     </Button>
                 </DockPanel>
-
-                
             </DockPanel>
+            
             <paz:ZoomBorder Name="ZoomBorder" Margin="3" HorizontalAlignment="Center" VerticalAlignment="Top" ClipToBounds="True">
                 <Grid x:Name="grdOverlays"/>
             </paz:ZoomBorder>
-            
+
+        </DockPanel>
 
 
-
-</DockPanel>
-
-    
 
     </Dialog:CustomDialog.DialogTop>
 

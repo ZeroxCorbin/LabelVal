@@ -50,7 +50,8 @@ public partial class ImageViewerDialogViewModel : ObservableObject
             Image.Freeze();
         }
 
-        Overlays.Add(overlay);
+        if (overlay != null)
+            Overlays.Add(overlay);
     }
 
     public void LoadImage(BitmapImage image, List<DrawingImage> overlays)
@@ -62,7 +63,9 @@ public partial class ImageViewerDialogViewModel : ObservableObject
     public void LoadImage(BitmapImage image, DrawingImage overlay)
     {
         Image = image;
-        Overlays.Add(overlay);
+
+        if (overlay != null)
+            Overlays.Add(overlay);
     }
 
 }
