@@ -11,7 +11,7 @@ using System.Windows.Media.Imaging;
 namespace LabelVal.ImageRolls.ViewModels;
 
 [JsonObject(MemberSerialization.OptIn)]
-public partial class ImageEntry : ObservableRecipient, IRecipient<PrinterMessages.SelectedPrinterChanged>
+public partial class ImageEntry : ObservableRecipient//, IRecipient<PrinterMessages.SelectedPrinterChanged>
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -54,9 +54,6 @@ public partial class ImageEntry : ObservableRecipient, IRecipient<PrinterMessage
     [JsonProperty] public double V52ImageTotalPixelDeviation { get; private set; }
 
 
-    [ObservableProperty] PrinterSettings selectedPrinter;
-    partial void OnSelectedPrinterChanged(PrinterSettings value) => InitPrinterVariables();
-
     [ObservableProperty] private double printerWidth;
     [ObservableProperty] private double printerHeight;
 
@@ -73,7 +70,7 @@ public partial class ImageEntry : ObservableRecipient, IRecipient<PrinterMessage
 
     public ImageEntry() { IsActive = true; }
 
-    public ImageEntry(string path, int targetDpiWidth, int targetDpiHeight, PrinterSettings selectedPrinter)
+    public ImageEntry(string path, int targetDpiWidth, int targetDpiHeight)
     {
         Path = path;
         TargetDpiHeight = targetDpiHeight;
@@ -93,12 +90,10 @@ public partial class ImageEntry : ObservableRecipient, IRecipient<PrinterMessage
 
         V52ImageTotalPixelDeviation = 5488640 - ImageTotalPixels;
 
-        SelectedPrinter = selectedPrinter;
-
         IsActive = true;
     }
 
-    public ImageEntry(byte[] image, int targetDpiWidth, PrinterSettings selectedPrinter, int targetDpiHeight = 0, string comment = null)
+    public ImageEntry(byte[] image, int targetDpiWidth, int targetDpiHeight = 0, string comment = null)
     {
         TargetDpiWidth = targetDpiWidth;
         TargetDpiHeight = targetDpiHeight != 0 ? targetDpiHeight : targetDpiWidth;
@@ -115,22 +110,20 @@ public partial class ImageEntry : ObservableRecipient, IRecipient<PrinterMessage
 
         V52ImageTotalPixelDeviation = 5488640 - ImageTotalPixels;
 
-        SelectedPrinter = selectedPrinter;
-
         IsActive = true;
     }
 
-    public ImageEntry Clone() => new ImageEntry(GetBitmapBytes(), TargetDpiWidth, SelectedPrinter, TargetDpiHeight, Comment);
+    public ImageEntry Clone() => new ImageEntry(GetBitmapBytes(), TargetDpiWidth, TargetDpiHeight, Comment);
 
-    public void Receive(PrinterMessages.SelectedPrinterChanged message) => SelectedPrinter = message.Value;
+    //public void Receive(PrinterMessages.SelectedPrinterChanged message) => SelectedPrinter = message.Value;
 
-    private void InitPrinterVariables()
+    public void InitPrinterVariables(PrinterSettings printer)
     {
-        PrinterWidth = Math.Round(SelectedPrinter.DefaultPageSettings.PrintableArea.Width / 100, 2);
-        PrinterHeight = Math.Round(SelectedPrinter.DefaultPageSettings.PrintableArea.Height / 100, 2);
+        PrinterWidth = Math.Round(printer.DefaultPageSettings.PrintableArea.Width / 100, 2);
+        PrinterHeight = Math.Round(printer.DefaultPageSettings.PrintableArea.Height / 100, 2);
 
-        PrinterPixelWidth = (int)Math.Round((SelectedPrinter.DefaultPageSettings.PrintableArea.Width / 100) * SelectedPrinter.DefaultPageSettings.PrinterResolution.X, 0);
-        PrinterPixelHeight = (int)Math.Round((SelectedPrinter.DefaultPageSettings.PrintableArea.Height / 100) * SelectedPrinter.DefaultPageSettings.PrinterResolution.Y, 0);
+        PrinterPixelWidth = (int)Math.Round((printer.DefaultPageSettings.PrintableArea.Width / 100) * printer.DefaultPageSettings.PrinterResolution.X, 0);
+        PrinterPixelHeight = (int)Math.Round((printer.DefaultPageSettings.PrintableArea.Height / 100) * printer.DefaultPageSettings.PrinterResolution.Y, 0);
         PrinterTotalPixels = PrinterPixelWidth * PrinterPixelHeight;
 
         DeviationWidth = PrinterPixelWidth - Image.PixelWidth;

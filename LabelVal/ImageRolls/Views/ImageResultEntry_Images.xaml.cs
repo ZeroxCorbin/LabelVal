@@ -2,20 +2,10 @@
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.WindowViews;
 using MahApps.Metro.Controls.Dialogs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace LabelVal.ImageRolls.Views
 {
@@ -28,14 +18,14 @@ namespace LabelVal.ImageRolls.Views
         {
             InitializeComponent();
         }
-
+        private bool ShowPrinterAreaOverSource => App.Settings.GetValue<bool>(nameof(ShowPrinterAreaOverSource), false, true);
         private void SourceImage_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).SourceImage, ((ViewModels.ImageResultEntry)DataContext).CreatePrinterAreaOverlay(false));
+                _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).SourceImage, ShowPrinterAreaOverSource ? ((ViewModels.ImageResultEntry)DataContext).CreatePrinterAreaOverlay(false) : null);
             }
-                
+
         }
         private void SourceImage_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
@@ -94,6 +84,16 @@ namespace LabelVal.ImageRolls.Views
 
             return true;
 
+        }
+
+        private void btnShowPrinterAreaOverSourceToggle(object sender, RoutedEventArgs e)
+        {
+            ((ViewModels.ImageResultEntry)DataContext).ShowPrinterAreaOverSource = !((ViewModels.ImageResultEntry)DataContext).ShowPrinterAreaOverSource;
+        }
+
+        private void btnShowDetailsToggle(object sender, RoutedEventArgs e)
+        {
+            ((ViewModels.ImageResultEntry)DataContext).ShowDetails = !((ViewModels.ImageResultEntry)DataContext).ShowDetails;
         }
     }
 }

@@ -97,7 +97,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PrinterMes
     {
         try
         {
-            var image = new ImageEntry(path, targetDPI, targetDPI, SelectedPrinter);
+            var image = new ImageEntry(path, targetDPI, targetDPI);
             Images.Add(image);
         }
         catch (Exception ex)

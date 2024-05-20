@@ -41,26 +41,37 @@ public partial class ImageResultEntry : ObservableRecipient,
 
     public ImageEntry SourceImage { get; }
     [ObservableProperty] System.Windows.Media.DrawingImage printerAreaOverlay;
-    //public string SourceImagePath { get; }
-    //[ObservableProperty] private byte[] sourceImage;
-    //[ObservableProperty] private string sourceImageUID;
-    //[ObservableProperty] private string sourceImageComment;
-
-
-    //[ObservableProperty] private bool v275SectorsNeedStored = false;
-    //partial void OnV275SectorsNeedStoredChanged(bool value) => OnPropertyChanged(nameof(NotV275SectorsNeedStored));
-    //public bool NotV275SectorsNeedStored => !V275SectorsNeedStored;
 
     [ObservableProperty] private Node selectedNode;
     [ObservableProperty] private ImageRollEntry selectedImageRoll;
     [ObservableProperty] private Scanner selectedScanner;
     [ObservableProperty] private PrinterSettings selectedPrinter;
-    partial void OnSelectedPrinterChanged(PrinterSettings value) => PrinterAreaOverlay = CreatePrinterAreaOverlay(true);
+    partial void OnSelectedPrinterChanged(PrinterSettings value)
+    {
+        PrinterAreaOverlay = ShowPrinterAreaOverSource ? CreatePrinterAreaOverlay(true) : null;
+        OnShowDetailsChanged(ShowDetails);
+    } 
 
     [ObservableProperty] private Databases.ImageResults selectedDatabase;
     partial void OnSelectedDatabaseChanged(Databases.ImageResults value) => GetStored();
 
     [ObservableProperty] private Sectors.ViewModels.Sector selectedSector;
+
+
+    [ObservableProperty] private bool showPrinterAreaOverSource;
+    partial void OnShowPrinterAreaOverSourceChanged(bool value) => PrinterAreaOverlay = ShowPrinterAreaOverSource ? CreatePrinterAreaOverlay(true) : null;
+
+
+    [ObservableProperty] private bool showDetails;
+    partial void OnShowDetailsChanged(bool value)
+    {
+        if (value)
+        {
+            SourceImage?.InitPrinterVariables(SelectedPrinter);
+            V275Image?.InitPrinterVariables(SelectedPrinter);
+            V5Image?.InitPrinterVariables(SelectedPrinter);
+        }
+    }
 
     private static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
     public ImageResultEntry(ImageEntry sourceImage, Node selectedNode, ImageRollEntry selectedImageRoll, Databases.ImageResults selectedDatabase, Scanner selectedScanner, PrinterSettings selectedPrinter)
@@ -77,6 +88,7 @@ public partial class ImageResultEntry : ObservableRecipient,
 
         IsActive = true;
     }
+
 
     private void SendStatusMessage(string message, SystemMessages.StatusMessageType type) => WeakReferenceMessenger.Default.Send(new SystemMessages.StatusMessage(this, type, message));
     private void SendErrorMessage(string message) => WeakReferenceMessenger.Default.Send(new SystemMessages.StatusMessage(this, SystemMessages.StatusMessageType.Error, message));
@@ -330,7 +342,7 @@ public partial class ImageResultEntry : ObservableRecipient,
         if (SelectedPrinter == null) return null;
 
         double xRatio, yRatio;
-        if(useRatio)
+        if (useRatio)
         {
             xRatio = (double)SourceImage.ImageLow.PixelWidth / SourceImage.Image.PixelWidth;
             yRatio = (double)SourceImage.ImageLow.PixelHeight / SourceImage.Image.PixelHeight;
@@ -345,7 +357,7 @@ public partial class ImageResultEntry : ObservableRecipient,
 
         var printer = new System.Windows.Media.GeometryDrawing
         {
-            Geometry = new System.Windows.Media.RectangleGeometry(new Rect(lineWidth/2, lineWidth/2,
+            Geometry = new System.Windows.Media.RectangleGeometry(new Rect(lineWidth / 2, lineWidth / 2,
             ((SelectedPrinter.DefaultPageSettings.PaperSize.Width / 100) * SelectedPrinter.DefaultPageSettings.PrinterResolution.X * xRatio) - lineWidth,
             ((SelectedPrinter.DefaultPageSettings.PaperSize.Height / 100) * SelectedPrinter.DefaultPageSettings.PrinterResolution.Y * yRatio) - lineWidth)),
             Pen = new System.Windows.Media.Pen(System.Windows.Media.Brushes.Red, lineWidth)
@@ -357,31 +369,5 @@ public partial class ImageResultEntry : ObservableRecipient,
         var geometryImage = new System.Windows.Media.DrawingImage(drwGroup);
         geometryImage.Freeze();
         return geometryImage;
-
     }
-
-
-
-    //public void Clear()
-    //{
-    //    SourceImage = null;
-    //    V275Image = null;
-    //    V275CurrentTemplate = null;
-
-    //    V275StoredTemplate = null;
-
-    //    foreach (var sec in V275CurrentSectors)
-    //        sec.Clear();
-
-    //    V275CurrentSectors.Clear();
-
-    //    foreach (var sec in V275StoredSectors)
-    //        sec.Clear();
-
-    //    V275StoredSectors.Clear();
-
-    //    dialogCoordinator = null;
-    //    ImageResultsDatabase = null;
-    //    V275 = null;
-    //}
 }

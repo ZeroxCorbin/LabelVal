@@ -135,7 +135,7 @@ public partial class ImageResultEntry
 
         if (!SelectedScanner.IsSimulator)
         {
-            V5Image = new ImageEntry(triggerResults.FullImage, 600, SelectedPrinter);
+            V5Image = new ImageEntry(triggerResults.FullImage, 600);
             //ImageUtilities.ConvertToPng(triggerResults.FullImage);
             IsV5ImageStored = false;
         }
@@ -199,8 +199,6 @@ public partial class ImageResultEntry
         }
 
         V5Image = JsonConvert.DeserializeObject<ImageEntry>(V5ResultRow.StoredImage);
-        V5Image.SelectedPrinter = SelectedPrinter;
-
         IsV5ImageStored = true;
 
         V5StoredSectors.Clear();
