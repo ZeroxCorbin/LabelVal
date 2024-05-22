@@ -72,7 +72,7 @@
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
                                             <Condition Binding="{Binding SelectedNode.IsSimulator}" Value="True"/>
-                                            <Condition Binding="{Binding SelectedNode.IsLoggedIn_Control}" Value="True"/>
+                                            <Condition Binding="{Binding SelectedNode.IsLoggedIn}" Value="True"/>
                                             <Condition Binding="{Binding V275ResultRow, Converter={StaticResource objectIsNull}}" Value="True"/>
                                         </MultiDataTrigger.Conditions>
 
@@ -472,7 +472,7 @@
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
                                             <Condition Binding="{Binding SelectedNode.IsSimulator}" Value="True"/>
-                                            <Condition Binding="{Binding SelectedNode.IsLoggedIn_Control}" Value="True"/>
+                                            <Condition Binding="{Binding SelectedNode.IsLoggedIn}" Value="True"/>
                                             <Condition Binding="{Binding V275ResultRow.StoredImage, Converter={StaticResource objectIsNull}}" Value="False"/>
                                         </MultiDataTrigger.Conditions>
 
@@ -550,37 +550,37 @@
                         <DockPanel Margin="0,6,0,0">
 
                             <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,3">
-                                <TextBox Text="{Binding V275Image.ImageTotalPixels, Mode=OneTime}"
+                                <TextBox Text="{Binding V275Image.ImageTotalPixels, Mode=OneWay}"
                                      BorderThickness="0" HorizontalContentAlignment="Center"
                                      md:HintAssist.Hint="Total Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
                             </DockPanel>
 
                             <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" Margin="0,3">
-                                <TextBox Text="{Binding V275Image.Image.PixelWidth, Mode=OneTime}"
+                                <TextBox Text="{Binding V275Image.Image.PixelWidth, Mode=OneWay}"
                                      Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
                                      md:HintAssist.Hint="Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
                                 <TextBox Margin="0" BorderThickness="0" Text="X" IsHitTestVisible="False"/>
-                                <TextBox Text="{Binding V275Image.Image.PixelHeight, Mode=OneTime}"
+                                <TextBox Text="{Binding V275Image.Image.PixelHeight, Mode=OneWay}"
                                      Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
                                      md:HintAssist.Hint="" md:HintAssist.IsFloating="True" IsHitTestVisible="False"/>
                             </DockPanel>
 
                             <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" Margin="0,3">
-                                <TextBox Text="{Binding V275Image.Image.DpiX, Mode=OneTime, StringFormat=N, Converter={StaticResource doubleToString}}"
+                                <TextBox Text="{Binding V275Image.Image.DpiX, Mode=OneWay, StringFormat=N, Converter={StaticResource doubleToString}}"
                                      Width="40" BorderThickness="0" HorizontalContentAlignment="Center" 
                                      md:HintAssist.Hint="DPI" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
                                 <TextBox Margin="0" BorderThickness="0" Text="X" IsHitTestVisible="False"/>
-                                <TextBox Text="{Binding V275Image.Image.DpiY, Mode=OneTime, StringFormat=N, Converter={StaticResource doubleToString}}"
+                                <TextBox Text="{Binding V275Image.Image.DpiY, Mode=OneWay, StringFormat=N, Converter={StaticResource doubleToString}}"
                                       Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
                                      md:HintAssist.Hint="" md:HintAssist.IsFloating="True" IsHitTestVisible="False"/>
                             </DockPanel>
 
                             <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" Margin="0,3">
-                                <TextBox Text="{Binding V275Image.ImageWidth, Mode=OneTime, StringFormat=N2}"
+                                <TextBox Text="{Binding V275Image.ImageWidth, Mode=OneWay, StringFormat=N2}"
                                      Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
                                      md:HintAssist.Hint="Inches" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
                                 <TextBox Margin="0" BorderThickness="0" Text="X" IsHitTestVisible="False"/>
-                                <TextBox Text="{Binding V275Image.ImageHeight, Mode=OneTime, StringFormat=N2}"
+                                <TextBox Text="{Binding V275Image.ImageHeight, Mode=OneWay, StringFormat=N2}"
                                       Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
                                      md:HintAssist.Hint="" md:HintAssist.IsFloating="True" IsHitTestVisible="False"/>
                             </DockPanel>
@@ -632,7 +632,7 @@
                         </GroupBox.Header>
 
                         <DockPanel Margin="0,6,0,0">
-                            <TextBox Text="{Binding V275Image.V52ImageTotalPixelDeviation, Mode=OneTime}"
+                            <TextBox Text="{Binding V275Image.V52ImageTotalPixelDeviation, Mode=OneWay}"
                                          BorderThickness="0" HorizontalContentAlignment="Center"
                                          md:HintAssist.Hint="Total Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
                         </DockPanel>
@@ -750,7 +750,7 @@
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
                                             <Condition Binding="{Binding SelectedNode.IsSimulator}" Value="True"/>
-                                            <Condition Binding="{Binding SelectedNode.IsLoggedIn_Control}" Value="True"/>
+                                            <Condition Binding="{Binding SelectedNode.IsLoggedIn}" Value="True"/>
                                             <Condition Binding="{Binding V5ResultRow.StoredImage, Converter={StaticResource objectIsNull}}" Value="False"/>
                                         </MultiDataTrigger.Conditions>
 
@@ -881,58 +881,12 @@
                         </GroupBox.Header>
 
                         <DockPanel Margin="0,6,0,0">
-                            <TextBox Text="{Binding V5Image.V52ImageTotalPixelDeviation, Mode=OneTime}"
+                            <TextBox Text="{Binding V5Image.V52ImageTotalPixelDeviation, Mode=OneWay}"
                                          BorderThickness="0" HorizontalContentAlignment="Center"
                                          md:HintAssist.Hint="Total Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
                         </DockPanel>
 
                     </GroupBox>
-
-                    <!--<GroupBox VerticalAlignment="Top" Margin="3,0,3,3" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-                        <GroupBox.Header>
-                            <TextBlock Text="Printer Details" Margin="-6"/>
-                        </GroupBox.Header>
-
-                        <DockPanel>
-
-                            <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,3">
-                                <TextBox Text="{Binding V5Image.PrinterTotalPixels, Mode=OneWay}"
-                                     BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="Total Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
-                            </DockPanel>
-
-                            <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" Margin="0,3">
-                                <TextBox Text="{Binding V5Image.PrinterPixelWidth, Mode=OneWay}"
-                                     Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
-                                <TextBox Margin="0" BorderThickness="0" Text="X" IsHitTestVisible="False"/>
-                                <TextBox Text="{Binding V5Image.PrinterPixelHeight, Mode=OneWay}"
-                                      Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="" md:HintAssist.IsFloating="True" IsHitTestVisible="False"/>
-                            </DockPanel>
-
-                            <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" Margin="0,3">
-                                <TextBox Text="{Binding V5Image.SelectedPrinter.DefaultPageSettings.PrinterResolution.X, Mode=OneWay}"
-                                     Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="DPI" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
-                                <TextBox Margin="0" BorderThickness="0" Text="X" IsHitTestVisible="False"/>
-                                <TextBox Text="{Binding V5Image.SelectedPrinter.DefaultPageSettings.PrinterResolution.Y, Mode=OneWay}"
-                                      Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="" md:HintAssist.IsFloating="True" IsHitTestVisible="False"/>
-                            </DockPanel>
-
-                            <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" Margin="0,3">
-                                <TextBox Text="{Binding V5Image.PrinterWidth, Mode=OneWay, StringFormat=N2}"
-                                     Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="Inches" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
-                                <TextBox Margin="0" BorderThickness="0" Text="X" IsHitTestVisible="False"/>
-                                <TextBox Text="{Binding V5Image.PrinterHeight, Mode=OneWay, StringFormat=N2}"
-                                     Width="40" BorderThickness="0"  HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="" md:HintAssist.IsFloating="True" IsHitTestVisible="False"/>
-                            </DockPanel>
-
-                        </DockPanel>
-                    </GroupBox>-->
 
                 </DockPanel>
             </DockPanel>

@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
 using LabelVal.Messages;
 using LabelVal.Utilities;
 using Newtonsoft.Json;
@@ -9,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Security;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -85,7 +83,7 @@ public partial class ImageResultEntry
         if (!string.IsNullOrEmpty(V275ResultRow.Report) && !string.IsNullOrEmpty(V275ResultRow.Template))
         {
 
-            V275SectorsImageOverlay = V275CreateSectorsImageOverlay(V275ResultRow._Job, false);
+            V275SectorsImageOverlay = V275CreateSectorsImageOverlay(V275ResultRow._Job, false, V275ResultRow._Report);
 
             foreach (var jSec in V275ResultRow._Job.sectors)
             {
@@ -140,7 +138,9 @@ public partial class ImageResultEntry
 
         if (!SelectedNode.IsSimulator)
         {
-            V275Image = new ImageEntry(report.image, 600);//ImageUtilities.ConvertToPng(report.image, 600);
+            var dpi = 600;// SelectedPrinter.PrinterName.Contains("ZT620") ? 300 : 600;
+            ImageUtilities.SetBitmapDPI(report.image, dpi);
+            V275Image = new ImageEntry(report.image, dpi);//ImageUtilities.ConvertToPng(report.image, 600);
             IsV275ImageStored = false;
         }
         else
@@ -181,7 +181,7 @@ public partial class ImageResultEntry
 
         V275GetSectorDiff();
 
-        V275SectorsImageOverlay = V275CreateSectorsImageOverlay(V275CurrentTemplate, true);
+        V275SectorsImageOverlay = V275CreateSectorsImageOverlay(V275CurrentTemplate, true, V275CurrentReport);
 
         return true;
     }
@@ -263,8 +263,8 @@ public partial class ImageResultEntry
             }
 
         foreach (var d in diff)
-            if(d.IsNotEmpty)
-               V275DiffSectors.Add(d);
+            if (d.IsNotEmpty)
+                V275DiffSectors.Add(d);
 
     }
     public async Task<int> V275LoadTask()
@@ -312,8 +312,42 @@ public partial class ImageResultEntry
 
         return 1;
     }
-    private DrawingImage V275CreateSectorsImageOverlay(Job template, bool isDetailed)
+    //private DrawingImage V275CreateSectorsImageOverlay(Report report, bool isDetailed)
+    //{
+    //    var drwGroup = new DrawingGroup();
+
+    //    //Draw the image outline the same size as the stored image
+    //    var border = new GeometryDrawing
+    //    {
+    //        Geometry = new RectangleGeometry(new Rect(0, 0, V275Image.Image.PixelWidth, V275Image.Image.PixelHeight)),
+    //        Pen = new Pen(Brushes.Transparent, 1)
+    //    };
+    //    drwGroup.Children.Add(border);
+
+    //    foreach (var sec in report.inspectLabel.inspectSector)
+    //    {
+    //        if()
+    //        var sector = new GeometryDrawing
+    //        {
+    //            Geometry = new RectangleGeometry(new Rect(sec.left, sec.top, sec.width, sec.height)),
+    //            Pen = new Pen(Brushes.Red, 5)
+    //        };
+    //        drwGroup.Children.Add(sector);
+
+    //        drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun(sec.username, new Typeface("Arial"), 30.0, new Point(sec.left - 8, sec.top - 8))));
+    //    }
+
+    //    if (isDetailed)
+    //        drwGroup = V275GetModuleGrid(template.sectors, V275StoredSectors);
+
+    //    var geometryImage = new DrawingImage(drwGroup);
+    //    geometryImage.Freeze();
+
+    //    return geometryImage;
+    //}
+    private DrawingImage V275CreateSectorsImageOverlay(Job template, bool isDetailed, Report report)
     {
+        var drwGroup = new DrawingGroup();
 
         //Draw the image outline the same size as the stored image
         var border = new GeometryDrawing
@@ -321,32 +355,37 @@ public partial class ImageResultEntry
             Geometry = new RectangleGeometry(new Rect(0, 0, V275Image.Image.PixelWidth, V275Image.Image.PixelHeight)),
             Pen = new Pen(Brushes.Transparent, 1)
         };
+        drwGroup.Children.Add(border);
 
-        var secAreas = new GeometryGroup();
-        var drwGroup = new DrawingGroup();
-
-        foreach (var sec in template.sectors)
+        foreach (var jSec in template.sectors)
         {
-            var area = new RectangleGeometry(new Rect(sec.left, sec.top, sec.width, sec.height));
-            secAreas.Children.Add(area);
+            foreach (JObject rSec in report.inspectLabel.inspectSector)
+            {
+                if (jSec.name == rSec["name"].ToString())
+                {
+                    var fSec = JsonConvert.DeserializeObject<JObject>(rSec["data"].ToString());
+                    var result = JsonConvert.DeserializeObject<JObject>(fSec["overallGrade"].ToString());
 
-            drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun(sec.username, new Typeface("Arial"), 30.0, new Point(sec.left - 8, sec.top - 8))));
+                    var sector = new GeometryDrawing
+                    {
+                        Geometry = new RectangleGeometry(new Rect(rSec["left"].Value<double>(), rSec["top"].Value<double>(), rSec["width"].Value<double>(), rSec["height"].Value<double>())),
+                        Pen = new Pen(V275GetGradeBrush(result["grade"]?["letter"].ToString()), 5)
+                    };
+                    drwGroup.Children.Add(sector);
+
+                    drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun(jSec.username, new Typeface("Arial"), 30.0, new Point(jSec.left - 8, jSec.top - 8))));
+
+                    break;
+                }
+            }
         }
 
         if (isDetailed)
             drwGroup = V275GetModuleGrid(template.sectors, V275StoredSectors);
 
-        var sectors = new GeometryDrawing
-        {
-            Geometry = secAreas,
-            Pen = new Pen(Brushes.Red, 5)
-        };
-
-        drwGroup.Children.Add(sectors);
-        drwGroup.Children.Add(border);
-
         var geometryImage = new DrawingImage(drwGroup);
         geometryImage.Freeze();
+
         return geometryImage;
 
         //System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(bmp.PixelWidth, bmp.PixelHeight);
@@ -380,6 +419,21 @@ public partial class ImageResultEntry
 
 
     }
+
+    private Brush V275GetGradeBrush(string grade)
+    {
+        return grade switch
+        {
+            "A" => Brushes.Green,
+            "B" => Brushes.Blue,
+            "C" => Brushes.LightBlue,
+            "D" => Brushes.Yellow,
+            "F" => Brushes.Red,
+            _ => Brushes.Black,
+        };
+    }
+
+    [Obsolete]
     public static GlyphRun CreateGlyphRun(string text, Typeface typeface, double emSize, Point baselineOrigin)
     {
         GlyphTypeface glyphTypeface;

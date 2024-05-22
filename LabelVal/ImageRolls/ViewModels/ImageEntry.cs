@@ -141,14 +141,11 @@ public partial class ImageEntry : ObservableRecipient//, IRecipient<PrinterMessa
 
         var bmp = BitmapImageUtilities.ImageToBytesBMP(Image);
 
-        ImageUtilities.SetBitmapDPI(bmp, tDpi);
+        if(dpi != 0)
+            ImageUtilities.SetBitmapDPI(bmp, (int)Image.DpiX);
 
         return bmp;
     }
 
-    public byte[] GetPngBytes()
-    {
-        var bmp = BitmapImageUtilities.ImageToBytesPNG(Image);
-        return bmp;
-    }
+    public byte[] GetPngBytes() => BitmapImageUtilities.ImageToBytesPNG(Image);
 }

@@ -118,7 +118,7 @@ public partial class ImageResults : ObservableRecipient,
         App.Current.Dispatcher.Invoke(() => ClearImageResultsList());
 
         if (SelectedImageRoll.Images.Count == 0)
-           await SelectedImageRoll.LoadImages(); 
+            await SelectedImageRoll.LoadImages();
 
         List<Task> taskList = new List<Task>();
         foreach (var img in SelectedImageRoll.Images)
@@ -127,7 +127,7 @@ public partial class ImageResults : ObservableRecipient,
             taskList.Add(tsk);
         }
 
-      // await Task.WhenAll(taskList.ToArray());
+        // await Task.WhenAll(taskList.ToArray());
     }
 
     private void LoadResultEntries(ImageEntry img)
@@ -151,7 +151,7 @@ public partial class ImageResults : ObservableRecipient,
 
             var printer = new Printer.Controller();
 
-            printer.Print(imageResults.SourceImage.Path, PrintCount, SelectedPrinter.PrinterName, "");
+            printer.Print(imageResults.SourceImage, PrintCount, SelectedPrinter.PrinterName, "");
 
             imageResults.IsV275Working = false;
 
@@ -160,103 +160,35 @@ public partial class ImageResults : ObservableRecipient,
 
         if (SelectedNode.IsSimulator)
         {
-            try
+            //V275ProcessSimulation_Old(imageResults, type);
+            ImageEntry img = null;
+            if (type == "source")
+                img = imageResults.SourceImage;
+            else if (type == "v275Stored")
+                img = imageResults.V275ResultRow.Stored;
+            else if (type == "v5Stored")
+                img = imageResults.V5ResultRow.Stored;
+
+            if (img == null)
+                return;
+
+            WaitForRepeat = SelectedNode.IsLoggedIn_Control;
+            PrintingImageResult = imageResults;
+
+            if (!await SelectedNode.Connection.Commands.TriggerSimulator(new V275_REST_Lib.Models.SimulationTrigger() { image = img.GetPngBytes(), dpi = (int)img.Image.DpiX }))
             {
-                var verRes = 1;
-                var prepend = "";
-
-                var sim = new Simulator.SimulatorFileHandler();
-
-                if (!sim.DeleteAllImages())
-                {
-                    var verCur = SelectedNode.Product.part?[(SelectedNode.Product.part.LastIndexOf('-') + 1)..];
-
-                    if (verCur != null)
-                    {
-                        var ver = System.Version.Parse(verCur);
-                        var verMin = System.Version.Parse("1.1.0.3009");
-                        verRes = ver.CompareTo(ver);
-                    }
-
-                    if (verRes > 0)
-                    {
-                        SendErrorMessage("Could not delete all simulator images.");
-                        imageResults.IsV275Working = false;
-                        return;
-                    }
-                    else
-                    {
-                        sim.UpdateImageList();
-
-                        prepend = "_";
-
-                        foreach (var imgFile in sim.Images)
-                        {
-                            var name = Path.GetFileName(imgFile);
-
-                            for (; ; )
-                            {
-                                if (name.StartsWith(prepend))
-                                    prepend += prepend;
-                                else
-                                    break;
-                            }
-                        }
-                    }
-                }
-
-                if (type == "source")
-                {
-                    if (!sim.CopyImage(imageResults.SourceImage.Path, prepend))
-                    {
-                        SendErrorMessage("Could not copy the image to the simulator images directory.");
-                        imageResults.IsV275Working = false;
-                        return;
-                    }
-                }
-                else if (type == "v275Stored")
-                {
-                    if (!sim.SaveImage(imageResults.SourceImage.Path, imageResults.V275ResultRow.Stored.GetPngBytes()))
-                    {
-                        SendErrorMessage("Could not save the image to the simulator images directory.");
-                        imageResults.IsV275Working = false;
-                        return;
-                    }
-                }
-                else if (type == "v5Stored")
-                {
-                    if (!sim.SaveImage(imageResults.SourceImage.Path, imageResults.V5ResultRow.Stored.GetPngBytes()))
-                    {
-                        SendErrorMessage("Could not save the image to the simulator images directory.");
-                        imageResults.IsV275Working = false;
-                        return;
-                    }
-                }
-
-                if (!SelectedNode.IsLoggedIn_Control)
-                {
-                    if (!await SelectedNode.Connection.Commands.TriggerSimulator())
-                    {
-                        SendErrorMessage("Error triggering the simulator.");
-                        imageResults.IsV275Working = false;
-                        return;
-                    }
-                }
-
-                if (!SelectedNode.IsLoggedIn_Control)
-                {
-                    imageResults.IsV275Working = false;
-                }
-            }
-            catch (Exception ex)
-            {
-                SendErrorMessage(ex.Message);
+                SendErrorMessage("Error triggering the simulator.");
                 imageResults.IsV275Working = false;
-                Logger.Error(ex);
+                return;
             }
+
         }
         else
         {
+
+            WaitForRepeat = SelectedNode.IsLoggedIn_Control;
+            PrintingImageResult = imageResults;
+
             _ = Task.Run(() =>
             {
                 var printer = new Printer.Controller();
@@ -264,14 +196,153 @@ public partial class ImageResults : ObservableRecipient,
                 if (RunViewModel.State != Run.Controller.RunStates.IDLE)
                 {
                     var data = $"Loop {RunViewModel.RunController.CurrentLoopCount} : {RunViewModel.RunController.CurrentLabelCount}";
-                    printer.Print(imageResults.SourceImage.Path, 1, SelectedPrinter.PrinterName, data);
+                    printer.Print(imageResults.SourceImage, 1, SelectedPrinter.PrinterName, data);
                 }
                 else
-                    printer.Print(imageResults.SourceImage.Path, PrintCount, SelectedPrinter.PrinterName, "");
+                    printer.Print(imageResults.SourceImage, PrintCount, SelectedPrinter.PrinterName, "");
 
                 if (!SelectedNode.IsLoggedIn_Control)
                     imageResults.IsV275Working = false;
             });
+        }
+
+        if (SelectedNode.IsLoggedIn_Control)
+        {
+            _ = Task.Run(() =>
+            {
+                var start = DateTime.Now;
+                while (WaitForRepeat)
+                {
+                    if ((DateTime.Now - start) > TimeSpan.FromMilliseconds(10000))
+                    {
+                        WaitForRepeat = false;
+
+                        PrintingImageResult = null;
+
+                        imageResults.IsV275Faulted = true;
+                        imageResults.IsV275Working = false;
+                        return;
+                    }
+                }
+            });
+        }
+        else
+        {
+            WaitForRepeat = false;
+            PrintingImageResult = null;
+        }
+
+        if (SelectedNode.State != V275.ViewModels.NodeStates.Idle && SelectedNode.IsLoggedIn_Control)
+        {
+            if (!await SelectedNode.EnablePrint("1"))
+            {
+                WaitForRepeat = false;
+
+                PrintingImageResult = null;
+
+                imageResults.IsV275Faulted = true;
+                imageResults.IsV275Working = false;
+            }
+        }
+
+        imageResults.IsV275Working = false;
+    }
+
+    private async void V275ProcessSimulation_Old(ImageResultEntry imageResults, string type)
+    {
+        try
+        {
+            var verRes = 1;
+            var prepend = "";
+
+            var sim = new Simulator.SimulatorFileHandler();
+
+            if (!sim.DeleteAllImages())
+            {
+                var verCur = SelectedNode.Product.part?[(SelectedNode.Product.part.LastIndexOf('-') + 1)..];
+
+                if (verCur != null)
+                {
+                    var ver = System.Version.Parse(verCur);
+                    var verMin = System.Version.Parse("1.1.0.3009");
+                    verRes = ver.CompareTo(ver);
+                }
+
+                if (verRes > 0)
+                {
+                    SendErrorMessage("Could not delete all simulator images.");
+                    imageResults.IsV275Working = false;
+                    return;
+                }
+                else
+                {
+                    sim.UpdateImageList();
+
+                    prepend = "_";
+
+                    foreach (var imgFile in sim.Images)
+                    {
+                        var name = Path.GetFileName(imgFile);
+
+                        for (; ; )
+                        {
+                            if (name.StartsWith(prepend))
+                                prepend += prepend;
+                            else
+                                break;
+                        }
+                    }
+                }
+            }
+
+            if (type == "source")
+            {
+                if (!sim.SaveImage(prepend + Path.GetFileName(imageResults.SourceImage.Path), imageResults.SourceImage.GetBitmapBytes()))
+                {
+                    SendErrorMessage("Could not copy the image to the simulator images directory.");
+                    imageResults.IsV275Working = false;
+                    return;
+                }
+            }
+            else if (type == "v275Stored")
+            {
+                if (!sim.SaveImage(prepend + Path.GetFileName(imageResults.SourceImage.Path), imageResults.V275ResultRow.Stored.GetPngBytes()))
+                {
+                    SendErrorMessage("Could not save the image to the simulator images directory.");
+                    imageResults.IsV275Working = false;
+                    return;
+                }
+            }
+            else if (type == "v5Stored")
+            {
+                if (!sim.SaveImage(prepend + Path.GetFileName(imageResults.SourceImage.Path), imageResults.V5ResultRow.Stored.GetPngBytes()))
+                {
+                    SendErrorMessage("Could not save the image to the simulator images directory.");
+                    imageResults.IsV275Working = false;
+                    return;
+                }
+            }
+
+            //if (!SelectedNode.IsLoggedIn_Control)
+            //{
+            //    if (!await SelectedNode.Connection.Commands.TriggerSimulator())
+            //    {
+            //        SendErrorMessage("Error triggering the simulator.");
+            //        imageResults.IsV275Working = false;
+            //        return;
+            //    }
+            //}
+
+            if (!SelectedNode.IsLoggedIn_Control)
+            {
+                imageResults.IsV275Working = false;
+            }
+        }
+        catch (Exception ex)
+        {
+            SendErrorMessage(ex.Message);
+            imageResults.IsV275Working = false;
+            Logger.Error(ex);
         }
 
         if (SelectedNode.IsLoggedIn_Control)

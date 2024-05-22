@@ -1,24 +1,34 @@
-﻿using System.Drawing;
+﻿using LabelVal.ImageRolls.ViewModels;
+using System.Drawing;
 using System.Drawing.Printing;
+using System.IO;
 
 namespace LabelVal.Printer;
 
 public class Controller
 {
-
-    private int Count { get; set; }
-    private string ImagePath { get; set; }
+    private byte[] Image;
+    private int Count;
     private string Data;
 
-    private int index;
+    //public void Print(string imagePath, int count, string printerName, string data)
+    //{
+    //    Image = File.ReadAllBytes(imagePath);
+    //    Count = count;
+    //    Data = data;
 
-    public void Print(string imagePath, int count, string printerName, string data)
+    //    using var pd = new PrintDocument();
+    //    pd.PrintPage += PrintPage;
+
+    //    pd.PrinterSettings.PrinterName = printerName;
+    //    pd.Print();
+    //}
+
+    public void Print(ImageEntry imageEntry, int count, string printerName, string data)
     {
-        ImagePath = imagePath;
+        Image = imageEntry.ImageBytes;
         Count = count;
         Data = data;
-
-        index = 1;
 
         using var pd = new PrintDocument();
         pd.PrintPage += PrintPage;
@@ -27,9 +37,10 @@ public class Controller
         pd.Print();
     }
 
+
     private void PrintPage(object o, PrintPageEventArgs e)
     {
-        using (var img = System.Drawing.Image.FromFile(ImagePath))
+        using (var img = System.Drawing.Image.FromStream(new MemoryStream(Image)))
         {
             //if (!string.IsNullOrEmpty(Data))
             //{
@@ -41,7 +52,7 @@ public class Controller
             e.Graphics.DrawImage(img, new Point(0, 0));
         }
 
-        if (index++ < Count)
+        if (Count-- > 1)
             e.HasMorePages = true;
     }
 }

@@ -228,6 +228,31 @@ public partial class Node : ObservableRecipient, IRecipient<Messages.ImageRollMe
         Symbologies = await Connection.Commands.GetSymbologies();
         Calibration = await Connection.Commands.GetCalibration();
 
+        if (IsSimulator)
+        {
+            var res = await Connection.Commands.GetSimulation();
+
+            if (res != null)
+            {
+                if (res.mode == "continuous")
+                {
+                    res.mode = "trigger";
+                    res.dwellMs = 1;
+                    _ = await Connection.Commands.PutSimulation(res);
+                }
+            }
+
+            res = await Connection.Commands.GetSimulation();
+            if (res != null)
+            {
+                if (res.mode != "trigger")
+                {
+
+                }
+            }
+        }
+
+
         _ = await Connection.Commands.SetSendExtendedData(true);
 
         if (!await Connection.WebSocket.StartAsync(Connection.Commands.URLs.WS_NodeEvents))
@@ -275,7 +300,7 @@ public partial class Node : ObservableRecipient, IRecipient<Messages.ImageRollMe
             return;
         }
     }
-    [RelayCommand] private void TriggerSim() => _ = Connection.Commands.TriggerSimulator();
+    //[RelayCommand] private void TriggerSim() => _ = Connection.Commands.TriggerSimulator();
     [RelayCommand] private async Task SwitchRun() => await Connection.SwitchToRun();
     [RelayCommand] private async Task SwitchEdit() => await Connection.SwitchToEdit();
 

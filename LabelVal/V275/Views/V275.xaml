@@ -29,12 +29,19 @@
 
                     <iconPacks:Modern Width="12" Height="12" Kind="Refresh"/>
                 </Button>
-
-                <Button Click="btnShowDetails_Click" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
+                
+                <Button Click="btnOpenInBrowser_Click" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
                         Padding="0" Margin="3,0" BorderThickness="0" Height="20" Width="20" HorizontalAlignment="Left">
+
+                    <iconPacks:PackIconModern Width="12" Height="12" Kind="Browser"/>
+                </Button>
+                
+                <Button Click="btnShowDetails_Click" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
+                        Padding="0" Margin="3,0" BorderThickness="0" Height="20" Width="20" HorizontalAlignment="Right">
 
                     <iconPacks:Material Width="12" Height="12" Kind="CodeJson"/>
                 </Button>
+                
 
             </DockPanel>
         </GroupBox.Header>

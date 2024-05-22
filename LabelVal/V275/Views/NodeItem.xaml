@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:LabelVal.V275.Views"
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:ViewModels="clr-namespace:LabelVal.V275.ViewModels"  
@@ -28,7 +29,11 @@
             <DockPanel Margin="3">
 
                 <md:Card VerticalAlignment="Top" Padding="3" Margin="3" Background="{DynamicResource MahApps.Brushes.Accent4}">
-                    <Button Command="{Binding LoginCommand}" BorderThickness="0">
+
+                    <DockPanel>
+                        
+                    
+                    <Button DockPanel.Dock="Top" Command="{Binding LoginCommand}" BorderThickness="0">
                         <Button.Style>
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
                                 <Setter Property="Content">
@@ -48,6 +53,16 @@
                             </Style>
                         </Button.Style>
                     </Button>
+
+                    <mah:ToggleSwitch IsOn="{Binding LoginMonitor}">
+                            <mah:ToggleSwitch.OnContent>
+                                <iconPacks:Modern Kind="Monitor" Height="16" Width="16"/>
+                            </mah:ToggleSwitch.OnContent>
+                            <mah:ToggleSwitch.OffContent>
+                                <iconPacks:Modern Kind="ControlEject" Height="16" Width="16"/>
+                            </mah:ToggleSwitch.OffContent>
+                        </mah:ToggleSwitch>
+                    </DockPanel>
                 </md:Card>
 
                 <DockPanel>
