@@ -53,6 +53,7 @@ namespace LabelVal.Sectors.ViewModels
 
         public string OverallGradeString { get; set; }
         public double OverallGradeValue { get; set; }
+        public string OverallGradeLetter { get; set; }
 
         public V275_REST_lib.Models.Report_InspectSector_Common.Gs1results GS1Results { get; set; }
         public string FormattedOut { get; set; }
@@ -74,6 +75,7 @@ namespace LabelVal.Sectors.ViewModels
 
                     OverallGradeString = v1D.data.overallGrade._string;
                     OverallGradeValue = v1D.data.overallGrade.grade.value;
+                    OverallGradeLetter = v1D.data.overallGrade.grade.letter;
 
                     if (v1D.data.gs1Results != null)
                     {
@@ -94,6 +96,7 @@ namespace LabelVal.Sectors.ViewModels
 
                     OverallGradeString = v2D.data.overallGrade._string;
                     OverallGradeValue = v2D.data.overallGrade.grade.value;
+                    OverallGradeLetter = v2D.data.overallGrade.grade.letter;
 
                     if (v2D.data.gs1Results != null)
                     {
@@ -144,11 +147,13 @@ namespace LabelVal.Sectors.ViewModels
                             {
                                 OverallGradeString = "No Grade";
                                 OverallGradeValue = 0;
+                                OverallGradeLetter = "F";
                             }
                             else
                             {
                                 OverallGradeString = $"{v5.grading.iso15416.overall.grade:f1}/00/600";
                                 OverallGradeValue = v5.grading.iso15416.overall.grade;
+                                OverallGradeLetter = V5GetLetter(v5.grading.iso15416.overall.letter);
                             }
                         }
                         else if (Type == "verify2D")
@@ -157,11 +162,13 @@ namespace LabelVal.Sectors.ViewModels
                             {
                                 OverallGradeString = "No Grade";
                                 OverallGradeValue = 0;
+                                OverallGradeLetter = "F";
                             }
                             else
                             {
                                 OverallGradeString = $"{v5.grading.iso15415.overall.grade:f1}/00/600";
                                 OverallGradeValue = v5.grading.iso15415.overall.grade;
+                                OverallGradeLetter = V5GetLetter(v5.grading.iso15415.overall.letter);
                             }
                         }
                     break;
@@ -229,6 +236,7 @@ namespace LabelVal.Sectors.ViewModels
 
                             OverallGradeValue = L95xxGetGrade(spl2[0]).value;// new Report_InspectSector_Common.Overallgrade() { grade = GetGrade(spl2[0]), _string = spl1[1] };
                             OverallGradeString = spl1[1];
+                            OverallGradeLetter = L95xxGetGrade(spl2[0]).letter;
 
                             Aperture = L95xxParseFloat(spl2[1]);
                             continue;
@@ -357,5 +365,15 @@ namespace LabelVal.Sectors.ViewModels
             else
                 return "Unknown";
         }
+
+        private string V5GetLetter(int grade) => grade switch
+        {
+            65 => "A",
+            66 => "B",
+            67 => "C",
+            68 => "D",
+            70 => "F",
+            _ => throw new System.NotImplementedException(),
+        };
     }
 }

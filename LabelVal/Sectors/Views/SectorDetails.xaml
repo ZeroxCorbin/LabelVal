@@ -148,18 +148,35 @@
                 </DockPanel>
                 
             <!--Overall Grade Button-->
-                <Button IsHitTestVisible="False" Height="30" Width="30" HorizontalAlignment="Right">
+                <Button IsHitTestVisible="False" Width="30" Height="30" BorderThickness="3" HorizontalAlignment="Right">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Square.Accent}">
                             <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
-                            <Setter Property="IsHitTestVisible" Value="True"/>
+                            <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}"/>
                             <Style.Triggers>
                                 <DataTrigger Value="True" Binding="{Binding IsError, Mode=OneTime}">
-                                    <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
+                                    <Setter Property="BorderBrush" Value="{DynamicResource ColorBlindBrush5}"/>
                                 </DataTrigger>
                                 <DataTrigger Value="True" Binding="{Binding IsWarning, Mode=OneTime}">
-                                    <Setter Property="Background" Value="{DynamicResource ColorBlindBrush6}"/>
+                                    <Setter Property="BorderBrush" Value="{DynamicResource ColorBlindBrush6}"/>
                                 </DataTrigger>
+
+                                 <DataTrigger Value="B" Binding="{Binding Report.OverallGradeLetter, Mode=OneTime}">
+                                    <Setter Property="Background" Value="{DynamicResource ColorBlindBrush2}"/>
+                                </DataTrigger>
+                                <DataTrigger Value="C" Binding="{Binding Report.OverallGradeLetter, Mode=OneTime}">
+                                    <Setter Property="Background" Value="{DynamicResource ColorBlindBrush4}"/>
+                                    <Setter Property="Foreground" Value="Black"/>
+                                </DataTrigger>
+                                <DataTrigger Value="D" Binding="{Binding Report.OverallGradeLetter, Mode=OneTime}">
+                                    <Setter Property="Background" Value="{DynamicResource ColorBlindBrush7}"/>
+                                    <Setter Property="Foreground" Value="Black"/>
+                                </DataTrigger>
+                                <DataTrigger Value="F" Binding="{Binding Report.OverallGradeLetter, Mode=OneTime}">
+                                    <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
+                                </DataTrigger>
+
+
                             </Style.Triggers>
                         </Style>
                     </Button.Style>
@@ -190,7 +207,8 @@
                         </TextBlock>
                     </Button.Content>
                 </Button>
-    
+
+
             </DockPanel>
 
 

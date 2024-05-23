@@ -155,7 +155,7 @@
                 </Border>
 
                 <DockPanel Grid.Column="1" Margin="0">
-                    
+
                     <!--Symbology Name-->
                     <TextBlock DockPanel.Dock="Top" TextWrapping="Wrap" HorizontalAlignment="Left" Margin="3,1,3,0">
                         <TextBlock.Style>
@@ -183,7 +183,7 @@
                             </Style>
                         </TextBlock.Style>
                     </TextBlock>
-                    
+
                     <!--Decode Text & OCR-->
                     <DockPanel Margin="3,0">
 
@@ -196,11 +196,11 @@
                                         <DataTrigger Value="verify1D" Binding="{Binding Report.Type, Mode=OneTime}">
                                             <Setter Property="Text" Value="{Binding Report.DecodeText, Mode=OneTime}"/>
                                         </DataTrigger>
-                                        
+
                                         <DataTrigger Value="verify2D" Binding="{Binding Report.Type, Mode=OneTime}">
                                             <Setter Property="Text" Value="{Binding Report.DecodeText, Mode=OneTime}"/>
                                         </DataTrigger>
-                                        
+
                                         <DataTrigger Value="ocr" Binding="{Binding Report.Type, Mode=OneTime}">
                                             <Setter Property="Text" Value="{Binding Report.Text, Mode=OneTime}"/>
                                         </DataTrigger>
@@ -208,11 +208,11 @@
                                         <DataTrigger Value="ocv" Binding="{Binding Report.Type, Mode=OneTime}">
                                             <Setter Property="Text" Value="{Binding Report.Text, Mode=OneTime}"/>
                                         </DataTrigger>
-                                        
+
                                         <DataTrigger Value="blemish" Binding="{Binding Report.Type, Mode=OneTime}">
                                             <Setter Property="Text" Value=""/>
                                         </DataTrigger>
-                                        
+
                                     </Style.Triggers>
                                 </Style>
                             </TextBlock.Style>
@@ -232,67 +232,79 @@
                             <IconPacks:Material Kind="ArrowDownBoldBox"/>
                         </Button>
                     </DockPanel>
-                    
+
                 </DockPanel>
 
-                <!--Overall Grade Button-->
+                <!--Overall Grade-->
+                <Button Click="Button_Click" Grid.Column="2" Width="30" Height="30" BorderThickness="3">
+                    <Button.Style>
+                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Square.Accent}">
+                            <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
+                            <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}"/>
+                            <Style.Triggers>
+                                <DataTrigger Value="True" Binding="{Binding IsError, Mode=OneTime}">
+                                    <Setter Property="BorderBrush" Value="{DynamicResource ColorBlindBrush5}"/>
+                                </DataTrigger>
+                                <DataTrigger Value="True" Binding="{Binding IsWarning, Mode=OneTime}">
+                                    <Setter Property="BorderBrush" Value="{DynamicResource ColorBlindBrush6}"/>
+                                </DataTrigger>
 
-                <Border Grid.Column="2" Name="PopupBorder" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" Height="30" Width="30" CornerRadius="3">
-                    <Button Click="Button_Click">
-                        <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Square.Accent}">
-                                <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
-                                <Setter Property="IsHitTestVisible" Value="True"/>
-                                <Style.Triggers>
-                                    <DataTrigger Value="True" Binding="{Binding IsError, Mode=OneTime}">
-                                        <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
-                                    </DataTrigger>
-                                    <DataTrigger Value="True" Binding="{Binding IsWarning, Mode=OneTime}">
-                                        <Setter Property="Background" Value="{DynamicResource ColorBlindBrush6}"/>
-                                    </DataTrigger>
+                                <DataTrigger Value="ocr" Binding="{Binding Report.Type, Mode=OneTime}">
+                                    <Setter Property="IsHitTestVisible" Value="False"/>
+                                </DataTrigger>
+                                <DataTrigger Value="ocv" Binding="{Binding Report.Type, Mode=OneTime}">
+                                    <Setter Property="IsHitTestVisible" Value="False"/>
+                                </DataTrigger>
 
-                                    <DataTrigger Value="ocr" Binding="{Binding Report.Type, Mode=OneTime}">
-                                        <Setter Property="IsHitTestVisible" Value="False"/>
-                                    </DataTrigger>
-                                    <DataTrigger Value="ocv" Binding="{Binding Report.Type, Mode=OneTime}">
-                                        <Setter Property="IsHitTestVisible" Value="False"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                        <Button.Content>
-                            <TextBlock>
-                                <TextBlock.Style>
-                                    <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                <DataTrigger Value="B" Binding="{Binding Report.OverallGradeLetter, Mode=OneTime}">
+                                    <Setter Property="Background" Value="{DynamicResource ColorBlindBrush2}"/>
+                                </DataTrigger>
+                                <DataTrigger Value="C" Binding="{Binding Report.OverallGradeLetter, Mode=OneTime}">
+                                    <Setter Property="Background" Value="{DynamicResource ColorBlindBrush4}"/>
+                                    <Setter Property="Foreground" Value="Black"/>
+                                </DataTrigger>
+                                <DataTrigger Value="D" Binding="{Binding Report.OverallGradeLetter, Mode=OneTime}">
+                                    <Setter Property="Background" Value="{DynamicResource ColorBlindBrush7}"/>
+                                    <Setter Property="Foreground" Value="Black"/>
+                                </DataTrigger>
+                                <DataTrigger Value="F" Binding="{Binding Report.OverallGradeLetter, Mode=OneTime}">
+                                    <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
+                                </DataTrigger>
 
-                                        <Style.Triggers>
-                                            <DataTrigger Value="verify1D" Binding="{Binding Report.Type, Mode=OneTime}">
-                                                <Setter Property="Text" Value="{Binding Report.OverallGradeValue, StringFormat=N1, Mode=OneTime}"/>
-                                            </DataTrigger>
-                                            <DataTrigger Value="verify2D" Binding="{Binding Report.Type, Mode=OneTime}">
-                                                <Setter Property="Text" Value="{Binding Report.OverallGradeValue, StringFormat=N1, Mode=OneTime}"/>
-                                            </DataTrigger>
-                                            <DataTrigger Value="ocr" Binding="{Binding Report.Type, Mode=OneTime}">
-                                                <Setter Property="Text" Value="{Binding Report.Score, Mode=OneTime}"/>
-                                            </DataTrigger>
-                                            <DataTrigger Value="ocv" Binding="{Binding Report.Type, Mode=OneTime}">
-                                                <Setter Property="Text" Value="{Binding Report.Score, Mode=OneTime}"/>
-                                            </DataTrigger>
-                                            <DataTrigger Value="blemish" Binding="{Binding Report.Type, Mode=OneTime}">
-                                                <Setter Property="Text" Value="{Binding Report.BlemishCount, Mode=OneTime}"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                        </Button.Content>
-                    </Button>
-                </Border>
-                                    
 
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                    <Button.Content>
+                        <TextBlock>
+                            <TextBlock.Style>
+                                <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+
+                                    <Style.Triggers>
+                                        <DataTrigger Value="verify1D" Binding="{Binding Report.Type, Mode=OneTime}">
+                                            <Setter Property="Text" Value="{Binding Report.OverallGradeValue, StringFormat=N1, Mode=OneTime}"/>
+                                        </DataTrigger>
+                                        <DataTrigger Value="verify2D" Binding="{Binding Report.Type, Mode=OneTime}">
+                                            <Setter Property="Text" Value="{Binding Report.OverallGradeValue, StringFormat=N1, Mode=OneTime}"/>
+                                        </DataTrigger>
+                                        <DataTrigger Value="ocr" Binding="{Binding Report.Type, Mode=OneTime}">
+                                            <Setter Property="Text" Value="{Binding Report.Score, Mode=OneTime}"/>
+                                        </DataTrigger>
+                                        <DataTrigger Value="ocv" Binding="{Binding Report.Type, Mode=OneTime}">
+                                            <Setter Property="Text" Value="{Binding Report.Score, Mode=OneTime}"/>
+                                        </DataTrigger>
+                                        <DataTrigger Value="blemish" Binding="{Binding Report.Type, Mode=OneTime}">
+                                            <Setter Property="Text" Value="{Binding Report.BlemishCount, Mode=OneTime}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Button.Content>
+                </Button>
 
             </Grid>
-            
+
             <!--Alarms-->
             <Border DockPanel.Dock="Top" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Padding="1" CornerRadius="3" Margin="0,3" HorizontalAlignment="Stretch">
                 <Border.Style>
@@ -373,7 +385,7 @@
             </Border>
 
 
-            <Popup x:Name="popSymbolDetails" StaysOpen="False" PlacementTarget="{Binding ElementName=PopupBorder}">
+            <Popup x:Name="popSymbolDetails" StaysOpen="False">
                 <Popup.Style>
                     <Style TargetType="{x:Type Popup}"/>
                 </Popup.Style>
