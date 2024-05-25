@@ -140,7 +140,7 @@ public partial class ImageResultEntry
         {
             var dpi = 600;// SelectedPrinter.PrinterName.Contains("ZT620") ? 300 : 600;
             ImageUtilities.SetBitmapDPI(report.image, dpi);
-            V275Image = new ImageEntry(report.image, dpi);//ImageUtilities.ConvertToPng(report.image, 600);
+            V275Image = new ImageEntry(SelectedImageRoll.UID, report.image, dpi);//ImageUtilities.ConvertToPng(report.image, 600);
             IsV275ImageStored = false;
         }
         else

@@ -1,46 +1,34 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using LabelVal.Messages;
 using LabelVal.Sectors.ViewModels;
 using Newtonsoft.Json;
-using NHibernate.Util;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing.Printing;
 using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Windows.Threading;
 
 namespace LabelVal.ImageRolls.ViewModels;
 
 [JsonObject(MemberSerialization.OptIn)]
+
 public partial class ImageRollEntry : ObservableRecipient, IRecipient<PrinterMessages.SelectedPrinterChanged>
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-    [ObservableProperty][property: JsonProperty] private string uID = new Guid().ToString();
+    [ObservableProperty][property: JsonProperty][property: SQLite.PrimaryKey] private string uID = Guid.NewGuid().ToString();
     [ObservableProperty][property: JsonProperty] private string name;
     [ObservableProperty] private string path;
+    partial void OnPathChanged(string value) => OnPropertyChanged(nameof(IsRooted));
+    [SQLite.Ignore] public bool IsRooted => !string.IsNullOrEmpty(path);
 
     [ObservableProperty] private int imageCount;
 
-    [ObservableProperty] private double imageDPI;
-    [ObservableProperty] private bool isImageDPIConsistent;
-
-    [ObservableProperty][property: JsonProperty("Standard")] private StandardsTypes selectedStandard;
-    [ObservableProperty][property: JsonProperty("GS1Table")] private GS1TableNames selectedGS1Table;
-
-    [ObservableProperty] private PrinterSettings selectedPrinter;
-    partial void OnSelectedPrinterChanged(PrinterSettings value)
-    {
-        foreach (var image in Images)
-        {
-            
-        }
-    }
+    [ObservableProperty][property: JsonProperty("Standard")][property: SQLite.Column("Standard")] private StandardsTypes selectedStandard;
+    [ObservableProperty][property: JsonProperty("GS1Table")][property: SQLite.Column("GS1Table")] private GS1TableNames selectedGS1Table;
 
     //If writeSectorsBeforeProcess is true the system will write the templates sectors before processing an image.
     //Normally the template is left untouched. I.e. When using a sequential OCR tool.
@@ -49,13 +37,18 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PrinterMes
 
     [ObservableProperty][property: JsonProperty] private bool isLocked = false;
 
-    public ObservableCollection<ImageEntry> Images { get; set; } = [];
+    [ObservableProperty][property: SQLite.Ignore] private PrinterSettings selectedPrinter;
+
+    [SQLite.Ignore] public ObservableCollection<ImageEntry> Images { get; set; } = [];
+
+    [SQLite.Ignore] public Databases.ImageRolls ImageRollsDatabase { get; set; }
 
     public ImageRollEntry() { Images.CollectionChanged += (s, e) => ImageCount = Images.Count; IsActive = true; }
 
-    public ImageRollEntry(string name, string path, PrinterSettings printerSettings)
+    public ImageRollEntry(string name, string path, PrinterSettings printerSettings, Databases.ImageRolls imageRollsDatabase)
     {
         SelectedPrinter = printerSettings;
+        ImageRollsDatabase = imageRollsDatabase;
 
         Name = name;
         Path = path;
@@ -67,8 +60,16 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PrinterMes
 
     public void Receive(PrinterMessages.SelectedPrinterChanged message) => SelectedPrinter = message.Value;
 
-    private List<ImageEntry> entries = new List<ImageEntry>();
-    public async Task LoadImages()
+    public Task LoadImages()
+    {
+        if(IsRooted)
+            return LoadImagesFromDirectory();
+        else
+           return LoadImagesFromDatabase();
+
+    }
+
+    public async Task LoadImagesFromDirectory()
     {
         if (Images.Count > 0)
             return;
@@ -80,24 +81,39 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PrinterMes
             if (System.IO.Path.GetExtension(f) == ".png")
                 images.Add(f);
 
-
-        entries.Clear();
         List<Task> taskList = new List<Task>();
         foreach (var f in images)
         {
-            var tsk = App.Current.Dispatcher.BeginInvoke(() => LoadImage(f)).Task;
+            var tsk = App.Current.Dispatcher.BeginInvoke(() => AddImage(f)).Task;
             taskList.Add(tsk);
         }
 
         await Task.WhenAll(taskList.ToArray());
-
     }
 
-    private void LoadImage(string path)
+    public async Task LoadImagesFromDatabase()
+    {
+        if (Images.Count > 0)
+            return;
+
+        Logger.Info("Loading label images from database: {name}", Name);
+
+        var images = ImageRollsDatabase.SelectAllImages(UID);
+        List<Task> taskList = new List<Task>();
+        foreach (var f in images)
+        {
+            var tsk = App.Current.Dispatcher.BeginInvoke(() => AddImage(f)).Task;
+            taskList.Add(tsk);
+        }
+
+        await Task.WhenAll(taskList.ToArray());
+    }
+
+    private void AddImage(string path)
     {
         try
         {
-            var image = new ImageEntry(path, targetDPI, targetDPI);
+            var image = new ImageEntry(UID, path, targetDPI, targetDPI);
             Images.Add(image);
         }
         catch (Exception ex)
@@ -105,4 +121,15 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PrinterMes
             Logger.Error(ex, "Failed to load image: {name}", path);
         }
     }
+
+
+    [RelayCommand]
+    private void AddImage()
+    {
+        string path;
+        if ((path = Utilities.FileUtilities.GetLoadFilePath("", "PNG|*.png", "Load Image")) != "")
+            AddImage(path);
+    }
+
+    public void AddImage(ImageEntry imageEntry) => Images.Add(imageEntry);
 }

@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="LabelVal.ImageRolls.Views.ImageRollEntryEdit"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:LabelVal.ImageRolls.Views"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+             xmlns:viewModels="clr-namespace:LabelVal.ImageRolls.ViewModels"
+                xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             d:DataContext="{d:DesignInstance Type=viewModels:ImageRollEntry}"
+             mc:Ignorable="d">
+    <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="3" Padding="2" HorizontalAlignment="Left">
+
+        <DockPanel>
+            <TextBox DockPanel.Dock="Top" Text="{Binding Name}" Margin="3"
+                     md:HintAssist.Hint="Name" md:HintAssist.IsFloating="True"/>
+
+            <TextBox Text="{Binding TargetDPI}" Margin="3"
+                        md:HintAssist.Hint="Target DPI" md:HintAssist.IsFloating="True"/>
+
+        </DockPanel>
+    </md:Card>
+</UserControl>

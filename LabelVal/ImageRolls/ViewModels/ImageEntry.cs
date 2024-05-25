@@ -1,6 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Messaging;
-using LabelVal.Messages;
 using LabelVal.Utilities;
 using Newtonsoft.Json;
 using System;
@@ -27,10 +25,11 @@ public partial class ImageEntry : ObservableRecipient//, IRecipient<PrinterMessa
     [JsonProperty] public string Path { get; private set; }
     [JsonProperty] public string Comment { get; private set; }
 
-    public BitmapImage Image { get; private set; }
-    public BitmapImage ImageLow { get; private set; }
+    [property: SQLite.Ignore] public BitmapImage Image { get; private set; }
+    [property: SQLite.Ignore] public BitmapImage ImageLow { get; private set; }
 
     [JsonProperty] public string UID { get; private set; }
+    [JsonProperty] public string RollUID { get; private set; }
 
     [JsonProperty]
     public byte[] ImageBytes
@@ -51,27 +50,28 @@ public partial class ImageEntry : ObservableRecipient//, IRecipient<PrinterMessa
     [JsonProperty] public double ImageWidth { get; private set; }
     [JsonProperty] public double ImageHeight { get; private set; }
     [JsonProperty] public long ImageTotalPixels { get; private set; }
-    [JsonProperty] public double V52ImageTotalPixelDeviation { get; private set; }
+    [JsonProperty][property: SQLite.Ignore] public double V52ImageTotalPixelDeviation { get; private set; }
 
 
-    [ObservableProperty] private double printerWidth;
-    [ObservableProperty] private double printerHeight;
+    [ObservableProperty][property: SQLite.Ignore] private double printerWidth;
+    [ObservableProperty][property: SQLite.Ignore] private double printerHeight;
 
-    [ObservableProperty] private int printerPixelWidth;
-    [ObservableProperty] private int printerPixelHeight;
-    [ObservableProperty] private long printerTotalPixels;
+    [ObservableProperty][property: SQLite.Ignore] private int printerPixelWidth;
+    [ObservableProperty][property: SQLite.Ignore] private int printerPixelHeight;
+    [ObservableProperty][property: SQLite.Ignore] private long printerTotalPixels;
 
-    [ObservableProperty] private double deviationWidth;
-    [ObservableProperty] private double deviationHeight;
-    [ObservableProperty] private double deviationWidthPercent;
-    [ObservableProperty] private double deviationHeightPercent;
+    [ObservableProperty][property: SQLite.Ignore] private double deviationWidth;
+    [ObservableProperty][property: SQLite.Ignore] private double deviationHeight;
+    [ObservableProperty][property: SQLite.Ignore] private double deviationWidthPercent;
+    [ObservableProperty][property: SQLite.Ignore] private double deviationHeightPercent;
 
-    [ObservableProperty] private double printer2ImageTotalPixelDeviation;
+    [ObservableProperty][property: SQLite.Ignore] private double printer2ImageTotalPixelDeviation;
 
     public ImageEntry() { IsActive = true; }
 
-    public ImageEntry(string path, int targetDpiWidth, int targetDpiHeight)
+    public ImageEntry(string rollUID, string path, int targetDpiWidth, int targetDpiHeight)
     {
+
         Path = path;
         TargetDpiHeight = targetDpiHeight;
         TargetDpiWidth = targetDpiWidth;
@@ -79,6 +79,7 @@ public partial class ImageEntry : ObservableRecipient//, IRecipient<PrinterMessa
         Image = BitmapImageUtilities.LoadBitmap(Path);
         ImageLow = BitmapImageUtilities.LoadBitmap(Path, 400);
         UID = BitmapImageUtilities.ImageUID(Image);
+        RollUID = rollUID;
 
         var cmt = Path.Replace(System.IO.Path.GetExtension(Path), ".txt");
         if (File.Exists(cmt))
@@ -93,7 +94,7 @@ public partial class ImageEntry : ObservableRecipient//, IRecipient<PrinterMessa
         IsActive = true;
     }
 
-    public ImageEntry(byte[] image, int targetDpiWidth, int targetDpiHeight = 0, string comment = null)
+    public ImageEntry(string rollUID, byte[] image, int targetDpiWidth, int targetDpiHeight = 0, string comment = null)
     {
         TargetDpiWidth = targetDpiWidth;
         TargetDpiHeight = targetDpiHeight != 0 ? targetDpiHeight : targetDpiWidth;
@@ -101,6 +102,7 @@ public partial class ImageEntry : ObservableRecipient//, IRecipient<PrinterMessa
         Image = BitmapImageUtilities.CreateBitmap(image);
         ImageLow = BitmapImageUtilities.CreateBitmap(image, 400);
         UID = ImageUtilities.ImageUID(image);
+        RollUID = rollUID;
 
         Comment = comment;
 
@@ -113,7 +115,7 @@ public partial class ImageEntry : ObservableRecipient//, IRecipient<PrinterMessa
         IsActive = true;
     }
 
-    public ImageEntry Clone() => new ImageEntry(GetBitmapBytes(), TargetDpiWidth, TargetDpiHeight, Comment);
+    public ImageEntry Clone() => new ImageEntry(RollUID, GetBitmapBytes(), TargetDpiWidth, TargetDpiHeight, Comment);
 
     //public void Receive(PrinterMessages.SelectedPrinterChanged message) => SelectedPrinter = message.Value;
 
@@ -141,7 +143,7 @@ public partial class ImageEntry : ObservableRecipient//, IRecipient<PrinterMessa
 
         var bmp = BitmapImageUtilities.ImageToBytesBMP(Image);
 
-        if(dpi != 0)
+        if (dpi != 0)
             ImageUtilities.SetBitmapDPI(bmp, (int)Image.DpiX);
 
         return bmp;

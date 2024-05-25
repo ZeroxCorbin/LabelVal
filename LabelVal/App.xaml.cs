@@ -39,8 +39,8 @@ namespace LabelVal
         public static string ImageResultsDatabaseRoot => $"{UserDataDirectory}\\ImageResultsDatabases";
 
         public static string AssetsImageRollRoot => $"{System.IO.Directory.GetCurrentDirectory()}\\Assets\\Image Rolls";
-        public static string ImageRollRoot => $"{UserDataDirectory}\\Image Rolls";
-
+        public static string ImageRollsRoot => $"{UserDataDirectory}\\Image Rolls";
+        public static string ImageRollsDatabasePath => $"{ImageRollsRoot}\\ImageRolls.sqlite";
 
         public static string RunsRoot => $"{UserDataDirectory}\\Runs";
         public static string RunLedgerDatabaseName => $"RunLedger{DatabaseExtension}";
@@ -58,8 +58,8 @@ namespace LabelVal
                 _ = Directory.CreateDirectory(UserDataDirectory);
             if (!Directory.Exists(ImageResultsDatabaseRoot))
                 _ = Directory.CreateDirectory(ImageResultsDatabaseRoot);
-            if (!Directory.Exists(ImageRollRoot))
-                _ = Directory.CreateDirectory(ImageRollRoot);
+            if (!Directory.Exists(ImageRollsRoot))
+                _ = Directory.CreateDirectory(ImageRollsRoot);
 
             if (!Directory.Exists(RunsRoot))
                 _ = Directory.CreateDirectory(RunsRoot);

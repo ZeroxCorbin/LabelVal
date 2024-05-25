@@ -135,7 +135,7 @@ public partial class ImageResultEntry
 
         if (!SelectedScanner.IsSimulator)
         {
-            V5Image = new ImageEntry(triggerResults.FullImage, 600);
+            V5Image = new ImageEntry(SelectedImageRoll.UID, triggerResults.FullImage, 600);
             //ImageUtilities.ConvertToPng(triggerResults.FullImage);
             IsV5ImageStored = false;
         }
