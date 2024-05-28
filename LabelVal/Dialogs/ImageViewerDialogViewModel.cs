@@ -32,7 +32,7 @@ public partial class ImageViewerDialogViewModel : ObservableObject
         }
 
         foreach (var overlay in overlays)
-            Overlays.Add(overlay);
+            if (overlay != null) Overlays.Add(overlay);
     }
 
     public void LoadImage(byte[] image, DrawingImage overlay)
@@ -58,7 +58,7 @@ public partial class ImageViewerDialogViewModel : ObservableObject
     {
         Image = image;
         foreach (var overlay in overlays)
-            Overlays.Add(overlay);
+            if(overlay!=null) Overlays.Add(overlay);
     }
     public void LoadImage(BitmapImage image, DrawingImage overlay)
     {

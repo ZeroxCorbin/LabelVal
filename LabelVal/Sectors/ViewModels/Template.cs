@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NHibernate.Hql.Ast;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -42,7 +43,7 @@ namespace LabelVal.Sectors.ViewModels
             Top = sectorTemplate.top;
             Symbology = sectorTemplate.symbology;
 
-            if(sectorTemplate.matchSettings != null)
+            if (sectorTemplate.matchSettings != null)
                 MatchSettings = new Template.TemplateMatchMode
                 {
                     MatchMode = sectorTemplate.matchSettings.matchMode,
@@ -50,7 +51,7 @@ namespace LabelVal.Sectors.ViewModels
                     FixedText = sectorTemplate.matchSettings.fixedText
                 };
 
-            
+
             BlemishMask = new Template.BlemishMaskLayers
             {
                 Layers = sectorTemplate.blemishMask?.layers
@@ -63,7 +64,11 @@ namespace LabelVal.Sectors.ViewModels
 
             Name = name;
             Username = name;
-            Top = Report.x;
+
+            if (Report.angleDeg > 45)
+                Top = Report.y;
+            else
+                Top = Report.y;
 
             Symbology = GetV5Symbology(Report);
 

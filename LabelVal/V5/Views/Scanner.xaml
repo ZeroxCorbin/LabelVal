@@ -371,6 +371,17 @@
                                 </md:Card>
 
                                 <md:Card Padding="3" Margin="3" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                                    <md:Card.Style>
+                                        <Style TargetType="{x:Type md:Card}">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsSimulator}" Value="True">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </md:Card.Style>
+                                    
                                     <StackPanel Orientation="Horizontal">
                                         <Button Content="QS Focus" Command="{Binding QuickSetFocusCommand}" Style="{StaticResource MahApps.Styles.Button}" Margin="3,0" BorderThickness="0"/>
                                         <Button Content="QS Photometry" Command="{Binding QuickSetPhotometryCommand}" Style="{StaticResource MahApps.Styles.Button}" Margin="3,0" BorderThickness="0"/>

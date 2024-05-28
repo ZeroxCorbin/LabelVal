@@ -10,6 +10,7 @@
              xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:Converters="clr-namespace:LabelVal.Converters"
              xmlns:V275Converters="clr-namespace:LabelVal.V275.Converters"
+                xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              
              xmlns:ViewModels="clr-namespace:LabelVal.ImageRolls.ViewModels"
              d:DataContext="{d:DesignInstance Type=ViewModels:ImageResultEntry}"
@@ -29,6 +30,13 @@
         <Image x:Key="V275Icon" Source="/Assets/Images/V275WhiteIcon.ico" />
         <Image x:Key="V275Png" Source="/Assets/Images/V275WhiteIcon.png" />
 
+        <CollectionViewSource x:Key="cvsV275StoredSectors" Source="{Binding V275StoredSectors}">
+            <CollectionViewSource.SortDescriptions>
+                <componentmodel:SortDescription PropertyName="Template.Top" Direction="Ascending"/>
+            </CollectionViewSource.SortDescriptions>
+
+        </CollectionViewSource>
+        
     </UserControl.Resources>
 
     <DockPanel>
@@ -306,7 +314,7 @@
                         </Style>
                     </ScrollViewer.Style>
 
-                    <ItemsControl ItemsSource="{Binding V275CurrentSectors}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                    <ItemsControl ItemsSource="{Binding Source={StaticResource ResourceKey=cvsV275StoredSectors}}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <sectors:Sector Width="180" Background="{DynamicResource AccentColorBrush}" Margin="6,1"/>

@@ -1,9 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LabelVal.Messages;
-using LabelVal.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -114,6 +114,8 @@ public partial class ImageResultEntry
 
         IsV5Working = false;
     }
+
+    [System.Obsolete]
     public bool V5ProcessResults(V5_REST_Lib.Controller.TriggerResults triggerResults)
     {
         if (!triggerResults.OK)
@@ -178,8 +180,10 @@ public partial class ImageResultEntry
     }
     //[RelayCommand] private void V5Read() => _ = V5ReadTask();
     [RelayCommand] private void V5Load() => _ = V5LoadTask();
+
     //[RelayCommand] private void V5Inspect() => _ = V5ReadTask(0);
 
+    [System.Obsolete]
     private void V5GetStored()
     {
         V5ResultRow = SelectedDatabase.Select_V5Result(SelectedImageRoll.UID, SourceImage.UID);
@@ -209,7 +213,7 @@ public partial class ImageResultEntry
             var results = V5ResultRow._Report;
 
             V5SectorsImageOverlay = V5CreateSectorsImageOverlay(results);
-            
+
             if (results["event"]?["name"].ToString() == "cycle-report-alt")
             {
                 foreach (var rSec in results["event"]?["data"]?["decodeData"])
@@ -317,20 +321,22 @@ public partial class ImageResultEntry
     {
         return 1;
     }
+
+    [System.Obsolete]
     private DrawingImage V5CreateSectorsImageOverlay(JObject results)
     {
+        var drwGroup = new DrawingGroup();
+
         //Draw the image outline the same size as the stored image
         var border = new GeometryDrawing
         {
-            Geometry = new RectangleGeometry(new Rect(0, 0, V5Image.Image.PixelWidth, V5Image.Image.PixelHeight)),
+            Geometry = new RectangleGeometry(new Rect(0.5, 0.5, V5Image.Image.PixelWidth - 1, V5Image.Image.PixelHeight - 1)),
             Pen = new Pen(Brushes.Transparent, 1)
         };
+        drwGroup.Children.Add(border);
 
-        var secAreas = new GeometryGroup();
+        var secCenter = new GeometryGroup();
         var bndAreas = new GeometryGroup();
-
-        var drwGroup = new DrawingGroup();
-
 
         if (results["event"]?["name"].ToString() == "cycle-report-alt")
         {
@@ -339,10 +345,51 @@ public partial class ImageResultEntry
                 if (sec["boundingBox"] == null)
                     continue;
 
-                secAreas.Children.Add(new RectangleGeometry(new Rect(new Point(sec["boundingBox"][0]["x"].Value<double>(), sec["boundingBox"][0]["y"].Value<double>()), new Point(sec["boundingBox"][2]["x"].Value<double>(), sec["boundingBox"][2]["y"].Value<double>()))));
+                var secAreas = new GeometryGroup();
+
+                double brushWidth = 4.0;
+                double halfBrushWidth = brushWidth / 2.0;
+
+                for (int i = 0; i < 4; i++)
+                {
+                    int nextIndex = (i + 1) % 4;
+
+                    double dx = sec["boundingBox"][nextIndex]["x"].Value<double>() - sec["boundingBox"][i]["x"].Value<double>();
+                    double dy = sec["boundingBox"][nextIndex]["y"].Value<double>() - sec["boundingBox"][i]["y"].Value<double>();
+
+                    // Calculate the length of the line segment
+                    double length = Math.Sqrt(dx * dx + dy * dy);
+
+                    // Normalize the direction to get a unit vector
+                    double ux = dx / length;
+                    double uy = dy / length;
+
+                    // Calculate the normal vector (perpendicular to the direction)
+                    double nx = -uy;
+                    double ny = ux;
+
+                    // Calculate the adjustment vector
+                    double ax = nx * halfBrushWidth;
+                    double ay = ny * halfBrushWidth;
+
+                    // Adjust the points
+                    double startX = sec["boundingBox"][i]["x"].Value<double>() - ax;
+                    double startY = sec["boundingBox"][i]["y"].Value<double>() - ay;
+                    double endX = sec["boundingBox"][nextIndex]["x"].Value<double>() - ax;
+                    double endY = sec["boundingBox"][nextIndex]["y"].Value<double>() - ay;
+
+                    // Add the line to the geometry group
+                    secAreas.Children.Add(new LineGeometry(new Point(startX, startY), new Point(endX, endY)));
+                }
+
+                drwGroup.Children.Add(new GeometryDrawing(Brushes.Transparent, new Pen(Brushes.Red, 4), secAreas));
 
                 drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun($"DecodeTool{sec["toolSlot"]}", new Typeface("Arial"), 30.0, new Point(sec["boundingBox"][2]["x"].Value<double>() - 8, sec["boundingBox"][2]["y"].Value<double>() - 8))));
-            }
+
+                secCenter.Children.Add(new LineGeometry(new Point(sec["x"].Value<double>() + 10, sec["y"].Value<double>()), new Point(sec["x"].Value<double>() + -10, sec["y"].Value<double>())));
+                secCenter.Children.Add(new LineGeometry(new Point(sec["x"].Value<double>(), sec["y"].Value<double>() + 10), new Point(sec["x"].Value<double>(), sec["y"].Value<double>() + -10)));
+
+             }
 
             //foreach (var sec in results["event"]["data"]["cycleConfig"]["job"]["toolList"])
             //{
@@ -356,8 +403,19 @@ public partial class ImageResultEntry
             {
                 if (sec["boundingBox"] == null)
                     continue;
-
-                secAreas.Children.Add(new RectangleGeometry(new Rect(new Point(sec["boundingBox"][0]["x"].Value<double>(), sec["boundingBox"][0]["y"].Value<double>()), new Point(sec["boundingBox"][2]["x"].Value<double>(), sec["boundingBox"][2]["y"].Value<double>()))));
+                var secAreas = new GeometryGroup();
+                secAreas.Children.Add(new LineGeometry(
+                    new Point(sec["boundingBox"][0]["x"].Value<double>() - 2, sec["boundingBox"][0]["y"].Value<double>() - 2),
+                    new Point(sec["boundingBox"][1]["x"].Value<double>() + 2, sec["boundingBox"][1]["y"].Value<double>() - 2)));
+                secAreas.Children.Add(new LineGeometry(
+                    new Point(sec["boundingBox"][1]["x"].Value<double>() + 2, sec["boundingBox"][1]["y"].Value<double>() - 2),
+                    new Point(sec["boundingBox"][2]["x"].Value<double>() + 2, sec["boundingBox"][2]["y"].Value<double>() + 2)));
+                secAreas.Children.Add(new LineGeometry(
+                    new Point(sec["boundingBox"][2]["x"].Value<double>() + 2, sec["boundingBox"][2]["y"].Value<double>() + 2),
+                    new Point(sec["boundingBox"][3]["x"].Value<double>() - 2, sec["boundingBox"][3]["y"].Value<double>() + 2)));
+                secAreas.Children.Add(new LineGeometry(
+                    new Point(sec["boundingBox"][3]["x"].Value<double>() - 2, sec["boundingBox"][3]["y"].Value<double>() + 2),
+                    new Point(sec["boundingBox"][0]["x"].Value<double>() - 2, sec["boundingBox"][0]["y"].Value<double>() - 2)));
 
                 drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun($"DecodeTool{sec["toolSlot"]}", new Typeface("Arial"), 30.0, new Point(sec["boundingBox"][2]["x"].Value<double>() - 8, sec["boundingBox"][2]["y"].Value<double>() - 8))));
             }
@@ -370,12 +428,11 @@ public partial class ImageResultEntry
         }
 
 
-        var sectors = new GeometryDrawing
+        var sectorCenters = new GeometryDrawing
         {
-            Geometry = secAreas,
-            Pen = new Pen(Brushes.Red, 5)
+            Geometry = secCenter,
+            Pen = new Pen(Brushes.Green, 2)
         };
-
         var bounding = new GeometryDrawing
         {
             Geometry = bndAreas,
@@ -383,8 +440,8 @@ public partial class ImageResultEntry
         };
 
         drwGroup.Children.Add(bounding);
-        drwGroup.Children.Add(sectors);
-        drwGroup.Children.Add(border);
+        drwGroup.Children.Add(sectorCenters);
+        
 
         var geometryImage = new DrawingImage(drwGroup);
         geometryImage.Freeze();

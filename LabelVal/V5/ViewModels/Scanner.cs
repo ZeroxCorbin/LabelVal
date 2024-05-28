@@ -8,6 +8,7 @@ using System.Security.Cryptography.Xml;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -98,7 +99,7 @@ namespace LabelVal.V5.ViewModels
         [ObservableProperty] private string explicitMessages;
 
         [ObservableProperty] private byte[] rawImage;
-        partial void OnRawImageChanged(byte[] value) { Image = value == null ? null : GetImage(value); App.Current.Dispatcher.InvokeAsync(CheckOverlay); }
+        partial void OnRawImageChanged(byte[] value) { Image = value == null ? null : GetImage(value); }
 
         [ObservableProperty] private BitmapImage image;
         [ObservableProperty] private DrawingImage imageOverlay;
@@ -107,27 +108,55 @@ namespace LabelVal.V5.ViewModels
         public static ObservableCollection<CameraDetails> AvailableCameras => V5_REST_Lib.Cameras.Cameras.Available;
 
         [ObservableProperty][property: JsonProperty] private CameraDetails selectedCamera;
-        partial void OnSelectedCameraChanged(CameraDetails value) => _ = App.Current.Dispatcher.BeginInvoke(() => { ImageFocusRegionOverlay = CreateFocusRegionOverlay(); });
+        partial void OnSelectedCameraChanged(CameraDetails value) => _ = App.Current.Dispatcher.BeginInvoke(() => 
+        {
+            if (IsSimulator)
+                ImageFocusRegionOverlay = null;
+            else
+                ImageFocusRegionOverlay = CreateFocusRegionOverlay();
+        });
 
 
         [ObservableProperty][property: JsonProperty] private double quickSet_ImagePercent = 0.33d;
         partial void OnQuickSet_ImagePercentChanged(double value) => _ = App.Current.Dispatcher.BeginInvoke(() =>
         {
-            ImageFocusRegionOverlay = CreateFocusRegionOverlay();
+            if (IsSimulator)
+                ImageFocusRegionOverlay = null;
+            else
+                ImageFocusRegionOverlay = CreateFocusRegionOverlay();
         });
 
-        private QuickSet_Photometry QuickSet_Photometry => new(
-                (float)((SelectedCamera.Sensor.PixelColumns - (SelectedCamera.Sensor.PixelColumns * QuickSet_ImagePercent)) / 2),
-                (float)((SelectedCamera.Sensor.PixelRows - (SelectedCamera.Sensor.PixelRows * QuickSet_ImagePercent)) / 2),
-                (float)((SelectedCamera.Sensor.PixelColumns * QuickSet_ImagePercent)),
-                (float)((SelectedCamera.Sensor.PixelRows * QuickSet_ImagePercent))
-            );
-        private QuickSet_Focus QuickSet_Focus => new(
-                (float)((SelectedCamera.Sensor.PixelColumns - (SelectedCamera.Sensor.PixelColumns * QuickSet_ImagePercent)) / 2),
-                (float)((SelectedCamera.Sensor.PixelRows - (SelectedCamera.Sensor.PixelRows * QuickSet_ImagePercent)) / 2),
-                (float)((SelectedCamera.Sensor.PixelColumns * QuickSet_ImagePercent)),
-                (float)((SelectedCamera.Sensor.PixelRows * QuickSet_ImagePercent))
-            );
+        private QuickSet_Photometry QuickSet_Photometry
+        {
+            get
+            {
+                if (SelectedCamera == null)
+                    return null;
+
+                var width = SelectedCamera.Sensor.PixelColumns * QuickSet_ImagePercent;
+                var height = SelectedCamera.Sensor.PixelRows * QuickSet_ImagePercent;
+
+                var x = (SelectedCamera.Sensor.PixelColumns - width) / 2;
+                var y = (SelectedCamera.Sensor.PixelRows - height) / 2;
+
+                return new QuickSet_Photometry((float)x, (float)y, (float)width, (float)height);
+            }
+        }
+        private QuickSet_Focus QuickSet_Focus
+        {
+            get
+            {
+                if (SelectedCamera == null)
+                    return null;
+
+                var width = SelectedCamera.Sensor.PixelColumns * QuickSet_ImagePercent;
+                var height = SelectedCamera.Sensor.PixelRows * QuickSet_ImagePercent;
+                var x = (SelectedCamera.Sensor.PixelColumns - width) / 2;
+                var y = (SelectedCamera.Sensor.PixelRows - height) / 2;
+
+                return new QuickSet_Focus((float)x, (float)y, (float)width, (float)height);
+            }
+        }
 
         [ObservableProperty] private V5_REST_Lib.Controller.ScannerModes scannerMode;
 
@@ -136,6 +165,9 @@ namespace LabelVal.V5.ViewModels
         [ObservableProperty] private JToken capture;
         [ObservableProperty] private string cycleID;
         public ObservableCollection<JToken> Results { get; } = [];
+        private JObject ResultsJObject;
+
+        private bool IsWaitingForFullImage;
 
         public Scanner()
         {
@@ -185,6 +217,8 @@ namespace LabelVal.V5.ViewModels
             {
                 try
                 {
+                    ResultsJObject = json;
+
                     ExplicitMessages = JsonConvert.SerializeObject(json);
 
                     if (json["event"]?["name"].ToString() == "cycle-report-alt")
@@ -237,15 +271,16 @@ namespace LabelVal.V5.ViewModels
             if (json == null)
             {
                 RawImage = null;
+                IsWaitingForFullImage = false;
                 return;
             }
-
 
             if (FullResImages)
             {
                 try
                 {
                     RawImage = ImageUtilities.ConvertToPng(await ScannerController.GetImageFullRes(json));
+                    IsWaitingForFullImage = false;
                     return;
                 }
                 catch { }
@@ -289,261 +324,187 @@ namespace LabelVal.V5.ViewModels
         private void CheckOverlay()
         {
             if (Results.Count > 0)
-                ImageOverlay = CreateResultOverlay(Results[0]);
+                ImageOverlay = V5CreateSectorsImageOverlay(ResultsJObject);
             else
                 ImageOverlay = null;
 
-            ImageFocusRegionOverlay = CreateFocusRegionOverlay();
-        }
-
-        private DrawingImage CreateResultOverlay(JToken json)
-        {
-            var data1 = json["boundingBox"];
-
-            if (data1 == null || Image == null)
-                return null;
-
-            DrawingGroup drwGroup = new();
-
-            //Draw the image outline the same size as the stored image
-            GeometryDrawing border = new()
-            {
-                Geometry = new RectangleGeometry(new System.Windows.Rect(0, 0, Image.PixelWidth, Image.PixelHeight)),
-                Pen = new Pen(Brushes.Transparent, 1)
-            };
-
-            double x1, x2, y1, y2;
-            LineGeometry ln;
-
-            GeometryGroup bndImageCenterGg = new();
-
-            x1 = (Image.PixelWidth / 2) + 20;
-            y1 = (Image.PixelHeight / 2);
-            x2 = (Image.PixelWidth / 2) - 20;
-            y2 = (Image.PixelHeight / 2);
-            ln = new LineGeometry(new System.Windows.Point(x1, y1), new System.Windows.Point(x2, y2));
-            bndImageCenterGg.Children.Add(ln);
-
-            x1 = (Image.PixelWidth / 2);
-            y1 = (Image.PixelHeight / 2) + 20;
-            x2 = (Image.PixelWidth / 2);
-            y2 = (Image.PixelHeight / 2) - 20;
-            ln = new LineGeometry(new System.Windows.Point(x1, y1), new System.Windows.Point(x2, y2));
-            bndImageCenterGg.Children.Add(ln);
-
-            GeometryDrawing bndImageCenter = new()
-            {
-                Geometry = bndImageCenterGg,
-                Pen = new Pen(Brushes.Pink, 1)
-            };
-
-            int div = FullResImages ? 1 : 2;
-
-            GeometryGroup bndBoxGg = new();
-            for (int i = 0; i < 4; i++)
-            {
-                int ii = i + 1;
-                if (ii >= 4)
-                    ii = 0;
-                x1 = double.Parse(data1[i]?["x"].ToString());
-                y1 = double.Parse(data1[i]?["y"].ToString());
-                x2 = double.Parse(data1[ii]?["x"].ToString());
-                y2 = double.Parse(data1[ii]?["y"].ToString());
-                ln = new LineGeometry(new System.Windows.Point(x1 / div, y1 / div), new System.Windows.Point(x2 / div, y2 / div));
-                //var area = new RectangleGeometry(new System.Windows.Rect(sec.left, sec.top, sec.width, sec.height));
-                bndBoxGg.Children.Add(ln);
-            }
-            GeometryDrawing bndBox = new()
-            {
-                Geometry = bndBoxGg,
-                Pen = new Pen(Brushes.Red, 1)
-            };
-
-            var rot = Rotate(double.Parse(json?["angleDeg"].ToString()), 20);
-
-            GeometryGroup bndBoxCenterGg = new();
-
-            x1 = (double.Parse(json?["x"].ToString()) / div) + 14;
-            y1 = (double.Parse(json?["y"].ToString()) / div) - rot;
-            x2 = (double.Parse(json?["x"].ToString()) / div) - 14;
-            y2 = (double.Parse(json?["y"].ToString()) / div) + rot;
-            ln = new LineGeometry(new System.Windows.Point(x1, y1), new System.Windows.Point(x2, y2));
-            bndBoxCenterGg.Children.Add(ln);
-
-            x1 = (double.Parse(json?["x"].ToString()) / div) + rot;
-            y1 = (double.Parse(json?["y"].ToString()) / div) + 14;
-            x2 = (double.Parse(json?["x"].ToString()) / div) - rot;
-            y2 = (double.Parse(json?["y"].ToString()) / div) - 14;
-            ln = new LineGeometry(new System.Windows.Point(x1, y1), new System.Windows.Point(x2, y2));
-            bndBoxCenterGg.Children.Add(ln);
-
-            GeometryDrawing bndBoxCenter = new()
-            {
-                Geometry = bndBoxCenterGg,
-                Pen = new Pen(Brushes.Red, 1)
-            };
-
-            //DrawingGroup drwGroup = new DrawingGroup();
-
-            drwGroup.Children.Add(bndImageCenter);
-
-            drwGroup.Children.Add(bndBox);
-            drwGroup.Children.Add(bndBoxCenter);
-
-            //drwGroup.Children.Add(mGrid);
-            drwGroup.Children.Add(border);
-
-            DrawingImage geometryImage = new(drwGroup);
-            geometryImage.Freeze();
-            return geometryImage;
-
-
-            //System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(bmp.PixelWidth, bmp.PixelHeight);
-            //using (var g = System.Drawing.Graphics.FromImage(bitmap))
-            //{
-            //    using (System.Drawing.Pen p = new System.Drawing.Pen(System.Drawing.Brushes.Red, 5))
-            //    {
-            //        if (!isRepeat)
-            //        {
-            //            DrawModuleGrid(g, V275StoredTemplate.sectors, V275StoredSectors);
-            //        }
-            //        else
-            //        {
-            //            DrawModuleGrid(g, V275CurrentTemplate.sectors, V275CurrentSectors);
-            //        }
-            //    }
-            //}
-
-            //using (MemoryStream memory = new MemoryStream())
-            //{
-            //    bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Png);
-            //    memory.Position = 0;
-            //    BitmapImage bitmapImage = new BitmapImage();
-            //    bitmapImage.BeginInit();
-            //    bitmapImage.StreamSource = memory;
-            //    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-            //    bitmapImage.EndInit();
-            //    return bitmapImage;
-            //}
-
-            //string text = "Verify1D";
-            //Typeface typeface = new Typeface("Arial");
-            //if (typeface.TryGetGlyphTypeface(out GlyphTypeface _glyphTypeface))
-            //{
-
-            //    GlyphRun gr = new GlyphRun
-            //    {
-            //        PixelsPerDip = 4,
-            //        IsSideways = false,
-            //        FontRenderingEmSize = 1.0,
-            //        BidiLevel = 0,
-            //        GlyphTypeface = _glyphTypeface
-            //    };
-
-            //    double textWidth = 0;
-            //    for (int ix = 0; ix < text.Length; ix++)
-            //    {
-            //        ushort glyphIndex = _glyphTypeface.CharacterToGlyphMap[text[ix]];
-            //        gr.GlyphIndices.Add(glyphIndex);
-
-            //        double width = _glyphTypeface.AdvanceWidths[glyphIndex] * 8;
-            //        gr.AdvanceWidths.Add(width);
-
-            //        textWidth += width;
-            //        double textHeight = _glyphTypeface.Height * 8;
-
-
-            //    }
-            //    gr.BaselineOrigin = new System.Windows.Point(0, 0);
-            //    GlyphRunDrawing grd = new GlyphRunDrawing(Brushes.Black, gr);
-            //    drwGroup.Children.Add(grd);
-            //}
-
-        }
-
-        private static double Rotate(double angle, double radius = 40)
-        {
-            while (angle >= 360)
-                angle -= 360;
-            while (angle <= -360)
-                angle += 360;
-
-            //var res = new double[2];
-
-            var rad = angle * Math.PI / 180;
-            var sin = Math.Sin(rad);
-            //var cos = Math.Cos(rad);
-            //var tan = Math.Tan(rad);
-            return sin * radius;
-            //res[0] = sin * radius;
-            //res[1] = cos * radius;
-
-            //return res;
+            if (IsSimulator)
+                ImageFocusRegionOverlay = null;
+            else
+                ImageFocusRegionOverlay = CreateFocusRegionOverlay();
         }
         private DrawingImage CreateFocusRegionOverlay()
         {
             if (QuickSet_Photometry == null || Image == null)
                 return null;
 
+            DrawingGroup drwGroup = new();
+
             //Draw the image outline the same size as the stored image
             GeometryDrawing border = new()
             {
-                Geometry = new RectangleGeometry(new System.Windows.Rect(0, 0, Image.PixelWidth, Image.PixelHeight)),
+                Geometry = new RectangleGeometry(new System.Windows.Rect(0.5, 0.5, Image.PixelWidth - 1, Image.PixelHeight - 1)),
                 Pen = new Pen(Brushes.Transparent, 1)
             };
+            drwGroup.Children.Add(border);
+
 
             GeometryGroup secAreas = new();
-            DrawingGroup drwGroup = new();
 
             int div = FullResImages ? 1 : 2;
 
-            var x1 = QuickSet_Photometry.photometry.roi[0];
-            var y1 = QuickSet_Photometry.photometry.roi[1];
-            var x2 = QuickSet_Photometry.photometry.roi[0] + QuickSet_Photometry.photometry.roi[2];
-            var y2 = QuickSet_Photometry.photometry.roi[1];
-            var ln = new LineGeometry(new System.Windows.Point(x1 / div, y1 / div), new System.Windows.Point(x2 / div, y2 / div));
-
-            secAreas.Children.Add(ln);
-
-            x1 = QuickSet_Photometry.photometry.roi[0] + QuickSet_Photometry.photometry.roi[2];
-            y1 = QuickSet_Photometry.photometry.roi[1];
-            x2 = QuickSet_Photometry.photometry.roi[0] + QuickSet_Photometry.photometry.roi[2];
-            y2 = QuickSet_Photometry.photometry.roi[1] + QuickSet_Photometry.photometry.roi[3];
-            var ln1 = new LineGeometry(new System.Windows.Point(x1 / div, y1 / div), new System.Windows.Point(x2 / div, y2 / div));
-            secAreas.Children.Add(ln1);
-
-            x1 = QuickSet_Photometry.photometry.roi[0] + QuickSet_Photometry.photometry.roi[2];
-            y1 = QuickSet_Photometry.photometry.roi[1] + QuickSet_Photometry.photometry.roi[3];
-            x2 = QuickSet_Photometry.photometry.roi[0];
-            y2 = QuickSet_Photometry.photometry.roi[1] + QuickSet_Photometry.photometry.roi[3];
-            var ln2 = new LineGeometry(new System.Windows.Point(x1 / div, y1 / div), new System.Windows.Point(x2 / div, y2 / div));
-            secAreas.Children.Add(ln2);
-
-            x1 = QuickSet_Photometry.photometry.roi[0];
-            y1 = QuickSet_Photometry.photometry.roi[1] + QuickSet_Photometry.photometry.roi[3];
-            x2 = QuickSet_Photometry.photometry.roi[0];
-            y2 = QuickSet_Photometry.photometry.roi[1];
-            var ln3 = new LineGeometry(new System.Windows.Point(x1 / div, y1 / div), new System.Windows.Point(x2 / div, y2 / div));
-            secAreas.Children.Add(ln3);
-
-            //}
+            secAreas.Children.Add(new RectangleGeometry(
+                new Rect(
+                    new Point(QuickSet_Photometry.photometry.roi[0], QuickSet_Photometry.photometry.roi[1]),
+                    new Point(QuickSet_Photometry.photometry.roi[0] + QuickSet_Photometry.photometry.roi[2], QuickSet_Photometry.photometry.roi[1] + QuickSet_Photometry.photometry.roi[3])
+                    )));
 
             GeometryDrawing sectors = new()
             {
                 Geometry = secAreas,
-                Pen = new Pen(Brushes.LightBlue, 2)
+                Pen = new Pen(Brushes.DarkRed, 5)
             };
 
-
-
-            //DrawingGroup drwGroup = new DrawingGroup();
             drwGroup.Children.Add(sectors);
-            //drwGroup.Children.Add(mGrid);
-            drwGroup.Children.Add(border);
 
             DrawingImage geometryImage = new(drwGroup);
             geometryImage.Freeze();
             return geometryImage;
+        }
+
+        private DrawingImage V5CreateSectorsImageOverlay(JObject results)
+        {
+            if (results == null)
+                return null;
+
+            //Draw the image outline the same size as the stored image
+            var border = new GeometryDrawing
+            {
+                Geometry = new RectangleGeometry(new Rect(0, 0, Image.PixelWidth, Image.PixelHeight)),
+                Pen = new Pen(Brushes.Transparent, 1)
+            };
+
+
+            var bndAreas = new GeometryGroup();
+
+            var drwGroup = new DrawingGroup();
+
+
+            if (results["event"]?["name"].ToString() == "cycle-report-alt")
+            {
+                foreach (var sec in results["event"]?["data"]?["decodeData"])
+                {
+                    if (sec["boundingBox"] == null)
+                        continue;
+
+                    var secAreas = new GeometryGroup();
+
+                    double brushWidth = 4.0;
+                    double halfBrushWidth = brushWidth / 2.0;
+
+                    for (int i = 0; i < 4; i++)
+                    {
+                        int nextIndex = (i + 1) % 4;
+
+                        double dx = sec["boundingBox"][nextIndex]["x"].Value<double>() - sec["boundingBox"][i]["x"].Value<double>();
+                        double dy = sec["boundingBox"][nextIndex]["y"].Value<double>() - sec["boundingBox"][i]["y"].Value<double>();
+
+                        // Calculate the length of the line segment
+                        double length = Math.Sqrt(dx * dx + dy * dy);
+
+                        // Normalize the direction to get a unit vector
+                        double ux = dx / length;
+                        double uy = dy / length;
+
+                        // Calculate the normal vector (perpendicular to the direction)
+                        double nx = -uy;
+                        double ny = ux;
+
+                        // Calculate the adjustment vector
+                        double ax = nx * halfBrushWidth;
+                        double ay = ny * halfBrushWidth;
+
+                        // Adjust the points
+                        double startX = sec["boundingBox"][i]["x"].Value<double>() - ax;
+                        double startY = sec["boundingBox"][i]["y"].Value<double>() - ay;
+                        double endX = sec["boundingBox"][nextIndex]["x"].Value<double>() - ax;
+                        double endY = sec["boundingBox"][nextIndex]["y"].Value<double>() - ay;
+
+                        // Add the line to the geometry group
+                        secAreas.Children.Add(new LineGeometry(new Point(startX, startY), new Point(endX, endY)));
+                    }
+                    drwGroup.Children.Add(new GeometryDrawing(Brushes.Transparent, new Pen(Brushes.Red, 4), secAreas));
+
+                    drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun($"DecodeTool{sec["toolSlot"]}", new Typeface("Arial"), 30.0, new Point(sec["boundingBox"][2]["x"].Value<double>() - 8, sec["boundingBox"][2]["y"].Value<double>() - 8))));
+                }
+
+                //foreach (var sec in results["event"]["data"]["cycleConfig"]["job"]["toolList"])
+                //{
+                //    foreach (var r in sec["SymbologyTool"]["regionList"])
+                //        bndAreas.Children.Add(new RectangleGeometry(new Rect(r["Region"]["shape"]["RectShape"]["x"].Value<double>(), r["Region"]["shape"]["RectShape"]["y"].Value<double>(), r["Region"]["shape"]["RectShape"]["width"].Value<double>(), r["Region"]["shape"]["RectShape"]["height"].Value<double>())));
+                //}
+            }
+            else if (results["event"]?["name"].ToString() == "cycle-report")
+            {
+
+                foreach (var sec in results["event"]["data"]["cycleConfig"]["qualifiedResults"])
+                {
+                    if (sec["boundingBox"] == null)
+                        continue;
+                    var secAreas = new GeometryGroup();
+                    secAreas.Children.Add(new LineGeometry(new Point(sec["boundingBox"][0]["x"].Value<double>(), sec["boundingBox"][0]["y"].Value<double>()), new Point(sec["boundingBox"][1]["x"].Value<double>(), sec["boundingBox"][1]["y"].Value<double>())));
+                    secAreas.Children.Add(new LineGeometry(new Point(sec["boundingBox"][1]["x"].Value<double>(), sec["boundingBox"][1]["y"].Value<double>()), new Point(sec["boundingBox"][2]["x"].Value<double>(), sec["boundingBox"][2]["y"].Value<double>())));
+                    secAreas.Children.Add(new LineGeometry(new Point(sec["boundingBox"][2]["x"].Value<double>(), sec["boundingBox"][2]["y"].Value<double>()), new Point(sec["boundingBox"][3]["x"].Value<double>(), sec["boundingBox"][3]["y"].Value<double>())));
+                    secAreas.Children.Add(new LineGeometry(new Point(sec["boundingBox"][3]["x"].Value<double>(), sec["boundingBox"][3]["y"].Value<double>()), new Point(sec["boundingBox"][0]["x"].Value<double>(), sec["boundingBox"][0]["y"].Value<double>())));
+
+                    drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun($"DecodeTool{sec["toolSlot"]}", new Typeface("Arial"), 30.0, new Point(sec["boundingBox"][2]["x"].Value<double>() - 8, sec["boundingBox"][2]["y"].Value<double>() - 8))));
+                }
+
+                foreach (var sec in results["event"]["data"]["cycleConfig"]["job"]["toolList"])
+                {
+
+                    foreach (var r in sec["SymbologyTool"]["regionList"])
+                        bndAreas.Children.Add(new RectangleGeometry(new Rect(r["Region"]["shape"]["RectShape"]["x"].Value<double>(), r["Region"]["shape"]["RectShape"]["y"].Value<double>(), r["Region"]["shape"]["RectShape"]["width"].Value<double>(), r["Region"]["shape"]["RectShape"]["height"].Value<double>())));
+                }
+            }
+
+            var bounding = new GeometryDrawing
+            {
+                Geometry = bndAreas,
+                Pen = new Pen(Brushes.Purple, 5)
+            };
+
+            drwGroup.Children.Add(bounding);
+            drwGroup.Children.Add(border);
+
+            var geometryImage = new DrawingImage(drwGroup);
+            geometryImage.Freeze();
+            return geometryImage;
+        }
+        public static GlyphRun CreateGlyphRun(string text, Typeface typeface, double emSize, Point baselineOrigin)
+        {
+            GlyphTypeface glyphTypeface;
+
+            if (!typeface.TryGetGlyphTypeface(out glyphTypeface))
+            {
+                throw new ArgumentException(string.Format(
+                    "{0}: no GlyphTypeface found", typeface.FontFamily));
+            }
+
+            var glyphIndices = new ushort[text.Length];
+            var advanceWidths = new double[text.Length];
+
+            for (int i = 0; i < text.Length; i++)
+            {
+                var glyphIndex = glyphTypeface.CharacterToGlyphMap[text[i]];
+                glyphIndices[i] = glyphIndex;
+                advanceWidths[i] = glyphTypeface.AdvanceWidths[glyphIndex] * emSize;
+            }
+
+            return new GlyphRun(
+                glyphTypeface, 0, false, emSize,
+                glyphIndices, baselineOrigin, advanceWidths,
+                null, null, null, null, null, null);
         }
 
 
@@ -590,7 +551,7 @@ namespace LabelVal.V5.ViewModels
         private bool running;
         private bool stop;
         [RelayCommand]
-        private void Trigger()
+        private async void Trigger()
         {
             if (running == true)
             {
@@ -619,13 +580,44 @@ namespace LabelVal.V5.ViewModels
                     }
                     finally
                     {
+                        CheckOverlay();
                         stop = false;
                         running = false;
                     }
                 });
             else
-                _ = ScannerController.Trigger_Wait();
+            {
+                IsWaitingForFullImage = FullResImages;
+
+                if (await ScannerController.Trigger_Wait())
+                {
+                    if (FullResImages)
+                        await WaitForImage();
+
+                    CheckOverlay();
+                }
+                else
+                    IsWaitingForFullImage = false;
+
+            }
         }
+
+        private async Task<bool> WaitForImage()
+        {
+            await Task.Run(() =>
+            {
+                DateTime start = DateTime.Now;
+                while (IsWaitingForFullImage)
+                {
+                    if ((DateTime.Now - start) > TimeSpan.FromMilliseconds(2000))
+                        break;
+                    Thread.Sleep(1);
+                }
+            });
+
+            return !IsWaitingForFullImage;
+        }
+
 
         [RelayCommand]
         private async Task QuickSetFocus()
