@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
-             xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:Converters="clr-namespace:LabelVal.Converters"             
              xmlns:ViewModels="clr-namespace:LabelVal.ImageRolls.ViewModels"
              d:DataContext="{d:DesignInstance Type=ViewModels:ImageResultEntry}"
@@ -47,7 +47,7 @@
                     <Button Command="{Binding SaveCommand}" Style="{StaticResource MaterialDesignFloatingActionDarkButton}" Padding="0" ToolTip="Save the source image."
                             Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
 
-                        <IconPacks:PackIconMaterial Kind="ContentSave" Height="12" Width="12"/>
+                        <iconPacks:PackIconMaterial Kind="ContentSave" Height="12" Width="12"/>
 
                     </Button>
 
@@ -90,7 +90,7 @@
                                     md:ButtonProgressAssist.Value="-1"
                                     md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV275Working}">
 
-                        <IconPacks:PackIconMaterial Kind="Printer"  Margin="0,0,0,0" Height="12" Width="12"/>
+                        <iconPacks:PackIconMaterial Kind="Printer"  Margin="0,0,0,0" Height="12" Width="12"/>
 
                         <Button.Style>
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
@@ -118,7 +118,7 @@
                                     md:ButtonProgressAssist.Value="-1"
                                     md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV275Working}">
 
-                        <IconPacks:PackIconMaterial Kind="Printer" Height="12" Width="12"/>
+                        <iconPacks:PackIconMaterial Kind="Printer" Height="12" Width="12"/>
 
                         <Button.Style>
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
@@ -145,7 +145,7 @@
                                     md:ButtonProgressAssist.Value="-1"
                                     md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV5Working}">
 
-                        <IconPacks:PackIconMaterial Kind="Camera"  Margin="-1,-1,0,0" Height="12" Width="12"/>
+                        <iconPacks:PackIconMaterial Kind="Camera"  Margin="-1,-1,0,0" Height="12" Width="12"/>
 
                         <Button.Style>
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
@@ -194,7 +194,7 @@
 
                         <Button Click="btnShowDetailsToggle" Width="20" Height="20" BorderThickness="0" Margin="3,0">
 
-                            <IconPacks:PackIconMaterial Kind="InformationVariant" Margin="0,0,0,0" Height="12" Width="12"/>
+                            <iconPacks:PackIconMaterial Kind="InformationVariant" Margin="0,0,0,0" Height="12" Width="12"/>
 
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
@@ -236,7 +236,7 @@
                                 <Setter Property="Content">
                                     <Setter.Value>
                                         <Grid Background="White">
-                                            <IconPacks:PackIconMaterial Width="20" Height="20" Kind="Information" Foreground="Red"/>
+                                            <iconPacks:PackIconMaterial Width="20" Height="20" Kind="Information" Foreground="Red"/>
                                         </Grid>
                                     </Setter.Value>
                                 </Setter>
@@ -329,8 +329,8 @@
                                 <Button Click="btnShowPrinterAreaOverSourceToggle" Width="20" Height="20" HorizontalAlignment="Left" BorderThickness="0" Margin="3,0">
 
                                     <Grid>
-                                        <IconPacks:PackIconMaterial Kind="BorderAllVariant" Foreground="Red" Margin="0,0,0,0" Height="12" Width="12"/>
-                                        <IconPacks:PackIconMaterial Kind="Printer"  Margin="-1,0,0,0" Height="12" Width="12"/>
+                                        <iconPacks:PackIconMaterial Kind="BorderAllVariant" Foreground="Red" Margin="0,0,0,0" Height="12" Width="12"/>
+                                        <iconPacks:PackIconMaterial Kind="Printer"  Margin="-1,0,0,0" Height="12" Width="12"/>
 
                                     </Grid>
 
@@ -429,7 +429,7 @@
                     <!--Save Image-->
                     <Button Command="{Binding SaveCommand}" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
 
-                        <IconPacks:PackIconMaterial Kind="ContentSave" Height="12" Width="12"/>
+                        <iconPacks:PackIconMaterial Kind="ContentSave" Height="12" Width="12"/>
 
                         <Button.Style>
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
@@ -490,7 +490,7 @@
                                     md:ButtonProgressAssist.Value="-1"
                                     md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV5Working}">
 
-                        <IconPacks:PackIconMaterial Kind="Camera"  Margin="-1,-1,0,0" Height="12" Width="12"/>
+                        <iconPacks:PackIconMaterial Kind="Camera"  Margin="-1,-1,0,0" Height="12" Width="12"/>
 
                         <Button.Style>
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
@@ -698,7 +698,7 @@
                             </Style>
                         </Button.Style>
 
-                        <IconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
+                        <iconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
                     </Button>
 
                     <!--Process V5 Stored Image-->
@@ -708,7 +708,7 @@
                                     md:ButtonProgressAssist.Value="-1"
                                     md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV5Working}">
 
-                        <IconPacks:PackIconMaterial Kind="Camera"  Margin="-1,-1,0,0" Height="12" Width="12"/>
+                        <iconPacks:PackIconMaterial Kind="Camera"  Margin="-1,-1,0,0" Height="12" Width="12"/>
 
                         <Button.Style>
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">

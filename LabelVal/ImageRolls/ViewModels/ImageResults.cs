@@ -12,6 +12,7 @@ using System.Collections.ObjectModel;
 using System.Drawing.Printing;
 using System.IO;
 using System.Threading.Tasks;
+using System.Windows;
 using V275_REST_lib.Models;
 
 namespace LabelVal.ImageRolls.ViewModels;
@@ -65,12 +66,11 @@ public partial class ImageResults : ObservableRecipient,
 
         SelectedNode = message.Value;
 
-        if (SelectedNode != null)
-        {
-            SelectedNode.Connection.WebSocket.SetupCapture += WebSocket_SetupCapture;
-            SelectedNode.Connection.WebSocket.LabelEnd += WebSocket_LabelEnd;
-            SelectedNode.Connection.WebSocket.StateChange += WebSocket_StateChange;
-        }
+        if (SelectedNode == null) return;
+
+        SelectedNode.Connection.WebSocket.SetupCapture += WebSocket_SetupCapture;
+        SelectedNode.Connection.WebSocket.LabelEnd += WebSocket_LabelEnd;
+        SelectedNode.Connection.WebSocket.StateChange += WebSocket_StateChange;
     }
     public void Receive(ImageRollMessages.SelectedImageRollChanged message) { if (SelectedImageRoll != null) SelectedImageRoll.Images.Clear(); SelectedImageRoll = message.Value; }
     public void Receive(PrinterMessages.SelectedPrinterChanged message) => SelectedPrinter = message.Value;
@@ -115,19 +115,19 @@ public partial class ImageResults : ObservableRecipient,
     }
     public async Task LoadImageResultsList()
     {
-        App.Current.Dispatcher.Invoke(() => ClearImageResultsList());
+        Application.Current.Dispatcher.Invoke(ClearImageResultsList);
 
         if (SelectedImageRoll.Images.Count == 0)
             await SelectedImageRoll.LoadImages();
 
-        List<Task> taskList = new List<Task>();
+        var taskList = new List<Task>();
         foreach (var img in SelectedImageRoll.Images)
         {
             var tsk = App.Current.Dispatcher.BeginInvoke(() => LoadResultEntries(img)).Task;
             taskList.Add(tsk);
         }
 
-        // await Task.WhenAll(taskList.ToArray());
+        await Task.WhenAll(taskList.ToArray());
     }
 
     private void LoadResultEntries(ImageEntry img)

@@ -289,7 +289,7 @@ public partial class SectorDifferences : ObservableObject
                     value = results.grading.iso15415.fixedPatternDamage.value
                 }));
         }
-        else if (Type == "verify1D" && results.grading.iso15416 != null && results.grading.iso15416.overall != null)
+        else if (Type == "verify1D" && results.grading.iso15416 is { overall: not null })
         {
             IsNotEmpty = true;
 
@@ -434,7 +434,7 @@ public partial class SectorDifferences : ObservableObject
         IsNotEmpty = false;
 
         float cellSizeX = 0, cellSizeY = 0;
-        List<Report_InspectSector_Common.Alarm> alarms = new List<Report_InspectSector_Common.Alarm>();
+        var alarms = new List<Report_InspectSector_Common.Alarm>();
 
         if (splitPacket.Find((e) => e.StartsWith("Cell size")) != null)
         {
@@ -447,7 +447,7 @@ public partial class SectorDifferences : ObservableObject
 
                 IsNotEmpty = true;
 
-                string[] spl1 = new string[2];
+                var spl1 = new string[2];
                 spl1[0] = data.Substring(0, data.IndexOf(','));
                 spl1[1] = data.Substring(data.IndexOf(',') + 1);
 
@@ -625,7 +625,7 @@ public partial class SectorDifferences : ObservableObject
                 if (!data.Contains(','))
                     continue;
 
-                string[] spl1 = new string[2];
+                var spl1 = new string[2];
                 spl1[0] = data.Substring(0, data.IndexOf(','));
                 spl1[1] = data.Substring(data.IndexOf(',') + 1);
 
@@ -722,7 +722,7 @@ public partial class SectorDifferences : ObservableObject
     {
         var warn = splitPacket.FindAll((e) => e.StartsWith(name));
 
-        List<string> ret = new List<string>();
+        var ret = new List<string>();
         foreach (var line in warn)
         {
             //string[] spl1 = new string[2];
@@ -744,17 +744,13 @@ public partial class SectorDifferences : ObservableObject
 
     }
 
-    private int ParseInt(string value)
+    private static int ParseInt(string value)
     {
         var digits = new string(value.Trim().TakeWhile(c =>
                                 ("0123456789").Contains(c)
                                 ).ToArray());
 
-        if (int.TryParse(digits, out var val))
-            return val;
-        else
-            return 0;
-
+        return int.TryParse(digits, out var val) ? val : 0;
     }
 
     private Report_InspectSector_Common.GradeValue GetGradeValue(string data)
@@ -764,7 +760,7 @@ public partial class SectorDifferences : ObservableObject
         if (spl2.Count() != 2)
             return null;
 
-        float tmp = ParseFloat(spl2[0]);
+        var tmp = ParseFloat(spl2[0]);
 
         return new Report_InspectSector_Common.GradeValue()
         {
@@ -780,7 +776,7 @@ public partial class SectorDifferences : ObservableObject
 
     private Report_InspectSector_Common.Grade GetGrade(string data)
     {
-        float tmp = ParseFloat(data);
+        var tmp = ParseFloat(data);
 
         return new Report_InspectSector_Common.Grade()
         {
@@ -789,29 +785,22 @@ public partial class SectorDifferences : ObservableObject
         };
     }
 
-    private string GetLetter(float value)
+    private static string GetLetter(float value)
     {
-        if (value == 4.0f)
-            return "A";
-
-        if (value <= 3.9f && value >= 3.0f)
-            return "B";
-
-        if (value <= 2.9f && value >= 2.0f)
-            return "C";
-
-        if (value <= 1.9f && value >= 1.0f)
-            return "D";
-
-        if (value <= 0.9f && value >= 0.0f)
-            return "F";
-
-        return "F";
+        return value switch
+        {
+            4.0f => "A",
+            <= 3.9f and >= 3.0f => "B",
+            <= 2.9f and >= 2.0f => "C",
+            <= 1.9f and >= 1.0f => "D",
+            <= 0.9f and >= 0.0f => "F",
+            _ => "F"
+        };
     }
 
     #endregion
 
-    private string V5GetGradeLetter(int grade) => grade switch
+    private static string V5GetGradeLetter(int grade) => grade switch
     {
         65 => "A",
         66 => "B",
@@ -820,7 +809,7 @@ public partial class SectorDifferences : ObservableObject
         70 => "F",
         _ => throw new System.NotImplementedException(),
     };
-    private string V5GetSymbolType(V5_REST_Lib.Models.Results_QualifiedResult results)
+    private static string V5GetSymbolType(V5_REST_Lib.Models.Results_QualifiedResult results)
     {
         if (results.Code128 != null)
             return "verify1D";
@@ -1041,7 +1030,7 @@ public partial class SectorDifferences : ObservableObject
             : (compare.value <= source.value + Settings.ValueResult_ValueTolerance) && (compare.value >= source.value - Settings.ValueResult_ValueTolerance);
     }
     private bool CompareValue(Report_InspectSector_Common.Value source, Report_InspectSector_Common.Value compare) => (compare.value <= source.value + Settings.Value_ValueTolerance) && (compare.value >= source.value - Settings.Value_ValueTolerance);
-    private bool CompareAlarm(Report_InspectSector_Common.Alarm source, Report_InspectSector_Common.Alarm compare) => source.category == compare.category && source.data.subAlarm == compare.data.subAlarm;
+    private static bool CompareAlarm(Report_InspectSector_Common.Alarm source, Report_InspectSector_Common.Alarm compare) => source.category == compare.category && source.data.subAlarm == compare.data.subAlarm;
 
     //public void Clear()
     //{

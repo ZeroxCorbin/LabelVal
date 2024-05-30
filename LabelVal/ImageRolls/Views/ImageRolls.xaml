@@ -9,12 +9,12 @@
              xmlns:viewModels="clr-namespace:LabelVal.ImageRolls.ViewModels"
                 xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              
-             xmlns:Converters="clr-namespace:LabelVal.Converters"
+             xmlns:converters="clr-namespace:LabelVal.Converters"
              d:DataContext="{d:DesignInstance Type=viewModels:ImageRolls}"
              mc:Ignorable="d">
 
     <UserControl.Resources>
-        <Converters:ObjectIsNull x:Key="objectIsNull"/>
+        <converters:ObjectIsNull x:Key="objectIsNull"/>
         
         <CollectionViewSource x:Key="FixedImageRolls" Source="{Binding FixedImageRolls}">
             <CollectionViewSource.SortDescriptions>

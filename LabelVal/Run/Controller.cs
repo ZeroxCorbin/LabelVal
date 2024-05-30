@@ -165,7 +165,7 @@ public class Controller
                 if (CurrentLoopCount != wasLoop)
                 {
                     //If running a non-GS1 label then this will reset the match to file and sequences.
-                    //If running a GS1 label label then edit mode is required.
+                    //If running a GS1 label then edit mode is required.
                     if (HasSequencing(label))
                         _ = await Node.Connection.SwitchToEdit();
                     else if (ImageResultsList.Count == 1)
