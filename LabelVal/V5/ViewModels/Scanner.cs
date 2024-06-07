@@ -105,7 +105,7 @@ namespace LabelVal.V5.ViewModels
         [ObservableProperty] private DrawingImage imageOverlay;
         [ObservableProperty] private DrawingImage imageFocusRegionOverlay;
 
-        public static ObservableCollection<CameraDetails> AvailableCameras => V5_REST_Lib.Cameras.Cameras.Available;
+        public static List<CameraDetails> AvailableCameras => V5_REST_Lib.Cameras.Cameras.Available;
 
         [ObservableProperty][property: JsonProperty] private CameraDetails selectedCamera;
         partial void OnSelectedCameraChanged(CameraDetails value) => _ = App.Current.Dispatcher.BeginInvoke(() => 
@@ -177,7 +177,7 @@ namespace LabelVal.V5.ViewModels
             ScannerController.ResultUpdate += ScannerController_ResultUpdate;
             ScannerController.ConfigUpdate += ScannerController_ConfigUpdate;
 
-            SelectedCamera = Cameras.Available.FirstOrDefault();
+           // SelectedCamera = Cameras.Available.FirstOrDefault();
 
             Host = ScannerController.Host;
             Port = ScannerController.Port;

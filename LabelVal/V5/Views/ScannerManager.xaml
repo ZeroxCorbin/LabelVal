@@ -7,10 +7,13 @@
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                           xmlns:ViewModels="clr-namespace:LabelVal.V5.ViewModels"  
+                xmlns:converters="clr-namespace:LabelVal.Converters"
              d:DataContext="{d:DesignInstance Type=ViewModels:ScannerManager}"
              mc:Ignorable="d" >
+    <UserControl.Resources>
+        <converters:ObjectIsNull x:Key="objectIsNull"/>
+    </UserControl.Resources>
 
-    
     <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" VerticalAlignment="Top" HorizontalAlignment="Left"
               Margin="3" Padding="3">
 
@@ -20,6 +23,55 @@
                     <TextBlock Text="V5 Cameras" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Margin="3,0"/>
                 </md:Card>
 
+                <Button Command="{Binding AddCommand}"
+                                    ToolTip="New V5" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+
+                    <Button.Style>
+                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding NewScanner, Converter={StaticResource objectIsNull}}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+
+                    <iconPacks:PackIconMaterial Kind="Plus" Margin="-1,0,0,0" Height="14" Width="14"/>
+                </Button>
+
+                <Button Command="{Binding SaveCommand}"
+                                    ToolTip="Save Image Roll" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                    <Button.Style>
+                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding NewScanner, Converter={StaticResource objectIsNull}}" Value="False">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+
+                    <iconPacks:PackIconMaterial Kind="ContentSave" Margin="0,-1,0,0" Height="12" Width="12"/>
+                </Button>
+
+                <Button Command="{Binding CancelCommand}" 
+                                    ToolTip="Cancel" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                    <Button.Style>
+                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding NewScanner, Converter={StaticResource objectIsNull}}" Value="False">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+
+                    <iconPacks:PackIconMaterial Kind="Cancel" Margin="0,-1,0,0" Height="14" Width="14"/>
+                </Button>
+                
                 <!--<Button Command="{Binding GetDevicesCommand}" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
                         Padding="0" Margin="6,0,3,0" BorderThickness="0" Height="20" Width="20" HorizontalAlignment="Left">
 
@@ -35,21 +87,57 @@
             </DockPanel>
         </GroupBox.Header>
 
-        <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-            <ListView ItemsSource="{Binding Scanners}" SelectedItem="{Binding SelectedScanner}">
-                <ListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                    </Style>
-                </ListView.ItemContainerStyle>
-                
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <local:Scanner DataContext="{Binding }"/>
-                 
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-        </md:Card>
+        <md:DrawerHost x:Name="drwEditImageRoll">
+            <md:DrawerHost.Style>
+                <Style TargetType="md:DrawerHost">
+                    <Setter Property="IsTopDrawerOpen" Value="False"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding NewScanner, Converter={StaticResource objectIsNull}}" Value="False">
+                            <Setter Property="IsTopDrawerOpen" Value="True"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </md:DrawerHost.Style>
+
+            <md:DrawerHost.TopDrawerContent>
+                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="3" Padding="2" HorizontalAlignment="Left">
+
+                    <DockPanel>
+                        <ComboBox ItemsSource="{Binding NewScanner.AvailableCameras}" SelectedValue="{Binding NewScanner.SelectedCamera}" md:HintAssist.Hint="Model" Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                              IsReadOnly="True" Margin="3,0" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" BorderThickness="0"
+                              md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <DockPanel>
+                                        <TextBlock Text="{Binding Name}"/>
+                                        <TextBlock Text="{Binding Sensor.PixelCount, StringFormat={} {0}MP}"/>
+                                    </DockPanel>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+
+                    </DockPanel>
+                </md:Card>
+
+            </md:DrawerHost.TopDrawerContent>
+
+            <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                <ListView ItemsSource="{Binding Scanners}" SelectedItem="{Binding SelectedScanner}">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
+
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <local:Scanner DataContext="{Binding }"/>
+
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </md:Card>
+
+        </md:DrawerHost>
     </GroupBox>
 </UserControl>

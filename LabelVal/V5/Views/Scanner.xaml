@@ -242,18 +242,22 @@
                                 </TextBox.Style>
                             </TextBox>
 
-                            <ComboBox ItemsSource="{Binding AvailableCameras}" SelectedValue="{Binding SelectedCamera}" md:HintAssist.Hint="Model" Style="{StaticResource MaterialDesignFloatingHintComboBox}"
-                              IsReadOnly="True" Margin="3,0" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" BorderThickness="0"
-                              md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
-                                <ComboBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <DockPanel>
-                                            <TextBlock Text="{Binding Name}"/>
-                                            <TextBlock Text="{Binding Sensor.PixelCount, StringFormat={} {0}MP}"/>
-                                        </DockPanel>
-                                    </DataTemplate>
-                                </ComboBox.ItemTemplate>
-                            </ComboBox>
+                                <TextBox d:Text="model" md:HintAssist.Hint="Model" MinWidth="86" Margin="3,0" HorizontalContentAlignment="Center"
+                                    md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left" BorderThickness="0"
+                                    IsHitTestVisible="True">
+                                    <TextBox.Style>
+                                        <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                                            <Setter Property="Text">
+                                                <Setter.Value>
+                                                    <MultiBinding StringFormat="{}{0} {1}" Mode="OneWay">
+                                                        <Binding Path="SelectedCamera.Name"/>
+                                                        <Binding Path="SelectedCamera.Sensor.PixelCount"/>
+                                                    </MultiBinding>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
 
                             <!--<TextBox d:Text="00:00:00:00:00" Text="{Binding Path=Details.cameraMAC, Mode=OneTime}" Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                          Margin="3" md:HintAssist.Hint="MAC" md:HintAssist.IsFloating="True" IsHitTestVisible="False" BorderThickness="0" />-->
