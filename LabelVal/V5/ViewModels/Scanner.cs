@@ -169,6 +169,7 @@ namespace LabelVal.V5.ViewModels
 
         private bool IsWaitingForFullImage;
 
+        public ScannerManager Manager { get; set; }
         public Scanner()
         {
             ScannerController.StateChanged += ScannerController_StateChanged;

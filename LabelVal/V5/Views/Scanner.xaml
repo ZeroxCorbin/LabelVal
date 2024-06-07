@@ -217,6 +217,11 @@
                                             </Style>
                                         </TextBox.Style>
                                     </TextBox>
+
+                                    <Button Margin="3"  Command="{Binding Manager.RemoveCommand}" CommandParameter="{Binding }" Style="{StaticResource MaterialDesignFloatingActionButton}"
+                                            ToolTip="Delete This Camera?" Width="20" Height="20" BorderThickness="0" VerticalAlignment="Top">
+                                        <iconPacks:PackIconMaterial Kind="Delete" Height="14" Width="14"/>
+                                    </Button>
                                 </DockPanel>
                             </DockPanel>
                         </md:Card>

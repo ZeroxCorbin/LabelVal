@@ -18,7 +18,13 @@ public partial class ScannerManager : ObservableObject
 
     partial void OnSelectedScannerChanged(Scanner oldValue, Scanner newValue) => _ = WeakReferenceMessenger.Default.Send(new ScannerMessages.SelectedScannerChanged(newValue, oldValue));
 
-    [RelayCommand] private void Add() => NewScanner = new Scanner();
+    public ScannerManager()
+    {
+        foreach (var scanner in Scanners) 
+            scanner.Manager = this;
+    }
+
+    [RelayCommand] private void Add() => NewScanner = new Scanner() { Manager = this };
     [RelayCommand] public void Cancel() => NewScanner = null;
 
     [RelayCommand]
@@ -32,6 +38,6 @@ public partial class ScannerManager : ObservableObject
         App.Settings.SetValue(nameof(Scanners), Scanners);
     }
 
-    [RelayCommand] private void RemoveScanner(Scanner scanner) { Scanners.Remove(scanner); Save(); } 
+    [RelayCommand] private void Remove(Scanner scanner) { Scanners.Remove(scanner); Save(); } 
     
 }
