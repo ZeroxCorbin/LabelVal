@@ -375,7 +375,7 @@ namespace LabelVal.V5.ViewModels
 
         private DrawingImage V5CreateSectorsImageOverlay(JObject results)
         {
-            if (results == null)
+            if (results == null || Image == null)
                 return null;
 
             //Draw the image outline the same size as the stored image

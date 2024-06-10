@@ -51,6 +51,33 @@
 
                     </Button>
 
+                    <!--Print Source Image-->
+                    <Button Command="{Binding V275ProcessCommand}" CommandParameter="print" ToolTip="Print the source image."
+                                    Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0"
+                                    md:ButtonProgressAssist.IsIndeterminate="True"
+                                    md:ButtonProgressAssist.Value="-1"
+                                    md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV275Working}">
+
+                        <iconPacks:PackIconMaterial Kind="Printer" Height="12" Width="12"/>
+
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+
+                                <Style.Triggers>
+
+                                    <DataTrigger Binding="{Binding SelectedNode.IsLoggedIn_Control}" Value="False">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+
+                                    <DataTrigger Binding="{Binding SelectedNode}" Value="{x:Null}">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    
                     <!--V275 Process Source Image-->
                     <Button Command="{Binding V275ProcessCommand}" CommandParameter="source" ToolTip="V275: Process the source image with the simulator." 
                                     Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0" BorderBrush="{DynamicResource YellowBrush2}"
@@ -106,33 +133,6 @@
                                         <Setter Property="Visibility" Value="Visible"/>
                                     </MultiDataTrigger>
 
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-
-                    <!--Print Source Image-->
-                    <Button Command="{Binding V275ProcessCommand}" CommandParameter="print" ToolTip="Print the source image."
-                                    Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0"
-                                    md:ButtonProgressAssist.IsIndeterminate="True"
-                                    md:ButtonProgressAssist.Value="-1"
-                                    md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV275Working}">
-
-                        <iconPacks:PackIconMaterial Kind="Printer" Height="12" Width="12"/>
-
-                        <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
-                                <Setter Property="Visibility" Value="Collapsed"/>
-
-                                <Style.Triggers>
-
-                                    <DataTrigger Binding="{Binding SelectedNode.IsLoggedIn_Control}" Value="False">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                    </DataTrigger>
-
-                                    <DataTrigger Binding="{Binding SelectedNode}" Value="{x:Null}">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                    </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </Button.Style>

@@ -15,7 +15,7 @@
 
     <UserControl.Resources>
         <converters:ObjectIsNull x:Key="objectIsNull"/>
-        
+
         <CollectionViewSource x:Key="FixedImageRolls" Source="{Binding FixedImageRolls}">
             <CollectionViewSource.SortDescriptions>
                 <componentmodel:SortDescription PropertyName="Name" Direction="Ascending"/>
@@ -68,7 +68,7 @@
                                 </Style.Triggers>
                             </Style>
                         </Button.Style>
-                        
+
                         <iconPacks:PackIconMaterial Kind="Plus" Margin="-1,0,0,0" Height="14" Width="14"/>
                     </Button>
 
@@ -100,7 +100,7 @@
                                 </Style.Triggers>
                             </Style>
                         </Button.Style>
-                        
+
                         <iconPacks:PackIconMaterial Kind="Cancel" Margin="0,-1,0,0" Height="14" Width="14"/>
                     </Button>
 
@@ -118,69 +118,72 @@
                         </Style.Triggers>
                     </Style>
                 </md:DrawerHost.Style>
-                
+
                 <md:DrawerHost.TopDrawerContent>
-                    
+
                     <local:ImageRollEntryEdit DataContext="{Binding UserImageRoll}" />
                 </md:DrawerHost.TopDrawerContent>
-                
-            <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Padding="2">
-                
-                <ListView ItemsSource="{Binding Source={StaticResource ResourceKey=UserImageRolls}}"
+
+                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Padding="2">
+
+                    <ListView ItemsSource="{Binding Source={StaticResource ResourceKey=UserImageRolls}}"
                         SelectedItem="{Binding SelectedUserImageRoll}"
                         IsEnabled="{Binding IsNotRunRunning}" Margin="2" ScrollViewer.VerticalScrollBarVisibility="Auto">
 
-                    <ListView.GroupStyle>
+                        <ListView.GroupStyle>
 
-                        <GroupStyle>
-                            <GroupStyle.ContainerStyle>
-                                <Style TargetType="{x:Type GroupItem}">
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="{x:Type GroupItem}">
-                                                <Expander>
-                                                    <Expander.Header>
-                                                        <TextBlock DockPanel.Dock="Top" Text="{Binding Name}" Margin="10,3" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
-                                                    </Expander.Header>
+                            <GroupStyle>
+                                <GroupStyle.ContainerStyle>
+                                    <Style TargetType="{x:Type GroupItem}">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type GroupItem}">
+                                                    <Expander>
+                                                        <Expander.Header>
+                                                            <TextBlock DockPanel.Dock="Top" Text="{Binding Name}" Margin="10,3" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                                                        </Expander.Header>
 
-                                                    <ItemsPresenter />
+                                                        <ItemsPresenter />
 
-                                                </Expander>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </GroupStyle.ContainerStyle>
-                        </GroupStyle>
+                                                    </Expander>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </GroupStyle.ContainerStyle>
+                            </GroupStyle>
 
 
-                    </ListView.GroupStyle>
+                        </ListView.GroupStyle>
 
-                    <ListView.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <DockPanel Margin="0,0,-2,0"/>
-                        </ItemsPanelTemplate>
-                    </ListView.ItemsPanel>
+                        <ListView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <DockPanel Margin="0,0,-2,0"/>
+                            </ItemsPanelTemplate>
+                        </ListView.ItemsPanel>
 
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
-                            <Setter Property="DockPanel.Dock" Value="Top"/>
-                        </Style>
-                    </ListView.ItemContainerStyle>
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
+                                <Setter Property="DockPanel.Dock" Value="Top"/>
+                            </Style>
+                        </ListView.ItemContainerStyle>
 
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
                                 <DockPanel>
-              <TextBlock DockPanel.Dock="Top" Text="{Binding Name}" Margin="10,3" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
-                                <TextBlock Text="{Binding ImageCount}" Margin="3,0" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
-          
+                                    <TextBlock Text="{Binding Name}" Margin="10,3" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                                    <Button Command="{Binding AddCommand}" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
+                                        ToolTip="Add to Image Roll" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                                        <iconPacks:PackIconMaterial Kind="Plus" Margin="-1,0,0,0" Height="14" Width="14"/>
+                                    </Button>
+
                                 </DockPanel>
 
-                                </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
 
-            </md:Card>
+                </md:Card>
             </md:DrawerHost>
 
         </GroupBox>

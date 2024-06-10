@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using LabelVal.Messages;
 using LabelVal.Sectors.ViewModels;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -62,10 +63,10 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PrinterMes
 
     public Task LoadImages()
     {
-        if(IsRooted)
+        if (IsRooted)
             return LoadImagesFromDirectory();
         else
-           return LoadImagesFromDatabase();
+            return LoadImagesFromDatabase();
 
     }
 
@@ -114,6 +115,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PrinterMes
         try
         {
             var image = new ImageEntry(UID, path, targetDPI, targetDPI);
+            SaveImage(image);
             Images.Add(image);
         }
         catch (Exception ex)
@@ -124,12 +126,33 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PrinterMes
 
 
     [RelayCommand]
-    private void AddImage()
+    private void Add()
     {
         string path;
-        if ((path = Utilities.FileUtilities.GetLoadFilePath("", "PNG|*.png", "Load Image")) != "")
+        if ((path = Utilities.FileUtilities.GetLoadFilePath("", "PNG|*.png|BMP|*.bmp", "Load Image")) != "")
+        {
             AddImage(path);
+            //Save();
+        }
+            
     }
 
     public void AddImage(ImageEntry imageEntry) => Images.Add(imageEntry);
+
+    [RelayCommand]
+    private void Save()
+    {
+        if (IsRooted)
+            return;
+
+        ImageRollsDatabase.InsertOrReplaceImageRoll(this);
+    } 
+    [RelayCommand]
+    private void SaveImage(ImageEntry image)
+    {
+        if (IsRooted)
+            return;
+
+        ImageRollsDatabase.InsertOrReplaceImage(image);
+    }
 }

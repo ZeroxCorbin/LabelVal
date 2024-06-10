@@ -22,14 +22,14 @@ public partial class ImageEntry : ObservableRecipient//, IRecipient<PrinterMessa
     private string name;
 
 
-    [JsonProperty] public string Path { get; private set; }
-    [JsonProperty] public string Comment { get; private set; }
+    [JsonProperty] public string Path { get; set; }
+    [JsonProperty] public string Comment { get; set; }
 
     [property: SQLite.Ignore] public BitmapImage Image { get; private set; }
     [property: SQLite.Ignore] public BitmapImage ImageLow { get; private set; }
 
-    [JsonProperty] public string UID { get; private set; }
-    [JsonProperty] public string RollUID { get; private set; }
+    [JsonProperty] public string UID { get; set; }
+    [JsonProperty] public string RollUID { get; set; }
 
     [JsonProperty]
     public byte[] ImageBytes
@@ -47,9 +47,9 @@ public partial class ImageEntry : ObservableRecipient//, IRecipient<PrinterMessa
     [ObservableProperty][property: JsonProperty] int targetDpiWidth;
     [ObservableProperty][property: JsonProperty] int targetDpiHeight;
 
-    [JsonProperty] public double ImageWidth { get; private set; }
-    [JsonProperty] public double ImageHeight { get; private set; }
-    [JsonProperty] public long ImageTotalPixels { get; private set; }
+    [JsonProperty] public double ImageWidth { get; set; }
+    [JsonProperty] public double ImageHeight { get; set; }
+    [JsonProperty] public long ImageTotalPixels { get; set; }
     [JsonProperty][property: SQLite.Ignore] public double V52ImageTotalPixelDeviation { get; private set; }
 
 

@@ -30,7 +30,7 @@
         </md:Card.Style>
 
         <md:Card HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="1">
-            
+
             <DockPanel Margin="3">
 
                 <DockPanel>
@@ -57,8 +57,8 @@
                             </Button.Style>
                         </Button>
                     </md:Card>
-                    
-                    
+
+
                     <Button Margin="3"  Click="btnShowSettings_Click" Style="{StaticResource MaterialDesignFloatingActionButton}"
                         ToolTip="Show Settings" Width="20" Height="20" BorderThickness="0" VerticalAlignment="Top">
                         <iconPacks:PackIconMaterial Kind="Cog" Height="14" Width="14"/>
@@ -229,7 +229,7 @@
 
                     <DockPanel>
 
-                        
+
                         <DockPanel DockPanel.Dock="Top" Margin="1">
 
                             <TextBox d:Text="camera" md:HintAssist.Hint="Type" MinWidth="56" Margin="3,0" HorizontalContentAlignment="Center"
@@ -247,22 +247,22 @@
                                 </TextBox.Style>
                             </TextBox>
 
-                                <TextBox d:Text="model" md:HintAssist.Hint="Model" MinWidth="86" Margin="3,0" HorizontalContentAlignment="Center"
+                            <TextBox d:Text="model" md:HintAssist.Hint="Model" MinWidth="86" Margin="3,0" HorizontalContentAlignment="Center"
                                     md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left" BorderThickness="0"
                                     IsHitTestVisible="True">
-                                    <TextBox.Style>
-                                        <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                                            <Setter Property="Text">
-                                                <Setter.Value>
-                                                    <MultiBinding StringFormat="{}{0} {1}" Mode="OneWay">
-                                                        <Binding Path="SelectedCamera.Name"/>
-                                                        <Binding Path="SelectedCamera.Sensor.PixelCount"/>
-                                                    </MultiBinding>
-                                                </Setter.Value>
-                                            </Setter>
-                                        </Style>
-                                    </TextBox.Style>
-                                </TextBox>
+                                <TextBox.Style>
+                                    <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                                        <Setter Property="Text">
+                                            <Setter.Value>
+                                                <MultiBinding StringFormat="{}{0} {1}" Mode="OneWay">
+                                                    <Binding Path="SelectedCamera.Name"/>
+                                                    <Binding Path="SelectedCamera.Sensor.PixelCount"/>
+                                                </MultiBinding>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </TextBox.Style>
+                            </TextBox>
 
                             <!--<TextBox d:Text="00:00:00:00:00" Text="{Binding Path=Details.cameraMAC, Mode=OneTime}" Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                          Margin="3" md:HintAssist.Hint="MAC" md:HintAssist.IsFloating="True" IsHitTestVisible="False" BorderThickness="0" />-->
@@ -359,53 +359,70 @@
                     <Expander DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Left" md:ExpanderAssist.HorizontalHeaderPadding="6" MaxHeight="450">
 
                         <Expander.Header>
-                            <TextBlock Text="Control" MinWidth="48"/>
+                            <DockPanel>
+                                
+                                <TextBlock Text="Control" MinWidth="48" VerticalAlignment="Center"/>
+
+                                <DockPanel DockPanel.Dock="Top">
+                                    <DockPanel.Style>
+                                        <Style TargetType="DockPanel">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Path=IsExpanded, RelativeSource={RelativeSource AncestorType=Expander}}" Value="True">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </DockPanel.Style>
+                                    
+                                    <md:Card Padding="3" Margin="3,0" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                                        <StackPanel Orientation="Horizontal">
+
+                                            <Button Content="Trigger" Command="{Binding TriggerCommand}" Style="{StaticResource MahApps.Styles.Button}" Margin="3,0" BorderThickness="0"/>
+
+                                            <ToggleButton IsChecked="{Binding RepeatTrigger}"
+                                              Content="{iconPacks:Material Kind=CircleSmall, Width=8, Height=8}"
+                                              md:ToggleButtonAssist.OnContent="{iconPacks:BootstrapIcons Kind=ArrowRepeat, Width=16, Height=16}"
+                                              Style="{StaticResource MaterialDesignActionToggleButton}"
+                                              Width="21" Height="21" Margin="3" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+
+                                        </StackPanel>
+                                    </md:Card>
+
+                                    <md:Card Padding="3" Margin="3,0" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                                        <md:Card.Style>
+                                            <Style TargetType="{x:Type md:Card}">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsSimulator}" Value="True">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </md:Card.Style>
+
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Content="QS Focus" Command="{Binding QuickSetFocusCommand}" Style="{StaticResource MahApps.Styles.Button}" Margin="3,0" BorderThickness="0"/>
+                                            <Button Content="QS Photometry" Command="{Binding QuickSetPhotometryCommand}" Style="{StaticResource MahApps.Styles.Button}" Margin="3,0" BorderThickness="0"/>
+                                        </StackPanel>
+                                    </md:Card>
+
+                                    <md:Card Padding="3" Margin="3,0" Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Content="SysInfo" Command="{Binding SysInfoCommand}" Style="{StaticResource MahApps.Styles.Button}" Margin="3,0" BorderThickness="0"/>
+
+                                            <Button Content="Config" Command="{Binding ConfigCommand}" Style="{StaticResource MahApps.Styles.Button}" Margin="3,0" BorderThickness="0"/>
+
+                                        </StackPanel>
+                                    </md:Card>
+                                </DockPanel>
+
+                            </DockPanel>
                         </Expander.Header>
 
                         <DockPanel>
 
-                            <DockPanel DockPanel.Dock="Top">
-                                <md:Card Padding="3" Margin="3" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-                                    <StackPanel Orientation="Horizontal">
 
-                                        <Button Content="Trigger" Command="{Binding TriggerCommand}" Style="{StaticResource MahApps.Styles.Button}" Margin="3,0" BorderThickness="0"/>
-
-                                        <ToggleButton IsChecked="{Binding RepeatTrigger}"
-                                          Content="{iconPacks:Material Kind=CircleSmall, Width=8, Height=8}"
-                                          md:ToggleButtonAssist.OnContent="{iconPacks:BootstrapIcons Kind=ArrowRepeat, Width=16, Height=16}"
-                                          Style="{StaticResource MaterialDesignActionToggleButton}"
-                                          Width="21" Height="21" Margin="3" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-
-                                    </StackPanel>
-                                </md:Card>
-
-                                <md:Card Padding="3" Margin="3" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-                                    <md:Card.Style>
-                                        <Style TargetType="{x:Type md:Card}">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsSimulator}" Value="True">
-                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </md:Card.Style>
-                                    
-                                    <StackPanel Orientation="Horizontal">
-                                        <Button Content="QS Focus" Command="{Binding QuickSetFocusCommand}" Style="{StaticResource MahApps.Styles.Button}" Margin="3,0" BorderThickness="0"/>
-                                        <Button Content="QS Photometry" Command="{Binding QuickSetPhotometryCommand}" Style="{StaticResource MahApps.Styles.Button}" Margin="3,0" BorderThickness="0"/>
-                                    </StackPanel>
-                                </md:Card>
-
-                                <md:Card Padding="3" Margin="3" Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left">
-                                    <StackPanel Orientation="Horizontal">
-                                        <Button Content="SysInfo" Command="{Binding SysInfoCommand}" Style="{StaticResource MahApps.Styles.Button}" Margin="3,0" BorderThickness="0"/>
-
-                                        <Button Content="Config" Command="{Binding ConfigCommand}" Style="{StaticResource MahApps.Styles.Button}" Margin="3,0" BorderThickness="0"/>
-
-                                    </StackPanel>
-                                </md:Card>
-                            </DockPanel>
 
                             <DockPanel >
 

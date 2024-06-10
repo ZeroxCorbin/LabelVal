@@ -6,6 +6,7 @@ using LabelVal.Utilities;
 using LabelVal.WindowViewModels;
 using MahApps.Metro.Controls.Dialogs;
 using Newtonsoft.Json;
+using NHibernate.Util;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -32,7 +33,27 @@ public partial class ImageResults : ObservableRecipient,
 
     [ObservableProperty] private V275.ViewModels.Node selectedNode;
     [ObservableProperty] private ImageRollEntry selectedImageRoll;
-    partial void OnSelectedImageRollChanged(ImageRollEntry value) => LoadImageResultsList();
+    partial void OnSelectedImageRollChanged(ImageRollEntry oldValue, ImageRollEntry newValue)
+    {
+        if (oldValue != null)
+        {
+            oldValue.Images.CollectionChanged -= Images_CollectionChanged;
+            oldValue.Images.Clear();
+        }
+
+        if (newValue != null)
+        {
+            LoadImageResultsList();
+        }
+        else
+            Application.Current.Dispatcher.Invoke(ClearImageResultsList);
+    }
+
+    private void Images_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+        var itm = e.NewItems.First();
+        LoadResultEntries((ImageEntry)itm);
+    }
 
     [ObservableProperty] private PrinterSettings selectedPrinter;
     [ObservableProperty] private Databases.ImageResults selectedDatabase;
@@ -72,7 +93,7 @@ public partial class ImageResults : ObservableRecipient,
         SelectedNode.Connection.WebSocket.LabelEnd += WebSocket_LabelEnd;
         SelectedNode.Connection.WebSocket.StateChange += WebSocket_StateChange;
     }
-    public void Receive(ImageRollMessages.SelectedImageRollChanged message) { if (SelectedImageRoll != null) SelectedImageRoll.Images.Clear(); SelectedImageRoll = message.Value; }
+    public void Receive(ImageRollMessages.SelectedImageRollChanged message) { SelectedImageRoll = message.Value; }
     public void Receive(PrinterMessages.SelectedPrinterChanged message) => SelectedPrinter = message.Value;
     public void Receive(DatabaseMessages.SelectedDatabseChanged message) => SelectedDatabase = message.Value;
     public void Receive(ScannerMessages.SelectedScannerChanged message)
@@ -128,6 +149,8 @@ public partial class ImageResults : ObservableRecipient,
         }
 
         await Task.WhenAll(taskList.ToArray());
+
+        SelectedImageRoll.Images.CollectionChanged += Images_CollectionChanged;
     }
 
     private void LoadResultEntries(ImageEntry img)
