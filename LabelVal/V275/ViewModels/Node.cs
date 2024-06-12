@@ -214,52 +214,60 @@ public partial class Node : ObservableRecipient, IRecipient<Messages.ImageRollMe
         }
         return true;
     }
+    /// <summary>
+    /// This method is responsible for handling the post-login process,
+    /// including setting login states, fetching configuration data,
+    /// adjusting simulation settings if in simulator mode,
+    /// and establishing a WebSocket connection for receiving node events.
+    /// </summary>
+    /// <param name="isLoggedIn_Monitor"></param>
+    /// <returns></returns>
     private async Task PostLogin(bool isLoggedIn_Monitor)
     {
+        // Set the login data based on whether the login is for monitoring or control
         LoginData.accessLevel = isLoggedIn_Monitor ? "monitor" : "control";
-        LoginData.token = Connection.Commands.Token;
-        LoginData.id = UserName;
-        LoginData.state = "0";
+        LoginData.token = Connection.Commands.Token; // Store the authentication token
+        LoginData.id = UserName; // Store the user's ID
+        LoginData.state = "0"; // Set the login state to '0' indicating a successful login
 
+        // Update the login status properties based on the login type
         IsLoggedIn_Monitor = isLoggedIn_Monitor;
         IsLoggedIn_Control = !isLoggedIn_Monitor;
 
+        // Fetch and store the camera configuration, symbologies, and calibration data from the server
         ConfigurationCamera = await Connection.Commands.GetCameraConfig();
         Symbologies = await Connection.Commands.GetSymbologies();
         Calibration = await Connection.Commands.GetCalibration();
 
-        if (IsSimulator)
-        {
-            var res = await Connection.Commands.GetSimulation();
+        // If the system is in simulator mode, adjust the simulation settings
+        //if (IsSimulator)
+        //{
+        //    var res = await Connection.Commands.GetSimulation();
 
-            if (res != null)
-            {
-                if (res.mode == "continuous")
-                {
-                    res.mode = "trigger";
-                    res.dwellMs = 1;
-                    _ = await Connection.Commands.PutSimulation(res);
-                }
-            }
+        //    // If the current simulation mode is 'continuous', change it to 'trigger' with a dwell time of 1ms
+        //    if (res != null && res.mode == "continuous")
+        //    {
+        //        res.mode = "trigger";
+        //        res.dwellMs = 1;
+        //        _ = await Connection.Commands.PutSimulation(res);
+        //    }
 
-            res = await Connection.Commands.GetSimulation();
-            if (res != null)
-            {
-                if (res.mode != "trigger")
-                {
+        //    // Fetch the simulation settings again to ensure they have been updated correctly
+        //    res = await Connection.Commands.GetSimulation();
+        //    if (res != null && res.mode != "trigger")
+        //    {
+        //        // If the mode is not 'trigger', additional handling could be implemented here
+        //    }
+        //}
 
-                }
-            }
-        }
-
-
+        // Request the server to send extended data
         _ = await Connection.Commands.SetSendExtendedData(true);
 
+        // Attempt to start the WebSocket connection for receiving node events
         if (!await Connection.WebSocket.StartAsync(Connection.Commands.URLs.WS_NodeEvents))
-            return;
-
-        //MainWindow.Repeats.Clear();
+            return; // If the WebSocket connection cannot be started, exit the method
     }
+
 
     [RelayCommand]
     public async Task<bool> EnablePrint(object parameter)
@@ -281,6 +289,7 @@ public partial class Node : ObservableRecipient, IRecipient<Messages.ImageRollMe
             return await Connection.SimulatorTogglePrint();
         }
     }
+
     [RelayCommand]
     private async Task RemoveRepeat()
     {

@@ -130,7 +130,7 @@ public partial class ImageResults : ObservableRecipient,
     public void ClearImageResultsList()
     {
         foreach (var lab in ImageResultsList)
-            lab.V275ProcessImage -= V275ProcessImage;
+            lab.V275ProcessImage -= V275ProcessSimulation_Old;
 
         ImageResultsList.Clear();
     }
@@ -157,7 +157,7 @@ public partial class ImageResults : ObservableRecipient,
     {
         var tmp = new ImageResultEntry(img, SelectedNode, SelectedImageRoll, SelectedDatabase, SelectedScanner, SelectedPrinter);
 
-        tmp.V275ProcessImage += V275ProcessImage;
+        tmp.V275ProcessImage += V275ProcessSimulation_Old;
         ImageResultsList.Add(tmp);
     }
 

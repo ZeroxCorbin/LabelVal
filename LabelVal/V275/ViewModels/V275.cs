@@ -51,7 +51,17 @@ public partial class V275 : ObservableRecipient, IRecipient<ImageRollMessages.Se
     partial void OnPasswordChanged(string value) => App.Settings.SetValue(nameof(Password), value);
 
     [ObservableProperty] private string simulatorImageDirectory = App.Settings.GetValue(nameof(SimulatorImageDirectory), GetV275SimulationDirectory(), true);
-    partial void OnSimulatorImageDirectoryChanged(string value) { if (string.IsNullOrEmpty(value)) { _ = App.Settings.DeleteSetting(nameof(SimulatorImageDirectory)); OnPropertyChanged(nameof(SimulatorImageDirectory)); } }
+    partial void OnSimulatorImageDirectoryChanged(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            _ = App.Settings.DeleteSetting(nameof(SimulatorImageDirectory)); OnPropertyChanged(nameof(SimulatorImageDirectory));
+        }
+        else
+        {
+            App.Settings.SetValue(nameof(SimulatorImageDirectory), value);
+        }
+    }
 
     [ObservableProperty] private ObservableCollection<Node> nodes = [];
     [ObservableProperty] private Node selectedNode;

@@ -36,7 +36,14 @@
             </CollectionViewSource.SortDescriptions>
 
         </CollectionViewSource>
-        
+
+        <CollectionViewSource x:Key="cvsV275CurrentSectors" Source="{Binding V275CurrentSectors}">
+            <CollectionViewSource.SortDescriptions>
+                <componentmodel:SortDescription PropertyName="Template.Top" Direction="Ascending"/>
+            </CollectionViewSource.SortDescriptions>
+
+        </CollectionViewSource>
+
     </UserControl.Resources>
 
     <DockPanel>
@@ -314,7 +321,7 @@
                         </Style>
                     </ScrollViewer.Style>
 
-                    <ItemsControl ItemsSource="{Binding Source={StaticResource ResourceKey=cvsV275StoredSectors}}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                    <ItemsControl ItemsSource="{Binding Source={StaticResource ResourceKey=cvsV275CurrentSectors}}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <sectors:Sector Width="180" Background="{DynamicResource AccentColorBrush}" Margin="6,1"/>

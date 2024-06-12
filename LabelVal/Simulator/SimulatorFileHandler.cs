@@ -11,7 +11,7 @@ namespace LabelVal.Simulator
 {
     internal class SimulatorFileHandler
     {
-        public string SimulatorImageDirectory { get => App.Settings.GetValue("Simulator_ImageDirectory", @"C:\Program Files\V275\data\images\simulation"); set { App.Settings.SetValue("Simulator_ImageDirectory", value); } }
+        public string SimulatorImageDirectory => App.Settings.GetValue<string>(nameof(SimulatorImageDirectory));
 
         public bool SimulatorImageDirectoryExists => Directory.Exists(SimulatorImageDirectory);
 
