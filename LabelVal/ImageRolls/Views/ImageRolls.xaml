@@ -72,6 +72,26 @@
                         <iconPacks:PackIconMaterial Kind="Plus" Margin="-1,0,0,0" Height="14" Width="14"/>
                     </Button>
 
+                    <Button Command="{Binding EditCommand}"
+                                    ToolTip="Edit Selected Image Roll" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
+
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedUserImageRoll, Converter={StaticResource objectIsNull}}" Value="True">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding UserImageRoll, Converter={StaticResource objectIsNull}}" Value="False">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+
+                        <iconPacks:PackIconMaterial Kind="SquareEditOutline" Margin="-1,0,0,0" Height="14" Width="14"/>
+                    </Button>
+                    
                     <Button Command="{Binding SaveCommand}"
                                     ToolTip="Save Image Roll" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
                         <Button.Style>
@@ -89,7 +109,7 @@
                     </Button>
 
                     <Button Command="{Binding CancelCommand}" 
-                                    ToolTip="Cancel" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                                    ToolTip="Cancel" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
                         <Button.Style>
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
@@ -172,6 +192,7 @@
                             <DataTemplate>
                                 <DockPanel>
                                     <TextBlock Text="{Binding Name}" Margin="10,3" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                                    
                                     <Button Command="{Binding AddCommand}" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
                                         ToolTip="Add to Image Roll" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
                                         <iconPacks:PackIconMaterial Kind="Plus" Margin="-1,0,0,0" Height="14" Width="14"/>

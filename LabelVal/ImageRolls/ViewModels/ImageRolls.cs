@@ -141,12 +141,18 @@ public partial class ImageRolls : ObservableRecipient, IRecipient<PrinterMessage
     }
 
     [RelayCommand]
+    private void Edit()
+    {
+        Logger.Info("Editing image roll.");
+        
+        UserImageRoll = SelectedUserImageRoll;
+    }
+
+
+    [RelayCommand]
     public void Save()
     {
         if (string.IsNullOrEmpty(UserImageRoll.Name))
-            return;
-
-        if (UserImageRoll.TargetDPI == 0)
             return;
 
         if (ImageRollsDatabase == null)

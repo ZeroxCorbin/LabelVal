@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing.Printing;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace LabelVal.ImageRolls.ViewModels;
@@ -20,6 +21,34 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PrinterMes
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
+    public Array StandardsTypes
+    {
+        get
+        {
+            var lst = Enum.GetValues(typeof(StandardsTypes)).Cast<StandardsTypes>().ToList();
+            lst.Remove(Sectors.ViewModels.StandardsTypes.Unsupported);
+            return lst.ToArray();
+        }
+    }
+    public Array GS1TableNames
+    {
+        get
+        {
+            var lst = Enum.GetNames(typeof(GS1TableNames)).ToList();
+            lst.Remove("Unsupported");
+            lst.Remove("None");
+
+            List<string> names = [];
+            foreach (var name in lst)
+                if (name.StartsWith("_"))
+                    names.Add(name.Substring(1).Replace("_", "."));
+                else
+                    names.Add(name);
+
+            return names.ToArray();
+        }
+    }
+
     [ObservableProperty][property: JsonProperty][property: SQLite.PrimaryKey] private string uID = Guid.NewGuid().ToString();
     [ObservableProperty][property: JsonProperty] private string name;
     [ObservableProperty] private string path;
@@ -29,6 +58,8 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PrinterMes
     [ObservableProperty] private int imageCount;
 
     [ObservableProperty][property: JsonProperty("Standard")][property: SQLite.Column("Standard")] private StandardsTypes selectedStandard;
+    partial void OnSelectedStandardChanged(StandardsTypes value) { if (value != Sectors.ViewModels.StandardsTypes.GS1) SelectedGS1Table = Sectors.ViewModels.GS1TableNames.None; }
+
     [ObservableProperty][property: JsonProperty("GS1Table")][property: SQLite.Column("GS1Table")] private GS1TableNames selectedGS1Table;
 
     //If writeSectorsBeforeProcess is true the system will write the templates sectors before processing an image.
@@ -134,7 +165,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PrinterMes
             AddImage(path);
             //Save();
         }
-            
+
     }
 
     public void AddImage(ImageEntry imageEntry) => Images.Add(imageEntry);
@@ -146,7 +177,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PrinterMes
             return;
 
         ImageRollsDatabase.InsertOrReplaceImageRoll(this);
-    } 
+    }
     [RelayCommand]
     private void SaveImage(ImageEntry image)
     {

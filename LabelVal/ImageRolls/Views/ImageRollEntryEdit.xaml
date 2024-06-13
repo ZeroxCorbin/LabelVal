@@ -6,18 +6,65 @@
              xmlns:local="clr-namespace:LabelVal.ImageRolls.Views"
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+                xmlns:converters="clr-namespace:LabelVal.ImageRolls.Converters"
+             
              xmlns:viewModels="clr-namespace:LabelVal.ImageRolls.ViewModels"
                 xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:sectors="clr-namespace:LabelVal.Sectors.ViewModels"
+             xmlns:System="clr-namespace:System;assembly=mscorlib"
              d:DataContext="{d:DesignInstance Type=viewModels:ImageRollEntry}"
              mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <converters:GS1TableNamesConverter x:Key="GS1TableNamesConverter"/>
+    </UserControl.Resources>
+
     <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="3" Padding="2" HorizontalAlignment="Left">
 
         <DockPanel>
-            <TextBox DockPanel.Dock="Top" Text="{Binding Name}" Margin="3"
+            <TextBox DockPanel.Dock="Top" Text="{Binding Name}" Margin="3" Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                      md:HintAssist.Hint="Name" md:HintAssist.IsFloating="True"/>
 
-            <TextBox Text="{Binding TargetDPI}" Margin="3"
+            <DockPanel DockPanel.Dock="Top" >
+                <ToggleButton IsChecked="{Binding WriteSectorsBeforeProcess}" Margin="7" Height="24" Width="24" VerticalAlignment="Top"
+                          Content="{iconPacks:Material Kind=FormatListBulletedSquare}"
+                          md:ToggleButtonAssist.OnContent="{iconPacks:Material Kind=FormatListBulletedType}">
+                    <ToggleButton.Style>
+                        <Style TargetType="ToggleButton" BasedOn="{StaticResource MaterialDesignActionToggleButton}">
+                            <Setter Property="ToolTip" Value="The template sectors are shared."/>
+                            <Style.Triggers>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Setter Property="ToolTip" Value="The template sectors are independant."/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ToggleButton.Style>
+                </ToggleButton>
+
+                <TextBox Text="{Binding TargetDPI}" Margin="3" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                         md:HintAssist.Hint="Target DPI" md:HintAssist.IsFloating="True"/>
+
+            </DockPanel>
+            <DockPanel>
+                <ComboBox ItemsSource="{Binding StandardsTypes}" SelectedItem="{Binding SelectedStandard}" Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                          md:HintAssist.Hint="Standard" md:HintAssist.IsFloating="True" Margin="3"/>
+                
+                <ComboBox ItemsSource="{Binding GS1TableNames}" SelectedItem="{Binding SelectedGS1Table, Converter={StaticResource GS1TableNamesConverter}}"
+                          md:HintAssist.Hint="GS1 Table" md:HintAssist.IsFloating="True" Margin="3">
+                    <ComboBox.Style>
+                        <Style TargetType="ComboBox" BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedStandard}" Value="{x:Static sectors:StandardsTypes.GS1}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+
+                    </ComboBox.Style>
+                </ComboBox>
+            </DockPanel>
+
 
         </DockPanel>
     </md:Card>

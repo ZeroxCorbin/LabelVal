@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.Messaging;
 using LabelVal.Messages;
 using LabelVal.Sectors.ViewModels;
-using LabelVal.Utilities;
 using LabelVal.WindowViewModels;
 using MahApps.Metro.Controls.Dialogs;
 using Newtonsoft.Json;
@@ -49,6 +48,7 @@ public partial class ImageResults : ObservableRecipient,
             Application.Current.Dispatcher.Invoke(ClearImageResultsList);
     }
 
+    [Obsolete]
     private void Images_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
         var itm = e.NewItems.First();
@@ -93,7 +93,7 @@ public partial class ImageResults : ObservableRecipient,
         SelectedNode.Connection.WebSocket.LabelEnd += WebSocket_LabelEnd;
         SelectedNode.Connection.WebSocket.StateChange += WebSocket_StateChange;
     }
-    public void Receive(ImageRollMessages.SelectedImageRollChanged message) { SelectedImageRoll = message.Value; }
+    public void Receive(ImageRollMessages.SelectedImageRollChanged message) => SelectedImageRoll = message.Value;
     public void Receive(PrinterMessages.SelectedPrinterChanged message) => SelectedPrinter = message.Value;
     public void Receive(DatabaseMessages.SelectedDatabseChanged message) => SelectedDatabase = message.Value;
     public void Receive(ScannerMessages.SelectedScannerChanged message)
@@ -130,7 +130,7 @@ public partial class ImageResults : ObservableRecipient,
     public void ClearImageResultsList()
     {
         foreach (var lab in ImageResultsList)
-            lab.V275ProcessImage -= V275ProcessSimulation_Old;
+            lab.V275ProcessImage -= V275ProcessImage;
 
         ImageResultsList.Clear();
     }
@@ -157,18 +157,27 @@ public partial class ImageResults : ObservableRecipient,
     {
         var tmp = new ImageResultEntry(img, SelectedNode, SelectedImageRoll, SelectedDatabase, SelectedScanner, SelectedPrinter);
 
-        tmp.V275ProcessImage += V275ProcessSimulation_Old;
+        tmp.V275ProcessImage += V275ProcessImage;
         ImageResultsList.Add(tmp);
     }
-
 
     #region V275 Image Results
     private ImageResultEntry PrintingImageResult { get; set; } = null;
 
     private bool WaitForRepeat;
-    private async void V275ProcessImage(ImageResultEntry imageResults, string type)
+
+    private void V275ProcessImage(ImageResultEntry imageResults, string type)
     {
-        if (SelectedNode == null)
+        if (SelectedNode != null)
+        {
+            if (!App.Settings.GetValue<string>(nameof(V275.ViewModels.V275.V275_Host)).Equals("127.0.0.1"))
+            {
+                V275ProcessImage_API(imageResults, type);
+            }
+            else
+                V275ProcessImage_FileSystem(imageResults, type);
+        }
+        else
         {
             SendStatusMessage("No node selected.", SystemMessages.StatusMessageType.Warning);
 
@@ -177,10 +186,11 @@ public partial class ImageResults : ObservableRecipient,
             printer.Print(imageResults.SourceImage, PrintCount, SelectedPrinter.PrinterName, "");
 
             imageResults.IsV275Working = false;
-
-            return;
         }
+    }
 
+    private async void V275ProcessImage_API(ImageResultEntry imageResults, string type)
+    {
         if (SelectedNode.IsSimulator)
         {
             //V275ProcessSimulation_Old(imageResults, type);
@@ -270,8 +280,7 @@ public partial class ImageResults : ObservableRecipient,
 
         imageResults.IsV275Working = false;
     }
-
-    private async void V275ProcessSimulation_Old(ImageResultEntry imageResults, string type)
+    private async void V275ProcessImage_FileSystem(ImageResultEntry imageResults, string type)
     {
         try
         {
@@ -411,6 +420,8 @@ public partial class ImageResults : ObservableRecipient,
         else if (SelectedNode.IsSimulator)
             _ = await SelectedNode.Connection.SimulatorTogglePrint();
     }
+
+
     private async void ProcessRepeat(int repeat)
     {
         WaitForRepeat = false;
