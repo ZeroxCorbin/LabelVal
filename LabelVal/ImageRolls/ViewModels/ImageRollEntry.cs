@@ -68,7 +68,6 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PrinterMes
 
     [ObservableProperty][property: JsonProperty("GS1Table")][property: SQLite.Column("GS1Table")] private GS1TableNames selectedGS1Table;
     partial void OnSelectedGS1TableChanged(GS1TableNames value) => OnPropertyChanged(nameof(GS1TableNumber));
-
     public double GS1TableNumber
     {
         get
@@ -79,6 +78,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PrinterMes
             return double.Parse(SelectedGS1Table.GetDescription());
         }
     }
+
     //If writeSectorsBeforeProcess is true the system will write the templates sectors before processing an image.
     //Normally the template is left untouched. I.e. When using a sequential OCR tool.
     [ObservableProperty][property: JsonProperty] private bool writeSectorsBeforeProcess = false;

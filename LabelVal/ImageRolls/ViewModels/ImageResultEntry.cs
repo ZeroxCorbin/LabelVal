@@ -33,6 +33,10 @@ public partial class ImageResultEntry : ObservableRecipient,
     public delegate void BringIntoViewDelegate();
     public event BringIntoViewDelegate BringIntoView;
 
+
+    public delegate void DeleteImageDelegate(ImageResultEntry imageResults);
+    public event DeleteImageDelegate DeleteImage;
+
     //public delegate void StatusChange(string status);
     //public event StatusChange StatusChanged;
 
@@ -314,6 +318,7 @@ public partial class ImageResultEntry : ObservableRecipient,
 
     [RelayCommand] private void RedoFiducial() => ImageUtilities.RedrawFiducial(SourceImage.Path, false);
 
+    [RelayCommand] private void Delete() => DeleteImage?.Invoke(this);
     //const UInt32 WM_KEYDOWN = 0x0100;
     //const int VK_F5 = 0x74;
 

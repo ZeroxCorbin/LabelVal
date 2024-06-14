@@ -48,7 +48,6 @@ public partial class ImageResults : ObservableRecipient,
             Application.Current.Dispatcher.Invoke(ClearImageResultsList);
     }
 
-    [Obsolete]
     private void Images_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
         var itm = e.NewItems.First();
@@ -130,7 +129,10 @@ public partial class ImageResults : ObservableRecipient,
     public void ClearImageResultsList()
     {
         foreach (var lab in ImageResultsList)
+        {
             lab.V275ProcessImage -= V275ProcessImage;
+            lab.DeleteImage -= DeleteImage;
+        }
 
         ImageResultsList.Clear();
     }
@@ -161,7 +163,23 @@ public partial class ImageResults : ObservableRecipient,
         var tmp = new ImageResultEntry(img, SelectedNode, SelectedImageRoll, SelectedDatabase, SelectedScanner, SelectedPrinter);
 
         tmp.V275ProcessImage += V275ProcessImage;
+        tmp.DeleteImage += DeleteImage;
+
         ImageResultsList.Add(tmp);
+    }
+
+    private void DeleteImage(ImageResultEntry imageResults) 
+    {
+        ImageResultsList.Remove(imageResults);
+
+        if (imageResults.V275ResultRow != null)
+        SelectedDatabase.Delete_V275Result(imageResults.V275ResultRow.ImageRollUID, imageResults.V275ResultRow.SourceImageUID);
+
+        if (imageResults.V5ResultRow != null)
+            SelectedDatabase.Delete_V275Result(imageResults.V5ResultRow.ImageRollUID, imageResults.V5ResultRow.SourceImageUID);
+
+        if (imageResults.L95xxResultRow != null)
+            SelectedDatabase.Delete_V275Result(imageResults.L95xxResultRow.ImageRollUID, imageResults.L95xxResultRow.SourceImageUID);
     }
 
     #region V275 Image Results
