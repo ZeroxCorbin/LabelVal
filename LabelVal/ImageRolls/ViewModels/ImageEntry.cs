@@ -28,7 +28,7 @@ public partial class ImageEntry : ObservableRecipient//, IRecipient<PrinterMessa
     [property: SQLite.Ignore] public BitmapImage Image { get; private set; }
     [property: SQLite.Ignore] public BitmapImage ImageLow { get; private set; }
 
-    [JsonProperty] public string UID { get; set; }
+    [JsonProperty][SQLite.PrimaryKey] public string UID { get; set; }
     [JsonProperty] public string RollUID { get; set; }
 
     [JsonProperty]

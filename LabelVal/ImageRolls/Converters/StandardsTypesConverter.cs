@@ -1,19 +1,22 @@
 ﻿using LabelVal.Extensions;
 using LabelVal.Sectors.ViewModels;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Data;
 
 namespace LabelVal.ImageRolls.Converters
 {
-    public class GS1TableNamesConverter : IValueConverter
+    public class StandardsTypesConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is GS1TableNames enumValue)
+            if (value is StandardsTypes enumValue)
                 return enumValue.GetDescription();
-            
+
             return value;
         }
 
@@ -21,14 +24,14 @@ namespace LabelVal.ImageRolls.Converters
         {
             if (value is string strValue)
             {
-                foreach(var desc in Enum.GetValues(typeof(GS1TableNames)).Cast<GS1TableNames>().ToList())
+                foreach (var desc in Enum.GetValues(typeof(StandardsTypes)).Cast<StandardsTypes>().ToList())
                 {
                     if (desc.GetDescription() == strValue)
                         return desc;
                 }
             }
 
-            return value;
+            return StandardsTypes.None;
         }
     }
 }

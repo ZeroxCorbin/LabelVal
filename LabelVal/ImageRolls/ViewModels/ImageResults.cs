@@ -134,9 +134,12 @@ public partial class ImageResults : ObservableRecipient,
 
         ImageResultsList.Clear();
     }
-    public async Task LoadImageResultsList()
+    public async void LoadImageResultsList()
     {
         Application.Current.Dispatcher.Invoke(ClearImageResultsList);
+
+        if (SelectedImageRoll == null)
+            return;
 
         if (SelectedImageRoll.Images.Count == 0)
             await SelectedImageRoll.LoadImages();

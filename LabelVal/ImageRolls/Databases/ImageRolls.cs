@@ -43,6 +43,7 @@ public class ImageRolls
     public bool ExistsImageRoll(string uid) => Connection.Table<ImageRollEntry>().Where(v => v.UID == uid).Count() > 0;
     public ImageRollEntry SelectImageRoll(string uid) => Connection.Table<ImageRollEntry>().Where(v => v.UID == uid).FirstOrDefault();
     public List<ImageRollEntry> SelectAllImageRolls() => Connection.Query<ImageRollEntry>("select * from ImageRollEntry");
+    public bool DeleteImageRoll(string uid) => Connection.Delete<ImageRollEntry>(uid) > 0;
 
     public int InsertOrReplaceImage(ImageEntry img) => Connection.InsertOrReplace(img);
     public bool ExistsImage(string rollUID, string imageUID) => Connection.Table<ImageEntry>().Where(v => v.UID == imageUID && v.RollUID == rollUID).Count() > 0;
@@ -58,5 +59,6 @@ public class ImageRolls
         return new List<ImageEntry>();
     }
     public List<ImageEntry> SelectAllImages() => Connection.Query<ImageEntry>("select * from ImageEntry");
+    public bool DeleteImage(string imageUID) => Connection.Delete<ImageEntry>(imageUID) > 0;
 
 }

@@ -7,7 +7,10 @@
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              xmlns:viewModels="clr-namespace:LabelVal.ImageRolls.ViewModels"
+             xmlns:sectors="clr-namespace:LabelVal.Sectors.ViewModels"
                 xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             
+             xmlns:imageRollConverters="clr-namespace:LabelVal.ImageRolls.Converters"
              
              xmlns:converters="clr-namespace:LabelVal.Converters"
              d:DataContext="{d:DesignInstance Type=viewModels:ImageRolls}"
@@ -15,34 +18,40 @@
 
     <UserControl.Resources>
         <converters:ObjectIsNull x:Key="objectIsNull"/>
+        
+        <imageRollConverters:GS1TableNamesConverter x:Key="GS1TableNamesConverter"/>
 
         <CollectionViewSource x:Key="FixedImageRolls" Source="{Binding FixedImageRolls}">
             <CollectionViewSource.SortDescriptions>
+                <componentmodel:SortDescription PropertyName="StandardDescription" Direction="Ascending"/>
+                <componentmodel:SortDescription PropertyName="GS1TableNumber" Direction="Ascending" />
                 <componentmodel:SortDescription PropertyName="Name" Direction="Ascending"/>
-                <componentmodel:SortDescription PropertyName="SelectedStandard" Direction="Ascending"/>
+                
             </CollectionViewSource.SortDescriptions>
 
             <CollectionViewSource.GroupDescriptions>
-                <PropertyGroupDescription PropertyName="SelectedStandard" />
+                <PropertyGroupDescription PropertyName="StandardDescription" />
                 <PropertyGroupDescription PropertyName="TargetDPI" />
             </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
 
         <CollectionViewSource x:Key="UserImageRolls" Source="{Binding UserImageRolls}">
             <CollectionViewSource.SortDescriptions>
+                <componentmodel:SortDescription PropertyName="StandardDescription" Direction="Ascending"/>
+                <componentmodel:SortDescription PropertyName="GS1TableNumber" Direction="Ascending" />
                 <componentmodel:SortDescription PropertyName="Name" Direction="Ascending"/>
-                <componentmodel:SortDescription PropertyName="SelectedStandard" Direction="Ascending"/>
             </CollectionViewSource.SortDescriptions>
 
             <CollectionViewSource.GroupDescriptions>
-                <PropertyGroupDescription PropertyName="SelectedStandard" />
+                <PropertyGroupDescription PropertyName="StandardDescription" />
                 <PropertyGroupDescription PropertyName="TargetDPI" />
-
             </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
     </UserControl.Resources>
 
     <DockPanel>
+        
+        <!--User Image Rolls-->
         <GroupBox DockPanel.Dock="Top"
             Margin="3" Padding="3"
             HorizontalAlignment="Left" VerticalAlignment="Top" 
@@ -124,10 +133,26 @@
                         <iconPacks:PackIconMaterial Kind="Cancel" Margin="0,-1,0,0" Height="14" Width="14"/>
                     </Button>
 
+                    <Button Command="{Binding DeleteCommand}" 
+                                    ToolTip="Delete" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding UserImageRoll, Converter={StaticResource objectIsNull}}" Value="False">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+
+                        <iconPacks:PackIconMaterial Kind="Delete" Margin="0,-1,0,0" Height="14" Width="14"/>
+                    </Button>
+
                 </DockPanel>
             </GroupBox.Header>
 
-            <md:DrawerHost x:Name="drwEditImageRoll">
+            <md:DrawerHost x:Name="drwEditImageRoll" OpenMode="Modal" TopDrawerCloseOnClickAway="False">
                 <md:DrawerHost.Style>
                     <Style TargetType="md:DrawerHost">
                         <Setter Property="IsTopDrawerOpen" Value="False"/>
@@ -142,6 +167,7 @@
                 <md:DrawerHost.TopDrawerContent>
 
                     <local:ImageRollEntryEdit DataContext="{Binding UserImageRoll}" />
+                    
                 </md:DrawerHost.TopDrawerContent>
 
                 <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Padding="2">
@@ -191,7 +217,32 @@
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <DockPanel>
-                                    <TextBlock Text="{Binding Name}" Margin="10,3" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                                    
+                                    <TextBlock Text="{Binding Name}" Margin="10,3" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Name}" Value="">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+
+                                    <TextBlock Text="{Binding SelectedGS1Table, Converter={StaticResource GS1TableNamesConverter}, StringFormat={}Table {0}}" Margin="10,3" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding SelectedStandard}" Value="{x:Static sectors:StandardsTypes.GS1}">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
                                     
                                     <Button Command="{Binding AddCommand}" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
                                         ToolTip="Add to Image Roll" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
@@ -209,6 +260,7 @@
 
         </GroupBox>
 
+        <!--Fixed Image Rolls-->
         <GroupBox
             Margin="3" Padding="3"
             HorizontalAlignment="Left" VerticalAlignment="Top" 
@@ -290,12 +342,42 @@
 
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Name}" Margin="10,3" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                            <DockPanel>
+
+
+                                <TextBlock Text="{Binding Name}" Margin="10,3" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Name}" Value="">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                                
+                                <TextBlock Text="{Binding SelectedGS1Table, Converter={StaticResource GS1TableNamesConverter}, StringFormat={}Table {0}}" Margin="10,3" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}">
+                                    
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                                <DataTrigger Binding="{Binding SelectedStandard}" Value="{x:Static sectors:StandardsTypes.GS1}">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                            </DockPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
 
             </md:Card>
         </GroupBox>
+        
     </DockPanel>
 </UserControl>

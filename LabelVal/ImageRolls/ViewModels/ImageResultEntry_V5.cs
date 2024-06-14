@@ -115,7 +115,6 @@ public partial class ImageResultEntry
         IsV5Working = false;
     }
 
-    [System.Obsolete]
     public bool V5ProcessResults(V5_REST_Lib.Controller.TriggerResults triggerResults)
     {
         if (!triggerResults.OK)
@@ -183,7 +182,7 @@ public partial class ImageResultEntry
 
     //[RelayCommand] private void V5Inspect() => _ = V5ReadTask(0);
 
-    [System.Obsolete]
+    
     private void V5GetStored()
     {
         V5ResultRow = SelectedDatabase.Select_V5Result(SelectedImageRoll.UID, SourceImage.UID);
@@ -322,7 +321,7 @@ public partial class ImageResultEntry
         return 1;
     }
 
-    [System.Obsolete]
+    
     private DrawingImage V5CreateSectorsImageOverlay(JObject results)
     {
         var drwGroup = new DrawingGroup();

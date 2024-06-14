@@ -17,6 +17,7 @@
 
     <UserControl.Resources>
         <converters:GS1TableNamesConverter x:Key="GS1TableNamesConverter"/>
+        <converters:StandardsTypesConverter x:Key="StandardsTypesConverter"/>
     </UserControl.Resources>
 
     <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="3" Padding="2" HorizontalAlignment="Left">
@@ -46,7 +47,7 @@
 
             </DockPanel>
             <DockPanel>
-                <ComboBox ItemsSource="{Binding StandardsTypes}" SelectedItem="{Binding SelectedStandard}" Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                <ComboBox ItemsSource="{Binding StandardsTypes}" SelectedItem="{Binding SelectedStandard, Converter={StaticResource StandardsTypesConverter}}" Style="{StaticResource MaterialDesignFloatingHintComboBox}"
                           md:HintAssist.Hint="Standard" md:HintAssist.IsFloating="True" Margin="3"/>
                 
                 <ComboBox ItemsSource="{Binding GS1TableNames}" SelectedItem="{Binding SelectedGS1Table, Converter={StaticResource GS1TableNamesConverter}}"

@@ -23,13 +23,13 @@ public partial class ImageRolls : ObservableRecipient, IRecipient<PrinterMessage
 
 
     [ObservableProperty] private ImageRollEntry selectedImageRoll = App.Settings.GetValue<ImageRollEntry>(nameof(SelectedImageRoll), null);
-    partial void OnSelectedImageRollChanged(ImageRollEntry value) { App.Settings.SetValue(nameof(SelectedImageRoll), value); if(value != null) SelectedUserImageRoll = null; }
-    partial void OnSelectedImageRollChanged(ImageRollEntry oldValue, ImageRollEntry newValue) { if (newValue != null) _ = WeakReferenceMessenger.Default.Send(new ImageRollMessages.SelectedImageRollChanged(newValue, oldValue)); }
+    partial void OnSelectedImageRollChanged(ImageRollEntry value) { App.Settings.SetValue(nameof(SelectedImageRoll), value); if (value != null) SelectedUserImageRoll = null; }
+    partial void OnSelectedImageRollChanged(ImageRollEntry oldValue, ImageRollEntry newValue) { _ = WeakReferenceMessenger.Default.Send(new ImageRollMessages.SelectedImageRollChanged(newValue, oldValue)); }
 
 
     [ObservableProperty] private ImageRollEntry selectedUserImageRoll = App.Settings.GetValue<ImageRollEntry>(nameof(SelectedUserImageRoll), null);
     partial void OnSelectedUserImageRollChanged(ImageRollEntry value) { App.Settings.SetValue(nameof(SelectedUserImageRoll), value); if (value != null) SelectedImageRoll = null; }
-    partial void OnSelectedUserImageRollChanged(ImageRollEntry oldValue, ImageRollEntry newValue) { if (newValue != null) _ = WeakReferenceMessenger.Default.Send(new ImageRollMessages.SelectedImageRollChanged(newValue, oldValue)); }
+    partial void OnSelectedUserImageRollChanged(ImageRollEntry oldValue, ImageRollEntry newValue) { _ = WeakReferenceMessenger.Default.Send(new ImageRollMessages.SelectedImageRollChanged(newValue, oldValue)); }
 
 
 
@@ -81,7 +81,7 @@ public partial class ImageRolls : ObservableRecipient, IRecipient<PrinterMessage
                     Logger.Error(ex, "Failed to load image roll from {path}", files.First());
                     continue;
                 }
-               // FixedImageRolls.Add(new ImageRollEntry(dir[(dir.LastIndexOf("\\") + 1)..], subdir));
+                // FixedImageRolls.Add(new ImageRollEntry(dir[(dir.LastIndexOf("\\") + 1)..], subdir));
             }
         }
 
@@ -106,13 +106,13 @@ public partial class ImageRolls : ObservableRecipient, IRecipient<PrinterMessage
 
         UserImageRolls.Clear();
 
-        foreach(var roll in ImageRollsDatabase.SelectAllImageRolls())
+        foreach (var roll in ImageRollsDatabase.SelectAllImageRolls())
         {
             roll.ImageRollsDatabase = ImageRollsDatabase;
             UserImageRolls.Add(roll);
         }
-            
-        
+
+
 
         Logger.Info("Processed {count} user image rolls.", UserImageRolls.Count);
 
@@ -144,8 +144,8 @@ public partial class ImageRolls : ObservableRecipient, IRecipient<PrinterMessage
     private void Edit()
     {
         Logger.Info("Editing image roll.");
-        
-        UserImageRoll = SelectedUserImageRoll;
+
+        UserImageRoll = SelectedUserImageRoll.CopyLite();
     }
 
 
@@ -153,6 +153,10 @@ public partial class ImageRolls : ObservableRecipient, IRecipient<PrinterMessage
     public void Save()
     {
         if (string.IsNullOrEmpty(UserImageRoll.Name))
+            return;
+
+        if (UserImageRoll.SelectedStandard is Sectors.ViewModels.StandardsTypes.GS1 &&
+            UserImageRoll.SelectedGS1Table is Sectors.ViewModels.GS1TableNames.None or Sectors.ViewModels.GS1TableNames.Unsupported)
             return;
 
         if (ImageRollsDatabase == null)
@@ -167,6 +171,32 @@ public partial class ImageRolls : ObservableRecipient, IRecipient<PrinterMessage
         else
             Logger.Error("Failed to save image roll: {name}", UserImageRoll.Name);
     }
+
+    [RelayCommand]
+    public void Delete()
+    {
+        if (ImageRollsDatabase == null)
+            return;
+
+        foreach (var img in SelectedUserImageRoll.Images)
+        {
+            if (ImageRollsDatabase.DeleteImage(img.UID))
+                Logger.Info("Deleted image: {UID}", img.UID);
+            else
+                Logger.Error("Failed to delete image: {UID}", img.UID);
+        }
+
+        if (ImageRollsDatabase.DeleteImageRoll(UserImageRoll.UID))
+        {
+            Logger.Info("Deleted image roll: {UID}", UserImageRoll.UID);
+            LoadUserImageRollsList();
+            UserImageRoll = null;
+            SelectedUserImageRoll = null;
+        }
+        else
+            Logger.Error("Failed to delete image roll: {UID}", UserImageRoll.UID);
+    }
+
 
     [RelayCommand]
     public void Cancel() => UserImageRoll = null;

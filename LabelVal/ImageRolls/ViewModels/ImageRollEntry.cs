@@ -1,8 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using LabelVal.Extensions;
 using LabelVal.Messages;
 using LabelVal.Sectors.ViewModels;
+using LabelVal.Sectors.Views;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Newtonsoft.Json;
 using System;
@@ -27,23 +29,25 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PrinterMes
         {
             var lst = Enum.GetValues(typeof(StandardsTypes)).Cast<StandardsTypes>().ToList();
             lst.Remove(Sectors.ViewModels.StandardsTypes.Unsupported);
-            return lst.ToArray();
+
+            List<string> names = [];
+            foreach (var name in lst)
+                names.Add(name.GetDescription());
+
+            return names.ToArray();
         }
     }
     public Array GS1TableNames
     {
         get
         {
-            var lst = Enum.GetNames(typeof(GS1TableNames)).ToList();
-            lst.Remove("Unsupported");
-            lst.Remove("None");
+            var lst = Enum.GetValues(typeof(GS1TableNames)).Cast<GS1TableNames>().ToList();
+            lst.Remove(Sectors.ViewModels.GS1TableNames.Unsupported);
+            lst.Remove(Sectors.ViewModels.GS1TableNames.None);
 
             List<string> names = [];
             foreach (var name in lst)
-                if (name.StartsWith("_"))
-                    names.Add(name.Substring(1).Replace("_", "."));
-                else
-                    names.Add(name);
+                names.Add(name.GetDescription());
 
             return names.ToArray();
         }
@@ -58,10 +62,23 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PrinterMes
     [ObservableProperty] private int imageCount;
 
     [ObservableProperty][property: JsonProperty("Standard")][property: SQLite.Column("Standard")] private StandardsTypes selectedStandard;
-    partial void OnSelectedStandardChanged(StandardsTypes value) { if (value != Sectors.ViewModels.StandardsTypes.GS1) SelectedGS1Table = Sectors.ViewModels.GS1TableNames.None; }
+    partial void OnSelectedStandardChanged(StandardsTypes value) { if (value != Sectors.ViewModels.StandardsTypes.GS1) SelectedGS1Table = Sectors.ViewModels.GS1TableNames.None; OnPropertyChanged(nameof(StandardDescription)); }
+    public string StandardDescription => SelectedStandard.GetDescription();
+
 
     [ObservableProperty][property: JsonProperty("GS1Table")][property: SQLite.Column("GS1Table")] private GS1TableNames selectedGS1Table;
+    partial void OnSelectedGS1TableChanged(GS1TableNames value) => OnPropertyChanged(nameof(GS1TableNumber));
 
+    public double GS1TableNumber
+    {
+        get
+        {
+            if(SelectedGS1Table is Sectors.ViewModels.GS1TableNames.None or Sectors.ViewModels.GS1TableNames.Unsupported)
+                return 0;
+
+            return double.Parse(SelectedGS1Table.GetDescription());
+        }
+    }
     //If writeSectorsBeforeProcess is true the system will write the templates sectors before processing an image.
     //Normally the template is left untouched. I.e. When using a sequential OCR tool.
     [ObservableProperty][property: JsonProperty] private bool writeSectorsBeforeProcess = false;
@@ -186,4 +203,6 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PrinterMes
 
         ImageRollsDatabase.InsertOrReplaceImage(image);
     }
+
+    public ImageRollEntry CopyLite() => JsonConvert.DeserializeObject<ImageRollEntry>(JsonConvert.SerializeObject(this));
 }
