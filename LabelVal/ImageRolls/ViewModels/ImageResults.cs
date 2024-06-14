@@ -171,7 +171,7 @@ public partial class ImageResults : ObservableRecipient,
 
     private void V275ProcessImage(ImageResultEntry imageResults, string type)
     {
-        if (SelectedNode != null)
+        if (SelectedNode != null && SelectedNode.IsSimulator)
         {
             if (!App.Settings.GetValue<string>(nameof(V275.ViewModels.V275.V275_Host)).Equals("127.0.0.1"))
             {

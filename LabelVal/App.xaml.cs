@@ -66,6 +66,9 @@ public partial class App : Application
         if (version != null)
             Version = version.ToString();
 
+        if (!Directory.Exists(AssetsImageResultsDatabasesRoot))
+            _ = Directory.CreateDirectory(AssetsImageResultsDatabasesRoot);
+
         if (!Directory.Exists(UserDataDirectory))
             _ = Directory.CreateDirectory(UserDataDirectory);
         if (!Directory.Exists(ImageResultsDatabaseRoot))
