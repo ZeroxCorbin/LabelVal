@@ -7,6 +7,12 @@ using System;
 using System.Collections.ObjectModel;
 
 namespace LabelVal.LVS_95xx.ViewModels;
+
+public class VerifierPacket(string value)
+{
+    public string Value { get; set; } = value;
+}
+
 public partial class Verifier : ObservableRecipient
 {  
     private SerialPortController PortController = new();
@@ -17,7 +23,8 @@ public partial class Verifier : ObservableRecipient
     public bool IsNotConnected => !IsConnected;
 
 
-    [ObservableProperty] private string readData;
+    [ObservableProperty][NotifyPropertyChangedRecipients] private VerifierPacket readData;
+
     public ObservableCollection<string> ComNameList { get; } = [];
 
     public string SelectedComName { get => App.Settings.GetValue("95xx_COM_Name", ""); set => App.Settings.SetValue("95xx_COM_Name", value); }
@@ -57,7 +64,7 @@ public partial class Verifier : ObservableRecipient
     }
 
     private void PortController_Exception(object sender, EventArgs e) => ClosePort();
-    private void PortController_PacketAvailable(string packet) { ReadData = packet; WeakReferenceMessenger.Default.Send(new VerifierMessages.NewPacket(packet)); }
+    private void PortController_PacketAvailable(string packet) => ReadData = new VerifierPacket(packet);
 
     [RelayCommand]
     private void ClosePort()

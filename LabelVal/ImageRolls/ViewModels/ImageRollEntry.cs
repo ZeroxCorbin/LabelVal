@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.Extensions;
 using LabelVal.Messages;
 using LabelVal.Sectors.ViewModels;
@@ -19,7 +20,7 @@ namespace LabelVal.ImageRolls.ViewModels;
 
 [JsonObject(MemberSerialization.OptIn)]
 
-public partial class ImageRollEntry : ObservableRecipient, IRecipient<PrinterMessages.SelectedPrinterChanged>
+public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyChangedMessage<PrinterSettings>>
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -107,7 +108,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PrinterMes
         IsActive = true;
     }
 
-    public void Receive(PrinterMessages.SelectedPrinterChanged message) => SelectedPrinter = message.Value;
+    public void Receive(PropertyChangedMessage<PrinterSettings> message) => SelectedPrinter = message.NewValue;
 
     public Task LoadImages()
     {

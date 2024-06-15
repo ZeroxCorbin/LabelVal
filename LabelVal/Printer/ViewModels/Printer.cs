@@ -6,13 +6,14 @@ using System.Drawing.Printing;
 using System.Linq;
 
 namespace LabelVal.Printer.ViewModels;
-public partial class Printer : ObservableObject
+public partial class Printer : ObservableRecipient
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
     public ObservableCollection<string> Printers { get; } = [];
-    [ObservableProperty] private PrinterSettings selectedPrinter;
-    partial void OnSelectedPrinterChanged(PrinterSettings value) => _ = WeakReferenceMessenger.Default.Send(new PrinterMessages.SelectedPrinterChanged(value));
+
+
+    [ObservableProperty][NotifyPropertyChangedRecipients] private PrinterSettings selectedPrinter;
 
     [ObservableProperty] private string selectedPrinterName;
     partial void OnSelectedPrinterNameChanged(string value)

@@ -8,15 +8,13 @@ using System.Collections.ObjectModel;
 
 namespace LabelVal.V5.ViewModels;
 
-public partial class ScannerManager : ObservableObject
+public partial class ScannerManager : ObservableRecipient
 {
     public ObservableCollection<Scanner> Scanners { get; } = App.Settings.GetValue(nameof(Scanners), new ObservableCollection<Scanner>(), true);
 
-    [ObservableProperty] private Scanner selectedScanner;
+    [ObservableProperty][NotifyPropertyChangedRecipients] private Scanner selectedScanner;
 
     [ObservableProperty] private Scanner newScanner;
-
-    partial void OnSelectedScannerChanged(Scanner oldValue, Scanner newValue) => _ = WeakReferenceMessenger.Default.Send(new ScannerMessages.SelectedScannerChanged(newValue, oldValue));
 
     public ScannerManager()
     {

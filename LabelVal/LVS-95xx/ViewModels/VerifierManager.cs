@@ -10,13 +10,11 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace LabelVal.LVS_95xx.ViewModels;
-public partial class VerifierManager : ObservableObject
+public partial class VerifierManager : ObservableRecipient
 {
-
     public ObservableCollection<Verifier> Verifiers { get; } = App.Settings.GetValue(nameof(Verifiers), new ObservableCollection<Verifier>(), true);
 
-    [ObservableProperty] public Verifier selectedVerifier;
-    partial void OnSelectedVerifierChanged(Verifier oldValue, Verifier newValue) => _ = WeakReferenceMessenger.Default.Send(new VerifierMessages.SelectedVerifierChanged(newValue, oldValue));
+    [ObservableProperty][NotifyPropertyChangedRecipients] public Verifier selectedVerifier;
 
     public VerifierManager()
     {

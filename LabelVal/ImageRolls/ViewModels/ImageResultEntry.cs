@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.Messages;
 using LabelVal.Utilities;
 using LabelVal.V275.ViewModels;
@@ -24,10 +25,10 @@ using V275_REST_lib.Models;
 namespace LabelVal.ImageRolls.ViewModels;
 
 public partial class ImageResultEntry : ObservableRecipient,
-    IRecipient<NodeMessages.SelectedNodeChanged>,
-    IRecipient<DatabaseMessages.SelectedDatabseChanged>,
-    IRecipient<ScannerMessages.SelectedScannerChanged>,
-    IRecipient<PrinterMessages.SelectedPrinterChanged>
+    IRecipient<PropertyChangedMessage<Node>>,
+    IRecipient<PropertyChangedMessage<Databases.ImageResults>>,
+    IRecipient<PropertyChangedMessage<Scanner>>,
+    IRecipient<PropertyChangedMessage<PrinterSettings>>
 {
 
     public delegate void BringIntoViewDelegate();
@@ -97,10 +98,10 @@ public partial class ImageResultEntry : ObservableRecipient,
     private void SendStatusMessage(string message, SystemMessages.StatusMessageType type) => WeakReferenceMessenger.Default.Send(new SystemMessages.StatusMessage(this, type, message));
     private void SendErrorMessage(string message) => WeakReferenceMessenger.Default.Send(new SystemMessages.StatusMessage(this, SystemMessages.StatusMessageType.Error, message));
 
-    public void Receive(NodeMessages.SelectedNodeChanged message) => SelectedNode = message.Value;
-    public void Receive(DatabaseMessages.SelectedDatabseChanged message) => SelectedDatabase = message.Value;
-    public void Receive(ScannerMessages.SelectedScannerChanged message) => SelectedScanner = message.Value;
-    public void Receive(PrinterMessages.SelectedPrinterChanged message) => SelectedPrinter = message.Value;
+    public void Receive(PropertyChangedMessage<Node> message) => SelectedNode = message.NewValue;
+    public void Receive(PropertyChangedMessage<Databases.ImageResults> message) => SelectedDatabase = message.NewValue;
+    public void Receive(PropertyChangedMessage<Scanner> message) => SelectedScanner = message.NewValue;
+    public void Receive(PropertyChangedMessage<PrinterSettings> message) => SelectedPrinter = message.NewValue;
 
 
     public async Task<MessageDialogResult> OkCancelDialog(string title, string message)

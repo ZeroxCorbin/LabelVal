@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Messages;
 using LabelVal.WindowViewModels;
@@ -15,7 +16,7 @@ using V275_REST_Lib.Models;
 
 namespace LabelVal.V275.ViewModels;
 
-public partial class V275 : ObservableRecipient, IRecipient<ImageRollMessages.SelectedImageRollChanged>
+public partial class V275 : ObservableRecipient, IRecipient<PropertyChangedMessage<ImageRollEntry>>
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -27,21 +28,34 @@ public partial class V275 : ObservableRecipient, IRecipient<ImageRollMessages.Se
     //private V275_API_WebSocketEvents SysWebSocket { get; } = new V275_API_WebSocketEvents();
 
     [ObservableProperty] private string v275_Host = App.Settings.GetValue(nameof(V275_Host), "127.0.0.1", true);
-    partial void OnV275_HostChanged(string value) { App.Settings.SetValue(nameof(V275_Host), value); }
+    partial void OnV275_HostChanged(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+            App.Current.Dispatcher.BeginInvoke(() => V275_Host = "127.0.0.1");
+        else
+            App.Settings.SetValue(nameof(V275_Host), value);
+    }
 
-    [ObservableProperty] private uint v275_SystemPort = App.Settings.GetValue(nameof(V275_SystemPort), GetV275PortNumber(), true);
+    [ObservableProperty]
+        private uint v275_SystemPort = App.Settings.GetValue(nameof(V275_SystemPort), GetV275PortNumber(), true);
     partial void OnV275_SystemPortChanged(uint value)
     {
-        if (value != 0)
-        {
-            App.Settings.SetValue(nameof(V275_SystemPort), value);
-        }
+        if (!LibStaticUtilities_IPHostPort.Ports.IsPortValid(value))
+            App.Current.Dispatcher.BeginInvoke(() => V275_SystemPort = GetV275PortNumber());
         else
-        {
-            _ = App.Settings.DeleteSetting(nameof(V275_SystemPort));
-        }
+            App.Settings.SetValue(nameof(V275_SystemPort), value);
+    }
 
-        OnPropertyChanged();
+public string V275_SystemPortString
+    {
+        get => V275_SystemPort.ToString();
+        set
+        {
+            if (value == null || !LibStaticUtilities_IPHostPort.Ports.IsPortValid(value))
+                App.Current.Dispatcher.BeginInvoke(() => { V275_SystemPort = GetV275PortNumber(); OnPropertyChanged(nameof(V275_SystemPortString)); });
+            else
+                App.Settings.SetValue(nameof(V275_SystemPort), uint.Parse(value));
+        }
     }
 
     [ObservableProperty] private string userName = App.Settings.GetValue(nameof(UserName), "admin", true);
@@ -54,18 +68,14 @@ public partial class V275 : ObservableRecipient, IRecipient<ImageRollMessages.Se
     partial void OnSimulatorImageDirectoryChanged(string value)
     {
         if (string.IsNullOrEmpty(value))
-        {
-            _ = App.Settings.DeleteSetting(nameof(SimulatorImageDirectory)); OnPropertyChanged(nameof(SimulatorImageDirectory));
-        }
+            App.Current.Dispatcher.BeginInvoke(() => SimulatorImageDirectory = GetV275SimulationDirectory());
         else
-        {
             App.Settings.SetValue(nameof(SimulatorImageDirectory), value);
-        }
     }
 
     [ObservableProperty] private ObservableCollection<Node> nodes = [];
-    [ObservableProperty] private Node selectedNode;
-    partial void OnSelectedNodeChanged(Node oldValue, Node newValue) => _ = WeakReferenceMessenger.Default.Send(new NodeMessages.SelectedNodeChanged(newValue, oldValue));
+
+    [ObservableProperty][NotifyPropertyChangedRecipients] private Node selectedNode;
 
     public bool ShowTemplateNameMismatchDialog { get => App.Settings.GetValue("ShowTemplateNameMismatchDialog", true, true); set => App.Settings.SetValue("ShowTemplateNameMismatchDialog", value); }
 
@@ -80,7 +90,7 @@ public partial class V275 : ObservableRecipient, IRecipient<ImageRollMessages.Se
         IsActive = true;
     }
 
-    public void Receive(ImageRollMessages.SelectedImageRollChanged message) => SelectedImageRoll = message.Value;
+    public void Receive(PropertyChangedMessage<ImageRollEntry> message) => SelectedImageRoll = message.NewValue;
 
     public async Task OkDialog(string title, string message) => _ = await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.Affirmative);
 

@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.Messages;
 using Newtonsoft.Json;
 using System;
@@ -12,7 +13,7 @@ using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
 namespace LabelVal.ImageRolls.ViewModels;
-public partial class ImageRolls : ObservableRecipient, IRecipient<PrinterMessages.SelectedPrinterChanged>
+public partial class ImageRolls : ObservableRecipient, IRecipient<PropertyChangedMessage<PrinterSettings>>
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -22,16 +23,12 @@ public partial class ImageRolls : ObservableRecipient, IRecipient<PrinterMessage
     [ObservableProperty] private ImageRollEntry userImageRoll = null;
 
 
-    [ObservableProperty] private ImageRollEntry selectedImageRoll = App.Settings.GetValue<ImageRollEntry>(nameof(SelectedImageRoll), null);
+    [ObservableProperty][NotifyPropertyChangedRecipients] private ImageRollEntry selectedImageRoll = App.Settings.GetValue<ImageRollEntry>(nameof(SelectedImageRoll), null);
     partial void OnSelectedImageRollChanged(ImageRollEntry value) { App.Settings.SetValue(nameof(SelectedImageRoll), value); if (value != null) SelectedUserImageRoll = null; }
-    partial void OnSelectedImageRollChanged(ImageRollEntry oldValue, ImageRollEntry newValue) { _ = WeakReferenceMessenger.Default.Send(new ImageRollMessages.SelectedImageRollChanged(newValue, oldValue)); }
 
 
-    [ObservableProperty] private ImageRollEntry selectedUserImageRoll = App.Settings.GetValue<ImageRollEntry>(nameof(SelectedUserImageRoll), null);
+    [ObservableProperty][NotifyPropertyChangedRecipients] private ImageRollEntry selectedUserImageRoll = App.Settings.GetValue<ImageRollEntry>(nameof(SelectedUserImageRoll), null);
     partial void OnSelectedUserImageRollChanged(ImageRollEntry value) { App.Settings.SetValue(nameof(SelectedUserImageRoll), value); if (value != null) SelectedImageRoll = null; }
-    partial void OnSelectedUserImageRollChanged(ImageRollEntry oldValue, ImageRollEntry newValue) { _ = WeakReferenceMessenger.Default.Send(new ImageRollMessages.SelectedImageRollChanged(newValue, oldValue)); }
-
-
 
 
     private PrinterSettings selectedPrinter;
@@ -51,7 +48,7 @@ public partial class ImageRolls : ObservableRecipient, IRecipient<PrinterMessage
         // SelectImageRoll();
     }
 
-    public void Receive(PrinterMessages.SelectedPrinterChanged message) => selectedPrinter = message.Value;
+    public void Receive(PropertyChangedMessage<PrinterSettings> message) => selectedPrinter = message.NewValue;
 
     private void LoadFixedImageRollsList()
     {

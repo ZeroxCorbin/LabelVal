@@ -1,13 +1,14 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.Messages;
 using LabelVal.Run;
 using LabelVal.V275.ViewModels;
 using MaterialDesignThemes.Wpf.Converters.CircularProgressBar;
 
 namespace LabelVal.WindowViewModels;
-public partial class RunViewModel : ObservableRecipient, IRecipient<NodeMessages.SelectedNodeChanged>
+public partial class RunViewModel : ObservableRecipient, IRecipient<PropertyChangedMessage<Node>>
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -23,7 +24,7 @@ public partial class RunViewModel : ObservableRecipient, IRecipient<NodeMessages
 
     public RunViewModel() => RunController.RunStateChange += RunController_RunStateChange;
 
-    public void Receive(NodeMessages.SelectedNodeChanged message) => SelectedNode = message.Value;
+    public void Receive(PropertyChangedMessage<Node> message) => SelectedNode = message.NewValue;
 
     [RelayCommand]
     private void StartRun()

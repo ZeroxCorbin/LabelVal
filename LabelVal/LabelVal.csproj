@@ -33,6 +33,13 @@
   <ItemGroup>
     <Compile Remove="ImageRolls\Databases\StandardsDatabase.cs" />
     <Compile Remove="LVS-95xx\ViewModels\SerialPort.cs" />
+    <Compile Remove="Messages\DatabaseMessages.cs" />
+    <Compile Remove="Messages\ImageRollMessages.cs" />
+    <Compile Remove="Messages\NodeMessages.cs" />
+    <Compile Remove="Messages\PrinterMessages.cs" />
+    <Compile Remove="Messages\ScannerMessages.cs" />
+    <Compile Remove="Messages\SectorMessages.cs" />
+    <Compile Remove="Messages\VerifierMessages.cs" />
     <Compile Remove="Run\Databases\V2RunEntryDatabase.cs" />
     <Compile Remove="V275\ViewModels\ImageResultEntry.cs" />
     <Compile Remove="V275\ViewModels\ImageResults.cs" />
@@ -1267,6 +1274,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\JSONViewer_WPF\JSONViewer_WPF.csproj" />
     <ProjectReference Include="..\..\LibDatabases\LibSimpleDatabase\LibSimpleDatabase.csproj" />
+    <ProjectReference Include="..\..\LibStaticUtilities\LibStaticUtilities\LibStaticUtilities.csproj" />
     <ProjectReference Include="..\..\V275_REST_Lib\V275_REST_Lib.csproj" />
     <ProjectReference Include="..\..\V5_REST_Lib\V5_REST_Lib.csproj" />
   </ItemGroup>

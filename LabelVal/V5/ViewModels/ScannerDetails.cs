@@ -1,20 +1,22 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging.Messages;
 using Google.Protobuf.WellKnownTypes;
+using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Messages;
 
 namespace LabelVal.V5.ViewModels;
 
-public partial class ScannerDetails : ObservableRecipient, IRecipient<ScannerMessages.SelectedScannerChanged>
+public partial class ScannerDetails : ObservableRecipient, IRecipient<PropertyChangedMessage<Scanner>>
 {
     [ObservableProperty] Scanner selectedScanner;
     public ScannerDetails() => IsActive = true;
-    public void Receive(ScannerMessages.SelectedScannerChanged message)
+    public void Receive(PropertyChangedMessage<Scanner> message)
     {
         if (SelectedScanner != null)
             SelectedScanner.PropertyChanged -= SelectedScanner_PropertyChanged;
 
-        SelectedScanner = message.Value;
+        SelectedScanner = message.NewValue;
 
         if (SelectedScanner != null)
             SelectedScanner.PropertyChanged += SelectedScanner_PropertyChanged;

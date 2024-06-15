@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.Messages;
 using LabelVal.Sectors.ViewModels;
 using LabelVal.Utilities;
@@ -15,7 +16,7 @@ using System.Windows;
 using System.Windows.Media;
 
 namespace LabelVal.ImageRolls.ViewModels;
-public partial class ImageResultEntry : ObservableRecipient, IRecipient<VerifierMessages.NewPacket>
+public partial class ImageResultEntry : ObservableRecipient, IRecipient<PropertyChangedMessage<LabelVal.LVS_95xx.ViewModels.VerifierPacket>>
 {
     public class L95xxReport
     {
@@ -44,8 +45,8 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Verifier
     partial void OnIsL95xxFaultedChanged(bool value) => OnPropertyChanged(nameof(IsNotL95xxFaulted));
     public bool IsNotL95xxFaulted => !IsL95xxFaulted;
 
-    public void Receive(VerifierMessages.NewPacket message) { if (SelectedSector != null) App.Current.Dispatcher.BeginInvoke(() => 
-        L95xxCurrentSectors.Add(new Sectors.ViewModels.Sector(SelectedSector.Template, message.Value, SelectedSector.DesiredStandard, SelectedSector.DesiredGS1Table))); }
+    public void Receive(PropertyChangedMessage<LabelVal.LVS_95xx.ViewModels.VerifierPacket> message) { if (SelectedSector != null) App.Current.Dispatcher.BeginInvoke(() => 
+        L95xxCurrentSectors.Add(new Sectors.ViewModels.Sector(SelectedSector.Template, message.NewValue.Value, SelectedSector.DesiredStandard, SelectedSector.DesiredGS1Table))); }
 
 
     private void L95xxGetStored()

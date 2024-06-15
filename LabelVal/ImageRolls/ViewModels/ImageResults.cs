@@ -1,7 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.Messages;
 using LabelVal.Sectors.ViewModels;
+using LabelVal.V275.ViewModels;
+using LabelVal.V5.ViewModels;
 using LabelVal.WindowViewModels;
 using MahApps.Metro.Controls.Dialogs;
 using Newtonsoft.Json;
@@ -17,12 +20,13 @@ using V275_REST_lib.Models;
 
 namespace LabelVal.ImageRolls.ViewModels;
 public partial class ImageResults : ObservableRecipient,
-    IRecipient<ImageRollMessages.SelectedImageRollChanged>,
-    IRecipient<NodeMessages.SelectedNodeChanged>,
-    IRecipient<PrinterMessages.SelectedPrinterChanged>,
-    IRecipient<DatabaseMessages.SelectedDatabseChanged>,
-    IRecipient<SystemMessages.StatusMessage>,
-    IRecipient<ScannerMessages.SelectedScannerChanged>
+    IRecipient<PropertyChangedMessage<ImageRollEntry>>,
+    IRecipient<PropertyChangedMessage<Node>>,
+    IRecipient<PropertyChangedMessage<Databases.ImageResults>>,
+    IRecipient<PropertyChangedMessage<Scanner>>,
+    IRecipient<PropertyChangedMessage<PrinterSettings>>,
+    IRecipient<SystemMessages.StatusMessage>
+
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -74,7 +78,7 @@ public partial class ImageResults : ObservableRecipient,
 
     public async Task<MessageDialogResult> OkCancelDialog(string title, string message) => await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative);
 
-    public void Receive(NodeMessages.SelectedNodeChanged message)
+    public void Receive(PropertyChangedMessage<Node> message)
     {
         if (SelectedNode != null)
         {
@@ -84,7 +88,7 @@ public partial class ImageResults : ObservableRecipient,
 
         }
 
-        SelectedNode = message.Value;
+        SelectedNode = message.NewValue ;
 
         if (SelectedNode == null) return;
 
@@ -92,17 +96,17 @@ public partial class ImageResults : ObservableRecipient,
         SelectedNode.Connection.WebSocket.LabelEnd += WebSocket_LabelEnd;
         SelectedNode.Connection.WebSocket.StateChange += WebSocket_StateChange;
     }
-    public void Receive(ImageRollMessages.SelectedImageRollChanged message) => SelectedImageRoll = message.Value;
-    public void Receive(PrinterMessages.SelectedPrinterChanged message) => SelectedPrinter = message.Value;
-    public void Receive(DatabaseMessages.SelectedDatabseChanged message) => SelectedDatabase = message.Value;
-    public void Receive(ScannerMessages.SelectedScannerChanged message)
+    public void Receive(PropertyChangedMessage<ImageRollEntry> message) => SelectedImageRoll = message.NewValue;
+    public void Receive(PropertyChangedMessage<PrinterSettings> message) => SelectedPrinter = message.NewValue;
+    public void Receive(PropertyChangedMessage<Databases.ImageResults> message) => SelectedDatabase = message.NewValue;
+    public void Receive(PropertyChangedMessage<Scanner> message)
     {
         if (SelectedScanner != null)
         {
             //SelectedScanner.ScannerController.ConfigUpdate -= ScannerController_ConfigUpdate;
         }
 
-        SelectedScanner = message.Value;
+        SelectedScanner = message.NewValue;
 
         if (SelectedScanner != null)
         {

@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace LabelVal.V275.Views;
 /// <summary>
@@ -9,7 +10,31 @@ namespace LabelVal.V275.Views;
 /// </summary>
 public partial class V275 : UserControl
 {
-    public V275() => InitializeComponent();
+    public V275() {
+        //Register KeyUpEvent to all TextBox elements
+        EventManager.RegisterClassHandler(typeof(TextBox),
+            TextBox.KeyUpEvent,
+            new System.Windows.Input.KeyEventHandler(TextBox_KeyUp));
+
+        InitializeComponent();
+    }
+
+    //Trigger binding update when enter key is pressed
+    private void TextBox_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+    {
+        if (e.Key != System.Windows.Input.Key.Enter) return;
+
+        TextBox tBox = (TextBox)sender;
+        DependencyProperty prop = TextBox.TextProperty;
+
+        BindingExpression binding = BindingOperations.GetBindingExpression(tBox, prop);
+        if (binding != null)
+        {
+            binding.UpdateSource();
+        }
+
+        e.Handled = true;
+    }
 
     public void btnShowDetails_Click(object sender, RoutedEventArgs e) => ((MainWindowView)App.Current.MainWindow).NodeDetails.IsLeftDrawerOpen = !((MainWindowView)App.Current.MainWindow).NodeDetails.IsLeftDrawerOpen;
 

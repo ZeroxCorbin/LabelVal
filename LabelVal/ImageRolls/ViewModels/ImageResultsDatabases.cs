@@ -11,19 +11,15 @@ using System.Threading.Tasks;
 using System.Windows;
 
 namespace LabelVal.ImageRolls.ViewModels;
-public partial class ImageResultsDatabases : ObservableObject
+public partial class ImageResultsDatabases : ObservableRecipient
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
     public ObservableCollection<Databases.ImageResults> Databases { get; } = [];
 
-    [ObservableProperty] private Databases.ImageResults selectedDatabase;
-    partial void OnSelectedDatabaseChanged(Databases.ImageResults oldValue, Databases.ImageResults newValue)
-    {
-        SelectedDatabaseFilePath = newValue != null ? newValue.FilePath : "";
+    [ObservableProperty][NotifyPropertyChangedRecipients] private Databases.ImageResults selectedDatabase;
+    partial void OnSelectedDatabaseChanged(Databases.ImageResults value) => SelectedDatabaseFilePath = value != null ? value.FilePath : "";
 
-        _ = WeakReferenceMessenger.Default.Send(new DatabaseMessages.SelectedDatabseChanged(newValue, oldValue));
-    }
 
     [ObservableProperty] private string selectedDatabaseFilePath = App.Settings.GetValue(nameof(SelectedDatabaseFilePath), "");
     partial void OnSelectedDatabaseFilePathChanged(string value) => App.Settings.SetValue(nameof(SelectedDatabaseFilePath), value);
