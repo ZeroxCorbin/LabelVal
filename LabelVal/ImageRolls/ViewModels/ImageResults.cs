@@ -212,8 +212,6 @@ public partial class ImageResults : ObservableRecipient,
             }
             else
                 V275ProcessImage_FileSystem(imageResults, type);
-        
-
     }
 
     private async void V275ProcessImage_API(ImageResultEntry imageResults, string type)

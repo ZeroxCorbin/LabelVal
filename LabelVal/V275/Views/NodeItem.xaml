@@ -130,6 +130,7 @@
                                 <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}">
                                     <Setter Property="BorderBrush" Value="{DynamicResource ColorBlindBrush5}"/>
                                     <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Setter Property="IsHitTestVisible" Value="True"/>
                                     <Style.Triggers>
                                         
                                         <DataTrigger Value="False" Binding="{Binding IsWrongTemplateName}">
@@ -143,7 +144,10 @@
                                         <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Monitor}">
                                             <Setter Property="Visibility" Value="Collapsed"/>
                                         </DataTrigger>
-                                        
+
+                                        <DataTrigger Value="Running" Binding="{Binding State}">
+                                            <Setter Property="IsHitTestVisible" Value="False"/>
+                                        </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
                             </ComboBox.Style>
