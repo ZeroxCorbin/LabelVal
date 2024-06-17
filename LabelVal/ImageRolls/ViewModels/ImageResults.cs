@@ -88,7 +88,7 @@ public partial class ImageResults : ObservableRecipient,
 
         }
 
-        SelectedNode = message.NewValue ;
+        SelectedNode = message.NewValue;
 
         if (SelectedNode == null) return;
 
@@ -172,12 +172,12 @@ public partial class ImageResults : ObservableRecipient,
         ImageResultsList.Add(tmp);
     }
 
-    private void DeleteImage(ImageResultEntry imageResults) 
+    private void DeleteImage(ImageResultEntry imageResults)
     {
         ImageResultsList.Remove(imageResults);
 
         if (imageResults.V275ResultRow != null)
-        SelectedDatabase.Delete_V275Result(imageResults.V275ResultRow.ImageRollUID, imageResults.V275ResultRow.SourceImageUID);
+            SelectedDatabase.Delete_V275Result(imageResults.V275ResultRow.ImageRollUID, imageResults.V275ResultRow.SourceImageUID);
 
         if (imageResults.V5ResultRow != null)
             SelectedDatabase.Delete_V275Result(imageResults.V5ResultRow.ImageRollUID, imageResults.V5ResultRow.SourceImageUID);
@@ -192,17 +192,8 @@ public partial class ImageResults : ObservableRecipient,
     private bool WaitForRepeat;
 
     private void V275ProcessImage(ImageResultEntry imageResults, string type)
-    {
-        if (SelectedNode != null && SelectedNode.IsSimulator)
-        {
-            if (!App.Settings.GetValue<string>(nameof(V275.ViewModels.V275.V275_Host)).Equals("127.0.0.1"))
-            {
-                V275ProcessImage_API(imageResults, type);
-            }
-            else
-                V275ProcessImage_FileSystem(imageResults, type);
-        }
-        else
+    { 
+        if (SelectedNode == null)
         {
             SendStatusMessage("No node selected.", SystemMessages.StatusMessageType.Warning);
 
@@ -211,7 +202,18 @@ public partial class ImageResults : ObservableRecipient,
             printer.Print(imageResults.SourceImage, PrintCount, SelectedPrinter.PrinterName, "");
 
             imageResults.IsV275Working = false;
+
+            return;
         }
+
+            if (SelectedNode.IsSimulator && !App.Settings.GetValue<string>(nameof(V275.ViewModels.V275.V275_Host)).Equals("127.0.0.1"))
+            {
+                V275ProcessImage_API(imageResults, type);
+            }
+            else
+                V275ProcessImage_FileSystem(imageResults, type);
+        
+
     }
 
     private async void V275ProcessImage_API(ImageResultEntry imageResults, string type)
@@ -307,99 +309,118 @@ public partial class ImageResults : ObservableRecipient,
     }
     private async void V275ProcessImage_FileSystem(ImageResultEntry imageResults, string type)
     {
-        try
-        {
-            var verRes = 1;
-            var prepend = "";
-
-            var sim = new Simulator.SimulatorFileHandler();
-
-            if (!sim.DeleteAllImages())
+        if (SelectedNode.IsSimulator)
+            try
             {
-                var verCur = SelectedNode.Product.part?[(SelectedNode.Product.part.LastIndexOf('-') + 1)..];
+                var verRes = 1;
+                var prepend = "";
 
-                if (verCur != null)
+                var sim = new Simulator.SimulatorFileHandler();
+
+                if (!sim.DeleteAllImages())
                 {
-                    var ver = System.Version.Parse(verCur);
-                    var verMin = System.Version.Parse("1.1.0.3009");
-                    verRes = ver.CompareTo(ver);
-                }
+                    var verCur = SelectedNode.Product.part?[(SelectedNode.Product.part.LastIndexOf('-') + 1)..];
 
-                if (verRes > 0)
-                {
-                    SendErrorMessage("Could not delete all simulator images.");
-                    imageResults.IsV275Working = false;
-                    return;
-                }
-                else
-                {
-                    sim.UpdateImageList();
-
-                    prepend = "_";
-
-                    foreach (var imgFile in sim.Images)
+                    if (verCur != null)
                     {
-                        var name = Path.GetFileName(imgFile);
+                        var ver = System.Version.Parse(verCur);
+                        var verMin = System.Version.Parse("1.1.0.3009");
+                        verRes = ver.CompareTo(ver);
+                    }
 
-                        for (; ; )
+                    if (verRes > 0)
+                    {
+                        SendErrorMessage("Could not delete all simulator images.");
+                        imageResults.IsV275Working = false;
+                        return;
+                    }
+                    else
+                    {
+                        sim.UpdateImageList();
+
+                        prepend = "_";
+
+                        foreach (var imgFile in sim.Images)
                         {
-                            if (name.StartsWith(prepend))
-                                prepend += prepend;
-                            else
-                                break;
+                            var name = Path.GetFileName(imgFile);
+
+                            for (; ; )
+                            {
+                                if (name.StartsWith(prepend))
+                                    prepend += prepend;
+                                else
+                                    break;
+                            }
                         }
                     }
                 }
-            }
 
-            if (type == "source")
-            {
-                if (!sim.SaveImage(prepend + Path.GetFileName(imageResults.SourceImage.Path), imageResults.SourceImage.GetBitmapBytes()))
+                if (type == "source")
                 {
-                    SendErrorMessage("Could not copy the image to the simulator images directory.");
+                    if (!sim.SaveImage(prepend + Path.GetFileName(imageResults.SourceImage.Path), imageResults.SourceImage.GetBitmapBytes()))
+                    {
+                        SendErrorMessage("Could not copy the image to the simulator images directory.");
+                        imageResults.IsV275Working = false;
+                        return;
+                    }
+                }
+                else if (type == "v275Stored")
+                {
+                    if (!sim.SaveImage(prepend + Path.GetFileName(imageResults.SourceImage.Path), imageResults.V275ResultRow.Stored.GetPngBytes()))
+                    {
+                        SendErrorMessage("Could not save the image to the simulator images directory.");
+                        imageResults.IsV275Working = false;
+                        return;
+                    }
+                }
+                else if (type == "v5Stored")
+                {
+                    if (!sim.SaveImage(prepend + Path.GetFileName(imageResults.SourceImage.Path), imageResults.V5ResultRow.Stored.GetPngBytes()))
+                    {
+                        SendErrorMessage("Could not save the image to the simulator images directory.");
+                        imageResults.IsV275Working = false;
+                        return;
+                    }
+                }
+
+                if (!SelectedNode.IsLoggedIn_Control)
+                {
+                    if (!await SelectedNode.Connection.Commands.TriggerSimulator())
+                    {
+                        SendErrorMessage("Error triggering the simulator.");
+                        imageResults.IsV275Working = false;
+                        return;
+                    }
+                }
+
+                if (!SelectedNode.IsLoggedIn_Control)
+                {
                     imageResults.IsV275Working = false;
-                    return;
                 }
             }
-            else if (type == "v275Stored")
+            catch (Exception ex)
             {
-                if (!sim.SaveImage(prepend + Path.GetFileName(imageResults.SourceImage.Path), imageResults.V275ResultRow.Stored.GetPngBytes()))
-                {
-                    SendErrorMessage("Could not save the image to the simulator images directory.");
-                    imageResults.IsV275Working = false;
-                    return;
-                }
-            }
-            else if (type == "v5Stored")
-            {
-                if (!sim.SaveImage(prepend + Path.GetFileName(imageResults.SourceImage.Path), imageResults.V5ResultRow.Stored.GetPngBytes()))
-                {
-                    SendErrorMessage("Could not save the image to the simulator images directory.");
-                    imageResults.IsV275Working = false;
-                    return;
-                }
-            }
-
-            //if (!SelectedNode.IsLoggedIn_Control)
-            //{
-            //    if (!await SelectedNode.Connection.Commands.TriggerSimulator())
-            //    {
-            //        SendErrorMessage("Error triggering the simulator.");
-            //        imageResults.IsV275Working = false;
-            //        return;
-            //    }
-            //}
-
-            if (!SelectedNode.IsLoggedIn_Control)
-            {
+                SendErrorMessage(ex.Message);
                 imageResults.IsV275Working = false;
+                Logger.Error(ex);
             }
-        }
-        catch (Exception ex)
+        else
         {
-            SendErrorMessage(ex.Message);
-            imageResults.IsV275Working = false;
-            Logger.Error(ex);
+            _ = Task.Run(() =>
+            {
+                var printer = new Printer.Controller();
+
+                if (RunViewModel.State != Run.Controller.RunStates.IDLE)
+                {
+                    var data = $"Loop {RunViewModel.RunController.CurrentLoopCount} : {RunViewModel.RunController.CurrentLabelCount}";
+                    printer.Print(imageResults.SourceImage, 1, SelectedPrinter.PrinterName, data);
+                }
+                else
+                    printer.Print(imageResults.SourceImage, PrintCount, SelectedPrinter.PrinterName, "");
+
+                if (!SelectedNode.IsLoggedIn_Control)
+                    imageResults.IsV275Working = false;
+            });
         }
 
         if (SelectedNode.IsLoggedIn_Control)
