@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing.Printing;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Documents;
@@ -48,6 +49,8 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
     public Devices.Camera Camera { get; set; }
     public Inspection Inspection { get; set; }
 
+    [ObservableProperty] private Jobs jobs;
+
     [ObservableProperty] private Product product;
     [ObservableProperty] private bool isOldISO;
 
@@ -60,6 +63,56 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
 
     [ObservableProperty] NodeStates state = NodeStates.Offline;
     [ObservableProperty] private string jobName = "";
+    partial void OnJobNameChanged(string value)
+    {
+        if(Jobs == null)
+        {
+            SelectedJob = null;
+            return;
+        }
+
+        var jb = Jobs.jobs.FirstOrDefault((e)=> e.name == jobName);
+
+        if(jb != null)
+        {
+            if(SelectedJob != jb)
+            {
+                userChange = true;
+                SelectedJob = jb;
+                
+            }
+                
+        }
+            
+    }
+    private bool userChange;
+
+    [ObservableProperty] private Jobs.Job selectedJob;
+    partial void OnSelectedJobChanged(Jobs.Job value)
+    {
+        if(value == null)
+        {
+            userChange = false;
+            return;
+        }
+
+        if (userChange)
+        {
+            userChange = false;
+            return;
+        }
+
+        App.Current.Dispatcher.BeginInvoke(() => ChangeJob(value.name));
+    }
+    private async Task ChangeJob(string name)
+    {
+      if( await Connection.Commands.UnloadJob())
+            if(await Connection.Commands.LoadJob(name))
+            {
+
+            }
+
+    } 
     public bool IsBackupVoid => ConfigurationCamera != null && ConfigurationCamera.backupVoidMode.value == "ON";
 
 
@@ -98,7 +151,6 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
 
     private void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-
         if (e.PropertyName == nameof(V275.V275_Host))
             Connection.Commands.Host = V275_Host;
         else if (e.PropertyName == nameof(V275.V275_SystemPort))
@@ -183,6 +235,7 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
         ConfigurationCamera = null;
         Symbologies = null;
         Calibration = null;
+        Jobs = null;
 
         JobName = "";
         State = NodeStates.Offline;
@@ -240,6 +293,7 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
         ConfigurationCamera = await Connection.Commands.GetCameraConfig();
         Symbologies = await Connection.Commands.GetSymbologies();
         Calibration = await Connection.Commands.GetCalibration();
+        Jobs = await Connection.Commands.GetJobs();
 
         // If the system is in simulator mode, adjust the simulation settings
         //if (IsSimulator)

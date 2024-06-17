@@ -9,8 +9,13 @@
              
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:ViewModels="clr-namespace:LabelVal.V275.ViewModels"  
+                xmlns:converters="clr-namespace:LabelVal.Converters"
              d:DataContext="{d:DesignInstance Type=ViewModels:Node}"
              mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <converters:ObjectIsNull x:Key="ObjectIsNull"/>
+    </UserControl.Resources>
 
     <md:Card HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3">
         <md:Card.Style>
@@ -115,20 +120,55 @@
 
                     <DockPanel Margin="1">
 
-                        <TextBox d:Text="JobName" Margin="3,0" md:HintAssist.Hint="Template Name" md:HintAssist.IsFloating="True" IsHitTestVisible="False">
+                        <ComboBox ItemsSource="{Binding Jobs.jobs}" SelectedValue="{Binding SelectedJob}" Margin="3,0" md:HintAssist.Hint="Template Name" md:HintAssist.IsFloating="True">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding name}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                            <ComboBox.Style>
+                                <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}">
+                                    <Setter Property="BorderBrush" Value="{DynamicResource ColorBlindBrush5}"/>
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        
+                                        <DataTrigger Value="False" Binding="{Binding IsWrongTemplateName}">
+                                            <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}"/>
+                                        </DataTrigger>
+                                        
+                                        <DataTrigger Value="False" Binding="{Binding Jobs,Converter={StaticResource ObjectIsNull}}">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+
+                                        <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Monitor}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                        
+                                    </Style.Triggers>
+                                </Style>
+                            </ComboBox.Style>
+                        </ComboBox>
+
+                        <TextBox d:Text="-----" BorderBrush="{DynamicResource ColorBlindBrush5}" Margin="3,0" md:HintAssist.Hint="Template Name" md:HintAssist.IsFloating="True" IsHitTestVisible="False">
                             <TextBox.Style>
                                 <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                     <Setter Property="BorderBrush" Value="{DynamicResource ColorBlindBrush5}"/>
                                     <Setter Property="Text" Value="{Binding JobName}"/>
-                                    <Style.Triggers>
 
-                                        <DataTrigger Value="False" Binding="{Binding IsWrongTemplateName}">
-                                            <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}"/>
-                                        </DataTrigger>
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
 
                                         <DataTrigger Value="" Binding="{Binding JobName}">
                                             <Setter Property="Text" Value="-----"/>
                                             <Setter Property="BorderBrush" Value="{DynamicResource ColorBlindBrush5}"/>
+                                        </DataTrigger>
+
+                                        <DataTrigger Value="True" Binding="{Binding Jobs, Converter={StaticResource ObjectIsNull}}">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+
+                                        <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Monitor}">
+                                            <Setter Property="Visibility" Value="Visible"/>
                                         </DataTrigger>
 
                                     </Style.Triggers>

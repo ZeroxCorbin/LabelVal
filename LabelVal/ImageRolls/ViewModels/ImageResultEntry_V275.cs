@@ -381,7 +381,7 @@ public partial class ImageResultEntry
         }
 
         if (isDetailed)
-            drwGroup = V275GetModuleGrid(template.sectors, V275StoredSectors);
+            drwGroup.Children.Add(V275GetModuleGrid(template.sectors, V275StoredSectors));
 
         var geometryImage = new DrawingImage(drwGroup);
         geometryImage.Freeze();
