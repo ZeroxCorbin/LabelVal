@@ -25,6 +25,7 @@ public enum NodeStates
     Editing,
     Running,
     Paused,
+    Disconnected
 }
 
 public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessage<ImageRollEntry>>
