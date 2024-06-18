@@ -168,7 +168,7 @@
 
                             <ListView.ItemTemplate>
                                 <DataTemplate>
-                                    <sectors:Sector Width="180" Background="{DynamicResource AccentColorBrush}" Margin="3,0"/>
+                                    <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="3,0"/>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                         </ListView>
@@ -322,9 +322,10 @@
                     </ScrollViewer.Style>
 
                     <ItemsControl ItemsSource="{Binding Source={StaticResource ResourceKey=cvsV275CurrentSectors}}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <sectors:Sector Width="180" Background="{DynamicResource AccentColorBrush}" Margin="6,1"/>
+                                <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="6,1"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>

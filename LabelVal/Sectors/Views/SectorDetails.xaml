@@ -22,8 +22,8 @@
         <V275Converters:V275_GS1FormattedOutput x:Key="gs1FormattedOutput"/>
     </UserControl.Resources>
 
-    <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="3" Padding="3">
-        <DockPanel>
+    <md:Card Width="280" Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="3" Padding="0">
+        <DockPanel Margin="3">
 
             <!--Name, Wrong Standard, Overall Grade String-->
             <DockPanel DockPanel.Dock="Top">
@@ -37,9 +37,10 @@
             </DockPanel>
 
             <!--Icon, Symbology, Decode Text-->
-            <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Stretch" Margin="3,0">
+            <DockPanel DockPanel.Dock="Top">
 
-                <Border Background="White" Height="30" Width="30" VerticalAlignment="Top" Margin="0,3">
+                <!--Symbology Image-->
+                <Border Background="White" Height="30" Width="30" VerticalAlignment="Top" Margin="3,3,0,0">
                     <Border.Style>
                         <Style TargetType="{x:Type Border}">
                             <Setter Property="Visibility" Value="Visible"/>
@@ -74,9 +75,10 @@
                     </Image>
                 </Border>
 
-                <DockPanel Margin="3">
+                <DockPanel>
 
-                    <TextBlock DockPanel.Dock="Top" Margin="3,0" TextWrapping="Wrap" MaxWidth="200" HorizontalAlignment="Left">
+                    <!--Symbology Name-->
+                    <TextBlock DockPanel.Dock="Top" Margin="3,0">
                         <TextBlock.Style>
                             <Style TargetType="{x:Type TextBlock}">
 
@@ -103,7 +105,8 @@
                         </TextBlock.Style>
                     </TextBlock>
 
-                    <TextBlock DockPanel.Dock="Top" Margin="3,0" TextWrapping="Wrap" MaxWidth="200" HorizontalAlignment="Left">
+                    <!--Decode Text & OCR-->
+                    <TextBlock Margin="3,0" TextWrapping="Wrap" Width="193">
                         <TextBlock.Style>
                             <Style TargetType="{x:Type TextBlock}">
 
@@ -147,8 +150,8 @@
                     </TextBlock>
                 </DockPanel>
                 
-            <!--Overall Grade Button-->
-                <Button IsHitTestVisible="False" Width="30" Height="30" BorderThickness="3" HorizontalAlignment="Right">
+                <!--Overall Grade Button-->
+                <Button Margin="3" IsHitTestVisible="False" Width="30" Height="30" BorderThickness="3" VerticalAlignment="Top">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Square.Accent}">
                             <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
@@ -571,26 +574,23 @@
                 <ItemsControl ItemsSource="{Binding SectorDifferences.Alarms, Mode=OneTime}">
                     <ItemsControl.ItemTemplate>
                         <HierarchicalDataTemplate>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="auto"/>
-                                </Grid.ColumnDefinitions>
+                            <DockPanel>
 
-                                <StackPanel Orientation="Horizontal" Grid.Column="0">
-                                    <TextBlock Text="{Binding Path=name, Converter={StaticResource stringToUpper}, Mode=OneTime}" TextWrapping="Wrap" MaxWidth="200"/>
-                                    <TextBlock Text=": "/>
-                                    <TextBlock Text="{Binding Path=data.subAlarm, Converter={StaticResource stringToUpper}, Mode=OneTime}" Grid.Column="1"/>
-                                </StackPanel>
+                                <TextBlock TextWrapping="Wrap">
+                                    <Run Text="{Binding Path=name, Converter={StaticResource stringToUpper}, Mode=OneTime}"/>
+                                    <Run Text=":"/>
+                                    <Run Text="{Binding Path=data.subAlarm, Converter={StaticResource stringToUpper}, Mode=OneTime}"/>
+                                </TextBlock>
 
-                                <StackPanel Orientation="Horizontal" Grid.Column="2">
-                                    <TextBlock Text=" ( "/>
-                                    <TextBlock Text="{Binding Path=data.text, StringFormat=N2, Converter={StaticResource floatTrim}, Mode=OneTime}"/>
-                                    <TextBlock Text="/"/>
-                                    <TextBlock Text="{Binding Path=data.expected, StringFormat=N2, Converter={StaticResource floatTrim}, Mode=OneTime}"/>
-                                    <TextBlock Text=" )   "/>
+                                    <TextBlock TextWrapping="Wrap">
+                                        <Run Text="("/>
+                                        <Run Text="{Binding Path=data.text, StringFormat=N2, Converter={StaticResource floatTrim}, Mode=OneTime}"/>
+                                        <Run Text="/"/>
+                                        <Run Text="{Binding Path=data.expected, StringFormat=N2, Converter={StaticResource floatTrim}, Mode=OneTime}"/>
+                                        <Run Text=")"/>
 
+                                    </TextBlock>
+                                    
                                     <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3">
                                         <Border.Style>
                                             <Style TargetType="{x:Type Border}">
@@ -606,9 +606,9 @@
                                             </Style>
                                         </Border.Style>
                                     </Border>
-                                </StackPanel>
+            
 
-                            </Grid>
+                            </DockPanel>
                         </HierarchicalDataTemplate>
                     </ItemsControl.ItemTemplate>
 

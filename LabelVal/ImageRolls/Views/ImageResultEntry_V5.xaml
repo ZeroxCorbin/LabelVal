@@ -148,7 +148,7 @@
                     <ItemsControl ItemsSource="{Binding Source={StaticResource ResourceKey=cvsV5StoredSectors}}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <sectors:Sector Width="180" Background="{DynamicResource AccentColorBrush}" Margin="6,1"/>
+                                <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="6,1"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>

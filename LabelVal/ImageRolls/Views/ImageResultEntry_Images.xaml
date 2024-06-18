@@ -532,6 +532,36 @@
                         </Button.Style>
                     </Button>
 
+                    <Button Command="{Binding ClearReadCommand}" CommandParameter="V275" ToolTip="Clear the current sectors and image."
+                                    Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
+
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                <Setter Property="Visibility" Value="Visible"/>
+
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding V275CurrentSectors.Count}" Value="0">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding V275Image, Converter={StaticResource objectIsNull}}" Value="False"/>
+                                            <Condition Binding="{Binding IsV275ImageStored}" Value="False"/>
+                                        </MultiDataTrigger.Conditions>
+
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </MultiDataTrigger>
+
+                                </Style.Triggers>
+
+                            </Style>
+                        </Button.Style>
+
+                        <iconPacks:PackIconModern Kind="Delete" Margin="-1,-1,0,0" Height="14" Width="14"/>
+
+                    </Button>
+
                 </DockPanel>
             </GroupBox.Header>
 
@@ -782,6 +812,34 @@
                         </Button.Style>
                     </Button>
 
+                    <Button Command="{Binding ClearReadCommand}" CommandParameter="V5" ToolTip="Clear the current sectors and image."
+                                    Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
+
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                <Setter Property="Visibility" Value="Visible"/>
+
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding V5CurrentSectors.Count}" Value="0">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding V5Image, Converter={StaticResource objectIsNull}}" Value="False"/>
+                                            <Condition Binding="{Binding IsV5ImageStored}" Value="False"/>
+                                        </MultiDataTrigger.Conditions>
+
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </MultiDataTrigger>
+
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+
+                        <iconPacks:PackIconModern Kind="Delete" Margin="-1,-1,0,0" Height="14" Width="14"/>
+
+                    </Button>
 
                 </DockPanel>
             </GroupBox.Header>

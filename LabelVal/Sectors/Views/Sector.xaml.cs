@@ -25,8 +25,8 @@ public partial class Sector : UserControl
 
         //_ = DialogCoordinator.Instance.ShowMetroDialogAsync(yourParentWindow.DataContext, new LVS_95xx.LVS95xx_SerialPortView() { DataContext = dc });
 
-        L95xxComparePopup.PlacementTarget = (Button)sender;
-        L95xxComparePopup.IsOpen = true;
+        //L95xxComparePopup.PlacementTarget = (Button)sender;
+        //L95xxComparePopup.IsOpen = true;
     }
 
     private void btnGS1DecodeText_Click(object sender, RoutedEventArgs e) => popGS1DecodeText.IsOpen = true;

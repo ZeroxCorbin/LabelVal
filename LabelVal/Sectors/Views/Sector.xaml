@@ -12,8 +12,7 @@
             xmlns:Converters="clr-namespace:LabelVal.Converters"
              xmlns:V275Converters="clr-namespace:LabelVal.V275.Converters"
             d:DataContext="{d:DesignInstance Type=ViewModels:Sector}"
-            mc:Ignorable="d" 
-            d:DesignHeight="450" d:DesignWidth="800">
+            mc:Ignorable="d">
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="booltovis"/>
@@ -23,7 +22,8 @@
         <V275Converters:V275_GS1FormattedOutput x:Key="gs1FormattedOutput"/>
     </UserControl.Resources>
 
-    <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="3" Padding="0">
+
+    <md:Card Width="217" Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="3" Padding="0">
         <DockPanel Margin="3">
 
             <DockPanel DockPanel.Dock="Top">
@@ -111,15 +111,9 @@
 
             </DockPanel>
 
-            <Grid DockPanel.Dock="Top">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="auto"/>
-                </Grid.ColumnDefinitions>
-
+            <DockPanel DockPanel.Dock="Top">
                 <!--Symbology Image-->
-                <Border Grid.Column="0" Background="White" Height="30" Width="30" Margin="0,3">
+                <Border Background="White" Height="30" Width="30" Margin="3,3,0,0" VerticalAlignment="Top">
                     <Border.Style>
                         <Style TargetType="{x:Type Border}">
                             <Setter Property="Visibility" Value="Visible"/>
@@ -154,10 +148,10 @@
                     </Image>
                 </Border>
 
-                <DockPanel Grid.Column="1" Margin="0">
+                <DockPanel>
 
                     <!--Symbology Name-->
-                    <TextBlock DockPanel.Dock="Top" TextWrapping="Wrap" HorizontalAlignment="Left" Margin="3,1,3,0">
+                    <TextBlock DockPanel.Dock="Top" Margin="3,0">
                         <TextBlock.Style>
                             <Style TargetType="{x:Type TextBlock}">
 
@@ -185,58 +179,121 @@
                     </TextBlock>
 
                     <!--Decode Text & OCR-->
-                    <DockPanel Margin="3,0">
+                    <TextBlock Margin="3,0" TextWrapping="Wrap" Name="txtDecodeText" Width="120">
+                        <TextBlock.Style>
+                            <Style TargetType="{x:Type TextBlock}">
 
-                        <TextBlock TextWrapping="Wrap" Name="txtDecodeText">
+                                <Style.Triggers>
+
+                                    <DataTrigger Value="verify1D" Binding="{Binding Report.Type, Mode=OneTime}">
+                                        <Setter Property="Text" Value="{Binding Report.DecodeText, Mode=OneTime}"/>
+                                    </DataTrigger>
+
+                                    <DataTrigger Value="verify2D" Binding="{Binding Report.Type, Mode=OneTime}">
+                                        <Setter Property="Text" Value="{Binding Report.DecodeText, Mode=OneTime}"/>
+                                    </DataTrigger>
+
+                                    <DataTrigger Value="ocr" Binding="{Binding Report.Type, Mode=OneTime}">
+                                        <Setter Property="Text" Value="{Binding Report.Text, Mode=OneTime}"/>
+                                    </DataTrigger>
+
+                                    <DataTrigger Value="ocv" Binding="{Binding Report.Type, Mode=OneTime}">
+                                        <Setter Property="Text" Value="{Binding Report.Text, Mode=OneTime}"/>
+                                    </DataTrigger>
+
+                                    <DataTrigger Value="blemish" Binding="{Binding Report.Type, Mode=OneTime}">
+                                        <Setter Property="Text" Value=""/>
+                                    </DataTrigger>
+
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+
+                </DockPanel>
+
+                <!--GS1 AI Button-->
+                <Button Margin="0,19,0,0" Name="btnGS1DecodeText" Click="btnGS1DecodeText_Click" VerticalAlignment="Top">
+                    <Button.Style>
+                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Chromeless}">
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Report.GS1Results, FallbackValue={x:Null}}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Hidden"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                    <IconPacks:Material Kind="ArrowDownBoldBox"/>
+                </Button>
+                
+                <Popup x:Name="popGS1DecodeText"  StaysOpen="False" PlacementTarget="{Binding ElementName=txtDecodeText}">
+
+                    <Border Padding="3" BorderThickness="2"
+                        BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+
+                        <Border BorderThickness="1" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="2">
+                            <!--<StackPanel>
+                        <TextBlock Padding="5" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
                             <TextBlock.Style>
                                 <Style TargetType="{x:Type TextBlock}">
-
-                                    <Style.Triggers>
-
-                                        <DataTrigger Value="verify1D" Binding="{Binding Report.Type, Mode=OneTime}">
-                                            <Setter Property="Text" Value="{Binding Report.DecodeText, Mode=OneTime}"/>
-                                        </DataTrigger>
-
-                                        <DataTrigger Value="verify2D" Binding="{Binding Report.Type, Mode=OneTime}">
-                                            <Setter Property="Text" Value="{Binding Report.DecodeText, Mode=OneTime}"/>
-                                        </DataTrigger>
-
-                                        <DataTrigger Value="ocr" Binding="{Binding Report.Type, Mode=OneTime}">
-                                            <Setter Property="Text" Value="{Binding Report.Text, Mode=OneTime}"/>
-                                        </DataTrigger>
-
-                                        <DataTrigger Value="ocv" Binding="{Binding Report.Type, Mode=OneTime}">
-                                            <Setter Property="Text" Value="{Binding Report.Text, Mode=OneTime}"/>
-                                        </DataTrigger>
-
-                                        <DataTrigger Value="blemish" Binding="{Binding Report.Type, Mode=OneTime}">
-                                            <Setter Property="Text" Value=""/>
-                                        </DataTrigger>
-
-                                    </Style.Triggers>
+                                    <Setter Property="Text">
+                                        <Setter.Value>
+                                            <MultiBinding StringFormat="{}(01){0}">
+                                                <Binding Path="Report.data.gs1Results.fields._01"/>
+                                            </MultiBinding>
+                                        </Setter.Value>
+                                    </Setter>
                                 </Style>
                             </TextBlock.Style>
                         </TextBlock>
 
-                        <Button Name="btnGS1DecodeText" Margin="0" Click="btnGS1DecodeText_Click">
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Chromeless}">
-                                    <Setter Property="Visibility" Value="Visible"/>
+                        <TextBlock Padding="5" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                            <TextBlock.Style>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Text">
+                                        <Setter.Value>
+                                            <MultiBinding StringFormat="{}(10){0}">
+                                                <Binding Path="Report.data.gs1Results.fields._10"/>
+                                            </MultiBinding>
+                                        </Setter.Value>
+                                    </Setter>
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Report.GS1Results, FallbackValue={x:Null}}" Value="{x:Null}">
+                                        <DataTrigger Binding="{Binding Report.data.gs1Results.fields._10}" Value="{x:Null}">
                                             <Setter Property="Visibility" Value="Collapsed"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
-                            </Button.Style>
-                            <IconPacks:Material Kind="ArrowDownBoldBox"/>
-                        </Button>
-                    </DockPanel>
-
-                </DockPanel>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        
+                        <TextBlock Padding="5" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                            <TextBlock.Style>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Text">
+                                        <Setter.Value>
+                                            <MultiBinding StringFormat="{}(90){0}">
+                                                <Binding Path="Report.data.gs1Results.fields._90"/>
+                                            </MultiBinding>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Report.data.gs1Results.fields._90}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </StackPanel>-->
+                            <TextBlock Text="{Binding Report.FormattedOut, Converter={StaticResource gs1FormattedOutput}}"  Margin="3,-10,3,3"/>
+                        </Border>
+                    </Border>
+                </Popup>
 
                 <!--Overall Grade-->
-                <Button Click="Button_Click" Grid.Column="2" Width="30" Height="30" BorderThickness="3">
+                <Button Margin="3" Click="Button_Click" Width="30" Height="30" BorderThickness="3" VerticalAlignment="Top">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Square.Accent}">
                             <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
@@ -303,7 +360,25 @@
                     </Button.Content>
                 </Button>
 
-            </Grid>
+                <Popup x:Name="popSymbolDetails" StaysOpen="False">
+                    <Popup.Style>
+                        <Style TargetType="{x:Type Popup}"/>
+                    </Popup.Style>
+
+                    <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top">
+
+                        <GroupBox.Header>
+                            <Button Style="{StaticResource MaterialDesignFloatingActionDarkButton}" ToolTip="Save as image." Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                                <IconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
+                            </Button>
+                        </GroupBox.Header>
+
+                        <local:SectorDetails DataContext="{Binding}"/>
+
+                    </GroupBox>
+                </Popup>
+
+            </DockPanel>
 
             <!--Alarms-->
             <Border DockPanel.Dock="Top" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Padding="1" CornerRadius="3" Margin="0,3" HorizontalAlignment="Stretch">
@@ -384,101 +459,10 @@
                 </ItemsControl>
             </Border>
 
-
-            <Popup x:Name="popSymbolDetails" StaysOpen="False">
-                <Popup.Style>
-                    <Style TargetType="{x:Type Popup}"/>
-                </Popup.Style>
-
-                <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top">
-
-                    <GroupBox.Header>
-                        <Button Style="{StaticResource MaterialDesignFloatingActionDarkButton}" ToolTip="Save as image." Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
-                            <IconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
-                        </Button>
-                    </GroupBox.Header>
-
-                    <local:SectorDetails DataContext="{Binding}"/>
-
-                </GroupBox>
-
-
-            </Popup>
-
-            <Popup x:Name="popGS1DecodeText"  StaysOpen="False" PlacementTarget="{Binding ElementName=txtDecodeText}">
-
-                <Border Padding="3" BorderThickness="2"
-                        BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
-                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-
-                    <Border BorderThickness="1" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="2">
-                        <!--<StackPanel>
-                        <TextBlock Padding="5" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-                            <TextBlock.Style>
-                                <Style TargetType="{x:Type TextBlock}">
-                                    <Setter Property="Text">
-                                        <Setter.Value>
-                                            <MultiBinding StringFormat="{}(01){0}">
-                                                <Binding Path="Report.data.gs1Results.fields._01"/>
-                                            </MultiBinding>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-
-                        <TextBlock Padding="5" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-                            <TextBlock.Style>
-                                <Style TargetType="{x:Type TextBlock}">
-                                    <Setter Property="Text">
-                                        <Setter.Value>
-                                            <MultiBinding StringFormat="{}(10){0}">
-                                                <Binding Path="Report.data.gs1Results.fields._10"/>
-                                            </MultiBinding>
-                                        </Setter.Value>
-                                    </Setter>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Report.data.gs1Results.fields._10}" Value="{x:Null}">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                        
-                        <TextBlock Padding="5" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-                            <TextBlock.Style>
-                                <Style TargetType="{x:Type TextBlock}">
-                                    <Setter Property="Text">
-                                        <Setter.Value>
-                                            <MultiBinding StringFormat="{}(90){0}">
-                                                <Binding Path="Report.data.gs1Results.fields._90"/>
-                                            </MultiBinding>
-                                        </Setter.Value>
-                                    </Setter>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Report.data.gs1Results.fields._90}" Value="{x:Null}">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                    </StackPanel>-->
-                        <TextBlock Text="{Binding Report.FormattedOut, Converter={StaticResource gs1FormattedOutput}}"  Margin="3,-10,3,3"/>
-                    </Border>
-                </Border>
-            </Popup>
-
-            <Popup x:Name="L95xxComparePopup" StaysOpen="True">
-                <Popup.Style>
-                    <Style TargetType="{x:Type Popup}"/>
-                </Popup.Style>
-
-                <DockPanel>
-
-                </DockPanel>
-            </Popup>
         </DockPanel>
+
+
     </md:Card>
+
+
 </UserControl>
