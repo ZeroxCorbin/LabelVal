@@ -18,8 +18,7 @@
                  xmlns:L95xx="clr-namespace:LabelVal.LVS_95xx.Views"
                  xmlns:ViewModels="clr-namespace:LabelVal.WindowViewModels"  
                 d:DataContext="{d:DesignInstance Type=ViewModels:MainWindowViewModel}"
-                mc:Ignorable="d"
-                Height="592" Width="1119" SaveWindowPosition="True" Closing="MetroWindow_Closing">
+                mc:Ignorable="d" SaveWindowPosition="True" Width="auto" Height="auto" Closing="MetroWindow_Closing">
 
     <mah:MetroWindow.Title>
         <MultiBinding StringFormat="Label Validator : {0}">
@@ -50,6 +49,12 @@
                         x:Name="btnDarkTheme"
                         Click="btnDarkTheme_Click">
                 <IconPacks:PackIconModern Width="20" Height="20" Kind="MoonWaningCrescent"/>
+            </Button>
+
+            <Button BorderThickness="0" 
+                        x:Name="btnSyncOSTheme"
+                        Click="btnSyncOSTheme_Click">
+                <IconPacks:PackIconModern Width="20" Height="20" Kind="OsWindows"/>
             </Button>
         </mah:WindowCommands>
     </mah:MetroWindow.RightWindowCommands>

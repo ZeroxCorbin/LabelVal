@@ -5,6 +5,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 using ControlzEx.Theming;
 using LibSimpleDatabase;
@@ -31,6 +32,8 @@ public partial class App : Application
 #endif
 
     public static string Version { get; set; }
+    public static string LocalAppData => System.IO.Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), System.Reflection.Assembly.GetExecutingAssembly().GetName().Name);
+
 
     public static string UserDataDirectory => $"{WorkingDir}\\UserData";
     public static string DatabaseExtension => ".sqlite";
@@ -119,20 +122,24 @@ public partial class App : Application
     {
         base.OnStartup(e);
 
-        //RedrawFiducial(@"D:\OneDrive - OMRON\Omron\OCR\Applications\LabelVal\LabelVal\Assets\Standards\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_49a.png");
         ChangeColorBlindTheme(Settings.GetValue("App.IsColorBlind", false));
 
-        // Set the application theme to Dark.Green
-        _ = ThemeManager.Current.ChangeTheme(this, Settings.GetValue("App.Theme", "Dark.Steel"));
+        var res = Settings.GetValue("App.Theme", "Dark.Steel", true);
+        if (res.Contains("#"))
+            ThemeManager.Current.SyncTheme(ThemeSyncMode.SyncAll);
+        else
+            _ = ThemeManager.Current.ChangeTheme(this, res);
 
         ThemeManager.Current.ThemeChanged += Current_ThemeChanged;
-        ThemeManager.Current.ThemeSyncMode = ThemeSyncMode.SyncWithAppMode;
+
+        if (Keyboard.IsKeyDown(Key.LeftCtrl))
+        {
+            NLog.LogManager.GetCurrentClassLogger().Info($"CTRL Key pressed. Deleting contents of {LocalAppData}");
+            RecursiveDelete(new DirectoryInfo(LocalAppData));
+        }
     }
 
-    private void Current_ThemeChanged(object sender, ThemeChangedEventArgs e)
-    {
-        Settings.SetValue("App.Theme", e.NewTheme.Name);
-    }
+    private void Current_ThemeChanged(object sender, ThemeChangedEventArgs e) => Settings.SetValue("App.Theme", e.NewTheme.Name);
 
     public static void ChangeColorBlindTheme(bool isColorBlind)
     {
@@ -193,7 +200,23 @@ public partial class App : Application
             Current.Dispatcher.Invoke(Shutdown);
     }
 
+    public static void RecursiveDelete(DirectoryInfo baseDir)
+    {
+        if (!baseDir.Exists)
+            return;
 
+        foreach (var dir in baseDir.EnumerateDirectories())
+        {
+            RecursiveDelete(dir);
+        }
+        var files = baseDir.GetFiles();
+        foreach (var file in files)
+        {
+            file.IsReadOnly = false;
+            file.Delete();
+        }
+        baseDir.Delete();
+    }
     private void ConvertDatabases()
     {
     }

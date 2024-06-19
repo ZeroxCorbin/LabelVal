@@ -21,7 +21,7 @@
                 </Button>
 
                 <md:Card Background="{DynamicResource ColorBlindBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
-                    <TextBlock Text="V275 Nodes" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                    <TextBlock Text="V275 Nodes" Foreground="White" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                 </md:Card>
 
                 <Button Command="{Binding GetDevicesCommand}" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
@@ -61,13 +61,14 @@
                             </Style.Triggers>
                         </Style>
                     </md:Card.Style>
+                    
                     <DockPanel>
-
                         <DockPanel DockPanel.Dock="Top" Margin="3">
 
                             <TextBox Text="{Binding V275_Host}" MinWidth="50" Margin="3,0" HorizontalAlignment="Center"
                                          md:HintAssist.Hint="IP Address" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left"
                                      md:TextFieldAssist.HasClearButton="True">
+                                
                                 <TextBox.Style>
                                     <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                         <Setter Property="IsEnabled" Value="True"/>
@@ -143,6 +144,7 @@
                         </DockPanel>
                     </DockPanel>
                 </md:Card>
+                
             </md:DrawerHost.TopDrawerContent>
 
             <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}">

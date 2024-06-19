@@ -433,7 +433,7 @@
 
                     <!--Title-->
                     <md:Card Background="{DynamicResource ColorBlindBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
-                        <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}">
+                        <TextBlock Foreground="White" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}">
                             <TextBlock.Style>
                                 <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource MahApps.Styles.TextBlock}">
                                     <Setter Property="Text" Value="Current Image"/>
@@ -714,7 +714,7 @@
 
                     <!--Title-->
                     <md:Card Background="{DynamicResource OrangeBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
-                        <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}">
+                        <TextBlock Foreground="White" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}">
                             <TextBlock.Style>
                                 <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource MahApps.Styles.TextBlock}">
                                     <Setter Property="Text" Value="Current Image"/>

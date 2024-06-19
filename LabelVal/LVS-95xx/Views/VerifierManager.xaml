@@ -17,7 +17,7 @@
         <GroupBox.Header>
             <DockPanel>
                 <md:Card Background="{DynamicResource OrangeBrush0}" HorizontalAlignment="Left" Padding="1">
-                    <TextBlock Text="LVS_95xx Verifiers" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Margin="3,0"/>
+                    <TextBlock Text="LVS_95xx Verifiers" Foreground="White" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Margin="3,0"/>
                 </md:Card>
 
                 <!--<Button Click="btnShowDetails_Click" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"

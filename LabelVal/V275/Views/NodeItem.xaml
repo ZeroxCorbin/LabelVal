@@ -59,15 +59,21 @@
                         </Button.Style>
                     </Button>
 
-                        <ToggleButton IsChecked="{Binding LoginMonitor}" Width="23" Height="23" Margin="0,6,0,0"
+                        <ToggleButton IsChecked="{Binding LoginMonitor}" Width="23" Height="23" Margin="0,6,0,0" ToolTipService.ShowOnDisabled="True"
                               md:ToggleButtonAssist.OnContent="{iconPacks:Modern Kind=Monitor}"
                               Content="{iconPacks:FontAwesome Kind=TerminalSolid}">
+                            
                             <ToggleButton.Style>
                                 <Style TargetType="ToggleButton" BasedOn="{StaticResource MaterialDesignActionDarkToggleButton}">
                                     <Setter Property="ToolTip" Value="Login control."/>
+                                    <Setter Property="IsEnabled" Value="True"/>
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding LoginMonitor}" Value="True">
                                             <Setter Property="ToolTip" Value="Login monitor."/>
+                                        </DataTrigger>
+
+                                        <DataTrigger Binding="{Binding IsLoggedIn}" Value="True">
+                                            <Setter Property="IsEnabled" Value="False"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>

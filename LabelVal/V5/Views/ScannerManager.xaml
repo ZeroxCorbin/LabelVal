@@ -21,7 +21,7 @@
         <GroupBox.Header>
             <DockPanel>
                 <md:Card Background="{DynamicResource OrangeBrush1}" HorizontalAlignment="Left" Padding="1">
-                    <TextBlock Text="V5 Cameras" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Margin="3,0"/>
+                    <TextBlock Text="V5 Cameras" Foreground="White" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Margin="3,0"/>
                 </md:Card>
 
                 <Button Command="{Binding AddCommand}"
@@ -123,6 +123,7 @@
             </md:DrawerHost.TopDrawerContent>
 
             <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                
                 <ListView ItemsSource="{Binding Scanners}" SelectedItem="{Binding SelectedScanner}">
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
@@ -132,6 +133,7 @@
 
                     <ListView.ItemTemplate>
                         <DataTemplate>
+                            
                             <local:Scanner DataContext="{Binding }"/>
 
                         </DataTemplate>

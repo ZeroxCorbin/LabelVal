@@ -61,7 +61,7 @@
                     <DockPanel Margin="3">
 
                         <md:Card Background="{DynamicResource OrangeBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
-                            <TextBlock Text="Stored Sectors" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                            <TextBlock Foreground="White" Text="Stored Sectors" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                         </md:Card>
 
                         <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
@@ -175,7 +175,7 @@
                     <DockPanel Margin="3">
 
                         <md:Card Background="{DynamicResource OrangeBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
-                            <TextBlock Text="Current Sectors" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                            <TextBlock Foreground="White" Text="Current Sectors" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                         </md:Card>
 
                         <DockPanel Margin="3,0">

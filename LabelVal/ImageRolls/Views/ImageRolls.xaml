@@ -18,7 +18,7 @@
 
     <UserControl.Resources>
         <converters:ObjectIsNull x:Key="objectIsNull"/>
-        
+
         <imageRollConverters:GS1TableNamesConverter x:Key="GS1TableNamesConverter"/>
 
         <CollectionViewSource x:Key="FixedImageRolls" Source="{Binding FixedImageRolls}">
@@ -26,7 +26,7 @@
                 <componentmodel:SortDescription PropertyName="StandardDescription" Direction="Ascending"/>
                 <componentmodel:SortDescription PropertyName="GS1TableNumber" Direction="Ascending" />
                 <componentmodel:SortDescription PropertyName="Name" Direction="Ascending"/>
-                
+
             </CollectionViewSource.SortDescriptions>
 
             <CollectionViewSource.GroupDescriptions>
@@ -50,7 +50,7 @@
     </UserControl.Resources>
 
     <DockPanel>
-        
+
         <!--User Image Rolls-->
         <GroupBox DockPanel.Dock="Top"
             Margin="3" Padding="3"
@@ -100,7 +100,7 @@
 
                         <iconPacks:PackIconMaterial Kind="SquareEditOutline" Margin="-1,0,0,0" Height="14" Width="14"/>
                     </Button>
-                    
+
                     <Button Command="{Binding SaveCommand}"
                                     ToolTip="Save Image Roll" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
                         <Button.Style>
@@ -167,7 +167,7 @@
                 <md:DrawerHost.TopDrawerContent>
 
                     <local:ImageRollEntryEdit DataContext="{Binding UserImageRoll}" />
-                    
+
                 </md:DrawerHost.TopDrawerContent>
 
                 <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Padding="2">
@@ -184,9 +184,10 @@
                                         <Setter Property="Template">
                                             <Setter.Value>
                                                 <ControlTemplate TargetType="{x:Type GroupItem}">
-                                                    <Expander>
+                                                    <Expander md:ExpanderAssist.ExpanderButtonPosition="Start"
+                                                       BorderThickness="0" Padding="0" md:ExpanderAssist.HorizontalHeaderPadding="3">
                                                         <Expander.Header>
-                                                            <TextBlock DockPanel.Dock="Top" Text="{Binding Name}" Margin="10,3" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                                                            <TextBlock Text="{Binding Name}" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                                                         </Expander.Header>
 
                                                         <ItemsPresenter />
@@ -199,7 +200,28 @@
                                 </GroupStyle.ContainerStyle>
                             </GroupStyle>
 
+                            <GroupStyle>
+                                <GroupStyle.ContainerStyle>
+                                    <Style TargetType="{x:Type GroupItem}">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type GroupItem}">
+                                                    <Expander md:ExpanderAssist.ExpanderButtonPosition="Start" Margin="10,0"
+                                                       BorderThickness="0" Padding="0" md:ExpanderAssist.HorizontalHeaderPadding="3">
+                                                        <Expander.Header>
+                                                            <TextBlock Text="{Binding Name}" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                                                        </Expander.Header>
 
+                                                        <ItemsPresenter />
+
+                                                    </Expander>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </GroupStyle.ContainerStyle>
+                            </GroupStyle>
+                            
                         </ListView.GroupStyle>
 
                         <ListView.ItemsPanel>
@@ -217,7 +239,7 @@
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <DockPanel>
-                                    
+
                                     <TextBlock Text="{Binding Name}" Margin="10,3" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
@@ -243,9 +265,21 @@
                                             </Style>
                                         </TextBlock.Style>
                                     </TextBlock>
-                                    
-                                    <Button Command="{Binding AddCommand}" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
+
+                                    <Button Command="{Binding AddCommand}"
                                         ToolTip="Add to Image Roll" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                                        
+                                        <Button.Style>
+                                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource AncestorType=ListViewItem}}" Value="True">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                        
                                         <iconPacks:PackIconMaterial Kind="Plus" Margin="-1,0,0,0" Height="14" Width="14"/>
                                     </Button>
 
@@ -342,9 +376,8 @@
 
                     <ListView.ItemTemplate>
                         <DataTemplate>
+                            
                             <DockPanel>
-
-
                                 <TextBlock Text="{Binding Name}" Margin="10,3" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
@@ -357,20 +390,20 @@
                                         </Style>
                                     </TextBlock.Style>
                                 </TextBlock>
-                                
+
                                 <TextBlock Text="{Binding SelectedGS1Table, Converter={StaticResource GS1TableNamesConverter}, StringFormat={}Table {0}}" Margin="10,3" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}">
-                                    
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                        <Style.Triggers>
+
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
                                                 <DataTrigger Binding="{Binding SelectedStandard}" Value="{x:Static sectors:StandardsTypes.GS1}">
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
                             </DockPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>
@@ -378,6 +411,6 @@
 
             </md:Card>
         </GroupBox>
-        
+
     </DockPanel>
 </UserControl>

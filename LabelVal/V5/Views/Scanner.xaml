@@ -69,7 +69,7 @@
 
                     <md:DrawerHost.TopDrawerContent>
 
-                        <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="3" Padding="2" HorizontalAlignment="Left">
+                        <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}"  Foreground="{DynamicResource MahApps.Brushes.Text}" Margin="3" Padding="2" HorizontalAlignment="Left">
                             <md:Card.Style>
                                 <Style TargetType="{x:Type md:Card}">
                                     <Setter Property="Visibility" Value="Collapsed"/>
@@ -225,10 +225,10 @@
                                 </DockPanel>
                             </DockPanel>
                         </md:Card>
+                        
                     </md:DrawerHost.TopDrawerContent>
 
                     <DockPanel>
-
 
                         <DockPanel DockPanel.Dock="Top" Margin="1">
 
@@ -420,18 +420,16 @@
                             </DockPanel>
                         </Expander.Header>
 
-                        <DockPanel>
-
-
+                        <DockPanel >
 
                             <DockPanel >
 
                                 <!--JSON-->
-                                <json:JsonViewer Title="JSON" JSON="{Binding ExplicitMessages}" ShowSaveButton="True" MinWidth="200" MaxWidth="400"/>
+                                <json:JsonViewer Title="JSON" JSON="{Binding ExplicitMessages}" ShowSaveButton="True" MinWidth="200" MaxWidth="400"  Foreground="{DynamicResource MahApps.Brushes.Text}"/>
 
                                 <!--Results-->
                                 <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}"
-                                  Background="{DynamicResource MahApps.Brushes.Accent4}"
+                                  Background="{DynamicResource MahApps.Brushes.Accent4}" Foreground="{DynamicResource MahApps.Brushes.Text}"
                                   VerticalAlignment="Top" Margin="3" Padding="3" Height="390">
 
                                     <GroupBox.Header>
@@ -439,9 +437,6 @@
                                             <TextBlock Text="Results" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                                         </md:Card>
                                     </GroupBox.Header>
-
-
-
 
                                     <DockPanel Width="166">
 
@@ -516,7 +511,7 @@
                                 </GroupBox>
 
                                 <!--Image-->
-                                <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}"
+                                <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" Foreground="{DynamicResource MahApps.Brushes.Text}"
                                   Background="{DynamicResource MahApps.Brushes.Accent4}"
                                   Margin="3" Padding="3">
 
