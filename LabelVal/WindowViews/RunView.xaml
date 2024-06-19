@@ -11,19 +11,17 @@
              d:DataContext="{d:DesignInstance Type=ViewModels:RunViewModel}"
              mc:Ignorable="d">
 
-    <GroupBox
-            md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-            md:ColorZoneAssist.Foreground="{DynamicResource MahApps.Brushes.Foreground}"
-            md:ColorZoneAssist.Mode="Custom"
-            BorderThickness="0"
-            Margin="3" Padding="3"
-            HorizontalAlignment="Left" VerticalAlignment="Top" 
-            Style="{StaticResource MaterialDesignCardGroupBox}">
+    <GroupBox Margin="3" Padding="3" BorderThickness="0" HorizontalAlignment="Left" VerticalAlignment="Top"
+                  Style="{StaticResource MaterialDesignCardGroupBox}"
+                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                md:ColorZoneAssist.Mode="Custom">
 
         <GroupBox.Header>
-            <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
-                <TextBlock Text="Run" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
-            </md:Card>
+            <DockPanel Margin="-5">
+                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
+                    <TextBlock Text="Run" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                </md:Card>
+            </DockPanel>
         </GroupBox.Header>
 
         <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Padding="2">

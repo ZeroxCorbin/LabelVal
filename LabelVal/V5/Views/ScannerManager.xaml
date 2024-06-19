@@ -15,17 +15,18 @@
         <converters:ObjectIsNull x:Key="objectIsNull"/>
     </UserControl.Resources>
 
-    <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" VerticalAlignment="Top" HorizontalAlignment="Left"
-              Margin="3" Padding="3">
+    <GroupBox Margin="3" Padding="3" VerticalAlignment="Top" HorizontalAlignment="Left"
+                  Style="{StaticResource MaterialDesignCardGroupBox}"
+                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                md:ColorZoneAssist.Mode="Custom">
 
         <GroupBox.Header>
-            <DockPanel>
-                <md:Card Background="{DynamicResource OrangeBrush1}" HorizontalAlignment="Left" Padding="1">
-                    <TextBlock Text="V5 Cameras" Foreground="White" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Margin="3,0"/>
+            <DockPanel Margin="-5">
+                <md:Card Background="{DynamicResource OrangeBrush1}" HorizontalAlignment="Left"  Padding="4,1">
+                    <TextBlock Text="V5 Cameras" Foreground="White" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                 </md:Card>
 
-                <Button Command="{Binding AddCommand}"
-                                    ToolTip="New V5" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                <Button Command="{Binding AddCommand}" ToolTip="New V5" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
 
                     <Button.Style>
                         <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
@@ -41,8 +42,7 @@
                     <iconPacks:PackIconMaterial Kind="Plus" Margin="-1,0,0,0" Height="14" Width="14"/>
                 </Button>
 
-                <Button Command="{Binding SaveCommand}"
-                                    ToolTip="Save Image Roll" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                <Button Command="{Binding SaveCommand}" ToolTip="Save Image Roll" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
                             <Setter Property="Visibility" Value="Collapsed"/>

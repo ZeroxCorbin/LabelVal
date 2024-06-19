@@ -23,7 +23,7 @@
         <Converters:StringToUpperSpacedConverter x:Key="stringToUpper"/>
         <Converters:FloatStringTrimConverter x:Key="floatTrim"/>
         <V275Converters:V275_OCMatchModeToString x:Key="matchModeToString"/>
-        
+
         <Converters:ObjectIsNull x:Key="objectIsNull"/>
         <Converters:EqualZeroOrNull x:Key="equalZeroOrNull"/>
 
@@ -52,7 +52,9 @@
         <DockPanel DockPanel.Dock="Top">
 
             <!--V275 Stored Sectors-->
-            <GroupBox d:Visibility="Visible" Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <GroupBox d:Visibility="Visible" Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top"
+                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                md:ColorZoneAssist.Mode="Custom">
                 <GroupBox.Style>
                     <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -63,15 +65,14 @@
                         </Style.Triggers>
                     </Style>
                 </GroupBox.Style>
-                
+
                 <GroupBox.Header>
 
-                    <DockPanel Margin="3">
+                    <DockPanel Margin="-5">
 
-                        <md:Card Background="{DynamicResource ColorBlindBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
+                        <md:Card Background="{DynamicResource ColorBlindBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="4,1">
                             <TextBlock Foreground="White" Text="Stored Sectors" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                         </md:Card>
-
 
                         <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
 
@@ -160,24 +161,26 @@
                     </ScrollViewer.Style>
 
                     <ListView ItemsSource="{Binding V275StoredSectors}" SelectedItem="{Binding SelectedSector}">
-                            <ListView.ItemContainerStyle>
-                                <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
-                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                                </Style>
-                            </ListView.ItemContainerStyle>
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
 
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="3,0"/>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="3,0"/>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
                 </ScrollViewer>
 
             </GroupBox>
 
             <!--V275 Current Sectors-->
-            <GroupBox d:Visibility="Visible" Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <GroupBox d:Visibility="Visible" Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                md:ColorZoneAssist.Mode="Custom">
                 <GroupBox.Style>
                     <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -188,12 +191,12 @@
                         </Style.Triggers>
                     </Style>
                 </GroupBox.Style>
-                
+
                 <GroupBox.Header>
 
-                    <DockPanel Margin="3">
+                    <DockPanel Margin="-5">
 
-                        <md:Card Background="{DynamicResource ColorBlindBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
+                        <md:Card Background="{DynamicResource ColorBlindBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="4,1">
                             <TextBlock Foreground="White" Text="Current Sectors" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                         </md:Card>
 
@@ -333,7 +336,9 @@
             </GroupBox>
 
             <!--V275 Dissimilar Results-->
-            <GroupBox d:Visibility="Visible" Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <GroupBox d:Visibility="Visible" Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                md:ColorZoneAssist.Mode="Custom">
                 <GroupBox.Style>
                     <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -347,7 +352,7 @@
 
                 <GroupBox.Header>
 
-                    <DockPanel Margin="3">
+                    <DockPanel Margin="-5">
 
                         <md:Card Background="{DynamicResource ColorBlindBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
                             <TextBlock Text="Dissimilar Results" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
@@ -368,7 +373,7 @@
                             </Style.Triggers>
                         </Style>
                     </ScrollViewer.Style>
-                    
+
                     <ItemsControl ItemsSource="{Binding V275DiffSectors}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>

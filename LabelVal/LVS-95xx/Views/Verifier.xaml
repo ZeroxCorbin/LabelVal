@@ -17,7 +17,9 @@
         <Converters:BytesToImageConverter x:Key="bytesToImage"/>
     </UserControl.Resources>
 
-    <md:Card HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3">
+    <md:Card HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3"
+                 Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                 Foreground="{DynamicResource MahApps.Brushes.Text}">
 
         <DockPanel Margin="3">
 
@@ -130,10 +132,13 @@
                         <TextBlock Text="Control" MinWidth="48"/>
                     </Expander.Header>
 
-                    <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="3" Padding="3">
+                    <GroupBox VerticalAlignment="Top" HorizontalAlignment="Left" Margin="3" Padding="3" 
+                  Style="{StaticResource MaterialDesignCardGroupBox}"
+                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                md:ColorZoneAssist.Mode="Custom">
 
                         <GroupBox.Header>
-                            <DockPanel>
+                            <DockPanel Margin="-5">
                                 <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="1">
                                     <TextBlock Text="Results" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Margin="3,0"/>
                                 </md:Card>

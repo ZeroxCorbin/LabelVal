@@ -10,17 +10,20 @@
              d:DataContext="{d:DesignInstance Type=ViewModels:V275}"
              mc:Ignorable="d">
 
-    <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="3" Padding="3">
+    <GroupBox VerticalAlignment="Top" HorizontalAlignment="Left" Margin="3" Padding="3" 
+                  Style="{StaticResource MaterialDesignCardGroupBox}"
+                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                md:ColorZoneAssist.Mode="Custom">
 
         <GroupBox.Header>
-            <DockPanel>
+            <DockPanel Margin="-5">
                 
                 <Button Click="btnShowSettings_Click" Style="{StaticResource MaterialDesignFloatingActionButton}"
                         ToolTip="Show Settings" Width="20" Height="20" BorderThickness="0" Margin="3,0,6,0">
                     <iconPacks:PackIconMaterial Kind="Cog" Height="14" Width="14"/>
                 </Button>
 
-                <md:Card Background="{DynamicResource ColorBlindBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
+                <md:Card Background="{DynamicResource ColorBlindBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="4,1">
                     <TextBlock Text="V275 Nodes" Foreground="White" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                 </md:Card>
 

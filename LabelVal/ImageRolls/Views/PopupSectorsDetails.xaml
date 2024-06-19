@@ -6,6 +6,8 @@
              xmlns:local="clr-namespace:LabelVal.ImageRolls.Views"
              xmlns:sectors="clr-namespace:LabelVal.Sectors.Views"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+             
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     
@@ -14,12 +16,25 @@
             <Style TargetType="{x:Type Popup}"/>
         </Popup.Style>
 
-        <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top">
+        <GroupBox Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                  Style="{StaticResource MaterialDesignCardGroupBox}"
+                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                md:ColorZoneAssist.Mode="Custom">
 
             <GroupBox.Header>
-                <Button Style="{StaticResource MaterialDesignFloatingActionDarkButton}" ToolTip="Save as image." Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                <DockPanel Margin="-5">
+                    
+                
+                <Button Click="btnSaveImage_Click" Style="{StaticResource MaterialDesignFloatingActionDarkButton}" ToolTip="Save as image." Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
                     <iconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
                 </Button>
+                    
+                <Button Click="btnCopyImage_Click" Style="{StaticResource MaterialDesignFloatingActionDarkButton}" ToolTip="Save as image." Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                    <iconPacks:Material Kind="ContentCopy" Height="12" Width="12"/>
+                </Button>
+                    
+                </DockPanel>
+                
             </GroupBox.Header>
 
             <DockPanel>
@@ -29,7 +44,7 @@
                     <ItemsControl x:Name="ItemsControl">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <WrapPanel IsItemsHost="True" MaxWidth="1024"/>
+                                <WrapPanel IsItemsHost="True"/>
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
 

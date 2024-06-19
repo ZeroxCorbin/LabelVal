@@ -19,10 +19,12 @@
         <GroupBox DockPanel.Dock="Top"
             Margin="3" Padding="3"
             HorizontalAlignment="Left" VerticalAlignment="Top" 
-            Style="{StaticResource MaterialDesignCardGroupBox}">
+                  Style="{StaticResource MaterialDesignCardGroupBox}"
+                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                md:ColorZoneAssist.Mode="Custom">
 
             <GroupBox.Header>
-                <DockPanel>
+                <DockPanel Margin="-5">
 
 
                     <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="1">

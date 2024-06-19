@@ -55,10 +55,12 @@
         <GroupBox DockPanel.Dock="Top"
             Margin="3" Padding="3"
             HorizontalAlignment="Left" VerticalAlignment="Top" 
-            Style="{StaticResource MaterialDesignCardGroupBox}">
+                  Style="{StaticResource MaterialDesignCardGroupBox}"
+                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                md:ColorZoneAssist.Mode="Custom">
 
             <GroupBox.Header>
-                <DockPanel>
+                <DockPanel Margin="-5">
 
                     <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Padding="1">
                         <TextBlock Text="Image Rolls" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Margin="3,0"/>
@@ -295,15 +297,17 @@
         </GroupBox>
 
         <!--Fixed Image Rolls-->
-        <GroupBox
-            Margin="3" Padding="3"
-            HorizontalAlignment="Left" VerticalAlignment="Top" 
-            Style="{StaticResource MaterialDesignCardGroupBox}">
+        <GroupBox Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                  Style="{StaticResource MaterialDesignCardGroupBox}"
+                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                md:ColorZoneAssist.Mode="Custom">
 
             <GroupBox.Header>
-                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Padding="1" HorizontalAlignment="Left">
-                    <TextBlock Text="Fixed Image Rolls" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Margin="3,0"/>
-                </md:Card>
+                <DockPanel Margin="-5">
+                    <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Padding="1" HorizontalAlignment="Left">
+                        <TextBlock Text="Fixed Image Rolls" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Margin="3,0"/>
+                    </md:Card>
+                </DockPanel>
             </GroupBox.Header>
 
             <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Padding="2">

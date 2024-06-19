@@ -45,7 +45,9 @@
         <DockPanel>
 
             <!--L95xx Stored Sectors-->
-            <GroupBox d:Visibility="Visible" Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <GroupBox d:Visibility="Visible" Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                md:ColorZoneAssist.Mode="Custom">
                 <GroupBox.Style>
                     <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -59,7 +61,7 @@
 
                 <GroupBox.Header>
 
-                    <DockPanel Margin="3">
+                    <DockPanel Margin="-5">
 
                         <md:Card Background="{DynamicResource OrangeBrush0}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
                             <TextBlock Foreground="White" Text="Stored Sectors" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
@@ -136,7 +138,9 @@
             </GroupBox>
 
             <!--L95xx Current Sectors-->
-            <GroupBox d:Visibility="Visible" Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <GroupBox d:Visibility="Visible" Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                md:ColorZoneAssist.Mode="Custom">
                 <GroupBox.Style>
                     <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -150,7 +154,7 @@
                 
                 <GroupBox.Header>
 
-                    <DockPanel Margin="3">
+                    <DockPanel Margin="-5">
 
                         <md:Card Background="{DynamicResource OrangeBrush0}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
                             <TextBlock Foreground="White" Text="Current Sectors" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
@@ -278,7 +282,9 @@
             </GroupBox>
 
             <!--L95xx Dissimilar Results-->
-            <GroupBox d:Visibility="Visible" Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <GroupBox d:Visibility="Visible" Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                md:ColorZoneAssist.Mode="Custom">
                 <GroupBox.Style>
                     <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -292,7 +298,7 @@
 
                 <GroupBox.Header>
 
-                    <DockPanel Margin="3">
+                    <DockPanel Margin="-5">
 
                         <md:Card Background="{DynamicResource OrangeBrush0}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
                             <TextBlock Text="Dissimilar Results" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>

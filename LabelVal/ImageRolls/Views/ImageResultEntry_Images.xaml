@@ -32,11 +32,14 @@
     <DockPanel>
 
         <!--Source Image-->
-        <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top">
+        <GroupBox Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                  Style="{StaticResource MaterialDesignCardGroupBox}"
+                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                md:ColorZoneAssist.Mode="Custom">
 
             <GroupBox.Header>
 
-                <DockPanel>
+                <DockPanel Margin="-5">
 
                     <!--Title-->
                     <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="1">
@@ -268,11 +271,13 @@
                     </DockPanel.Style>
 
                     <!--Image Details-->
-                    <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}"
-                              DockPanel.Dock="Top" VerticalAlignment="Top" Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="3" Padding="3">
+                    <GroupBox DockPanel.Dock="Top" Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                              Background="{DynamicResource MahApps.Brushes.ThemeBackground}" 
+                  Style="{StaticResource MaterialDesignCardGroupBox}"
+                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                md:ColorZoneAssist.Mode="Custom">
                         <GroupBox.Header>
-                            <DockPanel>
-
+                            <DockPanel Margin="-5">
 
                                 <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="1">
                                     <TextBlock Text="Image Details" FontSize="{DynamicResource MahApps.Font.Size.Tooltip}"/>
@@ -338,11 +343,14 @@
                     </GroupBox>
 
                     <!--Printer-->
-                    <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}"
-                              DockPanel.Dock="Top" VerticalAlignment="Top" Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="3" Padding="3">
+                    <GroupBox DockPanel.Dock="Top" VerticalAlignment="Top" Margin="3" Padding="3"
+                            Background="{DynamicResource MahApps.Brushes.ThemeBackground}" 
+                            Style="{StaticResource MaterialDesignCardGroupBox}"
+                            md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                            md:ColorZoneAssist.Mode="Custom">
 
                         <GroupBox.Header>
-                            <DockPanel>
+                            <DockPanel Margin="-5">
                                 <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="2,1">
                                     <TextBlock Text="Printer" FontSize="{DynamicResource MahApps.Font.Size.Tooltip}"/>
                                 </md:Card>
@@ -394,13 +402,18 @@
                     </GroupBox>
 
                     <!--V5-->
-                    <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}"
-                              DockPanel.Dock="Top" VerticalAlignment="Top" Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="3" Padding="3">
+                    <GroupBox  Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                               Background="{DynamicResource MahApps.Brushes.ThemeBackground}" 
+                  Style="{StaticResource MaterialDesignCardGroupBox}"
+                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                md:ColorZoneAssist.Mode="Custom">
 
                         <GroupBox.Header>
-                            <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="2,1">
-                                <TextBlock Text="V5" FontSize="{DynamicResource MahApps.Font.Size.Tooltip}"/>
-                            </md:Card>
+                            <DockPanel Margin="-5">
+                                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="2,1">
+                                    <TextBlock Text="V5" FontSize="{DynamicResource MahApps.Font.Size.Tooltip}"/>
+                                </md:Card>
+                            </DockPanel>
                         </GroupBox.Header>
 
                         <DockPanel Margin="0,6,0,0">
@@ -416,7 +429,9 @@
         </GroupBox>
 
         <!--V275 Image-->
-        <GroupBox d:Visibility="Visible" Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top">
+        <GroupBox d:Visibility="Visible" Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                md:ColorZoneAssist.Mode="Custom">
             <GroupBox.Style>
                 <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
                     <Setter Property="Visibility" Value="Collapsed"/>
@@ -429,7 +444,7 @@
             </GroupBox.Style>
 
             <GroupBox.Header>
-                <DockPanel>
+                <DockPanel Margin="-5">
 
                     <!--Title-->
                     <md:Card Background="{DynamicResource ColorBlindBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
@@ -590,12 +605,17 @@
                     </DockPanel.Style>
 
                     <!--Image Details-->
-                    <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}"
-                              DockPanel.Dock="Top" VerticalAlignment="Top" Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="3" Padding="3">
+                    <GroupBox DockPanel.Dock="Top" VerticalAlignment="Top" Margin="3" Padding="3"
+                            Background="{DynamicResource MahApps.Brushes.ThemeBackground}" 
+                            Style="{StaticResource MaterialDesignCardGroupBox}"
+                            md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                            md:ColorZoneAssist.Mode="Custom">
                         <GroupBox.Header>
-                            <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="1">
-                                <TextBlock Text="Image Details" FontSize="{DynamicResource MahApps.Font.Size.Tooltip}"/>
-                            </md:Card>
+                            <DockPanel Margin="-5">
+                                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="1">
+                                    <TextBlock Text="Image Details" FontSize="{DynamicResource MahApps.Font.Size.Tooltip}"/>
+                                </md:Card>
+                            </DockPanel>
                         </GroupBox.Header>
 
                         <DockPanel Margin="0,6,0,0">
@@ -640,13 +660,18 @@
                     </GroupBox>
 
                     <!--Printer-->
-                    <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}"
-                              DockPanel.Dock="Top" VerticalAlignment="Top" Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="3" Padding="3">
+                    <GroupBox DockPanel.Dock="Top" VerticalAlignment="Top" Margin="3" Padding="3"
+                              Background="{DynamicResource MahApps.Brushes.ThemeBackground}" 
+                  Style="{StaticResource MaterialDesignCardGroupBox}"
+                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                md:ColorZoneAssist.Mode="Custom">
 
                         <GroupBox.Header>
-                            <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="2,1">
-                                <TextBlock Text="Printer" FontSize="{DynamicResource MahApps.Font.Size.Tooltip}"/>
-                            </md:Card>
+                            <DockPanel Margin="-5">
+                                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="2,1">
+                                    <TextBlock Text="Printer" FontSize="{DynamicResource MahApps.Font.Size.Tooltip}"/>
+                                </md:Card>
+                            </DockPanel>
                         </GroupBox.Header>
 
                         <DockPanel Margin="0,6,0,0">
@@ -673,13 +698,18 @@
                     </GroupBox>
 
                     <!--V5-->
-                    <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}"
-                              DockPanel.Dock="Top" VerticalAlignment="Top" Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="3" Padding="3">
+                    <GroupBox DockPanel.Dock="Top" VerticalAlignment="Top" Margin="3" Padding="3"
+                              Background="{DynamicResource MahApps.Brushes.ThemeBackground}" 
+                  Style="{StaticResource MaterialDesignCardGroupBox}"
+                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                md:ColorZoneAssist.Mode="Custom">
 
                         <GroupBox.Header>
-                            <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="2,1">
-                                <TextBlock Text="V5" FontSize="{DynamicResource MahApps.Font.Size.Tooltip}"/>
-                            </md:Card>
+                            <DockPanel Margin="-5">
+                                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="2,1">
+                                    <TextBlock Text="V5" FontSize="{DynamicResource MahApps.Font.Size.Tooltip}"/>
+                                </md:Card>
+                            </DockPanel>
                         </GroupBox.Header>
 
                         <DockPanel Margin="0,6,0,0">
@@ -696,7 +726,9 @@
         </GroupBox>
 
         <!--V5 Image-->
-        <GroupBox d:Visibility="Visible" Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top">
+        <GroupBox d:Visibility="Visible" Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                md:ColorZoneAssist.Mode="Custom">
             <GroupBox.Style>
                 <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
                     <Setter Property="Visibility" Value="Visible"/>
@@ -710,7 +742,7 @@
 
             <GroupBox.Header>
 
-                <DockPanel>
+                <DockPanel Margin="-5">
 
                     <!--Title-->
                     <md:Card Background="{DynamicResource OrangeBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
@@ -869,12 +901,17 @@
                     </DockPanel.Style>
 
                     <!--Image Details-->
-                    <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}"
-                              DockPanel.Dock="Top" VerticalAlignment="Top" Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="3" Padding="3">
+                    <GroupBox DockPanel.Dock="Top" VerticalAlignment="Top" Margin="3" Padding="3"
+                              Background="{DynamicResource MahApps.Brushes.ThemeBackground}" 
+                  Style="{StaticResource MaterialDesignCardGroupBox}"
+                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                md:ColorZoneAssist.Mode="Custom">
                         <GroupBox.Header>
-                            <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="1">
-                                <TextBlock Text="Image Details" FontSize="{DynamicResource MahApps.Font.Size.Tooltip}"/>
-                            </md:Card>
+                            <DockPanel Margin="-5">
+                                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="1">
+                                    <TextBlock Text="Image Details" FontSize="{DynamicResource MahApps.Font.Size.Tooltip}"/>
+                                </md:Card>
+                            </DockPanel>
                         </GroupBox.Header>
 
                         <DockPanel Margin="0,6,0,0">
@@ -919,13 +956,18 @@
                     </GroupBox>
 
                     <!--Printer-->
-                    <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}"
-                              DockPanel.Dock="Top" VerticalAlignment="Top" Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="3" Padding="3">
+                    <GroupBox DockPanel.Dock="Top" VerticalAlignment="Top" Margin="3" Padding="3"
+                              Background="{DynamicResource MahApps.Brushes.ThemeBackground}" 
+                  Style="{StaticResource MaterialDesignCardGroupBox}"
+                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                md:ColorZoneAssist.Mode="Custom">
 
                         <GroupBox.Header>
-                            <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="2,1">
-                                <TextBlock Text="Printer" FontSize="{DynamicResource MahApps.Font.Size.Tooltip}"/>
-                            </md:Card>
+                            <DockPanel Margin="-5">
+                                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="2,1">
+                                    <TextBlock Text="Printer" FontSize="{DynamicResource MahApps.Font.Size.Tooltip}"/>
+                                </md:Card>
+                            </DockPanel>
                         </GroupBox.Header>
 
                         <DockPanel Margin="0,6,0,0">
@@ -950,13 +992,18 @@
                     </GroupBox>
 
                     <!--V5-->
-                    <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}"
-                              DockPanel.Dock="Top" VerticalAlignment="Top" Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="3" Padding="3">
+                    <GroupBox DockPanel.Dock="Top" VerticalAlignment="Top" Margin="3" Padding="3" 
+                              Background="{DynamicResource MahApps.Brushes.ThemeBackground}" 
+                  Style="{StaticResource MaterialDesignCardGroupBox}"
+                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                md:ColorZoneAssist.Mode="Custom">
 
                         <GroupBox.Header>
-                            <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="2,1">
-                                <TextBlock Text="V5" FontSize="{DynamicResource MahApps.Font.Size.Tooltip}"/>
-                            </md:Card>
+                            <DockPanel Margin="-5">
+                                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="2,1">
+                                    <TextBlock Text="V5" FontSize="{DynamicResource MahApps.Font.Size.Tooltip}"/>
+                                </md:Card>
+                            </DockPanel>
                         </GroupBox.Header>
 
                         <DockPanel Margin="0,6,0,0">

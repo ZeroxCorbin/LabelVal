@@ -12,14 +12,16 @@
              mc:Ignorable="d">
 
     <GroupBox Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top" 
-            Style="{StaticResource MaterialDesignCardGroupBox}">
+                  Style="{StaticResource MaterialDesignCardGroupBox}"
+                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                md:ColorZoneAssist.Mode="Custom">
 
         <GroupBox.Header>
 
-            <DockPanel>
+            <DockPanel Margin="-5">
 
-                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Padding="1">
-                    <TextBlock Text="Printers" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Margin="3,0"/>
+                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Padding="4,1">
+                    <TextBlock Text="Printers" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                 </md:Card>
 
                 <Button Click="btnShowPrinterDetails_Click" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"

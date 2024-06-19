@@ -11,11 +11,13 @@
              mc:Ignorable="d" >
 
 
-    <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" VerticalAlignment="Top" HorizontalAlignment="Left"
-              Margin="3" Padding="3">
+    <GroupBox Margin="3" Padding="3" VerticalAlignment="Top" HorizontalAlignment="Left"
+                  Style="{StaticResource MaterialDesignCardGroupBox}"
+                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                md:ColorZoneAssist.Mode="Custom">
 
         <GroupBox.Header>
-            <DockPanel>
+            <DockPanel Margin="-5">
                 <md:Card Background="{DynamicResource OrangeBrush0}" HorizontalAlignment="Left" Padding="1">
                     <TextBlock Text="LVS_95xx Verifiers" Foreground="White" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Margin="3,0"/>
                 </md:Card>

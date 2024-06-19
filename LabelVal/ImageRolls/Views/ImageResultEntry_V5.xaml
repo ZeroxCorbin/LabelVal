@@ -44,7 +44,9 @@
         <DockPanel>
 
             <!--V5 Stored Sectors-->
-            <GroupBox d:Visibility="Visible" Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <GroupBox d:Visibility="Visible" Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                md:ColorZoneAssist.Mode="Custom">
                 <GroupBox.Style>
                     <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -58,9 +60,9 @@
 
                 <GroupBox.Header>
 
-                    <DockPanel Margin="3">
+                    <DockPanel Margin="-5">
 
-                        <md:Card Background="{DynamicResource OrangeBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
+                        <md:Card Background="{DynamicResource OrangeBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="2,0">
                             <TextBlock Foreground="White" Text="Stored Sectors" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                         </md:Card>
 
@@ -157,7 +159,9 @@
             </GroupBox>
 
             <!--V5 Current Sectors-->
-            <GroupBox d:Visibility="Visible" Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <GroupBox d:Visibility="Visible" Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                md:ColorZoneAssist.Mode="Custom">
                 <GroupBox.Style>
                     <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -172,7 +176,7 @@
 
                 <GroupBox.Header>
 
-                    <DockPanel Margin="3">
+                    <DockPanel Margin="-5">
 
                         <md:Card Background="{DynamicResource OrangeBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
                             <TextBlock Foreground="White" Text="Current Sectors" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
@@ -301,7 +305,7 @@
                     <ItemsControl ItemsSource="{Binding V5CurrentSectors}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <sectors:Sector Width="180" Background="{DynamicResource AccentColorBrush}" Margin="6,1" />
+                                <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="6,1" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -309,7 +313,9 @@
             </GroupBox>
 
             <!--V5 Dissimilar Results-->
-            <GroupBox d:Visibility="Visible" Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <GroupBox d:Visibility="Visible" Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                md:ColorZoneAssist.Mode="Custom">
                 <GroupBox.Style>
                     <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -323,7 +329,7 @@
 
                 <GroupBox.Header>
 
-                    <DockPanel Margin="3">
+                    <DockPanel Margin="-5">
 
                         <md:Card Background="{DynamicResource OrangeBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
                             <TextBlock Text="Dissimilar Results" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>

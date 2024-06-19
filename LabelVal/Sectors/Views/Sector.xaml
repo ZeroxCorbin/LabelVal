@@ -365,12 +365,17 @@
                         <Style TargetType="{x:Type Popup}"/>
                     </Popup.Style>
 
-                    <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top">
+                    <GroupBox Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                          Style="{StaticResource MaterialDesignCardGroupBox}"
+                        md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                        md:ColorZoneAssist.Mode="Custom">
 
                         <GroupBox.Header>
-                            <Button Style="{StaticResource MaterialDesignFloatingActionDarkButton}" ToolTip="Save as image." Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
-                                <IconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
-                            </Button>
+                            <DockPanel Margin="-5">
+                                <Button Style="{StaticResource MaterialDesignFloatingActionDarkButton}" ToolTip="Save as image." Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                                    <IconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
+                                </Button>
+                            </DockPanel>
                         </GroupBox.Header>
 
                         <local:SectorDetails DataContext="{Binding}"/>

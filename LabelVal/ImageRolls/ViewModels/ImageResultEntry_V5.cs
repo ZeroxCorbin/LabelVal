@@ -207,7 +207,7 @@ public partial class ImageResultEntry
         V5StoredSectors.Clear();
 
         List<Sectors.ViewModels.Sector> tempSectors = [];
-        if (!string.IsNullOrEmpty(V275ResultRow.Report))
+        if (!string.IsNullOrEmpty(V5ResultRow.Report))
         {
             var results = V5ResultRow._Report;
 

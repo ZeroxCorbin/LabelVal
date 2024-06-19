@@ -29,7 +29,9 @@
             </Style>
         </md:Card.Style>
 
-        <md:Card HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="1">
+        <md:Card HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="1"
+                 Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                 Foreground="{DynamicResource MahApps.Brushes.Text}">
 
             <DockPanel Margin="3">
 
@@ -249,7 +251,7 @@
 
                             <TextBox d:Text="model" md:HintAssist.Hint="Model" MinWidth="86" Margin="3,0" HorizontalContentAlignment="Center"
                                     md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left" BorderThickness="0"
-                                    IsHitTestVisible="True">
+                                    IsHitTestVisible="False">
                                 <TextBox.Style>
                                     <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                         <Setter Property="Text">
@@ -420,25 +422,26 @@
                             </DockPanel>
                         </Expander.Header>
 
-                        <DockPanel >
-
                             <DockPanel >
 
                                 <!--JSON-->
-                                <json:JsonViewer Title="JSON" JSON="{Binding ExplicitMessages}" ShowSaveButton="True" MinWidth="200" MaxWidth="400"  Foreground="{DynamicResource MahApps.Brushes.Text}"/>
+                                <json:JsonViewer Title="JSON" JSON="{Binding ExplicitMessages}" ShowSaveButton="True" MinWidth="200" MaxWidth="400" Foreground="{DynamicResource MahApps.Brushes.Text}"/>
 
                                 <!--Results-->
-                                <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}"
-                                  Background="{DynamicResource MahApps.Brushes.Accent4}" Foreground="{DynamicResource MahApps.Brushes.Text}"
-                                  VerticalAlignment="Top" Margin="3" Padding="3" Height="390">
+                                <GroupBox VerticalAlignment="Top" Margin="3" Padding="3" Height="390"
+                                        Style="{StaticResource MaterialDesignCardGroupBox}"
+                                        md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                                        md:ColorZoneAssist.Mode="Custom">
 
                                     <GroupBox.Header>
-                                        <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="2,1">
-                                            <TextBlock Text="Results" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
-                                        </md:Card>
+                                        <DockPanel Margin="-5">
+                                            <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="2,1">
+                                                <TextBlock Text="Results" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                                            </md:Card>
+                                        </DockPanel>
                                     </GroupBox.Header>
 
-                                    <DockPanel Width="166">
+                                    <DockPanel MinWidth="180">
 
                                         <md:Card DockPanel.Dock="Top" Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="3" Padding="2">
                                             <StackPanel>
@@ -457,7 +460,8 @@
 
                                             </StackPanel>
                                         </md:Card>
-                                        <ScrollViewer>
+                                        
+                                        <ScrollViewer HorizontalScrollBarVisibility="Hidden">
                                             <ListView ItemsSource="{Binding Results}" HorizontalContentAlignment="Stretch" IsHitTestVisible="False">
 
                                                 <ListView.ItemTemplate>
@@ -511,14 +515,15 @@
                                 </GroupBox>
 
                                 <!--Image-->
-                                <GroupBox Style="{StaticResource MaterialDesignCardGroupBox}" Foreground="{DynamicResource MahApps.Brushes.Text}"
-                                  Background="{DynamicResource MahApps.Brushes.Accent4}"
-                                  Margin="3" Padding="3">
+                                <GroupBox Margin="3" Padding="3" VerticalAlignment="Top"
+                                        Style="{StaticResource MaterialDesignCardGroupBox}"
+                                        md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                                        md:ColorZoneAssist.Mode="Custom">
 
                                     <GroupBox.Header>
-                                        <DockPanel>
+                                        <DockPanel Margin="-5">
 
-                                            <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="2,1">
+                                            <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Padding="2,1">
                                                 <TextBlock Text="Image" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                                             </md:Card>
 
@@ -585,7 +590,7 @@
                                     </md:Card>
                                 </GroupBox>
                             </DockPanel>
-                        </DockPanel>
+                  
                     </Expander>
 
                     <!--<CheckBox IsChecked="{Binding IsSimulator}" Content="Simulator"/>-->

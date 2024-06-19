@@ -29,40 +29,41 @@
             </Style>
         </md:Card.Style>
 
-        <md:Card HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="1">
-            
+        <md:Card HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="1"
+                 Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                 Foreground="{DynamicResource MahApps.Brushes.Text}">
+
             <DockPanel Margin="3">
 
                 <md:Card VerticalAlignment="Top" Padding="3" Margin="3" Background="{DynamicResource MahApps.Brushes.Accent4}">
 
                     <DockPanel>
-                        
-                    
-                    <Button DockPanel.Dock="Top" Command="{Binding LoginCommand}" BorderThickness="0">
-                        <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
-                                <Setter Property="Content">
-                                    <Setter.Value>
-                                        <iconPacks:Modern Kind="Connect" Height="16" Width="16"/>
-                                    </Setter.Value>
-                                </Setter>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsLoggedIn}" Value="True">
-                                        <Setter Property="Content">
-                                            <Setter.Value>
-                                                <iconPacks:Modern Kind="Disconnect" Height="16" Width="16"/>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
+
+                        <Button DockPanel.Dock="Top" Command="{Binding LoginCommand}" BorderThickness="0">
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
+                                    <Setter Property="Content">
+                                        <Setter.Value>
+                                            <iconPacks:Modern Kind="Connect" Height="16" Width="16"/>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsLoggedIn}" Value="True">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <iconPacks:Modern Kind="Disconnect" Height="16" Width="16"/>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
 
                         <ToggleButton IsChecked="{Binding LoginMonitor}" Width="23" Height="23" Margin="0,6,0,0" ToolTipService.ShowOnDisabled="True"
                               md:ToggleButtonAssist.OnContent="{iconPacks:Modern Kind=Monitor}"
                               Content="{iconPacks:FontAwesome Kind=TerminalSolid}">
-                            
+
                             <ToggleButton.Style>
                                 <Style TargetType="ToggleButton" BasedOn="{StaticResource MaterialDesignActionDarkToggleButton}">
                                     <Setter Property="ToolTip" Value="Login control."/>
@@ -79,7 +80,7 @@
                                 </Style>
                             </ToggleButton.Style>
                         </ToggleButton>
-                        
+
                     </DockPanel>
                 </md:Card>
 
@@ -138,11 +139,11 @@
                                     <Setter Property="Visibility" Value="Collapsed"/>
                                     <Setter Property="IsHitTestVisible" Value="True"/>
                                     <Style.Triggers>
-                                        
+
                                         <DataTrigger Value="False" Binding="{Binding IsWrongTemplateName}">
                                             <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}"/>
                                         </DataTrigger>
-                                        
+
                                         <DataTrigger Value="False" Binding="{Binding Jobs,Converter={StaticResource ObjectIsNull}}">
                                             <Setter Property="Visibility" Value="Visible"/>
                                         </DataTrigger>
