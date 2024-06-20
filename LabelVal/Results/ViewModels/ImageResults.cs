@@ -422,6 +422,22 @@ public partial class ImageResults : ObservableRecipient,
             });
         }
 
+        if (SelectedNode.State != V275.ViewModels.NodeStates.Idle && SelectedNode.IsLoggedIn_Control)
+        {
+            if (!await SelectedNode.EnablePrint("1"))
+            {
+                WaitForRepeat = false;
+
+                PrintingImageResult = null;
+
+                imageResults.IsV275Faulted = true;
+                imageResults.IsV275Working = false;
+            }
+        }
+
+        else if (SelectedNode.IsSimulator)
+            _ = await SelectedNode.Connection.SimulatorTogglePrint();
+
         if (SelectedNode.IsLoggedIn_Control)
         {
             PrintingImageResult = imageResults;
@@ -448,24 +464,7 @@ public partial class ImageResults : ObservableRecipient,
         }
         else
             PrintingImageResult = null;
-
-        if (SelectedNode.State != V275.ViewModels.NodeStates.Idle && SelectedNode.IsLoggedIn_Control)
-        {
-            if (!await SelectedNode.EnablePrint("1"))
-            {
-                WaitForRepeat = false;
-
-                PrintingImageResult = null;
-
-                imageResults.IsV275Faulted = true;
-                imageResults.IsV275Working = false;
-            }
-        }
-
-        else if (SelectedNode.IsSimulator)
-            _ = await SelectedNode.Connection.SimulatorTogglePrint();
     }
-
 
     private async void ProcessRepeat(int repeat)
     {

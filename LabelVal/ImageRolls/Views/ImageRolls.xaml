@@ -163,9 +163,7 @@
                 </md:DrawerHost.Style>
 
                 <md:DrawerHost.TopDrawerContent>
-
                     <local:ImageRollEntryEdit DataContext="{Binding UserImageRoll}" />
-
                 </md:DrawerHost.TopDrawerContent>
 
                 <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Padding="2">
@@ -266,7 +264,7 @@
                                         </TextBlock.Style>
                                     </TextBlock>
 
-                                    <Button Command="{Binding AddCommand}" ToolTip="Add to Image Roll" Margin="6,0,3,0">
+                                    <Button Command="{Binding AddImageCommand}" ToolTip="Add to Image Roll" Margin="6,0,3,0">
                                         
                                         <Button.Style>
                                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
