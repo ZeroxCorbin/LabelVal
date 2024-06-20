@@ -15,9 +15,9 @@
     <ApplicationIcon>favicon.ico</ApplicationIcon>
     <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
     <Title>Label Validator</Title>
-    <AssemblyVersion>3.0.4</AssemblyVersion>
-    <FileVersion>3.0.4</FileVersion>
-    <RunAnalyzersDuringBuild>True</RunAnalyzersDuringBuild>
+    <AssemblyVersion>3.1.1</AssemblyVersion>
+    <FileVersion>3.1.1</FileVersion>
+    <RunAnalyzersDuringBuild>False</RunAnalyzersDuringBuild>
     <RunAnalyzersDuringLiveAnalysis>False</RunAnalyzersDuringLiveAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
