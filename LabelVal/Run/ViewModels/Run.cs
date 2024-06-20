@@ -9,20 +9,19 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using LabelVal.Run.Databases;
 using CommunityToolkit.Mvvm.ComponentModel;
-using LabelVal.result.ViewModels;
 using CommunityToolkit.Mvvm.Input;
 
 namespace LabelVal.Run.ViewModels
 {
-    public partial class ViewModel : ObservableObject
+    public partial class Run : ObservableObject
     {
         public static string Version => App.Version;
 
-        public ObservableCollection<LedgerDatabase.LedgerEntry> LedgerEntries { get; } = [];
-        private LedgerDatabase RunLedgerDatabase { get; set; }
+        private RunDatabase RunDatabase { get; set; }
 
-        [ObservableProperty] private LedgerDatabase.LedgerEntry selectedRunEntry;
-        partial void OnSelectedRunEntryChanged(LedgerDatabase.LedgerEntry value)
+        public ObservableCollection<RunEntry> RunEntries { get; } = [];
+        [ObservableProperty] private RunEntry selectedRunEntry;
+        partial void OnSelectedRunEntryChanged(RunEntry value)
         {
             if (value != null && !value.RunDBMissing)
             {
@@ -33,11 +32,11 @@ namespace LabelVal.Run.ViewModels
                 ImageResultsList.Clear();
         }
 
-        public ObservableCollection<LabelViewModel> ImageResultsList { get; } = [];
+        public ObservableCollection<Result> ImageResultsList { get; } = [];
 
 
         private IDialogCoordinator dialogCoordinator;
-        public ViewModel()
+        public Run()
         {
             dialogCoordinator = DialogCoordinator.Instance;
 
@@ -56,15 +55,15 @@ namespace LabelVal.Run.ViewModels
             if (parameter == null)
                 return;
 
-            if (await OkCancelDialog("Delete Run?", $"Are you sure you want to permenatley delete the Run dated {new DateTime(((LedgerDatabase.LedgerEntry)parameter).TimeDate).ToLocalTime()}") == MessageDialogResult.Affirmative)
+            if (await OkCancelDialog("Delete Run?", $"Are you sure you want to permenatley delete the Run dated {new DateTime(((RunEntry)parameter).TimeDate).ToLocalTime()}") == MessageDialogResult.Affirmative)
             {
-                LedgerDatabase.LedgerEntry runEntry = (LedgerDatabase.LedgerEntry)parameter;
+                RunEntry runEntry = (RunEntry)parameter;
 
-                _ = LedgerEntries.Remove(runEntry);
+                _ = RunEntries.Remove(runEntry);
 
-                RunLedgerDatabase = new LedgerDatabase().Open($"{App.RunsRoot}\\{App.RunLedgerDatabaseName}");
-                _ = RunLedgerDatabase.DeleteLedgerEntry(runEntry.TimeDate);
-                RunLedgerDatabase.Close();
+                RunDatabase = new RunDatabase().Open($"{App.RunsRoot}\\{App.RunLedgerDatabaseName}");
+                _ = RunDatabase.DeleteLedgerEntry(runEntry.TimeDate);
+                RunDatabase.Close();
 
                 if (!runEntry.RunDBMissing)
                 {
@@ -82,20 +81,20 @@ namespace LabelVal.Run.ViewModels
 
         private void LoadRunEntries()
         {
-            using (RunLedgerDatabase = new LedgerDatabase().Open($"{App.RunsRoot}\\{App.RunLedgerDatabaseName}"))
+            using (RunDatabase = new RunDatabase().Open($"{App.RunsRoot}\\{App.RunLedgerDatabaseName}"))
             {
                 var files = Directory.GetFiles(App.RunsRoot);
 
-                if (RunLedgerDatabase != null)
+                if (RunDatabase != null)
                 {
-                    var list = RunLedgerDatabase.SelectAllRunEntries();
+                    var list = RunDatabase.SelectAllRunEntries();
 
                     foreach (var runEntry in list)
                     {
                         if (string.IsNullOrEmpty(files.FirstOrDefault(e => e.EndsWith($"{App.RunResultsDatabaseName(runEntry.TimeDate)}"))))
                             runEntry.RunDBMissing = true;
 
-                        LedgerEntries.Add(runEntry);
+                        RunEntries.Add(runEntry);
                     }
                 }
             }
@@ -105,8 +104,8 @@ namespace LabelVal.Run.ViewModels
         private async void LoadRun()
         {
 
-            List<ResultDatabase.Result> runs;
-            using (ResultDatabase db = new ResultDatabase().Open($"{App.RunsRoot}\\{App.RunResultsDatabaseName(SelectedRunEntry.TimeDate)}"))
+            List<ResultEntry> runs;
+            using (RunDatabase db = new RunDatabase().Open($"{App.RunsRoot}\\{App.RunResultsDatabaseName(SelectedRunEntry.TimeDate)}"))
                 runs = db.SelectAllRuns();
 
             if (runs != null)
@@ -114,7 +113,7 @@ namespace LabelVal.Run.ViewModels
                 {
                     foreach (var run in runs)
                     {
-                        ImageResultsList.Add(new LabelViewModel(run, SelectedRunEntry));
+                        ImageResultsList.Add(new ViewModels.Result(run, SelectedRunEntry));
                     }
                 });
         }

@@ -30,11 +30,10 @@ public class Controller
     public RunStates State { get; private set; }
     private RunStates RequestedState { get; set; }
     public long TimeDate { get; private set; }
-    public LedgerDatabase RunLedgerDatabase { get; private set; }
 
-    public LedgerDatabase.LedgerEntry LedgerEntry { get; private set; }
-
-    public ResultDatabase RunEntryDatabase { get; private set; }
+    public RunDatabase RunDatabase { get; private set; }
+    public RunEntry RunEntry { get; private set; }
+    public ResultEntry ResultEntry { get; private set; }
     //public List<RunEntryDatabase.Run> RunImageResultsList { get; private set; } = new List<RunEntryDatabase.Run>();
 
     public int LoopCount { get; private set; }
@@ -59,7 +58,7 @@ public class Controller
     {
         TimeDate = timeDate;
 
-        _ = OpenDatabases();
+        _ = OpenDatabase();
     }
 
     public Controller Init(ObservableCollection<Results.ViewModels.ImageResultEntry> imageResultsList, int loopCount, Results.Databases.ImageResults standardsDatabase, V275.ViewModels.Node v275Node)
@@ -72,17 +71,16 @@ public class Controller
 
         TimeDate = DateTime.UtcNow.Ticks;
 
-        LedgerEntry = new LedgerDatabase.LedgerEntry() { GradingStandard = SelectedImageRoll.UID, TimeDate = TimeDate, Completed = 0, ProductPart = v275Node.Product.part, CameraMAC = v275Node.Details.cameraMAC };
+        RunEntry = new RunEntry() { GradingStandard = SelectedImageRoll.UID, TimeDate = TimeDate, Completed = 0, ProductPart = v275Node.Product.part, CameraMAC = v275Node.Details.cameraMAC };
 
-        return !OpenDatabases() ? null : !UpdateRunEntries() ? null : this;
+        return !OpenDatabase() ? null : !UpdateRunEntry() ? null : this;
     }
 
-    private bool OpenDatabases()
+    private bool OpenDatabase()
     {
         try
         {
-            RunLedgerDatabase = new LedgerDatabase().Open($"{App.RunsRoot}\\{App.RunLedgerDatabaseName}");
-            RunEntryDatabase = new ResultDatabase().Open($"{App.RunsRoot}\\{App.RunResultsDatabaseName(TimeDate)}");
+            RunDatabase = new RunDatabase().Open($"{App.RunsRoot}\\{App.RunResultsDatabaseName(TimeDate)}");
 
             return true;
         }
@@ -92,12 +90,11 @@ public class Controller
         }
     }
 
-    private bool UpdateRunEntries()
+    private bool UpdateRunEntry()
     {
         try
         {
-            _ = RunLedgerDatabase.InsertOrReplace(LedgerEntry);
-            _ = RunEntryDatabase.InsertOrReplace(LedgerEntry);
+            _ = RunDatabase.InsertOrReplace(RunEntry);
 
             return true;
         }
@@ -107,12 +104,11 @@ public class Controller
         }
     }
 
-    private bool RemoveRunEntries()
+    private bool RemoveRunEntry()
     {
         try
         {
-            _ = RunLedgerDatabase.DeleteLedgerEntry(LedgerEntry.TimeDate);
-            _ = RunEntryDatabase.DeleteLedgerEntry(LedgerEntry.TimeDate);
+            _ = RunDatabase.DeleteLedgerEntry(RunEntry.TimeDate);
 
             return true;
         }
@@ -191,7 +187,7 @@ public class Controller
 
                 if (RequestedState == RunStates.STOPPED)
                 {
-                    LedgerEntry.Completed = 2;
+                    RunEntry.Completed = 2;
                     Stopped();
                     return false;
                 }
@@ -213,14 +209,14 @@ public class Controller
                 {
                     if (RequestedState == RunStates.STOPPED)
                     {
-                        LedgerEntry.Completed = 2;
+                        RunEntry.Completed = 2;
                         Stopped();
                         return false;
                     }
                     if (DateTime.Now - start > TimeSpan.FromMilliseconds(10000))
                     {
                         Logger.Error("Job timeout.");
-                        LedgerEntry.Completed = -1;
+                        RunEntry.Completed = -1;
                         Stopped();
                         return false;
                     }
@@ -231,12 +227,12 @@ public class Controller
                 if (label.IsV275Faulted)
                 {
                     Logger.Error("Label action faulted.");
-                    LedgerEntry.Completed = -1;
+                    RunEntry.Completed = -1;
                     Stopped();
                     return false;
                 }
 
-                var row = new ResultDatabase.Result()
+                var row = new ResultEntry()
                 {
                     LabelTemplate = sRow.Template,
                     LabelReport = sRow.Report,
@@ -255,7 +251,7 @@ public class Controller
                     }
 
                 row.RepeatReport = JsonConvert.SerializeObject(label.V275CurrentReport);
-                _ = RunEntryDatabase.InsertOrReplace(row);
+                _ = RunDatabase.InsertOrReplace(row);
 
                 using var session = new NHibernateHelper().OpenSession();
                 if (session != null)
@@ -273,16 +269,15 @@ public class Controller
             }
         }
 
-        LedgerEntry.Completed = 1;
+        RunEntry.Completed = 1;
 
         Logger.Info("Job Completed");
 
-        _ = UpdateRunEntries();
+        _ = UpdateRunEntry();
 
         RunStateChange?.Invoke(State = RunStates.COMPLETE);
 
-        RunEntryDatabase.Close();
-        RunLedgerDatabase.Close();
+        RunDatabase.Close();
 
         return true;
     }
@@ -302,7 +297,7 @@ public class Controller
 
     private void Stopped()
     {
-        _ = CurrentLabelCount != 0 ? UpdateRunEntries() : RemoveRunEntries();
+        _ = CurrentLabelCount != 0 ? UpdateRunEntry() : RemoveRunEntry();
 
         Logger.Info("Job Stopped");
 
@@ -319,7 +314,6 @@ public class Controller
     {
         Stop();
 
-        RunEntryDatabase.Close();
-        RunLedgerDatabase.Close();
+        RunDatabase.Close();
     }
 }

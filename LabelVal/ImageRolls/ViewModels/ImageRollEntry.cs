@@ -159,7 +159,20 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
         await Task.WhenAll(taskList.ToArray());
     }
 
-    private void AddImage(string path)
+
+    [RelayCommand]
+    private void AddImage()
+    {
+        string path;
+        if ((path = Utilities.FileUtilities.GetLoadFilePath("", "PNG|*.png|BMP|*.bmp", "Load Image")) != "")
+        {
+            AddImage(path);
+            //Save();
+        }
+
+    }
+    public void AddImage(ImageEntry imageEntry) => Images.Add(imageEntry);
+    public void AddImage(string path)
     {
         try
         {
@@ -175,21 +188,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
 
 
     [RelayCommand]
-    private void Add()
-    {
-        string path;
-        if ((path = Utilities.FileUtilities.GetLoadFilePath("", "PNG|*.png|BMP|*.bmp", "Load Image")) != "")
-        {
-            AddImage(path);
-            //Save();
-        }
-
-    }
-
-    public void AddImage(ImageEntry imageEntry) => Images.Add(imageEntry);
-
-    [RelayCommand]
-    private void Save()
+    private void SaveRoll()
     {
         if (IsRooted)
             return;
