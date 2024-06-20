@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MaterialDesignThemes.Wpf;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,13 @@ namespace LabelVal.V5.Views
         public ScannerDetails()
         {
             InitializeComponent();
+        }
+
+        private void btnCloseDetails(object sender, RoutedEventArgs e)
+        {
+            var par = Utilities.VisualTreeHelp.GetVisualParent<DrawerHost>((Button)sender);
+            if (par != null)
+                par.IsLeftDrawerOpen = false;
         }
     }
 }

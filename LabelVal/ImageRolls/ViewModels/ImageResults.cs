@@ -192,7 +192,7 @@ public partial class ImageResults : ObservableRecipient,
     private bool WaitForRepeat;
 
     private void V275ProcessImage(ImageResultEntry imageResults, string type)
-    { 
+    {
         if (SelectedNode == null)
         {
             SendStatusMessage("No node selected.", SystemMessages.StatusMessageType.Warning);
@@ -206,12 +206,12 @@ public partial class ImageResults : ObservableRecipient,
             return;
         }
 
-            if (SelectedNode.IsSimulator && !App.Settings.GetValue<string>(nameof(V275.ViewModels.V275.V275_Host)).Equals("127.0.0.1"))
-            {
-                V275ProcessImage_API(imageResults, type);
-            }
-            else
-                V275ProcessImage_FileSystem(imageResults, type);
+        if (SelectedNode.IsSimulator && !App.Settings.GetValue<string>(nameof(V275.ViewModels.V275.V275_Host)).Equals("127.0.0.1"))
+        {
+            V275ProcessImage_API(imageResults, type);
+        }
+        else
+            V275ProcessImage_FileSystem(imageResults, type);
     }
 
     private async void V275ProcessImage_API(ImageResultEntry imageResults, string type)

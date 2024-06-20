@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MaterialDesignThemes.Wpf;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,5 +23,12 @@ public partial class PrinterDetails : UserControl
     public PrinterDetails()
     {
         InitializeComponent();
+    }
+
+    private void btnCloseDetails(object sender, RoutedEventArgs e)
+    {
+        var par = Utilities.VisualTreeHelp.GetVisualParent<DrawerHost>((Button)sender);
+        if (par != null)
+            par.IsLeftDrawerOpen = false;
     }
 }

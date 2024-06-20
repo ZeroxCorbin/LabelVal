@@ -22,7 +22,7 @@
                     <iconPacks:PackIconMaterial Kind="Cog" Height="14" Width="14"/>
                 </Button>
 
-                <md:Card Padding="4,1" Background="{DynamicResource ColorBlindBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                <md:Card Background="{DynamicResource ColorBlindBrush1}" HorizontalAlignment="Left" Padding="4,1" >
                     <TextBlock Text="V275 Nodes" Foreground="White" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                 </md:Card>
 

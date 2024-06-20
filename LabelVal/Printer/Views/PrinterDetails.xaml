@@ -3,6 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+                xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             
              xmlns:local="clr-namespace:LabelVal.Printer"
              xmlns:json="clr-namespace:JSONViewer_WPF;assembly=JSONViewer_WPF"
              
@@ -11,9 +14,27 @@
              mc:Ignorable="d">
     <ScrollViewer>
 
+        <GroupBox Margin="3" Padding="3"
+                          Style="{StaticResource MaterialDesignCardGroupBox}"
+                    md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                    md:ColorZoneAssist.Mode="Custom">
 
-        <StackPanel>
-            <json:JsonViewer JSON="{Binding SelectedPrinter}" HideButtons="False" Title="Printer Settings" />
-        </StackPanel>
+            <GroupBox.Header>
+                <DockPanel Margin="-5">
+                    <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="2,1">
+                        <TextBlock Text="Printer JSON" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                    </md:Card>
+
+                    <Button Click="btnCloseDetails" Style="{StaticResource GroupHeaderCirlceButton}" ToolTip="Close" Margin="6,0,3,0" HorizontalAlignment="Right">
+                        <iconPacks:Material Kind="Close" Height="16" Width="16"/>
+                    </Button>
+                </DockPanel>
+            </GroupBox.Header>
+
+            <StackPanel>
+                <json:JsonViewer JSON="{Binding SelectedPrinter}" HideButtons="False" Title="Printer Settings" />
+            </StackPanel>
+
+        </GroupBox>
     </ScrollViewer>
 </UserControl>

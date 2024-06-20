@@ -77,7 +77,7 @@
                     <iconPacks:Modern Height="14" Width="14" Kind="Refresh"/>
                 </Button>-->
 
-                <Button Click="btnShowDetails_Click" Style="{StaticResource GroupHeaderCirlceButton}">
+                <Button Click="btnShowDetails_Click" Style="{StaticResource GroupHeaderCirlceButton}" HorizontalAlignment="Right"> 
 
                     <iconPacks:PackIconMaterial Kind="CodeJson" Height="14" Width="14"/>
                 </Button>

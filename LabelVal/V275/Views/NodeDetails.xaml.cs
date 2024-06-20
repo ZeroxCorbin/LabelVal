@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MaterialDesignThemes.Wpf;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,8 +20,16 @@ namespace LabelVal.V275.Views;
 /// </summary>
 public partial class NodeDetails : UserControl
 {
+
     public NodeDetails()
     {
         InitializeComponent();
+    }
+
+    private void btnCloseDetails(object sender, RoutedEventArgs e)
+    {
+        var par = Utilities.VisualTreeHelp.GetVisualParent<DrawerHost>((Button)sender);
+        if (par != null)
+            par.IsLeftDrawerOpen = false;
     }
 }
