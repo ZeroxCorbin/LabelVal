@@ -18,8 +18,8 @@
 
         <GroupBox.Header>
             <DockPanel Margin="-5">
-                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
-                    <TextBlock Text="Run" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="4,1">
+                    <TextBlock Text="Run" Height="20" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                 </md:Card>
             </DockPanel>
         </GroupBox.Header>
@@ -38,7 +38,7 @@
                             <Setter Property="Command" Value="{Binding StartRunCommand}"/>
                             <Setter Property="Content">
                                 <Setter.Value>
-                                    <iconPacks:Material Kind="Play" Height="12" Width="12"/>
+                                    <iconPacks:PackIconMaterial Kind="Play" Height="14" Width="14"/>
                                 </Setter.Value>
                             </Setter>
 
@@ -51,7 +51,7 @@
                                     <Setter Property="Command" Value="{Binding StopRunCommand}"/>
                                     <Setter Property="Content">
                                         <Setter.Value>
-                                            <iconPacks:Material Kind="Pause" Height="12" Width="12"/>
+                                            <iconPacks:PackIconMaterial Kind="Pause" Height="14" Width="14"/>
                                         </Setter.Value>
                                     </Setter>  
                                 </DataTrigger>
@@ -60,7 +60,7 @@
                                     <Setter Property="Command" Value="{Binding PauseRunCommand}"/>
                                     <Setter Property="Content">
                                         <Setter.Value>
-                                            <iconPacks:Material Kind="Play" Height="12" Width="12"/>
+                                            <iconPacks:PackIconMaterial Kind="Play" Height="14" Width="14"/>
                                         </Setter.Value>
                                     </Setter>
                                 </DataTrigger>

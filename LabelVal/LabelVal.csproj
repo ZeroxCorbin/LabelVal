@@ -33,6 +33,7 @@
   <ItemGroup>
     <Compile Remove="ImageRolls\Databases\StandardsDatabase.cs" />
     <Compile Remove="LVS-95xx\ViewModels\SerialPort.cs" />
+    <Compile Remove="LVS-95xx\Views\LVS95xx_SerialPortView.xaml.cs" />
     <Compile Remove="Messages\DatabaseMessages.cs" />
     <Compile Remove="Messages\ImageRollMessages.cs" />
     <Compile Remove="Messages\NodeMessages.cs" />
@@ -76,6 +77,9 @@
     <None Remove="Assets\Images\V275WhiteIcon.ico" />
     <None Remove="Assets\Images\V275WhiteIcon.png" />
     <None Remove="Assets\Images\V275_Icon.xcf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Remove="LVS-95xx\Views\LVS95xx_SerialPortView.xaml" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="ToDo.txt" />

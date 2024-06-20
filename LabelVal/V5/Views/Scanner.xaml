@@ -60,11 +60,10 @@
                         </Button>
                     </md:Card>
 
-
-                    <Button Margin="3"  Click="btnShowSettings_Click" Style="{StaticResource MaterialDesignFloatingActionButton}"
-                        ToolTip="Show Settings" Width="20" Height="20" BorderThickness="0" VerticalAlignment="Top">
+                    <Button Click="btnShowSettings_Click" Style="{StaticResource GroupHeaderCirlceButton}" ToolTip="Show Settings" HorizontalAlignment="Center" VerticalAlignment="Top">
                         <iconPacks:PackIconMaterial Kind="Cog" Height="14" Width="14"/>
                     </Button>
+                    
                 </DockPanel>
 
                 <md:DrawerHost x:Name="drwSettings">
@@ -220,8 +219,7 @@
                                         </TextBox.Style>
                                     </TextBox>
 
-                                    <Button Margin="3"  Command="{Binding Manager.RemoveCommand}" CommandParameter="{Binding }" Style="{StaticResource MaterialDesignFloatingActionButton}"
-                                            ToolTip="Delete This Camera?" Width="20" Height="20" BorderThickness="0" VerticalAlignment="Top">
+                                    <Button Command="{Binding Manager.RemoveCommand}" CommandParameter="{Binding }" Style="{StaticResource GroupHeaderCirlceButton}" ToolTip="Delete This Camera?">
                                         <iconPacks:PackIconMaterial Kind="Delete" Height="14" Width="14"/>
                                     </Button>
                                 </DockPanel>
@@ -358,7 +356,8 @@
 
                 <DockPanel>
 
-                    <Expander DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Left" md:ExpanderAssist.HorizontalHeaderPadding="6" MaxHeight="450">
+                    <Expander DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Left" md:ExpanderAssist.HorizontalHeaderPadding="6" MaxHeight="450"
+                               Background="{DynamicResource MahApps.Brushes.Accent4}">
 
                         <Expander.Header>
                             <DockPanel>
@@ -527,10 +526,9 @@
                                                 <TextBlock Text="Image" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                                             </md:Card>
 
-                                            <Button x:Name="btnSaveImage" Click="btnSaveImage_Click"                                         
-                                            ToolTip="Save Image" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                                            <Button x:Name="btnSaveImage" Click="btnSaveImage_Click" ToolTip="Save Image">
                                                 <Button.Style>
-                                                    <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFloatingActionButton}">
+                                                    <Style TargetType="Button" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                                         <Setter Property="IsEnabled" Value="True"/>
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding RawImage}" Value="{x:Null}">
@@ -540,13 +538,12 @@
                                                     </Style>
                                                 </Button.Style>
 
-                                                <iconPacks:Material Kind="ContentSave" Height="14" Width="14"/>
+                                                <iconPacks:PackIconMaterial Kind="ContentSave" Height="14" Width="14"/>
                                             </Button>
 
-                                            <Button x:Name="btnResetImageView" Click="btnResetImageView_Click"                                         
-                                            ToolTip="Reset View" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3">
+                                            <Button x:Name="btnResetImageView" Click="btnResetImageView_Click" ToolTip="Reset View">
                                                 <Button.Style>
-                                                    <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFloatingActionButton}">
+                                                    <Style TargetType="Button" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                                         <Setter Property="IsEnabled" Value="True"/>
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding RawImage}" Value="{x:Null}">

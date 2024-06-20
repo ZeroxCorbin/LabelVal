@@ -21,6 +21,16 @@
 
             </ResourceDictionary.MergedDictionaries>
 
+            <Style x:Key="GroupHeaderCirlceButton" TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button.Circle}">
+                <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.ThemeBackground}"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Width" Value="22"/>
+                <Setter Property="Height" Value="22"/>
+                <Setter Property="Padding" Value="0"/>
+                <Setter Property="Margin" Value="3,0"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+            </Style>
+            
             <SolidColorBrush x:Key="HighlightBrush" Color="{DynamicResource Primary700}"/>
             <SolidColorBrush x:Key="AccentBaseColorBrush" Color="{DynamicResource Primary600}" />
             <SolidColorBrush x:Key="AccentColorBrush" Color="{DynamicResource Primary500}"/>

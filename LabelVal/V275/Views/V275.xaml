@@ -18,31 +18,24 @@
         <GroupBox.Header>
             <DockPanel Margin="-5">
                 
-                <Button Click="btnShowSettings_Click" Style="{StaticResource MaterialDesignFloatingActionButton}"
-                        ToolTip="Show Settings" Width="20" Height="20" BorderThickness="0" Margin="3,0,6,0">
+                <Button Click="btnShowSettings_Click" Style="{StaticResource GroupHeaderCirlceButton}" Margin="3,0,6,0">
                     <iconPacks:PackIconMaterial Kind="Cog" Height="14" Width="14"/>
                 </Button>
 
-                <md:Card Background="{DynamicResource ColorBlindBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="4,1">
+                <md:Card Padding="4,1" Background="{DynamicResource ColorBlindBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom">
                     <TextBlock Text="V275 Nodes" Foreground="White" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                 </md:Card>
 
-                <Button Command="{Binding GetDevicesCommand}" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
-                        Padding="0" Margin="6,0,3,0" BorderThickness="0" Height="20" Width="20" HorizontalAlignment="Left">
-
-                    <iconPacks:Modern Width="12" Height="12" Kind="Refresh"/>
+                <Button Command="{Binding GetDevicesCommand}" Style="{StaticResource GroupHeaderCirlceButton}" Margin="6,0,3,0" >
+                    <iconPacks:Modern Height="14" Width="14" Kind="Refresh"/>
                 </Button>
                 
-                <Button Click="btnOpenInBrowser_Click" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
-                        Padding="0" Margin="3,0" BorderThickness="0" Height="20" Width="20" HorizontalAlignment="Left">
-
-                    <iconPacks:PackIconModern Width="12" Height="12" Kind="Browser"/>
+                <Button Click="btnOpenInBrowser_Click" Style="{StaticResource GroupHeaderCirlceButton}">
+                    <iconPacks:PackIconModern Height="14" Width="14" Kind="Browser"/>
                 </Button>
                 
-                <Button Click="btnShowDetails_Click" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
-                        Padding="0" Margin="3,0" BorderThickness="0" Height="20" Width="20" HorizontalAlignment="Right">
-
-                    <iconPacks:Material Width="12" Height="12" Kind="CodeJson"/>
+                <Button Click="btnShowDetails_Click" Style="{StaticResource GroupHeaderCirlceButton}" HorizontalAlignment="Right">
+                    <iconPacks:PackIconMaterial Height="14" Width="14" Kind="CodeJson"/>
                 </Button>
                 
 

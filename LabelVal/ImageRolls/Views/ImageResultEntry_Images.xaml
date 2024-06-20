@@ -42,29 +42,25 @@
                 <DockPanel Margin="-5">
 
                     <!--Title-->
-                    <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="1">
+                    <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="4,1">
                         <TextBlock Text="Source Image" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                     </md:Card>
 
                     <!--Save Image-->
-                    <Button Command="{Binding SaveCommand}" Style="{StaticResource MaterialDesignFloatingActionDarkButton}" Padding="0" ToolTip="Save the source image."
-                            Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
-
-                        <iconPacks:PackIconMaterial Kind="ContentSave" Height="12" Width="12"/>
-
+                    <Button Margin="6,0,3,0" Command="{Binding SaveCommand}" Style="{StaticResource GroupHeaderCirlceButton}" ToolTip="Save the source image.">
+                        <iconPacks:PackIconMaterial Kind="ContentSave" Height="14" Width="14"/>
                     </Button>
 
                     <!--Print Source Image-->
                     <Button Command="{Binding V275ProcessCommand}" CommandParameter="print" ToolTip="Print the source image."
-                                    Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0"
                                     md:ButtonProgressAssist.IsIndeterminate="True"
                                     md:ButtonProgressAssist.Value="-1"
                                     md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV275Working}">
 
-                        <iconPacks:PackIconMaterial Kind="Printer" Height="12" Width="12"/>
+                        <iconPacks:PackIconMaterial Kind="Printer" Height="14" Width="14"/>
 
                         <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
 
                                 <Style.Triggers>
@@ -83,7 +79,7 @@
 
                     <!--V275 Process Source Image-->
                     <Button Command="{Binding V275ProcessCommand}" CommandParameter="source" ToolTip="V275: Process the source image with the simulator." 
-                                    Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0" BorderBrush="{DynamicResource YellowBrush2}"
+                                    BorderBrush="{DynamicResource YellowBrush2}"
                                     md:ButtonProgressAssist.IsIndeterminate="True"
                                     md:ButtonProgressAssist.Value="-1"
                                     md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV275Working}">
@@ -95,7 +91,7 @@
                         </Rectangle>
 
                         <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
 
                                 <Style.Triggers>
@@ -115,15 +111,14 @@
 
                     <!--V275 Print Source Image-->
                     <Button Command="{Binding V275ProcessCommand}" CommandParameter="print" ToolTip="V275: Print the source image and read the results."
-                                    Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0"
                                     md:ButtonProgressAssist.IsIndeterminate="True"
                                     md:ButtonProgressAssist.Value="-1"
                                     md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV275Working}">
 
-                        <iconPacks:PackIconMaterial Kind="Printer"  Margin="0,0,0,0" Height="12" Width="12"/>
+                        <iconPacks:PackIconMaterial Kind="Printer" Height="14" Width="14"/>
 
                         <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
 
                                 <Style.Triggers>
@@ -143,15 +138,15 @@
 
                     <!--V5 Process Source Image-->
                     <Button Command="{Binding V5ProcessCommand}" CommandParameter="source" ToolTip="V5: Process the source image with the simulator." 
-                                    Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0" BorderBrush="{DynamicResource YellowBrush2}"
+                                    BorderBrush="{DynamicResource YellowBrush2}"
                                     md:ButtonProgressAssist.IsIndeterminate="True"
                                     md:ButtonProgressAssist.Value="-1"
                                     md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV5Working}">
 
-                        <iconPacks:PackIconMaterial Kind="Camera"  Margin="-1,-1,0,0" Height="12" Width="12"/>
+                        <iconPacks:PackIconMaterial Kind="Camera" Height="14" Width="14"/>
 
                         <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
 
                                 <Style.Triggers>
@@ -196,12 +191,12 @@
 
                     <DockPanel HorizontalAlignment="Right">
 
-                        <Button Click="btnShowDetailsToggle" Width="20" Height="20" BorderThickness="0" Margin="3,0">
+                        <Button Click="btnShowDetailsToggle">
 
-                            <iconPacks:PackIconMaterial Kind="InformationVariant" Margin="0,0,0,0" Height="12" Width="12"/>
+                            <iconPacks:PackIconMaterial Kind="InformationVariant" Height="14" Width="14"/>
 
                             <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                     <Setter Property="ToolTip" Value="Show printer area overlay."/>
 
                                     <Style.Triggers>
@@ -283,10 +278,9 @@
                                     <TextBlock Text="Image Details" FontSize="{DynamicResource MahApps.Font.Size.Tooltip}"/>
                                 </md:Card>
 
-                                <Button Command="{Binding DeleteCommand}" 
-                                    ToolTip="Delete" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
+                                <Button Command="{Binding DeleteCommand}" ToolTip="Delete">
                                     <Button.Style>
-                                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                             <Setter Property="Visibility" Value="Collapsed"/>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding SelectedImageRoll.IsLocked}" Value="False">
@@ -296,7 +290,7 @@
                                         </Style>
                                     </Button.Style>
 
-                                    <iconPacks:PackIconMaterial Kind="Delete" Margin="0,-1,0,0" Height="14" Width="14"/>
+                                    <iconPacks:PackIconMaterial Kind="Delete" Height="14" Width="14"/>
                                 </Button>
                             </DockPanel>
                         </GroupBox.Header>
@@ -355,16 +349,16 @@
                                     <TextBlock Text="Printer" FontSize="{DynamicResource MahApps.Font.Size.Tooltip}"/>
                                 </md:Card>
 
-                                <Button Click="btnShowPrinterAreaOverSourceToggle" Width="20" Height="20" HorizontalAlignment="Left" BorderThickness="0" Margin="3,0">
+                                <Button Click="btnShowPrinterAreaOverSourceToggle">
 
                                     <Grid>
-                                        <iconPacks:PackIconMaterial Kind="BorderAllVariant" Foreground="Red" Margin="0,0,0,0" Height="12" Width="12"/>
-                                        <iconPacks:PackIconMaterial Kind="Printer"  Margin="-1,0,0,0" Height="12" Width="12"/>
+                                        <iconPacks:PackIconMaterial Kind="BorderAllVariant" Foreground="Red" Height="14" Width="14"/>
+                                        <iconPacks:PackIconMaterial Kind="Printer" Height="14" Width="14"/>
 
                                     </Grid>
 
                                     <Button.Style>
-                                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                             <Setter Property="ToolTip" Value="Show printer area overlay."/>
 
                                             <Style.Triggers>
@@ -447,7 +441,7 @@
                 <DockPanel Margin="-5">
 
                     <!--Title-->
-                    <md:Card Background="{DynamicResource ColorBlindBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
+                    <md:Card Background="{DynamicResource ColorBlindBrush1}" HorizontalAlignment="Left" Padding="4,1">
                         <TextBlock Foreground="White" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}">
                             <TextBlock.Style>
                                 <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource MahApps.Styles.TextBlock}">
@@ -463,12 +457,12 @@
                     </md:Card>
 
                     <!--Save Image-->
-                    <Button Command="{Binding SaveCommand}" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                    <Button Command="{Binding SaveCommand}" Margin="6,0,3,0">
 
-                        <iconPacks:PackIconMaterial Kind="ContentSave" Height="12" Width="12"/>
+                        <iconPacks:PackIconMaterial Kind="ContentSave" Height="14" Width="14"/>
 
                         <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                 <Setter Property="CommandParameter" Value="v275Stored"/>
                                 <Setter Property="ToolTip" Value="Save the stored image."/>
                                 <Setter Property="Visibility" Value="Visible"/>
@@ -489,7 +483,7 @@
 
                     <!--Process V275 Stored Image-->
                     <Button Command="{Binding V275ProcessCommand}" CommandParameter="v275Stored" ToolTip="V275: Process the stored image with the simulator." 
-                                    Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0" BorderBrush="{DynamicResource YellowBrush2}"
+                                    BorderBrush="{DynamicResource YellowBrush2}"
                                     md:ButtonProgressAssist.IsIndeterminate="True"
                                     md:ButtonProgressAssist.Value="-1"
                                     md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV275Working}">
@@ -501,7 +495,7 @@
                         </Rectangle>
 
                         <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
 
                                 <Style.Triggers>
@@ -521,15 +515,15 @@
 
                     <!--Process V5 Stored Image-->
                     <Button Command="{Binding V5ProcessCommand}" CommandParameter="v275Stored" ToolTip="V5: Process the stored image with the simulator." 
-                                    Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0" BorderBrush="{DynamicResource YellowBrush2}"
+                                    BorderBrush="{DynamicResource YellowBrush2}"
                                     md:ButtonProgressAssist.IsIndeterminate="True"
                                     md:ButtonProgressAssist.Value="-1"
                                     md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV5Working}">
 
-                        <iconPacks:PackIconMaterial Kind="Camera"  Margin="-1,-1,0,0" Height="12" Width="12"/>
+                        <iconPacks:PackIconMaterial Kind="Camera" Height="14" Width="14"/>
 
                         <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
 
                                 <Style.Triggers>
@@ -547,11 +541,10 @@
                         </Button.Style>
                     </Button>
 
-                    <Button Command="{Binding ClearReadCommand}" CommandParameter="V275" ToolTip="Clear the current sectors and image."
-                                    Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
+                    <Button Command="{Binding ClearReadCommand}" CommandParameter="V275" ToolTip="Clear the current sectors and image.">
 
                         <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                 <Setter Property="Visibility" Value="Visible"/>
 
                                 <Style.Triggers>
@@ -573,7 +566,7 @@
                             </Style>
                         </Button.Style>
 
-                        <iconPacks:PackIconModern Kind="Delete" Margin="-1,-1,0,0" Height="14" Width="14"/>
+                        <iconPacks:PackIconModern Kind="Delete" Height="14" Width="14"/>
 
                     </Button>
 
@@ -745,7 +738,7 @@
                 <DockPanel Margin="-5">
 
                     <!--Title-->
-                    <md:Card Background="{DynamicResource OrangeBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
+                    <md:Card Background="{DynamicResource OrangeBrush1}" HorizontalAlignment="Left" Padding="4,1">
                         <TextBlock Foreground="White" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}">
                             <TextBlock.Style>
                                 <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource MahApps.Styles.TextBlock}">
@@ -761,9 +754,9 @@
                     </md:Card>
 
                     <!--Save Image-->
-                    <Button Command="{Binding SaveCommand}" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                    <Button Command="{Binding SaveCommand}">
                         <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                 <Setter Property="CommandParameter" Value="v5Stored"/>
                                 <Setter Property="ToolTip" Value="Save the stored image."/>
                                 <Setter Property="Visibility" Value="Visible"/>
@@ -781,20 +774,20 @@
                             </Style>
                         </Button.Style>
 
-                        <iconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
+                        <iconPacks:PackIconMaterial Kind="ContentSave" Height="14" Width="14"/>
                     </Button>
 
                     <!--Process V5 Stored Image-->
                     <Button Command="{Binding V5ProcessCommand}" CommandParameter="v5Stored" ToolTip="V5: Process the stored image with the simulator." 
-                                    Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0" BorderBrush="{DynamicResource YellowBrush2}"
+                                    BorderBrush="{DynamicResource YellowBrush2}"
                                     md:ButtonProgressAssist.IsIndeterminate="True"
                                     md:ButtonProgressAssist.Value="-1"
                                     md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV5Working}">
 
-                        <iconPacks:PackIconMaterial Kind="Camera"  Margin="-1,-1,0,0" Height="12" Width="12"/>
+                        <iconPacks:PackIconMaterial Kind="Camera" Height="14" Width="14"/>
 
                         <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
 
                                 <Style.Triggers>
@@ -814,7 +807,7 @@
 
                     <!--Process V275 Stored Image-->
                     <Button Command="{Binding V275ProcessCommand}" CommandParameter="v5Stored" ToolTip="V275: Process the stored image with the simulator." 
-                                    Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0" BorderBrush="{DynamicResource YellowBrush2}"
+                                    BorderBrush="{DynamicResource YellowBrush2}"
                                     md:ButtonProgressAssist.IsIndeterminate="True"
                                     md:ButtonProgressAssist.Value="-1"
                                     md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV275Working}">
@@ -826,7 +819,7 @@
                         </Rectangle>
 
                         <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
 
                                 <Style.Triggers>
@@ -844,11 +837,10 @@
                         </Button.Style>
                     </Button>
 
-                    <Button Command="{Binding ClearReadCommand}" CommandParameter="V5" ToolTip="Clear the current sectors and image."
-                                    Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
+                    <Button Command="{Binding ClearReadCommand}" CommandParameter="V5" ToolTip="Clear the current sectors and image.">
 
                         <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                 <Setter Property="Visibility" Value="Visible"/>
 
                                 <Style.Triggers>
@@ -869,7 +861,7 @@
                             </Style>
                         </Button.Style>
 
-                        <iconPacks:PackIconModern Kind="Delete" Margin="-1,-1,0,0" Height="14" Width="14"/>
+                        <iconPacks:PackIconModern Kind="Delete" Height="14" Width="14"/>
 
                     </Button>
 

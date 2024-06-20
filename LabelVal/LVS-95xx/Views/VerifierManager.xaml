@@ -18,15 +18,9 @@
 
         <GroupBox.Header>
             <DockPanel Margin="-5">
-                <md:Card Background="{DynamicResource OrangeBrush0}" HorizontalAlignment="Left" Padding="1">
-                    <TextBlock Text="LVS_95xx Verifiers" Foreground="White" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Margin="3,0"/>
+                <md:Card Background="{DynamicResource OrangeBrush0}" HorizontalAlignment="Left" Padding="4,1">
+                    <TextBlock Text="LVS_95xx Verifiers" Height="20" Foreground="White" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                 </md:Card>
-
-                <!--<Button Click="btnShowDetails_Click" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
-                        Padding="0" Margin="6,0,3,0" BorderThickness="0" Height="20" Width="20" HorizontalAlignment="Left">
-
-                    <iconPacks:PackIconMaterial Kind="CodeJson" Width="12" Height="12"/>
-                </Button>-->
 
             </DockPanel>
         </GroupBox.Header>

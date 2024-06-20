@@ -62,15 +62,14 @@
             <GroupBox.Header>
                 <DockPanel Margin="-5">
 
-                    <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Padding="1">
-                        <TextBlock Text="Image Rolls" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Margin="3,0"/>
+                    <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Padding="4,1">
+                        <TextBlock Text="Image Rolls" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                     </md:Card>
 
-                    <Button Command="{Binding AddCommand}"
-                                    ToolTip="New Image Roll" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                    <Button Command="{Binding AddCommand}" ToolTip="New Image Roll" Margin="6,0,3,0">
 
                         <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding UserImageRoll, Converter={StaticResource objectIsNull}}" Value="True">
@@ -80,14 +79,13 @@
                             </Style>
                         </Button.Style>
 
-                        <iconPacks:PackIconMaterial Kind="Plus" Margin="-1,0,0,0" Height="14" Width="14"/>
+                        <iconPacks:PackIconMaterial Kind="Plus" Height="14" Width="14"/>
                     </Button>
 
-                    <Button Command="{Binding EditCommand}"
-                                    ToolTip="Edit Selected Image Roll" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
+                    <Button Command="{Binding EditCommand}" ToolTip="Edit Selected Image Roll">
 
                         <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                 <Setter Property="Visibility" Value="Visible"/>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding SelectedUserImageRoll, Converter={StaticResource objectIsNull}}" Value="True">
@@ -100,13 +98,12 @@
                             </Style>
                         </Button.Style>
 
-                        <iconPacks:PackIconMaterial Kind="SquareEditOutline" Margin="-1,0,0,0" Height="14" Width="14"/>
+                        <iconPacks:PackIconMaterial Kind="SquareEditOutline" Height="14" Width="14"/>
                     </Button>
 
-                    <Button Command="{Binding SaveCommand}"
-                                    ToolTip="Save Image Roll" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                    <Button Command="{Binding SaveCommand}" ToolTip="Save Image Roll" Margin="6,0,3,0">
                         <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding UserImageRoll, Converter={StaticResource objectIsNull}}" Value="False">
@@ -116,13 +113,12 @@
                             </Style>
                         </Button.Style>
 
-                        <iconPacks:PackIconMaterial Kind="ContentSave" Margin="0,-1,0,0" Height="12" Width="12"/>
+                        <iconPacks:PackIconMaterial Kind="ContentSave" Height="14" Width="14"/>
                     </Button>
 
-                    <Button Command="{Binding CancelCommand}" 
-                                    ToolTip="Cancel" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
+                    <Button Command="{Binding CancelCommand}" ToolTip="Cancel">
                         <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding UserImageRoll, Converter={StaticResource objectIsNull}}" Value="False">
@@ -132,13 +128,12 @@
                             </Style>
                         </Button.Style>
 
-                        <iconPacks:PackIconMaterial Kind="Cancel" Margin="0,-1,0,0" Height="14" Width="14"/>
+                        <iconPacks:PackIconMaterial Kind="Cancel" Height="14" Width="14"/>
                     </Button>
 
-                    <Button Command="{Binding DeleteCommand}" 
-                                    ToolTip="Delete" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
+                    <Button Command="{Binding DeleteCommand}" ToolTip="Delete">
                         <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding UserImageRoll, Converter={StaticResource objectIsNull}}" Value="False">
@@ -148,7 +143,7 @@
                             </Style>
                         </Button.Style>
 
-                        <iconPacks:PackIconMaterial Kind="Delete" Margin="0,-1,0,0" Height="14" Width="14"/>
+                        <iconPacks:PackIconMaterial Kind="Delete" Height="14" Width="14"/>
                     </Button>
 
                 </DockPanel>
@@ -268,11 +263,10 @@
                                         </TextBlock.Style>
                                     </TextBlock>
 
-                                    <Button Command="{Binding AddCommand}"
-                                        ToolTip="Add to Image Roll" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                                    <Button Command="{Binding AddCommand}" ToolTip="Add to Image Roll" Margin="6,0,3,0">
                                         
                                         <Button.Style>
-                                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource AncestorType=ListViewItem}}" Value="True">
@@ -282,7 +276,7 @@
                                             </Style>
                                         </Button.Style>
                                         
-                                        <iconPacks:PackIconMaterial Kind="Plus" Margin="-1,0,0,0" Height="14" Width="14"/>
+                                        <iconPacks:PackIconMaterial Kind="Plus" Height="14" Width="14"/>
                                     </Button>
 
                                 </DockPanel>
@@ -304,9 +298,15 @@
 
             <GroupBox.Header>
                 <DockPanel Margin="-5">
-                    <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Padding="1" HorizontalAlignment="Left">
-                        <TextBlock Text="Fixed Image Rolls" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Margin="3,0"/>
+                    <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="4,1">
+                        <TextBlock Text="Fixed Image Rolls" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                     </md:Card>
+
+                    <Button Margin="6,0,3,0" Command="{Binding UIDToClipboardCommand}" Style="{StaticResource GroupHeaderCirlceButton}" 
+                                    ToolTip="New UID to Clipboard">
+
+                        <iconPacks:PackIconFontAwesome Kind="FingerprintSolid" Height="14" Width="14"/>
+                    </Button>
                 </DockPanel>
             </GroupBox.Header>
 

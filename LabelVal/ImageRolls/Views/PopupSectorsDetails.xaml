@@ -25,12 +25,12 @@
                 <DockPanel Margin="-5">
                     
                 
-                <Button Click="btnSaveImage_Click" Style="{StaticResource MaterialDesignFloatingActionDarkButton}" ToolTip="Save as image." Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
-                    <iconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
+                <Button Click="btnSaveImage_Click" Style="{StaticResource GroupHeaderCirlceButton}" ToolTip="Save as image." Margin="6,0,3,0">
+                        <iconPacks:PackIconMaterial Kind="ContentSave" Height="14" Width="14"/>
                 </Button>
                     
-                <Button Click="btnCopyImage_Click" Style="{StaticResource MaterialDesignFloatingActionDarkButton}" ToolTip="Save as image." Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
-                    <iconPacks:Material Kind="ContentCopy" Height="12" Width="12"/>
+                <Button Click="btnCopyImage_Click" Style="{StaticResource GroupHeaderCirlceButton}" ToolTip="Save as image.">
+                        <iconPacks:PackIconMaterial Kind="ContentCopy" Height="14" Width="14"/>
                 </Button>
                     
                 </DockPanel>

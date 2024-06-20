@@ -10,6 +10,7 @@ using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Windows;
 using System.Xml.Linq;
 
 namespace LabelVal.ImageRolls.ViewModels;
@@ -197,4 +198,7 @@ public partial class ImageRolls : ObservableRecipient, IRecipient<PropertyChange
 
     [RelayCommand]
     public void Cancel() => UserImageRoll = null;
+
+    [RelayCommand]
+    private void UIDToClipboard() => Clipboard.SetText(Guid.NewGuid().ToString());
 }

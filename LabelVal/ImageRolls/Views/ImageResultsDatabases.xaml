@@ -5,7 +5,7 @@
                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
                 xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
                 xmlns:local="clr-namespace:LabelVal.ImageRolls.Views"
-                xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"  
+                xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"  
                 xmlns:ViewModels="clr-namespace:LabelVal.ImageRolls.ViewModels"  
 
                 xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
@@ -26,22 +26,15 @@
             <GroupBox.Header>
                 <DockPanel Margin="-5">
 
-
-                    <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="1">
-                        <TextBlock Text="Databases" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Margin="3,0"/>
+                    <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="4,1">
+                        <TextBlock Text="Results Databases" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                     </md:Card>
 
-                    <Button Command="{Binding CreateImageResultsDatabaseCommand}" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
-                                    ToolTip="New Database" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
-
-                        <IconPacks:PackIconMaterial Kind="Plus" Margin="-1,0,0,0" Height="14" Width="14"/>
+                    <Button Margin="6,0,3,0" ToolTip="New Database" Command="{Binding CreateImageResultsDatabaseCommand}"
+                            Style="{StaticResource GroupHeaderCirlceButton}">
+                        <iconPacks:PackIconMaterial Kind="Plus" Height="14" Width="14"/>
                     </Button>
 
-                    <Button Command="{Binding UIDToClipboardCommand}" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
-                                    ToolTip="New UID to Clipboard" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
-
-                        <IconPacks:PackIconFontAwesome Kind="FingerprintSolid" Margin="-1,0,0,0" Height="14" Width="14"/>
-                    </Button>
                 </DockPanel>
             </GroupBox.Header>
 
@@ -93,13 +86,12 @@
 
                             <DockPanel Margin="0,6">
 
-                                <Button Click="btnLockImageResultsDatabase_Click"
-                                            Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0">
+                                <Button Click="btnLockImageResultsDatabase_Click">
                                     <Button.Style>
-                                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                             <Setter Property="Content">
                                                 <Setter.Value>
-                                                    <IconPacks:PackIconMaterial Kind="LockOpenVariant" Height="12" Width="12"/>
+                                                    <iconPacks:PackIconMaterial Kind="LockOpenVariant" Height="14" Width="14"/>
                                                 </Setter.Value>
                                             </Setter>
 
@@ -110,7 +102,7 @@
                                                 <DataTrigger Binding="{Binding IsLocked}" Value="True">
                                                     <Setter Property="Content">
                                                         <Setter.Value>
-                                                            <IconPacks:PackIconMaterial Kind="Lock" Height="12" Width="12"/>
+                                                            <iconPacks:PackIconMaterial Kind="Lock" Height="14" Width="14"/>
                                                         </Setter.Value>
                                                     </Setter>
                                                     <Setter Property="ToolTip" Value="Database is locked. Click to unlock."/>
@@ -119,7 +111,7 @@
                                                 <DataTrigger Binding="{Binding IsPermLocked}" Value="True">
                                                     <Setter Property="Content">
                                                         <Setter.Value>
-                                                            <IconPacks:PackIconMaterial Kind="DatabaseLock" Height="12" Width="12"/>
+                                                            <iconPacks:PackIconMaterial Kind="DatabaseLock" Height="14" Width="14"/>
                                                         </Setter.Value>
                                                     </Setter>
                                                     <Setter Property="ToolTip" Value="Database is premanently locked."/>
@@ -129,13 +121,12 @@
                                     </Button.Style>
                                 </Button>
 
-                                <Button Command="{Binding ConvertDatabaseCommand}"
-                                            Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0">
+                                <Button Command="{Binding ConvertDatabaseCommand}">
 
-                                    <IconPacks:PackIconMaterial Kind="Exclamation" Height="14" Width="14"/>
+                                    <iconPacks:PackIconMaterial Kind="Exclamation" Height="14" Width="14"/>
 
                                     <Button.Style>
-                                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                             <Setter Property="Visibility" Value="Collapsed"/>
                                             <Style.Triggers>
 

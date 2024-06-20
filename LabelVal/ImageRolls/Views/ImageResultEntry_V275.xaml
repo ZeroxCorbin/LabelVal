@@ -7,7 +7,7 @@
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:sectors="clr-namespace:LabelVal.Sectors.Views"
-             xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:Converters="clr-namespace:LabelVal.Converters"
              xmlns:V275Converters="clr-namespace:LabelVal.V275.Converters"
                 xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
@@ -70,18 +70,18 @@
 
                     <DockPanel Margin="-5">
 
-                        <md:Card Background="{DynamicResource ColorBlindBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="4,1">
+                        <md:Card Background="{DynamicResource ColorBlindBrush1}" HorizontalAlignment="Left" Padding="4,1">
                             <TextBlock Foreground="White" Text="Stored Sectors" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                         </md:Card>
 
                         <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
 
-                            <Button Command="{Binding ClearStoredCommand}" CommandParameter="V275" ToolTip="Remove the stored sectors from the database, permanently.&#x0a;(CAUTION) This can not be undone!" 
-                                Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
-                                <IconPacks:PackIconModern Kind="Delete" Margin="-1,-1,0,0" Height="14" Width="14"/>
+                            <Button Command="{Binding ClearStoredCommand}" CommandParameter="V275" ToolTip="Remove the stored sectors from the database, permanently.&#x0a;(CAUTION) This can not be undone!">
+                                
+                                <iconPacks:PackIconModern Kind="Delete" Height="14" Width="14"/>
 
                                 <Button.Style>
-                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                         <Setter Property="Visibility" Value="Visible"/>
                                         <Style.Triggers>
                                             <DataTrigger Value="0" Binding="{Binding V275StoredSectors.Count}">
@@ -95,13 +95,12 @@
                                 </Button.Style>
                             </Button>
 
-                            <Button Command="{Binding V275LoadCommand}"  ToolTip="Overwrite the template sectors with the stored data."
-                                    Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
+                            <Button Command="{Binding V275LoadCommand}"  ToolTip="Overwrite the template sectors with the stored data.">
 
-                                <IconPacks:PackIconMaterial Kind="Download" Margin="-1,-1,0,0" Height="14" Width="14"/>
+                                <iconPacks:PackIconMaterial Kind="Download" Height="14" Width="14"/>
 
                                 <Button.Style>
-                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                         <Setter Property="Visibility" Value="Visible"/>
                                         <Style.Triggers>
                                             <DataTrigger Value="{x:Null}" Binding="{Binding SelectedNode}">
@@ -125,13 +124,13 @@
                             </Button>
                         </StackPanel>
 
-                        <Button Grid.Column="2" Click="V275StoredSectors_Click" ToolTip="The all seeing eye! Click it...&#x0a;Hold Shift and click for more."
-                                Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Right" Margin="3,0,3,0">
+                        <Button Click="V275StoredSectors_Click" ToolTip="The all seeing eye! Click it...&#x0a;Hold Shift and click for more."
+                                HorizontalAlignment="Right">
 
-                            <IconPacks:PackIconModern Kind="Eye" Margin="0,-1,0,0" Height="14" Width="14"/>
+                            <iconPacks:PackIconModern Kind="Eye" Height="16" Width="16"/>
 
                             <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                     <Setter Property="Visibility" Value="Visible"/>
                                     <Style.Triggers>
                                         <DataTrigger Value="0" Binding="{Binding V275StoredSectors.Count}">
@@ -202,10 +201,9 @@
 
                         <DockPanel Margin="3,0">
 
-                            <Button Command="{Binding StoreCommand}" CommandParameter="V275" ToolTip="Store the current sectors and images to the database."
-                                Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
+                            <Button Command="{Binding StoreCommand}" CommandParameter="V275" ToolTip="Store the current sectors and images to the database.">
                                 <Button.Style>
-                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                         <Setter Property="Visibility" Value="Visible"/>
                                         <Style.Triggers>
                                             <DataTrigger Value="0" Binding="{Binding V275CurrentSectors.Count}">
@@ -218,14 +216,13 @@
                                     </Style>
                                 </Button.Style>
 
-                                <IconPacks:PackIconMaterial Kind="StorePlusOutline" Margin="0,0,-1,-1" Height="14" Width="14"/>
+                                <iconPacks:PackIconMaterial Kind="StorePlusOutline" Height="14" Width="14"/>
                             </Button>
 
-                            <Button Command="{Binding ClearReadCommand}" CommandParameter="V275" ToolTip="Clear the current sectors and image."
-                                    Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
+                            <Button Command="{Binding ClearReadCommand}" CommandParameter="V275" ToolTip="Clear the current sectors and image.">
 
                                 <Button.Style>
-                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                         <Setter Property="Visibility" Value="Visible"/>
 
                                         <Style.Triggers>
@@ -247,15 +244,14 @@
                                     </Style>
                                 </Button.Style>
 
-                                <IconPacks:PackIconModern Kind="Delete" Margin="-1,-1,0,0" Height="14" Width="14"/>
+                                <iconPacks:PackIconModern Kind="Delete" Height="14" Width="14"/>
 
                             </Button>
 
-                            <Button Command="{Binding V275ReadCommand}" ToolTip="Read the last results and image from the V275.&#x0a;Just reads the data. No processing." 
-                                    Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
+                            <Button Command="{Binding V275ReadCommand}" ToolTip="Read the last results and image from the V275.&#x0a;Just reads the data. No processing.">
 
                                 <Button.Style>
-                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                         <Style.Triggers>
                                             <DataTrigger Value="True" Binding="{Binding SelectedNode.IsLoggedIn_Monitor}">
@@ -268,14 +264,14 @@
                                     </Style>
                                 </Button.Style>
 
-                                <IconPacks:PackIconMaterial Kind="Upload" Margin="-1,-1,0,0" Height="14" Width="14"/>
+                                <iconPacks:PackIconMaterial Kind="Upload" Height="14" Width="14"/>
                             </Button>
 
                             <!--<Button Command="{Binding InspectCommand}"
                                     ToolTip="Inspect" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
 
                             <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                     <Setter Property="Visibility" Value="Collapsed"/>
                                     <Style.Triggers>
                                         <DataTrigger Value="True" Binding="{Binding SelectedNode.IsLoggedIn_Control}">
@@ -285,16 +281,16 @@
                                 </Style>
                             </Button.Style>
 
-                            <IconPacks:PackIconMaterialDesign Kind="TouchApp" Margin="-1,-1,0,0" Height="14" Width="14"/>
+                            <iconPacks:PackIconMaterialDesign Kind="TouchApp" Margin="-1,-1,0,0" Height="14" Width="14"/>
 
                         </Button>-->
 
                         </DockPanel>
 
                         <Button Click="V275CurrentSectorDetails_Click" ToolTip="The all seeing eye! Click it...&#x0a;Hold Shift and click for more."
-                                Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Right" Margin="3,0,3,0">
+                                HorizontalAlignment="Right">
                             <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                     <Setter Property="Visibility" Value="Visible"/>
                                     <Style.Triggers>
                                         <DataTrigger Value="0" Binding="{Binding V275CurrentSectors.Count}">
@@ -303,7 +299,7 @@
                                     </Style.Triggers>
                                 </Style>
                             </Button.Style>
-                            <IconPacks:PackIconModern Kind="Eye" Margin="0,-1,-0,0" Width="14" Height="14"/>
+                            <iconPacks:PackIconModern Kind="Eye" Height="16" Width="16"/>
                         </Button>
 
                     </DockPanel>

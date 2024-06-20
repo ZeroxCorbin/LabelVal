@@ -49,8 +49,7 @@
                 </md:Card>
 
 
-                <Button Margin="3"  Click="btnShowSettings_Click" Style="{StaticResource MaterialDesignFloatingActionButton}"
-                        ToolTip="Show Settings" Width="20" Height="20" BorderThickness="0" VerticalAlignment="Top">
+                <Button Click="btnShowSettings_Click" Style="{StaticResource GroupHeaderCirlceButton}" ToolTip="Show Settings" HorizontalAlignment="Center" VerticalAlignment="Top">
                     <iconPacks:PackIconMaterial Kind="Cog" Height="14" Width="14"/>
                 </Button>
             </DockPanel>
@@ -71,13 +70,11 @@
                             </Style>
                         </md:Card.Style>
 
-                        <DockPanel>
 
-                            <DockPanel DockPanel.Dock="Top" Margin="3">
-                                <ComboBox ItemsSource="{Binding ComNameList}" SelectedItem="{Binding SelectedComName}" IsEnabled="{Binding IsNotConnected}"
-                                              md:HintAssist.Hint="COM Port" md:HintAssist.IsFloating="True"/>
-                            </DockPanel>
-                        </DockPanel>
+                        <ComboBox ItemsSource="{Binding ComNameList}" SelectedItem="{Binding SelectedComName}" IsEnabled="{Binding IsNotConnected}"
+                                  Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                                        md:HintAssist.Hint="COM Port" md:HintAssist.IsFloating="True"/>
+    
                     </md:Card>
                 </md:DrawerHost.TopDrawerContent>
 
@@ -126,37 +123,41 @@
 
             <DockPanel>
 
-                <Expander DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Left" md:ExpanderAssist.HorizontalHeaderPadding="6" MaxHeight="450">
+                <Expander DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Left" md:ExpanderAssist.HorizontalHeaderPadding="6" MaxHeight="450"
+                          Background="{DynamicResource MahApps.Brushes.Accent4}">
 
                     <Expander.Header>
-                        <TextBlock Text="Control" MinWidth="48"/>
+                        <TextBlock Text="Results" MinWidth="48"/>
                     </Expander.Header>
 
-                    <GroupBox VerticalAlignment="Top" HorizontalAlignment="Left" Margin="3" Padding="3" 
-                  Style="{StaticResource MaterialDesignCardGroupBox}"
-                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                md:ColorZoneAssist.Mode="Custom">
+                    <!--<GroupBox VerticalAlignment="Top" HorizontalAlignment="Left" Margin="3" Padding="3" 
+                      Style="{StaticResource MaterialDesignCardGroupBox}"
+                    md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                    md:ColorZoneAssist.Mode="Custom">
 
                         <GroupBox.Header>
                             <DockPanel Margin="-5">
-                                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="1">
+                                --><!--<md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="1">
                                     <TextBlock Text="Results" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Margin="3,0"/>
-                                </md:Card>
+                                </md:Card>-->
 
-                                <!--<Button Click="btnShowDetails_Click" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
+                                <!--<Button Click="btnShowDetails_Click" Style="{StaticResource GroupHeaderCirlceButton}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
                         Padding="0" Margin="6,0,3,0" BorderThickness="0" Height="20" Width="20" HorizontalAlignment="Left">
 
-                    <iconPacks:PackIconMaterial Kind="CodeJson" Width="12" Height="12"/>
-                </Button>-->
+                    <iconPacks:PackIconMaterial Kind="CodeJson" Height="14" Width="14"/>
+                </Button>--><!--
 
                             </DockPanel>
-                        </GroupBox.Header>
+                        </GroupBox.Header>-->
 
-                        <ScrollViewer Height="400" Width="300">
-                            <TextBox Text="{Binding ReadData}" IsReadOnly="True" BorderThickness="0" TextWrapping="Wrap"/>
-                        </ScrollViewer>
+                        <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Padding="1">
 
-                    </GroupBox>
+
+                            <ScrollViewer Height="400" Width="300">
+                                <TextBox Text="{Binding ReadData}" IsReadOnly="True" BorderThickness="0" TextWrapping="Wrap"/>
+                            </ScrollViewer>
+                        </md:Card>
+                    <!--</GroupBox>-->
 
                 </Expander>
 

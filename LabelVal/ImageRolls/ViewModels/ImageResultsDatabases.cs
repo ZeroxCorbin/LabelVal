@@ -119,6 +119,4 @@ public partial class ImageResultsDatabases : ObservableRecipient
 
     }
 
-    [RelayCommand]
-    private void UIDToClipboard() => Clipboard.SetText(Guid.NewGuid().ToString());
 }

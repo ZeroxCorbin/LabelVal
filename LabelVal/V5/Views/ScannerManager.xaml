@@ -26,10 +26,9 @@
                     <TextBlock Text="V5 Cameras" Foreground="White" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                 </md:Card>
 
-                <Button Command="{Binding AddCommand}" ToolTip="New V5" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
-
+                <Button Command="{Binding AddCommand}" ToolTip="New V5" Margin="6,0,3,0">
                     <Button.Style>
-                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                             <Setter Property="Visibility" Value="Collapsed"/>
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding NewScanner, Converter={StaticResource objectIsNull}}" Value="True">
@@ -39,12 +38,12 @@
                         </Style>
                     </Button.Style>
 
-                    <iconPacks:PackIconMaterial Kind="Plus" Margin="-1,0,0,0" Height="14" Width="14"/>
+                    <iconPacks:PackIconMaterial Kind="Plus" Height="14" Width="14"/>
                 </Button>
 
-                <Button Command="{Binding SaveCommand}" ToolTip="Save Image Roll" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                <Button Command="{Binding SaveCommand}" ToolTip="Save Image Roll" Margin="6,0,3,0">
                     <Button.Style>
-                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                             <Setter Property="Visibility" Value="Collapsed"/>
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding NewScanner, Converter={StaticResource objectIsNull}}" Value="False">
@@ -54,13 +53,12 @@
                         </Style>
                     </Button.Style>
 
-                    <iconPacks:PackIconMaterial Kind="ContentSave" Margin="0,-1,0,0" Height="12" Width="12"/>
+                    <iconPacks:PackIconMaterial Kind="ContentSave" Height="14" Width="14"/>
                 </Button>
 
-                <Button Command="{Binding CancelCommand}" 
-                                    ToolTip="Cancel" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
+                <Button Command="{Binding CancelCommand}" ToolTip="Cancel" Margin="6,0,3,0">
                     <Button.Style>
-                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                             <Setter Property="Visibility" Value="Collapsed"/>
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding NewScanner, Converter={StaticResource objectIsNull}}" Value="False">
@@ -70,19 +68,18 @@
                         </Style>
                     </Button.Style>
 
-                    <iconPacks:PackIconMaterial Kind="Cancel" Margin="0,-1,0,0" Height="14" Width="14"/>
+                    <iconPacks:PackIconMaterial Kind="Cancel" Height="14" Width="14"/>
                 </Button>
                 
-                <!--<Button Command="{Binding GetDevicesCommand}" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
+                <!--<Button Command="{Binding GetDevicesCommand}" Style="{StaticResource GroupHeaderCirlceButton}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
                         Padding="0" Margin="6,0,3,0" BorderThickness="0" Height="20" Width="20" HorizontalAlignment="Left">
 
-                    <iconPacks:Modern Width="12" Height="12" Kind="Refresh"/>
+                    <iconPacks:Modern Height="14" Width="14" Kind="Refresh"/>
                 </Button>-->
 
-                <Button Click="btnShowDetails_Click" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
-                        Padding="0" Margin="6,0,3,0" BorderThickness="0" Height="20" Width="20" HorizontalAlignment="Right">
+                <Button Click="btnShowDetails_Click" Style="{StaticResource GroupHeaderCirlceButton}">
 
-                    <iconPacks:PackIconMaterial Kind="CodeJson" Width="12" Height="12"/>
+                    <iconPacks:PackIconMaterial Kind="CodeJson" Height="14" Width="14"/>
                 </Button>
 
             </DockPanel>

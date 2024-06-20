@@ -7,6 +7,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:LabelVal.Printer.Views"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                xmlns:converters="clr-namespace:LabelVal.Printer.Converters"
              xmlns:ViewModels="clr-namespace:LabelVal.Printer.ViewModels"
              d:DataContext="{d:DesignInstance Type=ViewModels:Printer}"
              mc:Ignorable="d">
@@ -20,14 +21,13 @@
 
             <DockPanel Margin="-5">
 
-                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Padding="4,1">
+                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="4,1">
                     <TextBlock Text="Printers" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                 </md:Card>
 
-                <Button Click="btnShowPrinterDetails_Click" Style="{StaticResource MaterialDesignFloatingActionDarkButton}"
-                        Padding="0" Margin="6,0,3,0" BorderThickness="0" Height="20" Width="20" HorizontalAlignment="Left">
+                <Button Click="btnShowPrinterDetails_Click" Style="{StaticResource GroupHeaderCirlceButton}" Margin="6,0,3,0" HorizontalAlignment="Right">
 
-                    <iconPacks:Material Width="12" Height="12" Kind="CodeJson"/>
+                    <iconPacks:PackIconMaterial Height="14" Width="14" Kind="CodeJson"/>
                 </Button>
 
             </DockPanel>
@@ -36,51 +36,43 @@
         <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Padding="2">
 
             <DockPanel>
-                
-            
-            <ComboBox ItemsSource="{Binding Printers}" SelectedItem="{Binding SelectedPrinterName}" Margin="1">
-                <ComboBox.Style>
-                    <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}">
-                        <Setter Property="md:HintAssist.Hint">
-                            <Setter.Value>
-                                <DockPanel>
-                                    <TextBlock Text="{Binding SelectedPrinter.DefaultPageSettings.PrintableArea.Width}"/>
-                                    <TextBlock Text=" x "/>
-                                    <TextBlock Text="{Binding SelectedPrinter.DefaultPageSettings.PrintableArea.Height}"/>
-                                    <TextBlock Text=" inches "/>   
-                                    
-                                    <TextBlock Text="{Binding SelectedPrinter.DefaultPageSettings.PrinterResolution.X}"/>
-                                    <TextBlock Text=" DPI "/>
-                                </DockPanel>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </ComboBox.Style>
 
-                <ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding }" />
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
-            </ComboBox>
 
-                <TextBox Text="{Binding PrintCount}" md:HintAssist.Hint="# Copies" Margin="3,1" HorizontalContentAlignment="Center" VerticalContentAlignment="Bottom"
-                                md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left"
-                                        IsEnabled="{Binding SelectedNode.IsNotLoggedIn_Control}">
-                    <!--<mah:NumericUpDown.Style>
-                        <Style TargetType="{x:Type mah:NumericUpDown}">
-                            <Setter Property="Visibility" Value="Visible"/>
-
-                            <Style.Triggers>
-
-                                <DataTrigger Binding="{Binding SelectedNode.IsSimulator}" Value="True">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                </DataTrigger>
-                            </Style.Triggers>
+                <ComboBox ItemsSource="{Binding Printers}" SelectedItem="{Binding SelectedPrinterName}" Margin="3"
+                      md:HintAssist.FloatingHintHorizontalAlignment="Left">
+                    
+                    <ComboBox.Resources>
+                        <converters:PrinterSettingThousandthsToInches x:Key="printerSettingThousandthsToInches"/>
+                    </ComboBox.Resources>
+                    
+                    <ComboBox.Style>
+                        <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}">
+                            <Setter Property="md:HintAssist.Hint">
+                                <Setter.Value>
+                                    <TextBlock>
+                                        <Run Text="{Binding SelectedPrinter.DefaultPageSettings.PrintableArea.Width,StringFormat=N2, Converter={StaticResource printerSettingThousandthsToInches}}"/>
+                                        <Run Text="x"/>
+                                        <Run Text="{Binding SelectedPrinter.DefaultPageSettings.PrintableArea.Height,StringFormat=N2, Converter={StaticResource printerSettingThousandthsToInches}}"/>
+                                        <Run Text="inches ("/>
+                                        <Run Text="{Binding SelectedPrinter.DefaultPageSettings.PrinterResolution.X}"/>
+                                        <Run Text="DPI)"/>
+                                    </TextBlock>
+                                </Setter.Value>
+                            </Setter>
                         </Style>
-                    </mah:NumericUpDown.Style>-->
-                </TextBox>
-            
+                    </ComboBox.Style>
+
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding }" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+
+                <TextBox Text="{Binding PrintCount}" md:HintAssist.Hint="# Copies" Margin="3" HorizontalContentAlignment="Center" VerticalContentAlignment="Bottom"
+                        md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                        IsEnabled="{Binding SelectedNode.IsNotLoggedIn_Control}"/>
+
             </DockPanel>
         </md:Card>
 

@@ -7,7 +7,7 @@
             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
             
-            xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+            xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
             xmlns:ViewModels="clr-namespace:LabelVal.Sectors.ViewModels"
             xmlns:Converters="clr-namespace:LabelVal.Converters"
             xmlns:V275Converters="clr-namespace:LabelVal.V275.Converters"

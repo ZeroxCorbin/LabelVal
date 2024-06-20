@@ -4,7 +4,7 @@
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-            xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+            xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
             xmlns:local="clr-namespace:LabelVal.WindowViews"
              xmlns:json="clr-namespace:JSONViewer_WPF;assembly=JSONViewer_WPF"
              xmlns:v275="clr-namespace:LabelVal.V275.Views"
@@ -118,12 +118,11 @@
                 <TextBlock Text=" : " FontSize="16" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" />
                 <TextBlock Text="{Binding Run.SourceImageOrder}" FontSize="16" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
             </StackPanel >
-            <Button Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5,0"
-                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+            <Button Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right"
                         Command="{Binding SaveCommand}"
-                        CommandParameter="label" BorderThickness="0" Style="{StaticResource MahApps.Styles.Button.Circle}">
+                        CommandParameter="label" BorderThickness="0" Style="{StaticResource GroupHeaderCirlceButton}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
 
-                <IconPacks:Material Kind="ContentSave"/>
+                <iconPacks:PackIconMaterial Kind="ContentSave"/>
             </Button>
             <Border BorderThickness="1" Margin="1" Grid.Row="1" Grid.Column="0" BorderBrush="{StaticResource MahApps.Brushes.Accent}">
                 <Image x:Name="SourceImage" MaxHeight="400" Width="400" MouseDown="SourceImage_MouseDown">
@@ -140,9 +139,8 @@
                 </Image>
             </Border>
             <!--Label Sectors-->
-            <Button Grid.Row="0" Grid.Column="1" Name="V275StoredSectors" Click="V275StoredSectors_Click"
-                            BorderThickness="0" HorizontalAlignment="Center" Style="{StaticResource MahApps.Styles.Button.Circle}">
-                <IconPacks:PackIconModern Width="20" Height="20" Kind="Eye"/>
+            <Button Grid.Row="0" Grid.Column="1" Name="V275StoredSectors" Click="V275StoredSectors_Click" Style="{StaticResource GroupHeaderCirlceButton}">
+                <iconPacks:PackIconModern Width="20" Height="20" Kind="Eye"/>
             </Button>
             <ScrollViewer Grid.Row="1" Grid.Column="1" x:Name="ScrollV275StoredSectors"
                           Margin="3" Padding="0,0,0,6" MaxHeight="400" VerticalScrollBarVisibility="Auto"
@@ -168,8 +166,8 @@
 
             <!--Repeat Sectors-->
             <Button Grid.Row="0" Grid.Column="2" Name="V275CurrentSectors" Click="V275CurrentSectors_Click"
-                            BorderThickness="0" HorizontalAlignment="Center" Style="{StaticResource MahApps.Styles.Button.Circle}">
-                <IconPacks:PackIconModern Width="20" Height="20" Kind="Eye"/>
+                            BorderThickness="0" HorizontalAlignment="Center" Style="{StaticResource GroupHeaderCirlceButton}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                <iconPacks:PackIconModern Width="20" Height="20" Kind="Eye"/>
             </Button>
             <ScrollViewer Grid.Row="1" Grid.Column="2" x:Name="ScrollV275CurrentSectors" 
                           Margin="3" Padding="0,0,0,6" MaxHeight="400" VerticalScrollBarVisibility="Auto" 
@@ -222,7 +220,7 @@
                 <Button.Style>
 
 
-                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Circle}">
+                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                         <Setter Property="Visibility" Value="Visible"/>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding Run.SourceImage}" Value="{x:Null}">
@@ -231,8 +229,8 @@
                         </Style.Triggers>
                     </Style>
                 </Button.Style>
-                
-                <IconPacks:Material Kind="ContentSave"/>
+
+                <iconPacks:PackIconMaterial Kind="ContentSave"/>
             </Button>
 
             <Border BorderThickness="1" Margin="1" Grid.Row="1" Grid.Column="4" BorderBrush="{StaticResource MahApps.Brushes.Accent}">

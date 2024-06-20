@@ -6,7 +6,7 @@
             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
-            xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+            xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
             xmlns:local="clr-namespace:LabelVal.Sectors.Views"
             xmlns:ViewModels="clr-namespace:LabelVal.Sectors.ViewModels"
             xmlns:Converters="clr-namespace:LabelVal.Converters"
@@ -20,6 +20,7 @@
         <Converters:FloatStringTrimConverter x:Key="floatTrim"/>
         <V275Converters:V275_OCMatchModeToString x:Key="matchModeToString"/>
         <V275Converters:V275_GS1FormattedOutput x:Key="gs1FormattedOutput"/>
+
     </UserControl.Resources>
 
 
@@ -224,7 +225,7 @@
                             </Style.Triggers>
                         </Style>
                     </Button.Style>
-                    <IconPacks:Material Kind="ArrowDownBoldBox"/>
+                    <iconPacks:PackIconMaterial Kind="ArrowDownBoldBox"/>
                 </Button>
                 
                 <Popup x:Name="popGS1DecodeText"  StaysOpen="False" PlacementTarget="{Binding ElementName=txtDecodeText}">
@@ -372,8 +373,8 @@
 
                         <GroupBox.Header>
                             <DockPanel Margin="-5">
-                                <Button Style="{StaticResource MaterialDesignFloatingActionDarkButton}" ToolTip="Save as image." Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="6,0,3,0">
-                                    <IconPacks:Material Kind="ContentSave" Height="12" Width="12"/>
+                                <Button Margin="6,0,3,0" Style="{StaticResource GroupHeaderCirlceButton}" ToolTip="Save as image.">
+                                    <iconPacks:PackIconMaterial Kind="ContentSave" Width="14" Height="14"/>
                                 </Button>
                             </DockPanel>
                         </GroupBox.Header>
