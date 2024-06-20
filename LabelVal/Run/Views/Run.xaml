@@ -1,4 +1,4 @@
-﻿<mah:MetroWindow x:Class="LabelVal.Run.Views.View"
+﻿<mah:MetroWindow x:Class="LabelVal.Run.Views.Run"
                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -11,9 +11,8 @@
                 xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro" 
                 xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
                 Dialog:DialogParticipation.Register="{Binding}"
-                d:DataContext="{d:DesignInstance Type=ViewModels:ViewModel}"
+                d:DataContext="{d:DesignInstance Type=ViewModels:Run}"
                 mc:Ignorable="d"
-                Height="567" Width="1505"
                 SaveWindowPosition="True" Unloaded="MetroWindow_Unloaded">
 
     <mah:MetroWindow.Title>
@@ -23,7 +22,7 @@
     </mah:MetroWindow.Title>
 
     <mah:MetroWindow.DataContext>
-        <ViewModels:ViewModel/>
+        <ViewModels:Run/>
     </mah:MetroWindow.DataContext>
 
     <mah:MetroWindow.Resources>
@@ -116,28 +115,18 @@
                         <local:CompareSettingsView/>
                     </StackPanel>
                 </Grid>
-                
+
             </mah:Flyout>
         </mah:FlyoutsControl>
     </mah:MetroWindow.Flyouts>
 
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
+    <DockPanel>
 
-        <Grid Grid.Column="0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
+        <StackPanel>
 
-            <StackPanel Grid.Row="0" Orientation="Horizontal">
-                <Button x:Name="BtnSortRuns" Style="{StaticResource MahApps.Styles.Button.Flat}" Click="BtnSortRuns_Click"/>
-            </StackPanel>
+            <Button x:Name="BtnSortRuns" Style="{StaticResource MahApps.Styles.Button.Flat}" Click="BtnSortRuns_Click"/>
 
-            <ScrollViewer Grid.Row="1">
+            <ScrollViewer>
                 <ListView ItemsSource="{Binding Source={StaticResource ResourceKey=RunEntriesDataList}}" SelectedItem="{Binding SelectedRunEntry}" ContextMenu="{StaticResource contextMenu}">
                     <ListView.GroupStyle>
                         <GroupStyle>
@@ -261,17 +250,12 @@
 
                 </ListView>
             </ScrollViewer>
-        </Grid>
 
-        <Grid Grid.Column="1" HorizontalAlignment="Left">
+        </StackPanel>
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
+        <StackPanel HorizontalAlignment="Left">
 
             <StackPanel>
-
 
                 <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="2" Margin="5">
                     <Grid >
@@ -379,7 +363,8 @@
                     </Grid>
                 </Border>
             </StackPanel>
-            <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto">
+            
+            <ScrollViewer HorizontalScrollBarVisibility="Auto">
                 <StackPanel>
                     <ItemsControl ItemsSource="{Binding Source={StaticResource ResourceKey=ImageResultsDataList}}" x:Name="RunList">
                         <!--<ItemsControl.ItemsPanel>
@@ -389,7 +374,7 @@
                     </ItemsControl.ItemsPanel>-->
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <local:LabelView />
+                                <local:Run />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                         <ItemsControl.GroupStyle>
@@ -447,8 +432,8 @@
                     </ItemsControl>
                 </StackPanel>
             </ScrollViewer>
-        </Grid>
+            
+        </StackPanel>
 
-
-    </Grid>
+    </DockPanel>
 </mah:MetroWindow>

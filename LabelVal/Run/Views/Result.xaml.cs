@@ -13,7 +13,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using LabelVal.Dialogs;
-using LabelVal.result.ViewModels;
 using LabelVal.Run.ViewModels;
 using LabelVal.WindowViews;
 
@@ -22,9 +21,9 @@ namespace LabelVal.Run.Views
     /// <summary>
     /// Interaction logic for RunLabelControlView.xaml
     /// </summary>
-    public partial class LabelView : UserControl
+    public partial class Result : UserControl
     {
-        public LabelView()
+        public Result()
         {
             InitializeComponent();
         }
@@ -44,16 +43,16 @@ namespace LabelVal.Run.Views
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                if (((LabelViewModel)DataContext).Result.LabelImage != null)
-                    ShowImage(((LabelViewModel)DataContext).Result.LabelImage, null);
+                if (((ViewModels.Result)DataContext).ResultEntry.LabelImage != null)
+                    ShowImage(((ViewModels.Result)DataContext).ResultEntry.LabelImage, null);
                 else
-                    ShowImage(((LabelViewModel)DataContext).Result.RepeatGoldenImage, null);
+                    ShowImage(((ViewModels.Result)DataContext).ResultEntry.RepeatGoldenImage, null);
             }
         }
         private void RepeatImage_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
-                ShowImage(((LabelViewModel)DataContext).Result.RepeatImage, ((LabelViewModel)DataContext).V275SectorsImageOverlay);
+                ShowImage(((ViewModels.Result)DataContext).ResultEntry.RepeatImage, ((ViewModels.Result)DataContext).V275SectorsImageOverlay);
         }
 
         private bool ShowImage(byte[] image, DrawingImage overlay)
@@ -63,7 +62,7 @@ namespace LabelVal.Run.Views
             dc.LoadImage(image, overlay);
             if (dc.Image == null) return false;
 
-            Run.Views.View yourParentWindow = (Run.Views.View)Window.GetWindow(this);
+            Views.Run yourParentWindow = (Views.Run)Window.GetWindow(this);
 
             dc.Width = yourParentWindow.ActualWidth - 100;
             dc.Height = yourParentWindow.ActualHeight - 100;
@@ -77,17 +76,17 @@ namespace LabelVal.Run.Views
         {
             if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
             {
-                if (((LabelViewModel)DataContext).Result != null)
+                if (((ViewModels.Result)DataContext).ResultEntry != null)
                 {
-                    LabelJobJsonView.JSON = ((LabelViewModel)DataContext).Result.LabelTemplate;
-                    LabelResultJsonView.JSON = ((LabelViewModel)DataContext).Result.LabelReport;
+                    LabelJobJsonView.JSON = ((ViewModels.Result)DataContext).ResultEntry.LabelTemplate;
+                    LabelResultJsonView.JSON = ((ViewModels.Result)DataContext).ResultEntry.LabelReport;
                     LabelJsonPopup.PlacementTarget = (Button)sender;
                     LabelJsonPopup.IsOpen = true;
                 }
             }
             else
             {
-                if (((LabelViewModel)DataContext).V275StoredSectors.Count > 0)
+                if (((ViewModels.Result)DataContext).V275StoredSectors.Count > 0)
                 {
                     V275StoredSectorsDetailsPopup.PlacementTarget = (Button)sender;
                     V275StoredSectorsDetailsPopup.IsOpen = true;
@@ -99,16 +98,16 @@ namespace LabelVal.Run.Views
         {
             if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
             {
-                if (((LabelViewModel)DataContext).Result.RepeatReport != null)
+                if (((ViewModels.Result)DataContext).ResultEntry.RepeatReport != null)
                 {
-                    RepeatResultJsonView.JSON = ((LabelViewModel)DataContext).Result.RepeatReport;
+                    RepeatResultJsonView.JSON = ((ViewModels.Result)DataContext).ResultEntry.RepeatReport;
                     RepeatJsonPopup.PlacementTarget = (Button)sender;
                     RepeatJsonPopup.IsOpen = true;
                 }
             }
             else
             {
-                if (((LabelViewModel)DataContext).V275CurrentSectors.Count > 0)
+                if (((ViewModels.Result)DataContext).V275CurrentSectors.Count > 0)
                 {
                     V275CurrentSectorsDetailsPopup.PlacementTarget = (Button)sender;
                     V275CurrentSectorsDetailsPopup.IsOpen = true;

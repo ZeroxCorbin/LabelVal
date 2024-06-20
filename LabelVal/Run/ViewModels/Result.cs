@@ -12,13 +12,13 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 
-namespace LabelVal.result.ViewModels;
+namespace LabelVal.Run.ViewModels;
 
-public partial class LabelViewModel : ObservableObject
+public partial class Result : ObservableObject
 {
-    [ObservableProperty] private ResultDatabase.Result result;
+    [ObservableProperty] private ResultEntry resultEntry;
 
-    [ObservableProperty] private LedgerDatabase.LedgerEntry ledgerEntry;
+    [ObservableProperty] private RunEntry runEntry;
 
     public ObservableCollection<Sectors.ViewModels.Sector> V275CurrentSectors { get; } = [];
     public ObservableCollection<Sectors.ViewModels.Sector> V275StoredSectors { get; } = [];
@@ -28,11 +28,11 @@ public partial class LabelViewModel : ObservableObject
 
     [ObservableProperty] private bool isGS1Standard;
 
-    public LabelViewModel(ResultDatabase.Result result, LedgerDatabase.LedgerEntry ledgerEntry)
+    public Result(ResultEntry result, RunEntry ledgerEntry)
     {
-        Result = result;
-        LedgerEntry = ledgerEntry;
-        IsGS1Standard = LedgerEntry.GradingStandard.StartsWith("GS1");
+        ResultEntry = result;
+        RunEntry = ledgerEntry;
+        IsGS1Standard = RunEntry.GradingStandard.StartsWith("GS1");
 
         GetV275StoredSectors();
         GetV275CurrentSectors();
@@ -44,14 +44,14 @@ public partial class LabelViewModel : ObservableObject
         V275StoredSectors.Clear();
 
         List<Sectors.ViewModels.Sector> tempSectors = [];
-        if (!string.IsNullOrEmpty(Result.LabelReport) && !string.IsNullOrEmpty(Result.LabelTemplate))
-            foreach (var jSec in JsonConvert.DeserializeObject<V275_REST_lib.Models.Job>(Result.LabelTemplate).sectors)
+        if (!string.IsNullOrEmpty(ResultEntry.LabelReport) && !string.IsNullOrEmpty(ResultEntry.LabelTemplate))
+            foreach (var jSec in JsonConvert.DeserializeObject<V275_REST_lib.Models.Job>(ResultEntry.LabelTemplate).sectors)
             {
                 //var isWrongStandard = false;
                 //if (jSec.type is "verify1D" or "verify2D")
                 //    isWrongStandard = IsGS1Standard && (!jSec.gradingStandard.enabled || !LedgerEntry.GradingStandard.StartsWith($"{jSec.gradingStandard.standard} TABLE {jSec.gradingStandard.tableId}"));
 
-                foreach (var rSec in JsonConvert.DeserializeObject<V275_REST_lib.Models.Report>(Result.LabelReport).inspectLabel.inspectSector.Cast<JObject>())
+                foreach (var rSec in JsonConvert.DeserializeObject<V275_REST_lib.Models.Report>(ResultEntry.LabelReport).inspectLabel.inspectSector.Cast<JObject>())
                 {
                     if (jSec.name == rSec["name"].ToString())
                     {
@@ -81,14 +81,14 @@ public partial class LabelViewModel : ObservableObject
         V275CurrentSectors.Clear();
 
         List<Sectors.ViewModels.Sector> tempSectors = [];
-        if (!string.IsNullOrEmpty(Result.RepeatReport) && !string.IsNullOrEmpty(Result.LabelTemplate))
-            foreach (var jSec in JsonConvert.DeserializeObject<V275_REST_lib.Models.Job>(Result.LabelTemplate).sectors)
+        if (!string.IsNullOrEmpty(ResultEntry.RepeatReport) && !string.IsNullOrEmpty(ResultEntry.LabelTemplate))
+            foreach (var jSec in JsonConvert.DeserializeObject<V275_REST_lib.Models.Job>(ResultEntry.LabelTemplate).sectors)
             {
                 //var isWrongStandard = false;
                 //if (jSec.type is "verify1D" or "verify2D")
                 //    isWrongStandard = IsGS1Standard && (!jSec.gradingStandard.enabled || !LedgerEntry.GradingStandard.StartsWith($"{jSec.gradingStandard.standard} TABLE {jSec.gradingStandard.tableId}"));
 
-                foreach (var rSec in JsonConvert.DeserializeObject<V275_REST_lib.Models.Report>(Result.RepeatReport).inspectLabel.inspectSector.Cast<JObject>())
+                foreach (var rSec in JsonConvert.DeserializeObject<V275_REST_lib.Models.Report>(ResultEntry.RepeatReport).inspectLabel.inspectSector.Cast<JObject>())
                 {
                     if (jSec.name == rSec["name"].ToString())
                     {
@@ -149,13 +149,13 @@ public partial class LabelViewModel : ObservableObject
         {
             if (par == "stored")
             {
-                var bmp = ImageUtilities.ConvertToBmp(Result.RepeatImage);
+                var bmp = ImageUtilities.ConvertToBmp(ResultEntry.RepeatImage);
                 _ = SaveImageBytesToFile(path, bmp);
                 Clipboard.SetText(path);
             }
             else
             {
-                var bmp = ImageUtilities.ConvertToBmp(Result.LabelImage);
+                var bmp = ImageUtilities.ConvertToBmp(ResultEntry.LabelImage);
                 _ = SaveImageBytesToFile(path, bmp);
                 Clipboard.SetText(path);
             }

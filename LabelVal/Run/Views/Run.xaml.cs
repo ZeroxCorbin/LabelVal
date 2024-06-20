@@ -1,5 +1,4 @@
 ﻿using ControlzEx.Theming;
-using LabelVal.result.ViewModels;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using MahApps.Metro.IconPacks;
@@ -13,7 +12,7 @@ namespace LabelVal.Run.Views;
 /// <summary>
 /// Interaction logic for RunRunView.xaml
 /// </summary>
-public partial class View : MetroWindow
+public partial class Run : MetroWindow
 {
     public static class VisualTreeHelper
     {
@@ -47,7 +46,7 @@ public partial class View : MetroWindow
 
     private void btnColorBlind_Click(object sender, RoutedEventArgs e) => App.ChangeColorBlindTheme(!App.Settings.GetValue("App.IsColorBlind", false));
 
-    public View()
+    public Run()
     {
         InitializeComponent();
 
@@ -156,7 +155,7 @@ public partial class View : MetroWindow
                 if (ip.DataContext is CollectionViewGroup collection)
                 {
                     var errorCount = 0;
-                    foreach (LabelViewModel item in collection.Items)
+                    foreach (ViewModels.Result item in collection.Items)
                     {
                         if (expander.Header is Grid grid1)
                         {
