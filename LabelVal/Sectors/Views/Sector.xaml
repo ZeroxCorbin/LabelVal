@@ -24,7 +24,7 @@
     </UserControl.Resources>
 
 
-    <md:Card Width="217" Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="3" Padding="0">
+    <md:Card Width="217" Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Foreground="{DynamicResource MahApps.Brushes.Text}" Margin="3" Padding="0">
         <DockPanel Margin="3">
 
             <DockPanel DockPanel.Dock="Top">

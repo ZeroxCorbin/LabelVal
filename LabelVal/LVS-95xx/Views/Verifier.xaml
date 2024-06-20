@@ -49,8 +49,9 @@
                 </md:Card>
 
 
-                <Button Click="btnShowSettings_Click" Style="{StaticResource GroupHeaderCirlceButton}" ToolTip="Show Settings" HorizontalAlignment="Center" VerticalAlignment="Top">
-                    <iconPacks:PackIconMaterial Kind="Cog" Height="14" Width="14"/>
+                <Button Margin="3" Click="btnShowSettings_Click" Style="{StaticResource GroupHeaderCirlceButton}" ToolTip="Show Settings" 
+                        HorizontalAlignment="Center" VerticalAlignment="Top" Width="24" Height="24">
+                    <iconPacks:PackIconMaterial Kind="Cog" Height="18" Width="18"/>
                 </Button>
             </DockPanel>
 
