@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
+using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Messages;
 using LabelVal.Sectors.ViewModels;
 using LabelVal.V275.ViewModels;
@@ -18,7 +19,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using V275_REST_lib.Models;
 
-namespace LabelVal.ImageRolls.ViewModels;
+namespace LabelVal.Results.ViewModels;
 public partial class ImageResults : ObservableRecipient,
     IRecipient<PropertyChangedMessage<ImageRollEntry>>,
     IRecipient<PropertyChangedMessage<Node>>,

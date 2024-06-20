@@ -1,5 +1,6 @@
 ﻿using LabelVal.Dialogs;
 using LabelVal.ImageRolls.ViewModels;
+using LabelVal.Results.ViewModels;
 using LabelVal.WindowViews;
 using MahApps.Metro.Controls.Dialogs;
 using System.Windows;
@@ -7,7 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace LabelVal.ImageRolls.Views
+namespace LabelVal.Results.Views
 {
     /// <summary>
     /// Interaction logic for ImageResultEntry_Images.xaml

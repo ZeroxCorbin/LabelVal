@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Messages;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -10,9 +11,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using V5_REST_Lib.Models;
 
-namespace LabelVal.ImageRolls.ViewModels;
+namespace LabelVal.Results.ViewModels;
 public partial class ImageResultEntry
 {
 
@@ -20,7 +20,7 @@ public partial class ImageResultEntry
 
     //public Config V5CurrentTemplate { get; set; }
     public JObject V5CurrentReport { get; private set; }
-    public Results V5StoredReport { get; set; }
+    public V5_REST_Lib.Models.Results V5StoredReport { get; set; }
 
     [ObservableProperty] private ObservableCollection<Sectors.ViewModels.Sector> v5CurrentSectors = [];
     [ObservableProperty] private ObservableCollection<Sectors.ViewModels.Sector> v5StoredSectors = [];
@@ -154,13 +154,13 @@ public partial class ImageResultEntry
         if (V5CurrentReport["event"]?["name"].ToString() == "cycle-report-alt")
         {
             foreach (var rSec in V5CurrentReport["event"]?["data"]?["decodeData"])
-                tempSectors.Add(new Sectors.ViewModels.Sector(rSec.ToObject<Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", SelectedImageRoll.SelectedStandard, SelectedImageRoll.SelectedGS1Table));
+                tempSectors.Add(new Sectors.ViewModels.Sector(rSec.ToObject<V5_REST_Lib.Models.Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", SelectedImageRoll.SelectedStandard, SelectedImageRoll.SelectedGS1Table));
 
         }
         else if (V5CurrentReport["event"]?["name"].ToString() == "cycle-report")
         {
             foreach (var rSec in V5CurrentReport["event"]["data"]["cycleConfig"]["qualifiedResults"])
-                tempSectors.Add(new Sectors.ViewModels.Sector(rSec.ToObject<Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", SelectedImageRoll.SelectedStandard, SelectedImageRoll.SelectedGS1Table));
+                tempSectors.Add(new Sectors.ViewModels.Sector(rSec.ToObject<V5_REST_Lib.Models.Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", SelectedImageRoll.SelectedStandard, SelectedImageRoll.SelectedGS1Table));
         }
 
         if (tempSectors.Count > 0)
@@ -216,13 +216,13 @@ public partial class ImageResultEntry
             if (results["event"]?["name"].ToString() == "cycle-report-alt")
             {
                 foreach (var rSec in results["event"]?["data"]?["decodeData"])
-                    tempSectors.Add(new Sectors.ViewModels.Sector(rSec.ToObject<Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", SelectedImageRoll.SelectedStandard, selectedImageRoll.SelectedGS1Table));
+                    tempSectors.Add(new Sectors.ViewModels.Sector(rSec.ToObject<V5_REST_Lib.Models.Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", SelectedImageRoll.SelectedStandard, selectedImageRoll.SelectedGS1Table));
 
             }
             else if (results["event"]?["name"].ToString() == "cycle-report")
             {
                 foreach (var rSec in results["event"]["data"]["cycleConfig"]["qualifiedResults"])
-                    tempSectors.Add(new Sectors.ViewModels.Sector(rSec.ToObject<Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", SelectedImageRoll.SelectedStandard, selectedImageRoll.SelectedGS1Table));
+                    tempSectors.Add(new Sectors.ViewModels.Sector(rSec.ToObject<V5_REST_Lib.Models.Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", SelectedImageRoll.SelectedStandard, selectedImageRoll.SelectedGS1Table));
             }
         }
 

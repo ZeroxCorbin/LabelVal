@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="LabelVal.ImageRolls.Views.ImageResultEntry_Images"
+﻿<UserControl x:Class="LabelVal.Results.Views.ImageResultEntry_Images"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -6,7 +6,7 @@
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:Converters="clr-namespace:LabelVal.Converters"             
-             xmlns:ViewModels="clr-namespace:LabelVal.ImageRolls.ViewModels"
+             xmlns:ViewModels="clr-namespace:LabelVal.Results.ViewModels"
              d:DataContext="{d:DesignInstance Type=ViewModels:ImageResultEntry}"
              mc:Ignorable="d">
 

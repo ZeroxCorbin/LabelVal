@@ -42,10 +42,10 @@ public class Controller
     public int CurrentLabelCount { get; private set; }
     private long RunId { get; set; }
 
-    private ObservableCollection<ImageRolls.ViewModels.ImageResultEntry> ImageResultsList { get; set; }
+    private ObservableCollection<Results.ViewModels.ImageResultEntry> ImageResultsList { get; set; }
 
     public ImageRolls.ViewModels.ImageRollEntry SelectedImageRoll { get; private set; }
-    private ImageRolls.Databases.ImageResults ImageResultsDatabase { get; set; }
+    private Results.Databases.ImageResults ImageResultsDatabase { get; set; }
 
     public V275.ViewModels.Node Node { get; private set; }
     //private string JobName { get; }
@@ -62,7 +62,7 @@ public class Controller
         _ = OpenDatabases();
     }
 
-    public Controller Init(ObservableCollection<ImageRolls.ViewModels.ImageResultEntry> imageResultsList, int loopCount, ImageRolls.Databases.ImageResults standardsDatabase, V275.ViewModels.Node v275Node)
+    public Controller Init(ObservableCollection<Results.ViewModels.ImageResultEntry> imageResultsList, int loopCount, Results.Databases.ImageResults standardsDatabase, V275.ViewModels.Node v275Node)
     {
         ImageResultsList = imageResultsList;
         LoopCount = loopCount;
@@ -287,7 +287,7 @@ public class Controller
         return true;
     }
 
-    private static bool HasSequencing(ImageRolls.ViewModels.ImageResultEntry label)
+    private static bool HasSequencing(Results.ViewModels.ImageResultEntry label)
     {
         var template = JsonConvert.DeserializeObject<V275_REST_lib.Models.Job>(label.V275ResultRow.Template);
 

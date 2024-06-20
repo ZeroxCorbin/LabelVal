@@ -13,7 +13,7 @@ using Newtonsoft.Json;
 using V275_REST_lib.Models;
 using Newtonsoft.Json.Linq;
 
-namespace LabelVal.ImageRolls.Databases
+namespace LabelVal.Results.Databases
 {
     public partial class ImageResults : ObservableObject, IDisposable
     {

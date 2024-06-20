@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace LabelVal.ImageRolls.Views;
+namespace LabelVal.Results.Views;
 /// <summary>
 /// Interaction logic for ImageResultsDatabasesView.xaml
 /// </summary>

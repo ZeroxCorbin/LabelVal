@@ -19,14 +19,14 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
     public Printer.ViewModels.PrinterDetails PrinterDetails { get; }
 
     public ImageRolls.ViewModels.ImageRolls ImageRolls { get; }
-    public ImageRolls.ViewModels.ImageResults ImageResults { get; }
+    public Results.ViewModels.ImageResults ImageResults { get; }
 
     public V5.ViewModels.ScannerManager ScannerManager { get; }
     public V5.ViewModels.ScannerDetails ScannerDetails { get; }
 
     public LVS_95xx.ViewModels.VerifierManager VerifierManager { get; }
 
-    public ImageRolls.ViewModels.ImageResultsDatabases ImageResultsDatabases { get; }
+    public Results.ViewModels.ImageResultsDatabases ImageResultsDatabases { get; }
 
     [ObservableProperty] private string userMessage = "";
 
@@ -35,7 +35,7 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
     {
         IsActive = true;
 
-        ImageResults = new ImageRolls.ViewModels.ImageResults();
+        ImageResults = new Results.ViewModels.ImageResults();
 
         NodeDetails = new V275.ViewModels.NodeDetails();
         PrinterDetails = new Printer.ViewModels.PrinterDetails();
@@ -46,7 +46,7 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
         VerifierManager = new LVS_95xx.ViewModels.VerifierManager();
 
         ImageRolls = new ImageRolls.ViewModels.ImageRolls(new System.Drawing.Printing.PrinterSettings() { PrinterName = Printer.SelectedPrinterName });
-        ImageResultsDatabases = new ImageRolls.ViewModels.ImageResultsDatabases();
+        ImageResultsDatabases = new Results.ViewModels.ImageResultsDatabases();
 
         ScannerManager = new V5.ViewModels.ScannerManager();
 

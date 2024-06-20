@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 
-namespace LabelVal.ImageRolls.ViewModels;
+namespace LabelVal.Results.ViewModels;
 public partial class ImageResultEntry : ObservableRecipient, IRecipient<PropertyChangedMessage<LabelVal.LVS_95xx.ViewModels.VerifierPacket>>
 {
     public class L95xxReport

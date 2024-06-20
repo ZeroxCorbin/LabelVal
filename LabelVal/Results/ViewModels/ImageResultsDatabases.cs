@@ -10,7 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace LabelVal.ImageRolls.ViewModels;
+namespace LabelVal.Results.ViewModels;
 public partial class ImageResultsDatabases : ObservableRecipient
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();

@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace LabelVal.ImageRolls.Views;
+namespace LabelVal.Results.Views;
 /// <summary>
 /// Interaction logic for ImageResults.xaml
 /// </summary>

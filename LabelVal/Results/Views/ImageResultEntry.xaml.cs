@@ -7,7 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace LabelVal.ImageRolls.Views;
+namespace LabelVal.Results.Views;
 
 /// <summary>
 /// Interaction logic for LabelControlView.xaml

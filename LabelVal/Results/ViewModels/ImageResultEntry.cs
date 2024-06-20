@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
+using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Messages;
 using LabelVal.Utilities;
 using LabelVal.V275.ViewModels;
@@ -9,20 +10,16 @@ using LabelVal.V5.ViewModels;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.Drawing.Printing;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using V275_REST_lib.Models;
 
-namespace LabelVal.ImageRolls.ViewModels;
+namespace LabelVal.Results.ViewModels;
 
 public partial class ImageResultEntry : ObservableRecipient,
     IRecipient<PropertyChangedMessage<Node>>,
@@ -55,7 +52,7 @@ public partial class ImageResultEntry : ObservableRecipient,
     {
         PrinterAreaOverlay = ShowPrinterAreaOverSource ? CreatePrinterAreaOverlay(true) : null;
         OnShowDetailsChanged(ShowDetails);
-    } 
+    }
 
     [ObservableProperty] private Databases.ImageResults selectedDatabase;
     partial void OnSelectedDatabaseChanged(Databases.ImageResults value) => GetStored();

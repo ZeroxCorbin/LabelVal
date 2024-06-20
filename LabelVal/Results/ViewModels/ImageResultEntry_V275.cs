@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Messages;
 using LabelVal.Utilities;
 using Newtonsoft.Json;
@@ -13,7 +14,7 @@ using System.Windows;
 using System.Windows.Media;
 using V275_REST_lib.Models;
 
-namespace LabelVal.ImageRolls.ViewModels;
+namespace LabelVal.Results.ViewModels;
 public partial class ImageResultEntry
 {
 

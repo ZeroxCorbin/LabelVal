@@ -1,11 +1,7 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using LabelVal.ImageRolls.ViewModels;
+﻿using LabelVal.ImageRolls.ViewModels;
 using SQLite;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LabelVal.ImageRolls.Databases;
 public class ImageRolls
@@ -52,7 +48,7 @@ public class ImageRolls
     {
         try
         {
-            if(Connection.Table<ImageEntry>().Count() > 0)
+            if (Connection.Table<ImageEntry>().Count() > 0)
                 return Connection.Table<ImageEntry>().Where(v => v.RollUID == rollUID).ToList();
         }
         catch { }
