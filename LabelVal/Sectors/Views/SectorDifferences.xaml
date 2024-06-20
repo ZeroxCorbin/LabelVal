@@ -4,6 +4,7 @@
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+                xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
             xmlns:local="clr-namespace:LabelVal.Sectors.Views"
             xmlns:ViewModels="clr-namespace:LabelVal.Sectors.ViewModels"
@@ -18,34 +19,16 @@
         <Converters:FloatStringTrimConverter x:Key="floatTrim"/>
     </UserControl.Resources>
 
-    <Border BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
-            Visibility="{Binding IsNotEmpty, Converter={StaticResource booltovis}}"
-            BorderThickness="1" Margin="1" CornerRadius="3">
-        <Grid Margin="3">
+    <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Foreground="{DynamicResource MahApps.Brushes.Text}" Margin="3" Padding="0">
+        <DockPanel Margin="3">
 
-            <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition Height="auto"/>
-            </Grid.RowDefinitions>
+            <StackPanel>
 
-            <StackPanel Orientation="Horizontal" Grid.ColumnSpan="3">
                 <TextBlock Text="{Binding UserName, Mode=OneTime}" Margin="3,0,3,3"/>
-            </StackPanel>
 
-            <Grid Grid.Row="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
-
-                <Border Grid.Row="0" BorderThickness="1" Padding="1" CornerRadius="3" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
-                    <Border.Style>
-                        <Style TargetType="{x:Type Border}">
+                <DockPanel>
+                    <DockPanel.Style>
+                        <Style TargetType="{x:Type DockPanel}">
                             <Setter Property="Visibility" Value="Visible"/>
                             <Style.Triggers>
                                 <DataTrigger Value="0" Binding="{Binding Alarms.Count, Mode=OneTime}">
@@ -53,8 +36,8 @@
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
-                    </Border.Style>
-
+                    </DockPanel.Style>
+                    <Separator DockPanel.Dock="Top"/>
                     <ItemsControl ItemsSource="{Binding Alarms}">
                         <ItemsControl.ItemTemplate>
                             <HierarchicalDataTemplate>
@@ -100,20 +83,20 @@
                         </ItemsControl.ItemTemplate>
 
                     </ItemsControl>
-                </Border>
+                </DockPanel>
 
-                <Border Grid.Row="1" BorderThickness="1" Padding="1" CornerRadius="3" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
-                    <Border.Style>
-                        <Style TargetType="{x:Type Border}">
+                <DockPanel>
+                    <DockPanel.Style>
+                        <Style TargetType="{x:Type DockPanel}">
                             <Setter Property="Visibility" Value="Visible"/>
                             <Style.Triggers>
                                 <DataTrigger Value="0" Binding="{Binding GradeValues.Count, Mode=OneTime}">
                                     <Setter Property="Visibility" Value="Collapsed"/>
-                                 </DataTrigger>
+                                </DataTrigger>
                             </Style.Triggers>
                         </Style>
-                    </Border.Style>
-
+                    </DockPanel.Style>
+                    <Separator DockPanel.Dock="Top"/>
                     <ItemsControl ItemsSource="{Binding GradeValues}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
@@ -168,11 +151,11 @@
                         </ItemsControl.ItemTemplate>
 
                     </ItemsControl>
-                </Border>
+                </DockPanel>
 
-                <Border Grid.Row="2" BorderThickness="1" Padding="1" CornerRadius="3" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
-                    <Border.Style>
-                        <Style TargetType="{x:Type Border}">
+                <DockPanel>
+                    <DockPanel.Style>
+                        <Style TargetType="{x:Type DockPanel}">
                             <Setter Property="Visibility" Value="Visible"/>
                             <Style.Triggers>
                                 <DataTrigger Value="0" Binding="{Binding Values.Count, Mode=OneTime}">
@@ -180,8 +163,8 @@
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
-                    </Border.Style>
-
+                    </DockPanel.Style>
+                    <Separator DockPanel.Dock="Top"/>
                     <ItemsControl ItemsSource="{Binding Values}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
@@ -206,20 +189,20 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                </Border>
+                </DockPanel>
 
-                <Border Grid.Row="3" BorderThickness="1" Padding="1" CornerRadius="3" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
-                    <Border.Style>
-                        <Style TargetType="{x:Type Border}">
+                <DockPanel>
+                    <DockPanel.Style>
+                        <Style TargetType="{x:Type DockPanel}">
                             <Setter Property="Visibility" Value="Visible"/>
                             <Style.Triggers>
                                 <DataTrigger Value="0" Binding="{Binding ValueResults.Count, Mode=OneTime}">
                                     <Setter Property="Visibility" Value="Collapsed"/>
-                                 </DataTrigger>
+                                </DataTrigger>
                             </Style.Triggers>
                         </Style>
-                    </Border.Style>
-
+                    </DockPanel.Style>
+                    <Separator DockPanel.Dock="Top"/>
                     <ItemsControl ItemsSource="{Binding ValueResults}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
@@ -261,11 +244,11 @@
                         </ItemsControl.ItemTemplate>
 
                     </ItemsControl>
-                </Border>
+                </DockPanel>
 
-                <Border Grid.Row="4" BorderThickness="1" Padding="1" CornerRadius="3" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
-                    <Border.Style>
-                        <Style TargetType="{x:Type Border}">
+                <DockPanel>
+                    <DockPanel.Style>
+                        <Style TargetType="{x:Type DockPanel}">
                             <Setter Property="Visibility" Value="Visible"/>
                             <Style.Triggers>
                                 <DataTrigger Value="0" Binding="{Binding Gs1ValueResults.Count, Mode=OneTime}">
@@ -273,8 +256,8 @@
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
-                    </Border.Style>
-
+                    </DockPanel.Style>
+                    <Separator DockPanel.Dock="Top"/>
                     <ItemsControl ItemsSource="{Binding Gs1ValueResults}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
@@ -316,11 +299,11 @@
                         </ItemsControl.ItemTemplate>
 
                     </ItemsControl>
-                </Border>
+                </DockPanel>
 
-                <Border Grid.Row="5" BorderThickness="1" Padding="1" CornerRadius="3" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
-                    <Border.Style>
-                        <Style TargetType="{x:Type Border}">
+                <DockPanel>
+                    <DockPanel.Style>
+                        <Style TargetType="{x:Type DockPanel}">
                             <Setter Property="Visibility" Value="Visible"/>
                             <Style.Triggers>
                                 <DataTrigger Value="0" Binding="{Binding Gs1Grades.Count, Mode=OneTime}">
@@ -331,8 +314,8 @@
                                 </DataTrigger>-->
                             </Style.Triggers>
                         </Style>
-                    </Border.Style>
-
+                    </DockPanel.Style>
+                    <Separator DockPanel.Dock="Top"/>
                     <ItemsControl ItemsSource="{Binding Gs1Grades}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
@@ -382,20 +365,20 @@
                         </ItemsControl.ItemTemplate>
 
                     </ItemsControl>
-                </Border>
+                </DockPanel>
 
-                <Border Grid.Row="6" BorderThickness="1" Padding="1" CornerRadius="3" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
-                    <Border.Style>
-                        <Style TargetType="{x:Type Border}">
+                <DockPanel>
+                    <DockPanel.Style>
+                        <Style TargetType="{x:Type DockPanel}">
                             <Setter Property="Visibility" Value="Visible"/>
                             <Style.Triggers>
                                 <DataTrigger Value="0" Binding="{Binding Blemishes.Count, Mode=OneTime}">
                                     <Setter Property="Visibility" Value="Collapsed"/>
-                                 </DataTrigger>
+                                </DataTrigger>
                             </Style.Triggers>
                         </Style>
-                    </Border.Style>
-
+                    </DockPanel.Style>
+                    <Separator DockPanel.Dock="Top"/>
                     <ItemsControl ItemsSource="{Binding Blemishes, Mode=OneTime}">
                         <ItemsControl.ItemTemplate>
                             <HierarchicalDataTemplate>
@@ -415,18 +398,22 @@
                         </ItemsControl.ItemTemplate>
 
                     </ItemsControl>
-                </Border>
+                </DockPanel>
 
-                <Border Grid.Row="7" BorderThickness="1" Padding="1" CornerRadius="3" Visibility="{Binding IsNotOCVMatch, Converter={StaticResource BooleanToVisibilityConverter}}" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
+                <DockPanel Visibility="{Binding IsNotOCVMatch, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Separator DockPanel.Dock="Top"/>
                     <TextBlock Text="{Binding OCVMatchText}" Margin="2"/>
-                </Border>
+                </DockPanel>
 
-                <Border Grid.Row="7" BorderThickness="1" Padding="1" CornerRadius="3" Visibility="{Binding IsSectorMissing, Converter={StaticResource BooleanToVisibilityConverter}}" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
+                <DockPanel Visibility="{Binding IsSectorMissing, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Separator DockPanel.Dock="Top"/>
                     <TextBlock Text="{Binding SectorMissingText}" Margin="2"/>
-                </Border>
-                
-            </Grid>
+                </DockPanel>
 
-        </Grid>
-    </Border>
+            </StackPanel>
+
+        </DockPanel>
+
+    </md:Card>
+
 </UserControl>
