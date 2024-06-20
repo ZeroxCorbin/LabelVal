@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
-using LabelVal.Messages;
 using LabelVal.WindowViewModels;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
@@ -37,7 +36,7 @@ public partial class V275 : ObservableRecipient, IRecipient<PropertyChangedMessa
     }
 
     [ObservableProperty]
-        private uint v275_SystemPort = App.Settings.GetValue(nameof(V275_SystemPort), GetV275PortNumber(), true);
+    private uint v275_SystemPort = App.Settings.GetValue(nameof(V275_SystemPort), GetV275PortNumber(), true);
     partial void OnV275_SystemPortChanged(uint value)
     {
         if (!LibStaticUtilities_IPHostPort.Ports.IsPortValid(value))
@@ -46,7 +45,7 @@ public partial class V275 : ObservableRecipient, IRecipient<PropertyChangedMessa
             App.Settings.SetValue(nameof(V275_SystemPort), value);
     }
 
-public string V275_SystemPortString
+    public string V275_SystemPortString
     {
         get => V275_SystemPort.ToString();
         set

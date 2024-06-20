@@ -560,9 +560,9 @@
                                         </DockPanel>
                                     </GroupBox.Header>
 
-                                    <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Padding="2" Margin="3">
+                                    <md:Card Background="Black" Padding="2" Margin="3">
                                         <Grid Height="332" Width="400">
-                                            <paz:ZoomBorder Name="ZoomBorder" Margin="3" ClipToBounds="True" MouseDown="SourceImage_MouseDown">
+                                            <paz:ZoomBorder Name="ZoomBorder" Margin="3" ClipToBounds="True" MouseDown="SourceImage_MouseDown" VerticalAlignment="Center">
                                                 <Grid>
                                                     <Image x:Name="Image" 
                                                    Source="{Binding RawImage, Converter={StaticResource bytesToImage}}"

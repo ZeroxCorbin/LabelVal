@@ -121,7 +121,10 @@
                                     </Button.Style>
                                 </Button>
 
-                                <Button Command="{Binding ConvertDatabaseCommand}">
+
+                                <TextBlock Text="{Binding FileName}" Margin="3" />
+
+                                <Button Command="{Binding ConvertDatabaseCommand}" HorizontalAlignment="Right">
 
                                     <iconPacks:PackIconMaterial Kind="Exclamation" Height="14" Width="14"/>
 
@@ -137,9 +140,6 @@
                                         </Style>
                                     </Button.Style>
                                 </Button>
-
-                                <TextBlock Text="{Binding FileName}" Margin="3,0"/>
-
                             </DockPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>

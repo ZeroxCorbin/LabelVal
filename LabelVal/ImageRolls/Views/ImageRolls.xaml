@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:LabelVal.ImageRolls.Views"
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              xmlns:viewModels="clr-namespace:LabelVal.ImageRolls.ViewModels"
              xmlns:sectors="clr-namespace:LabelVal.Sectors.ViewModels"
@@ -181,8 +182,9 @@
                                         <Setter Property="Template">
                                             <Setter.Value>
                                                 <ControlTemplate TargetType="{x:Type GroupItem}">
-                                                    <Expander md:ExpanderAssist.ExpanderButtonPosition="Start"
-                                                       BorderThickness="0" Padding="0" md:ExpanderAssist.HorizontalHeaderPadding="3">
+                                                    <Expander BorderThickness="0" Margin="0,1" md:ExpanderAssist.ExpanderButtonPosition="Start"
+                                                          Style="{StaticResource MahApps.Styles.Expander}"
+                                                          mah:HeaderedControlHelper.HeaderBackground="{DynamicResource MahApps.Brushes.Accent4}">
                                                         <Expander.Header>
                                                             <TextBlock Text="{Binding Name}" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                                                         </Expander.Header>
@@ -203,8 +205,9 @@
                                         <Setter Property="Template">
                                             <Setter.Value>
                                                 <ControlTemplate TargetType="{x:Type GroupItem}">
-                                                    <Expander md:ExpanderAssist.ExpanderButtonPosition="Start" Margin="10,0"
-                                                       BorderThickness="0" Padding="0" md:ExpanderAssist.HorizontalHeaderPadding="3">
+                                                    <Expander BorderThickness="0" Margin="0,1" md:ExpanderAssist.ExpanderButtonPosition="Start"
+                                                          Style="{StaticResource MahApps.Styles.Expander}"
+                                                          mah:HeaderedControlHelper.HeaderBackground="{DynamicResource MahApps.Brushes.Accent3}">
                                                         <Expander.Header>
                                                             <TextBlock Text="{Binding Name}" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                                                         </Expander.Header>
@@ -223,7 +226,7 @@
 
                         <ListView.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <DockPanel Margin="0,0,-2,0"/>
+                                <DockPanel Margin="0,0,0,0"/>
                             </ItemsPanelTemplate>
                         </ListView.ItemsPanel>
 
@@ -325,8 +328,8 @@
                                     <Setter Property="Template">
                                         <Setter.Value>
                                             <ControlTemplate TargetType="{x:Type GroupItem}">
-                                                <Expander md:ExpanderAssist.ExpanderButtonPosition="Start"
-                                                       BorderThickness="0" Padding="0" md:ExpanderAssist.HorizontalHeaderPadding="3">
+                                                <Expander BorderThickness="0" Margin="0,1" md:ExpanderAssist.ExpanderButtonPosition="Start"  Style="{StaticResource MahApps.Styles.Expander}"
+                                                          mah:HeaderedControlHelper.HeaderBackground="{DynamicResource MahApps.Brushes.Accent4}">
                                                     <Expander.Header>
                                                         <TextBlock Text="{Binding Name}" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                                                     </Expander.Header>
@@ -347,8 +350,9 @@
                                     <Setter Property="Template">
                                         <Setter.Value>
                                             <ControlTemplate TargetType="{x:Type GroupItem}">
-                                                <Expander md:ExpanderAssist.ExpanderButtonPosition="Start" Margin="10,0"
-                                                       BorderThickness="0" Padding="0" md:ExpanderAssist.HorizontalHeaderPadding="3">
+                                                <Expander BorderThickness="0" Margin="0,1" md:ExpanderAssist.ExpanderButtonPosition="Start"
+                                                          Style="{StaticResource MahApps.Styles.Expander}"
+                                                          mah:HeaderedControlHelper.HeaderBackground="{DynamicResource MahApps.Brushes.Accent3}">
                                                     <Expander.Header>
                                                         <TextBlock Text="{Binding Name}" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                                                     </Expander.Header>
@@ -366,17 +370,17 @@
 
                     </ListView.GroupStyle>
 
-                    <ListView.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <DockPanel Margin="0,0,-2,0"/>
-                        </ItemsPanelTemplate>
-                    </ListView.ItemsPanel>
+                        <ListView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <DockPanel/>
+                            </ItemsPanelTemplate>
+                        </ListView.ItemsPanel>
 
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
-                            <Setter Property="DockPanel.Dock" Value="Top"/>
-                        </Style>
-                    </ListView.ItemContainerStyle>
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
+                                <Setter Property="DockPanel.Dock" Value="Top"/>
+                            </Style>
+                        </ListView.ItemContainerStyle>
 
                     <ListView.ItemTemplate>
                         <DataTemplate>

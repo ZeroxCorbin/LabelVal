@@ -27,9 +27,16 @@
                      md:HintAssist.Hint="Name" md:HintAssist.IsFloating="True"/>
 
             <DockPanel DockPanel.Dock="Top" >
-                <ToggleButton IsChecked="{Binding WriteSectorsBeforeProcess}" Margin="7" Height="24" Width="24" VerticalAlignment="Top"
-                          Content="{iconPacks:Material Kind=FormatListBulletedSquare}"
-                          md:ToggleButtonAssist.OnContent="{iconPacks:Material Kind=FormatListBulletedType}">
+                <ToggleButton IsChecked="{Binding WriteSectorsBeforeProcess}" Margin="7" Height="24" Width="24" VerticalAlignment="Top">
+                    
+                    <ToggleButton.Content>
+                        <iconPacks:PackIconMaterial Kind="FormatListBulletedSquare"/>
+                    </ToggleButton.Content>
+                    
+                    <md:ToggleButtonAssist.OnContent>
+                        <iconPacks:PackIconMaterial Kind="FormatListBulletedSquare"/>
+                    </md:ToggleButtonAssist.OnContent>
+                    
                     <ToggleButton.Style>
                         <Style TargetType="ToggleButton" BasedOn="{StaticResource MaterialDesignActionToggleButton}">
                             <Setter Property="ToolTip" Value="The template sectors are shared."/>

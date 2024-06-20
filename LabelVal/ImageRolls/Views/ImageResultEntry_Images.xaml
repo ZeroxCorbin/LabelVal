@@ -216,9 +216,11 @@
 
             </GroupBox.Header>
 
-            <DockPanel>
+            <DockPanel Background="Black">
 
-                <Grid VerticalAlignment="Top" MaxHeight="400" Width="400" Margin="3" MouseDown="SourceImage_MouseDown" ContextMenu="{StaticResource cmImageModify}" ContextMenuOpening="SourceImage_ContextMenuOpening">
+                <Grid VerticalAlignment="Top" MaxHeight="400" Width="400" Margin="3" MouseDown="SourceImage_MouseDown" 
+                      
+                      ContextMenu="{StaticResource cmImageModify}" ContextMenuOpening="SourceImage_ContextMenuOpening">
 
                     <Image x:Name="SourceImage"
                                 Source="{Binding SourceImage.ImageLow, Mode=OneTime}"
@@ -573,7 +575,7 @@
                 </DockPanel>
             </GroupBox.Header>
 
-            <DockPanel>
+            <DockPanel Background="Black">
 
                 <Grid VerticalAlignment="Top" Margin="3" MouseDown="V275Image_MouseDown">
                     <Image Name="V275Image" Source="{Binding V275Image.ImageLow}" 
@@ -868,7 +870,7 @@
                 </DockPanel>
             </GroupBox.Header>
 
-            <DockPanel>
+            <DockPanel Background="Black">
 
                 <Grid VerticalAlignment="Top" Margin="3" MouseDown="V5Image_MouseDown">
                     <Image Name="V5Image" Source="{Binding V5Image.ImageLow, Mode=OneWay}" 

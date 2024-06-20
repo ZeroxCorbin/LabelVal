@@ -39,7 +39,7 @@
 
                     <DockPanel>
 
-                        <Button DockPanel.Dock="Top" Command="{Binding LoginCommand}" BorderThickness="0">
+                        <Button Margin="3" DockPanel.Dock="Top" Command="{Binding LoginCommand}" BorderThickness="0">
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
                                     <Setter Property="Content">
@@ -60,18 +60,20 @@
                             </Button.Style>
                         </Button>
 
-                        <ToggleButton IsChecked="{Binding LoginMonitor}" Width="24" Height="24" Margin="0,6,0,0" HorizontalAlignment="Center" VerticalAlignment="Top"
-                                      ToolTipService.ShowOnDisabled="True" Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
-                              md:ToggleButtonAssist.OnContent="{iconPacks:Modern Kind=Monitor}"
-                              Content="{iconPacks:FontAwesome Kind=TerminalSolid}">
+                        <ToggleButton IsChecked="{Binding LoginMonitor}" BorderThickness="0" Width="24" Height="24" Margin="3" HorizontalAlignment="Center" VerticalAlignment="Top"
+                                      ToolTipService.ShowOnDisabled="True" Background="{DynamicResource MahApps.Brushes.Accent3}">
 
                             <ToggleButton.Style>
-                                <Style TargetType="ToggleButton" BasedOn="{StaticResource MaterialDesignActionDarkToggleButton}">
+                                <Style TargetType="ToggleButton" BasedOn="{StaticResource MahApps.Styles.ToggleButton.Circle}">
                                     <Setter Property="ToolTip" Value="Login control."/>
                                     <Setter Property="IsEnabled" Value="True"/>
+                                    <Setter Property="Content" Value="{iconPacks:FontAwesome Kind=TerminalSolid}"/>
+                                    
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding LoginMonitor}" Value="True">
                                             <Setter Property="ToolTip" Value="Login monitor."/>
+                                            
+                                            <Setter Property="Content" Value="{iconPacks:Modern Kind=Monitor}"/>
                                         </DataTrigger>
 
                                         <DataTrigger Binding="{Binding IsLoggedIn}" Value="True">
