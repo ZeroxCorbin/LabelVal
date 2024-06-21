@@ -124,7 +124,7 @@
 
             <DockPanel>
 
-                <Expander DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Left" md:ExpanderAssist.HorizontalHeaderPadding="6" MaxHeight="450"
+                <Expander DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Right" md:ExpanderAssist.HorizontalHeaderPadding="6" MaxHeight="450"
                           Background="{DynamicResource MahApps.Brushes.Accent4}">
 
                     <Expander.Header>

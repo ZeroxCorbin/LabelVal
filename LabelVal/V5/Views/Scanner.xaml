@@ -37,7 +37,9 @@
 
                 <DockPanel>
 
-                    <md:Card DockPanel.Dock="Top" VerticalAlignment="Top" Padding="3" Margin="3" Background="{DynamicResource MahApps.Brushes.Accent4}">
+                    <md:Card DockPanel.Dock="Top" VerticalAlignment="Top" Padding="3" Margin="3" 
+                             Background="{DynamicResource MahApps.Brushes.Accent4}">
+                        
                         <Button Command="{Binding WebsocketConnectCommand}" BorderThickness="0">
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
@@ -58,6 +60,7 @@
                                 </Style>
                             </Button.Style>
                         </Button>
+                        
                     </md:Card>
 
                     <Button Margin="3" Click="btnShowSettings_Click" Style="{StaticResource GroupHeaderCirlceButton}" ToolTip="Show Settings"
@@ -71,7 +74,9 @@
 
                     <md:DrawerHost.TopDrawerContent>
 
-                        <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}"  Foreground="{DynamicResource MahApps.Brushes.Text}" Margin="3" Padding="2" HorizontalAlignment="Left">
+                        <md:Card Margin="3" Padding="2" HorizontalAlignment="Left"
+                                 Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                                 Foreground="{DynamicResource MahApps.Brushes.Text}">
                             <md:Card.Style>
                                 <Style TargetType="{x:Type md:Card}">
                                     <Setter Property="Visibility" Value="Collapsed"/>
@@ -355,7 +360,7 @@
 
                 <DockPanel>
 
-                    <Expander DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Left" md:ExpanderAssist.HorizontalHeaderPadding="6" MaxHeight="450"
+                    <Expander DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Right" md:ExpanderAssist.HorizontalHeaderPadding="6" MaxHeight="450"
                                Background="{DynamicResource MahApps.Brushes.Accent4}">
 
                         <Expander.Header>

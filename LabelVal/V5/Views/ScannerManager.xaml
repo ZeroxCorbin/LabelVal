@@ -15,7 +15,7 @@
         <converters:ObjectIsNull x:Key="objectIsNull"/>
     </UserControl.Resources>
 
-    <GroupBox Margin="3" Padding="3" VerticalAlignment="Top" HorizontalAlignment="Left"
+    <GroupBox MinWidth="312" Margin="3" Padding="3" VerticalAlignment="Top" HorizontalAlignment="Left"
                   Style="{StaticResource MaterialDesignCardGroupBox}"
                 md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
                 md:ColorZoneAssist.Mode="Custom">
@@ -130,9 +130,18 @@
 
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            
-                            <local:Scanner DataContext="{Binding }"/>
-
+                            <local:Scanner DataContext="{Binding }">
+                                <local:Scanner.Style>
+                                    <Style TargetType="local:Scanner">
+                                        <Setter Property="IsHitTestVisible" Value="False"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListViewItem}}" Value="True">
+                                                <Setter Property="IsHitTestVisible" Value="True"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </local:Scanner.Style>
+                            </local:Scanner>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>

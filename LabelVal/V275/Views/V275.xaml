@@ -10,14 +10,14 @@
              d:DataContext="{d:DesignInstance Type=ViewModels:V275}"
              mc:Ignorable="d">
 
-    <GroupBox VerticalAlignment="Top" HorizontalAlignment="Left" Margin="3" Padding="3" 
-                  Style="{StaticResource MaterialDesignCardGroupBox}"
+    <GroupBox VerticalAlignment="Top" HorizontalAlignment="Left" Margin="3" Padding="3" MinWidth="312"
+                Style="{StaticResource MaterialDesignCardGroupBox}"
                 md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
                 md:ColorZoneAssist.Mode="Custom">
 
         <GroupBox.Header>
             <DockPanel Margin="-5">
-                
+
                 <Button Click="btnShowSettings_Click" Style="{StaticResource GroupHeaderCirlceButton}" Margin="3,0,6,0">
                     <iconPacks:PackIconMaterial Kind="Cog" Height="14" Width="14"/>
                 </Button>
@@ -29,15 +29,15 @@
                 <Button Command="{Binding GetDevicesCommand}" Style="{StaticResource GroupHeaderCirlceButton}" Margin="6,0,3,0" >
                     <iconPacks:Modern Height="14" Width="14" Kind="Refresh"/>
                 </Button>
-                
+
                 <Button Click="btnOpenInBrowser_Click" Style="{StaticResource GroupHeaderCirlceButton}">
                     <iconPacks:PackIconModern Height="14" Width="14" Kind="Browser"/>
                 </Button>
-                
+
                 <Button Click="btnShowDetails_Click" Style="{StaticResource GroupHeaderCirlceButton}" HorizontalAlignment="Right">
                     <iconPacks:PackIconMaterial Height="14" Width="14" Kind="CodeJson"/>
                 </Button>
-                
+
 
             </DockPanel>
         </GroupBox.Header>
@@ -57,14 +57,14 @@
                             </Style.Triggers>
                         </Style>
                     </md:Card.Style>
-                    
+
                     <DockPanel>
                         <DockPanel DockPanel.Dock="Top" Margin="3">
 
                             <TextBox Text="{Binding V275_Host}" MinWidth="50" Margin="3,0" HorizontalAlignment="Center"
                                          md:HintAssist.Hint="IP Address" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left"
                                      md:TextFieldAssist.HasClearButton="True">
-                                
+
                                 <TextBox.Style>
                                     <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                         <Setter Property="IsEnabled" Value="True"/>
@@ -140,11 +140,12 @@
                         </DockPanel>
                     </DockPanel>
                 </md:Card>
-                
+
             </md:DrawerHost.TopDrawerContent>
 
             <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
                 <ListView ItemsSource="{Binding Nodes}" SelectedItem="{Binding SelectedNode}" HorizontalAlignment="Center">
+
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
                             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -153,14 +154,23 @@
 
                     <ListView.ItemTemplate>
                         <DataTemplate>
-
-                                <local:NodeItem DataContext="{Binding }"/>
-                 
+                            <local:NodeItem DataContext="{Binding }">
+                                <local:NodeItem.Style>
+                                    <Style TargetType="local:NodeItem">
+                                        <Setter Property="IsHitTestVisible" Value="False"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListViewItem}}" Value="True">
+                                                <Setter Property="IsHitTestVisible" Value="True"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </local:NodeItem.Style>
+                            </local:NodeItem>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
             </md:Card>
-            
+
         </md:DrawerHost>
     </GroupBox>
 
