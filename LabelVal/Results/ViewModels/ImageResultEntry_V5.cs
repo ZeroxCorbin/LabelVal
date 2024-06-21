@@ -43,6 +43,7 @@ public partial class ImageResultEntry
     private async Task V5Process(string imageType)
     {
         IsV5Faulted = false;
+        IsV5Working = true;
 
         BringIntoView?.Invoke();
 

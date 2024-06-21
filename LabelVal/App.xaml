@@ -32,7 +32,7 @@
                 <Setter Property="HorizontalAlignment" Value="Left"/>
             </Style>
 
-            <Style x:Key="GroupHeaderCirlceActionButton" TargetType="Button" BasedOn="{StaticResource MaterialDesignFloatingActionButton}">
+            <!--<Style x:Key="GroupHeaderCirlceActionButton" TargetType="Button" BasedOn="{StaticResource MaterialDesignFloatingActionButton}">
                 <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.ThemeBackground}"/>
                 <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
                 <Setter Property="BorderThickness" Value="0"/>
@@ -43,7 +43,7 @@
                 <Setter Property="HorizontalAlignment" Value="Left"/>
                 <Setter Property="md:ButtonProgressAssist.IsIndeterminate" Value="True"/>
                 <Setter Property="md:ButtonProgressAssist.Value" Value="-1"/>
-            </Style>
+            </Style>-->
 
             <SolidColorBrush x:Key="HighlightBrush" Color="{DynamicResource Primary700}"/>
             <SolidColorBrush x:Key="AccentBaseColorBrush" Color="{DynamicResource Primary600}" />

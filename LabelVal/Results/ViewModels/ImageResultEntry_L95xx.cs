@@ -65,12 +65,9 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
         List<Sectors.ViewModels.Sector> tempSectors = [];
         foreach (var rSec in report)
             tempSectors.Add(new Sectors.ViewModels.Sector(rSec.Template, rSec.Report, StandardsTypes.None, GS1TableNames.None));
-        
 
         if (tempSectors.Count > 0) 
         {
-            tempSectors = tempSectors.OrderBy(x => x.Template.Top).ToList();
-
             foreach (var sec in tempSectors)
                 L95xxStoredSectors.Add(sec);
         }

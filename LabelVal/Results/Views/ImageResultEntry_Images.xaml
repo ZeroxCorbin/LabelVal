@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:Converters="clr-namespace:LabelVal.Converters"             
              xmlns:ViewModels="clr-namespace:LabelVal.Results.ViewModels"
@@ -82,14 +83,18 @@
                                     BorderBrush="{DynamicResource YellowBrush2}"
                                     md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV275Working}">
 
-                        <Rectangle Width="14" Height="14" Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
-                            <Rectangle.OpacityMask>
-                                <VisualBrush Stretch="Fill" Visual="{DynamicResource V275Png}" />
-                            </Rectangle.OpacityMask>
-                        </Rectangle>
+                        <Grid>
+                            <mah:ProgressRing IsActive="{Binding IsV275Working}" Width="14" Height="14" Foreground="White"/>
+
+                            <Rectangle Width="14" Height="14" Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill" Visual="{DynamicResource V275Png}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                        </Grid>
 
                         <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceActionButton}">
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
 
                                 <Style.Triggers>
@@ -108,13 +113,15 @@
                     </Button>
 
                     <!--V275 Print Source Image-->
-                    <Button Command="{Binding V275ProcessCommand}" CommandParameter="print" ToolTip="V275: Print the source image and read the results."
-                                    md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV275Working}">
+                    <Button Command="{Binding V275ProcessCommand}" CommandParameter="print" ToolTip="V275: Print the source image and read the results.">
 
-                        <iconPacks:PackIconMaterial Kind="Printer" Height="14" Width="14"/>
-
+                        <Grid>
+                            <mah:ProgressRing IsActive="{Binding IsV275Working}" Width="14" Height="14" Foreground="White"/>
+                            <iconPacks:PackIconMaterial Kind="Printer" Height="14" Width="14"/>
+                        </Grid>
+                        
                         <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceActionButton}">
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
 
                                 <Style.Triggers>
@@ -134,13 +141,14 @@
 
                     <!--V5 Process Source Image-->
                     <Button Command="{Binding V5ProcessCommand}" CommandParameter="source" ToolTip="V5: Process the source image with the simulator." 
-                                    BorderBrush="{DynamicResource YellowBrush2}"
-                                    md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV5Working}">
-
-                        <iconPacks:PackIconMaterial Kind="Camera" Height="14" Width="14"/>
+                                    BorderBrush="{DynamicResource YellowBrush2}">
+                        <Grid>
+                            <mah:ProgressRing IsActive="{Binding IsV5Working}" Width="14" Height="14" Foreground="White"/>
+                            <iconPacks:PackIconMaterial Kind="Camera" Height="14" Width="14" Margin="3"/>
+                        </Grid>
 
                         <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceActionButton}">
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
 
                                 <Style.Triggers>
@@ -479,17 +487,20 @@
 
                     <!--Process V275 Stored Image-->
                     <Button Command="{Binding V275ProcessCommand}" CommandParameter="v275Stored" ToolTip="V275: Process the stored image with the simulator." 
-                                    BorderBrush="{DynamicResource YellowBrush2}"
-                                    md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV275Working}">
+                                    BorderBrush="{DynamicResource YellowBrush2}">
 
-                        <Rectangle Width="14" Height="14" Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
-                            <Rectangle.OpacityMask>
-                                <VisualBrush Stretch="Fill" Visual="{DynamicResource V275Png}" />
-                            </Rectangle.OpacityMask>
-                        </Rectangle>
+                        <Grid>
+                            <mah:ProgressRing IsActive="{Binding IsV275Working}" Width="14" Height="14" Foreground="White"/>
 
+                            <Rectangle Width="14" Height="14" Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill" Visual="{DynamicResource V275Png}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                        </Grid>
+ 
                         <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceActionButton}">
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
 
                                 <Style.Triggers>
@@ -508,14 +519,16 @@
                     </Button>
 
                     <!--Process V5 Stored Image-->
-                    <Button Command="{Binding V5ProcessCommand}" CommandParameter="v5Stored" ToolTip="V5: Process the stored image with the simulator." 
-                                    BorderBrush="{DynamicResource YellowBrush2}"
-                                    md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV5Working}">
-
-                        <iconPacks:PackIconMaterial Kind="Camera" Height="14" Width="14"/>
+                    <Button Command="{Binding V5ProcessCommand}" CommandParameter="v275Stored" ToolTip="V5: Process the stored image with the simulator." 
+                                    BorderBrush="{DynamicResource YellowBrush2}">
+                        
+                        <Grid>
+                            <mah:ProgressRing IsActive="{Binding IsV5Working}" Width="14" Height="14" Foreground="White"/>
+                            <iconPacks:PackIconMaterial Kind="Camera" Height="14" Width="14" Margin="3"/>
+                        </Grid>
 
                         <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceActionButton}">
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
 
                                 <Style.Triggers>
@@ -771,12 +784,12 @@
 
                     <!--Process V5 Stored Image-->
                     <Button Command="{Binding V5ProcessCommand}" CommandParameter="v5Stored" ToolTip="V5: Process the stored image with the simulator." 
-                                    BorderBrush="{DynamicResource YellowBrush2}"
-                                    md:ButtonProgressAssist.IsIndeterminate="True"
-                                    md:ButtonProgressAssist.Value="-1"
-                                    md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV5Working}">
+                                    BorderBrush="{DynamicResource YellowBrush2}">
 
-                        <iconPacks:PackIconMaterial Kind="Camera" Height="14" Width="14"/>
+                        <Grid>
+                            <mah:ProgressRing IsActive="{Binding IsV5Working}" Width="14" Height="14" Foreground="White"/>
+                            <iconPacks:PackIconMaterial Kind="Camera" Height="14" Width="14" Margin="3"/>
+                        </Grid>
 
                         <Button.Style>
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
@@ -799,16 +812,15 @@
 
                     <!--Process V275 Stored Image-->
                     <Button Command="{Binding V275ProcessCommand}" CommandParameter="v5Stored" ToolTip="V275: Process the stored image with the simulator." 
-                                    BorderBrush="{DynamicResource YellowBrush2}"
-                                    md:ButtonProgressAssist.IsIndeterminate="True"
-                                    md:ButtonProgressAssist.Value="-1"
-                                    md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV275Working}">
-
-                        <Rectangle Width="14" Height="14" Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
-                            <Rectangle.OpacityMask>
-                                <VisualBrush Stretch="Fill" Visual="{DynamicResource V275Png}" />
-                            </Rectangle.OpacityMask>
-                        </Rectangle>
+                                    BorderBrush="{DynamicResource YellowBrush2}">
+                        <Grid>
+                            <mah:ProgressRing IsActive="{Binding IsV275Working}" Width="14" Height="14" Foreground="White"/>
+                            <Rectangle Width="14" Height="14" Fill="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill" Visual="{DynamicResource V275Png}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                        </Grid>
 
                         <Button.Style>
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">

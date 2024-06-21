@@ -17,7 +17,7 @@
     <DockPanel>
 
         <GroupBox DockPanel.Dock="Top"
-            Margin="3" Padding="3"
+            Margin="3" Padding="3" Width="220"
             HorizontalAlignment="Left" VerticalAlignment="Top" 
                   Style="{StaticResource MaterialDesignCardGroupBox}"
                 md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"

@@ -28,6 +28,7 @@ namespace LabelVal.Sectors.ViewModels
         public string Name { get; set; }
         public string Username { get; set; }
         public int Top { get; set; }
+        public int Center { get; set; }
         public string Symbology { get; set; }
 
 
@@ -41,6 +42,7 @@ namespace LabelVal.Sectors.ViewModels
             Name = sectorTemplate.name;
             Username = sectorTemplate.username;
             Top = sectorTemplate.top;
+            Center = sectorTemplate.top + (sectorTemplate.height / 2) + sectorTemplate.left + (sectorTemplate.width / 2);
             Symbology = sectorTemplate.symbology;
 
             if (sectorTemplate.matchSettings != null)
@@ -70,6 +72,8 @@ namespace LabelVal.Sectors.ViewModels
             else
                 Top = Report.y;
 
+            Center = Report.y + (Report.height / 2) + Report.x + (Report.width / 2);
+
             Symbology = GetV5Symbology(Report);
 
         }
@@ -79,6 +83,7 @@ namespace LabelVal.Sectors.ViewModels
             Name = template.Name;
             Username = template.Username;
             Top = template.Top;
+            Center = template.Center;
             Symbology = template.Symbology;
 
             MatchSettings = template.MatchSettings;

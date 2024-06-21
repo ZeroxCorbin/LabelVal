@@ -67,7 +67,7 @@ public enum GS1TableNames
     _12_3
 }
 
-public partial class Sector : ObservableObject
+public class Sector
 {
     public V275_REST_lib.Models.Job.Sector V275Sector { get; }
     public string L95xxPacket { get; }

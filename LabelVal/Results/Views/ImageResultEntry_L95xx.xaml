@@ -32,7 +32,8 @@
 
         <CollectionViewSource x:Key="cvsL95xxStoredSectors" Source="{Binding L95xxStoredSectors}">
             <CollectionViewSource.SortDescriptions>
-                <componentmodel:SortDescription PropertyName="Template.Top" Direction="Ascending"/>
+                <componentmodel:SortDescription PropertyName="Template.Username" Direction="Ascending"/>
+                <!--<componentmodel:SortDescription PropertyName="Template.Top" Direction="Ascending"/>-->
             </CollectionViewSource.SortDescriptions>
 
         </CollectionViewSource>
@@ -126,10 +127,10 @@
                         </Style>
                     </ScrollViewer.Style>
 
-                    <ItemsControl ItemsSource="{Binding Source={StaticResource ResourceKey=cvsL95xxStoredSectors}}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                    <ItemsControl Padding="0,2,0,0" ItemsSource="{Binding Source={StaticResource ResourceKey=cvsL95xxStoredSectors}}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="6,1"/>
+                                <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="2,1"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -269,10 +270,10 @@
                         </Style>
                     </ScrollViewer.Style>
 
-                    <ItemsControl ItemsSource="{Binding L95xxCurrentSectors}">
+                    <ItemsControl Padding="0,2,0,0" ItemsSource="{Binding L95xxCurrentSectors}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="6,1"/>
+                                <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="2,1"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>

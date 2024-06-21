@@ -17,7 +17,7 @@
         <Converters:BytesToImageConverter x:Key="bytesToImage"/>
     </UserControl.Resources>
 
-    <md:Card HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3"
+    <md:Card HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="6"
                  Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
                  Foreground="{DynamicResource MahApps.Brushes.Text}">
 

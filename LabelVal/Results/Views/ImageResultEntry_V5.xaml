@@ -31,11 +31,20 @@
 
         <CollectionViewSource x:Key="cvsV5StoredSectors" Source="{Binding V5StoredSectors}">
             <CollectionViewSource.SortDescriptions>
-                <componentmodel:SortDescription PropertyName="Template.Top" Direction="Ascending"/>
+                <componentmodel:SortDescription PropertyName="Template.Center" Direction="Ascending"/>
+                <!--<componentmodel:SortDescription PropertyName="Template.Top" Direction="Ascending"/>-->
             </CollectionViewSource.SortDescriptions>
 
         </CollectionViewSource>
-        
+
+        <CollectionViewSource x:Key="cvsV5CurrentSectors" Source="{Binding V5CurrentSectors}">
+            <CollectionViewSource.SortDescriptions>
+                <componentmodel:SortDescription PropertyName="Template.Center" Direction="Ascending"/>
+                <!--<componentmodel:SortDescription PropertyName="Template.Top" Direction="Ascending"/>-->
+            </CollectionViewSource.SortDescriptions>
+
+        </CollectionViewSource>
+
     </UserControl.Resources>
 
     <DockPanel>
@@ -146,10 +155,10 @@
                         </Style>
                     </ScrollViewer.Style>
 
-                    <ItemsControl ItemsSource="{Binding Source={StaticResource ResourceKey=cvsV5StoredSectors}}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                    <ItemsControl Padding="0,2,0,0" ItemsSource="{Binding Source={StaticResource ResourceKey=cvsV5StoredSectors}}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="6,1"/>
+                                <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="2,1"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -299,10 +308,10 @@
                         </Style>
                     </ScrollViewer.Style>
 
-                    <ItemsControl ItemsSource="{Binding V5CurrentSectors}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                    <ItemsControl Padding="0,2,0,0" ItemsSource="{Binding Source={StaticResource ResourceKey=cvsV5CurrentSectors}}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="6,1" />
+                                <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="2,1" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>

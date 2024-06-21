@@ -163,10 +163,34 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     [RelayCommand]
     private void AddImage()
     {
-        List<string> path;
-        if ((path = Utilities.FileUtilities.GetLoadFilePaths()).Count > 0)
+        var settings = new Utilities.FileUtilities.LoadFileDialogSettings
         {
-            foreach(var f in path)
+            Title = "Select image(s) to add to roll.",
+            Multiselect = true,
+            Filters = new List<Utilities.FileUtilities.LoadFileDialogFilter> 
+            { 
+                new Utilities.FileUtilities.LoadFileDialogFilter 
+                {
+                    Description = "Image Files", Extensions = new List<string> { "png", "bmp" } 
+                },
+                new Utilities.FileUtilities.LoadFileDialogFilter
+                {
+                    Description = "Image Files (Add Fiducial)", Extensions = new List<string> { "png", "bmp" }
+                },
+                new Utilities.FileUtilities.LoadFileDialogFilter 
+                {
+                    Description = "PNG Files", Extensions = new List<string> { "png" } 
+                }, 
+                new Utilities.FileUtilities.LoadFileDialogFilter 
+                {
+                    Description = "BMP Files", Extensions = new List<string> { "bmp" } 
+                },
+            }
+        };
+
+        if (Utilities.FileUtilities.LoadFileDialog(settings))
+        {
+            foreach(var f in settings.SelectedFiles)
                 AddImage(f);
         }
 

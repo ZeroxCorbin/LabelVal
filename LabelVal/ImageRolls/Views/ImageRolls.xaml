@@ -54,7 +54,7 @@
 
         <!--User Image Rolls-->
         <GroupBox DockPanel.Dock="Top"
-            Margin="3" Padding="3"
+            Margin="3" Padding="3" Width="220"
             HorizontalAlignment="Left" VerticalAlignment="Top" 
                   Style="{StaticResource MaterialDesignCardGroupBox}"
                 md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
@@ -292,7 +292,7 @@
         </GroupBox>
 
         <!--Fixed Image Rolls-->
-        <GroupBox Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top" 
+        <GroupBox Margin="3" Padding="3" Width="220" HorizontalAlignment="Left" VerticalAlignment="Top" 
                   Style="{StaticResource MaterialDesignCardGroupBox}"
                 md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
                 md:ColorZoneAssist.Mode="Custom">

@@ -1303,7 +1303,7 @@
     <PackageReference Include="MahApps.Metro.SimpleChildWindow">
       <Version>2.2.1</Version>
     </PackageReference>
-    <PackageReference Include="MaterialDesignThemes.MahApps" Version="3.1.0-ci666" />
+    <PackageReference Include="MaterialDesignThemes.MahApps" Version="3.1.0-ci668" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.Net.Http.Headers" Version="8.0.6" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf">

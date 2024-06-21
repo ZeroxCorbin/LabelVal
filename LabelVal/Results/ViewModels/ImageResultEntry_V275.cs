@@ -109,8 +109,6 @@ public partial class ImageResultEntry
 
         if (tempSectors.Count > 0)
         {
-            tempSectors = tempSectors.OrderBy(x => x.Template.Top).ToList();
-
             foreach (var sec in tempSectors)
                 V275StoredSectors.Add(sec);
         }

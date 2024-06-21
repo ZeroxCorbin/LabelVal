@@ -32,18 +32,16 @@
 
         <CollectionViewSource x:Key="cvsV275StoredSectors" Source="{Binding V275StoredSectors}">
             <CollectionViewSource.SortDescriptions>
-                <componentmodel:SortDescription PropertyName="Template.Name" Direction="Ascending"/>
-                <componentmodel:SortDescription PropertyName="Template.Top" Direction="Ascending"/>
+                <componentmodel:SortDescription PropertyName="Template.Center" Direction="Ascending"/>
+                <!--<componentmodel:SortDescription PropertyName="Template.Top" Direction="Ascending"/>-->
             </CollectionViewSource.SortDescriptions>
-
         </CollectionViewSource>
 
         <CollectionViewSource x:Key="cvsV275CurrentSectors" Source="{Binding V275CurrentSectors}">
             <CollectionViewSource.SortDescriptions>
-                <componentmodel:SortDescription PropertyName="Template.Name" Direction="Ascending"/>
-                <componentmodel:SortDescription PropertyName="Template.Top" Direction="Ascending"/>
+                <componentmodel:SortDescription PropertyName="Template.Center" Direction="Ascending"/>
+                <!--<componentmodel:SortDescription PropertyName="Template.Top" Direction="Ascending"/>-->
             </CollectionViewSource.SortDescriptions>
-
         </CollectionViewSource>
 
     </UserControl.Resources>
@@ -161,7 +159,9 @@
                         </Style>
                     </ScrollViewer.Style>
 
-                    <ListView ItemsSource="{Binding V275StoredSectors}" SelectedItem="{Binding SelectedSector}">
+                    <ListView Padding="0,1,0,0" ItemsSource="{Binding Source={StaticResource ResourceKey=cvsV275StoredSectors}}" SelectedItem="{Binding SelectedSector}"
+                              Style="{StaticResource MahApps.Styles.ListView}">
+                        
                         <ListView.ItemContainerStyle>
                             <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
                                 <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -170,7 +170,7 @@
 
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="3,0"/>
+                                <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="6,0" />
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
@@ -322,11 +322,11 @@
                         </Style>
                     </ScrollViewer.Style>
 
-                    <ItemsControl ItemsSource="{Binding Source={StaticResource ResourceKey=cvsV275CurrentSectors}}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                    <ItemsControl Padding="0,2,0,0" ItemsSource="{Binding Source={StaticResource ResourceKey=cvsV275CurrentSectors}}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
 
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="6,1"/>
+                                <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="2,1"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
