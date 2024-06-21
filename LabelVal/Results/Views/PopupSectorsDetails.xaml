@@ -7,10 +7,8 @@
              xmlns:sectors="clr-namespace:LabelVal.Sectors.Views"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
-             
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    
+             mc:Ignorable="d">
+
     <Popup x:Name="Popup" StaysOpen="False">
         <Popup.Style>
             <Style TargetType="{x:Type Popup}"/>
@@ -23,18 +21,19 @@
 
             <GroupBox.Header>
                 <DockPanel Margin="-5">
-                    
-                
-                <Button Click="btnSaveImage_Click" Style="{StaticResource GroupHeaderCirlceButton}" ToolTip="Save as image." Margin="6,0,3,0">
+
+                    <Button Margin="6,0,3,0" Click="btnSaveImage_Click" Style="{StaticResource GroupHeaderCirlceButton}"
+                            ToolTip="Save as image.">
                         <iconPacks:PackIconMaterial Kind="ContentSave" Height="14" Width="14"/>
-                </Button>
-                    
-                <Button Click="btnCopyImage_Click" Style="{StaticResource GroupHeaderCirlceButton}" ToolTip="Save as image.">
+                    </Button>
+
+                    <Button Click="btnCopyImage_Click" Style="{StaticResource GroupHeaderCirlceButton}"
+                            ToolTip="Copy image to clipboard as PNG.">
                         <iconPacks:PackIconMaterial Kind="ContentCopy" Height="14" Width="14"/>
-                </Button>
-                    
+                    </Button>
+
                 </DockPanel>
-                
+
             </GroupBox.Header>
 
             <DockPanel>
@@ -44,7 +43,7 @@
                     <ItemsControl x:Name="ItemsControl">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <WrapPanel IsItemsHost="True"/>
+                                <WrapPanel IsItemsHost="True" MaxWidth="1400"/>
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
 

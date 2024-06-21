@@ -24,7 +24,7 @@
         <Border x:Key="Seperator" Height="2" BorderThickness="2"/>
     </UserControl.Resources>
 
-    <md:Card Width="230" Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="3" Padding="0">
+    <md:Card MaxWidth="260" Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="3" Padding="0">
         <StackPanel Margin="3">
 
             <!--Name, Wrong Standard, Overall Grade String-->
@@ -108,7 +108,7 @@
                     </TextBlock>
 
                     <!--Decode Text & OCR-->
-                    <TextBlock Margin="3,0" TextWrapping="Wrap" Width="193">
+                    <TextBlock Margin="3,0" TextWrapping="Wrap" Width="173">
                         <TextBlock.Style>
                             <Style TargetType="{x:Type TextBlock}">
 
@@ -326,7 +326,6 @@
 
                 </ItemsControl>
             </DockPanel>
-
 
             <!--Values-->
             <DockPanel>
@@ -598,15 +597,12 @@
                                     <Run Text="{Binding Path=name, Converter={StaticResource stringToUpper}, Mode=OneTime}"/>
                                     <Run Text=":"/>
                                     <Run Text="{Binding Path=data.subAlarm, Converter={StaticResource stringToUpper}, Mode=OneTime}"/>
-                                </TextBlock>
 
-                                <TextBlock TextWrapping="Wrap">
-                                        <Run Text="("/>
-                                        <Run Text="{Binding Path=data.text, StringFormat=N2, Converter={StaticResource floatTrim}, Mode=OneTime}"/>
-                                        <Run Text="/"/>
-                                        <Run Text="{Binding Path=data.expected, StringFormat=N2, Converter={StaticResource floatTrim}, Mode=OneTime}"/>
-                                        <Run Text=")"/>
-
+                                    <Run Text="("/>
+                                    <Run Text="{Binding Path=data.text, StringFormat=N2, Converter={StaticResource floatTrim}, Mode=OneTime}"/>
+                                    <Run Text="/"/>
+                                    <Run Text="{Binding Path=data.expected, StringFormat=N2, Converter={StaticResource floatTrim}, Mode=OneTime}"/>
+                                    <Run Text=")"/>
                                 </TextBlock>
 
                                 <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3">

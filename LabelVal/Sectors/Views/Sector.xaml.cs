@@ -1,4 +1,5 @@
-﻿using MahApps.Metro.Controls.Dialogs;
+﻿using LabelVal.Results.Views;
+using MahApps.Metro.Controls.Dialogs;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -10,7 +11,14 @@ namespace LabelVal.Sectors.Views;
 public partial class Sector : UserControl
 {
     public Sector() => InitializeComponent();
-    private void Button_Click(object sender, RoutedEventArgs e) => popSymbolDetails.IsOpen = true;
+    private void Button_Click(object sender, RoutedEventArgs e)
+    {
+        var pop = new PopupSectorDetails();
+        pop.DataContext = this.DataContext;
+
+        pop.Popup.PlacementTarget = (Button)sender;
+        pop.Popup.IsOpen = true;
+    }
 
     private void Show95xxCompare_Click(object sender, RoutedEventArgs e)
     {
@@ -29,5 +37,12 @@ public partial class Sector : UserControl
         //L95xxComparePopup.IsOpen = true;
     }
 
-    private void btnGS1DecodeText_Click(object sender, RoutedEventArgs e) => popGS1DecodeText.IsOpen = true;
+    private void btnGS1DecodeText_Click(object sender, RoutedEventArgs e)
+    {
+        var pop = new PopupGS1DecodeText();
+        pop.DataContext = this.DataContext;
+
+        pop.Popup.PlacementTarget = (Button)sender;
+        pop.Popup.IsOpen = true;
+    }
 }

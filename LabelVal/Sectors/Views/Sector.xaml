@@ -113,6 +113,7 @@
             </DockPanel>
 
             <DockPanel DockPanel.Dock="Top">
+                
                 <!--Symbology Image-->
                 <Border Background="White" Height="30" Width="30" Margin="3,3,0,0" VerticalAlignment="Top">
                     <Border.Style>
@@ -227,71 +228,6 @@
                     </Button.Style>
                     <iconPacks:PackIconMaterial Kind="ArrowDownBoldBox"/>
                 </Button>
-                
-                <Popup x:Name="popGS1DecodeText"  StaysOpen="False" PlacementTarget="{Binding ElementName=txtDecodeText}">
-
-                    <Border Padding="3" BorderThickness="2"
-                        BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
-                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-
-                        <Border BorderThickness="1" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="2">
-                            <!--<StackPanel>
-                        <TextBlock Padding="5" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-                            <TextBlock.Style>
-                                <Style TargetType="{x:Type TextBlock}">
-                                    <Setter Property="Text">
-                                        <Setter.Value>
-                                            <MultiBinding StringFormat="{}(01){0}">
-                                                <Binding Path="Report.data.gs1Results.fields._01"/>
-                                            </MultiBinding>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-
-                        <TextBlock Padding="5" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-                            <TextBlock.Style>
-                                <Style TargetType="{x:Type TextBlock}">
-                                    <Setter Property="Text">
-                                        <Setter.Value>
-                                            <MultiBinding StringFormat="{}(10){0}">
-                                                <Binding Path="Report.data.gs1Results.fields._10"/>
-                                            </MultiBinding>
-                                        </Setter.Value>
-                                    </Setter>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Report.data.gs1Results.fields._10}" Value="{x:Null}">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                        
-                        <TextBlock Padding="5" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-                            <TextBlock.Style>
-                                <Style TargetType="{x:Type TextBlock}">
-                                    <Setter Property="Text">
-                                        <Setter.Value>
-                                            <MultiBinding StringFormat="{}(90){0}">
-                                                <Binding Path="Report.data.gs1Results.fields._90"/>
-                                            </MultiBinding>
-                                        </Setter.Value>
-                                    </Setter>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Report.data.gs1Results.fields._90}" Value="{x:Null}">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                    </StackPanel>-->
-                            <TextBlock Text="{Binding Report.FormattedOut, Converter={StaticResource gs1FormattedOutput}}"  Margin="3,-10,3,3"/>
-                        </Border>
-                    </Border>
-                </Popup>
 
                 <!--Overall Grade-->
                 <Button Margin="3" Click="Button_Click" Width="30" Height="30" BorderThickness="3" VerticalAlignment="Top">
@@ -360,29 +296,6 @@
                         </TextBlock>
                     </Button.Content>
                 </Button>
-
-                <Popup x:Name="popSymbolDetails" StaysOpen="False">
-                    <Popup.Style>
-                        <Style TargetType="{x:Type Popup}"/>
-                    </Popup.Style>
-
-                    <GroupBox Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top" 
-                          Style="{StaticResource MaterialDesignCardGroupBox}"
-                        md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                        md:ColorZoneAssist.Mode="Custom">
-
-                        <GroupBox.Header>
-                            <DockPanel Margin="-5">
-                                <Button Margin="6,0,3,0" Style="{StaticResource GroupHeaderCirlceButton}" ToolTip="Save as image.">
-                                    <iconPacks:PackIconMaterial Kind="ContentSave" Width="14" Height="14"/>
-                                </Button>
-                            </DockPanel>
-                        </GroupBox.Header>
-
-                        <local:SectorDetails DataContext="{Binding}"/>
-
-                    </GroupBox>
-                </Popup>
 
             </DockPanel>
 

@@ -54,6 +54,20 @@ namespace LabelVal.Utilities
                 return false;
         }
 
+        public static string GenerateFilterString(List<LoadFileDialogFilter> filterEntries)
+        {
+            var filterBuilder = new StringBuilder();
+            foreach (var entry in filterEntries)
+            {
+                if (filterBuilder.Length > 0)
+                    filterBuilder.Append("|");
+
+                var extensions = string.Join(";", entry.Extensions.Select(ext => $"*.{ext}"));
+                filterBuilder.Append($"{entry.Description}|{extensions}");
+            }
+            return filterBuilder.ToString();
+        }
+
         public static string LoadFileDialog(string fileName = "", string filter = "All Files|*.*", string title = "Select a file.")
         {
             var settings = new LoadFileDialogSettings();
@@ -88,33 +102,50 @@ namespace LabelVal.Utilities
         }
 
 
-        public static string GetSaveFilePath(string fileName = "", string filter = "All Files|*.*", string title = "Save a file.")
+        public class SaveFileDialogSettings
+        {
+            public List<LoadFileDialogFilter> Filters { get; set; } = new List<LoadFileDialogFilter>();
+            public string FilterString { get => filterString ?? GenerateFilterString(Filters); set => filterString = value; }
+            private string filterString = null;
+            public string Title { get; set; }
+            public string InitialFileName { get; set; }
+            public string SelectedFileName { get; set; }
+            public int SelectedFilterIndex { get; set; }
+        }
+
+        public static bool SaveFileDialog(SaveFileDialogSettings settings)
         {
             Microsoft.Win32.SaveFileDialog diag = new()
             {
-                Filter = filter,
-                Title = title,
-                FileName = fileName
+                Filter = settings.FilterString,
+                Title = settings.Title,
+                FileName = settings.InitialFileName
             };
 
             if (diag.ShowDialog() == true)
-                return diag.FileName;
+            {
+                settings.SelectedFilterIndex = diag.FilterIndex;
+                settings.SelectedFileName = diag.FileName;
+                return true;
+            }
             else
-                return "";
+                return false;
         }
 
-        public static string GenerateFilterString(List<LoadFileDialogFilter> filterEntries)
+        public static string GetSaveFilePath(string fileName = "", string filter = "All Files|*.*", string title = "Save a file.")
         {
-            var filterBuilder = new StringBuilder();
-            foreach (var entry in filterEntries)
+            SaveFileDialogSettings settings = new SaveFileDialogSettings
             {
-                if (filterBuilder.Length > 0)
-                    filterBuilder.Append("|");
+                FilterString = filter,
+                Title = title,
+                InitialFileName = fileName
+            };
 
-                var extensions = string.Join(";", entry.Extensions.Select(ext => $"*.{ext}"));
-                filterBuilder.Append($"{entry.Description}|{extensions}");
-            }
-            return filterBuilder.ToString();
+            if (FileUtilities.SaveFileDialog(settings))
+                return settings.SelectedFileName;
+            else
+                return null;
+            
         }
 
     }
