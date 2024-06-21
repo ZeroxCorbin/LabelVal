@@ -272,6 +272,24 @@
 
                         <DockPanel Margin="1" HorizontalAlignment="Left" VerticalAlignment="Top">
 
+                            <TextBox d:Text="State" Text="{Binding ScannerMode}" md:HintAssist.Hint="State" Margin="3,0" HorizontalContentAlignment="Center"
+                                md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left" 
+                                IsHitTestVisible="False">
+                                <TextBox.Style>
+                                    <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                                        <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}"/>
+                                        <Style.Triggers>
+                                            <MultiDataTrigger>
+                                                <MultiDataTrigger.Conditions>
+                                                    <Condition Value="Offline" Binding="{Binding ScannerMode}" />
+                                                </MultiDataTrigger.Conditions>
+                                                <Setter Property="BorderBrush" Value="{DynamicResource ColorBlindBrush5}" />
+                                            </MultiDataTrigger>
+
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBox.Style>
+                            </TextBox>
 
                             <DockPanel Margin="3,0">
 
@@ -329,26 +347,6 @@
                                 <!--<TextBlock Text="{Binding ScannerMode}" Margin="3,0" HorizontalAlignment="Left" VerticalAlignment="Center"/>-->
 
                             </DockPanel>
-
-                            <TextBox d:Text="State" Text="{Binding ScannerMode}" md:HintAssist.Hint="State" Margin="3,0" HorizontalContentAlignment="Center"
-                                md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left" 
-                                IsHitTestVisible="False">
-                                <TextBox.Style>
-                                    <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                                        <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}"/>
-                                        <Style.Triggers>
-                                            <MultiDataTrigger>
-                                                <MultiDataTrigger.Conditions>
-                                                    <Condition Value="Offline" Binding="{Binding ScannerMode}" />
-                                                </MultiDataTrigger.Conditions>
-                                                <Setter Property="BorderBrush" Value="{DynamicResource ColorBlindBrush5}" />
-                                            </MultiDataTrigger>
-
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBox.Style>
-                            </TextBox>
-
 
                         </DockPanel>
 
