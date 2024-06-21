@@ -32,6 +32,7 @@
 
         <CollectionViewSource x:Key="cvsV275StoredSectors" Source="{Binding V275StoredSectors}">
             <CollectionViewSource.SortDescriptions>
+                <componentmodel:SortDescription PropertyName="Template.Name" Direction="Ascending"/>
                 <componentmodel:SortDescription PropertyName="Template.Top" Direction="Ascending"/>
             </CollectionViewSource.SortDescriptions>
 
@@ -39,6 +40,7 @@
 
         <CollectionViewSource x:Key="cvsV275CurrentSectors" Source="{Binding V275CurrentSectors}">
             <CollectionViewSource.SortDescriptions>
+                <componentmodel:SortDescription PropertyName="Template.Name" Direction="Ascending"/>
                 <componentmodel:SortDescription PropertyName="Template.Top" Direction="Ascending"/>
             </CollectionViewSource.SortDescriptions>
 

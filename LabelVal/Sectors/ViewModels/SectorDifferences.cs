@@ -16,8 +16,11 @@ public partial class SectorDifferences : ObservableObject
 
         public GradeValue(string name, Report_InspectSector_Common.GradeValue data)
         {
-            value = data.value;
-            grade = data.grade;
+            if(data != null)
+            {
+                value = data.value;
+                grade = data.grade;
+            }
             Name = name;
         }
     }
