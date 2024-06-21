@@ -163,11 +163,11 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     [RelayCommand]
     private void AddImage()
     {
-        string path;
-        if ((path = Utilities.FileUtilities.GetLoadFilePath("", "PNG|*.png|BMP|*.bmp", "Load Image")) != "")
+        List<string> path;
+        if ((path = Utilities.FileUtilities.GetLoadFilePaths()).Count > 0)
         {
-            AddImage(path);
-            //Save();
+            foreach(var f in path)
+                AddImage(f);
         }
 
     }
