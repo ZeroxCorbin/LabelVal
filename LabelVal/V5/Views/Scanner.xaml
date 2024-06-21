@@ -233,7 +233,7 @@
 
                         <DockPanel DockPanel.Dock="Top" Margin="1">
 
-                            <TextBox d:Text="camera" md:HintAssist.Hint="Type" MinWidth="56" Margin="3,0" HorizontalContentAlignment="Center"
+                            <TextBox d:Text="camera" md:HintAssist.Hint="Type" MinWidth="56" Margin="3,0" HorizontalContentAlignment="Left"
                                 md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left" BorderThickness="0"
                                 IsHitTestVisible="False">
                                 <TextBox.Style>
@@ -248,7 +248,7 @@
                                 </TextBox.Style>
                             </TextBox>
 
-                            <TextBox d:Text="model" md:HintAssist.Hint="Model" MinWidth="86" Margin="3,0" HorizontalContentAlignment="Center"
+                            <TextBox d:Text="model" md:HintAssist.Hint="Model" MinWidth="86" Margin="3,0" HorizontalContentAlignment="Left"
                                     md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left" BorderThickness="0"
                                     IsHitTestVisible="False">
                                 <TextBox.Style>

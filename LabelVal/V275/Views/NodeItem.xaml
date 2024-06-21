@@ -106,7 +106,7 @@
                             </TextBox.Style>
                         </TextBox>
 
-                        <TextBox d:Text="ZT610" Margin="3" md:HintAssist.Hint="Model" md:HintAssist.IsFloating="True" IsHitTestVisible="False" BorderThickness="0">
+                        <TextBox d:Text="ZT610"  MinWidth="57" Margin="3" md:HintAssist.Hint="Model" md:HintAssist.IsFloating="True" IsHitTestVisible="False" BorderThickness="0">
                             <TextBox.Style>
                                 <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                     <Setter Property="Text" Value="{Binding Path=Details.printerModel}"/>
