@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Web;
 
 namespace LabelVal.Utilities
 {
@@ -31,7 +28,7 @@ namespace LabelVal.Utilities
 
         public static bool LoadFileDialog(LoadFileDialogSettings settings)
         {
-            Microsoft.Win32.OpenFileDialog diag = new()
+            Microsoft.Win32.OpenFileDialog diag = new Microsoft.Win32.OpenFileDialog()
             {
                 Filter = settings.FilterString,
                 Title = settings.Title,
@@ -70,10 +67,12 @@ namespace LabelVal.Utilities
 
         public static string LoadFileDialog(string fileName = "", string filter = "All Files|*.*", string title = "Select a file.")
         {
-            var settings = new LoadFileDialogSettings();
-            settings.FilterString = filter;
-            settings.Title = title;
-            settings.SelectedFile = fileName;
+            var settings = new LoadFileDialogSettings
+            {
+                FilterString = filter,
+                Title = title,
+                SelectedFile = fileName
+            };
 
             if (LoadFileDialog(settings))
                 return settings.SelectedFile;
@@ -90,10 +89,12 @@ namespace LabelVal.Utilities
         /// <returns></returns>
         public static List<string> LoadFileDialog(string filter = "All Files|*.*", string title = "Select image files.")
         {
-            var settings = new LoadFileDialogSettings();
-            settings.FilterString = filter;
-            settings.Title = title;
-            settings.Multiselect = true;
+            var settings = new LoadFileDialogSettings
+            {
+                FilterString = filter,
+                Title = title,
+                Multiselect = true
+            };
 
             if (LoadFileDialog(settings))
                 return settings.SelectedFiles;
@@ -145,7 +146,7 @@ namespace LabelVal.Utilities
                 return settings.SelectedFileName;
             else
                 return null;
-            
+
         }
 
     }

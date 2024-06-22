@@ -9,10 +9,7 @@
              mc:Ignorable="d">
 
     <Popup x:Name="Popup" StaysOpen="False">
-        <Popup.Style>
-            <Style TargetType="{x:Type Popup}"/>
-        </Popup.Style>
-        
+
         <DockPanel>
             
             <md:Card>

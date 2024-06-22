@@ -20,7 +20,6 @@
         <Converters:FloatStringTrimConverter x:Key="floatTrim"/>
         <V275Converters:V275_OCMatchModeToString x:Key="matchModeToString"/>
         <V275Converters:V275_GS1FormattedOutput x:Key="gs1FormattedOutput"/>
-
     </UserControl.Resources>
 
 
@@ -264,8 +263,6 @@
                                 <DataTrigger Value="F" Binding="{Binding Report.OverallGradeLetter, Mode=OneTime}">
                                     <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
                                 </DataTrigger>
-
-
                             </Style.Triggers>
                         </Style>
                     </Button.Style>
@@ -296,8 +293,45 @@
                         </TextBlock>
                     </Button.Content>
                 </Button>
-
             </DockPanel>
+
+            <Popup x:Name="popGS1DecodeText"  StaysOpen="False" PlacementTarget="{Binding ElementName=txtDecodeText}">
+
+                <Border Padding="3" BorderThickness="2"
+                        BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+
+                    <Border BorderThickness="1" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="2">
+                        <TextBlock Text="{Binding Report.FormattedOut, Converter={StaticResource gs1FormattedOutput}}"  Margin="3,-10,3,3"/>
+                    </Border>
+                </Border>
+            </Popup>
+
+            <Popup x:Name="popSymbolDetails" StaysOpen="False">
+
+                <GroupBox Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                          Style="{StaticResource MaterialDesignCardGroupBox}"
+                        md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                        md:ColorZoneAssist.Mode="Custom">
+
+                    <GroupBox.Header>
+                        <DockPanel Margin="-5">
+                            <Button Margin="6,0,3,0" Click="btnSaveImage_Click" Style="{StaticResource GroupHeaderCirlceButton}"
+                            ToolTip="Save as image.">
+                                <iconPacks:PackIconMaterial Kind="ContentSave" Height="14" Width="14"/>
+                            </Button>
+
+                            <Button Click="btnCopyImage_Click" Style="{StaticResource GroupHeaderCirlceButton}"
+                            ToolTip="Copy image to clipboard as PNG.">
+                                <iconPacks:PackIconMaterial Kind="ContentCopy" Height="14" Width="14"/>
+                            </Button>
+                        </DockPanel>
+                    </GroupBox.Header>
+
+                    <local:SectorDetails x:Name="SectorDetails" DataContext="{Binding}"/>
+
+                </GroupBox>
+            </Popup>
 
             <!--Alarms-->
             <Border DockPanel.Dock="Top" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Padding="1" CornerRadius="3" Margin="0,3" HorizontalAlignment="Stretch">

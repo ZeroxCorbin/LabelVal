@@ -271,10 +271,10 @@
 
                     <!--Image Details-->
                     <GroupBox DockPanel.Dock="Top" Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top" 
-                              Background="{DynamicResource MahApps.Brushes.ThemeBackground}" 
-                  Style="{StaticResource MaterialDesignCardGroupBox}"
-                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                md:ColorZoneAssist.Mode="Custom">
+                            Background="{DynamicResource MahApps.Brushes.ThemeBackground}" 
+                            Style="{StaticResource MaterialDesignCardGroupBox}"
+                            md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                            md:ColorZoneAssist.Mode="Custom">
                         <GroupBox.Header>
                             <DockPanel Margin="-5">
 
