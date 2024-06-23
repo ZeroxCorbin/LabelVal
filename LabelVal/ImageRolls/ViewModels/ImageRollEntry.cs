@@ -134,7 +134,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
         List<Task> taskList = [];
 
         var sorted = images.OrderBy(x => x).ToList();
-        int i = 0;
+        int i = 1;
         foreach (var f in sorted)
         {
             var tsk = App.Current.Dispatcher.BeginInvoke(() => AddImage(f, i++)).Task;
@@ -176,9 +176,9 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
 
         for (int i = 0; i < images.Count; i++)
         {
-            if (images[i].Order != i)
+            if (images[i].Order != i + 1)
             {
-                images[i].Order = i;
+                images[i].Order = i + 1;
                 SaveImage(images[i]);
             }
         }
@@ -215,7 +215,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
         if (Utilities.FileUtilities.LoadFileDialog(settings))
         {
             var sorted = settings.SelectedFiles.OrderBy(x => x).ToList();
-            int last = -1;
+            int last = 0;
             if (Images.Count > 0)
             {
                 var sortedImages = Images.OrderBy(x => x.Order).ToList();
