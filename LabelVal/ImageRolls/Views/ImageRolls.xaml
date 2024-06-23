@@ -9,10 +9,8 @@
              xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              xmlns:viewModels="clr-namespace:LabelVal.ImageRolls.ViewModels"
              xmlns:sectors="clr-namespace:LabelVal.Sectors.ViewModels"
-                xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-             
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:imageRollConverters="clr-namespace:LabelVal.ImageRolls.Converters"
-             
              xmlns:converters="clr-namespace:LabelVal.Converters"
              d:DataContext="{d:DesignInstance Type=viewModels:ImageRolls}"
              mc:Ignorable="d">
@@ -293,9 +291,9 @@
 
         <!--Fixed Image Rolls-->
         <GroupBox Margin="3" Padding="3" Width="220" HorizontalAlignment="Left" VerticalAlignment="Top" 
-                  Style="{StaticResource MaterialDesignCardGroupBox}"
-                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                md:ColorZoneAssist.Mode="Custom">
+                    Style="{StaticResource MaterialDesignCardGroupBox}"
+                    md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                    md:ColorZoneAssist.Mode="Custom">
 
             <GroupBox.Header>
                 <DockPanel Margin="-5">
@@ -365,7 +363,6 @@
                             </GroupStyle.ContainerStyle>
                         </GroupStyle>
 
-
                     </ListView.GroupStyle>
 
                         <ListView.ItemsPanel>
@@ -398,7 +395,6 @@
                                 </TextBlock>
 
                                 <TextBlock Text="{Binding SelectedGS1Table, Converter={StaticResource GS1TableNamesConverter}, StringFormat={}Table {0}}" Margin="10,3" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}">
-
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="Visibility" Value="Collapsed"/>

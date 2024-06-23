@@ -15,6 +15,7 @@ using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using ZstdSharp.Unsafe;
 
 namespace LabelVal.ImageRolls.ViewModels;
 
@@ -58,7 +59,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     [ObservableProperty][property: JsonProperty] private string name;
     [ObservableProperty] private string path;
     partial void OnPathChanged(string value) => OnPropertyChanged(nameof(IsRooted));
-    [SQLite.Ignore] public bool IsRooted => !string.IsNullOrEmpty(path);
+    [SQLite.Ignore] public bool IsRooted => !string.IsNullOrEmpty(Path);
 
     [ObservableProperty] private int imageCount;
 
@@ -73,7 +74,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     {
         get
         {
-            if(SelectedGS1Table is Sectors.ViewModels.GS1TableNames.None or Sectors.ViewModels.GS1TableNames.Unsupported)
+            if (SelectedGS1Table is Sectors.ViewModels.GS1TableNames.None or Sectors.ViewModels.GS1TableNames.Unsupported)
                 return 0;
 
             return double.Parse(SelectedGS1Table.GetDescription());
@@ -116,7 +117,6 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
             return LoadImagesFromDirectory();
         else
             return LoadImagesFromDatabase();
-
     }
 
     public async Task LoadImagesFromDirectory()
@@ -131,14 +131,17 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
             if (System.IO.Path.GetExtension(f) == ".png")
                 images.Add(f);
 
-        List<Task> taskList = new List<Task>();
-        foreach (var f in images)
+        List<Task> taskList = [];
+
+        var sorted = images.OrderBy(x => x).ToList();
+        int i = 0;
+        foreach (var f in sorted)
         {
-            var tsk = App.Current.Dispatcher.BeginInvoke(() => AddImage(f)).Task;
+            var tsk = App.Current.Dispatcher.BeginInvoke(() => AddImage(f, i++)).Task;
             taskList.Add(tsk);
         }
 
-        await Task.WhenAll(taskList.ToArray());
+        await Task.WhenAll([.. taskList]);
     }
 
     public async Task LoadImagesFromDatabase()
@@ -149,16 +152,37 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
         Logger.Info("Loading label images from database: {name}", Name);
 
         var images = ImageRollsDatabase.SelectAllImages(UID);
-        List<Task> taskList = new List<Task>();
+        List<Task> taskList = [];
+
+        CheckImageEntryOrder([.. images]);
+
         foreach (var f in images)
         {
             var tsk = App.Current.Dispatcher.BeginInvoke(() => AddImage(f)).Task;
             taskList.Add(tsk);
         }
 
-        await Task.WhenAll(taskList.ToArray());
+        await Task.WhenAll([.. taskList]);
+
+
     }
 
+    public void ConfirmOrder() => CheckImageEntryOrder([.. Images]);
+    private void CheckImageEntryOrder(ImageEntry[] entries)
+    {
+        bool invalid = entries.Any(x => x.Order < 0 || x.Order >= entries.Length);
+
+        List<ImageEntry> images = invalid ? [.. entries.OrderBy(x => x.Order)] : [.. entries.OrderBy(x => x.Path)];
+
+        for (int i = 0; i < images.Count; i++)
+        {
+            if (images[i].Order != i)
+            {
+                images[i].Order = i;
+                SaveImage(images[i]);
+            }
+        }
+    }
 
     [RelayCommand]
     private void AddImage()
@@ -167,40 +191,59 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
         {
             Title = "Select image(s) to add to roll.",
             Multiselect = true,
-            Filters = new List<Utilities.FileUtilities.LoadFileDialogFilter> 
-            { 
-                new Utilities.FileUtilities.LoadFileDialogFilter 
+            Filters =
+            [
+                new Utilities.FileUtilities.LoadFileDialogFilter
                 {
-                    Description = "Image Files", Extensions = new List<string> { "png", "bmp" } 
+                    Description = "Image Files", Extensions = ["png", "bmp"]
                 },
                 new Utilities.FileUtilities.LoadFileDialogFilter
                 {
-                    Description = "Image Files (Add Fiducial)", Extensions = new List<string> { "png", "bmp" }
+                    Description = "Image Files (Add Fiducial)", Extensions = ["png", "bmp"]
                 },
-                new Utilities.FileUtilities.LoadFileDialogFilter 
+                new Utilities.FileUtilities.LoadFileDialogFilter
                 {
-                    Description = "PNG Files", Extensions = new List<string> { "png" } 
-                }, 
-                new Utilities.FileUtilities.LoadFileDialogFilter 
-                {
-                    Description = "BMP Files", Extensions = new List<string> { "bmp" } 
+                    Description = "PNG Files", Extensions = ["png"]
                 },
-            }
+                new Utilities.FileUtilities.LoadFileDialogFilter
+                {
+                    Description = "BMP Files", Extensions = ["bmp"]
+                },
+            ]
         };
 
         if (Utilities.FileUtilities.LoadFileDialog(settings))
         {
-            foreach(var f in settings.SelectedFiles)
-                AddImage(f);
+            var sorted = settings.SelectedFiles.OrderBy(x => x).ToList();
+            int last = -1;
+            if (Images.Count > 0)
+            {
+                var sortedImages = Images.OrderBy(x => x.Order).ToList();
+                last = sortedImages.Last().Order;
+            }
+
+            int i = last + 1;
+            foreach (var f in sorted)
+                AddImage(f, i++);
         }
 
+        CheckImageEntryOrder([.. Images]);
     }
+
     public void AddImage(ImageEntry imageEntry) => Images.Add(imageEntry);
-    public void AddImage(string path)
+    public void AddImage(string path, int order)
     {
         try
         {
-            var image = new ImageEntry(UID, path, targetDPI, targetDPI);
+            var image = new ImageEntry(UID, path, TargetDPI, TargetDPI)
+            {
+                Order = order
+            };
+            if (Images.Any(e => e.UID == image.UID))
+            {
+                Logger.Warn("Image already exists in roll: {path}", path);
+                return;
+            }
             SaveImage(image);
             Images.Add(image);
         }
@@ -210,6 +253,13 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
         }
     }
 
+    public void DeleteImage(ImageEntry imageEntry)
+    {
+        ImageRollsDatabase.DeleteImage(imageEntry.UID);
+        Images.Remove(imageEntry);
+
+        ConfirmOrder();
+    }
 
     [RelayCommand]
     private void SaveRoll()
@@ -217,7 +267,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
         if (IsRooted)
             return;
 
-        ImageRollsDatabase.InsertOrReplaceImageRoll(this);
+        _ = ImageRollsDatabase.InsertOrReplaceImageRoll(this);
     }
     [RelayCommand]
     private void SaveImage(ImageEntry image)
@@ -225,7 +275,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
         if (IsRooted)
             return;
 
-        ImageRollsDatabase.InsertOrReplaceImage(image);
+        _ = ImageRollsDatabase.InsertOrReplaceImage(image);
     }
 
     public ImageRollEntry CopyLite() => JsonConvert.DeserializeObject<ImageRollEntry>(JsonConvert.SerializeObject(this));

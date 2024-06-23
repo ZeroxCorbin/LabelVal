@@ -11,10 +11,9 @@
             d:DataContext="{d:DesignInstance Type=ViewModels:ImageResultEntry}"
             mc:Ignorable="d" Loaded="UserControl_Loaded" Unloaded="UserControl_Unloaded">
 
- <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto" mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True">
-    <DockPanel>
+    <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto" mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True">
+        <DockPanel>
 
-       
             <local:ImageResultEntry_Images DataContext="{Binding }" DockPanel.Dock="Top"/>
 
             <local:ImageResultEntry_V275 DataContext="{Binding }"/>
@@ -22,8 +21,6 @@
             <local:ImageResultEntry_V5 DataContext="{Binding }"/>
 
             <local:ImageResultEntry_L95xx DataContext="{Binding }"/>
-       
-
-    </DockPanel>
-</ScrollViewer>
+        </DockPanel>
+    </ScrollViewer>
 </UserControl>

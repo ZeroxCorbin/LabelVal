@@ -52,13 +52,13 @@
                         <iconPacks:PackIconMaterial Kind="ContentSave" Height="14" Width="14"/>
                     </Button>
 
-                    <!--Print Source Image-->
-                    <Button Command="{Binding V275ProcessCommand}" CommandParameter="print" ToolTip="Print the source image."
-                                    md:ButtonProgressAssist.IsIndeterminate="True"
-                                    md:ButtonProgressAssist.Value="-1"
-                                    md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV275Working}">
+                    <!--Only Print Source Image-->
+                    <Button Command="{Binding V275ProcessCommand}" CommandParameter="print" ToolTip="Print the source image.">
 
-                        <iconPacks:PackIconMaterial Kind="Printer" Height="14" Width="14"/>
+                        <Grid>
+                            <mah:ProgressRing IsActive="{Binding IsV275Working}" Width="14" Height="14" Foreground="White"/>
+                            <iconPacks:PackIconMaterial Kind="Printer" Height="14" Width="14" Margin="3"/>
+                        </Grid>
 
                         <Button.Style>
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
@@ -80,9 +80,7 @@
 
                     <!--V275 Process Source Image-->
                     <Button Command="{Binding V275ProcessCommand}" CommandParameter="source" ToolTip="V275: Process the source image with the simulator." 
-                                    BorderBrush="{DynamicResource YellowBrush2}"
-                                    md:ButtonProgressAssist.IsIndicatorVisible="{Binding IsV275Working}">
-
+                                    BorderBrush="{DynamicResource YellowBrush2}">
                         <Grid>
                             <mah:ProgressRing IsActive="{Binding IsV275Working}" Width="14" Height="14" Foreground="White"/>
 
@@ -117,7 +115,7 @@
 
                         <Grid>
                             <mah:ProgressRing IsActive="{Binding IsV275Working}" Width="14" Height="14" Foreground="White"/>
-                            <iconPacks:PackIconMaterial Kind="Printer" Height="14" Width="14"/>
+                            <iconPacks:PackIconMaterial Kind="Printer" Height="14" Width="14" Margin="3"/>
                         </Grid>
                         
                         <Button.Style>

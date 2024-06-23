@@ -33,7 +33,7 @@ public partial class ImageResults : ObservableRecipient,
 
     private int PrintCount => App.Settings.GetValue<int>(nameof(PrintCount));
 
-    [ObservableProperty] private ObservableCollection<ImageResultEntry> imageResultsList = [];
+    public ObservableCollection<ImageResultEntry> ImageResultsList { get; } = [];
 
     [ObservableProperty] private V275.ViewModels.Node selectedNode;
     [ObservableProperty] private ImageRollEntry selectedImageRoll;
@@ -55,8 +55,11 @@ public partial class ImageResults : ObservableRecipient,
 
     private void Images_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
-        var itm = e.NewItems.First();
-        LoadResultEntries((ImageEntry)itm);
+        if(e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+        {
+            var itm = e.NewItems.First();
+            LoadResultEntries((ImageEntry)itm);
+        }
     }
 
     [ObservableProperty] private PrinterSettings selectedPrinter;
@@ -177,6 +180,8 @@ public partial class ImageResults : ObservableRecipient,
     {
         ImageResultsList.Remove(imageResults);
 
+        SelectedImageRoll.DeleteImage(imageResults.SourceImage);
+
         if (imageResults.V275ResultRow != null)
             SelectedDatabase.Delete_V275Result(imageResults.V275ResultRow.ImageRollUID, imageResults.V275ResultRow.SourceImageUID);
 
@@ -185,6 +190,8 @@ public partial class ImageResults : ObservableRecipient,
 
         if (imageResults.L95xxResultRow != null)
             SelectedDatabase.Delete_V275Result(imageResults.L95xxResultRow.ImageRollUID, imageResults.L95xxResultRow.SourceImageUID);
+
+        
     }
 
     #region V275 Image Results
