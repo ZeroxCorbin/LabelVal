@@ -216,41 +216,33 @@ public partial class ImageResults : ObservableRecipient,
     [RelayCommand]
     private void AddImageTop()
     {
-        var newImage = PromptForNewImage();
-        if (newImage != null)
-        {
-            InsertImageAtOrder(newImage, 1); // Add at the top with order 1
-        }
+        var newImages = PromptForNewImages(); // Prompt the user to select multiple images
+        if (newImages != null && newImages.Count != 0)
+            InsertImageAtOrder(newImages, 1);
     }
 
     [RelayCommand]
     private void AddImageAbove(ImageResultEntry imageResult)
     {
-        var newImage = PromptForNewImage();
-        if (newImage != null)
-        {
-            InsertImageAtOrder(newImage, imageResult.SourceImage.Order);
-        }
+        var newImages = PromptForNewImages(); // Prompt the user to select multiple images
+        if (newImages != null && newImages.Count != 0)
+            InsertImageAtOrder(newImages, imageResult.SourceImage.Order);
     }
 
     [RelayCommand]
     private void AddImageBelow(ImageResultEntry imageResult)
     {
-        var newImage = PromptForNewImage();
-        if (newImage != null)
-        {
-            InsertImageAtOrder(newImage, imageResult.SourceImage.Order + 1);
-        }
+        var newImages = PromptForNewImages(); // Prompt the user to select multiple images
+        if (newImages != null && newImages.Count != 0)
+            InsertImageAtOrder(newImages, imageResult.SourceImage.Order + 1);
     }
 
     [RelayCommand]
     private void AddImageBottom()
     {
-        var newImage = PromptForNewImage();
-        if (newImage != null)
-        {
-            InsertImageAtOrder(newImage, ImageResultsList.Count + 1); // Add at the bottom
-        }
+        var newImages = PromptForNewImages(); // Prompt the user to select multiple images
+        if (newImages != null && newImages.Count != 0)
+            InsertImageAtOrder(newImages, ImageResultsList.Count + 1);
     }
 
     private ImageResultEntry PromptForNewImage()
@@ -273,6 +265,34 @@ public partial class ImageResults : ObservableRecipient,
         return null;
     }
 
+    private List<ImageResultEntry> PromptForNewImages()
+    {
+        var settings = new Utilities.FileUtilities.LoadFileDialogSettings
+        {
+            Filters =
+            [
+                new Utilities.FileUtilities.FileDialogFilter("Image Files", ["png", "bmp"])
+            ],
+            Title = "Select image(s).",
+            Multiselect = true, // Ensure this property is set to allow multiple file selections
+        };
+
+        if (Utilities.FileUtilities.LoadFileDialog(settings))
+        {
+            var newImages = new List<ImageResultEntry>();
+            foreach (var filePath in settings.SelectedFiles) // Iterate over selected files
+            {
+                var newImage = SelectedImageRoll.GetNewImageEntry(filePath, 0); // Order will be set in InsertImageAtOrder
+                if (newImage != null)
+                {
+                    newImages.Add(new ImageResultEntry(newImage, this));
+                }
+            }
+            return newImages;
+        }
+
+        return null;
+    }
 
 
     private void AdjustOrderForMove(ImageResultEntry itemToMove, bool increase)
@@ -360,6 +380,24 @@ public partial class ImageResults : ObservableRecipient,
         newImageResult.SourceImage.Order = targetOrder;
         SelectedImageRoll.AddImage(newImageResult.SourceImage);
     }
+    public void InsertImageAtOrder(List<ImageResultEntry> newImageResults, int targetOrder)
+    {
+        if (newImageResults == null || !newImageResults.Any()) return;
+
+        // Sort the new images by their current order (if any) to maintain consistency in their addition
+        var sortedNewImages = newImageResults.OrderBy(img => img.SourceImage.Order).ToList();
+
+        // Adjust the orders of existing items to make space for the new items
+        AdjustOrdersBeforeInsert(targetOrder, newImageResults.Count);
+
+        // Insert each new image at the adjusted target order
+        foreach (var newImageResult in sortedNewImages)
+        {
+            // Set the order of the new item
+            newImageResult.SourceImage.Order = targetOrder++;
+            SelectedImageRoll.AddImage(newImageResult.SourceImage);
+        }
+    }
     private void AdjustOrdersBeforeInsert(int targetOrder)
     {
         foreach (var item in ImageResultsList)
@@ -368,6 +406,18 @@ public partial class ImageResults : ObservableRecipient,
             {
                 // Increment the order of existing items that come after the target order
                 item.SourceImage.Order++;
+                SelectedImageRoll.SaveImage(item.SourceImage);
+            }
+        }
+    }
+    private void AdjustOrdersBeforeInsert(int targetOrder, int numberOfNewItems)
+    {
+        foreach (var item in ImageResultsList)
+        {
+            if (item.SourceImage.Order >= targetOrder)
+            {
+                // Increment the order of existing items to accommodate the new items
+                item.SourceImage.Order += numberOfNewItems;
                 SelectedImageRoll.SaveImage(item.SourceImage);
             }
         }
