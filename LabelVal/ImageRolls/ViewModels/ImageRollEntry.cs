@@ -203,6 +203,35 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
         return null;
     }
 
+    [RelayCommand]
+    private void AddFirstImages()
+    {
+        var settings = new Utilities.FileUtilities.LoadFileDialogSettings
+        {
+            Title = "Select image(s) to add to roll.",
+            Multiselect = true,
+            Filters =
+            [
+                new Utilities.FileUtilities.FileDialogFilter("Image Files", ["png", "bmp"]),
+                new Utilities.FileUtilities.FileDialogFilter("Image Files (Add Fiducial)", ["png", "bmp"]),
+            ]
+        };
+
+        if (Utilities.FileUtilities.LoadFileDialog(settings))
+        {
+            var sorted = settings.SelectedFiles.OrderBy(x => x).ToList();
+            int last = 0;
+            if (Images.Count > 0)
+            {
+                var sortedImages = Images.OrderBy(x => x.Order).ToList();
+                last = sortedImages.Last().Order;
+            }
+
+            int i = last + 1;
+            foreach (var f in sorted)
+                _ = AddImage(f, i++);
+        }
+    }
     private ImageEntry AddImage(string path, int order)
     {
         try

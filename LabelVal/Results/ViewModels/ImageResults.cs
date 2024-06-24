@@ -259,8 +259,7 @@ public partial class ImageResults : ObservableRecipient,
         {
             Filters =
             [
-                new Utilities.FileUtilities.FileDialogFilter("Image Files", ["png", "bmp"]),
-                new Utilities.FileUtilities.FileDialogFilter("All Files", [])
+                new Utilities.FileUtilities.FileDialogFilter("Image Files", ["png", "bmp"])
             ],
             Title = "Select image(s).",
         };

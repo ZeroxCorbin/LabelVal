@@ -195,7 +195,6 @@ public partial class ImageRolls : ObservableRecipient, IRecipient<PropertyChange
             Logger.Error("Failed to delete image roll: {UID}", UserImageRoll.UID);
     }
 
-
     [RelayCommand]
     public void Cancel() => UserImageRoll = null;
 
