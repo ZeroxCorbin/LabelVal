@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Messages;
+using LabelVal.Results.Views;
 using LabelVal.Sectors.ViewModels;
 using LabelVal.V275.ViewModels;
 using LabelVal.V5.ViewModels;
@@ -189,91 +190,70 @@ public partial class ImageResults : ObservableRecipient,
             //img.DeleteImage -= DeleteImage;
             ImageResultsList.Remove(itm);
         }
-    }
 
-
-    [RelayCommand]
-    private void DeleteImage(ImageResultEntry imageResults)
-    {
-        SelectedImageRoll.DeleteImage(imageResults.SourceImage);
-
-        if (imageResults.V275ResultRow != null)
-            SelectedDatabase.Delete_V275Result(imageResults.V275ResultRow.ImageRollUID, imageResults.V275ResultRow.SourceImageUID);
-
-        if (imageResults.V5ResultRow != null)
-            SelectedDatabase.Delete_V275Result(imageResults.V5ResultRow.ImageRollUID, imageResults.V5ResultRow.SourceImageUID);
-
-        if (imageResults.L95xxResultRow != null)
-            SelectedDatabase.Delete_V275Result(imageResults.L95xxResultRow.ImageRollUID, imageResults.L95xxResultRow.SourceImageUID);
-
-    }
-
-    [RelayCommand]
-    private void MoveImageUp(ImageResultEntry imageResult)
-    {
-        var currentOrder = imageResult.SourceImage.Order;
-        var targetImage = ImageResultsList.FirstOrDefault(ir => ir.SourceImage.Order == currentOrder - 1);
-        if (targetImage != null)
+        // Reorder the remaining items in the list
+        int order = 1;
+        foreach (var item in ImageResultsList.OrderBy(item => item.SourceImage.Order))
         {
-            // Swap order values
-            imageResult.SourceImage.Order--;
-            targetImage.SourceImage.Order++;
-
-            SelectedImageRoll.SaveImage(imageResult.SourceImage);
-            SelectedImageRoll.SaveImage(targetImage.SourceImage);
-
-            SelectedImageRoll.ConfirmOrder();
-            // Additional logic to refresh the list or UI if necessary
+            item.SourceImage.Order = order++;
+            SelectedImageRoll.SaveImage(item.SourceImage);
         }
     }
 
     [RelayCommand]
-    private void MoveImageDown(ImageResultEntry imageResult)
+    public void DeleteImage(ImageResultEntry imageToDelete)
     {
-        var currentOrder = imageResult.SourceImage.Order;
-        var targetImage = ImageResultsList.FirstOrDefault(ir => ir.SourceImage.Order == currentOrder + 1);
-        if (targetImage != null)
+        // Remove the specified image from the list
+        SelectedImageRoll.DeleteImage(imageToDelete.SourceImage);
+    }
+
+    [RelayCommand] private void MoveImageTop(ImageResultEntry imageResult) => ChangeOrderTo(imageResult, 1);
+    [RelayCommand] private void MoveImageUp(ImageResultEntry imageResult) => AdjustOrderForMove(imageResult, false);
+    [RelayCommand] private void MoveImageDown(ImageResultEntry imageResult) => AdjustOrderForMove(imageResult, true);
+    [RelayCommand] private void MoveImageBottom(ImageResultEntry imageResult) => ChangeOrderTo(imageResult, ImageResultsList.Count);
+
+
+    [RelayCommand]
+    private void AddImageTop()
+    {
+        var newImage = PromptForNewImage();
+        if (newImage != null)
         {
-            // Swap order values
-            imageResult.SourceImage.Order++;
-            targetImage.SourceImage.Order--;
-
-            SelectedImageRoll.SaveImage(imageResult.SourceImage);
-            SelectedImageRoll.SaveImage(targetImage.SourceImage);
-
-            SelectedImageRoll.ConfirmOrder();
-            // Additional logic to refresh the list or UI if necessary
+            InsertImageAtOrder(newImage, 1); // Add at the top with order 1
         }
     }
 
     [RelayCommand]
     private void AddImageAbove(ImageResultEntry imageResult)
     {
-        var settings = new Utilities.FileUtilities.LoadFileDialogSettings
+        var newImage = PromptForNewImage();
+        if (newImage != null)
         {
-            Filters =
-            [
-                new Utilities.FileUtilities.FileDialogFilter("Image Files", ["png", "bmp"]),
-                new Utilities.FileUtilities.FileDialogFilter("All Files", [])
-            ],
-            Title = "Select an image to add above the current image.",
-        };
-
-        if (Utilities.FileUtilities.LoadFileDialog(settings))
-        {
-            var newOrder = imageResult.SourceImage.Order;
-            var newImage = SelectedImageRoll.GetNewImageEntry(settings.SelectedFile, newOrder);
-
-            if(newImage != null)
-                SelectedImageRoll.InsertImage(newImage);
-
-            //var newImageResult = new ImageResultEntry(newImage, this);
-            //ImageResultsList.Add(newImageResult);
+            InsertImageAtOrder(newImage, imageResult.SourceImage.Order);
         }
     }
 
     [RelayCommand]
     private void AddImageBelow(ImageResultEntry imageResult)
+    {
+        var newImage = PromptForNewImage();
+        if (newImage != null)
+        {
+            InsertImageAtOrder(newImage, imageResult.SourceImage.Order + 1);
+        }
+    }
+
+    [RelayCommand]
+    private void AddImageBottom()
+    {
+        var newImage = PromptForNewImage();
+        if (newImage != null)
+        {
+            InsertImageAtOrder(newImage, ImageResultsList.Count + 1); // Add at the bottom
+        }
+    }
+
+    private ImageResultEntry PromptForNewImage()
     {
         var settings = new Utilities.FileUtilities.LoadFileDialogSettings
         {
@@ -282,20 +262,119 @@ public partial class ImageResults : ObservableRecipient,
                 new Utilities.FileUtilities.FileDialogFilter("Image Files", ["png", "bmp"]),
                 new Utilities.FileUtilities.FileDialogFilter("All Files", [])
             ],
-            Title = "Select an image to add below the current image.",
+            Title = "Select image(s).",
         };
 
         if (Utilities.FileUtilities.LoadFileDialog(settings))
         {
-            var newOrder = imageResult.SourceImage.Order + 1;
-            var newImage = SelectedImageRoll.GetNewImageEntry(settings.SelectedFile, newOrder);
+            var newImage = SelectedImageRoll.GetNewImageEntry(settings.SelectedFile, 0); // Order will be set in InsertImageAtOrder
+            return new ImageResultEntry(newImage, this);
+        }
 
-            SelectedImageRoll.InsertImage(newImage);
+        return null;
+    }
 
-            //var newImageResult = new ImageResultEntry(newImage, this);
-            //ImageResultsList.Add(newImageResult);
+
+
+    private void AdjustOrderForMove(ImageResultEntry itemToMove, bool increase)
+    {
+        // This method can be used to generalize the adjustment logic if needed
+        if (increase)
+        {
+            IncreaseOrder(itemToMove);
+        }
+        else
+        {
+            DecreaseOrder(itemToMove);
         }
     }
+    public void IncreaseOrder(ImageResultEntry itemToMove)
+    {
+        var currentItemOrder = itemToMove.SourceImage.Order;
+        var nextItem = ImageResultsList.FirstOrDefault(item => item.SourceImage.Order == currentItemOrder + 1);
+        if (nextItem != null)
+        {
+            // Swap the order values
+            itemToMove.SourceImage.Order++;
+            nextItem.SourceImage.Order--;
+
+            SelectedImageRoll.SaveImage(itemToMove.SourceImage);
+            SelectedImageRoll.SaveImage(nextItem.SourceImage);
+        }
+    }
+    public void DecreaseOrder(ImageResultEntry itemToMove)
+    {
+        var currentItemOrder = itemToMove.SourceImage.Order;
+        var previousItem = ImageResultsList.FirstOrDefault(item => item.SourceImage.Order == currentItemOrder - 1);
+        if (previousItem != null)
+        {
+            // Swap the order values
+            itemToMove.SourceImage.Order--;
+            previousItem.SourceImage.Order++;
+
+            SelectedImageRoll.SaveImage(itemToMove.SourceImage);
+            SelectedImageRoll.SaveImage(previousItem.SourceImage);
+        }
+    }
+
+    public void ChangeOrderTo(ImageResultEntry itemToMove, int newOrder)
+    {
+        int originalOrder = itemToMove.SourceImage.Order;
+
+        if (newOrder == originalOrder) return; // No change needed
+
+        // Temporarily assign a placeholder order to avoid conflicts during adjustment
+        itemToMove.SourceImage.Order = int.MinValue;
+
+        if (newOrder > originalOrder)
+        {
+            // Moving down in the list
+            foreach (var item in ImageResultsList.Where(item => item.SourceImage.Order > originalOrder && item.SourceImage.Order <= newOrder))
+            {
+                item.SourceImage.Order--;
+                SelectedImageRoll.SaveImage(item.SourceImage);
+            }
+        }
+        else
+        {
+            // Moving up in the list
+            foreach (var item in ImageResultsList.Where(item => item.SourceImage.Order < originalOrder && item.SourceImage.Order >= newOrder))
+            {
+                item.SourceImage.Order++;
+                SelectedImageRoll.SaveImage(item.SourceImage);
+            }
+        }
+
+        // Set the item to its new order
+        itemToMove.SourceImage.Order = newOrder;
+        SelectedImageRoll.SaveImage(itemToMove.SourceImage);
+
+        // Sort or notify UI if necessary
+    }
+
+    public void InsertImageAtOrder(ImageResultEntry newImageResult, int targetOrder)
+    {
+        // Adjust the order of existing items to make space for the new item
+        AdjustOrdersBeforeInsert(targetOrder);
+
+        // Set the order of the new item
+        newImageResult.SourceImage.Order = targetOrder;
+        SelectedImageRoll.AddImage(newImageResult.SourceImage);
+    }
+    private void AdjustOrdersBeforeInsert(int targetOrder)
+    {
+        foreach (var item in ImageResultsList)
+        {
+            if (item.SourceImage.Order >= targetOrder)
+            {
+                // Increment the order of existing items that come after the target order
+                item.SourceImage.Order++;
+                SelectedImageRoll.SaveImage(item.SourceImage);
+            }
+        }
+    }
+
+
 
     #region V275 Image Results
     private ImageResultEntry PrintingImageResult { get; set; } = null;

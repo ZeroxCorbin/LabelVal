@@ -33,23 +33,66 @@ public partial class ImageResultEntry : UserControl
 
     private void ViewModel_BringIntoView() => App.Current.Dispatcher.Invoke(new Action(BringIntoView));
 
-    private void btnMoveUpClick(object sender, RoutedEventArgs e)
-    {
 
+    private void btnMove_Click(object sender, RoutedEventArgs e)
+    {
+        popMove.PlacementTarget = sender as UIElement;
+        popMove.Placement = System.Windows.Controls.Primitives.PlacementMode.Center;
+        popMove.StaysOpen = false;
+        popMove.IsOpen = true;
     }
 
-    private void btnMoveDownClick(object sender, RoutedEventArgs e)
+    private void btnMoveImage_Click(object sender, RoutedEventArgs e)
     {
+        popMove.IsOpen = false;
+        var viewModel = ((ViewModels.ImageResultEntry)DataContext);
+        if (((Button)sender).Tag is string s)
+            switch (s)
+            {
+                case "top":
+                    viewModel.ImageResults.MoveImageTopCommand.Execute(viewModel);
+                    break;
+                case "up":
+                    viewModel.ImageResults.MoveImageUpCommand.Execute(viewModel);
+                    break;
+                case "down":
+                    viewModel.ImageResults.MoveImageDownCommand.Execute(viewModel);
+                    break;
+                case "bottom":
+                    viewModel.ImageResults.MoveImageBottomCommand.Execute(viewModel);
+                    break;
+            }
 
+        BringIntoView();
     }
 
-    private void btnAddImageAbove(object sender, RoutedEventArgs e)
+    private void btnAdd_Click(object sender, RoutedEventArgs e)
     {
-
+        popAdd.PlacementTarget = sender as UIElement;
+        popAdd.Placement = System.Windows.Controls.Primitives.PlacementMode.Center;
+        popAdd.StaysOpen = false;
+        popAdd.IsOpen = true;
     }
 
-    private void btnAddImageBelow(object sender, RoutedEventArgs e)
+    private void btnAddImage_Click(object sender, RoutedEventArgs e)
     {
-
+        popAdd.IsOpen = false;
+        var viewModel = ((ViewModels.ImageResultEntry)DataContext);
+        if (((Button)sender).Tag is string s)
+            switch (s)
+            {
+                case "top":
+                    viewModel.ImageResults.AddImageTopCommand.Execute(viewModel);
+                    break;
+                case "up":
+                    viewModel.ImageResults.AddImageAboveCommand.Execute(viewModel);
+                    break;
+                case "down":
+                    viewModel.ImageResults.AddImageBelowCommand.Execute(viewModel);
+                    break;
+                case "bottom":
+                    viewModel.ImageResults.AddImageBottomCommand.Execute(viewModel);
+                    break;
+            }
     }
 }

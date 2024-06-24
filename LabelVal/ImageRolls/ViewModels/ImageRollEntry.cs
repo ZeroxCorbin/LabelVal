@@ -162,7 +162,6 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
         await Task.WhenAll([.. taskList]);
     }
 
-    public void ConfirmOrder() => CheckImageEntryOrder([.. Images]);
     private void CheckImageEntryOrder(ImageEntry[] entries)
     {
         bool invalid = entries.Any(x => x.Order < 0);
@@ -204,41 +203,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
         return null;
     }
 
-    [RelayCommand]
-    private void AddImage()
-    {
-        var settings = new Utilities.FileUtilities.LoadFileDialogSettings
-        {
-            Title = "Select image(s) to add to roll.",
-            Multiselect = true,
-            Filters =
-            [
-                new Utilities.FileUtilities.FileDialogFilter("Image Files", ["png", "bmp"]),
-                new Utilities.FileUtilities.FileDialogFilter("Image Files (Add Fiducial)", ["png", "bmp"]),
-                new Utilities.FileUtilities.FileDialogFilter("PNG Files", ["png"]),
-                new Utilities.FileUtilities.FileDialogFilter("BMP Files", ["bmp"]),
-            ]
-        };
-
-        if (Utilities.FileUtilities.LoadFileDialog(settings))
-        {
-            var sorted = settings.SelectedFiles.OrderBy(x => x).ToList();
-            int last = 0;
-            if (Images.Count > 0)
-            {
-                var sortedImages = Images.OrderBy(x => x.Order).ToList();
-                last = sortedImages.Last().Order;
-            }
-
-            int i = last + 1;
-            foreach (var f in sorted)
-                AddImage(f, i++);
-        }
-
-        CheckImageEntryOrder([.. Images]);
-    }
-
-    public ImageEntry AddImage(string path, int order)
+    private ImageEntry AddImage(string path, int order)
     {
         try
         {
@@ -258,7 +223,6 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
 
         return null;
     }
-
     public ImageEntry AddImage(ImageEntry image)
     {
         try
@@ -279,33 +243,10 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
         return null;
     }
 
-    public void InsertImage(ImageEntry newEntry)
-    {
-        bool invalid = Images.Any(x => x.Order < 0);
-
-        if (invalid)
-            CheckImageEntryOrder([.. Images]);
-
-        var images = Images.OrderBy(x => x.Order).ToArray();
-        var order = newEntry.Order;
-
-        // Adjust the order of existing images to make space for the new entry
-        foreach (var image in images.Where(img => img.Order >= order))
-        {
-            image.Order++;
-            SaveImage(image);
-        }
-
-        SaveImage(newEntry);
-        Images.Add(newEntry);
-    }
-
     public void DeleteImage(ImageEntry imageEntry)
     {
         ImageRollsDatabase.DeleteImage(imageEntry.UID);
         Images.Remove(imageEntry);
-
-        CheckImageEntryOrder([.. Images]);
     }
 
     [RelayCommand]
