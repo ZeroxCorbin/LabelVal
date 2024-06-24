@@ -33,7 +33,7 @@ public partial class PopupSectorsDetails : UserControl
         if (card != null)
         {
             string path;
-            if ((path = Utilities.FileUtilities.GetSaveFilePath("plot", "PNG|*.png", "Export Results Plot.")) != "")
+            if ((path = Utilities.FileUtilities.SaveFileDialog("plot", "PNG|*.png", "Export Results Plot.")) != "")
             {
                 try
                 {

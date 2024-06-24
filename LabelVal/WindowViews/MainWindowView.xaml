@@ -172,25 +172,18 @@
                                 <results:ImageResultsDatabases DockPanel.Dock="Top" DataContext="{Binding ImageResultsDatabases}"/>
 
                                 <imageRolls:ImageRolls DataContext="{Binding ImageRolls}"/>
-                                
+
                             </DockPanel>
+
                             <DockPanel DockPanel.Dock="Top">
 
                                 <printer:Printer DataContext="{Binding Printer}"/>
 
                                 <!--Test Runs-->
                                 <local:RunView DataContext="{Binding ImageResults.RunViewModel}"/>
-
-
-
                             </DockPanel>
 
-                            <DockPanel >
-
-                                <results:ImageResults DataContext="{Binding ImageResults}"/>
-
-                            </DockPanel>
-
+                            <results:ImageResults DataContext="{Binding ImageResults}"/>
 
                         </DockPanel>
                     </DockPanel>

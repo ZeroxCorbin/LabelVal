@@ -6,15 +6,20 @@ namespace LabelVal.Utilities
 {
     public static class FileUtilities
     {
-        public class LoadFileDialogFilter
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="description"></param>
+        /// <param name="extensions">A list of extensions ["bmp" , "png"]. Do not include the period.</param>
+        public class FileDialogFilter(string description, List<string> extensions)
         {
-            public string Description { get; set; }
-            public List<string> Extensions { get; set; } = [];
+            public string Description { get; set; } = description;
+            public List<string> Extensions { get; set; } = extensions;
         }
 
-        public class LoadFileDialogSettings
+        public class LoadFileDialogSettings(List<FileDialogFilter> filters = null)
         {
-            public List<LoadFileDialogFilter> Filters { get; set; } = new List<LoadFileDialogFilter>();
+            public List<FileDialogFilter> Filters { get; set; } = filters;
             public string FilterString { get => filterString ?? GenerateFilterString(Filters); set => filterString = value; }
             private string filterString = null;
             public string Title { get; set; }
@@ -51,8 +56,11 @@ namespace LabelVal.Utilities
                 return false;
         }
 
-        public static string GenerateFilterString(List<LoadFileDialogFilter> filterEntries)
+        public static string GenerateFilterString(List<FileDialogFilter> filterEntries)
         {
+            if(filterEntries == null || filterEntries.Count == 0)
+                return "All Files|*.*";
+
             var filterBuilder = new StringBuilder();
             foreach (var entry in filterEntries)
             {
@@ -105,12 +113,12 @@ namespace LabelVal.Utilities
 
         public class SaveFileDialogSettings
         {
-            public List<LoadFileDialogFilter> Filters { get; set; } = new List<LoadFileDialogFilter>();
+            public List<FileDialogFilter> Filters { get; set; } = new List<FileDialogFilter>();
             public string FilterString { get => filterString ?? GenerateFilterString(Filters); set => filterString = value; }
             private string filterString = null;
             public string Title { get; set; }
             public string InitialFileName { get; set; }
-            public string SelectedFileName { get; set; }
+            public string SelectedFile { get; set; }
             public int SelectedFilterIndex { get; set; }
         }
 
@@ -126,14 +134,14 @@ namespace LabelVal.Utilities
             if (diag.ShowDialog() == true)
             {
                 settings.SelectedFilterIndex = diag.FilterIndex;
-                settings.SelectedFileName = diag.FileName;
+                settings.SelectedFile = diag.FileName;
                 return true;
             }
             else
                 return false;
         }
 
-        public static string GetSaveFilePath(string fileName = "", string filter = "All Files|*.*", string title = "Save a file.")
+        public static string SaveFileDialog(string fileName = "", string filter = "All Files|*.*", string title = "Save a file.")
         {
             SaveFileDialogSettings settings = new SaveFileDialogSettings
             {
@@ -143,7 +151,7 @@ namespace LabelVal.Utilities
             };
 
             if (FileUtilities.SaveFileDialog(settings))
-                return settings.SelectedFileName;
+                return settings.SelectedFile;
             else
                 return null;
 

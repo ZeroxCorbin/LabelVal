@@ -6,19 +6,23 @@
              xmlns:local="clr-namespace:LabelVal.Results.Views"
                 xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                 xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:viewModels="clr-namespace:LabelVal.Results.ViewModels"
              d:DataContext="{d:DesignInstance Type=viewModels:ImageResults}"
              mc:Ignorable="d" >
 
     <UserControl.Resources>
-        <CollectionViewSource x:Key="cvsImageResultsList" Source="{Binding ImageResultsList}">
+        
+        <CollectionViewSource x:Key="cvsImageResultsList" Source="{Binding ImageResultsList}" IsLiveSortingRequested="True">
             <CollectionViewSource.SortDescriptions>
-                <componentmodel:SortDescription PropertyName="SourceImage.Order" Direction="Ascending"/>
+                <componentmodel:SortDescription PropertyName="SourceImage.Order" Direction="Ascending" />
             </CollectionViewSource.SortDescriptions>
         </CollectionViewSource>
+        
     </UserControl.Resources>
 
-    <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+    <ScrollViewer Margin="0,0,3,0" Style="{StaticResource MahApps.Styles.ScrollViewer}">
+
         <ItemsControl ItemsSource="{Binding Source={StaticResource cvsImageResultsList}}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>

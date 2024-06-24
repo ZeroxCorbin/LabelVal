@@ -33,8 +33,23 @@ public partial class ImageResultEntry : UserControl
 
     private void ViewModel_BringIntoView() => App.Current.Dispatcher.Invoke(new Action(BringIntoView));
 
+    private void btnMoveUpClick(object sender, RoutedEventArgs e)
+    {
 
+    }
 
+    private void btnMoveDownClick(object sender, RoutedEventArgs e)
+    {
 
+    }
 
+    private void btnAddImageAbove(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void btnAddImageBelow(object sender, RoutedEventArgs e)
+    {
+
+    }
 }

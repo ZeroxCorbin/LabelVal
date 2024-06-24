@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
@@ -15,6 +16,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing.Printing;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using V275_REST_lib.Models;
@@ -55,10 +57,15 @@ public partial class ImageResults : ObservableRecipient,
 
     private void Images_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
-        if(e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+        if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
         {
             var itm = e.NewItems.First();
-            LoadResultEntries((ImageEntry)itm);
+            AddImageResultEntry((ImageEntry)itm);
+        }
+        else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
+        {
+            var itm = e.OldItems.First();
+            RemoveImageResultEntry((ImageEntry)itm);
         }
     }
 
@@ -139,7 +146,7 @@ public partial class ImageResults : ObservableRecipient,
         foreach (var lab in ImageResultsList)
         {
             lab.V275ProcessImage -= V275ProcessImage;
-            lab.DeleteImage -= DeleteImage;
+            //lab.DeleteImage -= DeleteImage;
         }
 
         ImageResultsList.Clear();
@@ -157,7 +164,7 @@ public partial class ImageResults : ObservableRecipient,
         var taskList = new List<Task>();
         foreach (var img in SelectedImageRoll.Images)
         {
-            var tsk = App.Current.Dispatcher.BeginInvoke(() => LoadResultEntries(img)).Task;
+            var tsk = App.Current.Dispatcher.BeginInvoke(() => AddImageResultEntry(img)).Task;
             taskList.Add(tsk);
         }
 
@@ -166,20 +173,28 @@ public partial class ImageResults : ObservableRecipient,
         SelectedImageRoll.Images.CollectionChanged += Images_CollectionChanged;
     }
 
-    private void LoadResultEntries(ImageEntry img)
+    private void AddImageResultEntry(ImageEntry img)
     {
-        var tmp = new ImageResultEntry(img, SelectedNode, SelectedImageRoll, SelectedDatabase, SelectedScanner, SelectedPrinter);
-
+        var tmp = new ImageResultEntry(img, this);
         tmp.V275ProcessImage += V275ProcessImage;
-        tmp.DeleteImage += DeleteImage;
-
         ImageResultsList.Add(tmp);
     }
 
+    private void RemoveImageResultEntry(ImageEntry img)
+    {
+        var itm = ImageResultsList.FirstOrDefault(ir => ir.SourceImage == img);
+        if (itm != null)
+        {
+            itm.V275ProcessImage -= V275ProcessImage;
+            //img.DeleteImage -= DeleteImage;
+            ImageResultsList.Remove(itm);
+        }
+    }
+
+
+    [RelayCommand]
     private void DeleteImage(ImageResultEntry imageResults)
     {
-        ImageResultsList.Remove(imageResults);
-
         SelectedImageRoll.DeleteImage(imageResults.SourceImage);
 
         if (imageResults.V275ResultRow != null)
@@ -191,7 +206,95 @@ public partial class ImageResults : ObservableRecipient,
         if (imageResults.L95xxResultRow != null)
             SelectedDatabase.Delete_V275Result(imageResults.L95xxResultRow.ImageRollUID, imageResults.L95xxResultRow.SourceImageUID);
 
-        
+    }
+
+    [RelayCommand]
+    private void MoveImageUp(ImageResultEntry imageResult)
+    {
+        var currentOrder = imageResult.SourceImage.Order;
+        var targetImage = ImageResultsList.FirstOrDefault(ir => ir.SourceImage.Order == currentOrder - 1);
+        if (targetImage != null)
+        {
+            // Swap order values
+            imageResult.SourceImage.Order--;
+            targetImage.SourceImage.Order++;
+
+            SelectedImageRoll.SaveImage(imageResult.SourceImage);
+            SelectedImageRoll.SaveImage(targetImage.SourceImage);
+
+            SelectedImageRoll.ConfirmOrder();
+            // Additional logic to refresh the list or UI if necessary
+        }
+    }
+
+    [RelayCommand]
+    private void MoveImageDown(ImageResultEntry imageResult)
+    {
+        var currentOrder = imageResult.SourceImage.Order;
+        var targetImage = ImageResultsList.FirstOrDefault(ir => ir.SourceImage.Order == currentOrder + 1);
+        if (targetImage != null)
+        {
+            // Swap order values
+            imageResult.SourceImage.Order++;
+            targetImage.SourceImage.Order--;
+
+            SelectedImageRoll.SaveImage(imageResult.SourceImage);
+            SelectedImageRoll.SaveImage(targetImage.SourceImage);
+
+            SelectedImageRoll.ConfirmOrder();
+            // Additional logic to refresh the list or UI if necessary
+        }
+    }
+
+    [RelayCommand]
+    private void AddImageAbove(ImageResultEntry imageResult)
+    {
+        var settings = new Utilities.FileUtilities.LoadFileDialogSettings
+        {
+            Filters =
+            [
+                new Utilities.FileUtilities.FileDialogFilter("Image Files", ["png", "bmp"]),
+                new Utilities.FileUtilities.FileDialogFilter("All Files", [])
+            ],
+            Title = "Select an image to add above the current image.",
+        };
+
+        if (Utilities.FileUtilities.LoadFileDialog(settings))
+        {
+            var newOrder = imageResult.SourceImage.Order;
+            var newImage = SelectedImageRoll.GetNewImageEntry(settings.SelectedFile, newOrder);
+
+            if(newImage != null)
+                SelectedImageRoll.InsertImage(newImage);
+
+            //var newImageResult = new ImageResultEntry(newImage, this);
+            //ImageResultsList.Add(newImageResult);
+        }
+    }
+
+    [RelayCommand]
+    private void AddImageBelow(ImageResultEntry imageResult)
+    {
+        var settings = new Utilities.FileUtilities.LoadFileDialogSettings
+        {
+            Filters =
+            [
+                new Utilities.FileUtilities.FileDialogFilter("Image Files", ["png", "bmp"]),
+                new Utilities.FileUtilities.FileDialogFilter("All Files", [])
+            ],
+            Title = "Select an image to add below the current image.",
+        };
+
+        if (Utilities.FileUtilities.LoadFileDialog(settings))
+        {
+            var newOrder = imageResult.SourceImage.Order + 1;
+            var newImage = SelectedImageRoll.GetNewImageEntry(settings.SelectedFile, newOrder);
+
+            SelectedImageRoll.InsertImage(newImage);
+
+            //var newImageResult = new ImageResultEntry(newImage, this);
+            //ImageResultsList.Add(newImageResult);
+        }
     }
 
     #region V275 Image Results
@@ -477,7 +580,7 @@ public partial class ImageResults : ObservableRecipient,
     {
         WaitForRepeat = false;
 
-        if (TempV275Repeat[repeat].ImageResult.SelectedImageRoll.WriteSectorsBeforeProcess)
+        if (TempV275Repeat[repeat].ImageResult.ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess)
         {
             if (repeat > 0)
                 if (!await SelectedNode.Connection.Commands.SetRepeat(repeat))

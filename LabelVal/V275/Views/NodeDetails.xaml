@@ -10,7 +10,7 @@
              xmlns:ViewModels="clr-namespace:LabelVal.V275.ViewModels"  
              d:DataContext="{d:DesignInstance Type=ViewModels:NodeDetails}"
              mc:Ignorable="d">
-    <ScrollViewer>
+    <ScrollViewer Style="{StaticResource MahApps.Styles.ScrollViewer}">
 
         <GroupBox Margin="3" Padding="3"
                           Style="{StaticResource MaterialDesignCardGroupBox}"

@@ -126,7 +126,7 @@
 
             <Button x:Name="BtnSortRuns" Style="{StaticResource MahApps.Styles.Button.Flat}" Click="BtnSortRuns_Click"/>
 
-            <ScrollViewer>
+            <ScrollViewer Style="{StaticResource MahApps.Styles.ScrollViewer}">
                 <ListView ItemsSource="{Binding Source={StaticResource ResourceKey=RunEntriesDataList}}" SelectedItem="{Binding SelectedRunEntry}" ContextMenu="{StaticResource contextMenu}">
                     <ListView.GroupStyle>
                         <GroupStyle>
@@ -363,8 +363,8 @@
                     </Grid>
                 </Border>
             </StackPanel>
-            
-            <ScrollViewer HorizontalScrollBarVisibility="Auto">
+
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" Style="{StaticResource MahApps.Styles.ScrollViewer}">
                 <StackPanel>
                     <ItemsControl ItemsSource="{Binding Source={StaticResource ResourceKey=ImageResultsDataList}}" x:Name="RunList">
                         <!--<ItemsControl.ItemsPanel>

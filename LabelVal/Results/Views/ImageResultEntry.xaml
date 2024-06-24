@@ -32,9 +32,9 @@
 
                 <StackPanel>
                      
-                    <Button VerticalAlignment="Top" BorderThickness="0" Margin="0,3"
+                    <Button Command="{Binding ImageResults.MoveImageUpCommand}" CommandParameter="{Binding }" VerticalAlignment="Top" BorderThickness="0" Margin="0,3"
                             Content="{iconPacks:Material Kind=ArrowUpBoldBox}"
-                            ToolTip="Move Image Up" md:HintAssist.Hint="Move" md:HintAssist.IsFloating="True">
+                            ToolTip="Move Up" md:HintAssist.Hint="Move" md:HintAssist.IsFloating="True">
 
                         <Button.Style>
                             <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
@@ -42,7 +42,7 @@
                                     <DataTrigger Binding="{Binding SourceImage.Order}" Value="1">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding SelectedImageRoll.IsLocked}" Value="True">
+                                    <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -50,13 +50,13 @@
                         </Button.Style>
                     </Button>
 
-                    <Button VerticalAlignment="Top" BorderThickness="0" Margin="0,3"
+                    <Button  Command="{Binding ImageResults.MoveImageDownCommand}" CommandParameter="{Binding }" VerticalAlignment="Top" BorderThickness="0" Margin="0,3"
                             Content="{iconPacks:Material Kind=ArrowDownBoldBox}"
-                            ToolTip="Move Image Down">
+                            ToolTip="Move Down">
                         <Button.Style>
                             <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding SelectedImageRoll.IsLocked}" Value="True">
+                                    <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -68,7 +68,7 @@
                         <Separator.Style>
                              <Style TargetType="Separator">
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding SelectedImageRoll.IsLocked}" Value="True">
+                                    <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -76,13 +76,13 @@
                         </Separator.Style>
                     </Separator>
 
-                    <Button VerticalAlignment="Top" BorderThickness="0" Margin="0,3"
+                    <Button Command="{Binding ImageResults.AddImageAboveCommand}" CommandParameter="{Binding }" VerticalAlignment="Top" BorderThickness="0" Margin="0,3"
                             Content="{iconPacks:Material Kind=ImageAreaClose, RotationAngle=180}"
-                            ToolTip="Add Image Above">
+                            ToolTip="New Image Above">
                         <Button.Style>
                             <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding SelectedImageRoll.IsLocked}" Value="True">
+                                    <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -90,13 +90,38 @@
                         </Button.Style>
                     </Button>
 
-                    <Button VerticalAlignment="Top" BorderThickness="0" Margin="0,3"
+                    <Button Command="{Binding ImageResults.AddImageBelowCommand}" CommandParameter="{Binding }" VerticalAlignment="Top" BorderThickness="0" Margin="0,3"
                             Content="{iconPacks:Material Kind=ImageAreaClose}"
-                            ToolTip="Add Image Below">
+                            ToolTip="New Image Below">
                         <Button.Style>
                             <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding SelectedImageRoll.IsLocked}" Value="True">
+                                    <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <Separator>
+                        <Separator.Style>
+                            <Style TargetType="Separator">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Separator.Style>
+                    </Separator>
+                    
+                    <Button Command="{Binding ImageResults.DeleteImageCommand}" CommandParameter="{Binding }" VerticalAlignment="Top" BorderThickness="0" Margin="0,3"
+                              ToolTip="Delete" Content="{iconPacks:Material Kind=Delete}">
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -108,7 +133,9 @@
             </GroupBox>
         </DockPanel>
 
-        <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto" mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True">
+        <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto" 
+                      mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
+                      Style="{StaticResource MahApps.Styles.ScrollViewer}">
             <DockPanel>
 
                 <local:ImageResultEntry_Images DataContext="{Binding }" DockPanel.Dock="Top"/>

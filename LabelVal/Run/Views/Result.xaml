@@ -43,7 +43,7 @@
                         BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
                         Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
 
-                    <ScrollViewer HorizontalScrollBarVisibility="Auto">
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto" Style="{StaticResource MahApps.Styles.ScrollViewer}">
                         <ItemsControl ItemsSource="{Binding V275StoredSectors}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -68,7 +68,7 @@
                         BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
                         Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
 
-                    <ScrollViewer HorizontalScrollBarVisibility="Auto">
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto" Style="{StaticResource MahApps.Styles.ScrollViewer}">
                         <ItemsControl ItemsSource="{Binding V275CurrentSectors}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -146,7 +146,7 @@
                           Margin="3" Padding="0,0,0,6" MaxHeight="400" VerticalScrollBarVisibility="Auto"
                           ScrollChanged="ScrollV275StoredSectors_ScrollChanged">
                 <ScrollViewer.Style>
-                    <Style TargetType="{x:Type ScrollViewer}">
+                    <Style TargetType="{x:Type ScrollViewer}" BasedOn="{StaticResource MahApps.Styles.ScrollViewer}">
                         <Setter Property="mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer" Value="True"/>
                         <Style.Triggers>
                             <Trigger Property="ComputedVerticalScrollBarVisibility" Value="Visible">
@@ -173,7 +173,7 @@
                           Margin="3" Padding="0,0,0,6" MaxHeight="400" VerticalScrollBarVisibility="Auto" 
                           ScrollChanged="ScrollV275CurrentSectors_ScrollChanged" >
                 <ScrollViewer.Style>
-                    <Style TargetType="{x:Type ScrollViewer}">
+                    <Style TargetType="{x:Type ScrollViewer}" BasedOn="{StaticResource MahApps.Styles.ScrollViewer}">
                         <Setter Property="mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer" Value="True"/>
                         <Style.Triggers>
                             <Trigger Property="ComputedVerticalScrollBarVisibility" Value="Visible">
@@ -194,7 +194,7 @@
             <!--Dissimilar Sectors-->
             <ScrollViewer Grid.Row="1" Grid.Column="3" Margin="3" Padding="0,0,0,6" MaxHeight="400" VerticalScrollBarVisibility="Auto" >
                 <ScrollViewer.Style>
-                    <Style TargetType="{x:Type ScrollViewer}">
+                    <Style TargetType="{x:Type ScrollViewer}" BasedOn="{StaticResource MahApps.Styles.ScrollViewer}">
                         <Setter Property="mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer" Value="True"/>
                         <Style.Triggers>
                             <Trigger Property="ComputedVerticalScrollBarVisibility" Value="Visible">

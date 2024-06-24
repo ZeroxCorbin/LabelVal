@@ -3,10 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.Extensions;
-using LabelVal.Messages;
 using LabelVal.Sectors.ViewModels;
-using LabelVal.Sectors.Views;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -15,7 +12,6 @@ using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using ZstdSharp.Unsafe;
 
 namespace LabelVal.ImageRolls.ViewModels;
 
@@ -159,20 +155,19 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
         foreach (var f in images)
         {
             var tsk = App.Current.Dispatcher.BeginInvoke(() => AddImage(f)).Task;
+
             taskList.Add(tsk);
         }
 
         await Task.WhenAll([.. taskList]);
-
-
     }
 
     public void ConfirmOrder() => CheckImageEntryOrder([.. Images]);
     private void CheckImageEntryOrder(ImageEntry[] entries)
     {
-        bool invalid = entries.Any(x => x.Order < 0 || x.Order >= entries.Length);
+        bool invalid = entries.Any(x => x.Order < 0);
 
-        List<ImageEntry> images = invalid ? [.. entries.OrderBy(x => x.Order)] : [.. entries.OrderBy(x => x.Path)];
+        List<ImageEntry> images = !invalid ? [.. entries.OrderBy(x => x.Order)] : [.. entries.OrderBy(x => x.Path)];
 
         for (int i = 0; i < images.Count; i++)
         {
@@ -184,6 +179,31 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
         }
     }
 
+    public ImageEntry GetNewImageEntry(string path, int order)
+    {
+        try
+        {
+            var image = new ImageEntry(UID, path, TargetDPI, TargetDPI)
+            {
+                Order = order
+            };
+
+            if (Images.Any(e => e.UID == image.UID))
+            {
+                Logger.Warn("Image already exists in roll: {path}", path);
+                return null;
+            }
+
+            return image;
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(ex, "Failed to load image: {name}", path);
+        }
+
+        return null;
+    }
+
     [RelayCommand]
     private void AddImage()
     {
@@ -193,22 +213,10 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
             Multiselect = true,
             Filters =
             [
-                new Utilities.FileUtilities.LoadFileDialogFilter
-                {
-                    Description = "Image Files", Extensions = ["png", "bmp"]
-                },
-                new Utilities.FileUtilities.LoadFileDialogFilter
-                {
-                    Description = "Image Files (Add Fiducial)", Extensions = ["png", "bmp"]
-                },
-                new Utilities.FileUtilities.LoadFileDialogFilter
-                {
-                    Description = "PNG Files", Extensions = ["png"]
-                },
-                new Utilities.FileUtilities.LoadFileDialogFilter
-                {
-                    Description = "BMP Files", Extensions = ["bmp"]
-                },
+                new Utilities.FileUtilities.FileDialogFilter("Image Files", ["png", "bmp"]),
+                new Utilities.FileUtilities.FileDialogFilter("Image Files (Add Fiducial)", ["png", "bmp"]),
+                new Utilities.FileUtilities.FileDialogFilter("PNG Files", ["png"]),
+                new Utilities.FileUtilities.FileDialogFilter("BMP Files", ["bmp"]),
             ]
         };
 
@@ -230,27 +238,66 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
         CheckImageEntryOrder([.. Images]);
     }
 
-    public void AddImage(ImageEntry imageEntry) => Images.Add(imageEntry);
-    public void AddImage(string path, int order)
+    public ImageEntry AddImage(string path, int order)
     {
         try
         {
-            var image = new ImageEntry(UID, path, TargetDPI, TargetDPI)
-            {
-                Order = order
-            };
-            if (Images.Any(e => e.UID == image.UID))
-            {
-                Logger.Warn("Image already exists in roll: {path}", path);
-                return;
-            }
+            var image = GetNewImageEntry(path, order);
+            if (image == null)
+                return null;
+
             SaveImage(image);
             Images.Add(image);
+
+            return image;
         }
         catch (Exception ex)
         {
             Logger.Error(ex, "Failed to load image: {name}", path);
         }
+
+        return null;
+    }
+
+    public ImageEntry AddImage(ImageEntry image)
+    {
+        try
+        {
+            if (image == null)
+                return null;
+
+            SaveImage(image);
+            Images.Add(image);
+
+            return image;
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(ex, "Failed to load image: {name}", path);
+        }
+
+        return null;
+    }
+
+    public void InsertImage(ImageEntry newEntry)
+    {
+        bool invalid = Images.Any(x => x.Order < 0);
+
+        if (invalid)
+            CheckImageEntryOrder([.. Images]);
+
+        var images = Images.OrderBy(x => x.Order).ToArray();
+        var order = newEntry.Order;
+
+        // Adjust the order of existing images to make space for the new entry
+        foreach (var image in images.Where(img => img.Order >= order))
+        {
+            image.Order++;
+            SaveImage(image);
+        }
+
+        SaveImage(newEntry);
+        Images.Add(newEntry);
     }
 
     public void DeleteImage(ImageEntry imageEntry)
@@ -258,7 +305,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
         ImageRollsDatabase.DeleteImage(imageEntry.UID);
         Images.Remove(imageEntry);
 
-        ConfirmOrder();
+        CheckImageEntryOrder([.. Images]);
     }
 
     [RelayCommand]
@@ -270,7 +317,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
         _ = ImageRollsDatabase.InsertOrReplaceImageRoll(this);
     }
     [RelayCommand]
-    private void SaveImage(ImageEntry image)
+    public void SaveImage(ImageEntry image)
     {
         if (IsRooted)
             return;

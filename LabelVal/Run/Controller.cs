@@ -67,7 +67,7 @@ public class Controller
         LoopCount = loopCount;
         ImageResultsDatabase = standardsDatabase;
         Node = v275Node;
-        SelectedImageRoll = ImageResultsList[0].SelectedImageRoll;
+        SelectedImageRoll = ImageResultsList[0].ImageResults.SelectedImageRoll;
 
         TimeDate = DateTime.UtcNow.Ticks;
 

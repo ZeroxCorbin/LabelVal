@@ -22,9 +22,9 @@ using System.Windows.Media;
 namespace LabelVal.Results.ViewModels;
 
 public partial class ImageResultEntry : ObservableRecipient,
-    IRecipient<PropertyChangedMessage<Node>>,
+    //IRecipient<PropertyChangedMessage<Node>>,
     IRecipient<PropertyChangedMessage<Databases.ImageResults>>,
-    IRecipient<PropertyChangedMessage<Scanner>>,
+   // IRecipient<PropertyChangedMessage<Scanner>>,
     IRecipient<PropertyChangedMessage<PrinterSettings>>
 {
 
@@ -42,11 +42,15 @@ public partial class ImageResultEntry : ObservableRecipient,
     //partial void OnStatusChanged(string value) => App.Current.Dispatcher.Invoke(() => StatusChanged?.Invoke(Status));
 
     public ImageEntry SourceImage { get; }
+
+    public ImageResults ImageResults { get; }
+
+
     [ObservableProperty] System.Windows.Media.DrawingImage printerAreaOverlay;
 
-    [ObservableProperty] private Node selectedNode;
-    [ObservableProperty] private ImageRollEntry selectedImageRoll;
-    [ObservableProperty] private Scanner selectedScanner;
+    //[ObservableProperty] private Node selectedNode;
+    //[ObservableProperty] private ImageRollEntry selectedImageRoll;
+    //[ObservableProperty] private Scanner selectedScanner;
     [ObservableProperty] private PrinterSettings selectedPrinter;
     partial void OnSelectedPrinterChanged(PrinterSettings value)
     {
@@ -76,17 +80,13 @@ public partial class ImageResultEntry : ObservableRecipient,
     }
 
     private static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
-    public ImageResultEntry(ImageEntry sourceImage, Node selectedNode, ImageRollEntry selectedImageRoll, Databases.ImageResults selectedDatabase, Scanner selectedScanner, PrinterSettings selectedPrinter)
+    public ImageResultEntry(ImageEntry sourceImage, ImageResults imageResults )//Node selectedNode, ImageRollEntry selectedImageRoll, Databases.ImageResults selectedDatabase, Scanner selectedScanner, PrinterSettings selectedPrinter)
     {
         SourceImage = sourceImage;
+        ImageResults = imageResults;
 
-        // GetImage(imagePath);
-
-        SelectedImageRoll = selectedImageRoll;
-        SelectedNode = selectedNode;
-        SelectedDatabase = selectedDatabase;
-        SelectedScanner = selectedScanner;
-        SelectedPrinter = selectedPrinter;
+        SelectedDatabase = ImageResults.SelectedDatabase;
+        SelectedPrinter = ImageResults.SelectedPrinter;
 
         IsActive = true;
     }
@@ -95,9 +95,9 @@ public partial class ImageResultEntry : ObservableRecipient,
     private void SendStatusMessage(string message, SystemMessages.StatusMessageType type) => WeakReferenceMessenger.Default.Send(new SystemMessages.StatusMessage(this, type, message));
     private void SendErrorMessage(string message) => WeakReferenceMessenger.Default.Send(new SystemMessages.StatusMessage(this, SystemMessages.StatusMessageType.Error, message));
 
-    public void Receive(PropertyChangedMessage<Node> message) => SelectedNode = message.NewValue;
+    //public void Receive(PropertyChangedMessage<Node> message) => SelectedNode = message.NewValue;
     public void Receive(PropertyChangedMessage<Databases.ImageResults> message) => SelectedDatabase = message.NewValue;
-    public void Receive(PropertyChangedMessage<Scanner> message) => SelectedScanner = message.NewValue;
+    //public void Receive(PropertyChangedMessage<Scanner> message) => SelectedScanner = message.NewValue;
     public void Receive(PropertyChangedMessage<PrinterSettings> message) => SelectedPrinter = message.NewValue;
 
 
@@ -165,7 +165,7 @@ public partial class ImageResultEntry : ObservableRecipient,
             _ = SelectedDatabase.InsertOrReplace_V275Result(new Databases.ImageResults.V275Result
             {
                 SourceImageUID = SourceImage.UID,
-                ImageRollUID = SelectedImageRoll.UID,
+                ImageRollUID = ImageResults.SelectedImageRoll.UID,
 
                 SourceImage = JsonConvert.SerializeObject(SourceImage),
                 StoredImage = JsonConvert.SerializeObject(V275Image),
@@ -185,7 +185,7 @@ public partial class ImageResultEntry : ObservableRecipient,
             _ = SelectedDatabase.InsertOrReplace_V5Result(new Databases.ImageResults.V5Result
             {
                 SourceImageUID = SourceImage.UID,
-                ImageRollUID = SelectedImageRoll.UID,
+                ImageRollUID = ImageResults.SelectedImageRoll.UID,
 
                 SourceImage = JsonConvert.SerializeObject(SourceImage),
                 StoredImage = JsonConvert.SerializeObject(V5Image),
@@ -207,7 +207,7 @@ public partial class ImageResultEntry : ObservableRecipient,
 
             _ = SelectedDatabase.InsertOrReplace_L95xxResult(new Databases.ImageResults.L95xxResult
             {
-                ImageRollUID = SelectedImageRoll.UID,
+                ImageRollUID = ImageResults.SelectedImageRoll.UID,
                 SourceImageUID = SourceImage.UID,
                 SourceImage = SourceImage.GetBitmapBytes(),
                 Report = JsonConvert.SerializeObject(temp),
@@ -224,17 +224,17 @@ public partial class ImageResultEntry : ObservableRecipient,
         {
             if (device == "V275")
             {
-                _ = SelectedDatabase.Delete_V275Result(SelectedImageRoll.UID, SourceImage.UID);
+                _ = SelectedDatabase.Delete_V275Result(ImageResults.SelectedImageRoll.UID, SourceImage.UID);
                 V275GetStored();
             }
             else if (device == "V5")
             {
-                _ = SelectedDatabase.Delete_V5Result(SelectedImageRoll.UID, SourceImage.UID);
+                _ = SelectedDatabase.Delete_V5Result(ImageResults.SelectedImageRoll.UID, SourceImage.UID);
                 V5GetStored();
             }
             else if (device == "L95xx")
             {
-                _ = SelectedDatabase.Delete_L95xxResult(SelectedImageRoll.UID, SourceImage.UID);
+                _ = SelectedDatabase.Delete_L95xxResult(ImageResults.SelectedImageRoll.UID, SourceImage.UID);
                 L95xxGetStored();
             }
         }
@@ -251,7 +251,7 @@ public partial class ImageResultEntry : ObservableRecipient,
             V275CurrentSectors.Clear();
             V275DiffSectors.Clear();
 
-            V275ResultRow = SelectedDatabase.Select_V275Result(SelectedImageRoll.UID, SourceImage.UID);
+            V275ResultRow = SelectedDatabase.Select_V275Result(ImageResults.SelectedImageRoll.UID, SourceImage.UID);
 
             if (V275ResultRow == null)
             {
@@ -278,7 +278,7 @@ public partial class ImageResultEntry : ObservableRecipient,
             V5CurrentSectors.Clear();
             V5DiffSectors.Clear();
 
-            V5ResultRow = SelectedDatabase.Select_V5Result(SelectedImageRoll.UID, SourceImage.UID);
+            V5ResultRow = SelectedDatabase.Select_V5Result(ImageResults.SelectedImageRoll.UID, SourceImage.UID);
 
             if (V5ResultRow == null)
             {
@@ -305,7 +305,7 @@ public partial class ImageResultEntry : ObservableRecipient,
             L95xxCurrentSectors.Clear();
             L95xxDiffSectors.Clear();
 
-            L95xxResultRow = SelectedDatabase.Select_L95xxResult(SelectedImageRoll.UID, SourceImage.UID);
+            L95xxResultRow = SelectedDatabase.Select_L95xxResult(ImageResults.SelectedImageRoll.UID, SourceImage.UID);
 
             if (L95xxResultRow != null)
                 if (getStored)

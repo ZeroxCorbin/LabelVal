@@ -72,7 +72,7 @@ namespace LabelVal.V5.Views
         private void btnSaveImage_Click(object sender, RoutedEventArgs e)
         {
             string path;
-            if ((path = Utilities.FileUtilities.GetSaveFilePath("", "PNG|*.png", "Save Image")) != "")
+            if ((path = Utilities.FileUtilities.SaveFileDialog("", "PNG|*.png", "Save Image")) != "")
             {
                 try
                 {

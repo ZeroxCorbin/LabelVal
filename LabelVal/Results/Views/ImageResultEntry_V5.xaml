@@ -102,16 +102,16 @@
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                         <Setter Property="Visibility" Value="Visible"/>
                                         <Style.Triggers>
-                                            <DataTrigger Value="False" Binding="{Binding SelectedScanner.IsConnected}">
+                                            <DataTrigger Value="False" Binding="{Binding ImageResults.SelectedScanner.IsConnected}">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
                                             <DataTrigger Value="0" Binding="{Binding V5StoredSectors.Count}">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
-                                            <DataTrigger Value="Run" Binding="{Binding SelectedScanner.ScannerMode}">
+                                            <DataTrigger Value="Run" Binding="{Binding ImageResults.SelectedScanner.ScannerMode}">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
-                                            <DataTrigger Value="Offline" Binding="{Binding SelectedScanner.ScannerMode}">
+                                            <DataTrigger Value="Offline" Binding="{Binding ImageResults.SelectedScanner.ScannerMode}">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -145,7 +145,7 @@
                           mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
                           ScrollChanged="ScrollV5StoredSectors_ScrollChanged">
                     <ScrollViewer.Style>
-                        <Style TargetType="{x:Type ScrollViewer}">
+                        <Style TargetType="{x:Type ScrollViewer}" BasedOn="{StaticResource MahApps.Styles.ScrollViewer}">
                             <Setter Property="Height" Value="393"/>
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding V5StoredSectors.Count}" Value="0">
@@ -245,7 +245,7 @@
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                         <Style.Triggers>
-                                            <DataTrigger Value="True" Binding="{Binding SelectedScanner.IsConnected}">
+                                            <DataTrigger Value="True" Binding="{Binding ImageResults.SelectedScanner.IsConnected}">
                                                 <Setter Property="Visibility" Value="Visible"/>
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -262,7 +262,7 @@
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                     <Setter Property="Visibility" Value="Collapsed"/>
                                     <Style.Triggers>
-                                        <DataTrigger Value="True" Binding="{Binding SelectedNode.IsLoggedIn_Control}">
+                                        <DataTrigger Value="True" Binding="{Binding ImageResults.SelectedNode.IsLoggedIn_Control}">
                                             <Setter Property="Visibility" Value="Visible"/>
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -298,7 +298,7 @@
                         mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
                         ScrollChanged="ScrollV5CurrentSectors_ScrollChanged">
                     <ScrollViewer.Style>
-                        <Style TargetType="{x:Type ScrollViewer}">
+                        <Style TargetType="{x:Type ScrollViewer}" BasedOn="{StaticResource MahApps.Styles.ScrollViewer}">
                             <Setter Property="Height" Value="393"/>
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding V5CurrentSectors.Count}" Value="0">
@@ -347,7 +347,7 @@
                 <ScrollViewer Margin="3" VerticalScrollBarVisibility="Auto"
                           mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True">
                     <ScrollViewer.Style>
-                        <Style TargetType="{x:Type ScrollViewer}">
+                        <Style TargetType="{x:Type ScrollViewer}" BasedOn="{StaticResource MahApps.Styles.ScrollViewer}">
                             <Setter Property="Height" Value="393"/>
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding V5DiffSectors.Count}" Value="0">

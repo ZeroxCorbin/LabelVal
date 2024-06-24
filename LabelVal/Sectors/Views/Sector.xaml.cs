@@ -39,7 +39,7 @@ public partial class Sector : UserControl
         if (card != null)
         {
             string path;
-            if ((path = Utilities.FileUtilities.GetSaveFilePath("plot", "PNG|*.png", "Save sector details.")) != "")
+            if ((path = Utilities.FileUtilities.SaveFileDialog("plot", "PNG|*.png", "Save sector details.")) != "")
             {
                 try
                 {

@@ -47,13 +47,13 @@ public partial class ImageResultEntry
 
         BringIntoView?.Invoke();
 
-        if (SelectedScanner == null)
+        if (ImageResults.SelectedScanner == null)
         {
             SendStatusMessage("No scanner selected.", SystemMessages.StatusMessageType.Error);
             return;
         }
 
-        var res = await SelectedScanner.ScannerController.GetConfig();
+        var res = await ImageResults.SelectedScanner.ScannerController.GetConfig();
 
         if (!res.OK)
         {
@@ -64,7 +64,7 @@ public partial class ImageResultEntry
         var config = (JObject)res.Object;
 
 
-        if (SelectedScanner.IsSimulator)
+        if (ImageResults.SelectedScanner.IsSimulator)
         {
             var fas = config["response"]["data"]["job"]["channelMap"]["acquisition"]["AcquisitionChannel"]["source"]["FileAcquisitionSource"];
             if (fas == null)
@@ -74,43 +74,43 @@ public partial class ImageResultEntry
             }
 
             //Rotate directory names to accomadate V5 
-            var isFirst = fas["directory"].ToString() != SelectedScanner.FTPClient.ImagePath1Root;
+            var isFirst = fas["directory"].ToString() != ImageResults.SelectedScanner.FTPClient.ImagePath1Root;
 
             var path = isFirst
-                ? SelectedScanner.FTPClient.ImagePath1
-                : SelectedScanner.FTPClient.ImagePath2;
+                ? ImageResults.SelectedScanner.FTPClient.ImagePath1
+                : ImageResults.SelectedScanner.FTPClient.ImagePath2;
 
             fas["directory"] = isFirst
-                ? SelectedScanner.FTPClient.ImagePath1Root
-                : SelectedScanner.FTPClient.ImagePath2Root;
+                ? ImageResults.SelectedScanner.FTPClient.ImagePath1Root
+                : ImageResults.SelectedScanner.FTPClient.ImagePath2Root;
 
-            SelectedScanner.FTPClient.Connect();
+            ImageResults.SelectedScanner.FTPClient.Connect();
 
-            if (!SelectedScanner.FTPClient.DirectoryExists(path))
-                SelectedScanner.FTPClient.CreateRemoteDir(path);
+            if (!ImageResults.SelectedScanner.FTPClient.DirectoryExists(path))
+                ImageResults.SelectedScanner.FTPClient.CreateRemoteDir(path);
             else
-                SelectedScanner.FTPClient.DeleteRemoteFiles(path);
+                ImageResults.SelectedScanner.FTPClient.DeleteRemoteFiles(path);
 
             path = $"{path}/image.png";
 
             if (imageType == "source")
-                SelectedScanner.FTPClient.UploadFile(SourceImage.GetPngBytes(), path);
+                ImageResults.SelectedScanner.FTPClient.UploadFile(SourceImage.GetPngBytes(), path);
             else if (imageType == "v5Stored")
-                SelectedScanner.FTPClient.UploadFile(V5ResultRow.Stored.GetPngBytes(), path);
+                ImageResults.SelectedScanner.FTPClient.UploadFile(V5ResultRow.Stored.GetPngBytes(), path);
             else if (imageType == "v275Stored")
-                SelectedScanner.FTPClient.UploadFile(V275ResultRow.Stored.GetPngBytes(), path);
+                ImageResults.SelectedScanner.FTPClient.UploadFile(V275ResultRow.Stored.GetPngBytes(), path);
 
 
-            SelectedScanner.FTPClient.Disconnect();
+            ImageResults.SelectedScanner.FTPClient.Disconnect();
 
             //Attempt to update the directory in the FileAcquisitionSource
-            _ = await SelectedScanner.ScannerController.SendJob(config["response"]["data"]);
+            _ = await ImageResults.SelectedScanner.ScannerController.SendJob(config["response"]["data"]);
 
 
-            _ = V5ProcessResults(await SelectedScanner.ScannerController.Trigger_Wait_Return(true));
+            _ = V5ProcessResults(await ImageResults.SelectedScanner.ScannerController.Trigger_Wait_Return(true));
         }
         else
-            _ = V5ProcessResults(await SelectedScanner.ScannerController.Trigger_Wait_Return(true));
+            _ = V5ProcessResults(await ImageResults.SelectedScanner.ScannerController.Trigger_Wait_Return(true));
 
 
         IsV5Working = false;
@@ -135,9 +135,9 @@ public partial class ImageResultEntry
 
         V5CurrentReport = JsonConvert.DeserializeObject<JObject>(triggerResults.ReportJSON);
 
-        if (!SelectedScanner.IsSimulator)
+        if (!ImageResults.SelectedScanner.IsSimulator)
         {
-            V5Image = new ImageEntry(SelectedImageRoll.UID, triggerResults.FullImage, 600);
+            V5Image = new ImageEntry(ImageResults.SelectedImageRoll.UID, triggerResults.FullImage, 600);
             //ImageUtilities.ConvertToPng(triggerResults.FullImage);
             IsV5ImageStored = false;
         }
@@ -155,13 +155,13 @@ public partial class ImageResultEntry
         if (V5CurrentReport["event"]?["name"].ToString() == "cycle-report-alt")
         {
             foreach (var rSec in V5CurrentReport["event"]?["data"]?["decodeData"])
-                tempSectors.Add(new Sectors.ViewModels.Sector(rSec.ToObject<V5_REST_Lib.Models.Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", SelectedImageRoll.SelectedStandard, SelectedImageRoll.SelectedGS1Table));
+                tempSectors.Add(new Sectors.ViewModels.Sector(rSec.ToObject<V5_REST_Lib.Models.Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
 
         }
         else if (V5CurrentReport["event"]?["name"].ToString() == "cycle-report")
         {
             foreach (var rSec in V5CurrentReport["event"]["data"]["cycleConfig"]["qualifiedResults"])
-                tempSectors.Add(new Sectors.ViewModels.Sector(rSec.ToObject<V5_REST_Lib.Models.Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", SelectedImageRoll.SelectedStandard, SelectedImageRoll.SelectedGS1Table));
+                tempSectors.Add(new Sectors.ViewModels.Sector(rSec.ToObject<V5_REST_Lib.Models.Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
         }
 
         if (tempSectors.Count > 0)
@@ -186,7 +186,7 @@ public partial class ImageResultEntry
     
     private void V5GetStored()
     {
-        V5ResultRow = SelectedDatabase.Select_V5Result(SelectedImageRoll.UID, SourceImage.UID);
+        V5ResultRow = SelectedDatabase.Select_V5Result(ImageResults.SelectedImageRoll.UID, SourceImage.UID);
 
         if (V5ResultRow == null)
         {
@@ -217,13 +217,13 @@ public partial class ImageResultEntry
             if (results["event"]?["name"].ToString() == "cycle-report-alt")
             {
                 foreach (var rSec in results["event"]?["data"]?["decodeData"])
-                    tempSectors.Add(new Sectors.ViewModels.Sector(rSec.ToObject<V5_REST_Lib.Models.Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", SelectedImageRoll.SelectedStandard, selectedImageRoll.SelectedGS1Table));
+                    tempSectors.Add(new Sectors.ViewModels.Sector(rSec.ToObject<V5_REST_Lib.Models.Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
 
             }
             else if (results["event"]?["name"].ToString() == "cycle-report")
             {
                 foreach (var rSec in results["event"]["data"]["cycleConfig"]["qualifiedResults"])
-                    tempSectors.Add(new Sectors.ViewModels.Sector(rSec.ToObject<V5_REST_Lib.Models.Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", SelectedImageRoll.SelectedStandard, selectedImageRoll.SelectedGS1Table));
+                    tempSectors.Add(new Sectors.ViewModels.Sector(rSec.ToObject<V5_REST_Lib.Models.Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
             }
         }
 

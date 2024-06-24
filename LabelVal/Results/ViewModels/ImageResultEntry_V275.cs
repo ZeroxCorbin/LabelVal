@@ -59,7 +59,7 @@ public partial class ImageResultEntry
 
     private void V275GetStored()
     {
-        V275ResultRow = SelectedDatabase.Select_V275Result(SelectedImageRoll.UID, SourceImage.UID);
+        V275ResultRow = SelectedDatabase.Select_V275Result(ImageResults.SelectedImageRoll.UID, SourceImage.UID);
 
         if (V275ResultRow == null)
         {
@@ -98,7 +98,7 @@ public partial class ImageResultEntry
                         if (fSec == null)
                             break;
 
-                        tempSectors.Add(new Sectors.ViewModels.Sector(jSec, fSec, SelectedImageRoll.SelectedStandard, SelectedImageRoll.SelectedGS1Table));
+                        tempSectors.Add(new Sectors.ViewModels.Sector(jSec, fSec, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
 
                         break;
                     }
@@ -116,9 +116,9 @@ public partial class ImageResultEntry
     public async Task<bool> V275ReadTask(int repeat)
     {
         V275_REST_lib.Controller.FullReport report;
-        if ((report = await SelectedNode.Connection.Read(repeat, !SelectedNode.IsSimulator)) == null)
+        if ((report = await ImageResults.SelectedNode.Connection.Read(repeat, !ImageResults.SelectedNode.IsSimulator)) == null)
         {
-            SendStatusMessage(SelectedNode.Connection.Status, SystemMessages.StatusMessageType.Error);
+            SendStatusMessage(ImageResults.SelectedNode.Connection.Status, SystemMessages.StatusMessageType.Error);
 
             V275CurrentTemplate = null;
             V275CurrentReport = null;
@@ -135,11 +135,11 @@ public partial class ImageResultEntry
         V275CurrentTemplate = report.job;
         V275CurrentReport = report.report;
 
-        if (!SelectedNode.IsSimulator)
+        if (!ImageResults.SelectedNode.IsSimulator)
         {
             var dpi = 600;// SelectedPrinter.PrinterName.Contains("ZT620") ? 300 : 600;
             ImageUtilities.SetBitmapDPI(report.image, dpi);
-            V275Image = new ImageEntry(SelectedImageRoll.UID, report.image, dpi);//ImageUtilities.ConvertToPng(report.image, 600);
+            V275Image = new ImageEntry(ImageResults.SelectedImageRoll.UID, report.image, dpi);//ImageUtilities.ConvertToPng(report.image, 600);
             IsV275ImageStored = false;
         }
         else
@@ -158,12 +158,12 @@ public partial class ImageResultEntry
                 if (jSec.name == rSec["name"].ToString())
                 {
 
-                    var fSec = V275DeserializeSector(rSec, SelectedImageRoll.SelectedStandard != Sectors.ViewModels.StandardsTypes.GS1 && SelectedNode.IsOldISO);
+                    var fSec = V275DeserializeSector(rSec, ImageResults.SelectedImageRoll.SelectedStandard != Sectors.ViewModels.StandardsTypes.GS1 && ImageResults.SelectedNode.IsOldISO);
 
                     if (fSec == null)
                         break; //Not yet supported sector type
 
-                    tempSectors.Add(new Sectors.ViewModels.Sector(jSec, fSec, SelectedImageRoll.SelectedStandard, SelectedImageRoll.SelectedGS1Table));
+                    tempSectors.Add(new Sectors.ViewModels.Sector(jSec, fSec, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
 
                     break;
                 }
@@ -268,17 +268,17 @@ public partial class ImageResultEntry
     }
     public async Task<int> V275LoadTask()
     {
-        if (!await SelectedNode.Connection.DeleteSectors())
+        if (!await ImageResults.SelectedNode.Connection.DeleteSectors())
         {
-            SendStatusMessage(SelectedNode.Connection.Status, SystemMessages.StatusMessageType.Error);
+            SendStatusMessage(ImageResults.SelectedNode.Connection.Status, SystemMessages.StatusMessageType.Error);
             return -1;
         }
 
         if (V275StoredSectors.Count == 0)
         {
-            if (!await SelectedNode.Connection.DetectSectors())
+            if (!await ImageResults.SelectedNode.Connection.DetectSectors())
             {
-                SendStatusMessage(SelectedNode.Connection.Status, SystemMessages.StatusMessageType.Error);
+                SendStatusMessage(ImageResults.SelectedNode.Connection.Status, SystemMessages.StatusMessageType.Error);
                 return -1;
             }
 
@@ -287,9 +287,9 @@ public partial class ImageResultEntry
 
         foreach (var sec in V275StoredSectors)
         {
-            if (!await SelectedNode.Connection.AddSector(sec.Template.Name, JsonConvert.SerializeObject(sec.V275Sector)))
+            if (!await ImageResults.SelectedNode.Connection.AddSector(sec.Template.Name, JsonConvert.SerializeObject(sec.V275Sector)))
             {
-                SendStatusMessage(SelectedNode.Connection.Status, SystemMessages.StatusMessageType.Error);
+                SendStatusMessage(ImageResults.SelectedNode.Connection.Status, SystemMessages.StatusMessageType.Error);
                 return -1;
             }
 
@@ -297,11 +297,11 @@ public partial class ImageResultEntry
             {
                 foreach (var layer in sec.Template.BlemishMask.Layers)
                 {
-                    if (!await SelectedNode.Connection.AddMask(sec.Template.Name, JsonConvert.SerializeObject(layer)))
+                    if (!await ImageResults.SelectedNode.Connection.AddMask(sec.Template.Name, JsonConvert.SerializeObject(layer)))
                     {
                         if (layer.value != 0)
                         {
-                            SendStatusMessage(SelectedNode.Connection.Status, SystemMessages.StatusMessageType.Error);
+                            SendStatusMessage(ImageResults.SelectedNode.Connection.Status, SystemMessages.StatusMessageType.Error);
                             return -1;
                         }
                     }
