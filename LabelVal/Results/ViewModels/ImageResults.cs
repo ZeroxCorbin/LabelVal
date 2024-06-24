@@ -423,8 +423,6 @@ public partial class ImageResults : ObservableRecipient,
         }
     }
 
-
-
     #region V275 Image Results
     private ImageResultEntry PrintingImageResult { get; set; } = null;
 

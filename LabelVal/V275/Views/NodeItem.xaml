@@ -68,11 +68,11 @@
                                     <Setter Property="ToolTip" Value="Login control."/>
                                     <Setter Property="IsEnabled" Value="True"/>
                                     <Setter Property="Content" Value="{iconPacks:FontAwesome Kind=TerminalSolid}"/>
-                                    
+
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding LoginMonitor}" Value="True">
                                             <Setter Property="ToolTip" Value="Login monitor."/>
-                                            
+
                                             <Setter Property="Content" Value="{iconPacks:Modern Kind=Monitor}"/>
                                         </DataTrigger>
 
@@ -128,7 +128,7 @@
 
                     </DockPanel>
 
-                    <DockPanel Margin="1">
+                    <DockPanel DockPanel.Dock="Top" Margin="1">
 
                         <TextBox d:Text="State" Text="{Binding State}" Margin="3,0" md:HintAssist.Hint="State" md:HintAssist.IsFloating="True" IsHitTestVisible="False" HorizontalAlignment="Left">
                             <TextBox.Style>
@@ -155,7 +155,7 @@
                             </TextBox.Style>
                         </TextBox>
 
-                        
+
                         <ComboBox ItemsSource="{Binding Jobs.jobs}" SelectedValue="{Binding SelectedJob}" Margin="3,0" md:HintAssist.Hint="Template Name" md:HintAssist.IsFloating="True" HorizontalAlignment="Left">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
@@ -216,36 +216,78 @@
                             </TextBox.Style>
                         </TextBox>
 
-
-
-
                     </DockPanel>
 
+
+                    <DockPanel Margin="1">
+
+                        <Button Margin="3,0"  BorderThickness="0" Width="38">
+
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
+                                    <Setter Property="IsEnabled" Value="False"/>
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+
+                                    <Style.Triggers>
+
+                                        <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Control}">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+
+                                        <DataTrigger Value="Editing" Binding="{Binding State}">
+                                            <Setter Property="IsEnabled" Value="True"/>
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <iconPacks:PackIconMaterial Kind="Play"/>
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Setter Property="Command" Value="{Binding SwitchRunCommand}"/>
+                                        </DataTrigger>
+
+                                        <DataTrigger Value="Running" Binding="{Binding State}">
+                                            <Setter Property="IsEnabled" Value="True"/>
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <iconPacks:PackIconMaterial Kind="Stop"/>
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Setter Property="Command" Value="{Binding SwitchEditCommand}"/>
+                                        </DataTrigger>
+
+                                        <DataTrigger Value="True" Binding="{Binding SelectedImageRoll.WriteSectorsBeforeProcess}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+
+                        <Button Margin="3,0" BorderThickness="0" Width="38" Command="{Binding RemoveRepeatCommand}">
+                            <iconPacks:PackIconMaterial Kind="SelectRemove"/>
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Value="True" Binding="{Binding IsLoggedIn_Control}"/>
+                                                <Condition Value="Paused" Binding="{Binding State}"/>
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </MultiDataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+
+                    </DockPanel>
                 </DockPanel>
 
                 <StackPanel>
 
-                    <Button Content="Run" Margin="3,0" Command="{Binding SwitchRunCommand}">
-                        <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
-                                <Setter Property="IsEnabled" Value="False"/>
-                                <Setter Property="Visibility" Value="Collapsed"/>
-                                <Style.Triggers>
-                                    <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Control}">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                    </DataTrigger>
-                                    <DataTrigger Value="Editing" Binding="{Binding State}">
-                                        <Setter Property="IsEnabled" Value="True"/>
-                                    </DataTrigger>
-                                    <DataTrigger Value="True" Binding="{Binding SelectedImageRoll.WriteSectorsBeforeProcess}">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
 
-                    <Button Content="Edit" Margin="3,0" Command="{Binding SwitchEditCommand}">
+                    <!--<Button Content="Edit" Margin="3,0" Command="{Binding SwitchEditCommand}">
                         <Button.Style>
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                                 <Setter Property="IsEnabled" Value="False"/>
@@ -263,26 +305,9 @@
                                 </Style.Triggers>
                             </Style>
                         </Button.Style>
-                    </Button>
+                    </Button>-->
 
-                    <Button Content="Remove" Margin="3,0" Command="{Binding RemoveRepeatCommand}">
-                        <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
-                                <Setter Property="IsEnabled" Value="False"/>
-                                <Setter Property="Visibility" Value="Collapsed"/>
-                                <Style.Triggers>
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Value="True" Binding="{Binding IsLoggedIn_Control}"/>
-                                            <Condition Value="Paused" Binding="{Binding State}"/>
-                                        </MultiDataTrigger.Conditions>
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                        <Setter Property="IsEnabled" Value="True"/>
-                                    </MultiDataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
+
                 </StackPanel>
 
             </DockPanel>

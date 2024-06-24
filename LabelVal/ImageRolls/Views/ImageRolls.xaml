@@ -78,7 +78,7 @@
                             </Style>
                         </Button.Style>
 
-                        <iconPacks:PackIconMaterial Kind="Plus" Height="14" Width="14"/>
+                        <iconPacks:PackIconMaterial Kind="Plus" Height="17" Width="17"/>
                     </Button>
 
                     <Button Command="{Binding EditCommand}" ToolTip="Edit Selected Image Roll">

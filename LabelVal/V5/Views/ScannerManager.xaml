@@ -38,7 +38,7 @@
                         </Style>
                     </Button.Style>
 
-                    <iconPacks:PackIconMaterial Kind="Plus" Height="14" Width="14"/>
+                    <iconPacks:PackIconMaterial Kind="Plus" Height="17" Width="17"/>
                 </Button>
 
                 <Button Command="{Binding SaveCommand}" ToolTip="Save Image Roll" Margin="6,0,3,0">
@@ -77,9 +77,9 @@
                     <iconPacks:Modern Height="14" Width="14" Kind="Refresh"/>
                 </Button>-->
 
-                <Button Click="btnShowDetails_Click" Style="{StaticResource GroupHeaderCirlceButton}" HorizontalAlignment="Right"> 
+                <Button Click="btnShowDetails_Click" Style="{StaticResource GroupHeaderCirlceButton}" HorizontalAlignment="Right">
 
-                    <iconPacks:PackIconMaterial Kind="CodeJson" Height="14" Width="14"/>
+                    <iconPacks:PackIconMaterial Kind="CodeJson" Margin="0,0,1,0" Height="18" Width="18"/>
                 </Button>
 
             </DockPanel>

@@ -32,7 +32,7 @@
 
                     <Button Margin="6,0,3,0" ToolTip="New Database" Command="{Binding CreateImageResultsDatabaseCommand}"
                             Style="{StaticResource GroupHeaderCirlceButton}">
-                        <iconPacks:PackIconMaterial Kind="Plus" Height="14" Width="14"/>
+                        <iconPacks:PackIconMaterial Kind="Plus" Height="17" Width="17"/>
                     </Button>
 
                 </DockPanel>
@@ -126,7 +126,7 @@
 
                                 <Button Command="{Binding ConvertDatabaseCommand}" HorizontalAlignment="Right">
 
-                                    <iconPacks:PackIconMaterial Kind="Exclamation" Height="14" Width="14"/>
+                                    <iconPacks:PackIconMaterial Kind="Exclamation" Margin="0,0,2,0" Height="16" Width="16"/>
 
                                     <Button.Style>
                                         <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">

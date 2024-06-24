@@ -27,7 +27,7 @@
 
                 <Button Click="btnShowPrinterDetails_Click" Style="{StaticResource GroupHeaderCirlceButton}" Margin="6,0,3,0" HorizontalAlignment="Right">
 
-                    <iconPacks:PackIconMaterial Height="14" Width="14" Kind="CodeJson"/>
+                    <iconPacks:PackIconMaterial Height="18" Width="18" Margin="0,0,1,0" Kind="CodeJson"/>
                 </Button>
 
             </DockPanel>
