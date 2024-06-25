@@ -7,9 +7,19 @@
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:ViewModels="clr-namespace:LabelVal.V275.ViewModels"  
+                xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              d:DataContext="{d:DesignInstance Type=ViewModels:V275}"
              mc:Ignorable="d">
 
+    <UserControl.Resources>
+        <CollectionViewSource x:Key="cvsNodes" Source="{Binding Nodes}">
+            <CollectionViewSource.SortDescriptions>
+                <componentmodel:SortDescription PropertyName="Connection.Commands.NodeNumber" Direction="Ascending"/>
+                <!--<componentmodel:SortDescription PropertyName="Template.Top" Direction="Ascending"/>-->
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
+        
+    </UserControl.Resources>
     <GroupBox VerticalAlignment="Top" HorizontalAlignment="Left" Margin="3" Padding="3" MinWidth="312"
                 Style="{StaticResource MaterialDesignCardGroupBox}"
                 md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
@@ -144,7 +154,7 @@
             </md:DrawerHost.TopDrawerContent>
 
             <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-                <ListView ItemsSource="{Binding Nodes}" SelectedItem="{Binding SelectedNode}" HorizontalAlignment="Center">
+                <ListView ItemsSource="{Binding Source={StaticResource ResourceKey=cvsNodes}}" SelectedItem="{Binding SelectedNode}" HorizontalAlignment="Center">
 
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
@@ -154,7 +164,7 @@
 
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <local:NodeItem DataContext="{Binding }">
+                            <local:NodeItem>
                                 <local:NodeItem.Style>
                                     <Style TargetType="local:NodeItem">
                                         <Setter Property="IsHitTestVisible" Value="False"/>

@@ -1,3 +1,10 @@
-﻿Add the instructions for installing com0com.
+﻿Complete: Sort nodes by node number to keep order consitent.
+
+
+Add the instructions for installing com0com.
 
 When viewing the run results and it is a simulation run the sector outlines are not shown. Maybe show the repeat and not the label?
+
+Work on sector coloring based on standard not just random.
+
+OCR OCV and blemish are checking the standard and should not.
