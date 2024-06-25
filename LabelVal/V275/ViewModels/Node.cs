@@ -332,27 +332,27 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
         Print = await Connection.Commands.GetPrint();
 
         //If the system is in simulator mode, adjust the simulation settings
-        if (IsSimulator)
-        {
-            Simulation = await Connection.Commands.GetSimulation();
+        //if (IsSimulator)
+        //{
+        //    Simulation = await Connection.Commands.GetSimulation();
 
-            // If the current simulation mode is 'continuous', change it to 'trigger' with a dwell time of 1ms
-            if (Simulation != null && Simulation.mode == "continuous")
-            {
-                Simulation.mode = "trigger";
-                Simulation.dwellMs = 1;
-                _ = await Connection.Commands.PutSimulation(Simulation);
-            }
+        //    // If the current simulation mode is 'continuous', change it to 'trigger' with a dwell time of 1ms
+        //    if (Simulation != null && Simulation.mode == "continuous")
+        //    {
+        //        Simulation.mode = "trigger";
+        //        Simulation.dwellMs = 1;
+        //        _ = await Connection.Commands.PutSimulation(Simulation);
+        //    }
 
-            // Fetch the simulation settings again to ensure they have been updated correctly
-            Simulation = await Connection.Commands.GetSimulation();
-            if (Simulation != null && Simulation.mode != "trigger")
-            {
-                // If the mode is not 'trigger', additional handling could be implemented here
-            }
-        }
-        else
-            Simulation = null;
+        //    // Fetch the simulation settings again to ensure they have been updated correctly
+        //    Simulation = await Connection.Commands.GetSimulation();
+        //    if (Simulation != null && Simulation.mode != "trigger")
+        //    {
+        //        // If the mode is not 'trigger', additional handling could be implemented here
+        //    }
+        //}
+        //else
+        //    Simulation = null;
 
         // Request the server to send extended data
         _ = await Connection.Commands.SetSendExtendedData(true);

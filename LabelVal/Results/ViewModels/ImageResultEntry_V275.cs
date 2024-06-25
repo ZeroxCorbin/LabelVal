@@ -374,6 +374,9 @@ public partial class ImageResultEntry
             {
                 if (jSec.name == rSec["name"].ToString())
                 {
+                    if (rSec["type"].ToString() is "blemish" or "ocr" or "ocv")
+                        continue;
+
                     var fSec = JsonConvert.DeserializeObject<JObject>(rSec["data"].ToString());
                     var result = JsonConvert.DeserializeObject<JObject>(fSec["overallGrade"].ToString());
 
