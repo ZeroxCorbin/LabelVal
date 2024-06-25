@@ -28,7 +28,7 @@ public partial class PopupSectorsDetails : UserControl
 
     private void btnSaveImage_Click(object sender, RoutedEventArgs e)
     {
-        var card = ItemsControl;
+        var card = itemsControl;
 
         if (card != null)
         {
@@ -80,7 +80,7 @@ public partial class PopupSectorsDetails : UserControl
 
     private void btnCopyImage_Click(object sender, RoutedEventArgs e)
     {
-        var ic = ItemsControl; // Assuming ItemsControl is the visual element you want to copy
+        var ic = itemsControl; // Assuming ItemsControl is the visual element you want to copy
 
         if (ic != null)
             CopyToClipboard(ic);

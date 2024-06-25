@@ -48,7 +48,6 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     public void Receive(PropertyChangedMessage<LabelVal.LVS_95xx.ViewModels.VerifierPacket> message) { if (SelectedSector != null) App.Current.Dispatcher.BeginInvoke(() => 
         L95xxCurrentSectors.Add(new Sectors.ViewModels.Sector(SelectedSector.Template, message.NewValue.Value, SelectedSector.DesiredStandard, SelectedSector.DesiredGS1Table))); }
 
-
     private void L95xxGetStored()
     {
         L95xxResultRow = SelectedDatabase.Select_L95xxResult(ImageResults.SelectedImageRoll.UID, SourceImage.UID);

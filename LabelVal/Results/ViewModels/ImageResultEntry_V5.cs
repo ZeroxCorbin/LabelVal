@@ -382,7 +382,9 @@ public partial class ImageResultEntry
                     secAreas.Children.Add(new LineGeometry(new Point(startX, startY), new Point(endX, endY)));
                 }
 
-                drwGroup.Children.Add(new GeometryDrawing(Brushes.Transparent, new Pen(Brushes.Red, 4), secAreas));
+                var grade = double.TryParse(sec["grading"]?["grade"].ToString(), out double g) ? g : 4.0;
+
+                drwGroup.Children.Add(new GeometryDrawing(Brushes.Transparent, new Pen(GetGradeBrush(V5GetLetter(grade)), 4), secAreas));
 
                 drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun($"DecodeTool{sec["toolSlot"]}", new Typeface("Arial"), 30.0, new Point(sec["boundingBox"][2]["x"].Value<double>() - 8, sec["boundingBox"][2]["y"].Value<double>() - 8))));
 
@@ -390,12 +392,6 @@ public partial class ImageResultEntry
                 secCenter.Children.Add(new LineGeometry(new Point(sec["x"].Value<double>(), sec["y"].Value<double>() + 10), new Point(sec["x"].Value<double>(), sec["y"].Value<double>() + -10)));
 
              }
-
-            //foreach (var sec in results["event"]["data"]["cycleConfig"]["job"]["toolList"])
-            //{
-            //    foreach (var r in sec["SymbologyTool"]["regionList"])
-            //        bndAreas.Children.Add(new RectangleGeometry(new Rect(r["Region"]["shape"]["RectShape"]["x"].Value<double>(), r["Region"]["shape"]["RectShape"]["y"].Value<double>(), r["Region"]["shape"]["RectShape"]["width"].Value<double>(), r["Region"]["shape"]["RectShape"]["height"].Value<double>())));
-            //}
         }
         else if (results["event"]?["name"].ToString() == "cycle-report")
         {
@@ -427,11 +423,10 @@ public partial class ImageResultEntry
             }
         }
 
-
         var sectorCenters = new GeometryDrawing
         {
             Geometry = secCenter,
-            Pen = new Pen(Brushes.Green, 2)
+            Pen = new Pen(Brushes.Red, 4)
         };
         var bounding = new GeometryDrawing
         {
@@ -442,10 +437,19 @@ public partial class ImageResultEntry
         drwGroup.Children.Add(bounding);
         drwGroup.Children.Add(sectorCenters);
         
-
         var geometryImage = new DrawingImage(drwGroup);
         geometryImage.Freeze();
         return geometryImage;
     }
+
+    private string V5GetLetter(double grade) => grade switch
+    {
+        double i when i == 4.0 => "A",
+        double i when i is < 4.0 and >= 3.0 => "B",
+        double i when i is < 3.0 and >= 2.0 => "C",
+        double i when i is < 2.0 and >= 1.0 => "D",
+        double i when i is < 1.0 and >= 0.0 => "F",
+        _ => throw new System.NotImplementedException(),
+    };
 
 }

@@ -7,8 +7,18 @@
              xmlns:sectors="clr-namespace:LabelVal.Sectors.Views"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+                xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              mc:Ignorable="d">
 
+    <UserControl.Resources>
+        <CollectionViewSource x:Key="cvsStoredSectors" Source="{Binding }">
+            <CollectionViewSource.SortDescriptions>
+                <componentmodel:SortDescription PropertyName="Template.Center" Direction="Ascending"/>
+                <!--<componentmodel:SortDescription PropertyName="Template.Top" Direction="Ascending"/>-->
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
+    </UserControl.Resources>
+    
     <Popup x:Name="Popup" StaysOpen="False">
         <Popup.Style>
             <Style TargetType="{x:Type Popup}"/>
@@ -41,7 +51,7 @@
                 <ScrollViewer HorizontalScrollBarVisibility="Auto" 
                               Style="{StaticResource MahApps.Styles.ScrollViewer}">
 
-                    <ItemsControl x:Name="ItemsControl">
+                    <ItemsControl x:Name="itemsControl" ItemsSource="{Binding Source={StaticResource ResourceKey=cvsStoredSectors}}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <WrapPanel IsItemsHost="True" MaxWidth="1400"/>

@@ -373,4 +373,14 @@ public partial class ImageResultEntry : ObservableRecipient,
         geometryImage.Freeze();
         return geometryImage;
     }
+
+    private static SolidColorBrush GetGradeBrush(string grade) => grade switch
+    {
+        "A" => Brushes.Green,
+        "B" => Brushes.Blue,
+        "C" => Brushes.LightBlue,
+        "D" => Brushes.Yellow,
+        "F" => Brushes.Red,
+        _ => Brushes.Black,
+    };
 }

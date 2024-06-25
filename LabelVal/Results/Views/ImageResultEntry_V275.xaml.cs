@@ -36,7 +36,7 @@ public partial class ImageResultEntry_V275 : UserControl
         else
         {
             var pop = new PopupSectorsDetails();
-            pop.ItemsControl.ItemsSource = ((ViewModels.ImageResultEntry)DataContext).V275StoredSectors;
+            pop.DataContext = ((ViewModels.ImageResultEntry)DataContext).V275StoredSectors;
 
             pop.Popup.PlacementTarget = (Button)sender;
             pop.Popup.IsOpen = true;
@@ -58,7 +58,7 @@ public partial class ImageResultEntry_V275 : UserControl
         else
         {
             var pop = new PopupSectorsDetails();
-            pop.ItemsControl.ItemsSource = ((ViewModels.ImageResultEntry)DataContext).V275CurrentSectors;
+            pop.DataContext = ((ViewModels.ImageResultEntry)DataContext).V275CurrentSectors;
 
             pop.Popup.PlacementTarget = (Button)sender;
             pop.Popup.IsOpen = true;

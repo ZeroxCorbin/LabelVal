@@ -32,7 +32,7 @@
 
         <CollectionViewSource x:Key="cvsL95xxStoredSectors" Source="{Binding L95xxStoredSectors}">
             <CollectionViewSource.SortDescriptions>
-                <componentmodel:SortDescription PropertyName="Template.Username" Direction="Ascending"/>
+                <componentmodel:SortDescription PropertyName="Template.Center" Direction="Ascending"/>
                 <!--<componentmodel:SortDescription PropertyName="Template.Top" Direction="Ascending"/>-->
             </CollectionViewSource.SortDescriptions>
 
