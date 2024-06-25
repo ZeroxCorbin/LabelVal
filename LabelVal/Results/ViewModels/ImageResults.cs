@@ -528,18 +528,7 @@ public partial class ImageResults : ObservableRecipient,
         }
 
         if (SelectedNode.State != V275.ViewModels.NodeStates.Idle && SelectedNode.IsLoggedIn_Control)
-        {
-            if (!await SelectedNode.EnablePrint("1"))
-            {
-                WaitForRepeat = false;
-
-                PrintingImageResult = null;
-
-                imageResults.IsV275Faulted = true;
-                imageResults.IsV275Working = false;
-            }
-        }
-
+            await SelectedNode.EnablePrint("1");
     }
     private async void V275ProcessImage_FileSystem(ImageResultEntry imageResults, string type)
     {
@@ -687,17 +676,7 @@ public partial class ImageResults : ObservableRecipient,
             PrintingImageResult = null;
 
         if (SelectedNode.State != V275.ViewModels.NodeStates.Idle && SelectedNode.IsLoggedIn_Control)
-        {
-            if (!await SelectedNode.EnablePrint("1"))
-            {
-                WaitForRepeat = false;
-
-                PrintingImageResult = null;
-
-                imageResults.IsV275Faulted = true;
-                imageResults.IsV275Working = false;
-            }
-        }
+            await SelectedNode.EnablePrint("1");
         else if (SelectedNode.IsSimulator)
             _ = await SelectedNode.Connection.SimulatorTogglePrint();
     }

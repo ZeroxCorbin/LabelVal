@@ -58,6 +58,8 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
     [ObservableProperty] private Configuration_Camera configurationCamera;
     [ObservableProperty] private List<Symbologies.Symbol> symbologies;
     [ObservableProperty] private Calibration calibration;
+    [ObservableProperty] private Simulation simulation;
+    [ObservableProperty] private Print print;
 
     public bool IsSimulator => Inspection != null && Inspection.device.Equals("simulator");
     private static string SimulatorImageDirectory => App.Settings.GetValue<string>(nameof(V275.SimulatorImageDirectory));
@@ -217,6 +219,9 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
     [RelayCommand]
     private async Task Logout()
     {
+
+        PreLogout();
+
         _ = await Connection.Commands.Logout();
 
         try
@@ -237,11 +242,15 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
         Symbologies = null;
         Calibration = null;
         Jobs = null;
+        Print = null;
+        Simulation = null;
 
         JobName = "";
         State = NodeStates.Offline;
 
     }
+
+
     private bool PreLogin()
     {
         if (IsSimulator)
@@ -270,6 +279,31 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
         }
         return true;
     }
+    
+    private async void PreLogout()
+    {
+        //If the system is in simulator mode, adjust the simulation settings
+        if (IsSimulator)
+        {
+            Simulation = await Connection.Commands.GetSimulation();
+
+            // If the current simulation mode is 'continuous', change it to 'trigger' with a dwell time of 1ms
+            if (Simulation != null && Simulation.mode != "continuous")
+            {
+                Simulation.mode = "continuous";
+                Simulation.dwellMs = 1000;
+                _ = await Connection.Commands.PutSimulation(Simulation);
+            }
+
+            // Fetch the simulation settings again to ensure they have been updated correctly
+            Simulation = await Connection.Commands.GetSimulation();
+            if (Simulation != null && Simulation.mode != "continuous")
+            {
+                // If the mode is not 'continuous', additional handling could be implemented here
+            }
+        }
+    }
+    
     /// <summary>
     /// This method is responsible for handling the post-login process,
     /// including setting login states, fetching configuration data,
@@ -295,27 +329,30 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
         Symbologies = await Connection.Commands.GetSymbologies();
         Calibration = await Connection.Commands.GetCalibration();
         Jobs = await Connection.Commands.GetJobs();
+        Print = await Connection.Commands.GetPrint();
 
-        // If the system is in simulator mode, adjust the simulation settings
-        //if (IsSimulator)
-        //{
-        //    var res = await Connection.Commands.GetSimulation();
+        //If the system is in simulator mode, adjust the simulation settings
+        if (IsSimulator)
+        {
+            Simulation = await Connection.Commands.GetSimulation();
 
-        //    // If the current simulation mode is 'continuous', change it to 'trigger' with a dwell time of 1ms
-        //    if (res != null && res.mode == "continuous")
-        //    {
-        //        res.mode = "trigger";
-        //        res.dwellMs = 1;
-        //        _ = await Connection.Commands.PutSimulation(res);
-        //    }
+            // If the current simulation mode is 'continuous', change it to 'trigger' with a dwell time of 1ms
+            if (Simulation != null && Simulation.mode == "continuous")
+            {
+                Simulation.mode = "trigger";
+                Simulation.dwellMs = 1;
+                _ = await Connection.Commands.PutSimulation(Simulation);
+            }
 
-        //    // Fetch the simulation settings again to ensure they have been updated correctly
-        //    res = await Connection.Commands.GetSimulation();
-        //    if (res != null && res.mode != "trigger")
-        //    {
-        //        // If the mode is not 'trigger', additional handling could be implemented here
-        //    }
-        //}
+            // Fetch the simulation settings again to ensure they have been updated correctly
+            Simulation = await Connection.Commands.GetSimulation();
+            if (Simulation != null && Simulation.mode != "trigger")
+            {
+                // If the mode is not 'trigger', additional handling could be implemented here
+            }
+        }
+        else
+            Simulation = null;
 
         // Request the server to send extended data
         _ = await Connection.Commands.SetSendExtendedData(true);
@@ -327,24 +364,25 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
 
 
     [RelayCommand]
-    public async Task<bool> EnablePrint(object parameter)
+    public async Task EnablePrint(object parameter)
     {
         if (!IsSimulator)
         {
-            if (IsBackupVoid)
+            if (IsBackupVoid && (string)parameter == "1")
             {
                 if (!await Connection.Commands.Print(false))
-                    return false;
+                    return;
 
                 Thread.Sleep(50);
             }
 
-            return await Connection.Commands.Print((string)parameter == "1");
+            _ = await Connection.Commands.Print((string)parameter == "1");
         }
         else
-        {
-            return await Connection.SimulatorTogglePrint();
-        }
+            _ = await Connection.SimulatorTogglePrint();
+
+        Print = await Connection.Commands.GetPrint();
+
     }
 
     [RelayCommand]

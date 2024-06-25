@@ -216,45 +216,52 @@
                             </TextBox.Style>
                         </TextBox>
 
+          
                     </DockPanel>
 
-
-                    <DockPanel Margin="1">
-
-                        <Button Margin="3,0"  BorderThickness="0" Width="38">
+                    <DockPanel>
+                        
+                        <Button HorizontalAlignment="Left" Margin="3,0" BorderThickness="0" Width="38">
 
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
-                                    <Setter Property="IsEnabled" Value="False"/>
                                     <Setter Property="Visibility" Value="Collapsed"/>
-
                                     <Style.Triggers>
 
-                                        <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Control}">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-
                                         <DataTrigger Value="Editing" Binding="{Binding State}">
-                                            <Setter Property="IsEnabled" Value="True"/>
+                                            <Setter Property="Visibility" Value="Visible"/>
                                             <Setter Property="Content">
                                                 <Setter.Value>
                                                     <iconPacks:PackIconMaterial Kind="Play"/>
                                                 </Setter.Value>
                                             </Setter>
                                             <Setter Property="Command" Value="{Binding SwitchRunCommand}"/>
+                                            <Setter Property="ToolTip" Value="Run"/>
                                         </DataTrigger>
 
                                         <DataTrigger Value="Running" Binding="{Binding State}">
-                                            <Setter Property="IsEnabled" Value="True"/>
+                                            <Setter Property="Visibility" Value="Visible"/>
                                             <Setter Property="Content">
                                                 <Setter.Value>
                                                     <iconPacks:PackIconMaterial Kind="Stop"/>
                                                 </Setter.Value>
                                             </Setter>
                                             <Setter Property="Command" Value="{Binding SwitchEditCommand}"/>
+                                            <Setter Property="ToolTip" Value="Stop"/>
                                         </DataTrigger>
 
-                                        <DataTrigger Value="True" Binding="{Binding SelectedImageRoll.WriteSectorsBeforeProcess}">
+                                        <DataTrigger Value="Paused" Binding="{Binding State}">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <iconPacks:PackIconMaterial Kind="SelectRemove"/>
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Setter Property="Command" Value="{Binding RemoveRepeatCommand}"/>
+                                            <Setter Property="ToolTip" Value="Remove"/>
+                                        </DataTrigger>
+
+                                        <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Monitor}">
                                             <Setter Property="Visibility" Value="Collapsed"/>
                                         </DataTrigger>
 
@@ -263,53 +270,50 @@
                             </Button.Style>
                         </Button>
 
-                        <Button Margin="3,0" BorderThickness="0" Width="38" Command="{Binding RemoveRepeatCommand}">
-                            <iconPacks:PackIconMaterial Kind="SelectRemove"/>
+                        <Button HorizontalAlignment="Left" Margin="3,0" BorderThickness="0" Width="38">
+
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
                                     <Setter Property="Visibility" Value="Collapsed"/>
                                     <Style.Triggers>
-                                        <MultiDataTrigger>
-                                            <MultiDataTrigger.Conditions>
-                                                <Condition Value="True" Binding="{Binding IsLoggedIn_Control}"/>
-                                                <Condition Value="Paused" Binding="{Binding State}"/>
-                                            </MultiDataTrigger.Conditions>
+                                        
+                                        <DataTrigger Value="True" Binding="{Binding Print.enabled}">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <iconPacks:PackIconMaterial Kind="Printer"
+                                                        Foreground="{DynamicResource CB_Green}"/>
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Setter Property="Command" Value="{Binding EnablePrintCommand}"/>
+                                            <Setter Property="CommandParameter" Value="0"/>
+                                            <Setter Property="ToolTip" Value="Printing Enabled"/>
+                                        </DataTrigger>
+
+                                        <DataTrigger Value="False" Binding="{Binding Print.enabled}">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <iconPacks:PackIconMaterial Kind="PrinterAlert"
+                                                        Foreground="{DynamicResource ColorBlindBrush5}"/>
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Setter Property="Command" Value="{Binding EnablePrintCommand}"/>
+                                            <Setter Property="CommandParameter" Value="1"/>
+                                            <Setter Property="ToolTip" Value="Printing Disabled"/>
+                                        </DataTrigger>
+
+                                        <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Control}">
                                             <Setter Property="Visibility" Value="Visible"/>
-                                        </MultiDataTrigger>
+                                        </DataTrigger>
+                                        <DataTrigger Value="True" Binding="{Binding IsSimulator}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                        
                                     </Style.Triggers>
                                 </Style>
                             </Button.Style>
                         </Button>
-
                     </DockPanel>
                 </DockPanel>
-
-                <StackPanel>
-
-
-                    <!--<Button Content="Edit" Margin="3,0" Command="{Binding SwitchEditCommand}">
-                        <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
-                                <Setter Property="IsEnabled" Value="False"/>
-                                <Setter Property="Visibility" Value="Collapsed"/>
-                                <Style.Triggers>
-                                    <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Control}">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                    </DataTrigger>
-                                    <DataTrigger Value="Running" Binding="{Binding State}">
-                                        <Setter Property="IsEnabled" Value="True"/>
-                                    </DataTrigger>
-                                    <DataTrigger Value="Paused" Binding="{Binding State}">
-                                        <Setter Property="IsEnabled" Value="True"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>-->
-
-
-                </StackPanel>
-
             </DockPanel>
         </md:Card>
     </md:Card>
