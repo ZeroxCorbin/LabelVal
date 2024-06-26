@@ -8,3 +8,5 @@ When viewing the run results and it is a simulation run the sector outlines are 
 Work on sector coloring based on standard not just random.
 
 OCR OCV and blemish are checking the standard and should not.
+
+Display the details panels when dissimilar sectors are selected. 
