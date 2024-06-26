@@ -4,7 +4,7 @@
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
                     xmlns:local="clr-namespace:LabelVal.Dialogs"
-                    xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                     xmlns:ViewModelsDiag="clr-namespace:LabelVal.Dialogs"
                     xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
                     Dialog:DialogParticipation.Register="{Binding}"
@@ -15,53 +15,49 @@
                     mc:Ignorable="d" 
                     d:DesignHeight="800" d:DesignWidth="800" Width="{Binding Width}" Height="{Binding Height}"
                     PreviewKeyDown="CustomDialog_PreviewKeyDown"
-                    Style="{StaticResource {x:Type Dialog:BaseMetroDialog}}">
+                    Style="{StaticResource {x:Type Dialog:BaseMetroDialog}}" Loaded="CustomDialog_Loaded">
     <Dialog:CustomDialog.Resources>
         <converters:DoubleToStringConverter x:Key="doubleToString"/>
     </Dialog:CustomDialog.Resources>
-    
+
     <Dialog:CustomDialog.DialogTop>
-        <Grid>
-            <paz:ZoomBorder Name="ZoomBorder" Margin="3">
-                <Grid>
+
+        <DockPanel>
+
+            <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                <DockPanel Margin="3"> 
                     
-                
-                <Image Source="{Binding RepeatImage}"  Width="{Binding Width}" Height="{Binding Height}"
-                       SnapsToDevicePixels="true"
-                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
-                <Image Name="RepeatImageOverlay" Source="{Binding RepeatOverlay}" 
-                        Width="{Binding Width}" Height="{Binding Height}"
-                       SnapsToDevicePixels="true"
-                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
-                </Grid>
+                    <DockPanel DockPanel.Dock="Top">
+                        <TextBlock Text="{Binding Image.PixelWidth, Mode=OneTime}"  Foreground="White"/>
+                        <TextBlock Text="x" Foreground="White" Margin="3,0"/>
+                        <TextBlock Text="{Binding Image.PixelHeight, Mode=OneTime}"  Foreground="White"/>
+                    </DockPanel>
+                    
+                    <DockPanel HorizontalAlignment="Center">
+                        <TextBlock Text="{Binding Image.DpiX, StringFormat=N, Converter={StaticResource doubleToString}, Mode=OneTime}"  Foreground="White"/>
+                        <TextBlock Text="x" Foreground="White" Margin="3,0"/>
+                        <TextBlock Text="{Binding Image.DpiY, StringFormat=N, Converter={StaticResource doubleToString}, Mode=OneTime}"  Foreground="White"/>
+                    </DockPanel>
+                </DockPanel>
+
+                <DockPanel>
+                    <Button Name="Reset" Click="Reset_Click" Margin="3" Width="30" Height="30" Style="{StaticResource MahApps.Styles.Button.Square}">
+                        <iconPacks:PackIconMaterial Kind="ArrowExpandAll"/>
+                    </Button>
+
+                    <Button Name="CloseButton" Click="CloseButton_Click" Margin="3" Width="30" Height="30" Style="{StaticResource MahApps.Styles.Button.Square}">
+                        <iconPacks:Modern Kind="Close"/>
+                    </Button>
+                </DockPanel>
+            </DockPanel>
+
+            <paz:ZoomBorder Name="ZoomBorder" Margin="3" HorizontalAlignment="Center" VerticalAlignment="Top" ClipToBounds="True">
+                <Grid x:Name="grdOverlays"/>
             </paz:ZoomBorder>
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" >
-                <Button Name="Reset" Click="Reset_Click"  Width="30" Height="30" Style="{StaticResource MahApps.Styles.Button.Square}">
-                    <IconPacks:Modern Kind="Reset"/>
-                </Button>
-                <Label/>
-                <Button Name="CloseButton" Click="CloseButton_Click" Width="30" Height="30" Style="{StaticResource MahApps.Styles.Button.Square}">
-                    <IconPacks:Modern Kind="Close"/>
-                </Button>
-            </StackPanel>
-
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" >
-                <Label Content="{Binding ImageWidth, Mode=OneTime, Converter={StaticResource doubleToString}}" Foreground="{DynamicResource ColorBlindBrush2}"/>
-                <TextBlock Text="x" Margin="0,5,0,0" Foreground="{DynamicResource ColorBlindBrush2}"/>
-                <Label Content="{Binding ImageHeight, Mode=OneTime, Converter={StaticResource doubleToString}}" Foreground="{DynamicResource ColorBlindBrush2}"/>
-                <TextBlock Text="/" Margin="0,5,0,0" Foreground="{DynamicResource ColorBlindBrush2}"/>
-
-                <Label Content="{Binding ImageDPIX, Mode=OneTime, Converter={StaticResource doubleToString}}" Foreground="{DynamicResource ColorBlindBrush2}"/>
-                <TextBlock Text="x" Margin="0,5,0,0" Foreground="{DynamicResource ColorBlindBrush2}"/>
-                <Label Content="{Binding ImageDPIY, Mode=OneTime, Converter={StaticResource doubleToString}}" Foreground="{DynamicResource ColorBlindBrush2}"/>
-
-            </StackPanel>
+        </DockPanel>
 
 
-
-
-        </Grid>
 
     </Dialog:CustomDialog.DialogTop>
 

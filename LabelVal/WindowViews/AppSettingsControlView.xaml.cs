@@ -1,4 +1,7 @@
-﻿using System;
+﻿using LabelVal.ORM_Test;
+using LabelVal.WindowViewModels;
+using MahApps.Metro.SimpleChildWindow;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -36,9 +39,16 @@ namespace LabelVal.WindowViews
 
                 if (result == System.Windows.Forms.DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
                 {
-                    ((WindowViewModels.MainWindowViewModel)DataContext).SimulatorImageDirectory = fbd.SelectedPath;
+                    ((MainWindowViewModel)DataContext).V275.SimulatorImageDirectory = fbd.SelectedPath;
                 }
             }
+        }
+
+        private void btnShowORMSettingsDialog_Click(object sender, RoutedEventArgs e)
+        {
+            var tmp = new NHibernateSettingsView();
+            tmp.Owner = App.Current.MainWindow;
+            tmp.Show();
         }
     }
 }

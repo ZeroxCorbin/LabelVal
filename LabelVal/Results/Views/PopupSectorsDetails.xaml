@@ -1,0 +1,72 @@
+﻿<UserControl x:Class="LabelVal.Results.Views.PopupSectorsDetails"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:LabelVal.Results.Views"
+             xmlns:sectors="clr-namespace:LabelVal.Sectors.Views"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+                xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+             mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <CollectionViewSource x:Key="cvsStoredSectors" Source="{Binding }">
+            <CollectionViewSource.SortDescriptions>
+                <componentmodel:SortDescription PropertyName="Template.Center" Direction="Ascending"/>
+                <!--<componentmodel:SortDescription PropertyName="Template.Top" Direction="Ascending"/>-->
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
+    </UserControl.Resources>
+    
+    <Popup x:Name="Popup" StaysOpen="False">
+        <Popup.Style>
+            <Style TargetType="{x:Type Popup}"/>
+        </Popup.Style>
+
+        <GroupBox Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                  Style="{StaticResource MaterialDesignCardGroupBox}"
+                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                md:ColorZoneAssist.Mode="Custom">
+
+            <GroupBox.Header>
+                <DockPanel Margin="-5">
+
+                    <Button Margin="6,0,3,0" Click="btnSaveImage_Click" Style="{StaticResource GroupHeaderCirlceButton}"
+                            ToolTip="Save as image.">
+                        <iconPacks:PackIconMaterial Kind="ContentSave" Height="14" Width="14"/>
+                    </Button>
+
+                    <Button Click="btnCopyImage_Click" Style="{StaticResource GroupHeaderCirlceButton}"
+                            ToolTip="Copy image to clipboard as PNG.">
+                        <iconPacks:PackIconMaterial Kind="ContentCopy" Height="14" Width="14"/>
+                    </Button>
+
+                </DockPanel>
+
+            </GroupBox.Header>
+
+            <DockPanel>
+
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" 
+                              Style="{StaticResource MahApps.Styles.ScrollViewer}">
+
+                    <ItemsControl x:Name="itemsControl" ItemsSource="{Binding Source={StaticResource ResourceKey=cvsStoredSectors}}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel IsItemsHost="True" MaxWidth="1400"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <sectors:SectorDetails Foreground="{DynamicResource MahApps.Brushes.Text}" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+
+            </DockPanel>
+        </GroupBox>
+    </Popup>
+</UserControl>

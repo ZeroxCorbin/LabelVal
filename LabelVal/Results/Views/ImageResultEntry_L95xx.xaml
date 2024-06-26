@@ -1,0 +1,448 @@
+﻿<UserControl x:Class="LabelVal.Results.Views.ImageResultEntry_L95xx"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:LabelVal.Results.Views"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:sectors="clr-namespace:LabelVal.Sectors.Views"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:Converters="clr-namespace:LabelVal.Converters"
+             xmlns:V275Converters="clr-namespace:LabelVal.V275.Converters"
+                xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+             
+             xmlns:ViewModels="clr-namespace:LabelVal.Results.ViewModels"
+             d:DataContext="{d:DesignInstance Type=ViewModels:ImageResultEntry}"
+             mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="booltovis"/>
+        <Converters:BytesToImageConverter x:Key="bytesToImage"/>
+        <Converters:ShortenUIDConverter x:Key="shortenUID"/>
+        <Converters:StringToUpperSpacedConverter x:Key="stringToUpper"/>
+        <Converters:FloatStringTrimConverter x:Key="floatTrim"/>
+        <V275Converters:V275_OCMatchModeToString x:Key="matchModeToString"/>
+
+        <Converters:ObjectIsNull x:Key="objectIsNull"/>
+        <Converters:EqualZeroOrNull x:Key="equalZeroOrNull"/>
+
+        <Image x:Key="V275Icon" Source="/Assets/Images/V275WhiteIcon.ico" />
+        <Image x:Key="V275Png" Source="/Assets/Images/V275WhiteIcon.png" />
+
+        <CollectionViewSource x:Key="cvsL95xxStoredSectors" Source="{Binding L95xxStoredSectors}">
+            <CollectionViewSource.SortDescriptions>
+                <componentmodel:SortDescription PropertyName="Template.Center" Direction="Ascending"/>
+                <!--<componentmodel:SortDescription PropertyName="Template.Top" Direction="Ascending"/>-->
+            </CollectionViewSource.SortDescriptions>
+
+        </CollectionViewSource>
+
+    </UserControl.Resources>
+
+    <DockPanel>
+
+        <!--L95xx Sectors-->
+        <DockPanel>
+
+            <!--L95xx Stored Sectors-->
+            <GroupBox d:Visibility="Visible" Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                md:ColorZoneAssist.Mode="Custom">
+                <GroupBox.Style>
+                    <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding L95xxStoredSectors.Count, Converter={StaticResource equalZeroOrNull}}" Value="False">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </GroupBox.Style>
+
+                <GroupBox.Header>
+
+                    <DockPanel Margin="-5">
+
+                        <md:Card Background="{DynamicResource OrangeBrush0}" HorizontalAlignment="Left" Padding="4,1">
+                            <TextBlock Foreground="White" Text="Stored Sectors" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                        </md:Card>
+
+
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
+
+                            <Button Command="{Binding ClearStoredCommand}" CommandParameter="L95xx" ToolTip="Remove the stored sectors from the database, permanently.&#x0a;(CAUTION) This can not be undone!">
+
+                                <iconPacks:PackIconModern Kind="Delete" Height="14" Width="14"/>
+
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Value="0" Binding="{Binding L95xxStoredSectors.Count}">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+
+                        </StackPanel>
+
+                        <Button Click="L95xxStoredSectors_Click" ToolTip="The all seeing eye! Click it...&#x0a;Hold Shift and click for more."
+                                HorizontalAlignment="Right">
+
+                            <iconPacks:PackIconModern Kind="Eye" Height="16" Width="16"/>
+
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Value="0" Binding="{Binding L95xxStoredSectors.Count}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+
+                        </Button>
+
+                    </DockPanel>
+                </GroupBox.Header>
+
+                <ScrollViewer Margin="3" Name="ScrollL95xxStoredSectors" VerticalScrollBarVisibility="Auto"
+                          mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
+                          ScrollChanged="ScrollL95xxStoredSectors_ScrollChanged">
+                    <ScrollViewer.Style>
+                        <Style TargetType="{x:Type ScrollViewer}" BasedOn="{StaticResource MahApps.Styles.ScrollViewer}">
+                            <Setter Property="Height" Value="393"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding L95xxStoredSectors.Count}" Value="0">
+                                    <Setter Property="Height" Value="0"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ScrollViewer.Style>
+
+                    <DockPanel>
+
+                        <GroupBox Margin="3" Padding="3"
+                            md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                            md:ColorZoneAssist.Mode="Custom">
+                            <GroupBox.Style>
+                                <Style TargetType="GroupBox" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding L95xxFocusedStoredSector, Converter={StaticResource objectIsNull}}" Value="True">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </GroupBox.Style>
+
+                            <GroupBox.Header>
+                                <DockPanel Margin="-5">
+                                    <Button Margin="6,0,3,0" Click="btnSaveImage_Click" Style="{StaticResource GroupHeaderCirlceButton}"
+                                        ToolTip="Save as image.">
+                                        <iconPacks:PackIconMaterial Kind="ContentSave" Height="14" Width="14"/>
+                                    </Button>
+
+                                    <Button Click="btnCopyImage_Click" Style="{StaticResource GroupHeaderCirlceButton}"
+                                        ToolTip="Copy image to clipboard as PNG.">
+                                        <iconPacks:PackIconMaterial Kind="ContentCopy" Height="14" Width="14"/>
+                                    </Button>
+
+                                    <Button Click="btnCloseDetails_Click" Style="{StaticResource GroupHeaderCirlceButton}"
+                                        ToolTip="Close this." HorizontalAlignment="Right" Tag="l95xxStored">
+                                        <iconPacks:PackIconMaterial Kind="Close" Height="14" Width="14"/>
+                                    </Button>
+                                </DockPanel>
+                            </GroupBox.Header>
+
+                            <sectors:SectorDetails DataContext="{Binding L95xxFocusedStoredSector}"/>
+
+                        </GroupBox>
+
+                        <ItemsControl Padding="0,2,0,0" ItemsSource="{Binding Source={StaticResource ResourceKey=cvsL95xxStoredSectors}}" 
+                                      Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                                      Tag="l95xxStored">
+                            
+                            <ItemsControl.Style>
+                                <Style TargetType="ItemsControl">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding L95xxFocusedStoredSector, Converter={StaticResource objectIsNull}}" Value="False">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ItemsControl.Style>
+                            
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="2,1"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                            
+                        </ItemsControl>
+                    </DockPanel>
+                </ScrollViewer>
+
+            </GroupBox>
+
+            <!--L95xx Current Sectors-->
+            <GroupBox d:Visibility="Visible" Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                md:ColorZoneAssist.Mode="Custom">
+                <GroupBox.Style>
+                    <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding L95xxCurrentSectors.Count, Converter={StaticResource equalZeroOrNull}}" Value="False">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </GroupBox.Style>
+
+                <GroupBox.Header>
+
+                    <DockPanel Margin="-5">
+
+                        <md:Card HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1"
+                                 Background="{DynamicResource OrangeBrush0}" >
+                            <TextBlock Foreground="White" Text="Current Sectors" 
+                                       FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                        </md:Card>
+
+                        <DockPanel Margin="3,0">
+
+                            <Button Command="{Binding StoreCommand}" CommandParameter="L95xx" ToolTip="Store the current sectors and images to the database.">
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Value="0" Binding="{Binding L95xxCurrentSectors.Count}">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+
+                                <iconPacks:PackIconMaterial Kind="StorePlusOutline" Height="14" Width="14"/>
+                            </Button>
+
+                            <Button Command="{Binding ClearReadCommand}" CommandParameter="L95xx" ToolTip="Clear the current sectors and image.">
+
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
+                                        <Setter Property="Visibility" Value="Visible"/>
+
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding L95xxCurrentSectors.Count}" Value="0">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+
+                                <iconPacks:PackIconModern Kind="Delete" Height="14" Width="14"/>
+
+                            </Button>
+
+                            <!--<Button Command="{Binding L95xxReadCommand}"
+                                    ToolTip="Read Results" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
+
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Value="True" Binding="{Binding ImageResults.SelectedScanner.IsConnected}">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+
+                                <iconPacks:PackIconMaterial Kind="Upload" Margin="-1,-1,0,0" Height="14" Width="14"/>
+                            </Button>-->
+
+                            <!--<Button Command="{Binding InspectCommand}"
+                                    ToolTip="Inspect" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
+
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Value="True" Binding="{Binding ImageResults.SelectedNode.IsLoggedIn_Control}">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+
+                            <iconPacks:PackIconMaterialDesign Kind="TouchApp" Margin="-1,-1,0,0" Height="14" Width="14"/>
+
+                        </Button>-->
+
+                        </DockPanel>
+
+                        <Button Click="L95xxCurrentSectorDetails_Click" ToolTip="The all seeing eye! Click it...&#x0a;Hold Shift and click for more."
+                                HorizontalAlignment="Right">
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Value="0" Binding="{Binding L95xxCurrentSectors.Count}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                            <iconPacks:PackIconModern Kind="Eye" Width="16" Height="16"/>
+                        </Button>
+
+                    </DockPanel>
+                </GroupBox.Header>
+
+                <ScrollViewer x:Name="ScrollL95xxCurrentSectors"
+                        Margin="3" VerticalScrollBarVisibility="Auto"
+                        mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
+                        ScrollChanged="ScrollL95xxCurrentSectors_ScrollChanged">
+                    <ScrollViewer.Style>
+                        <Style TargetType="{x:Type ScrollViewer}" BasedOn="{StaticResource MahApps.Styles.ScrollViewer}">
+                            <Setter Property="Height" Value="393"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding L95xxCurrentSectors.Count}" Value="0">
+                                    <Setter Property="Height" Value="0"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ScrollViewer.Style>
+
+                    <DockPanel>
+
+                        <GroupBox Margin="3" Padding="3"
+                            md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                            md:ColorZoneAssist.Mode="Custom">
+                            <GroupBox.Style>
+                                <Style TargetType="GroupBox" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding L95xxFocusedCurrentSector, Converter={StaticResource objectIsNull}}" Value="True">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </GroupBox.Style>
+
+                            <GroupBox.Header>
+                                <DockPanel Margin="-5">
+                                    <Button Margin="6,0,3,0" Click="btnSaveImage_Click" Style="{StaticResource GroupHeaderCirlceButton}"
+                                        ToolTip="Save as image.">
+                                        <iconPacks:PackIconMaterial Kind="ContentSave" Height="14" Width="14"/>
+                                    </Button>
+
+                                    <Button Click="btnCopyImage_Click" Style="{StaticResource GroupHeaderCirlceButton}"
+                                        ToolTip="Copy image to clipboard as PNG.">
+                                        <iconPacks:PackIconMaterial Kind="ContentCopy" Height="14" Width="14"/>
+                                    </Button>
+
+                                    <Button Click="btnCloseDetails_Click" Style="{StaticResource GroupHeaderCirlceButton}"
+                                        ToolTip="Close this." HorizontalAlignment="Right" Tag="l95xxCurrent">
+                                        <iconPacks:PackIconMaterial Kind="Close" Height="14" Width="14"/>
+                                    </Button>
+                                </DockPanel>
+                            </GroupBox.Header>
+
+                            <sectors:SectorDetails DataContext="{Binding L95xxFocusedCurrentSector}"/>
+
+                        </GroupBox>
+
+                        <ItemsControl Padding="0,2,0,0" ItemsSource="{Binding L95xxCurrentSectors}"
+                                      Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                                       Tag="l95xxCurrent">
+                            
+                            <ItemsControl.Style>
+                                <Style TargetType="ItemsControl">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding L95xxFocusedCurrentSector, Converter={StaticResource objectIsNull}}" Value="False">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ItemsControl.Style>
+                            
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="2,1"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </DockPanel>
+                </ScrollViewer>
+            </GroupBox>
+
+            <!--L95xx Dissimilar Results-->
+            <GroupBox d:Visibility="Visible" Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                md:ColorZoneAssist.Mode="Custom">
+                <GroupBox.Style>
+                    <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding L95xxDiffSectors.Count, Converter={StaticResource equalZeroOrNull}}" Value="False">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </GroupBox.Style>
+
+                <GroupBox.Header>
+
+                    <DockPanel Margin="-5">
+
+                        <md:Card HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1"
+                                 Background="{DynamicResource OrangeBrush0}" >
+                            <TextBlock Foreground="White" Text="Dissimilar Results" 
+                                       FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                        </md:Card>
+
+                    </DockPanel>
+                </GroupBox.Header>
+
+                <ScrollViewer Margin="3" VerticalScrollBarVisibility="Auto"
+                          mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True">
+                    <ScrollViewer.Style>
+                        <Style TargetType="{x:Type ScrollViewer}" BasedOn="{StaticResource MahApps.Styles.ScrollViewer}">
+                            <Setter Property="Height" Value="393"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding L95xxDiffSectors.Count}" Value="0">
+                                    <Setter Property="Height" Value="0"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ScrollViewer.Style>
+
+                    <ItemsControl ItemsSource="{Binding L95xxDiffSectors}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <sectors:SectorDifferences Width="220" Background="{DynamicResource AccentColorBrush}" Margin="6,1"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </GroupBox>
+
+        </DockPanel>
+
+    </DockPanel>
+</UserControl>

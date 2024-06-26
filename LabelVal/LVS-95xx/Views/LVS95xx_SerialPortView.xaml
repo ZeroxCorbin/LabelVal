@@ -1,0 +1,76 @@
+﻿<Dialog:CustomDialog x:Class="LabelVal.LVS_95xx.LVS95xx_SerialPortView"
+                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                    xmlns:local="clr-namespace:LabelVal.LVS_95xx"
+                    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+                    xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                    xmlns:ViewModels="clr-namespace:LabelVal.LVS_95xx.ViewModels"   
+                    xmlns:MainViews="clr-namespace:LabelVal.WindowViews"
+                     xmlns:v275="clr-namespace:LabelVal.V275.Views"
+                     xmlns:sectors="clr-namespace:LabelVal.Sectors.Views"
+                    xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+                    Dialog:DialogParticipation.Register="{Binding}"
+                    d:DataContext="{d:DesignInstance Type=ViewModels:Verifier}"
+                    mc:Ignorable="d"
+                    d:DesignHeight="800" d:DesignWidth="800" Width="{Binding Width}" Height="{Binding Height}"
+                    Style="{StaticResource {x:Type Dialog:BaseMetroDialog}}" 
+                    PreviewKeyDown="CustomDialog_PreviewKeyDown" DialogContentMargin="100" Loaded="CustomDialog_Loaded">
+
+    <Dialog:CustomDialog.DialogTop>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="1" Text="LVS-95xx Comparison" HorizontalAlignment="Center" FontSize="24"/>
+
+            <Button Grid.Column="2" Name="CloseButton" Click="CloseButton_Click" Width="30" Height="30" Style="{StaticResource MahApps.Styles.Button.Square}" HorizontalAlignment="Right">
+                <IconPacks:Modern Kind="Close"/>
+            </Button>
+        </Grid>
+    </Dialog:CustomDialog.DialogTop>
+
+    <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+        </Grid.ColumnDefinitions>
+        
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="3">
+            <ComboBox ItemsSource="{Binding ComNameList}" SelectedItem="{Binding SelectedComName}" IsEnabled="{Binding IsNotConnected}"/>
+            <Button Command="{Binding OpenPort}"  Width="30" Height="30" Style="{StaticResource MahApps.Styles.Button.Square}" IsEnabled="{Binding IsNotConnected}">
+                <IconPacks:Modern Kind="Connect"/>
+            </Button>
+            <Button Command="{Binding ClosePort}" Width="30" Height="30" Style="{StaticResource MahApps.Styles.Button.Square}" IsEnabled="{Binding IsConnected}">
+                <IconPacks:Modern Kind="Disconnect"/>
+            </Button>
+        </StackPanel>
+
+
+
+        <sectors:SectorDetails Grid.Row="2" Grid.Column="0" DataContext="{Binding StoredSectorControl}" Margin="3"/>
+
+        <sectors:SectorDetails Grid.Row="2" Grid.Column="1" DataContext="{Binding Lvs95xxSectorControl}" Margin="3" MinWidth="250"/>
+
+        <Border Grid.Row="2" Grid.Column="2" BorderThickness="2" Margin="3"
+                        BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+            <ScrollViewer Height="400">
+                <TextBox Text="{Binding ReadData}" IsReadOnly="True" BorderThickness="0"/>
+            </ScrollViewer>
+        </Border>
+
+    </Grid>
+
+</Dialog:CustomDialog>

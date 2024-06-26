@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
 using System.Drawing.Imaging;
+using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
 
 namespace LabelVal.Utilities
 {
@@ -22,7 +17,8 @@ namespace LabelVal.Utilities
             return res;
         }
 
-        public static void SetImageDPI(byte[] image, int dpi)
+        //Set DPI for 95xx systems
+        public static void SetBitmapDPI(byte[] image, int dpi)
         {
             var value = BitConverter.GetBytes(SetDPI(dpi));
 
@@ -34,61 +30,206 @@ namespace LabelVal.Utilities
                 image[i++] = b;
         }
 
+      //Seek #FileIndex, 7   ' position of balance information
+      //Get #FileIndex, , BalanceInfo
+      //If BalanceInfo = Asc("C") Or BalanceInfo = Asc("3") Then
+      //  ColorFlag = Chr(BalanceInfo)
+      //End If
+        public static void SetBitmapColorFlag(byte[] image, char balanceInfo)
+        {
+            var value = BitConverter.GetBytes(balanceInfo);
+
+            int i = 7;
+            foreach (byte b in value)
+                image[i++] = b;
+        }
+
+
+
         public static byte[] ConvertToPng(byte[] img, int dpi)
         {
             if (dpi > 0)
-                SetImageDPI(img, dpi);
+                SetBitmapDPI(img, dpi);
 
-            PngBitmapEncoder encoder = new PngBitmapEncoder();
-            using (var ms = new System.IO.MemoryStream(img))
+            System.Windows.Media.Imaging.PngBitmapEncoder encoder = new();
+
+            using var ms = new System.IO.MemoryStream(img);
+            using MemoryStream stream = new();
+
+            encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(ms));
+            encoder.Save(stream);
+            stream.Close();
+
+            return stream.ToArray();
+        }
+
+        public static byte[] ConvertToPng(byte[] img)
+        {
+            System.Windows.Media.Imaging.PngBitmapEncoder encoder = new();
+            using var ms = new System.IO.MemoryStream(img);
+            using MemoryStream stream = new();
+            encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(ms));
+            encoder.Save(stream);
+            stream.Close();
+
+            return stream.ToArray();
+        }
+
+
+
+        public static byte[] AddOverlayPNG(byte[] img, byte[] overlay)
+        {
+
+            var dg = new System.Windows.Media.DrawingGroup();
+
+            var renderBitmap1 = CreateBitmap(img);
+            var renderBitmap2 = CreateBitmap(overlay);
+
+            var id1 = new System.Windows.Media.ImageDrawing(renderBitmap1, new System.Windows.Rect(0, 0, renderBitmap1.Width, renderBitmap1.Height));
+            var id2 = new System.Windows.Media.ImageDrawing(renderBitmap2, new System.Windows.Rect(0, 0, renderBitmap2.Width, renderBitmap2.Height));
+
+            dg.Children.Add(id1);
+            dg.Children.Add(id2);
+
+            var combinedImg = new System.Windows.Media.Imaging.RenderTargetBitmap(
+                (int)renderBitmap1.Width,
+                (int)renderBitmap1.Height, 96, 96, System.Windows.Media.PixelFormats.Pbgra32);
+
+            var dv = new System.Windows.Media.DrawingVisual();
+            using (var dc = dv.RenderOpen())
             {
-                using (MemoryStream stream = new MemoryStream())
-                {
-                    encoder.Frames.Add(BitmapFrame.Create(ms));
-                    encoder.Save(stream);
-                    stream.Close();
-
-                    return stream.ToArray();
-
-                }
+                dc.DrawDrawing(dg);
             }
+
+            combinedImg.Render(dv);
+
+            System.Windows.Media.Imaging.PngBitmapEncoder encoder = new();
+            using MemoryStream stream = new();
+            encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(combinedImg));
+
+            encoder.Save(stream);
+            stream.Close();
+
+            return stream.ToArray();
+
         }
 
         public static byte[] ConvertToBmp(byte[] img)
         {
-            BmpBitmapEncoder encoder = new BmpBitmapEncoder();
-            using (var ms = new System.IO.MemoryStream(img))
-            {
-                using (MemoryStream stream = new MemoryStream())
-                {
-                    encoder.Frames.Add(BitmapFrame.Create(ms));
-                    encoder.Save(stream);
-                    stream.Close();
+            System.Windows.Media.Imaging.BmpBitmapEncoder encoder = new();
+            using var ms = new System.IO.MemoryStream(img);
+            using MemoryStream stream = new();
+            encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(ms));
+            encoder.Save(stream);
+            stream.Close();
 
-                    return stream.ToArray();
-
-                }
-            }
+            return stream.ToArray();
         }
+        public static byte[] ConvertToBmp(byte[] img, int dpi)
+        {
+            System.Windows.Media.Imaging.BmpBitmapEncoder encoder = new();
+            using var ms = new System.IO.MemoryStream(img);
+            using MemoryStream stream = new();
+            encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(ms));
+            encoder.Save(stream);
+            stream.Close();
 
-        public static BitmapImage CreateBitmap(byte[] data)
+            byte[] ret = stream.ToArray();
+
+            if (dpi > 0)
+                SetBitmapDPI(ret, dpi);
+
+            return ret;
+        }
+        public static System.Windows.Media.Imaging.BitmapImage CreateBitmap(byte[] data, int decodePixelWidth = 0)
         {
             if (data == null || data.Length < 2)
                 return null;
 
-            BitmapImage img = new BitmapImage();
-
-            using (MemoryStream memStream = new MemoryStream(data))
+            try
             {
-                img.BeginInit();
-                img.CacheOption = BitmapCacheOption.OnLoad;
-                img.StreamSource = memStream;
-                //img.DecodePixelWidth = 400;
-                img.EndInit();
-                img.Freeze();
+                System.Windows.Media.Imaging.BitmapImage img = new();
+
+                using (MemoryStream memStream = new(data))
+                {
+                    img.BeginInit();
+                    img.CacheOption = System.Windows.Media.Imaging.BitmapCacheOption.OnLoad;
+                    img.StreamSource = memStream;
+                    img.DecodePixelWidth = decodePixelWidth;
+                    img.EndInit();
+                    img.Freeze();
+
+                }
+                return img;
+            }
+            catch { }
+
+            return null;
+        }
+
+        public static byte[] ImageToBytes(System.Drawing.Image image)
+        {
+            System.Drawing.ImageConverter converter = new();
+            return (byte[])converter.ConvertTo(image, typeof(byte[]));
+        }
+
+        private static byte[] imageToBytes(System.Windows.Media.ImageSource imageSource)
+        {
+            System.Windows.Media.Imaging.PngBitmapEncoder encoder = new();
+            byte[] bytes = null;
+            var bitmapSource = imageSource as System.Windows.Media.Imaging.BitmapSource;
+
+            if (bitmapSource != null)
+            {
+                encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(bitmapSource));
+
+                using var stream = new MemoryStream();
+                encoder.Save(stream);
+                bytes = stream.ToArray();
+            }
+
+            return bytes;
+        }
+
+        public static byte[] ImageToBytes(this System.Windows.Media.DrawingImage source)
+        {
+            var drawingVisual = new System.Windows.Media.DrawingVisual();
+            var drawingContext = drawingVisual.RenderOpen();
+            drawingContext.DrawImage(source, new System.Windows.Rect(new System.Windows.Point(0, 0), new System.Windows.Size(source.Width, source.Height)));
+            drawingContext.Close();
+
+            var bmp = new System.Windows.Media.Imaging.RenderTargetBitmap((int)source.Width, (int)source.Height, 96, 96, System.Windows.Media.PixelFormats.Pbgra32);
+            bmp.Render(drawingVisual);
+            return imageToBytes(bmp);
+        }
+
+        public static System.Windows.Media.Imaging.BitmapSource ToBitmapSource(this System.Windows.Media.DrawingImage source)
+        {
+            var drawingVisual = new System.Windows.Media.DrawingVisual();
+            var drawingContext = drawingVisual.RenderOpen();
+            drawingContext.DrawImage(source, new System.Windows.Rect(new System.Windows.Point(0, 0), new System.Windows.Size(source.Width, source.Height)));
+            drawingContext.Close();
+
+            var bmp = new System.Windows.Media.Imaging.RenderTargetBitmap((int)source.Width, (int)source.Height, 96, 96, System.Windows.Media.PixelFormats.Pbgra32);
+            bmp.Render(drawingVisual);
+            return bmp;
+        }
+
+        private static int GetDPI(int headerValue) => (int)Math.Round(headerValue / InchesPerMeter);
+        private static int SetDPI(int dpi) => (int)Math.Round(dpi * InchesPerMeter);
+
+        public static string ImageUID(byte[] image)
+        {
+            try
+            {
+                using SHA256 md5 = SHA256.Create();
+                return BitConverter.ToString(md5.ComputeHash(image)).Replace("-", String.Empty);
 
             }
-            return img;
+            catch (Exception)
+            {
+                return string.Empty;
+            }
         }
 
         public static void RedrawFiducial(string path, bool is300)
@@ -134,26 +275,6 @@ namespace LabelVal.Utilities
                 }
             }
 
-        }
-
-
-        private static int GetDPI(int headerValue) => (int)Math.Round(headerValue / InchesPerMeter);
-        private static int SetDPI(int dpi) => (int)Math.Round(dpi * InchesPerMeter);
-
-        public static string ImageUID(byte[] image)
-        {
-            try
-            {
-                using (SHA256 md5 = SHA256.Create())
-                {
-                    return BitConverter.ToString(md5.ComputeHash(image)).Replace("-", String.Empty);
-                }
-
-            }
-            catch (Exception)
-            {
-                return string.Empty;
-            }
         }
 
     }

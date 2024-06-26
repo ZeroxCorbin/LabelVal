@@ -1,0 +1,9 @@
+{
+  "UID": "a07011de-9bbd-4b7d-8011-c433a4815f06",
+  "Name": "",
+  "Standard": "GS1",
+  "GS1Table": "_2",
+  "WriteSectorsBeforeProcess": true,
+  "TargetDPI": 600,
+  "IsLocked": true
+}

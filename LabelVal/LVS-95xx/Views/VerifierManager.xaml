@@ -1,0 +1,56 @@
+﻿<UserControl x:Class="LabelVal.LVS_95xx.Views.VerifierManager"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:LabelVal.LVS_95xx.Views"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:ViewModels="clr-namespace:LabelVal.LVS_95xx.ViewModels"  
+             d:DataContext="{d:DesignInstance Type=ViewModels:VerifierManager}"
+             mc:Ignorable="d" >
+
+
+    <GroupBox MinWidth="312" Margin="3" Padding="3" VerticalAlignment="Top" HorizontalAlignment="Left"
+                  Style="{StaticResource MaterialDesignCardGroupBox}"
+                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                md:ColorZoneAssist.Mode="Custom">
+
+        <GroupBox.Header>
+            <DockPanel Margin="-5">
+                <md:Card Background="{DynamicResource OrangeBrush0}" HorizontalAlignment="Left" Padding="4,1">
+                    <TextBlock Text="LVS_95xx Verifiers" Height="20" Foreground="White" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                </md:Card>
+
+            </DockPanel>
+        </GroupBox.Header>
+
+        <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+            <ListView ItemsSource="{Binding Verifiers}" SelectedItem="{Binding SelectedVerifier}">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <local:Verifier DataContext="{Binding }">
+                            <local:Verifier.Style>
+                                <Style TargetType="local:Verifier">
+                                    <Setter Property="IsHitTestVisible" Value="False"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListViewItem}}" Value="True">
+                                            <Setter Property="IsHitTestVisible" Value="True"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </local:Verifier.Style>
+                        </local:Verifier>
+
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </md:Card>
+    </GroupBox>
+</UserControl>

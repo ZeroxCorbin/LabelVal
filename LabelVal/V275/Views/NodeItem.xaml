@@ -1,0 +1,320 @@
+﻿<UserControl x:Class="LabelVal.V275.Views.NodeItem"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:LabelVal.V275.Views"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+             
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:ViewModels="clr-namespace:LabelVal.V275.ViewModels"  
+                xmlns:converters="clr-namespace:LabelVal.Converters"
+             d:DataContext="{d:DesignInstance Type=ViewModels:Node}"
+             mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <converters:ObjectIsNull x:Key="ObjectIsNull"/>
+    </UserControl.Resources>
+
+    <md:Card HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="6">
+        <md:Card.Style>
+            <Style TargetType="md:Card" BasedOn="{StaticResource {x:Type md:Card}}">
+                <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent4}"/>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsSimulator}" Value="True">
+                        <Setter Property="Background" Value="{DynamicResource YellowBrush2}"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </md:Card.Style>
+
+        <md:Card HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="1"
+                 Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                 Foreground="{DynamicResource MahApps.Brushes.Text}">
+
+            <DockPanel Margin="3">
+
+                <md:Card VerticalAlignment="Top" Padding="3" Margin="3" Background="{DynamicResource MahApps.Brushes.Accent4}">
+
+                    <DockPanel>
+
+                        <Button Margin="3" DockPanel.Dock="Top" Command="{Binding LoginCommand}" BorderThickness="0">
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
+                                    <Setter Property="Content">
+                                        <Setter.Value>
+                                            <iconPacks:Modern Kind="Connect" Height="16" Width="16"/>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsLoggedIn}" Value="True">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <iconPacks:Modern Kind="Disconnect" Height="16" Width="16"/>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+
+                        <ToggleButton IsChecked="{Binding LoginMonitor}" BorderThickness="0" Width="24" Height="24" Margin="3" HorizontalAlignment="Center" VerticalAlignment="Top"
+                                      ToolTipService.ShowOnDisabled="True" Background="{DynamicResource MahApps.Brushes.Accent3}">
+
+                            <ToggleButton.Style>
+                                <Style TargetType="ToggleButton" BasedOn="{StaticResource MahApps.Styles.ToggleButton.Circle}">
+                                    <Setter Property="ToolTip" Value="Login control."/>
+                                    <Setter Property="IsEnabled" Value="True"/>
+                                    <Setter Property="Content" Value="{iconPacks:FontAwesome Kind=TerminalSolid}"/>
+
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding LoginMonitor}" Value="True">
+                                            <Setter Property="ToolTip" Value="Login monitor."/>
+
+                                            <Setter Property="Content" Value="{iconPacks:Modern Kind=Monitor}"/>
+                                        </DataTrigger>
+
+                                        <DataTrigger Binding="{Binding IsLoggedIn}" Value="True">
+                                            <Setter Property="IsEnabled" Value="False"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ToggleButton.Style>
+                        </ToggleButton>
+
+                    </DockPanel>
+                </md:Card>
+
+                <DockPanel>
+
+                    <DockPanel DockPanel.Dock="Top" Margin="1">
+                        <TextBox d:Text="camera" MinWidth="56" Margin="3" md:HintAssist.Hint="Type" md:HintAssist.IsFloating="True" IsHitTestVisible="False" BorderThickness="0" >
+                            <TextBox.Style>
+                                <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                                    <Setter Property="Text" Value="Unknown"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Value="camera" Binding="{Binding Inspection.device}">
+                                            <Setter Property="Text" Value="Camera"/>
+                                        </DataTrigger>
+                                        <DataTrigger Value="simulator" Binding="{Binding Inspection.device}">
+                                            <Setter Property="Text" Value="Simulator"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBox.Style>
+                        </TextBox>
+
+                        <TextBox d:Text="ZT610"  MinWidth="57" Margin="3" md:HintAssist.Hint="Model" md:HintAssist.IsFloating="True" IsHitTestVisible="False" BorderThickness="0">
+                            <TextBox.Style>
+                                <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                                    <Setter Property="Text" Value="{Binding Path=Details.printerModel}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Value="False" Binding="{Binding IsWrongTemplateName}">
+                                            <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}"/>
+                                        </DataTrigger>
+                                        <DataTrigger Value="Unknown" Binding="{Binding Path=Details.printerModel}">
+                                            <Setter Property="Text" Value="-----"/>
+                                        </DataTrigger>
+
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBox.Style>
+                        </TextBox>
+
+                        <TextBox d:Text="00:00:00:00:00" Text="{Binding Path=Details.cameraMAC, Mode=OneTime}" Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                         Margin="3" md:HintAssist.Hint="MAC" md:HintAssist.IsFloating="True" IsHitTestVisible="False" BorderThickness="0" />
+
+                    </DockPanel>
+
+                    <DockPanel DockPanel.Dock="Top" Margin="1">
+
+                        <TextBox d:Text="State" Text="{Binding State}" Margin="3,0" md:HintAssist.Hint="State" md:HintAssist.IsFloating="True" IsHitTestVisible="False" HorizontalAlignment="Left">
+                            <TextBox.Style>
+                                <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                                    <Setter Property="BorderBrush" Value="{DynamicResource ColorBlindBrush5}"/>
+                                    <Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Value="Editing" Binding="{Binding State}" />
+                                                <Condition Value="True" Binding="{Binding SelectedImageRoll.WriteSectorsBeforeProcess}" />
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}" />
+                                        </MultiDataTrigger>
+
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Value="Running" Binding="{Binding State}" />
+                                                <Condition Value="False" Binding="{Binding SelectedImageRoll.WriteSectorsBeforeProcess}" />
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}" />
+                                        </MultiDataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBox.Style>
+                        </TextBox>
+
+
+                        <ComboBox ItemsSource="{Binding Jobs.jobs}" SelectedValue="{Binding SelectedJob}" Margin="3,0" md:HintAssist.Hint="Template Name" md:HintAssist.IsFloating="True" HorizontalAlignment="Left">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding name}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                            <ComboBox.Style>
+                                <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}">
+                                    <Setter Property="BorderBrush" Value="{DynamicResource ColorBlindBrush5}"/>
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Setter Property="IsHitTestVisible" Value="True"/>
+                                    <Style.Triggers>
+
+                                        <DataTrigger Value="False" Binding="{Binding IsWrongTemplateName}">
+                                            <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}"/>
+                                        </DataTrigger>
+
+                                        <DataTrigger Value="False" Binding="{Binding Jobs,Converter={StaticResource ObjectIsNull}}">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+
+                                        <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Monitor}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+
+                                        <DataTrigger Value="Running" Binding="{Binding State}">
+                                            <Setter Property="IsHitTestVisible" Value="False"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ComboBox.Style>
+                        </ComboBox>
+
+                        <TextBox d:Text="-----" BorderBrush="{DynamicResource ColorBlindBrush5}" Margin="3,0" md:HintAssist.Hint="Template Name" md:HintAssist.IsFloating="True" IsHitTestVisible="False" HorizontalAlignment="Left">
+                            <TextBox.Style>
+                                <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                                    <Setter Property="BorderBrush" Value="{DynamicResource ColorBlindBrush5}"/>
+                                    <Setter Property="Text" Value="{Binding JobName}"/>
+
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+
+                                        <DataTrigger Value="" Binding="{Binding JobName}">
+                                            <Setter Property="Text" Value="-----"/>
+                                            <Setter Property="BorderBrush" Value="{DynamicResource ColorBlindBrush5}"/>
+                                        </DataTrigger>
+
+                                        <DataTrigger Value="True" Binding="{Binding Jobs, Converter={StaticResource ObjectIsNull}}">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+
+                                        <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Monitor}">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBox.Style>
+                        </TextBox>
+
+          
+                    </DockPanel>
+
+                    <DockPanel>
+                        
+                        <Button HorizontalAlignment="Left" Margin="3,0" BorderThickness="0" Width="38">
+
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+
+                                        <DataTrigger Value="Editing" Binding="{Binding State}">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <iconPacks:PackIconMaterial Kind="Play"/>
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Setter Property="Command" Value="{Binding SwitchRunCommand}"/>
+                                            <Setter Property="ToolTip" Value="Run"/>
+                                        </DataTrigger>
+
+                                        <DataTrigger Value="Running" Binding="{Binding State}">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <iconPacks:PackIconMaterial Kind="Stop"/>
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Setter Property="Command" Value="{Binding SwitchEditCommand}"/>
+                                            <Setter Property="ToolTip" Value="Stop"/>
+                                        </DataTrigger>
+
+                                        <DataTrigger Value="Paused" Binding="{Binding State}">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <iconPacks:PackIconMaterial Kind="SelectRemove"/>
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Setter Property="Command" Value="{Binding RemoveRepeatCommand}"/>
+                                            <Setter Property="ToolTip" Value="Remove"/>
+                                        </DataTrigger>
+
+                                        <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Monitor}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+
+                        <Button HorizontalAlignment="Left" Margin="3,0" BorderThickness="0" Width="38">
+
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        
+                                        <DataTrigger Value="True" Binding="{Binding Print.enabled}">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <iconPacks:PackIconMaterial Kind="Printer"
+                                                        Foreground="{DynamicResource CB_Green}"/>
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Setter Property="Command" Value="{Binding EnablePrintCommand}"/>
+                                            <Setter Property="CommandParameter" Value="0"/>
+                                            <Setter Property="ToolTip" Value="Printing Enabled"/>
+                                        </DataTrigger>
+
+                                        <DataTrigger Value="False" Binding="{Binding Print.enabled}">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <iconPacks:PackIconMaterial Kind="PrinterAlert"
+                                                        Foreground="{DynamicResource ColorBlindBrush5}"/>
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Setter Property="Command" Value="{Binding EnablePrintCommand}"/>
+                                            <Setter Property="CommandParameter" Value="1"/>
+                                            <Setter Property="ToolTip" Value="Printing Disabled"/>
+                                        </DataTrigger>
+
+                                        <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Control}">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                        <DataTrigger Value="True" Binding="{Binding IsSimulator}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                        
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </DockPanel>
+                </DockPanel>
+            </DockPanel>
+        </md:Card>
+    </md:Card>
+</UserControl>

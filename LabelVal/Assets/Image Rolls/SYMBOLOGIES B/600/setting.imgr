@@ -1,0 +1,9 @@
+{
+  "UID": "a07011de-9bbd-4b7d-8011-c433a4815f27",
+  "Name": "Symbologies B",
+  "Standard": "ISO15415_15416",
+  "GS1Table": "None",
+  "WriteSectorsBeforeProcess": false,
+  "TargetDPI": 600,
+  "IsLocked": true
+}

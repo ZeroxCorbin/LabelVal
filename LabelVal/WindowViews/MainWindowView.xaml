@@ -4,15 +4,22 @@
                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                 xmlns:local="clr-namespace:LabelVal.WindowViews"
+                 xmlns:v275="clr-namespace:LabelVal.V275.Views"
                 xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-                xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-                xmlns:ViewModels="clr-namespace:LabelVal.WindowViewModels"     
-                 xmlns:RunViews="clr-namespace:LabelVal.RunViews"
+                 xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+                 xmlns:printer="clr-namespace:LabelVal.Printer.Views"
+                 xmlns:imageRolls="clr-namespace:LabelVal.ImageRolls.Views"
+                 xmlns:results="clr-namespace:LabelVal.Results.Views"
+                xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"  
+                 xmlns:RunViews="clr-namespace:LabelVal.Run.Views"
                 xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
                 Dialog:DialogParticipation.Register="{Binding}"
+                 
+                 xmlns:v5="clr-namespace:LabelVal.V5.Views"
+                 xmlns:L95xx="clr-namespace:LabelVal.LVS_95xx.Views"
+                 xmlns:ViewModels="clr-namespace:LabelVal.WindowViewModels"  
                 d:DataContext="{d:DesignInstance Type=ViewModels:MainWindowViewModel}"
-                mc:Ignorable="d"
-                Height="592" Width="1119" SaveWindowPosition="True" Closing="MetroWindow_Closing">
+                mc:Ignorable="d" SaveWindowPosition="True" Width="auto" Height="auto" Closing="MetroWindow_Closing">
 
     <mah:MetroWindow.Title>
         <MultiBinding StringFormat="Label Validator : {0}">
@@ -30,19 +37,25 @@
             <Button BorderThickness="0" 
                         x:Name="btnColorBlind"
                         Click="btnColorBlind_Click">
-                <IconPacks:PackIconModern Width="20" Height="20" Kind="Eye"/>
+                <iconPacks:PackIconModern Width="20" Height="20" Kind="Eye"/>
             </Button>
 
             <Button BorderThickness="0" 
                         x:Name="btnLightTheme"
                         Click="btnLightTheme_Click">
-                <IconPacks:PackIconModern Width="20" Height="20" Kind="WeatherSun"/>
+                <iconPacks:PackIconModern Width="20" Height="20" Kind="WeatherSun"/>
             </Button>
 
             <Button BorderThickness="0" 
                         x:Name="btnDarkTheme"
                         Click="btnDarkTheme_Click">
-                <IconPacks:PackIconModern Width="20" Height="20" Kind="MoonWaningCrescent"/>
+                <iconPacks:PackIconModern Width="20" Height="20" Kind="MoonWaningCrescent"/>
+            </Button>
+
+            <Button BorderThickness="0" 
+                        x:Name="btnSyncOSTheme"
+                        Click="btnSyncOSTheme_Click">
+                <iconPacks:PackIconModern Width="20" Height="20" Kind="OsWindows"/>
             </Button>
         </mah:WindowCommands>
     </mah:MetroWindow.RightWindowCommands>
@@ -50,7 +63,7 @@
     <mah:MetroWindow.LeftWindowCommands>
         <mah:WindowCommands>
             <Button Name="btnShowSettings" Click="btnShowSettings_Click">
-                <IconPacks:PackIconModern Width="20" Height="20" Kind="Cog"/>
+                <iconPacks:PackIconModern Width="20" Height="20" Kind="Cog"/>
             </Button>
         </mah:WindowCommands>
     </mah:MetroWindow.LeftWindowCommands>
@@ -73,531 +86,109 @@
                     <StackPanel Grid.Row="1">
                         <Label/>
                         <Label Content="Compare Settings" FontSize="18" HorizontalAlignment="Right"/>
-                        <RunViews:CompareSettingsControlView/>
+                        <RunViews:CompareSettingsView/>
                     </StackPanel>
-
 
                 </Grid>
 
             </mah:Flyout>
+
+
         </mah:FlyoutsControl>
     </mah:MetroWindow.Flyouts>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition/>
-            <RowDefinition Height="auto"/>
-        </Grid.RowDefinitions>
+    <DockPanel>
+        <md:DrawerHost x:Name="NodeDetails" VerticalAlignment="Stretch" OpenMode="Standard">
 
-        <Grid Grid.Row="0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
+            <md:DrawerHost.LeftDrawerContent>
+                <v275:NodeDetails DataContext="{Binding NodeDetails}"/>
+            </md:DrawerHost.LeftDrawerContent>
 
-            <!--V275 Node connection-->
-            <Border Grid.Row="0" Grid.Column="0" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="2" Margin="5">
-                <StackPanel Orientation="Horizontal"  Margin="3">
+            <md:DrawerHost x:Name="PrinterDetails" VerticalAlignment="Stretch" OpenMode="Standard">
 
-                    <Label Padding="1">
-                        <Label.Content>
-                            <IconPacks:PackIconModern Width="15" Height="15" Kind="InformationCircle"/>
-                        </Label.Content>
-                        <Label.Style>
-                            <Style TargetType="{x:Type Label}">
-                                <Setter Property="ToolTip">
-                                    <Setter.Value>
-                                        <TextBlock Text="{Binding V275_Version, StringFormat='V275 Software Version: {0}'}"/>
-                                    </Setter.Value>
-                                </Setter>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding V275_Version}" Value="{x:Null}">
-                                        <Setter Property="ToolTip">
-                                            <Setter.Value>
-                                                <TextBlock Text="Click 'Get Nodes'"/>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Label.Style>
-                    </Label>
+                <md:DrawerHost.LeftDrawerContent>
+                    <printer:PrinterDetails DataContext="{Binding PrinterDetails}"/>
+                </md:DrawerHost.LeftDrawerContent>
 
-                    <Label Content="Node Connection"/>
+                <md:DrawerHost x:Name="ScannerDetails" VerticalAlignment="Stretch" OpenMode="Standard">
 
-                    <Button Content="Get Nodes"
-                    Command="{Binding GetDevices}"
-                    IsEnabled="{Binding IsNotLoggedIn}"/>
+                    <md:DrawerHost.LeftDrawerContent>
+                        <v5:ScannerDetails DataContext="{Binding ScannerDetails}"/>
+                    </md:DrawerHost.LeftDrawerContent>
 
-                    <Label/>
+                    <DockPanel>
 
-                    <ComboBox ItemsSource="{Binding Nodes}" Margin="0,0,2,0"
-                          SelectedValue="{Binding SelectedNode}"
-                          IsEnabled="{Binding IsNotLoggedIn}">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding Path=enumeration, Mode=OneTime, StringFormat='Slot: {0} Model: '}"/>
-                                    <TextBlock Text="{Binding Path=printerModel, Mode=OneTime}" />
-                                    <TextBlock Text="{Binding Path=cameraMAC, Mode=OneTime, StringFormat=' ({0})'}" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
+                        <DockPanel DockPanel.Dock="Bottom">
+                            <StatusBar>
+                                <StatusBarItem>
+                                    <Label Margin="0,1,0,0" Padding="0,2,0,2" Background="Red" Foreground="White">
+                                        <iconPacks:PackIconMaterial Kind="ExclamationThick" Height="14" Width="14"/>
+                                        <Label.Style>
+                                            <Style TargetType="{x:Type Label}">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding UserMessage}" Value="">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Label.Style>
+                                    </Label>
+                                </StatusBarItem>
+                                <StatusBarItem>
+                                    <TextBlock Text="{Binding UserMessage}"/>
+                                </StatusBarItem>
+                                <StatusBarItem>
+                                    <Button Command="{Binding ClearUserMessageCommand}">
+                                        <iconPacks:PackIconMaterial Kind="Cancel"/>
+                                        <Button.Style>
+                                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding UserMessage}" Value="">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                </StatusBarItem>
+                            </StatusBar>
+                        </DockPanel>
 
-                    <!--<TextBox mah:TextBoxHelper.Watermark="Board Stack IP" 
-                         Text="{Binding Host}" MinWidth="80"/>-->
-                    <!--<TextBox mah:TextBoxHelper.Watermark="Path" 
-                         Text="{Binding RootPath}" MinWidth="80"/>-->
-                    <!--<TextBox mah:TextBoxHelper.Watermark="User Name" 
-                         Text="{Binding UserName}" MinWidth="80" Margin="0,0,2,0"
-                     IsEnabled="{Binding IsNotLoggedIn}"/>
-                    <TextBox mah:TextBoxHelper.Watermark="Password" 
-                         Text="{Binding Password}" MinWidth="80"
-                     IsEnabled="{Binding IsNotLoggedIn}"/>-->
-                    <Label/>
-                    <StackPanel Orientation="Horizontal" IsEnabled="{Binding IsGetDevices}" >
-                        <Button Content="Logout" Margin="0,0,2,0"
-                            Command="{Binding Logout}"
-                            IsEnabled="{Binding IsLoggedIn}"/>
+                        <DockPanel  DockPanel.Dock="Top">
 
-                        <Button Content="Monitor" Margin="0,0,2,0"
-                            Command="{Binding LoginMonitor}">
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
-                                    <Setter Property="IsEnabled" Value="True"/>
-                                    <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Control}"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Value="True" Binding="{Binding IsLoggedIn}">
-                                            <Setter Property="IsHitTestVisible" Value="False"/>
-                                        </DataTrigger>
-                                        <DataTrigger Value="False" Binding="{Binding IsDeviceSelected}">
-                                            <Setter Property="IsEnabled" Value="False"/>
-                                        </DataTrigger>
-                                        <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Control}">
-                                            <Setter Property="IsEnabled" Value="False"/>
-                                        </DataTrigger>
-                                        <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Monitor}">
-                                            <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
+                            <DockPanel>
 
-                        <Button Content="Control"
-                            Command="{Binding LoginControl}">
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
-                                    <Setter Property="IsEnabled" Value="True"/>
-                                    <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Control}"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Value="True" Binding="{Binding IsLoggedIn}">
-                                            <Setter Property="IsHitTestVisible" Value="False"/>
-                                        </DataTrigger>
-                                        <DataTrigger Value="False" Binding="{Binding IsDeviceSelected}">
-                                            <Setter Property="IsEnabled" Value="False"/>
-                                        </DataTrigger>
-                                        <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Monitor}">
-                                            <Setter Property="IsEnabled" Value="False"/>
-                                        </DataTrigger>
-                                        <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Control}">
-                                            <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
+                                <v275:V275 DockPanel.Dock="Top" DataContext="{Binding V275}"/>
 
+                                <v5:ScannerManager DockPanel.Dock="Top" DataContext="{Binding ScannerManager}"/>
 
-                    </StackPanel>
+                                <L95xx:VerifierManager DockPanel.Dock="Top" DataContext="{Binding VerifierManager}"/>
 
-                </StackPanel>
-            </Border>
+                            </DockPanel>
 
-            <!--V275 State Data-->
-            <Border Grid.Column="1" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="2" Margin="5">
-                <Border.Style>
-                    <Style TargetType="{x:Type Border}">
-                        <Setter Property="Visibility" Value="Visible"/>
-                        <Style.Triggers>
-                            <DataTrigger Value="False" Binding="{Binding IsLoggedIn}">
-                                <Setter Property="Visibility" Value="Collapsed"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Border.Style>
+                            <DockPanel>
+                                <results:ImageResultsDatabases DockPanel.Dock="Top" DataContext="{Binding ImageResultsDatabases}"/>
 
-                <StackPanel Orientation="Horizontal"  Margin="3">
+                                <imageRolls:ImageRolls DataContext="{Binding ImageRolls}"/>
 
-                    <Label Content="Template:"/>
+                            </DockPanel>
 
-                    <Label>
-                        <Label.Style>
-                            <Style TargetType="{x:Type Label}">
-                                <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
-                                <Setter Property="Content" Value="{Binding V275_JobName}"/>
-                                <Style.Triggers>
-                                    <DataTrigger Value="False" Binding="{Binding IsWrongTemplateName}">
-                                        <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
-                                    </DataTrigger>
-                                    <DataTrigger Value="" Binding="{Binding V275_JobName}">
-                                        <Setter Property="Content" Value="-----"/>
-                                        <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Label.Style>
-                    </Label>
+                            <DockPanel DockPanel.Dock="Top">
 
-                    <Label Content="State:"/>
+                                <printer:Printer DataContext="{Binding Printer}"/>
 
-                    <Label Content="{Binding V275_State}">
-                        <Label.Style>
-                            <Style TargetType="{x:Type Label}">
-                                <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
-                                <Setter Property="Visibility" Value="Visible"/>
-                                <Style.Triggers>
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Value="Editing" Binding="{Binding V275_State}" />
-                                            <Condition Value="True" Binding="{Binding SelectedStandard.IsGS1}" />
-                                        </MultiDataTrigger.Conditions>
-                                        <Setter Property="Background" Value="{DynamicResource CB_Green}" />
-                                    </MultiDataTrigger>
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Value="Running" Binding="{Binding V275_State}" />
-                                            <Condition Value="False" Binding="{Binding SelectedStandard.IsGS1}" />
-                                        </MultiDataTrigger.Conditions>
-                                        <Setter Property="Background" Value="{DynamicResource CB_Green}" />
-                                    </MultiDataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Label.Style>
-                    </Label>
-                    <Label/>
-                    <Button Content="Run" Margin="0,0,2,0"
-                            Command="{Binding V275_SwitchRun}">
-                        <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
-                                <Setter Property="IsEnabled" Value="False"/>
-                                <Setter Property="Visibility" Value="Collapsed"/>
-                                <Style.Triggers>
-                                    <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Control}">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                    </DataTrigger>
-                                    <DataTrigger Value="Editing" Binding="{Binding V275_State}">
-                                        <Setter Property="IsEnabled" Value="True"/>
-                                    </DataTrigger>
-                                    <DataTrigger Value="True" Binding="{Binding SelectedStandard.IsGS1}">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-                    <Button Content="Edit" Margin="0,0,2,0"
-                            Command="{Binding V275_SwitchEdit}">
-                        <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
-                                <Setter Property="IsEnabled" Value="False"/>
-                                <Setter Property="Visibility" Value="Collapsed"/>
-                                <Style.Triggers>
-                                    <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Control}">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                    </DataTrigger>
-                                    <DataTrigger Value="Running" Binding="{Binding V275_State}">
-                                        <Setter Property="IsEnabled" Value="True"/>
-                                    </DataTrigger>
-                                    <DataTrigger Value="Paused" Binding="{Binding V275_State}">
-                                        <Setter Property="IsEnabled" Value="True"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
+                                <!--Test Runs-->
+                                <local:RunView DataContext="{Binding ImageResults.RunViewModel}"/>
+                            </DockPanel>
 
-                    <Button Content="Remove"
-                            Command="{Binding V275_RemoveRepeat}">
-                        <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
-                                <Setter Property="IsEnabled" Value="False"/>
-                                <Setter Property="Visibility" Value="Collapsed"/>
-                                <Style.Triggers>
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Value="True" Binding="{Binding IsLoggedIn_Control}"/>
-                                            <Condition Value="Paused" Binding="{Binding V275_State}"/>
-                                        </MultiDataTrigger.Conditions>
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                        <Setter Property="IsEnabled" Value="True"/>
-                                    </MultiDataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-                </StackPanel>
-            </Border>
+                            <results:ImageResults DataContext="{Binding ImageResults}"/>
 
-            <Grid Grid.Row="1" Grid.ColumnSpan="3">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="auto"/>
-                </Grid.ColumnDefinitions>
-
-                <Border Grid.Column="0" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="2" Margin="5">
-                    <StackPanel Orientation="Horizontal" Margin="3">
-                        <Label Content="Printer"/>
-                        <ComboBox ItemsSource="{Binding Printers}" SelectedItem="{Binding SelectedPrinter}" IsEnabled="{Binding IsNotRunRunning}"/>
-                    </StackPanel>
-                </Border>
-
-                <!--Standards Database-->
-                <Border Grid.Column="1" BorderThickness="2" Margin="5" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
-                    <StackPanel Orientation="Horizontal" Margin="3">
-                        <Label Content="Standards"/>
-
-                        <Button Command="{Binding CreateStandardsDatabase}"
-                                ToolTip="Create a new standards database."
-                                Margin="0,0,2,0">
-                            <IconPacks:Material Kind="Plus"/>
-                        </Button>
-
-                        <Button Command="{Binding LockStandardsDatabase}" Margin="0,0,2,0">
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
-                                    <Setter Property="Content">
-                                        <Setter.Value>
-                                            <IconPacks:Material Kind="LockOpenVariant"/>
-                                        </Setter.Value>
-                                    </Setter>
-                                    <Setter Property="IsHitTestVisible" Value="True"/>
-                                    <Setter Property="ToolTip" Value="Database is unlocked. Click to unlock."/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsDatabaseLocked}" Value="True">
-                                            <Setter Property="Content">
-                                                <Setter.Value>
-                                                    <IconPacks:Material Kind="Lock"/>
-                                                </Setter.Value>
-                                            </Setter>
-                                            <Setter Property="ToolTip" Value="Database is locked. Click to unlock."/>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding IsDatabasePermLocked}" Value="True">
-                                            <Setter Property="Content">
-                                                <Setter.Value>
-                                                    <IconPacks:Material Kind="DatabaseLock"/>
-                                                </Setter.Value>
-                                            </Setter>
-                                            <Setter Property="ToolTip" Value="Database is premanently locked."/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
-
-                        <ComboBox ItemsSource="{Binding StandardsDatabases}" 
-                                  SelectedItem="{Binding SelectedStandardsDatabase}"
-                                  IsEnabled="{Binding IsNotRunRunning}"  Margin="0,0,2,0">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding FileName}"/>
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-
-                        <ComboBox ItemsSource="{Binding Standards}"
-                                  SelectedItem="{Binding SelectedStandard}"
-                                  IsEnabled="{Binding IsNotRunRunning}">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Name}">
-                                            <!--<TextBlock.Text>
-                                                <MultiBinding StringFormat="{}{0}   ({1})">
-                                                    <Binding Path="Name"/>
-                                                    <Binding Path="NumRows"/>
-                                                </MultiBinding>
-                                            </TextBlock.Text>-->
-                                    </TextBlock>
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-
-                    </StackPanel>
-                </Border>
-
-                <!--Test Runs-->
-                <Border Grid.Column="2" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="2" Margin="5">
-                    <StackPanel Orientation="Horizontal" Margin="3">
-
-                        <Label Content="Run Test"/>
-
-                        <mah:NumericUpDown Value="{Binding RunLoopCount}" Minimum="1" Maximum="9999" Interval="1"/>
-
-                        <Label/>
-
-                        <Button Content="Start" Margin="0,0,2,0"
-                            Command="{Binding StartRun}">
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
-                                    <Setter Property="IsEnabled" Value="True"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Value="False" Binding="{Binding IsLoggedIn_Control}">
-                                            <Setter Property="IsEnabled" Value="False"/>
-                                        </DataTrigger>
-                                        <DataTrigger Value="True" Binding="{Binding IsRunRunning}">
-                                            <Setter Property="IsEnabled" Value="False"/>
-                                        </DataTrigger>
-                                        <DataTrigger Value="" Binding="{Binding V275_State}">
-                                            <Setter Property="IsEnabled" Value="False"/>
-                                        </DataTrigger>
-                                        <DataTrigger Value="Idle" Binding="{Binding V275_State}">
-                                            <Setter Property="IsEnabled" Value="False"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
-
-                        <Button Margin="0,0,2,0"
-                            Command="{Binding PauseRun}">
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
-                                    <Setter Property="IsEnabled" Value="True"/>
-                                    <Setter Property="Content" Value="Pause"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Value="False" Binding="{Binding IsLoggedIn_Control}">
-                                            <Setter Property="IsEnabled" Value="False"/>
-                                        </DataTrigger>
-                                        <DataTrigger Value="False" Binding="{Binding IsRunRunning}">
-                                            <Setter Property="IsEnabled" Value="False"/>
-                                        </DataTrigger>
-                                        <DataTrigger Value="True" Binding="{Binding IsRunPaused}">
-                                            <Setter Property="Content" Value="Resume"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
-
-                        <Button Content="Stop"
-                            Command="{Binding StopRun}">
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
-                                    <Setter Property="IsEnabled" Value="True"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Value="False" Binding="{Binding IsLoggedIn_Control}">
-                                            <Setter Property="IsEnabled" Value="False"/>
-                                        </DataTrigger>
-                                        <DataTrigger Value="False" Binding="{Binding IsRunRunning}">
-                                            <Setter Property="IsEnabled" Value="False"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
-
-                        <mah:ProgressRing IsActive="{Binding IsRunRunning}" Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" Height="30" Width="30"/>
-
-                        <Button Content="View Test Results" Click="Button_Click"/>
-                    </StackPanel>
-                </Border>
-
-            </Grid>
-        </Grid>
-
-        <Grid Grid.Row="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-
-            <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="2" Margin="5,0,5,0" HorizontalAlignment="Left">
-
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="406"/>
-                        <ColumnDefinition Width="230"/>
-                        <ColumnDefinition Width="230"/>
-                        <ColumnDefinition Width="280"/>
-                        <ColumnDefinition Width="406"/>
-                    </Grid.ColumnDefinitions>
-
-                    <Label Grid.Column="0" Content="Label Image" HorizontalAlignment="Center"/>
-                    <Label Grid.Column="1" Content="Label Sectors" HorizontalAlignment="Center"/>
-                    <Label Grid.Column="2" Content="Repeat Sectors" HorizontalAlignment="Center"/>
-
-                    <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Label Content="Dissimilar Sector Results"/>
-                        <Button x:Name="btnCompareSettings" Click="btnShowSettings_Click" Margin="3"
-                                ToolTip="Compare Settings" Style="{StaticResource MahApps.Styles.Button.Circle}" BorderThickness="0">
-                            <IconPacks:Material Kind="Cog"/>
-                        </Button>
-                    </StackPanel>
-
-                    <Label Grid.Column="4" Content="Repeat Image" HorizontalAlignment="Center"/>
-                </Grid>
-            </Border>
-
-            <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto">
-                <ItemsControl ItemsSource="{Binding Labels}">
-                    <!--<ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel IsItemsHost="True"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>-->
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <local:LabelControlView />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </ScrollViewer>
-            
-        </Grid>
-        
-        <StatusBar VerticalAlignment="Bottom" Grid.Row="2">
-            <StatusBarItem>
-                <Label Margin="0,1,0,0" Padding="0,2,0,2" Background="Red" Foreground="White">
-                    <IconPacks:Material Kind="ExclamationThick" Width="12" Height="12"/>
-                    <Label.Style>
-                        <Style TargetType="{x:Type Label}">
-                            <Setter Property="Visibility" Value="Visible"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding UserMessage}" Value="">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Label.Style>
-                </Label>
-            </StatusBarItem>
-            <StatusBarItem>
-                <TextBlock Text="{Binding UserMessage}"/>
-            </StatusBarItem>
-            <StatusBarItem>
-                <Button Command="{Binding ClearUserMessage}">
-                    <IconPacks:Material Kind="Cancel"/>
-                    <Button.Style>
-                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Circle}">
-                            <Setter Property="Visibility" Value="Visible"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding UserMessage}" Value="">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
-            </StatusBarItem>
-        </StatusBar>
-    </Grid>
+                        </DockPanel>
+                    </DockPanel>
+                </md:DrawerHost>
+            </md:DrawerHost>
+        </md:DrawerHost>
+    </DockPanel>
 </mah:MetroWindow>
