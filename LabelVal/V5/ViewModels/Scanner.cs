@@ -8,11 +8,13 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using V275_REST_Lib.Models;
 using V5_REST_Lib.Cameras;
 using V5_REST_Lib.Models;
 
@@ -152,6 +154,56 @@ public partial class Scanner : ObservableObject
 
     private bool IsWaitingForFullImage;
 
+    [ObservableProperty] private List<JobSlots.Datum> jobs;
+    [ObservableProperty] private JobSlots.Datum selectedJob;
+
+    private bool userChange;
+    partial void OnSelectedJobChanged(JobSlots.Datum value)
+    {
+        if (value == null)
+        {
+            userChange = false;
+            return;
+        }
+
+        if (userChange)
+        {
+            userChange = false;
+            return;
+        }
+
+        App.Current.Dispatcher.BeginInvoke(() => ChangeJob(value));
+    }
+
+    [ObservableProperty] private string jobName = "";
+    partial void OnJobNameChanged(string value)
+    {
+        if (Jobs == null)
+        {
+            SelectedJob = null;
+            return;
+        }
+
+        var jb = Jobs.FirstOrDefault((e) => e.jobName == jobName);
+
+        if (jb != null)
+        {
+            if (SelectedJob != jb)
+            {
+                userChange = true;
+                SelectedJob = jb;
+
+            }
+        }
+    }
+
+
+    private async Task ChangeJob(JobSlots.Datum job)
+    {
+        _ = await ScannerController.Commands.PutJobSlots(job);
+        ScannerController_ConfigUpdate(null);
+    }
+
     public ScannerManager Manager { get; set; }
     public Scanner()
     {
@@ -179,8 +231,11 @@ public partial class Scanner : ObservableObject
         var res = await ScannerController.GetConfig();
         if (res.OK)
         {
-            var config = (JObject)res.Object;
-            IsSimulator = config["response"]?["data"]?["job"]?["channelMap"]?["acquisition"]?["AcquisitionChannel"]?["source"]?["FileAcquisitionSource"] != null;
+            var config = (Config)res.Object;
+            IsSimulator = config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource != null;
+
+            JobName = null;
+            JobName = config.response.data.job.name;
         }
     }
 
@@ -190,11 +245,7 @@ public partial class Scanner : ObservableObject
     //        stop = true;
     //}
 
-    private void ScannerController_ScannerModeChanged(V5_REST_Lib.Controller.ScannerModes mode)
-    {
-
-        ScannerMode = mode;
-    }
+    private void ScannerController_ScannerModeChanged(V5_REST_Lib.Controller.ScannerModes mode) => ScannerMode = mode;
     private void ScannerController_ResultUpdate(JObject json)
     {
         if (json != null)
@@ -302,7 +353,8 @@ public partial class Scanner : ObservableObject
         IsResultWSConnected = resultsWS;
         IsImageWSConnected = imageWS;
 
-        ScannerController_ConfigUpdate(null);
+        if (IsEventWSConnected && IsResultWSConnected && IsImageWSConnected)
+            PostLogin();
     }
 
     private void CheckOverlay()
@@ -516,18 +568,40 @@ public partial class Scanner : ObservableObject
     //}
 
     [RelayCommand]
-    private async Task WebsocketConnect()
+    private async Task Connect()
     {
         ScannerMode = V5_REST_Lib.Controller.ScannerModes.Offline;
 
         if (!ScannerController.IsConnected)
         {
+            if(!await PreLogin())
+                return;
+
             if (!await Task.Run(ScannerController.Connect))
                 await Task.Run(ScannerController.Disconnect);
         }
-
         else
             await Task.Run(ScannerController.Disconnect);
+    }
+
+    private async Task<bool> PreLogin()
+    {
+        var jobs = await ScannerController.Commands.GetJobSlots();
+        if (jobs.OK)
+        {
+            var job = (JobSlots)jobs.Object;
+            if (job != null)
+                Jobs = job.response.data;
+
+            return true;
+        }
+        else
+            return false;
+    }
+
+    private async void PostLogin()
+    {
+        ScannerController_ConfigUpdate(null);
     }
 
     private bool running;
@@ -635,6 +709,18 @@ public partial class Scanner : ObservableObject
             ExplicitMessages = res.Data;
         }
     }
+
+    [RelayCommand] private async Task SwitchRun()
+    {
+        _ = await ScannerController.Commands.ModeRun();
+        ScannerController_ConfigUpdate(null);
+    } 
+    [RelayCommand] private async Task SwitchEdit()
+    {
+        if(await ScannerController.Commands.ModeSetup())
+            _ = ScannerController.Commands.TriggerEnable();
+        ScannerController_ConfigUpdate(null);
+    } 
 
     [RelayCommand]
     private void Reboot()

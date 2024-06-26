@@ -155,7 +155,6 @@
                             </TextBox.Style>
                         </TextBox>
 
-
                         <ComboBox ItemsSource="{Binding Jobs.jobs}" SelectedValue="{Binding SelectedJob}" Margin="3,0" md:HintAssist.Hint="Template Name" md:HintAssist.IsFloating="True" HorizontalAlignment="Left">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>

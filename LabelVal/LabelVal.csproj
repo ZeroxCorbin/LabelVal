@@ -1372,4 +1372,9 @@
     <PackageReference Include="System.ServiceModel.Security" Version="6.0.0" />
     <PackageReference Include="System.ServiceModel.Federation" Version="8.0.0" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="Assets\Images\vhv5-settings.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

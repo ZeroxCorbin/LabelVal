@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Messages;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -63,12 +64,13 @@ public partial class ImageResultEntry
             return;
         }
 
-        var config = (JObject)res.Object;
+        var config = (V5_REST_Lib.Models.Config)res.Object;
 
 
         if (ImageResults.SelectedScanner.IsSimulator)
         {
-            var fas = config["response"]["data"]["job"]["channelMap"]["acquisition"]["AcquisitionChannel"]["source"]["FileAcquisitionSource"];
+            var fas = config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource;
+            //var fas = config["response"]["data"]["job"]["channelMap"]["acquisition"]["AcquisitionChannel"]["source"]["FileAcquisitionSource"];
             if (fas == null)
             {
                 SendErrorMessage("The scanner is not in file aquire mode.");
@@ -76,13 +78,13 @@ public partial class ImageResultEntry
             }
 
             //Rotate directory names to accomadate V5 
-            var isFirst = fas["directory"].ToString() != ImageResults.SelectedScanner.FTPClient.ImagePath1Root;
+            var isFirst = fas.directory != ImageResults.SelectedScanner.FTPClient.ImagePath1Root;
 
             var path = isFirst
                 ? ImageResults.SelectedScanner.FTPClient.ImagePath1
                 : ImageResults.SelectedScanner.FTPClient.ImagePath2;
 
-            fas["directory"] = isFirst
+            fas.directory = isFirst
                 ? ImageResults.SelectedScanner.FTPClient.ImagePath1Root
                 : ImageResults.SelectedScanner.FTPClient.ImagePath2Root;
 
@@ -106,7 +108,7 @@ public partial class ImageResultEntry
             ImageResults.SelectedScanner.FTPClient.Disconnect();
 
             //Attempt to update the directory in the FileAcquisitionSource
-            _ = await ImageResults.SelectedScanner.ScannerController.SendJob(config["response"]["data"]);
+            _ = await ImageResults.SelectedScanner.ScannerController.SendJob(config.response.data);
 
 
             _ = V5ProcessResults(await ImageResults.SelectedScanner.ScannerController.Trigger_Wait_Return(true));

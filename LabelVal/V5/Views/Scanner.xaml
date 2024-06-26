@@ -15,6 +15,7 @@
 
     <UserControl.Resources>
         <Converters:BytesToImageConverter x:Key="bytesToImage"/>
+        <Converters:ObjectIsNull x:Key="ObjectIsNull"/>
     </UserControl.Resources>
 
     <md:Card HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="6">
@@ -40,7 +41,7 @@
                     <md:Card DockPanel.Dock="Top" VerticalAlignment="Top" Padding="3" Margin="3" 
                              Background="{DynamicResource MahApps.Brushes.Accent4}">
                         
-                        <Button Command="{Binding WebsocketConnectCommand}" BorderThickness="0">
+                        <Button Command="{Binding ConnectCommand}" BorderThickness="0">
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
                                     <Setter Property="Content">
@@ -275,7 +276,7 @@
 
                         </DockPanel>
 
-                        <DockPanel Margin="1" HorizontalAlignment="Left" VerticalAlignment="Top">
+                        <DockPanel DockPanel.Dock="Top" Margin="1" HorizontalAlignment="Left" VerticalAlignment="Top">
 
                             <TextBox d:Text="State" Text="{Binding ScannerMode}" md:HintAssist.Hint="State" Margin="3,0" HorizontalContentAlignment="Center"
                                 md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left" 
@@ -296,66 +297,91 @@
                                 </TextBox.Style>
                             </TextBox>
 
-                            <DockPanel Margin="3,0">
+                            <ComboBox ItemsSource="{Binding Jobs}" SelectedValue="{Binding SelectedJob}" Margin="3,0" md:HintAssist.Hint="Template Name" md:HintAssist.IsFloating="True" HorizontalAlignment="Left">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding jobName}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                                <ComboBox.Style>
+                                    <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}">
+                                        <Setter Property="BorderBrush" Value="{DynamicResource ColorBlindBrush5}"/>
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Setter Property="IsHitTestVisible" Value="True"/>
+                                        <Style.Triggers>
 
-                                <Grid Margin="6,0,3,0">
-                                    <Ellipse Height="20" Width="20" Stroke="{DynamicResource MahApps.Brushes.Accent}" 
-                                 ToolTip="Event Web Socket State">
-                                        <Ellipse.Style>
-                                            <Style TargetType="{x:Type Ellipse}">
-                                                <Setter Property="Fill" Value="Gray"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsEventWSConnected}" Value="True">
-                                                        <Setter Property="Fill" Value="Green"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Ellipse.Style>
-                                    </Ellipse>
-                                    <TextBlock Text="E" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Event Web Socket State"/>
-                                </Grid>
+                                            <DataTrigger Value="False" Binding="{Binding IsWrongTemplateName}">
+                                                <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}"/>
+                                            </DataTrigger>
 
-                                <Grid Margin="3,0">
-                                    <Ellipse Height="20" Width="20" Stroke="{DynamicResource MahApps.Brushes.Accent}"
-                                 ToolTip="Result Web Socket State">
-                                        <Ellipse.Style>
-                                            <Style TargetType="{x:Type Ellipse}">
-                                                <Setter Property="Fill" Value="Gray"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsResultWSConnected}" Value="True">
-                                                        <Setter Property="Fill" Value="Green"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Ellipse.Style>
-                                    </Ellipse>
-                                    <TextBlock Text="R" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Result Web Socket State"/>
-                                </Grid>
+                                            <DataTrigger Value="False" Binding="{Binding Jobs, Converter={StaticResource ObjectIsNull}}">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
 
-                                <Grid Margin="3,0">
-                                    <Ellipse Height="20" Width="20" Stroke="{DynamicResource MahApps.Brushes.Accent}"
-                                 ToolTip="Image Web Socket State">
-                                        <Ellipse.Style>
-                                            <Style TargetType="{x:Type Ellipse}">
-                                                <Setter Property="Fill" Value="Gray"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsImageWSConnected}" Value="True">
-                                                        <Setter Property="Fill" Value="Green"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Ellipse.Style>
-                                    </Ellipse>
-                                    <TextBlock Text="I" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Image Web Socket State"/>
-                                </Grid>
-
-                                <!--<TextBlock Text="{Binding ScannerMode}" Margin="3,0" HorizontalAlignment="Left" VerticalAlignment="Center"/>-->
-
-                            </DockPanel>
+                                            <DataTrigger Value="Run" Binding="{Binding ScannerMode}">
+                                                <Setter Property="IsHitTestVisible" Value="False"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ComboBox.Style>
+                            </ComboBox>
 
                         </DockPanel>
 
+                        <DockPanel>
+
+                            <Button HorizontalAlignment="Left" VerticalAlignment="Top" Margin="3,0" BorderThickness="0" Width="38">
+
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
+                                        <Setter Property="Visibility" Value="Hidden"/>
+                                        <Style.Triggers>
+                                            
+                                            <DataTrigger Value="Offline" Binding="{Binding ScannerMode}">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                                <Setter Property="Content">
+                                                    <Setter.Value>
+                                                        <iconPacks:PackIconMaterial Kind="SettingsHelper"/>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Setter Property="Command" Value="{Binding SwitchEditCommand}"/>
+                                                <Setter Property="ToolTip" Value="Setup"/>
+                                            </DataTrigger>
+                                            
+                                            <DataTrigger Value="Setup" Binding="{Binding ScannerMode}">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                                <Setter Property="Content">
+                                                    <Setter.Value>
+                                                        <iconPacks:PackIconMaterial Kind="Play"/>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Setter Property="Command" Value="{Binding SwitchRunCommand}"/>
+                                                <Setter Property="ToolTip" Value="Run"/>
+                                            </DataTrigger>
+
+                                            <DataTrigger Value="Run" Binding="{Binding ScannerMode}">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                                <Setter Property="Content">
+                                                    <Setter.Value>
+                                                        <iconPacks:PackIconMaterial Kind="SettingsHelper"/>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Setter Property="Command" Value="{Binding SwitchEditCommand}"/>
+                                                <Setter Property="ToolTip" Value="Edit"/>
+                                            </DataTrigger>
+
+                                            <DataTrigger Value="False" Binding="{Binding IsConnected}">
+                                                <Setter Property="Visibility" Value="Hidden"/>
+                                            </DataTrigger>
+
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+
+                        </DockPanel>
                     </DockPanel>
+                    
                 </md:DrawerHost>
 
                 <DockPanel>
@@ -368,7 +394,7 @@
                                 
                                 <TextBlock Text="Control" MinWidth="48" VerticalAlignment="Center"/>
 
-                                <DockPanel DockPanel.Dock="Top">
+                                <DockPanel >
                                     <DockPanel.Style>
                                         <Style TargetType="DockPanel">
                                             <Setter Property="Visibility" Value="Collapsed"/>
@@ -422,6 +448,72 @@
                                     </md:Card>
                                 </DockPanel>
 
+                                <DockPanel DockPanel.Dock="Left" Margin="3" VerticalAlignment="Center">
+                                    <DockPanel.Style>
+                                        <Style TargetType="DockPanel">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Path=IsExpanded, RelativeSource={RelativeSource AncestorType=Expander}}" Value="True">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </DockPanel.Style>
+                                    
+                                    <Grid Margin="6,0,3,0">
+                                        <Ellipse Height="20" Width="20" Stroke="{DynamicResource MahApps.Brushes.Accent}" 
+                                 ToolTip="Event Web Socket State">
+                                            <Ellipse.Style>
+                                                <Style TargetType="{x:Type Ellipse}">
+                                                    <Setter Property="Fill" Value="Gray"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsEventWSConnected}" Value="True">
+                                                            <Setter Property="Fill" Value="Green"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Ellipse.Style>
+                                        </Ellipse>
+                                        <TextBlock Text="E" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Event Web Socket State"/>
+                                    </Grid>
+
+                                    <Grid Margin="3,0">
+                                        <Ellipse Height="20" Width="20" Stroke="{DynamicResource MahApps.Brushes.Accent}"
+                                 ToolTip="Result Web Socket State">
+                                            <Ellipse.Style>
+                                                <Style TargetType="{x:Type Ellipse}">
+                                                    <Setter Property="Fill" Value="Gray"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsResultWSConnected}" Value="True">
+                                                            <Setter Property="Fill" Value="Green"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Ellipse.Style>
+                                        </Ellipse>
+                                        <TextBlock Text="R" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Result Web Socket State"/>
+                                    </Grid>
+
+                                    <Grid Margin="3,0" HorizontalAlignment="Left">
+                                        <Ellipse Height="20" Width="20" Stroke="{DynamicResource MahApps.Brushes.Accent}"
+                                        ToolTip="Image Web Socket State">
+                                            <Ellipse.Style>
+                                                <Style TargetType="{x:Type Ellipse}">
+                                                    <Setter Property="Fill" Value="Gray"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsImageWSConnected}" Value="True">
+                                                            <Setter Property="Fill" Value="Green"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Ellipse.Style>
+                                        </Ellipse>
+                                        <TextBlock Text="I" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Image Web Socket State"/>
+                                    </Grid>
+
+                                    <!--<TextBlock Text="{Binding ScannerMode}" Margin="3,0" HorizontalAlignment="Left" VerticalAlignment="Center"/>-->
+
+                                </DockPanel>
                             </DockPanel>
                         </Expander.Header>
 
