@@ -169,53 +169,99 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
             return;
         }
 
-        if (!PreLogin()) return;
+        if (!PreLogin())
+            return;
 
         if (await Connection.Commands.Login(UserName, Password, LoginMonitor))
         {
-            _ = PostLogin(LoginMonitor);
+            PostLogin(LoginMonitor);
         }
         else
         {
-            //Label_StatusChanged(V275.Status);
+            IsLoggedIn_Control = false;
             IsLoggedIn_Monitor = false;
         }
     }
+    private bool PreLogin()
+    {
+        if (IsSimulator)
+        {
+            if (Directory.Exists(SimulatorImageDirectory))
+            {
+                try
+                {
+                    File.Create(Path.Combine(SimulatorImageDirectory, "file")).Close();
+                    File.Delete(Path.Combine(SimulatorImageDirectory, "file"));
+                }
+                catch (Exception ex)
+                {
+                    //Label_StatusChanged(ex.Message);
 
-    //[RelayCommand]
-    //private async Task LoginMonitor()
-    //{
-    //    //Reset();
+                    Logger.Error(ex);
+                    return false;
+                }
+                return true;
+            }
+            else
+            {
+                // _ = OkDialog("Invalid Simulation Images Directory", $"Please select a valid simulator images directory.\r\n'{SimulatorImageDirectory}'");
+                return false;
+            }
+        }
+        return true;
+    }
+    private async void PostLogin(bool isLoggedIn_Monitor)
+    {
+        // Set the login data based on whether the login is for monitoring or control
+        LoginData.accessLevel = isLoggedIn_Monitor ? "monitor" : "control";
+        LoginData.token = Connection.Commands.Token; // Store the authentication token
+        LoginData.id = UserName; // Store the user's ID
+        LoginData.state = "0"; // Set the login state to '0' indicating a successful login
 
-    //    if (!PreLogin()) return;
+        // Update the login status properties based on the login type
+        IsLoggedIn_Monitor = isLoggedIn_Monitor;
+        IsLoggedIn_Control = !isLoggedIn_Monitor;
 
-    //    if (await Connection.Commands.Login(UserName, Password, true))
-    //    {
-    //        _ = PostLogin(true);
-    //    }
-    //    else
-    //    {
-    //        //Label_StatusChanged(V275.Status);
-    //        IsLoggedIn_Monitor = false;
-    //    }
-    //}
-    //[RelayCommand]
-    //private async Task LoginControl()
-    //{
-    //    //Reset();
+        // Fetch and store the camera configuration, symbologies, and calibration data from the server
+        ConfigurationCamera = await Connection.Commands.GetCameraConfig();
+        Symbologies = await Connection.Commands.GetSymbologies();
+        Calibration = await Connection.Commands.GetCalibration();
+        Jobs = await Connection.Commands.GetJobs();
+        Print = await Connection.Commands.GetPrint();
 
-    //    if (!PreLogin()) return;
+        //If the system is in simulator mode, adjust the simulation settings
+        if (IsSimulator && Connection.Commands.Host != "127.0.0.1")
+        {
+            Simulation = await Connection.Commands.GetSimulation();
 
-    //    if (await Connection.Commands.Login(UserName, Password, false))
-    //    {
-    //        _ = PostLogin(false);
-    //    }
-    //    else
-    //    {
-    //        //Label_StatusChanged(V275.Status);
-    //        IsLoggedIn_Control = false;
-    //    }
-    //}
+            // If the current simulation mode is 'continuous', change it to 'trigger' with a dwell time of 1ms
+            if (Simulation != null && Simulation.mode == "continuous")
+            {
+                Simulation.mode = "trigger";
+                Simulation.dwellMs = 1;
+                _ = await Connection.Commands.PutSimulation(Simulation);
+            }
+
+            // Fetch the simulation settings again to ensure they have been updated correctly
+            Simulation = await Connection.Commands.GetSimulation();
+            if (Simulation != null && Simulation.mode != "trigger")
+            {
+                // If the mode is not 'trigger', additional handling could be implemented here
+            }
+        }
+        else if (IsSimulator)
+            Simulation = await Connection.Commands.GetSimulation();
+        else
+            Simulation = null;
+
+        // Request the server to send extended data
+        _ = await Connection.Commands.SetSendExtendedData(true);
+
+        // Attempt to start the WebSocket connection for receiving node events
+        if (!await Connection.WebSocket.StartAsync(Connection.Commands.URLs.WS_NodeEvents))
+            return; // If the WebSocket connection cannot be started, exit the method
+    }
+
     [RelayCommand]
     private async Task Logout()
     {
@@ -249,37 +295,6 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
         State = NodeStates.Offline;
 
     }
-
-
-    private bool PreLogin()
-    {
-        if (IsSimulator)
-        {
-            if (Directory.Exists(SimulatorImageDirectory))
-            {
-                try
-                {
-                    File.Create(Path.Combine(SimulatorImageDirectory, "file")).Close();
-                    File.Delete(Path.Combine(SimulatorImageDirectory, "file"));
-                }
-                catch (Exception ex)
-                {
-                    //Label_StatusChanged(ex.Message);
-
-                    Logger.Error(ex);
-                    return false;
-                }
-                return true;
-            }
-            else
-            {
-                // _ = OkDialog("Invalid Simulation Images Directory", $"Please select a valid simulator images directory.\r\n'{SimulatorImageDirectory}'");
-                return false;
-            }
-        }
-        return true;
-    }
-    
     private async void PreLogout()
     {
         //If the system is in simulator mode, adjust the simulation settings
@@ -302,65 +317,11 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
                 // If the mode is not 'continuous', additional handling could be implemented here
             }
         }
+
+        _ = await Connection.Commands.SetSendExtendedData(false);
     }
-    
-    /// <summary>
-    /// This method is responsible for handling the post-login process,
-    /// including setting login states, fetching configuration data,
-    /// adjusting simulation settings if in simulator mode,
-    /// and establishing a WebSocket connection for receiving node events.
-    /// </summary>
-    /// <param name="isLoggedIn_Monitor"></param>
-    /// <returns></returns>
-    private async Task PostLogin(bool isLoggedIn_Monitor)
-    {
-        // Set the login data based on whether the login is for monitoring or control
-        LoginData.accessLevel = isLoggedIn_Monitor ? "monitor" : "control";
-        LoginData.token = Connection.Commands.Token; // Store the authentication token
-        LoginData.id = UserName; // Store the user's ID
-        LoginData.state = "0"; // Set the login state to '0' indicating a successful login
 
-        // Update the login status properties based on the login type
-        IsLoggedIn_Monitor = isLoggedIn_Monitor;
-        IsLoggedIn_Control = !isLoggedIn_Monitor;
 
-        // Fetch and store the camera configuration, symbologies, and calibration data from the server
-        ConfigurationCamera = await Connection.Commands.GetCameraConfig();
-        Symbologies = await Connection.Commands.GetSymbologies();
-        Calibration = await Connection.Commands.GetCalibration();
-        Jobs = await Connection.Commands.GetJobs();
-        Print = await Connection.Commands.GetPrint();
-
-        //If the system is in simulator mode, adjust the simulation settings
-        //if (IsSimulator)
-        //{
-        //    Simulation = await Connection.Commands.GetSimulation();
-
-        //    // If the current simulation mode is 'continuous', change it to 'trigger' with a dwell time of 1ms
-        //    if (Simulation != null && Simulation.mode == "continuous")
-        //    {
-        //        Simulation.mode = "trigger";
-        //        Simulation.dwellMs = 1;
-        //        _ = await Connection.Commands.PutSimulation(Simulation);
-        //    }
-
-        //    // Fetch the simulation settings again to ensure they have been updated correctly
-        //    Simulation = await Connection.Commands.GetSimulation();
-        //    if (Simulation != null && Simulation.mode != "trigger")
-        //    {
-        //        // If the mode is not 'trigger', additional handling could be implemented here
-        //    }
-        //}
-        //else
-        //    Simulation = null;
-
-        // Request the server to send extended data
-        _ = await Connection.Commands.SetSendExtendedData(true);
-
-        // Attempt to start the WebSocket connection for receiving node events
-        if (!await Connection.WebSocket.StartAsync(Connection.Commands.URLs.WS_NodeEvents))
-            return; // If the WebSocket connection cannot be started, exit the method
-    }
 
 
     [RelayCommand]

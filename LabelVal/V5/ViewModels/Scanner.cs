@@ -156,8 +156,6 @@ public partial class Scanner : ObservableObject
 
     [ObservableProperty] private List<JobSlots.Datum> jobs;
     [ObservableProperty] private JobSlots.Datum selectedJob;
-
-    private bool userChange;
     partial void OnSelectedJobChanged(JobSlots.Datum value)
     {
         if (value == null)
@@ -175,6 +173,7 @@ public partial class Scanner : ObservableObject
         App.Current.Dispatcher.BeginInvoke(() => ChangeJob(value));
     }
 
+    private bool userChange;
     [ObservableProperty] private string jobName = "";
     partial void OnJobNameChanged(string value)
     {
@@ -198,10 +197,18 @@ public partial class Scanner : ObservableObject
     }
 
 
-    private async Task ChangeJob(JobSlots.Datum job)
+    [ObservableProperty] private List<string> directories;
+    [ObservableProperty] private string selectedDirectory;
+    partial void OnSelectedDirectoryChanged(string value)
     {
-        _ = await ScannerController.Commands.PutJobSlots(job);
-        ScannerController_ConfigUpdate(null);
+
+    }
+
+    public List<string> AcquisitionTypes => ["File", "Camera"];
+    [ObservableProperty] private string selectedAcquisitionType;
+    partial void OnSelectedAcquisitionTypeChanged(string value)
+    {
+
     }
 
     public ScannerManager Manager { get; set; }
@@ -233,6 +240,23 @@ public partial class Scanner : ObservableObject
         {
             var config = (Config)res.Object;
             IsSimulator = config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource != null;
+
+            if (IsSimulator)
+            {
+                SelectedAcquisitionType = "File";
+
+                var meta = await ScannerController.Commands.GetMeta();
+                if (meta.OK)
+                {
+                    var metaConfig = (Meta)meta.Object;
+
+                    Directories = [.. metaConfig.response.data.FileAcquisitionSource.directory.sources];
+                }
+            }
+            else
+            {
+               SelectedAcquisitionType = "Camera";
+            }
 
             JobName = null;
             JobName = config.response.data.job.name;
@@ -544,6 +568,12 @@ public partial class Scanner : ObservableObject
             null, null, null, null, null, null);
     }
 
+    private async Task ChangeJob(JobSlots.Datum job)
+    {
+        _ = await ScannerController.Commands.PutJobSlots(job);
+        ScannerController_ConfigUpdate(null);
+    }
+
     //private void UpdateQuickSetRegions()
     //{
     //    var photo = new V5_REST_Lib.Models.QuickSet_Photometry();
@@ -577,11 +607,15 @@ public partial class Scanner : ObservableObject
             if(!await PreLogin())
                 return;
 
-            if (!await Task.Run(ScannerController.Connect))
-                await Task.Run(ScannerController.Disconnect);
+            if (await Task.Run(ScannerController.Connect))
+                return;
+
+            await Task.Run(ScannerController.Disconnect);
         }
         else
             await Task.Run(ScannerController.Disconnect);
+
+        PostLogout();
     }
 
     private async Task<bool> PreLogin()
@@ -599,9 +633,15 @@ public partial class Scanner : ObservableObject
             return false;
     }
 
-    private async void PostLogin()
+    private void PostLogin()
     {
         ScannerController_ConfigUpdate(null);
+    }
+
+    private void PostLogout()
+    {
+        Jobs = null;
+        IsSimulator = false;
     }
 
     private bool running;

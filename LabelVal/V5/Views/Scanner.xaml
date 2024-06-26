@@ -237,23 +237,12 @@
 
                     <DockPanel>
 
-                        <DockPanel DockPanel.Dock="Top" Margin="1">
+                        <DockPanel DockPanel.Dock="Top" Margin="0">
 
-                            <TextBox d:Text="camera" md:HintAssist.Hint="Type" MinWidth="56" Margin="3,0" HorizontalContentAlignment="Left"
-                                md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left" BorderThickness="0"
-                                IsHitTestVisible="False">
-                                <TextBox.Style>
-                                    <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                                        <Setter Property="Text" Value="Camera"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsSimulator}" Value="True">
-                                                <Setter Property="Text" Value="Simulator"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBox.Style>
-                            </TextBox>
-
+                            <ComboBox Style="{StaticResource MaterialDesignFloatingHintComboBox}" ItemsSource="{Binding AcquisitionTypes}" SelectedValue="{Binding SelectedAcquisitionType}"
+                                      d:Text="Sensor" md:HintAssist.Hint="Acquire" MinWidth="56" Margin="3,0" HorizontalContentAlignment="Left"
+                                       md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
+                            
                             <TextBox d:Text="model" md:HintAssist.Hint="Model" MinWidth="86" Margin="3,0" HorizontalContentAlignment="Left"
                                     md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left" BorderThickness="0"
                                     IsHitTestVisible="False">
@@ -271,14 +260,30 @@
                                 </TextBox.Style>
                             </TextBox>
 
-                            <!--<TextBox d:Text="00:00:00:00:00" Text="{Binding Path=Details.cameraMAC, Mode=OneTime}" Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                         Margin="3" md:HintAssist.Hint="MAC" md:HintAssist.IsFloating="True" IsHitTestVisible="False" BorderThickness="0" />-->
-
                         </DockPanel>
 
+                        <ComboBox DockPanel.Dock="Top" ItemsSource="{Binding Directories}" SelectedValue="{Binding SelectedDirectory}" 
+                                      Margin="3,0" md:HintAssist.Hint="Directory" md:HintAssist.IsFloating="True" HorizontalAlignment="Left" BorderThickness="0">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding }"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                            <ComboBox.Style>
+                                <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsSimulator}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ComboBox.Style>
+                        </ComboBox>
+                        
                         <DockPanel DockPanel.Dock="Top" Margin="1" HorizontalAlignment="Left" VerticalAlignment="Top">
 
-                            <TextBox d:Text="State" Text="{Binding ScannerMode}" md:HintAssist.Hint="State" Margin="3,0" HorizontalContentAlignment="Center"
+                            <TextBox d:Text="Mode" Text="{Binding ScannerMode}" md:HintAssist.Hint="Mode" Margin="3,0" HorizontalContentAlignment="Center"
                                 md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left" 
                                 IsHitTestVisible="False">
                                 <TextBox.Style>
@@ -297,7 +302,8 @@
                                 </TextBox.Style>
                             </TextBox>
 
-                            <ComboBox ItemsSource="{Binding Jobs}" SelectedValue="{Binding SelectedJob}" Margin="3,0" md:HintAssist.Hint="Template Name" md:HintAssist.IsFloating="True" HorizontalAlignment="Left">
+                            <ComboBox ItemsSource="{Binding Jobs}" SelectedValue="{Binding SelectedJob}" Margin="3,0"
+                                      md:HintAssist.Hint="Job Name" md:HintAssist.IsFloating="True" HorizontalAlignment="Left">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding jobName}"/>
@@ -334,7 +340,7 @@
 
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
-                                        <Setter Property="Visibility" Value="Hidden"/>
+                                        <Setter Property="Visibility" Value="Collapsed"/>
                                         <Style.Triggers>
                                             
                                             <DataTrigger Value="Offline" Binding="{Binding ScannerMode}">
@@ -371,7 +377,7 @@
                                             </DataTrigger>
 
                                             <DataTrigger Value="False" Binding="{Binding IsConnected}">
-                                                <Setter Property="Visibility" Value="Hidden"/>
+                                                <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
 
                                         </Style.Triggers>
