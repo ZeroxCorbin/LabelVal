@@ -1,9 +1,8 @@
-﻿using LabelVal.Results.Views;
-using MahApps.Metro.Controls.Dialogs;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media.Imaging;
+using System.Windows.Data;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace LabelVal.Sectors.Views;
 
@@ -12,9 +11,16 @@ namespace LabelVal.Sectors.Views;
 /// </summary>
 public partial class Sector : UserControl
 {
-    public Sector() => InitializeComponent();
-    private void Button_Click(object sender, RoutedEventArgs e) => popSymbolDetails.IsOpen = true;
-    private void btnGS1DecodeText_Click(object sender, RoutedEventArgs e) => popGS1DecodeText.IsOpen = true;
+    public Sector()
+    {
+        InitializeComponent();
+    }
+
+    private void btnGS1DecodeText_Click(object sender, RoutedEventArgs e)
+    {
+        popGS1DecodeText.IsOpen = true;
+    }
+
     private void Show95xxCompare_Click(object sender, RoutedEventArgs e)
     {
         //LVS_95xx.LVS95xx_SerialPortView sp = new LVS_95xx.LVS95xx_SerialPortView(this.DataContext);
@@ -32,64 +38,83 @@ public partial class Sector : UserControl
         //L95xxComparePopup.IsOpen = true;
     }
 
-    private void btnSaveImage_Click(object sender, RoutedEventArgs e)
-    {
-        var card = SectorDetails;
 
-        if (card != null)
+
+    private void btnOverallGrade_Click(object sender, RoutedEventArgs e)
+    {
+        Results.ViewModels.ImageResultEntry vm = null;
+        string str = string.Empty;
+        var list = Utilities.VisualTreeHelp.GetVisualParent<ListView>(this);
+        if (list != null)
         {
-            string path;
-            if ((path = Utilities.FileUtilities.SaveFileDialog("plot", "PNG|*.png", "Save sector details.")) != "")
+            str = list.Tag.ToString();
+            vm = (Results.ViewModels.ImageResultEntry)list.DataContext;
+        }
+        else
+        {
+            var itmc = Utilities.VisualTreeHelp.GetVisualParent<ItemsControl>(this);
+            if (itmc != null)
             {
-                try
-                {
-                    SaveToPng(card, path);
-                }
-                catch { }
+                str = itmc.Tag.ToString();
+                vm = (Results.ViewModels.ImageResultEntry)itmc.DataContext;
             }
         }
-    }
 
-    public void SaveToPng(FrameworkElement visual, string fileName)
-    {
-        var encoder = new PngBitmapEncoder();
-        EncodeVisual(visual, encoder);
+        if (vm == null)
+            return;
 
-        using var stream = System.IO.File.Create(fileName);
-        encoder.Save(stream);
-    }
-    private static void EncodeVisual(FrameworkElement visual, BitmapEncoder encoder)
-    {
-        var bitmap = new RenderTargetBitmap((int)visual.ActualWidth, (int)visual.ActualHeight, 96, 96, PixelFormats.Pbgra32);
-        bitmap.Render(visual);
-        var frame = BitmapFrame.Create(bitmap);
-        encoder.Frames.Add(frame);
-    }
-
-    public void CopyToClipboard(FrameworkElement visual)
-    {
-        var encoder = new PngBitmapEncoder();
-        EncodeVisual(visual, encoder);
-
-        using (var stream = new System.IO.MemoryStream())
+        switch (str)
         {
-            encoder.Save(stream);
-            stream.Seek(0, System.IO.SeekOrigin.Begin);
-            var bitmapImage = new BitmapImage();
-            bitmapImage.BeginInit();
-            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-            bitmapImage.StreamSource = stream;
-            bitmapImage.EndInit();
-            Clipboard.SetImage(bitmapImage);
+            case "v275Stored":
+                vm.V275FocusedStoredSector = (ViewModels.Sector)this.DataContext;
+                break;
+            case "v275Current":
+                vm.V275FocusedCurrentSector = (ViewModels.Sector)this.DataContext;
+                break;
+            case "v5Stored":
+                vm.V5FocusedStoredSector = (ViewModels.Sector)this.DataContext;
+                break;
+            case "v5Current":
+                vm.V5FocusedCurrentSector = (ViewModels.Sector)this.DataContext;
+                break;
+            case "l95xxStored":
+                vm.L95xxFocusedStoredSector = (ViewModels.Sector)this.DataContext;
+                break;
+            case "l95xxCurrent":
+                vm.L95xxFocusedCurrentSector = (ViewModels.Sector)this.DataContext;
+                break;
         }
+
+        //popSymbolDetails.HorizontalOffset = 0;
+        //popSymbolDetails.VerticalOffset = 0;
+        //popSymbolDetails.PlacementTarget = null;
+        ////popSymbolDetails.Placement = System.Windows.Controls.Primitives.PlacementMode.Center;
+        //popSymbolDetails.IsOpen = true;
     }
 
-    private void btnCopyImage_Click(object sender, RoutedEventArgs e)
+    private void UserControl_Loaded(object sender, RoutedEventArgs e)
     {
-        var ic = SectorDetails; // Assuming ItemsControl is the visual element you want to copy
+        btnOverallGrade.LayoutUpdated += BtnOverallGrade_LayoutUpdated;
+    }
 
-        if (ic != null)
-            CopyToClipboard(ic);
+    private void BtnOverallGrade_LayoutUpdated(object sender, System.EventArgs e)
+    {
+        if (!popSymbolDetails.IsOpen)
+            return;
 
+        // Calculate the button's position relative to the window
+        var transform = btnOverallGrade.TransformToAncestor(this);
+        Point relativePosition = transform.Transform(new Point(0, 0));
+
+        // Convert the position to screen coordinates
+        Point screenPosition = this.PointToScreen(relativePosition);
+
+        // Assuming yourPopup is the popup you want to move
+        // Adjust the popup's position based on the button's screen position
+        //popSymbolDetails.HorizontalOffset = popSymbolDetails.HorizontalOffset + 1;
+        //popSymbolDetails.HorizontalOffset = popSymbolDetails.HorizontalOffset - 1;
+
+        popSymbolDetails.HorizontalOffset = screenPosition.X;
+        popSymbolDetails.VerticalOffset = screenPosition.Y;
     }
 }

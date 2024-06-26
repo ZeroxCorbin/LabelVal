@@ -21,7 +21,7 @@
         <Converters:ShortenUIDConverter x:Key="shortenUID"/>
         <Converters:StringToUpperSpacedConverter x:Key="stringToUpper"/>
         <Converters:FloatStringTrimConverter x:Key="floatTrim"/>
-        
+
         <Converters:ObjectIsNull x:Key="objectIsNull"/>
         <Converters:EqualZeroOrNull x:Key="equalZeroOrNull"/>
 
@@ -155,13 +155,66 @@
                         </Style>
                     </ScrollViewer.Style>
 
-                    <ItemsControl Padding="0,2,0,0" ItemsSource="{Binding Source={StaticResource ResourceKey=cvsV5StoredSectors}}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="2,1"/>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                    <DockPanel>
+
+                        <GroupBox Margin="3" Padding="3"
+                            md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                            md:ColorZoneAssist.Mode="Custom">
+                            <GroupBox.Style>
+                                <Style TargetType="GroupBox" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding V5FocusedStoredSector, Converter={StaticResource objectIsNull}}" Value="True">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </GroupBox.Style>
+
+                            <GroupBox.Header>
+                                <DockPanel Margin="-5">
+                                    <Button Margin="6,0,3,0" Click="btnSaveImage_Click" Style="{StaticResource GroupHeaderCirlceButton}"
+                                        ToolTip="Save as image.">
+                                        <iconPacks:PackIconMaterial Kind="ContentSave" Height="14" Width="14"/>
+                                    </Button>
+
+                                    <Button Click="btnCopyImage_Click" Style="{StaticResource GroupHeaderCirlceButton}"
+                                        ToolTip="Copy image to clipboard as PNG.">
+                                        <iconPacks:PackIconMaterial Kind="ContentCopy" Height="14" Width="14"/>
+                                    </Button>
+
+                                    <Button Click="btnCloseDetails_Click" Style="{StaticResource GroupHeaderCirlceButton}"
+                                        ToolTip="Close this." HorizontalAlignment="Right" Tag="v5Stored">
+                                        <iconPacks:PackIconMaterial Kind="Close" Height="14" Width="14"/>
+                                    </Button>
+                                </DockPanel>
+                            </GroupBox.Header>
+
+                            <sectors:SectorDetails DataContext="{Binding V5FocusedStoredSector}"/>
+
+                        </GroupBox>
+
+                        <ItemsControl Padding="0,2,0,0" ItemsSource="{Binding Source={StaticResource ResourceKey=cvsV5StoredSectors}}"
+                                      Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                                      Tag="v5Stored">
+                            <ItemsControl.Style>
+                                <Style TargetType="ItemsControl">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding V5FocusedStoredSector, Converter={StaticResource objectIsNull}}" Value="False">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ItemsControl.Style>
+
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="2,1"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </DockPanel>
                 </ScrollViewer>
 
             </GroupBox>
@@ -308,13 +361,66 @@
                         </Style>
                     </ScrollViewer.Style>
 
-                    <ItemsControl Padding="0,2,0,0" ItemsSource="{Binding Source={StaticResource ResourceKey=cvsV5CurrentSectors}}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="2,1" />
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                    <DockPanel>
+
+                        <GroupBox Margin="3" Padding="3"
+                            md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                            md:ColorZoneAssist.Mode="Custom">
+                            <GroupBox.Style>
+                                <Style TargetType="GroupBox" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding V5FocusedCurrentSector, Converter={StaticResource objectIsNull}}" Value="True">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </GroupBox.Style>
+
+                            <GroupBox.Header>
+                                <DockPanel Margin="-5">
+                                    <Button Margin="6,0,3,0" Click="btnSaveImage_Click" Style="{StaticResource GroupHeaderCirlceButton}"
+                                        ToolTip="Save as image.">
+                                        <iconPacks:PackIconMaterial Kind="ContentSave" Height="14" Width="14"/>
+                                    </Button>
+
+                                    <Button Click="btnCopyImage_Click" Style="{StaticResource GroupHeaderCirlceButton}"
+                                        ToolTip="Copy image to clipboard as PNG.">
+                                        <iconPacks:PackIconMaterial Kind="ContentCopy" Height="14" Width="14"/>
+                                    </Button>
+
+                                    <Button Click="btnCloseDetails_Click" Style="{StaticResource GroupHeaderCirlceButton}"
+                                        ToolTip="Close this." HorizontalAlignment="Right" Tag="v5Current">
+                                        <iconPacks:PackIconMaterial Kind="Close" Height="14" Width="14"/>
+                                    </Button>
+                                </DockPanel>
+                            </GroupBox.Header>
+
+                            <sectors:SectorDetails DataContext="{Binding V5FocusedCurrentSector}"/>
+
+                        </GroupBox>
+
+                        <ItemsControl Padding="0,2,0,0" ItemsSource="{Binding Source={StaticResource ResourceKey=cvsV5CurrentSectors}}"
+                                      Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                                      Tag="v5Current">
+                            <ItemsControl.Style>
+                                <Style TargetType="ItemsControl">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding V5FocusedCurrentSector, Converter={StaticResource objectIsNull}}" Value="False">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ItemsControl.Style>
+                            
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="2,1" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </DockPanel>
                 </ScrollViewer>
             </GroupBox>
 
@@ -338,7 +444,7 @@
                     <DockPanel Margin="-5">
 
                         <md:Card Background="{DynamicResource OrangeBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
-                            <TextBlock Text="Dissimilar Results" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                            <TextBlock Foreground="White" Text="Dissimilar Results" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                         </md:Card>
 
                     </DockPanel>

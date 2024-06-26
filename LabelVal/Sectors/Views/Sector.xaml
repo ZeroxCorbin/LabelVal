@@ -12,7 +12,7 @@
             xmlns:Converters="clr-namespace:LabelVal.Converters"
              xmlns:V275Converters="clr-namespace:LabelVal.V275.Converters"
             d:DataContext="{d:DesignInstance Type=ViewModels:Sector}"
-            mc:Ignorable="d">
+            mc:Ignorable="d" Loaded="UserControl_Loaded">
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="booltovis"/>
@@ -229,7 +229,7 @@
                 </Button>
 
                 <!--Overall Grade-->
-                <Button Margin="3" Click="Button_Click" Width="30" Height="30" BorderThickness="3" VerticalAlignment="Top">
+                <Button x:Name="btnOverallGrade" Margin="3" Click="btnOverallGrade_Click" Width="30" Height="30" BorderThickness="3" VerticalAlignment="Top">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Square.Accent}">
                             <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
@@ -309,28 +309,7 @@
 
             <Popup x:Name="popSymbolDetails" StaysOpen="False">
 
-                <GroupBox Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top" 
-                          Style="{StaticResource MaterialDesignCardGroupBox}"
-                        md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                        md:ColorZoneAssist.Mode="Custom">
 
-                    <GroupBox.Header>
-                        <DockPanel Margin="-5">
-                            <Button Margin="6,0,3,0" Click="btnSaveImage_Click" Style="{StaticResource GroupHeaderCirlceButton}"
-                            ToolTip="Save as image.">
-                                <iconPacks:PackIconMaterial Kind="ContentSave" Height="14" Width="14"/>
-                            </Button>
-
-                            <Button Click="btnCopyImage_Click" Style="{StaticResource GroupHeaderCirlceButton}"
-                            ToolTip="Copy image to clipboard as PNG.">
-                                <iconPacks:PackIconMaterial Kind="ContentCopy" Height="14" Width="14"/>
-                            </Button>
-                        </DockPanel>
-                    </GroupBox.Header>
-
-                    <local:SectorDetails x:Name="SectorDetails" DataContext="{Binding}"/>
-
-                </GroupBox>
             </Popup>
 
             <!--Alarms-->

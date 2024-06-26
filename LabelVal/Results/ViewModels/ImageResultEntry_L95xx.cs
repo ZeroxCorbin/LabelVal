@@ -31,6 +31,8 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     public ObservableCollection<Sectors.ViewModels.Sector> L95xxCurrentSectors { get; } = [];
     public ObservableCollection<Sectors.ViewModels.Sector> L95xxStoredSectors { get; }= [];
     public ObservableCollection<Sectors.ViewModels.SectorDifferences> L95xxDiffSectors { get; }= [];
+    [ObservableProperty] private Sectors.ViewModels.Sector l95xxFocusedStoredSector = null;
+    [ObservableProperty] private Sectors.ViewModels.Sector l95xxFocusedCurrentSector = null;
 
     //[ObservableProperty] private byte[] l95xxImage = null;
     //[ObservableProperty] private DrawingImage l95xxSectorsImageOverlay;

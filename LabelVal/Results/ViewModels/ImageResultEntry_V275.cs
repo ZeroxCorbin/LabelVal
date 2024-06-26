@@ -30,6 +30,8 @@ public partial class ImageResultEntry
     [ObservableProperty] private ObservableCollection<Sectors.ViewModels.Sector> v275CurrentSectors = [];
     [ObservableProperty] private ObservableCollection<Sectors.ViewModels.Sector> v275StoredSectors = [];
     [ObservableProperty] private ObservableCollection<Sectors.ViewModels.SectorDifferences> v275DiffSectors = [];
+    [ObservableProperty] private Sectors.ViewModels.Sector v275FocusedStoredSector = null;
+    [ObservableProperty] private Sectors.ViewModels.Sector v275FocusedCurrentSector = null;
 
     [ObservableProperty] private ImageEntry v275Image;
     [ObservableProperty] private DrawingImage v275SectorsImageOverlay;

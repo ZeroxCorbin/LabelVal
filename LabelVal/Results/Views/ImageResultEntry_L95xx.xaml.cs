@@ -1,4 +1,5 @@
 ﻿using LabelVal.Dialogs;
+using LabelVal.Sectors.Views;
 using LabelVal.WindowViews;
 using MahApps.Metro.Controls.Dialogs;
 using System;
@@ -25,6 +26,19 @@ public partial class ImageResultEntry_L95xx : UserControl
     public ImageResultEntry_L95xx()
     {
         InitializeComponent();
+    }
+
+    private void btnCloseDetails_Click(object sender, RoutedEventArgs e)
+    {
+        switch ((string)((Button)sender).Tag)
+        {
+            case "l95xxStored":
+                ((ViewModels.ImageResultEntry)DataContext).L95xxFocusedStoredSector = null;
+                break;
+            case "l95xxCurrent":
+                ((ViewModels.ImageResultEntry)DataContext).L95xxFocusedCurrentSector = null;
+                break;
+        }
     }
 
     private void L95xxStoredSectors_Click(object sender, RoutedEventArgs e)
@@ -79,6 +93,64 @@ public partial class ImageResultEntry_L95xx : UserControl
     {
         if (e.VerticalChange != 0)
             ScrollL95xxStoredSectors.ScrollToVerticalOffset(e.VerticalOffset);
+    }
+
+    private void btnSaveImage_Click(object sender, RoutedEventArgs e)
+    {
+        var sect = Utilities.VisualTreeHelp.GetVisualParent<Sector>((Button)sender);
+
+        if (sect != null)
+        {
+            string path;
+            if ((path = Utilities.FileUtilities.SaveFileDialog("plot", "PNG|*.png", "Save sector details.")) != "")
+            {
+                try
+                {
+                    SaveToPng(sect, path);
+                }
+                catch { }
+            }
+        }
+    }
+    private void btnCopyImage_Click(object sender, RoutedEventArgs e)
+    {
+        var sect = Utilities.VisualTreeHelp.GetVisualParent<Sector>((Button)sender);
+
+        if (sect != null)
+            CopyToClipboard(sect);
+
+    }
+    public void SaveToPng(FrameworkElement visual, string fileName)
+    {
+        var encoder = new PngBitmapEncoder();
+        EncodeVisual(visual, encoder);
+
+        using var stream = System.IO.File.Create(fileName);
+        encoder.Save(stream);
+    }
+    public void CopyToClipboard(FrameworkElement visual)
+    {
+        var encoder = new PngBitmapEncoder();
+        EncodeVisual(visual, encoder);
+
+        using (var stream = new System.IO.MemoryStream())
+        {
+            encoder.Save(stream);
+            stream.Seek(0, System.IO.SeekOrigin.Begin);
+            var bitmapImage = new BitmapImage();
+            bitmapImage.BeginInit();
+            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+            bitmapImage.StreamSource = stream;
+            bitmapImage.EndInit();
+            Clipboard.SetImage(bitmapImage);
+        }
+    }
+    private static void EncodeVisual(FrameworkElement visual, BitmapEncoder encoder)
+    {
+        var bitmap = new RenderTargetBitmap((int)visual.ActualWidth, (int)visual.ActualHeight, 96, 96, PixelFormats.Pbgra32);
+        bitmap.Render(visual);
+        var frame = BitmapFrame.Create(bitmap);
+        encoder.Frames.Add(frame);
     }
 
 }

@@ -57,6 +57,9 @@ namespace LabelVal.Utilities
         {
             T parent = default(T);
 
+            if(child == null)
+                return null; 
+            
             Visual v = (Visual)VisualTreeHelper.GetParent(child);
             parent = v as T;
             if (parent == null || level > 0)
