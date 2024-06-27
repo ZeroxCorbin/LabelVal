@@ -376,11 +376,11 @@ public partial class ImageResultEntry : ObservableRecipient,
 
     private static SolidColorBrush GetGradeBrush(string grade) => grade switch
     {
-        "A" => Brushes.Green,
-        "B" => Brushes.Blue,
-        "C" => Brushes.LightBlue,
-        "D" => Brushes.Yellow,
-        "F" => Brushes.Red,
+        "A" => (SolidColorBrush)App.Current.Resources["CB_Green"],
+        "B" => (SolidColorBrush)App.Current.Resources["ISO_GradeB_Brush"],
+        "C" => (SolidColorBrush)App.Current.Resources["ISO_GradeC_Brush"],
+        "D" => (SolidColorBrush)App.Current.Resources["ISO_GradeD_Brush"],
+        "F" => (SolidColorBrush)App.Current.Resources["ISO_GradeF_Brush"],
         _ => Brushes.Black,
     };
 }

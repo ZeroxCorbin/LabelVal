@@ -12,7 +12,7 @@
             xmlns:Converters="clr-namespace:LabelVal.Converters"
              xmlns:V275Converters="clr-namespace:LabelVal.V275.Converters"
             d:DataContext="{d:DesignInstance Type=ViewModels:Sector}"
-            mc:Ignorable="d" Loaded="UserControl_Loaded">
+            mc:Ignorable="d">
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="booltovis"/>
@@ -30,7 +30,7 @@
 
                 <!--Name, Wrong Standard, Overall Grade String-->
                 <DockPanel DockPanel.Dock="Top" Margin="3">
-                    <TextBlock DockPanel.Dock="Top" Text="WRONG STANDARD" HorizontalAlignment="Center" Background="{DynamicResource ColorBlindBrush5}"
+                    <TextBlock DockPanel.Dock="Top" Text="WRONG STANDARD" HorizontalAlignment="Center" Background="{DynamicResource SectorError_Brush}"
                        Visibility="{Binding IsWrongStandard, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneTime}"/>
 
                     <TextBlock Text="{Binding Template.Username, Mode=OneTime}"/>
@@ -229,17 +229,20 @@
                 </Button>
 
                 <!--Overall Grade-->
-                <Button x:Name="btnOverallGrade" Margin="3" Click="btnOverallGrade_Click" Width="30" Height="30" BorderThickness="3" VerticalAlignment="Top">
+                <Button x:Name="btnOverallGrade" Width="30" Height="30" Margin="3" Click="btnOverallGrade_Click" VerticalAlignment="Top">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Square.Accent}">
                             <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
-                            <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}"/>
+                            <Setter Property="BorderBrush" Value="Transparent"/>
+                            <Setter Property="BorderThickness" Value="0"/>
                             <Style.Triggers>
                                 <DataTrigger Value="True" Binding="{Binding IsError, Mode=OneTime}">
-                                    <Setter Property="BorderBrush" Value="{DynamicResource ColorBlindBrush5}"/>
+                                    <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}"/>
+                                    <Setter Property="BorderThickness" Value="3"/>
                                 </DataTrigger>
                                 <DataTrigger Value="True" Binding="{Binding IsWarning, Mode=OneTime}">
-                                    <Setter Property="BorderBrush" Value="{DynamicResource ColorBlindBrush6}"/>
+                                    <Setter Property="BorderBrush" Value="{DynamicResource SectorWarning_Brush}"/>
+                                    <Setter Property="BorderThickness" Value="3"/>
                                 </DataTrigger>
 
                                 <DataTrigger Value="ocr" Binding="{Binding Report.Type, Mode=OneTime}">
@@ -250,18 +253,16 @@
                                 </DataTrigger>
 
                                 <DataTrigger Value="B" Binding="{Binding Report.OverallGradeLetter, Mode=OneTime}">
-                                    <Setter Property="Background" Value="{DynamicResource ColorBlindBrush2}"/>
+                                    <Setter Property="Background" Value="{DynamicResource ISO_GradeB_Brush}"/>
                                 </DataTrigger>
                                 <DataTrigger Value="C" Binding="{Binding Report.OverallGradeLetter, Mode=OneTime}">
-                                    <Setter Property="Background" Value="{DynamicResource ColorBlindBrush4}"/>
-                                    <Setter Property="Foreground" Value="Black"/>
+                                    <Setter Property="Background" Value="{DynamicResource ISO_GradeC_Brush}"/>
                                 </DataTrigger>
                                 <DataTrigger Value="D" Binding="{Binding Report.OverallGradeLetter, Mode=OneTime}">
-                                    <Setter Property="Background" Value="{DynamicResource ColorBlindBrush7}"/>
-                                    <Setter Property="Foreground" Value="Black"/>
+                                    <Setter Property="Background" Value="{DynamicResource ISO_GradeD_Brush}"/>
                                 </DataTrigger>
                                 <DataTrigger Value="F" Binding="{Binding Report.OverallGradeLetter, Mode=OneTime}">
-                                    <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
+                                    <Setter Property="Background" Value="{DynamicResource ISO_GradeF_Brush}"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -313,13 +314,19 @@
             </Popup>
 
             <!--Alarms-->
-            <Border DockPanel.Dock="Top" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Padding="1" CornerRadius="3" Margin="0,3" HorizontalAlignment="Stretch">
+            <Border DockPanel.Dock="Top" BorderThickness="3" Padding="1" CornerRadius="3" Margin="0,3" HorizontalAlignment="Stretch">
                 <Border.Style>
                     <Style TargetType="{x:Type Border}">
                         <Setter Property="Visibility" Value="Visible"/>
                         <Style.Triggers>
                             <DataTrigger Value="0" Binding="{Binding SectorDifferences.Alarms.Count, Mode=OneTime}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                            <DataTrigger Value="True" Binding="{Binding IsError, Mode=OneTime}">
+                                <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}"/>
+                            </DataTrigger>
+                            <DataTrigger Value="True" Binding="{Binding IsWarning, Mode=OneTime}">
+                                <Setter Property="BorderBrush" Value="{DynamicResource SectorWarning_Brush}"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -377,7 +384,7 @@
                                                 <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Value="FAIL" Binding="{Binding Path=result, Mode=OneTime}">
-                                                        <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
+                                                        <Setter Property="Background" Value="{DynamicResource SectorError_Brush}"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>

@@ -321,7 +321,7 @@
                                                 <MultiDataTrigger.Conditions>
                                                     <Condition Value="Offline" Binding="{Binding ScannerMode}" />
                                                 </MultiDataTrigger.Conditions>
-                                                <Setter Property="BorderBrush" Value="{DynamicResource ColorBlindBrush5}" />
+                                                <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}" />
                                             </MultiDataTrigger>
 
                                         </Style.Triggers>
@@ -338,7 +338,7 @@
                                 </ComboBox.ItemTemplate>
                                 <ComboBox.Style>
                                     <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}">
-                                        <Setter Property="BorderBrush" Value="{DynamicResource ColorBlindBrush5}"/>
+                                        <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}"/>
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                         <Setter Property="IsHitTestVisible" Value="True"/>
                                         <Style.Triggers>

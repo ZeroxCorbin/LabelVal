@@ -65,7 +65,29 @@
             <SolidColorBrush x:Key="MahApps.Metro.Brushes.ToggleSwitchButton.OnSwitchMouseOverBrush.Win10" Color="{DynamicResource Primary400}" />
             <SolidColorBrush x:Key="MahApps.Metro.Brushes.ToggleSwitchButton.ThumbIndicatorCheckedBrush.Win10" Color="{DynamicResource Primary500Foreground}" />
 
+            <Color x:Key="ISO_GradeA">Green</Color>
+            <SolidColorBrush x:Key="ISO_GradeA_Brush" Color="{StaticResource ISO_GradeA}"/>
 
+            <Color x:Key="ISO_GradeB">Teal</Color>
+            <SolidColorBrush x:Key="ISO_GradeB_Brush" Color="{StaticResource ISO_GradeB}"/>
+
+            <Color x:Key="ISO_GradeC">Blue</Color>
+            <SolidColorBrush x:Key="ISO_GradeC_Brush" Color="{StaticResource ISO_GradeC}"/>
+
+            <Color x:Key="ISO_GradeD">Magenta</Color>
+            <SolidColorBrush x:Key="ISO_GradeD_Brush" Color="{StaticResource ISO_GradeD}"/>
+
+            <Color x:Key="ISO_GradeF">Red</Color>
+            <SolidColorBrush x:Key="ISO_GradeF_Brush" Color="{StaticResource ISO_GradeF}"/>
+
+            
+            <Color x:Key="SectorWarning">#FFC107</Color>
+            <SolidColorBrush x:Key="SectorWarning_Brush" Color="{StaticResource SectorWarning}"/>
+
+            <Color x:Key="SectorError">Red</Color>
+            <SolidColorBrush x:Key="SectorError_Brush" Color="{StaticResource SectorError}"/>
+
+            
             <Color x:Key="Orange0">#4F000B</Color>
             <SolidColorBrush x:Key="OrangeBrush0" Color="{StaticResource Orange0}"/>
             

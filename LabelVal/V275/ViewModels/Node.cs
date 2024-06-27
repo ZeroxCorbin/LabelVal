@@ -321,9 +321,6 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
         _ = await Connection.Commands.SetSendExtendedData(false);
     }
 
-
-
-
     [RelayCommand]
     public async Task EnablePrint(object parameter)
     {

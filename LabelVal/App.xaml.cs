@@ -147,7 +147,7 @@ public partial class App : Application
 
         Current.Resources["CB_Green"] = isColorBlind
             ? Current.Resources["ColorBlindBrush1"]
-            : new SolidColorBrush(Colors.Green);
+            : Current.Resources["ISO_GradeA_Brush"];
     }
 
     protected override void OnExit(ExitEventArgs e)

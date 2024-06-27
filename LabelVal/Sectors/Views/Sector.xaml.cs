@@ -21,25 +21,6 @@ public partial class Sector : UserControl
         popGS1DecodeText.IsOpen = true;
     }
 
-    private void Show95xxCompare_Click(object sender, RoutedEventArgs e)
-    {
-        //LVS_95xx.LVS95xx_SerialPortView sp = new LVS_95xx.LVS95xx_SerialPortView(this.DataContext);
-
-        //var dc = new LVS_95xx.ViewModels.Verifier();
-
-        //var yourParentWindow = Window.GetWindow(this);
-
-        //dc.Width = yourParentWindow.ActualWidth - 200;
-        //dc.Height = yourParentWindow.ActualHeight - 200;
-
-        //_ = DialogCoordinator.Instance.ShowMetroDialogAsync(yourParentWindow.DataContext, new LVS_95xx.LVS95xx_SerialPortView() { DataContext = dc });
-
-        //L95xxComparePopup.PlacementTarget = (Button)sender;
-        //L95xxComparePopup.IsOpen = true;
-    }
-
-
-
     private void btnOverallGrade_Click(object sender, RoutedEventArgs e)
     {
         Results.ViewModels.ImageResultEntry vm = null;
@@ -84,37 +65,5 @@ public partial class Sector : UserControl
                 vm.L95xxFocusedCurrentSector = (ViewModels.Sector)this.DataContext;
                 break;
         }
-
-        //popSymbolDetails.HorizontalOffset = 0;
-        //popSymbolDetails.VerticalOffset = 0;
-        //popSymbolDetails.PlacementTarget = null;
-        ////popSymbolDetails.Placement = System.Windows.Controls.Primitives.PlacementMode.Center;
-        //popSymbolDetails.IsOpen = true;
-    }
-
-    private void UserControl_Loaded(object sender, RoutedEventArgs e)
-    {
-        btnOverallGrade.LayoutUpdated += BtnOverallGrade_LayoutUpdated;
-    }
-
-    private void BtnOverallGrade_LayoutUpdated(object sender, System.EventArgs e)
-    {
-        if (!popSymbolDetails.IsOpen)
-            return;
-
-        // Calculate the button's position relative to the window
-        var transform = btnOverallGrade.TransformToAncestor(this);
-        Point relativePosition = transform.Transform(new Point(0, 0));
-
-        // Convert the position to screen coordinates
-        Point screenPosition = this.PointToScreen(relativePosition);
-
-        // Assuming yourPopup is the popup you want to move
-        // Adjust the popup's position based on the button's screen position
-        //popSymbolDetails.HorizontalOffset = popSymbolDetails.HorizontalOffset + 1;
-        //popSymbolDetails.HorizontalOffset = popSymbolDetails.HorizontalOffset - 1;
-
-        popSymbolDetails.HorizontalOffset = screenPosition.X;
-        popSymbolDetails.VerticalOffset = screenPosition.Y;
     }
 }

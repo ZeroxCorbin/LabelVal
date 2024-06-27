@@ -133,7 +133,7 @@
                         <TextBox d:Text="State" Text="{Binding State}" Margin="3,0" md:HintAssist.Hint="State" md:HintAssist.IsFloating="True" IsHitTestVisible="False" HorizontalAlignment="Left">
                             <TextBox.Style>
                                 <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                                    <Setter Property="BorderBrush" Value="{DynamicResource ColorBlindBrush5}"/>
+                                    <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}"/>
                                     <Style.Triggers>
                                         <MultiDataTrigger>
                                             <MultiDataTrigger.Conditions>
@@ -163,7 +163,7 @@
                             </ComboBox.ItemTemplate>
                             <ComboBox.Style>
                                 <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}">
-                                    <Setter Property="BorderBrush" Value="{DynamicResource ColorBlindBrush5}"/>
+                                    <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}"/>
                                     <Setter Property="Visibility" Value="Collapsed"/>
                                     <Setter Property="IsHitTestVisible" Value="True"/>
                                     <Style.Triggers>
@@ -188,10 +188,10 @@
                             </ComboBox.Style>
                         </ComboBox>
 
-                        <TextBox d:Text="-----" BorderBrush="{DynamicResource ColorBlindBrush5}" Margin="3,0" md:HintAssist.Hint="Template Name" md:HintAssist.IsFloating="True" IsHitTestVisible="False" HorizontalAlignment="Left">
+                        <TextBox d:Text="-----" Margin="3,0" md:HintAssist.Hint="Template Name" md:HintAssist.IsFloating="True" IsHitTestVisible="False" HorizontalAlignment="Left">
                             <TextBox.Style>
                                 <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                                    <Setter Property="BorderBrush" Value="{DynamicResource ColorBlindBrush5}"/>
+                                    <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}"/>
                                     <Setter Property="Text" Value="{Binding JobName}"/>
 
                                     <Setter Property="Visibility" Value="Collapsed"/>
@@ -199,7 +199,7 @@
 
                                         <DataTrigger Value="" Binding="{Binding JobName}">
                                             <Setter Property="Text" Value="-----"/>
-                                            <Setter Property="BorderBrush" Value="{DynamicResource ColorBlindBrush5}"/>
+                                            <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}"/>
                                         </DataTrigger>
 
                                         <DataTrigger Value="True" Binding="{Binding Jobs, Converter={StaticResource ObjectIsNull}}">
@@ -214,7 +214,6 @@
                                 </Style>
                             </TextBox.Style>
                         </TextBox>
-
           
                     </DockPanel>
 
@@ -292,7 +291,7 @@
                                             <Setter Property="Content">
                                                 <Setter.Value>
                                                     <iconPacks:PackIconMaterial Kind="PrinterAlert"
-                                                        Foreground="{DynamicResource ColorBlindBrush5}"/>
+                                                        Foreground="{DynamicResource SectorError_Brush}"/>
                                                 </Setter.Value>
                                             </Setter>
                                             <Setter Property="Command" Value="{Binding EnablePrintCommand}"/>

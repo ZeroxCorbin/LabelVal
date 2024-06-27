@@ -41,7 +41,7 @@
                 <Label>
                     <Label.Style>
                         <Style TargetType="{x:Type Label}">
-                            <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
+                            <Setter Property="Background" Value="{DynamicResource SectorError_Brush}"/>
                             <Setter Property="Content" Value="{Binding SelectedNode.JobName}"/>
                             <Style.Triggers>
                                 <DataTrigger Value="False" Binding="{Binding IsWrongTemplateName}">
@@ -49,7 +49,7 @@
                                 </DataTrigger>
                                 <DataTrigger Value="" Binding="{Binding SelectedNode.JobName}">
                                     <Setter Property="Content" Value="-----"/>
-                                    <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
+                                    <Setter Property="Background" Value="{DynamicResource SectorError_Brush}"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -61,7 +61,7 @@
                 <Label Content="{Binding SelectedNode.State}">
                     <Label.Style>
                         <Style TargetType="{x:Type Label}">
-                            <Setter Property="Background" Value="{DynamicResource ColorBlindBrush5}"/>
+                            <Setter Property="Background" Value="{DynamicResource SectorError_Brush}"/>
                             <Setter Property="Visibility" Value="Visible"/>
                             <Style.Triggers>
                                 <MultiDataTrigger>
