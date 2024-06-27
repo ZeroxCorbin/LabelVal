@@ -22,15 +22,28 @@ public partial class ImageResultEntry_V275 : UserControl
 
     private void btnCloseDetails_Click(object sender, RoutedEventArgs e) 
     {
-        switch((string)((Button)sender).Tag)
+        if(Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
         {
-            case "v275Stored":
-                ((ViewModels.ImageResultEntry)DataContext).V275FocusedStoredSector = null;
-                break;
-            case "v275Current":
-                ((ViewModels.ImageResultEntry)DataContext).V275FocusedCurrentSector = null;
-                break;
+            ((ViewModels.ImageResultEntry)DataContext).V275FocusedStoredSector = null;
+            ((ViewModels.ImageResultEntry)DataContext).V275FocusedCurrentSector = null;
+            ((ViewModels.ImageResultEntry)DataContext).V5FocusedStoredSector = null;
+            ((ViewModels.ImageResultEntry)DataContext).V5FocusedCurrentSector = null;
+            ((ViewModels.ImageResultEntry)DataContext).L95xxFocusedStoredSector = null;
+            ((ViewModels.ImageResultEntry)DataContext).L95xxFocusedCurrentSector = null;
         }
+        else
+        {
+            switch((string)((Button)sender).Tag)
+            {
+                case "v275Stored":
+                    ((ViewModels.ImageResultEntry)DataContext).V275FocusedStoredSector = null;
+                    break;
+                case "v275Current":
+                    ((ViewModels.ImageResultEntry)DataContext).V275FocusedCurrentSector = null;
+                    break;
+            }
+        }
+
     }
 
     private void V275StoredSectors_Click(object sender, RoutedEventArgs e)

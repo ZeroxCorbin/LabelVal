@@ -103,6 +103,34 @@ public partial class Sector : UserControl
         }
     }
 
+    public void HideSectorDetails()
+    {
+        if (ImageResultEntry == null)
+            return;
+
+        switch (GroupName)
+        {
+            case "v275Stored":
+                ImageResultEntry.V275FocusedStoredSector = null;
+                break;
+            case "v275Current":
+                ImageResultEntry.V275FocusedCurrentSector = null;
+                break;
+            case "v5Stored":
+                ImageResultEntry.V5FocusedStoredSector = null;
+                break;
+            case "v5Current":
+                ImageResultEntry.V5FocusedCurrentSector = null;
+                break;
+            case "l95xxStored":
+                ImageResultEntry.L95xxFocusedStoredSector = null;
+                break;
+            case "l95xxCurrent":
+                ImageResultEntry.L95xxFocusedCurrentSector = null;
+                break;
+        }
+    }
+
     private void ShowSameNameSector(string targetGroup)
     {
         var ire = Utilities.VisualTreeHelp.GetVisualParent<ImageResultEntry_V275>(this);

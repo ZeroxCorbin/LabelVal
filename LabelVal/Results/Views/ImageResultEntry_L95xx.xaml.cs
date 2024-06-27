@@ -30,14 +30,26 @@ public partial class ImageResultEntry_L95xx : UserControl
 
     private void btnCloseDetails_Click(object sender, RoutedEventArgs e)
     {
-        switch ((string)((Button)sender).Tag)
+        if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
         {
-            case "l95xxStored":
-                ((ViewModels.ImageResultEntry)DataContext).L95xxFocusedStoredSector = null;
-                break;
-            case "l95xxCurrent":
-                ((ViewModels.ImageResultEntry)DataContext).L95xxFocusedCurrentSector = null;
-                break;
+            ((ViewModels.ImageResultEntry)DataContext).V275FocusedStoredSector = null;
+            ((ViewModels.ImageResultEntry)DataContext).V275FocusedCurrentSector = null;
+            ((ViewModels.ImageResultEntry)DataContext).V5FocusedStoredSector = null;
+            ((ViewModels.ImageResultEntry)DataContext).V5FocusedCurrentSector = null;
+            ((ViewModels.ImageResultEntry)DataContext).L95xxFocusedStoredSector = null;
+            ((ViewModels.ImageResultEntry)DataContext).L95xxFocusedCurrentSector = null;
+        }
+        else
+        {
+            switch ((string)((Button)sender).Tag)
+            {
+                case "l95xxStored":
+                    ((ViewModels.ImageResultEntry)DataContext).L95xxFocusedStoredSector = null;
+                    break;
+                case "l95xxCurrent":
+                    ((ViewModels.ImageResultEntry)DataContext).L95xxFocusedCurrentSector = null;
+                    break;
+            }
         }
     }
 
