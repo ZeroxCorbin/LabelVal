@@ -1,19 +1,15 @@
 ﻿Complete: Sort nodes by node number to keep order consitent.
-Change the error and warning border color and width to match the overall score outer border.
+Complete: Change the error and warning border color and width to match the overall score outer border.
 Complete: Display the details panels when dissimilar sectors are selected. 
+Complete: Clicking on current sector details opens the equivelent stored sector details. Clicking on stored sector details only opens stored. Then if already open current does not overwrite stored.
+Complete: Work on sector coloring based on standard not just random.
 
 
 Add the instructions for installing com0com.
 
 When viewing the run results and it is a simulation run the sector outlines are not shown. Maybe show the repeat and not the label?
 
-Work on sector coloring based on standard not just random.
-
 OCR OCV and blemish are checking the standard and should not.
-
-
-
-Clicking on current sector details opens the equivelent stored sector details. Clicking on stored sector details only opens stored. Then if already open current does not overwrite stored.
 
 Shiuft click sector details all sectors open.
 
