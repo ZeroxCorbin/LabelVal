@@ -57,6 +57,8 @@
                         Click="btnSyncOSTheme_Click">
                 <iconPacks:PackIconModern Width="20" Height="20" Kind="OsWindows"/>
             </Button>
+
+            <ComboBox ItemsSource="{Binding Languages}" SelectedValue="{Binding SelectedLanguage}" BorderThickness="0"/>
         </mah:WindowCommands>
     </mah:MetroWindow.RightWindowCommands>
 

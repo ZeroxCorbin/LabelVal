@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:LabelVal.V275.Views"
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-             
+             xmlns:loc="clr-namespace:LabelVal.Localization"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:ViewModels="clr-namespace:LabelVal.V275.ViewModels"  
                 xmlns:converters="clr-namespace:LabelVal.Converters"
@@ -15,6 +15,7 @@
 
     <UserControl.Resources>
         <converters:ObjectIsNull x:Key="ObjectIsNull"/>
+        <converters:LocalizeEnumValue x:Key="LocalizeEnumValue"/>
     </UserControl.Resources>
 
     <md:Card HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="6">
@@ -90,23 +91,27 @@
                 <DockPanel>
 
                     <DockPanel DockPanel.Dock="Top" Margin="1">
-                        <TextBox d:Text="camera" MinWidth="56" Margin="3" md:HintAssist.Hint="Type" md:HintAssist.IsFloating="True" IsHitTestVisible="False" BorderThickness="0" >
+                        <TextBox d:Text="camera" MinWidth="56" Margin="3"
+                                 md:HintAssist.Hint="{loc:Loc Type}" md:HintAssist.IsFloating="True" 
+                                 IsHitTestVisible="False" BorderThickness="0" >
                             <TextBox.Style>
                                 <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                                    <Setter Property="Text" Value="Unknown"/>
+                                    <Setter Property="Text" Value="{loc:Loc Unknown}"/>
                                     <Style.Triggers>
                                         <DataTrigger Value="camera" Binding="{Binding Inspection.device}">
-                                            <Setter Property="Text" Value="Camera"/>
+                                            <Setter Property="Text" Value="{loc:Loc Camera}"/>
                                         </DataTrigger>
                                         <DataTrigger Value="simulator" Binding="{Binding Inspection.device}">
-                                            <Setter Property="Text" Value="Simulator"/>
+                                            <Setter Property="Text" Value="{loc:Loc Simulator}"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
                             </TextBox.Style>
                         </TextBox>
 
-                        <TextBox d:Text="ZT610"  MinWidth="57" Margin="3" md:HintAssist.Hint="Model" md:HintAssist.IsFloating="True" IsHitTestVisible="False" BorderThickness="0">
+                        <TextBox d:Text="ZT610"  MinWidth="57" Margin="3" 
+                                 md:HintAssist.Hint="{loc:Loc Model}" md:HintAssist.IsFloating="True" 
+                                 IsHitTestVisible="False" BorderThickness="0">
                             <TextBox.Style>
                                 <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                     <Setter Property="Text" Value="{Binding Path=Details.printerModel}"/>
@@ -130,7 +135,9 @@
 
                     <DockPanel DockPanel.Dock="Top" Margin="1">
 
-                        <TextBox d:Text="State" Text="{Binding State}" Margin="3,0" md:HintAssist.Hint="State" md:HintAssist.IsFloating="True" IsHitTestVisible="False" HorizontalAlignment="Left">
+                        <TextBox d:Text="State" Text="{Binding State, Converter={StaticResource LocalizeEnumValue}}" Margin="3,0" 
+                                 md:HintAssist.Hint="{loc:Loc State}" md:HintAssist.IsFloating="True" 
+                                 IsHitTestVisible="False" HorizontalAlignment="Left">
                             <TextBox.Style>
                                 <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                     <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}"/>
@@ -155,7 +162,9 @@
                             </TextBox.Style>
                         </TextBox>
 
-                        <ComboBox ItemsSource="{Binding Jobs.jobs}" SelectedValue="{Binding SelectedJob}" Margin="3,0" md:HintAssist.Hint="Template Name" md:HintAssist.IsFloating="True" HorizontalAlignment="Left">
+                        <ComboBox ItemsSource="{Binding Jobs.jobs}" SelectedValue="{Binding SelectedJob}" Margin="3,0"
+                                  md:HintAssist.Hint="{loc:Loc Template Name}" md:HintAssist.IsFloating="True" 
+                                  HorizontalAlignment="Left">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding name}"/>
@@ -188,7 +197,7 @@
                             </ComboBox.Style>
                         </ComboBox>
 
-                        <TextBox d:Text="-----" Margin="3,0" md:HintAssist.Hint="Template Name" md:HintAssist.IsFloating="True" IsHitTestVisible="False" HorizontalAlignment="Left">
+                        <TextBox d:Text="-----" Margin="3,0" md:HintAssist.Hint="{loc:Loc Template Name}" md:HintAssist.IsFloating="True" IsHitTestVisible="False" HorizontalAlignment="Left">
                             <TextBox.Style>
                                 <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                     <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}"/>
@@ -234,7 +243,7 @@
                                                 </Setter.Value>
                                             </Setter>
                                             <Setter Property="Command" Value="{Binding SwitchRunCommand}"/>
-                                            <Setter Property="ToolTip" Value="Run"/>
+                                            <Setter Property="ToolTip" Value="{loc:Loc Run}"/>
                                         </DataTrigger>
 
                                         <DataTrigger Value="Running" Binding="{Binding State}">
@@ -245,7 +254,7 @@
                                                 </Setter.Value>
                                             </Setter>
                                             <Setter Property="Command" Value="{Binding SwitchEditCommand}"/>
-                                            <Setter Property="ToolTip" Value="Stop"/>
+                                            <Setter Property="ToolTip" Value="{loc:Loc Stop}"/>
                                         </DataTrigger>
 
                                         <DataTrigger Value="Paused" Binding="{Binding State}">
@@ -256,7 +265,7 @@
                                                 </Setter.Value>
                                             </Setter>
                                             <Setter Property="Command" Value="{Binding RemoveRepeatCommand}"/>
-                                            <Setter Property="ToolTip" Value="Remove"/>
+                                            <Setter Property="ToolTip" Value="{loc:Loc Remove}"/>
                                         </DataTrigger>
 
                                         <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Monitor}">
@@ -284,7 +293,7 @@
                                             </Setter>
                                             <Setter Property="Command" Value="{Binding EnablePrintCommand}"/>
                                             <Setter Property="CommandParameter" Value="0"/>
-                                            <Setter Property="ToolTip" Value="Printing Enabled"/>
+                                            <Setter Property="ToolTip" Value="{loc:Loc Printing Enabled}"/>
                                         </DataTrigger>
 
                                         <DataTrigger Value="False" Binding="{Binding Print.enabled}">
@@ -296,7 +305,7 @@
                                             </Setter>
                                             <Setter Property="Command" Value="{Binding EnablePrintCommand}"/>
                                             <Setter Property="CommandParameter" Value="1"/>
-                                            <Setter Property="ToolTip" Value="Printing Disabled"/>
+                                            <Setter Property="ToolTip" Value="{loc:Loc Printing Disabled}"/>
                                         </DataTrigger>
 
                                         <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Control}">

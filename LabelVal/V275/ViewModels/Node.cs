@@ -4,6 +4,8 @@ using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Messages;
+using LabelVal.WindowViewModels;
+using LabelVal.WindowViews;
 using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Collections.Generic;
@@ -158,6 +160,8 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
             Connection.Commands.Host = V275_Host;
         else if (e.PropertyName == nameof(V275.V275_SystemPort))
             Connection.Commands.SystemPort = V275_SystemPort;
+        else if (e.PropertyName == "SelectedLanguage")
+            OnPropertyChanged(nameof(State));
     }
 
     [RelayCommand]

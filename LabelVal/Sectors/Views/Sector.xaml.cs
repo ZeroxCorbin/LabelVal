@@ -11,17 +11,16 @@ namespace LabelVal.Sectors.Views;
 /// </summary>
 public partial class Sector : UserControl
 {
+    public string SectorName => ((ViewModels.Sector)DataContext).Template.Username;
     public Sector()
     {
         InitializeComponent();
     }
 
-    private void btnGS1DecodeText_Click(object sender, RoutedEventArgs e)
-    {
-        popGS1DecodeText.IsOpen = true;
-    }
+    private void btnGS1DecodeText_Click(object sender, RoutedEventArgs e) => popGS1DecodeText.IsOpen = true;
+    private void btnOverallGrade_Click(object sender, RoutedEventArgs e) => ShowSectorDetails();
 
-    private void btnOverallGrade_Click(object sender, RoutedEventArgs e)
+    public void ShowSectorDetails()
     {
         Results.ViewModels.ImageResultEntry vm = null;
         string str = string.Empty;
@@ -66,4 +65,6 @@ public partial class Sector : UserControl
                 break;
         }
     }
+
+
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using ControlzEx.Theming;
+using LabelVal.Properties;
 using LibSimpleDatabase;
 using NLog;
 using NLog.Config;
@@ -61,6 +63,7 @@ public partial class App : Application
 
     public App()
     {
+
         //   ExtractRunDetails();
         // File.WriteAllText("setting.imgr", JsonConvert.SerializeObject(new ImageRolls.ViewModels.ImageRollEntry(), new Newtonsoft.Json.Converters.StringEnumConverter()));
         SetupExceptionHandling();

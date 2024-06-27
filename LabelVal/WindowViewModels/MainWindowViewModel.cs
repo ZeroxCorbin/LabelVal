@@ -3,6 +3,9 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using LabelVal.Messages;
 using MahApps.Metro.Controls.Dialogs;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Threading.Tasks;
 
 namespace LabelVal.WindowViewModels;
@@ -30,9 +33,20 @@ public partial class MainWindowViewModel : ObservableRecipient, IRecipient<Syste
 
     [ObservableProperty] private string userMessage = "";
 
+    public List<string> Languages { get; } = ["English", "Español"];
+    [ObservableProperty] private string selectedLanguage = App.Settings.GetValue(nameof(SelectedLanguage), "English", true);
+    partial void OnSelectedLanguageChanged(string value)
+    {
+        Localization.TranslationSource.Instance.CurrentCulture = CultureInfo.GetCultureInfo(Localization.Culture.GetCulture(value));
+        App.Settings.SetValue(nameof(SelectedLanguage), value);
+    }
+
     public static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
     public MainWindowViewModel()
     {
+        Localization.TranslationSource.Instance.CurrentCulture = CultureInfo.GetCultureInfo(Localization.Culture.GetCulture(selectedLanguage));
+
+
         IsActive = true;
 
         ImageResults = new Results.ViewModels.ImageResults();

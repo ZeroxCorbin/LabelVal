@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using static V5_REST_Lib.Models.Meta;
 
 namespace LabelVal.Results.Views;
 /// <summary>
@@ -147,9 +148,21 @@ public partial class ImageResultEntry_V275 : UserControl
         var frame = BitmapFrame.Create(bitmap);
         encoder.Frames.Add(frame);
     }
-  
+
+    private void lstDissimilarSector_Click(object sender, MouseButtonEventArgs e)
+    {
+        var sndr = (SectorDifferences)sender;
+        //var ire = Utilities.VisualTreeHelp.GetVisualParent<ImageResultEntry_V275>(sndr);
+        //if (ire != null)
+        //{
+            var sectors = Utilities.VisualTreeHelp.GetVisualChildren<Sector>(this);
+            foreach (var s in sectors)
+            {
+                if (s.SectorName == ((Sectors.ViewModels.SectorDifferences)sndr.DataContext).UserName)
+                    s.ShowSectorDetails();
+            }
 
 
-
-
+        //}
+    }
 }

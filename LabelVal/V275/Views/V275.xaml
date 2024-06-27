@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:LabelVal.V275.Views"
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:loc="clr-namespace:LabelVal.Localization"
              xmlns:ViewModels="clr-namespace:LabelVal.V275.ViewModels"  
                 xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              d:DataContext="{d:DesignInstance Type=ViewModels:V275}"
@@ -20,6 +21,7 @@
         </CollectionViewSource>
         
     </UserControl.Resources>
+    
     <GroupBox VerticalAlignment="Top" HorizontalAlignment="Left" Margin="3" Padding="3" MinWidth="312"
                 Style="{StaticResource MaterialDesignCardGroupBox}"
                 md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
@@ -28,15 +30,17 @@
         <GroupBox.Header>
             <DockPanel Margin="-5">
 
-                <Button Click="btnShowSettings_Click" Style="{StaticResource GroupHeaderCirlceButton}" Margin="3,0,6,0">
+                <Button Click="btnShowSettings_Click" Style="{StaticResource GroupHeaderCirlceButton}" Margin="3,0,6,0"
+                        ToolTip="{loc:Loc Settings}">
                     <iconPacks:PackIconMaterial Kind="Cog" Height="16" Width="16"/>
                 </Button>
 
                 <md:Card Background="{DynamicResource ColorBlindBrush1}" HorizontalAlignment="Left" Padding="4,1" >
-                    <TextBlock Text="V275 Nodes" Foreground="White" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                    <TextBlock Text="{loc:Loc V275_Nodes}" Foreground="White" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                 </md:Card>
 
-                <Button Command="{Binding GetDevicesCommand}" Style="{StaticResource GroupHeaderCirlceButton}" Margin="6,0,3,0" >
+                <Button Command="{Binding GetDevicesCommand}" Style="{StaticResource GroupHeaderCirlceButton}" Margin="6,0,3,0"
+                        ToolTip="{loc:Loc Refresh}">
                     <iconPacks:Modern Height="16" Width="16" Kind="Refresh"/>
                 </Button>
 
@@ -44,7 +48,8 @@
                     <iconPacks:PackIconModern Height="16" Width="16" Kind="Browser" Margin="0,2,0,0"/>
                 </Button>
 
-                <Button Click="btnShowDetails_Click" Style="{StaticResource GroupHeaderCirlceButton}" HorizontalAlignment="Right">
+                <Button Click="btnShowDetails_Click" Style="{StaticResource GroupHeaderCirlceButton}" HorizontalAlignment="Right"
+                        ToolTip="{loc:Loc Details}">
                     <iconPacks:PackIconMaterial Height="18" Width="18"  Kind="CodeJson"/>
                 </Button>
 
