@@ -1,23 +1,26 @@
 ﻿using LabelVal.Results.Views;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace LabelVal.Sectors.Views;
 
 public partial class Sector : UserControl
 {
-    private Results.ViewModels.ImageResultEntry Vm { get; set; }
-    public string SectorName => ((ViewModels.Sector)DataContext).Template.Username;
+    private Results.ViewModels.ImageResultEntry ImageResultEntry { get; set; }
+    private ViewModels.Sector ThisSector { get; set; }
+    public string SectorName => ThisSector.Template.Username;
+    public System.Drawing.Point SectorCenterPoint => ThisSector.Template.CenterPoint;
     public string GroupName { get; private set; }
 
     public bool IsSectorFocused => GroupName switch
     {
-        "v275Stored" => Vm.V275FocusedStoredSector != null,
-        "v275Current" => Vm.V275FocusedCurrentSector != null,
-        "v5Stored" => Vm.V5FocusedStoredSector != null,
-        "v5Current" => Vm.V5FocusedCurrentSector != null,
-        "l95xxStored" => Vm.L95xxFocusedStoredSector != null,
-        "l95xxCurrent" => Vm.L95xxFocusedCurrentSector != null,
+        "v275Stored" => ImageResultEntry.V275FocusedStoredSector != null,
+        "v275Current" => ImageResultEntry.V275FocusedCurrentSector != null,
+        "v5Stored" => ImageResultEntry.V5FocusedStoredSector != null,
+        "v5Current" => ImageResultEntry.V5FocusedCurrentSector != null,
+        "l95xxStored" => ImageResultEntry.L95xxFocusedStoredSector != null,
+        "l95xxCurrent" => ImageResultEntry.L95xxFocusedCurrentSector != null,
         _ => false,
     };
 
@@ -28,6 +31,8 @@ public partial class Sector : UserControl
 
     private void UserControl_Loaded(object sender, RoutedEventArgs e)
     {
+        ThisSector = (ViewModels.Sector)DataContext;
+
         GetSecotorDetails();
     }
 
@@ -37,7 +42,7 @@ public partial class Sector : UserControl
         if (list != null)
         {
             GroupName = list.Tag.ToString();
-            Vm = (Results.ViewModels.ImageResultEntry)list.DataContext;
+            ImageResultEntry = (Results.ViewModels.ImageResultEntry)list.DataContext;
         }
         else
         {
@@ -45,7 +50,7 @@ public partial class Sector : UserControl
             if (itmc != null)
             {
                 GroupName = itmc.Tag.ToString();
-                Vm = (Results.ViewModels.ImageResultEntry)itmc.DataContext;
+                ImageResultEntry = (Results.ViewModels.ImageResultEntry)itmc.DataContext;
             }
         }
     }
@@ -57,35 +62,43 @@ public partial class Sector : UserControl
 
     private void btnOverallGrade_Click(object sender, RoutedEventArgs e)
     {
-        ShowSectorDetails();
+        if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+        {
+            ShowAllLikeSectors();
+        }
+        else
+        {
+            ShowSectorDetails();
+        }
+
     }
 
     public void ShowSectorDetails()
     {
-        if (Vm == null)
+        if (ImageResultEntry == null)
             return;
 
         //This lets us know which sector is being focused on
         switch (GroupName)
         {
             case "v275Stored":
-                Vm.V275FocusedStoredSector = (ViewModels.Sector)this.DataContext;
+                ImageResultEntry.V275FocusedStoredSector = (ViewModels.Sector)this.DataContext;
                 break;
             case "v275Current":
-                Vm.V275FocusedCurrentSector = (ViewModels.Sector)this.DataContext;
+                ImageResultEntry.V275FocusedCurrentSector = (ViewModels.Sector)this.DataContext;
                 ShowSameNameSector("v275Stored");
                 break;
             case "v5Stored":
-                Vm.V5FocusedStoredSector = (ViewModels.Sector)this.DataContext;
+                ImageResultEntry.V5FocusedStoredSector = (ViewModels.Sector)this.DataContext;
                 break;
             case "v5Current":
-                Vm.V5FocusedCurrentSector = (ViewModels.Sector)this.DataContext;
+                ImageResultEntry.V5FocusedCurrentSector = (ViewModels.Sector)this.DataContext;
                 break;
             case "l95xxStored":
-                Vm.L95xxFocusedStoredSector = (ViewModels.Sector)this.DataContext;
+                ImageResultEntry.L95xxFocusedStoredSector = (ViewModels.Sector)this.DataContext;
                 break;
             case "l95xxCurrent":
-                Vm.L95xxFocusedCurrentSector = (ViewModels.Sector)this.DataContext;
+                ImageResultEntry.L95xxFocusedCurrentSector = (ViewModels.Sector)this.DataContext;
                 break;
         }
     }
@@ -103,6 +116,24 @@ public partial class Sector : UserControl
                     if (!s.IsSectorFocused)
                         s.ShowSectorDetails();
                     break;
+                }
+            }
+        }
+    }
+
+    private void ShowAllLikeSectors()
+    {
+        var ire = Utilities.VisualTreeHelp.GetVisualParent<ImageResultEntry>(this);
+        if (ire != null)
+        {
+            var sectors = Utilities.VisualTreeHelp.GetVisualChildren<Sector>(ire);
+            foreach (var s in sectors)
+            {
+                var vm = (ViewModels.Sector)s.DataContext;
+
+                if (LibStaticUtilities.PositionMovement.IsPointWithinCircumference(SectorCenterPoint, 30, vm.Template.CenterPoint))
+                {
+                    s.ShowSectorDetails();
                 }
             }
         }

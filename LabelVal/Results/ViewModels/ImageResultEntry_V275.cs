@@ -121,6 +121,8 @@ public partial class ImageResultEntry
 
         if (tempSectors.Count > 0)
         {
+            SortList(tempSectors);
+
             foreach (var sec in tempSectors)
                 V275StoredSectors.Add(sec);
         }
@@ -184,7 +186,7 @@ public partial class ImageResultEntry
 
         if (tempSectors.Count > 0)
         {
-            tempSectors = tempSectors.OrderBy(x => x.Template.Top).ToList();
+            SortList(tempSectors);
 
             foreach (var sec in tempSectors)
                 V275CurrentSectors.Add(sec);
@@ -273,6 +275,7 @@ public partial class ImageResultEntry
                 }
             }
 
+        //ToDo: Sort the diff list
         foreach (var d in diff)
             if (d.IsNotEmpty)
                 V275DiffSectors.Add(d);

@@ -170,7 +170,7 @@ public partial class ImageResultEntry
 
         if (tempSectors.Count > 0)
         {
-            tempSectors = tempSectors.OrderBy(x => x.Template.Top).ToList();
+            SortList(tempSectors);
 
             foreach (var sec in tempSectors)
                 V5CurrentSectors.Add(sec);
@@ -233,7 +233,7 @@ public partial class ImageResultEntry
 
         if (tempSectors.Count > 0)
         {
-            tempSectors = tempSectors.OrderBy(x => x.Template.Top).ToList();
+            SortList(tempSectors);
 
             foreach (var sec in tempSectors)
                 V5StoredSectors.Add(sec);

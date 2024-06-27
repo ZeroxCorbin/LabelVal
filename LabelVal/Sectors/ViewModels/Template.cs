@@ -1,10 +1,4 @@
-﻿using NHibernate.Hql.Ast;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using V5_REST_Lib.Models;
+﻿using V5_REST_Lib.Models;
 
 namespace LabelVal.Sectors.ViewModels
 {
@@ -29,6 +23,7 @@ namespace LabelVal.Sectors.ViewModels
         public string Username { get; set; }
         public int Top { get; set; }
         public int Center { get; set; }
+        public System.Drawing.Point CenterPoint { get; set; }
         public string Symbology { get; set; }
 
 
@@ -43,6 +38,8 @@ namespace LabelVal.Sectors.ViewModels
             Username = sectorTemplate.username;
             Top = sectorTemplate.top;
             Center = sectorTemplate.top + (sectorTemplate.height / 2) + sectorTemplate.left + (sectorTemplate.width / 2);
+            CenterPoint = new System.Drawing.Point(sectorTemplate.left + (sectorTemplate.width / 2), sectorTemplate.top + (sectorTemplate.height / 2));
+
             Symbology = sectorTemplate.symbology;
 
             if (sectorTemplate.matchSettings != null)
@@ -72,7 +69,8 @@ namespace LabelVal.Sectors.ViewModels
             else
                 Top = Report.y;
 
-            Center = Report.y + (Report.height / 2) + Report.x + (Report.width / 2);
+            Center = Report.y + Report.x;
+            CenterPoint = new System.Drawing.Point(Report.x, Report.y);
 
             Symbology = GetV5Symbology(Report);
 
@@ -84,6 +82,8 @@ namespace LabelVal.Sectors.ViewModels
             Username = template.Username;
             Top = template.Top;
             Center = template.Center;
+            CenterPoint = template.CenterPoint;
+
             Symbology = template.Symbology;
 
             MatchSettings = template.MatchSettings;

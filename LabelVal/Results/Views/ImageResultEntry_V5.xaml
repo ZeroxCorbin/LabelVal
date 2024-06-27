@@ -29,10 +29,10 @@
         <Image x:Key="V275Png" Source="/Assets/Images/V275WhiteIcon.png" />
 
 
-        <CollectionViewSource x:Key="cvsV5StoredSectors" Source="{Binding V5StoredSectors}">
+        <!--<CollectionViewSource x:Key="cvsV5StoredSectors" Source="{Binding V5StoredSectors}">
             <CollectionViewSource.SortDescriptions>
                 <componentmodel:SortDescription PropertyName="Template.Center" Direction="Ascending"/>
-                <!--<componentmodel:SortDescription PropertyName="Template.Top" Direction="Ascending"/>-->
+                --><!--<componentmodel:SortDescription PropertyName="Template.Top" Direction="Ascending"/>--><!--
             </CollectionViewSource.SortDescriptions>
 
         </CollectionViewSource>
@@ -40,10 +40,10 @@
         <CollectionViewSource x:Key="cvsV5CurrentSectors" Source="{Binding V5CurrentSectors}">
             <CollectionViewSource.SortDescriptions>
                 <componentmodel:SortDescription PropertyName="Template.Center" Direction="Ascending"/>
-                <!--<componentmodel:SortDescription PropertyName="Template.Top" Direction="Ascending"/>-->
+                --><!--<componentmodel:SortDescription PropertyName="Template.Top" Direction="Ascending"/>--><!--
             </CollectionViewSource.SortDescriptions>
 
-        </CollectionViewSource>
+        </CollectionViewSource>-->
 
     </UserControl.Resources>
 
@@ -194,7 +194,7 @@
 
                         </GroupBox>
 
-                        <ItemsControl Padding="0,2,0,0" ItemsSource="{Binding Source={StaticResource ResourceKey=cvsV5StoredSectors}}"
+                        <ItemsControl Padding="0,2,0,0" ItemsSource="{Binding V5StoredSectors}"
                                       Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
                                       Tag="v5Stored">
                             <ItemsControl.Style>
@@ -400,7 +400,7 @@
 
                         </GroupBox>
 
-                        <ItemsControl Padding="0,2,0,0" ItemsSource="{Binding Source={StaticResource ResourceKey=cvsV5CurrentSectors}}"
+                        <ItemsControl Padding="0,2,0,0" ItemsSource="{Binding V5CurrentSectors}"
                                       Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
                                       Tag="v5Current">
                             <ItemsControl.Style>

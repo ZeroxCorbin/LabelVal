@@ -30,19 +30,20 @@
         <Image x:Key="V275Icon" Source="/Assets/Images/V275WhiteIcon.ico" />
         <Image x:Key="V275Png" Source="/Assets/Images/V275WhiteIcon.png" />
 
-        <CollectionViewSource x:Key="cvsV275StoredSectors" Source="{Binding V275StoredSectors}">
+        <!--<CollectionViewSource x:Key="cvsV275StoredSectors" Source="{Binding V275StoredSectors}">
             <CollectionViewSource.SortDescriptions>
-                <componentmodel:SortDescription PropertyName="Template.Center" Direction="Ascending"/>
-                <!--<componentmodel:SortDescription PropertyName="Template.Top" Direction="Ascending"/>-->
+                <componentmodel:SortDescription PropertyName="Template.CenterPoint.Y" Direction="Ascending"/>
+                <componentmodel:SortDescription PropertyName="Template.CenterPoint.X" Direction="Ascending"/>
+                --><!--<componentmodel:SortDescription PropertyName="Template.Top" Direction="Ascending"/>--><!--
             </CollectionViewSource.SortDescriptions>
         </CollectionViewSource>
 
         <CollectionViewSource x:Key="cvsV275CurrentSectors" Source="{Binding V275CurrentSectors}">
             <CollectionViewSource.SortDescriptions>
-                <componentmodel:SortDescription PropertyName="Template.Center" Direction="Ascending"/>
-                <!--<componentmodel:SortDescription PropertyName="Template.Top" Direction="Ascending"/>-->
+                <componentmodel:SortDescription PropertyName="Template.CenterPoint.Y" Direction="Ascending"/>
+                <componentmodel:SortDescription PropertyName="Template.CenterPoint.X" Direction="Ascending"/>
             </CollectionViewSource.SortDescriptions>
-        </CollectionViewSource>
+        </CollectionViewSource>-->
 
     </UserControl.Resources>
 
@@ -198,7 +199,7 @@
 
                         </GroupBox>
 
-                        <ListView Padding="0,1,0,0" ItemsSource="{Binding Source={StaticResource ResourceKey=cvsV275StoredSectors}}" SelectedItem="{Binding SelectedSector}"
+                        <ListView Padding="0,1,0,0" ItemsSource="{Binding V275StoredSectors}" SelectedItem="{Binding SelectedSector}"
                                   Tag="v275Stored">
                             <ListView.Style>
                                 <Style TargetType="ListView" BasedOn="{StaticResource MahApps.Styles.ListView}">
@@ -411,7 +412,7 @@
 
                         </GroupBox>
 
-                        <ItemsControl Padding="0,2,0,0" ItemsSource="{Binding Source={StaticResource ResourceKey=cvsV275CurrentSectors}}" 
+                        <ItemsControl Padding="0,2,0,0" ItemsSource="{Binding V275CurrentSectors}" 
                                        Tag="v275Current"
                                       Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
                             <ItemsControl.Style>
