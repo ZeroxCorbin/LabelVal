@@ -113,18 +113,21 @@ public partial class Sector : UserControl
                 break;
             case "v275Current":
                 ImageResultEntry.V275FocusedCurrentSector = null;
+                HideSameNameSector("v275Stored");
                 break;
             case "v5Stored":
                 ImageResultEntry.V5FocusedStoredSector = null;
                 break;
             case "v5Current":
                 ImageResultEntry.V5FocusedCurrentSector = null;
+                HideSameNameSector("v5Stored");
                 break;
             case "l95xxStored":
                 ImageResultEntry.L95xxFocusedStoredSector = null;
                 break;
             case "l95xxCurrent":
                 ImageResultEntry.L95xxFocusedCurrentSector = null;
+                HideSameNameSector("l95xxStored");
                 break;
         }
     }
@@ -161,6 +164,41 @@ public partial class Sector : UserControl
             {
                 if (!s.IsSectorFocused)
                     s.ShowSectorDetails();
+                break;
+            }
+        }
+    }
+
+
+    private void HideSameNameSector(string targetGroup)
+    {
+        Collection<Sector> sectors = null;
+
+        if (targetGroup.StartsWith("v275"))
+        {
+            var ire = Utilities.VisualTreeHelp.GetVisualParent<ImageResultEntry_V275>(this);
+            if (ire != null)
+                sectors = Utilities.VisualTreeHelp.GetVisualChildren<Sector>(ire);
+        }
+        else if (targetGroup.StartsWith("v5"))
+        {
+            var ire = Utilities.VisualTreeHelp.GetVisualParent<ImageResultEntry_V5>(this);
+            if (ire != null)
+                sectors = Utilities.VisualTreeHelp.GetVisualChildren<Sector>(ire);
+        }
+        else if (targetGroup.StartsWith("l95"))
+        {
+            var ire = Utilities.VisualTreeHelp.GetVisualParent<ImageResultEntry_L95xx>(this);
+            if (ire != null)
+                sectors = Utilities.VisualTreeHelp.GetVisualChildren<Sector>(ire);
+        }
+
+        foreach (var s in sectors)
+        {
+            if (s.GroupName == targetGroup && s.SectorName == SectorName)
+            {
+                if (!s.IsSectorFocused)
+                    s.HideSectorDetails();
                 break;
             }
         }

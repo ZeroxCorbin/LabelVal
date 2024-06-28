@@ -48,6 +48,7 @@ public partial class ImageResultEntry_L95xx : UserControl
                     break;
                 case "l95xxCurrent":
                     ((ViewModels.ImageResultEntry)DataContext).L95xxFocusedCurrentSector = null;
+                    ((ViewModels.ImageResultEntry)DataContext).L95xxFocusedStoredSector = null;
                     break;
             }
         }
