@@ -16,7 +16,7 @@ public partial class SectorDifferences : ObservableObject
 
         public GradeValue(string name, Report_InspectSector_Common.GradeValue data)
         {
-            if(data != null)
+            if (data != null)
             {
                 value = data.value;
                 grade = data.grade;
@@ -597,8 +597,57 @@ public partial class SectorDifferences : ObservableObject
             foreach (var item in alarms)
                 Alarms.Add(item);
         }
+        else if (isPDF417)
+        {
+            //PDF417
+            GradeValues.Add(new GradeValue("symbolContrast", GetGradeValue(GetValues("Contrast", splitPacket)[0])));
+            foreach (var data in splitPacket)
+            {
+                if (!data.Contains(','))
+                    continue;
+
+                var spl1 = new string[2];
+                spl1[0] = data.Substring(0, data.IndexOf(','));
+                spl1[1] = data.Substring(data.IndexOf(',') + 1);
+
+                if (spl1[0].StartsWith("Xdim"))
+                {
+                    var xdim = ParseFloat(spl1[1]);
+
+                    ValueResults.Add(new ValueResult("symbolXDim", new Report_InspectSector_Common.ValueResult() { value = xdim, result = "PASS" }));
+                    continue;
+                }
+
+                if (spl1[0].StartsWith("Rmin"))
+                {
+                    var val = (int)Math.Ceiling(ParseFloat(spl1[1]));
+
+                    Values.Add(new Value("minimumReflectance", new Report_InspectSector_Common.Value() { value = val }));
+                    continue;
+                }
+
+                if (spl1[0].StartsWith("Codeword y"))
+                {
+                    var spl2 = spl1[1].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    if (spl2.Count() != 2) continue;
+
+                    GradeValues.Add(new GradeValue("CodewordY", new Report_InspectSector_Common.GradeValue() { grade = GetGrade(spl2[0]), value = ParseInt(spl2[1]) }));
+                    continue;
+                }
+
+                if (spl1[0].StartsWith("Codeword P"))
+                {
+                    GradeValues.Add(new GradeValue("CodewordP", new Report_InspectSector_Common.GradeValue() { grade = GetGrade(spl1[1]), value = -1 }));
+                    continue;
+                }
+            }
+
+        }
         else
         {
+
+
             GradeValues.Add(new GradeValue("decode",
                 new Report_InspectSector_Common.GradeValue()
                 {
@@ -618,8 +667,7 @@ public partial class SectorDifferences : ObservableObject
                     value = -1
                 }));
 
-            if (!isPDF417)
-                Values.Add(new Value("maximumReflectance", new Report_InspectSector_Common.Value() { value = ParseInt(GetValues("Rmax", splitPacket)[0]) }));
+            Values.Add(new Value("maximumReflectance", new Report_InspectSector_Common.Value() { value = ParseInt(GetValues("Rmax", splitPacket)[0]) }));
 
             ValueResults.Add(new ValueResult("edgeDetermination", new Report_InspectSector_Common.ValueResult() { value = 100, result = GetValues("Edge", splitPacket)[0] }));
 
@@ -640,8 +688,6 @@ public partial class SectorDifferences : ObservableObject
 
                 if (spl1[0].StartsWith("Rmin"))
                 {
-                    if (isPDF417) continue;
-
                     var val = (int)Math.Ceiling(ParseFloat(spl1[1]));
 
                     Values.Add(new Value("minimumReflectance", new Report_InspectSector_Common.Value() { value = val }));
@@ -658,8 +704,6 @@ public partial class SectorDifferences : ObservableObject
                 if (spl1[0].StartsWith("Xdim"))
                 {
                     var xdim = ParseFloat(spl1[1]);
-
-                    if (isPDF417) continue;
 
                     var item = alarms.Find((e) => e.name.Contains("minimum Xdim"));
 
@@ -699,21 +743,7 @@ public partial class SectorDifferences : ObservableObject
                     continue;
                 }
 
-                if (spl1[0].StartsWith("Codeword y"))
-                {
-                    var spl2 = spl1[1].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-                    if (spl2.Count() != 2) continue;
-
-                    GradeValues.Add(new GradeValue("CodewordY", new Report_InspectSector_Common.GradeValue() { grade = GetGrade(spl2[0]), value = ParseInt(spl2[1]) }));
-                    continue;
-                }
-
-                if (spl1[0].StartsWith("Codeword P"))
-                {
-                    GradeValues.Add(new GradeValue("CodewordP", new Report_InspectSector_Common.GradeValue() { grade = GetGrade(spl1[1]), value = -1 }));
-                    continue;
-                }
             }
 
             foreach (var item in alarms)

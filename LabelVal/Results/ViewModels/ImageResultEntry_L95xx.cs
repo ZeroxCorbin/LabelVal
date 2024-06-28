@@ -47,8 +47,33 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     partial void OnIsL95xxFaultedChanged(bool value) => OnPropertyChanged(nameof(IsNotL95xxFaulted));
     public bool IsNotL95xxFaulted => !IsL95xxFaulted;
 
-    public void Receive(PropertyChangedMessage<LabelVal.LVS_95xx.ViewModels.VerifierPacket> message) { if (SelectedSector != null) App.Current.Dispatcher.BeginInvoke(() => 
-        L95xxCurrentSectors.Add(new Sectors.ViewModels.Sector(SelectedSector.Template, message.NewValue.Value, SelectedSector.DesiredStandard, SelectedSector.DesiredGS1Table))); }
+    public void Receive(PropertyChangedMessage<LabelVal.LVS_95xx.ViewModels.VerifierPacket> message)
+    { 
+        if (SelectedSector != null) 
+            App.Current.Dispatcher.BeginInvoke(() =>
+            {
+                L95xxCurrentSectors.Add(new Sector(SelectedSector.Template, message.NewValue.Value, SelectedSector.DesiredStandard, SelectedSector.DesiredGS1Table));
+                var secs = L95xxCurrentSectors.ToList();
+                SortList(secs);
+
+                SortObservableCollectionByList(secs, L95xxCurrentSectors);
+            });
+    }
+
+    public static void SortObservableCollectionByList(List<Sector> list, ObservableCollection<Sector> observableCollection)
+    {
+        for (int i = 0; i < list.Count; i++)
+        {
+            var item = list[i];
+            var currentIndex = observableCollection.IndexOf(item);
+            if (currentIndex != i)
+            {
+                observableCollection.Move(currentIndex, i);
+            }
+        }
+    }
+
+
 
     private void L95xxGetStored()
     {
@@ -69,6 +94,8 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
 
         if (tempSectors.Count > 0) 
         {
+            SortList(tempSectors);
+
             foreach (var sec in tempSectors)
                 L95xxStoredSectors.Add(sec);
         }

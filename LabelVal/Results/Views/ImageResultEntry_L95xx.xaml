@@ -30,13 +30,13 @@
         <Image x:Key="V275Icon" Source="/Assets/Images/V275WhiteIcon.ico" />
         <Image x:Key="V275Png" Source="/Assets/Images/V275WhiteIcon.png" />
 
-        <CollectionViewSource x:Key="cvsL95xxStoredSectors" Source="{Binding L95xxStoredSectors}">
+        <!--<CollectionViewSource x:Key="cvsL95xxStoredSectors" Source="{Binding L95xxStoredSectors}">
             <CollectionViewSource.SortDescriptions>
                 <componentmodel:SortDescription PropertyName="Template.Center" Direction="Ascending"/>
-                <!--<componentmodel:SortDescription PropertyName="Template.Top" Direction="Ascending"/>-->
+                --><!--<componentmodel:SortDescription PropertyName="Template.Top" Direction="Ascending"/>--><!--
             </CollectionViewSource.SortDescriptions>
 
-        </CollectionViewSource>
+        </CollectionViewSource>-->
 
     </UserControl.Resources>
 
@@ -166,7 +166,7 @@
 
                         </GroupBox>
 
-                        <ItemsControl Padding="0,2,0,0" ItemsSource="{Binding Source={StaticResource ResourceKey=cvsL95xxStoredSectors}}" 
+                        <ItemsControl Padding="0,2,0,0" ItemsSource="{Binding L95xxStoredSectors}" 
                                       Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
                                       Tag="l95xxStored">
                             
