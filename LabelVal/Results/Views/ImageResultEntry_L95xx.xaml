@@ -220,10 +220,11 @@
 
                         <DockPanel Margin="3,0">
 
-                            <Button Command="{Binding StoreCommand}" CommandParameter="L95xx" ToolTip="Store the current sectors and images to the database.">
+                            <Button Command="{Binding StoreCommand}" CommandParameter="L95xx" ToolTip="Store the selected sector to the database.">
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                         <Setter Property="Visibility" Value="Visible"/>
+                                        <Setter Property="IsEnabled" Value="True"/>
                                         <Style.Triggers>
                                             <DataTrigger Value="0" Binding="{Binding L95xxCurrentSectors.Count}">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
@@ -231,66 +232,35 @@
                                             <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
+                                            <DataTrigger Binding="{Binding L95xxCurrentSectorSelected, Converter={StaticResource objectIsNull}}" Value="True">
+                                                <Setter Property="IsEnabled" Value="False"/>
+                                            </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
                                 </Button.Style>
 
-                                <iconPacks:PackIconMaterial Kind="StorePlusOutline" Height="14" Width="14"/>
+                                <iconPacks:PackIconMaterial Kind="ChevronDoubleLeft" Height="14" Width="14"/>
                             </Button>
 
-                            <Button Command="{Binding ClearReadCommand}" CommandParameter="L95xx" ToolTip="Clear the current sectors and image.">
+                            <Button Command="{Binding ClearReadCommand}" CommandParameter="L95xx" ToolTip="Clear the selected sector.">
 
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                         <Setter Property="Visibility" Value="Visible"/>
-
+                                        <Setter Property="IsEnabled" Value="True"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding L95xxCurrentSectors.Count}" Value="0">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
-
+                                            <DataTrigger Binding="{Binding L95xxCurrentSectorSelected, Converter={StaticResource objectIsNull}}" Value="True">
+                                                <Setter Property="IsEnabled" Value="False"/>
+                                            </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
                                 </Button.Style>
 
                                 <iconPacks:PackIconModern Kind="Delete" Height="14" Width="14"/>
-
                             </Button>
-
-                            <!--<Button Command="{Binding L95xxReadCommand}"
-                                    ToolTip="Read Results" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
-
-                                <Button.Style>
-                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Value="True" Binding="{Binding ImageResults.SelectedScanner.IsConnected}">
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Button.Style>
-
-                                <iconPacks:PackIconMaterial Kind="Upload" Margin="-1,-1,0,0" Height="14" Width="14"/>
-                            </Button>-->
-
-                            <!--<Button Command="{Binding InspectCommand}"
-                                    ToolTip="Inspect" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
-
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Value="True" Binding="{Binding ImageResults.SelectedNode.IsLoggedIn_Control}">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-
-                            <iconPacks:PackIconMaterialDesign Kind="TouchApp" Margin="-1,-1,0,0" Height="14" Width="14"/>
-
-                        </Button>-->
 
                         </DockPanel>
 
@@ -366,12 +336,12 @@
 
                         </GroupBox>
 
-                        <ItemsControl Padding="0,2,0,0" ItemsSource="{Binding L95xxCurrentSectors}"
+                        <ListView Padding="0,1,0,0" ItemsSource="{Binding L95xxCurrentSectors}" SelectedItem="{Binding L95xxCurrentSectorSelected}"
                                       Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
                                        Tag="l95xxCurrent">
-                            
-                            <ItemsControl.Style>
-                                <Style TargetType="ItemsControl">
+
+                            <ListView.Style>
+                                <Style TargetType="ListView" BasedOn="{StaticResource MahApps.Styles.ListView}">
                                     <Setter Property="Visibility" Value="Visible"/>
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding L95xxFocusedCurrentSector, Converter={StaticResource objectIsNull}}" Value="False">
@@ -379,14 +349,20 @@
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
-                            </ItemsControl.Style>
-                            
+                            </ListView.Style>
+
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                </Style>
+                            </ListView.ItemContainerStyle>
+
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="2,1"/>
+                                    <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="6,0"/>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
-                        </ItemsControl>
+                        </ListView>
                     </DockPanel>
                 </ScrollViewer>
             </GroupBox>

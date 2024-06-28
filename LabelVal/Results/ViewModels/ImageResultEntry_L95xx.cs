@@ -34,6 +34,8 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     [ObservableProperty] private Sectors.ViewModels.Sector l95xxFocusedStoredSector = null;
     [ObservableProperty] private Sectors.ViewModels.Sector l95xxFocusedCurrentSector = null;
 
+    [ObservableProperty] private Sectors.ViewModels.Sector l95xxCurrentSectorSelected;
+
     //[ObservableProperty] private byte[] l95xxImage = null;
     //[ObservableProperty] private DrawingImage l95xxSectorsImageOverlay;
     //[ObservableProperty] private bool isL95xxImageStored;

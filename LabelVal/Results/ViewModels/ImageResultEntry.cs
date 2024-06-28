@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Messages;
 using LabelVal.Utilities;
+using System.Linq;
 using LabelVal.V275.ViewModels;
 using LabelVal.V5.ViewModels;
 using MahApps.Metro.Controls.Dialogs;
@@ -197,12 +198,37 @@ public partial class ImageResultEntry : ObservableRecipient,
         }
         else if (device == "L95xx")
         {
-            if (L95xxStoredSectors.Count > 0)
-                if (await OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for this image?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
-                    return;
 
+            if(L95xxCurrentSectorSelected == null)
+            {
+                SendErrorMessage("No sector selected to store.");
+                return;
+            }
+            //Does the selected sector exist in the Stored sectors list?
+            //If so, prompt to overwrite or cancel.
+            
+            var old = L95xxStoredSectors.FirstOrDefault(x => x.Template.Name == L95xxCurrentSectorSelected.Template.Name);
+             if (old != null)
+            {
+                if (await OkCancelDialog("Overwrite Stored Sector", $"The sector already exists.\r\nAre you sure you want to overwrite the stored sector?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
+                    return;
+                else //Remove the old sector from the stored list.
+                    L95xxStoredSectors.Remove(old);
+            }
+
+            //Add the selected sector to the stored sectors list.
+            L95xxStoredSectors.Add(L95xxCurrentSectorSelected);
+            //Remove it from the current sectors list.
+            L95xxCurrentSectors.Remove(L95xxCurrentSectorSelected);
+            
+            //Sort the stored list.
+            var secs = L95xxStoredSectors.ToList();
+            SortList(secs);
+            SortObservableCollectionByList(secs, L95xxStoredSectors);
+
+            //Save the list to the database.
             var temp = new List<L95xxReport>();
-            foreach (var sec in L95xxCurrentSectors)
+            foreach (var sec in L95xxStoredSectors)
                 temp.Add(new L95xxReport() { Report = sec.L95xxPacket, Template = sec.Template });
 
             _ = SelectedDatabase.InsertOrReplace_L95xxResult(new Databases.ImageResults.L95xxResult
@@ -211,10 +237,7 @@ public partial class ImageResultEntry : ObservableRecipient,
                 SourceImageUID = SourceImage.UID,
                 SourceImage = SourceImage.GetBitmapBytes(),
                 Report = JsonConvert.SerializeObject(temp),
-                //StoredImage = L95xxImage
             });
-
-            ClearRead(device, true);
         }
     }
     [RelayCommand]
@@ -302,8 +325,8 @@ public partial class ImageResultEntry : ObservableRecipient,
         {
             L95xxCurrentReport = null;
 
-            L95xxCurrentSectors.Clear();
-            L95xxDiffSectors.Clear();
+            L95xxCurrentSectors.Remove(L95xxCurrentSectorSelected);
+           //L95xxDiffSectors.Clear();
 
             L95xxResultRow = SelectedDatabase.Select_L95xxResult(ImageResults.SelectedImageRoll.UID, SourceImage.UID);
 
