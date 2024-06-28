@@ -1,4 +1,5 @@
 ﻿using LabelVal.Results.Views;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -63,14 +64,9 @@ public partial class Sector : UserControl
     private void btnOverallGrade_Click(object sender, RoutedEventArgs e)
     {
         if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
-        {
             ShowAllLikeSectors();
-        }
         else
-        {
             ShowSectorDetails();
-        }
-
     }
 
     public void ShowSectorDetails()
@@ -93,12 +89,14 @@ public partial class Sector : UserControl
                 break;
             case "v5Current":
                 ImageResultEntry.V5FocusedCurrentSector = (ViewModels.Sector)this.DataContext;
+                ShowSameNameSector("v5Stored");
                 break;
             case "l95xxStored":
                 ImageResultEntry.L95xxFocusedStoredSector = (ViewModels.Sector)this.DataContext;
                 break;
             case "l95xxCurrent":
                 ImageResultEntry.L95xxFocusedCurrentSector = (ViewModels.Sector)this.DataContext;
+                ShowSameNameSector("l95xxStored");
                 break;
         }
     }
@@ -133,18 +131,37 @@ public partial class Sector : UserControl
 
     private void ShowSameNameSector(string targetGroup)
     {
-        var ire = Utilities.VisualTreeHelp.GetVisualParent<ImageResultEntry_V275>(this);
-        if (ire != null)
+        Collection<Sector> sectors = null;
+
+        if (targetGroup.StartsWith("v275"))
         {
-            var sectors = Utilities.VisualTreeHelp.GetVisualChildren<Sector>(ire);
-            foreach (var s in sectors)
+            var ire = Utilities.VisualTreeHelp.GetVisualParent<ImageResultEntry_V275>(this);
+            if (ire != null)
+                sectors = Utilities.VisualTreeHelp.GetVisualChildren<Sector>(ire);
+
+        }
+        else if (targetGroup.StartsWith("v5"))
+        {
+            var ire = Utilities.VisualTreeHelp.GetVisualParent<ImageResultEntry_V5>(this);
+            if (ire != null)
+                sectors = Utilities.VisualTreeHelp.GetVisualChildren<Sector>(ire);
+
+        }
+        else if (targetGroup.StartsWith("l95"))
+        {
+            var ire = Utilities.VisualTreeHelp.GetVisualParent<ImageResultEntry_L95xx>(this);
+            if (ire != null)
+                sectors = Utilities.VisualTreeHelp.GetVisualChildren<Sector>(ire);
+
+        }
+
+        foreach (var s in sectors)
+        {
+            if (s.GroupName == targetGroup && s.SectorName == SectorName)
             {
-                if (s.GroupName == targetGroup && s.SectorName == SectorName)
-                {
-                    if (!s.IsSectorFocused)
-                        s.ShowSectorDetails();
-                    break;
-                }
+                if (!s.IsSectorFocused)
+                    s.ShowSectorDetails();
+                break;
             }
         }
     }

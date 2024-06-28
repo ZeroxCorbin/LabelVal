@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Messages;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -53,6 +54,7 @@ public partial class ImageResultEntry
         if (ImageResults.SelectedScanner == null)
         {
             SendStatusMessage("No scanner selected.", SystemMessages.StatusMessageType.Error);
+            IsV5Working = false;
             return;
         }
 
@@ -61,19 +63,19 @@ public partial class ImageResultEntry
         if (!res.OK)
         {
             SendErrorMessage("Could not get scanner configuration.");
+            IsV5Working = false;
             return;
         }
 
-        var config = (V5_REST_Lib.Models.Config)res.Object;
-
+        var config = (V5_REST_Lib.Models.NewConfig)res.Object;
 
         if (ImageResults.SelectedScanner.IsSimulator)
         {
             var fas = config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource;
-            //var fas = config["response"]["data"]["job"]["channelMap"]["acquisition"]["AcquisitionChannel"]["source"]["FileAcquisitionSource"];
             if (fas == null)
             {
                 SendErrorMessage("The scanner is not in file aquire mode.");
+                IsV5Working = false;
                 return;
             }
 
@@ -104,10 +106,10 @@ public partial class ImageResultEntry
             else if (imageType == "v275Stored")
                 ImageResults.SelectedScanner.FTPClient.UploadFile(V275ResultRow.Stored.GetPngBytes(), path);
 
-
             ImageResults.SelectedScanner.FTPClient.Disconnect();
 
             //Attempt to update the directory in the FileAcquisitionSource
+            //config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.uid = DateTime.Now.Ticks.ToString();
             _ = await ImageResults.SelectedScanner.ScannerController.SendJob(config.response.data);
 
 
@@ -182,12 +184,8 @@ public partial class ImageResultEntry
 
         return true;
     }
-    //[RelayCommand] private void V5Read() => _ = V5ReadTask();
     [RelayCommand] private void V5Load() => _ = V5LoadTask();
 
-    //[RelayCommand] private void V5Inspect() => _ = V5ReadTask(0);
-
-    
     private void V5GetStored()
     {
         V5ResultRow = SelectedDatabase.Select_V5Result(ImageResults.SelectedImageRoll.UID, SourceImage.UID);
@@ -239,7 +237,6 @@ public partial class ImageResultEntry
                 V5StoredSectors.Add(sec);
         }
     }
-
     private void V5GetSectorDiff()
     {
         V5DiffSectors.Clear();
@@ -386,10 +383,16 @@ public partial class ImageResultEntry
                     secAreas.Children.Add(new LineGeometry(new Point(startX, startY), new Point(endX, endY)));
                 }
 
-                var grade = double.TryParse(sec["grading"]?["grade"].ToString(), out double g) ? g : 4.0;
+                if(sec["grading"]?["grade"] != null)
+                {
+                    var grade = double.TryParse(sec["grading"]?["grade"].ToString(), out double g) ? g : 4.0;
 
-                drwGroup.Children.Add(new GeometryDrawing(Brushes.Transparent, new Pen(GetGradeBrush(V5GetLetter(grade)), 4), secAreas));
-
+                    drwGroup.Children.Add(new GeometryDrawing(Brushes.Transparent, new Pen(GetGradeBrush(V5GetLetter(grade)), 4), secAreas));
+                }
+                else
+                {
+                    drwGroup.Children.Add(new GeometryDrawing(Brushes.Transparent, new Pen(Brushes.Black, 4), secAreas));
+                }
                 drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun($"DecodeTool{sec["toolSlot"]}", new Typeface("Arial"), 30.0, new Point(sec["boundingBox"][2]["x"].Value<double>() - 8, sec["boundingBox"][2]["y"].Value<double>() - 8))));
 
                 secCenter.Children.Add(new LineGeometry(new Point(sec["x"].Value<double>() + 10, sec["y"].Value<double>()), new Point(sec["x"].Value<double>() + -10, sec["y"].Value<double>())));

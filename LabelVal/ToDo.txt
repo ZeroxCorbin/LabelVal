@@ -3,7 +3,7 @@ Complete: Change the error and warning border color and width to match the overa
 Complete: Display the details panels when dissimilar sectors are selected. 
 Complete: Clicking on current sector details opens the equivelent stored sector details. Clicking on stored sector details only opens stored. Then if already open current does not overwrite stored.
 Complete: Work on sector coloring based on standard not just random.
-
+Complete: Shift click sector details all sectors open.
 
 Add the instructions for installing com0com.
 
@@ -11,7 +11,7 @@ When viewing the run results and it is a simulation run the sector outlines are 
 
 OCR OCV and blemish are checking the standard and should not.
 
-Shiuft click sector details all sectors open.
+
 
 
 

@@ -164,7 +164,7 @@
                         </Button.Style>
                     </Button>
 
-                    <!--V5 Process Image-->
+                    <!--V5 Process Image--><!--
                     <DockPanel>
                         <DockPanel.Style>
                             <Style TargetType="{x:Type DockPanel}">
@@ -186,7 +186,7 @@
                             </Style>
                         </DockPanel.Style>
 
-                    </DockPanel>
+                    </DockPanel>-->
 
                     <DockPanel HorizontalAlignment="Right">
 
@@ -503,7 +503,7 @@
                     </Button>
 
                     <!--Process V5 Stored Image-->
-                    <Button Command="{Binding V5ProcessCommand}" CommandParameter="v275Stored" ToolTip="V5: Process the stored image with the simulator." 
+                    <!--<Button Command="{Binding V5ProcessCommand}" CommandParameter="v275Stored" ToolTip="V5: Process the stored image with the simulator." 
                                     BorderBrush="{DynamicResource YellowBrush2}">
 
                         <Grid>
@@ -528,7 +528,7 @@
                                 </Style.Triggers>
                             </Style>
                         </Button.Style>
-                    </Button>
+                    </Button>-->
 
                     <Button Command="{Binding ClearReadCommand}" CommandParameter="V275" ToolTip="Clear the current sectors and image.">
 
@@ -821,7 +821,7 @@
                     </Button>
 
                     <!--Process V275 Stored Image-->
-                    <Button Command="{Binding V275ProcessCommand}" CommandParameter="v5Stored" ToolTip="V275: Process the stored image with the simulator." 
+                    <!--<Button Command="{Binding V275ProcessCommand}" CommandParameter="v5Stored" ToolTip="V275: Process the stored image with the simulator." 
                                     BorderBrush="{DynamicResource YellowBrush2}">
                         <Grid>
                             <mah:ProgressRing IsActive="{Binding IsV275Working}" Width="14" Height="14" Foreground="White"/>
@@ -849,7 +849,7 @@
                                 </Style.Triggers>
                             </Style>
                         </Button.Style>
-                    </Button>
+                    </Button>-->
 
                     <Button Command="{Binding ClearReadCommand}" CommandParameter="V5" ToolTip="Clear the current sectors and image.">
 

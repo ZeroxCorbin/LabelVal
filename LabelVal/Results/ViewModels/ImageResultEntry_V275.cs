@@ -67,8 +67,6 @@ public partial class ImageResultEntry
         return V275LoadTask();
     }
 
-    //[RelayCommand] private void V275Inspect() => _ = V275ReadTask(0);
-
     private void V275GetStored()
     {
         V275ResultRow = SelectedDatabase.Select_V275Result(ImageResults.SelectedImageRoll.UID, SourceImage.UID);

@@ -1,5 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using LabelVal.Converters;
+using LabelVal.Messages;
 using LabelVal.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -21,7 +24,7 @@ using V5_REST_Lib.Models;
 namespace LabelVal.V5.ViewModels;
 
 [JsonObject(MemberSerialization.OptIn)]
-public partial class Scanner : ObservableObject
+public partial class Scanner : ObservableRecipient
 {
     private static readonly Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -191,24 +194,86 @@ public partial class Scanner : ObservableObject
             {
                 userChange = true;
                 SelectedJob = jb;
-
             }
         }
     }
 
-
-    [ObservableProperty] private List<string> directories;
+    public ObservableCollection<string> Directories { get; set; } = [];
     [ObservableProperty] private string selectedDirectory;
-    partial void OnSelectedDirectoryChanged(string value)
-    {
-
-    }
+    partial void OnSelectedDirectoryChanged(string value) => ChangeDirectory(value);
 
     public List<string> AcquisitionTypes => ["File", "Camera"];
     [ObservableProperty] private string selectedAcquisitionType;
-    partial void OnSelectedAcquisitionTypeChanged(string value)
-    {
+    partial void OnSelectedAcquisitionTypeChanged(string value) => SwitchAquisitionType(value == "File");
 
+    private async void SwitchAquisitionType(bool file)
+    {
+        var res = await ScannerController.GetConfig();
+
+        if (!res.OK)
+        {
+            SendErrorMessage("Could not get scanner configuration.");
+            return;
+        }
+
+        var config = (V5_REST_Lib.Models.NewConfig)res.Object;
+        var src = config.response.data.job.channelMap.acquisition.AcquisitionChannel.source;
+        if (!file)
+        {
+            if (src.SensorAcquisitionSource != null)
+                return;
+
+            src.FileAcquisitionSource = null;
+            src.SensorAcquisitionSource = new V5_REST_Lib.Models.NewConfig.Sensoracquisitionsource()
+            {
+                baseClass = "ChannelSource",
+                extlight = "inactive",
+                targeting = true,
+                text = "Sensor",
+                trigdebounce = 5000,
+                trigpolarity = "normally-open",
+                uiScale = 1,
+            };
+            src.type = "SensorAcquisitionSource";
+           // src.uid = DateTime.Now.Ticks.ToString();
+        }
+        else
+        {
+            if (src.FileAcquisitionSource != null)
+                return;
+
+            src.SensorAcquisitionSource = null;
+            src.FileAcquisitionSource = new NewConfig.Fileacquisitionsource()
+            {
+                baseClass = "ChannelSource",
+                directory = SelectedDirectory == null ? Directories.First() : SelectedDirectory,
+                uiScale = 1,
+            };
+            src.type = "FileAcquisitionSource";
+            //src.uid = DateTime.Now.Ticks.ToString();
+        }
+
+        _ = await ScannerController.SendJob(config.response.data);
+    }
+    private async void ChangeDirectory(string directory)
+    {
+        var res = await ScannerController.GetConfig();
+
+        if (!res.OK)
+        {
+            SendErrorMessage("Could not get scanner configuration.");
+            return;
+        }
+
+        var config = (V5_REST_Lib.Models.NewConfig)res.Object;
+        var src = config.response.data.job.channelMap.acquisition.AcquisitionChannel.source;
+
+        if(src.FileAcquisitionSource.directory != directory)
+        {
+            src.FileAcquisitionSource.directory = directory;
+            //src.uid = DateTime.Now.Ticks.ToString();
+            _ = await ScannerController.SendJob(config.response.data);
+        }
     }
 
     public ScannerManager Manager { get; set; }
@@ -233,29 +298,47 @@ public partial class Scanner : ObservableObject
         //App.RunController.StateChanged += RunController_StateChanged;
     }
 
+    private void SendErrorMessage(string message) => WeakReferenceMessenger.Default.Send(new SystemMessages.StatusMessage(this, SystemMessages.StatusMessageType.Error, message));
+
+
     private async void ScannerController_ConfigUpdate(JObject json)
     {
         var res = await ScannerController.GetConfig();
         if (res.OK)
         {
-            var config = (Config)res.Object;
+            var config = (NewConfig)res.Object;
             IsSimulator = config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource != null;
+
+            var meta = await ScannerController.Commands.GetMeta();
+            if (meta.OK)
+            {
+                var metaConfig = (Meta)meta.Object;
+
+                // Assuming metaConfig.response.data.FileAcquisitionSource.directory.sources is an array of strings
+                var sources = metaConfig.response.data.FileAcquisitionSource.directory.sources;
+
+                await App.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    // Add new directories from sources to Directories if they're not already present
+                    foreach (var source in sources)
+                        if (!Directories.Contains(source))
+                            Directories.Add(source);
+
+                    // Remove directories from Directories if they're not present in sources
+                    for (int i = Directories.Count - 1; i >= 0; i--)
+                        if (!sources.Contains(Directories[i]))
+                            Directories.RemoveAt(i);
+                });
+            }
 
             if (IsSimulator)
             {
                 SelectedAcquisitionType = "File";
-
-                var meta = await ScannerController.Commands.GetMeta();
-                if (meta.OK)
-                {
-                    var metaConfig = (Meta)meta.Object;
-
-                    Directories = [.. metaConfig.response.data.FileAcquisitionSource.directory.sources];
-                }
+                SelectedDirectory = config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource.directory;
             }
             else
             {
-               SelectedAcquisitionType = "Camera";
+                SelectedAcquisitionType = "Camera";
             }
 
             JobName = null;
@@ -356,7 +439,6 @@ public partial class Scanner : ObservableObject
 
         RawImage = null;
     }
-
     private BitmapImage GetImage(byte[] raw)
     {
         var img = new BitmapImage();
@@ -437,7 +519,7 @@ public partial class Scanner : ObservableObject
         //Draw the image outline the same size as the stored image
         var border = new GeometryDrawing
         {
-            Geometry = new RectangleGeometry(new Rect(0.5, 0.5, Image.PixelWidth-1, Image.PixelHeight-1)),
+            Geometry = new RectangleGeometry(new Rect(0.5, 0.5, Image.PixelWidth - 1, Image.PixelHeight - 1)),
             Pen = new Pen(Brushes.Transparent, 1)
         };
         drwGroup.Children.Add(border);
@@ -493,7 +575,7 @@ public partial class Scanner : ObservableObject
 
                 drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun($"DecodeTool{sec["toolSlot"]}", new Typeface("Arial"), 30.0 / div, new Point((sec["boundingBox"][2]["x"].Value<double>() - 8) / div, (sec["boundingBox"][2]["y"].Value<double>() - 8) / div))));
 
-                secCenter.Children.Add(new LineGeometry(new Point((sec["x"].Value<double>() + 10) / div, sec["y"].Value<double>() / div), new Point((sec["x"].Value<double>() + -10) / div, sec["y"].Value<double>() / div )));
+                secCenter.Children.Add(new LineGeometry(new Point((sec["x"].Value<double>() + 10) / div, sec["y"].Value<double>() / div), new Point((sec["x"].Value<double>() + -10) / div, sec["y"].Value<double>() / div)));
                 secCenter.Children.Add(new LineGeometry(new Point(sec["x"].Value<double>() / div, (sec["y"].Value<double>() + 10) / div), new Point(sec["x"].Value<double>() / div, (sec["y"].Value<double>() + -10) / div)));
             }
         }
@@ -517,9 +599,9 @@ public partial class Scanner : ObservableObject
                 foreach (var r in sec["SymbologyTool"]["regionList"])
                     bndAreas.Children.Add(new RectangleGeometry(
                         new Rect(
-                            r["Region"]["shape"]["RectShape"]["x"].Value<double>() / div, 
-                            r["Region"]["shape"]["RectShape"]["y"].Value<double>() / div, 
-                            r["Region"]["shape"]["RectShape"]["width"].Value<double>() / div, 
+                            r["Region"]["shape"]["RectShape"]["x"].Value<double>() / div,
+                            r["Region"]["shape"]["RectShape"]["y"].Value<double>() / div,
+                            r["Region"]["shape"]["RectShape"]["width"].Value<double>() / div,
                             r["Region"]["shape"]["RectShape"]["height"].Value<double>() / div)
                         ));
         }
@@ -568,34 +650,6 @@ public partial class Scanner : ObservableObject
             null, null, null, null, null, null);
     }
 
-    private async Task ChangeJob(JobSlots.Datum job)
-    {
-        _ = await ScannerController.Commands.PutJobSlots(job);
-        ScannerController_ConfigUpdate(null);
-    }
-
-    //private void UpdateQuickSetRegions()
-    //{
-    //    var photo = new V5_REST_Lib.Models.QuickSet_Photometry();
-    //    var focus = new V5_REST_Lib.Models.QuickSet_Focus();
-
-    //    float x = (float)((CameraDetails.Sensor.PixelColumns - (CameraDetails.Sensor.PixelColumns * QuickSet_ImagePercent)) / 2);
-    //    float y = (float)((CameraDetails.Sensor.PixelRows - (CameraDetails.Sensor.PixelRows * QuickSet_ImagePercent)) / 2);
-
-    //    float width = (float)((CameraDetails.Sensor.PixelColumns * QuickSet_ImagePercent));
-    //    float height = (float)((CameraDetails.Sensor.PixelRows * QuickSet_ImagePercent));
-
-    //    photo.photometry.SetROI(x, y, width, height);
-    //    focus.focus.SetROI(x, y, width, height);
-
-    //    QuickSet_Photometry = photo;
-    //    QuickSet_Focus = focus;
-
-    //    App.Current.Dispatcher.Invoke(() =>
-    //    {
-    //        ImageFocusRegionOverlay = CreateFocusRegionOverlay();
-    //    });
-    //}
 
     [RelayCommand]
     private async Task Connect()
@@ -604,7 +658,7 @@ public partial class Scanner : ObservableObject
 
         if (!ScannerController.IsConnected)
         {
-            if(!await PreLogin())
+            if (!await PreLogin())
                 return;
 
             if (await Task.Run(ScannerController.Connect))
@@ -750,17 +804,24 @@ public partial class Scanner : ObservableObject
         }
     }
 
-    [RelayCommand] private async Task SwitchRun()
+    private async Task ChangeJob(JobSlots.Datum job)
+    {
+        _ = await ScannerController.Commands.PutJobSlots(job);
+        ScannerController_ConfigUpdate(null);
+    }
+    [RelayCommand]
+    private async Task SwitchRun()
     {
         _ = await ScannerController.Commands.ModeRun();
         ScannerController_ConfigUpdate(null);
-    } 
-    [RelayCommand] private async Task SwitchEdit()
+    }
+    [RelayCommand]
+    private async Task SwitchEdit()
     {
-        if(await ScannerController.Commands.ModeSetup())
+        if (await ScannerController.Commands.ModeSetup())
             _ = ScannerController.Commands.TriggerEnable();
         ScannerController_ConfigUpdate(null);
-    } 
+    }
 
     [RelayCommand]
     private void Reboot()
