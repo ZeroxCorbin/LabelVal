@@ -1,4 +1,5 @@
-﻿using LabelVal.WindowViews;
+﻿using LabelVal.WindowViewModels;
+using LabelVal.WindowViews;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
@@ -36,8 +37,19 @@ public partial class V275 : UserControl
         e.Handled = true;
     }
 
-    public void btnShowDetails_Click(object sender, RoutedEventArgs e) => ((MainWindowView)App.Current.MainWindow).NodeDetails.IsLeftDrawerOpen = !((MainWindowView)App.Current.MainWindow).NodeDetails.IsLeftDrawerOpen;
-
+    public void btnShowDetails_Click(object sender, RoutedEventArgs e)
+    {
+        var view = ((MainWindowView)App.Current.MainWindow).NodeDetails;
+        var vm = ((MainWindowView)App.Current.MainWindow).DataContext as MainWindowViewModel;
+        if (view.LeftDrawerContent == null)
+        {
+            var details = new Views.NodeDetails();
+            details.DataContext = vm.NodeDetails;
+            view.LeftDrawerContent = details;
+        }
+        view.IsLeftDrawerOpen = !view.IsLeftDrawerOpen;
+     }
+     
     private void btnShowSettings_Click(object sender, RoutedEventArgs e) => drwSettings.IsTopDrawerOpen = !drwSettings.IsTopDrawerOpen;
 
     private void btnOpenInBrowser_Click(object sender, RoutedEventArgs e)

@@ -1,4 +1,5 @@
-﻿using LabelVal.WindowViews;
+﻿using LabelVal.WindowViewModels;
+using LabelVal.WindowViews;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,5 +26,16 @@ public partial class Printer : UserControl
         InitializeComponent();
     }
 
-    private void btnShowPrinterDetails_Click(object sender, RoutedEventArgs e) => ((MainWindowView)App.Current.MainWindow).PrinterDetails.IsLeftDrawerOpen = !((MainWindowView)App.Current.MainWindow).PrinterDetails.IsLeftDrawerOpen;
+    private void btnShowPrinterDetails_Click(object sender, RoutedEventArgs e)
+    {
+        var view = ((MainWindowView)App.Current.MainWindow).PrinterDetails;
+        var vm = ((MainWindowView)App.Current.MainWindow).DataContext as MainWindowViewModel;
+        if (view.LeftDrawerContent == null)
+        {
+            var details = new Views.PrinterDetails();
+            details.DataContext = vm.PrinterDetails;
+            view.LeftDrawerContent = details;
+        }
+        view.IsLeftDrawerOpen = !view.IsLeftDrawerOpen;
+    }
 }

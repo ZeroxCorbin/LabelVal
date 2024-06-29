@@ -52,32 +52,6 @@
                         <TextBlock Text="Source Image" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                     </md:Card>
 
-                    <!--Only Print Source Image--><!--
-                    <Button Command="{Binding V275ProcessCommand}" CommandParameter="print" ToolTip="Print the source image.">
-
-                        <Grid>
-                            <mah:ProgressRing IsActive="{Binding IsV275Working}" Width="14" Height="14" Foreground="White"/>
-                            <iconPacks:PackIconMaterial Kind="Printer" Height="14" Width="14" Margin="3"/>
-                        </Grid>
-
-                        <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
-                                <Setter Property="Visibility" Value="Collapsed"/>
-
-                                <Style.Triggers>
-
-                                    <DataTrigger Binding="{Binding ImageResults.SelectedNode.IsLoggedIn_Control}" Value="False">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                    </DataTrigger>
-
-                                    <DataTrigger Binding="{Binding ImageResults.SelectedNode}" Value="{x:Null}">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>-->
-
                     <!--V275 Process Source Image-->
                     <Button Command="{Binding V275ProcessCommand}" CommandParameter="source" ToolTip="V275: Process the source image with the simulator." 
                                     BorderBrush="{DynamicResource YellowBrush2}">

@@ -101,22 +101,22 @@
 
     <DockPanel>
         <md:DrawerHost x:Name="NodeDetails" VerticalAlignment="Stretch" OpenMode="Standard">
-
-            <md:DrawerHost.LeftDrawerContent>
+            
+            <!--<md:DrawerHost.LeftDrawerContent>
                 <v275:NodeDetails DataContext="{Binding NodeDetails}"/>
-            </md:DrawerHost.LeftDrawerContent>
+            </md:DrawerHost.LeftDrawerContent>-->
 
             <md:DrawerHost x:Name="PrinterDetails" VerticalAlignment="Stretch" OpenMode="Standard">
 
-                <md:DrawerHost.LeftDrawerContent>
+                <!--<md:DrawerHost.LeftDrawerContent>
                     <printer:PrinterDetails DataContext="{Binding PrinterDetails}"/>
-                </md:DrawerHost.LeftDrawerContent>
+                </md:DrawerHost.LeftDrawerContent>-->
 
                 <md:DrawerHost x:Name="ScannerDetails" VerticalAlignment="Stretch" OpenMode="Standard">
 
-                    <md:DrawerHost.LeftDrawerContent>
+                    <!--<md:DrawerHost.LeftDrawerContent>
                         <v5:ScannerDetails DataContext="{Binding ScannerDetails}"/>
-                    </md:DrawerHost.LeftDrawerContent>
+                    </md:DrawerHost.LeftDrawerContent>-->
 
                     <DockPanel>
 

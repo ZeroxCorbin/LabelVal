@@ -1,21 +1,9 @@
-﻿using LabelVal.Dialogs;
-using LabelVal.Sectors.Views;
-using LabelVal.WindowViews;
-using MahApps.Metro.Controls.Dialogs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using LabelVal.Sectors.Views;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace LabelVal.Results.Views;
 /// <summary>
@@ -70,8 +58,10 @@ public partial class ImageResultEntry_L95xx : UserControl
         }
         else
         {
-            var pop = new PopupSectorsDetails();
-            pop.DataContext = ((ViewModels.ImageResultEntry)DataContext).L95xxStoredSectors;
+            var pop = new PopupSectorsDetails
+            {
+                DataContext = ((ViewModels.ImageResultEntry)DataContext).L95xxStoredSectors
+            };
 
             pop.Popup.PlacementTarget = (Button)sender;
             pop.Popup.IsOpen = true;
@@ -90,8 +80,10 @@ public partial class ImageResultEntry_L95xx : UserControl
         }
         else
         {
-            var pop = new PopupSectorsDetails();
-            pop.DataContext = ((ViewModels.ImageResultEntry)DataContext).L95xxCurrentSectors;
+            var pop = new PopupSectorsDetails
+            {
+                DataContext = ((ViewModels.ImageResultEntry)DataContext).L95xxCurrentSectors
+            };
 
             pop.Popup.PlacementTarget = (Button)sender;
             pop.Popup.IsOpen = true;
