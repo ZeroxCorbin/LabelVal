@@ -91,7 +91,6 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     [SQLite.Ignore] public Databases.ImageRolls ImageRollsDatabase { get; set; }
 
     public ImageRollEntry() { Images.CollectionChanged += (s, e) => ImageCount = Images.Count; IsActive = true; }
-
     public ImageRollEntry(string name, string path, PrinterSettings printerSettings, Databases.ImageRolls imageRollsDatabase)
     {
         SelectedPrinter = printerSettings;
@@ -139,7 +138,6 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
 
         await Task.WhenAll([.. taskList]);
     }
-
     public async Task LoadImagesFromDatabase()
     {
         if (Images.Count > 0)
@@ -185,6 +183,30 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
             var image = new ImageEntry(UID, path, TargetDPI, TargetDPI)
             {
                 Order = order
+            };
+
+            if (Images.Any(e => e.UID == image.UID))
+            {
+                Logger.Warn("Image already exists in roll: {path}", path);
+                return null;
+            }
+
+            return image;
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(ex, "Failed to load image: {name}", path);
+        }
+
+        return null;
+    }
+    public ImageEntry GetNewImageEntry(byte[] rawImage)
+    {
+        try
+        {
+            var image = new ImageEntry(UID, rawImage, TargetDPI, TargetDPI)
+            {
+                Order = Images.Count > 0 ? Images.Max(img => img.Order) + 1 : 1
             };
 
             if (Images.Any(e => e.UID == image.UID))

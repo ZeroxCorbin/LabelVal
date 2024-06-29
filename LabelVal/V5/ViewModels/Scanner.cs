@@ -1,7 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.Converters;
+using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Messages;
 using LabelVal.Utilities;
 using Newtonsoft.Json;
@@ -24,7 +26,7 @@ using V5_REST_Lib.Models;
 namespace LabelVal.V5.ViewModels;
 
 [JsonObject(MemberSerialization.OptIn)]
-public partial class Scanner : ObservableRecipient
+public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMessage<ImageRollEntry>>
 {
     private static readonly Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -147,6 +149,8 @@ public partial class Scanner : ObservableRecipient
     }
 
     [ObservableProperty] private V5_REST_Lib.Controller.ScannerModes scannerMode;
+
+    [ObservableProperty] private ImageRollEntry selectedImageRoll;
 
     [ObservableProperty] private bool repeatTrigger;
 
@@ -295,8 +299,11 @@ public partial class Scanner : ObservableRecipient
         FTPHost = FTPClient.Host;
         FTPPort = FTPClient.Port;
         FTPRemotePath = FTPClient.RemotePath;
-        //App.RunController.StateChanged += RunController_StateChanged;
+        
+        IsActive = true;
     }
+
+    public void Receive(PropertyChangedMessage<ImageRollEntry> message) => SelectedImageRoll = message.NewValue;
 
     private void SendErrorMessage(string message) => WeakReferenceMessenger.Default.Send(new SystemMessages.StatusMessage(this, SystemMessages.StatusMessageType.Error, message));
 
@@ -827,6 +834,36 @@ public partial class Scanner : ObservableRecipient
     private void Reboot()
     {
         _ = ScannerController.Reboot();
+    }
+    [RelayCommand]
+    private void AddToImageRoll()
+    {
+        if(SelectedImageRoll == null)
+        {
+            SendErrorMessage("No image roll selected.");
+            return;
+        }
+
+        if(SelectedImageRoll.IsRooted)
+        {
+            SendErrorMessage("Cannot add to a rooted image roll.");
+            return;
+        }
+
+        if(SelectedImageRoll.IsLocked)
+        {
+            SendErrorMessage("Cannot add to a locked image roll.");
+            return;
+        }
+
+        if (RawImage == null)
+        {
+            SendErrorMessage("No image to add.");
+            return;
+        }
+        var imagEntry = SelectedImageRoll.GetNewImageEntry(RawImage);
+
+        SelectedImageRoll.AddImage(imagEntry);
     }
 
     private void Clear()
