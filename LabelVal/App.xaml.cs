@@ -8,7 +8,9 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using CommunityToolkit.Mvvm.Messaging;
 using ControlzEx.Theming;
+using LabelVal.Messages;
 using LabelVal.Properties;
 using LibSimpleDatabase;
 using NLog;
@@ -24,6 +26,7 @@ namespace LabelVal;
 /// </summary>
 public partial class App : Application
 {
+    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
     public static SimpleDatabase Settings { get; private set; }
 
 #if DEBUG
@@ -60,6 +63,8 @@ public partial class App : Application
     {
         return $"Run_{timeDate}{DatabaseExtension}";
     }
+
+    public static void  SendMessage(Exception ex) => _ = WeakReferenceMessenger.Default.Send(new SystemMessages.StatusMessage(ex));
 
     public App()
     {
@@ -183,24 +188,27 @@ public partial class App : Application
         var message = $"Unhandled exception ({source})";
         try
         {
-            //NLog.LogManager.GetCurrentClassLogger().Error(exception);
+            Logger.Error(exception, message);
 
             var assemblyName = Assembly.GetExecutingAssembly().GetName();
             message = string.Format("Unhandled exception in {0} v{1}", assemblyName.Name, assemblyName.Version);
         }
         catch (Exception ex)
         {
-            LogManager.GetCurrentClassLogger().Error(ex, "Exception in LogUnhandledException");
+            Logger.Error(ex, "Exception in LogUnhandledException");
         }
         finally
         {
-            LogManager.GetCurrentClassLogger().Error(exception, message);
+            Logger.Error(exception, message);
         }
 
-        _ = MessageBox.Show($"{message}\r\n{exception.Message}", "Unhandled Exception!", MessageBoxButton.OK);
-
         if (shutdown)
+        {
+            _ = MessageBox.Show($"{message}\r\n{exception.Message}", "Unhandled Exception!", MessageBoxButton.OK);
             Current.Dispatcher.Invoke(Shutdown);
+        }
+        else
+            SendMessage(exception);
     }
 
     public static void RecursiveDelete(DirectoryInfo baseDir)

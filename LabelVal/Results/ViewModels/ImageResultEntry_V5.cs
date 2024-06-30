@@ -53,7 +53,7 @@ public partial class ImageResultEntry
 
         if (ImageResults.SelectedScanner == null)
         {
-            SendStatusMessage("No scanner selected.", SystemMessages.StatusMessageType.Error);
+            UpdateStatus("No scanner selected.", SystemMessages.StatusMessageType.Error);
             IsV5Working = false;
             return;
         }
@@ -62,7 +62,7 @@ public partial class ImageResultEntry
 
         if (!res.OK)
         {
-            SendErrorMessage("Could not get scanner configuration.");
+            UpdateStatus("Could not get scanner configuration.", SystemMessages.StatusMessageType.Error);
             IsV5Working = false;
             return;
         }
@@ -74,7 +74,7 @@ public partial class ImageResultEntry
             var fas = config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource;
             if (fas == null)
             {
-                SendErrorMessage("The scanner is not in file aquire mode.");
+                UpdateStatus("The scanner is not in file aquire mode.", SystemMessages.StatusMessageType.Error);
                 IsV5Working = false;
                 return;
             }
@@ -126,7 +126,7 @@ public partial class ImageResultEntry
     {
         if (!triggerResults.OK)
         {
-            SendErrorMessage("Could not trigger the scanner.");
+            UpdateStatus("Could not trigger the scanner.", SystemMessages.StatusMessageType.Error);
 
             V5CurrentReport = null;
 

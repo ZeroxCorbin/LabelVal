@@ -28,8 +28,6 @@ namespace LabelVal.V5.ViewModels;
 [JsonObject(MemberSerialization.OptIn)]
 public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMessage<ImageRollEntry>>
 {
-    private static readonly Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-
     public V5_REST_Lib.Controller ScannerController { get; } = new();
     public V5_REST_Lib.FTP.FTPClient FTPClient { get; } = new();
 
@@ -216,7 +214,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
         if (!res.OK)
         {
-            SendErrorMessage("Could not get scanner configuration.");
+            UpdateStatus("Could not get scanner configuration.", SystemMessages.StatusMessageType.Error);
             return;
         }
 
@@ -265,7 +263,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
         if (!res.OK)
         {
-            SendErrorMessage("Could not get scanner configuration.");
+            UpdateStatus("Could not get scanner configuration.", SystemMessages.StatusMessageType.Error);
             return;
         }
 
@@ -304,9 +302,6 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     }
 
     public void Receive(PropertyChangedMessage<ImageRollEntry> message) => SelectedImageRoll = message.NewValue;
-
-    private void SendErrorMessage(string message) => WeakReferenceMessenger.Default.Send(new SystemMessages.StatusMessage(this, SystemMessages.StatusMessageType.Error, message));
-
 
     private async void ScannerController_ConfigUpdate(JObject json)
     {
@@ -412,7 +407,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
                 }
 
             }
-            catch (Exception ex) { Logger.Error(ex); }
+            catch (Exception ex) { UpdateStatus(ex); }
         }
     }
     private async void ScannerController_ImageUpdate(JObject json)
@@ -840,25 +835,25 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     {
         if(SelectedImageRoll == null)
         {
-            SendErrorMessage("No image roll selected.");
+            UpdateStatus("No image roll selected.", SystemMessages.StatusMessageType.Warning);
             return;
         }
 
         if(SelectedImageRoll.IsRooted)
         {
-            SendErrorMessage("Cannot add to a rooted image roll.");
+            UpdateStatus("Cannot add to a rooted image roll.",SystemMessages.StatusMessageType.Warning);
             return;
         }
 
         if(SelectedImageRoll.IsLocked)
         {
-            SendErrorMessage("Cannot add to a locked image roll.");
+            UpdateStatus("Cannot add to a locked image roll.",SystemMessages.StatusMessageType.Warning);
             return;
         }
 
         if (RawImage == null)
         {
-            SendErrorMessage("No image to add.");
+            UpdateStatus("No image to add.", SystemMessages.StatusMessageType.Warning);
             return;
         }
         var imagEntry = SelectedImageRoll.GetNewImageEntry(RawImage);
@@ -877,4 +872,47 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         Capture = null;
     }
 
+
+    #region Logging & Status Messages
+
+    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+    private void UpdateStatus(string message)
+    {
+        UpdateStatus(message);
+        _ = Messenger.Send(new SystemMessages.StatusMessage(message, SystemMessages.StatusMessageType.Info));
+    }
+    private void UpdateStatus(string message, SystemMessages.StatusMessageType type)
+    {
+        switch (type)
+        {
+            case SystemMessages.StatusMessageType.Info:
+                UpdateStatus(message);
+                break;
+            case SystemMessages.StatusMessageType.Debug:
+                Logger.Debug(message);
+                break;
+            case SystemMessages.StatusMessageType.Warning:
+                Logger.Warn(message);
+                break;
+            case SystemMessages.StatusMessageType.Error:
+                Logger.Error(message);
+                break;
+            default:
+                UpdateStatus(message);
+                break;
+        }
+        _ = Messenger.Send(new SystemMessages.StatusMessage(message, type));
+    }
+    private void UpdateStatus(Exception ex)
+    {
+        Logger.Error(ex);
+        _ = Messenger.Send(new SystemMessages.StatusMessage(ex));
+    }
+    private void UpdateStatus(string message, Exception ex)
+    {
+        Logger.Error(ex);
+        _ = Messenger.Send(new SystemMessages.StatusMessage(ex));
+    }
+
+    #endregion
 }

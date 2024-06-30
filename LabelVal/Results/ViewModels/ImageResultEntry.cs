@@ -19,6 +19,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using System.Data;
 
 namespace LabelVal.Results.ViewModels;
 
@@ -28,10 +29,8 @@ public partial class ImageResultEntry : ObservableRecipient,
    // IRecipient<PropertyChangedMessage<Scanner>>,
     IRecipient<PropertyChangedMessage<PrinterSettings>>
 {
-
     public delegate void BringIntoViewDelegate();
     public event BringIntoViewDelegate BringIntoView;
-
 
     public delegate void DeleteImageDelegate(ImageResultEntry imageResults);
     public event DeleteImageDelegate DeleteImage;
@@ -91,10 +90,6 @@ public partial class ImageResultEntry : ObservableRecipient,
 
         IsActive = true;
     }
-
-
-    private void SendStatusMessage(string message, SystemMessages.StatusMessageType type) => WeakReferenceMessenger.Default.Send(new SystemMessages.StatusMessage(this, type, message));
-    private void SendErrorMessage(string message) => WeakReferenceMessenger.Default.Send(new SystemMessages.StatusMessage(this, SystemMessages.StatusMessageType.Error, message));
 
     //public void Receive(PropertyChangedMessage<Node> message) => SelectedNode = message.NewValue;
     public void Receive(PropertyChangedMessage<Databases.ImageResults> message) => SelectedDatabase = message.NewValue;
@@ -201,7 +196,7 @@ public partial class ImageResultEntry : ObservableRecipient,
 
             if(L95xxCurrentSectorSelected == null)
             {
-                SendErrorMessage("No sector selected to store.");
+                UpdateStatus("No sector selected to store.", SystemMessages.StatusMessageType.Error);
                 return;
             }
             //Does the selected sector exist in the Stored sectors list?
@@ -429,4 +424,48 @@ public partial class ImageResultEntry : ObservableRecipient,
             return distanceComparison;
         });
     }
+
+
+    #region Logging & Status Messages
+
+    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+    private void UpdateStatus(string message)
+    {
+        UpdateStatus(message);
+        _ = Messenger.Send(new SystemMessages.StatusMessage(message, SystemMessages.StatusMessageType.Info));
+    }
+    private void UpdateStatus(string message, SystemMessages.StatusMessageType type)
+    {
+        switch (type)
+        {
+            case SystemMessages.StatusMessageType.Info:
+                UpdateStatus(message);
+                break;
+            case SystemMessages.StatusMessageType.Debug:
+                Logger.Debug(message);
+                break;
+            case SystemMessages.StatusMessageType.Warning:
+                Logger.Warn(message);
+                break;
+            case SystemMessages.StatusMessageType.Error:
+                Logger.Error(message);
+                break;
+            default:
+                UpdateStatus(message);
+                break;
+        }
+        _ = Messenger.Send(new SystemMessages.StatusMessage(message, type));
+    }
+    private void UpdateStatus(Exception ex)
+    {
+        Logger.Error(ex);
+        _ = Messenger.Send(new SystemMessages.StatusMessage(ex));
+    }
+    private void UpdateStatus(string message, Exception ex)
+    {
+        Logger.Error(ex);
+        _ = Messenger.Send(new SystemMessages.StatusMessage(ex));
+    }
+
+    #endregion
 }

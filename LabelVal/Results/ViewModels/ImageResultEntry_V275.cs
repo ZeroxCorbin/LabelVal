@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Messages;
 using LabelVal.Utilities;
@@ -130,7 +131,7 @@ public partial class ImageResultEntry
         V275_REST_lib.Controller.FullReport report;
         if ((report = await ImageResults.SelectedNode.Connection.Read(repeat, !ImageResults.SelectedNode.IsSimulator)) == null)
         {
-            SendStatusMessage(ImageResults.SelectedNode.Connection.Status, SystemMessages.StatusMessageType.Error);
+            UpdateStatus(ImageResults.SelectedNode.Connection.Status, SystemMessages.StatusMessageType.Error);
 
             V275CurrentTemplate = null;
             V275CurrentReport = null;
@@ -283,7 +284,7 @@ public partial class ImageResultEntry
     {
         if (!await ImageResults.SelectedNode.Connection.DeleteSectors())
         {
-            SendStatusMessage(ImageResults.SelectedNode.Connection.Status, SystemMessages.StatusMessageType.Error);
+            UpdateStatus(ImageResults.SelectedNode.Connection.Status, SystemMessages.StatusMessageType.Error);
             return -1;
         }
 
@@ -291,7 +292,7 @@ public partial class ImageResultEntry
         {
             if (!await ImageResults.SelectedNode.Connection.DetectSectors())
             {
-                SendStatusMessage(ImageResults.SelectedNode.Connection.Status, SystemMessages.StatusMessageType.Error);
+                UpdateStatus(ImageResults.SelectedNode.Connection.Status, SystemMessages.StatusMessageType.Error);
                 return -1;
             }
 
@@ -302,7 +303,7 @@ public partial class ImageResultEntry
         {
             if (!await ImageResults.SelectedNode.Connection.AddSector(sec.Template.Name, JsonConvert.SerializeObject(sec.V275Sector)))
             {
-                SendStatusMessage(ImageResults.SelectedNode.Connection.Status, SystemMessages.StatusMessageType.Error);
+                UpdateStatus(ImageResults.SelectedNode.Connection.Status, SystemMessages.StatusMessageType.Error);
                 return -1;
             }
 
@@ -314,7 +315,7 @@ public partial class ImageResultEntry
                     {
                         if (layer.value != 0)
                         {
-                            SendStatusMessage(ImageResults.SelectedNode.Connection.Status, SystemMessages.StatusMessageType.Error);
+                            UpdateStatus(ImageResults.SelectedNode.Connection.Status, SystemMessages.StatusMessageType.Error);
                             return -1;
                         }
                     }
@@ -652,4 +653,5 @@ public partial class ImageResultEntry
                                         : (object)null;
         }
     }
+
 }

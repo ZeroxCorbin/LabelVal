@@ -5,36 +5,39 @@ using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.Messages;
 using LabelVal.Run;
 using LabelVal.V275.ViewModels;
-using MaterialDesignThemes.Wpf.Converters.CircularProgressBar;
+using System;
 
 namespace LabelVal.WindowViewModels;
 public partial class RunViewModel : ObservableRecipient, IRecipient<PropertyChangedMessage<Node>>
 {
-    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-
     public Controller RunController { get; set; } = new Controller();
 
     [ObservableProperty] private Node selectedNode;
-
 
     [ObservableProperty] private Controller.RunStates state = Controller.RunStates.IDLE;
 
     [ObservableProperty] private int loopCount = App.Settings.GetValue(nameof(LoopCount), 1, true);
     partial void OnLoopCountChanged(int value) { App.Settings.SetValue(nameof(LoopCount), value); }
 
-    public RunViewModel() => RunController.RunStateChange += RunController_RunStateChange;
+    public RunViewModel()
+    {
+        RunController.RunStateChange += RunController_RunStateChange;
+    }
 
-    public void Receive(PropertyChangedMessage<Node> message) => SelectedNode = message.NewValue;
+    public void Receive(PropertyChangedMessage<Node> message)
+    {
+        SelectedNode = message.NewValue;
+    }
 
     [RelayCommand]
     private void StartRun()
     {
-        SendStatusMessage("StartRun", SystemMessages.StatusMessageType.Control);
+        SendControlMessage("StartRun");
     }
 
     public void StartRunRequest()
     {
-        Logger.Info($"Starting Run: {RunController.SelectedImageRoll.Name}; {RunController.LoopCount}");
+        UpdateStatus($"Starting Run: {RunController.SelectedImageRoll.Name}; {RunController.LoopCount}");
 
         RunController.StartAsync();
     }
@@ -78,6 +81,52 @@ public partial class RunViewModel : ObservableRecipient, IRecipient<PropertyChan
         }
     }
 
-    private void SendStatusMessage(string message, SystemMessages.StatusMessageType type) => WeakReferenceMessenger.Default.Send(new SystemMessages.StatusMessage(this, type, message));
+    #region Logging & Status Messages
+
+    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+    private void UpdateStatus(string message)
+    {
+        UpdateStatus(message);
+        _ = Messenger.Send(new SystemMessages.StatusMessage(message, SystemMessages.StatusMessageType.Info));
+    }
+    private void UpdateStatus(string message, SystemMessages.StatusMessageType type)
+    {
+        switch (type)
+        {
+            case SystemMessages.StatusMessageType.Info:
+                UpdateStatus(message);
+                break;
+            case SystemMessages.StatusMessageType.Debug:
+                Logger.Debug(message);
+                break;
+            case SystemMessages.StatusMessageType.Warning:
+                Logger.Warn(message);
+                break;
+            case SystemMessages.StatusMessageType.Error:
+                Logger.Error(message);
+                break;
+            default:
+                UpdateStatus(message);
+                break;
+        }
+        _ = Messenger.Send(new SystemMessages.StatusMessage(message, type));
+    }
+    private void UpdateStatus(Exception ex)
+    {
+        Logger.Error(ex);
+        _ = Messenger.Send(new SystemMessages.StatusMessage(ex));
+    }
+    private void UpdateStatus(string message, Exception ex)
+    {
+        Logger.Error(ex);
+        _ = Messenger.Send(new SystemMessages.StatusMessage(ex));
+    }
+
+    private void SendControlMessage(string message)
+    {
+        _ = Messenger.Send(new SystemMessages.ControlMessage(this, message));
+    }
+
+    #endregion
 
 }

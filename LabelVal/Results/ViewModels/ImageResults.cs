@@ -29,11 +29,9 @@ public partial class ImageResults : ObservableRecipient,
     IRecipient<PropertyChangedMessage<Databases.ImageResults>>,
     IRecipient<PropertyChangedMessage<Scanner>>,
     IRecipient<PropertyChangedMessage<PrinterSettings>>,
-    IRecipient<SystemMessages.StatusMessage>
+    IRecipient<SystemMessages.ControlMessage>
 
 {
-    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-
     private int PrintCount => App.Settings.GetValue<int>(nameof(PrintCount));
 
     public ObservableCollection<ImageResultEntry> ImageResultsList { get; } = [];
@@ -125,7 +123,7 @@ public partial class ImageResults : ObservableRecipient,
             //SelectedScanner.ScannerController.ConfigUpdate += ScannerController_ConfigUpdate;
         }
     }
-    public void Receive(SystemMessages.StatusMessage message)
+    public void Receive(SystemMessages.ControlMessage message)
     {
         switch (message.Value)
         {
@@ -139,8 +137,6 @@ public partial class ImageResults : ObservableRecipient,
                 break;
         }
     }
-    private void SendStatusMessage(string message, SystemMessages.StatusMessageType type) => WeakReferenceMessenger.Default.Send(new SystemMessages.StatusMessage(this, type, message));
-    private void SendErrorMessage(string message) => WeakReferenceMessenger.Default.Send(new SystemMessages.StatusMessage(this, SystemMessages.StatusMessageType.Error, message));
 
     public void ClearImageResultsList()
     {
@@ -180,7 +176,6 @@ public partial class ImageResults : ObservableRecipient,
         tmp.V275ProcessImage += V275ProcessImage;
         ImageResultsList.Add(tmp);
     }
-
     private void RemoveImageResultEntry(ImageEntry img)
     {
         var itm = ImageResultsList.FirstOrDefault(ir => ir.SourceImage == img);
@@ -220,7 +215,6 @@ public partial class ImageResults : ObservableRecipient,
         if (newImages != null && newImages.Count != 0)
             InsertImageAtOrder(newImages, 1);
     }
-
     [RelayCommand]
     private void AddImageAbove(ImageResultEntry imageResult)
     {
@@ -228,7 +222,6 @@ public partial class ImageResults : ObservableRecipient,
         if (newImages != null && newImages.Count != 0)
             InsertImageAtOrder(newImages, imageResult.SourceImage.Order);
     }
-
     [RelayCommand]
     private void AddImageBelow(ImageResultEntry imageResult)
     {
@@ -236,7 +229,6 @@ public partial class ImageResults : ObservableRecipient,
         if (newImages != null && newImages.Count != 0)
             InsertImageAtOrder(newImages, imageResult.SourceImage.Order + 1);
     }
-
     [RelayCommand]
     private void AddImageBottom()
     {
@@ -264,7 +256,6 @@ public partial class ImageResults : ObservableRecipient,
 
         return null;
     }
-
     private List<ImageResultEntry> PromptForNewImages()
     {
         var settings = new Utilities.FileUtilities.LoadFileDialogSettings
@@ -293,7 +284,6 @@ public partial class ImageResults : ObservableRecipient,
 
         return null;
     }
-
 
     private void AdjustOrderForMove(ImageResultEntry itemToMove, bool increase)
     {
@@ -432,7 +422,7 @@ public partial class ImageResults : ObservableRecipient,
     {
         if (SelectedNode == null)
         {
-            SendStatusMessage("No node selected.", SystemMessages.StatusMessageType.Warning);
+            StatusMessage("No node selected.", SystemMessages.StatusMessageType.Warning);
 
             var printer = new Printer.Controller();
 
@@ -472,7 +462,7 @@ public partial class ImageResults : ObservableRecipient,
 
             if (!await SelectedNode.Connection.Commands.TriggerSimulator(new V275_REST_Lib.Models.SimulationTrigger() { image = img.GetPngBytes(), dpi = (int)img.Image.DpiX }))
             {
-                SendErrorMessage("Error triggering the simulator.");
+                StatusMessage("Error triggering the simulator.");
                 imageResults.IsV275Working = false;
                 return;
             }
@@ -553,7 +543,7 @@ public partial class ImageResults : ObservableRecipient,
 
                     if (verRes > 0)
                     {
-                        SendErrorMessage("Could not delete all simulator images.");
+                        StatusMessage("Could not delete all simulator images.");
                         imageResults.IsV275Working = false;
                         return;
                     }
@@ -582,7 +572,7 @@ public partial class ImageResults : ObservableRecipient,
                 {
                     if (!sim.SaveImage(prepend + Path.GetFileName(imageResults.SourceImage.Path), imageResults.SourceImage.GetBitmapBytes()))
                     {
-                        SendErrorMessage("Could not copy the image to the simulator images directory.");
+                        StatusMessage("Could not copy the image to the simulator images directory.");
                         imageResults.IsV275Working = false;
                         return;
                     }
@@ -591,7 +581,7 @@ public partial class ImageResults : ObservableRecipient,
                 {
                     if (!sim.SaveImage(prepend + Path.GetFileName(imageResults.SourceImage.Path), imageResults.V275ResultRow.Stored.GetPngBytes()))
                     {
-                        SendErrorMessage("Could not save the image to the simulator images directory.");
+                        StatusMessage("Could not save the image to the simulator images directory.");
                         imageResults.IsV275Working = false;
                         return;
                     }
@@ -600,7 +590,7 @@ public partial class ImageResults : ObservableRecipient,
                 {
                     if (!sim.SaveImage(prepend + Path.GetFileName(imageResults.SourceImage.Path), imageResults.V5ResultRow.Stored.GetPngBytes()))
                     {
-                        SendErrorMessage("Could not save the image to the simulator images directory.");
+                        StatusMessage("Could not save the image to the simulator images directory.");
                         imageResults.IsV275Working = false;
                         return;
                     }
@@ -610,7 +600,7 @@ public partial class ImageResults : ObservableRecipient,
                 {
                     if (!await SelectedNode.Connection.Commands.TriggerSimulator())
                     {
-                        SendErrorMessage("Error triggering the simulator.");
+                        StatusMessage("Error triggering the simulator.");
                         imageResults.IsV275Working = false;
                         return;
                     }
@@ -623,9 +613,8 @@ public partial class ImageResults : ObservableRecipient,
             }
             catch (Exception ex)
             {
-                SendErrorMessage(ex.Message);
+                StatusMessage(ex.Message);
                 imageResults.IsV275Working = false;
-                Logger.Error(ex);
             }
         else
         {
@@ -706,7 +695,7 @@ public partial class ImageResults : ObservableRecipient,
             {
                 var sectors = SelectedNode.Connection.CreateSectors(SelectedNode.Connection.SetupDetectEvent, V275GetTableID(SelectedImageRoll.SelectedGS1Table), SelectedNode.Symbologies);
 
-                Logger.Info("Creating sectors.");
+                StatusMessage("Creating sectors.", SystemMessages.StatusMessageType.Info);
 
                 foreach (var sec in sectors)
                 {
@@ -719,7 +708,7 @@ public partial class ImageResults : ObservableRecipient,
             }
         }
 
-        Logger.Info("Reading results and Image.");
+        StatusMessage("Reading results and Image.", SystemMessages.StatusMessageType.Info);
         if (!await TempV275Repeat[repeat].ImageResult.V275ReadTask(repeat))
         {
             ProcessRepeatFault(repeat);
@@ -814,4 +803,43 @@ public partial class ImageResults : ObservableRecipient,
     }
 
 
+    #region Logging & Status Messages
+
+    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+    private void StatusMessage(string message)
+    {
+        Logger.Info(message);
+        _ = Messenger.Send(new SystemMessages.StatusMessage(message, SystemMessages.StatusMessageType.Info));
+    }
+    private void StatusMessage(string message, SystemMessages.StatusMessageType type)
+    {
+        switch (type)
+        {
+            case SystemMessages.StatusMessageType.Info:
+                Logger.Info(message);
+                break;
+            case SystemMessages.StatusMessageType.Warning:
+                Logger.Warn(message);
+                break;
+            case SystemMessages.StatusMessageType.Debug:
+                Logger.Debug(message);
+                break;
+            default:
+                Logger.Info(message);
+                break;
+        }
+        _ = Messenger.Send(new SystemMessages.StatusMessage(message, type));
+    }
+    private void StatusMessage(Exception ex)
+    {
+        Logger.Error(ex);
+        _ = Messenger.Send(new SystemMessages.StatusMessage(ex));
+    }
+    private void StatusMessage(string message, Exception ex)
+    {
+        Logger.Error(ex);
+        _ = Messenger.Send(new SystemMessages.StatusMessage(ex));
+    }
+
+    #endregion
 }
