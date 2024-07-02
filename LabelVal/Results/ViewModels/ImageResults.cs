@@ -125,16 +125,10 @@ public partial class ImageResults : ObservableRecipient,
     }
     public void Receive(SystemMessages.ControlMessage message)
     {
-        switch (message.Value)
+        if (message.Sender == RunViewModel)
         {
-            case SystemMessages.StatusMessageType.Control:
-                if (message.Sender == RunViewModel)
-                {
-                    if (message.Message == "StartRun")
-                        _ = StartRun();
-
-                }
-                break;
+            if (message.Value == "StartRun")
+                _ = StartRun();
         }
     }
 
@@ -422,7 +416,7 @@ public partial class ImageResults : ObservableRecipient,
     {
         if (SelectedNode == null)
         {
-            StatusMessage("No node selected.", SystemMessages.StatusMessageType.Warning);
+            UpdateStatus("No node selected.", SystemMessages.StatusMessageType.Warning);
 
             var printer = new Printer.Controller();
 
@@ -462,7 +456,7 @@ public partial class ImageResults : ObservableRecipient,
 
             if (!await SelectedNode.Connection.Commands.TriggerSimulator(new V275_REST_Lib.Models.SimulationTrigger() { image = img.GetPngBytes(), dpi = (int)img.Image.DpiX }))
             {
-                StatusMessage("Error triggering the simulator.");
+                UpdateStatus("Error triggering the simulator.");
                 imageResults.IsV275Working = false;
                 return;
             }
@@ -543,7 +537,7 @@ public partial class ImageResults : ObservableRecipient,
 
                     if (verRes > 0)
                     {
-                        StatusMessage("Could not delete all simulator images.");
+                        UpdateStatus("Could not delete all simulator images.");
                         imageResults.IsV275Working = false;
                         return;
                     }
@@ -572,7 +566,7 @@ public partial class ImageResults : ObservableRecipient,
                 {
                     if (!sim.SaveImage(prepend + Path.GetFileName(imageResults.SourceImage.Path), imageResults.SourceImage.GetBitmapBytes()))
                     {
-                        StatusMessage("Could not copy the image to the simulator images directory.");
+                        UpdateStatus("Could not copy the image to the simulator images directory.");
                         imageResults.IsV275Working = false;
                         return;
                     }
@@ -581,7 +575,7 @@ public partial class ImageResults : ObservableRecipient,
                 {
                     if (!sim.SaveImage(prepend + Path.GetFileName(imageResults.SourceImage.Path), imageResults.V275ResultRow.Stored.GetPngBytes()))
                     {
-                        StatusMessage("Could not save the image to the simulator images directory.");
+                        UpdateStatus("Could not save the image to the simulator images directory.");
                         imageResults.IsV275Working = false;
                         return;
                     }
@@ -590,7 +584,7 @@ public partial class ImageResults : ObservableRecipient,
                 {
                     if (!sim.SaveImage(prepend + Path.GetFileName(imageResults.SourceImage.Path), imageResults.V5ResultRow.Stored.GetPngBytes()))
                     {
-                        StatusMessage("Could not save the image to the simulator images directory.");
+                        UpdateStatus("Could not save the image to the simulator images directory.");
                         imageResults.IsV275Working = false;
                         return;
                     }
@@ -600,7 +594,7 @@ public partial class ImageResults : ObservableRecipient,
                 {
                     if (!await SelectedNode.Connection.Commands.TriggerSimulator())
                     {
-                        StatusMessage("Error triggering the simulator.");
+                        UpdateStatus("Error triggering the simulator.");
                         imageResults.IsV275Working = false;
                         return;
                     }
@@ -613,7 +607,7 @@ public partial class ImageResults : ObservableRecipient,
             }
             catch (Exception ex)
             {
-                StatusMessage(ex.Message);
+                UpdateStatus(ex.Message);
                 imageResults.IsV275Working = false;
             }
         else
@@ -695,7 +689,7 @@ public partial class ImageResults : ObservableRecipient,
             {
                 var sectors = SelectedNode.Connection.CreateSectors(SelectedNode.Connection.SetupDetectEvent, V275GetTableID(SelectedImageRoll.SelectedGS1Table), SelectedNode.Symbologies);
 
-                StatusMessage("Creating sectors.", SystemMessages.StatusMessageType.Info);
+                UpdateStatus("Creating sectors.", SystemMessages.StatusMessageType.Info);
 
                 foreach (var sec in sectors)
                 {
@@ -708,7 +702,7 @@ public partial class ImageResults : ObservableRecipient,
             }
         }
 
-        StatusMessage("Reading results and Image.", SystemMessages.StatusMessageType.Info);
+        UpdateStatus("Reading results and Image.", SystemMessages.StatusMessageType.Info);
         if (!await TempV275Repeat[repeat].ImageResult.V275ReadTask(repeat))
         {
             ProcessRepeatFault(repeat);
@@ -806,39 +800,47 @@ public partial class ImageResults : ObservableRecipient,
     #region Logging & Status Messages
 
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-    private void StatusMessage(string message)
+    private void UpdateStatus(string message)
     {
-        Logger.Info(message);
+        UpdateStatus(message);
         _ = Messenger.Send(new SystemMessages.StatusMessage(message, SystemMessages.StatusMessageType.Info));
     }
-    private void StatusMessage(string message, SystemMessages.StatusMessageType type)
+    private void UpdateStatus(string message, SystemMessages.StatusMessageType type)
     {
         switch (type)
         {
             case SystemMessages.StatusMessageType.Info:
-                Logger.Info(message);
-                break;
-            case SystemMessages.StatusMessageType.Warning:
-                Logger.Warn(message);
+                UpdateStatus(message);
                 break;
             case SystemMessages.StatusMessageType.Debug:
                 Logger.Debug(message);
                 break;
+            case SystemMessages.StatusMessageType.Warning:
+                Logger.Warn(message);
+                break;
+            case SystemMessages.StatusMessageType.Error:
+                Logger.Error(message);
+                break;
             default:
-                Logger.Info(message);
+                UpdateStatus(message);
                 break;
         }
         _ = Messenger.Send(new SystemMessages.StatusMessage(message, type));
     }
-    private void StatusMessage(Exception ex)
+    private void UpdateStatus(Exception ex)
     {
         Logger.Error(ex);
         _ = Messenger.Send(new SystemMessages.StatusMessage(ex));
     }
-    private void StatusMessage(string message, Exception ex)
+    private void UpdateStatus(string message, Exception ex)
     {
         Logger.Error(ex);
         _ = Messenger.Send(new SystemMessages.StatusMessage(ex));
+    }
+
+    private void SendControlMessage(string message)
+    {
+        _ = Messenger.Send(new SystemMessages.ControlMessage(this, message));
     }
 
     #endregion

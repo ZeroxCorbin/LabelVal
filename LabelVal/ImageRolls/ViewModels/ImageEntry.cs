@@ -11,8 +11,6 @@ namespace LabelVal.ImageRolls.ViewModels;
 [JsonObject(MemberSerialization.OptIn)]
 public partial class ImageEntry : ObservableRecipient//, IRecipient<PrinterMessages.SelectedPrinterChanged>
 {
-    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-
     [ObservableProperty]
     [property: SQLite.Ignore]
     private bool isActive;

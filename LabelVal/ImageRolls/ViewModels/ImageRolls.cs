@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.Messages;
+using Mysqlx.Crud;
 using Newtonsoft.Json;
 using System;
 using System.Collections.ObjectModel;
@@ -86,12 +87,14 @@ public partial class ImageRolls : ObservableRecipient, IRecipient<PropertyChange
 
     private void LoadUserImageRollsList()
     {
-        UpdateStatus($"Loading image rolls from database. {App.AssetsImageRollRoot}");
+        UpdateStatus($"Loading user image rolls from database. {App.ImageRollsDatabasePath}");
 
         UserImageRolls.Clear();
 
         foreach (var roll in ImageRollsDatabase.SelectAllImageRolls())
         {
+            UpdateStatus($"Found: {roll.Name}", SystemMessages.StatusMessageType.Debug);
+
             roll.ImageRollsDatabase = ImageRollsDatabase;
             UserImageRolls.Add(roll);
         }

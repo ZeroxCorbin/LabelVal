@@ -1,7 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Messaging.Messages;
-using Org.BouncyCastle.Tls;
 using System;
-using System.Runtime.CompilerServices;
 
 namespace LabelVal.Messages;
 public class SystemMessages
@@ -12,11 +10,15 @@ public class SystemMessages
         Info,
         Warning,
         Error,
-        Control
     }
 
     public class StatusMessage : ValueChangedMessage<StatusMessageType>
     {
+        public DateTime TimeStamp { get; } = DateTime.Now;
+
+        //public bool Acknowledged { get; set; } = false;
+        //public bool Acknowledge() => Acknowledged = true;
+
         private readonly string message;
         public string Message => Exception != null ? Exception.Message : message;
 
@@ -29,13 +31,9 @@ public class SystemMessages
         public StatusMessage(string message, Exception exception) : base(StatusMessageType.Error) { Exception = exception; this.message = message; }
     }
 
-    public class ControlMessage : ValueChangedMessage<object>
+    public class ControlMessage : ValueChangedMessage<string>
     {
         public object Sender { get; private set; }
-        public string Message { get; private set; }
-        public ControlMessage(object sender, string message) : base(StatusMessageType.Control)
-        {
-            this.Sender = sender; Message = message;
-        }
+        public ControlMessage(object sender, string message) : base(message) => this.Sender = sender;
     }
 }

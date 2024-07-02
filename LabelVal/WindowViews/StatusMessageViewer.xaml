@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="LabelVal.WindowViews.StatusMessageViewer"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:LabelVal.WindowViews"
+                xmlns:viewModels="clr-namespace:LabelVal.WindowViewModels"
+                xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance viewModels:SystemMessagesDataContext}">
+
+    <UserControl.Resources>
+
+    </UserControl.Resources>
+
+    <DockPanel>
+        <!--<ScrollViewer VerticalScrollBarVisibility="Auto">-->
+
+
+        <DataGrid x:Name="dataGrid" ItemsSource="{Binding Path=FilteredMessagesView, RelativeSource={RelativeSource AncestorType=UserControl}}"  AutoGenerateColumns="False" MaxHeight="400" Style="{StaticResource MahApps.Styles.DataGrid.Azure}">
+            <DataGrid.Columns>
+                <DataGridTextColumn SortDirection="Descending" Header="Timestamp" Binding="{Binding TimeStamp, Mode=OneTime}" HeaderStyle="{StaticResource MahApps.Styles.DataGridColumnHeader.Azure}" />
+                <DataGridTextColumn Header="Message" Binding="{Binding Message, Mode=OneTime}"  HeaderStyle="{StaticResource MahApps.Styles.DataGridColumnHeader.Azure}"/>
+                <DataGridTextColumn Header="Type" Binding="{Binding Value, Mode=OneTime}"  HeaderStyle="{StaticResource MahApps.Styles.DataGridColumnHeader.Azure}"/>
+                <DataGridCheckBoxColumn Header="Has Exception" Binding="{Binding HasException, Mode=OneTime}"  HeaderStyle="{StaticResource MahApps.Styles.DataGridColumnHeader.Azure}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+<!--</ScrollViewer>-->
+    </DockPanel>
+</UserControl>

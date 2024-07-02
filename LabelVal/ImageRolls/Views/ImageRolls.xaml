@@ -262,32 +262,7 @@
                                         </TextBlock.Style>
                                     </TextBlock>
 
-                                    <Button Command="{Binding AddFirstImagesCommand}" ToolTip="Add to Image Roll" Margin="6,0,3,0">
-                                        
-                                        <Button.Style>
-                                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                                <Style.Triggers>
-                                                    <MultiDataTrigger>
-                                                        <MultiDataTrigger.Conditions>
-                                                            <Condition Binding="{Binding Images.Count}" Value="0"/>
-                                                            <Condition Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource AncestorType=ListViewItem}}" Value="True"/>
-                                                       
-                                                        </MultiDataTrigger.Conditions>
-
-                                                        <MultiDataTrigger.Setters>
-                                                            <Setter Property="Visibility" Value="Visible"/>
-                                                        </MultiDataTrigger.Setters>
-                                                    </MultiDataTrigger>
-                                                          </Style.Triggers>
-                                            </Style>
-                                        </Button.Style>
-                                        
-                                        <iconPacks:PackIconMaterial Kind="Plus" Height="14" Width="14"/>
-                                    </Button>
-
                                 </DockPanel>
-
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>

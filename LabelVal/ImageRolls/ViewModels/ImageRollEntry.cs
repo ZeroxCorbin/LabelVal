@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.Extensions;
+using LabelVal.Messages;
 using LabelVal.Sectors.ViewModels;
 using Newtonsoft.Json;
 using System;
@@ -19,8 +20,6 @@ namespace LabelVal.ImageRolls.ViewModels;
 
 public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyChangedMessage<PrinterSettings>>
 {
-    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-
     public Array StandardsTypes
     {
         get
@@ -83,6 +82,8 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     [ObservableProperty][property: JsonProperty] private int targetDPI;
 
     [ObservableProperty][property: JsonProperty] private bool isLocked = false;
+
+
 
     [ObservableProperty][property: SQLite.Ignore] private PrinterSettings selectedPrinter;
 
@@ -318,4 +319,52 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     }
 
     public ImageRollEntry CopyLite() => JsonConvert.DeserializeObject<ImageRollEntry>(JsonConvert.SerializeObject(this));
+
+    #region Logging & Status Messages
+
+    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+    private void UpdateStatus(string message)
+    {
+        UpdateStatus(message);
+        _ = Messenger.Send(new SystemMessages.StatusMessage(message, SystemMessages.StatusMessageType.Info));
+    }
+    private void UpdateStatus(string message, SystemMessages.StatusMessageType type)
+    {
+        switch (type)
+        {
+            case SystemMessages.StatusMessageType.Info:
+                UpdateStatus(message);
+                break;
+            case SystemMessages.StatusMessageType.Debug:
+                Logger.Debug(message);
+                break;
+            case SystemMessages.StatusMessageType.Warning:
+                Logger.Warn(message);
+                break;
+            case SystemMessages.StatusMessageType.Error:
+                Logger.Error(message);
+                break;
+            default:
+                UpdateStatus(message);
+                break;
+        }
+        _ = Messenger.Send(new SystemMessages.StatusMessage(message, type));
+    }
+    private void UpdateStatus(Exception ex)
+    {
+        Logger.Error(ex);
+        _ = Messenger.Send(new SystemMessages.StatusMessage(ex));
+    }
+    private void UpdateStatus(string message, Exception ex)
+    {
+        Logger.Error(ex);
+        _ = Messenger.Send(new SystemMessages.StatusMessage(ex));
+    }
+
+    private void SendControlMessage(string message)
+    {
+        _ = Messenger.Send(new SystemMessages.ControlMessage(this, message));
+    }
+
+    #endregion
 }

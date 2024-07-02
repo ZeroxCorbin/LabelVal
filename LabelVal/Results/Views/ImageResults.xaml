@@ -15,53 +15,98 @@
              mc:Ignorable="d" >
 
     <UserControl.Resources>
-        
+
         <CollectionViewSource x:Key="cvsImageResultsList" Source="{Binding ImageResultsList}" IsLiveSortingRequested="True">
             <CollectionViewSource.SortDescriptions>
                 <componentmodel:SortDescription PropertyName="SourceImage.Order" Direction="Ascending" />
             </CollectionViewSource.SortDescriptions>
         </CollectionViewSource>
-        
+
     </UserControl.Resources>
 
     <DockPanel>
-        <DockPanel>
-            <GroupBox Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Stretch" 
-                  Style="{StaticResource MaterialDesignCardGroupBox}"
+
+        <GroupBox Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top"
                 md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
                 md:ColorZoneAssist.Mode="Custom">
 
-                <GroupBox.Header>
-                    <DockPanel Margin="-5">
-                        <!--Title-->
-                        <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Stretch" Padding="4,1">
-                            <TextBlock Text="First" MinWidth="26" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
+            <GroupBox.Style>
+                <Style TargetType="GroupBox" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding SelectedImageRoll.Images.Count}" Value="0"/>
+                            </MultiDataTrigger.Conditions>
+
+                            <MultiDataTrigger.Setters>
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </MultiDataTrigger.Setters>
+                        </MultiDataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </GroupBox.Style>
+
+            <GroupBox.Header>
+                <DockPanel Margin="-5">
+                    <!--Title-->
+                    <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Stretch" Padding="4,1">
+                        <TextBlock Text="First" MinWidth="26" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
                                        HorizontalAlignment="Center"/>
-                        </md:Card>
-                    </DockPanel>
-                </GroupBox.Header>
+                    </md:Card>
+                </DockPanel>
+            </GroupBox.Header>
+            
+            <DockPanel>
 
-                <StackPanel>
+                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Padding="3">
+                    <DockPanel>
 
-                    <Button Command="{Binding AddImageTopCommand}"  VerticalAlignment="Top" BorderThickness="0" Margin="0,3"
+                        <Button Command="{Binding AddImageTopCommand}" Style="{StaticResource MahApps.Styles.Button}" 
+                            VerticalAlignment="Top" BorderThickness="0" Margin="3"
                             Content="{iconPacks:Material Kind=ImagePlus}"
                             ToolTip="Add Image">
-                        <Button.Style>
-                            <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
+                        </Button>
 
-                </StackPanel>
-            </GroupBox>
-        </DockPanel>
+                        <Button Command="{Binding AddImageTopCommand}"
+                            VerticalAlignment="Top" BorderThickness="0" Margin="3"
+                            Content="{iconPacks:Material Kind=Camera}"
+                            ToolTipService.ShowOnDisabled="True">
 
-        
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
+                                    <Setter Property="IsEnabled" Value="False"/>
+                                    <Setter Property="ToolTip" Value="V5: Trigger"/>
+                                    <Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding SelectedScanner.IsConnected}" Value="True"/>
+                                                <Condition Binding="{Binding SelectedScanner.IsSimulator}" Value="False"/>
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="IsEnabled" Value="True"/>
+                                        </MultiDataTrigger>
+
+                                        <DataTrigger Binding="{Binding SelectedScanner.IsConnected}" Value="False">
+                                            <Setter Property="ToolTip" Value="Scanner not connected"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding SelectedScanner.IsSimulator}" Value="True">
+                                            <Setter Property="ToolTip" Value="Camera not set to Sensor."/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
+                                            <Setter Property="ToolTip" Value="The Results Database is locked."/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+
+                        </Button>
+                        
+                    </DockPanel>
+                </md:Card>
+            </DockPanel>
+
+        </GroupBox>
+
         <ScrollViewer Margin="0,0,3,0" Style="{StaticResource MahApps.Styles.ScrollViewer}">
 
             <ItemsControl ItemsSource="{Binding Source={StaticResource cvsImageResultsList}}">

@@ -467,5 +467,10 @@ public partial class ImageResultEntry : ObservableRecipient,
         _ = Messenger.Send(new SystemMessages.StatusMessage(ex));
     }
 
+    private void SendControlMessage(string message)
+    {
+        _ = Messenger.Send(new SystemMessages.ControlMessage(this, message));
+    }
+
     #endregion
 }
