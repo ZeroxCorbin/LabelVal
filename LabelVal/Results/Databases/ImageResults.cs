@@ -22,7 +22,7 @@ namespace LabelVal.Results.Databases
         public string FilePath { get; private set; }
         public string FileName => System.IO.Path.GetFileNameWithoutExtension(FilePath);
 
-        public partial class V275Result : ObservableObject
+        public partial class Result : ObservableObject
         {    
             [ObservableProperty] [property: PrimaryKey] private string sourceImageUID;
             [ObservableProperty] private string imageRollUID;
@@ -33,45 +33,24 @@ namespace LabelVal.Results.Databases
             [ObservableProperty] private string template;
             [ObservableProperty] private string report;
 
-            public ImageEntry Source => JsonConvert.DeserializeObject<ImageEntry>(sourceImage);
-            public ImageEntry Stored => JsonConvert.DeserializeObject<ImageEntry>(storedImage);
-
-            public Job _Job => JsonConvert.DeserializeObject<Job>(template);
-            public Report _Report => JsonConvert.DeserializeObject<Report>(report);
-
+            [SQLite.Ignore] public ImageEntry Source => JsonConvert.DeserializeObject<ImageEntry>(sourceImage);
+            [SQLite.Ignore] public ImageEntry Stored => JsonConvert.DeserializeObject<ImageEntry>(storedImage);
         }
 
-        public partial class V5Result : ObservableObject
-        {  
-            [ObservableProperty] [property: PrimaryKey] private string sourceImageUID;
-            [ObservableProperty] private string imageRollUID;
-
-            [ObservableProperty] private string sourceImage;
-            [ObservableProperty] private string storedImage;
-
-            [ObservableProperty] private string template;
-            [ObservableProperty] private string report;
-
-            public ImageEntry Source => JsonConvert.DeserializeObject<ImageEntry>(sourceImage);
-            public ImageEntry Stored => JsonConvert.DeserializeObject<ImageEntry>(storedImage);
-
-            public JObject _Config => JsonConvert.DeserializeObject<JObject>(Template);
-            public JObject _Report => JsonConvert.DeserializeObject<JObject>(Report);
-
+        public class V275Result : Result
+        {
+            [SQLite.Ignore] public Job _Job => JsonConvert.DeserializeObject<Job>(Template);
+            [SQLite.Ignore] public Report _Report => JsonConvert.DeserializeObject<Report>(Report);
         }
 
-        public partial class L95xxResult : ObservableObject
-        { 
-            [ObservableProperty][property: PrimaryKey] private string sourceImageUID;
-            [ObservableProperty] private string imageRollUID;
+        public class V5Result : Result
+        {
+            [SQLite.Ignore] public JObject _Config => JsonConvert.DeserializeObject<JObject>(Template);
+            [SQLite.Ignore] public JObject _Report => JsonConvert.DeserializeObject<JObject>(Report);
+        }
 
-
-            [ObservableProperty] private string template;
-            [ObservableProperty] private string report;
-
-            //Not used for L95xx
-            [ObservableProperty] private byte[] sourceImage;
-            [ObservableProperty] private byte[] storedImage;
+        public class L95xxResult : Result
+        {
         }
 
         public partial class LockTable : ObservableObject

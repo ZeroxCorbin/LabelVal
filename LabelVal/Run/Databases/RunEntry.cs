@@ -16,6 +16,7 @@ namespace LabelVal.Run.Databases
         [ObservableProperty]private string gradingStandard;
         [ObservableProperty]private string productPart;
         [ObservableProperty]private string cameraMAC;
+
         [ObservableProperty][property: SQLite.Ignore]private bool runDBMissing;
     }
 }

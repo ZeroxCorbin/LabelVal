@@ -104,18 +104,18 @@ namespace LabelVal.Run.ViewModels
         private async void LoadRun()
         {
 
-            List<ResultEntry> runs;
-            using (RunDatabase db = new RunDatabase().Open($"{App.RunsRoot}\\{App.RunResultsDatabaseName(SelectedRunEntry.TimeDate)}"))
-                runs = db.SelectAllRuns();
+            //List<ResultEntry> runs;
+            //using (RunDatabase db = new RunDatabase().Open($"{App.RunsRoot}\\{App.RunResultsDatabaseName(SelectedRunEntry.TimeDate)}"))
+            //    runs = db.SelectAllRuns();
 
-            if (runs != null)
-                await System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
-                {
-                    foreach (var run in runs)
-                    {
-                        ImageResultsList.Add(new ViewModels.Result(run, SelectedRunEntry));
-                    }
-                });
+            //if (runs != null)
+            //    await System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
+            //    {
+            //        foreach (var run in runs)
+            //        {
+            //            ImageResultsList.Add(new ViewModels.Result(run, SelectedRunEntry));
+            //        }
+            //    });
         }
     }
 }

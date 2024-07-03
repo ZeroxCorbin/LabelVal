@@ -1,5 +1,6 @@
 ﻿
 using CommunityToolkit.Mvvm.ComponentModel;
+using LabelVal.Results.ViewModels;
 using SQLite;
 using System;
 using System.Collections.Generic;
@@ -24,7 +25,7 @@ public partial class RunDatabase : IDisposable
             Connection ??= new SQLiteConnection(dbFilePath);
 
             _ = Connection.CreateTable<RunEntry>();
-            _ = Connection.CreateTable<ResultEntry>();
+            _ = Connection.CreateTable<ImageResultEntry>();
             
 
             return this;
@@ -43,11 +44,11 @@ public partial class RunDatabase : IDisposable
     public List<RunEntry> SelectAllRunEntries() => Connection.CreateCommand("select * from LedgerEntry").ExecuteQuery<RunEntry>();
     public int DeleteLedgerEntry(long timeDate) => Connection.Table<RunEntry>().Delete(v => v.TimeDate == timeDate);
 
-    public int InsertOrReplace(ResultEntry run) => Connection.InsertOrReplace(run);
-    public bool ExistsRun(long timeDate) => Connection.Table<ResultEntry>().Where(v => v.TimeDate == timeDate).Count() > 0;
-    public ResultEntry SelectRun(long timeDate) => Connection.Table<ResultEntry>().Where(v => v.TimeDate == timeDate).FirstOrDefault();
-    public List<ResultEntry> SelectAllRuns() => Connection.CreateCommand("select * from Result").ExecuteQuery<ResultEntry>();
-    public int DeleteRun(long timeDate) => Connection.Table<ResultEntry>().Delete(v => v.TimeDate == timeDate);
+    //public int InsertOrReplace(ImageResultEntry run) => Connection.InsertOrReplace(run);
+    //public bool ExistsRun(long timeDate) => Connection.Table<ImageResultEntry>().Where(v => v.TimeDate == timeDate).Count() > 0;
+    //public ImageResultEntry SelectRun(long timeDate) => Connection.Table<ImageResultEntry>().Where(v => v.TimeDate == timeDate).FirstOrDefault();
+    //public List<ImageResultEntry> SelectAllRuns() => Connection.CreateCommand("select * from Result").ExecuteQuery<ImageResultEntry>();
+    //public int DeleteRun(long timeDate) => Connection.Table<ImageResultEntry>().Delete(v => v.TimeDate == timeDate);
 
     public void Dispose()
     {

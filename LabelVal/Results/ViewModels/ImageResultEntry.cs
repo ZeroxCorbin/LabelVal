@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Data;
+using LabelVal.Converters;
 
 namespace LabelVal.Results.ViewModels;
 
@@ -41,8 +42,33 @@ public partial class ImageResultEntry : ObservableRecipient,
     //[ObservableProperty] private string status;
     //partial void OnStatusChanged(string value) => App.Current.Dispatcher.Invoke(() => StatusChanged?.Invoke(Status));
 
-    public ImageEntry SourceImage { get; }
+    public Models.ImageResultEntry GetModel()
+    {
+        return new Models.ImageResultEntry()
+        {
+            //LoopCount = LoopCount,
+            SourceImageUID = SourceImage?.UID,
+            SourceImage = SourceImage?.GetBitmapBytes(),
 
+            V275_StoredTemplate = V275ResultRow?.Template,
+            V275_StoredReport = V275ResultRow?.Report,
+            V275_StoredImage = V275ResultRow?.StoredImage,
+
+            V275_CurrentTemplate = V275CurrentTemplate != null ? JsonConvert.SerializeObject(V275CurrentTemplate) : null,
+            V275_CurrentReport = V275CurrentReport != null ? JsonConvert.SerializeObject(V275CurrentReport) : null,
+            V275_CurrentImage = V275Image?.ToJSON(),
+
+            V5_StoredTemplate = V5ResultRow?.Template,
+            V5_StoredReport = V5ResultRow?.Report,
+            V5_StoredImage = V5ResultRow?.StoredImage,
+
+            //V5_CurrentTemplate = V5CurrentTemplate != null ? JsonConvert.SerializeObject(V5CurrentTemplate) : null,
+            V5_CurrentReport = V5CurrentReport != null ? JsonConvert.SerializeObject(V5CurrentReport) : null,
+            V5_CurrentImage = V5Image?.ToJSON(),
+        };  
+    }
+
+    public ImageEntry SourceImage { get; }
     public ImageResults ImageResults { get; }
 
 
@@ -230,7 +256,7 @@ public partial class ImageResultEntry : ObservableRecipient,
             {
                 ImageRollUID = ImageResults.SelectedImageRoll.UID,
                 SourceImageUID = SourceImage.UID,
-                SourceImage = SourceImage.GetBitmapBytes(),
+                SourceImage = JsonConvert.SerializeObject(SourceImage),
                 Report = JsonConvert.SerializeObject(temp),
             });
         }

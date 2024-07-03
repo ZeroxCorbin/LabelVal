@@ -11,6 +11,8 @@ namespace LabelVal.ImageRolls.ViewModels;
 [JsonObject(MemberSerialization.OptIn)]
 public partial class ImageEntry : ObservableRecipient//, IRecipient<PrinterMessages.SelectedPrinterChanged>
 {
+    public string ToJSON() => JsonConvert.SerializeObject(this);
+
     [ObservableProperty]
     [property: SQLite.Ignore]
     private bool isActive;

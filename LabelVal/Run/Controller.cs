@@ -251,7 +251,7 @@ public class Controller
                     }
 
                 row.RepeatReport = JsonConvert.SerializeObject(label.V275CurrentReport);
-                _ = RunDatabase.InsertOrReplace(row);
+                //_ = RunDatabase.InsertOrReplace(row);
 
                 using var session = new NHibernateHelper().OpenSession();
                 if (session != null)
