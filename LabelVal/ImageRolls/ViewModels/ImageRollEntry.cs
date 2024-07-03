@@ -83,8 +83,6 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
 
     [ObservableProperty][property: JsonProperty] private bool isLocked = false;
 
-
-
     [ObservableProperty][property: SQLite.Ignore] private PrinterSettings selectedPrinter;
 
     [SQLite.Ignore] public ObservableCollection<ImageEntry> Images { get; set; } = [];

@@ -29,6 +29,12 @@
 		<IsPublishable>False</IsPublishable>
 	</PropertyGroup>
 	<ItemGroup>
+	  <Compile Remove="Assets\Image Rolls\VALIDATION\**" />
+	  <EmbeddedResource Remove="Assets\Image Rolls\VALIDATION\**" />
+	  <None Remove="Assets\Image Rolls\VALIDATION\**" />
+	  <Page Remove="Assets\Image Rolls\VALIDATION\**" />
+	</ItemGroup>
+	<ItemGroup>
 		<Compile Remove="ImageRolls\Databases\StandardsDatabase.cs" />
 		<Compile Remove="LVS-95xx\ViewModels\SerialPort.cs" />
 		<Compile Remove="LVS-95xx\Views\LVS95xx_SerialPortView.xaml.cs" />
@@ -60,6 +66,136 @@
 		<None Remove="Assets\Image Rolls\GS1 TABLE 6\600\setting.imgr" />
 		<None Remove="Assets\Image Rolls\GS1 TABLE 8\600\setting.imgr" />
 		<None Remove="Assets\Image Rolls\GS1 TABLE 9\600\setting.imgr" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_01.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_02.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_03.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_04.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_05.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_05.txt" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_06.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_07.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_08.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_09.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_09.txt" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_10.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_11.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_11.txt" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_12.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_13.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_14.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_15.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_15.txt" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_16.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_16.txt" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_17.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_18.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_19.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_19.txt" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_20.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_21.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_22.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_23.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_24.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_25.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_25.txt" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_26.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_27.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_28.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_28.txt" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_29.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_30.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_30.txt" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_31.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_32.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_33.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_34.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_34.txt" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_35.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_36.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_37.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_37.txt" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_38.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_39.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_39.txt" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_40.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_41.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_42.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_43.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_44.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_44.txt" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_45.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_46.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_47.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_48.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_49.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_49.txt" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\Label_50.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\300\setting.imgr" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_01.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_02.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_03.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_04.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_05.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_05.txt" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_06.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_07.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_08.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_09.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_09.txt" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_10.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_11.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_11.txt" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_12.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_13.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_14.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_15.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_15.txt" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_16.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_16.txt" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_17.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_18.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_19.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_19.txt" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_20.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_21.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_22.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_23.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_24.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_25.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_25.txt" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_26.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_27.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_28.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_28.txt" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_29.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_30.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_30.txt" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_31.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_32.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_33.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_34.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_34.txt" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_35.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_36.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_37.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_37.txt" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_38.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_39.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_39.txt" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_40.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_41.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_42.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_43.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_44.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_44.txt" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_45.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_46.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_47.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_48.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_49.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_49.txt" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\Label_50.png" />
+		<None Remove="Assets\Image Rolls\IQOQPQ\600\setting.imgr" />
 		<None Remove="Assets\Image Rolls\OCR OCV RECOGNITION\300\setting.imgr" />
 		<None Remove="Assets\Image Rolls\OCR OCV RECOGNITION\600\setting.imgr" />
 		<None Remove="Assets\Image Rolls\SYMBOLOGIES A NEW\300\setting.imgr" />
@@ -69,8 +205,6 @@
 		<None Remove="Assets\Image Rolls\SYMBOLOGIES C\600\setting.imgr" />
 		<None Remove="Assets\Image Rolls\SYMBOLOGIES D\600\setting.imgr" />
 		<None Remove="Assets\Image Rolls\VALIDATION 6x4\300\setting.imgr" />
-		<None Remove="Assets\Image Rolls\VALIDATION\300\setting.imgr" />
-		<None Remove="Assets\Image Rolls\VALIDATION\600\setting.imgr" />
 		<None Remove="Assets\ImageResultsDatabases\GS1 Golden.sqlite" />
 		<None Remove="Assets\Images\V275WhiteIcon.ico" />
 		<None Remove="Assets\Images\V275WhiteIcon.png" />
@@ -120,6 +254,396 @@
 		<Content Include="Assets\Image Rolls\GS1 TABLE 9\600\setting.imgr">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_01.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_02.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_03.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_04.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_05.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_05.txt">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_06.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_07.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_08.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_09.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_09.txt">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_10.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_11.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_11.txt">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_12.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_13.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_14.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_15.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_15.txt">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_16.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_16.txt">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_17.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_18.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_19.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_19.txt">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_20.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_21.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_22.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_23.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_24.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_25.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_25.txt">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_26.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_27.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_28.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_28.txt">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_29.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_30.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_30.txt">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_31.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_32.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_33.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_34.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_34.txt">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_35.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_36.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_37.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_37.txt">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_38.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_39.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_39.txt">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_40.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_41.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_42.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_43.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_44.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_44.txt">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_45.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_46.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_47.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_48.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_49.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_49.txt">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\Label_50.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\300\setting.imgr">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_01.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_02.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_03.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_04.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_05.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_05.txt">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_06.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_07.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_08.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_09.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_09.txt">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_10.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_11.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_11.txt">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_12.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_13.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_14.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_15.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_15.txt">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_16.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_16.txt">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_17.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_18.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_19.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_19.txt">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_20.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_21.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_22.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_23.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_24.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_25.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_25.txt">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_26.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_27.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_28.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_28.txt">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_29.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_30.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_30.txt">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_31.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_32.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_33.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_34.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_34.txt">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_35.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_36.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_37.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_37.txt">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_38.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_39.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_39.txt">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_40.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_41.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_42.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_43.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_44.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_44.txt">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_45.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_46.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_47.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_48.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_49.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_49.txt">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\Label_50.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Image Rolls\IQOQPQ\600\setting.imgr">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
 		<Content Include="Assets\Image Rolls\OCR OCV RECOGNITION\300\setting.imgr">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
@@ -145,12 +669,6 @@
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\VALIDATION 6x4\300\setting.imgr">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\setting.imgr">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\setting.imgr">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Images\V275WhiteIcon.ico">
@@ -858,396 +1376,6 @@
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Image Rolls\VALIDATION CLEAN\600\Omron Validation Lables 25 count No Errors 600dpi_25.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_01.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_02.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_03.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_04.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_05.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_05.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_06.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_07.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_08.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_09.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_09.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_10.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_11.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_11.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_12.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_13.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_14.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_15.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_15.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_16.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_16.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_17.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_18.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_19.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_19.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_20.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_21.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_22.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_23.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_24.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_25.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_25.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_26.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_27.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_28.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_28.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_29.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_30.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_30.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_31.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_32.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_33.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_34.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_34.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_35.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_36.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_37.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_37.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_38.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_39.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_39.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_40.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_41.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_42.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_43.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_44.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_44.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_45.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_46.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_47.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_48.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_49.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_49.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_49a.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_50.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\300\FINAL 300dpi TEST ROLL 4x4 50labels_39a.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_01.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_02.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_03.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_04.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_05.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_05.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_06.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_07.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_08.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_09.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_09.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_10.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_11.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_11.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_12.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_13.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_14.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_15.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_15.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_16.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_16.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_17.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_18.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_19.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_19.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_20.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_21.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_22.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_23.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_24.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_25.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_25.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_26.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_27.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_28.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_28.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_29.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_30.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_30.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_31.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_32.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_33.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_34.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_34.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_35.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_36.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_37.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_37.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_38.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_39.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_39.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_40.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_41.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_42.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_43.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_44.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_44.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_45.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_46.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_47.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_48.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_49.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_49.txt">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Assets\Image Rolls\VALIDATION\600\FINAL 600dpi TEST ROLL 4x4 50labels_50.png">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\com0com\Setup_com0com_x64_signed.exe">

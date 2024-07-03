@@ -49,10 +49,8 @@ public partial class ImageResultEntry
     [RelayCommand]
     private void V275Process(string imageType)
     {
-
         IsV275Working = true;
         IsV275Faulted = false;
-
         BringIntoView?.Invoke();
         V275ProcessImage?.Invoke(this, imageType);
     }
@@ -61,7 +59,6 @@ public partial class ImageResultEntry
     {
         return V275ReadTask(0);
     }
-
     [RelayCommand]
     private Task<int> V275Load()
     {

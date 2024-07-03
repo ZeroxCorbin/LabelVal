@@ -1,0 +1,2 @@
+1. Mismatch Error - Expected Output 016 vs Actual Output 01 – Only Two Digits Read 
+2. Blemish Error - Serial Number Sideways 
