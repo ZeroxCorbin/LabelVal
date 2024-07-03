@@ -19,7 +19,7 @@ namespace LabelVal.WindowViews;
 /// </summary>
 public partial class RunView : UserControl
 {
-    private Run.Views.Run win;
+    //private Run.Views.Run win;
 
     public RunView()
     {
@@ -28,25 +28,25 @@ public partial class RunView : UserControl
 
     private void Button_Click(object sender, RoutedEventArgs e)
     {
-        if (win != null)
-        {
-            win.BringIntoView();
-            return;
-        }
+        //if (win != null)
+        //{
+        //    win.BringIntoView();
+        //    return;
+        //}
 
-        win = new Run.Views.Run();
-        win.Closed += Win_Closed;
-        win.Show();
+        //win = new Run.Views.Run();
+        //win.Closed += Win_Closed;
+        //win.Show();
 
     }
 
     private void Win_Closed(object sender, EventArgs e)
     {
-        ((Run.Views.Run)sender).Closed -= Win_Closed;
+        //((Run.Views.Run)sender).Closed -= Win_Closed;
 
-        win = null;
+        //win = null;
 
-        GC.Collect();
+        //GC.Collect();
     }
 
     

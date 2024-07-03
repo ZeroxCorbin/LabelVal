@@ -19,14 +19,13 @@ namespace LabelVal.Results.ViewModels;
 public partial class ImageResultEntry
 {
 
-    [ObservableProperty] private Databases.ImageResults.V275Result v275ResultRow;
+    [ObservableProperty] private Databases.V275Result v275ResultRow;
 
     public delegate void V275ProcessImageDelegate(ImageResultEntry imageResults, string type);
     public event V275ProcessImageDelegate V275ProcessImage;
 
     public Job V275CurrentTemplate { get; set; }
     public Report V275CurrentReport { get; private set; }
-    //public Job V275StoredTemplate { get; set; }
 
     [ObservableProperty] private ObservableCollection<Sectors.ViewModels.Sector> v275CurrentSectors = [];
     [ObservableProperty] private ObservableCollection<Sectors.ViewModels.Sector> v275StoredSectors = [];
@@ -128,7 +127,7 @@ public partial class ImageResultEntry
         V275_REST_lib.Controller.FullReport report;
         if ((report = await ImageResults.SelectedNode.Connection.Read(repeat, !ImageResults.SelectedNode.IsSimulator)) == null)
         {
-            UpdateStatus(ImageResults.SelectedNode.Connection.Status, SystemMessages.StatusMessageType.Error);
+            LogError(ImageResults.SelectedNode.Connection.Status);
 
             V275CurrentTemplate = null;
             V275CurrentReport = null;
@@ -281,7 +280,7 @@ public partial class ImageResultEntry
     {
         if (!await ImageResults.SelectedNode.Connection.DeleteSectors())
         {
-            UpdateStatus(ImageResults.SelectedNode.Connection.Status, SystemMessages.StatusMessageType.Error);
+            LogError(ImageResults.SelectedNode.Connection.Status);
             return -1;
         }
 
@@ -289,7 +288,7 @@ public partial class ImageResultEntry
         {
             if (!await ImageResults.SelectedNode.Connection.DetectSectors())
             {
-                UpdateStatus(ImageResults.SelectedNode.Connection.Status, SystemMessages.StatusMessageType.Error);
+                LogError(ImageResults.SelectedNode.Connection.Status);
                 return -1;
             }
 
@@ -300,7 +299,7 @@ public partial class ImageResultEntry
         {
             if (!await ImageResults.SelectedNode.Connection.AddSector(sec.Template.Name, JsonConvert.SerializeObject(sec.V275Sector)))
             {
-                UpdateStatus(ImageResults.SelectedNode.Connection.Status, SystemMessages.StatusMessageType.Error);
+                LogError(ImageResults.SelectedNode.Connection.Status);
                 return -1;
             }
 
@@ -312,7 +311,7 @@ public partial class ImageResultEntry
                     {
                         if (layer.value != 0)
                         {
-                            UpdateStatus(ImageResults.SelectedNode.Connection.Status, SystemMessages.StatusMessageType.Error);
+                            LogError(ImageResults.SelectedNode.Connection.Status);
                             return -1;
                         }
                     }

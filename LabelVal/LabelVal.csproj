@@ -45,7 +45,10 @@
 		<Compile Remove="Messages\ScannerMessages.cs" />
 		<Compile Remove="Messages\SectorMessages.cs" />
 		<Compile Remove="Messages\VerifierMessages.cs" />
+		<Compile Remove="Run\Controller.cs" />
 		<Compile Remove="Run\Databases\V2RunEntryDatabase.cs" />
+		<Compile Remove="Run\ViewModels\Result.cs" />
+		<Compile Remove="Run\ViewModels\Run.cs" />
 		<Compile Remove="V275\ViewModels\ImageResultEntry.cs" />
 		<Compile Remove="V275\ViewModels\ImageResults.cs" />
 		<Compile Remove="V275\ViewModels\SectorDifferences.cs" />

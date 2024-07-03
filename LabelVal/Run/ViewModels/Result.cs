@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using LabelVal.Results.Databases;
 using LabelVal.Run.Databases;
 using LabelVal.Utilities;
 using Microsoft.Win32;
@@ -16,7 +17,7 @@ namespace LabelVal.Run.ViewModels;
 
 public partial class Result : ObservableObject
 {
-    [ObservableProperty] private ResultEntry resultEntry;
+    [ObservableProperty] private ImageResultGroup resultEntry;
 
     [ObservableProperty] private RunEntry runEntry;
 
@@ -28,7 +29,7 @@ public partial class Result : ObservableObject
 
     [ObservableProperty] private bool isGS1Standard;
 
-    public Result(ResultEntry result, RunEntry ledgerEntry)
+    public Result(ImageResultGroup result, RunEntry ledgerEntry)
     {
         ResultEntry = result;
         RunEntry = ledgerEntry;

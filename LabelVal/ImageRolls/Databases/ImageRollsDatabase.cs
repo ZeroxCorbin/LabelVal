@@ -4,13 +4,13 @@ using System;
 using System.Collections.Generic;
 
 namespace LabelVal.ImageRolls.Databases;
-public class ImageRolls
+public class ImageRollsDatabase
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
     private SQLiteConnection Connection { get; set; } = null;
 
-    public ImageRolls Open(string dbFilePath)
+    public ImageRollsDatabase Open(string dbFilePath)
     {
         Logger.Info("Opening Database: {file}", dbFilePath);
 

@@ -29,7 +29,7 @@ public partial class ImageRolls : ObservableRecipient, IRecipient<PropertyChange
 
     private PrinterSettings selectedPrinter;
 
-    private Databases.ImageRolls ImageRollsDatabase { get; } = new Databases.ImageRolls();
+    private Databases.ImageRollsDatabase ImageRollsDatabase { get; } = new Databases.ImageRollsDatabase();
 
     public ImageRolls(PrinterSettings selectedPrinter)
     {
@@ -51,15 +51,14 @@ public partial class ImageRolls : ObservableRecipient, IRecipient<PropertyChange
 
     private void LoadFixedImageRollsList()
     {
-
-        UpdateStatus($"Loading image rolls from file system. {App.AssetsImageRollRoot}");
+        LogInfo($"Loading image rolls from file system. {App.AssetsImageRollRoot}");
 
         FixedImageRolls.Clear();
 
         foreach (var dir in Directory.EnumerateDirectories(App.AssetsImageRollRoot).ToList().OrderBy((e) => Regex.Replace(e, "[0-9]+", match => match.Value.PadLeft(10, '0'))))
         {
             var fnd = dir[(dir.LastIndexOf('\\') + 1)..];
-            UpdateStatus($"Found: {fnd}", SystemMessages.StatusMessageType.Debug);
+            LogDebug($"Found: {fnd}");
 
             foreach (var subdir in Directory.EnumerateDirectories(dir))
             {
@@ -76,36 +75,36 @@ public partial class ImageRolls : ObservableRecipient, IRecipient<PropertyChange
                 }
                 catch (Exception ex)
                 {
-                    UpdateStatus($"Failed to load image roll from {files.First()}", ex);
+                    LogError($"Failed to load image roll from {files.First()}", ex);
                     continue;
                 }
             }
         }
 
-        UpdateStatus($"Processed {FixedImageRolls.Count} fixed image rolls.");
+        LogInfo($"Processed {FixedImageRolls.Count} fixed image rolls.");
     }
 
     private void LoadUserImageRollsList()
     {
-        UpdateStatus($"Loading user image rolls from database. {App.ImageRollsDatabasePath}");
+        LogInfo($"Loading user image rolls from database. {App.ImageRollsDatabasePath}");
 
         UserImageRolls.Clear();
 
         foreach (var roll in ImageRollsDatabase.SelectAllImageRolls())
         {
-            UpdateStatus($"Found: {roll.Name}", SystemMessages.StatusMessageType.Debug);
+            LogDebug($"Found: {roll.Name}");
 
             roll.ImageRollsDatabase = ImageRollsDatabase;
             UserImageRolls.Add(roll);
         }
 
-        UpdateStatus($"Processed {UserImageRolls.Count} user image rolls.");
+        LogInfo($"Processed {UserImageRolls.Count} user image rolls.");
     }
 
     [RelayCommand]
     private void Add()
     {
-        UpdateStatus("Adding image roll.");
+        LogInfo("Adding image roll.");
 
         UserImageRoll = new ImageRollEntry
         {
@@ -117,7 +116,7 @@ public partial class ImageRolls : ObservableRecipient, IRecipient<PropertyChange
     [RelayCommand]
     private void Edit()
     {
-        UpdateStatus("Editing image roll.");
+        LogInfo("Editing image roll.");
 
         UserImageRoll = SelectedUserImageRoll.CopyLite();
     }
@@ -137,13 +136,13 @@ public partial class ImageRolls : ObservableRecipient, IRecipient<PropertyChange
 
         if (ImageRollsDatabase.InsertOrReplaceImageRoll(UserImageRoll) > 0)
         {
-            UpdateStatus($"Saved image roll: {UserImageRoll.Name}");
+            LogInfo($"Saved image roll: {UserImageRoll.Name}");
 
             LoadUserImageRollsList();
             UserImageRoll = null;
         }
         else
-            UpdateStatus($"Failed to save image roll: {UserImageRoll.Name}", SystemMessages.StatusMessageType.Error);
+            LogError($"Failed to save image roll: {UserImageRoll.Name}");
     }
 
     [RelayCommand]
@@ -155,21 +154,21 @@ public partial class ImageRolls : ObservableRecipient, IRecipient<PropertyChange
         foreach (var img in SelectedUserImageRoll.Images)
         {
             if (ImageRollsDatabase.DeleteImage(img.UID))
-                UpdateStatus($"Deleted image: {img.UID}");
+                LogInfo($"Deleted image: {img.UID}");
             else
-                UpdateStatus($"Failed to delete image: {img.UID}", SystemMessages.StatusMessageType.Error);
+                LogError($"Failed to delete image: {img.UID}");
         }
 
         if (ImageRollsDatabase.DeleteImageRoll(UserImageRoll.UID))
         {
-            UpdateStatus($"Deleted image roll: {UserImageRoll.UID}");
+            LogInfo($"Deleted image roll: {UserImageRoll.UID}");
 
             LoadUserImageRollsList();
             UserImageRoll = null;
             SelectedUserImageRoll = null;
         }
         else
-            UpdateStatus($"Failed to delete image roll: {UserImageRoll.UID}");
+            LogError($"Failed to delete image roll: {UserImageRoll.UID}");
     }
 
     [RelayCommand]
@@ -184,46 +183,13 @@ public partial class ImageRolls : ObservableRecipient, IRecipient<PropertyChange
         Clipboard.SetText(Guid.NewGuid().ToString());
     }
 
-    #region Logging & Status Messages
-
-    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-    private void UpdateStatus(string message)
-    {
-        Logger.Info(message);
-        _ = Messenger.Send(new SystemMessages.StatusMessage(message, SystemMessages.StatusMessageType.Info));
-    }
-    private void UpdateStatus(string message, SystemMessages.StatusMessageType type)
-    {
-        switch (type)
-        {
-            case SystemMessages.StatusMessageType.Info:
-                Logger.Info(message);
-                break;
-            case SystemMessages.StatusMessageType.Debug:
-                Logger.Debug(message);
-                break;
-            case SystemMessages.StatusMessageType.Warning:
-                Logger.Warn(message);
-                break;
-            case SystemMessages.StatusMessageType.Error:
-                Logger.Error(message);
-                break;
-            default:
-                Logger.Info(message);
-                break;
-        }
-        _ = Messenger.Send(new SystemMessages.StatusMessage(message, type));
-    }
-    private void UpdateStatus(Exception ex)
-    {
-        Logger.Error(ex);
-        _ = Messenger.Send(new SystemMessages.StatusMessage(ex));
-    }
-    private void UpdateStatus(string message, Exception ex)
-    {
-        Logger.Error(ex);
-        _ = Messenger.Send(new SystemMessages.StatusMessage(ex));
-    }
-
+    #region Logging
+    private readonly Logging.Logger logger = new();
+    public void LogInfo(string message) => logger.LogInfo(this.GetType(), message);
+    public void LogDebug(string message) => logger.LogDebug(this.GetType(), message);
+    public void LogWarning(string message) => logger.LogInfo(this.GetType(), message);
+    public void LogError(string message) => logger.LogError(this.GetType(), message);
+    public void LogError(Exception ex) => logger.LogError(this.GetType(), ex);
+    public void LogError(string message, Exception ex) => logger.LogError(this.GetType(), message, ex);
     #endregion
 }

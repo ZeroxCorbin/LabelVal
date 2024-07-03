@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
+using LabelVal.Logging;
 using LabelVal.Messages;
 using LabelVal.Sectors.ViewModels;
 using LabelVal.V275.ViewModels;
@@ -17,6 +18,7 @@ using System.Collections.ObjectModel;
 using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using V275_REST_lib.Models;
@@ -25,18 +27,30 @@ namespace LabelVal.Results.ViewModels;
 public partial class ImageResults : ObservableRecipient,
     IRecipient<PropertyChangedMessage<ImageRollEntry>>,
     IRecipient<PropertyChangedMessage<Node>>,
-    IRecipient<PropertyChangedMessage<Databases.ImageResults>>,
+    IRecipient<PropertyChangedMessage<Databases.ImageResultsDatabase>>,
     IRecipient<PropertyChangedMessage<Scanner>>,
     IRecipient<PropertyChangedMessage<PrinterSettings>>,
     IRecipient<SystemMessages.ControlMessage>
-
 {
+    private class V275Repeat
+    {
+        public ImageResultEntry ImageResult { get; set; }
+        public int RepeatNumber { get; set; } = -1;
+    }
+
+    public RunViewModel RunViewModel { get; } = new RunViewModel();
+
     private int PrintCount => App.Settings.GetValue<int>(nameof(PrintCount));
+    private int LoopCount => App.Settings.GetValue(nameof(LoopCount), 1);
 
     public ObservableCollection<ImageResultEntry> ImageResultsList { get; } = [];
 
-    [ObservableProperty] private V275.ViewModels.Node selectedNode;
+    [ObservableProperty] private Node selectedNode;
     [ObservableProperty] private ImageRollEntry selectedImageRoll;
+
+    [ObservableProperty] private PrinterSettings selectedPrinter;
+    [ObservableProperty] private Databases.ImageResultsDatabase selectedDatabase;
+    [ObservableProperty] private Scanner selectedScanner;
     partial void OnSelectedImageRollChanged(ImageRollEntry oldValue, ImageRollEntry newValue)
     {
         if (oldValue != null)
@@ -53,83 +67,9 @@ public partial class ImageResults : ObservableRecipient,
             Application.Current.Dispatcher.Invoke(ClearImageResultsList);
     }
 
-    private void Images_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-    {
-        if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
-        {
-            var itm = e.NewItems.First();
-            AddImageResultEntry((ImageEntry)itm);
-        }
-        else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
-        {
-            var itm = e.OldItems.First();
-            RemoveImageResultEntry((ImageEntry)itm);
-        }
-    }
-
-    [ObservableProperty] private PrinterSettings selectedPrinter;
-    [ObservableProperty] private Databases.ImageResults selectedDatabase;
-    [ObservableProperty] private V5.ViewModels.Scanner selectedScanner;
-
-    public RunViewModel RunViewModel { get; } = new RunViewModel();
-    private int LoopCount => App.Settings.GetValue(nameof(RunViewModel.LoopCount), 1);
-
-    private class V275Repeat
-    {
-        public ImageResultEntry ImageResult { get; set; }
-        public int RepeatNumber { get; set; } = -1;
-    }
     private Dictionary<int, V275Repeat> TempV275Repeat { get; } = [];
 
-    public static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
-
     public ImageResults() => IsActive = true;
-
-    public async Task<MessageDialogResult> OkCancelDialog(string title, string message) => await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative);
-
-    public void Receive(PropertyChangedMessage<Node> message)
-    {
-        if (SelectedNode != null)
-        {
-            SelectedNode.Connection.WebSocket.SetupCapture -= WebSocket_SetupCapture;
-            SelectedNode.Connection.WebSocket.LabelEnd -= WebSocket_LabelEnd;
-            SelectedNode.Connection.WebSocket.StateChange -= WebSocket_StateChange;
-
-        }
-
-        SelectedNode = message.NewValue;
-
-        if (SelectedNode == null) return;
-
-        SelectedNode.Connection.WebSocket.SetupCapture += WebSocket_SetupCapture;
-        SelectedNode.Connection.WebSocket.LabelEnd += WebSocket_LabelEnd;
-        SelectedNode.Connection.WebSocket.StateChange += WebSocket_StateChange;
-    }
-    public void Receive(PropertyChangedMessage<ImageRollEntry> message) => SelectedImageRoll = message.NewValue;
-    public void Receive(PropertyChangedMessage<PrinterSettings> message) => SelectedPrinter = message.NewValue;
-    public void Receive(PropertyChangedMessage<Databases.ImageResults> message) => SelectedDatabase = message.NewValue;
-    public void Receive(PropertyChangedMessage<Scanner> message)
-    {
-        if (SelectedScanner != null)
-        {
-            //SelectedScanner.ScannerController.ConfigUpdate -= ScannerController_ConfigUpdate;
-        }
-
-        SelectedScanner = message.NewValue;
-
-        if (SelectedScanner != null)
-        {
-            //SelectedScanner.ScannerController.ConfigUpdate += ScannerController_ConfigUpdate;
-        }
-    }
-    public void Receive(SystemMessages.ControlMessage message)
-    {
-        if (message.Sender == RunViewModel)
-        {
-            if (message.Value == "StartRun")
-                _ = StartRun();
-        }
-    }
 
     public void ClearImageResultsList()
     {
@@ -161,6 +101,19 @@ public partial class ImageResults : ObservableRecipient,
         await Task.WhenAll(taskList.ToArray());
 
         SelectedImageRoll.Images.CollectionChanged += Images_CollectionChanged;
+    }
+    private void Images_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+        if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+        {
+            var itm = e.NewItems.First();
+            AddImageResultEntry((ImageEntry)itm);
+        }
+        else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
+        {
+            var itm = e.OldItems.First();
+            RemoveImageResultEntry((ImageEntry)itm);
+        }
     }
 
     private void AddImageResultEntry(ImageEntry img)
@@ -412,7 +365,7 @@ public partial class ImageResults : ObservableRecipient,
     {
         if (SelectedNode == null)
         {
-            UpdateStatus("No node selected.", SystemMessages.StatusMessageType.Warning);
+            LogWarning("No node selected.");
 
             _ = StartPrint(imageResults);
 
@@ -444,7 +397,7 @@ public partial class ImageResults : ObservableRecipient,
 
                 if (!await SelectedNode.Connection.Commands.TriggerSimulator())
                 {
-                    UpdateStatus("Error triggering the simulator.");
+                    LogError("Error triggering the simulator.");
                     imageResults.IsV275Working = false;
                     return;
                 }
@@ -459,7 +412,7 @@ public partial class ImageResults : ObservableRecipient,
                 imageResults.IsV275Working = false;
         }
 
-        if(imageResults.IsV275Working == false)
+        if (imageResults.IsV275Working == false)
         {
             WaitForRepeat = false;
             PrintingImageResult = null;
@@ -484,7 +437,7 @@ public partial class ImageResults : ObservableRecipient,
                 }
             }
         });
-        
+
         if (SelectedNode.State != V275.ViewModels.NodeStates.Idle && SelectedNode.IsLoggedIn_Control)
             await SelectedNode.EnablePrint("1");
         else if (SelectedNode.IsSimulator)
@@ -495,12 +448,12 @@ public partial class ImageResults : ObservableRecipient,
     {
         var printer = new Printer.Controller();
 
-        if (RunViewModel.State != Run.Controller.RunStates.IDLE)
-        {
-            var data = $"Loop {RunViewModel.RunController.CurrentLoopCount} : {RunViewModel.RunController.CurrentLabelCount}";
-            printer.Print(imageResults.SourceImage, 1, SelectedPrinter.PrinterName, data);
-        }
-        else
+        //if (RunViewModel.State != Run.Controller.RunStates.IDLE)
+        //{
+        //    var data = $"Loop {RunViewModel.RunController.CurrentLoopCount} : {RunViewModel.RunController.CurrentLabelCount}";
+        //    printer.Print(imageResults.SourceImage, 1, SelectedPrinter.PrinterName, data);
+        //}
+        //else
             printer.Print(imageResults.SourceImage, PrintCount, SelectedPrinter.PrinterName, "");
     });
 
@@ -517,14 +470,14 @@ public partial class ImageResults : ObservableRecipient,
 
         if (img == null)
         {
-            UpdateStatus($"The image type is null: {type}");
+            LogError($"The image type is null: {type}");
             imageResults.IsV275Working = false;
             return;
         }
 
         if (!await SelectedNode.Connection.Commands.TriggerSimulator(new V275_REST_Lib.Models.SimulationTrigger() { image = img.GetPngBytes(), dpi = (int)img.Image.DpiX }))
         {
-            UpdateStatus("Error triggering the simulator.");
+            LogError("Error triggering the simulator.");
             imageResults.IsV275Working = false;
             return;
         }
@@ -551,7 +504,7 @@ public partial class ImageResults : ObservableRecipient,
 
                 if (verRes > 0)
                 {
-                    UpdateStatus("Could not delete all simulator images.");
+                    LogError("Could not delete all simulator images.");
                     imageResults.IsV275Working = false;
                     return;
                 }
@@ -580,7 +533,7 @@ public partial class ImageResults : ObservableRecipient,
             {
                 if (!sim.SaveImage(prepend + Path.GetFileName(imageResults.SourceImage.Path), imageResults.SourceImage.GetBitmapBytes()))
                 {
-                    UpdateStatus("Could not copy the image to the simulator images directory.");
+                    LogError("Could not copy the image to the simulator images directory.");
                     imageResults.IsV275Working = false;
                     return;
                 }
@@ -589,7 +542,7 @@ public partial class ImageResults : ObservableRecipient,
             {
                 if (!sim.SaveImage(prepend + Path.GetFileName(imageResults.SourceImage.Path), imageResults.V275ResultRow.Stored.GetPngBytes()))
                 {
-                    UpdateStatus("Could not save the image to the simulator images directory.");
+                    LogError("Could not save the image to the simulator images directory.");
                     imageResults.IsV275Working = false;
                     return;
                 }
@@ -598,7 +551,7 @@ public partial class ImageResults : ObservableRecipient,
             {
                 if (!sim.SaveImage(prepend + Path.GetFileName(imageResults.SourceImage.Path), imageResults.V5ResultRow.Stored.GetPngBytes()))
                 {
-                    UpdateStatus("Could not save the image to the simulator images directory.");
+                    LogError("Could not save the image to the simulator images directory.");
                     imageResults.IsV275Working = false;
                     return;
                 }
@@ -606,11 +559,10 @@ public partial class ImageResults : ObservableRecipient,
         }
         catch (Exception ex)
         {
-            UpdateStatus(ex.Message);
+            LogError(ex.Message);
             imageResults.IsV275Working = false;
         }
     }
-
 
     private async void ProcessRepeat(int repeat)
     {
@@ -637,7 +589,7 @@ public partial class ImageResults : ObservableRecipient,
             {
                 var sectors = SelectedNode.Connection.CreateSectors(SelectedNode.Connection.SetupDetectEvent, V275GetTableID(SelectedImageRoll.SelectedGS1Table), SelectedNode.Symbologies);
 
-                UpdateStatus("Creating sectors.", SystemMessages.StatusMessageType.Info);
+                LogInfo("Creating sectors.");
 
                 foreach (var sec in sectors)
                 {
@@ -650,7 +602,7 @@ public partial class ImageResults : ObservableRecipient,
             }
         }
 
-        UpdateStatus("Reading results and Image.", SystemMessages.StatusMessageType.Info);
+        LogInfo("Reading results and Image.");
         if (!await TempV275Repeat[repeat].ImageResult.V275ReadTask(repeat))
         {
             ProcessRepeatFault(repeat);
@@ -732,9 +684,9 @@ public partial class ImageResults : ObservableRecipient,
             if (await OkCancelDialog("Missing Stored Sectors", "There are images that do not have stored sectors. Are you sure you want to continue?") == MessageDialogResult.Negative)
                 return;
 
-        _ = RunViewModel.RunController.Init(ImageResultsList, LoopCount, SelectedDatabase, SelectedNode);
+        //_ = RunViewModel.RunController.Init(ImageResultsList, LoopCount, SelectedDatabase, SelectedNode);
 
-        RunViewModel.StartRunRequest();
+        //RunViewModel.StartRunRequest();
     }
     private bool StartRunCheck()
     {
@@ -744,48 +696,65 @@ public partial class ImageResults : ObservableRecipient,
         return true;
     }
 
-    #region Logging & Status Messages
-
-    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-    private void UpdateStatus(string message)
+    #region Recieve Messages
+    public void Receive(PropertyChangedMessage<Node> message)
     {
-        Logger.Info(message);
-        _ = Messenger.Send(new SystemMessages.StatusMessage(message, SystemMessages.StatusMessageType.Info));
-    }
-    private void UpdateStatus(string message, SystemMessages.StatusMessageType type)
-    {
-        switch (type)
+        if (SelectedNode != null)
         {
-            case SystemMessages.StatusMessageType.Info:
-                Logger.Info(message);
-                break;
-            case SystemMessages.StatusMessageType.Debug:
-                Logger.Debug(message);
-                break;
-            case SystemMessages.StatusMessageType.Warning:
-                Logger.Warn(message);
-                break;
-            case SystemMessages.StatusMessageType.Error:
-                Logger.Error(message);
-                break;
-            default:
-                Logger.Info(message);
-                break;
+            SelectedNode.Connection.WebSocket.SetupCapture -= WebSocket_SetupCapture;
+            SelectedNode.Connection.WebSocket.LabelEnd -= WebSocket_LabelEnd;
+            SelectedNode.Connection.WebSocket.StateChange -= WebSocket_StateChange;
+
         }
-        _ = Messenger.Send(new SystemMessages.StatusMessage(message, type));
-    }
-    private void UpdateStatus(Exception ex)
-    {
-        Logger.Error(ex);
-        _ = Messenger.Send(new SystemMessages.StatusMessage(ex));
-    }
-    private void UpdateStatus(string message, Exception ex)
-    {
-        Logger.Error(ex);
-        _ = Messenger.Send(new SystemMessages.StatusMessage(ex));
-    }
 
-    private void SendControlMessage(string message) => _ = Messenger.Send(new SystemMessages.ControlMessage(this, message));
+        SelectedNode = message.NewValue;
 
+        if (SelectedNode == null) return;
+
+        SelectedNode.Connection.WebSocket.SetupCapture += WebSocket_SetupCapture;
+        SelectedNode.Connection.WebSocket.LabelEnd += WebSocket_LabelEnd;
+        SelectedNode.Connection.WebSocket.StateChange += WebSocket_StateChange;
+    }
+    public void Receive(PropertyChangedMessage<ImageRollEntry> message) => SelectedImageRoll = message.NewValue;
+    public void Receive(PropertyChangedMessage<PrinterSettings> message) => SelectedPrinter = message.NewValue;
+    public void Receive(PropertyChangedMessage<Databases.ImageResultsDatabase> message) => SelectedDatabase = message.NewValue;
+    public void Receive(PropertyChangedMessage<Scanner> message)
+    {
+        if (SelectedScanner != null)
+        {
+            //SelectedScanner.ScannerController.ConfigUpdate -= ScannerController_ConfigUpdate;
+        }
+
+        SelectedScanner = message.NewValue;
+
+        if (SelectedScanner != null)
+        {
+            //SelectedScanner.ScannerController.ConfigUpdate += ScannerController_ConfigUpdate;
+        }
+    }
+    public void Receive(SystemMessages.ControlMessage message)
+    {
+        if (message.Sender == RunViewModel)
+        {
+            if (message.Value == "StartRun")
+                _ = StartRun();
+        }
+    }
     #endregion
+
+    #region Dialogs
+    public static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
+    public async Task<MessageDialogResult> OkCancelDialog(string title, string message) => await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative);
+    #endregion
+
+    #region Logging
+    private readonly Logger logger = new();
+    public void LogInfo(string message) => logger.LogInfo(this.GetType(), message);
+    public void LogDebug(string message) => logger.LogDebug(this.GetType(), message);
+    public void LogWarning(string message) => logger.LogInfo(this.GetType(), message);
+    public void LogError(string message) => logger.LogError(this.GetType(), message);
+    public void LogError(Exception ex) => logger.LogError(this.GetType(), ex);
+    public void LogError(string message, Exception ex) => logger.LogError(this.GetType(), message, ex);
+    #endregion
+
 }

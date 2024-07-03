@@ -24,7 +24,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
         public string Report { get; set; }
     }
 
-    [ObservableProperty] private Databases.ImageResults.L95xxResult l95xxResultRow;
+    [ObservableProperty] private Databases.L95xxResult l95xxResultRow;
 
     public List<L95xxReport> L95xxCurrentReport { get; private set; }
 

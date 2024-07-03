@@ -33,7 +33,7 @@ public class Controller
 
     public RunDatabase RunDatabase { get; private set; }
     public RunEntry RunEntry { get; private set; }
-    public ResultEntry ResultEntry { get; private set; }
+    //public ResultEntry ResultEntry { get; private set; }
     //public List<RunEntryDatabase.Run> RunImageResultsList { get; private set; } = new List<RunEntryDatabase.Run>();
 
     public int LoopCount { get; private set; }
@@ -44,7 +44,7 @@ public class Controller
     private ObservableCollection<Results.ViewModels.ImageResultEntry> ImageResultsList { get; set; }
 
     public ImageRolls.ViewModels.ImageRollEntry SelectedImageRoll { get; private set; }
-    private Results.Databases.ImageResults ImageResultsDatabase { get; set; }
+    private Results.Databases.ImageResultsDatabase ImageResultsDatabase { get; set; }
 
     public V275.ViewModels.Node Node { get; private set; }
     //private string JobName { get; }
@@ -61,7 +61,7 @@ public class Controller
         _ = OpenDatabase();
     }
 
-    public Controller Init(ObservableCollection<Results.ViewModels.ImageResultEntry> imageResultsList, int loopCount, Results.Databases.ImageResults standardsDatabase, V275.ViewModels.Node v275Node)
+    public Controller Init(ObservableCollection<Results.ViewModels.ImageResultEntry> imageResultsList, int loopCount, Results.Databases.ImageResultsDatabase standardsDatabase, V275.ViewModels.Node v275Node)
     {
         ImageResultsList = imageResultsList;
         LoopCount = loopCount;
@@ -232,7 +232,7 @@ public class Controller
                     return false;
                 }
 
-                var row = new ResultEntry()
+                var row = new ResultEntryGroup()
                 {
                     LabelTemplate = sRow.Template,
                     LabelReport = sRow.Report,

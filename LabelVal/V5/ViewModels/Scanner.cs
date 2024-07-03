@@ -8,7 +8,6 @@ using LabelVal.Messages;
 using LabelVal.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using NLog;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -214,7 +213,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
         if (!res.OK)
         {
-            UpdateStatus("Could not get scanner configuration.", SystemMessages.StatusMessageType.Error);
+            LogError("Could not get scanner configuration.");
             return;
         }
 
@@ -263,7 +262,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
         if (!res.OK)
         {
-            UpdateStatus("Could not get scanner configuration.", SystemMessages.StatusMessageType.Error);
+            LogError("Could not get scanner configuration.");
             return;
         }
 
@@ -407,7 +406,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
                 }
 
             }
-            catch (Exception ex) { UpdateStatus(ex); }
+            catch (Exception ex) { LogError(ex); }
         }
     }
     private async void ScannerController_ImageUpdate(JObject json)
@@ -835,25 +834,25 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     {
         if(SelectedImageRoll == null)
         {
-            UpdateStatus("No image roll selected.", SystemMessages.StatusMessageType.Warning);
+            LogWarning("No image roll selected.");
             return;
         }
 
         if(SelectedImageRoll.IsRooted)
         {
-            UpdateStatus("Cannot add to a rooted image roll.",SystemMessages.StatusMessageType.Warning);
+            LogWarning("Cannot add to a rooted image roll.");
             return;
         }
 
         if(SelectedImageRoll.IsLocked)
         {
-            UpdateStatus("Cannot add to a locked image roll.",SystemMessages.StatusMessageType.Warning);
+            LogWarning("Cannot add to a locked image roll.");
             return;
         }
 
         if (RawImage == null)
         {
-            UpdateStatus("No image to add.", SystemMessages.StatusMessageType.Warning);
+            LogWarning("No image to add.");
             return;
         }
         var imagEntry = SelectedImageRoll.GetNewImageEntry(RawImage);
@@ -872,52 +871,18 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         Capture = null;
     }
 
-
-    #region Logging & Status Messages
-
-    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-    private void UpdateStatus(string message)
-    {
-        UpdateStatus(message);
-        _ = Messenger.Send(new SystemMessages.StatusMessage(message, SystemMessages.StatusMessageType.Info));
-    }
-    private void UpdateStatus(string message, SystemMessages.StatusMessageType type)
-    {
-        switch (type)
-        {
-            case SystemMessages.StatusMessageType.Info:
-                UpdateStatus(message);
-                break;
-            case SystemMessages.StatusMessageType.Debug:
-                Logger.Debug(message);
-                break;
-            case SystemMessages.StatusMessageType.Warning:
-                Logger.Warn(message);
-                break;
-            case SystemMessages.StatusMessageType.Error:
-                Logger.Error(message);
-                break;
-            default:
-                UpdateStatus(message);
-                break;
-        }
-        _ = Messenger.Send(new SystemMessages.StatusMessage(message, type));
-    }
-    private void UpdateStatus(Exception ex)
-    {
-        Logger.Error(ex);
-        _ = Messenger.Send(new SystemMessages.StatusMessage(ex));
-    }
-    private void UpdateStatus(string message, Exception ex)
-    {
-        Logger.Error(ex);
-        _ = Messenger.Send(new SystemMessages.StatusMessage(ex));
-    }
-
-    private void SendControlMessage(string message)
+   private void SendControlMessage(string message)
     {
         _ = Messenger.Send(new SystemMessages.ControlMessage(this, message));
     }
 
+    #region Logging
+    private readonly Logging.Logger logger = new();
+    public void LogInfo(string message) => logger.LogInfo(this.GetType(), message);
+    public void LogDebug(string message) => logger.LogDebug(this.GetType(), message);
+    public void LogWarning(string message) => logger.LogInfo(this.GetType(), message);
+    public void LogError(string message) => logger.LogError(this.GetType(), message);
+    public void LogError(Exception ex) => logger.LogError(this.GetType(), ex);
+    public void LogError(string message, Exception ex) => logger.LogError(this.GetType(), message, ex);
     #endregion
 }

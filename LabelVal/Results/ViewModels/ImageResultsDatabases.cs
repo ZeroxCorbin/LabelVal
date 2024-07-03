@@ -15,10 +15,10 @@ public partial class ImageResultsDatabases : ObservableRecipient
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-    public ObservableCollection<Databases.ImageResults> Databases { get; } = [];
+    public ObservableCollection<Databases.ImageResultsDatabase> Databases { get; } = [];
 
-    [ObservableProperty][NotifyPropertyChangedRecipients] private Databases.ImageResults selectedDatabase;
-    partial void OnSelectedDatabaseChanged(Databases.ImageResults value) => SelectedDatabaseFilePath = value != null ? value.FilePath : "";
+    [ObservableProperty][NotifyPropertyChangedRecipients] private Databases.ImageResultsDatabase selectedDatabase;
+    partial void OnSelectedDatabaseChanged(Databases.ImageResultsDatabase value) => SelectedDatabaseFilePath = value != null ? value.FilePath : "";
 
 
     [ObservableProperty] private string selectedDatabaseFilePath = App.Settings.GetValue(nameof(SelectedDatabaseFilePath), "");
@@ -50,7 +50,7 @@ public partial class ImageResultsDatabases : ObservableRecipient
                 if (Databases.Any((a) => a.FilePath == file))
                     continue;
 
-                Databases.Add(new Databases.ImageResults(file));
+                Databases.Add(new Databases.ImageResultsDatabase(file));
             }
         }
 
@@ -63,7 +63,7 @@ public partial class ImageResultsDatabases : ObservableRecipient
                 if (Databases.Any((a) => a.FilePath == file))
                     continue;
 
-                Databases.Add(new Databases.ImageResults(file));
+                Databases.Add(new Databases.ImageResultsDatabase(file));
             }
         }
 
@@ -94,7 +94,7 @@ public partial class ImageResultsDatabases : ObservableRecipient
             return;
         }
 
-        var file = new Databases.ImageResults(Path.Combine(App.ImageResultsDatabaseRoot, res + App.DatabaseExtension));
+        var file = new Databases.ImageResultsDatabase(Path.Combine(App.ImageResultsDatabaseRoot, res + App.DatabaseExtension));
         _ = file.Open();
         file.Close();
 

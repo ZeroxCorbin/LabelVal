@@ -25,9 +25,7 @@ using LabelVal.Converters;
 namespace LabelVal.Results.ViewModels;
 
 public partial class ImageResultEntry : ObservableRecipient,
-    //IRecipient<PropertyChangedMessage<Node>>,
-    IRecipient<PropertyChangedMessage<Databases.ImageResults>>,
-   // IRecipient<PropertyChangedMessage<Scanner>>,
+    IRecipient<PropertyChangedMessage<Databases.ImageResultsDatabase>>,
     IRecipient<PropertyChangedMessage<PrinterSettings>>
 {
     public delegate void BringIntoViewDelegate();
@@ -36,47 +34,11 @@ public partial class ImageResultEntry : ObservableRecipient,
     public delegate void DeleteImageDelegate(ImageResultEntry imageResults);
     public event DeleteImageDelegate DeleteImage;
 
-    //public delegate void StatusChange(string status);
-    //public event StatusChange StatusChanged;
-
-    //[ObservableProperty] private string status;
-    //partial void OnStatusChanged(string value) => App.Current.Dispatcher.Invoke(() => StatusChanged?.Invoke(Status));
-
-    public Models.ImageResultEntry GetModel()
-    {
-        return new Models.ImageResultEntry()
-        {
-            //LoopCount = LoopCount,
-            SourceImageUID = SourceImage?.UID,
-            SourceImage = SourceImage?.GetBitmapBytes(),
-
-            V275_StoredTemplate = V275ResultRow?.Template,
-            V275_StoredReport = V275ResultRow?.Report,
-            V275_StoredImage = V275ResultRow?.StoredImage,
-
-            V275_CurrentTemplate = V275CurrentTemplate != null ? JsonConvert.SerializeObject(V275CurrentTemplate) : null,
-            V275_CurrentReport = V275CurrentReport != null ? JsonConvert.SerializeObject(V275CurrentReport) : null,
-            V275_CurrentImage = V275Image?.ToJSON(),
-
-            V5_StoredTemplate = V5ResultRow?.Template,
-            V5_StoredReport = V5ResultRow?.Report,
-            V5_StoredImage = V5ResultRow?.StoredImage,
-
-            //V5_CurrentTemplate = V5CurrentTemplate != null ? JsonConvert.SerializeObject(V5CurrentTemplate) : null,
-            V5_CurrentReport = V5CurrentReport != null ? JsonConvert.SerializeObject(V5CurrentReport) : null,
-            V5_CurrentImage = V5Image?.ToJSON(),
-        };  
-    }
-
     public ImageEntry SourceImage { get; }
     public ImageResults ImageResults { get; }
 
+    [ObservableProperty] DrawingImage printerAreaOverlay;
 
-    [ObservableProperty] System.Windows.Media.DrawingImage printerAreaOverlay;
-
-    //[ObservableProperty] private Node selectedNode;
-    //[ObservableProperty] private ImageRollEntry selectedImageRoll;
-    //[ObservableProperty] private Scanner selectedScanner;
     [ObservableProperty] private PrinterSettings selectedPrinter;
     partial void OnSelectedPrinterChanged(PrinterSettings value)
     {
@@ -84,8 +46,8 @@ public partial class ImageResultEntry : ObservableRecipient,
         OnShowDetailsChanged(ShowDetails);
     }
 
-    [ObservableProperty] private Databases.ImageResults selectedDatabase;
-    partial void OnSelectedDatabaseChanged(Databases.ImageResults value) => GetStored();
+    [ObservableProperty] private Databases.ImageResultsDatabase selectedDatabase;
+    partial void OnSelectedDatabaseChanged(Databases.ImageResultsDatabase value) => GetStored();
 
     [ObservableProperty] private Sectors.ViewModels.Sector selectedSector;
 
@@ -118,10 +80,9 @@ public partial class ImageResultEntry : ObservableRecipient,
     }
 
     //public void Receive(PropertyChangedMessage<Node> message) => SelectedNode = message.NewValue;
-    public void Receive(PropertyChangedMessage<Databases.ImageResults> message) => SelectedDatabase = message.NewValue;
+    public void Receive(PropertyChangedMessage<Databases.ImageResultsDatabase> message) => SelectedDatabase = message.NewValue;
     //public void Receive(PropertyChangedMessage<Scanner> message) => SelectedScanner = message.NewValue;
     public void Receive(PropertyChangedMessage<PrinterSettings> message) => SelectedPrinter = message.NewValue;
-
 
     public async Task<MessageDialogResult> OkCancelDialog(string title, string message)
     {
@@ -184,7 +145,7 @@ public partial class ImageResultEntry : ObservableRecipient,
                 if (await OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for this image?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
                     return;
 
-            _ = SelectedDatabase.InsertOrReplace_V275Result(new Databases.ImageResults.V275Result
+            _ = SelectedDatabase.InsertOrReplace_V275Result(new Databases.V275Result
             {
                 SourceImageUID = SourceImage.UID,
                 ImageRollUID = ImageResults.SelectedImageRoll.UID,
@@ -204,7 +165,7 @@ public partial class ImageResultEntry : ObservableRecipient,
                 if (await OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for this image?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
                     return;
 
-            _ = SelectedDatabase.InsertOrReplace_V5Result(new Databases.ImageResults.V5Result
+            _ = SelectedDatabase.InsertOrReplace_V5Result(new Databases.V5Result
             {
                 SourceImageUID = SourceImage.UID,
                 ImageRollUID = ImageResults.SelectedImageRoll.UID,
@@ -222,7 +183,7 @@ public partial class ImageResultEntry : ObservableRecipient,
 
             if(L95xxCurrentSectorSelected == null)
             {
-                UpdateStatus("No sector selected to store.", SystemMessages.StatusMessageType.Error);
+                LogError("No sector selected to store.");
                 return;
             }
             //Does the selected sector exist in the Stored sectors list?
@@ -252,7 +213,7 @@ public partial class ImageResultEntry : ObservableRecipient,
             foreach (var sec in L95xxStoredSectors)
                 temp.Add(new L95xxReport() { Report = sec.L95xxPacket, Template = sec.Template });
 
-            _ = SelectedDatabase.InsertOrReplace_L95xxResult(new Databases.ImageResults.L95xxResult
+            _ = SelectedDatabase.InsertOrReplace_L95xxResult(new Databases.L95xxResult
             {
                 ImageRollUID = ImageResults.SelectedImageRoll.UID,
                 SourceImageUID = SourceImage.UID,
@@ -451,52 +412,13 @@ public partial class ImageResultEntry : ObservableRecipient,
         });
     }
 
-
-    #region Logging & Status Messages
-
-    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-    private void UpdateStatus(string message)
-    {
-        UpdateStatus(message);
-        _ = Messenger.Send(new SystemMessages.StatusMessage(message, SystemMessages.StatusMessageType.Info));
-    }
-    private void UpdateStatus(string message, SystemMessages.StatusMessageType type)
-    {
-        switch (type)
-        {
-            case SystemMessages.StatusMessageType.Info:
-                UpdateStatus(message);
-                break;
-            case SystemMessages.StatusMessageType.Debug:
-                Logger.Debug(message);
-                break;
-            case SystemMessages.StatusMessageType.Warning:
-                Logger.Warn(message);
-                break;
-            case SystemMessages.StatusMessageType.Error:
-                Logger.Error(message);
-                break;
-            default:
-                UpdateStatus(message);
-                break;
-        }
-        _ = Messenger.Send(new SystemMessages.StatusMessage(message, type));
-    }
-    private void UpdateStatus(Exception ex)
-    {
-        Logger.Error(ex);
-        _ = Messenger.Send(new SystemMessages.StatusMessage(ex));
-    }
-    private void UpdateStatus(string message, Exception ex)
-    {
-        Logger.Error(ex);
-        _ = Messenger.Send(new SystemMessages.StatusMessage(ex));
-    }
-
-    private void SendControlMessage(string message)
-    {
-        _ = Messenger.Send(new SystemMessages.ControlMessage(this, message));
-    }
-
+    #region Logging
+    private readonly Logging.Logger logger = new();
+    public void LogInfo(string message) => logger.LogInfo(this.GetType(), message);
+    public void LogDebug(string message) => logger.LogDebug(this.GetType(), message);
+    public void LogWarning(string message) => logger.LogInfo(this.GetType(), message);
+    public void LogError(string message) => logger.LogError(this.GetType(), message);
+    public void LogError(Exception ex) => logger.LogError(this.GetType(), ex);
+    public void LogError(string message, Exception ex) => logger.LogError(this.GetType(), message, ex);
     #endregion
 }

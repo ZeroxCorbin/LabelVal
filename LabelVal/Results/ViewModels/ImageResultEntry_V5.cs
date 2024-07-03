@@ -18,7 +18,7 @@ namespace LabelVal.Results.ViewModels;
 public partial class ImageResultEntry
 {
 
-    [ObservableProperty] private Databases.ImageResults.V5Result v5ResultRow;
+    [ObservableProperty] private Databases.V5Result v5ResultRow;
 
     //public Config V5CurrentTemplate { get; set; }
     public JObject V5CurrentReport { get; private set; }
@@ -38,7 +38,6 @@ public partial class ImageResultEntry
     partial void OnIsV5WorkingChanged(bool value) => OnPropertyChanged(nameof(IsNotV5Working));
     public bool IsNotV5Working => !IsV5Working;
 
-
     [ObservableProperty] private bool isV5Faulted = false;
     partial void OnIsV5FaultedChanged(bool value) => OnPropertyChanged(nameof(IsNotV5Faulted));
     public bool IsNotV5Faulted => !IsV5Faulted;
@@ -53,7 +52,7 @@ public partial class ImageResultEntry
 
         if (ImageResults.SelectedScanner == null)
         {
-            UpdateStatus("No scanner selected.", SystemMessages.StatusMessageType.Error);
+            LogError("No scanner selected.");
             IsV5Working = false;
             return;
         }
@@ -62,7 +61,7 @@ public partial class ImageResultEntry
 
         if (!res.OK)
         {
-            UpdateStatus("Could not get scanner configuration.", SystemMessages.StatusMessageType.Error);
+            LogError("Could not get scanner configuration.");
             IsV5Working = false;
             return;
         }
@@ -74,7 +73,7 @@ public partial class ImageResultEntry
             var fas = config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource;
             if (fas == null)
             {
-                UpdateStatus("The scanner is not in file aquire mode.", SystemMessages.StatusMessageType.Error);
+                LogError("The scanner is not in file aquire mode.");
                 IsV5Working = false;
                 return;
             }
@@ -126,7 +125,7 @@ public partial class ImageResultEntry
     {
         if (!triggerResults.OK)
         {
-            UpdateStatus("Could not trigger the scanner.", SystemMessages.StatusMessageType.Error);
+            LogError("Could not trigger the scanner.");
 
             V5CurrentReport = null;
 

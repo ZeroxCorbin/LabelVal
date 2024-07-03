@@ -87,10 +87,10 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
 
     [SQLite.Ignore] public ObservableCollection<ImageEntry> Images { get; set; } = [];
 
-    [SQLite.Ignore] public Databases.ImageRolls ImageRollsDatabase { get; set; }
+    [SQLite.Ignore] public Databases.ImageRollsDatabase ImageRollsDatabase { get; set; }
 
     public ImageRollEntry() { Images.CollectionChanged += (s, e) => ImageCount = Images.Count; IsActive = true; }
-    public ImageRollEntry(string name, string path, PrinterSettings printerSettings, Databases.ImageRolls imageRollsDatabase)
+    public ImageRollEntry(string name, string path, PrinterSettings printerSettings, Databases.ImageRollsDatabase imageRollsDatabase)
     {
         SelectedPrinter = printerSettings;
         ImageRollsDatabase = imageRollsDatabase;
@@ -118,7 +118,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
         if (Images.Count > 0)
             return;
 
-        Logger.Info("Loading label images from standards directory: {name}", $"{App.AssetsImageRollRoot}\\{Name}\\");
+        LogInfo($"Loading label images from standards directory: {App.AssetsImageRollRoot}\\{Name}\\");
 
         List<string> images = [];
         foreach (var f in Directory.EnumerateFiles(Path))
@@ -142,7 +142,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
         if (Images.Count > 0)
             return;
 
-        Logger.Info("Loading label images from database: {name}", Name);
+        LogInfo($"Loading label images from database: {Name}");
 
         var images = ImageRollsDatabase.SelectAllImages(UID);
         List<Task> taskList = [];
@@ -186,7 +186,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
 
             if (Images.Any(e => e.UID == image.UID))
             {
-                Logger.Warn("Image already exists in roll: {path}", path);
+                LogWarning($"Image already exists in roll: {Path}");
                 return null;
             }
 
@@ -194,7 +194,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
         }
         catch (Exception ex)
         {
-            Logger.Error(ex, "Failed to load image: {name}", path);
+            LogError($"Failed to load image: {Path}", ex);
         }
 
         return null;
@@ -210,7 +210,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
 
             if (Images.Any(e => e.UID == image.UID))
             {
-                Logger.Warn("Image already exists in roll: {path}", path);
+               LogWarning($"Image already exists in roll: {Path}");
                 return null;
             }
 
@@ -218,7 +218,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
         }
         catch (Exception ex)
         {
-            Logger.Error(ex, "Failed to load image: {name}", path);
+            LogError($"Failed to load image: {Path}", ex);
         }
 
         return null;
@@ -268,7 +268,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
         }
         catch (Exception ex)
         {
-            Logger.Error(ex, "Failed to load image: {name}", path);
+            LogError($"Failed to load image: {Path}", ex);
         }
 
         return null;
@@ -287,7 +287,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
         }
         catch (Exception ex)
         {
-            Logger.Error(ex, "Failed to load image: {name}", path);
+            LogError($"Failed to load image: {Path}", ex);
         }
 
         return null;
@@ -318,51 +318,13 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
 
     public ImageRollEntry CopyLite() => JsonConvert.DeserializeObject<ImageRollEntry>(JsonConvert.SerializeObject(this));
 
-    #region Logging & Status Messages
-
-    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-    private void UpdateStatus(string message)
-    {
-        UpdateStatus(message);
-        _ = Messenger.Send(new SystemMessages.StatusMessage(message, SystemMessages.StatusMessageType.Info));
-    }
-    private void UpdateStatus(string message, SystemMessages.StatusMessageType type)
-    {
-        switch (type)
-        {
-            case SystemMessages.StatusMessageType.Info:
-                UpdateStatus(message);
-                break;
-            case SystemMessages.StatusMessageType.Debug:
-                Logger.Debug(message);
-                break;
-            case SystemMessages.StatusMessageType.Warning:
-                Logger.Warn(message);
-                break;
-            case SystemMessages.StatusMessageType.Error:
-                Logger.Error(message);
-                break;
-            default:
-                UpdateStatus(message);
-                break;
-        }
-        _ = Messenger.Send(new SystemMessages.StatusMessage(message, type));
-    }
-    private void UpdateStatus(Exception ex)
-    {
-        Logger.Error(ex);
-        _ = Messenger.Send(new SystemMessages.StatusMessage(ex));
-    }
-    private void UpdateStatus(string message, Exception ex)
-    {
-        Logger.Error(ex);
-        _ = Messenger.Send(new SystemMessages.StatusMessage(ex));
-    }
-
-    private void SendControlMessage(string message)
-    {
-        _ = Messenger.Send(new SystemMessages.ControlMessage(this, message));
-    }
-
+    #region Logging
+    private readonly Logging.Logger logger = new();
+    public void LogInfo(string message) => logger.LogInfo(this.GetType(), message);
+    public void LogDebug(string message) => logger.LogDebug(this.GetType(), message);
+    public void LogWarning(string message) => logger.LogInfo(this.GetType(), message);
+    public void LogError(string message) => logger.LogError(this.GetType(), message);
+    public void LogError(Exception ex) => logger.LogError(this.GetType(), ex);
+    public void LogError(string message, Exception ex) => logger.LogError(this.GetType(), message, ex);
     #endregion
 }
