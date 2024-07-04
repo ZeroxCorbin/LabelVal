@@ -1,19 +1,5 @@
-﻿using LabelVal.WindowViewModels;
-using LabelVal.WindowViews;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace LabelVal.Printer.Views;
 /// <summary>
@@ -21,19 +7,18 @@ namespace LabelVal.Printer.Views;
 /// </summary>
 public partial class Printer : UserControl
 {
-    public Printer()
-    {
-        InitializeComponent();
-    }
+    public Printer() => InitializeComponent();
 
     private void btnShowPrinterDetails_Click(object sender, RoutedEventArgs e)
     {
-        var view = ((MainWindowView)App.Current.MainWindow).PrinterDetails;
-        var vm = ((MainWindowView)App.Current.MainWindow).DataContext as MainWindowViewModel;
+        MaterialDesignThemes.Wpf.DrawerHost view = ((Main.Views.MainWindow)App.Current.MainWindow).PrinterDetails;
+        Main.ViewModels.MainWindow vm = ((Main.Views.MainWindow)App.Current.MainWindow).DataContext as Main.ViewModels.MainWindow;
         if (view.LeftDrawerContent == null)
         {
-            var details = new Views.PrinterDetails();
-            details.DataContext = vm.PrinterDetails;
+            PrinterDetails details = new()
+            {
+                DataContext = vm.PrinterDetails
+            };
             view.LeftDrawerContent = details;
         }
         view.IsLeftDrawerOpen = !view.IsLeftDrawerOpen;

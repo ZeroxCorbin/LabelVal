@@ -1,14 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
-using CommunityToolkit.Mvvm.Messaging.Messages;
-using LabelVal.Messages;
-using LabelVal.Run;
-using LabelVal.V275.ViewModels;
-using System;
 
-namespace LabelVal.WindowViewModels;
-public partial class RunViewModel : ObservableRecipient//, IRecipient<PropertyChangedMessage<Node>>
+namespace LabelVal.Run.ViewModels;
+public partial class RunControl : ObservableRecipient//, IRecipient<PropertyChangedMessage<Node>>
 {
     //public Controller RunController { get; set; } = new Controller();
 

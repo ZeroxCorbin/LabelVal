@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Windows.Controls;
 using System.Windows.Data;
 
-namespace LabelVal.WindowViews;
+namespace LabelVal.Main.Views;
 /// <summary>
 /// Interaction logic for StatusMessageViewer.xaml
 /// </summary>

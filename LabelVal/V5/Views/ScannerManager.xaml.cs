@@ -1,6 +1,4 @@
-﻿using LabelVal.WindowViewModels;
-using LabelVal.WindowViews;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 
 namespace LabelVal.V5.Views;
@@ -10,19 +8,18 @@ namespace LabelVal.V5.Views;
 /// </summary>
 public partial class ScannerManager : UserControl
 {
-    public ScannerManager()
-    {
-        InitializeComponent();
-    }
+    public ScannerManager() => InitializeComponent();
 
     private void btnShowDetails_Click(object sender, RoutedEventArgs e)
     {
-        var view = ((MainWindowView)App.Current.MainWindow).ScannerDetails;
-        var vm = ((MainWindowView)App.Current.MainWindow).DataContext as MainWindowViewModel;
+        var view = ((Main.Views.MainWindow)App.Current.MainWindow).ScannerDetails;
+        var vm = ((Main.Views.MainWindow)App.Current.MainWindow).DataContext as Main.ViewModels.MainWindow;
         if (view.LeftDrawerContent == null)
         {
-            var details = new Views.ScannerDetails();
-            details.DataContext = vm.ScannerDetails;
+            ScannerDetails details = new()
+            {
+                DataContext = vm.ScannerDetails
+            };
             view.LeftDrawerContent = details;
         }
         view.IsLeftDrawerOpen = !view.IsLeftDrawerOpen;

@@ -5,10 +5,10 @@ using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Logging;
 using LabelVal.Messages;
+using LabelVal.Run.ViewModels;
 using LabelVal.Sectors.ViewModels;
 using LabelVal.V275.ViewModels;
 using LabelVal.V5.ViewModels;
-using LabelVal.WindowViewModels;
 using MahApps.Metro.Controls.Dialogs;
 using Newtonsoft.Json;
 using NHibernate.Util;
@@ -38,7 +38,7 @@ public partial class ImageResults : ObservableRecipient,
         public int RepeatNumber { get; set; } = -1;
     }
 
-    public RunViewModel RunViewModel { get; } = new RunViewModel();
+    public RunControl RunControl { get; } = new RunControl();
 
     private int PrintCount => App.Settings.GetValue<int>(nameof(PrintCount));
     private int LoopCount => App.Settings.GetValue(nameof(LoopCount), 1);
@@ -734,7 +734,7 @@ public partial class ImageResults : ObservableRecipient,
     }
     public void Receive(SystemMessages.ControlMessage message)
     {
-        if (message.Sender == RunViewModel)
+        if (message.Sender == RunControl)
         {
             if (message.Value == "StartRun")
                 _ = StartRun();

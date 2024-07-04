@@ -1,7 +1,4 @@
-﻿using LabelVal.Dialogs;
-using LabelVal.Sectors.Views;
-using LabelVal.WindowViews;
-using MahApps.Metro.Controls.Dialogs;
+﻿using LabelVal.Sectors.Views;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -14,10 +11,7 @@ namespace LabelVal.Results.Views;
 /// </summary>
 public partial class ImageResultEntry_V5 : UserControl
 {
-    public ImageResultEntry_V5()
-    {
-        InitializeComponent();
-    }
+    public ImageResultEntry_V5() => InitializeComponent();
 
     private void btnCloseDetails_Click(object sender, RoutedEventArgs e)
     {
@@ -51,7 +45,7 @@ public partial class ImageResultEntry_V5 : UserControl
         {
             if (((ViewModels.ImageResultEntry)DataContext).V5ResultRow != null)
             {
-                var pop = new PopupJSONViewer();
+                PopupJSONViewer pop = new();
                 pop.Viewer1.JSON = ((ViewModels.ImageResultEntry)DataContext).V5ResultRow.Report;
                 pop.Viewer1.Title = "Report";
 
@@ -61,8 +55,10 @@ public partial class ImageResultEntry_V5 : UserControl
         }
         else
         {
-            var pop = new PopupSectorsDetails();
-            pop.DataContext = ((ViewModels.ImageResultEntry)DataContext).V5StoredSectors;
+            PopupSectorsDetails pop = new()
+            {
+                DataContext = ((ViewModels.ImageResultEntry)DataContext).V5StoredSectors
+            };
 
             pop.Popup.PlacementTarget = (Button)sender;
             pop.Popup.IsOpen = true;
@@ -74,7 +70,7 @@ public partial class ImageResultEntry_V5 : UserControl
         {
             if (((ViewModels.ImageResultEntry)DataContext).V5CurrentReport != null)
             {
-                var pop = new PopupJSONViewer();
+                PopupJSONViewer pop = new();
                 pop.Viewer1.JSON = ((ViewModels.ImageResultEntry)DataContext).V5CurrentReport;
                 pop.Viewer1.Title = "Report";
 
@@ -84,8 +80,10 @@ public partial class ImageResultEntry_V5 : UserControl
         }
         else
         {
-            var pop = new PopupSectorsDetails();
-            pop.DataContext = ((ViewModels.ImageResultEntry)DataContext).V5CurrentSectors;
+            PopupSectorsDetails pop = new()
+            {
+                DataContext = ((ViewModels.ImageResultEntry)DataContext).V5CurrentSectors
+            };
 
             pop.Popup.PlacementTarget = (Button)sender;
             pop.Popup.IsOpen = true;
@@ -104,7 +102,7 @@ public partial class ImageResultEntry_V5 : UserControl
 
     private void btnSaveImage_Click(object sender, RoutedEventArgs e)
     {
-        var sect = Utilities.VisualTreeHelp.GetVisualParent<Sector>((Button)sender);
+        Sector sect = Utilities.VisualTreeHelp.GetVisualParent<Sector>((Button)sender);
 
         if (sect != null)
         {
@@ -121,7 +119,7 @@ public partial class ImageResultEntry_V5 : UserControl
     }
     private void btnCopyImage_Click(object sender, RoutedEventArgs e)
     {
-        var sect = Utilities.VisualTreeHelp.GetVisualParent<Sector>((Button)sender);
+        Sector sect = Utilities.VisualTreeHelp.GetVisualParent<Sector>((Button)sender);
 
         if (sect != null)
             CopyToClipboard(sect);
@@ -129,35 +127,32 @@ public partial class ImageResultEntry_V5 : UserControl
     }
     public void SaveToPng(FrameworkElement visual, string fileName)
     {
-        var encoder = new PngBitmapEncoder();
+        PngBitmapEncoder encoder = new();
         EncodeVisual(visual, encoder);
 
-        using var stream = System.IO.File.Create(fileName);
+        using System.IO.FileStream stream = System.IO.File.Create(fileName);
         encoder.Save(stream);
     }
     public void CopyToClipboard(FrameworkElement visual)
     {
-        var encoder = new PngBitmapEncoder();
+        PngBitmapEncoder encoder = new();
         EncodeVisual(visual, encoder);
 
-        using (var stream = new System.IO.MemoryStream())
-        {
-            encoder.Save(stream);
-            stream.Seek(0, System.IO.SeekOrigin.Begin);
-            var bitmapImage = new BitmapImage();
-            bitmapImage.BeginInit();
-            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-            bitmapImage.StreamSource = stream;
-            bitmapImage.EndInit();
-            Clipboard.SetImage(bitmapImage);
-        }
+        using System.IO.MemoryStream stream = new();
+        encoder.Save(stream);
+        stream.Seek(0, System.IO.SeekOrigin.Begin);
+        BitmapImage bitmapImage = new();
+        bitmapImage.BeginInit();
+        bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+        bitmapImage.StreamSource = stream;
+        bitmapImage.EndInit();
+        Clipboard.SetImage(bitmapImage);
     }
     private static void EncodeVisual(FrameworkElement visual, BitmapEncoder encoder)
     {
-        var bitmap = new RenderTargetBitmap((int)visual.ActualWidth, (int)visual.ActualHeight, 96, 96, PixelFormats.Pbgra32);
+        RenderTargetBitmap bitmap = new((int)visual.ActualWidth, (int)visual.ActualHeight, 96, 96, PixelFormats.Pbgra32);
         bitmap.Render(visual);
-        var frame = BitmapFrame.Create(bitmap);
+        BitmapFrame frame = BitmapFrame.Create(bitmap);
         encoder.Frames.Add(frame);
     }
-
 }

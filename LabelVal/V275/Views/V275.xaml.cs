@@ -1,6 +1,4 @@
-﻿using LabelVal.WindowViewModels;
-using LabelVal.WindowViews;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -39,8 +37,8 @@ public partial class V275 : UserControl
 
     public void btnShowDetails_Click(object sender, RoutedEventArgs e)
     {
-        var view = ((MainWindowView)App.Current.MainWindow).NodeDetails;
-        var vm = ((MainWindowView)App.Current.MainWindow).DataContext as MainWindowViewModel;
+        var view = ((Main.Views.MainWindow)App.Current.MainWindow).NodeDetails;
+        var vm = ((Main.Views.MainWindow)App.Current.MainWindow).DataContext as Main.ViewModels.MainWindow;
         if (view.LeftDrawerContent == null)
         {
             var details = new Views.NodeDetails();

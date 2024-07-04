@@ -2,14 +2,14 @@
 using MahApps.Metro.Controls;
 using System.Windows;
 
-namespace LabelVal.WindowViews;
+namespace LabelVal.Main.Views;
 
 /// <summary>
 /// Interaction logic for MainWindowView.xaml
 /// </summary>
-public partial class MainWindowView : MetroWindow
+public partial class MainWindow : MetroWindow
 {
-    public MainWindowView() => InitializeComponent();
+    public MainWindow() => InitializeComponent();
 
     private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e) { }
 

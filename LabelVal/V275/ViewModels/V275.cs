@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
-using LabelVal.WindowViewModels;
+using LabelVal.Main.ViewModels;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using System;
@@ -18,13 +18,6 @@ namespace LabelVal.V275.ViewModels;
 public partial class V275 : ObservableRecipient, IRecipient<PropertyChangedMessage<ImageRollEntry>>
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-
-    public MainWindowViewModel MainWindow => App.Current.MainWindow.DataContext as MainWindowViewModel;
-
-    //public static V275_REST_lib.Controller V275 { get; } = new V275_REST_lib.Controller();
-
-    //private V275_API_WebSocketEvents WebSocket { get; } = new V275_API_WebSocketEvents();
-    //private V275_API_WebSocketEvents SysWebSocket { get; } = new V275_API_WebSocketEvents();
 
     [ObservableProperty] private string v275_Host = App.Settings.GetValue(nameof(V275_Host), "127.0.0.1", true);
     partial void OnV275_HostChanged(string value)

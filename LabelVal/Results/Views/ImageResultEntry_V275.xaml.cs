@@ -1,13 +1,9 @@
-﻿using LabelVal.Dialogs;
-using LabelVal.Sectors.Views;
-using LabelVal.WindowViews;
-using MahApps.Metro.Controls.Dialogs;
+﻿using LabelVal.Sectors.Views;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using static V5_REST_Lib.Models.Meta;
 
 namespace LabelVal.Results.Views;
 /// <summary>
@@ -15,14 +11,11 @@ namespace LabelVal.Results.Views;
 /// </summary>
 public partial class ImageResultEntry_V275 : UserControl
 {
-    public ImageResultEntry_V275()
-    {
-        InitializeComponent();
-    }
+    public ImageResultEntry_V275() => InitializeComponent();
 
-    private void btnCloseDetails_Click(object sender, RoutedEventArgs e) 
+    private void btnCloseDetails_Click(object sender, RoutedEventArgs e)
     {
-        if(Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+        if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
         {
             ((ViewModels.ImageResultEntry)DataContext).V275FocusedStoredSector = null;
             ((ViewModels.ImageResultEntry)DataContext).V275FocusedCurrentSector = null;
@@ -33,7 +26,7 @@ public partial class ImageResultEntry_V275 : UserControl
         }
         else
         {
-            switch((string)((Button)sender).Tag)
+            switch ((string)((Button)sender).Tag)
             {
                 case "v275Stored":
                     ((ViewModels.ImageResultEntry)DataContext).V275FocusedStoredSector = null;
@@ -44,7 +37,6 @@ public partial class ImageResultEntry_V275 : UserControl
                     break;
             }
         }
-
     }
 
     private void V275StoredSectors_Click(object sender, RoutedEventArgs e)
@@ -53,7 +45,7 @@ public partial class ImageResultEntry_V275 : UserControl
         {
             if (((ViewModels.ImageResultEntry)DataContext).V275ResultRow != null)
             {
-                var pop = new PopupJSONViewer();
+                PopupJSONViewer pop = new();
                 pop.Viewer1.JSON = ((ViewModels.ImageResultEntry)DataContext).V275ResultRow.Template;
                 pop.Viewer1.Title = "Template";
                 pop.Viewer2.JSON = ((ViewModels.ImageResultEntry)DataContext).V275ResultRow.Report;
@@ -65,8 +57,10 @@ public partial class ImageResultEntry_V275 : UserControl
         }
         else
         {
-            var pop = new PopupSectorsDetails();
-            pop.DataContext = ((ViewModels.ImageResultEntry)DataContext).V275StoredSectors;
+            PopupSectorsDetails pop = new()
+            {
+                DataContext = ((ViewModels.ImageResultEntry)DataContext).V275StoredSectors
+            };
 
             pop.Popup.PlacementTarget = (Button)sender;
             pop.Popup.IsOpen = true;
@@ -76,7 +70,7 @@ public partial class ImageResultEntry_V275 : UserControl
     {
         if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
         {
-            var pop = new PopupJSONViewer();
+            PopupJSONViewer pop = new();
             pop.Viewer1.JSON = ((ViewModels.ImageResultEntry)DataContext).V275CurrentTemplate;
             pop.Viewer1.Title = "Template";
             pop.Viewer2.JSON = ((ViewModels.ImageResultEntry)DataContext).V275CurrentReport;
@@ -87,8 +81,10 @@ public partial class ImageResultEntry_V275 : UserControl
         }
         else
         {
-            var pop = new PopupSectorsDetails();
-            pop.DataContext = ((ViewModels.ImageResultEntry)DataContext).V275CurrentSectors;
+            PopupSectorsDetails pop = new()
+            {
+                DataContext = ((ViewModels.ImageResultEntry)DataContext).V275CurrentSectors
+            };
 
             pop.Popup.PlacementTarget = (Button)sender;
             pop.Popup.IsOpen = true;
@@ -107,7 +103,7 @@ public partial class ImageResultEntry_V275 : UserControl
 
     private void btnSaveImage_Click(object sender, RoutedEventArgs e)
     {
-        var sect = Utilities.VisualTreeHelp.GetVisualParent<Sector>((Button)sender);
+        Sector sect = Utilities.VisualTreeHelp.GetVisualParent<Sector>((Button)sender);
 
         if (sect != null)
         {
@@ -124,7 +120,7 @@ public partial class ImageResultEntry_V275 : UserControl
     }
     private void btnCopyImage_Click(object sender, RoutedEventArgs e)
     {
-        var sect = Utilities.VisualTreeHelp.GetVisualParent<Sector>((Button)sender);
+        Sector sect = Utilities.VisualTreeHelp.GetVisualParent<Sector>((Button)sender);
 
         if (sect != null)
             CopyToClipboard(sect);
@@ -132,50 +128,47 @@ public partial class ImageResultEntry_V275 : UserControl
     }
     public void SaveToPng(FrameworkElement visual, string fileName)
     {
-        var encoder = new PngBitmapEncoder();
+        PngBitmapEncoder encoder = new();
         EncodeVisual(visual, encoder);
 
-        using var stream = System.IO.File.Create(fileName);
+        using System.IO.FileStream stream = System.IO.File.Create(fileName);
         encoder.Save(stream);
-    } 
+    }
     public void CopyToClipboard(FrameworkElement visual)
     {
-        var encoder = new PngBitmapEncoder();
+        PngBitmapEncoder encoder = new();
         EncodeVisual(visual, encoder);
 
-        using (var stream = new System.IO.MemoryStream())
-        {
-            encoder.Save(stream);
-            stream.Seek(0, System.IO.SeekOrigin.Begin);
-            var bitmapImage = new BitmapImage();
-            bitmapImage.BeginInit();
-            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-            bitmapImage.StreamSource = stream;
-            bitmapImage.EndInit();
-            Clipboard.SetImage(bitmapImage);
-        }
+        using System.IO.MemoryStream stream = new();
+        encoder.Save(stream);
+        stream.Seek(0, System.IO.SeekOrigin.Begin);
+        BitmapImage bitmapImage = new();
+        bitmapImage.BeginInit();
+        bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+        bitmapImage.StreamSource = stream;
+        bitmapImage.EndInit();
+        Clipboard.SetImage(bitmapImage);
     }
     private static void EncodeVisual(FrameworkElement visual, BitmapEncoder encoder)
     {
-        var bitmap = new RenderTargetBitmap((int)visual.ActualWidth, (int)visual.ActualHeight, 96, 96, PixelFormats.Pbgra32);
+        RenderTargetBitmap bitmap = new((int)visual.ActualWidth, (int)visual.ActualHeight, 96, 96, PixelFormats.Pbgra32);
         bitmap.Render(visual);
-        var frame = BitmapFrame.Create(bitmap);
+        BitmapFrame frame = BitmapFrame.Create(bitmap);
         encoder.Frames.Add(frame);
     }
 
     private void lstDissimilarSector_Click(object sender, MouseButtonEventArgs e)
     {
-        var sndr = (SectorDifferences)sender;
+        SectorDifferences sndr = (SectorDifferences)sender;
         //var ire = Utilities.VisualTreeHelp.GetVisualParent<ImageResultEntry_V275>(sndr);
         //if (ire != null)
         //{
-            var sectors = Utilities.VisualTreeHelp.GetVisualChildren<Sector>(this);
-            foreach (var s in sectors)
-            {
-                if (s.SectorName == ((Sectors.ViewModels.SectorDifferences)sndr.DataContext).UserName)
-                    s.ShowSectorDetails();
-            }
-
+        System.Collections.ObjectModel.Collection<Sector> sectors = Utilities.VisualTreeHelp.GetVisualChildren<Sector>(this);
+        foreach (Sector s in sectors)
+        {
+            if (s.SectorName == ((Sectors.ViewModels.SectorDifferences)sndr.DataContext).UserName)
+                s.ShowSectorDetails();
+        }
 
         //}
     }

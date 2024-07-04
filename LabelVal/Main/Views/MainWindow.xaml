@@ -1,9 +1,9 @@
-﻿<mah:MetroWindow x:Class="LabelVal.WindowViews.MainWindowView"
+﻿<mah:MetroWindow x:Class="LabelVal.Main.Views.MainWindow"
                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                xmlns:local="clr-namespace:LabelVal.WindowViews"
+                xmlns:local="clr-namespace:LabelVal.Main.Views"
                  xmlns:v275="clr-namespace:LabelVal.V275.Views"
                 xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                  xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -11,14 +11,15 @@
                  xmlns:imageRolls="clr-namespace:LabelVal.ImageRolls.Views"
                  xmlns:results="clr-namespace:LabelVal.Results.Views"
                 xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"  
-                 xmlns:RunViews="clr-namespace:LabelVal.Run.Views"
+                 xmlns:runViews="clr-namespace:LabelVal.Run.Views"
                 xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
                 Dialog:DialogParticipation.Register="{Binding}"
                  
                  xmlns:v5="clr-namespace:LabelVal.V5.Views"
                  xmlns:L95xx="clr-namespace:LabelVal.LVS_95xx.Views"
-                 xmlns:ViewModels="clr-namespace:LabelVal.WindowViewModels"  
-                d:DataContext="{d:DesignInstance Type=ViewModels:MainWindowViewModel}"
+                 xmlns:run="clr-namespace:LabelVal.Run.Views"
+                 xmlns:viewModels="clr-namespace:LabelVal.Main.ViewModels"  
+                d:DataContext="{d:DesignInstance Type=viewModels:MainWindow}"
                 mc:Ignorable="d" SaveWindowPosition="True" Width="auto" Height="auto" Closing="MetroWindow_Closing">
 
     <mah:MetroWindow.Title>
@@ -28,7 +29,7 @@
     </mah:MetroWindow.Title>
 
     <mah:MetroWindow.DataContext>
-        <ViewModels:MainWindowViewModel/>
+        <viewModels:MainWindow/>
     </mah:MetroWindow.DataContext>
 
     <mah:MetroWindow.RightWindowCommands>
@@ -88,7 +89,7 @@
                     <StackPanel Grid.Row="1">
                         <Label/>
                         <Label Content="Compare Settings" FontSize="18" HorizontalAlignment="Right"/>
-                        <RunViews:CompareSettingsView/>
+                        <runViews:CompareSettingsView/>
                     </StackPanel>
 
                 </Grid>
@@ -153,7 +154,7 @@
                                 <printer:Printer DataContext="{Binding Printer}"/>
 
                                 <!--Test Runs-->
-                                <local:RunView DataContext="{Binding ImageResults.RunViewModel}"/>
+                                <run:RunControl DataContext="{Binding ImageResults.RunControl}"/>
                             </DockPanel>
 
                             <results:ImageResults DataContext="{Binding ImageResults}"/>

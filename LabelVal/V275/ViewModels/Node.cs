@@ -3,18 +3,13 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
-using LabelVal.Messages;
-using LabelVal.WindowViewModels;
-using LabelVal.WindowViews;
 using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Collections.Generic;
-using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Documents;
 using V275_REST_lib.Models;
 using V275_REST_Lib.Models;
 
@@ -35,7 +30,6 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
     public V275_REST_lib.Controller Connection { get; }
-
 
     private string V275_Host = App.Settings.GetValue<string>(nameof(V275.V275_Host));
 
@@ -66,36 +60,34 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
     public bool IsSimulator => Inspection != null && Inspection.device.Equals("simulator");
     private static string SimulatorImageDirectory => App.Settings.GetValue<string>(nameof(V275.SimulatorImageDirectory));
 
-    [ObservableProperty] NodeStates state = NodeStates.Offline;
+    [ObservableProperty] private NodeStates state = NodeStates.Offline;
     [ObservableProperty] private string jobName = "";
     partial void OnJobNameChanged(string value)
     {
-        if(Jobs == null)
+        if (Jobs == null)
         {
             SelectedJob = null;
             return;
         }
 
-        var jb = Jobs.jobs.FirstOrDefault((e)=> e.name == jobName);
+        var jb = Jobs.jobs.FirstOrDefault((e) => e.name == jobName);
 
-        if(jb != null)
+        if (jb != null)
         {
-            if(SelectedJob != jb)
+            if (SelectedJob != jb)
             {
                 userChange = true;
                 SelectedJob = jb;
-                
+
             }
-                
         }
-            
     }
     private bool userChange;
 
     [ObservableProperty] private Jobs.Job selectedJob;
     partial void OnSelectedJobChanged(Jobs.Job value)
     {
-        if(value == null)
+        if (value == null)
         {
             userChange = false;
             return;
@@ -111,15 +103,13 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
     }
     private async Task ChangeJob(string name)
     {
-      if( await Connection.Commands.UnloadJob())
-            if(await Connection.Commands.LoadJob(name))
+        if (await Connection.Commands.UnloadJob())
+            if (await Connection.Commands.LoadJob(name))
             {
 
             }
-
-    } 
+    }
     public bool IsBackupVoid => ConfigurationCamera != null && ConfigurationCamera.backupVoidMode.value == "ON";
-
 
     [ObservableProperty] private bool isLoggedIn_Monitor = false;
     partial void OnIsLoggedIn_MonitorChanged(bool value) { OnPropertyChanged(nameof(IsLoggedIn)); OnPropertyChanged(nameof(IsNotLoggedIn)); }
@@ -129,7 +119,6 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
     partial void OnIsLoggedIn_ControlChanged(bool value) { OnPropertyChanged(nameof(IsLoggedIn)); OnPropertyChanged(nameof(IsNotLoggedIn)); OnPropertyChanged(nameof(IsNotLoggedIn_Control)); }
     public bool IsLoggedIn => IsLoggedIn_Monitor || IsLoggedIn_Control;
     public bool IsNotLoggedIn => !(IsLoggedIn_Monitor || IsLoggedIn_Control);
-
 
     [ObservableProperty] private ImageRollEntry selectedImageRoll;
     partial void OnSelectedImageRollChanged(ImageRollEntry value) => CheckTemplateName();
@@ -253,10 +242,7 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
                 // If the mode is not 'trigger', additional handling could be implemented here
             }
         }
-        else if (IsSimulator)
-            Simulation = await Connection.Commands.GetSimulation();
-        else
-            Simulation = null;
+        else Simulation = IsSimulator ? await Connection.Commands.GetSimulation() : null;
 
         // Request the server to send extended data
         _ = await Connection.Commands.SetSendExtendedData(true);

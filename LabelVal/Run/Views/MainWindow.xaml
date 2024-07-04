@@ -1,0 +1,83 @@
+﻿<mah:MetroWindow x:Class="LabelVal.Run.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:local="clr-namespace:LabelVal.Run.Views"
+                 xmlns:viewModels="clr-namespace:LabelVal.Run.ViewModels"
+                 xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                 xmlns:main="clr-namespace:LabelVal.Main.Views"
+                 d:DataContext="{d:DesignInstance Type=viewModels:MainWindow}"
+        mc:Ignorable="d">
+
+    <mah:MetroWindow.Title>
+        <MultiBinding StringFormat="Label Validator : {0}">
+            <Binding Path="Version"/>
+        </MultiBinding>
+    </mah:MetroWindow.Title>
+
+    <mah:MetroWindow.DataContext>
+        <viewModels:MainWindow/>
+    </mah:MetroWindow.DataContext>
+
+    <mah:MetroWindow.RightWindowCommands>
+        <mah:WindowCommands>>
+
+            <Button BorderThickness="0" 
+                        x:Name="btnColorBlind"
+                        Click="btnColorBlind_Click">
+                <iconPacks:PackIconModern Width="20" Height="20" Kind="Eye"/>
+            </Button>
+
+            <Button BorderThickness="0" 
+                        x:Name="btnLightTheme"
+                        Click="btnLightTheme_Click">
+                <iconPacks:PackIconModern Width="20" Height="20" Kind="WeatherSun"/>
+            </Button>
+
+            <Button BorderThickness="0" 
+                        x:Name="btnDarkTheme"
+                        Click="btnDarkTheme_Click">
+                <iconPacks:PackIconModern Width="20" Height="20" Kind="MoonWaningCrescent"/>
+            </Button>
+
+            <Button BorderThickness="0" 
+                        x:Name="btnSyncOSTheme"
+                        Click="btnSyncOSTheme_Click">
+                <iconPacks:PackIconModern Width="20" Height="20" Kind="OsWindows"/>
+            </Button>
+
+            <ComboBox ItemsSource="{Binding Languages}" SelectedValue="{Binding SelectedLanguage}" BorderThickness="0"/>
+        </mah:WindowCommands>
+    </mah:MetroWindow.RightWindowCommands>
+
+    <DockPanel>
+
+        <DockPanel DockPanel.Dock="Bottom">
+            <StatusBar>
+                <StatusBarItem>
+                    <Button x:Name="btnShowInfo" Click="btnShowInfo_Click">
+                        <iconPacks:PackIconMaterial Kind="ThumbUp"/>
+                    </Button>
+                </StatusBarItem>
+                <Popup x:Name="popupInfo" PlacementTarget="{Binding ElementName=btnShowInfo}" Placement="Top" StaysOpen="False">
+                    <main:StatusMessageViewer DataContext="{Binding SystemMessages_InfoDebug}"/>
+                </Popup>
+                <StatusBarItem>
+                    <Button x:Name="btnShowError" Click="btnShowError_Click">
+                        <iconPacks:PackIconMaterial Kind="Exclamation"/>
+                    </Button>
+                </StatusBarItem>
+                <Popup x:Name="popupError" PlacementTarget="{Binding ElementName=btnShowError}" Placement="Top" StaysOpen="False">
+                    <main:StatusMessageViewer DataContext="{Binding SystemMessages_ErrorWarning}"/>
+                </Popup>
+                <StatusBarItem>
+                    <TextBlock Text="{Binding SystemMessages_RecentError.Message}"/>
+                </StatusBarItem>
+            </StatusBar>
+        </DockPanel>
+
+    </DockPanel>
+</mah:MetroWindow>

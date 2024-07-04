@@ -1,11 +1,7 @@
-﻿using LabelVal.Dialogs;
-using LabelVal.WindowViews;
-using MahApps.Metro.Controls.Dialogs;
+﻿using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
 
 namespace LabelVal.Results.Views;
 
@@ -33,7 +29,6 @@ public partial class ImageResultEntry : UserControl
 
     private void ViewModel_BringIntoView() => App.Current.Dispatcher.Invoke(new Action(BringIntoView));
 
-
     private void btnMove_Click(object sender, RoutedEventArgs e)
     {
         popMove.PlacementTarget = sender as UIElement;
@@ -45,7 +40,7 @@ public partial class ImageResultEntry : UserControl
     private void btnMoveImage_Click(object sender, RoutedEventArgs e)
     {
         popMove.IsOpen = false;
-        var viewModel = ((ViewModels.ImageResultEntry)DataContext);
+        ViewModels.ImageResultEntry viewModel = (ViewModels.ImageResultEntry)DataContext;
         if (((Button)sender).Tag is string s)
             switch (s)
             {
@@ -77,7 +72,7 @@ public partial class ImageResultEntry : UserControl
     private void btnAddImage_Click(object sender, RoutedEventArgs e)
     {
         popAdd.IsOpen = false;
-        var viewModel = ((ViewModels.ImageResultEntry)DataContext);
+        ViewModels.ImageResultEntry viewModel = (ViewModels.ImageResultEntry)DataContext;
         if (((Button)sender).Tag is string s)
             switch (s)
             {
