@@ -105,6 +105,7 @@ public class Sector
                             case StandardsTypes.ISO15415_15416:
                             case StandardsTypes.ISO15415:
                             case StandardsTypes.ISO15416:
+                            case StandardsTypes.Unsupported:
                                 return false;
                             default:
                                 return true;
@@ -180,29 +181,6 @@ public class Sector
             IsError = true;
     }
 
-    private GS1TableNames V275GetGS1Table(string tableId)
-        => tableId switch
-        {
-            "1" => GS1TableNames._1,
-            "2" => GS1TableNames._2,
-            "3" => GS1TableNames._3,
-            "4" => GS1TableNames._4,
-            "5" => GS1TableNames._5,
-            "6" => GS1TableNames._6,
-            "7.1" => GS1TableNames._7_1,
-            "7.2" => GS1TableNames._7_2,
-            "7.3" => GS1TableNames._7_3,
-            "7.4" => GS1TableNames._7_4,
-            "8" => GS1TableNames._8,
-            "9" => GS1TableNames._9,
-            "10" => GS1TableNames._10,
-            "11" => GS1TableNames._11,
-            "12.1" => GS1TableNames._12_1,
-            "12.2" => GS1TableNames._12_2,
-            "12.3" => GS1TableNames._12_3,
-            _ => GS1TableNames.Unsupported,
-        };
-
     //V5
     public Sector(Results_QualifiedResult results, string name, StandardsTypes standard, GS1TableNames table)
     {
@@ -214,10 +192,8 @@ public class Sector
         DesiredStandard = standard;
         DesiredGS1Table = table;
 
-        Standard = results.grading != null ? V5GetStandard(results.grading) : StandardsTypes.None;
-        GS1Table = GS1TableNames.None;
-        //if (Standard == StandardsTypes.GS1)
-        //    GS1Table = V275GetGS1Table(sector.gradingStandard.tableId);
+        Standard = results.grading != null ? V5GetStandard(results.grading) : DesiredStandard;
+        GS1Table = GS1TableNames.None; //GS1 is not supported in V5, yet
 
         var highCat = 0;
         foreach (var alm in SectorDifferences.Alarms)
@@ -268,5 +244,28 @@ public class Sector
     {
         return StandardsTypes.None;
     }
+
+    private GS1TableNames V275GetGS1Table(string tableId)
+    => tableId switch
+    {
+        "1" => GS1TableNames._1,
+        "2" => GS1TableNames._2,
+        "3" => GS1TableNames._3,
+        "4" => GS1TableNames._4,
+        "5" => GS1TableNames._5,
+        "6" => GS1TableNames._6,
+        "7.1" => GS1TableNames._7_1,
+        "7.2" => GS1TableNames._7_2,
+        "7.3" => GS1TableNames._7_3,
+        "7.4" => GS1TableNames._7_4,
+        "8" => GS1TableNames._8,
+        "9" => GS1TableNames._9,
+        "10" => GS1TableNames._10,
+        "11" => GS1TableNames._11,
+        "12.1" => GS1TableNames._12_1,
+        "12.2" => GS1TableNames._12_2,
+        "12.3" => GS1TableNames._12_3,
+        _ => GS1TableNames.Unsupported,
+    };
 
 }

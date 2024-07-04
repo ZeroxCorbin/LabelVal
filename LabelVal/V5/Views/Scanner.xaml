@@ -70,7 +70,8 @@
                     </Button>
 
                     <Button DockPanel.Dock="Top" Margin="3" Click="btnOpenInBrowser_Click" Style="{StaticResource GroupHeaderCirlceButton}"
-                                HorizontalAlignment="Center" VerticalAlignment="Center" Width="24" Height="24">
+                                HorizontalAlignment="Center" VerticalAlignment="Top" Width="24" Height="24"
+                            ToolTip="Open V5 WebLink. Shift + Click to open admin UI!">
                         <iconPacks:PackIconModern Height="18" Width="18" Kind="Browser" Margin="0,2,0,0"/>
                     </Button>
 

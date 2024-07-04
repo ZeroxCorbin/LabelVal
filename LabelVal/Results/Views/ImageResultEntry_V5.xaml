@@ -287,7 +287,7 @@
                                     </Style>
                                 </Button.Style>
 
-                                <iconPacks:PackIconModern Kind="Delete" Height="14" Width="14"/>
+                                <iconPacks:PackIconMaterialDesign Kind="Clear" Height="14" Width="14"/>
 
                             </Button>
 

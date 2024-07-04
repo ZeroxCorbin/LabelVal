@@ -88,8 +88,11 @@ namespace LabelVal.V5.Views
 
         private void btnOpenInBrowser_Click(object sender, RoutedEventArgs e)
         {
-            var v275 = $"http://{((ViewModels.Scanner)DataContext).Host}:{((ViewModels.Scanner)DataContext).Port}";
-            var ps = new ProcessStartInfo(v275)
+            string addr = Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)
+                ? $"http://{((ViewModels.Scanner)DataContext).Host}:9898"
+                : $"http://{((ViewModels.Scanner)DataContext).Host}:{((ViewModels.Scanner)DataContext).Port}";
+            
+            var ps = new ProcessStartInfo(addr)
             {
                 UseShellExecute = true,
                 Verb = "open"
