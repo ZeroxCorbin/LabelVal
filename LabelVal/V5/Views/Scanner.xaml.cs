@@ -3,6 +3,7 @@ using LabelVal.V5.ViewModels;
 using LabelVal.WindowViews;
 using MahApps.Metro.Controls.Dialogs;
 using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -84,6 +85,17 @@ namespace LabelVal.V5.Views
         }
 
         private void btnShowSettings_Click(object sender, RoutedEventArgs e) => drwSettings.IsTopDrawerOpen = !drwSettings.IsTopDrawerOpen;
+
+        private void btnOpenInBrowser_Click(object sender, RoutedEventArgs e)
+        {
+            var v275 = $"http://{((ViewModels.Scanner)DataContext).Host}:{((ViewModels.Scanner)DataContext).Port}";
+            var ps = new ProcessStartInfo(v275)
+            {
+                UseShellExecute = true,
+                Verb = "open"
+            };
+            _ = Process.Start(ps);
+        }
 
         //private void btnSetResults_Click(object sender, RoutedEventArgs e)
         //{

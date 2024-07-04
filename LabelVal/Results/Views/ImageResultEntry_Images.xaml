@@ -138,29 +138,30 @@
                         </Button.Style>
                     </Button>
 
-                    <!--V5 Process Image--><!--
-                    <DockPanel>
-                        <DockPanel.Style>
-                            <Style TargetType="{x:Type DockPanel}">
-                                <Setter Property="Visibility" Value="Visible"/>
+                     <!--V5 Process Sensor Image-->
+                    <Button Command="{Binding V5ProcessCommand}" CommandParameter="sensor" ToolTip="V5: Process the sensor image.">
+                        <Grid>
+                            <mah:ProgressRing IsActive="{Binding IsV5Working}" Width="18" Height="18" Foreground="White"/>
+                            <iconPacks:PackIconMaterial Kind="Camera" Height="17" Width="17" Margin="1,1,0,0"/>
+                        </Grid>
+
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+
                                 <Style.Triggers>
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ImageResults.SelectedScanner.IsSimulator}" Value="True"/>
-                                            <Condition Binding="{Binding IsV5ImageStored}" Value="True"/>
+                                            <Condition Binding="{Binding ImageResults.SelectedScanner.IsSimulator}" Value="False"/>
+                                            <Condition Binding="{Binding ImageResults.SelectedScanner.IsConnected}" Value="True"/>
                                         </MultiDataTrigger.Conditions>
 
-                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Setter Property="Visibility" Value="Visible"/>
                                     </MultiDataTrigger>
-
-                                    <DataTrigger Value="False" Binding="{Binding ImageResults.SelectedScanner.IsConnected}">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                    </DataTrigger>
                                 </Style.Triggers>
                             </Style>
-                        </DockPanel.Style>
-
-                    </DockPanel>-->
+                        </Button.Style>
+                    </Button>
 
                     <DockPanel HorizontalAlignment="Right">
 

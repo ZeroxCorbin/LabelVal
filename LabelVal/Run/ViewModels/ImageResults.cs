@@ -42,6 +42,7 @@ public partial class ImageResults : ObservableRecipient,
     public ImageResults() => IsActive = true;
 
 
+
     #region Recieve Messages    
     public void Receive(PropertyChangedMessage<RunEntry> message) => SelectedRunEntry = message.NewValue;
     public void Receive(PropertyChangedMessage<RunDatabase> message) => SelectedDatabase = message.NewValue;

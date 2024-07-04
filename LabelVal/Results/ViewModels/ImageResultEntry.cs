@@ -3,24 +3,21 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
-using LabelVal.Messages;
+using LabelVal.Results.Databases;
 using LabelVal.Utilities;
-using System.Linq;
-using LabelVal.V275.ViewModels;
-using LabelVal.V5.ViewModels;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Drawing.Printing;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using System.Data;
-using LabelVal.Converters;
 
 namespace LabelVal.Results.ViewModels;
 
@@ -37,24 +34,20 @@ public partial class ImageResultEntry : ObservableRecipient,
     public ImageEntry SourceImage { get; }
     public ImageResults ImageResults { get; }
 
-    [ObservableProperty] DrawingImage printerAreaOverlay;
+    [ObservableProperty] private bool showPrinterAreaOverSource;
+    [ObservableProperty] private DrawingImage printerAreaOverlay;
+    partial void OnShowPrinterAreaOverSourceChanged(bool value) => PrinterAreaOverlay = ShowPrinterAreaOverSource ? CreatePrinterAreaOverlay(true) : null;
 
     [ObservableProperty] private PrinterSettings selectedPrinter;
+    [ObservableProperty] private Databases.ImageResultsDatabase selectedDatabase;
     partial void OnSelectedPrinterChanged(PrinterSettings value)
     {
         PrinterAreaOverlay = ShowPrinterAreaOverSource ? CreatePrinterAreaOverlay(true) : null;
         OnShowDetailsChanged(ShowDetails);
     }
-
-    [ObservableProperty] private Databases.ImageResultsDatabase selectedDatabase;
     partial void OnSelectedDatabaseChanged(Databases.ImageResultsDatabase value) => GetStored();
 
     [ObservableProperty] private Sectors.ViewModels.Sector selectedSector;
-
-
-    [ObservableProperty] private bool showPrinterAreaOverSource;
-    partial void OnShowPrinterAreaOverSourceChanged(bool value) => PrinterAreaOverlay = ShowPrinterAreaOverSource ? CreatePrinterAreaOverlay(true) : null;
-
 
     [ObservableProperty] private bool showDetails;
     partial void OnShowDetailsChanged(bool value)
@@ -67,8 +60,7 @@ public partial class ImageResultEntry : ObservableRecipient,
         }
     }
 
-    private static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
-    public ImageResultEntry(ImageEntry sourceImage, ImageResults imageResults )//Node selectedNode, ImageRollEntry selectedImageRoll, Databases.ImageResults selectedDatabase, Scanner selectedScanner, PrinterSettings selectedPrinter)
+    public ImageResultEntry(ImageEntry sourceImage, ImageResults imageResults)
     {
         SourceImage = sourceImage;
         ImageResults = imageResults;
@@ -79,24 +71,54 @@ public partial class ImageResultEntry : ObservableRecipient,
         IsActive = true;
     }
 
-    //public void Receive(PropertyChangedMessage<Node> message) => SelectedNode = message.NewValue;
-    public void Receive(PropertyChangedMessage<Databases.ImageResultsDatabase> message) => SelectedDatabase = message.NewValue;
-    //public void Receive(PropertyChangedMessage<Scanner> message) => SelectedScanner = message.NewValue;
-    public void Receive(PropertyChangedMessage<PrinterSettings> message) => SelectedPrinter = message.NewValue;
-
-    public async Task<MessageDialogResult> OkCancelDialog(string title, string message)
+    public StoredImageResultGroup GetStoredImageResultGroup(string runUID) => new()
     {
+        RunUID = runUID,
+        ImageRollUID = ImageResults.SelectedImageRoll.UID,
+        SourceImageUID = SourceImage.UID,
+        V275Result = V275ResultRow,
+        V5Result = V5ResultRow,
+        L95xxResult = L95xxResultRow,
+    };
 
-        var result = await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative);
+    public CurrentImageResultGroup GetCurrentImageResultGroup(string runUID) => new()
+    {
+        RunUID = runUID,
+        ImageRollUID = ImageResults.SelectedImageRoll.UID,
+        SourceImageUID = SourceImage.UID,
+        V275Result = new Databases.V275Result
+        {
+            RunUID = runUID,
+            SourceImageUID = SourceImage.UID,
+            ImageRollUID = ImageResults.SelectedImageRoll.UID,
 
-        return result;
-    }
+            SourceImage = JsonConvert.SerializeObject(SourceImage),
+            StoredImage = JsonConvert.SerializeObject(V275Image),
 
-    //private void GetImage(string imagePath)
-    //{
-    //    SourceImage = File.ReadAllBytes(imagePath);
-    //    SourceImageUID = ImageUtilities.ImageUID(SourceImage);
-    //}
+            Template = JsonConvert.SerializeObject(V275CurrentTemplate),
+            Report = JsonConvert.SerializeObject(V275CurrentReport),
+        },
+        V5Result = new Databases.V5Result
+        {
+            RunUID = runUID,
+            SourceImageUID = SourceImage.UID,
+            ImageRollUID = ImageResults.SelectedImageRoll.UID,
+
+            SourceImage = JsonConvert.SerializeObject(SourceImage),
+            StoredImage = JsonConvert.SerializeObject(V5Image),
+
+            Report = JsonConvert.SerializeObject(V5CurrentReport),
+        },
+        L95xxResult = new Databases.L95xxResult
+        {
+            RunUID = runUID,
+            ImageRollUID = ImageResults.SelectedImageRoll.UID,
+            SourceImageUID = SourceImage.UID,
+            SourceImage = JsonConvert.SerializeObject(SourceImage),
+            Report = JsonConvert.SerializeObject(L95xxStoredSectors.Select(x => new L95xxReport() { Report = x.L95xxPacket, Template = x.Template }).ToList()),
+        },
+    };
+
     private void GetStored()
     {
         V275GetStored();
@@ -120,10 +142,7 @@ public partial class ImageResultEntry : ObservableRecipient,
                 bmp = V275Image.GetBitmapBytes();
             else if (type == "v5Stored")
                 bmp = V5ResultRow.Stored.GetBitmapBytes();
-            else if (type == "v5Current")
-                bmp = V5Image.GetBitmapBytes();
-            else
-                bmp = SourceImage.GetBitmapBytes();
+            else bmp = type == "v5Current" ? V5Image.GetBitmapBytes() : SourceImage.GetBitmapBytes();
 
             if (bmp != null)
             {
@@ -181,16 +200,16 @@ public partial class ImageResultEntry : ObservableRecipient,
         else if (device == "L95xx")
         {
 
-            if(L95xxCurrentSectorSelected == null)
+            if (L95xxCurrentSectorSelected == null)
             {
                 LogError("No sector selected to store.");
                 return;
             }
             //Does the selected sector exist in the Stored sectors list?
             //If so, prompt to overwrite or cancel.
-            
+
             var old = L95xxStoredSectors.FirstOrDefault(x => x.Template.Name == L95xxCurrentSectorSelected.Template.Name);
-             if (old != null)
+            if (old != null)
             {
                 if (await OkCancelDialog("Overwrite Stored Sector", $"The sector already exists.\r\nAre you sure you want to overwrite the stored sector?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
                     return;
@@ -202,7 +221,7 @@ public partial class ImageResultEntry : ObservableRecipient,
             L95xxStoredSectors.Add(L95xxCurrentSectorSelected);
             //Remove it from the current sectors list.
             L95xxCurrentSectors.Remove(L95xxCurrentSectorSelected);
-            
+
             //Sort the stored list.
             var secs = L95xxStoredSectors.ToList();
             SortList(secs);
@@ -308,7 +327,7 @@ public partial class ImageResultEntry : ObservableRecipient,
             L95xxCurrentReport = null;
 
             L95xxCurrentSectors.Remove(L95xxCurrentSectorSelected);
-           //L95xxDiffSectors.Clear();
+            //L95xxDiffSectors.Clear();
 
             L95xxResultRow = SelectedDatabase.Select_L95xxResult(ImageResults.SelectedImageRoll.UID, SourceImage.UID);
 
@@ -317,7 +336,6 @@ public partial class ImageResultEntry : ObservableRecipient,
                     L95xxGetStored();
         }
     }
-
 
     [RelayCommand] private void RedoFiducial() => ImageUtilities.RedrawFiducial(SourceImage.Path, false);
 
@@ -331,9 +349,11 @@ public partial class ImageResultEntry : ObservableRecipient,
     private void SendTo95xxApplication() => _ = Process.GetProcessesByName("LVS-95XX");//foreach (Process proc in processes)//    PostMessage(proc.MainWindowHandle, WM_KEYDOWN, VK_F5, 0);
     private string GetSaveFilePath()
     {
-        var saveFileDialog1 = new SaveFileDialog();
-        saveFileDialog1.Filter = "Bitmap Image|*.bmp";//|Gif Image|*.gif|JPeg Image|*.jpg";
-        saveFileDialog1.Title = "Save an Image File";
+        var saveFileDialog1 = new SaveFileDialog
+        {
+            Filter = "Bitmap Image|*.bmp",//|Gif Image|*.gif|JPeg Image|*.jpg";
+            Title = "Save an Image File"
+        };
         _ = saveFileDialog1.ShowDialog();
 
         return saveFileDialog1.FileName;
@@ -366,8 +386,8 @@ public partial class ImageResultEntry : ObservableRecipient,
         var printer = new System.Windows.Media.GeometryDrawing
         {
             Geometry = new System.Windows.Media.RectangleGeometry(new Rect(lineWidth / 2, lineWidth / 2,
-            ((SelectedPrinter.DefaultPageSettings.PaperSize.Width / 100) * SelectedPrinter.DefaultPageSettings.PrinterResolution.X * xRatio) - lineWidth,
-            ((SelectedPrinter.DefaultPageSettings.PaperSize.Height / 100) * SelectedPrinter.DefaultPageSettings.PrinterResolution.Y * yRatio) - lineWidth)),
+            (SelectedPrinter.DefaultPageSettings.PaperSize.Width / 100 * SelectedPrinter.DefaultPageSettings.PrinterResolution.X * xRatio) - lineWidth,
+            (SelectedPrinter.DefaultPageSettings.PaperSize.Height / 100 * SelectedPrinter.DefaultPageSettings.PrinterResolution.Y * yRatio) - lineWidth)),
             Pen = new System.Windows.Media.Pen(System.Windows.Media.Brushes.Red, lineWidth)
         };
 
@@ -389,28 +409,35 @@ public partial class ImageResultEntry : ObservableRecipient,
         _ => Brushes.Black,
     };
 
-    public static void SortList(List<Sectors.ViewModels.Sector> list)
-    {
-        list.Sort((item1, item2) =>
-        {
-            double distance1 = Math.Sqrt(Math.Pow(item1.Template.CenterPoint.X, 2) + Math.Pow(item1.Template.CenterPoint.Y, 2));
-            double distance2 = Math.Sqrt(Math.Pow(item2.Template.CenterPoint.X, 2) + Math.Pow(item2.Template.CenterPoint.Y, 2));
-            int distanceComparison = distance1.CompareTo(distance2);
+    public static void SortList(List<Sectors.ViewModels.Sector> list) => list.Sort((item1, item2) =>
+                                                                              {
+                                                                                  double distance1 = Math.Sqrt(Math.Pow(item1.Template.CenterPoint.X, 2) + Math.Pow(item1.Template.CenterPoint.Y, 2));
+                                                                                  double distance2 = Math.Sqrt(Math.Pow(item2.Template.CenterPoint.X, 2) + Math.Pow(item2.Template.CenterPoint.Y, 2));
+                                                                                  int distanceComparison = distance1.CompareTo(distance2);
 
-            if (distanceComparison == 0)
-            {
-                // If distances are equal, sort by X coordinate, then by Y if necessary
-                int xComparison = item1.Template.CenterPoint.X.CompareTo(item2.Template.CenterPoint.X);
-                if (xComparison == 0)
-                {
-                    // If X coordinates are equal, sort by Y coordinate
-                    return item1.Template.CenterPoint.Y.CompareTo(item2.Template.CenterPoint.Y);
-                }
-                return xComparison;
-            }
-            return distanceComparison;
-        });
-    }
+                                                                                  if (distanceComparison == 0)
+                                                                                  {
+                                                                                      // If distances are equal, sort by X coordinate, then by Y if necessary
+                                                                                      int xComparison = item1.Template.CenterPoint.X.CompareTo(item2.Template.CenterPoint.X);
+                                                                                      if (xComparison == 0)
+                                                                                      {
+                                                                                          // If X coordinates are equal, sort by Y coordinate
+                                                                                          return item1.Template.CenterPoint.Y.CompareTo(item2.Template.CenterPoint.Y);
+                                                                                      }
+                                                                                      return xComparison;
+                                                                                  }
+                                                                                  return distanceComparison;
+                                                                              });
+
+    #region Recieve Messages
+    public void Receive(PropertyChangedMessage<Databases.ImageResultsDatabase> message) => SelectedDatabase = message.NewValue;
+    public void Receive(PropertyChangedMessage<PrinterSettings> message) => SelectedPrinter = message.NewValue;
+    #endregion
+
+    #region Dialogs
+    private static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
+    public async Task<MessageDialogResult> OkCancelDialog(string title, string message) => await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative);
+    #endregion
 
     #region Logging
     private readonly Logging.Logger logger = new();

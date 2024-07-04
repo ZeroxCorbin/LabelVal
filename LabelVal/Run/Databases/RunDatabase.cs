@@ -25,9 +25,8 @@ public partial class RunDatabase : IDisposable
 
             _ = Connection.CreateTable<RunEntry>();
 
-            _ = Connection.CreateTable<V275Result>();
-            _ = Connection.CreateTable<V5Result>();
-            _ = Connection.CreateTable<L95xxResult>();
+            _ = Connection.CreateTable<StoredImageResultGroup>();
+            _ = Connection.CreateTable<CurrentImageResultGroup>();
 
             return this;
         }
@@ -45,64 +44,17 @@ public partial class RunDatabase : IDisposable
     public List<RunEntry> SelectAllRunEntries() => Connection.CreateCommand("select * from LedgerEntry").ExecuteQuery<RunEntry>();
     public int DeleteLedgerEntry(string uid) => Connection.Table<RunEntry>().Delete(v => v.UID == uid);
 
-    public int InsertOrReplace(ImageResultGroup entryGroup)
-    {
-        int result = 0;
-        if (entryGroup.V275Result != null)
-            result += Connection.InsertOrReplace(entryGroup.V275Result);
-        if (entryGroup.V5Result != null)
-            result += Connection.InsertOrReplace(entryGroup.V5Result);
-        if (entryGroup.L95xxResult != null)
-            result += Connection.InsertOrReplace(entryGroup.L95xxResult);
-        return result;
-    }
-    public bool ExistsResultEntryGroup(string imageRollUID, string imageUID, string runUID) =>
-        Connection.Table<V275Result>().Where(v => v.SourceImageUID == imageUID && v.ImageRollUID == imageRollUID && v.RunUID == runUID).Count() > 0 ||
-        Connection.Table<V5Result>().Where(v => v.SourceImageUID == imageUID && v.ImageRollUID == imageRollUID && v.RunUID == runUID).Count() > 0 ||
-        Connection.Table<L95xxResult>().Where(v => v.SourceImageUID == imageUID && v.ImageRollUID == imageRollUID && v.RunUID == runUID).Count() > 0;
-    public ImageResultGroup SelectResultEntryGroup(string imageRollUID, string imageUID, string runUID) => new()
-    {
-        V275Result = Connection.Table<V275Result>().Where(v => v.SourceImageUID == imageUID && v.ImageRollUID == imageRollUID && v.RunUID == runUID).FirstOrDefault(),
-        V5Result = Connection.Table<V5Result>().Where(v => v.SourceImageUID == imageUID && v.ImageRollUID == imageRollUID && v.RunUID == runUID).FirstOrDefault(),
-        L95xxResult = Connection.Table<L95xxResult>().Where(v => v.SourceImageUID == imageUID && v.ImageRollUID == imageRollUID && v.RunUID == runUID).FirstOrDefault()
-    };
-    public List<ImageResultGroup> SelectAllResultEntryGroups()
-    {
-        List<ImageResultGroup> result = [];
-        foreach (var v275 in Connection.Query<V275Result>("select * from V275Result"))
-            result.Add(new ImageResultGroup() { V275Result = v275 });
-        foreach (var v5 in Connection.Query<V5Result>("select * from V5Result"))
-            result.Add(new ImageResultGroup() { V5Result = v5 });
-        foreach (var l95 in Connection.Query<L95xxResult>("select * from L95xxResult"))
-            result.Add(new ImageResultGroup() { L95xxResult = l95 });
-        return result;
-    }
-    public int DeleteResultEntryGroup(string imageRollUID, string imageUID, string runUID)
-    {
-        int result = 0;
-        result += Connection.Table<V275Result>().Delete(v => v.SourceImageUID == imageUID && v.ImageRollUID == imageRollUID && v.RunUID == runUID);
-        result += Connection.Table<V5Result>().Delete(v => v.SourceImageUID == imageUID && v.ImageRollUID == imageRollUID && v.RunUID == runUID);
-        result += Connection.Table<L95xxResult>().Delete(v => v.SourceImageUID == imageUID && v.ImageRollUID == imageRollUID && v.RunUID == runUID);
-        return result;
-    }
+    public int InsertOrReplace(CurrentImageResultGroup cirg) => Connection.InsertOrReplace(cirg);
+    public bool ExistsCurrentImageResultGroup(string runUID) => Connection.Table<CurrentImageResultGroup>().Where(v => v.RunUID == runUID).Count() > 0;
+    public CurrentImageResultGroup SelectCurrentImageResultGroup(string runUID) => Connection.Table<CurrentImageResultGroup>().Where(v => v.RunUID == runUID).FirstOrDefault();
+    public List<CurrentImageResultGroup> SelectAllCurrentImageResultGroups(string runUID) => [.. Connection.Table<CurrentImageResultGroup>().Where(v => v.RunUID == runUID)];
+    public int DeleteCurrentImageResultGroup(string runUID) => Connection.Table<CurrentImageResultGroup>().Delete(v => v.RunUID == runUID);
 
-    private int? InsertOrReplace_V275Result(V275Result result) => Connection?.InsertOrReplace(result);
-    private bool Exists_V275Result(string imageRollUID, string imageUID) => Connection?.Table<V275Result>().Where(v => v.SourceImageUID == imageUID && v.ImageRollUID == imageRollUID).Count() > 0;
-    private V275Result Select_V275Result(string imageRollUID, string imageUID) => Connection?.Table<V275Result>().Where(v => v.SourceImageUID == imageUID && v.ImageRollUID == imageRollUID).FirstOrDefault();
-    private List<V275Result> SelectAll_V275Result() => Connection?.Query<V275Result>("select * from V275Result");
-    private int? Delete_V275Result(string imageRollUID, string imageUID) => Connection?.Table<V275Result>().Delete(v => v.SourceImageUID == imageUID && v.ImageRollUID == imageRollUID);
-
-    private int? InsertOrReplace_V5Result(V5Result result) => Connection?.InsertOrReplace(result);
-    private bool Exists_V5Result(string imageRollUID, string imageUID) => Connection?.Table<V5Result>().Where(v => v.SourceImageUID == imageUID && v.ImageRollUID == imageRollUID).Count() > 0;
-    private V5Result Select_V5Result(string imageRollUID, string imageUID) => Connection?.Table<V5Result>().Where(v => v.SourceImageUID == imageUID && v.ImageRollUID == imageRollUID).FirstOrDefault();
-    private List<V5Result> SelectAll_V5Result() => Connection?.Query<V5Result>("select * from V5Result");
-    private int? Delete_V5Result(string imageRollUID, string imageUID) => Connection?.Table<V5Result>().Delete(v => v.SourceImageUID == imageUID && v.ImageRollUID == imageRollUID);
-
-    private int? InsertOrReplace_L95xxResult(L95xxResult result) => Connection?.InsertOrReplace(result);
-    private bool Exists_L95xxResult(string imageRollUID, string imageUID) => Connection?.Table<L95xxResult>().Where(v => v.SourceImageUID == imageUID && v.ImageRollUID == imageRollUID).Count() > 0;
-    private L95xxResult Select_L95xxResult(string imageRollUID, string imageUID) => Connection?.Table<L95xxResult>().Where(v => v.SourceImageUID == imageUID && v.ImageRollUID == imageRollUID).FirstOrDefault();
-    private List<L95xxResult> SelectAll_L95xxResult() => Connection?.Query<L95xxResult>("select * from L95xxResult");
-    private int? Delete_L95xxResult(string imageRollUID, string imageUID) => Connection?.Table<L95xxResult>().Delete(v => v.SourceImageUID == imageUID && v.ImageRollUID == imageRollUID);
+    public int InsertOrReplace(StoredImageResultGroup sirg) => Connection.InsertOrReplace(sirg);
+    public bool ExistsStoredImageResultGroup(string runUID) => Connection.Table<StoredImageResultGroup>().Where(v => v.RunUID == runUID).Count() > 0;
+    public StoredImageResultGroup SelectStoredImageResultGroup(string runUID) => Connection.Table<StoredImageResultGroup>().Where(v => v.RunUID == runUID).FirstOrDefault();
+    public List<StoredImageResultGroup> SelectAllStoredImageResultGroups(string runUID) => [.. Connection.Table<StoredImageResultGroup>().Where(v => v.RunUID == runUID)];
+    public int DeleteStoredImageResultGroup(string runUID) => Connection.Table<StoredImageResultGroup>().Delete(v => v.RunUID == runUID);
 
     protected virtual void Dispose(bool disposing)
     {

@@ -12,7 +12,8 @@ public partial class RunEntry : ObservableObject
     partial void OnEndTimeChanged(long value) => OnPropertyChanged(nameof(IsComplete));
     public bool IsComplete => EndTime < long.MaxValue;
 
-    [ObservableProperty] private int completed;
+    [ObservableProperty] private int loopsCompleted;
+
     [ObservableProperty] private string gradingStandard;
     [ObservableProperty] private string productPart;
     [ObservableProperty] private string cameraMAC;

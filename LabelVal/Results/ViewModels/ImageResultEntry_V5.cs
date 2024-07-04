@@ -68,7 +68,7 @@ public partial class ImageResultEntry
 
         var config = (V5_REST_Lib.Models.NewConfig)res.Object;
 
-        if (ImageResults.SelectedScanner.IsSimulator)
+        if (imageType != "sensor")
         {
             var fas = config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource;
             if (fas == null)
@@ -322,7 +322,6 @@ public partial class ImageResultEntry
         return 1;
     }
 
-    
     private DrawingImage V5CreateSectorsImageOverlay(JObject results)
     {
         var drwGroup = new DrawingGroup();
