@@ -7,6 +7,7 @@ using LabelVal.Logging;
 using LabelVal.Messages;
 using LabelVal.Run.ViewModels;
 using LabelVal.Sectors.ViewModels;
+using LabelVal.Utilities;
 using LabelVal.V275.ViewModels;
 using LabelVal.V5.ViewModels;
 using MahApps.Metro.Controls.Dialogs;
@@ -55,7 +56,7 @@ public partial class ImageResults : ObservableRecipient,
     {
         if (oldValue != null)
         {
-            oldValue.Images.CollectionChanged -= Images_CollectionChanged;
+            oldValue.Images.CollectionChanged -= SelectedImageRoll_Images_CollectionChanged;
             oldValue.Images.Clear();
         }
 
@@ -98,20 +99,22 @@ public partial class ImageResults : ObservableRecipient,
             taskList.Add(tsk);
         }
 
-        await Task.WhenAll(taskList.ToArray());
+        await Task.WhenAll([.. taskList]);
 
-        SelectedImageRoll.Images.CollectionChanged += Images_CollectionChanged;
+        SelectedImageRoll.Images.CollectionChanged += SelectedImageRoll_Images_CollectionChanged;
     }
-    private void Images_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    private void SelectedImageRoll_Images_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
         if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
         {
-            var itm = e.NewItems.First();
+            var itm = e.NewItems.Cast<ImageEntry>().FirstOrDefault();
+            //var itm = e.NewItems.First();
             AddImageResultEntry((ImageEntry)itm);
         }
         else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
         {
-            var itm = e.OldItems.First();
+            var itm = e.OldItems.Cast<ImageEntry>().FirstOrDefault();
+            //var itm = ((IList<ImageEntry>)e.OldItems).First();
             RemoveImageResultEntry((ImageEntry)itm);
         }
     }
@@ -120,6 +123,10 @@ public partial class ImageResults : ObservableRecipient,
     {
         var tmp = new ImageResultEntry(img, this);
         tmp.V275ProcessImage += V275ProcessImage;
+
+        if(img.IsPlaceholder)
+            tmp.V5ProcessCommand.Execute("sensor");
+
         ImageResultsList.Add(tmp);
     }
     private void RemoveImageResultEntry(ImageEntry img)
@@ -150,7 +157,16 @@ public partial class ImageResults : ObservableRecipient,
     [RelayCommand] private void MoveImageUp(ImageResultEntry imageResult) => AdjustOrderForMove(imageResult, false);
     [RelayCommand] private void MoveImageDown(ImageResultEntry imageResult) => AdjustOrderForMove(imageResult, true);
     [RelayCommand] private void MoveImageBottom(ImageResultEntry imageResult) => ChangeOrderTo(imageResult, ImageResultsList.Count);
+     
+    [RelayCommand]
+    private void AddV5Image()
+    {
+        var bees = BitmapImageUtilities.ImageToBytesPNG(BitmapImageUtilities.CreateRandomBitmapImage(50, 50));
+        var imagEntry = SelectedImageRoll.GetNewImageEntry(bees);
+        imagEntry.IsPlaceholder = true;
 
+        SelectedImageRoll.AddImage(imagEntry);
+    }
     [RelayCommand]
     private void AddImageTop()
     {

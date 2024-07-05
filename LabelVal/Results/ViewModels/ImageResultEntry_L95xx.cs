@@ -1,22 +1,14 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
-using LabelVal.Messages;
 using LabelVal.Sectors.ViewModels;
-using LabelVal.Utilities;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Media;
 
 namespace LabelVal.Results.ViewModels;
-public partial class ImageResultEntry : ObservableRecipient, IRecipient<PropertyChangedMessage<LabelVal.LVS_95xx.ViewModels.VerifierPacket>>
+public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelVal.LVS_95xx.ViewModels.VerifierPacket>>
 {
     public class L95xxReport
     {
@@ -29,8 +21,8 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     public List<L95xxReport> L95xxCurrentReport { get; private set; }
 
     public ObservableCollection<Sectors.ViewModels.Sector> L95xxCurrentSectors { get; } = [];
-    public ObservableCollection<Sectors.ViewModels.Sector> L95xxStoredSectors { get; }= [];
-    public ObservableCollection<Sectors.ViewModels.SectorDifferences> L95xxDiffSectors { get; }= [];
+    public ObservableCollection<Sectors.ViewModels.Sector> L95xxStoredSectors { get; } = [];
+    public ObservableCollection<Sectors.ViewModels.SectorDifferences> L95xxDiffSectors { get; } = [];
     [ObservableProperty] private Sectors.ViewModels.Sector l95xxFocusedStoredSector = null;
     [ObservableProperty] private Sectors.ViewModels.Sector l95xxFocusedCurrentSector = null;
 
@@ -44,18 +36,17 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     partial void OnIsL95xxWorkingChanged(bool value) => OnPropertyChanged(nameof(IsNotL95xxWorking));
     public bool IsNotL95xxWorking => !IsL95xxWorking;
 
-
     [ObservableProperty] private bool isL95xxFaulted = false;
     partial void OnIsL95xxFaultedChanged(bool value) => OnPropertyChanged(nameof(IsNotL95xxFaulted));
     public bool IsNotL95xxFaulted => !IsL95xxFaulted;
 
     public void Receive(PropertyChangedMessage<LabelVal.LVS_95xx.ViewModels.VerifierPacket> message)
-    { 
-        if (SelectedSector != null) 
+    {
+        if (SelectedSector != null)
             App.Current.Dispatcher.BeginInvoke(() =>
             {
                 L95xxCurrentSectors.Add(new Sector(SelectedSector.Template, message.NewValue.Value, SelectedSector.DesiredStandard, SelectedSector.DesiredGS1Table));
-                var secs = L95xxCurrentSectors.ToList();
+                List<Sector> secs = L95xxCurrentSectors.ToList();
                 SortList(secs);
 
                 SortObservableCollectionByList(secs, L95xxCurrentSectors);
@@ -66,16 +57,14 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     {
         for (int i = 0; i < list.Count; i++)
         {
-            var item = list[i];
-            var currentIndex = observableCollection.IndexOf(item);
+            Sector item = list[i];
+            int currentIndex = observableCollection.IndexOf(item);
             if (currentIndex != i)
             {
                 observableCollection.Move(currentIndex, i);
             }
         }
     }
-
-
 
     private void L95xxGetStored()
     {
@@ -87,18 +76,18 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
             return;
         }
 
-        var report = JsonConvert.DeserializeObject<List<L95xxReport>>(L95xxResultRow.Report);
+        List<L95xxReport> report = JsonConvert.DeserializeObject<List<L95xxReport>>(L95xxResultRow.Report);
 
         L95xxStoredSectors.Clear();
         List<Sectors.ViewModels.Sector> tempSectors = [];
-        foreach (var rSec in report)
+        foreach (L95xxReport rSec in report)
             tempSectors.Add(new Sectors.ViewModels.Sector(rSec.Template, rSec.Report, StandardsTypes.None, GS1TableNames.None));
 
-        if (tempSectors.Count > 0) 
+        if (tempSectors.Count > 0)
         {
             SortList(tempSectors);
 
-            foreach (var sec in tempSectors)
+            foreach (Sector sec in tempSectors)
                 L95xxStoredSectors.Add(sec);
         }
     }
@@ -110,9 +99,9 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
         List<Sectors.ViewModels.SectorDifferences> diff = [];
 
         //Compare; Do not check for missing her. To keep found at top of list.
-        foreach (var sec in L95xxStoredSectors)
+        foreach (Sector sec in L95xxStoredSectors)
         {
-            foreach (var cSec in L95xxCurrentSectors)
+            foreach (Sector cSec in L95xxCurrentSectors)
                 if (sec.Template.Name == cSec.Template.Name)
                 {
                     if (sec.Template.Symbology == cSec.Template.Symbology)
@@ -122,7 +111,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
                     }
                     else
                     {
-                        var dat = new Sectors.ViewModels.SectorDifferences
+                        SectorDifferences dat = new()
                         {
                             UserName = $"{sec.Template.Username} (SYMBOLOGY MISMATCH)",
                             IsSectorMissing = true,
@@ -134,10 +123,10 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
         }
 
         //Check for missing
-        foreach (var sec in L95xxStoredSectors)
+        foreach (Sector sec in L95xxStoredSectors)
         {
-            var found = false;
-            foreach (var cSec in L95xxCurrentSectors)
+            bool found = false;
+            foreach (Sector cSec in L95xxCurrentSectors)
                 if (sec.Template.Name == cSec.Template.Name)
                 {
                     found = true;
@@ -146,7 +135,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
 
             if (!found)
             {
-                var dat = new Sectors.ViewModels.SectorDifferences
+                SectorDifferences dat = new()
                 {
                     UserName = $"{sec.Template.Username} (MISSING)",
                     IsSectorMissing = true,
@@ -158,10 +147,10 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
 
         //check for missing
         if (L95xxStoredSectors.Count > 0)
-            foreach (var sec in L95xxCurrentSectors)
+            foreach (Sector sec in L95xxCurrentSectors)
             {
-                var found = false;
-                foreach (var cSec in L95xxStoredSectors)
+                bool found = false;
+                foreach (Sector cSec in L95xxStoredSectors)
                     if (sec.Template.Name == cSec.Template.Name)
                     {
                         found = true;
@@ -170,7 +159,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
 
                 if (!found)
                 {
-                    var dat = new Sectors.ViewModels.SectorDifferences
+                    SectorDifferences dat = new()
                     {
                         UserName = $"{sec.Template.Username} (MISSING)",
                         IsSectorMissing = true,
@@ -180,7 +169,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
                 }
             }
 
-        foreach (var d in diff)
+        foreach (SectorDifferences d in diff)
             if (d.IsNotEmpty)
                 L95xxDiffSectors.Add(d);
     }
@@ -218,7 +207,6 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     //            foreach (var r in sec.SymbologyTool.regionList)
     //                bndAreas.Children.Add(new RectangleGeometry(new Rect(r.Region.shape.RectShape.x, r.Region.shape.RectShape.y, r.Region.shape.RectShape.width, r.Region.shape.RectShape.height)));
 
-
     //    }
     //    else
     //    {
@@ -241,7 +229,6 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     //        Geometry = secAreas,
     //        Pen = new Pen(Brushes.Red, 5)
     //    };
-
 
     //    var bounding = new GeometryDrawing
     //    {

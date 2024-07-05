@@ -1,8 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
 using LabelVal.ImageRolls.ViewModels;
-using LabelVal.Messages;
 using LabelVal.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -54,15 +52,9 @@ public partial class ImageResultEntry
         V275ProcessImage?.Invoke(this, imageType);
     }
     [RelayCommand]
-    private Task<bool> V275Read()
-    {
-        return V275ReadTask(0);
-    }
+    private Task<bool> V275Read() => V275ReadTask(0);
     [RelayCommand]
-    private Task<int> V275Load()
-    {
-        return V275LoadTask();
-    }
+    private Task<int> V275Load() => V275LoadTask();
 
     private void V275GetStored()
     {
@@ -93,14 +85,14 @@ public partial class ImageResultEntry
 
             V275SectorsImageOverlay = V275CreateSectorsImageOverlay(V275ResultRow._Job, false, V275ResultRow._Report);
 
-            foreach (var jSec in V275ResultRow._Job.sectors)
+            foreach (Job.Sector jSec in V275ResultRow._Job.sectors)
             {
                 foreach (JObject rSec in V275ResultRow._Report.inspectLabel.inspectSector)
                 {
                     if (jSec.name == rSec["name"].ToString())
                     {
 
-                        var fSec = V275DeserializeSector(rSec, false);
+                        object fSec = V275DeserializeSector(rSec, false);
 
                         if (fSec == null)
                             break;
@@ -111,14 +103,13 @@ public partial class ImageResultEntry
                     }
                 }
             }
-
         }
 
         if (tempSectors.Count > 0)
         {
             SortList(tempSectors);
 
-            foreach (var sec in tempSectors)
+            foreach (Sectors.ViewModels.Sector sec in tempSectors)
                 V275StoredSectors.Add(sec);
         }
     }
@@ -146,7 +137,7 @@ public partial class ImageResultEntry
 
         if (!ImageResults.SelectedNode.IsSimulator)
         {
-            var dpi = 600;// SelectedPrinter.PrinterName.Contains("ZT620") ? 300 : 600;
+            int dpi = 600;// SelectedPrinter.PrinterName.Contains("ZT620") ? 300 : 600;
             ImageUtilities.SetBitmapDPI(report.image, dpi);
             V275Image = new ImageEntry(ImageResults.SelectedImageRoll.UID, report.image, dpi);//ImageUtilities.ConvertToPng(report.image, 600);
             IsV275ImageStored = false;
@@ -160,14 +151,14 @@ public partial class ImageResultEntry
         V275CurrentSectors.Clear();
 
         List<Sectors.ViewModels.Sector> tempSectors = [];
-        foreach (var jSec in V275CurrentTemplate.sectors)
+        foreach (Job.Sector jSec in V275CurrentTemplate.sectors)
         {
             foreach (JObject rSec in V275CurrentReport.inspectLabel.inspectSector)
             {
                 if (jSec.name == rSec["name"].ToString())
                 {
 
-                    var fSec = V275DeserializeSector(rSec, ImageResults.SelectedImageRoll.SelectedStandard != Sectors.ViewModels.StandardsTypes.GS1 && ImageResults.SelectedNode.IsOldISO);
+                    object fSec = V275DeserializeSector(rSec, ImageResults.SelectedImageRoll.SelectedStandard != Sectors.ViewModels.StandardsTypes.GS1 && ImageResults.SelectedNode.IsOldISO);
 
                     if (fSec == null)
                         break; //Not yet supported sector type
@@ -183,7 +174,7 @@ public partial class ImageResultEntry
         {
             SortList(tempSectors);
 
-            foreach (var sec in tempSectors)
+            foreach (Sectors.ViewModels.Sector sec in tempSectors)
                 V275CurrentSectors.Add(sec);
         }
 
@@ -200,9 +191,9 @@ public partial class ImageResultEntry
         List<Sectors.ViewModels.SectorDifferences> diff = [];
 
         //Compare; Do not check for missing her. To keep found at top of list.
-        foreach (var sec in V275StoredSectors)
+        foreach (Sectors.ViewModels.Sector sec in V275StoredSectors)
         {
-            foreach (var cSec in V275CurrentSectors)
+            foreach (Sectors.ViewModels.Sector cSec in V275CurrentSectors)
                 if (sec.Template.Name == cSec.Template.Name)
                 {
                     if (sec.Template.Symbology == cSec.Template.Symbology)
@@ -212,7 +203,7 @@ public partial class ImageResultEntry
                     }
                     else
                     {
-                        var dat = new Sectors.ViewModels.SectorDifferences
+                        Sectors.ViewModels.SectorDifferences dat = new()
                         {
                             UserName = $"{sec.Template.Username} (SYMBOLOGY MISMATCH)",
                             IsSectorMissing = true,
@@ -224,10 +215,10 @@ public partial class ImageResultEntry
         }
 
         //Check for missing
-        foreach (var sec in V275StoredSectors)
+        foreach (Sectors.ViewModels.Sector sec in V275StoredSectors)
         {
-            var found = false;
-            foreach (var cSec in V275CurrentSectors)
+            bool found = false;
+            foreach (Sectors.ViewModels.Sector cSec in V275CurrentSectors)
                 if (sec.Template.Name == cSec.Template.Name)
                 {
                     found = true;
@@ -236,7 +227,7 @@ public partial class ImageResultEntry
 
             if (!found)
             {
-                var dat = new Sectors.ViewModels.SectorDifferences
+                Sectors.ViewModels.SectorDifferences dat = new()
                 {
                     UserName = $"{sec.Template.Username} (MISSING)",
                     IsSectorMissing = true,
@@ -248,10 +239,10 @@ public partial class ImageResultEntry
 
         //check for missing
         if (V275StoredSectors.Count > 0)
-            foreach (var sec in V275CurrentSectors)
+            foreach (Sectors.ViewModels.Sector sec in V275CurrentSectors)
             {
-                var found = false;
-                foreach (var cSec in V275StoredSectors)
+                bool found = false;
+                foreach (Sectors.ViewModels.Sector cSec in V275StoredSectors)
                     if (sec.Template.Name == cSec.Template.Name)
                     {
                         found = true;
@@ -260,7 +251,7 @@ public partial class ImageResultEntry
 
                 if (!found)
                 {
-                    var dat = new Sectors.ViewModels.SectorDifferences
+                    Sectors.ViewModels.SectorDifferences dat = new()
                     {
                         UserName = $"{sec.Template.Username} (MISSING)",
                         IsSectorMissing = true,
@@ -271,7 +262,7 @@ public partial class ImageResultEntry
             }
 
         //ToDo: Sort the diff list
-        foreach (var d in diff)
+        foreach (Sectors.ViewModels.SectorDifferences d in diff)
             if (d.IsNotEmpty)
                 V275DiffSectors.Add(d);
 
@@ -295,7 +286,7 @@ public partial class ImageResultEntry
             return 2;
         }
 
-        foreach (var sec in V275StoredSectors)
+        foreach (Sectors.ViewModels.Sector sec in V275StoredSectors)
         {
             if (!await ImageResults.SelectedNode.Connection.AddSector(sec.Template.Name, JsonConvert.SerializeObject(sec.V275Sector)))
             {
@@ -305,7 +296,7 @@ public partial class ImageResultEntry
 
             if (sec.Template.BlemishMask.Layers != null)
             {
-                foreach (var layer in sec.Template.BlemishMask.Layers)
+                foreach (Job.Layer layer in sec.Template.BlemishMask.Layers)
                 {
                     if (!await ImageResults.SelectedNode.Connection.AddMask(sec.Template.Name, JsonConvert.SerializeObject(layer)))
                     {
@@ -356,19 +347,19 @@ public partial class ImageResultEntry
     //}
     private DrawingImage V275CreateSectorsImageOverlay(Job template, bool isDetailed, Report report)
     {
-        var drwGroup = new DrawingGroup();
+        DrawingGroup drwGroup = new();
 
         //Draw the image outline the same size as the stored image
-        var border = new GeometryDrawing
+        GeometryDrawing border = new()
         {
             Geometry = new RectangleGeometry(new Rect(0.5, 0.5, V275Image.Image.PixelWidth - 1, V275Image.Image.PixelHeight - 1)),
             Pen = new Pen(Brushes.Transparent, 1)
         };
         drwGroup.Children.Add(border);
 
-        var secCenter = new GeometryGroup();
+        GeometryGroup secCenter = new();
 
-        foreach (var jSec in template.sectors)
+        foreach (Job.Sector jSec in template.sectors)
         {
             foreach (JObject rSec in report.inspectLabel.inspectSector.Cast<JObject>())
             {
@@ -377,10 +368,10 @@ public partial class ImageResultEntry
                     if (rSec["type"].ToString() is "blemish" or "ocr" or "ocv")
                         continue;
 
-                    var fSec = JsonConvert.DeserializeObject<JObject>(rSec["data"].ToString());
-                    var result = JsonConvert.DeserializeObject<JObject>(fSec["overallGrade"].ToString());
+                    JObject fSec = JsonConvert.DeserializeObject<JObject>(rSec["data"].ToString());
+                    JObject result = JsonConvert.DeserializeObject<JObject>(fSec["overallGrade"].ToString());
 
-                    var sector = new GeometryDrawing
+                    GeometryDrawing sector = new()
                     {
                         Geometry = new RectangleGeometry(new Rect(rSec["left"].Value<double>(), rSec["top"].Value<double>(), rSec["width"].Value<double>(), rSec["height"].Value<double>())),
                         Pen = new Pen(GetGradeBrush(result["grade"]?["letter"].ToString()), 5)
@@ -389,8 +380,8 @@ public partial class ImageResultEntry
 
                     drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun(jSec.username, new Typeface("Arial"), 30.0, new Point(jSec.left - 8, jSec.top - 8))));
 
-                    var y = rSec["top"].Value<double>() + (rSec["height"].Value<double>() / 2);
-                    var x = rSec["left"].Value<double>() + (rSec["width"].Value<double>() / 2);
+                    double y = rSec["top"].Value<double>() + (rSec["height"].Value<double>() / 2);
+                    double x = rSec["left"].Value<double>() + (rSec["width"].Value<double>() / 2);
                     secCenter.Children.Add(new LineGeometry(new Point(x + 10, y), new Point(x + -10, y)));
                     secCenter.Children.Add(new LineGeometry(new Point(x, y + 10), new Point(x, y + -10)));
 
@@ -399,7 +390,7 @@ public partial class ImageResultEntry
             }
         }
 
-        var sectorCenters = new GeometryDrawing
+        GeometryDrawing sectorCenters = new()
         {
             Geometry = secCenter,
             Pen = new Pen(Brushes.Red, 4)
@@ -409,7 +400,7 @@ public partial class ImageResultEntry
         if (isDetailed)
             drwGroup.Children.Add(V275GetModuleGrid(template.sectors, V275StoredSectors));
 
-        var geometryImage = new DrawingImage(drwGroup);
+        DrawingImage geometryImage = new(drwGroup);
         geometryImage.Freeze();
 
         return geometryImage;
@@ -425,12 +416,12 @@ public partial class ImageResultEntry
                 "{0}: no GlyphTypeface found", typeface.FontFamily));
         }
 
-        var glyphIndices = new ushort[text.Length];
-        var advanceWidths = new double[text.Length];
+        ushort[] glyphIndices = new ushort[text.Length];
+        double[] advanceWidths = new double[text.Length];
 
         for (int i = 0; i < text.Length; i++)
         {
-            var glyphIndex = glyphTypeface.CharacterToGlyphMap[text[i]];
+            ushort glyphIndex = glyphTypeface.CharacterToGlyphMap[text[i]];
             glyphIndices[i] = glyphIndex;
             advanceWidths[i] = glyphTypeface.AdvanceWidths[glyphIndex] * emSize;
         }
@@ -442,103 +433,103 @@ public partial class ImageResultEntry
     }
     private static DrawingGroup V275GetModuleGrid(Job.Sector[] sectors, ObservableCollection<Sectors.ViewModels.Sector> parsedSectors)
     {
-        var drwGroup = new DrawingGroup();
+        DrawingGroup drwGroup = new();
         //GeometryGroup moduleGrid = new GeometryGroup();
 
-        foreach (var sec in sectors)
+        foreach (Job.Sector sec in sectors)
         {
-            var sect = parsedSectors.FirstOrDefault((e) => e.Template.Name.Equals(sec.name));
+            Sectors.ViewModels.Sector sect = parsedSectors.FirstOrDefault((e) => e.Template.Name.Equals(sec.name));
 
             if (sect != null)
             {
-                var secArea = new GeometryGroup();
+                GeometryGroup secArea = new();
 
                 secArea.Children.Add(new RectangleGeometry(new Rect(sec.left, sec.top, sec.width, sec.height)));
 
                 if (sec.symbology is "qr" or "dataMatrix")
                 {
 
-                    var res = sect.Report;
+                    Sectors.ViewModels.Report res = sect.Report;
 
                     if (res.ExtendedData != null)
                     {
                         if (res.ExtendedData.ModuleReflectance != null)
                         {
-                            var moduleGrid = new GeometryGroup();
-                            var textGrp = new DrawingGroup();
+                            GeometryGroup moduleGrid = new();
+                            DrawingGroup textGrp = new();
 
-                            var qzX = (sec.symbology == "dataMatrix") ? 1 : res.ExtendedData.QuietZone;
-                            var qzY = res.ExtendedData.QuietZone;
+                            int qzX = (sec.symbology == "dataMatrix") ? 1 : res.ExtendedData.QuietZone;
+                            int qzY = res.ExtendedData.QuietZone;
 
-                            var dX = (sec.symbology == "dataMatrix") ? 0 : (res.ExtendedData.DeltaX / 2);
-                            var dY = (sec.symbology == "dataMatrix") ? (res.ExtendedData.DeltaY * res.ExtendedData.NumRows) : (res.ExtendedData.DeltaY / 2);
+                            double dX = (sec.symbology == "dataMatrix") ? 0 : (res.ExtendedData.DeltaX / 2);
+                            double dY = (sec.symbology == "dataMatrix") ? (res.ExtendedData.DeltaY * res.ExtendedData.NumRows) : (res.ExtendedData.DeltaY / 2);
 
-                            var startX = 0;// sec.left + res.ExtendedData.Xnw - dX + 1 - (qzX * res.ExtendedData.DeltaX);
-                            var startY = 0;// sec.top + res.ExtendedData.Ynw - dY + 1 - (qzY * res.ExtendedData.DeltaY);
+                            int startX = 0;// sec.left + res.ExtendedData.Xnw - dX + 1 - (qzX * res.ExtendedData.DeltaX);
+                            int startY = 0;// sec.top + res.ExtendedData.Ynw - dY + 1 - (qzY * res.ExtendedData.DeltaY);
 
-                            var cnt = 0;
+                            int cnt = 0;
 
-                            for (var row = -qzX; row < res.ExtendedData.NumRows + qzX; row++)
+                            for (int row = -qzX; row < res.ExtendedData.NumRows + qzX; row++)
                             {
-                                for (var col = -qzY; col < res.ExtendedData.NumColumns + qzY; col++)
+                                for (int col = -qzY; col < res.ExtendedData.NumColumns + qzY; col++)
                                 {
-                                    var area1 = new RectangleGeometry(new Rect(startX + (res.ExtendedData.DeltaX * (col + qzX)), startY + (res.ExtendedData.DeltaY * (row + qzY)), res.ExtendedData.DeltaX, res.ExtendedData.DeltaY));
+                                    RectangleGeometry area1 = new(new Rect(startX + (res.ExtendedData.DeltaX * (col + qzX)), startY + (res.ExtendedData.DeltaY * (row + qzY)), res.ExtendedData.DeltaX, res.ExtendedData.DeltaY));
                                     moduleGrid.Children.Add(area1);
 
-                                    var text = res.ExtendedData.ModuleModulation[cnt].ToString();
-                                    var typeface = new Typeface("Arial");
-                                    if (typeface.TryGetGlyphTypeface(out var _glyphTypeface))
+                                    string text = res.ExtendedData.ModuleModulation[cnt].ToString();
+                                    Typeface typeface = new("Arial");
+                                    if (typeface.TryGetGlyphTypeface(out GlyphTypeface _glyphTypeface))
                                     {
-                                        var _glyphIndexes = new ushort[text.Length];
-                                        var _advanceWidths = new double[text.Length];
+                                        ushort[] _glyphIndexes = new ushort[text.Length];
+                                        double[] _advanceWidths = new double[text.Length];
 
                                         double textWidth = 0;
-                                        for (var ix = 0; ix < text.Length; ix++)
+                                        for (int ix = 0; ix < text.Length; ix++)
                                         {
-                                            var glyphIndex = _glyphTypeface.CharacterToGlyphMap[text[ix]];
+                                            ushort glyphIndex = _glyphTypeface.CharacterToGlyphMap[text[ix]];
                                             _glyphIndexes[ix] = glyphIndex;
 
-                                            var width = _glyphTypeface.AdvanceWidths[glyphIndex] * 2;
+                                            double width = _glyphTypeface.AdvanceWidths[glyphIndex] * 2;
                                             _advanceWidths[ix] = width;
 
                                             textWidth += width;
                                         }
 
-                                        var gr = new GlyphRun(_glyphTypeface, 0, false, 2, 1.0f, _glyphIndexes,
+                                        GlyphRun gr = new(_glyphTypeface, 0, false, 2, 1.0f, _glyphIndexes,
                                             new Point(startX + (res.ExtendedData.DeltaX * (col + qzX)) + 1,
                                             startY + (res.ExtendedData.DeltaY * (row + qzY)) + (_glyphTypeface.Height * (res.ExtendedData.DeltaY / 4))),
                                             _advanceWidths, null, null, null, null, null, null);
 
-                                        var grd = new GlyphRunDrawing(Brushes.Blue, gr);
+                                        GlyphRunDrawing grd = new(Brushes.Blue, gr);
 
                                         textGrp.Children.Add(grd);
                                     }
 
                                     text = res.ExtendedData.ModuleReflectance[cnt++].ToString();
-                                    var typeface1 = new Typeface("Arial");
-                                    if (typeface1.TryGetGlyphTypeface(out var _glyphTypeface1))
+                                    Typeface typeface1 = new("Arial");
+                                    if (typeface1.TryGetGlyphTypeface(out GlyphTypeface _glyphTypeface1))
                                     {
-                                        var _glyphIndexes = new ushort[text.Length];
-                                        var _advanceWidths = new double[text.Length];
+                                        ushort[] _glyphIndexes = new ushort[text.Length];
+                                        double[] _advanceWidths = new double[text.Length];
 
                                         double textWidth = 0;
-                                        for (var ix = 0; ix < text.Length; ix++)
+                                        for (int ix = 0; ix < text.Length; ix++)
                                         {
-                                            var glyphIndex = _glyphTypeface1.CharacterToGlyphMap[text[ix]];
+                                            ushort glyphIndex = _glyphTypeface1.CharacterToGlyphMap[text[ix]];
                                             _glyphIndexes[ix] = glyphIndex;
 
-                                            var width = _glyphTypeface1.AdvanceWidths[glyphIndex] * 2;
+                                            double width = _glyphTypeface1.AdvanceWidths[glyphIndex] * 2;
                                             _advanceWidths[ix] = width;
 
                                             textWidth += width;
                                         }
 
-                                        var gr = new GlyphRun(_glyphTypeface1, 0, false, 2, 1.0f, _glyphIndexes,
+                                        GlyphRun gr = new(_glyphTypeface1, 0, false, 2, 1.0f, _glyphIndexes,
                                             new Point(startX + (res.ExtendedData.DeltaX * (col + qzX)) + 1,
                                             startY + (res.ExtendedData.DeltaY * (row + qzY)) + (_glyphTypeface1.Height * (res.ExtendedData.DeltaY / 2))),
                                             _advanceWidths, null, null, null, null, null, null);
 
-                                        var grd = new GlyphRunDrawing(Brushes.Blue, gr);
+                                        GlyphRunDrawing grd = new(Brushes.Blue, gr);
                                         textGrp.Children.Add(grd);
                                     }
 
@@ -557,7 +548,7 @@ public partial class ImageResultEntry
                                 }
                             }
 
-                            var transGroup = new TransformGroup();
+                            TransformGroup transGroup = new();
 
                             transGroup.Children.Add(new RotateTransform(
                                 sec.orientation,
@@ -580,7 +571,7 @@ public partial class ImageResultEntry
 
                             if (sec.orientation == 90)
                             {
-                                var x = sec.symbology == "dataMatrix"
+                                double x = sec.symbology == "dataMatrix"
                                     ? sec.width - res.ExtendedData.Ynw - (qzY * res.ExtendedData.DeltaY) - 1
                                     : sec.width - res.ExtendedData.Ynw - dY - ((res.ExtendedData.NumColumns + qzY) * res.ExtendedData.DeltaY);
                                 transGroup.Children.Add(new TranslateTransform(
@@ -598,7 +589,7 @@ public partial class ImageResultEntry
                             moduleGrid.Transform = transGroup;
                             textGrp.Transform = transGroup;
 
-                            var mGrid = new GeometryDrawing
+                            GeometryDrawing mGrid = new()
                             {
                                 Geometry = moduleGrid,
                                 Pen = new Pen(Brushes.Yellow, 0.25)
@@ -649,5 +640,4 @@ public partial class ImageResultEntry
                                         : (object)null;
         }
     }
-
 }

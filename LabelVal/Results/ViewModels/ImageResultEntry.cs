@@ -34,12 +34,14 @@ public partial class ImageResultEntry : ObservableRecipient,
     public ImageEntry SourceImage { get; }
     public ImageResults ImageResults { get; }
 
+    public bool IsPlaceholder => SourceImage.IsPlaceholder;
+
     [ObservableProperty] private bool showPrinterAreaOverSource;
     [ObservableProperty] private DrawingImage printerAreaOverlay;
     partial void OnShowPrinterAreaOverSourceChanged(bool value) => PrinterAreaOverlay = ShowPrinterAreaOverSource ? CreatePrinterAreaOverlay(true) : null;
 
     [ObservableProperty] private PrinterSettings selectedPrinter;
-    [ObservableProperty] private Databases.ImageResultsDatabase selectedDatabase;
+    [ObservableProperty] private ImageResultsDatabase selectedDatabase;
     partial void OnSelectedPrinterChanged(PrinterSettings value)
     {
         PrinterAreaOverlay = ShowPrinterAreaOverSource ? CreatePrinterAreaOverlay(true) : null;
@@ -62,8 +64,8 @@ public partial class ImageResultEntry : ObservableRecipient,
 
     public ImageResultEntry(ImageEntry sourceImage, ImageResults imageResults)
     {
-        SourceImage = sourceImage;
         ImageResults = imageResults;
+        SourceImage = sourceImage;
 
         SelectedDatabase = ImageResults.SelectedDatabase;
         SelectedPrinter = ImageResults.SelectedPrinter;
@@ -131,29 +133,24 @@ public partial class ImageResultEntry : ObservableRecipient,
     {
         SendTo95xxApplication();
 
-        var path = GetSaveFilePath();
+        string path = GetSaveFilePath();
         if (string.IsNullOrEmpty(path)) return;
         try
         {
-            byte[] bmp = null;
-            if (type == "v275Stored")
-                bmp = V275ResultRow.Stored.GetBitmapBytes();
-            else if (type == "v275Current")
-                bmp = V275Image.GetBitmapBytes();
-            else if (type == "v5Stored")
-                bmp = V5ResultRow.Stored.GetBitmapBytes();
-            else bmp = type == "v5Current" ? V5Image.GetBitmapBytes() : SourceImage.GetBitmapBytes();
-
+            byte[] bmp = type == "v275Stored"
+                    ? V275ResultRow.Stored.GetBitmapBytes()
+                    : type == "v275Current"
+                    ? V275Image.GetBitmapBytes()
+                    : type == "v5Stored"
+                    ? V5ResultRow.Stored.GetBitmapBytes()
+                    : type == "v5Current" ? V5Image.GetBitmapBytes() : SourceImage.GetBitmapBytes();
             if (bmp != null)
             {
                 _ = SaveImageBytesToFile(path, bmp);
                 Clipboard.SetText(path);
             }
         }
-        catch (Exception)
-        {
-
-        }
+        catch { }
     }
     [RelayCommand]
     private async Task Store(string device)
@@ -208,7 +205,7 @@ public partial class ImageResultEntry : ObservableRecipient,
             //Does the selected sector exist in the Stored sectors list?
             //If so, prompt to overwrite or cancel.
 
-            var old = L95xxStoredSectors.FirstOrDefault(x => x.Template.Name == L95xxCurrentSectorSelected.Template.Name);
+            Sectors.ViewModels.Sector old = L95xxStoredSectors.FirstOrDefault(x => x.Template.Name == L95xxCurrentSectorSelected.Template.Name);
             if (old != null)
             {
                 if (await OkCancelDialog("Overwrite Stored Sector", $"The sector already exists.\r\nAre you sure you want to overwrite the stored sector?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
@@ -223,13 +220,13 @@ public partial class ImageResultEntry : ObservableRecipient,
             L95xxCurrentSectors.Remove(L95xxCurrentSectorSelected);
 
             //Sort the stored list.
-            var secs = L95xxStoredSectors.ToList();
+            List<Sectors.ViewModels.Sector> secs = L95xxStoredSectors.ToList();
             SortList(secs);
             SortObservableCollectionByList(secs, L95xxStoredSectors);
 
             //Save the list to the database.
-            var temp = new List<L95xxReport>();
-            foreach (var sec in L95xxStoredSectors)
+            List<L95xxReport> temp = [];
+            foreach (Sectors.ViewModels.Sector sec in L95xxStoredSectors)
                 temp.Add(new L95xxReport() { Report = sec.L95xxPacket, Template = sec.Template });
 
             _ = SelectedDatabase.InsertOrReplace_L95xxResult(new Databases.L95xxResult
@@ -349,7 +346,7 @@ public partial class ImageResultEntry : ObservableRecipient,
     private void SendTo95xxApplication() => _ = Process.GetProcessesByName("LVS-95XX");//foreach (Process proc in processes)//    PostMessage(proc.MainWindowHandle, WM_KEYDOWN, VK_F5, 0);
     private string GetSaveFilePath()
     {
-        var saveFileDialog1 = new SaveFileDialog
+        SaveFileDialog saveFileDialog1 = new()
         {
             Filter = "Bitmap Image|*.bmp",//|Gif Image|*.gif|JPeg Image|*.jpg";
             Title = "Save an Image File"
@@ -381,9 +378,9 @@ public partial class ImageResultEntry : ObservableRecipient,
             yRatio = 1;
         }
 
-        var lineWidth = 10 * xRatio;
+        double lineWidth = 10 * xRatio;
 
-        var printer = new System.Windows.Media.GeometryDrawing
+        GeometryDrawing printer = new()
         {
             Geometry = new System.Windows.Media.RectangleGeometry(new Rect(lineWidth / 2, lineWidth / 2,
             (SelectedPrinter.DefaultPageSettings.PaperSize.Width / 100 * SelectedPrinter.DefaultPageSettings.PrinterResolution.X * xRatio) - lineWidth,
@@ -391,10 +388,10 @@ public partial class ImageResultEntry : ObservableRecipient,
             Pen = new System.Windows.Media.Pen(System.Windows.Media.Brushes.Red, lineWidth)
         };
 
-        var drwGroup = new System.Windows.Media.DrawingGroup();
+        DrawingGroup drwGroup = new();
         drwGroup.Children.Add(printer);
 
-        var geometryImage = new System.Windows.Media.DrawingImage(drwGroup);
+        DrawingImage geometryImage = new(drwGroup);
         geometryImage.Freeze();
         return geometryImage;
     }
@@ -410,24 +407,24 @@ public partial class ImageResultEntry : ObservableRecipient,
     };
 
     public static void SortList(List<Sectors.ViewModels.Sector> list) => list.Sort((item1, item2) =>
-                                                                              {
-                                                                                  double distance1 = Math.Sqrt(Math.Pow(item1.Template.CenterPoint.X, 2) + Math.Pow(item1.Template.CenterPoint.Y, 2));
-                                                                                  double distance2 = Math.Sqrt(Math.Pow(item2.Template.CenterPoint.X, 2) + Math.Pow(item2.Template.CenterPoint.Y, 2));
-                                                                                  int distanceComparison = distance1.CompareTo(distance2);
+        {
+            double distance1 = Math.Sqrt(Math.Pow(item1.Template.CenterPoint.X, 2) + Math.Pow(item1.Template.CenterPoint.Y, 2));
+            double distance2 = Math.Sqrt(Math.Pow(item2.Template.CenterPoint.X, 2) + Math.Pow(item2.Template.CenterPoint.Y, 2));
+            int distanceComparison = distance1.CompareTo(distance2);
 
-                                                                                  if (distanceComparison == 0)
-                                                                                  {
-                                                                                      // If distances are equal, sort by X coordinate, then by Y if necessary
-                                                                                      int xComparison = item1.Template.CenterPoint.X.CompareTo(item2.Template.CenterPoint.X);
-                                                                                      if (xComparison == 0)
-                                                                                      {
-                                                                                          // If X coordinates are equal, sort by Y coordinate
-                                                                                          return item1.Template.CenterPoint.Y.CompareTo(item2.Template.CenterPoint.Y);
-                                                                                      }
-                                                                                      return xComparison;
-                                                                                  }
-                                                                                  return distanceComparison;
-                                                                              });
+            if (distanceComparison == 0)
+            {
+                // If distances are equal, sort by X coordinate, then by Y if necessary
+                int xComparison = item1.Template.CenterPoint.X.CompareTo(item2.Template.CenterPoint.X);
+                if (xComparison == 0)
+                {
+                    // If X coordinates are equal, sort by Y coordinate
+                    return item1.Template.CenterPoint.Y.CompareTo(item2.Template.CenterPoint.Y);
+                }
+                return xComparison;
+            }
+            return distanceComparison;
+        });
 
     #region Recieve Messages
     public void Receive(PropertyChangedMessage<Databases.ImageResultsDatabase> message) => SelectedDatabase = message.NewValue;

@@ -68,7 +68,7 @@
                             ToolTip="Add Image">
                         </Button>
 
-                        <Button Command="{Binding AddImageTopCommand}"
+                        <Button Command="{Binding AddV5ImageCommand}"
                             VerticalAlignment="Top" BorderThickness="0" Margin="3"
                             Content="{iconPacks:Material Kind=Camera}"
                             ToolTipService.ShowOnDisabled="True">

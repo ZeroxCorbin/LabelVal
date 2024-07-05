@@ -1,15 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
 using LabelVal.ImageRolls.ViewModels;
-using LabelVal.Messages;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -17,7 +13,6 @@ using System.Windows.Media;
 namespace LabelVal.Results.ViewModels;
 public partial class ImageResultEntry
 {
-
     [ObservableProperty] private Databases.V5Result v5ResultRow;
 
     //public Config V5CurrentTemplate { get; set; }
@@ -57,7 +52,7 @@ public partial class ImageResultEntry
             return;
         }
 
-        var res = await ImageResults.SelectedScanner.ScannerController.GetConfig();
+        V5_REST_Lib.Commands.Results res = await ImageResults.SelectedScanner.ScannerController.GetConfig();
 
         if (!res.OK)
         {
@@ -66,11 +61,11 @@ public partial class ImageResultEntry
             return;
         }
 
-        var config = (V5_REST_Lib.Models.NewConfig)res.Object;
+        V5_REST_Lib.Models.NewConfig config = (V5_REST_Lib.Models.NewConfig)res.Object;
 
         if (imageType != "sensor")
         {
-            var fas = config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource;
+            V5_REST_Lib.Models.NewConfig.Fileacquisitionsource fas = config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource;
             if (fas == null)
             {
                 LogError("The scanner is not in file aquire mode.");
@@ -79,9 +74,9 @@ public partial class ImageResultEntry
             }
 
             //Rotate directory names to accomadate V5 
-            var isFirst = fas.directory != ImageResults.SelectedScanner.FTPClient.ImagePath1Root;
+            bool isFirst = fas.directory != ImageResults.SelectedScanner.FTPClient.ImagePath1Root;
 
-            var path = isFirst
+            string path = isFirst
                 ? ImageResults.SelectedScanner.FTPClient.ImagePath1
                 : ImageResults.SelectedScanner.FTPClient.ImagePath2;
 
@@ -111,12 +106,10 @@ public partial class ImageResultEntry
             //config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.uid = DateTime.Now.Ticks.ToString();
             _ = await ImageResults.SelectedScanner.ScannerController.SendJob(config.response.data);
 
-
             _ = V5ProcessResults(await ImageResults.SelectedScanner.ScannerController.Trigger_Wait_Return(true));
         }
         else
             _ = V5ProcessResults(await ImageResults.SelectedScanner.ScannerController.Trigger_Wait_Return(true));
-
 
         IsV5Working = false;
     }
@@ -156,16 +149,15 @@ public partial class ImageResultEntry
 
         List<Sectors.ViewModels.Sector> tempSectors = [];
 
-
         if (V5CurrentReport["event"]?["name"].ToString() == "cycle-report-alt")
         {
-            foreach (var rSec in V5CurrentReport["event"]?["data"]?["decodeData"])
+            foreach (JToken rSec in V5CurrentReport["event"]?["data"]?["decodeData"])
                 tempSectors.Add(new Sectors.ViewModels.Sector(rSec.ToObject<V5_REST_Lib.Models.Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
 
         }
         else if (V5CurrentReport["event"]?["name"].ToString() == "cycle-report")
         {
-            foreach (var rSec in V5CurrentReport["event"]["data"]["cycleConfig"]["qualifiedResults"])
+            foreach (JToken rSec in V5CurrentReport["event"]["data"]["cycleConfig"]["qualifiedResults"])
                 tempSectors.Add(new Sectors.ViewModels.Sector(rSec.ToObject<V5_REST_Lib.Models.Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
         }
 
@@ -173,7 +165,7 @@ public partial class ImageResultEntry
         {
             SortList(tempSectors);
 
-            foreach (var sec in tempSectors)
+            foreach (Sectors.ViewModels.Sector sec in tempSectors)
                 V5CurrentSectors.Add(sec);
         }
 
@@ -211,19 +203,19 @@ public partial class ImageResultEntry
         List<Sectors.ViewModels.Sector> tempSectors = [];
         if (!string.IsNullOrEmpty(V5ResultRow.Report))
         {
-            var results = V5ResultRow._Report;
+            JObject results = V5ResultRow._Report;
 
             V5SectorsImageOverlay = V5CreateSectorsImageOverlay(results);
 
             if (results["event"]?["name"].ToString() == "cycle-report-alt")
             {
-                foreach (var rSec in results["event"]?["data"]?["decodeData"])
+                foreach (JToken rSec in results["event"]?["data"]?["decodeData"])
                     tempSectors.Add(new Sectors.ViewModels.Sector(rSec.ToObject<V5_REST_Lib.Models.Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
 
             }
             else if (results["event"]?["name"].ToString() == "cycle-report")
             {
-                foreach (var rSec in results["event"]["data"]["cycleConfig"]["qualifiedResults"])
+                foreach (JToken rSec in results["event"]["data"]["cycleConfig"]["qualifiedResults"])
                     tempSectors.Add(new Sectors.ViewModels.Sector(rSec.ToObject<V5_REST_Lib.Models.Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
             }
         }
@@ -232,7 +224,7 @@ public partial class ImageResultEntry
         {
             SortList(tempSectors);
 
-            foreach (var sec in tempSectors)
+            foreach (Sectors.ViewModels.Sector sec in tempSectors)
                 V5StoredSectors.Add(sec);
         }
     }
@@ -243,9 +235,9 @@ public partial class ImageResultEntry
         List<Sectors.ViewModels.SectorDifferences> diff = [];
 
         //Compare; Do not check for missing her. To keep found at top of list.
-        foreach (var sec in V5StoredSectors)
+        foreach (Sectors.ViewModels.Sector sec in V5StoredSectors)
         {
-            foreach (var cSec in V5CurrentSectors)
+            foreach (Sectors.ViewModels.Sector cSec in V5CurrentSectors)
                 if (sec.Template.Name == cSec.Template.Name)
                 {
                     if (sec.Template.Symbology == cSec.Template.Symbology)
@@ -255,7 +247,7 @@ public partial class ImageResultEntry
                     }
                     else
                     {
-                        var dat = new Sectors.ViewModels.SectorDifferences
+                        Sectors.ViewModels.SectorDifferences dat = new()
                         {
                             UserName = $"{sec.Template.Username} (SYMBOLOGY MISMATCH)",
                             IsSectorMissing = true,
@@ -267,10 +259,10 @@ public partial class ImageResultEntry
         }
 
         //Check for missing
-        foreach (var sec in V5StoredSectors)
+        foreach (Sectors.ViewModels.Sector sec in V5StoredSectors)
         {
-            var found = false;
-            foreach (var cSec in V5CurrentSectors)
+            bool found = false;
+            foreach (Sectors.ViewModels.Sector cSec in V5CurrentSectors)
                 if (sec.Template.Name == cSec.Template.Name)
                 {
                     found = true;
@@ -279,7 +271,7 @@ public partial class ImageResultEntry
 
             if (!found)
             {
-                var dat = new Sectors.ViewModels.SectorDifferences
+                Sectors.ViewModels.SectorDifferences dat = new()
                 {
                     UserName = $"{sec.Template.Username} (MISSING)",
                     IsSectorMissing = true,
@@ -291,10 +283,10 @@ public partial class ImageResultEntry
 
         //check for missing
         if (V5StoredSectors.Count > 0)
-            foreach (var sec in V5CurrentSectors)
+            foreach (Sectors.ViewModels.Sector sec in V5CurrentSectors)
             {
-                var found = false;
-                foreach (var cSec in V5StoredSectors)
+                bool found = false;
+                foreach (Sectors.ViewModels.Sector cSec in V5StoredSectors)
                     if (sec.Template.Name == cSec.Template.Name)
                     {
                         found = true;
@@ -303,7 +295,7 @@ public partial class ImageResultEntry
 
                 if (!found)
                 {
-                    var dat = new Sectors.ViewModels.SectorDifferences
+                    Sectors.ViewModels.SectorDifferences dat = new()
                     {
                         UserName = $"{sec.Template.Username} (MISSING)",
                         IsSectorMissing = true,
@@ -313,38 +305,35 @@ public partial class ImageResultEntry
                 }
             }
 
-        foreach (var d in diff)
+        foreach (Sectors.ViewModels.SectorDifferences d in diff)
             if (d.IsNotEmpty)
                 V5DiffSectors.Add(d);
     }
-    public int V5LoadTask()
-    {
-        return 1;
-    }
+    public int V5LoadTask() => 1;
 
     private DrawingImage V5CreateSectorsImageOverlay(JObject results)
     {
-        var drwGroup = new DrawingGroup();
+        DrawingGroup drwGroup = new();
 
         //Draw the image outline the same size as the stored image
-        var border = new GeometryDrawing
+        GeometryDrawing border = new()
         {
             Geometry = new RectangleGeometry(new Rect(0.5, 0.5, V5Image.Image.PixelWidth - 1, V5Image.Image.PixelHeight - 1)),
             Pen = new Pen(Brushes.Transparent, 1)
         };
         drwGroup.Children.Add(border);
 
-        var secCenter = new GeometryGroup();
-        var bndAreas = new GeometryGroup();
+        GeometryGroup secCenter = new();
+        GeometryGroup bndAreas = new();
 
         if (results["event"]?["name"].ToString() == "cycle-report-alt")
         {
-            foreach (var sec in results["event"]?["data"]?["decodeData"])
+            foreach (JToken sec in results["event"]?["data"]?["decodeData"])
             {
                 if (sec["boundingBox"] == null)
                     continue;
 
-                var secAreas = new GeometryGroup();
+                GeometryGroup secAreas = new();
 
                 double brushWidth = 4.0;
                 double halfBrushWidth = brushWidth / 2.0;
@@ -357,7 +346,7 @@ public partial class ImageResultEntry
                     double dy = sec["boundingBox"][nextIndex]["y"].Value<double>() - sec["boundingBox"][i]["y"].Value<double>();
 
                     // Calculate the length of the line segment
-                    double length = Math.Sqrt(dx * dx + dy * dy);
+                    double length = Math.Sqrt((dx * dx) + (dy * dy));
 
                     // Normalize the direction to get a unit vector
                     double ux = dx / length;
@@ -381,9 +370,9 @@ public partial class ImageResultEntry
                     secAreas.Children.Add(new LineGeometry(new Point(startX, startY), new Point(endX, endY)));
                 }
 
-                if(sec["grading"]?["grade"] != null)
+                if (sec["grading"]?["grade"] != null)
                 {
-                    var grade = double.TryParse(sec["grading"]?["grade"].ToString(), out double g) ? g : 4.0;
+                    double grade = double.TryParse(sec["grading"]?["grade"].ToString(), out double g) ? g : 4.0;
 
                     drwGroup.Children.Add(new GeometryDrawing(Brushes.Transparent, new Pen(GetGradeBrush(V5GetLetter(grade)), 4), secAreas));
                 }
@@ -396,15 +385,15 @@ public partial class ImageResultEntry
                 secCenter.Children.Add(new LineGeometry(new Point(sec["x"].Value<double>() + 10, sec["y"].Value<double>()), new Point(sec["x"].Value<double>() + -10, sec["y"].Value<double>())));
                 secCenter.Children.Add(new LineGeometry(new Point(sec["x"].Value<double>(), sec["y"].Value<double>() + 10), new Point(sec["x"].Value<double>(), sec["y"].Value<double>() + -10)));
 
-             }
+            }
         }
         else if (results["event"]?["name"].ToString() == "cycle-report")
         {
-            foreach (var sec in results["event"]["data"]["cycleConfig"]["qualifiedResults"])
+            foreach (JToken sec in results["event"]["data"]["cycleConfig"]["qualifiedResults"])
             {
                 if (sec["boundingBox"] == null)
                     continue;
-                var secAreas = new GeometryGroup();
+                GeometryGroup secAreas = new();
                 secAreas.Children.Add(new LineGeometry(
                     new Point(sec["boundingBox"][0]["x"].Value<double>() - 2, sec["boundingBox"][0]["y"].Value<double>() - 2),
                     new Point(sec["boundingBox"][1]["x"].Value<double>() + 2, sec["boundingBox"][1]["y"].Value<double>() - 2)));
@@ -421,19 +410,19 @@ public partial class ImageResultEntry
                 drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun($"DecodeTool{sec["toolSlot"]}", new Typeface("Arial"), 30.0, new Point(sec["boundingBox"][2]["x"].Value<double>() - 8, sec["boundingBox"][2]["y"].Value<double>() - 8))));
             }
 
-            foreach (var sec in results["event"]["data"]["cycleConfig"]["job"]["toolList"])
+            foreach (JToken sec in results["event"]["data"]["cycleConfig"]["job"]["toolList"])
             {
-                foreach (var r in sec["SymbologyTool"]["regionList"])
+                foreach (JToken r in sec["SymbologyTool"]["regionList"])
                     bndAreas.Children.Add(new RectangleGeometry(new Rect(r["Region"]["shape"]["RectShape"]["x"].Value<double>(), r["Region"]["shape"]["RectShape"]["y"].Value<double>(), r["Region"]["shape"]["RectShape"]["width"].Value<double>(), r["Region"]["shape"]["RectShape"]["height"].Value<double>())));
             }
         }
 
-        var sectorCenters = new GeometryDrawing
+        GeometryDrawing sectorCenters = new()
         {
             Geometry = secCenter,
             Pen = new Pen(Brushes.Red, 4)
         };
-        var bounding = new GeometryDrawing
+        GeometryDrawing bounding = new()
         {
             Geometry = bndAreas,
             Pen = new Pen(Brushes.Purple, 5)
@@ -441,8 +430,8 @@ public partial class ImageResultEntry
 
         drwGroup.Children.Add(bounding);
         drwGroup.Children.Add(sectorCenters);
-        
-        var geometryImage = new DrawingImage(drwGroup);
+
+        DrawingImage geometryImage = new(drwGroup);
         geometryImage.Freeze();
         return geometryImage;
     }

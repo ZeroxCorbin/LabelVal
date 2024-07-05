@@ -250,47 +250,39 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
 
             int i = last + 1;
             foreach (var f in sorted)
-                _ = AddImage(f, i++);
+                AddImage(f, i++);
         }
     }
-    private ImageEntry AddImage(string path, int order)
+    private void AddImage(string path, int order)
     {
         try
         {
             var image = GetNewImageEntry(path, order);
             if (image == null)
-                return null;
+                return;
 
             SaveImage(image);
             Images.Add(image);
-
-            return image;
         }
         catch (Exception ex)
         {
             LogError($"Failed to load image: {Path}", ex);
         }
-
-        return null;
     }
-    public ImageEntry AddImage(ImageEntry image)
+    public void AddImage(ImageEntry image)
     {
         try
         {
             if (image == null)
-                return null;
+                return;
 
             SaveImage(image);
             Images.Add(image);
-
-            return image;
         }
         catch (Exception ex)
         {
             LogError($"Failed to load image: {Path}", ex);
         }
-
-        return null;
     }
 
     public void DeleteImage(ImageEntry imageEntry)

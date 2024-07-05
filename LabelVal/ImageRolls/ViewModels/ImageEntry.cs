@@ -26,6 +26,7 @@ public partial class ImageEntry : ObservableRecipient//, IRecipient<PrinterMessa
     private string name;
 
     [ObservableProperty][property: JsonProperty] public int order = -1;
+    [JsonProperty] public bool IsPlaceholder { get; set; }
 
     [JsonProperty] public string Path { get; set; }
     [JsonProperty] public string Comment { get; set; }
@@ -73,9 +74,9 @@ public partial class ImageEntry : ObservableRecipient//, IRecipient<PrinterMessa
     [ObservableProperty][property: SQLite.Ignore] private double printer2ImageTotalPixelDeviation;
 
     public ImageEntry() { IsActive = true; }
-
     public ImageEntry(string rollUID, string path, int targetDpiWidth, int targetDpiHeight)
     {
+        RollUID = rollUID;
 
         Path = path;
         TargetDpiHeight = targetDpiHeight;
@@ -84,7 +85,7 @@ public partial class ImageEntry : ObservableRecipient//, IRecipient<PrinterMessa
         Image = BitmapImageUtilities.LoadBitmap(Path);
         ImageLow = BitmapImageUtilities.LoadBitmap(Path, 400);
         UID = BitmapImageUtilities.ImageUID(Image);
-        RollUID = rollUID;
+
 
         var cmt = Path.Replace(System.IO.Path.GetExtension(Path), ".txt");
         if (File.Exists(cmt))
@@ -98,7 +99,17 @@ public partial class ImageEntry : ObservableRecipient//, IRecipient<PrinterMessa
 
         IsActive = true;
     }
+    public ImageEntry(string rollUID, byte[] placeholderImage)
+    {
+        RollUID = rollUID;
 
+        Image = BitmapImageUtilities.CreateBitmap(placeholderImage);
+        UID = ImageUtilities.ImageUID(placeholderImage);
+
+        IsPlaceholder = true;
+
+        IsActive = true;
+    }
     public ImageEntry(string rollUID, byte[] image, int targetDpiWidth, int targetDpiHeight = 0, string comment = null)
     {
         TargetDpiWidth = targetDpiWidth;
@@ -120,7 +131,7 @@ public partial class ImageEntry : ObservableRecipient//, IRecipient<PrinterMessa
         IsActive = true;
     }
 
-    public ImageEntry Clone() => new ImageEntry(RollUID, GetBitmapBytes(), TargetDpiWidth, TargetDpiHeight, Comment);
+    public ImageEntry Clone() => new(RollUID, GetBitmapBytes(), TargetDpiWidth, TargetDpiHeight, Comment);
 
     //public void Receive(PrinterMessages.SelectedPrinterChanged message) => SelectedPrinter = message.Value;
 
@@ -144,6 +155,9 @@ public partial class ImageEntry : ObservableRecipient//, IRecipient<PrinterMessa
 
     public byte[] GetBitmapBytes(int dpi = 0)
     {
+        if (Image == null)
+            return null;
+
         var tDpi = dpi == 0 ? TargetDpiWidth : dpi;
 
         var bmp = BitmapImageUtilities.ImageToBytesBMP(Image);
@@ -154,5 +168,5 @@ public partial class ImageEntry : ObservableRecipient//, IRecipient<PrinterMessa
         return bmp;
     }
 
-    public byte[] GetPngBytes() => BitmapImageUtilities.ImageToBytesPNG(Image);
+    public byte[] GetPngBytes() => Image != null ? BitmapImageUtilities.ImageToBytesPNG(Image) : null;
 }

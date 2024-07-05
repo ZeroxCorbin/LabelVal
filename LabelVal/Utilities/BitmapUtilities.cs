@@ -31,6 +31,55 @@ public class BitmapUtilities
         return bitmap;
     }
 
+    public static System.Drawing.Bitmap CreateRandomBitmap(int width, int height)
+    {
+        var random = new Random();
+        var bitmap = new System.Drawing.Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                int alpha = 255; // Full opacity
+                int red = random.Next(256); // 0 to 255
+                int green = random.Next(256); // 0 to 255
+                int blue = random.Next(256); // 0 to 255
+                System.Drawing.Color randomColor = System.Drawing.Color.FromArgb(alpha, red, green, blue);
+                bitmap.SetPixel(x, y, randomColor);
+            }
+        }
+        return bitmap;
+    }
+
+    public static System.Drawing.Bitmap CreateRandomBitmapFast(int width, int height)
+    {
+        var random = new Random();
+        var bitmap = new System.Drawing.Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+        var rect = new System.Drawing.Rectangle(0, 0, width, height);
+        var bitmapData = bitmap.LockBits(rect, System.Drawing.Imaging.ImageLockMode.WriteOnly, bitmap.PixelFormat);
+
+        int bytesPerPixel = System.Drawing.Image.GetPixelFormatSize(bitmap.PixelFormat) / 8;
+        int byteCount = bitmapData.Stride * bitmapData.Height;
+        byte[] pixels = new byte[byteCount];
+
+        for (int y = 0; y < height; y++)
+        {
+            int yPos = y * bitmapData.Stride;
+            for (int x = 0; x < width; x++)
+            {
+                int xPos = x * bytesPerPixel;
+                pixels[yPos + xPos + 3] = 255; // Alpha channel (fully opaque)
+                pixels[yPos + xPos + 2] = (byte)random.Next(256); // Red
+                pixels[yPos + xPos + 1] = (byte)random.Next(256); // Green
+                pixels[yPos + xPos] = (byte)random.Next(256); // Blue
+            }
+        }
+
+        System.Runtime.InteropServices.Marshal.Copy(pixels, 0, bitmapData.Scan0, pixels.Length);
+        bitmap.UnlockBits(bitmapData);
+
+        return bitmap;
+    }
+
 
     public static System.Drawing.Bitmap BitmapFromBytes(byte[] bytes)
     {
