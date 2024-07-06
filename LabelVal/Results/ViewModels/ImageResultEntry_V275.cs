@@ -378,7 +378,7 @@ public partial class ImageResultEntry
                     };
                     drwGroup.Children.Add(sector);
 
-                    drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun(jSec.username, new Typeface("Arial"), 30.0, new Point(jSec.left - 8, jSec.top - 8), DpiScale.PixelsPerDip)));
+                    drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun(jSec.username, new Typeface("Arial"), 30.0, new Point(jSec.left - 8, jSec.top - 8))));
 
                     double y = rSec["top"].Value<double>() + (rSec["height"].Value<double>() / 2);
                     double x = rSec["left"].Value<double>() + (rSec["width"].Value<double>() / 2);
@@ -406,7 +406,7 @@ public partial class ImageResultEntry
         return geometryImage;
     }
 
-    public static GlyphRun CreateGlyphRun(string text, Typeface typeface, double emSize, Point baselineOrigin, double pixelsPerDip)
+    public static GlyphRun CreateGlyphRun(string text, Typeface typeface, double emSize, Point baselineOrigin)
     {
         GlyphTypeface glyphTypeface;
 
@@ -427,7 +427,7 @@ public partial class ImageResultEntry
         }
 
         return new GlyphRun(
-            glyphTypeface, 0, false, emSize, (float)pixelsPerDip,
+            glyphTypeface, 0, false, emSize, (float)MonitorUtilities.GetDpi().PixelsPerDip,
             glyphIndices, baselineOrigin, advanceWidths,
             null, null, null, null, null, null);
     }

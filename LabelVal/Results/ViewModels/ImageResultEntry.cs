@@ -22,7 +22,7 @@ using System.Windows.Media;
 
 namespace LabelVal.Results.ViewModels;
 
-public partial class ImageResultEntry : ObservableRecipient, IRecipient<PropertyChangedMessage<Databases.ImageResultsDatabase>>, IRecipient<PropertyChangedMessage<PrinterSettings>>, IRecipient<Main.ViewModels.DPIChangedMessage>
+public partial class ImageResultEntry : ObservableRecipient, IRecipient<PropertyChangedMessage<Databases.ImageResultsDatabase>>, IRecipient<PropertyChangedMessage<PrinterSettings>>
 {
     public delegate void BringIntoViewDelegate();
     public event BringIntoViewDelegate BringIntoView;
@@ -39,7 +39,6 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     [ObservableProperty] private DrawingImage printerAreaOverlay;
     partial void OnShowPrinterAreaOverSourceChanged(bool value) => PrinterAreaOverlay = ShowPrinterAreaOverSource ? CreatePrinterAreaOverlay(true) : null;
 
-    [ObservableProperty] DpiScale dpiScale;
     [ObservableProperty] private PrinterSettings selectedPrinter;
     [ObservableProperty] private ImageResultsDatabase selectedDatabase;
     partial void OnSelectedPrinterChanged(PrinterSettings value)
@@ -64,8 +63,6 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
 
     public ImageResultEntry(ImageEntry sourceImage, ImageResults imageResults)
     {
-        DpiScale = MonitorUtilities.GetDpi();
-
         ImageResults = imageResults;
         SourceImage = sourceImage;
 
@@ -431,7 +428,6 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     #region Recieve Messages
     public void Receive(PropertyChangedMessage<Databases.ImageResultsDatabase> message) => SelectedDatabase = message.NewValue;
     public void Receive(PropertyChangedMessage<PrinterSettings> message) => SelectedPrinter = message.NewValue;
-    public void Receive(DPIChangedMessage message) => DpiScale = message.Value;
     #endregion
 
     #region Dialogs

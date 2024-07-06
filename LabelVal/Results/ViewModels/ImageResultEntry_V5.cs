@@ -380,7 +380,7 @@ public partial class ImageResultEntry
                 {
                     drwGroup.Children.Add(new GeometryDrawing(Brushes.Transparent, new Pen(Brushes.Black, 4), secAreas));
                 }
-                drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun($"DecodeTool{sec["toolSlot"]}", new Typeface("Arial"), 30.0, new Point(sec["boundingBox"][2]["x"].Value<double>() - 8, sec["boundingBox"][2]["y"].Value<double>() - 8), DpiScale.PixelsPerDip)));
+                drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun($"DecodeTool{sec["toolSlot"]}", new Typeface("Arial"), 30.0, new Point(sec["boundingBox"][2]["x"].Value<double>() - 8, sec["boundingBox"][2]["y"].Value<double>() - 8))));
 
                 secCenter.Children.Add(new LineGeometry(new Point(sec["x"].Value<double>() + 10, sec["y"].Value<double>()), new Point(sec["x"].Value<double>() + -10, sec["y"].Value<double>())));
                 secCenter.Children.Add(new LineGeometry(new Point(sec["x"].Value<double>(), sec["y"].Value<double>() + 10), new Point(sec["x"].Value<double>(), sec["y"].Value<double>() + -10)));
@@ -407,7 +407,7 @@ public partial class ImageResultEntry
                     new Point(sec["boundingBox"][3]["x"].Value<double>() - 2, sec["boundingBox"][3]["y"].Value<double>() + 2),
                     new Point(sec["boundingBox"][0]["x"].Value<double>() - 2, sec["boundingBox"][0]["y"].Value<double>() - 2)));
 
-                drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun($"DecodeTool{sec["toolSlot"]}", new Typeface("Arial"), 30.0, new Point(sec["boundingBox"][2]["x"].Value<double>() - 8, sec["boundingBox"][2]["y"].Value<double>() - 8), DpiScale.PixelsPerDip)));
+                drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun($"DecodeTool{sec["toolSlot"]}", new Typeface("Arial"), 30.0, new Point(sec["boundingBox"][2]["x"].Value<double>() - 8, sec["boundingBox"][2]["y"].Value<double>() - 8))));
             }
 
             foreach (JToken sec in results["event"]["data"]["cycleConfig"]["job"]["toolList"])
