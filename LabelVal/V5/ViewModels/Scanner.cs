@@ -646,7 +646,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         }
 
         return new GlyphRun(
-            glyphTypeface, 0, false, emSize,
+            glyphTypeface, 0, false, emSize, (float)MonitorUtilities.GetDpi().PixelsPerDip,
             glyphIndices, baselineOrigin, advanceWidths,
             null, null, null, null, null, null);
     }

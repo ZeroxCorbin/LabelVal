@@ -1,20 +1,26 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.Messages;
 using MahApps.Metro.Controls.Dialogs;
 using RingBuffer;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace LabelVal.Main.ViewModels
 {
     //This is for the XAML designer data context to allow contextual binding to ObservableRingBuffer<SystemMessages.StatusMessage>
     public class SystemMessagesDataContext(int length) : RingBufferCollection<SystemMessages.StatusMessage>(length) { }
+    public class DPIChangedMessage : ValueChangedMessage<DpiScale> { public DPIChangedMessage(DpiScale value) : base(value) { } }
 
     public partial class MainWindow : ObservableRecipient, IRecipient<SystemMessages.StatusMessage>
     {
         public static string Version => App.Version;
+
+        [ObservableProperty] private DPIChangedMessage dPIChangedMessage;
+        partial void OnDPIChangedMessageChanged(DPIChangedMessage value) => _ = WeakReferenceMessenger.Default.Send(value);
 
         public RingBufferCollection<SystemMessages.StatusMessage> SystemMessages_InfoDebug { get; } = new RingBufferCollection<SystemMessages.StatusMessage>(30);
         public RingBufferCollection<SystemMessages.StatusMessage> SystemMessages_ErrorWarning { get; } = new RingBufferCollection<SystemMessages.StatusMessage>(10);

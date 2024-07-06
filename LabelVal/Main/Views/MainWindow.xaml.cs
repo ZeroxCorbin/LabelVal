@@ -1,6 +1,9 @@
 ﻿using ControlzEx.Theming;
+using LabelVal.Utilities;
 using MahApps.Metro.Controls;
 using System.Windows;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Windows.Media;
 
 namespace LabelVal.Main.Views;
 
@@ -9,7 +12,15 @@ namespace LabelVal.Main.Views;
 /// </summary>
 public partial class MainWindow : MetroWindow
 {
-    public MainWindow() => InitializeComponent();
+    public MainWindow()
+    {
+        InitializeComponent();
+        this.DpiChanged += MainWindow_DpiChanged;
+
+        ((ViewModels.MainWindow)this.DataContext).DPIChangedMessage = new ViewModels.DPIChangedMessage(VisualTreeHelper.GetDpi(this));
+    }
+
+    private void MainWindow_DpiChanged(object sender, DpiChangedEventArgs e) => ((ViewModels.MainWindow)this.DataContext).DPIChangedMessage = new ViewModels.DPIChangedMessage(e.NewDpi);
 
     private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e) { }
 

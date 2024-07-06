@@ -1,23 +1,19 @@
-﻿using System;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Globalization;
-using System.IO;
-using System.Reflection;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
-using System.Windows.Media;
-using CommunityToolkit.Mvvm.Messaging;
+﻿using CommunityToolkit.Mvvm.Messaging;
 using ControlzEx.Theming;
 using LabelVal.Messages;
-using LabelVal.Properties;
 using LibSimpleDatabase;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
 using SQLitePCL;
-using Brushes = System.Drawing.Brushes;
+using System;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Reflection;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
 
 namespace LabelVal;
 
@@ -39,7 +35,6 @@ public partial class App : Application
     public static string Version { get; set; }
     public static string LocalAppData => System.IO.Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), System.Reflection.Assembly.GetExecutingAssembly().GetName().Name);
 
-
     public static string UserDataDirectory => $"{WorkingDir}\\UserData";
     public static string DatabaseExtension => ".sqlite";
 
@@ -59,12 +54,9 @@ public partial class App : Application
     public static string RunsRoot => $"{UserDataDirectory}\\Runs";
     public static string RunLedgerDatabaseName => $"RunLedger{DatabaseExtension}";
 
-    public static string RunResultsDatabaseName(long timeDate)
-    {
-        return $"Run_{timeDate}{DatabaseExtension}";
-    }
+    public static string RunResultsDatabaseName(long timeDate) => $"Run_{timeDate.ToString()}{DatabaseExtension}";
 
-    public static void  SendMessage(Exception ex) => _ = WeakReferenceMessenger.Default.Send(new SystemMessages.StatusMessage(ex));
+    public static void SendMessage(Exception ex) => _ = WeakReferenceMessenger.Default.Send(new SystemMessages.StatusMessage(ex));
 
     public App()
     {
@@ -73,7 +65,7 @@ public partial class App : Application
         // File.WriteAllText("setting.imgr", JsonConvert.SerializeObject(new ImageRolls.ViewModels.ImageRollEntry(), new Newtonsoft.Json.Converters.StringEnumConverter()));
         SetupExceptionHandling();
 
-        var version = Assembly.GetExecutingAssembly().GetName().Version;
+        Version version = Assembly.GetExecutingAssembly().GetName().Version;
         if (version != null)
             Version = version.ToString();
 
@@ -90,9 +82,9 @@ public partial class App : Application
         if (!Directory.Exists(RunsRoot))
             _ = Directory.CreateDirectory(RunsRoot);
 
-        var config = new LoggingConfiguration();
+        LoggingConfiguration config = new();
         // Targets where to log to: File and Console
-        var logfile = new FileTarget("logfile")
+        FileTarget logfile = new("logfile")
         {
             FileName = Path.Combine(UserDataDirectory, "log.txt"),
             ArchiveFileName = Path.Combine(UserDataDirectory, "log.${shortdate}.txt"),
@@ -129,10 +121,10 @@ public partial class App : Application
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
-
+        
         ChangeColorBlindTheme(Settings.GetValue("App.IsColorBlind", false));
 
-        var res = Settings.GetValue("App.Theme", "Dark.Steel", true);
+        string res = Settings.GetValue("App.Theme", "Dark.Steel", true);
         if (res.Contains("#"))
             ThemeManager.Current.SyncTheme(ThemeSyncMode.SyncAll);
         else
@@ -146,9 +138,14 @@ public partial class App : Application
             RecursiveDelete(new DirectoryInfo(LocalAppData));
         }
     }
+    protected override void OnExit(ExitEventArgs e)
+    {
+        base.OnExit(e);
+
+        Settings?.Dispose();
+    }
 
     private void Current_ThemeChanged(object sender, ThemeChangedEventArgs e) => Settings.SetValue("App.Theme", e.NewTheme.Name);
-
     public static void ChangeColorBlindTheme(bool isColorBlind)
     {
         Settings.SetValue("App.IsColorBlind", isColorBlind);
@@ -156,13 +153,6 @@ public partial class App : Application
         Current.Resources["CB_Green"] = isColorBlind
             ? Current.Resources["ColorBlindBrush1"]
             : Current.Resources["ISO_GradeA_Brush"];
-    }
-
-    protected override void OnExit(ExitEventArgs e)
-    {
-        base.OnExit(e);
-
-        Settings?.Dispose();
     }
 
     private void SetupExceptionHandling()
@@ -182,15 +172,14 @@ public partial class App : Application
             e.SetObserved();
         };
     }
-
     private void LogUnhandledException(Exception exception, string source, bool shutdown)
     {
-        var message = $"Unhandled exception ({source})";
+        string message = $"Unhandled exception ({source})";
         try
         {
             Logger.Error(exception, message);
 
-            var assemblyName = Assembly.GetExecutingAssembly().GetName();
+            AssemblyName assemblyName = Assembly.GetExecutingAssembly().GetName();
             message = string.Format("Unhandled exception in {0} v{1}", assemblyName.Name, assemblyName.Version);
         }
         catch (Exception ex)
@@ -216,12 +205,12 @@ public partial class App : Application
         if (!baseDir.Exists)
             return;
 
-        foreach (var dir in baseDir.EnumerateDirectories())
+        foreach (DirectoryInfo dir in baseDir.EnumerateDirectories())
         {
             RecursiveDelete(dir);
         }
-        var files = baseDir.GetFiles();
-        foreach (var file in files)
+        FileInfo[] files = baseDir.GetFiles();
+        foreach (FileInfo file in files)
         {
             file.IsReadOnly = false;
             file.Delete();
@@ -232,12 +221,11 @@ public partial class App : Application
     {
     }
 
-
     private void FixFiducial()
     {
-        foreach (var dir in Directory.EnumerateDirectories(AssetsImageRollRoot))
+        foreach (string dir in Directory.EnumerateDirectories(AssetsImageRollRoot))
             if (Directory.Exists($"{dir}\\300"))
-                foreach (var imgFile in Directory.EnumerateFiles($"{dir}\\300"))
+                foreach (string imgFile in Directory.EnumerateFiles($"{dir}\\300"))
                     if (Path.GetExtension(imgFile) == ".png")
                         RedrawFiducial(imgFile);
     }
@@ -245,57 +233,51 @@ public partial class App : Application
     private void RedrawFiducial(string path)
     {
         // load your photo
-        using (var fs = new FileStream(path, FileMode.Open))
-        {
-            var photo = (Bitmap)Image.FromStream(fs);
-            fs.Close();
-            var newmap = new Bitmap(photo.Width, photo.Height);
-            newmap.SetResolution(photo.HorizontalResolution, photo.VerticalResolution);
-            //if (photo.Height != 2400)
-            //    File.AppendAllText($"{UserDataDirectory}\\Small Images List", Path.GetFileName(path));
+        using FileStream fs = new(path, FileMode.Open);
+        Bitmap photo = (Bitmap)Image.FromStream(fs);
+        fs.Close();
+        Bitmap newmap = new(photo.Width, photo.Height);
+        newmap.SetResolution(photo.HorizontalResolution, photo.VerticalResolution);
+        //if (photo.Height != 2400)
+        //    File.AppendAllText($"{UserDataDirectory}\\Small Images List", Path.GetFileName(path));
 
-            //600 DPI
-            //if ((photo.Height > 2400 && photo.Height != 4800) || photo.Height < 2000)
-            //    return;
+        //600 DPI
+        //if ((photo.Height > 2400 && photo.Height != 4800) || photo.Height < 2000)
+        //    return;
 
-            //300 DPI
-            if (photo.Height > 1200 || photo.Height < 1000)
-                return;
+        //300 DPI
+        if (photo.Height is > 1200 or < 1000)
+            return;
 
-            using (var graphics = Graphics.FromImage(newmap))
-            {
-                graphics.DrawImage(photo, 0, 0, photo.Width, photo.Height);
-                //graphics.FillRectangle(Brushes.White, 0, 1900, 210, photo.Height - 1900);
-                //graphics.FillRectangle(Brushes.Black, 30, 1950, 90, 90);
+        using Graphics graphics = Graphics.FromImage(newmap);
+        graphics.DrawImage(photo, 0, 0, photo.Width, photo.Height);
+        //graphics.FillRectangle(Brushes.White, 0, 1900, 210, photo.Height - 1900);
+        //graphics.FillRectangle(Brushes.Black, 30, 1950, 90, 90);
 
-                //300 DPI
-                graphics.FillRectangle(Brushes.White, 0, 976, 150, photo.Height - 976);
-                graphics.FillRectangle(Brushes.Black, 15, 975, 45, 45);
+        //300 DPI
+        graphics.FillRectangle(Brushes.White, 0, 976, 150, photo.Height - 976);
+        graphics.FillRectangle(Brushes.Black, 15, 975, 45, 45);
 
-                newmap.Save(path, ImageFormat.Png);
-            }
-        }
+        newmap.Save(path, ImageFormat.Png);
     }
 
     private void FixRotation()
     {
-        foreach (var dir in Directory.EnumerateDirectories(AssetsImageRollRoot))
-        foreach (var imgFile in Directory.EnumerateFiles($"{dir}\\600"))
-            if (imgFile.Contains("PRINT QUALITY"))
-                RotateImage(imgFile);
+        foreach (string dir in Directory.EnumerateDirectories(AssetsImageRollRoot))
+            foreach (string imgFile in Directory.EnumerateFiles($"{dir}\\600"))
+                if (imgFile.Contains("PRINT QUALITY"))
+                    RotateImage(imgFile);
     }
 
     private void RotateImage(string path)
     {
         // load your photo
-        using (var fs = new FileStream(path, FileMode.Open))
-        {
-            var photo = Image.FromStream(fs);
-            fs.Close();
+        using FileStream fs = new(path, FileMode.Open);
+        Image photo = Image.FromStream(fs);
+        fs.Close();
 
-            photo.RotateFlip(RotateFlipType.Rotate180FlipNone);
-            photo.Save(path, ImageFormat.Png);
-        }
+        photo.RotateFlip(RotateFlipType.Rotate180FlipNone);
+        photo.Save(path, ImageFormat.Png);
     }
 
     private class FinalReport
@@ -352,7 +334,6 @@ public partial class App : Application
     //                final.Voided++;
     //        }
     //    }
-
 
     //    File.WriteAllText("result.json", Newtonsoft.Json.JsonConvert.SerializeObject(final));
     //}
