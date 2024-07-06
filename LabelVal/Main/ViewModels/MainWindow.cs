@@ -11,8 +11,6 @@ using System.Windows;
 
 namespace LabelVal.Main.ViewModels
 {
-    //This is for the XAML designer data context to allow contextual binding to ObservableRingBuffer<SystemMessages.StatusMessage>
-    public class SystemMessagesDataContext(int length) : RingBufferCollection<SystemMessages.StatusMessage>(length) { }
     public class DPIChangedMessage : ValueChangedMessage<DpiScale> { public DPIChangedMessage(DpiScale value) : base(value) { } }
 
     public partial class MainWindow : ObservableRecipient, IRecipient<SystemMessages.StatusMessage>
@@ -50,7 +48,6 @@ namespace LabelVal.Main.ViewModels
             App.Settings.SetValue(nameof(SelectedLanguage), value);
         }
 
-        public static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
         public MainWindow()
         {
             Localization.TranslationSource.Instance.CurrentCulture = CultureInfo.GetCultureInfo(Localization.Culture.GetCulture(selectedLanguage));
@@ -94,8 +91,12 @@ namespace LabelVal.Main.ViewModels
             }
         }
 
-        public async Task OkDialog(string title, string message) => _ = await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.Affirmative);
+        #region Dialogs
 
+        public static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
+        public async Task OkDialog(string title, string message) => _ = await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.Affirmative);
         public async Task<string> GetStringDialog(string title, string message) => await DialogCoordinator.ShowInputAsync(this, title, message);
+
+        #endregion
     }
 }

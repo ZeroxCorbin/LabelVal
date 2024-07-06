@@ -10,26 +10,28 @@ using System.Drawing.Printing;
 using System.Threading.Tasks;
 
 namespace LabelVal.Run.ViewModels;
-public partial class ImageResults : ObservableRecipient,
-    IRecipient<PropertyChangedMessage<RunEntry>>,
-    IRecipient<PropertyChangedMessage<RunDatabase>>,
+public partial class RunResult : ObservableRecipient,
     IRecipient<PropertyChangedMessage<PrinterSettings>>
 {
     private int PrintCount => App.Settings.GetValue<int>(nameof(PrintCount));
     private int LoopCount => App.Settings.GetValue(nameof(LoopCount), 1);
 
-    public ObservableCollection<ImageResultGroup> ImageResultsList { get; } = [];
-    [ObservableProperty] private ImageResultGroup selectedImageResultGroup;
+    public CurrentImageResultGroup CurrentImageResultGroup { get; } 
+    public StoredImageResultGroup StoredImageResultGroup { get; } 
 
-    [ObservableProperty] private RunDatabase selectedDatabase;
-    [ObservableProperty] private RunEntry selectedRunEntry;
     [ObservableProperty] private PrinterSettings selectedPrinter;
 
-    public ImageResults() => IsActive = true;
+    public RunResult() => IsActive = true;
+
+    public RunResult(CurrentImageResultGroup current, StoredImageResultGroup stored)
+    {
+        CurrentImageResultGroup = current;
+        StoredImageResultGroup = stored;
+
+        IsActive = true;
+    }
 
     #region Recieve Messages    
-    public void Receive(PropertyChangedMessage<RunEntry> message) => SelectedRunEntry = message.NewValue;
-    public void Receive(PropertyChangedMessage<RunDatabase> message) => SelectedDatabase = message.NewValue;
     public void Receive(PropertyChangedMessage<PrinterSettings> message) => SelectedPrinter = message.NewValue;
     #endregion
 

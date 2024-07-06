@@ -17,7 +17,6 @@ public partial class MainWindow : MetroWindow
     private void btnSyncOSTheme_Click(object sender, RoutedEventArgs e) => ThemeManager.Current.SyncTheme(ThemeSyncMode.SyncAll);
     private void btnColorBlind_Click(object sender, RoutedEventArgs e) => App.ChangeColorBlindTheme(!App.Settings.GetValue("App.IsColorBlind", false));
 
-    //private void btnShowSettings_Click(object sender, RoutedEventArgs e) => ApplicationSettings.IsOpen = true;
 
     private void btnShowInfo_Click(object sender, RoutedEventArgs e) => popupInfo.IsOpen = true;
     private void btnShowError_Click(object sender, RoutedEventArgs e) => popupError.IsOpen = true;

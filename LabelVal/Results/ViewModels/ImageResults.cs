@@ -108,14 +108,12 @@ public partial class ImageResults : ObservableRecipient,
         if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
         {
             var itm = e.NewItems.Cast<ImageEntry>().FirstOrDefault();
-            //var itm = e.NewItems.First();
-            AddImageResultEntry((ImageEntry)itm);
+            AddImageResultEntry(itm);
         }
         else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
         {
             var itm = e.OldItems.Cast<ImageEntry>().FirstOrDefault();
-            //var itm = ((IList<ImageEntry>)e.OldItems).First();
-            RemoveImageResultEntry((ImageEntry)itm);
+            RemoveImageResultEntry(itm);
         }
     }
 
@@ -124,7 +122,7 @@ public partial class ImageResults : ObservableRecipient,
         var tmp = new ImageResultEntry(img, this);
         tmp.V275ProcessImage += V275ProcessImage;
 
-        if(img.IsPlaceholder)
+        if(img.IsNew)
             tmp.V5ProcessCommand.Execute("sensor");
 
         ImageResultsList.Add(tmp);
@@ -164,6 +162,7 @@ public partial class ImageResults : ObservableRecipient,
         var bees = BitmapImageUtilities.ImageToBytesPNG(BitmapImageUtilities.CreateRandomBitmapImage(50, 50));
         var imagEntry = SelectedImageRoll.GetNewImageEntry(bees);
         imagEntry.IsPlaceholder = true;
+        imagEntry.IsNew = true;
 
         SelectedImageRoll.AddImage(imagEntry);
     }
