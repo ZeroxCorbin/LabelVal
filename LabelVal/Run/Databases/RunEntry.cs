@@ -8,10 +8,11 @@ namespace LabelVal.Run.Databases;
 public partial class RunEntry : ObservableObject
 {
     public RunEntry() { }
-    public RunEntry(RunDatabase runDatabase, StandardsTypes gradingStandard, string productPart, string cameraMAC, int loops)
+    public RunEntry(RunDatabase runDatabase, StandardsTypes gradingStandard, GS1TableNames gS1TableNames, string productPart, string cameraMAC, int loops)
     {
         RunDatabase = runDatabase;
         this.gradingStandard = gradingStandard;
+        this.gs1TableName = gS1TableNames;
         this.productPart = productPart;
         this.cameraMAC = cameraMAC;
         this.loops = loops;
@@ -26,6 +27,7 @@ public partial class RunEntry : ObservableObject
 
     [SQLite.Ignore] public RunDatabase RunDatabase { get; set; }
     [ObservableProperty] private StandardsTypes gradingStandard;
+    [ObservableProperty] private GS1TableNames gs1TableName;
     [ObservableProperty] private string productPart;
     [ObservableProperty] private string cameraMAC;
     [ObservableProperty] private int loops;

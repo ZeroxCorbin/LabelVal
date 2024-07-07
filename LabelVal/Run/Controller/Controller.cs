@@ -37,7 +37,7 @@ public partial class Controller : ObservableObject
 
         LoopCount = loopCount;
 
-        RunEntry = new RunEntry(RunDatabase, ImageRollEntry.SelectedStandard, v275Node.Product.part, v275Node.Details.cameraMAC, LoopCount);
+        RunEntry = new RunEntry(RunDatabase, ImageRollEntry.SelectedStandard, ImageRollEntry.SelectedGS1Table, v275Node.Product.part, v275Node.Details.cameraMAC, LoopCount);
 
         if (!OpenDatabase() || !UpdateRunEntry())
             return false;

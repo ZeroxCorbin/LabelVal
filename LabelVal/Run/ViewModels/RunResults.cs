@@ -30,7 +30,7 @@ public partial class RunResults : ObservableRecipient, IRecipient<PropertyChange
 
             var current = SelectedRunEntry.RunDatabase.SelectCurrentImageResultGroup(stored.RunUID, stored.SourceImageUID);
             if (current != null)
-                ImageResultsList.Add(new RunResult(current, stored));
+                ImageResultsList.Add(new RunResult(current, stored, value));
             else
                 LogError($"CurrentImageResultGroup not found for {stored.RunUID} and {stored.SourceImageUID}");
         }

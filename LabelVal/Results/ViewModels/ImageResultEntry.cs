@@ -291,7 +291,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
                 else
                 {
                     V275Image = V275ResultRow.Stored;
-                    V275SectorsImageOverlay = V275CreateSectorsImageOverlay(V275ResultRow._Job, false, V275ResultRow._Report);
+                    V275SectorsImageOverlay = V275CreateSectorsImageOverlay(V275ResultRow._Job, false, V275ResultRow._Report, V275Image, V275StoredSectors);
                     IsV275ImageStored = true;
                 }
             }

@@ -1,0 +1,51 @@
+﻿<UserControl x:Class="LabelVal.Run.Views.RunResult"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:LabelVal.Run.Views"
+                xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+                
+                xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+                xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <DockPanel>
+
+        <DockPanel>
+            <GroupBox Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Stretch" 
+                  Style="{StaticResource MaterialDesignCardGroupBox}"
+                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                md:ColorZoneAssist.Mode="Custom">
+
+                <GroupBox.Header>
+                    <DockPanel Margin="-5">
+                        <!--Title-->
+                        <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Stretch" Padding="4,1">
+                            <TextBlock Text="{Binding SourceImage.Order}" MinWidth="26" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
+                                       HorizontalAlignment="Center"/>
+                        </md:Card>
+                    </DockPanel>
+                </GroupBox.Header>
+
+
+            </GroupBox>
+        </DockPanel>
+
+        <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto" 
+                      mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
+                      Style="{StaticResource MahApps.Styles.ScrollViewer}">
+            <DockPanel>
+
+                <local:RunResult_Images DataContext="{Binding }" DockPanel.Dock="Top"/>
+
+                <local:RunResult_V275 DataContext="{Binding }"/>
+
+                <local:RunResult_V5 DataContext="{Binding }"/>
+
+                <local:RunResult_L95xx DataContext="{Binding }"/>
+            </DockPanel>
+        </ScrollViewer>
+    </DockPanel>
+</UserControl>

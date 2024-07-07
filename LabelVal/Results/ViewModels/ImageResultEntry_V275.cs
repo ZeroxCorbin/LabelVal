@@ -82,9 +82,6 @@ public partial class ImageResultEntry
         List<Sectors.ViewModels.Sector> tempSectors = [];
         if (!string.IsNullOrEmpty(V275ResultRow.Report) && !string.IsNullOrEmpty(V275ResultRow.Template))
         {
-
-            V275SectorsImageOverlay = V275CreateSectorsImageOverlay(V275ResultRow._Job, false, V275ResultRow._Report);
-
             foreach (Job.Sector jSec in V275ResultRow._Job.sectors)
             {
                 foreach (JObject rSec in V275ResultRow._Report.inspectLabel.inspectSector)
@@ -111,6 +108,8 @@ public partial class ImageResultEntry
 
             foreach (Sectors.ViewModels.Sector sec in tempSectors)
                 V275StoredSectors.Add(sec);
+
+            V275SectorsImageOverlay = V275CreateSectorsImageOverlay(V275ResultRow._Job, false, V275ResultRow._Report, V275Image, V275StoredSectors);
         }
     }
     public async Task<bool> V275ReadTask(int repeat)
@@ -176,11 +175,11 @@ public partial class ImageResultEntry
 
             foreach (Sectors.ViewModels.Sector sec in tempSectors)
                 V275CurrentSectors.Add(sec);
+
+            V275SectorsImageOverlay = V275CreateSectorsImageOverlay(V275CurrentTemplate, true, V275CurrentReport, V275Image, V275CurrentSectors);
         }
 
         V275GetSectorDiff();
-
-        V275SectorsImageOverlay = V275CreateSectorsImageOverlay(V275CurrentTemplate, true, V275CurrentReport);
 
         return true;
     }
@@ -345,14 +344,14 @@ public partial class ImageResultEntry
 
     //    return geometryImage;
     //}
-    private DrawingImage V275CreateSectorsImageOverlay(Job template, bool isDetailed, Report report)
+    private DrawingImage V275CreateSectorsImageOverlay(Job template, bool isDetailed, Report report, ImageRolls.ViewModels.ImageEntry image, ObservableCollection<Sectors.ViewModels.Sector> sectors)
     {
         DrawingGroup drwGroup = new();
 
         //Draw the image outline the same size as the stored image
         GeometryDrawing border = new()
         {
-            Geometry = new RectangleGeometry(new Rect(0.5, 0.5, V275Image.Image.PixelWidth - 1, V275Image.Image.PixelHeight - 1)),
+            Geometry = new RectangleGeometry(new Rect(0.5, 0.5, image.Image.PixelWidth - 1, image.Image.PixelHeight - 1)),
             Pen = new Pen(Brushes.Transparent, 1)
         };
         drwGroup.Children.Add(border);
@@ -398,7 +397,7 @@ public partial class ImageResultEntry
         drwGroup.Children.Add(sectorCenters);
 
         if (isDetailed)
-            drwGroup.Children.Add(V275GetModuleGrid(template.sectors, V275StoredSectors));
+            drwGroup.Children.Add(V275GetModuleGrid(template.sectors, sectors));
 
         DrawingImage geometryImage = new(drwGroup);
         geometryImage.Freeze();
