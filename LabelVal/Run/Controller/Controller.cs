@@ -1,8 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Messaging;
-using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
-using LabelVal.ORM_Test;
 using LabelVal.Run.Databases;
 using LabelVal.V275.ViewModels;
 using Newtonsoft.Json;
@@ -15,9 +12,6 @@ namespace LabelVal.Run;
 
 public partial class Controller : ObservableObject
 {
-    public delegate void RunStateChangeDeletgate(RunStates state);
-    public event RunStateChangeDeletgate RunStateChange;
-
     [ObservableProperty] private RunStates state;
     [ObservableProperty] private RunStates requestedState;
 
@@ -34,7 +28,6 @@ public partial class Controller : ObservableObject
     public int CurrentLoopCount { get; private set; }
     public int CurrentLabelCount { get; private set; }
 
-
     public bool StartAsync(ObservableCollection<Results.ViewModels.ImageResultEntry> imageResultEntries, ImageRollEntry imageRollEntry, Node v275Node, int loopCount)
     {
         ImageRollEntry = imageRollEntry;
@@ -44,9 +37,9 @@ public partial class Controller : ObservableObject
 
         LoopCount = loopCount;
 
-        RunEntry = new RunEntry(ImageRollEntry.SelectedStandard, v275Node.Product.part, v275Node.Details.cameraMAC, LoopCount);
+        RunEntry = new RunEntry(RunDatabase, ImageRollEntry.SelectedStandard, v275Node.Product.part, v275Node.Details.cameraMAC, LoopCount);
 
-        if(!OpenDatabase() || !UpdateRunEntry() )
+        if (!OpenDatabase() || !UpdateRunEntry())
             return false;
 
         Task.Run(Start);
@@ -69,12 +62,12 @@ public partial class Controller : ObservableObject
         }
 
         RequestedState = UpdateRunState(RunStates.Running);
-        LogInfo($"Run: Loop Count {LoopCount}");
+        LogInfo($"Run: Loop Count {LoopCount.ToString()}");
 
-        var wasLoop = 0;
-        for (var i = 0; i < LoopCount; i++)
+        int wasLoop = 0;
+        for (int i = 0; i < LoopCount; i++)
         {
-            foreach (var ire in ImageResultEntries)
+            foreach (Results.ViewModels.ImageResultEntry ire in ImageResultEntries)
             {
                 if (ire.V275StoredSectors.Count == 0)
                 {
@@ -100,7 +93,11 @@ public partial class Controller : ObservableObject
                         CurrentLoopCount = 1;
 
                     wasLoop = CurrentLoopCount;
-                    LogInfo($"Run: Starting Loop {CurrentLoopCount}");
+
+                    RunEntry.CompletedLoops = CurrentLoopCount - 1;
+                    UpdateRunEntry();
+
+                    LogInfo($"Run: Starting Loop {CurrentLoopCount.ToString()}");
                 }
 
                 if (!ImageRollEntry.WriteSectorsBeforeProcess)
@@ -119,10 +116,13 @@ public partial class Controller : ObservableObject
                 CurrentLabelCount++;
 
                 //Start the V275 processing the image.
-                ire.V275ProcessCommand.Execute(null);
+                if (V275Node.IsSimulator)
+                    ire.V275ProcessCommand.Execute("v275Stored");
+                else
+                    ire.V275ProcessCommand.Execute("source");
 
                 //Wait for the V275 to finish processing the image or fault.
-                var start = DateTime.Now;
+                DateTime start = DateTime.Now;
                 while (ire.IsV275Working)
                 {
                     if (RequestedState != RunStates.Running)
@@ -134,7 +134,7 @@ public partial class Controller : ObservableObject
                         return UpdateRunState(RunStates.Error);
                     }
 
-                    if(ire.IsV275Faulted)
+                    if (ire.IsV275Faulted)
                     {
                         LogError("Run: Error when interacting with V275.");
                         return UpdateRunState(RunStates.Error);
@@ -143,8 +143,8 @@ public partial class Controller : ObservableObject
                     Thread.Sleep(1);
                 };
 
-                var stored = ire.GetStoredImageResultGroup(RunUID);
-                var current = ire.GetCurrentImageResultGroup(RunUID);
+                Results.Databases.StoredImageResultGroup stored = ire.GetStoredImageResultGroup(RunUID);
+                Results.Databases.CurrentImageResultGroup current = ire.GetCurrentImageResultGroup(RunUID);
 
                 if (stored == null || current == null)
                 {
@@ -157,15 +157,16 @@ public partial class Controller : ObservableObject
             }
         }
 
-        RunDatabase.Close();
+        RunEntry.EndTime = DateTime.Now.Ticks;
+
         return UpdateRunState(RunStates.Complete);
     }
 
     private static bool HasSequencing(Results.ViewModels.ImageResultEntry label)
     {
-        var template = JsonConvert.DeserializeObject<V275_REST_lib.Models.Job>(label.V275ResultRow.Template);
+        V275_REST_lib.Models.Job template = JsonConvert.DeserializeObject<V275_REST_lib.Models.Job>(label.V275ResultRow.Template);
 
-        foreach (var sect in template.sectors)
+        foreach (V275_REST_lib.Models.Job.Sector sect in template.sectors)
         {
             if (sect.matchSettings != null)
                 if (sect.matchSettings.matchMode is >= 3 and <= 6)
@@ -185,12 +186,14 @@ public partial class Controller : ObservableObject
 
     private RunStates UpdateRunState(RunStates state)
     {
-        if (state == RunStates.Error)
+        if (state is RunStates.Complete or RunStates.Stopped or RunStates.Error)
+        {
             _ = CurrentLabelCount != 0 ? UpdateRunEntry() : RemoveRunEntry();
+            RunDatabase?.Close();
+        }
 
-        LogInfo($"Run: State Changed to {state}");
-
-        RunStateChange?.Invoke(State = state);
+        LogInfo($"Run: State Changed to {state.ToString()}");
+        State = state;
         RunEntry.State = state;
         return state;
     }

@@ -56,7 +56,7 @@
 
         <DockPanel>
             <local:RunDatabases DataContext="{Binding RunDatabases}"/>
-
+            <local:RunResults DataContext="{Binding RunResults}"/>
         </DockPanel>
         
         

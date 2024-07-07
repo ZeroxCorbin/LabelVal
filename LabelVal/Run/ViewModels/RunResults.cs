@@ -7,12 +7,11 @@ using System;
 using System.Collections.ObjectModel;
 
 namespace LabelVal.Run.ViewModels;
-public partial class RunResults : ObservableRecipient, IRecipient<PropertyChangedMessage<RunEntry>>, IRecipient<PropertyChangedMessage<RunDatabase>>
+public partial class RunResults : ObservableRecipient, IRecipient<PropertyChangedMessage<RunEntry>>
 {
     ObservableCollection<RunResult> ImageResultsList { get; } = [];
 
     [ObservableProperty] private RunEntry selectedRunEntry;
-    [ObservableProperty] private RunDatabase selectedDatabase;
 
     public RunResults() => IsActive = true;
 
@@ -23,13 +22,13 @@ public partial class RunResults : ObservableRecipient, IRecipient<PropertyChange
         ImageResultsList.Clear();
 
         if (value == null) return;
-        if (SelectedDatabase == null) return;
+        if (SelectedRunEntry == null) return;
 
-        foreach (var stored in SelectedDatabase.SelectAllStoredImageResultGroups(value.UID))
+        foreach (var stored in SelectedRunEntry.RunDatabase.SelectAllStoredImageResultGroups(value.UID))
         {
             LogDebug($"Loading StoredImageResultGroup {stored.RunUID} {stored.SourceImageUID}");
 
-            var current = SelectedDatabase.SelectCurrentImageResultGroup(stored.RunUID, stored.SourceImageUID);
+            var current = SelectedRunEntry.RunDatabase.SelectCurrentImageResultGroup(stored.RunUID, stored.SourceImageUID);
             if (current != null)
                 ImageResultsList.Add(new RunResult(current, stored));
             else
@@ -40,7 +39,6 @@ public partial class RunResults : ObservableRecipient, IRecipient<PropertyChange
 
     #region Recieve Messages
     public void Receive(PropertyChangedMessage<RunEntry> message) => SelectedRunEntry = message.NewValue;
-    public void Receive(PropertyChangedMessage<RunDatabase> message) => SelectedDatabase = message.NewValue;
     #endregion
 
     #region Logging

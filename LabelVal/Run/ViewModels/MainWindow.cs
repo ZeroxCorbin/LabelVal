@@ -10,7 +10,7 @@ public partial class MainWindow : ObservableRecipient
     public static string Version => App.Version;
 
     public RunDatabases RunDatabases { get; set; } = new();
-    public RunResult ImageResults { get; set; } = new();
+    public RunResults RunResults { get; set; } = new();
 
     public RingBufferCollection<SystemMessages.StatusMessage> SystemMessages_InfoDebug { get; } = new RingBufferCollection<SystemMessages.StatusMessage>(30);
     public RingBufferCollection<SystemMessages.StatusMessage> SystemMessages_ErrorWarning { get; } = new RingBufferCollection<SystemMessages.StatusMessage>(10);

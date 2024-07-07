@@ -118,7 +118,9 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
             RunUID = runUID,
             ImageRollUID = RollUID,
             SourceImageUID = ImageUID,
+
             SourceImage = JsonConvert.SerializeObject(SourceImage),
+
             Report = JsonConvert.SerializeObject(L95xxStoredSectors.Select(x => new L95xxReport() { Report = x.L95xxPacket, Template = x.Template }).ToList()),
         },
     };

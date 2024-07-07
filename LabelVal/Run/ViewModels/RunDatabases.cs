@@ -7,10 +7,9 @@ namespace LabelVal.Run.ViewModels;
 public partial class RunDatabases : ObservableRecipient
 {
     public ObservableCollection<RunDatabase> RunDatabasesList { get; } = [];
-    [ObservableProperty][NotifyPropertyChangedRecipients] private RunDatabase selectedRunDatabase;
-
     public ObservableCollection<RunEntry> RunEntriesList { get; } = [];
     [ObservableProperty][NotifyPropertyChangedRecipients] private RunEntry selectedRunEntry;
+    partial void OnSelectedRunEntryChanged(RunEntry value) { }
 
     public RunDatabases() { IsActive = true; RefreshAll(); }
 
@@ -28,7 +27,10 @@ public partial class RunDatabases : ObservableRecipient
         RunEntriesList.Clear();
         foreach (RunDatabase runDatabase in RunDatabasesList)
             foreach (RunEntry runEntry in runDatabase.SelectAllRunEntries())
+            {
+                runEntry.RunDatabase = runDatabase;
                 RunEntriesList.Add(runEntry);
+            }
     }
 
     [RelayCommand]

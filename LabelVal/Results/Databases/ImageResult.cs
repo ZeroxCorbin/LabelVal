@@ -17,18 +17,18 @@ public partial class ImageResult : ObservableObject
     [ObservableProperty] private string template;
     [ObservableProperty] private string report;
 
-    [SQLite.Ignore] public ImageEntry Source => JsonConvert.DeserializeObject<ImageEntry>(SourceImage);
-    [SQLite.Ignore] public ImageEntry Stored => JsonConvert.DeserializeObject<ImageEntry>(StoredImage);
+    [SQLite.Ignore] public ImageEntry Source => !string.IsNullOrEmpty(SourceImage) ? JsonConvert.DeserializeObject<ImageEntry>(SourceImage) : null;
+    [SQLite.Ignore] public ImageEntry Stored => !string.IsNullOrEmpty(StoredImage) ? JsonConvert.DeserializeObject<ImageEntry>(StoredImage) : null;
 }
 public class V275Result : ImageResult
 {
-    [SQLite.Ignore] public Job _Job => JsonConvert.DeserializeObject<Job>(Template);
-    [SQLite.Ignore] public Report _Report => JsonConvert.DeserializeObject<Report>(Report);
+    [SQLite.Ignore] public Job _Job => !string.IsNullOrEmpty(Template) ? JsonConvert.DeserializeObject<Job>(Template) : null;
+    [SQLite.Ignore] public Report _Report => !string.IsNullOrEmpty(Report) ? JsonConvert.DeserializeObject<Report>(Report): null;
 }
 public class V5Result : ImageResult
 {
-    [SQLite.Ignore] public JObject _Config => JsonConvert.DeserializeObject<JObject>(Template);
-    [SQLite.Ignore] public JObject _Report => JsonConvert.DeserializeObject<JObject>(Report);
+    [SQLite.Ignore] public JObject _Config => !string.IsNullOrEmpty(Template) ? JsonConvert.DeserializeObject<JObject>(Template) : null;
+    [SQLite.Ignore] public JObject _Report => !string.IsNullOrEmpty(Report) ? JsonConvert.DeserializeObject<JObject>(Report) : null;
 }
 
 public class L95xxResult : ImageResult { }

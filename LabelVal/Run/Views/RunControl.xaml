@@ -45,8 +45,8 @@
                                 <DataTrigger Value="False" Binding="{Binding SelectedNode.IsLoggedIn_Control}">
                                     <Setter Property="IsEnabled" Value="False"/>
                                 </DataTrigger>
-                                
-                                <DataTrigger Value="Running" Binding="{Binding State}">
+
+                                <DataTrigger Value="Running" Binding="{Binding RunController.State}">
                                     <Setter Property="Content">
                                         <Setter.Value>
                                             <iconPacks:PackIconMaterial Kind="Stop" Height="14" Width="14"/>
@@ -64,7 +64,7 @@
                         <Style TargetType="{x:Type mah:ProgressRing}">
                             <Setter Property="IsActive" Value="False"/>
                             <Style.Triggers>
-                                <DataTrigger Value="Running" Binding="{Binding State}">
+                                <DataTrigger Value="Running" Binding="{Binding RunController.State}">
                                     <Setter Property="IsActive" Value="True"/>
                                 </DataTrigger>
                             </Style.Triggers>

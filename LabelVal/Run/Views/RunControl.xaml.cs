@@ -8,30 +8,26 @@ namespace LabelVal.Run.Views;
 /// </summary>
 public partial class RunControl : UserControl
 {
-    //private Run.Views.Run win;
+    private Run.Views.MainWindow RunWindow;
 
     public RunControl() => InitializeComponent();
 
     private void Button_Click(object sender, RoutedEventArgs e)
     {
-        //if (win != null)
-        //{
-        //    win.BringIntoView();
-        //    return;
-        //}
+        if (RunWindow != null)
+        {
+            RunWindow.BringIntoView();
+            return;
+        }
 
-        //win = new Run.Views.Run();
-        //win.Closed += Win_Closed;
-        //win.Show();
-
+        RunWindow = new Run.Views.MainWindow();
+        RunWindow.Closed += Win_Closed;
+        RunWindow.Show();
     }
 
     private void Win_Closed(object sender, EventArgs e)
     {
-        //((Run.Views.Run)sender).Closed -= Win_Closed;
-
-        //win = null;
-
-        //GC.Collect();
+        ((Run.Views.MainWindow)sender).Closed -= Win_Closed;
+        RunWindow = null;
     }
 }
