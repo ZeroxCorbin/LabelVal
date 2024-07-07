@@ -39,7 +39,7 @@ public partial class ImageResults : ObservableRecipient,
         public int RepeatNumber { get; set; } = -1;
     }
 
-    public RunControl RunControl { get; } = new RunControl();
+    public RunControl RunControl { get; }
 
     private int PrintCount => App.Settings.GetValue<int>(nameof(PrintCount));
     private int LoopCount => App.Settings.GetValue(nameof(LoopCount), 1);
@@ -70,7 +70,7 @@ public partial class ImageResults : ObservableRecipient,
 
     private Dictionary<int, V275Repeat> TempV275Repeat { get; } = [];
 
-    public ImageResults() => IsActive = true;
+    public ImageResults() { RunControl = new RunControl(this); IsActive = true; }
 
     public void ClearImageResultsList()
     {

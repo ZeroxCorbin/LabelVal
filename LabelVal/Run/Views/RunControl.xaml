@@ -30,12 +30,11 @@
 
                 <mah:NumericUpDown Value="{Binding LoopCount}" Minimum="1" Maximum="9999" Interval="1"/>
 
-                <Button Margin="3,0">
+                <Button Margin="3,0" Command="{Binding StartStopCommand}">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                             <Setter Property="IsEnabled" Value="True"/>
-
-                            <Setter Property="Command" Value="{Binding StartRunCommand}"/>
+                            
                             <Setter Property="Content">
                                 <Setter.Value>
                                     <iconPacks:PackIconMaterial Kind="Play" Height="14" Width="14"/>
@@ -47,23 +46,14 @@
                                     <Setter Property="IsEnabled" Value="False"/>
                                 </DataTrigger>
                                 
-                                <DataTrigger Value="RUNNING" Binding="{Binding State}">
-                                    <Setter Property="Command" Value="{Binding StopRunCommand}"/>
+                                <DataTrigger Value="Running" Binding="{Binding State}">
                                     <Setter Property="Content">
                                         <Setter.Value>
-                                            <iconPacks:PackIconMaterial Kind="Pause" Height="14" Width="14"/>
+                                            <iconPacks:PackIconMaterial Kind="Stop" Height="14" Width="14"/>
                                         </Setter.Value>
                                     </Setter>  
                                 </DataTrigger>
-                                
-                                <DataTrigger Value="PAUSED" Binding="{Binding State}">
-                                    <Setter Property="Command" Value="{Binding PauseRunCommand}"/>
-                                    <Setter Property="Content">
-                                        <Setter.Value>
-                                            <iconPacks:PackIconMaterial Kind="Play" Height="14" Width="14"/>
-                                        </Setter.Value>
-                                    </Setter>
-                                </DataTrigger>
+
                             </Style.Triggers>
                         </Style>
                     </Button.Style>
@@ -74,7 +64,7 @@
                         <Style TargetType="{x:Type mah:ProgressRing}">
                             <Setter Property="IsActive" Value="False"/>
                             <Style.Triggers>
-                                <DataTrigger Value="RUNNING" Binding="{Binding State}">
+                                <DataTrigger Value="Running" Binding="{Binding State}">
                                     <Setter Property="IsActive" Value="True"/>
                                 </DataTrigger>
                             </Style.Triggers>

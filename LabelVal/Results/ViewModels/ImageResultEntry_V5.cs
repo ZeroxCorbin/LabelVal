@@ -135,7 +135,7 @@ public partial class ImageResultEntry
 
         if (!ImageResults.SelectedScanner.IsSimulator)
         {
-            V5Image = new ImageEntry(ImageResults.SelectedImageRoll.UID, triggerResults.FullImage, 600);
+            V5Image = new ImageEntry(RollUID, triggerResults.FullImage, 600);
             //ImageUtilities.ConvertToPng(triggerResults.FullImage);
             IsV5ImageStored = false;
         }
@@ -179,7 +179,7 @@ public partial class ImageResultEntry
 
     private void V5GetStored()
     {
-        V5ResultRow = SelectedDatabase.Select_V5Result(ImageResults.SelectedImageRoll.UID, SourceImage.UID);
+        V5ResultRow = SelectedDatabase.Select_V5Result(RollUID, ImageUID);
 
         if (V5ResultRow == null)
         {

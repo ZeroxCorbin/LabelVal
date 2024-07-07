@@ -187,7 +187,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             return;
         }
 
-        var jb = Jobs.FirstOrDefault((e) => e.jobName == jobName);
+        var jb = Jobs.FirstOrDefault((e) => e.jobName == JobName);
 
         if (jb != null)
         {
@@ -702,7 +702,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     private bool running;
     private bool stop;
     [RelayCommand]
-    private async void Trigger()
+    private async Task Trigger()
     {
         if (running == true)
         {

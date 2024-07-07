@@ -27,7 +27,7 @@ public partial class ImageEntry : ObservableRecipient//, IRecipient<PrinterMessa
 
     [ObservableProperty][property: JsonProperty] public int order = -1;
     [JsonProperty] public bool IsPlaceholder { get; set; }
-    public bool IsNew { get; set; }
+    [property: SQLite.Ignore] public bool IsNew { get; set; }
 
     [JsonProperty] public string Path { get; set; }
     [JsonProperty] public string Comment { get; set; }

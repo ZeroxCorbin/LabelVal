@@ -70,7 +70,7 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
             return;
         }
 
-        var jb = Jobs.jobs.FirstOrDefault((e) => e.name == jobName);
+        var jb = Jobs.jobs.FirstOrDefault((e) => e.name == JobName);
 
         if (jb != null)
         {

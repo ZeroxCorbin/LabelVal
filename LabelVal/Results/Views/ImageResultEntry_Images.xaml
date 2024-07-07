@@ -174,8 +174,8 @@
 
                     <DockPanel HorizontalAlignment="Right">
 
-                        <TextBlock VerticalAlignment="Center" Text="{Binding SourceImage.UID, Converter={StaticResource shortenUID}}" 
-                                   ToolTip="{Binding SourceImage.UID}"/>
+                        <TextBlock VerticalAlignment="Center" Text="{Binding ImageUID, Converter={StaticResource shortenUID}}" 
+                                   ToolTip="{Binding ImageUID}"/>
 
                         <Button Click="btnShowDetailsToggle">
 

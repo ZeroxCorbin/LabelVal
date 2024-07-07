@@ -1,90 +1,81 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Security.Permissions;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace LabelVal.Simulator
+namespace LabelVal.Simulator;
+
+internal class SimulatorFileHandler
 {
-    internal class SimulatorFileHandler
+    public string SimulatorImageDirectory => App.Settings.GetValue<string>(nameof(SimulatorImageDirectory));
+
+    public bool SimulatorImageDirectoryExists => Directory.Exists(SimulatorImageDirectory);
+
+    public List<string> Images { get; set; } = [];
+
+    public bool HasImages { get { UpdateImageList(); return Images.Count > 0; } }
+
+    public void UpdateImageList()
     {
-        public string SimulatorImageDirectory => App.Settings.GetValue<string>(nameof(SimulatorImageDirectory));
+        Images.Clear();
 
-        public bool SimulatorImageDirectoryExists => Directory.Exists(SimulatorImageDirectory);
-
-        public List<string> Images { get; set; } = new List<string>();
-
-        public bool HasImages { get { UpdateImageList(); return Images.Count > 0; } }
-
-        public void UpdateImageList()
+        if (SimulatorImageDirectoryExists)
         {
-            Images.Clear();
-
-            if (SimulatorImageDirectoryExists)
+            foreach (string file in Directory.GetFiles(SimulatorImageDirectory))
             {
-                foreach (string file in Directory.GetFiles(SimulatorImageDirectory))
-                {
-                    string ext = Path.GetExtension(file);
+                string ext = Path.GetExtension(file);
 
-                    if (ext.Equals(".bmp") ||
-                        ext.Equals(".png") ||
-                        ext.Equals(".tif") ||
-                        ext.Equals(".tiff") ||
-                        ext.Equals(".jpg") ||
-                        ext.Equals(".webp"))
+                if (ext.Equals(".bmp") ||
+                    ext.Equals(".png") ||
+                    ext.Equals(".tif") ||
+                    ext.Equals(".tiff") ||
+                    ext.Equals(".jpg") ||
+                    ext.Equals(".webp"))
 
-                        Images.Add(file);
-                }
+                    Images.Add(file);
             }
-
         }
+    }
 
-        public bool DeleteAllImages()
+    public bool DeleteAllImages()
+    {
+        if (!HasImages)
+            return true;
+
+        bool ok = true;
+        foreach (string file in Images)
         {
-            if (HasImages)
+            try
             {
-                bool ok = true;
-                foreach (string file in Images)
-                {
-                    try
-                    {
-                        File.Delete(file);
-                    }
-                    catch (Exception ex)
-                    {
-                        ok = false;
-                    }
-                }
-                return ok;
+                File.Delete(file);
             }
+            catch
+            {
+                ok = false;
+            }
+        }
+        return ok;
+    }
+
+    public bool CopyImage(string file, string prepend)
+    {
+
+        if (SimulatorImageDirectoryExists)
+        {
+            File.Copy(file, Path.Combine(SimulatorImageDirectory, prepend + Path.GetFileName(file)));
             return true;
         }
+        else
+            return false;
+    }
 
-        public bool CopyImage(string file, string prepend)
+    public bool SaveImage(string fileName, byte[] imageData)
+    {
+
+        if (SimulatorImageDirectoryExists)
         {
-
-            if (SimulatorImageDirectoryExists)
-            {
-                File.Copy(file, Path.Combine(SimulatorImageDirectory, prepend + Path.GetFileName(file)));
-                return true;
-            }
-            else
-                return false;
+            File.WriteAllBytes(Path.Combine(SimulatorImageDirectory, fileName), imageData);
+            return true;
         }
-
-        public bool SaveImage(string fileName, byte[] imageData)
-        {
-
-            if (SimulatorImageDirectoryExists)
-            {
-                File.WriteAllBytes(Path.Combine(SimulatorImageDirectory, fileName), imageData);
-                return true;
-            }
-            else
-                return false;
-        }
+        else
+            return false;
     }
 }

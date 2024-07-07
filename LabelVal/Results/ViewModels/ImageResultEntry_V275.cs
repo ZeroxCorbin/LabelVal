@@ -58,7 +58,7 @@ public partial class ImageResultEntry
 
     private void V275GetStored()
     {
-        V275ResultRow = SelectedDatabase.Select_V275Result(ImageResults.SelectedImageRoll.UID, SourceImage.UID);
+        V275ResultRow = SelectedDatabase.Select_V275Result(RollUID, ImageUID);
 
         if (V275ResultRow == null)
         {
@@ -139,7 +139,7 @@ public partial class ImageResultEntry
         {
             int dpi = 600;// SelectedPrinter.PrinterName.Contains("ZT620") ? 300 : 600;
             ImageUtilities.SetBitmapDPI(report.image, dpi);
-            V275Image = new ImageEntry(ImageResults.SelectedImageRoll.UID, report.image, dpi);//ImageUtilities.ConvertToPng(report.image, 600);
+            V275Image = new ImageEntry(RollUID, report.image, dpi);//ImageUtilities.ConvertToPng(report.image, 600);
             IsV275ImageStored = false;
         }
         else

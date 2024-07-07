@@ -68,7 +68,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
 
     private void L95xxGetStored()
     {
-        L95xxResultRow = SelectedDatabase.Select_L95xxResult(ImageResults.SelectedImageRoll.UID, SourceImage.UID);
+        L95xxResultRow = SelectedDatabase.Select_L95xxResult(RollUID, ImageUID);
 
         if (L95xxResultRow == null)
         {

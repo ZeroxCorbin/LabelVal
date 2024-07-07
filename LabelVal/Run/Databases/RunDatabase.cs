@@ -13,7 +13,7 @@ public partial class RunDatabase : IDisposable
     private SQLiteConnection Connection { get; set; } = null;
 
     public RunDatabase() { }
-    public RunDatabase(string dbFilePath) { _ = Open(dbFilePath); }
+    public RunDatabase(string dbFilePath) => Open(dbFilePath);
     public RunDatabase Open(string dbFilePath)
     {
         Logger.Info("Opening Database: {file}", dbFilePath);

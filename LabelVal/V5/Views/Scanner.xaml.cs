@@ -73,7 +73,7 @@ public partial class Scanner : UserControl
             {
                 System.IO.File.WriteAllBytes(path, ((ViewModels.Scanner)DataContext).RawImage);
             }
-            catch (Exception ex) { }
+            catch (Exception ex) { LogError(ex); }
         }
     }
 
@@ -98,4 +98,14 @@ public partial class Scanner : UserControl
     //    CodeType = ((Scanner)DataContext).Results[0]["type"].ToString();
     //    ExpectedOutDataUTF8 = ((Scanner)DataContext).Results[0]["dataUTF8"].ToString();
     //}
+
+    #region Logging
+    private readonly Logging.Logger logger = new();
+    public void LogInfo(string message) => logger.LogInfo(this.GetType(), message);
+    public void LogDebug(string message) => logger.LogDebug(this.GetType(), message);
+    public void LogWarning(string message) => logger.LogInfo(this.GetType(), message);
+    public void LogError(string message) => logger.LogError(this.GetType(), message);
+    public void LogError(Exception ex) => logger.LogError(this.GetType(), ex);
+    public void LogError(string message, Exception ex) => logger.LogError(this.GetType(), message, ex);
+    #endregion
 }

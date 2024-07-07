@@ -33,8 +33,8 @@ public partial class ScannerManager : ObservableRecipient
     [RelayCommand]
     private void Save()
     {
-        if(newScanner != null)
-            Scanners.Add(newScanner);
+        if(NewScanner != null)
+            Scanners.Add(NewScanner);
 
         NewScanner = null;
 

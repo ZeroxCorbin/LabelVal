@@ -193,7 +193,7 @@ public partial class App : Application
 
         if (shutdown)
         {
-            _ = MessageBox.Show($"{message}\r\n{exception.Message}", "Unhandled Exception!", MessageBoxButton.OK);
+             _ = MessageBox.Show($"{message}\r\n{exception.Message}", "Unhandled Exception!", MessageBoxButton.OK);
             Current.Dispatcher.Invoke(Shutdown);
         }
         else

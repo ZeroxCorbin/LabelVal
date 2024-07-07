@@ -36,6 +36,9 @@ namespace LabelVal.Main.ViewModels
         public V5.ViewModels.ScannerManager ScannerManager { get; }
         public V5.ViewModels.ScannerDetails ScannerDetails { get; }
 
+        public Run.ViewModels.RunControl RunControl { get; }
+
+
         public LVS_95xx.ViewModels.VerifierManager VerifierManager { get; }
 
         public Results.ViewModels.ImageResultsDatabases ImageResultsDatabases { get; }
