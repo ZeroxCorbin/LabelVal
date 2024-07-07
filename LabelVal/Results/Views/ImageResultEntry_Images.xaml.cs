@@ -30,13 +30,13 @@ public partial class ImageResultEntry_Images : UserControl
     private void V275Image_MouseDown(object sender, MouseButtonEventArgs e)
     {
         if (e.LeftButton == MouseButtonState.Pressed)
-            _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).V275Image, ((ViewModels.ImageResultEntry)DataContext).V275SectorsImageOverlay);
+            _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).V275Image, ((ViewModels.ImageResultEntry)DataContext).V275ImageOverlay);
     }
 
     private void V5Image_MouseDown(object sender, MouseButtonEventArgs e)
     {
         if (e.LeftButton == MouseButtonState.Pressed)
-            _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).V5Image, ((ViewModels.ImageResultEntry)DataContext).V5SectorsImageOverlay);
+            _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).V5Image, ((ViewModels.ImageResultEntry)DataContext).V5ImageOverlay);
     }
 
     //private void L95xxImage_MouseDown(object sender, MouseButtonEventArgs e)

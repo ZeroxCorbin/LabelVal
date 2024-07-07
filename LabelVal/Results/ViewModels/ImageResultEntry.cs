@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Main.ViewModels;
 using LabelVal.Results.Databases;
+using LabelVal.Run.ViewModels;
 using LabelVal.Utilities;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
@@ -22,7 +23,7 @@ using System.Windows.Media;
 
 namespace LabelVal.Results.ViewModels;
 
-public partial class ImageResultEntry : ObservableRecipient, IRecipient<PropertyChangedMessage<Databases.ImageResultsDatabase>>, IRecipient<PropertyChangedMessage<PrinterSettings>>
+public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, IRecipient<PropertyChangedMessage<Databases.ImageResultsDatabase>>, IRecipient<PropertyChangedMessage<PrinterSettings>>
 {
     public delegate void BringIntoViewDelegate();
     public event BringIntoViewDelegate BringIntoView;
@@ -281,7 +282,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
             if (V275ResultRow == null)
             {
                 V275Image = null;
-                V275SectorsImageOverlay = null;
+                V275ImageOverlay = null;
                 IsV275ImageStored = false;
             }
             else
@@ -291,7 +292,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
                 else
                 {
                     V275Image = V275ResultRow.Stored;
-                    V275SectorsImageOverlay = V275CreateSectorsImageOverlay(V275ResultRow._Job, false, V275ResultRow._Report, V275Image, V275StoredSectors);
+                    V275ImageOverlay = V275CreateSectorsImageOverlay(V275ResultRow._Job, false, V275ResultRow._Report, V275Image, V275StoredSectors);
                     IsV275ImageStored = true;
                 }
             }
@@ -308,7 +309,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
             if (V5ResultRow == null)
             {
                 V5Image = null;
-                V5SectorsImageOverlay = null;
+                V5ImageOverlay = null;
                 IsV5ImageStored = false;
             }
             else
@@ -318,7 +319,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
                 else
                 {
                     V5Image = V5ResultRow.Stored;
-                    V5SectorsImageOverlay = V5CreateSectorsImageOverlay(V5ResultRow._Report);
+                    V5ImageOverlay = V5CreateSectorsImageOverlay(V5ResultRow._Report);
                     IsV5ImageStored = true;
                 }
             }

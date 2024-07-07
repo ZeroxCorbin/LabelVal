@@ -9,7 +9,7 @@
                 xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                 xmlns:main="clr-namespace:LabelVal.Main.Views"
                 d:DataContext="{d:DesignInstance Type=viewModels:MainWindow}"
-                mc:Ignorable="d">
+                mc:Ignorable="d" SaveWindowPosition="True" Width="auto" Height="auto" >
 
     <mah:MetroWindow.Title>
         <MultiBinding StringFormat="Label Validator : {0}">

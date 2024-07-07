@@ -8,7 +8,8 @@
                 
                 xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                 xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-             
+             xmlns:viewModels="clr-namespace:LabelVal.Run.ViewModels"
+              d:DataContext="{d:DesignInstance Type=viewModels:RunResult}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <DockPanel>
@@ -23,7 +24,7 @@
                     <DockPanel Margin="-5">
                         <!--Title-->
                         <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Stretch" Padding="4,1">
-                            <TextBlock Text="{Binding SourceImage.Order}" MinWidth="26" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
+                            <TextBlock Text="{Binding V275SourceImage.Order}" MinWidth="26" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
                                        HorizontalAlignment="Center"/>
                         </md:Card>
                     </DockPanel>

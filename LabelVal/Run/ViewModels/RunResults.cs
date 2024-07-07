@@ -9,7 +9,7 @@ using System.Collections.ObjectModel;
 namespace LabelVal.Run.ViewModels;
 public partial class RunResults : ObservableRecipient, IRecipient<PropertyChangedMessage<RunEntry>>
 {
-    ObservableCollection<RunResult> ImageResultsList { get; } = [];
+    public ObservableCollection<RunResult> ImageResultsList { get; } = [];
 
     [ObservableProperty] private RunEntry selectedRunEntry;
 

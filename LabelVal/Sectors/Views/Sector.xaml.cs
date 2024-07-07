@@ -8,11 +8,14 @@ namespace LabelVal.Sectors.Views;
 
 public partial class Sector : UserControl
 {
-    private Results.ViewModels.ImageResultEntry ImageResultEntry { get; set; }
+
     private ViewModels.Sector ThisSector { get; set; }
     public string SectorName => ThisSector.Template.Username;
     public System.Drawing.Point SectorCenterPoint => ThisSector.Template.CenterPoint;
     public string GroupName { get; private set; }
+
+
+    private Results.ViewModels.IImageResultEntry ImageResultEntry { get; set; }
 
     public bool IsSectorFocused => GroupName switch
     {
@@ -43,7 +46,7 @@ public partial class Sector : UserControl
         if (list != null)
         {
             GroupName = list.Tag.ToString();
-            ImageResultEntry = (Results.ViewModels.ImageResultEntry)list.DataContext;
+            ImageResultEntry = (Results.ViewModels.IImageResultEntry)list.DataContext;
         }
         else
         {
@@ -51,7 +54,7 @@ public partial class Sector : UserControl
             if (itmc != null)
             {
                 GroupName = itmc.Tag.ToString();
-                ImageResultEntry = (Results.ViewModels.ImageResultEntry)itmc.DataContext;
+                ImageResultEntry = (Results.ViewModels.IImageResultEntry)itmc.DataContext;
             }
         }
     }
@@ -158,15 +161,16 @@ public partial class Sector : UserControl
 
         }
 
-        foreach (var s in sectors)
-        {
-            if (s.GroupName == targetGroup && s.SectorName == SectorName)
+        if(sectors != null)
+            foreach (var s in sectors)
             {
-                if (!s.IsSectorFocused)
-                    s.ShowSectorDetails();
-                break;
+                if (s.GroupName == targetGroup && s.SectorName == SectorName)
+                {
+                    if (!s.IsSectorFocused)
+                        s.ShowSectorDetails();
+                    break;
+                }
             }
-        }
     }
 
 

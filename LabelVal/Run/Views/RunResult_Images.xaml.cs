@@ -23,4 +23,39 @@ public partial class RunResult_Images : UserControl
     {
         InitializeComponent();
     }
+
+    private void btnShowDetailsToggle(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void btnShowPrinterAreaOverSourceToggle(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void V275CurrentImage_MouseDown(object sender, MouseButtonEventArgs e)
+    {
+
+    }
+
+    private void V275StoredImage_MouseDown(object sender, MouseButtonEventArgs e)
+    {
+
+    }
+
+    private void V5CurrentImage_MouseDown(object sender, MouseButtonEventArgs e)
+    {
+
+    }
+
+    private void V5StoredImage_MouseDown(object sender, MouseButtonEventArgs e)
+    {
+
+    }
+
+    private void SourceImage_MouseDown(object sender, MouseButtonEventArgs e)
+    {
+
+    }
 }

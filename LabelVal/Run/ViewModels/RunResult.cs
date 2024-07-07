@@ -3,24 +3,24 @@ using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Results.Databases;
+using LabelVal.Results.ViewModels;
 using LabelVal.Run.Databases;
+using LabelVal.Utilities;
 using MahApps.Metro.Controls.Dialogs;
-using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing.Printing;
-using System.Threading.Tasks;
-using System.Windows.Media;
-using System.Windows;
 using System.Linq;
-using LabelVal.Utilities;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media;
 using V275_REST_lib.Models;
 
 namespace LabelVal.Run.ViewModels;
-public partial class RunResult : ObservableRecipient,
-    IRecipient<PropertyChangedMessage<PrinterSettings>>
+public partial class RunResult : ObservableRecipient, IImageResultEntry, IRecipient<PropertyChangedMessage<PrinterSettings>>
 {
 
     [ObservableProperty] private ObservableCollection<Sectors.ViewModels.Sector> v275CurrentSectors = [];
@@ -29,20 +29,39 @@ public partial class RunResult : ObservableRecipient,
     [ObservableProperty] private Sectors.ViewModels.Sector v275FocusedStoredSector = null;
     [ObservableProperty] private Sectors.ViewModels.Sector v275FocusedCurrentSector = null;
 
-    [ObservableProperty] private ImageRolls.ViewModels.ImageEntry v275SourceImage;
+    [ObservableProperty] private ImageRolls.ViewModels.ImageEntry sourceImage;
     [ObservableProperty] private ImageRolls.ViewModels.ImageEntry v275CurrentImage;
     [ObservableProperty] private ImageRolls.ViewModels.ImageEntry v275StoredImage;
 
-    [ObservableProperty] private System.Windows.Media.DrawingImage v275CurrentSectorsImageOverlay;
-    [ObservableProperty] private System.Windows.Media.DrawingImage v275StoredSectorsImageOverlay;
+    [ObservableProperty] private System.Windows.Media.DrawingImage v275CurrentImageOverlay;
+    [ObservableProperty] private System.Windows.Media.DrawingImage v275StoredImageOverlay;
+
+    [ObservableProperty] private ObservableCollection<Sectors.ViewModels.Sector> v5CurrentSectors = [];
+    [ObservableProperty] private ObservableCollection<Sectors.ViewModels.Sector> v5StoredSectors = [];
+    [ObservableProperty] private ObservableCollection<Sectors.ViewModels.SectorDifferences> v5DiffSectors = [];
+    [ObservableProperty] private Sectors.ViewModels.Sector v5FocusedStoredSector = null;
+    [ObservableProperty] private Sectors.ViewModels.Sector v5FocusedCurrentSector = null;
+
+    [ObservableProperty] private ImageRolls.ViewModels.ImageEntry v5SourceImage;
+    [ObservableProperty] private ImageRolls.ViewModels.ImageEntry v5CurrentImage;
+    [ObservableProperty] private ImageRolls.ViewModels.ImageEntry v5StoredImage;
+
+    [ObservableProperty] private System.Windows.Media.DrawingImage v5CurrentImageOverlay;
+    [ObservableProperty] private System.Windows.Media.DrawingImage v5StoredImageOverlay;
+
+    [ObservableProperty] private ObservableCollection<Sectors.ViewModels.Sector> l95xxCurrentSectors = [];
+    [ObservableProperty] private ObservableCollection<Sectors.ViewModels.Sector> l95xxStoredSectors = [];
+    [ObservableProperty] private ObservableCollection<Sectors.ViewModels.SectorDifferences> l95xxDiffSectors = [];
+    [ObservableProperty] private Sectors.ViewModels.Sector l95xxFocusedStoredSector = null;
+    [ObservableProperty] private Sectors.ViewModels.Sector l95xxFocusedCurrentSector = null;
 
     public RunEntry RunEntry { get; }
 
     private int PrintCount => App.Settings.GetValue<int>(nameof(PrintCount));
     private int LoopCount => App.Settings.GetValue(nameof(LoopCount), 1);
 
-    public CurrentImageResultGroup CurrentImageResultGroup { get; } 
-    public StoredImageResultGroup StoredImageResultGroup { get; } 
+    public CurrentImageResultGroup CurrentImageResultGroup { get; }
+    public StoredImageResultGroup StoredImageResultGroup { get; }
 
     [ObservableProperty] private PrinterSettings selectedPrinter;
 
@@ -66,7 +85,7 @@ public partial class RunResult : ObservableRecipient,
         if (StoredImageResultGroup == null)
             return;
 
-        V275SourceImage = JsonConvert.DeserializeObject<ImageEntry>(StoredImageResultGroup.V275Result.SourceImage);
+        SourceImage = JsonConvert.DeserializeObject<ImageEntry>(StoredImageResultGroup.V275Result.SourceImage);
         V275StoredImage = JsonConvert.DeserializeObject<ImageEntry>(StoredImageResultGroup.V275Result.StoredImage);
 
         List<Sectors.ViewModels.Sector> tempSectors = [];
@@ -99,7 +118,7 @@ public partial class RunResult : ObservableRecipient,
             foreach (Sectors.ViewModels.Sector sec in tempSectors)
                 V275StoredSectors.Add(sec);
 
-            V275StoredSectorsImageOverlay = V275CreateSectorsImageOverlay(StoredImageResultGroup.V275Result._Job, false, StoredImageResultGroup.V275Result._Report, V275StoredImage, V275StoredSectors);
+            V275StoredImageOverlay = V275CreateSectorsImageOverlay(StoredImageResultGroup.V275Result._Job, false, StoredImageResultGroup.V275Result._Report, V275StoredImage, V275StoredSectors);
         }
     }
 
@@ -142,7 +161,7 @@ public partial class RunResult : ObservableRecipient,
             foreach (Sectors.ViewModels.Sector sec in tempSectors)
                 V275CurrentSectors.Add(sec);
 
-            V275CurrentSectorsImageOverlay = V275CreateSectorsImageOverlay(CurrentImageResultGroup.V275Result._Job, false, CurrentImageResultGroup.V275Result._Report, V275CurrentImage, V275CurrentSectors);
+            V275CurrentImageOverlay = V275CreateSectorsImageOverlay(CurrentImageResultGroup.V275Result._Job, false, CurrentImageResultGroup.V275Result._Report, V275CurrentImage, V275CurrentSectors);
         }
     }
 

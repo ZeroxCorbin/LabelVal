@@ -579,7 +579,7 @@
                        Margin="0" MaxHeight="400" Width="400"
                        RenderOptions.BitmapScalingMode="NearestNeighbor"/>
 
-                    <Image Name="V275ImageOverlay" Source="{Binding V275SectorsImageOverlay}" 
+                    <Image Name="V275ImageOverlay" Source="{Binding V275ImageOverlay}" 
                        Margin="0" MaxHeight="400" Width="400"
                        RenderOptions.BitmapScalingMode="NearestNeighbor"/>
                 </Grid>
@@ -885,8 +885,6 @@
                                 </Style>
                             </Button.Style>
                         </Button>
-
-
                     </DockPanel>
                     
                 </DockPanel>
@@ -899,7 +897,7 @@
                        Margin="0" MaxHeight="400" Width="400"
                        RenderOptions.BitmapScalingMode="NearestNeighbor"/>
 
-                    <Image Name="V5ImageOverlay" Source="{Binding V5SectorsImageOverlay}" 
+                    <Image Name="V5ImageOverlay" Source="{Binding V5ImageOverlay}" 
                        Margin="0" MaxHeight="400" Width="400"
                        RenderOptions.BitmapScalingMode="NearestNeighbor"/>
                 </Grid>

@@ -32,7 +32,15 @@ public partial class ImageResultEntry
     [ObservableProperty] private Sectors.ViewModels.Sector v275FocusedCurrentSector = null;
 
     [ObservableProperty] private ImageEntry v275Image;
-    [ObservableProperty] private DrawingImage v275SectorsImageOverlay;
+    public ImageEntry V275CurrentImage => V275Image;
+    public ImageEntry V275StoredImage => V275ResultRow?.Stored;
+
+
+    [ObservableProperty] private DrawingImage v275ImageOverlay;
+    public DrawingImage V275CurrentImageOverlay => IsV275ImageStored ? null : V275ImageOverlay;
+    public DrawingImage V275StoredImageOverlay => IsV275ImageStored ? V275ImageOverlay : null;
+
+
     [ObservableProperty] private bool isV275ImageStored;
 
     [ObservableProperty] private bool isV275Working = false;
@@ -67,7 +75,7 @@ public partial class ImageResultEntry
             if (V275CurrentSectors.Count == 0)
             {
                 V275Image = null;
-                V275SectorsImageOverlay = null;
+                V275ImageOverlay = null;
                 IsV275ImageStored = false;
             }
 
@@ -109,7 +117,7 @@ public partial class ImageResultEntry
             foreach (Sectors.ViewModels.Sector sec in tempSectors)
                 V275StoredSectors.Add(sec);
 
-            V275SectorsImageOverlay = V275CreateSectorsImageOverlay(V275ResultRow._Job, false, V275ResultRow._Report, V275Image, V275StoredSectors);
+            V275ImageOverlay = V275CreateSectorsImageOverlay(V275ResultRow._Job, false, V275ResultRow._Report, V275Image, V275StoredSectors);
         }
     }
     public async Task<bool> V275ReadTask(int repeat)
@@ -125,7 +133,7 @@ public partial class ImageResultEntry
             if (!IsV275ImageStored)
             {
                 V275Image = null;
-                V275SectorsImageOverlay = null;
+                V275ImageOverlay = null;
             }
 
             return false;
@@ -176,7 +184,7 @@ public partial class ImageResultEntry
             foreach (Sectors.ViewModels.Sector sec in tempSectors)
                 V275CurrentSectors.Add(sec);
 
-            V275SectorsImageOverlay = V275CreateSectorsImageOverlay(V275CurrentTemplate, true, V275CurrentReport, V275Image, V275CurrentSectors);
+            V275ImageOverlay = V275CreateSectorsImageOverlay(V275CurrentTemplate, true, V275CurrentReport, V275Image, V275CurrentSectors);
         }
 
         V275GetSectorDiff();

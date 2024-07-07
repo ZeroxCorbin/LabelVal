@@ -26,7 +26,14 @@ public partial class ImageResultEntry
     [ObservableProperty] private Sectors.ViewModels.Sector v5FocusedCurrentSector = null;
 
     [ObservableProperty] private ImageEntry v5Image = null;
-    [ObservableProperty] private DrawingImage v5SectorsImageOverlay;
+    public ImageEntry V5CurrentImage => V5Image;
+    public ImageEntry V5StoredImage => V5ResultRow?.Stored;
+
+    [ObservableProperty] private DrawingImage v5ImageOverlay;
+    public DrawingImage V5CurrentImageOverlay => IsV5ImageStored ? null : V5ImageOverlay;
+    public DrawingImage V5StoredImageOverlay => IsV5ImageStored ? V5ImageOverlay : null;
+
+
     [ObservableProperty] private bool isV5ImageStored;
 
     [ObservableProperty] private bool isV5Working = false;
@@ -125,7 +132,7 @@ public partial class ImageResultEntry
             if (!IsV5ImageStored)
             {
                 V5Image = null;
-                V5SectorsImageOverlay = null;
+                V5ImageOverlay = null;
             }
 
             return false;
@@ -171,7 +178,7 @@ public partial class ImageResultEntry
 
         V5GetSectorDiff();
 
-        V5SectorsImageOverlay = V5CreateSectorsImageOverlay(V5CurrentReport);
+        V5ImageOverlay = V5CreateSectorsImageOverlay(V5CurrentReport);
 
         return true;
     }
@@ -188,7 +195,7 @@ public partial class ImageResultEntry
             if (V5CurrentSectors.Count == 0)
             {
                 V5Image = null;
-                V5SectorsImageOverlay = null;
+                V5ImageOverlay = null;
                 IsV5ImageStored = false;
             }
 
@@ -205,7 +212,7 @@ public partial class ImageResultEntry
         {
             JObject results = V5ResultRow._Report;
 
-            V5SectorsImageOverlay = V5CreateSectorsImageOverlay(results);
+            V5ImageOverlay = V5CreateSectorsImageOverlay(results);
 
             if (results["event"]?["name"].ToString() == "cycle-report-alt")
             {
