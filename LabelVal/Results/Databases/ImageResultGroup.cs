@@ -12,6 +12,10 @@ public class ImageResultGroup()
     public string ImageRollUID { get; set; }
     public string SourceImageUID { get; set; }
 
+    public int LoopCount { get; set; }
+    public int Order { get; set; }
+    public int Loop { get; set; }
+
     public string V275Result_
     {
         get => V275Result != null ? JsonConvert.SerializeObject(V275Result) : null;

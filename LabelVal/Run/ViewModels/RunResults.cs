@@ -10,7 +10,7 @@ using System.Drawing.Printing;
 namespace LabelVal.Run.ViewModels;
 public partial class RunResults : ObservableRecipient, IRecipient<PropertyChangedMessage<RunEntry>>
 {
-    public ObservableCollection<RunResult> ImageResultsList { get; } = [];
+    public ObservableCollection<RunResult> RunResultsList { get; } = [];
     [ObservableProperty] private RunEntry selectedRunEntry;
 
     public RunResults() => IsActive = true;
@@ -19,19 +19,19 @@ public partial class RunResults : ObservableRecipient, IRecipient<PropertyChange
     //The loaded entries should be added to the ImageResultsList as new RunResult objects.
     partial void OnSelectedRunEntryChanged(RunEntry value)
     {
-        ImageResultsList.Clear();
+        RunResultsList.Clear();
 
         if (value == null) return;
         if (SelectedRunEntry == null) return;
-
+        //var vals = SelectedRunEntry.RunDatabase.SelectAllStoredImageResultGroups(value.UID);
         foreach (var stored in SelectedRunEntry.RunDatabase.SelectAllStoredImageResultGroups(value.UID))
         {
             LogDebug($"Loading StoredImageResultGroup {stored.RunUID} {stored.SourceImageUID}");
 
-            var current = SelectedRunEntry.RunDatabase.SelectCurrentImageResultGroup(stored.RunUID, stored.SourceImageUID);
+            var current = SelectedRunEntry.RunDatabase.SelectCurrentImageResultGroup(stored.RunUID, stored.SourceImageUID, stored.Order);
 
             if (current != null)
-                ImageResultsList.Add(new RunResult(current, stored, value));
+                RunResultsList.Add(new RunResult(current, stored, value));
             else
                 LogError($"CurrentImageResultGroup not found for {stored.RunUID} and {stored.SourceImageUID}");
         }

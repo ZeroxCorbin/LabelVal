@@ -102,6 +102,10 @@
                                 RenderOptions.BitmapScalingMode="NearestNeighbor"
                                 HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
+                    <Image Source="{Binding PrinterAreaOverlay, Mode=OneWay}" Stretch="None"
+                                RenderOptions.BitmapScalingMode="NearestNeighbor"
+                                HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                    
                     <Label HorizontalAlignment="Right" VerticalAlignment="Top" Margin="3">
                         <Label.Style>
                             <Style TargetType="{x:Type Label}">

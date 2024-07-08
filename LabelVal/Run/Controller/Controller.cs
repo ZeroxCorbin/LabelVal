@@ -89,8 +89,6 @@ public partial class Controller : ObservableObject
                             return UpdateRunState(RunStates.Error);
                         }
                     }
-                    else if (ImageResultEntries.Count == 1)
-                        CurrentLoopCount = 1;
 
                     wasLoop = CurrentLoopCount;
 
@@ -151,6 +149,14 @@ public partial class Controller : ObservableObject
                     LogError("Run: Failed to get stored or current image result group.");
                     return UpdateRunState(RunStates.Error);
                 }
+
+                stored.Order = CurrentLabelCount;
+                stored.Loop = CurrentLoopCount;
+                stored.LoopCount = LoopCount;
+
+                current.Order = CurrentLabelCount;
+                current.Loop = CurrentLoopCount;
+                current.LoopCount = LoopCount;
 
                 RunDatabase.InsertOrReplace(stored);
                 RunDatabase.InsertOrReplace(current);

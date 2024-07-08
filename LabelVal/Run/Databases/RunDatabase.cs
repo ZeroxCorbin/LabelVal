@@ -48,13 +48,13 @@ public partial class RunDatabase : IDisposable
 
     public int InsertOrReplace(CurrentImageResultGroup cirg) => Connection.InsertOrReplace(cirg);
     public bool ExistsCurrentImageResultGroup(string runUID) => Connection.Table<CurrentImageResultGroup>().Where(v => v.RunUID == runUID).Count() > 0;
-    public CurrentImageResultGroup SelectCurrentImageResultGroup(string runUID, string imageUID) => Connection.Table<CurrentImageResultGroup>().Where(v => v.RunUID == runUID && v.SourceImageUID == imageUID ).FirstOrDefault();
+    public CurrentImageResultGroup SelectCurrentImageResultGroup(string runUID, string imageUID, int order) => Connection.Table<CurrentImageResultGroup>().Where(v => v.RunUID == runUID && v.SourceImageUID == imageUID && v.Order == order ).FirstOrDefault();
     public List<CurrentImageResultGroup> SelectAllCurrentImageResultGroups(string runUID) => [.. Connection.Table<CurrentImageResultGroup>().Where(v => v.RunUID == runUID)];
     public int DeleteCurrentImageResultGroup(string runUID) => Connection.Table<CurrentImageResultGroup>().Delete(v => v.RunUID == runUID);
 
     public int InsertOrReplace(StoredImageResultGroup sirg) => Connection.InsertOrReplace(sirg);
     public bool ExistsStoredImageResultGroup(string runUID) => Connection.Table<StoredImageResultGroup>().Where(v => v.RunUID == runUID).Count() > 0;
-    public StoredImageResultGroup SelectStoredImageResultGroup(string runUID, string imageUID) => Connection.Table<StoredImageResultGroup>().Where(v => v.RunUID == runUID && v.SourceImageUID == imageUID).FirstOrDefault();
+    public StoredImageResultGroup SelectStoredImageResultGroup(string runUID, string imageUID, int order) => Connection.Table<StoredImageResultGroup>().Where(v => v.RunUID == runUID && v.SourceImageUID == imageUID && v.Order == order).FirstOrDefault();
     public List<StoredImageResultGroup> SelectAllStoredImageResultGroups(string runUID) => [.. Connection.Table<StoredImageResultGroup>().Where(v => v.RunUID == runUID)];
     public int DeleteStoredImageResultGroup(string runUID) => Connection.Table<StoredImageResultGroup>().Delete(v => v.RunUID == runUID);
 

@@ -2,15 +2,12 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
-using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Results.Databases;
 using LabelVal.Results.ViewModels;
 using LabelVal.Run.Databases;
 using LabelVal.Utilities;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -20,8 +17,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using V275_REST_lib.Models;
-using static System.ComponentModel.Design.ObjectSelectorEditor;
 
 namespace LabelVal.Run.ViewModels;
 public partial class RunResult : ObservableRecipient, IImageResultEntry, IRecipient<PropertyChangedMessage<PrinterSettings>>
@@ -60,8 +55,11 @@ public partial class RunResult : ObservableRecipient, IImageResultEntry, IRecipi
 
     public RunEntry RunEntry { get; }
 
+    public int Order => CurrentImageResultGroup.Order;
+    public int Loop => CurrentImageResultGroup.Loop;
+    public bool HasDiff => V275DiffSectors.Count > 0 || V5DiffSectors.Count > 0 || L95xxDiffSectors.Count > 0;
+
     private int PrintCount => App.Settings.GetValue<int>(nameof(PrintCount));
-    private int LoopCount => App.Settings.GetValue(nameof(LoopCount), 1);
 
     public CurrentImageResultGroup CurrentImageResultGroup { get; }
     public StoredImageResultGroup StoredImageResultGroup { get; }
@@ -125,8 +123,8 @@ public partial class RunResult : ObservableRecipient, IImageResultEntry, IRecipi
                     ? V275CurrentImage.GetBitmapBytes()
                     : type == "v5Stored"
                     ? V5StoredImage.GetBitmapBytes()
-                    : type == "v5Current" 
-                    ? V5CurrentImage.GetBitmapBytes() 
+                    : type == "v5Current"
+                    ? V5CurrentImage.GetBitmapBytes()
                     : SourceImage.GetBitmapBytes();
             if (bmp != null)
             {
@@ -207,7 +205,6 @@ public partial class RunResult : ObservableRecipient, IImageResultEntry, IRecipi
         File.WriteAllBytes(path, img);
         return "";
     }
-
 
     public DrawingImage CreatePrinterAreaOverlay(bool useRatio)
     {
