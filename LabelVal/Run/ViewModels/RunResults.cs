@@ -10,7 +10,6 @@ namespace LabelVal.Run.ViewModels;
 public partial class RunResults : ObservableRecipient, IRecipient<PropertyChangedMessage<RunEntry>>
 {
     public ObservableCollection<RunResult> ImageResultsList { get; } = [];
-
     [ObservableProperty] private RunEntry selectedRunEntry;
 
     public RunResults() => IsActive = true;
@@ -29,6 +28,7 @@ public partial class RunResults : ObservableRecipient, IRecipient<PropertyChange
             LogDebug($"Loading StoredImageResultGroup {stored.RunUID} {stored.SourceImageUID}");
 
             var current = SelectedRunEntry.RunDatabase.SelectCurrentImageResultGroup(stored.RunUID, stored.SourceImageUID);
+
             if (current != null)
                 ImageResultsList.Add(new RunResult(current, stored, value));
             else

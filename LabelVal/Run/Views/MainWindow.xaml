@@ -54,14 +54,8 @@
 
     <DockPanel>
 
-        <DockPanel>
-            <local:RunDatabases DataContext="{Binding RunDatabases}"/>
-            <local:RunResults DataContext="{Binding RunResults}"/>
-        </DockPanel>
-        
-        
         <DockPanel DockPanel.Dock="Bottom">
-            <StatusBar>
+            <StatusBar> 
                 <StatusBarItem>
                     <Button x:Name="btnShowInfo" Click="btnShowInfo_Click">
                         <iconPacks:PackIconMaterial Kind="ThumbUp"/>
@@ -83,6 +77,11 @@
                 </StatusBarItem>
             </StatusBar>
         </DockPanel>
+        
+        <local:RunDatabases DataContext="{Binding RunDatabases}"/>
 
+        <ScrollViewer DockPanel.Dock="Top">
+            <local:RunResults DataContext="{Binding RunResults}"/>
+        </ScrollViewer>
     </DockPanel>
 </mah:MetroWindow>

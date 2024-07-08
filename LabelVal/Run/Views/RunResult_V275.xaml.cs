@@ -172,4 +172,9 @@ public partial class RunResult_V275 : UserControl
         BitmapFrame frame = BitmapFrame.Create(bitmap);
         encoder.Frames.Add(frame);
     }
+
+    private void lstDissimilarSector_Click(object sender, MouseButtonEventArgs e)
+    {
+
+    }
 }
