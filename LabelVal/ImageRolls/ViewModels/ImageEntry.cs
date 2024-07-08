@@ -9,7 +9,7 @@ using System.Windows.Media.Imaging;
 namespace LabelVal.ImageRolls.ViewModels;
 
 [JsonObject(MemberSerialization.OptIn)]
-public partial class ImageEntry : ObservableRecipient//, IRecipient<PrinterMessages.SelectedPrinterChanged>
+public partial class ImageEntry : ObservableRecipient
 {
     public string ToJSON() => JsonConvert.SerializeObject(this);
 
@@ -51,14 +51,13 @@ public partial class ImageEntry : ObservableRecipient//, IRecipient<PrinterMessa
         }
     }
 
-    [ObservableProperty][property: JsonProperty] int targetDpiWidth;
-    [ObservableProperty][property: JsonProperty] int targetDpiHeight;
+    [ObservableProperty][property: JsonProperty] private int targetDpiWidth;
+    [ObservableProperty][property: JsonProperty] private int targetDpiHeight;
 
     [JsonProperty] public double ImageWidth { get; set; }
     [JsonProperty] public double ImageHeight { get; set; }
     [JsonProperty] public long ImageTotalPixels { get; set; }
     [JsonProperty][property: SQLite.Ignore] public double V52ImageTotalPixelDeviation { get; private set; }
-
 
     [ObservableProperty][property: SQLite.Ignore] private double printerWidth;
     [ObservableProperty][property: SQLite.Ignore] private double printerHeight;
@@ -74,7 +73,7 @@ public partial class ImageEntry : ObservableRecipient//, IRecipient<PrinterMessa
 
     [ObservableProperty][property: SQLite.Ignore] private double printer2ImageTotalPixelDeviation;
 
-    public ImageEntry() { IsActive = true; }
+    public ImageEntry() => IsActive = true;
     public ImageEntry(string rollUID, string path, int targetDpiWidth, int targetDpiHeight)
     {
         RollUID = rollUID;
@@ -87,8 +86,7 @@ public partial class ImageEntry : ObservableRecipient//, IRecipient<PrinterMessa
         ImageLow = BitmapImageUtilities.LoadBitmap(Path, 400);
         UID = BitmapImageUtilities.ImageUID(Image);
 
-
-        var cmt = Path.Replace(System.IO.Path.GetExtension(Path), ".txt");
+        string cmt = Path.Replace(System.IO.Path.GetExtension(Path), ".txt");
         if (File.Exists(cmt))
             Comment = File.ReadAllText(cmt);
 
@@ -134,34 +132,31 @@ public partial class ImageEntry : ObservableRecipient//, IRecipient<PrinterMessa
 
     public ImageEntry Clone() => new(RollUID, GetBitmapBytes(), TargetDpiWidth, TargetDpiHeight, Comment);
 
-    //public void Receive(PrinterMessages.SelectedPrinterChanged message) => SelectedPrinter = message.Value;
-
     public void InitPrinterVariables(PrinterSettings printer)
     {
         PrinterWidth = Math.Round(printer.DefaultPageSettings.PrintableArea.Width / 100, 2);
         PrinterHeight = Math.Round(printer.DefaultPageSettings.PrintableArea.Height / 100, 2);
 
-        PrinterPixelWidth = (int)Math.Round((printer.DefaultPageSettings.PrintableArea.Width / 100) * printer.DefaultPageSettings.PrinterResolution.X, 0);
-        PrinterPixelHeight = (int)Math.Round((printer.DefaultPageSettings.PrintableArea.Height / 100) * printer.DefaultPageSettings.PrinterResolution.Y, 0);
+        PrinterPixelWidth = (int)Math.Round(printer.DefaultPageSettings.PrintableArea.Width / 100 * printer.DefaultPageSettings.PrinterResolution.X, 0);
+        PrinterPixelHeight = (int)Math.Round(printer.DefaultPageSettings.PrintableArea.Height / 100 * printer.DefaultPageSettings.PrinterResolution.Y, 0);
         PrinterTotalPixels = PrinterPixelWidth * PrinterPixelHeight;
 
         DeviationWidth = PrinterPixelWidth - Image.PixelWidth;
         DeviationHeight = PrinterPixelHeight - Image.PixelHeight;
-        DeviationWidthPercent = Math.Round((DeviationWidth / Image.PixelWidth) * 100, 2);
-        DeviationHeightPercent = Math.Round((DeviationHeight / Image.PixelHeight) * 100, 2);
+        DeviationWidthPercent = Math.Round(DeviationWidth / Image.PixelWidth * 100, 2);
+        DeviationHeightPercent = Math.Round(DeviationHeight / Image.PixelHeight * 100, 2);
 
         Printer2ImageTotalPixelDeviation = PrinterTotalPixels - ImageTotalPixels;
     }
-
 
     public byte[] GetBitmapBytes(int dpi = 0)
     {
         if (Image == null)
             return null;
 
-        var tDpi = dpi == 0 ? TargetDpiWidth : dpi;
+        int tDpi = dpi == 0 ? TargetDpiWidth : dpi;
 
-        var bmp = BitmapImageUtilities.ImageToBytesBMP(Image);
+        byte[] bmp = BitmapImageUtilities.ImageToBytesBMP(Image);
 
         if (dpi != 0)
             ImageUtilities.SetBitmapDPI(bmp, (int)Image.DpiX);

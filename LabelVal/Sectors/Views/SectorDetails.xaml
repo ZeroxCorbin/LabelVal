@@ -22,6 +22,12 @@
         <V275Converters:V275_GS1FormattedOutput x:Key="gs1FormattedOutput"/>
 
         <Border x:Key="Seperator" Height="2" BorderThickness="2"/>
+
+        <Image x:Key="barcode-1d" Source="/Assets/Images/barcode-1d.png" />
+        <Image x:Key="barcode-2d" Source="/Assets/Images/barcode-2d.png" />
+        <Image x:Key="ocr" Source="/Assets/Images/ocr.png" />
+        <Image x:Key="ocv" Source="/Assets/Images/ocv.png" />
+        <Image x:Key="flaw" Source="/Assets/Images/FlawTool.png" />
     </UserControl.Resources>
 
     <md:Card MaxWidth="260" Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="3" Padding="0">

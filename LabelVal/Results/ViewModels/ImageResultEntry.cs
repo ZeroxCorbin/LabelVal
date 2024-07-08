@@ -3,9 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
-using LabelVal.Main.ViewModels;
 using LabelVal.Results.Databases;
-using LabelVal.Run.ViewModels;
 using LabelVal.Utilities;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
@@ -34,7 +32,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
     public ImageEntry SourceImage { get; }
     public string ImageUID => SourceImage.UID;
 
-    public ImageResults ImageResults { get; } 
+    public ImageResults ImageResults { get; }
     public string RollUID => ImageResults.SelectedImageRoll.UID;
 
     public bool IsPlaceholder => SourceImage.IsPlaceholder;
@@ -70,10 +68,19 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         ImageResults = imageResults;
         SourceImage = sourceImage;
 
-        SelectedDatabase = ImageResults.SelectedDatabase;
-        SelectedPrinter = ImageResults.SelectedPrinter;
-
         IsActive = true;
+        RecieveAll();
+    }
+
+    private void RecieveAll()
+    {
+        RequestMessage<PrinterSettings> mes2 = new();
+        WeakReferenceMessenger.Default.Send(mes2);
+        SelectedPrinter = mes2.Response;
+
+        RequestMessage<ImageResultsDatabase> mes4 = new();
+        WeakReferenceMessenger.Default.Send(mes4);
+        SelectedDatabase = mes4.Response;
     }
 
     public StoredImageResultGroup GetStoredImageResultGroup(string runUID) => new()

@@ -8,6 +8,7 @@ using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using System;
 using System.Collections.ObjectModel;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Threading.Tasks;
 using V275_REST_lib.Models;
@@ -66,7 +67,6 @@ public partial class V275 : ObservableRecipient, IRecipient<PropertyChangedMessa
     }
 
     [ObservableProperty] private ObservableCollection<Node> nodes = [];
-
     [ObservableProperty][NotifyPropertyChangedRecipients] private Node selectedNode;
 
     public bool ShowTemplateNameMismatchDialog { get => App.Settings.GetValue("ShowTemplateNameMismatchDialog", true, true); set => App.Settings.SetValue("ShowTemplateNameMismatchDialog", value); }
@@ -80,8 +80,16 @@ public partial class V275 : ObservableRecipient, IRecipient<PropertyChangedMessa
     public V275()
     {
         IsActive = true;
+
+        WeakReferenceMessenger.Default.Register<RequestMessage<Node>>(
+            this,
+            (recipient, message) =>
+            {
+                message.Reply(SelectedNode);
+            });
     }
 
+    //There is no point in reuesting the SeletedImageRoll at init, the user has not selected anything yet.
     public void Receive(PropertyChangedMessage<ImageRollEntry> message) => SelectedImageRoll = message.NewValue;
 
     public async Task OkDialog(string title, string message) => _ = await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.Affirmative);

@@ -21,11 +21,11 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using V275_REST_lib.Models;
+using static System.ComponentModel.Design.ObjectSelectorEditor;
 
 namespace LabelVal.Run.ViewModels;
 public partial class RunResult : ObservableRecipient, IImageResultEntry, IRecipient<PropertyChangedMessage<PrinterSettings>>
 {
-
     [ObservableProperty] private ObservableCollection<Sectors.ViewModels.Sector> v275CurrentSectors = [];
     [ObservableProperty] private ObservableCollection<Sectors.ViewModels.Sector> v275StoredSectors = [];
     [ObservableProperty] private ObservableCollection<Sectors.ViewModels.SectorDifferences> v275DiffSectors = [];
@@ -68,7 +68,26 @@ public partial class RunResult : ObservableRecipient, IImageResultEntry, IRecipi
 
     [ObservableProperty] private PrinterSettings selectedPrinter;
 
-    public RunResult() => IsActive = true;
+    public bool IsPlaceholder => SourceImage.IsPlaceholder;
+
+    [ObservableProperty] private bool showDetails;
+    partial void OnShowDetailsChanged(bool value)
+    {
+        if (value)
+        {
+            SourceImage?.InitPrinterVariables(SelectedPrinter);
+            V275CurrentImage?.InitPrinterVariables(SelectedPrinter);
+            V275StoredImage?.InitPrinterVariables(SelectedPrinter);
+            V5CurrentImage?.InitPrinterVariables(SelectedPrinter);
+            V5StoredImage?.InitPrinterVariables(SelectedPrinter);
+        }
+    }
+
+    [ObservableProperty] private bool showPrinterAreaOverSource;
+    [ObservableProperty] private DrawingImage printerAreaOverlay;
+    partial void OnShowPrinterAreaOverSourceChanged(bool value) => PrinterAreaOverlay = ShowPrinterAreaOverSource ? CreatePrinterAreaOverlay(true) : null;
+
+    public RunResult() { IsActive = true; RecieveAll(); }
 
     public RunResult(CurrentImageResultGroup current, StoredImageResultGroup stored, RunEntry runEntry)
     {
@@ -81,6 +100,14 @@ public partial class RunResult : ObservableRecipient, IImageResultEntry, IRecipi
         V275GetSectorDiff();
 
         IsActive = true;
+        RecieveAll();
+    }
+
+    private void RecieveAll()
+    {
+        RequestMessage<PrinterSettings> mes2 = new();
+        WeakReferenceMessenger.Default.Send(mes2);
+        SelectedPrinter = mes2.Response;
     }
 
     [RelayCommand]
@@ -181,6 +208,40 @@ public partial class RunResult : ObservableRecipient, IImageResultEntry, IRecipi
         return "";
     }
 
+
+    public DrawingImage CreatePrinterAreaOverlay(bool useRatio)
+    {
+        if (SelectedPrinter == null) return null;
+
+        double xRatio, yRatio;
+        if (useRatio)
+        {
+            xRatio = (double)SourceImage.ImageLow.PixelWidth / SourceImage.Image.PixelWidth;
+            yRatio = (double)SourceImage.ImageLow.PixelHeight / SourceImage.Image.PixelHeight;
+        }
+        else
+        {
+            xRatio = 1;
+            yRatio = 1;
+        }
+
+        double lineWidth = 10 * xRatio;
+
+        GeometryDrawing printer = new()
+        {
+            Geometry = new System.Windows.Media.RectangleGeometry(new Rect(lineWidth / 2, lineWidth / 2,
+            (SelectedPrinter.DefaultPageSettings.PaperSize.Width / 100 * SelectedPrinter.DefaultPageSettings.PrinterResolution.X * xRatio) - lineWidth,
+            (SelectedPrinter.DefaultPageSettings.PaperSize.Height / 100 * SelectedPrinter.DefaultPageSettings.PrinterResolution.Y * yRatio) - lineWidth)),
+            Pen = new System.Windows.Media.Pen(System.Windows.Media.Brushes.Red, lineWidth)
+        };
+
+        DrawingGroup drwGroup = new();
+        drwGroup.Children.Add(printer);
+
+        DrawingImage geometryImage = new(drwGroup);
+        geometryImage.Freeze();
+        return geometryImage;
+    }
 
     #region Recieve Messages    
     public void Receive(PropertyChangedMessage<PrinterSettings> message) => SelectedPrinter = message.NewValue;

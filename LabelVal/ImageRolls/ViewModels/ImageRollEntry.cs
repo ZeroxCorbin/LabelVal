@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.Extensions;
-using LabelVal.Messages;
 using LabelVal.Sectors.ViewModels;
 using Newtonsoft.Json;
 using System;
@@ -13,6 +12,7 @@ using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using static System.ComponentModel.Design.ObjectSelectorEditor;
 
 namespace LabelVal.ImageRolls.ViewModels;
 
@@ -24,11 +24,11 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     {
         get
         {
-            var lst = Enum.GetValues(typeof(StandardsTypes)).Cast<StandardsTypes>().ToList();
+            List<StandardsTypes> lst = Enum.GetValues(typeof(StandardsTypes)).Cast<StandardsTypes>().ToList();
             lst.Remove(Sectors.ViewModels.StandardsTypes.Unsupported);
 
             List<string> names = [];
-            foreach (var name in lst)
+            foreach (StandardsTypes name in lst)
                 names.Add(name.GetDescription());
 
             return names.ToArray();
@@ -38,12 +38,12 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     {
         get
         {
-            var lst = Enum.GetValues(typeof(GS1TableNames)).Cast<GS1TableNames>().ToList();
+            List<GS1TableNames> lst = Enum.GetValues(typeof(GS1TableNames)).Cast<GS1TableNames>().ToList();
             lst.Remove(Sectors.ViewModels.GS1TableNames.Unsupported);
             lst.Remove(Sectors.ViewModels.GS1TableNames.None);
 
             List<string> names = [];
-            foreach (var name in lst)
+            foreach (GS1TableNames name in lst)
                 names.Add(name.GetDescription());
 
             return names.ToArray();
@@ -62,19 +62,11 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     partial void OnSelectedStandardChanged(StandardsTypes value) { if (value != Sectors.ViewModels.StandardsTypes.GS1) SelectedGS1Table = Sectors.ViewModels.GS1TableNames.None; OnPropertyChanged(nameof(StandardDescription)); }
     public string StandardDescription => SelectedStandard.GetDescription();
 
-
     [ObservableProperty][property: JsonProperty("GS1Table")][property: SQLite.Column("GS1Table")] private GS1TableNames selectedGS1Table;
     partial void OnSelectedGS1TableChanged(GS1TableNames value) => OnPropertyChanged(nameof(GS1TableNumber));
-    public double GS1TableNumber
-    {
-        get
-        {
-            if (SelectedGS1Table is Sectors.ViewModels.GS1TableNames.None or Sectors.ViewModels.GS1TableNames.Unsupported)
-                return 0;
-
-            return double.Parse(SelectedGS1Table.GetDescription());
-        }
-    }
+    public double GS1TableNumber => SelectedGS1Table is Sectors.ViewModels.GS1TableNames.None or Sectors.ViewModels.GS1TableNames.Unsupported
+                ? 0
+                : double.Parse(SelectedGS1Table.GetDescription());
 
     //If writeSectorsBeforeProcess is true the system will write the templates sectors before processing an image.
     //Normally the template is left untouched. I.e. When using a sequential OCR tool.
@@ -86,32 +78,37 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     [ObservableProperty][property: SQLite.Ignore] private PrinterSettings selectedPrinter;
 
     [SQLite.Ignore] public ObservableCollection<ImageEntry> Images { get; set; } = [];
-
     [SQLite.Ignore] public Databases.ImageRollsDatabase ImageRollsDatabase { get; set; }
 
-    public ImageRollEntry() { Images.CollectionChanged += (s, e) => ImageCount = Images.Count; IsActive = true; }
-    public ImageRollEntry(string name, string path, PrinterSettings printerSettings, Databases.ImageRollsDatabase imageRollsDatabase)
+    public ImageRollEntry()
     {
-        SelectedPrinter = printerSettings;
+        IsActive = true;
+        RecieveAll();
+
+        Images.CollectionChanged += (s, e) => ImageCount = Images.Count;
+    }
+    public ImageRollEntry(string name, string path, Databases.ImageRollsDatabase imageRollsDatabase)
+    {
+        IsActive = true;
+        RecieveAll();
+
         ImageRollsDatabase = imageRollsDatabase;
 
         Name = name;
         Path = path;
 
         Images.CollectionChanged += (s, e) => ImageCount = Images.Count;
-
-        IsActive = true;
     }
 
+    private void RecieveAll()
+    {
+        RequestMessage<PrinterSettings> message = new();
+        WeakReferenceMessenger.Default.Send(message);
+        SelectedPrinter = message.Response;
+    }
     public void Receive(PropertyChangedMessage<PrinterSettings> message) => SelectedPrinter = message.NewValue;
 
-    public Task LoadImages()
-    {
-        if (IsRooted)
-            return LoadImagesFromDirectory();
-        else
-            return LoadImagesFromDatabase();
-    }
+    public Task LoadImages() => IsRooted ? LoadImagesFromDirectory() : LoadImagesFromDatabase();
 
     public async Task LoadImagesFromDirectory()
     {
@@ -121,17 +118,17 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
         LogInfo($"Loading label images from standards directory: {App.AssetsImageRollRoot}\\{Name}\\");
 
         List<string> images = [];
-        foreach (var f in Directory.EnumerateFiles(Path))
+        foreach (string f in Directory.EnumerateFiles(Path))
             if (System.IO.Path.GetExtension(f) == ".png")
                 images.Add(f);
 
         List<Task> taskList = [];
 
-        var sorted = images.OrderBy(x => x).ToList();
+        List<string> sorted = images.OrderBy(x => x).ToList();
         int i = 1;
-        foreach (var f in sorted)
+        foreach (string f in sorted)
         {
-            var tsk = App.Current.Dispatcher.BeginInvoke(() => AddImage(f, i++)).Task;
+            Task tsk = App.Current.Dispatcher.BeginInvoke(() => AddImage(f, i++)).Task;
             taskList.Add(tsk);
         }
 
@@ -144,14 +141,14 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
 
         LogInfo($"Loading label images from database: {Name}");
 
-        var images = ImageRollsDatabase.SelectAllImages(UID);
+        List<ImageEntry> images = ImageRollsDatabase.SelectAllImages(UID);
         List<Task> taskList = [];
 
         CheckImageEntryOrder([.. images]);
 
-        foreach (var f in images)
+        foreach (ImageEntry f in images)
         {
-            var tsk = App.Current.Dispatcher.BeginInvoke(() => AddImage(f)).Task;
+            Task tsk = App.Current.Dispatcher.BeginInvoke(() => AddImage(f)).Task;
 
             taskList.Add(tsk);
         }
@@ -179,7 +176,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     {
         try
         {
-            var image = new ImageEntry(UID, path, TargetDPI, TargetDPI)
+            ImageEntry image = new(UID, path, TargetDPI, TargetDPI)
             {
                 Order = order
             };
@@ -203,14 +200,14 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     {
         try
         {
-            var image = new ImageEntry(UID, rawImage, TargetDPI, TargetDPI)
+            ImageEntry image = new(UID, rawImage, TargetDPI, TargetDPI)
             {
                 Order = Images.Count > 0 ? Images.Max(img => img.Order) + 1 : 1
             };
 
             if (Images.Any(e => e.UID == image.UID))
             {
-               LogWarning($"Image already exists in roll: {Path}");
+                LogWarning($"Image already exists in roll: {Path}");
                 return null;
             }
 
@@ -227,7 +224,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     [RelayCommand]
     private void AddFirstImages()
     {
-        var settings = new Utilities.FileUtilities.LoadFileDialogSettings
+        Utilities.FileUtilities.LoadFileDialogSettings settings = new()
         {
             Title = "Select image(s) to add to roll.",
             Multiselect = true,
@@ -240,16 +237,16 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
 
         if (Utilities.FileUtilities.LoadFileDialog(settings))
         {
-            var sorted = settings.SelectedFiles.OrderBy(x => x).ToList();
+            List<string> sorted = settings.SelectedFiles.OrderBy(x => x).ToList();
             int last = 0;
             if (Images.Count > 0)
             {
-                var sortedImages = Images.OrderBy(x => x.Order).ToList();
+                List<ImageEntry> sortedImages = Images.OrderBy(x => x.Order).ToList();
                 last = sortedImages.Last().Order;
             }
 
             int i = last + 1;
-            foreach (var f in sorted)
+            foreach (string f in sorted)
                 AddImage(f, i++);
         }
     }
@@ -257,7 +254,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     {
         try
         {
-            var image = GetNewImageEntry(path, order);
+            ImageEntry image = GetNewImageEntry(path, order);
             if (image == null)
                 return;
 

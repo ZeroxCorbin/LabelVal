@@ -14,26 +14,29 @@ using System.Text.RegularExpressions;
 using System.Windows;
 
 namespace LabelVal.ImageRolls.ViewModels;
-public partial class ImageRolls : ObservableRecipient, IRecipient<PropertyChangedMessage<PrinterSettings>>
+public partial class ImageRolls : ObservableRecipient
 {
     public ObservableCollection<ImageRollEntry> FixedImageRolls { get; } = [];
     public ObservableCollection<ImageRollEntry> UserImageRolls { get; } = [];
 
     [ObservableProperty] private ImageRollEntry userImageRoll = null;
 
-    [ObservableProperty][NotifyPropertyChangedRecipients] private ImageRollEntry selectedImageRoll = App.Settings.GetValue<ImageRollEntry>(nameof(SelectedImageRoll), null);
+    [ObservableProperty][NotifyPropertyChangedRecipients] private ImageRollEntry selectedImageRoll;// = App.Settings.GetValue<ImageRollEntry>(nameof(SelectedImageRoll), null);
     partial void OnSelectedImageRollChanged(ImageRollEntry value) { App.Settings.SetValue(nameof(SelectedImageRoll), value); if (value != null) SelectedUserImageRoll = null; }
 
-    [ObservableProperty][NotifyPropertyChangedRecipients] private ImageRollEntry selectedUserImageRoll = App.Settings.GetValue<ImageRollEntry>(nameof(SelectedUserImageRoll), null);
+    [ObservableProperty][NotifyPropertyChangedRecipients] private ImageRollEntry selectedUserImageRoll;// = App.Settings.GetValue<ImageRollEntry>(nameof(SelectedUserImageRoll), null);
     partial void OnSelectedUserImageRollChanged(ImageRollEntry value) { App.Settings.SetValue(nameof(SelectedUserImageRoll), value); if (value != null) SelectedImageRoll = null; }
-
-    private PrinterSettings selectedPrinter;
 
     private Databases.ImageRollsDatabase ImageRollsDatabase { get; } = new Databases.ImageRollsDatabase();
 
-    public ImageRolls(PrinterSettings selectedPrinter)
+    public ImageRolls()
     {
-        this.selectedPrinter = selectedPrinter;
+        WeakReferenceMessenger.Default.Register<RequestMessage<ImageRollEntry>>(
+        this,
+        (recipient, message) =>
+        {
+            message.Reply(SelectedImageRoll ?? SelectedUserImageRoll);
+        });
 
         LoadFixedImageRollsList();
 
@@ -42,11 +45,6 @@ public partial class ImageRolls : ObservableRecipient, IRecipient<PropertyChange
         LoadUserImageRollsList();
 
         IsActive = true;
-    }
-
-    public void Receive(PropertyChangedMessage<PrinterSettings> message)
-    {
-        selectedPrinter = message.NewValue;
     }
 
     private void LoadFixedImageRollsList()
@@ -70,7 +68,6 @@ public partial class ImageRolls : ObservableRecipient, IRecipient<PropertyChange
                 {
                     var imgr = JsonConvert.DeserializeObject<ImageRollEntry>(File.ReadAllText(files.First()));
                     imgr.Path = subdir;
-                    imgr.SelectedPrinter = selectedPrinter;
                     FixedImageRolls.Add(imgr);
                 }
                 catch (Exception ex)
@@ -83,7 +80,6 @@ public partial class ImageRolls : ObservableRecipient, IRecipient<PropertyChange
 
         LogInfo($"Processed {FixedImageRolls.Count} fixed image rolls.");
     }
-
     private void LoadUserImageRollsList()
     {
         LogInfo($"Loading user image rolls from database. {App.ImageRollsDatabasePath}");
@@ -108,7 +104,6 @@ public partial class ImageRolls : ObservableRecipient, IRecipient<PropertyChange
 
         UserImageRoll = new ImageRollEntry
         {
-            SelectedPrinter = selectedPrinter,
             ImageRollsDatabase = ImageRollsDatabase
         };
     }

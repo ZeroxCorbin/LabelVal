@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.Messages;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,13 @@ public partial class VerifierManager : ObservableRecipient
             Verifiers.Add(new Verifier());
             SelectedVerifier = Verifiers[0];
         }
+
+        WeakReferenceMessenger.Default.Register<RequestMessage<Verifier>>(
+            this,
+            (recipient, message) =>
+            {
+                message.Reply(SelectedVerifier);
+            });
     }
 
     [RelayCommand] private void AddVerifier() => Verifiers.Add(new Verifier());

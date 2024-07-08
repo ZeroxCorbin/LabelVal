@@ -19,7 +19,6 @@ using System.Collections.ObjectModel;
 using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using V275_REST_lib.Models;
@@ -70,11 +69,39 @@ public partial class ImageResults : ObservableRecipient,
 
     private Dictionary<int, V275Repeat> TempV275Repeat { get; } = [];
 
-    public ImageResults() { RunControl = new RunControl(this); IsActive = true; }
+    public ImageResults()
+    {
+        RunControl = new RunControl(this);
+        IsActive = true;
+        RecieveAll();
+    }
+
+    private void RecieveAll()
+    {
+        RequestMessage<Node> mes1 = new();
+        WeakReferenceMessenger.Default.Send(mes1);
+        SelectedNode = mes1.Response;
+
+        RequestMessage<ImageRollEntry> mes3 = new();
+        WeakReferenceMessenger.Default.Send(mes3);
+        SelectedImageRoll = mes3.Response;
+
+        RequestMessage<PrinterSettings> mes2 = new();
+        WeakReferenceMessenger.Default.Send(mes2);
+        SelectedPrinter = mes2.Response;
+
+        RequestMessage<Databases.ImageResultsDatabase> mes4 = new();
+        WeakReferenceMessenger.Default.Send(mes4);
+        SelectedDatabase = mes4.Response;
+
+        RequestMessage<Scanner> mes5 = new();
+        WeakReferenceMessenger.Default.Send(mes5);
+        SelectedScanner = mes5.Response;
+    }
 
     public void ClearImageResultsList()
     {
-        foreach (var lab in ImageResultsList)
+        foreach (ImageResultEntry lab in ImageResultsList)
         {
             lab.V275ProcessImage -= V275ProcessImage;
             //lab.DeleteImage -= DeleteImage;
@@ -92,10 +119,10 @@ public partial class ImageResults : ObservableRecipient,
         if (SelectedImageRoll.Images.Count == 0)
             await SelectedImageRoll.LoadImages();
 
-        var taskList = new List<Task>();
-        foreach (var img in SelectedImageRoll.Images)
+        List<Task> taskList = new();
+        foreach (ImageEntry img in SelectedImageRoll.Images)
         {
-            var tsk = App.Current.Dispatcher.BeginInvoke(() => AddImageResultEntry(img)).Task;
+            Task tsk = App.Current.Dispatcher.BeginInvoke(() => AddImageResultEntry(img)).Task;
             taskList.Add(tsk);
         }
 
@@ -107,29 +134,29 @@ public partial class ImageResults : ObservableRecipient,
     {
         if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
         {
-            var itm = e.NewItems.Cast<ImageEntry>().FirstOrDefault();
+            ImageEntry itm = e.NewItems.Cast<ImageEntry>().FirstOrDefault();
             AddImageResultEntry(itm);
         }
         else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
         {
-            var itm = e.OldItems.Cast<ImageEntry>().FirstOrDefault();
+            ImageEntry itm = e.OldItems.Cast<ImageEntry>().FirstOrDefault();
             RemoveImageResultEntry(itm);
         }
     }
 
     private void AddImageResultEntry(ImageEntry img)
     {
-        var tmp = new ImageResultEntry(img, this);
+        ImageResultEntry tmp = new(img, this);
         tmp.V275ProcessImage += V275ProcessImage;
 
-        if(img.IsNew)
+        if (img.IsNew)
             tmp.V5ProcessCommand.Execute("sensor");
 
         ImageResultsList.Add(tmp);
     }
     private void RemoveImageResultEntry(ImageEntry img)
     {
-        var itm = ImageResultsList.FirstOrDefault(ir => ir.SourceImage == img);
+        ImageResultEntry itm = ImageResultsList.FirstOrDefault(ir => ir.SourceImage == img);
         if (itm != null)
         {
             itm.V275ProcessImage -= V275ProcessImage;
@@ -139,7 +166,7 @@ public partial class ImageResults : ObservableRecipient,
 
         // Reorder the remaining items in the list
         int order = 1;
-        foreach (var item in ImageResultsList.OrderBy(item => item.SourceImage.Order))
+        foreach (ImageResultEntry item in ImageResultsList.OrderBy(item => item.SourceImage.Order))
         {
             item.SourceImage.Order = order++;
             SelectedImageRoll.SaveImage(item.SourceImage);
@@ -155,12 +182,12 @@ public partial class ImageResults : ObservableRecipient,
     [RelayCommand] private void MoveImageUp(ImageResultEntry imageResult) => AdjustOrderForMove(imageResult, false);
     [RelayCommand] private void MoveImageDown(ImageResultEntry imageResult) => AdjustOrderForMove(imageResult, true);
     [RelayCommand] private void MoveImageBottom(ImageResultEntry imageResult) => ChangeOrderTo(imageResult, ImageResultsList.Count);
-     
+
     [RelayCommand]
     private void AddV5Image()
     {
-        var bees = BitmapImageUtilities.ImageToBytesPNG(BitmapImageUtilities.CreateRandomBitmapImage(50, 50));
-        var imagEntry = SelectedImageRoll.GetNewImageEntry(bees);
+        byte[] bees = BitmapImageUtilities.ImageToBytesPNG(BitmapImageUtilities.CreateRandomBitmapImage(50, 50));
+        ImageEntry imagEntry = SelectedImageRoll.GetNewImageEntry(bees);
         imagEntry.IsPlaceholder = true;
         imagEntry.IsNew = true;
 
@@ -169,35 +196,35 @@ public partial class ImageResults : ObservableRecipient,
     [RelayCommand]
     private void AddImageTop()
     {
-        var newImages = PromptForNewImages(); // Prompt the user to select multiple images
+        List<ImageResultEntry> newImages = PromptForNewImages(); // Prompt the user to select multiple images
         if (newImages != null && newImages.Count != 0)
             InsertImageAtOrder(newImages, 1);
     }
     [RelayCommand]
     private void AddImageAbove(ImageResultEntry imageResult)
     {
-        var newImages = PromptForNewImages(); // Prompt the user to select multiple images
+        List<ImageResultEntry> newImages = PromptForNewImages(); // Prompt the user to select multiple images
         if (newImages != null && newImages.Count != 0)
             InsertImageAtOrder(newImages, imageResult.SourceImage.Order);
     }
     [RelayCommand]
     private void AddImageBelow(ImageResultEntry imageResult)
     {
-        var newImages = PromptForNewImages(); // Prompt the user to select multiple images
+        List<ImageResultEntry> newImages = PromptForNewImages(); // Prompt the user to select multiple images
         if (newImages != null && newImages.Count != 0)
             InsertImageAtOrder(newImages, imageResult.SourceImage.Order + 1);
     }
     [RelayCommand]
     private void AddImageBottom()
     {
-        var newImages = PromptForNewImages(); // Prompt the user to select multiple images
+        List<ImageResultEntry> newImages = PromptForNewImages(); // Prompt the user to select multiple images
         if (newImages != null && newImages.Count != 0)
             InsertImageAtOrder(newImages, ImageResultsList.Count + 1);
     }
 
     private ImageResultEntry PromptForNewImage()
     {
-        var settings = new Utilities.FileUtilities.LoadFileDialogSettings
+        FileUtilities.LoadFileDialogSettings settings = new()
         {
             Filters =
             [
@@ -208,7 +235,7 @@ public partial class ImageResults : ObservableRecipient,
 
         if (Utilities.FileUtilities.LoadFileDialog(settings))
         {
-            var newImage = SelectedImageRoll.GetNewImageEntry(settings.SelectedFile, 0); // Order will be set in InsertImageAtOrder
+            ImageEntry newImage = SelectedImageRoll.GetNewImageEntry(settings.SelectedFile, 0); // Order will be set in InsertImageAtOrder
             return new ImageResultEntry(newImage, this);
         }
 
@@ -216,7 +243,7 @@ public partial class ImageResults : ObservableRecipient,
     }
     private List<ImageResultEntry> PromptForNewImages()
     {
-        var settings = new Utilities.FileUtilities.LoadFileDialogSettings
+        FileUtilities.LoadFileDialogSettings settings = new()
         {
             Filters =
             [
@@ -228,10 +255,10 @@ public partial class ImageResults : ObservableRecipient,
 
         if (Utilities.FileUtilities.LoadFileDialog(settings))
         {
-            var newImages = new List<ImageResultEntry>();
-            foreach (var filePath in settings.SelectedFiles) // Iterate over selected files
+            List<ImageResultEntry> newImages = new();
+            foreach (string filePath in settings.SelectedFiles) // Iterate over selected files
             {
-                var newImage = SelectedImageRoll.GetNewImageEntry(filePath, 0); // Order will be set in InsertImageAtOrder
+                ImageEntry newImage = SelectedImageRoll.GetNewImageEntry(filePath, 0); // Order will be set in InsertImageAtOrder
                 if (newImage != null)
                 {
                     newImages.Add(new ImageResultEntry(newImage, this));
@@ -257,8 +284,8 @@ public partial class ImageResults : ObservableRecipient,
     }
     public void IncreaseOrder(ImageResultEntry itemToMove)
     {
-        var currentItemOrder = itemToMove.SourceImage.Order;
-        var nextItem = ImageResultsList.FirstOrDefault(item => item.SourceImage.Order == currentItemOrder + 1);
+        int currentItemOrder = itemToMove.SourceImage.Order;
+        ImageResultEntry nextItem = ImageResultsList.FirstOrDefault(item => item.SourceImage.Order == currentItemOrder + 1);
         if (nextItem != null)
         {
             // Swap the order values
@@ -271,8 +298,8 @@ public partial class ImageResults : ObservableRecipient,
     }
     public void DecreaseOrder(ImageResultEntry itemToMove)
     {
-        var currentItemOrder = itemToMove.SourceImage.Order;
-        var previousItem = ImageResultsList.FirstOrDefault(item => item.SourceImage.Order == currentItemOrder - 1);
+        int currentItemOrder = itemToMove.SourceImage.Order;
+        ImageResultEntry previousItem = ImageResultsList.FirstOrDefault(item => item.SourceImage.Order == currentItemOrder - 1);
         if (previousItem != null)
         {
             // Swap the order values
@@ -296,7 +323,7 @@ public partial class ImageResults : ObservableRecipient,
         if (newOrder > originalOrder)
         {
             // Moving down in the list
-            foreach (var item in ImageResultsList.Where(item => item.SourceImage.Order > originalOrder && item.SourceImage.Order <= newOrder))
+            foreach (ImageResultEntry item in ImageResultsList.Where(item => item.SourceImage.Order > originalOrder && item.SourceImage.Order <= newOrder))
             {
                 item.SourceImage.Order--;
                 SelectedImageRoll.SaveImage(item.SourceImage);
@@ -305,7 +332,7 @@ public partial class ImageResults : ObservableRecipient,
         else
         {
             // Moving up in the list
-            foreach (var item in ImageResultsList.Where(item => item.SourceImage.Order < originalOrder && item.SourceImage.Order >= newOrder))
+            foreach (ImageResultEntry item in ImageResultsList.Where(item => item.SourceImage.Order < originalOrder && item.SourceImage.Order >= newOrder))
             {
                 item.SourceImage.Order++;
                 SelectedImageRoll.SaveImage(item.SourceImage);
@@ -333,13 +360,13 @@ public partial class ImageResults : ObservableRecipient,
         if (newImageResults == null || !newImageResults.Any()) return;
 
         // Sort the new images by their current order (if any) to maintain consistency in their addition
-        var sortedNewImages = newImageResults.OrderBy(img => img.SourceImage.Order).ToList();
+        List<ImageResultEntry> sortedNewImages = newImageResults.OrderBy(img => img.SourceImage.Order).ToList();
 
         // Adjust the orders of existing items to make space for the new items
         AdjustOrdersBeforeInsert(targetOrder, newImageResults.Count);
 
         // Insert each new image at the adjusted target order
-        foreach (var newImageResult in sortedNewImages)
+        foreach (ImageResultEntry newImageResult in sortedNewImages)
         {
             // Set the order of the new item
             newImageResult.SourceImage.Order = targetOrder++;
@@ -348,7 +375,7 @@ public partial class ImageResults : ObservableRecipient,
     }
     private void AdjustOrdersBeforeInsert(int targetOrder)
     {
-        foreach (var item in ImageResultsList)
+        foreach (ImageResultEntry item in ImageResultsList)
         {
             if (item.SourceImage.Order >= targetOrder)
             {
@@ -360,7 +387,7 @@ public partial class ImageResults : ObservableRecipient,
     }
     private void AdjustOrdersBeforeInsert(int targetOrder, int numberOfNewItems)
     {
-        foreach (var item in ImageResultsList)
+        foreach (ImageResultEntry item in ImageResultsList)
         {
             if (item.SourceImage.Order >= targetOrder)
             {
@@ -437,7 +464,7 @@ public partial class ImageResults : ObservableRecipient,
         //This will wait for the repeat to complete or turn off the working flag if it takes too long
         _ = Task.Run(() =>
         {
-            var start = DateTime.Now;
+            DateTime start = DateTime.Now;
             while (WaitForRepeat)
             {
                 if ((DateTime.Now - start) > TimeSpan.FromMilliseconds(10000))
@@ -461,7 +488,7 @@ public partial class ImageResults : ObservableRecipient,
 
     private Task StartPrint(ImageResultEntry imageResults) => Task.Run(() =>
     {
-        var printer = new Printer.Controller();
+        Printer.Controller printer = new();
 
         //if (RunViewModel.State != Run.Controller.RunStates.IDLE)
         //{
@@ -469,7 +496,7 @@ public partial class ImageResults : ObservableRecipient,
         //    printer.Print(imageResults.SourceImage, 1, SelectedPrinter.PrinterName, data);
         //}
         //else
-            printer.Print(imageResults.SourceImage, PrintCount, SelectedPrinter.PrinterName, "");
+        printer.Print(imageResults.SourceImage, PrintCount, SelectedPrinter.PrinterName, "");
     });
 
     private async void V275ProcessImage_API(ImageResultEntry imageResults, string type)
@@ -501,19 +528,19 @@ public partial class ImageResults : ObservableRecipient,
     {
         try
         {
-            var verRes = 1;
-            var prepend = "";
+            int verRes = 1;
+            string prepend = "";
 
-            var sim = new Simulator.SimulatorFileHandler();
+            Simulator.SimulatorFileHandler sim = new();
 
             if (!sim.DeleteAllImages())
             {
-                var verCur = SelectedNode.Product.part?[(SelectedNode.Product.part.LastIndexOf('-') + 1)..];
+                string verCur = SelectedNode.Product.part?[(SelectedNode.Product.part.LastIndexOf('-') + 1)..];
 
                 if (verCur != null)
                 {
-                    var ver = System.Version.Parse(verCur);
-                    var verMin = System.Version.Parse("1.1.0.3009");
+                    Version ver = System.Version.Parse(verCur);
+                    Version verMin = System.Version.Parse("1.1.0.3009");
                     verRes = ver.CompareTo(ver);
                 }
 
@@ -529,9 +556,9 @@ public partial class ImageResults : ObservableRecipient,
 
                     prepend = "_";
 
-                    foreach (var imgFile in sim.Images)
+                    foreach (string imgFile in sim.Images)
                     {
-                        var name = Path.GetFileName(imgFile);
+                        string name = Path.GetFileName(imgFile);
 
                         for (; ; )
                         {
@@ -592,7 +619,7 @@ public partial class ImageResults : ObservableRecipient,
                     return;
                 }
 
-            var i = await TempV275Repeat[repeat].ImageResult.V275LoadTask();
+            int i = await TempV275Repeat[repeat].ImageResult.V275LoadTask();
 
             if (i == 0)
             {
@@ -602,11 +629,11 @@ public partial class ImageResults : ObservableRecipient,
 
             if (i == 2)
             {
-                var sectors = SelectedNode.Connection.CreateSectors(SelectedNode.Connection.SetupDetectEvent, V275GetTableID(SelectedImageRoll.SelectedGS1Table), SelectedNode.Symbologies);
+                List<Sector_New_Verify> sectors = SelectedNode.Connection.CreateSectors(SelectedNode.Connection.SetupDetectEvent, V275GetTableID(SelectedImageRoll.SelectedGS1Table), SelectedNode.Symbologies);
 
                 LogInfo("Creating sectors.");
 
-                foreach (var sec in sectors)
+                foreach (Sector_New_Verify sec in sectors)
                 {
                     if (!await SelectedNode.Connection.AddSector(sec.name, JsonConvert.SerializeObject(sec)))
                     {
@@ -705,7 +732,7 @@ public partial class ImageResults : ObservableRecipient,
     }
     private bool StartRunCheck()
     {
-        foreach (var lab in ImageResultsList)
+        foreach (ImageResultEntry lab in ImageResultsList)
             if (lab.V275StoredSectors.Count == 0)
                 return false;
         return true;

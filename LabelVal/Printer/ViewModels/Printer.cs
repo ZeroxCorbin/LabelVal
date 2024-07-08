@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.Messages;
 using System.Collections.ObjectModel;
 using System.Drawing.Printing;
@@ -14,14 +15,13 @@ public partial class Printer : ObservableRecipient
 
 
     [ObservableProperty][NotifyPropertyChangedRecipients] private PrinterSettings selectedPrinter;
-
     [ObservableProperty] private string selectedPrinterName;
     partial void OnSelectedPrinterNameChanged(string value)
     {
         if (!string.IsNullOrEmpty(value))
         {
-            App.Settings.SetValue(nameof(SelectedPrinterName), value);
             SelectedPrinter = new PrinterSettings() { PrinterName = value };
+            App.Settings.SetValue(nameof(SelectedPrinterName), value);
         }
         else
             SelectedPrinter = null;
@@ -30,7 +30,17 @@ public partial class Printer : ObservableRecipient
     [ObservableProperty] private int printCount = App.Settings.GetValue<int>(nameof(PrintCount), 1, true);
     partial void OnPrintCountChanged(int value) => App.Settings.SetValue(nameof(PrintCount), value);
 
-    public Printer() => LoadPrinters();
+    public Printer()
+    {
+        WeakReferenceMessenger.Default.Register<RequestMessage<PrinterSettings>>(
+            this,
+            (recipient, message) =>
+            {
+                message.Reply(SelectedPrinter);
+            });
+
+        LoadPrinters();
+    }
 
     private void LoadPrinters()
     {

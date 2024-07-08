@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.Messages;
 using MahApps.Metro.Controls.Dialogs;
 using System;
@@ -32,6 +33,13 @@ public partial class ImageResultsDatabases : ObservableRecipient
     {
         LoadImageResultsDatabasesList();
         SelectImageResultsDatabase();
+
+        WeakReferenceMessenger.Default.Register<RequestMessage<Databases.ImageResultsDatabase>>(
+            this,
+            (recipient, message) =>
+            {
+                message.Reply(SelectedDatabase);
+            });
     }
 
     public async Task OkDialog(string title, string message) => _ = await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.Affirmative);

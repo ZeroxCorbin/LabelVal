@@ -5,6 +5,7 @@ using LabelVal.Results.Databases;
 using LabelVal.Run.Databases;
 using System;
 using System.Collections.ObjectModel;
+using System.Drawing.Printing;
 
 namespace LabelVal.Run.ViewModels;
 public partial class RunResults : ObservableRecipient, IRecipient<PropertyChangedMessage<RunEntry>>
