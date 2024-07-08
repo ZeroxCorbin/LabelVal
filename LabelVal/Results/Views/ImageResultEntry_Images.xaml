@@ -654,9 +654,9 @@
                     <!--Printer-->
                     <GroupBox DockPanel.Dock="Top" VerticalAlignment="Top" Margin="3" Padding="3"
                               Background="{DynamicResource MahApps.Brushes.ThemeBackground}" 
-                  Style="{StaticResource MaterialDesignCardGroupBox}"
-                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                md:ColorZoneAssist.Mode="Custom">
+                              Style="{StaticResource MaterialDesignCardGroupBox}"
+                            md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                            md:ColorZoneAssist.Mode="Custom">
 
                         <GroupBox.Header>
                             <DockPanel Margin="-5">
@@ -692,9 +692,9 @@
                     <!--V5-->
                     <GroupBox DockPanel.Dock="Top" VerticalAlignment="Top" Margin="3" Padding="3"
                               Background="{DynamicResource MahApps.Brushes.ThemeBackground}" 
-                  Style="{StaticResource MaterialDesignCardGroupBox}"
-                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                md:ColorZoneAssist.Mode="Custom">
+                              Style="{StaticResource MaterialDesignCardGroupBox}"
+                            md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                            md:ColorZoneAssist.Mode="Custom">
 
                         <GroupBox.Header>
                             <DockPanel Margin="-5">

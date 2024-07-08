@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
@@ -7,12 +8,14 @@ using LabelVal.Results.ViewModels;
 using LabelVal.Run.Databases;
 using LabelVal.Utilities;
 using MahApps.Metro.Controls.Dialogs;
+using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing.Printing;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -80,6 +83,33 @@ public partial class RunResult : ObservableRecipient, IImageResultEntry, IRecipi
         IsActive = true;
     }
 
+    [RelayCommand]
+    private void Save(string type)
+    {
+        //SendTo95xxApplication();
+
+        string path = GetSaveFilePath();
+        if (string.IsNullOrEmpty(path)) return;
+        try
+        {
+            byte[] bmp = type == "v275Stored"
+                    ? V275StoredImage.GetBitmapBytes()
+                    : type == "v275Current"
+                    ? V275CurrentImage.GetBitmapBytes()
+                    : type == "v5Stored"
+                    ? V5StoredImage.GetBitmapBytes()
+                    : type == "v5Current" 
+                    ? V5CurrentImage.GetBitmapBytes() 
+                    : SourceImage.GetBitmapBytes();
+            if (bmp != null)
+            {
+                _ = SaveImageBytesToFile(path, bmp);
+                Clipboard.SetText(path);
+            }
+        }
+        catch { }
+    }
+
     public static GlyphRun CreateGlyphRun(string text, Typeface typeface, double emSize, Point baselineOrigin)
     {
         GlyphTypeface glyphTypeface;
@@ -133,6 +163,24 @@ public partial class RunResult : ObservableRecipient, IImageResultEntry, IRecipi
         }
         return distanceComparison;
     });
+
+    private string GetSaveFilePath()
+    {
+        SaveFileDialog saveFileDialog1 = new()
+        {
+            Filter = "Bitmap Image|*.bmp",//|Gif Image|*.gif|JPeg Image|*.jpg";
+            Title = "Save an Image File"
+        };
+        _ = saveFileDialog1.ShowDialog();
+
+        return saveFileDialog1.FileName;
+    }
+    private string SaveImageBytesToFile(string path, byte[] img)
+    {
+        File.WriteAllBytes(path, img);
+        return "";
+    }
+
 
     #region Recieve Messages    
     public void Receive(PropertyChangedMessage<PrinterSettings> message) => SelectedPrinter = message.NewValue;
