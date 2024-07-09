@@ -412,6 +412,8 @@ public partial class ImageResults : ObservableRecipient,
             _ = StartPrint(imageResults);
 
             imageResults.IsV275Working = false;
+            WaitForRepeat = false;
+            PrintingImageResult = null;
 
             return;
         }
@@ -437,12 +439,8 @@ public partial class ImageResults : ObservableRecipient,
             {
                 imageResults.IsV275Working = false;
 
-                if (!await SelectedNode.Connection.Commands.TriggerSimulator())
-                {
+                if (!await SelectedNode.Connection.Commands.SimulationTrigger())
                     LogError("Error triggering the simulator.");
-                    imageResults.IsV275Working = false;
-                    return;
-                }
             }
         }
         else
@@ -480,10 +478,13 @@ public partial class ImageResults : ObservableRecipient,
             }
         });
 
-        if (SelectedNode.State != V275.ViewModels.NodeStates.Idle && SelectedNode.IsLoggedIn_Control)
+
+        if (!SelectedNode.IsSimulator && SelectedNode.State != V275.ViewModels.NodeStates.Idle && SelectedNode.IsLoggedIn_Control)
             await SelectedNode.EnablePrint("1");
-        else if (SelectedNode.IsSimulator)
-            _ = await SelectedNode.Connection.SimulatorTogglePrint();
+
+        //Trigger the simulator if it is using the local file system
+        if (SelectedNode.IsSimulator && App.Settings.GetValue<string>(nameof(V275.ViewModels.V275.V275_Host)).Equals("127.0.0.1"))
+            _ = await SelectedNode.Connection.Commands.SimulationTrigger();
     }
 
     private Task StartPrint(ImageResultEntry imageResults) => Task.Run(() =>
@@ -517,7 +518,7 @@ public partial class ImageResults : ObservableRecipient,
             return;
         }
 
-        if (!await SelectedNode.Connection.Commands.TriggerSimulator(new V275_REST_Lib.Models.SimulationTrigger() { image = img.GetPngBytes(), dpi = (int)img.Image.DpiX }))
+        if (!await SelectedNode.Connection.Commands.SimulationTriggerImage(new V275_REST_Lib.Models.SimulationTrigger() { image = img.GetPngBytes(), dpi = (uint)Math.Round(img.Image.DpiX, 0) }))
         {
             LogError("Error triggering the simulator.");
             imageResults.IsV275Working = false;

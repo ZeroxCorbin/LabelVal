@@ -31,9 +31,8 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
 
     public V275_REST_lib.Controller Connection { get; }
 
-    private string V275_Host = App.Settings.GetValue<string>(nameof(V275.V275_Host));
-
-    private uint V275_SystemPort = App.Settings.GetValue<uint>(nameof(V275.V275_SystemPort));
+    private string V275_Host => App.Settings.GetValue<string>(nameof(V275.V275_Host));
+    private uint V275_SystemPort => App.Settings.GetValue<uint>(nameof(V275.V275_SystemPort));
 
     private static string UserName => App.Settings.GetValue<string>(nameof(V275.UserName));
     private static string Password => App.Settings.GetValue<string>(nameof(V275.Password));
@@ -61,6 +60,11 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
     private static string SimulatorImageDirectory => App.Settings.GetValue<string>(nameof(V275.SimulatorImageDirectory));
 
     [ObservableProperty] private NodeStates state = NodeStates.Offline;
+
+    [ObservableProperty] private int dpi = 600;
+    partial void OnDpiChanged(int value) => Is600Dpi = value == 600;
+    [ObservableProperty] private bool is600Dpi = true;
+
     [ObservableProperty] private string jobName = "";
     partial void OnJobNameChanged(string value)
     {
@@ -83,6 +87,7 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
         }
     }
     private bool userChange;
+
 
     [ObservableProperty] private Jobs.Job selectedJob;
     partial void OnSelectedJobChanged(Jobs.Job value)
@@ -134,9 +139,15 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
         Connection.WebSocket.SessionStateChange += WebSocket_SessionStateChange;
         Connection.StateChanged += V275_StateChanged;
 
+        App.Settings.PropertyChanged -= Settings_PropertyChanged;
         App.Settings.PropertyChanged += Settings_PropertyChanged;
 
         IsActive = true;
+    }
+
+    ~Node()
+    {
+        App.Settings.PropertyChanged -= Settings_PropertyChanged;
     }
 
     public async Task OkDialog(string title, string message) => _ = await DialogCoordinator.Instance.ShowMessageAsync(this, title, message, MessageDialogStyle.Affirmative);
@@ -145,11 +156,7 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
 
     private void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(V275.V275_Host))
-            Connection.Commands.Host = V275_Host;
-        else if (e.PropertyName == nameof(V275.V275_SystemPort))
-            Connection.Commands.SystemPort = V275_SystemPort;
-        else if (e.PropertyName == "SelectedLanguage")
+        if (e.PropertyName == "SelectedLanguage")
             OnPropertyChanged(nameof(State));
     }
 
@@ -164,6 +171,9 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
 
         if (!PreLogin())
             return;
+
+        Connection.Commands.SystemPort = V275_SystemPort;
+        Connection.Commands.Host = V275_Host;
 
         if (await Connection.Commands.Login(UserName, Password, LoginMonitor))
         {
@@ -223,26 +233,28 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
         Print = await Connection.Commands.GetPrint();
 
         //If the system is in simulator mode, adjust the simulation settings
-        if (IsSimulator && Connection.Commands.Host != "127.0.0.1")
+        if (IsSimulator)
         {
             Simulation = await Connection.Commands.GetSimulation();
 
-            // If the current simulation mode is 'continuous', change it to 'trigger' with a dwell time of 1ms
-            if (Simulation != null && Simulation.mode == "continuous")
-            {
-                Simulation.mode = "trigger";
-                Simulation.dwellMs = 1;
-                _ = await Connection.Commands.PutSimulation(Simulation);
-            }
+            if (Simulation != null)
+                if (Connection.Commands.Host != "127.0.0.1")
+                {
+                    Simulation.mode = "trigger";
+                    Simulation.dwellMs = 1;
+                    _ = await Connection.Commands.PutSimulation(Simulation);
+                }
+                else
+                {
+                    Simulation.mode = "continuous";
+                    Simulation.dwellMs = 1000;
+                    _ = await Connection.Commands.PutSimulation(Simulation);
+                }
 
-            // Fetch the simulation settings again to ensure they have been updated correctly
             Simulation = await Connection.Commands.GetSimulation();
-            if (Simulation != null && Simulation.mode != "trigger")
-            {
-                // If the mode is not 'trigger', additional handling could be implemented here
-            }
         }
-        else Simulation = IsSimulator ? await Connection.Commands.GetSimulation() : null;
+        else
+            Simulation = null;
 
         // Request the server to send extended data
         _ = await Connection.Commands.SetSendExtendedData(true);
@@ -365,10 +377,11 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
                     if (ev.data.token != LoginData.token)
                         _ = Logout();
     }
-    private void V275_StateChanged(string state, string jobName)
+    private void V275_StateChanged(string state, string jobName, int dpi)
     {
         State = Enum.Parse<NodeStates>(state);
         JobName = jobName;
+        Dpi = dpi;
 
         if (JobName != "")
             CheckTemplateName();

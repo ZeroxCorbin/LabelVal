@@ -76,7 +76,7 @@ public partial class RunResult_Images : UserControl
         dc.LoadImage(image.Image, overlay);
         if (dc.Image == null) return false;
 
-        var yourParentWindow = (Main.Views.MainWindow)Window.GetWindow(this);
+        var yourParentWindow = (Run.Views.MainWindow)Window.GetWindow(this);
 
         dc.Width = yourParentWindow.ActualWidth - 100;
         dc.Height = yourParentWindow.ActualHeight - 100;

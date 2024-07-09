@@ -98,6 +98,24 @@
                                 <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                     <Setter Property="Text" Value="{loc:Loc Unknown}"/>
                                     <Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Value="camera" Binding="{Binding Inspection.device}"/>
+                                                <Condition Value="False" Binding="{Binding Is600Dpi}"/>
+                                            </MultiDataTrigger.Conditions>
+                                            
+                                            <Setter Property="Foreground" Value="Red"/>
+                                        </MultiDataTrigger>
+
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Value="simulator" Binding="{Binding Inspection.device}"/>
+                                                <Condition Value="False" Binding="{Binding Is600Dpi}"/>
+                                            </MultiDataTrigger.Conditions>
+
+                                            <Setter Property="Foreground" Value="Yellow"/>
+                                        </MultiDataTrigger>
+
                                         <DataTrigger Value="camera" Binding="{Binding Inspection.device}">
                                             <Setter Property="Text" Value="{loc:Loc Camera}"/>
                                         </DataTrigger>

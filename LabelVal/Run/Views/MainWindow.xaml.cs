@@ -1,5 +1,6 @@
 ﻿using ControlzEx.Theming;
 using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 using System.Windows;
 
 namespace LabelVal.Run.Views;
@@ -20,4 +21,7 @@ public partial class MainWindow : MetroWindow
 
     private void btnShowInfo_Click(object sender, RoutedEventArgs e) => popupInfo.IsOpen = true;
     private void btnShowError_Click(object sender, RoutedEventArgs e) => popupError.IsOpen = true;
+
+    private void MetroWindow_Closed(object sender, System.EventArgs e) => DialogParticipation.SetRegister(this, null);
+
 }
