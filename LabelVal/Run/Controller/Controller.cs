@@ -50,6 +50,7 @@ public partial class Controller : ObservableObject
     private bool OpenDatabase() => (RunDatabase = new RunDatabase().Open($"{App.RunsRoot}\\RunResults.sqlite")) != null;
     private bool UpdateRunEntry() => RunDatabase.InsertOrReplace(RunEntry) > 0;
     private bool RemoveRunEntry() => RunDatabase.DeleteLedgerEntry(RunEntry.UID) > 0;
+    private bool ExistRunEntry() => RunDatabase.ExistsLedgerEntry(RunEntry.UID);
 
     private async Task<RunStates> Start()
     {
@@ -194,7 +195,8 @@ public partial class Controller : ObservableObject
     {
         if (state is RunStates.Complete or RunStates.Stopped or RunStates.Error)
         {
-            _ = CurrentLabelCount != 0 ? UpdateRunEntry() : RemoveRunEntry();
+
+            _ = CurrentLabelCount != 0 ? UpdateRunEntry() : ExistRunEntry() && RemoveRunEntry();
             RunDatabase?.Close();
         }
 
