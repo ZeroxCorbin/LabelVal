@@ -12,7 +12,7 @@
              d:DataContext="{d:DesignInstance Type=ViewModels:Printer}"
              mc:Ignorable="d">
 
-    <GroupBox Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top" 
+    <!--<GroupBox Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top" 
                   Style="{StaticResource MaterialDesignCardGroupBox}"
                 md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
                 md:ColorZoneAssist.Mode="Custom">
@@ -31,50 +31,50 @@
                 </Button>
 
             </DockPanel>
-        </GroupBox.Header>
+        </GroupBox.Header>-->
 
-        <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Padding="2">
+    <!--<md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Padding="2">-->
 
-            <DockPanel>
+    <DockPanel>
 
 
-                <ComboBox ItemsSource="{Binding Printers}" SelectedItem="{Binding SelectedPrinterName}" Margin="3"
-                      md:HintAssist.FloatingHintHorizontalAlignment="Left">
-                    
-                    <ComboBox.Resources>
-                        <converters:PrinterSettingThousandthsToInches x:Key="printerSettingThousandthsToInches"/>
-                    </ComboBox.Resources>
-                    
-                    <ComboBox.Style>
-                        <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}">
-                            <Setter Property="md:HintAssist.Hint">
-                                <Setter.Value>
-                                    <TextBlock>
-                                        <Run Text="{Binding SelectedPrinter.DefaultPageSettings.PrintableArea.Width,StringFormat=N2, Converter={StaticResource printerSettingThousandthsToInches}}"/>
-                                        <Run Text="x"/>
-                                        <Run Text="{Binding SelectedPrinter.DefaultPageSettings.PrintableArea.Height,StringFormat=N2, Converter={StaticResource printerSettingThousandthsToInches}}"/>
-                                        <Run Text="inches ("/>
-                                        <Run Text="{Binding SelectedPrinter.DefaultPageSettings.PrinterResolution.X}"/>
-                                        <Run Text="DPI)"/>
-                                    </TextBlock>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </ComboBox.Style>
+        <ComboBox ItemsSource="{Binding Printers}" SelectedItem="{Binding SelectedPrinterName}"
+                  VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Height="44"
+                  md:HintAssist.FloatingOffset="0, -15">
 
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding }" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
+            <ComboBox.Resources>
+                <converters:PrinterSettingThousandthsToInches x:Key="printerSettingThousandthsToInches"/>
+            </ComboBox.Resources>
 
-                <TextBox Text="{Binding PrintCount}" md:HintAssist.Hint="# Copies" Margin="3" HorizontalContentAlignment="Center" VerticalContentAlignment="Bottom"
-                        md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left"
-                        IsEnabled="{Binding SelectedNode.IsNotLoggedIn_Control}"/>
+            <ComboBox.Style>
+                <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}">
+                    <Setter Property="md:HintAssist.Hint">
+                        <Setter.Value>
+                            <TextBlock>
+                                <Run Text="{Binding SelectedPrinter.DefaultPageSettings.PrintableArea.Width,StringFormat=N2, Converter={StaticResource printerSettingThousandthsToInches}}"/>
+                                <Run Text="x"/>
+                                <Run Text="{Binding SelectedPrinter.DefaultPageSettings.PrintableArea.Height,StringFormat=N2, Converter={StaticResource printerSettingThousandthsToInches}}"/>
+                                <Run Text="inches ("/>
+                                <Run Text="{Binding SelectedPrinter.DefaultPageSettings.PrinterResolution.X}"/>
+                                <Run Text="DPI )"/>
+                            </TextBlock>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ComboBox.Style>
 
-            </DockPanel>
-        </md:Card>
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding }" />
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
 
-    </GroupBox>
+        <!--<TextBox Grid.Column="1" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Text="{Binding PrintCount}" md:HintAssist.Hint="# Copies" 
+                        md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>-->
+
+    </DockPanel>
+    <!--</md:Card>-->
+
+    <!--</GroupBox>-->
 </UserControl>

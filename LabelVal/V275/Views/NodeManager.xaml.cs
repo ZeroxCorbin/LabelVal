@@ -7,9 +7,9 @@ namespace LabelVal.V275.Views;
 /// <summary>
 /// Interaction logic for V275NodesView.xaml
 /// </summary>
-public partial class V275 : UserControl
+public partial class NodeManager : UserControl
 {
-    public V275() {
+    public NodeManager() {
         //Register KeyUpEvent to all TextBox elements
         EventManager.RegisterClassHandler(typeof(TextBox),
             TextBox.KeyUpEvent,
@@ -52,7 +52,7 @@ public partial class V275 : UserControl
 
     private void btnOpenInBrowser_Click(object sender, RoutedEventArgs e)
     {
-        var v275 = $"http://{((ViewModels.V275)DataContext).V275_Host}:{((ViewModels.V275)DataContext).V275_SystemPort}";
+        var v275 = $"http://{((ViewModels.NodeManager)DataContext).V275_Host}:{((ViewModels.NodeManager)DataContext).V275_SystemPort}";
         var ps = new ProcessStartInfo(v275)
         {
             UseShellExecute = true,

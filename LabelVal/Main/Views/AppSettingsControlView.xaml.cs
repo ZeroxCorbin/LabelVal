@@ -23,7 +23,7 @@ public partial class AppSettingsControlView : UserControl
 
         if (result == System.Windows.Forms.DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
         {
-            ((ViewModels.MainWindow)DataContext).V275.SimulatorImageDirectory = fbd.SelectedPath;
+            ((ViewModels.MainWindow)DataContext).NodeManager.SimulatorImageDirectory = fbd.SelectedPath;
         }
     }
 

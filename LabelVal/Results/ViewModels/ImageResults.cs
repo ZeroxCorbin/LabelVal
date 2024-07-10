@@ -429,7 +429,7 @@ public partial class ImageResults : ObservableRecipient,
             PrintingImageResult = null;
         }
 
-        if (SelectedNode.IsSimulator && !App.Settings.GetValue<string>(nameof(V275.ViewModels.V275.V275_Host)).Equals("127.0.0.1"))
+        if (SelectedNode.IsSimulator && !App.Settings.GetValue<string>(nameof(V275.ViewModels.NodeManager.V275_Host)).Equals("127.0.0.1"))
             V275ProcessImage_API(imageResults, type);
         else if (SelectedNode.IsSimulator)
         {
@@ -483,7 +483,7 @@ public partial class ImageResults : ObservableRecipient,
             await SelectedNode.EnablePrint("1");
 
         //Trigger the simulator if it is using the local file system
-        if (SelectedNode.IsSimulator && App.Settings.GetValue<string>(nameof(V275.ViewModels.V275.V275_Host)).Equals("127.0.0.1"))
+        if (SelectedNode.IsSimulator && App.Settings.GetValue<string>(nameof(V275.ViewModels.NodeManager.V275_Host)).Equals("127.0.0.1"))
             _ = await SelectedNode.Connection.Commands.SimulationTrigger();
     }
 

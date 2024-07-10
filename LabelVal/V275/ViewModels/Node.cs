@@ -31,11 +31,11 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
 
     public V275_REST_lib.Controller Connection { get; }
 
-    private string V275_Host => App.Settings.GetValue<string>(nameof(V275.V275_Host));
-    private uint V275_SystemPort => App.Settings.GetValue<uint>(nameof(V275.V275_SystemPort));
+    private string V275_Host => App.Settings.GetValue<string>(nameof(NodeManager.V275_Host));
+    private uint V275_SystemPort => App.Settings.GetValue<uint>(nameof(NodeManager.V275_SystemPort));
 
-    private static string UserName => App.Settings.GetValue<string>(nameof(V275.UserName));
-    private static string Password => App.Settings.GetValue<string>(nameof(V275.Password));
+    private static string UserName => App.Settings.GetValue<string>(nameof(NodeManager.UserName));
+    private static string Password => App.Settings.GetValue<string>(nameof(NodeManager.Password));
 
     [ObservableProperty] private bool loginMonitor;
 
@@ -57,7 +57,7 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
     [ObservableProperty] private Print print;
 
     public bool IsSimulator => Inspection != null && Inspection.device.Equals("simulator");
-    private static string SimulatorImageDirectory => App.Settings.GetValue<string>(nameof(V275.SimulatorImageDirectory));
+    private static string SimulatorImageDirectory => App.Settings.GetValue<string>(nameof(NodeManager.SimulatorImageDirectory));
 
     [ObservableProperty] private NodeStates state = NodeStates.Offline;
 

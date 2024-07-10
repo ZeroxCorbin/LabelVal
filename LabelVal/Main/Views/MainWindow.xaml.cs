@@ -1,15 +1,10 @@
 ﻿using ControlzEx.Theming;
-using LabelVal.Utilities;
 using MahApps.Metro.Controls;
 using System.Windows;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Windows.Media;
 
 namespace LabelVal.Main.Views;
 
-/// <summary>
-/// Interaction logic for MainWindowView.xaml
-/// </summary>
 public partial class MainWindow : MetroWindow
 {
     public MainWindow()
@@ -33,4 +28,19 @@ public partial class MainWindow : MetroWindow
 
     private void btnShowInfo_Click(object sender, RoutedEventArgs e) => popupInfo.IsOpen = true;
     private void btnShowError_Click(object sender, RoutedEventArgs e) => popupError.IsOpen = true;
+
+    private void HamburgerMenu_ItemClick(object sender, ItemClickEventArgs args)
+    {
+        if (args.ClickedItem is Main.ViewModels.HamburgerMenuItem menuItem && menuItem.IsNotSelectable)
+        {
+            hamMenu.IsPaneOpen = !hamMenu.IsPaneOpen;
+            args.Handled = true;
+        }
+            
+    }
+
+    private void btnHamburger_Click(object sender, RoutedEventArgs e)
+    {
+        //hamMenu.IsPaneOpen = !hamMenu.IsPaneOpen;
+    }
 }

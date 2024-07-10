@@ -5,6 +5,7 @@ using LabelVal.Messages;
 using MahApps.Metro.Controls.Dialogs;
 using RingBuffer;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Threading.Tasks;
 using System.Windows;
@@ -24,7 +25,10 @@ public partial class MainWindow : ObservableRecipient, IRecipient<SystemMessages
     public RingBufferCollection<SystemMessages.StatusMessage> SystemMessages_ErrorWarning { get; } = new RingBufferCollection<SystemMessages.StatusMessage>(10);
     public SystemMessages.StatusMessage SystemMessages_RecentError => SystemMessages_ErrorWarning.Count > 0 ? SystemMessages_ErrorWarning[SystemMessages_ErrorWarning.Head] : null;
 
-    public V275.ViewModels.V275 V275 { get; }
+    public ObservableCollection<HamburgerMenuItem> MenuItems { get; }
+    [ObservableProperty] HamburgerMenuItem selectedMenuItem;
+ 
+    public V275.ViewModels.NodeManager NodeManager { get; }
     public V275.ViewModels.NodeDetails NodeDetails { get; }
 
     public Printer.ViewModels.Printer Printer { get; }
@@ -62,13 +66,21 @@ public partial class MainWindow : ObservableRecipient, IRecipient<SystemMessages
         ScannerDetails = new V5.ViewModels.ScannerDetails();
 
         Printer = new Printer.ViewModels.Printer();
-        V275 = new V275.ViewModels.V275();
+        NodeManager = new V275.ViewModels.NodeManager();
         ScannerManager = new V5.ViewModels.ScannerManager();
         VerifierManager = new LVS_95xx.ViewModels.VerifierManager();
 
         ImageRolls = new ImageRolls.ViewModels.ImageRolls();
         ImageResultsDatabases = new Results.ViewModels.ImageResultsDatabases();
         ImageResults = new Results.ViewModels.ImageResults();
+
+        MenuItems = new ObservableCollection<HamburgerMenuItem>
+        {    
+            new HamburgerMenuItem { Label = "Results", Content = ImageResultsDatabases },  
+            new HamburgerMenuItem { Label = "V275", Content = NodeManager },
+            new HamburgerMenuItem { Label = "V5", Content = ScannerManager },
+            new HamburgerMenuItem { Label = "L95xx", Content = VerifierManager },
+        };
     }
 
     public void Receive(SystemMessages.StatusMessage message)

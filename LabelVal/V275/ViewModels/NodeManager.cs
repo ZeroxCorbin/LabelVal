@@ -7,16 +7,18 @@ using LabelVal.Main.ViewModels;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing.Printing;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 using V275_REST_lib.Models;
 using V275_REST_Lib.Models;
 
 namespace LabelVal.V275.ViewModels;
 
-public partial class V275 : ObservableRecipient, IRecipient<PropertyChangedMessage<ImageRollEntry>>
+public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChangedMessage<ImageRollEntry>>
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -68,6 +70,7 @@ public partial class V275 : ObservableRecipient, IRecipient<PropertyChangedMessa
 
     [ObservableProperty] private ObservableCollection<Node> nodes = [];
     [ObservableProperty][NotifyPropertyChangedRecipients] private Node selectedNode;
+    partial void OnSelectedNodeChanged(Node value) {}
 
     public bool ShowTemplateNameMismatchDialog { get => App.Settings.GetValue("ShowTemplateNameMismatchDialog", true, true); set => App.Settings.SetValue("ShowTemplateNameMismatchDialog", value); }
 
@@ -77,7 +80,7 @@ public partial class V275 : ObservableRecipient, IRecipient<PropertyChangedMessa
 
     public static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
 
-    public V275()
+    public NodeManager()
     {
         IsActive = true;
 
@@ -106,9 +109,10 @@ public partial class V275 : ObservableRecipient, IRecipient<PropertyChangedMessa
         Devices dev;
         if ((dev = await system.Connection.Commands.GetDevices()) != null)
         {
+            var lst = new List<Node>();
             foreach (var node in dev.nodes)
             {
-                if (Nodes.Any(n => n.Details.cameraMAC == node.cameraMAC))
+                if (lst.Any(n => n.Details.cameraMAC == node.cameraMAC))
                 {
                     Logger.Warn("Duplicate device MAC: {dev}", node.cameraMAC);
                     continue;
@@ -124,8 +128,19 @@ public partial class V275 : ObservableRecipient, IRecipient<PropertyChangedMessa
                 if ((insp = await newNode.Connection.Commands.GetInspection()) != null)
                     newNode.Inspection = insp;
 
-                Nodes.Add(newNode);
+                lst.Add(newNode);
             }
+
+            var srt = lst.OrderBy(n => n.Connection.Commands.NodeNumber).ToList();
+
+            Nodes.Clear();
+            if(srt.Count == 0)
+            {
+                Logger.Warn("No devices found.");
+                return;
+            }
+            foreach (var node in srt)
+                Nodes.Add(node);
 
             if (SelectedNode == null && Nodes.Count > 0)
                 SelectedNode = Nodes.First();
