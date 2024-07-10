@@ -81,6 +81,8 @@ public partial class MainWindow : ObservableRecipient, IRecipient<SystemMessages
             new HamburgerMenuItem { Label = "V5", Content = ScannerManager },
             new HamburgerMenuItem { Label = "L95xx", Content = VerifierManager },
         };
+
+        SelectedMenuItem = MenuItems[0];
     }
 
     public void Receive(SystemMessages.StatusMessage message)

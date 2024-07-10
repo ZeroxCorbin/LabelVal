@@ -39,8 +39,4 @@ public partial class MainWindow : MetroWindow
             
     }
 
-    private void btnHamburger_Click(object sender, RoutedEventArgs e)
-    {
-        //hamMenu.IsPaneOpen = !hamMenu.IsPaneOpen;
-    }
 }

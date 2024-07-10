@@ -37,7 +37,7 @@
                  xmlns:printerConverters="clr-namespace:LabelVal.Printer.Converters"
                  
                 d:DataContext="{d:DesignInstance Type=viewModels:MainWindow}"
-                mc:Ignorable="d" SaveWindowPosition="True" Width="auto" Height="auto" Closing="MetroWindow_Closing">
+                mc:Ignorable="d" SaveWindowPosition="True" Width="auto" Height="auto" Closing="MetroWindow_Closing" >
 
     <mah:MetroWindow.Title>
         <MultiBinding StringFormat="Label Validator : {0}">
@@ -63,7 +63,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
+
         <!--<DataTemplate x:Key="printerContent">
             <printer:Printer/>
         </DataTemplate>-->
@@ -91,7 +91,8 @@
 
                 <DockPanel>
                     <printer:Printer DataContext="{Binding Content}"/>
-                    --><!--<TextBlock DockPanel.Dock="Top" Text="{Binding Content.SelectedPrinter.PrinterName}" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                    -->
+        <!--<TextBlock DockPanel.Dock="Top" Text="{Binding Content.SelectedPrinter.PrinterName}" VerticalAlignment="Center" Margin="10,0,0,0"/>
                     <TextBlock VerticalAlignment="Center" Margin="10,0,0,0">
                         <Run Text="{Binding Content.SelectedPrinter.DefaultPageSettings.PrintableArea.Width,StringFormat=N2, Converter={StaticResource printerSettingThousandthsToInches}}"/>
                         <Run Text="x"/>
@@ -99,7 +100,8 @@
                         <Run Text="inches ("/>
                         <Run Text="{Binding Content.SelectedPrinter.DefaultPageSettings.PrinterResolution.X}"/>
                         <Run Text="DPI  )"/>
-                    </TextBlock>--><!--
+                    </TextBlock>-->
+        <!--
                 </DockPanel>
             </DockPanel>
         </DataTemplate>-->
@@ -109,7 +111,7 @@
                     <iconPacks:PackIconMaterial Width="36" Height="36" Kind="Printer3d" 
                         VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 </DockPanel>
-                 
+
                 <TextBlock Text="{Binding Label}" VerticalAlignment="Center" Margin="10,0,0,0"/>
             </DockPanel>
         </DataTemplate>
@@ -119,7 +121,7 @@
                     <iconPacks:PackIconMaterial Width="36" Height="36" Kind="Camera" 
                         VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 </DockPanel>
-                
+
                 <TextBlock Text="{Binding Label}" VerticalAlignment="Center" Margin="10,0,0,0"/>
             </DockPanel>
         </DataTemplate>
@@ -129,14 +131,14 @@
                     <iconPacks:PackIconMaterial Width="36" Height="36" Kind="Scanner" 
                         VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 </DockPanel>
-                
+
                 <TextBlock Text="{Binding Label}" VerticalAlignment="Center" Margin="10,0,0,0"/>
             </DockPanel>
         </DataTemplate>
         <DataTemplate x:Key="imageRDMenuItem">
             <DockPanel>
                 <Separator DockPanel.Dock="Bottom" VerticalAlignment="Stretch"/>
-                
+
                 <DockPanel Width="48" Height="48">
                     <iconPacks:PackIconMaterial Width="36" Height="36" Kind="Database" 
                         VerticalAlignment="Center" HorizontalAlignment="Center"/>
@@ -154,7 +156,7 @@
                         </Style>
                     </TextBlock.Style>
                 </TextBlock>
-                
+
             </DockPanel>
         </DataTemplate>
 
@@ -246,7 +248,7 @@
                 <md:DrawerHost x:Name="ScannerDetails" VerticalAlignment="Stretch" OpenMode="Standard">
                     <DockPanel>
 
-                        
+
                         <DockPanel DockPanel.Dock="Bottom">
                             <StatusBar>
                                 <StatusBarItem>
@@ -270,10 +272,10 @@
                                 </StatusBarItem>
                             </StatusBar>
                         </DockPanel>
-                        
+
                         <mah:HamburgerMenu x:Name="hamMenu" Width="Auto" ItemsSource="{Binding MenuItems}" SelectedItem="{Binding SelectedMenuItem}"
                                            ItemTemplateSelector="{StaticResource menuItemTemplateSelector}"
-                                           ItemClick="HamburgerMenu_ItemClick" >
+                                           ItemClick="HamburgerMenu_ItemClick">
 
                             <mah:HamburgerMenu.HamburgerButtonTemplate>
 
@@ -283,7 +285,7 @@
                                         <iconPacks:PackIconMaterial Width="36" Height="36" Kind="Printer" 
 
                                             VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                        
+
                                     </DockPanel>
                                 </DataTemplate>
                             </mah:HamburgerMenu.HamburgerButtonTemplate>
@@ -291,13 +293,13 @@
                             <mah:HamburgerMenu.HamburgerMenuHeaderTemplate>
                                 <DataTemplate>
                                     <DockPanel>
-                                        
+
                                         <printer:Printer DataContext="{Binding DataContext.Printer, RelativeSource={RelativeSource AncestorType=mah:HamburgerMenu}}"/>
-                      
+
                                     </DockPanel>
-                                  </DataTemplate>
+                                </DataTemplate>
                             </mah:HamburgerMenu.HamburgerMenuHeaderTemplate>
-                            
+
                             <mah:HamburgerMenu.ContentTemplate>
                                 <DataTemplate>
 
@@ -307,11 +309,11 @@
                                 </DataTemplate>
                             </mah:HamburgerMenu.ContentTemplate>
                         </mah:HamburgerMenu>
-                        
+
                         <DockPanel DockPanel.Dock="Top">
 
                             <DockPanel>
- 
+
 
                                 <imageRolls:ImageRolls DataContext="{Binding ImageRolls}"/>
 
