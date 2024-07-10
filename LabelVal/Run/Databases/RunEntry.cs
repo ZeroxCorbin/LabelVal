@@ -20,7 +20,8 @@ public partial class RunEntry : ObservableObject
 
     [SQLite.PrimaryKey] public long StartTime { get; set; } = DateTime.Now.Ticks;
 
-    public string UID => StartTime.ToString();
+    //Cant be used for DB quries.
+    public string UID => StartTime.ToString() ?? "";
     public DateTime StartDateTime => new(StartTime);
 
     [ObservableProperty][property: SQLite.Ignore] private RunStates state;

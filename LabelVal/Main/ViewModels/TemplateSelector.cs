@@ -10,6 +10,7 @@ namespace LabelVal.Main.ViewModels
 {
     public class TemplateSelector : DataTemplateSelector
     {
+        public DataTemplate Run { get; set; }
         public DataTemplate Printer { get; set; }
         public DataTemplate V275 { get; set; }
         public DataTemplate V5 { get; set; }
@@ -46,10 +47,11 @@ namespace LabelVal.Main.ViewModels
                 {
                     return ImageResultsDatabases;
                 }
-                else if (hmi.Content is HamburgerSeperator)
+                else if (hmi.Content is Run.ViewModels.RunControl)
                 {
-                    return Seperator;
+                    return Run;
                 }
+
             }
 
             return base.SelectTemplate(item, container);

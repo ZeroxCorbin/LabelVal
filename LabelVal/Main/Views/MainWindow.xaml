@@ -31,6 +31,8 @@
                  xmlns:resultsVm="clr-namespace:LabelVal.Results.ViewModels"
                  
                  xmlns:run="clr-namespace:LabelVal.Run.Views"
+                 xmlns:runVm="clr-namespace:LabelVal.Run.ViewModels"
+                 
                  xmlns:viewModels="clr-namespace:LabelVal.Main.ViewModels"  
                     xmlns:converters="clr-namespace:LabelVal.Converters"
                  
@@ -64,9 +66,9 @@
             </Setter>
         </Style>
 
-        <!--<DataTemplate x:Key="printerContent">
-            <printer:Printer/>
-        </DataTemplate>-->
+        <DataTemplate x:Key="runContent">
+            <run:RunControl/>
+        </DataTemplate>
         <DataTemplate x:Key="v275Content">
             <v275:NodeManager/>
         </DataTemplate>
@@ -80,31 +82,17 @@
             <results:ImageResultsDatabases/>
         </DataTemplate>
 
-        <!--<DataTemplate x:Key="printerMenuItem">
+        <DataTemplate x:Key="runMenuItem">
             <DockPanel>
-                <Separator DockPanel.Dock="Bottom" VerticalAlignment="Stretch"/>
-                
                 <DockPanel Width="48" Height="48">
-                    <iconPacks:PackIconMaterial Width="36" Height="36" Kind="Printer" 
+                    <iconPacks:PackIconMaterial Width="36" Height="36" Kind="RunFast" 
                         VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 </DockPanel>
 
-                <DockPanel>
-                    <printer:Printer DataContext="{Binding Content}"/>
-                    -->
-        <!--<TextBlock DockPanel.Dock="Top" Text="{Binding Content.SelectedPrinter.PrinterName}" VerticalAlignment="Center" Margin="10,0,0,0"/>
-                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0">
-                        <Run Text="{Binding Content.SelectedPrinter.DefaultPageSettings.PrintableArea.Width,StringFormat=N2, Converter={StaticResource printerSettingThousandthsToInches}}"/>
-                        <Run Text="x"/>
-                        <Run Text="{Binding Content.SelectedPrinter.DefaultPageSettings.PrintableArea.Height,StringFormat=N2, Converter={StaticResource printerSettingThousandthsToInches}}"/>
-                        <Run Text="inches ("/>
-                        <Run Text="{Binding Content.SelectedPrinter.DefaultPageSettings.PrinterResolution.X}"/>
-                        <Run Text="DPI  )"/>
-                    </TextBlock>-->
-        <!--
-                </DockPanel>
+                <TextBlock Text="{Binding Label}" VerticalAlignment="Center" Margin="10,0,0,0"/>
             </DockPanel>
-        </DataTemplate>-->
+        </DataTemplate>
+
         <DataTemplate x:Key="v275MenuItem">
             <DockPanel>
                 <DockPanel Width="48" Height="48">
@@ -161,12 +149,14 @@
         </DataTemplate>
 
         <viewModels:TemplateSelector x:Key="menuItemTemplateSelector"
+                                     Run="{StaticResource runMenuItem}"
                                              V275="{StaticResource v275MenuItem}"
                                              V5="{StaticResource v5MenuItem}"
                                              L96XX="{StaticResource l95xxMenuItem}"
                                      ImageResultsDatabases="{StaticResource imageRDMenuItem}"/>
 
         <viewModels:TemplateSelector x:Key="contentItemTemplateSelector"
+                                     Run="{StaticResource runContent}"
                                              V275="{StaticResource v275Content}"
                                              V5="{StaticResource v5Content}"
                                              L96XX="{StaticResource l95xxContent}"
@@ -319,12 +309,7 @@
 
                             </DockPanel>
 
-                            <DockPanel DockPanel.Dock="Top">
-                                <!--Test Runs-->
-                                <run:RunControl DataContext="{Binding ImageResults.RunControl}"/>
-                            </DockPanel>
-
-                            <results:ImageResults DataContext="{Binding ImageResults}"/>
+                              <results:ImageResults DataContext="{Binding ImageResults}"/>
 
                         </DockPanel>
                     </DockPanel>
