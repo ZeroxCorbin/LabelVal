@@ -52,7 +52,7 @@ public partial class NodeManager : UserControl
 
     private void btnOpenInBrowser_Click(object sender, RoutedEventArgs e)
     {
-        var v275 = $"http://{((ViewModels.NodeManager)DataContext).V275_Host}:{((ViewModels.NodeManager)DataContext).V275_SystemPort}";
+        var v275 = $"http://{((ViewModels.NodeManager)DataContext).Host}:{((ViewModels.NodeManager)DataContext).SystemPort}";
         var ps = new ProcessStartInfo(v275)
         {
             UseShellExecute = true,

@@ -31,8 +31,8 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
 
     public V275_REST_lib.Controller Connection { get; }
 
-    private string V275_Host => App.Settings.GetValue<string>(nameof(NodeManager.V275_Host));
-    private uint V275_SystemPort => App.Settings.GetValue<uint>(nameof(NodeManager.V275_SystemPort));
+    private string Host => App.Settings.GetValue<string>($"{NodeManager.ClassName}{nameof(NodeManager.Host)}");
+    private uint SystemPort => App.Settings.GetValue<uint>($"{NodeManager.ClassName}{nameof(NodeManager.SystemPort)}");
 
     private static string UserName => App.Settings.GetValue<string>(nameof(NodeManager.UserName));
     private static string Password => App.Settings.GetValue<string>(nameof(NodeManager.Password));
@@ -172,8 +172,8 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
         if (!PreLogin())
             return;
 
-        Connection.Commands.SystemPort = V275_SystemPort;
-        Connection.Commands.Host = V275_Host;
+        Connection.Commands.SystemPort = SystemPort;
+        Connection.Commands.Host = Host;
 
         if (await Connection.Commands.Login(UserName, Password, LoginMonitor))
         {
@@ -238,7 +238,7 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
             Simulation = await Connection.Commands.GetSimulation();
 
             if (Simulation != null)
-                if (Connection.Commands.Host != "127.0.0.1")
+                if (!Host.Equals("127.0.0.1"))
                 {
                     Simulation.mode = "trigger";
                     Simulation.dwellMs = 1;

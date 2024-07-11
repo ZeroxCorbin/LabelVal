@@ -76,7 +76,7 @@
                     <DockPanel>
                         <DockPanel DockPanel.Dock="Top" Margin="3">
 
-                            <TextBox Text="{Binding V275_Host}" MinWidth="50" Margin="3,0" HorizontalAlignment="Center"
+                            <TextBox Text="{Binding Host}" MinWidth="50" Margin="3,0" HorizontalAlignment="Center"
                                          md:HintAssist.Hint="IP Address" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left"
                                      md:TextFieldAssist.HasClearButton="True">
 
@@ -92,7 +92,7 @@
                                 </TextBox.Style>
                             </TextBox>
 
-                            <TextBox Text="{Binding V275_SystemPortString}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center"
+                            <TextBox Text="{Binding SystemPortString}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center"
                                          md:HintAssist.Hint="Port" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left"
                                      md:TextFieldAssist.HasClearButton="True">
                                 <TextBox.Style>

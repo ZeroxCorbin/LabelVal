@@ -186,7 +186,7 @@
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
                                             <Condition Value="Editing" Binding="{Binding Content.SelectedNode.State}" />
-                                            <Condition Value="True" Binding="{Binding SelectedImageRoll.WriteSectorsBeforeProcess}" />
+                                            <Condition Value="True" Binding="{Binding Content.SelectedImageRoll.WriteSectorsBeforeProcess}" />
                                         </MultiDataTrigger.Conditions>
                                         <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}" />
                                     </MultiDataTrigger>
@@ -194,7 +194,7 @@
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
                                             <Condition Value="Running" Binding="{Binding Content.SelectedNode.State}" />
-                                            <Condition Value="False" Binding="{Binding SelectedImageRoll.WriteSectorsBeforeProcess}" />
+                                            <Condition Value="False" Binding="{Binding Content.SelectedImageRoll.WriteSectorsBeforeProcess}" />
                                         </MultiDataTrigger.Conditions>
                                         <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}" />
                                     </MultiDataTrigger>
