@@ -74,14 +74,14 @@ public partial class MainWindow : ObservableRecipient, IRecipient<SystemMessages
         ImageResultsDatabases = new Results.ViewModels.ImageResultsDatabases();
         ImageResults = new Results.ViewModels.ImageResults();
 
-        MenuItems = new ObservableCollection<HamburgerMenuItem>
-        {    
+        MenuItems =
+        [
             new HamburgerMenuItem { Label = "Results", Content = ImageResultsDatabases },
             new HamburgerMenuItem { Label = "Run", Content = ImageResults.RunControl },
             new HamburgerMenuItem { Label = "V275", Content = NodeManager },
             new HamburgerMenuItem { Label = "V5", Content = ScannerManager },
             new HamburgerMenuItem { Label = "L95xx", Content = VerifierManager },
-        };
+        ];
 
         SelectedMenuItem = MenuItems[0];
     }

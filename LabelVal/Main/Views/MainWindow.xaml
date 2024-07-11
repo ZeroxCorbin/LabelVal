@@ -1,45 +1,38 @@
 ﻿<mah:MetroWindow x:Class="LabelVal.Main.Views.MainWindow"
-                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                xmlns:local="clr-namespace:LabelVal.Main.Views"
-                 
-                xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-                 xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 
-                 xmlns:imageRolls="clr-namespace:LabelVal.ImageRolls.Views"
                  
-                xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"  
-                 xmlns:runViews="clr-namespace:LabelVal.Run.Views"
-                xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
-                Dialog:DialogParticipation.Register="{Binding}"
+                    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+                    xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+                    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"  
                  
-                 xmlns:printer="clr-namespace:LabelVal.Printer.Views"
-                 xmlns:printerVm="clr-namespace:LabelVal.Printer.ViewModels"
+                    xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+                    Dialog:DialogParticipation.Register="{Binding}"    
                  
-                 xmlns:v275="clr-namespace:LabelVal.V275.Views"
-                 xmlns:v275Vm="clr-namespace:LabelVal.V275.ViewModels"
+                    xmlns:local="clr-namespace:LabelVal.Main.Views"
+                    xmlns:imageRolls="clr-namespace:LabelVal.ImageRolls.Views"
+                    xmlns:printer="clr-namespace:LabelVal.Printer.Views"
+
+                    xmlns:results="clr-namespace:LabelVal.Results.Views"
+                    xmlns:resultsVm="clr-namespace:LabelVal.Results.ViewModels"
+                    xmlns:run="clr-namespace:LabelVal.Run.Views"
+                    xmlns:runVm="clr-namespace:LabelVal.Run.ViewModels"
+                    xmlns:v275="clr-namespace:LabelVal.V275.Views"
+                    xmlns:v275Vm="clr-namespace:LabelVal.V275.ViewModels"
+                    xmlns:v5="clr-namespace:LabelVal.V5.Views"
+                    xmlns:v5Vm="clr-namespace:LabelVal.V5.ViewModels"
+                    xmlns:L95xx="clr-namespace:LabelVal.LVS_95xx.Views"
+                    xmlns:L95xxVm="clr-namespace:LabelVal.LVS_95xx.ViewModels"
                  
-                 xmlns:v5="clr-namespace:LabelVal.V5.Views"
-                 xmlns:v5Vm="clr-namespace:LabelVal.V5.ViewModels"
+                    xmlns:viewModels="clr-namespace:LabelVal.Main.ViewModels"  
                  
-                 xmlns:L95xx="clr-namespace:LabelVal.LVS_95xx.Views"
-                 xmlns:L95xxVm="clr-namespace:LabelVal.LVS_95xx.ViewModels"
-                 
-                 xmlns:results="clr-namespace:LabelVal.Results.Views"
-                 xmlns:resultsVm="clr-namespace:LabelVal.Results.ViewModels"
-                 
-                 xmlns:run="clr-namespace:LabelVal.Run.Views"
-                 xmlns:runVm="clr-namespace:LabelVal.Run.ViewModels"
-                 
-                 xmlns:viewModels="clr-namespace:LabelVal.Main.ViewModels"  
                     xmlns:converters="clr-namespace:LabelVal.Converters"
-                 
-                 xmlns:printerConverters="clr-namespace:LabelVal.Printer.Converters"
-                 
-                d:DataContext="{d:DesignInstance Type=viewModels:MainWindow}"
-                mc:Ignorable="d" SaveWindowPosition="True" Width="auto" Height="auto" Closing="MetroWindow_Closing" >
+                    xmlns:printerConverters="clr-namespace:LabelVal.Printer.Converters"
+                    d:DataContext="{d:DesignInstance Type=viewModels:MainWindow}"
+                    mc:Ignorable="d" SaveWindowPosition="True" Width="auto" Height="auto" Closing="MetroWindow_Closing" >
 
     <mah:MetroWindow.Title>
         <MultiBinding StringFormat="Label Validator : {0}">
@@ -52,115 +45,14 @@
     </mah:MetroWindow.DataContext>
 
     <mah:MetroWindow.Resources>
-        <printerConverters:PrinterSettingThousandthsToInches x:Key="printerSettingThousandthsToInches"/>
-        <converters:ObjectIsNull x:Key="objectIsNull"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="HamburgerMenu.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
 
-        <Style TargetType="{x:Type mah:HamburgerMenu}" x:Key="HamburgerMenuWithoutHeaderStyle">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type mah:HamburgerMenu}">
-                        <!-- Modified template here -->
-                        <!-- Make sure to set Visibility to Collapsed for the header and hamburger icon parts -->
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+            <printerConverters:PrinterSettingThousandthsToInches x:Key="printerSettingThousandthsToInches"/>
 
-        <DataTemplate x:Key="runContent">
-            <run:RunControl/>
-        </DataTemplate>
-        <DataTemplate x:Key="v275Content">
-            <v275:NodeManager/>
-        </DataTemplate>
-        <DataTemplate x:Key="v5Content">
-            <v5:ScannerManager/>
-        </DataTemplate>
-        <DataTemplate x:Key="l95xxContent">
-            <L95xx:VerifierManager/>
-        </DataTemplate>
-        <DataTemplate x:Key="imageRDContent">
-            <results:ImageResultsDatabases/>
-        </DataTemplate>
-
-        <DataTemplate x:Key="runMenuItem">
-            <DockPanel>
-                <DockPanel Width="48" Height="48">
-                    <iconPacks:PackIconMaterial Width="36" Height="36" Kind="RunFast" 
-                        VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                </DockPanel>
-
-                <TextBlock Text="{Binding Label}" VerticalAlignment="Center" Margin="10,0,0,0"/>
-            </DockPanel>
-        </DataTemplate>
-
-        <DataTemplate x:Key="v275MenuItem">
-            <DockPanel>
-                <DockPanel Width="48" Height="48">
-                    <iconPacks:PackIconMaterial Width="36" Height="36" Kind="Printer3d" 
-                        VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                </DockPanel>
-
-                <TextBlock Text="{Binding Label}" VerticalAlignment="Center" Margin="10,0,0,0"/>
-            </DockPanel>
-        </DataTemplate>
-        <DataTemplate x:Key="v5MenuItem">
-            <DockPanel>
-                <DockPanel Width="48" Height="48">
-                    <iconPacks:PackIconMaterial Width="36" Height="36" Kind="Camera" 
-                        VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                </DockPanel>
-
-                <TextBlock Text="{Binding Label}" VerticalAlignment="Center" Margin="10,0,0,0"/>
-            </DockPanel>
-        </DataTemplate>
-        <DataTemplate x:Key="l95xxMenuItem">
-            <DockPanel>
-                <DockPanel Width="48" Height="48">
-                    <iconPacks:PackIconMaterial Width="36" Height="36" Kind="Scanner" 
-                        VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                </DockPanel>
-
-                <TextBlock Text="{Binding Label}" VerticalAlignment="Center" Margin="10,0,0,0"/>
-            </DockPanel>
-        </DataTemplate>
-        <DataTemplate x:Key="imageRDMenuItem">
-            <DockPanel>
-                <Separator DockPanel.Dock="Bottom" VerticalAlignment="Stretch"/>
-
-                <DockPanel Width="48" Height="48">
-                    <iconPacks:PackIconMaterial Width="36" Height="36" Kind="Database" 
-                        VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                </DockPanel>
-
-                <TextBlock VerticalAlignment="Center" Margin="10,0,0,0">
-                    <TextBlock.Style>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="Text" Value="{Binding Content.SelectedDatabase.FileName}"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Content.SelectedDatabase, Converter={StaticResource objectIsNull}}" Value="True">
-                                    <Setter Property="Text" Value="NO DATABASE SELECTED"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBlock.Style>
-                </TextBlock>
-
-            </DockPanel>
-        </DataTemplate>
-
-        <viewModels:TemplateSelector x:Key="menuItemTemplateSelector"
-                                     Run="{StaticResource runMenuItem}"
-                                             V275="{StaticResource v275MenuItem}"
-                                             V5="{StaticResource v5MenuItem}"
-                                             L96XX="{StaticResource l95xxMenuItem}"
-                                     ImageResultsDatabases="{StaticResource imageRDMenuItem}"/>
-
-        <viewModels:TemplateSelector x:Key="contentItemTemplateSelector"
-                                     Run="{StaticResource runContent}"
-                                             V275="{StaticResource v275Content}"
-                                             V5="{StaticResource v5Content}"
-                                             L96XX="{StaticResource l95xxContent}"
-                                     ImageResultsDatabases="{StaticResource imageRDContent}"/>
+        </ResourceDictionary>
     </mah:MetroWindow.Resources>
 
     <mah:MetroWindow.RightWindowCommands>
@@ -220,7 +112,7 @@
                     <StackPanel Grid.Row="1">
                         <Label/>
                         <Label Content="Compare Settings" FontSize="18" HorizontalAlignment="Right"/>
-                        <runViews:CompareSettingsView/>
+                        <run:CompareSettingsView/>
                     </StackPanel>
 
                 </Grid>
@@ -300,16 +192,10 @@
                             </mah:HamburgerMenu.ContentTemplate>
                         </mah:HamburgerMenu>
 
-                        <DockPanel DockPanel.Dock="Top">
+                        <DockPanel >
 
-                            <DockPanel>
-
-
-                                <imageRolls:ImageRolls DataContext="{Binding ImageRolls}"/>
-
-                            </DockPanel>
-
-                              <results:ImageResults DataContext="{Binding ImageResults}"/>
+                            <imageRolls:ImageRolls DataContext="{Binding ImageRolls}"/>
+                            <results:ImageResults DataContext="{Binding ImageResults}"/>
 
                         </DockPanel>
                     </DockPanel>

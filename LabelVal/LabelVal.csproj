@@ -210,9 +210,16 @@
 		<None Remove="Assets\Image Rolls\SYMBOLOGIES D\600\setting.imgr" />
 		<None Remove="Assets\Image Rolls\VALIDATION 6x4\300\setting.imgr" />
 		<None Remove="Assets\ImageResultsDatabases\GS1 Golden.sqlite" />
-		<None Remove="Assets\Images\V275WhiteIcon.ico" />
-		<None Remove="Assets\Images\V275WhiteIcon.png" />
+		<None Remove="Assets\Images\l95xx-white-outline.ico" />
+		<None Remove="Assets\Images\l95xx-white-outline.xcf" />
+		<None Remove="Assets\Images\v275-black-outline.ico" />
+		<None Remove="Assets\Images\v275-black-outline.xcf" />
+		<None Remove="Assets\Images\v275-white-outline.ico" />
+		<None Remove="Assets\Images\v275-white-outline.xcf" />
 		<None Remove="Assets\Images\V275_Icon.xcf" />
+		<None Remove="Assets\Images\v5-white-outline.ico" />
+		<None Remove="Assets\Images\v5-white-outline.xcf" />
+		<None Remove="Assets\Images\v5_1.png" />
 	</ItemGroup>
 	<ItemGroup>
 		<Page Remove="LVS-95xx\Views\LVS95xx_SerialPortView.xaml" />
@@ -675,11 +682,17 @@
 		<Content Include="Assets\Image Rolls\VALIDATION 6x4\300\setting.imgr">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
-		<Content Include="Assets\Images\V275WhiteIcon.ico">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		<Content Include="Assets\Images\l95xx-white-outline.ico">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
-		<Content Include="Assets\Images\V275WhiteIcon.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		<Content Include="Assets\Images\v275-black-outline.ico">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Images\v275-white-outline.ico">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Images\v5-white-outline.ico">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 	</ItemGroup>
 	<ItemGroup>
@@ -1419,7 +1432,7 @@
 			<Version>5.0.2</Version>
 		</PackageReference>
 		<PackageReference Include="FluentNHibernate">
-			<Version>3.3.0</Version>
+			<Version>3.4.0</Version>
 		</PackageReference>
 		<PackageReference Include="Google.Protobuf">
 			<Version>3.27.2</Version>

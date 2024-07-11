@@ -70,7 +70,6 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
 
     [ObservableProperty] private ObservableCollection<Node> nodes = [];
     [ObservableProperty][NotifyPropertyChangedRecipients] private Node selectedNode;
-    partial void OnSelectedNodeChanged(Node value) {}
 
     public bool ShowTemplateNameMismatchDialog { get => App.Settings.GetValue("ShowTemplateNameMismatchDialog", true, true); set => App.Settings.SetValue("ShowTemplateNameMismatchDialog", value); }
 
