@@ -33,7 +33,7 @@ public partial class MainWindow : MetroWindow
     {
         if (args.ClickedItem is Main.ViewModels.HamburgerMenuItem menuItem && menuItem.IsNotSelectable)
         {
-            hamMenu.IsPaneOpen = !hamMenu.IsPaneOpen;
+            hamMenu.IsPaneOpen = true;
             args.Handled = true;
         }
             

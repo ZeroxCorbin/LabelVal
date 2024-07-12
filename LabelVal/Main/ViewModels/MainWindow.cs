@@ -28,7 +28,7 @@ public partial class MainWindow : ObservableRecipient, IRecipient<SystemMessages
     public ObservableCollection<HamburgerMenuItem> MenuItems { get; }
     [ObservableProperty] HamburgerMenuItem selectedMenuItem;
  
-    public V275.ViewModels.NodeManager NodeManager { get; }
+    public V275.ViewModels.V275Manager V275Manager { get; }
     public V275.ViewModels.NodeDetails NodeDetails { get; }
 
     public Printer.ViewModels.Printer Printer { get; }
@@ -66,7 +66,7 @@ public partial class MainWindow : ObservableRecipient, IRecipient<SystemMessages
         ScannerDetails = new V5.ViewModels.ScannerDetails();
 
         Printer = new Printer.ViewModels.Printer();
-        NodeManager = new V275.ViewModels.NodeManager();
+        V275Manager = new V275.ViewModels.V275Manager();
         ScannerManager = new V5.ViewModels.ScannerManager();
         VerifierManager = new LVS_95xx.ViewModels.VerifierManager();
 
@@ -76,9 +76,10 @@ public partial class MainWindow : ObservableRecipient, IRecipient<SystemMessages
 
         MenuItems =
         [
+            new HamburgerMenuItem { Label = "Printer", Content = Printer, IsNotSelectable = true },
             new HamburgerMenuItem { Label = "Results", Content = ImageResultsDatabases },
             new HamburgerMenuItem { Label = "Run", Content = ImageResults.RunControl },
-            new HamburgerMenuItem { Label = "V275", Content = NodeManager },
+            new HamburgerMenuItem { Label = "V275", Content = V275Manager },
             new HamburgerMenuItem { Label = "V5", Content = ScannerManager },
             new HamburgerMenuItem { Label = "L95xx", Content = VerifierManager },
         ];

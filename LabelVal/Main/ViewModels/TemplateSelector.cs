@@ -27,7 +27,7 @@ namespace LabelVal.Main.ViewModels
 
             if (hmi != null)
             {
-                if (hmi.Content is V275.ViewModels.NodeManager)
+                if (hmi.Content is V275.ViewModels.V275Manager)
                 {
                     return V275;
                 }

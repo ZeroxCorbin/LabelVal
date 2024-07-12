@@ -16,16 +16,16 @@ public partial class AppSettingsControlView : UserControl
         DataContext = App.Current.MainWindow.DataContext;
     }
 
-    private void btnSelectDirectory_Click(object sender, RoutedEventArgs e)
-    {
-        using System.Windows.Forms.FolderBrowserDialog fbd = new();
-        System.Windows.Forms.DialogResult result = fbd.ShowDialog();
+    //private void btnSelectDirectory_Click(object sender, RoutedEventArgs e)
+    //{
+    //    using System.Windows.Forms.FolderBrowserDialog fbd = new();
+    //    System.Windows.Forms.DialogResult result = fbd.ShowDialog();
 
-        if (result == System.Windows.Forms.DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
-        {
-            ((ViewModels.MainWindow)DataContext).NodeManager.SimulatorImageDirectory = fbd.SelectedPath;
-        }
-    }
+    //    if (result == System.Windows.Forms.DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+    //    {
+    //        ((ViewModels.MainWindow)DataContext).NodeManager.SimulatorImageDirectory = fbd.SelectedPath;
+    //    }
+    //}
 
     private void btnShowORMSettingsDialog_Click(object sender, RoutedEventArgs e)
     {

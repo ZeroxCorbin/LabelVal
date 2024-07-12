@@ -129,8 +129,7 @@
             <md:DrawerHost x:Name="PrinterDetails" VerticalAlignment="Stretch" OpenMode="Standard">
                 <md:DrawerHost x:Name="ScannerDetails" VerticalAlignment="Stretch" OpenMode="Standard">
                     <DockPanel>
-
-
+                        
                         <DockPanel DockPanel.Dock="Bottom">
                             <StatusBar>
                                 <StatusBarItem>
@@ -158,29 +157,6 @@
                         <mah:HamburgerMenu x:Name="hamMenu" Width="Auto" ItemsSource="{Binding MenuItems}" SelectedItem="{Binding SelectedMenuItem}"
                                            ItemTemplateSelector="{StaticResource menuItemTemplateSelector}"
                                            ItemClick="HamburgerMenu_ItemClick">
-
-                            <mah:HamburgerMenu.HamburgerButtonTemplate>
-
-                                <DataTemplate>
-                                    <DockPanel Width="48" Height="48">
-                                        <Separator DockPanel.Dock="Bottom" VerticalAlignment="Stretch"/>
-                                        <iconPacks:PackIconMaterial Width="36" Height="36" Kind="Printer" 
-
-                                            VerticalAlignment="Center" HorizontalAlignment="Center"/>
-
-                                    </DockPanel>
-                                </DataTemplate>
-                            </mah:HamburgerMenu.HamburgerButtonTemplate>
-
-                            <mah:HamburgerMenu.HamburgerMenuHeaderTemplate>
-                                <DataTemplate>
-                                    <DockPanel>
-
-                                        <printer:Printer DataContext="{Binding DataContext.Printer, RelativeSource={RelativeSource AncestorType=mah:HamburgerMenu}}"/>
-
-                                    </DockPanel>
-                                </DataTemplate>
-                            </mah:HamburgerMenu.HamburgerMenuHeaderTemplate>
 
                             <mah:HamburgerMenu.ContentTemplate>
                                 <DataTemplate>

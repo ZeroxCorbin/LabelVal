@@ -18,21 +18,18 @@
         <converters:LocalizeEnumValue x:Key="LocalizeEnumValue"/>
     </UserControl.Resources>
 
-    <md:Card HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="6">
+    <md:Card HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="6" BorderThickness="1"  Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+             Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}">
         <md:Card.Style>
             <Style TargetType="md:Card" BasedOn="{StaticResource {x:Type md:Card}}">
-                <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent4}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent4}"/>
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding IsSimulator}" Value="True">
-                        <Setter Property="Background" Value="{DynamicResource YellowBrush2}"/>
+                        <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}"/>
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
         </md:Card.Style>
-
-        <md:Card HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="1"
-                 Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
-                 Foreground="{DynamicResource MahApps.Brushes.Text}">
 
             <DockPanel Margin="3">
 
@@ -340,6 +337,6 @@
                     </DockPanel>
                 </DockPanel>
             </DockPanel>
-        </md:Card>
+
     </md:Card>
 </UserControl>

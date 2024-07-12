@@ -7,7 +7,8 @@
                     
                     xmlns:loc="clr-namespace:LabelVal.Localization"
                     
-                    
+                    xmlns:printer="clr-namespace:LabelVal.Printer.Views"
+                    xmlns:printerVm="clr-namespace:LabelVal.Printer.ViewModels"
                     xmlns:results="clr-namespace:LabelVal.Results.Views"
                     xmlns:resultsVm="clr-namespace:LabelVal.Results.ViewModels"
                     xmlns:run="clr-namespace:LabelVal.Run.Views"
@@ -33,7 +34,7 @@
         <run:RunControl/>
     </DataTemplate>
     <DataTemplate x:Key="v275Content">
-        <v275:NodeManager/>
+        <v275:V275Manager/>
     </DataTemplate>
     <DataTemplate x:Key="v5Content">
         <v5:ScannerManager/>
@@ -41,7 +42,23 @@
     <DataTemplate x:Key="l95xxContent">
         <L95xx:VerifierManager/>
     </DataTemplate>
+    
+    
+    <DataTemplate x:Key="printerMenuItem">
+        <DockPanel>
 
+            <DockPanel Width="48" Height="48">
+                <Separator DockPanel.Dock="Bottom" VerticalAlignment="Stretch"/>
+                
+                <iconPacks:PackIconMaterial Width="36" Height="36" Kind="Printer" 
+                        VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            </DockPanel>
+
+            <printer:Printer DataContext="{Binding Content}"/>
+
+        </DockPanel>
+    </DataTemplate>
+    
     <DataTemplate x:Key="imageRDMenuItem">
         <DockPanel>
             <Separator DockPanel.Dock="Bottom" VerticalAlignment="Stretch"/>
@@ -83,7 +100,7 @@
     <!--V275 Menu Item-->
     <DataTemplate x:Key="v275MenuItem">
         <DockPanel>
-            <DockPanel Width="48" Height="48">
+            <DockPanel MinHeight="48" Width="48" Background="{DynamicResource ColorBlindBrush1}">
                 <Image Width="36" Height="36" Source="/Assets/Images/v275-white-outline.ico" VerticalAlignment="Center" HorizontalAlignment="Center"/>
             </DockPanel>
 
@@ -249,6 +266,7 @@
 
 
     <viewModels:TemplateSelector x:Key="menuItemTemplateSelector"
+                                        Printer="{StaticResource printerMenuItem}"
                                         Run="{StaticResource runMenuItem}"
                                         V275="{StaticResource v275MenuItem}"
                                         V5="{StaticResource v5MenuItem}"
