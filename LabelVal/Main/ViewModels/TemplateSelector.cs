@@ -16,7 +16,7 @@ namespace LabelVal.Main.ViewModels
         public DataTemplate V5 { get; set; }
         public DataTemplate L96XX { get; set; }
         public DataTemplate ImageResultsDatabases { get; set; }
-        public DataTemplate Seperator { get; set; }
+        public DataTemplate Empty { get; set; } = new DataTemplate();
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
             var hmi = item as HamburgerMenuItem;
@@ -57,8 +57,8 @@ namespace LabelVal.Main.ViewModels
                 }
 
             }
-
-            return base.SelectTemplate(item, container);
+            return Empty;
+            //return base.SelectTemplate(item, container);
         }
     }
 

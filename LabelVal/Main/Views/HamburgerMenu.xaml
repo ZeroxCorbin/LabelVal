@@ -27,6 +27,9 @@
     <converters:LocalizeEnumValue x:Key="localizeEnumValue"/>
     <converters:MACAddressSplitConverter x:Key="macAddressSplitConverter"/>
 
+    <DataTemplate x:Key="printerContent">
+        <Grid Visibility="Collapsed"/>
+    </DataTemplate>
     <DataTemplate x:Key="imageRDContent">
         <results:ImageResultsDatabases/>
     </DataTemplate>
@@ -375,6 +378,7 @@
                                         ImageResultsDatabases="{StaticResource imageRDMenuItem}"/>
 
     <viewModels:TemplateSelector x:Key="contentItemTemplateSelector"
+                                        Printer="{StaticResource printerContent}"
                                         Run="{StaticResource runContent}"
                                         V275="{StaticResource v275Content}"
                                         V5="{StaticResource v5Content}"

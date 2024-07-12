@@ -17,16 +17,8 @@
                     xmlns:printer="clr-namespace:LabelVal.Printer.Views"
 
                     xmlns:results="clr-namespace:LabelVal.Results.Views"
-                    xmlns:resultsVm="clr-namespace:LabelVal.Results.ViewModels"
                     xmlns:run="clr-namespace:LabelVal.Run.Views"
-                    xmlns:runVm="clr-namespace:LabelVal.Run.ViewModels"
-                    xmlns:v275="clr-namespace:LabelVal.V275.Views"
-                    xmlns:v275Vm="clr-namespace:LabelVal.V275.ViewModels"
-                    xmlns:v5="clr-namespace:LabelVal.V5.Views"
-                    xmlns:v5Vm="clr-namespace:LabelVal.V5.ViewModels"
-                    xmlns:L95xx="clr-namespace:LabelVal.LVS_95xx.Views"
-                    xmlns:L95xxVm="clr-namespace:LabelVal.LVS_95xx.ViewModels"
-                 
+
                     xmlns:viewModels="clr-namespace:LabelVal.Main.ViewModels"  
                  
                     xmlns:converters="clr-namespace:LabelVal.Converters"
@@ -129,7 +121,7 @@
             <md:DrawerHost x:Name="PrinterDetails" VerticalAlignment="Stretch" OpenMode="Standard">
                 <md:DrawerHost x:Name="ScannerDetails" VerticalAlignment="Stretch" OpenMode="Standard">
                     <DockPanel>
-                        
+
                         <DockPanel DockPanel.Dock="Bottom">
                             <StatusBar>
                                 <StatusBarItem>
@@ -154,16 +146,16 @@
                             </StatusBar>
                         </DockPanel>
 
-                        <mah:HamburgerMenu x:Name="hamMenu" Width="Auto" ItemsSource="{Binding MenuItems}" SelectedItem="{Binding SelectedMenuItem}"
-                                           ItemTemplateSelector="{StaticResource menuItemTemplateSelector}"
-                                           ItemClick="HamburgerMenu_ItemClick">
+                        <mah:HamburgerMenu  DisplayMode="CompactInline" x:Name="hamMenu" 
+                                ItemsSource="{Binding MenuItems}"
+                                SelectedItem="{Binding SelectedMenuItem}"
+                                ItemTemplateSelector="{StaticResource menuItemTemplateSelector}"
+                                ItemClick="HamburgerMenu_ItemClick">
 
                             <mah:HamburgerMenu.ContentTemplate>
                                 <DataTemplate>
-
                                     <ContentControl Content="{Binding DataContext.SelectedMenuItem.Content, RelativeSource={RelativeSource AncestorType=mah:HamburgerMenu}}" 
-                                                    ContentTemplateSelector="{StaticResource contentItemTemplateSelector}"/>
-
+                            ContentTemplateSelector="{StaticResource contentItemTemplateSelector}"/>
                                 </DataTemplate>
                             </mah:HamburgerMenu.ContentTemplate>
                         </mah:HamburgerMenu>

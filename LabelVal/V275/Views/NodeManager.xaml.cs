@@ -46,7 +46,7 @@ public partial class NodeManager : UserControl
             view.LeftDrawerContent = details;
         }
         view.IsLeftDrawerOpen = !view.IsLeftDrawerOpen;
-     }
+    }
      
     private void btnShowSettings_Click(object sender, RoutedEventArgs e) => drwSettings.IsTopDrawerOpen = !drwSettings.IsTopDrawerOpen;
 
