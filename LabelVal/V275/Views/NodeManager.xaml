@@ -22,7 +22,7 @@
     
     <DockPanel>
 
-        <md:Card DockPanel.Dock="Top" Height="48" Margin="5" 
+        <md:Card DockPanel.Dock="Top" Height="48" Margin="2"
                  Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
                  Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 

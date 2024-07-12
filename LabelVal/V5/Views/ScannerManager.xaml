@@ -10,25 +10,26 @@
                 xmlns:converters="clr-namespace:LabelVal.Converters"
              d:DataContext="{d:DesignInstance Type=ViewModels:ScannerManager}"
              mc:Ignorable="d" >
-    
+
     <UserControl.Resources>
         <converters:ObjectIsNull x:Key="objectIsNull"/>
     </UserControl.Resources>
 
-    <GroupBox MinWidth="312" Margin="3" Padding="3" VerticalAlignment="Top" HorizontalAlignment="Left"
-                  Style="{StaticResource MaterialDesignCardGroupBox}"
-                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                md:ColorZoneAssist.Mode="Custom">
+    <DockPanel>
 
-        <GroupBox.Header>
-            <DockPanel Margin="-5">
-                <md:Card Background="{DynamicResource OrangeBrush1}" HorizontalAlignment="Left"  Padding="4,1">
-                    <TextBlock Text="V5 Cameras" Foreground="White" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
-                </md:Card>
+        <md:Card DockPanel.Dock="Top" Height="48" Margin="2" 
+                 Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
-                <Button Command="{Binding AddCommand}" ToolTip="New V5" Margin="6,0,3,0">
+            <DockPanel>
+
+                <DockPanel Width="48" Height="48" Background="{DynamicResource OrangeBrush1}">
+                    <Image Width="36" Height="36" Source="/Assets/Images/v5-white-outline.ico" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                </DockPanel>
+
+                <Button Command="{Binding AddCommand}" ToolTip="New V5" Width="48">
                     <Button.Style>
-                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
+                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
                             <Setter Property="Visibility" Value="Collapsed"/>
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding NewScanner, Converter={StaticResource objectIsNull}}" Value="True">
@@ -38,12 +39,13 @@
                         </Style>
                     </Button.Style>
 
-                    <iconPacks:PackIconMaterial Kind="Plus" Height="17" Width="17"/>
+                    <iconPacks:PackIconMaterial Kind="Plus"
+                                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" Width="24" Height="24"/>
                 </Button>
 
-                <Button Command="{Binding SaveCommand}" ToolTip="Save Image Roll" Margin="6,0,3,0">
+                <Button Command="{Binding SaveCommand}" ToolTip="Save Image Roll" Width="48">
                     <Button.Style>
-                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
+                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
                             <Setter Property="Visibility" Value="Collapsed"/>
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding NewScanner, Converter={StaticResource objectIsNull}}" Value="False">
@@ -53,12 +55,13 @@
                         </Style>
                     </Button.Style>
 
-                    <iconPacks:PackIconMaterial Kind="ContentSave" Height="14" Width="14"/>
+                    <iconPacks:PackIconMaterial Kind="ContentSave"
+                                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" Width="24" Height="24"/>
                 </Button>
 
-                <Button Command="{Binding CancelCommand}" ToolTip="Cancel" Margin="6,0,3,0">
+                <Button Command="{Binding CancelCommand}" ToolTip="Cancel" Width="48">
                     <Button.Style>
-                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
+                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
                             <Setter Property="Visibility" Value="Collapsed"/>
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding NewScanner, Converter={StaticResource objectIsNull}}" Value="False">
@@ -68,24 +71,20 @@
                         </Style>
                     </Button.Style>
 
-                    <iconPacks:PackIconMaterial Kind="Cancel" Height="14" Width="14"/>
+                    <iconPacks:PackIconMaterial Kind="Cancel"
+                                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" Width="24" Height="24"/>
                 </Button>
-                
-                <!--<Button Command="{Binding GetDevicesCommand}" Style="{StaticResource GroupHeaderCirlceButton}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
-                        Padding="0" Margin="6,0,3,0" BorderThickness="0" Height="20" Width="20" HorizontalAlignment="Left">
 
-                    <iconPacks:Modern Height="14" Width="14" Kind="Refresh"/>
-                </Button>-->
+                <Button Click="btnShowDetails_Click" Style="{StaticResource MahApps.Styles.Button.Hamburger}" HorizontalAlignment="Right" Width="48">
 
-                <Button Click="btnShowDetails_Click" Style="{StaticResource GroupHeaderCirlceButton}" HorizontalAlignment="Right">
-
-                    <iconPacks:PackIconMaterial Kind="CodeJson" Margin="0,0,1,0" Height="18" Width="18"/>
+                    <iconPacks:PackIconMaterial Kind="CodeJson"
+                                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" Width="24" Height="24"/>
                 </Button>
 
             </DockPanel>
-        </GroupBox.Header>
+        </md:Card>
 
-        <md:DrawerHost x:Name="drwEditImageRoll">
+        <md:DrawerHost x:Name="drwEditCamera">
             <md:DrawerHost.Style>
                 <Style TargetType="md:DrawerHost">
                     <Setter Property="IsTopDrawerOpen" Value="False"/>
@@ -119,35 +118,32 @@
 
             </md:DrawerHost.TopDrawerContent>
 
-            <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+            <ListView Style="{StaticResource MahApps.Styles.ListView}"
+                      ItemsSource="{Binding Scanners}" SelectedItem="{Binding SelectedScanner}">
+
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                </ListView.ItemContainerStyle>
                 
-                <ListView ItemsSource="{Binding Scanners}" SelectedItem="{Binding SelectedScanner}">
-                    
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
-                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                        </Style>
-                    </ListView.ItemContainerStyle>
-
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <local:Scanner DataContext="{Binding }">
-                                <local:Scanner.Style>
-                                    <Style TargetType="local:Scanner">
-                                        <Setter Property="IsHitTestVisible" Value="False"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListViewItem}}" Value="True">
-                                                <Setter Property="IsHitTestVisible" Value="True"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </local:Scanner.Style>
-                            </local:Scanner>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </md:Card>
-
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <local:Scanner DataContext="{Binding }">
+                            <local:Scanner.Style>
+                                <Style TargetType="local:Scanner">
+                                    <Setter Property="IsHitTestVisible" Value="False"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListViewItem}}" Value="True">
+                                            <Setter Property="IsHitTestVisible" Value="True"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </local:Scanner.Style>
+                        </local:Scanner>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
         </md:DrawerHost>
-    </GroupBox>
+    </DockPanel>
 </UserControl>

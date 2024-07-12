@@ -18,294 +18,239 @@
         <Converters:ObjectIsNull x:Key="ObjectIsNull"/>
     </UserControl.Resources>
 
-    <md:Card HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="6">
+    <md:Card HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="6" BorderThickness="1"  
+             Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+             Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}">
         <md:Card.Style>
             <Style TargetType="md:Card" BasedOn="{StaticResource {x:Type md:Card}}">
-                <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent4}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent4}"/>
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding IsSimulator}" Value="True">
-                        <Setter Property="Background" Value="{DynamicResource YellowBrush2}"/>
+                        <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}"/>
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
         </md:Card.Style>
 
-        <md:Card HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="1"
-                 Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
-                 Foreground="{DynamicResource MahApps.Brushes.Text}">
+        <DockPanel Margin="3">
 
-            <DockPanel Margin="3">
+            <DockPanel>
 
-                <DockPanel>
-                    
-                    <md:Card DockPanel.Dock="Top" VerticalAlignment="Top" Padding="3" Margin="3" 
+                <md:Card DockPanel.Dock="Top" VerticalAlignment="Top" Padding="3" Margin="3" 
                              Background="{DynamicResource MahApps.Brushes.Accent4}">
 
-                        <Button Command="{Binding ConnectCommand}" BorderThickness="0">
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
-                                    <Setter Property="Content">
-                                        <Setter.Value>
-                                            <iconPacks:Modern Kind="Connect" Height="16" Width="16"/>
-                                        </Setter.Value>
-                                    </Setter>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsConnected}" Value="True">
-                                            <Setter Property="Content">
-                                                <Setter.Value>
-                                                    <iconPacks:Modern Kind="Disconnect" Height="16" Width="16"/>
-                                                </Setter.Value>
-                                            </Setter>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
-
-                    </md:Card>
-                    
-                    <Button DockPanel.Dock="Top" Margin="3" Click="btnShowSettings_Click" Style="{StaticResource GroupHeaderCirlceButton}" ToolTip="Show Settings"
-                            HorizontalAlignment="Center" VerticalAlignment="Top" Width="24" Height="24">
-                        <iconPacks:PackIconMaterial Kind="Cog" Height="18" Width="18"/>
+                    <Button Command="{Binding ConnectCommand}" BorderThickness="0">
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
+                                <Setter Property="Content">
+                                    <Setter.Value>
+                                        <iconPacks:Modern Kind="Connect" Height="16" Width="16"/>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <iconPacks:Modern Kind="Disconnect" Height="16" Width="16"/>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
                     </Button>
 
-                    <Button DockPanel.Dock="Top" Margin="3" Click="btnOpenInBrowser_Click" Style="{StaticResource GroupHeaderCirlceButton}"
+                </md:Card>
+
+                <Button DockPanel.Dock="Top" Margin="3" Click="btnShowSettings_Click" Style="{StaticResource GroupHeaderCirlceButton}" ToolTip="Show Settings"
+                            HorizontalAlignment="Center" VerticalAlignment="Top" Width="24" Height="24">
+                    <iconPacks:PackIconMaterial Kind="Cog" Height="18" Width="18"/>
+                </Button>
+
+                <Button DockPanel.Dock="Top" Margin="3" Click="btnOpenInBrowser_Click" Style="{StaticResource GroupHeaderCirlceButton}"
                                 HorizontalAlignment="Center" VerticalAlignment="Top" Width="24" Height="24"
                             ToolTip="Open V5 WebLink. Shift + Click to open admin UI!">
-                        <iconPacks:PackIconModern Height="18" Width="18" Kind="Browser" Margin="0,2,0,0"/>
-                    </Button>
+                    <iconPacks:PackIconModern Height="18" Width="18" Kind="Browser" Margin="0,2,0,0"/>
+                </Button>
 
-                </DockPanel>
+            </DockPanel>
 
-                <md:DrawerHost x:Name="drwSettings">
+            <md:DrawerHost x:Name="drwSettings">
 
-                    <md:DrawerHost.TopDrawerContent>
+                <md:DrawerHost.TopDrawerContent>
 
-                        <md:Card Margin="3" Padding="2" HorizontalAlignment="Left"
+                    <md:Card Margin="3" Padding="2" HorizontalAlignment="Left"
                                  Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
                                  Foreground="{DynamicResource MahApps.Brushes.Text}">
-                            <md:Card.Style>
-                                <Style TargetType="{x:Type md:Card}">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Path=IsTopDrawerOpen, ElementName=drwSettings}" Value="True">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </md:Card.Style>
+                        <md:Card.Style>
+                            <Style TargetType="{x:Type md:Card}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=IsTopDrawerOpen, ElementName=drwSettings}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </md:Card.Style>
 
-                            <DockPanel>
+                        <DockPanel>
 
-                                <DockPanel DockPanel.Dock="Top" Margin="3">
-                                    <TextBox Text="{Binding Host}" md:HintAssist.Hint="IP Address" MinWidth="50" Margin="3,0"  HorizontalContentAlignment="Center"
+                            <DockPanel DockPanel.Dock="Top" Margin="3">
+                                <TextBox Text="{Binding Host}" md:HintAssist.Hint="IP Address" MinWidth="50" Margin="3,0"  HorizontalContentAlignment="Center"
                                         md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
-                                        <TextBox.Style>
-                                            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                                                <Setter Property="IsEnabled" Value="True"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsConnected}" Value="True">
-                                                        <Setter Property="IsEnabled" Value="False"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBox.Style>
-                                    </TextBox>
+                                    <TextBox.Style>
+                                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                                            <Setter Property="IsEnabled" Value="True"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
 
-                                    <TextBox Text="{Binding Port}" md:HintAssist.Hint="Port" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center"
+                                <TextBox Text="{Binding Port}" md:HintAssist.Hint="Port" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center"
                                          md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
-                                        <TextBox.Style>
-                                            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                                                <Setter Property="IsEnabled" Value="True"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsConnected}" Value="True">
-                                                        <Setter Property="IsEnabled" Value="False"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBox.Style>
-                                    </TextBox>
+                                    <TextBox.Style>
+                                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                                            <Setter Property="IsEnabled" Value="True"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
 
-                                    <TextBox Text="{Binding QuickSet_ImagePercent}" md:HintAssist.Hint="Focus ROI" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center"
+                                <TextBox Text="{Binding QuickSet_ImagePercent}" md:HintAssist.Hint="Focus ROI" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center"
                                          md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
-                                        <TextBox.Style>
-                                            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                                                <Setter Property="IsEnabled" Value="True"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsConnected}" Value="True">
-                                                        <Setter Property="IsEnabled" Value="False"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBox.Style>
-                                    </TextBox>
+                                    <TextBox.Style>
+                                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                                            <Setter Property="IsEnabled" Value="True"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
 
-                                    <!--<mah:NumericUpDown Value="{Binding QuickSet_ImagePercent}" StringFormat="N2" Interval="0.01" Maximum="1.0" Minimum="0.01"
+                                <!--<mah:NumericUpDown Value="{Binding QuickSet_ImagePercent}" StringFormat="N2" Interval="0.01" Maximum="1.0" Minimum="0.01"
                                            md:HintAssist.Hint="Focus ROI" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Right" HorizontalContentAlignment="Left"
                                            MinWidth="40" Margin="0,0" BorderThickness="0"/>-->
 
-                                    <TextBox Text="{Binding RepeatedTriggerDelay}" Style="{StaticResource MaterialDesignFloatingHintTextBox}" HorizontalContentAlignment="Center"
+                                <TextBox Text="{Binding RepeatedTriggerDelay}" Style="{StaticResource MaterialDesignFloatingHintTextBox}" HorizontalContentAlignment="Center"
                                              md:HintAssist.Hint="Trigger Delay" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left"
                                              md:TextFieldAssist.SuffixText="ms"/>
 
-                                    <mah:ToggleSwitch IsOn="{Binding FullResImages}"
+                                <mah:ToggleSwitch IsOn="{Binding FullResImages}"
                                           Content="Full Res. Images"
                                           Margin="3" >
-                                        <mah:ToggleSwitch.RenderTransform>
-                                            <ScaleTransform ScaleX="0.8" ScaleY="0.8"/>
-                                        </mah:ToggleSwitch.RenderTransform>
-                                    </mah:ToggleSwitch>
+                                    <mah:ToggleSwitch.RenderTransform>
+                                        <ScaleTransform ScaleX="0.8" ScaleY="0.8"/>
+                                    </mah:ToggleSwitch.RenderTransform>
+                                </mah:ToggleSwitch>
 
-                                </DockPanel>
-
-                                <DockPanel DockPanel.Dock="Top" Margin="3">
-                                    <TextBox Text="{Binding FTPHost}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center"
-                                            md:HintAssist.Hint="SFTP IP Address" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
-                                        <TextBox.Style>
-                                            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                                                <Setter Property="IsEnabled" Value="True"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsConnected}" Value="True">
-                                                        <Setter Property="IsEnabled" Value="False"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBox.Style>
-                                    </TextBox>
-
-                                    <TextBox Text="{Binding FTPPort}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center"
-                                  md:HintAssist.Hint="SFTP Port" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
-                                        <TextBox.Style>
-                                            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                                                <Setter Property="IsEnabled" Value="True"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsConnected}" Value="True">
-                                                        <Setter Property="IsEnabled" Value="False"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBox.Style>
-                                    </TextBox>
-
-                                    <TextBox Text="{Binding FTPUsername}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center"
-                                 md:HintAssist.Hint="SFTP User name" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
-                                        <TextBox.Style>
-                                            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                                                <Setter Property="IsEnabled" Value="True"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsConnected}" Value="True">
-                                                        <Setter Property="IsEnabled" Value="False"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBox.Style>
-                                    </TextBox>
-
-                                    <TextBox Text="{Binding FTPPassword}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center" HorizontalAlignment="Left"
-                                 md:HintAssist.Hint="SFTP Password" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
-                                        <TextBox.Style>
-                                            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                                                <Setter Property="IsEnabled" Value="True"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsConnected}" Value="True">
-                                                        <Setter Property="IsEnabled" Value="False"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBox.Style>
-                                    </TextBox>
-
-                                </DockPanel>
-
-                                <DockPanel Margin="3">
-                                    <TextBox Text="{Binding FTPRemotePath}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center" HorizontalAlignment="Left"
-                                        md:HintAssist.Hint="Remote Path" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
-                                        <TextBox.Style>
-                                            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                                                <Setter Property="IsEnabled" Value="True"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsConnected}" Value="True">
-                                                        <Setter Property="IsEnabled" Value="False"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBox.Style>
-                                    </TextBox>
-
-                                    <Button Command="{Binding Manager.RemoveCommand}" CommandParameter="{Binding }" Style="{StaticResource GroupHeaderCirlceButton}" ToolTip="Delete This Camera?">
-                                        <iconPacks:PackIconMaterial Kind="Delete" Height="14" Width="14"/>
-                                    </Button>
-                                </DockPanel>
                             </DockPanel>
-                        </md:Card>
 
-                    </md:DrawerHost.TopDrawerContent>
+                            <DockPanel DockPanel.Dock="Top" Margin="3">
+                                <TextBox Text="{Binding FTPHost}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center"
+                                            md:HintAssist.Hint="SFTP IP Address" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
+                                    <TextBox.Style>
+                                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                                            <Setter Property="IsEnabled" Value="True"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
 
-                    <DockPanel>
+                                <TextBox Text="{Binding FTPPort}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center"
+                                  md:HintAssist.Hint="SFTP Port" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
+                                    <TextBox.Style>
+                                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                                            <Setter Property="IsEnabled" Value="True"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
 
-                        <DockPanel DockPanel.Dock="Top" Margin="0">
+                                <TextBox Text="{Binding FTPUsername}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center"
+                                 md:HintAssist.Hint="SFTP User name" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
+                                    <TextBox.Style>
+                                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                                            <Setter Property="IsEnabled" Value="True"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
 
-                            <ComboBox ItemsSource="{Binding AcquisitionTypes}" SelectedValue="{Binding SelectedAcquisitionType}"
+                                <TextBox Text="{Binding FTPPassword}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center" HorizontalAlignment="Left"
+                                 md:HintAssist.Hint="SFTP Password" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
+                                    <TextBox.Style>
+                                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                                            <Setter Property="IsEnabled" Value="True"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
+
+                            </DockPanel>
+
+                            <DockPanel Margin="3">
+                                <TextBox Text="{Binding FTPRemotePath}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center" HorizontalAlignment="Left"
+                                        md:HintAssist.Hint="Remote Path" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
+                                    <TextBox.Style>
+                                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                                            <Setter Property="IsEnabled" Value="True"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
+
+                                <Button Command="{Binding Manager.RemoveCommand}" CommandParameter="{Binding }" Style="{StaticResource GroupHeaderCirlceButton}" ToolTip="Delete This Camera?">
+                                    <iconPacks:PackIconMaterial Kind="Delete" Height="14" Width="14"/>
+                                </Button>
+                            </DockPanel>
+                        </DockPanel>
+                    </md:Card>
+
+                </md:DrawerHost.TopDrawerContent>
+
+                <DockPanel>
+
+                    <DockPanel DockPanel.Dock="Top" Margin="0">
+
+                        <ComboBox ItemsSource="{Binding AcquisitionTypes}" SelectedValue="{Binding SelectedAcquisitionType}"
                                       d:Text="Sensor" md:HintAssist.Hint="Acquire" MinWidth="56" Margin="3,0" HorizontalContentAlignment="Left"
                                        md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
-                                <ComboBox.Style>
-                                    <Style TargetType="ComboBox" BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsConnected}" Value="True">
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </ComboBox.Style>
-                            </ComboBox>
-
-                            <TextBox d:Text="-----" Text="-----" md:HintAssist.Hint="Acquire" MinWidth="56" Margin="3,0" HorizontalContentAlignment="Left"
-                                    md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left" BorderThickness="0"
-                                    IsHitTestVisible="False">
-                                <TextBox.Style>
-                                    <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsConnected}" Value="True">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBox.Style>
-                            </TextBox>
-
-                            <TextBox d:Text="model" md:HintAssist.Hint="Model" MinWidth="86" Margin="3,0" HorizontalContentAlignment="Left"
-                                    md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left" BorderThickness="0"
-                                    IsHitTestVisible="False">
-                                <TextBox.Style>
-                                    <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                                        <Setter Property="Text">
-                                            <Setter.Value>
-                                                <MultiBinding StringFormat="{}{0} {1}" Mode="OneWay">
-                                                    <Binding Path="SelectedCamera.Name"/>
-                                                    <Binding Path="SelectedCamera.Sensor.PixelCount"/>
-                                                </MultiBinding>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Style>
-                                </TextBox.Style>
-                            </TextBox>
-
-                        </DockPanel>
-
-                        <ComboBox DockPanel.Dock="Top" ItemsSource="{Binding Directories}" SelectedValue="{Binding SelectedDirectory}" 
-                                      Margin="3,0" md:HintAssist.Hint="Directory" md:HintAssist.IsFloating="True" HorizontalAlignment="Left" BorderThickness="0">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding }"/>
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
                             <ComboBox.Style>
-                                <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}">
+                                <Style TargetType="ComboBox" BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}">
                                     <Setter Property="Visibility" Value="Collapsed"/>
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsSimulator}" Value="True">
+                                        <DataTrigger Binding="{Binding IsConnected}" Value="True">
                                             <Setter Property="Visibility" Value="Visible"/>
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -313,442 +258,493 @@
                             </ComboBox.Style>
                         </ComboBox>
 
-                        <DockPanel DockPanel.Dock="Top" Margin="1" HorizontalAlignment="Left" VerticalAlignment="Top">
+                        <TextBox d:Text="-----" Text="-----" md:HintAssist.Hint="Acquire" MinWidth="56" Margin="3,0" HorizontalContentAlignment="Left"
+                                    md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left" BorderThickness="0"
+                                    IsHitTestVisible="False">
+                            <TextBox.Style>
+                                <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBox.Style>
+                        </TextBox>
 
-                            <TextBox d:Text="Mode" Text="{Binding ScannerMode}" md:HintAssist.Hint="Mode" Margin="3,0" HorizontalContentAlignment="Center"
-                                md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left" 
-                                IsHitTestVisible="False">
-                                <TextBox.Style>
-                                    <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                                        <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}"/>
-                                        <Style.Triggers>
-                                            <MultiDataTrigger>
-                                                <MultiDataTrigger.Conditions>
-                                                    <Condition Value="Offline" Binding="{Binding ScannerMode}" />
-                                                </MultiDataTrigger.Conditions>
-                                                <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}" />
-                                            </MultiDataTrigger>
+                        <TextBox d:Text="model" md:HintAssist.Hint="Model" MinWidth="86" Margin="3,0" HorizontalContentAlignment="Left"
+                                    md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left" BorderThickness="0"
+                                    IsHitTestVisible="False">
+                            <TextBox.Style>
+                                <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                                    <Setter Property="Text">
+                                        <Setter.Value>
+                                            <MultiBinding StringFormat="{}{0} {1}" Mode="OneWay">
+                                                <Binding Path="SelectedCamera.Name"/>
+                                                <Binding Path="SelectedCamera.Sensor.PixelCount"/>
+                                            </MultiBinding>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </TextBox.Style>
+                        </TextBox>
 
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBox.Style>
-                            </TextBox>
-
-                            <ComboBox ItemsSource="{Binding Jobs}" SelectedValue="{Binding SelectedJob}" Margin="3,0"
-                                      md:HintAssist.Hint="Job Name" md:HintAssist.IsFloating="True" HorizontalAlignment="Left">
-                                <ComboBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding jobName}"/>
-                                    </DataTemplate>
-                                </ComboBox.ItemTemplate>
-                                <ComboBox.Style>
-                                    <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}">
-                                        <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}"/>
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                        <Setter Property="IsHitTestVisible" Value="True"/>
-                                        <Style.Triggers>
-
-                                            <DataTrigger Value="False" Binding="{Binding IsWrongTemplateName}">
-                                                <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}"/>
-                                            </DataTrigger>
-
-                                            <DataTrigger Value="False" Binding="{Binding Jobs, Converter={StaticResource ObjectIsNull}}">
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                            </DataTrigger>
-
-                                            <DataTrigger Value="Run" Binding="{Binding ScannerMode}">
-                                                <Setter Property="IsHitTestVisible" Value="False"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </ComboBox.Style>
-                            </ComboBox>
-
-                        </DockPanel>
-
-                        <DockPanel>
-                            
-                            <Button HorizontalAlignment="Left" VerticalAlignment="Top" Margin="3,0" BorderThickness="0" Width="38">
-
-                                <Button.Style>
-                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                        <Style.Triggers>
-
-                                            <DataTrigger Value="Offline" Binding="{Binding ScannerMode}">
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                                <Setter Property="Content">
-                                                    <Setter.Value>
-                                                        <iconPacks:PackIconMaterial Kind="SettingsHelper"/>
-                                                    </Setter.Value>
-                                                </Setter>
-                                                <Setter Property="Command" Value="{Binding SwitchEditCommand}"/>
-                                                <Setter Property="ToolTip" Value="Setup"/>
-                                            </DataTrigger>
-
-                                            <DataTrigger Value="Setup" Binding="{Binding ScannerMode}">
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                                <Setter Property="Content">
-                                                    <Setter.Value>
-                                                        <iconPacks:PackIconMaterial Kind="Play"/>
-                                                    </Setter.Value>
-                                                </Setter>
-                                                <Setter Property="Command" Value="{Binding SwitchRunCommand}"/>
-                                                <Setter Property="ToolTip" Value="Run"/>
-                                            </DataTrigger>
-
-                                            <DataTrigger Value="Run" Binding="{Binding ScannerMode}">
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                                <Setter Property="Content">
-                                                    <Setter.Value>
-                                                        <iconPacks:PackIconMaterial Kind="SettingsHelper"/>
-                                                    </Setter.Value>
-                                                </Setter>
-                                                <Setter Property="Command" Value="{Binding SwitchEditCommand}"/>
-                                                <Setter Property="ToolTip" Value="Edit"/>
-                                            </DataTrigger>
-
-                                            <DataTrigger Value="False" Binding="{Binding IsConnected}">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                            </DataTrigger>
-
-                                        </Style.Triggers>
-                                    </Style>
-                                </Button.Style>
-                            </Button>
-
-                        </DockPanel>
                     </DockPanel>
 
-                </md:DrawerHost>
+                    <ComboBox DockPanel.Dock="Top" ItemsSource="{Binding Directories}" SelectedValue="{Binding SelectedDirectory}" 
+                                      Margin="3,0" md:HintAssist.Hint="Directory" md:HintAssist.IsFloating="True" HorizontalAlignment="Left" BorderThickness="0">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding }"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                        <ComboBox.Style>
+                            <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsSimulator}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ComboBox.Style>
+                    </ComboBox>
 
-                <Expander DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Right" md:ExpanderAssist.HorizontalHeaderPadding="6" MaxHeight="450"
+                    <DockPanel DockPanel.Dock="Top" Margin="1" HorizontalAlignment="Left" VerticalAlignment="Top">
+
+                        <TextBox d:Text="Mode" Text="{Binding ScannerMode}" md:HintAssist.Hint="Mode" Margin="3,0" HorizontalContentAlignment="Center"
+                                md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left" 
+                                IsHitTestVisible="False">
+                            <TextBox.Style>
+                                <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                                    <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}"/>
+                                    <Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Value="Offline" Binding="{Binding ScannerMode}" />
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}" />
+                                        </MultiDataTrigger>
+
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBox.Style>
+                        </TextBox>
+
+                        <ComboBox ItemsSource="{Binding Jobs}" SelectedValue="{Binding SelectedJob}" Margin="3,0"
+                                      md:HintAssist.Hint="Job Name" md:HintAssist.IsFloating="True" HorizontalAlignment="Left">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding jobName}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                            <ComboBox.Style>
+                                <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}">
+                                    <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}"/>
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Setter Property="IsHitTestVisible" Value="True"/>
+                                    <Style.Triggers>
+
+                                        <DataTrigger Value="False" Binding="{Binding IsWrongTemplateName}">
+                                            <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}"/>
+                                        </DataTrigger>
+
+                                        <DataTrigger Value="False" Binding="{Binding Jobs, Converter={StaticResource ObjectIsNull}}">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+
+                                        <DataTrigger Value="Run" Binding="{Binding ScannerMode}">
+                                            <Setter Property="IsHitTestVisible" Value="False"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ComboBox.Style>
+                        </ComboBox>
+
+                    </DockPanel>
+
+                    <DockPanel>
+
+                        <Button HorizontalAlignment="Left" VerticalAlignment="Top" Margin="3,0" BorderThickness="0" Width="38">
+
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+
+                                        <DataTrigger Value="Offline" Binding="{Binding ScannerMode}">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <iconPacks:PackIconMaterial Kind="SettingsHelper"/>
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Setter Property="Command" Value="{Binding SwitchEditCommand}"/>
+                                            <Setter Property="ToolTip" Value="Setup"/>
+                                        </DataTrigger>
+
+                                        <DataTrigger Value="Setup" Binding="{Binding ScannerMode}">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <iconPacks:PackIconMaterial Kind="Play"/>
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Setter Property="Command" Value="{Binding SwitchRunCommand}"/>
+                                            <Setter Property="ToolTip" Value="Run"/>
+                                        </DataTrigger>
+
+                                        <DataTrigger Value="Run" Binding="{Binding ScannerMode}">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <iconPacks:PackIconMaterial Kind="SettingsHelper"/>
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Setter Property="Command" Value="{Binding SwitchEditCommand}"/>
+                                            <Setter Property="ToolTip" Value="Edit"/>
+                                        </DataTrigger>
+
+                                        <DataTrigger Value="False" Binding="{Binding IsConnected}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+
+                    </DockPanel>
+                </DockPanel>
+
+            </md:DrawerHost>
+
+            <Expander DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Right" md:ExpanderAssist.HorizontalHeaderPadding="6" MaxHeight="450"
                                Background="{DynamicResource MahApps.Brushes.Accent4}">
 
-                    <Expander.Header>
-                        <DockPanel>
+                <Expander.Header>
+                    <DockPanel>
 
-                            <TextBlock Text="Control" MinWidth="48" VerticalAlignment="Center"/>
+                        <TextBlock Text="Control" MinWidth="48" VerticalAlignment="Center"/>
 
-                            <DockPanel >
-                                <DockPanel.Style>
-                                    <Style TargetType="DockPanel">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Path=IsExpanded, RelativeSource={RelativeSource AncestorType=Expander}}" Value="True">
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </DockPanel.Style>
+                        <DockPanel >
+                            <DockPanel.Style>
+                                <Style TargetType="DockPanel">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=IsExpanded, RelativeSource={RelativeSource AncestorType=Expander}}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DockPanel.Style>
 
-                                <md:Card Padding="3" Margin="3,0" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-                                    <StackPanel Orientation="Horizontal">
+                            <md:Card Padding="3" Margin="3,0" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                                <StackPanel Orientation="Horizontal">
 
-                                        <Button Content="Trigger" Command="{Binding TriggerCommand}" Style="{StaticResource MahApps.Styles.Button}" Margin="3,0" BorderThickness="0"/>
+                                    <Button Content="Trigger" Command="{Binding TriggerCommand}" Style="{StaticResource MahApps.Styles.Button}" Margin="3,0" BorderThickness="0"/>
 
-                                        <ToggleButton IsChecked="{Binding RepeatTrigger}"
+                                    <ToggleButton IsChecked="{Binding RepeatTrigger}"
                                               Content="{iconPacks:Material Kind=CircleSmall, Width=8, Height=8}"
                                               md:ToggleButtonAssist.OnContent="{iconPacks:BootstrapIcons Kind=ArrowRepeat, Width=16, Height=16}"
                                               Style="{StaticResource MaterialDesignActionToggleButton}"
                                               Width="21" Height="21" Margin="3" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
 
-                                    </StackPanel>
-                                </md:Card>
+                                </StackPanel>
+                            </md:Card>
 
-                                <md:Card Padding="3" Margin="3,0" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-                                    <md:Card.Style>
-                                        <Style TargetType="{x:Type md:Card}">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsSimulator}" Value="True">
-                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </md:Card.Style>
-
-                                    <StackPanel Orientation="Horizontal">
-                                        <Button Content="QS Focus" Command="{Binding QuickSetFocusCommand}" Style="{StaticResource MahApps.Styles.Button}" Margin="3,0" BorderThickness="0"/>
-                                        <Button Content="QS Photometry" Command="{Binding QuickSetPhotometryCommand}" Style="{StaticResource MahApps.Styles.Button}" Margin="3,0" BorderThickness="0"/>
-                                    </StackPanel>
-                                </md:Card>
-
-                                <md:Card Padding="3" Margin="3,0" Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left">
-                                    <StackPanel Orientation="Horizontal">
-                                        <Button Content="SysInfo" Command="{Binding SysInfoCommand}" Style="{StaticResource MahApps.Styles.Button}" Margin="3,0" BorderThickness="0"/>
-
-                                        <Button Content="Config" Command="{Binding ConfigCommand}" Style="{StaticResource MahApps.Styles.Button}" Margin="3,0" BorderThickness="0"/>
-
-                                    </StackPanel>
-                                </md:Card>
-
-
-                            </DockPanel>
-
-                            <DockPanel DockPanel.Dock="Left" Margin="3" VerticalAlignment="Center">
-                                <DockPanel.Style>
-                                    <Style TargetType="DockPanel">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Path=IsExpanded, RelativeSource={RelativeSource AncestorType=Expander}}" Value="True">
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </DockPanel.Style>
-
-                                <Grid Margin="6,0,3,0">
-                                    <Ellipse Height="20" Width="20" Stroke="{DynamicResource MahApps.Brushes.Accent}" 
-                                 ToolTip="Event Web Socket State">
-                                        <Ellipse.Style>
-                                            <Style TargetType="{x:Type Ellipse}">
-                                                <Setter Property="Fill" Value="Gray"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsEventWSConnected}" Value="True">
-                                                        <Setter Property="Fill" Value="Green"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Ellipse.Style>
-                                    </Ellipse>
-                                    <TextBlock Text="E" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Event Web Socket State"/>
-                                </Grid>
-
-                                <Grid Margin="3,0">
-                                    <Ellipse Height="20" Width="20" Stroke="{DynamicResource MahApps.Brushes.Accent}"
-                                 ToolTip="Result Web Socket State">
-                                        <Ellipse.Style>
-                                            <Style TargetType="{x:Type Ellipse}">
-                                                <Setter Property="Fill" Value="Gray"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsResultWSConnected}" Value="True">
-                                                        <Setter Property="Fill" Value="Green"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Ellipse.Style>
-                                    </Ellipse>
-                                    <TextBlock Text="R" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Result Web Socket State"/>
-                                </Grid>
-
-                                <Grid Margin="3,0" HorizontalAlignment="Left">
-                                    <Ellipse Height="20" Width="20" Stroke="{DynamicResource MahApps.Brushes.Accent}"
-                                        ToolTip="Image Web Socket State">
-                                        <Ellipse.Style>
-                                            <Style TargetType="{x:Type Ellipse}">
-                                                <Setter Property="Fill" Value="Gray"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsImageWSConnected}" Value="True">
-                                                        <Setter Property="Fill" Value="Green"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Ellipse.Style>
-                                    </Ellipse>
-                                    <TextBlock Text="I" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Image Web Socket State"/>
-                                </Grid>
-
-                                <!--<TextBlock Text="{Binding ScannerMode}" Margin="3,0" HorizontalAlignment="Left" VerticalAlignment="Center"/>-->
-
-                            </DockPanel>
-
-
-                            <Button Content="Add" Command="{Binding AddToImageRollCommand}" Margin="3,0" BorderThickness="0" HorizontalAlignment="Right">
-                                <Button.Style>
-                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
+                            <md:Card Padding="3" Margin="3,0" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                                <md:Card.Style>
+                                    <Style TargetType="{x:Type md:Card}">
                                         <Setter Property="Visibility" Value="Visible"/>
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding SelectedImageRoll, Converter={StaticResource ObjectIsNull}}" Value="True">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding RawImage, Converter={StaticResource ObjectIsNull}}" Value="True">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding FullResImages}" Value="False">
+                                            <DataTrigger Binding="{Binding IsSimulator}" Value="True">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
-                                </Button.Style>
-                            </Button>
+                                </md:Card.Style>
+
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Content="QS Focus" Command="{Binding QuickSetFocusCommand}" Style="{StaticResource MahApps.Styles.Button}" Margin="3,0" BorderThickness="0"/>
+                                    <Button Content="QS Photometry" Command="{Binding QuickSetPhotometryCommand}" Style="{StaticResource MahApps.Styles.Button}" Margin="3,0" BorderThickness="0"/>
+                                </StackPanel>
+                            </md:Card>
+
+                            <md:Card Padding="3" Margin="3,0" Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left">
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Content="SysInfo" Command="{Binding SysInfoCommand}" Style="{StaticResource MahApps.Styles.Button}" Margin="3,0" BorderThickness="0"/>
+
+                                    <Button Content="Config" Command="{Binding ConfigCommand}" Style="{StaticResource MahApps.Styles.Button}" Margin="3,0" BorderThickness="0"/>
+
+                                </StackPanel>
+                            </md:Card>
 
 
                         </DockPanel>
-                    </Expander.Header>
 
-                    <DockPanel >
+                        <DockPanel DockPanel.Dock="Left" Margin="3" VerticalAlignment="Center">
+                            <DockPanel.Style>
+                                <Style TargetType="DockPanel">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=IsExpanded, RelativeSource={RelativeSource AncestorType=Expander}}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DockPanel.Style>
 
-                        <!--JSON-->
-                        <json:JsonViewer Title="JSON" JSON="{Binding ExplicitMessages}" ShowSaveButton="True" MinWidth="200" MaxWidth="400" Foreground="{DynamicResource MahApps.Brushes.Text}"/>
+                            <Grid Margin="6,0,3,0">
+                                <Ellipse Height="20" Width="20" Stroke="{DynamicResource MahApps.Brushes.Accent}" 
+                                 ToolTip="Event Web Socket State">
+                                    <Ellipse.Style>
+                                        <Style TargetType="{x:Type Ellipse}">
+                                            <Setter Property="Fill" Value="Gray"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsEventWSConnected}" Value="True">
+                                                    <Setter Property="Fill" Value="Green"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Ellipse.Style>
+                                </Ellipse>
+                                <TextBlock Text="E" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Event Web Socket State"/>
+                            </Grid>
 
-                        <!--Results-->
-                        <GroupBox VerticalAlignment="Top" Margin="3" Padding="3" Height="390"
+                            <Grid Margin="3,0">
+                                <Ellipse Height="20" Width="20" Stroke="{DynamicResource MahApps.Brushes.Accent}"
+                                 ToolTip="Result Web Socket State">
+                                    <Ellipse.Style>
+                                        <Style TargetType="{x:Type Ellipse}">
+                                            <Setter Property="Fill" Value="Gray"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsResultWSConnected}" Value="True">
+                                                    <Setter Property="Fill" Value="Green"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Ellipse.Style>
+                                </Ellipse>
+                                <TextBlock Text="R" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Result Web Socket State"/>
+                            </Grid>
+
+                            <Grid Margin="3,0" HorizontalAlignment="Left">
+                                <Ellipse Height="20" Width="20" Stroke="{DynamicResource MahApps.Brushes.Accent}"
+                                        ToolTip="Image Web Socket State">
+                                    <Ellipse.Style>
+                                        <Style TargetType="{x:Type Ellipse}">
+                                            <Setter Property="Fill" Value="Gray"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsImageWSConnected}" Value="True">
+                                                    <Setter Property="Fill" Value="Green"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Ellipse.Style>
+                                </Ellipse>
+                                <TextBlock Text="I" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Image Web Socket State"/>
+                            </Grid>
+
+                            <!--<TextBlock Text="{Binding ScannerMode}" Margin="3,0" HorizontalAlignment="Left" VerticalAlignment="Center"/>-->
+
+                        </DockPanel>
+
+
+                        <Button Content="Add" Command="{Binding AddToImageRollCommand}" Margin="3,0" BorderThickness="0" HorizontalAlignment="Right">
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SelectedImageRoll, Converter={StaticResource ObjectIsNull}}" Value="True">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding RawImage, Converter={StaticResource ObjectIsNull}}" Value="True">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding FullResImages}" Value="False">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+
+
+                    </DockPanel>
+                </Expander.Header>
+
+                <DockPanel >
+
+                    <!--JSON-->
+                    <json:JsonViewer Title="JSON" JSON="{Binding ExplicitMessages}" ShowSaveButton="True" MinWidth="200" MaxWidth="400" Foreground="{DynamicResource MahApps.Brushes.Text}"/>
+
+                    <!--Results-->
+                    <GroupBox VerticalAlignment="Top" Margin="3" Padding="3" Height="390"
                                         Style="{StaticResource MaterialDesignCardGroupBox}"
                                         md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
                                         md:ColorZoneAssist.Mode="Custom">
 
-                            <GroupBox.Header>
-                                <DockPanel Margin="-5">
-                                    <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="2,1">
-                                        <TextBlock Text="Results" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
-                                    </md:Card>
-                                </DockPanel>
-                            </GroupBox.Header>
-
-                            <DockPanel MinWidth="180">
-
-                                <md:Card DockPanel.Dock="Top" Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="3" Padding="2">
-                                    <StackPanel>
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="Cycle ID: "/>
-                                            <TextBlock Text="{Binding CycleID, StringFormat=N2}"/>
-                                        </StackPanel>
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="Focus: "/>
-                                            <TextBlock Text="{Binding Capture[focus], StringFormat=N2}"/>
-                                        </StackPanel>
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="Exposure: "/>
-                                            <TextBlock Text="{Binding Capture[PhotometrySettings][usExposure]}"/>
-                                        </StackPanel>
-
-                                    </StackPanel>
+                        <GroupBox.Header>
+                            <DockPanel Margin="-5">
+                                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="2,1">
+                                    <TextBlock Text="Results" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                                 </md:Card>
+                            </DockPanel>
+                        </GroupBox.Header>
 
-                                <ScrollViewer HorizontalScrollBarVisibility="Hidden">
-                                    <ListView ItemsSource="{Binding Results}" HorizontalContentAlignment="Stretch" IsHitTestVisible="False">
+                        <DockPanel MinWidth="180">
 
-                                        <ListView.ItemTemplate>
-                                            <DataTemplate>
-                                                <md:Card Foreground="{DynamicResource MahApps.Brushes.Text}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="-5" Padding="2" Width="160">
-                                                    <DockPanel>
+                            <md:Card DockPanel.Dock="Top" Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="3" Padding="2">
+                                <StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Cycle ID: "/>
+                                        <TextBlock Text="{Binding CycleID, StringFormat=N2}"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Focus: "/>
+                                        <TextBlock Text="{Binding Capture[focus], StringFormat=N2}"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Exposure: "/>
+                                        <TextBlock Text="{Binding Capture[PhotometrySettings][usExposure]}"/>
+                                    </StackPanel>
 
-                                                        <DockPanel DockPanel.Dock="Top">
+                                </StackPanel>
+                            </md:Card>
+
+                            <ScrollViewer HorizontalScrollBarVisibility="Hidden">
+                                <ListView ItemsSource="{Binding Results}" HorizontalContentAlignment="Stretch" IsHitTestVisible="False">
+
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <md:Card Foreground="{DynamicResource MahApps.Brushes.Text}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="-5" Padding="2" Width="160">
+                                                <DockPanel>
+
+                                                    <DockPanel DockPanel.Dock="Top">
 
 
-                                                            <TextBlock DockPanel.Dock="Top" Text="{Binding [type]}"/>
+                                                        <TextBlock DockPanel.Dock="Top" Text="{Binding [type]}"/>
 
-                                                            <TextBox Text="{Binding [dataUTF8], Mode=OneWay}" IsReadOnly="True" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" TextWrapping="Wrap"/>
+                                                        <TextBox Text="{Binding [dataUTF8], Mode=OneWay}" IsReadOnly="True" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" TextWrapping="Wrap"/>
 
-
-                                                        </DockPanel>
-
-
-
-                                                        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
-                                                            <TextBlock Text="PPE: "/>
-                                                            <TextBlock Text="{Binding [ppe], StringFormat=N2}"/>
-                                                        </StackPanel>
-
-                                                        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
-                                                            <TextBlock Text="Position: "/>
-                                                            <TextBlock>
-                                                                <TextBlock.Text>
-                                                                    <MultiBinding StringFormat="{}{0} x {1}">
-                                                                        <Binding Path="[x]"/>
-                                                                        <Binding Path="[y]"/>
-                                                                    </MultiBinding>
-                                                                </TextBlock.Text>
-                                                            </TextBlock>
-                                                        </StackPanel>
-
-                                                        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
-                                                            <TextBlock Text="Angle: "/>
-                                                            <TextBlock Text="{Binding [angleDeg], StringFormat=N2}"/>
-                                                        </StackPanel>
 
                                                     </DockPanel>
-                                                </md:Card>
-                                            </DataTemplate>
-                                        </ListView.ItemTemplate>
-                                    </ListView>
-                                </ScrollViewer>
-                            </DockPanel>
 
 
-                        </GroupBox>
 
-                        <!--Image-->
-                        <GroupBox Margin="3" Padding="3" VerticalAlignment="Top"
+                                                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                                                        <TextBlock Text="PPE: "/>
+                                                        <TextBlock Text="{Binding [ppe], StringFormat=N2}"/>
+                                                    </StackPanel>
+
+                                                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                                                        <TextBlock Text="Position: "/>
+                                                        <TextBlock>
+                                                            <TextBlock.Text>
+                                                                <MultiBinding StringFormat="{}{0} x {1}">
+                                                                    <Binding Path="[x]"/>
+                                                                    <Binding Path="[y]"/>
+                                                                </MultiBinding>
+                                                            </TextBlock.Text>
+                                                        </TextBlock>
+                                                    </StackPanel>
+
+                                                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                                                        <TextBlock Text="Angle: "/>
+                                                        <TextBlock Text="{Binding [angleDeg], StringFormat=N2}"/>
+                                                    </StackPanel>
+
+                                                </DockPanel>
+                                            </md:Card>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </ScrollViewer>
+                        </DockPanel>
+
+
+                    </GroupBox>
+
+                    <!--Image-->
+                    <GroupBox Margin="3" Padding="3" VerticalAlignment="Top"
                                         Style="{StaticResource MaterialDesignCardGroupBox}"
                                         md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
                                         md:ColorZoneAssist.Mode="Custom">
 
-                            <GroupBox.Header>
-                                <DockPanel Margin="-5">
+                        <GroupBox.Header>
+                            <DockPanel Margin="-5">
 
-                                    <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Padding="2,1">
-                                        <TextBlock Text="Image" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
-                                    </md:Card>
+                                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Padding="2,1">
+                                    <TextBlock Text="Image" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                                </md:Card>
 
-                                    <Button x:Name="btnSaveImage" Click="btnSaveImage_Click" ToolTip="Save Image">
-                                        <Button.Style>
-                                            <Style TargetType="Button" BasedOn="{StaticResource GroupHeaderCirlceButton}">
-                                                <Setter Property="IsEnabled" Value="True"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding RawImage}" Value="{x:Null}">
-                                                        <Setter Property="IsEnabled" Value="False"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Button.Style>
+                                <Button x:Name="btnSaveImage" Click="btnSaveImage_Click" ToolTip="Save Image">
+                                    <Button.Style>
+                                        <Style TargetType="Button" BasedOn="{StaticResource GroupHeaderCirlceButton}">
+                                            <Setter Property="IsEnabled" Value="True"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding RawImage}" Value="{x:Null}">
+                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
 
-                                        <iconPacks:PackIconMaterial Kind="ContentSave" Height="14" Width="14"/>
-                                    </Button>
+                                    <iconPacks:PackIconMaterial Kind="ContentSave" Height="14" Width="14"/>
+                                </Button>
 
-                                    <Button x:Name="btnResetImageView" Click="btnResetImageView_Click" ToolTip="Reset View">
-                                        <Button.Style>
-                                            <Style TargetType="Button" BasedOn="{StaticResource GroupHeaderCirlceButton}">
-                                                <Setter Property="IsEnabled" Value="True"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding RawImage}" Value="{x:Null}">
-                                                        <Setter Property="IsEnabled" Value="False"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Button.Style>
+                                <Button x:Name="btnResetImageView" Click="btnResetImageView_Click" ToolTip="Reset View">
+                                    <Button.Style>
+                                        <Style TargetType="Button" BasedOn="{StaticResource GroupHeaderCirlceButton}">
+                                            <Setter Property="IsEnabled" Value="True"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding RawImage}" Value="{x:Null}">
+                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
 
-                                        <iconPacks:MaterialDesign Kind="ZoomOutMap" Height="14" Width="14"/>
-                                    </Button>
+                                    <iconPacks:MaterialDesign Kind="ZoomOutMap" Height="14" Width="14"/>
+                                </Button>
 
-                                </DockPanel>
-                            </GroupBox.Header>
+                            </DockPanel>
+                        </GroupBox.Header>
 
-                            <md:Card Background="Black" Padding="2" Margin="3">
-                                <Grid Height="332" Width="400">
-                                    <paz:ZoomBorder Name="ZoomBorder" Margin="3" ClipToBounds="True" MouseDown="SourceImage_MouseDown" VerticalAlignment="Center">
-                                        <Grid>
-                                            <Image x:Name="Image" 
+                        <md:Card Background="Black" Padding="2" Margin="3">
+                            <Grid Height="332" Width="400">
+                                <paz:ZoomBorder Name="ZoomBorder" Margin="3" ClipToBounds="True" MouseDown="SourceImage_MouseDown" VerticalAlignment="Center">
+                                    <Grid>
+                                        <Image x:Name="Image" 
                                                    Source="{Binding RawImage, Converter={StaticResource bytesToImage}}"
                                                    RenderOptions.BitmapScalingMode="NearestNeighbor"
                                                    HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                            <Image x:Name="Overlay"
+                                        <Image x:Name="Overlay"
                                                     Source="{Binding ImageOverlay}"
                                                     RenderOptions.BitmapScalingMode="NearestNeighbor"
                                                     HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                            <Image x:Name="FocusOverlay"
+                                        <Image x:Name="FocusOverlay"
                                                    Source="{Binding ImageFocusRegionOverlay}"
                                                    RenderOptions.BitmapScalingMode="NearestNeighbor"
                                                    HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                        </Grid>
-                                    </paz:ZoomBorder>
+                                    </Grid>
+                                </paz:ZoomBorder>
 
-                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" >
-                                        <Label Content="{Binding Image.PixelWidth}" Foreground="White"/>
-                                        <TextBlock Text="x" Margin="0,5,0,0" Foreground="White"/>
-                                        <Label Content="{Binding Image.PixelHeight}" Foreground="White"/>
-                                    </StackPanel>
-                                </Grid>
-                            </md:Card>
-                        </GroupBox>
-                    </DockPanel>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" >
+                                    <Label Content="{Binding Image.PixelWidth}" Foreground="White"/>
+                                    <TextBlock Text="x" Margin="0,5,0,0" Foreground="White"/>
+                                    <Label Content="{Binding Image.PixelHeight}" Foreground="White"/>
+                                </StackPanel>
+                            </Grid>
+                        </md:Card>
+                    </GroupBox>
+                </DockPanel>
 
-                </Expander>
+            </Expander>
 
-            </DockPanel>
-
-        </md:Card>
+        </DockPanel>
 
     </md:Card>
 

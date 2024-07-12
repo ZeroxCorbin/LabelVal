@@ -2,13 +2,8 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
-using LabelVal.Messages;
-using NHibernate.Util;
-using Org.BouncyCastle.Crypto.Prng;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using static System.ComponentModel.Design.ObjectSelectorEditor;
 
 namespace LabelVal.V5.ViewModels;
 
@@ -22,7 +17,7 @@ public partial class ScannerManager : ObservableRecipient
 
     public ScannerManager()
     {
-        foreach (var scanner in Scanners) 
+        foreach (Scanner scanner in Scanners)
             scanner.Manager = this;
 
         if (selectedScanner == null)
@@ -42,7 +37,7 @@ public partial class ScannerManager : ObservableRecipient
     [RelayCommand]
     private void Save()
     {
-        if(NewScanner != null)
+        if (NewScanner != null)
             Scanners.Add(NewScanner);
 
         NewScanner = null;
@@ -50,6 +45,5 @@ public partial class ScannerManager : ObservableRecipient
         App.Settings.SetValue(nameof(Scanners), Scanners);
     }
 
-    [RelayCommand] private void Remove(Scanner scanner) { Scanners.Remove(scanner); Save(); } 
-    
+    [RelayCommand] private void Remove(Scanner scanner) { Scanners.Remove(scanner); Save(); }
 }

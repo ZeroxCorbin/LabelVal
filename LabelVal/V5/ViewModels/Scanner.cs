@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
-using LabelVal.Converters;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Messages;
 using LabelVal.Utilities;
@@ -18,7 +17,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using V275_REST_Lib.Models;
 using V5_REST_Lib.Cameras;
 using V5_REST_Lib.Models;
 
@@ -61,9 +59,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         get => repeatedTriggerDelay;
         set
         {
-            if (value < 1)
-                repeatedTriggerDelay = 1;
-            else repeatedTriggerDelay = value > 1000 ? 1000 : value;
+            repeatedTriggerDelay = value < 1 ? 1 : value > 1000 ? 1000 : value;
 
             OnPropertyChanged();
         }
@@ -120,11 +116,11 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             if (SelectedCamera == null)
                 return null;
 
-            var width = SelectedCamera.Sensor.PixelColumns * QuickSet_ImagePercent;
-            var height = SelectedCamera.Sensor.PixelRows * QuickSet_ImagePercent;
+            double width = SelectedCamera.Sensor.PixelColumns * QuickSet_ImagePercent;
+            double height = SelectedCamera.Sensor.PixelRows * QuickSet_ImagePercent;
 
-            var x = (SelectedCamera.Sensor.PixelColumns - width) / 2;
-            var y = (SelectedCamera.Sensor.PixelRows - height) / 2;
+            double x = (SelectedCamera.Sensor.PixelColumns - width) / 2;
+            double y = (SelectedCamera.Sensor.PixelRows - height) / 2;
 
             return new QuickSet_Photometry((float)x, (float)y, (float)width, (float)height);
         }
@@ -136,10 +132,10 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             if (SelectedCamera == null)
                 return null;
 
-            var width = SelectedCamera.Sensor.PixelColumns * QuickSet_ImagePercent;
-            var height = SelectedCamera.Sensor.PixelRows * QuickSet_ImagePercent;
-            var x = (SelectedCamera.Sensor.PixelColumns - width) / 2;
-            var y = (SelectedCamera.Sensor.PixelRows - height) / 2;
+            double width = SelectedCamera.Sensor.PixelColumns * QuickSet_ImagePercent;
+            double height = SelectedCamera.Sensor.PixelRows * QuickSet_ImagePercent;
+            double x = (SelectedCamera.Sensor.PixelColumns - width) / 2;
+            double y = (SelectedCamera.Sensor.PixelRows - height) / 2;
 
             return new QuickSet_Focus((float)x, (float)y, (float)width, (float)height);
         }
@@ -209,7 +205,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
     private async void SwitchAquisitionType(bool file)
     {
-        var res = await ScannerController.GetConfig();
+        V5_REST_Lib.Commands.Results res = await ScannerController.GetConfig();
 
         if (!res.OK)
         {
@@ -217,8 +213,8 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             return;
         }
 
-        var config = (V5_REST_Lib.Models.NewConfig)res.Object;
-        var src = config.response.data.job.channelMap.acquisition.AcquisitionChannel.source;
+        NewConfig config = (V5_REST_Lib.Models.NewConfig)res.Object;
+        NewConfig.Source src = config.response.data.job.channelMap.acquisition.AcquisitionChannel.source;
         if (!file)
         {
             if (src.SensorAcquisitionSource != null)
@@ -236,7 +232,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
                 uiScale = 1,
             };
             src.type = "SensorAcquisitionSource";
-           // src.uid = DateTime.Now.Ticks.ToString();
+            // src.uid = DateTime.Now.Ticks.ToString();
         }
         else
         {
@@ -247,7 +243,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             src.FileAcquisitionSource = new NewConfig.Fileacquisitionsource()
             {
                 baseClass = "ChannelSource",
-                directory = SelectedDirectory == null ? Directories.First() : SelectedDirectory,
+                directory = SelectedDirectory ?? Directories.First(),
                 uiScale = 1,
             };
             src.type = "FileAcquisitionSource";
@@ -258,7 +254,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     }
     private async void ChangeDirectory(string directory)
     {
-        var res = await ScannerController.GetConfig();
+        V5_REST_Lib.Commands.Results res = await ScannerController.GetConfig();
 
         if (!res.OK)
         {
@@ -266,10 +262,10 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             return;
         }
 
-        var config = (V5_REST_Lib.Models.NewConfig)res.Object;
-        var src = config.response.data.job.channelMap.acquisition.AcquisitionChannel.source;
+        NewConfig config = (V5_REST_Lib.Models.NewConfig)res.Object;
+        NewConfig.Source src = config.response.data.job.channelMap.acquisition.AcquisitionChannel.source;
 
-        if(src.FileAcquisitionSource.directory != directory)
+        if (src.FileAcquisitionSource.directory != directory)
         {
             src.FileAcquisitionSource.directory = directory;
             //src.uid = DateTime.Now.Ticks.ToString();
@@ -296,7 +292,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         FTPHost = FTPClient.Host;
         FTPPort = FTPClient.Port;
         FTPRemotePath = FTPClient.RemotePath;
-        
+
         IsActive = true;
     }
 
@@ -304,24 +300,24 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
     private async void ScannerController_ConfigUpdate(JObject json)
     {
-        var res = await ScannerController.GetConfig();
+        V5_REST_Lib.Commands.Results res = await ScannerController.GetConfig();
         if (res.OK)
         {
-            var config = (NewConfig)res.Object;
+            NewConfig config = (NewConfig)res.Object;
             IsSimulator = config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource != null;
 
-            var meta = await ScannerController.Commands.GetMeta();
+            V5_REST_Lib.Commands.Results meta = await ScannerController.Commands.GetMeta();
             if (meta.OK)
             {
-                var metaConfig = (Meta)meta.Object;
+                Meta metaConfig = (Meta)meta.Object;
 
                 // Assuming metaConfig.response.data.FileAcquisitionSource.directory.sources is an array of strings
-                var sources = metaConfig.response.data.FileAcquisitionSource.directory.sources;
+                string[] sources = metaConfig.response.data.FileAcquisitionSource.directory.sources;
 
                 await App.Current.Dispatcher.BeginInvoke(() =>
                 {
                     // Add new directories from sources to Directories if they're not already present
-                    foreach (var source in sources)
+                    foreach (string source in sources)
                         if (!Directories.Contains(source))
                             Directories.Add(source);
 
@@ -377,10 +373,10 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
                     {
                         Results.Clear();
 
-                        var data1 = json["event"]?["data"]?["decodeData"];
+                        JToken data1 = json["event"]?["data"]?["decodeData"];
                         if (data1 != null)
                             if (data1.HasValues)
-                                foreach (var b in data1)
+                                foreach (JToken b in data1)
                                     Results.Add(b);
                     });
                 }
@@ -388,7 +384,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
                 {
                     CycleID = json["event"]?["data"]?["cycleConfig"]?["cycleId"].ToString();
 
-                    var data1 = json["event"]?["data"]?["cycleConfig"]?["job"]?["captureList"];
+                    JToken data1 = json["event"]?["data"]?["cycleConfig"]?["job"]?["captureList"];
                     if (data1 != null)
                         if (data1.HasValues)
                             Capture = data1[0]?["Capture"];
@@ -400,11 +396,10 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
                         data1 = json["event"]?["data"]?["cycleConfig"]?["qualifiedResults"];
                         if (data1 != null)
                             if (data1.HasValues)
-                                foreach (var b in data1)
+                                foreach (JToken b in data1)
                                     Results.Add(b);
                     });
                 }
-
             }
             catch (Exception ex) { LogError(ex); }
         }
@@ -442,7 +437,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     }
     private BitmapImage GetImage(byte[] raw)
     {
-        var img = new BitmapImage();
+        BitmapImage img = new();
         using (MemoryStream memStream = new(raw))
         {
             img.BeginInit();
@@ -492,7 +487,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         secAreas.Children.Add(new RectangleGeometry(
             new Rect(
                 new Point(QuickSet_Photometry.photometry.roi[0] / div, QuickSet_Photometry.photometry.roi[1] / div),
-                new Point(QuickSet_Photometry.photometry.roi[0] + QuickSet_Photometry.photometry.roi[2] / div, QuickSet_Photometry.photometry.roi[1] + QuickSet_Photometry.photometry.roi[3] / div)
+                new Point(QuickSet_Photometry.photometry.roi[0] + (QuickSet_Photometry.photometry.roi[2] / div), QuickSet_Photometry.photometry.roi[1] + (QuickSet_Photometry.photometry.roi[3] / div))
                 )));
 
         GeometryDrawing sectors = new()
@@ -513,29 +508,29 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         if (results == null || Image == null)
             return null;
 
-        var drwGroup = new DrawingGroup();
+        DrawingGroup drwGroup = new();
 
         int div = FullResImages ? 1 : 2;
 
         //Draw the image outline the same size as the stored image
-        var border = new GeometryDrawing
+        GeometryDrawing border = new()
         {
             Geometry = new RectangleGeometry(new Rect(0.5, 0.5, Image.PixelWidth - 1, Image.PixelHeight - 1)),
             Pen = new Pen(Brushes.Transparent, 1)
         };
         drwGroup.Children.Add(border);
 
-        var secCenter = new GeometryGroup();
-        var bndAreas = new GeometryGroup();
+        GeometryGroup secCenter = new();
+        GeometryGroup bndAreas = new();
 
         if (results["event"]?["name"].ToString() == "cycle-report-alt")
         {
-            foreach (var sec in results["event"]?["data"]?["decodeData"])
+            foreach (JToken sec in results["event"]?["data"]?["decodeData"])
             {
                 if (sec["boundingBox"] == null)
                     continue;
 
-                var secAreas = new GeometryGroup();
+                GeometryGroup secAreas = new();
 
                 double brushWidth = 4.0 / div;
                 double halfBrushWidth = brushWidth / 2.0 / div;
@@ -583,11 +578,11 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         else if (results["event"]?["name"].ToString() == "cycle-report")
         {
 
-            foreach (var sec in results["event"]["data"]["cycleConfig"]["qualifiedResults"])
+            foreach (JToken sec in results["event"]["data"]["cycleConfig"]["qualifiedResults"])
             {
                 if (sec["boundingBox"] == null)
                     continue;
-                var secAreas = new GeometryGroup();
+                GeometryGroup secAreas = new();
                 secAreas.Children.Add(new LineGeometry(new Point(sec["boundingBox"][0]["x"].Value<double>() / div, sec["boundingBox"][0]["y"].Value<double>() / div), new Point(sec["boundingBox"][1]["x"].Value<double>() / div, sec["boundingBox"][1]["y"].Value<double>() / div)));
                 secAreas.Children.Add(new LineGeometry(new Point(sec["boundingBox"][1]["x"].Value<double>() / div, sec["boundingBox"][1]["y"].Value<double>() / div), new Point(sec["boundingBox"][2]["x"].Value<double>() / div, sec["boundingBox"][2]["y"].Value<double>() / div)));
                 secAreas.Children.Add(new LineGeometry(new Point(sec["boundingBox"][2]["x"].Value<double>() / div, sec["boundingBox"][2]["y"].Value<double>() / div), new Point(sec["boundingBox"][3]["x"].Value<double>() / div, sec["boundingBox"][3]["y"].Value<double>() / div)));
@@ -596,8 +591,8 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
                 drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun($"DecodeTool{sec["toolSlot"]}", new Typeface("Arial"), 30.0 / div, new Point((sec["boundingBox"][2]["x"].Value<double>() - 8) / div, (sec["boundingBox"][2]["y"].Value<double>() - 8) / div))));
             }
 
-            foreach (var sec in results["event"]["data"]["cycleConfig"]["job"]["toolList"])
-                foreach (var r in sec["SymbologyTool"]["regionList"])
+            foreach (JToken sec in results["event"]["data"]["cycleConfig"]["job"]["toolList"])
+                foreach (JToken r in sec["SymbologyTool"]["regionList"])
                     bndAreas.Children.Add(new RectangleGeometry(
                         new Rect(
                             r["Region"]["shape"]["RectShape"]["x"].Value<double>() / div,
@@ -607,12 +602,12 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
                         ));
         }
 
-        var sectorCenters = new GeometryDrawing
+        GeometryDrawing sectorCenters = new()
         {
             Geometry = secCenter,
             Pen = new Pen(Brushes.Red, 4 / div)
         };
-        var bounding = new GeometryDrawing
+        GeometryDrawing bounding = new()
         {
             Geometry = bndAreas,
             Pen = new Pen(Brushes.Purple, 4 / div)
@@ -621,7 +616,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         drwGroup.Children.Add(bounding);
         drwGroup.Children.Add(sectorCenters);
 
-        var geometryImage = new DrawingImage(drwGroup);
+        DrawingImage geometryImage = new(drwGroup);
         geometryImage.Freeze();
         return geometryImage;
     }
@@ -635,12 +630,12 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
                 "{0}: no GlyphTypeface found", typeface.FontFamily));
         }
 
-        var glyphIndices = new ushort[text.Length];
-        var advanceWidths = new double[text.Length];
+        ushort[] glyphIndices = new ushort[text.Length];
+        double[] advanceWidths = new double[text.Length];
 
         for (int i = 0; i < text.Length; i++)
         {
-            var glyphIndex = glyphTypeface.CharacterToGlyphMap[text[i]];
+            ushort glyphIndex = glyphTypeface.CharacterToGlyphMap[text[i]];
             glyphIndices[i] = glyphIndex;
             advanceWidths[i] = glyphTypeface.AdvanceWidths[glyphIndex] * emSize;
         }
@@ -650,7 +645,6 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             glyphIndices, baselineOrigin, advanceWidths,
             null, null, null, null, null, null);
     }
-
 
     [RelayCommand]
     private async Task Connect()
@@ -675,10 +669,10 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
     private async Task<bool> PreLogin()
     {
-        var jobs = await ScannerController.Commands.GetJobSlots();
+        V5_REST_Lib.Commands.Results jobs = await ScannerController.Commands.GetJobSlots();
         if (jobs.OK)
         {
-            var job = (JobSlots)jobs.Object;
+            JobSlots job = (JobSlots)jobs.Object;
             if (job != null)
                 Jobs = job.response.data;
 
@@ -688,10 +682,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             return false;
     }
 
-    private void PostLogin()
-    {
-        ScannerController_ConfigUpdate(null);
-    }
+    private void PostLogin() => ScannerController_ConfigUpdate(null);
 
     private void PostLogout()
     {
@@ -774,21 +765,21 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     {
         Clear();
 
-        var res = await ScannerController.QuickSet_Focus_Wait(QuickSet_Focus);
+        bool res = await ScannerController.QuickSet_Focus_Wait(QuickSet_Focus);
     }
     [RelayCommand]
     private async Task QuickSetPhotometry()
     {
         Clear();
 
-        var res = await ScannerController.QuickSet_Photometry_Wait(QuickSet_Photometry);
+        bool res = await ScannerController.QuickSet_Photometry_Wait(QuickSet_Photometry);
     }
     [RelayCommand]
     private async Task SysInfo()
     {
         Clear();
 
-        var res = await ScannerController.GetSysInfo();
+        V5_REST_Lib.Commands.Results res = await ScannerController.GetSysInfo();
         if (res.OK)
         {
             ExplicitMessages = res.Data;
@@ -798,7 +789,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     private async Task Config()
     {
         Clear();
-        var res = await ScannerController.GetConfig();
+        V5_REST_Lib.Commands.Results res = await ScannerController.GetConfig();
         if (res.OK)
         {
             ExplicitMessages = res.Data;
@@ -825,26 +816,23 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     }
 
     [RelayCommand]
-    private void Reboot()
-    {
-        _ = ScannerController.Reboot();
-    }
+    private void Reboot() => _ = ScannerController.Reboot();
     [RelayCommand]
     private void AddToImageRoll()
     {
-        if(SelectedImageRoll == null)
+        if (SelectedImageRoll == null)
         {
             LogWarning("No image roll selected.");
             return;
         }
 
-        if(SelectedImageRoll.IsRooted)
+        if (SelectedImageRoll.IsRooted)
         {
             LogWarning("Cannot add to a rooted image roll.");
             return;
         }
 
-        if(SelectedImageRoll.IsLocked)
+        if (SelectedImageRoll.IsLocked)
         {
             LogWarning("Cannot add to a locked image roll.");
             return;
@@ -855,7 +843,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             LogWarning("No image to add.");
             return;
         }
-        var imagEntry = SelectedImageRoll.GetNewImageEntry(RawImage);
+        ImageEntry imagEntry = SelectedImageRoll.GetNewImageEntry(RawImage);
 
         SelectedImageRoll.AddImage(imagEntry);
     }
@@ -871,10 +859,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         Capture = null;
     }
 
-   private void SendControlMessage(string message)
-    {
-        _ = Messenger.Send(new SystemMessages.ControlMessage(this, message));
-    }
+    private void SendControlMessage(string message) => _ = Messenger.Send(new SystemMessages.ControlMessage(this, message));
 
     #region Logging
     private readonly Logging.Logger logger = new();

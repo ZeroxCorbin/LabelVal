@@ -16,9 +16,11 @@
     <UserControl.Resources>
         <converters:ObjectIsNull x:Key="ObjectIsNull"/>
         <converters:LocalizeEnumValue x:Key="LocalizeEnumValue"/>
+        <converters:MACAddressSplitConverter x:Key="macAddressSplitConverter"/>
     </UserControl.Resources>
 
-    <md:Card HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="6" BorderThickness="1"  Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+    <md:Card HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="6" BorderThickness="1"  
+             Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
              Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}">
         <md:Card.Style>
             <Style TargetType="md:Card" BasedOn="{StaticResource {x:Type md:Card}}">
@@ -143,7 +145,7 @@
                             </TextBox.Style>
                         </TextBox>
 
-                        <TextBox d:Text="00:00:00:00:00" Text="{Binding Path=Details.cameraMAC, Mode=OneTime}" Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                    <TextBox d:Text="00:00:00:00:00" Text="{Binding Path=Details.cameraMAC, Mode=OneWay, Converter={StaticResource macAddressSplitConverter}, ConverterParameter=Last}" Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                          Margin="3" md:HintAssist.Hint="MAC" md:HintAssist.IsFloating="True" IsHitTestVisible="False" BorderThickness="0" />
 
                     </DockPanel>
