@@ -6,51 +6,112 @@
              xmlns:local="clr-namespace:LabelVal.LVS_95xx.Views"
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                xmlns:converters="clr-namespace:LabelVal.Converters"
              xmlns:ViewModels="clr-namespace:LabelVal.LVS_95xx.ViewModels"  
              d:DataContext="{d:DesignInstance Type=ViewModels:VerifierManager}"
              mc:Ignorable="d" >
+    
+    <UserControl.Resources>
+        <converters:ObjectIsNull x:Key="objectIsNull"/>
+        
+        <Style x:Key="verticalSep" TargetType="Border">
+            <Setter Property="Width" Value="1"/>
+            <Setter Property="Height" Value="auto"/>
+            <Setter Property="Background" Value="White"/>
+        </Style>
+    </UserControl.Resources>
 
+    <DockPanel>
 
-    <GroupBox MinWidth="312" Margin="3" Padding="3" VerticalAlignment="Top" HorizontalAlignment="Left"
-                  Style="{StaticResource MaterialDesignCardGroupBox}"
-                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                md:ColorZoneAssist.Mode="Custom">
+        <md:Card DockPanel.Dock="Top" Height="48" Margin="2"
+                 Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
-        <GroupBox.Header>
-            <DockPanel Margin="-5">
-                <md:Card Background="{DynamicResource OrangeBrush0}" HorizontalAlignment="Left" Padding="4,1">
-                    <TextBlock Text="LVS_95xx Verifiers" Height="20" Foreground="White" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
-                </md:Card>
+            <DockPanel>
 
+                <DockPanel Width="48" Height="48" Background="{DynamicResource OrangeBrush0}">
+                    <Image Width="36" Height="36" Source="/Assets/Images/l95xx-white-outline.ico" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                </DockPanel>
+
+                <Border Style="{StaticResource verticalSep}" HorizontalAlignment="Left"/>
+
+                <Button Command="{Binding AddCommand}" ToolTip="New V5" Width="48">
+                    <Button.Style>
+                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding NewVerifier, Converter={StaticResource objectIsNull}}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+
+                    <iconPacks:PackIconMaterial Kind="Plus"
+                                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" Width="24" Height="24"/>
+                </Button>
+
+                <Button Command="{Binding SaveCommand}" ToolTip="Save Image Roll" Width="48">
+                    <Button.Style>
+                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding NewVerifier, Converter={StaticResource objectIsNull}}" Value="False">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+
+                    <iconPacks:PackIconMaterial Kind="ContentSave"
+                                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" Width="24" Height="24"/>
+                </Button>
+
+                <Button Command="{Binding CancelCommand}" ToolTip="Cancel" Width="48">
+                    <Button.Style>
+                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding NewVerifier, Converter={StaticResource objectIsNull}}" Value="False">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+
+                    <iconPacks:PackIconMaterial Kind="Cancel"
+                                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" Width="24" Height="24"/>
+                </Button>
+                
             </DockPanel>
-        </GroupBox.Header>
 
-        <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-            <ListView ItemsSource="{Binding Verifiers}" SelectedItem="{Binding SelectedVerifier}">
-                <ListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                    </Style>
-                </ListView.ItemContainerStyle>
-
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <local:Verifier DataContext="{Binding }">
-                            <local:Verifier.Style>
-                                <Style TargetType="local:Verifier">
-                                    <Setter Property="IsHitTestVisible" Value="False"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListViewItem}}" Value="True">
-                                            <Setter Property="IsHitTestVisible" Value="True"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </local:Verifier.Style>
-                        </local:Verifier>
-
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
         </md:Card>
-    </GroupBox>
+
+        <ListView ItemsSource="{Binding Verifiers}" SelectedItem="{Binding SelectedVerifier}">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                </Style>
+            </ListView.ItemContainerStyle>
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <local:Verifier DataContext="{Binding }">
+                        <local:Verifier.Style>
+                            <Style TargetType="local:Verifier">
+                                <Setter Property="IsHitTestVisible" Value="False"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListViewItem}}" Value="True">
+                                        <Setter Property="IsHitTestVisible" Value="True"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </local:Verifier.Style>
+                    </local:Verifier>
+
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </DockPanel>
+
 </UserControl>

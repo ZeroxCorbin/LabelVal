@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using LabelVal.Messages;
 using LabelVal.Sectors.ViewModels;
+using Newtonsoft.Json;
 using System;
 using System.Collections.ObjectModel;
 
@@ -14,8 +15,12 @@ public class VerifierPacket(string value)
 }
 
 public partial class Verifier : ObservableRecipient
-{  
+{
+    public long ID { get; set; } = DateTime.Now.Ticks;
+
     private SerialPortController PortController = new();
+
+    [JsonIgnore] public VerifierManager Manager { get; set; }
 
 
     [ObservableProperty] private bool isConnected;

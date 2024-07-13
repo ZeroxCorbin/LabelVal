@@ -2,13 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
-using LabelVal.Messages;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LabelVal.LVS_95xx.ViewModels;
 public partial class VerifierManager : ObservableRecipient
@@ -17,12 +11,19 @@ public partial class VerifierManager : ObservableRecipient
 
     [ObservableProperty][NotifyPropertyChangedRecipients] public Verifier selectedVerifier;
 
+    [ObservableProperty] public Verifier newVerifier;
+
     public VerifierManager()
     {
-        if (Verifiers.Count == 0)
+        Verifier sel = App.Settings.GetValue<Verifier>(nameof(SelectedVerifier));
+
+        foreach (Verifier verifier in Verifiers)
         {
-            Verifiers.Add(new Verifier());
-            SelectedVerifier = Verifiers[0];
+            verifier.Manager = this;
+
+            if (sel != null)
+                if (verifier.ID == sel.ID)
+                    SelectedVerifier = verifier;
         }
 
         WeakReferenceMessenger.Default.Register<RequestMessage<Verifier>>(
@@ -33,8 +34,26 @@ public partial class VerifierManager : ObservableRecipient
             });
     }
 
-    [RelayCommand] private void AddVerifier() => Verifiers.Add(new Verifier());
-    [RelayCommand] private void RemoveVerifier(Verifier scanner) => Verifiers.Remove(scanner);
-    [RelayCommand] private void SaveVerifiers() => App.Settings.SetValue(nameof(Verifiers), Verifiers);
+    [RelayCommand]
+    private void Add() => NewVerifier = new Verifier() { Manager = this };
 
+    [RelayCommand]
+    private void Remove(Verifier scanner)
+    {
+        Verifiers.Remove(scanner);
+        Save();
+    }
+
+    [RelayCommand]
+    private void Cancel() => NewVerifier = null;
+
+    [RelayCommand]
+    private void Save()
+    {
+        if (NewVerifier != null)
+            Verifiers.Add(NewVerifier);
+        NewVerifier = null;
+
+        App.Settings.SetValue(nameof(Verifiers), Verifiers);
+    }
 }

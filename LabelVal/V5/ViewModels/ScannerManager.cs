@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using System.Collections.ObjectModel;
-using System.Linq;
 
 namespace LabelVal.V5.ViewModels;
 
@@ -12,16 +11,22 @@ public partial class ScannerManager : ObservableRecipient
     public ObservableCollection<Scanner> Scanners { get; } = App.Settings.GetValue(nameof(Scanners), new ObservableCollection<Scanner>(), true);
 
     [ObservableProperty][NotifyPropertyChangedRecipients] private Scanner selectedScanner;
+    partial void OnSelectedScannerChanged(Scanner value) => App.Settings.SetValue(nameof(SelectedScanner), value);
 
     [ObservableProperty] private Scanner newScanner;
 
     public ScannerManager()
     {
+        Scanner sel = App.Settings.GetValue<Scanner>(nameof(SelectedScanner));
+
         foreach (Scanner scanner in Scanners)
+        {
             scanner.Manager = this;
 
-        if (selectedScanner == null)
-            SelectedScanner = Scanners.FirstOrDefault();
+            if (sel != null)
+                if (scanner.ID == sel.ID)
+                    SelectedScanner = scanner;
+        }
 
         WeakReferenceMessenger.Default.Register<RequestMessage<Scanner>>(
             this,
@@ -31,19 +36,26 @@ public partial class ScannerManager : ObservableRecipient
             });
     }
 
-    [RelayCommand] private void Add() => NewScanner = new Scanner() { Manager = this };
-    [RelayCommand] public void Cancel() => NewScanner = null;
+    [RelayCommand]
+    private void Add() => NewScanner = new Scanner() { Manager = this };
+
+    [RelayCommand]
+    private void Remove(Scanner scanner)
+    {
+        Scanners.Remove(scanner);
+        Save();
+    }
+
+    [RelayCommand]
+    public void Cancel() => NewScanner = null;
 
     [RelayCommand]
     private void Save()
     {
         if (NewScanner != null)
             Scanners.Add(NewScanner);
-
         NewScanner = null;
 
         App.Settings.SetValue(nameof(Scanners), Scanners);
     }
-
-    [RelayCommand] private void Remove(Scanner scanner) { Scanners.Remove(scanner); Save(); }
 }

@@ -17,15 +17,18 @@
         <Converters:BytesToImageConverter x:Key="bytesToImage"/>
     </UserControl.Resources>
 
-    <md:Card HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="6"
-                 Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
-                 Foreground="{DynamicResource MahApps.Brushes.Text}">
+    <md:Card HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="6" BorderThickness="1"  
+             BorderBrush="{DynamicResource MahApps.Brushes.Accent4}"
+             Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+             Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}">
 
         <DockPanel Margin="3">
 
             <DockPanel>
 
-                <md:Card DockPanel.Dock="Top" VerticalAlignment="Top" Padding="3" Margin="3" Background="{DynamicResource MahApps.Brushes.Accent4}">
+                <md:Card DockPanel.Dock="Top" VerticalAlignment="Top" Padding="3" Margin="3"
+                         Background="{DynamicResource MahApps.Brushes.Accent4}">
+
                     <Button Command="{Binding ConnectCommand}" BorderThickness="0">
                         <Button.Style>
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
@@ -46,13 +49,14 @@
                             </Style>
                         </Button.Style>
                     </Button>
-                </md:Card>
 
+                </md:Card>
 
                 <Button Margin="3" Click="btnShowSettings_Click" Style="{StaticResource GroupHeaderCirlceButton}" ToolTip="Show Settings" 
                         HorizontalAlignment="Center" VerticalAlignment="Top" Width="24" Height="24">
                     <iconPacks:PackIconMaterial Kind="Cog" Height="18" Width="18"/>
                 </Button>
+
             </DockPanel>
 
             <md:DrawerHost x:Name="drwSettings">
@@ -71,16 +75,20 @@
                             </Style>
                         </md:Card.Style>
 
-
-                        <ComboBox ItemsSource="{Binding ComNameList}" SelectedItem="{Binding SelectedComName}" IsEnabled="{Binding IsNotConnected}"
+                        <DockPanel>
+                            <ComboBox ItemsSource="{Binding ComNameList}" SelectedItem="{Binding SelectedComName}" IsEnabled="{Binding IsNotConnected}"
                                   Style="{StaticResource MaterialDesignFloatingHintComboBox}"
                                         md:HintAssist.Hint="COM Port" md:HintAssist.IsFloating="True"/>
-    
+
+                            <Button Command="{Binding Manager.RemoveCommand}" CommandParameter="{Binding }" Style="{StaticResource GroupHeaderCirlceButton}" ToolTip="Delete this verifier?">
+                                <iconPacks:PackIconMaterial Kind="Delete" Height="14" Width="14"/>
+                            </Button>
+                            
+                        </DockPanel>
                     </md:Card>
                 </md:DrawerHost.TopDrawerContent>
 
                 <DockPanel>
-
 
                     <DockPanel DockPanel.Dock="Top" Margin="1">
 
@@ -92,13 +100,9 @@
 
                         <TextBox d:Text="LVS-95xx" Text="LVS-95xx" Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                                       IsHitTestVisible="False" MinWidth="86" Margin="3,0" BorderThickness="0" md:HintAssist.Hint="Model" md:HintAssist.IsFloating="True"/>
-                        <!--<TextBox d:Text="00:00:00:00:00" Text="{Binding Path=Details.cameraMAC, Mode=OneTime}" Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                         Margin="3" md:HintAssist.Hint="MAC" md:HintAssist.IsFloating="True" IsHitTestVisible="False" BorderThickness="0" />-->
-
                     </DockPanel>
 
                     <DockPanel Margin="1" HorizontalAlignment="Left" VerticalAlignment="Top">
-
 
                         <TextBox d:Text="State" md:HintAssist.Hint="State" Margin="3,0" HorizontalContentAlignment="Center"
                                 md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left" 
@@ -115,10 +119,7 @@
                                 </Style>
                             </TextBox.Style>
                         </TextBox>
-
-
                     </DockPanel>
-
                 </DockPanel>
             </md:DrawerHost>
 
@@ -131,34 +132,12 @@
                         <TextBlock Text="Results" MinWidth="48"/>
                     </Expander.Header>
 
-                    <!--<GroupBox VerticalAlignment="Top" HorizontalAlignment="Left" Margin="3" Padding="3" 
-                      Style="{StaticResource MaterialDesignCardGroupBox}"
-                    md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                    md:ColorZoneAssist.Mode="Custom">
+                    <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Padding="1">
 
-                        <GroupBox.Header>
-                            <DockPanel Margin="-5">
-                                --><!--<md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="1">
-                                    <TextBlock Text="Results" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Margin="3,0"/>
-                                </md:Card>-->
-
-                                <!--<Button Click="btnShowDetails_Click" Style="{StaticResource GroupHeaderCirlceButton}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
-                        Padding="0" Margin="6,0,3,0" BorderThickness="0" Height="20" Width="20" HorizontalAlignment="Left">
-
-                    <iconPacks:PackIconMaterial Kind="CodeJson" Height="14" Width="14"/>
-                </Button>--><!--
-
-                            </DockPanel>
-                        </GroupBox.Header>-->
-
-                        <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Padding="1">
-
-
-                            <ScrollViewer Height="400" Width="300">
-                                <TextBox Text="{Binding ReadData.Value, Mode=OneWay}" IsReadOnly="True" BorderThickness="0" TextWrapping="Wrap"/>
-                            </ScrollViewer>
-                        </md:Card>
-                    <!--</GroupBox>-->
+                        <ScrollViewer Height="400" Width="300">
+                            <TextBox Text="{Binding ReadData.Value, Mode=OneWay}" IsReadOnly="True" BorderThickness="0" TextWrapping="Wrap"/>
+                        </ScrollViewer>
+                    </md:Card>
 
                 </Expander>
 

@@ -25,6 +25,8 @@ namespace LabelVal.V5.ViewModels;
 [JsonObject(MemberSerialization.OptIn)]
 public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMessage<ImageRollEntry>>
 {
+    [JsonProperty] public long ID { get; set; } = DateTime.Now.Ticks;
+
     public V5_REST_Lib.Controller ScannerController { get; } = new();
     public V5_REST_Lib.FTP.FTPClient FTPClient { get; } = new();
 
