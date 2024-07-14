@@ -11,70 +11,71 @@
              d:DataContext="{d:DesignInstance Type=viewModels:RunControl}"
              mc:Ignorable="d">
 
-    <GroupBox Margin="3" Padding="3" BorderThickness="0" HorizontalAlignment="Left" VerticalAlignment="Top"
-                  Style="{StaticResource MaterialDesignCardGroupBox}"
-                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                md:ColorZoneAssist.Mode="Custom">
+    <DockPanel VerticalAlignment="Top" Margin="3,3,0,0">
 
-        <GroupBox.Header>
-            <DockPanel Margin="-5">
-                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="4,1">
-                    <TextBlock Text="Run" Height="20" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
-                </md:Card>
-            </DockPanel>
-        </GroupBox.Header>
-
-        <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Padding="2">
+        <md:Card DockPanel.Dock="Top" Height="48" Margin="3,3,0,0"
+                 Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
             <DockPanel>
 
-                <mah:NumericUpDown Value="{Binding LoopCount}" Minimum="1" Maximum="9999" Interval="1"/>
+                <DockPanel Width="48" Height="48">
+                    <iconPacks:PackIconMaterial Width="36" Height="36" Kind="Run" 
+                        VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                </DockPanel>
 
-                <Button Margin="3,0" Command="{Binding StartStopCommand}">
-                    <Button.Style>
-                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
-                            <Setter Property="IsEnabled" Value="True"/>
-                            
-                            <Setter Property="Content">
-                                <Setter.Value>
-                                    <iconPacks:PackIconMaterial Kind="Play" Height="14" Width="14"/>
-                                </Setter.Value>
-                            </Setter>
+                <Border Style="{StaticResource imageBar}" />
 
-                            <Style.Triggers>
-                                <DataTrigger Value="False" Binding="{Binding SelectedNode.IsLoggedIn_Control}">
-                                    <Setter Property="IsEnabled" Value="False"/>
-                                </DataTrigger>
-
-                                <DataTrigger Value="Running" Binding="{Binding RunController.State}">
-                                    <Setter Property="Content">
-                                        <Setter.Value>
-                                            <iconPacks:PackIconMaterial Kind="Stop" Height="14" Width="14"/>
-                                        </Setter.Value>
-                                    </Setter>  
-                                </DataTrigger>
-
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
-
-                <mah:ProgressRing Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" Height="30" Width="30">
-                    <mah:ProgressRing.Style>
-                        <Style TargetType="{x:Type mah:ProgressRing}">
-                            <Setter Property="IsActive" Value="False"/>
-                            <Style.Triggers>
-                                <DataTrigger Value="Running" Binding="{Binding RunController.State}">
-                                    <Setter Property="IsActive" Value="True"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </mah:ProgressRing.Style>
-                </mah:ProgressRing>
-
-                <Button Content="View Test Results" Click="Button_Click"/>
             </DockPanel>
         </md:Card>
-    </GroupBox>
 
+        <DockPanel Margin="3,3,0,0">
+
+            <mah:NumericUpDown Value="{Binding LoopCount}" Minimum="1" Maximum="9999" Interval="1"/>
+
+            <Button Margin="3,0" Command="{Binding StartStopCommand}">
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+                        <Setter Property="IsEnabled" Value="True"/>
+
+                        <Setter Property="Content">
+                            <Setter.Value>
+                                <iconPacks:PackIconMaterial Kind="Play" Height="14" Width="14"/>
+                            </Setter.Value>
+                        </Setter>
+
+                        <Style.Triggers>
+                            <DataTrigger Value="False" Binding="{Binding SelectedNode.IsLoggedIn_Control}">
+                                <Setter Property="IsEnabled" Value="False"/>
+                            </DataTrigger>
+
+                            <DataTrigger Value="Running" Binding="{Binding RunController.State}">
+                                <Setter Property="Content">
+                                    <Setter.Value>
+                                        <iconPacks:PackIconMaterial Kind="Stop" Height="14" Width="14"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger>
+
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+
+            <mah:ProgressRing Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" Height="30" Width="30">
+                <mah:ProgressRing.Style>
+                    <Style TargetType="{x:Type mah:ProgressRing}">
+                        <Setter Property="IsActive" Value="False"/>
+                        <Style.Triggers>
+                            <DataTrigger Value="Running" Binding="{Binding RunController.State}">
+                                <Setter Property="IsActive" Value="True"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </mah:ProgressRing.Style>
+            </mah:ProgressRing>
+
+            <Button Content="View Test Results" Click="Button_Click"/>
+        </DockPanel>
+    </DockPanel>
 </UserControl>

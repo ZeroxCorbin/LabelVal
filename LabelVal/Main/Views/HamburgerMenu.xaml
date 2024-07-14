@@ -27,6 +27,21 @@
     <converters:LocalizeEnumValue x:Key="localizeEnumValue"/>
     <converters:MACAddressSplitConverter x:Key="macAddressSplitConverter"/>
 
+    <Style x:Key="imageBar" TargetType="Border">
+        <Setter Property="Width" Value="1"/>
+        <Setter Property="Height" Value="auto"/>
+        <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent}"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+    </Style>
+
+    <Style x:Key="seperatorBar" TargetType="Border">
+        <Setter Property="Width" Value="auto"/>
+        <Setter Property="Height" Value="1"/>
+        <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent}"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="DockPanel.Dock" Value="Bottom"/>
+    </Style>
+
     <DataTemplate x:Key="printerContent">
         <Grid Visibility="Collapsed"/>
     </DataTemplate>
@@ -34,7 +49,7 @@
         <results:ImageResultsDatabases/>
     </DataTemplate>
     <DataTemplate x:Key="runContent">
-        <run:RunControl/>
+        <Grid Visibility="Collapsed"/>
     </DataTemplate>
     <DataTemplate x:Key="v275Content">
         <v275:V275Manager/>
@@ -46,30 +61,34 @@
         <L95xx:VerifierManager/>
     </DataTemplate>
 
-
+    <!--Printer Menu-->
     <DataTemplate x:Key="printerMenuItem">
         <DockPanel>
+            <Border Style="{StaticResource seperatorBar}"/>
 
             <DockPanel Width="48" Height="48">
-                <Separator DockPanel.Dock="Bottom" VerticalAlignment="Stretch"/>
-
                 <iconPacks:PackIconMaterial Width="36" Height="36" Kind="Printer" 
                         VerticalAlignment="Center" HorizontalAlignment="Center"/>
             </DockPanel>
+
+            <Border Style="{StaticResource imageBar}"/>
 
             <printer:Printer DataContext="{Binding Content}"/>
 
         </DockPanel>
     </DataTemplate>
 
+    <!--Results Databases-->
     <DataTemplate x:Key="imageRDMenuItem">
         <DockPanel>
-            <Separator DockPanel.Dock="Bottom" VerticalAlignment="Stretch"/>
+            <Border Style="{StaticResource seperatorBar}"/>
 
             <DockPanel Width="48" Height="48">
                 <iconPacks:PackIconMaterial Width="36" Height="36" Kind="Database" 
                         VerticalAlignment="Center" HorizontalAlignment="Center"/>
             </DockPanel>
+
+            <Border Style="{StaticResource imageBar}"/>
 
             <TextBlock VerticalAlignment="Center" Margin="10,0,0,0">
                 <TextBlock.Style>
@@ -87,25 +106,78 @@
         </DockPanel>
     </DataTemplate>
 
+    <!--Run-->
     <DataTemplate x:Key="runMenuItem">
         <DockPanel>
-            <Separator DockPanel.Dock="Bottom" VerticalAlignment="Stretch"/>
+            <Border Style="{StaticResource seperatorBar}"/>
 
             <DockPanel Width="48" Height="48">
                 <iconPacks:PackIconMaterial Width="36" Height="36" Kind="Run" 
                         VerticalAlignment="Center" HorizontalAlignment="Center"/>
             </DockPanel>
 
-            <TextBlock Text="{Binding Label}" VerticalAlignment="Center" Margin="10,0,0,0"/>
+            <Border Style="{StaticResource imageBar}"/>
+
+            <DockPanel Margin="10,0" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+
+                <mah:NumericUpDown Value="{Binding Content.LoopCount}" Minimum="1" Maximum="999" Interval="1" Width="78" Height="30" HorizontalAlignment="Center"/>
+
+                <Button Command="{Binding Content.StartStopCommand}" Width="36" Height="36">
+                    <Button.Style>
+                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
+                            <Setter Property="IsEnabled" Value="True"/>
+
+                            <Setter Property="Content">
+                                <Setter.Value>
+                                    <iconPacks:PackIconMaterial Kind="Play" Width="24" Height="24"/>
+                                </Setter.Value>
+                            </Setter>
+
+                            <Style.Triggers>
+                                <DataTrigger Value="False" Binding="{Binding Content.SelectedNode.IsLoggedIn_Control}">
+                                    <Setter Property="IsEnabled" Value="False"/>
+                                </DataTrigger>
+
+                                <DataTrigger Value="Running" Binding="{Binding Content.RunController.State}">
+                                    <Setter Property="Content">
+                                        <Setter.Value>
+                                            <iconPacks:PackIconMaterial Kind="Stop" Width="36" Height="36"/>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <mah:ProgressRing Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" Width="36" Height="36">
+                    <mah:ProgressRing.Style>
+                        <Style TargetType="{x:Type mah:ProgressRing}">
+                            <Setter Property="IsActive" Value="False"/>
+                            <Style.Triggers>
+                                <DataTrigger Value="Running" Binding="{Binding Content.RunController.State}">
+                                    <Setter Property="IsActive" Value="True"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </mah:ProgressRing.Style>
+                </mah:ProgressRing>
+            </DockPanel>
+            
         </DockPanel>
     </DataTemplate>
 
-    <!--V275 Menu Item-->
+    <!--V275-->
     <DataTemplate x:Key="v275MenuItem">
         <DockPanel>
+            <Border Style="{StaticResource seperatorBar}"/>
+
             <DockPanel MinHeight="48" Width="48" Background="{DynamicResource ColorBlindBrush1}">
                 <Image Width="36" Height="36" Source="/Assets/Images/v275-white-outline.ico" VerticalAlignment="Center" HorizontalAlignment="Center"/>
             </DockPanel>
+
+            <Border Style="{StaticResource imageBar}"/>
 
             <DockPanel>
                 <DockPanel.Style>
@@ -246,11 +318,17 @@
         </DockPanel>
     </DataTemplate>
 
+    <!--V5-->
     <DataTemplate x:Key="v5MenuItem">
         <DockPanel>
+
+            <Border Style="{StaticResource seperatorBar}"/>
+
             <DockPanel Width="48" MinHeight="48" Background="{DynamicResource OrangeBrush1}">
                 <Image Width="36" Height="36" Source="/Assets/Images/v5-white-outline.ico" VerticalAlignment="Center" HorizontalAlignment="Center"/>
             </DockPanel>
+
+            <Border Style="{StaticResource imageBar}"/>
 
             <DockPanel>
                 <DockPanel.Style>
@@ -358,12 +436,15 @@
         </DockPanel>
     </DataTemplate>
 
+    <!--L95xx-->
     <DataTemplate x:Key="l95xxMenuItem">
         <DockPanel>
 
             <DockPanel Width="48" MinHeight="48" Background="{DynamicResource OrangeBrush0}">
                 <Image Width="36" Height="36" Source="/Assets/Images/l95xx-white-outline.ico" VerticalAlignment="Center" HorizontalAlignment="Center"/>
             </DockPanel>
+
+            <Border Style="{StaticResource imageBar}"/>
 
             <DockPanel>
                 <DockPanel.Style>

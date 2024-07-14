@@ -77,8 +77,9 @@ public partial class MainWindow : ObservableRecipient, IRecipient<SystemMessages
         MenuItems =
         [
             new HamburgerMenuItem { Label = "Printer", Content = Printer, IsNotSelectable = true },
+            new HamburgerMenuItem { Label = "Run", Content = ImageResults.RunControl, IsNotSelectable = true },
             new HamburgerMenuItem { Label = "Results", Content = ImageResultsDatabases },
-            new HamburgerMenuItem { Label = "Run", Content = ImageResults.RunControl },
+
             new HamburgerMenuItem { Label = "V275", Content = V275Manager },
             new HamburgerMenuItem { Label = "V5", Content = ScannerManager },
             new HamburgerMenuItem { Label = "L95xx", Content = VerifierManager },

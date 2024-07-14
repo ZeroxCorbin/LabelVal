@@ -32,6 +32,31 @@
                 <Setter Property="HorizontalAlignment" Value="Left"/>
             </Style>
 
+            <Style x:Key="imageBar" TargetType="Border">
+                <Setter Property="Width" Value="1"/>
+                <Setter Property="Height" Value="auto"/>
+                <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent}"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+            </Style>
+            <Style x:Key="groupLeft" TargetType="Border">
+                <Setter Property="DockPanel.Dock" Value="Left"/>
+                <Setter Property="Margin" Value="4,3,0,5"/>
+                <Setter Property="Width" Value="1"/>
+                <Setter Property="Height" Value="auto"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Setter Property="VerticalAlignment" Value="Stretch"/>
+                <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent}"/>
+            </Style>
+            <Style x:Key="groupBottom" TargetType="Border">
+                <Setter Property="DockPanel.Dock" Value="Bottom"/>
+                <Setter Property="Margin" Value="0,3,0,5"/>
+                <Setter Property="Width" Value="auto"/>
+                <Setter Property="Height" Value="1"/>
+                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                <Setter Property="VerticalAlignment" Value="Top"/>
+                <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent}"/>
+            </Style>
+            
             <!--<Style x:Key="GroupHeaderCirlceActionButton" TargetType="Button" BasedOn="{StaticResource MaterialDesignFloatingActionButton}">
                 <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.ThemeBackground}"/>
                 <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.ThemeForeground}"/>

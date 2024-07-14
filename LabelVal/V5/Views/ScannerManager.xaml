@@ -15,9 +15,9 @@
         <converters:ObjectIsNull x:Key="objectIsNull"/>
     </UserControl.Resources>
 
-    <DockPanel>
+    <DockPanel VerticalAlignment="Top" Margin="3,3,0,0">
 
-        <md:Card DockPanel.Dock="Top" Height="48" Margin="2" 
+        <md:Card DockPanel.Dock="Top" Height="48" Margin="3,3,0,0" 
                  Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
                  Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
@@ -26,6 +26,8 @@
                 <DockPanel Width="48" Height="48" Background="{DynamicResource OrangeBrush1}">
                     <Image Width="36" Height="36" Source="/Assets/Images/v5-white-outline.ico" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 </DockPanel>
+
+                <Border Style="{StaticResource imageBar}"/>
 
                 <Button Command="{Binding AddCommand}" ToolTip="New V5" Width="48">
                     <Button.Style>
@@ -84,66 +86,73 @@
             </DockPanel>
         </md:Card>
 
-        <md:DrawerHost x:Name="drwEditCamera">
-            <md:DrawerHost.Style>
-                <Style TargetType="md:DrawerHost">
-                    <Setter Property="IsTopDrawerOpen" Value="False"/>
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding NewScanner, Converter={StaticResource objectIsNull}}" Value="False">
-                            <Setter Property="IsTopDrawerOpen" Value="True"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </md:DrawerHost.Style>
+        <DockPanel DockPanel.Dock="Top">
+            <Border Style="{StaticResource groupLeft}" />
+            <Border Style="{StaticResource groupBottom}"/>
 
-            <md:DrawerHost.TopDrawerContent>
-                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="3" Padding="2" HorizontalAlignment="Left">
+            <md:DrawerHost x:Name="drwEditCamera" Margin="3,3,0,0">
+                <md:DrawerHost.Style>
+                    <Style TargetType="md:DrawerHost">
+                        <Setter Property="IsTopDrawerOpen" Value="False"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding NewScanner, Converter={StaticResource objectIsNull}}" Value="False">
+                                <Setter Property="IsTopDrawerOpen" Value="True"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </md:DrawerHost.Style>
 
-                    <DockPanel>
-                        <ComboBox ItemsSource="{Binding NewScanner.AvailableCameras}" SelectedValue="{Binding NewScanner.SelectedCamera}" md:HintAssist.Hint="Model" Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                <md:DrawerHost.TopDrawerContent>
+                    <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="3" Padding="2" HorizontalAlignment="Left">
+
+                        <DockPanel>
+                            <ComboBox ItemsSource="{Binding NewScanner.AvailableCameras}" SelectedValue="{Binding NewScanner.SelectedCamera}" md:HintAssist.Hint="Model" Style="{StaticResource MaterialDesignFloatingHintComboBox}"
                               IsReadOnly="True" Margin="3,0" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" BorderThickness="0"
                               md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <DockPanel>
-                                        <TextBlock Text="{Binding Name}"/>
-                                        <TextBlock Text="{Binding Sensor.PixelCount, StringFormat={} {0}MP}"/>
-                                    </DockPanel>
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <DockPanel>
+                                            <TextBlock Text="{Binding Name}"/>
+                                            <TextBlock Text="{Binding Sensor.PixelCount, StringFormat={} {0}MP}"/>
+                                        </DockPanel>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
 
-                    </DockPanel>
-                </md:Card>
+                        </DockPanel>
+                    </md:Card>
 
-            </md:DrawerHost.TopDrawerContent>
+                </md:DrawerHost.TopDrawerContent>
 
-            <ListView Style="{StaticResource MahApps.Styles.ListView}"
+                <ListView Style="{StaticResource MahApps.Styles.ListView}"
                       ItemsSource="{Binding Scanners}" SelectedItem="{Binding SelectedScanner}">
 
-                <ListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                    </Style>
-                </ListView.ItemContainerStyle>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
+
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <local:Scanner DataContext="{Binding }">
+                                <local:Scanner.Style>
+                                    <Style TargetType="local:Scanner">
+                                        <Setter Property="IsHitTestVisible" Value="False"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListViewItem}}" Value="True">
+                                                <Setter Property="IsHitTestVisible" Value="True"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </local:Scanner.Style>
+                            </local:Scanner>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
                 
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <local:Scanner DataContext="{Binding }">
-                            <local:Scanner.Style>
-                                <Style TargetType="local:Scanner">
-                                    <Setter Property="IsHitTestVisible" Value="False"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListViewItem}}" Value="True">
-                                            <Setter Property="IsHitTestVisible" Value="True"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </local:Scanner.Style>
-                        </local:Scanner>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-        </md:DrawerHost>
+            </md:DrawerHost>
+        </DockPanel>
+
     </DockPanel>
 </UserControl>

@@ -10,20 +10,14 @@
              xmlns:ViewModels="clr-namespace:LabelVal.LVS_95xx.ViewModels"  
              d:DataContext="{d:DesignInstance Type=ViewModels:VerifierManager}"
              mc:Ignorable="d" >
-    
+
     <UserControl.Resources>
         <converters:ObjectIsNull x:Key="objectIsNull"/>
-        
-        <Style x:Key="verticalSep" TargetType="Border">
-            <Setter Property="Width" Value="1"/>
-            <Setter Property="Height" Value="auto"/>
-            <Setter Property="Background" Value="White"/>
-        </Style>
     </UserControl.Resources>
 
-    <DockPanel>
+    <DockPanel VerticalAlignment="Top" Margin="3,3,0,0">
 
-        <md:Card DockPanel.Dock="Top" Height="48" Margin="2"
+        <md:Card DockPanel.Dock="Top" Height="48" Margin="3,3,0,0"
                  Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
                  Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
@@ -33,7 +27,7 @@
                     <Image Width="36" Height="36" Source="/Assets/Images/l95xx-white-outline.ico" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 </DockPanel>
 
-                <Border Style="{StaticResource verticalSep}" HorizontalAlignment="Left"/>
+                <Border Style="{StaticResource imageBar}"/>
 
                 <Button Command="{Binding AddCommand}" ToolTip="New V5" Width="48">
                     <Button.Style>
@@ -82,36 +76,42 @@
                     <iconPacks:PackIconMaterial Kind="Cancel"
                                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" Width="24" Height="24"/>
                 </Button>
-                
+
             </DockPanel>
 
         </md:Card>
 
-        <ListView ItemsSource="{Binding Verifiers}" SelectedItem="{Binding SelectedVerifier}">
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                </Style>
-            </ListView.ItemContainerStyle>
+        <DockPanel DockPanel.Dock="Top">
+            <Border Style="{StaticResource groupLeft}" />
+            <Border Style="{StaticResource groupBottom}"/>
 
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <local:Verifier DataContext="{Binding }">
-                        <local:Verifier.Style>
-                            <Style TargetType="local:Verifier">
-                                <Setter Property="IsHitTestVisible" Value="False"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListViewItem}}" Value="True">
-                                        <Setter Property="IsHitTestVisible" Value="True"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </local:Verifier.Style>
-                    </local:Verifier>
+            <ListView Margin="3,3,0,0" ItemsSource="{Binding Verifiers}" SelectedItem="{Binding SelectedVerifier}">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                </ListView.ItemContainerStyle>
 
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <local:Verifier DataContext="{Binding }">
+                            <local:Verifier.Style>
+                                <Style TargetType="local:Verifier">
+                                    <Setter Property="IsHitTestVisible" Value="False"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListViewItem}}" Value="True">
+                                            <Setter Property="IsHitTestVisible" Value="True"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </local:Verifier.Style>
+                        </local:Verifier>
+
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </DockPanel>
+
     </DockPanel>
 
 </UserControl>
