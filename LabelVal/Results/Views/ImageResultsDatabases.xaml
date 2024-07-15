@@ -22,9 +22,14 @@
 
             <DockPanel>
 
-                <DockPanel Width="48" Height="48" HorizontalAlignment="Left">
-                    <iconPacks:PackIconMaterial Width="36" Height="36" Kind="Database" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <DockPanel Width="48" Height="48">
+                    <StackPanel Width="36" Height="36" VerticalAlignment="Center" Margin="0,2">
+                        <iconPacks:PackIconMaterial Height="14" Width="30" Kind="ImageText" HorizontalAlignment="Center"/>
+                        <iconPacks:PackIconMaterial Margin="0,0,0,1" Height="6" Kind="ChevronDown" HorizontalAlignment="Center"/>
+                        <iconPacks:PackIconMaterial Height="14" Width="36" Kind="Database" HorizontalAlignment="Center"/>
+                    </StackPanel>
                 </DockPanel>
+
 
                 <Border Style="{StaticResource imageBar}" />
 
@@ -45,7 +50,7 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <DockPanel Height="36">
-
+                            
                             <Button Click="btnLockImageResultsDatabase_Click" Width="36">
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
@@ -80,7 +85,10 @@
                                     </Style>
                                 </Button.Style>
                             </Button>
-
+                            
+                            <iconPacks:PackIconMaterial Height="36" Kind="Database" Margin="3,0"
+                                                        HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                            
                             <TextBlock Text="{Binding FileName}" Margin="3" VerticalAlignment="Center"
                                    Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}" />
 

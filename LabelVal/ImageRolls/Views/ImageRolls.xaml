@@ -60,7 +60,14 @@
                 <DockPanel>
 
                     <DockPanel Width="48" Height="48">
-                        <iconPacks:PackIconMaterial Kind="Film" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <StackPanel Width="36" Height="36" VerticalAlignment="Center" Margin="0,2">
+                            <DockPanel>
+                                <iconPacks:PackIconMaterial Height="14" Kind="ImageMultiple" HorizontalAlignment="Center"/>
+                                <iconPacks:PackIconMaterial Height="14" Kind="ImageMultiple" HorizontalAlignment="Center"/>
+                            </DockPanel>
+                            <iconPacks:PackIconMaterial Margin="0,0,0,1" Height="6" Kind="ChevronDown" HorizontalAlignment="Center"/>
+                            <iconPacks:PackIconMaterial Height="14" Width="36" Kind="Database" HorizontalAlignment="Center"/>
+                        </StackPanel>
                     </DockPanel>
 
                     <Border Style="{StaticResource imageBar}"/>
@@ -229,12 +236,155 @@
                         <ListView.ItemTemplate>
                             <DataTemplate>
 
+                                <DockPanel>
+                                    <iconPacks:PackIconMaterial Margin="3,0" Kind="ImageMultiple" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
+                                    <md:Card HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="2" BorderThickness="0"  
+                                         Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                                         Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}">
+
+                                        <DockPanel>
+
+                                            <TextBlock Text="{Binding Name}" Margin="10,3" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Name}" Value="">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+
+                                            <TextBlock Text="{Binding SelectedGS1Table, Converter={StaticResource GS1TableNamesConverter}, StringFormat={}Table {0}}" Margin="10,3" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding SelectedStandard}" Value="{x:Static sectors:StandardsTypes.GS1}">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+
+                                        </DockPanel>
+                                    </md:Card>
+                                </DockPanel>
+
+
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
+                </md:DrawerHost>
+            </DockPanel>
+        </DockPanel>
+
+        <!--Fixed Image Rolls-->
+        <DockPanel>
+
+            <md:Card DockPanel.Dock="Top" Height="48" Margin="3,3,0,0"
+                     Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+
+                <DockPanel>
+
+                    <DockPanel Width="48" Height="48">
+                        <StackPanel Width="36" Height="36" VerticalAlignment="Center" Margin="0,2">
+                            <DockPanel>
+                                <iconPacks:PackIconMaterial Height="14" Kind="ImageMultiple" HorizontalAlignment="Center"/>
+                                <iconPacks:PackIconMaterial Height="14" Kind="ImageMultiple" HorizontalAlignment="Center"/>
+                            </DockPanel>
+                            <iconPacks:PackIconMaterial Margin="0,0,0,1" Height="6" Kind="ChevronDown" HorizontalAlignment="Center"/>
+                            <iconPacks:PackIconMaterial Height="14" Width="36" Kind="Database" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </DockPanel>
+
+                    <Border Style="{StaticResource imageBar}"/>
+
+                    <Button Command="{Binding UIDToClipboardCommand}" Style="{StaticResource MahApps.Styles.Button.Hamburger}" ToolTip="New UID to Clipboard" Width="48"
+                            HorizontalAlignment="Left">
+
+                        <iconPacks:PackIconFontAwesome Kind="FingerprintSolid"
+                                                       Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" Width="24" Height="24"/>
+                    </Button>
+                </DockPanel>
+            </md:Card>
+
+            <DockPanel>
+                <Border Style="{StaticResource groupLeft}" />
+                <Border Style="{StaticResource groupBottom}"/>
+
+                <ListView Margin="3,3,0,0" Style="{StaticResource MahApps.Styles.ListBox}" ItemsSource="{Binding Source={StaticResource ResourceKey=FixedImageRolls}}"
+                            SelectedItem="{Binding SelectedImageRoll}" ScrollViewer.VerticalScrollBarVisibility="Auto">
+
+                    <ListView.GroupStyle>
+
+                        <!--Lens Name-->
+                        <GroupStyle>
+                            <GroupStyle.ContainerStyle>
+                                <Style TargetType="{x:Type GroupItem}">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type GroupItem}">
+                                                <Expander Foreground="White" Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}">
+                                                    <Expander.Header>
+                                                        <TextBlock Text="{Binding Name}" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                                                    </Expander.Header>
+
+                                                    <ItemsPresenter />
+
+                                                </Expander>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </GroupStyle.ContainerStyle>
+                        </GroupStyle>
+
+                        <GroupStyle>
+                            <GroupStyle.ContainerStyle>
+                                <Style TargetType="{x:Type GroupItem}">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type GroupItem}">
+                                                <Expander Margin="2,0,0,0">
+                                                    <Expander.Header>
+                                                        <TextBlock Margin="4,0,0,0" Text="{Binding Name, StringFormat={}{0} dpi}" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                                                    </Expander.Header>
+
+                                                    <ItemsPresenter />
+
+                                                </Expander>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </GroupStyle.ContainerStyle>
+                        </GroupStyle>
+
+                    </ListView.GroupStyle>
+
+
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}"/>
+                    </ListView.ItemContainerStyle>
+
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+
+                            <DockPanel>
+                                <iconPacks:PackIconMaterial Margin="3,0" Kind="ImageMultiple" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
                                 <md:Card HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="2" BorderThickness="0"  
-                                 Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
-                                 Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}">
+                                     Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                                     Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}">
 
                                     <DockPanel>
-
                                         <TextBlock Text="{Binding Name}" Margin="10,3" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
@@ -260,143 +410,13 @@
                                                 </Style>
                                             </TextBlock.Style>
                                         </TextBlock>
-
                                     </DockPanel>
                                 </md:Card>
 
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-                    
-                </md:DrawerHost>
-            </DockPanel>
-        </DockPanel>
-
-        <!--Fixed Image Rolls-->
-        <DockPanel>
-
-            <md:Card DockPanel.Dock="Top" Height="48" Margin="3,3,0,0"
-                     Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
-                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
-
-                <DockPanel>
-
-                    <DockPanel Width="48" Height="48">
-                        <Grid>
-                            <iconPacks:PackIconMaterial Kind="Film" Width="36" Height="36" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                            <iconPacks:PackIconMaterial Kind="Lock" Width="24" Height="24" VerticalAlignment="Bottom" HorizontalAlignment="Right"
-                                                        Foreground="Black" Margin="3"/>
-                        </Grid>
-                    </DockPanel>
-
-                    <Border Style="{StaticResource imageBar}"/>
-
-                    <Button Command="{Binding UIDToClipboardCommand}" Style="{StaticResource MahApps.Styles.Button.Hamburger}" ToolTip="New UID to Clipboard" Width="48"
-                            HorizontalAlignment="Left">
-
-                        <iconPacks:PackIconFontAwesome Kind="FingerprintSolid"
-                                                       Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" Width="24" Height="24"/>
-                    </Button>
-                </DockPanel>
-            </md:Card>
-
-            <DockPanel>
-                <Border Style="{StaticResource groupLeft}" />
-                <Border Style="{StaticResource groupBottom}"/>
-
-                <ListView Margin="3,3,0,0" Style="{StaticResource MahApps.Styles.ListBox}" ItemsSource="{Binding Source={StaticResource ResourceKey=FixedImageRolls}}"
-                            SelectedItem="{Binding SelectedImageRoll}" ScrollViewer.VerticalScrollBarVisibility="Auto">
-
-                <ListView.GroupStyle>
-
-                    <!--Lens Name-->
-                    <GroupStyle>
-                        <GroupStyle.ContainerStyle>
-                            <Style TargetType="{x:Type GroupItem}">
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="{x:Type GroupItem}">
-                                            <Expander Foreground="White" Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}">
-                                                <Expander.Header>
-                                                    <TextBlock Text="{Binding Name}" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
-                                                </Expander.Header>
-
-                                                <ItemsPresenter />
-
-                                            </Expander>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </GroupStyle.ContainerStyle>
-                    </GroupStyle>
-
-                    <GroupStyle>
-                        <GroupStyle.ContainerStyle>
-                            <Style TargetType="{x:Type GroupItem}">
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="{x:Type GroupItem}">
-                                            <Expander Margin="2,0,0,0">
-                                                <Expander.Header>
-                                                    <TextBlock Margin="4,0,0,0" Text="{Binding Name, StringFormat={}{0} dpi}" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
-                                                </Expander.Header>
-
-                                                <ItemsPresenter />
-
-                                            </Expander>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </GroupStyle.ContainerStyle>
-                    </GroupStyle>
-
-                </ListView.GroupStyle>
-
-
-                <ListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}"/>
-                </ListView.ItemContainerStyle>
-
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-
-                        <md:Card HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="2" BorderThickness="0"  
-                             Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
-                             Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}">
-
-                            <DockPanel>
-                                <TextBlock Text="{Binding Name}" Margin="10,3" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}">
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Name}" Value="">
-                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
-
-                                <TextBlock Text="{Binding SelectedGS1Table, Converter={StaticResource GS1TableNamesConverter}, StringFormat={}Table {0}}" Margin="10,3" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}">
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding SelectedStandard}" Value="{x:Static sectors:StandardsTypes.GS1}">
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
                             </DockPanel>
-                        </md:Card>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
             </DockPanel>
         </DockPanel>
     </DockPanel>

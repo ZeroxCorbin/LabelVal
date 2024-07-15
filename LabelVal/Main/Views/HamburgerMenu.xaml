@@ -84,8 +84,11 @@
             <Border Style="{StaticResource seperatorBar}"/>
 
             <DockPanel Width="48" Height="48">
-                <iconPacks:PackIconMaterial Width="36" Height="36" Kind="Database" 
-                        VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <StackPanel Width="36" Height="36" VerticalAlignment="Center" Margin="0,2">
+                    <iconPacks:PackIconMaterial Height="14" Width="30" Kind="ImageText" HorizontalAlignment="Center"/>
+                    <iconPacks:PackIconMaterial Margin="0,0,0,1" Height="6" Kind="ChevronDown" HorizontalAlignment="Center"/>
+                    <iconPacks:PackIconMaterial Height="14" Width="36" Kind="Database" HorizontalAlignment="Center"/>
+                </StackPanel>
             </DockPanel>
 
             <Border Style="{StaticResource imageBar}"/>

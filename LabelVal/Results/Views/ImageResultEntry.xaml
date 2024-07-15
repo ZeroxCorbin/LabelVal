@@ -17,7 +17,7 @@
     <UserControl.Resources>
         <converters:ObjectIsNull x:Key="objectIsNull"/>
     </UserControl.Resources>
-    
+
     <DockPanel>
 
 
@@ -28,15 +28,18 @@
             <DockPanel>
 
                 <DockPanel Width="48" Height="48">
+
+                    <DockPanel Width="36" DockPanel.Dock="Top" VerticalAlignment="Top" Margin="0,4,0,2">
+                        <iconPacks:PackIconMaterial Height="18" Width="30" Kind="ImageText" HorizontalAlignment="Center"/>
+
+                    </DockPanel>
                     
-                        <iconPacks:PackIconMaterial DockPanel.Dock="Top" Width="36" Height="26" Kind="ImageText"
-                                                    VerticalAlignment="Top" HorizontalAlignment="Center"/>
-                        <TextBlock Margin="11,0,0,0" Text="{Binding SourceImage.Order}" FontSize="{DynamicResource MahApps.Font.Size.Dialog.Message}"
+                    <TextBlock Margin="11,0,0,0" Text="{Binding SourceImage.Order}" FontSize="{DynamicResource MahApps.Font.Size.Dialog.Message}"
                                    FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Left"/>
-                    
+
                 </DockPanel>
 
-                <Border Style="{StaticResource imageBarHor}" />
+                <Border Style="{StaticResource imageBar}" />
 
                 <!--Only Print Source Image-->
                 <Button Command="{Binding V275ProcessCommand}" CommandParameter="print" Width="48"  
@@ -49,7 +52,7 @@
                                                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
                     </Grid>
                 </Button>
-                
+
                 <!--V275-->
                 <Button Command="{Binding V275ProcessCommand}" Width="48" Height="48" 
                         BorderBrush="{DynamicResource YellowBrush2}" Background="{DynamicResource ColorBlindBrush1}">
@@ -98,7 +101,7 @@
                                     <Setter Property="CommandParameter" Value="v275Stored"/>
                                     <Setter Property="ToolTip" Value="V275: Process the stored image with the simulator."/>
                                 </MultiDataTrigger>
-                                
+
                             </Style.Triggers>
                         </Style>
                     </Button.Style>
@@ -379,7 +382,7 @@
         <DockPanel DockPanel.Dock="Top">
             <Border Style="{StaticResource groupLeft}" />
             <Border Style="{StaticResource groupBottom}"/>
-            
+
             <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto" 
                       mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
                       Style="{StaticResource MahApps.Styles.ScrollViewer}">
