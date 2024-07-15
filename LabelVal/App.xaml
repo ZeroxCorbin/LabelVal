@@ -38,6 +38,12 @@
                 <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent}"/>
                 <Setter Property="HorizontalAlignment" Value="Left"/>
             </Style>
+            <Style x:Key="imageBarHor" TargetType="Border">
+                <Setter Property="Width" Value="auto"/>
+                <Setter Property="Height" Value="1"/>
+                <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent}"/>
+                <Setter Property="VerticalAlignment" Value="Top"/>
+            </Style>
             <Style x:Key="groupLeft" TargetType="Border">
                 <Setter Property="DockPanel.Dock" Value="Left"/>
                 <Setter Property="Margin" Value="4,3,0,5"/>

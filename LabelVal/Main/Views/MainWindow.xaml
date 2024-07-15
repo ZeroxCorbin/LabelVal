@@ -163,6 +163,7 @@
                         <DockPanel >
 
                             <imageRolls:ImageRolls DataContext="{Binding ImageRolls}"/>
+                            
                             <results:ImageResults DataContext="{Binding ImageResults}"/>
 
                         </DockPanel>

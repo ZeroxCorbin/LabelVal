@@ -78,8 +78,8 @@
                             </Style>
                         </Button.Style>
 
-                        <iconPacks:PackIconMaterial Kind="Plus"
-                                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" Width="24" Height="24"/>
+                        <iconPacks:PackIconMaterial Kind="Plus" Width="24" Height="24"
+                                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
                     </Button>
 
                     <Button Command="{Binding EditCommand}" ToolTip="Edit Selected Image Roll" Width="48">

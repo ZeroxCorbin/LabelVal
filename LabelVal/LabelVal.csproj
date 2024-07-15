@@ -50,6 +50,7 @@
 		<Compile Remove="Run\Databases\V2RunEntryDatabase.cs" />
 		<Compile Remove="Run\ViewModels\Result.cs" />
 		<Compile Remove="Run\ViewModels\Run.cs" />
+		<Compile Remove="Run\Views\RunControl.xaml.cs" />
 		<Compile Remove="V275\ViewModels\ImageResultEntry.cs" />
 		<Compile Remove="V275\ViewModels\ImageResults.cs" />
 		<Compile Remove="V275\ViewModels\SectorDifferences.cs" />
@@ -223,6 +224,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<Page Remove="LVS-95xx\Views\LVS95xx_SerialPortView.xaml" />
+		<Page Remove="Run\Views\RunControl.xaml" />
 	</ItemGroup>
 	<ItemGroup>
 		<Resource Include="ToDo.txt" />

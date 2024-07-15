@@ -7,340 +7,393 @@
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:converters="clr-namespace:LabelVal.Converters"
             xmlns:ViewModels="clr-namespace:LabelVal.Results.ViewModels"
             xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
             Dialog:DialogParticipation.Register="{Binding}"
             d:DataContext="{d:DesignInstance Type=ViewModels:ImageResultEntry}"
             mc:Ignorable="d" Loaded="UserControl_Loaded" Unloaded="UserControl_Unloaded">
+
+    <UserControl.Resources>
+        <converters:ObjectIsNull x:Key="objectIsNull"/>
+    </UserControl.Resources>
+    
     <DockPanel>
 
-        <DockPanel>
-            <GroupBox Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Stretch" 
-                  Style="{StaticResource MaterialDesignCardGroupBox}"
-                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                md:ColorZoneAssist.Mode="Custom">
 
-                <GroupBox.Header>
-                    <DockPanel Margin="-5">
-                        <!--Title-->
-                        <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Stretch" Padding="4,1">
-                            <TextBlock Text="{Binding SourceImage.Order}" MinWidth="26" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
-                                       HorizontalAlignment="Center"/>
-                        </md:Card>
-                    </DockPanel>
-                </GroupBox.Header>
+        <md:Card HorizontalAlignment="Left" DockPanel.Dock="Top" Height="48" Margin="3,3,0,0"
+                 Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
-                <StackPanel>
+            <DockPanel>
 
-                    <!--Only Print Source Image-->
-                    <Button Command="{Binding V275ProcessCommand}" CommandParameter="print" BorderThickness="0" Margin="0,3" 
-                            ToolTip="Print the source image.">
-
-                        <Grid>
-                            <mah:ProgressRing IsActive="{Binding IsV275Working}" Foreground="White" Width="18" Height="18"/>
-                            <iconPacks:PackIconMaterial Kind="Printer" Width="16" Height="16" Margin="2,3,0,0"/>
-                        </Grid>
-
-                        <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource  MahApps.Styles.Button}">
-                                <!--<Setter Property="Visibility" Value="Collapsed"/>
-
-                                <Style.Triggers>
-
-                                    <DataTrigger Binding="{Binding ImageResults.SelectedNode.IsLoggedIn_Control}" Value="False">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                    </DataTrigger>
-
-                                    <DataTrigger Binding="{Binding ImageResults.SelectedNode}" Value="{x:Null}">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                    </DataTrigger>
-                                </Style.Triggers>-->
-                            </Style>
-                        </Button.Style>
-                    </Button>
-
-                    <!--V275 Print Source Image-->
-                    <!--<Button Command="{Binding V275ProcessCommand}" CommandParameter="print" BorderThickness="0" Margin="0,3"
-                            ToolTip="V275: Print the source image and read the results.">
-
-                        <Grid>
-                            <mah:ProgressRing IsActive="{Binding IsV275Working}" Foreground="White" Width="18" Height="18"/>
-                            <iconPacks:PackIconMaterial Kind="Printer" Width="16" Height="16" Margin="2,3,0,0"/>
-                        </Grid>
-
-                        <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
-                                <Setter Property="Visibility" Value="Collapsed"/>
-
-                                <Style.Triggers>
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ImageResults.SelectedNode.IsSimulator}" Value="False"/>
-                                            <Condition Binding="{Binding ImageResults.SelectedNode.IsLoggedIn_Control}" Value="True"/>
-                                        </MultiDataTrigger.Conditions>
-
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                    </MultiDataTrigger>
-
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>-->
-
-                    <Separator>
-                        <Separator.Style>
-                            <Style TargetType="Separator">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Separator.Style>
-                    </Separator>
+                <DockPanel Width="48" Height="48">
                     
-                    <Button x:Name="btnMove" Click="btnMove_Click" VerticalAlignment="Top" BorderThickness="0" Margin="0,3"
-                            Content="{iconPacks:Material Kind=ArrowUpDownBold}"
+                        <iconPacks:PackIconMaterial DockPanel.Dock="Top" Width="36" Height="26" Kind="ImageText"
+                                                    VerticalAlignment="Top" HorizontalAlignment="Center"/>
+                        <TextBlock Margin="11,0,0,0" Text="{Binding SourceImage.Order}" FontSize="{DynamicResource MahApps.Font.Size.Dialog.Message}"
+                                   FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                    
+                </DockPanel>
+
+                <Border Style="{StaticResource imageBarHor}" />
+
+                <!--Only Print Source Image-->
+                <Button Command="{Binding V275ProcessCommand}" CommandParameter="print" Width="48"  
+                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                        ToolTip="Print the source image.">
+
+                    <Grid>
+                        <mah:ProgressRing IsActive="{Binding IsV275Working}" Width="28" Height="28" Foreground="White"/>
+                        <iconPacks:PackIconMaterial Kind="Printer" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center"
+                                                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
+                    </Grid>
+                </Button>
+                
+                <!--V275-->
+                <Button Command="{Binding V275ProcessCommand}" Width="48" Height="48" 
+                        BorderBrush="{DynamicResource YellowBrush2}" Background="{DynamicResource ColorBlindBrush1}">
+
+                    <Grid>
+                        <mah:ProgressRing IsActive="{Binding IsV275Working}" Width="28" Height="28" Foreground="White"/>
+                        <Image Width="24" Height="24" Source="/Assets/Images/v275-white-outline.ico" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    </Grid>
+
+                    <Button.Style>
+                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.MetroSquare}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ImageResults.SelectedNode.IsSimulator}" Value="False"/>
+                                        <Condition Binding="{Binding ImageResults.SelectedNode.IsLoggedIn_Control}" Value="True"/>
+                                    </MultiDataTrigger.Conditions>
+
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Setter Property="CommandParameter" Value="print"/>
+                                    <Setter Property="ToolTip" Value="Print the source image and read the results."/>
+                                </MultiDataTrigger>
+
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ImageResults.SelectedNode.IsSimulator}" Value="True"/>
+                                        <Condition Binding="{Binding ImageResults.SelectedNode.IsLoggedIn}" Value="True"/>
+                                        <Condition Binding="{Binding V275ResultRow, Converter={StaticResource objectIsNull}}" Value="True"/>
+                                    </MultiDataTrigger.Conditions>
+
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Setter Property="CommandParameter" Value="source"/>
+                                    <Setter Property="ToolTip" Value="V275: Process the source image with the simulator."/>
+                                </MultiDataTrigger>
+
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ImageResults.SelectedNode.IsSimulator}" Value="True"/>
+                                        <Condition Binding="{Binding ImageResults.SelectedNode.IsLoggedIn}" Value="True"/>
+                                        <Condition Binding="{Binding V275ResultRow.StoredImage, Converter={StaticResource objectIsNull}}" Value="False"/>
+                                    </MultiDataTrigger.Conditions>
+
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Setter Property="CommandParameter" Value="v275Stored"/>
+                                    <Setter Property="ToolTip" Value="V275: Process the stored image with the simulator."/>
+                                </MultiDataTrigger>
+                                
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <!--V5 Process Source Image-->
+                <Button Command="{Binding V5ProcessCommand}" Width="48" Height="48"
+                        BorderBrush="{DynamicResource YellowBrush2}" Background="{DynamicResource OrangeBrush1}">
+
+                    <Grid>
+                        <mah:ProgressRing IsActive="{Binding IsV5Working}" Width="28" Height="28" Foreground="White"/>
+                        <Image Width="24" Height="24" Source="/Assets/Images/v5-white-outline.ico" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    </Grid>
+
+                    <Button.Style>
+                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.MetroSquare}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ImageResults.SelectedScanner.IsSimulator}" Value="True"/>
+                                        <Condition Binding="{Binding ImageResults.SelectedScanner.IsConnected}" Value="True"/>
+                                        <Condition Binding="{Binding V5ResultRow, Converter={StaticResource objectIsNull}}" Value="True"/>
+                                    </MultiDataTrigger.Conditions>
+
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Setter Property="CommandParameter" Value="source"/>
+                                    <Setter Property="ToolTip" Value="V5: Process the source image with the simulator."/>
+                                </MultiDataTrigger>
+
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ImageResults.SelectedScanner.IsSimulator}" Value="False"/>
+                                        <Condition Binding="{Binding ImageResults.SelectedScanner.IsConnected}" Value="True"/>
+                                    </MultiDataTrigger.Conditions>
+
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Setter Property="CommandParameter" Value="sensor"/>
+                                    <Setter Property="ToolTip" Value="V5: Process the sensor image."/>
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <Separator>
+                    <Separator.Style>
+                        <Style TargetType="Separator">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Separator.Style>
+                </Separator>
+
+                <Button x:Name="btnMove" Click="btnMove_Click" Width="48"
+                            Content="{iconPacks:Material Kind=ArrowUpDownBold, Width=24, Height=24}"
+                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                             ToolTip="Move">
-                        <Button.Style>
-                            <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
 
-                    <Popup x:Name="popMove" Width="{Binding ActualWidth, ElementName=btnMove}">
+                <Popup x:Name="popMove" Width="{Binding ActualWidth, ElementName=btnMove}">
 
-                        <md:Card Style="{StaticResource MaterialDesignElevatedCard}" Padding="3" BorderThickness="2" BorderBrush="{DynamicResource MahApps.Brushes.Accent2}"
+                    <md:Card Style="{StaticResource MaterialDesignElevatedCard}" Padding="3" BorderThickness="2" BorderBrush="{DynamicResource MahApps.Brushes.Accent2}"
                                  Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-                            <StackPanel>
+                        <StackPanel>
 
-                                <Button Click="btnMoveImage_Click" Tag="top" VerticalAlignment="Top" BorderThickness="0" Margin="0,3"
+                            <Button Click="btnMoveImage_Click" Tag="top" VerticalAlignment="Top" BorderThickness="0" Margin="0,3"
                                 Content="{iconPacks:Material Kind=ArrowCollapseUp}"
                                 ToolTip="Move to Top">
 
-                                    <Button.Style>
-                                        <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding SourceImage.Order}" Value="1">
-                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
-                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Button.Style>
-                                </Button>
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SourceImage.Order}" Value="1">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
 
-                                <Button Click="btnMoveImage_Click" Tag="up" VerticalAlignment="Top" BorderThickness="0" Margin="0,3"
+                            <Button Click="btnMoveImage_Click" Tag="up" VerticalAlignment="Top" BorderThickness="0" Margin="0,3"
                                 Content="{iconPacks:Material Kind=ArrowUp}"
                                 ToolTip="Move Up">
 
-                                    <Button.Style>
-                                        <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding SourceImage.Order}" Value="1">
-                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
-                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Button.Style>
-                                </Button>
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SourceImage.Order}" Value="1">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
 
-                                <Separator/>
-                                
-                                <Button Click="btnMoveImage_Click" Tag="down" VerticalAlignment="Top" BorderThickness="0" Margin="0,3"
+                            <Separator/>
+
+                            <Button Click="btnMoveImage_Click" Tag="down" VerticalAlignment="Top" BorderThickness="0" Margin="0,3"
                                     Content="{iconPacks:Material Kind=ArrowDown}"
                                     ToolTip="Move Down">
-                                    <Button.Style>
-                                        <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
-                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Button.Style>
-                                </Button>
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
 
-                                <Button  Click="btnMoveImage_Click" Tag="bottom" VerticalAlignment="Top" BorderThickness="0" Margin="0,3"
+                            <Button  Click="btnMoveImage_Click" Tag="bottom" VerticalAlignment="Top" BorderThickness="0" Margin="0,3"
                                 Content="{iconPacks:Material Kind=ArrowCollapseDown}"
                                 ToolTip="Move to Bottom">
 
-                                    <Button.Style>
-                                        <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
-                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Button.Style>
-                                </Button>
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
 
-                            </StackPanel>
-                        </md:Card>
-                    </Popup>
+                        </StackPanel>
+                    </md:Card>
+                </Popup>
 
-                    <!--<Separator>
-                        <Separator.Style>
-                            <Style TargetType="Separator">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Separator.Style>
-                    </Separator>-->
-
-                    <Button x:Name="btnAdd" Click="btnAdd_Click" VerticalAlignment="Top" BorderThickness="0" Margin="0,3"
-                            Content="{iconPacks:Material Kind=ImagePlus}"
+                <Button x:Name="btnAdd" Click="btnAdd_Click" Width="48"
+                            Content="{iconPacks:Material Kind=ImagePlus, Width=24, Height=24}"
+                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                             ToolTip="Add Image">
-                        <Button.Style>
-                            <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
 
-                    <Popup x:Name="popAdd" Width="{Binding ActualWidth, ElementName=btnAdd}">
+                <Popup x:Name="popAdd" Width="{Binding ActualWidth, ElementName=btnAdd}">
 
-                        <md:Card Style="{StaticResource MaterialDesignElevatedCard}" Padding="3" BorderThickness="2" BorderBrush="{DynamicResource MahApps.Brushes.Accent2}"
+                    <md:Card Style="{StaticResource MaterialDesignElevatedCard}" Padding="3" BorderThickness="2" BorderBrush="{DynamicResource MahApps.Brushes.Accent2}"
                                  Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
 
-                            <StackPanel>
+                        <StackPanel>
 
-                                <Button Click="btnAddImage_Click" Tag="top" VerticalAlignment="Top" BorderThickness="0" Margin="0,3"
+                            <Button Click="btnAddImage_Click" Tag="top" VerticalAlignment="Top" BorderThickness="0" Margin="0,3"
                                 ToolTip="Add to Top">
 
-                                    <Grid>
-                                        <iconPacks:PackIconMaterial Kind="Minus" VerticalAlignment="Top" Margin="0,-10,0,0"/>
-                                        <iconPacks:PackIconMaterial Kind="ImageAreaClose" RotationAngle="180" />
-                                    </Grid>
+                                <Grid>
+                                    <iconPacks:PackIconMaterial Kind="Minus" VerticalAlignment="Top" Margin="0,-10,0,0"/>
+                                    <iconPacks:PackIconMaterial Kind="ImageAreaClose" RotationAngle="180" />
+                                </Grid>
 
-                                    <Button.Style>
-                                        <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding SourceImage.Order}" Value="1">
-                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
-                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Button.Style>
-                                </Button>
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SourceImage.Order}" Value="1">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
 
-                                <Button Click="btnAddImage_Click" Tag="up" VerticalAlignment="Top" BorderThickness="0" Margin="0,3"
+                            <Button Click="btnAddImage_Click" Tag="up" VerticalAlignment="Top" BorderThickness="0" Margin="0,3"
                                 Content="{iconPacks:Material Kind=ImageAreaClose, RotationAngle=180}"
                                 ToolTip="Add Above">
 
-                                    <Button.Style>
-                                        <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
-                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Button.Style>
-                                </Button>
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
 
-                                <Separator/>
+                            <Separator/>
 
-                                <Button Click="btnAddImage_Click" Tag="down" VerticalAlignment="Top" BorderThickness="0" Margin="0,3"
+                            <Button Click="btnAddImage_Click" Tag="down" VerticalAlignment="Top" BorderThickness="0" Margin="0,3"
                                     Content="{iconPacks:Material Kind=ImageAreaClose}"
                                     ToolTip="Add Below">
-                                    <Button.Style>
-                                        <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
-                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Button.Style>
-                                </Button>
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
 
-                                <Button  Click="btnAddImage_Click" Tag="bottom" VerticalAlignment="Top" BorderThickness="0" Margin="0,3"
+                            <Button  Click="btnAddImage_Click" Tag="bottom" VerticalAlignment="Top" BorderThickness="0" Margin="0,3"
                                 ToolTip="Add to Bottom">
 
-                                    <Grid>
-                                        <iconPacks:PackIconMaterial Kind="Minus" VerticalAlignment="Top" Margin="0,10,0,-10"/>
-                                        <iconPacks:PackIconMaterial Kind="ImageAreaClose" />
-                                    </Grid>
+                                <Grid>
+                                    <iconPacks:PackIconMaterial Kind="Minus" VerticalAlignment="Top" Margin="0,10,0,-10"/>
+                                    <iconPacks:PackIconMaterial Kind="ImageAreaClose" />
+                                </Grid>
 
-                                    <Button.Style>
-                                        <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
-                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Button.Style>
-                                </Button>
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
 
-                            </StackPanel>
-                        </md:Card>
-                    </Popup>
+                        </StackPanel>
+                    </md:Card>
+                </Popup>
 
-                    <Separator>
-                        <Separator.Style>
-                            <Style TargetType="Separator">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Separator.Style>
-                    </Separator>
+                <Separator>
+                    <Separator.Style>
+                        <Style TargetType="Separator">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Separator.Style>
+                </Separator>
 
-                    <Button Command="{Binding ImageResults.DeleteImageCommand}" CommandParameter="{Binding }" VerticalAlignment="Top" BorderThickness="0" Margin="0,3"
-                              ToolTip="Delete" Content="{iconPacks:Material Kind=Delete}">
-                        <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
+                <Button Command="{Binding ImageResults.DeleteImageCommand}" CommandParameter="{Binding }" Width="48"
+                              ToolTip="Delete" Content="{iconPacks:Material Kind=Delete, Width=24, Height=24}"
+                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+                    <Button.Style>
+                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
 
-                </StackPanel>
-            </GroupBox>
-        </DockPanel>
+            </DockPanel>
+        </md:Card>
 
-        <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto" 
+        <DockPanel DockPanel.Dock="Top">
+            <Border Style="{StaticResource groupLeft}" />
+            <Border Style="{StaticResource groupBottom}"/>
+            
+            <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto" 
                       mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
                       Style="{StaticResource MahApps.Styles.ScrollViewer}">
-            <DockPanel>
+                <DockPanel>
 
-                <local:ImageResultEntry_Images DataContext="{Binding }" DockPanel.Dock="Top"/>
+                    <local:ImageResultEntry_Images DataContext="{Binding }" DockPanel.Dock="Top"/>
 
-                <local:ImageResultEntry_V275 DataContext="{Binding }"/>
+                    <local:ImageResultEntry_V275 DataContext="{Binding }"/>
 
-                <local:ImageResultEntry_V5 DataContext="{Binding }"/>
+                    <local:ImageResultEntry_V5 DataContext="{Binding }"/>
 
-                <local:ImageResultEntry_L95xx DataContext="{Binding }"/>
-            </DockPanel>
-        </ScrollViewer>
+                    <local:ImageResultEntry_L95xx DataContext="{Binding }"/>
+                </DockPanel>
+            </ScrollViewer>
+        </DockPanel>
     </DockPanel>
 </UserControl>
