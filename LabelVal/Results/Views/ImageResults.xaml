@@ -9,12 +9,14 @@
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:viewModels="clr-namespace:LabelVal.Results.ViewModels"
                 xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-             
+             xmlns:sectors="clr-namespace:LabelVal.Sectors.ViewModels"
                 xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+                xmlns:imageRollConverters="clr-namespace:LabelVal.ImageRolls.Converters"
              d:DataContext="{d:DesignInstance Type=viewModels:ImageResults}"
              mc:Ignorable="d" >
 
     <UserControl.Resources>
+        <imageRollConverters:GS1TableNamesConverter x:Key="GS1TableNamesConverter"/>
 
         <CollectionViewSource x:Key="cvsImageResultsList" Source="{Binding ImageResultsList}" IsLiveSortingRequested="True">
             <CollectionViewSource.SortDescriptions>
@@ -28,7 +30,7 @@
 
         <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Left" Margin="3,3,0,0">
 
-            <md:Card DockPanel.Dock="Top" Height="48" Margin="3,3,0,0"
+            <md:Card DockPanel.Dock="Top" Height="68" Margin="3,3,0,0"
                  Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
                  Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
@@ -41,48 +43,84 @@
                     <Border Style="{StaticResource imageBar}" />
 
                     <DockPanel>
+                        <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Left">
 
-                        <Button Command="{Binding AddImageTopCommand}" Width="48" 
+                            <DockPanel DockPanel.Dock="Top" Margin="6,0,6,3">
+
+                                <TextBlock Text="{Binding SelectedImageRoll.Name}">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock" BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding SelectedImageRoll.Name}" Value="">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+
+                                <TextBlock Text="{Binding SelectedImageRoll.SelectedGS1Table, Converter={StaticResource GS1TableNamesConverter}, StringFormat={}Table {0}}">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock" BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding SelectedImageRoll.SelectedStandard}" Value="{x:Static sectors:StandardsTypes.GS1}">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+
+                                <TextBlock Text="{Binding SelectedImageRoll.TargetDPI, StringFormat={} : {0} dpi}" Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"/>
+                           </DockPanel>
+                            <Border Style="{StaticResource imageBarHor}"/>
+                        </DockPanel>
+
+                        <DockPanel>
+
+                            <Button Command="{Binding AddImageTopCommand}" Width="48" 
                                 Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                             ToolTip="Add Image(s)">
 
-                            <iconPacks:PackIconMaterial Kind="Image" Width="24" Height="24"
+                                <iconPacks:PackIconMaterial Kind="Image" Width="24" Height="24"
                                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
-                        </Button>
+                            </Button>
 
-                        <Button Command="{Binding AddV5ImageCommand}" Width="48"
+                            <Button Command="{Binding AddV5ImageCommand}" Width="48"
                             Content="{iconPacks:Material Kind=Camera, Width=24, Height=24}" ToolTipService.ShowOnDisabled="True">
 
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
-                                    <Setter Property="IsEnabled" Value="False"/>
-                                    <Setter Property="ToolTip" Value="V5: Trigger"/>
-                                    <Style.Triggers>
-                                        <MultiDataTrigger>
-                                            <MultiDataTrigger.Conditions>
-                                                <Condition Binding="{Binding SelectedScanner.IsConnected}" Value="True"/>
-                                                <Condition Binding="{Binding SelectedScanner.IsSimulator}" Value="False"/>
-                                            </MultiDataTrigger.Conditions>
-                                            <Setter Property="IsEnabled" Value="True"/>
-                                        </MultiDataTrigger>
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                        <Setter Property="ToolTip" Value="V5: Trigger"/>
+                                        <Style.Triggers>
+                                            <MultiDataTrigger>
+                                                <MultiDataTrigger.Conditions>
+                                                    <Condition Binding="{Binding SelectedScanner.IsConnected}" Value="True"/>
+                                                    <Condition Binding="{Binding SelectedScanner.IsSimulator}" Value="False"/>
+                                                </MultiDataTrigger.Conditions>
+                                                <Setter Property="IsEnabled" Value="True"/>
+                                            </MultiDataTrigger>
 
-                                        <DataTrigger Binding="{Binding SelectedScanner.IsConnected}" Value="False">
-                                            <Setter Property="ToolTip" Value="Scanner not connected"/>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding SelectedScanner.IsSimulator}" Value="True">
-                                            <Setter Property="ToolTip" Value="Camera not set to Sensor."/>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
-                                            <Setter Property="ToolTip" Value="The Results Database is locked."/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
+                                            <DataTrigger Binding="{Binding SelectedScanner.IsConnected}" Value="False">
+                                                <Setter Property="ToolTip" Value="Scanner not connected"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding SelectedScanner.IsSimulator}" Value="True">
+                                                <Setter Property="ToolTip" Value="Camera not set to Sensor."/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
+                                                <Setter Property="ToolTip" Value="The Results Database is locked."/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
 
-                        </Button>
+                            </Button>
 
+                        </DockPanel>
                     </DockPanel>
-
                 </DockPanel>
             </md:Card>
 

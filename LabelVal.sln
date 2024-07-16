@@ -14,7 +14,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "V5_REST_Lib", "..\V5_REST_L
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibStaticUtilities", "..\LibStaticUtilities\LibStaticUtilities\LibStaticUtilities.csproj", "{6BDCE2C9-F0F1-473D-BEEC-8A52AF16D9E7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RingBuffer", "..\RingBuffer\RingBuffer\RingBuffer.csproj", "{1B984D6C-AD49-40CD-AFCC-B96C4AD8F489}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingBuffer", "..\RingBuffer\RingBuffer\RingBuffer.csproj", "{1B984D6C-AD49-40CD-AFCC-B96C4AD8F489}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

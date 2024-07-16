@@ -17,72 +17,80 @@
 
     <DockPanel VerticalAlignment="Top" Margin="3,3,0,0">
 
-        <md:Card DockPanel.Dock="Top" Height="48" Margin="3,3,0,0" 
+        <md:Card DockPanel.Dock="Top" Height="68" Margin="3,3,0,0" 
                  Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
                  Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
             <DockPanel>
 
-                <DockPanel Width="48" Height="48" Background="{DynamicResource OrangeBrush1}">
+                <DockPanel Width="48" Background="{DynamicResource OrangeBrush1}">
                     <Image Width="36" Height="36" Source="/Assets/Images/v5-white-outline.ico" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 </DockPanel>
 
                 <Border Style="{StaticResource imageBar}"/>
 
-                <Button Command="{Binding AddCommand}" ToolTip="New V5" Width="48">
-                    <Button.Style>
-                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
-                            <Setter Property="Visibility" Value="Collapsed"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding NewScanner, Converter={StaticResource objectIsNull}}" Value="True">
-                                    <Setter Property="Visibility" Value="Visible"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
+                <DockPanel>
+                    <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Left">
+                        <TextBlock DockPanel.Dock="Top" Margin="6,0,0,3" Text="V5 Cameras" Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"/>
+                        <Border Style="{StaticResource imageBarHor}"/>
+                    </DockPanel>
 
-                    <iconPacks:PackIconMaterial Kind="Plus"
+                    <DockPanel>
+                        <Button Command="{Binding AddCommand}" ToolTip="New V5" Width="48">
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding NewScanner, Converter={StaticResource objectIsNull}}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+
+                            <iconPacks:PackIconMaterial Kind="Plus"
                                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" Width="24" Height="24"/>
-                </Button>
+                        </Button>
 
-                <Button Command="{Binding SaveCommand}" ToolTip="Save Image Roll" Width="48">
-                    <Button.Style>
-                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
-                            <Setter Property="Visibility" Value="Collapsed"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding NewScanner, Converter={StaticResource objectIsNull}}" Value="False">
-                                    <Setter Property="Visibility" Value="Visible"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
+                        <Button Command="{Binding SaveCommand}" ToolTip="Save Image Roll" Width="48">
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding NewScanner, Converter={StaticResource objectIsNull}}" Value="False">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
 
-                    <iconPacks:PackIconMaterial Kind="ContentSave"
+                            <iconPacks:PackIconMaterial Kind="ContentSave"
                                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" Width="24" Height="24"/>
-                </Button>
+                        </Button>
 
-                <Button Command="{Binding CancelCommand}" ToolTip="Cancel" Width="48">
-                    <Button.Style>
-                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
-                            <Setter Property="Visibility" Value="Collapsed"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding NewScanner, Converter={StaticResource objectIsNull}}" Value="False">
-                                    <Setter Property="Visibility" Value="Visible"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
+                        <Button Command="{Binding CancelCommand}" ToolTip="Cancel" Width="48">
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding NewScanner, Converter={StaticResource objectIsNull}}" Value="False">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
 
-                    <iconPacks:PackIconMaterial Kind="Cancel"
+                            <iconPacks:PackIconMaterial Kind="Cancel"
                                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" Width="24" Height="24"/>
-                </Button>
+                        </Button>
 
-                <Button Click="btnShowDetails_Click" Style="{StaticResource MahApps.Styles.Button.Hamburger}" HorizontalAlignment="Right" Width="48">
+                        <Button Click="btnShowDetails_Click" Style="{StaticResource MahApps.Styles.Button.Hamburger}" HorizontalAlignment="Right" Width="48">
 
-                    <iconPacks:PackIconMaterial Kind="CodeJson"
+                            <iconPacks:PackIconMaterial Kind="CodeJson"
                                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" Width="24" Height="24"/>
-                </Button>
-
+                        </Button>
+                    </DockPanel>
+                </DockPanel>
             </DockPanel>
         </md:Card>
 

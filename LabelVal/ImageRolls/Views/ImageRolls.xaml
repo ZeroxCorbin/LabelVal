@@ -52,7 +52,7 @@
         <!--User Image Rolls-->
         <DockPanel DockPanel.Dock="Top">
 
-            <md:Card DockPanel.Dock="Top" Height="48" Margin="3,3,0,0"
+            <md:Card DockPanel.Dock="Top" Height="68" Margin="3,3,0,0"
                  Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
                  Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
@@ -71,91 +71,101 @@
 
                     <Border Style="{StaticResource imageBar}"/>
 
-                    <Button Command="{Binding AddCommand}" ToolTip="New Image Roll" Width="48">
+                    <DockPanel>
+                        <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Left">
+                            <TextBlock DockPanel.Dock="Top" Margin="6,0,0,3" Text="User Image Rolls" Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"/>
+                            <Border Style="{StaticResource imageBarHor}"/>
+                        </DockPanel>
 
-                        <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
-                                <Setter Property="Visibility" Value="Collapsed"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding UserImageRoll, Converter={StaticResource objectIsNull}}" Value="True">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
+                        <DockPanel>
+                            <Button Command="{Binding AddCommand}" ToolTip="New Image Roll" Width="48">
 
-                        <iconPacks:PackIconMaterial Kind="Plus" Width="24" Height="24"
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding UserImageRoll, Converter={StaticResource objectIsNull}}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+
+                                <iconPacks:PackIconMaterial Kind="Plus" Width="24" Height="24"
                                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
-                    </Button>
+                            </Button>
 
-                    <Button Command="{Binding EditCommand}" ToolTip="Edit Selected Image Roll" Width="48">
+                            <Button Command="{Binding EditCommand}" ToolTip="Edit Selected Image Roll" Width="48">
 
-                        <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
-                                <Setter Property="Visibility" Value="Visible"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding SelectedUserImageRoll, Converter={StaticResource objectIsNull}}" Value="True">
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SelectedUserImageRoll, Converter={StaticResource objectIsNull}}" Value="True">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding UserImageRoll, Converter={StaticResource objectIsNull}}" Value="False">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+
+                                <iconPacks:PackIconMaterial Kind="SquareEditOutline"
+                                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" Width="24" Height="24"/>
+                            </Button>
+
+                            <Button Command="{Binding SaveCommand}" ToolTip="Save Image Roll"  Width="48">
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding UserImageRoll, Converter={StaticResource objectIsNull}}" Value="False">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding UserImageRoll, Converter={StaticResource objectIsNull}}" Value="False">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+
+                                <iconPacks:PackIconMaterial Kind="ContentSave"
+                                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" Width="24" Height="24"/>
+                            </Button>
+
+                            <Button Command="{Binding CancelCommand}" ToolTip="Cancel" Width="48">
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding UserImageRoll, Converter={StaticResource objectIsNull}}" Value="False">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
 
-                        <iconPacks:PackIconMaterial Kind="SquareEditOutline"
+                                <iconPacks:PackIconMaterial Kind="Cancel"
                                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" Width="24" Height="24"/>
-                    </Button>
+                            </Button>
 
-                    <Button Command="{Binding SaveCommand}" ToolTip="Save Image Roll"  Width="48">
-                        <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
-                                <Setter Property="Visibility" Value="Collapsed"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding UserImageRoll, Converter={StaticResource objectIsNull}}" Value="False">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
+                            <Button Command="{Binding DeleteCommand}" ToolTip="Delete" Width="48">
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding UserImageRoll, Converter={StaticResource objectIsNull}}" Value="False">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
 
-                        <iconPacks:PackIconMaterial Kind="ContentSave"
+                                <iconPacks:PackIconMaterial Kind="Delete"
                                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" Width="24" Height="24"/>
-                    </Button>
+                            </Button>
 
-                    <Button Command="{Binding CancelCommand}" ToolTip="Cancel" Width="48">
-                        <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
-                                <Setter Property="Visibility" Value="Collapsed"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding UserImageRoll, Converter={StaticResource objectIsNull}}" Value="False">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
 
-                        <iconPacks:PackIconMaterial Kind="Cancel"
-                                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" Width="24" Height="24"/>
-                    </Button>
-
-                    <Button Command="{Binding DeleteCommand}" ToolTip="Delete" Width="48">
-                        <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
-                                <Setter Property="Visibility" Value="Collapsed"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding UserImageRoll, Converter={StaticResource objectIsNull}}" Value="False">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-
-                        <iconPacks:PackIconMaterial Kind="Delete"
-                                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" Width="24" Height="24"/>
-                    </Button>
-
+                        </DockPanel>
+                    </DockPanel>
                 </DockPanel>
             </md:Card>
 
@@ -228,53 +238,112 @@
 
                         </ListView.GroupStyle>
 
-                        <!--<ListView.ItemContainerStyle>
-                            <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}"/>
-                        </ListView.ItemContainerStyle>-->
-
                         <ListView.ItemTemplate>
                             <DataTemplate>
-
                                 <DockPanel>
-                                    <iconPacks:PackIconMaterial Margin="3,0" Kind="ImageMultiple" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                    <Border Style="{StaticResource groupLeft}" Margin="0,0,6,0" Background="{DynamicResource MahApps.Brushes.Accent2}"/>
+                                    <Border Style="{StaticResource groupBottom}" Margin="-6,3,0,0" Background="{DynamicResource MahApps.Brushes.Accent2}"/>
 
-                                    <md:Card HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="2" BorderThickness="0"  
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <iconPacks:PackIconMaterial Kind="ImageMultiple" VerticalAlignment="Center" Margin="0,3,6,0"/>
+
+                                        <TextBlock Grid.Row="1" Text="{Binding ImageCount}">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock" BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding ImageCount}" Value="0">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+
+                                        <md:Card Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3,0" 
                                          Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
                                          Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}">
 
-                                        <DockPanel>
+                                            <DockPanel>
+                                                <TextBlock Text="{Binding Name}" TextWrapping="Wrap" Margin="10,3">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock" BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Name}" Value="">
+                                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
 
-                                            <TextBlock Text="{Binding Name}" Margin="10,3" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}">
-                                                <TextBlock.Style>
-                                                    <Style TargetType="TextBlock">
-                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                <TextBlock Text="{Binding SelectedGS1Table, Converter={StaticResource GS1TableNamesConverter}, StringFormat={}Table {0}}"
+                                                   Margin="10,3">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock" BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding SelectedStandard}" Value="{x:Static sectors:StandardsTypes.GS1}">
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </DockPanel>
+
+                                        </md:Card>
+
+                                        <DockPanel Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left">
+
+                                            <TextBlock Margin="6,0" Text="{Binding TargetDPI, StringFormat={}{0} dpi}" VerticalAlignment="Center"/>
+
+                                            <iconPacks:PackIconMaterial Margin="3" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                                <iconPacks:PackIconMaterial.Style>
+                                                    <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
+                                                        <Setter Property="Kind" Value="LockOpenVariant"/>
+                                                        <Setter Property="ToolTip" Value="Image Roll is unlocked."/>
+
                                                         <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding Name}" Value="">
-                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            <DataTrigger Binding="{Binding IsLocked}" Value="True">
+                                                                <Setter Property="Kind" Value="Lock"/>
+                                                                <Setter Property="ToolTip" Value="Image Roll is locked."/>
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
-                                                </TextBlock.Style>
-                                            </TextBlock>
+                                                </iconPacks:PackIconMaterial.Style>
+                                            </iconPacks:PackIconMaterial>
 
-                                            <TextBlock Text="{Binding SelectedGS1Table, Converter={StaticResource GS1TableNamesConverter}, StringFormat={}Table {0}}" Margin="10,3" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}">
-                                                <TextBlock.Style>
-                                                    <Style TargetType="TextBlock">
-                                                        <Setter Property="Visibility" Value="Collapsed"/>
+
+                                            <iconPacks:PackIconMaterial Margin="3" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                                <iconPacks:PackIconMaterial.Style>
+                                                    <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
+                                                        <Setter Property="Kind" Value="Database"/>
+                                                        <Setter Property="ToolTip" Value="Images are stored."/>
+
                                                         <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding SelectedStandard}" Value="{x:Static sectors:StandardsTypes.GS1}">
-                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            <DataTrigger Binding="{Binding IsRooted}" Value="True">
+                                                                <Setter Property="Kind" Value="Folder"/>
+                                                                <Setter Property="ToolTip" Value="Images are rooted."/>
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
-                                                </TextBlock.Style>
-                                            </TextBlock>
+                                                </iconPacks:PackIconMaterial.Style>
+                                            </iconPacks:PackIconMaterial>
 
                                         </DockPanel>
-                                    </md:Card>
+                                    </Grid>
                                 </DockPanel>
-
-
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
@@ -305,12 +374,21 @@
 
                     <Border Style="{StaticResource imageBar}"/>
 
-                    <Button Command="{Binding UIDToClipboardCommand}" Style="{StaticResource MahApps.Styles.Button.Hamburger}" ToolTip="New UID to Clipboard" Width="48"
+                    <DockPanel>
+                        <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Left">
+                            <TextBlock DockPanel.Dock="Top" Margin="6,0,0,3" Text="Fixed Image Rolls" Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"/>
+                            <Border Style="{StaticResource imageBarHor}"/>
+                        </DockPanel>
+
+                        <DockPanel>
+                            <Button Visibility="Collapsed" Command="{Binding UIDToClipboardCommand}" Style="{StaticResource MahApps.Styles.Button.Hamburger}" ToolTip="New UID to Clipboard" Width="48"
                             HorizontalAlignment="Left">
 
-                        <iconPacks:PackIconFontAwesome Kind="FingerprintSolid"
+                                <iconPacks:PackIconFontAwesome Kind="FingerprintSolid"
                                                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" Width="24" Height="24"/>
-                    </Button>
+                            </Button>
+                        </DockPanel>
+                    </DockPanel>
                 </DockPanel>
             </md:Card>
 
@@ -370,95 +448,111 @@
 
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
-
-                                <iconPacks:PackIconMaterial Kind="ImageMultiple" VerticalAlignment="Center" Margin="0,3,6,0"/>
-
-                                <TextBlock Grid.Row="1" Text="{Binding ImageCount}">
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock" BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding ImageCount}" Value="0">
-                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
+                            <DockPanel>
+                                <Border Style="{StaticResource groupLeft}" Margin="0,0,6,0" Background="{DynamicResource MahApps.Brushes.Accent2}"/>
+                                <Border Style="{StaticResource groupBottom}" Margin="-6,3,0,0" Background="{DynamicResource MahApps.Brushes.Accent2}"/>
                                 
-                                <md:Card Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3,0" 
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <iconPacks:PackIconMaterial Kind="ImageMultiple" VerticalAlignment="Center" Margin="0,3,6,0"/>
+
+                                    <TextBlock Grid.Row="1" Text="{Binding ImageCount}">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock" BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ImageCount}" Value="0">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+
+                                    <md:Card Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3,0" 
                                          Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
                                          Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}">
 
-                                    <DockPanel>
-                                        <TextBlock Text="{Binding Name}" TextWrapping="Wrap" Margin="10,3"
-                                                    Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}" />
+                                        <DockPanel>
+                                            <TextBlock Text="{Binding Name}" TextWrapping="Wrap" Margin="10,3">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock" BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Name}" Value="">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
 
-                                        <TextBlock Text="{Binding SelectedGS1Table, Converter={StaticResource GS1TableNamesConverter}, StringFormat={}Table {0}}"
+                                            <TextBlock Text="{Binding SelectedGS1Table, Converter={StaticResource GS1TableNamesConverter}, StringFormat={}Table {0}}"
                                                    Margin="10,3">
-                                            <TextBlock.Style>
-                                                <Style TargetType="TextBlock" BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}">
-                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock" BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding SelectedStandard}" Value="{x:Static sectors:StandardsTypes.GS1}">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </DockPanel>
+
+                                    </md:Card>
+
+                                    <DockPanel Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left">
+
+                                        <TextBlock Margin="6,0" Text="{Binding TargetDPI, StringFormat={}{0} dpi}" VerticalAlignment="Center"/>
+
+                                        <iconPacks:PackIconMaterial Margin="3" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                            <iconPacks:PackIconMaterial.Style>
+                                                <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
+                                                    <Setter Property="Kind" Value="LockOpenVariant"/>
+                                                    <Setter Property="ToolTip" Value="Image Roll is unlocked."/>
+
                                                     <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding SelectedStandard}" Value="{x:Static sectors:StandardsTypes.GS1}">
-                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        <DataTrigger Binding="{Binding IsLocked}" Value="True">
+                                                            <Setter Property="Kind" Value="Lock"/>
+                                                            <Setter Property="ToolTip" Value="Image Roll is locked."/>
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
-                                            </TextBlock.Style>
-                                        </TextBlock>
+                                            </iconPacks:PackIconMaterial.Style>
+                                        </iconPacks:PackIconMaterial>
+
+
+                                        <iconPacks:PackIconMaterial Margin="3" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                            <iconPacks:PackIconMaterial.Style>
+                                                <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
+                                                    <Setter Property="Kind" Value="Database"/>
+                                                    <Setter Property="ToolTip" Value="Images are stored."/>
+
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsRooted}" Value="True">
+                                                            <Setter Property="Kind" Value="Folder"/>
+                                                            <Setter Property="ToolTip" Value="Images are rooted."/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </iconPacks:PackIconMaterial.Style>
+                                        </iconPacks:PackIconMaterial>
+
                                     </DockPanel>
+                                </Grid>
+                            </DockPanel>
 
-                                </md:Card>
-
-                                <DockPanel Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left">
-
-                                    <TextBlock Margin="6,0" Text="{Binding TargetDPI, StringFormat={}{0} dpi}" VerticalAlignment="Center"/>
-                                    
-                                    <iconPacks:PackIconMaterial Margin="3" HorizontalAlignment="Left" VerticalAlignment="Center">
-                                        <iconPacks:PackIconMaterial.Style>
-                                            <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
-                                                <Setter Property="Kind" Value="LockOpenVariant"/>
-                                                <Setter Property="ToolTip" Value="Image Roll is unlocked."/>
-
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsLocked}" Value="True">
-                                                        <Setter Property="Kind" Value="Lock"/>
-                                                        <Setter Property="ToolTip" Value="Image Roll is locked."/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </iconPacks:PackIconMaterial.Style>
-                                    </iconPacks:PackIconMaterial>
-
-
-                                    <iconPacks:PackIconMaterial Margin="3" HorizontalAlignment="Left" VerticalAlignment="Center">
-                                        <iconPacks:PackIconMaterial.Style>
-                                            <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
-                                                <Setter Property="Kind" Value="Database"/>
-                                                <Setter Property="ToolTip" Value="Images are stored."/>
-
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsRooted}" Value="True">
-                                                        <Setter Property="Kind" Value="Folder"/>
-                                                        <Setter Property="ToolTip" Value="Images are rooted."/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </iconPacks:PackIconMaterial.Style>
-                                    </iconPacks:PackIconMaterial>
-
-                                 </DockPanel>
-                            </Grid>
 
                         </DataTemplate>
                     </ListView.ItemTemplate>
