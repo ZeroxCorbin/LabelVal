@@ -678,7 +678,7 @@ public partial class ImageResults : ObservableRecipient,
             GS1TableNames._12_1 => "12.1",
             GS1TableNames._12_2 => "12.2",
             GS1TableNames._12_3 => "12.3",
-            _ => "0",
+            _ => "",
         };
 
     private void ProcessRepeatFault(int repeat)

@@ -56,7 +56,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     partial void OnPathChanged(string value) => OnPropertyChanged(nameof(IsRooted));
     [SQLite.Ignore] public bool IsRooted => !string.IsNullOrEmpty(Path);
 
-    [ObservableProperty] private int imageCount;
+    [ObservableProperty][property: JsonProperty] private int imageCount;
 
     [ObservableProperty][property: JsonProperty("Standard")][property: SQLite.Column("Standard")] private StandardsTypes selectedStandard;
     partial void OnSelectedStandardChanged(StandardsTypes value) { if (value != Sectors.ViewModels.StandardsTypes.GS1) SelectedGS1Table = Sectors.ViewModels.GS1TableNames.None; OnPropertyChanged(nameof(StandardDescription)); }
@@ -84,8 +84,6 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     {
         IsActive = true;
         RecieveAll();
-
-        Images.CollectionChanged += (s, e) => ImageCount = Images.Count;
     }
     public ImageRollEntry(string name, string path, Databases.ImageRollsDatabase imageRollsDatabase)
     {
@@ -96,8 +94,6 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
 
         Name = name;
         Path = path;
-
-        Images.CollectionChanged += (s, e) => ImageCount = Images.Count;
     }
 
     private void RecieveAll()
@@ -260,6 +256,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
 
             SaveImage(image);
             Images.Add(image);
+            ImageCount = Images.Count;
         }
         catch (Exception ex)
         {
@@ -275,6 +272,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
 
             SaveImage(image);
             Images.Add(image);
+            ImageCount = Images.Count;
         }
         catch (Exception ex)
         {
@@ -286,6 +284,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     {
         ImageRollsDatabase.DeleteImage(imageEntry.UID);
         Images.Remove(imageEntry);
+        ImageCount = Images.Count;
     }
 
     [RelayCommand]

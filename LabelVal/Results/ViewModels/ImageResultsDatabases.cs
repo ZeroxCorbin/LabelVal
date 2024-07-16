@@ -14,8 +14,6 @@ using System.Windows;
 namespace LabelVal.Results.ViewModels;
 public partial class ImageResultsDatabases : ObservableRecipient
 {
-    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-
     public ObservableCollection<Databases.ImageResultsDatabase> Databases { get; } = [];
 
     [ObservableProperty][NotifyPropertyChangedRecipients] private Databases.ImageResultsDatabase selectedDatabase;
@@ -27,8 +25,7 @@ public partial class ImageResultsDatabases : ObservableRecipient
 
     private ObservableCollection<string> OrphandStandards { get; } = [];
 
-    public static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
-
+  
     public ImageResultsDatabases()
     {
         LoadImageResultsDatabasesList();
@@ -42,16 +39,14 @@ public partial class ImageResultsDatabases : ObservableRecipient
             });
     }
 
-    public async Task OkDialog(string title, string message) => _ = await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.Affirmative);
-    public async Task<string> GetStringDialog(string title, string message) => await DialogCoordinator.ShowInputAsync(this, title, message);
 
     private void LoadImageResultsDatabasesList()
     {
-        Logger.Info("Loading grading standards databases from file system. {path}", App.ImageResultsDatabaseRoot);
+        LogInfo($"Loading grading standards databases from file system. {App.ImageResultsDatabaseRoot}");
 
         foreach (var file in Directory.EnumerateFiles(App.AssetsImageResultsDatabasesRoot))
         {
-            Logger.Debug("Found: {name}", Path.GetFileName(file));
+            LogDebug($"Found: {Path.GetFileName(file)}");
 
             if (file.EndsWith(App.DatabaseExtension))
             {
@@ -64,7 +59,7 @@ public partial class ImageResultsDatabases : ObservableRecipient
 
         foreach (var file in Directory.EnumerateFiles(App.ImageResultsDatabaseRoot))
         {
-            Logger.Debug("Found: {name}", Path.GetFileName(file));
+            LogDebug($"Found: {Path.GetFileName(file)}");
 
             if (file.EndsWith(App.DatabaseExtension))
             {
@@ -126,5 +121,53 @@ public partial class ImageResultsDatabases : ObservableRecipient
         //}
 
     }
+    [RelayCommand]
+    private async Task Delete(Databases.ImageResultsDatabase imageResultsDatabase)
+    { 
+        if (imageResultsDatabase == null)
+            return;
+        
+        if (imageResultsDatabase.IsPermLocked)
+            return;
+
+        if (imageResultsDatabase.IsLocked)
+        {
+            _ = OkDialog("Database is Locked", "The database is locked. Unlock the database before deleting.");
+            return;
+        }
+
+        if(await OkCancelDialog("Delete Database", $"Are you sure you want to delete the database '{imageResultsDatabase.FileName}'?") != MessageDialogResult.Affirmative)
+            return;
+
+        imageResultsDatabase.Close();
+
+        if (File.Exists(imageResultsDatabase.FilePath))
+        {
+            File.Delete(imageResultsDatabase.FilePath);
+            Databases.Remove(imageResultsDatabase);
+
+            if(SelectedDatabase == imageResultsDatabase)
+                SelectedDatabase = null;
+        }
+    }
+
+
+    #region Dialogs
+    public static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
+
+    public async Task OkDialog(string title, string message) => _ = await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.Affirmative);
+    public async Task<string> GetStringDialog(string title, string message) => await DialogCoordinator.ShowInputAsync(this, title, message);
+    public async Task<MessageDialogResult> OkCancelDialog(string title, string message) => await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative);
+    #endregion
+
+    #region Logging
+    private readonly Logging.Logger logger = new();
+    public void LogInfo(string message) => logger.LogInfo(this.GetType(), message);
+    public void LogDebug(string message) => logger.LogDebug(this.GetType(), message);
+    public void LogWarning(string message) => logger.LogInfo(this.GetType(), message);
+    public void LogError(string message) => logger.LogError(this.GetType(), message);
+    public void LogError(Exception ex) => logger.LogError(this.GetType(), ex);
+    public void LogError(string message, Exception ex) => logger.LogError(this.GetType(), message, ex);
+    #endregion
 
 }

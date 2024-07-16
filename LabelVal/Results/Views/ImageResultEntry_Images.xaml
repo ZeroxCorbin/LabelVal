@@ -20,10 +20,6 @@
         <Converters:ObjectIsNull x:Key="objectIsNull"/>
         <Converters:DoubleToStringConverter x:Key="doubleToString"/>
 
-        <Image x:Key="V275Icon" Source="/Assets/Images/V275WhiteIcon.ico" />
-        <Image x:Key="V275Png" Source="/Assets/Images/V275WhiteIcon.png" />
-
-
         <ContextMenu x:Key="cmImageModify">
             <MenuItem Command="{Binding RedoFiducial}" Header="Registration Mark"/>
         </ContextMenu>

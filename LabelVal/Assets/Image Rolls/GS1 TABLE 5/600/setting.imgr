@@ -5,5 +5,6 @@
   "GS1Table": "_5",
   "WriteSectorsBeforeProcess": true,
   "TargetDPI": 600,
-  "IsLocked": true
+  "IsLocked": true,
+  "ImageCount": 3
 }

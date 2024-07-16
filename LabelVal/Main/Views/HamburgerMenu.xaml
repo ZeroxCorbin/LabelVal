@@ -27,21 +27,6 @@
     <converters:LocalizeEnumValue x:Key="localizeEnumValue"/>
     <converters:MACAddressSplitConverter x:Key="macAddressSplitConverter"/>
 
-    <Style x:Key="imageBar" TargetType="Border">
-        <Setter Property="Width" Value="1"/>
-        <Setter Property="Height" Value="auto"/>
-        <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent}"/>
-        <Setter Property="HorizontalAlignment" Value="Left"/>
-    </Style>
-
-    <Style x:Key="seperatorBar" TargetType="Border">
-        <Setter Property="Width" Value="auto"/>
-        <Setter Property="Height" Value="1"/>
-        <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent}"/>
-        <Setter Property="VerticalAlignment" Value="Top"/>
-        <Setter Property="DockPanel.Dock" Value="Bottom"/>
-    </Style>
-
     <DataTemplate x:Key="printerContent">
         <Grid Visibility="Collapsed"/>
     </DataTemplate>
@@ -64,7 +49,7 @@
     <!--Printer Menu-->
     <DataTemplate x:Key="printerMenuItem">
         <DockPanel>
-            <Border Style="{StaticResource seperatorBar}"/>
+            <Border Style="{StaticResource hamMenuBottomBar}"/>
 
             <DockPanel Width="48" Height="48">
                 <iconPacks:PackIconMaterial Width="36" Height="36" Kind="Printer" 
@@ -81,7 +66,8 @@
     <!--Results Databases-->
     <DataTemplate x:Key="imageRDMenuItem">
         <DockPanel>
-            <Border Style="{StaticResource seperatorBar}"/>
+
+            <Border Style="{StaticResource hamMenuBottomBar}"/>
 
             <DockPanel Width="48" Height="48">
                 <StackPanel Width="36" Height="36" VerticalAlignment="Center" Margin="0,2">
@@ -93,9 +79,35 @@
 
             <Border Style="{StaticResource imageBar}"/>
 
-            <TextBlock VerticalAlignment="Center" Margin="10,0,0,0">
+            <StackPanel Margin="5,3,3,3">
+                <iconPacks:PackIconMaterial Kind="Database" Margin="3" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+
+                <iconPacks:PackIconMaterial Margin="3" HorizontalAlignment="Left" VerticalAlignment="Center">
+                    <iconPacks:PackIconMaterial.Style>
+                        <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
+                            <Setter Property="Kind" Value="LockOpenVariant"/>
+                            <Setter Property="ToolTip" Value="Database is unlocked."/>
+
+                            <Style.Triggers>
+
+                                <DataTrigger Binding="{Binding Content.SelectedDatabase.IsLocked}" Value="True">
+                                    <Setter Property="Kind" Value="Lock"/>
+                                    <Setter Property="ToolTip" Value="Database is locked."/>
+                                </DataTrigger>
+
+                                <DataTrigger Binding="{Binding Content.SelectedDatabase.IsPermLocked}" Value="True">
+                                    <Setter Property="Kind" Value="DatabaseLock"/>
+                                    <Setter Property="ToolTip" Value="Database is premanently locked."/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </iconPacks:PackIconMaterial.Style>
+                </iconPacks:PackIconMaterial>
+            </StackPanel>
+
+            <TextBlock Margin="3" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap">
                 <TextBlock.Style>
-                    <Style TargetType="TextBlock">
+                    <Style TargetType="TextBlock" BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}">
                         <Setter Property="Text" Value="{Binding Content.SelectedDatabase.FileName}"/>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding Content.SelectedDatabase, Converter={StaticResource objectIsNull}}" Value="True">
@@ -112,7 +124,7 @@
     <!--Run-->
     <DataTemplate x:Key="runMenuItem">
         <DockPanel>
-            <Border Style="{StaticResource seperatorBar}"/>
+            <Border Style="{StaticResource hamMenuBottomBar}"/>
 
             <DockPanel Width="48" Height="48">
                 <iconPacks:PackIconMaterial Width="36" Height="36" Kind="Run" 
@@ -167,14 +179,14 @@
                     </mah:ProgressRing.Style>
                 </mah:ProgressRing>
             </DockPanel>
-            
+
         </DockPanel>
     </DataTemplate>
 
     <!--V275-->
     <DataTemplate x:Key="v275MenuItem">
         <DockPanel>
-            <Border Style="{StaticResource seperatorBar}"/>
+            <Border Style="{StaticResource hamMenuBottomBar}"/>
 
             <DockPanel MinHeight="48" Width="48" Background="{DynamicResource ColorBlindBrush1}">
                 <Image Width="36" Height="36" Source="/Assets/Images/v275-white-outline.ico" VerticalAlignment="Center" HorizontalAlignment="Center"/>
@@ -325,7 +337,7 @@
     <DataTemplate x:Key="v5MenuItem">
         <DockPanel>
 
-            <Border Style="{StaticResource seperatorBar}"/>
+            <Border Style="{StaticResource hamMenuBottomBar}"/>
 
             <DockPanel Width="48" MinHeight="48" Background="{DynamicResource OrangeBrush1}">
                 <Image Width="36" Height="36" Source="/Assets/Images/v5-white-outline.ico" VerticalAlignment="Center" HorizontalAlignment="Center"/>

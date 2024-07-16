@@ -210,7 +210,6 @@
 		<None Remove="Assets\Image Rolls\SYMBOLOGIES C\600\setting.imgr" />
 		<None Remove="Assets\Image Rolls\SYMBOLOGIES D\600\setting.imgr" />
 		<None Remove="Assets\Image Rolls\VALIDATION 6x4\300\setting.imgr" />
-		<None Remove="Assets\ImageResultsDatabases\GS1 Golden.sqlite" />
 		<None Remove="Assets\Images\l95xx-white-outline.ico" />
 		<None Remove="Assets\Images\l95xx-white-outline.xcf" />
 		<None Remove="Assets\Images\v275-black-outline.ico" />
@@ -1406,7 +1405,6 @@
 	</ItemGroup>
 	<ItemGroup>
 		<Folder Include="Assets\Image Rolls\GS1 TABLE 1\300\" />
-		<Folder Include="Assets\ImageResultsDatabases\" />
 	</ItemGroup>
 	<ItemGroup>
 		<BootstrapperPackage Include=".NETFramework,Version=v4.8">

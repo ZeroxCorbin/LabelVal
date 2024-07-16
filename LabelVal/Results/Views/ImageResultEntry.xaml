@@ -20,7 +20,6 @@
 
     <DockPanel>
 
-
         <md:Card HorizontalAlignment="Left" DockPanel.Dock="Top" Height="48" Margin="3,3,0,0"
                  Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
                  Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
