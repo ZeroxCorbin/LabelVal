@@ -132,6 +132,12 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     }
     public async Task LoadImagesFromDatabase()
     {
+        if(ImageRollsDatabase == null)
+        {
+            LogError("ImageRollsDatabase is null.");
+            return;
+        }
+
         if (Images.Count > 0)
             return;
 

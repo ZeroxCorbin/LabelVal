@@ -210,6 +210,11 @@
 		<None Remove="Assets\Image Rolls\SYMBOLOGIES C\600\setting.imgr" />
 		<None Remove="Assets\Image Rolls\SYMBOLOGIES D\600\setting.imgr" />
 		<None Remove="Assets\Image Rolls\VALIDATION 6x4\300\setting.imgr" />
+		<None Remove="Assets\Images\all-codes.png" />
+		<None Remove="Assets\Images\barcode-15416.png" />
+		<None Remove="Assets\Images\barcode-1d1.png" />
+		<None Remove="Assets\Images\barcodes.xcf" />
+		<None Remove="Assets\Images\ISO.png" />
 		<None Remove="Assets\Images\l95xx-white-outline.ico" />
 		<None Remove="Assets\Images\l95xx-white-outline.xcf" />
 		<None Remove="Assets\Images\v275-black-outline.ico" />
@@ -682,6 +687,12 @@
 		</Content>
 		<Content Include="Assets\Image Rolls\VALIDATION 6x4\300\setting.imgr">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Images\all-codes.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Images\barcode-1d1.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Images\l95xx-white-outline.ico">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

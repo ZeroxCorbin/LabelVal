@@ -31,6 +31,13 @@
 
                 <DockPanel>
                     <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Left">
+                        <DockPanel.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="{DynamicResource MahApps.Colors.Accent3}" Offset="0"/>
+                                <GradientStop Color="{DynamicResource MahApps.Colors.HamburgerMenu}" Offset="1"/>
+                            </LinearGradientBrush>
+                        </DockPanel.Background>
+                        
                         <TextBlock DockPanel.Dock="Top" Margin="6,0,6,3" Text="L95xx Verifiers" Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"/>
                         <Border Style="{StaticResource imageBarHor}"/>
                     </DockPanel>

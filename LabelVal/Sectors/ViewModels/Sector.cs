@@ -21,6 +21,8 @@ public enum StandardsTypes
     ISO15416,
     [Description("GS1")]
     GS1,
+    [Description("OCR / OCV")]
+    OCR_OCR,
 }
 
 public enum GS1TableNames

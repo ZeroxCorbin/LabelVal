@@ -46,6 +46,12 @@
                         <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Left">
 
                             <DockPanel DockPanel.Dock="Top" Margin="6,0,6,3">
+                                <DockPanel.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="{DynamicResource MahApps.Colors.Accent3}" Offset="0"/>
+                                        <GradientStop Color="{DynamicResource MahApps.Colors.HamburgerMenu}" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </DockPanel.Background>
 
                                 <TextBlock Text="{Binding SelectedImageRoll.Name}">
                                     <TextBlock.Style>
@@ -126,7 +132,7 @@
 
         </DockPanel>
 
-        <DockPanel DockPanel.Dock="Top">
+        <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Left">
             <Border Style="{StaticResource groupLeft}" />
             <Border Style="{StaticResource groupBottom}"/>
 

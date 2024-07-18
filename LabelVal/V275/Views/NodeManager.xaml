@@ -14,36 +14,48 @@
 
     <DockPanel VerticalAlignment="Top" Margin="3,3,0,0">
 
-        <md:Card DockPanel.Dock="Top" Height="48" Margin="3,3,0,0"
+        <md:Card DockPanel.Dock="Top" Height="68" Margin="3,3,0,0" 
                  Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
                  Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
             <DockPanel>
 
-                <DockPanel Width="48" Height="48" Background="{DynamicResource ColorBlindBrush1}">
+                <DockPanel Width="48" Background="{DynamicResource ColorBlindBrush1}">
                     <Image Width="36" Height="36" Source="/Assets/Images/v275-white-outline.ico" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 </DockPanel>
 
-                <Border Style="{StaticResource imageBar}" />
+                <Border Style="{StaticResource imageBar}"/>
 
-                <Button Command="{Binding GetDevicesCommand}" Style="{StaticResource MahApps.Styles.Button.Hamburger}" Width="48"
+                <DockPanel>
+                    <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Left">
+                        <DockPanel.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="{DynamicResource MahApps.Colors.Accent3}" Offset="0"/>
+                                <GradientStop Color="{DynamicResource MahApps.Colors.HamburgerMenu}" Offset="1"/>
+                            </LinearGradientBrush>
+                        </DockPanel.Background>
+                        <TextBlock DockPanel.Dock="Top" Margin="6,0,0,3" Text="V275 Systems" Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"/>
+                        <Border Style="{StaticResource imageBarHor}"/>
+                    </DockPanel>
+
+                    <Button Command="{Binding GetDevicesCommand}" Style="{StaticResource MahApps.Styles.Button.Hamburger}" Width="48"
                         ToolTip="{loc:Loc Refresh}">
-                    <iconPacks:PackIconModern Kind="Refresh" 
+                        <iconPacks:PackIconModern Kind="Refresh" 
                                               Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" Width="24" Height="24"/>
-                </Button>
+                    </Button>
 
-                <Button Click="btnOpenInBrowser_Click" Style="{StaticResource MahApps.Styles.Button.Hamburger}" Width="48">
-                    <iconPacks:PackIconModern Kind="Browser"
+                    <Button Click="btnOpenInBrowser_Click" Style="{StaticResource MahApps.Styles.Button.Hamburger}" Width="48">
+                        <iconPacks:PackIconModern Kind="Browser"
                                               Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" Width="24" Height="24"/>
-                </Button>
+                    </Button>
 
-                <Button Click="btnShowSettings_Click" Style="{StaticResource MahApps.Styles.Button.Hamburger}" Width="48"
+                    <Button Click="btnShowSettings_Click" Style="{StaticResource MahApps.Styles.Button.Hamburger}" Width="48"
                         HorizontalAlignment="Right"
                         ToolTip="{loc:Loc Settings}">
-                    <iconPacks:PackIconMaterial Kind="Cog" 
+                        <iconPacks:PackIconMaterial Kind="Cog" 
                                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" Width="24" Height="24"/>
-                </Button>
-
+                    </Button>
+                </DockPanel>
             </DockPanel>
         </md:Card>
 

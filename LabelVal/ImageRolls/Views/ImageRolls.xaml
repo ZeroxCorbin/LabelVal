@@ -12,39 +12,298 @@
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:imageRollConverters="clr-namespace:LabelVal.ImageRolls.Converters"
              xmlns:converters="clr-namespace:LabelVal.Converters"
+             xmlns:custom="clr-namespace:LabelVal.Main.CustomControl"
+             xmlns:services="clr-namespace:LabelVal.ImageRolls.Services"
+             xmlns:controlz="urn:controlzex"
              d:DataContext="{d:DesignInstance Type=viewModels:ImageRolls}"
              mc:Ignorable="d">
 
     <UserControl.Resources>
         <converters:ObjectIsNull x:Key="objectIsNull"/>
+        <converters:ContentGeneratorConverter x:Key="ContentGeneratorConverter"/>
+
+        <services:SelectionService x:Key="sharedSelectionService"/>
 
         <imageRollConverters:GS1TableNamesConverter x:Key="GS1TableNamesConverter"/>
 
         <CollectionViewSource x:Key="FixedImageRolls" Source="{Binding FixedImageRolls}">
             <CollectionViewSource.SortDescriptions>
-                <componentmodel:SortDescription PropertyName="StandardDescription" Direction="Ascending"/>
+                <componentmodel:SortDescription PropertyName="SelectedStandard" Direction="Ascending"/>
                 <componentmodel:SortDescription PropertyName="GS1TableNumber" Direction="Ascending" />
                 <componentmodel:SortDescription PropertyName="Name" Direction="Ascending"/>
 
             </CollectionViewSource.SortDescriptions>
 
             <CollectionViewSource.GroupDescriptions>
-                <PropertyGroupDescription PropertyName="StandardDescription" />
+                <PropertyGroupDescription PropertyName="SelectedStandard" />
             </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
 
         <CollectionViewSource x:Key="UserImageRolls" Source="{Binding UserImageRolls}">
             <CollectionViewSource.SortDescriptions>
-                <componentmodel:SortDescription PropertyName="StandardDescription" Direction="Ascending"/>
+                <componentmodel:SortDescription PropertyName="SelectedStandard" Direction="Ascending"/>
                 <componentmodel:SortDescription PropertyName="GS1TableNumber" Direction="Ascending" />
                 <componentmodel:SortDescription PropertyName="Name" Direction="Ascending"/>
             </CollectionViewSource.SortDescriptions>
 
             <CollectionViewSource.GroupDescriptions>
-                <PropertyGroupDescription PropertyName="StandardDescription" />
-                <PropertyGroupDescription PropertyName="TargetDPI" />
+                <PropertyGroupDescription PropertyName="SelectedStandard" />
             </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
+
+        <DataTemplate x:Key="fixedIRListView">
+            
+            <ListView Loaded="ListView_Loaded" SelectionChanged="ListView_SelectionChanged" ItemsSource="{Binding Items}" Margin="3,3,0,0" Style="{StaticResource MahApps.Styles.ListBox}"
+                      ScrollViewer.VerticalScrollBarVisibility="Auto">
+
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}"/>
+                </ListView.ItemContainerStyle>
+
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <DockPanel Margin="5">
+                            <Border Style="{StaticResource groupLeft}" Margin="0,0,6,0" Background="{DynamicResource MahApps.Brushes.Accent2}"/>
+                            <Border Style="{StaticResource groupBottom}" Margin="-6,3,0,0" Background="{DynamicResource MahApps.Brushes.Accent2}"/>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <iconPacks:PackIconMaterial Kind="ImageMultiple" VerticalAlignment="Center" Margin="0,3,6,0"/>
+
+                                <TextBlock Grid.Row="1" Text="{Binding ImageCount}">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock" BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ImageCount}" Value="0">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+
+                                <md:Card Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3,0" 
+                                                         Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                                                         Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}">
+
+                                    <DockPanel>
+                                        <TextBlock Text="{Binding Name}" TextWrapping="Wrap" Margin="10,3">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock" BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Name}" Value="">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+
+                                        <TextBlock Text="{Binding SelectedGS1Table, Converter={StaticResource GS1TableNamesConverter}, StringFormat={}Table {0}}"
+                                                                    Margin="10,3">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock" BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding SelectedStandard}" Value="{x:Static sectors:StandardsTypes.GS1}">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </DockPanel>
+
+                                </md:Card>
+
+                                <DockPanel Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left">
+
+                                    <TextBlock Margin="6,0" Text="{Binding TargetDPI, StringFormat={}{0} dpi}" VerticalAlignment="Center">
+                                        <TextBlock.Background>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="{DynamicResource MahApps.Colors.Accent2}" Offset="0"/>
+                                                <GradientStop Color="{DynamicResource MahApps.Colors.Accent4}" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </TextBlock.Background>
+                                    </TextBlock>
+
+                                    <iconPacks:PackIconMaterial Margin="3" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                        <iconPacks:PackIconMaterial.Style>
+                                            <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
+                                                <Setter Property="Kind" Value="LockOpenVariant"/>
+                                                <Setter Property="ToolTip" Value="Image Roll is unlocked."/>
+
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsLocked}" Value="True">
+                                                        <Setter Property="Kind" Value="Lock"/>
+                                                        <Setter Property="ToolTip" Value="Image Roll is locked."/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </iconPacks:PackIconMaterial.Style>
+                                    </iconPacks:PackIconMaterial>
+
+
+                                    <iconPacks:PackIconMaterial Margin="3" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                        <iconPacks:PackIconMaterial.Style>
+                                            <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
+                                                <Setter Property="Kind" Value="Database"/>
+                                                <Setter Property="ToolTip" Value="Images are stored."/>
+
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsRooted}" Value="True">
+                                                        <Setter Property="Kind" Value="Folder"/>
+                                                        <Setter Property="ToolTip" Value="Images are rooted."/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </iconPacks:PackIconMaterial.Style>
+                                    </iconPacks:PackIconMaterial>
+
+                                </DockPanel>
+                            </Grid>
+                        </DockPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </DataTemplate>
+              <DataTemplate x:Key="userIRListView">
+            
+            <ListView Loaded="ListViewUser_Loaded" SelectionChanged="ListViewUser_SelectionChanged" ItemsSource="{Binding Items}" Margin="3,3,0,0" Style="{StaticResource MahApps.Styles.ListBox}"
+                      ScrollViewer.VerticalScrollBarVisibility="Auto">
+
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}"/>
+                </ListView.ItemContainerStyle>
+
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <DockPanel Margin="5">
+                            <Border Style="{StaticResource groupLeft}" Margin="0,0,6,0" Background="{DynamicResource MahApps.Brushes.Accent2}"/>
+                            <Border Style="{StaticResource groupBottom}" Margin="-6,3,0,0" Background="{DynamicResource MahApps.Brushes.Accent2}"/>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <iconPacks:PackIconMaterial Kind="ImageMultiple" VerticalAlignment="Center" Margin="0,3,6,0"/>
+
+                                <TextBlock Grid.Row="1" Text="{Binding ImageCount}">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock" BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ImageCount}" Value="0">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+
+                                <md:Card Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3,0" 
+                                                         Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                                                         Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}">
+
+                                    <DockPanel>
+                                        <TextBlock Text="{Binding Name}" TextWrapping="Wrap" Margin="10,3">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock" BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Name}" Value="">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+
+                                        <TextBlock Text="{Binding SelectedGS1Table, Converter={StaticResource GS1TableNamesConverter}, StringFormat={}Table {0}}"
+                                                                    Margin="10,3">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock" BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding SelectedStandard}" Value="{x:Static sectors:StandardsTypes.GS1}">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </DockPanel>
+
+                                </md:Card>
+
+                                <DockPanel Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left">
+
+                                    <TextBlock Margin="6,0" Text="{Binding TargetDPI, StringFormat={}{0} dpi}" VerticalAlignment="Center">
+                                        <TextBlock.Background>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="{DynamicResource MahApps.Colors.Accent2}" Offset="0"/>
+                                                <GradientStop Color="{DynamicResource MahApps.Colors.Accent4}" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </TextBlock.Background>
+                                    </TextBlock>
+
+                                    <iconPacks:PackIconMaterial Margin="3" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                        <iconPacks:PackIconMaterial.Style>
+                                            <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
+                                                <Setter Property="Kind" Value="LockOpenVariant"/>
+                                                <Setter Property="ToolTip" Value="Image Roll is unlocked."/>
+
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsLocked}" Value="True">
+                                                        <Setter Property="Kind" Value="Lock"/>
+                                                        <Setter Property="ToolTip" Value="Image Roll is locked."/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </iconPacks:PackIconMaterial.Style>
+                                    </iconPacks:PackIconMaterial>
+
+
+                                    <iconPacks:PackIconMaterial Margin="3" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                        <iconPacks:PackIconMaterial.Style>
+                                            <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
+                                                <Setter Property="Kind" Value="Database"/>
+                                                <Setter Property="ToolTip" Value="Images are stored."/>
+
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsRooted}" Value="True">
+                                                        <Setter Property="Kind" Value="Folder"/>
+                                                        <Setter Property="ToolTip" Value="Images are rooted."/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </iconPacks:PackIconMaterial.Style>
+                                    </iconPacks:PackIconMaterial>
+
+                                </DockPanel>
+                            </Grid>
+                        </DockPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </DataTemplate>
+        
     </UserControl.Resources>
 
     <DockPanel VerticalAlignment="Top" Margin="3,3,0,0">
@@ -73,7 +332,13 @@
 
                     <DockPanel>
                         <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Left">
-                            <TextBlock DockPanel.Dock="Top" Margin="6,0,0,3" Text="User Image Rolls" Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"/>
+                            <DockPanel.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="{DynamicResource MahApps.Colors.Accent3}" Offset="0"/>
+                                    <GradientStop Color="{DynamicResource MahApps.Colors.HamburgerMenu}" Offset="1"/>
+                                </LinearGradientBrush>
+                            </DockPanel.Background>
+                            <TextBlock DockPanel.Dock="Top" Margin="6,0,6,3" Text="User Image Rolls" Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"/>
                             <Border Style="{StaticResource imageBarHor}"/>
                         </DockPanel>
 
@@ -189,166 +454,80 @@
                         <local:ImageRollEntryEdit DataContext="{Binding UserImageRoll}" />
                     </md:DrawerHost.TopDrawerContent>
 
-                    <ListView Margin="3,3,0,0" Style="{StaticResource MahApps.Styles.ListBox}"  ItemsSource="{Binding Source={StaticResource ResourceKey=UserImageRolls}}"
-                        SelectedItem="{Binding SelectedUserImageRoll}" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                    <mah:MetroTabControl ItemsSource="{Binding Groups, Source={StaticResource ResourceKey=UserImageRolls}}"
+                           TabStripPlacement="Left" Style="{StaticResource MahApps.Styles.TabControl}">
+                        
+                        <mah:MetroTabControl.ItemContainerStyle>
+                            <Style TargetType="TabItem" BasedOn="{StaticResource MahApps.Styles.TabItem}">
+                                <Setter Property="Content" Value="{Binding Converter={StaticResource ContentGeneratorConverter}, ConverterParameter={StaticResource userIRListView}}"/>
 
-                        <ListView.GroupStyle>
+                                <Setter Property="Background" Value="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"/>
+                                <Setter Property="BorderThickness" Value="1,1,1,0"/>
+                                <Setter Property="Margin" Value="0"/>
 
-                            <GroupStyle>
-                                <GroupStyle.ContainerStyle>
-                                    <Style TargetType="{x:Type GroupItem}">
-                                        <Setter Property="Template">
-                                            <Setter.Value>
-                                                <ControlTemplate TargetType="{x:Type GroupItem}">
-                                                    <Expander Foreground="White" Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}">
-                                                        <Expander.Header>
-                                                            <TextBlock Text="{Binding Name}" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
-                                                        </Expander.Header>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=TabItem}}" Value="{x:Static sectors:StandardsTypes.GS1}">
+                                        <Setter Property="Background" Value="{DynamicResource MahApps.Colors.Accent3}"/>
+                                    </DataTrigger>
 
-                                                        <ItemsPresenter />
+                                    <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.GS1}">
+                                        <Setter Property="ToolTip" Value="GS1"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15415_15416}">
+                                        <Setter Property="ToolTip" Value="ISO/IEC 15416-15415"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15416}">
+                                        <Setter Property="ToolTip" Value="ISO/IEC 15416"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15415}">
+                                        <Setter Property="ToolTip" Value="ISO/IEC 15415"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.OCR_OCR}">
+                                        <Setter Property="ToolTip" Value="OCR/OCV"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.None}">
+                                        <Setter Property="ToolTip" Value="OCR/OCV"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
 
-                                                    </Expander>
-                                                </ControlTemplate>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Style>
-                                </GroupStyle.ContainerStyle>
-                            </GroupStyle>
+                            </Style>
+                        </mah:MetroTabControl.ItemContainerStyle>
 
-                            <GroupStyle>
-                                <GroupStyle.ContainerStyle>
-                                    <Style TargetType="{x:Type GroupItem}">
-                                        <Setter Property="Template">
-                                            <Setter.Value>
-                                                <ControlTemplate TargetType="{x:Type GroupItem}">
-                                                    <Expander Margin="2,0,0,0">
-                                                        <Expander.Header>
-                                                            <TextBlock Margin="4,0,0,0" Text="{Binding Name, StringFormat={}{0} dpi}" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
-                                                        </Expander.Header>
-
-                                                        <ItemsPresenter />
-
-                                                    </Expander>
-                                                </ControlTemplate>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Style>
-                                </GroupStyle.ContainerStyle>
-                            </GroupStyle>
-
-                        </ListView.GroupStyle>
-
-                        <ListView.ItemTemplate>
+                        <mah:MetroTabControl.ItemTemplate>
                             <DataTemplate>
-                                <DockPanel>
-                                    <Border Style="{StaticResource groupLeft}" Margin="0,0,6,0" Background="{DynamicResource MahApps.Brushes.Accent2}"/>
-                                    <Border Style="{StaticResource groupBottom}" Margin="-6,3,0,0" Background="{DynamicResource MahApps.Brushes.Accent2}"/>
-
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                        </Grid.RowDefinitions>
-
-                                        <iconPacks:PackIconMaterial Kind="ImageMultiple" VerticalAlignment="Center" Margin="0,3,6,0"/>
-
-                                        <TextBlock Grid.Row="1" Text="{Binding ImageCount}">
-                                            <TextBlock.Style>
-                                                <Style TargetType="TextBlock" BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}">
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding ImageCount}" Value="0">
-                                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </TextBlock.Style>
-                                        </TextBlock>
-
-                                        <md:Card Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3,0" 
-                                         Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
-                                         Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}">
-
-                                            <DockPanel>
-                                                <TextBlock Text="{Binding Name}" TextWrapping="Wrap" Margin="10,3">
-                                                    <TextBlock.Style>
-                                                        <Style TargetType="TextBlock" BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}">
-                                                            <Setter Property="Visibility" Value="Visible"/>
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding Name}" Value="">
-                                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </TextBlock.Style>
-                                                </TextBlock>
-
-                                                <TextBlock Text="{Binding SelectedGS1Table, Converter={StaticResource GS1TableNamesConverter}, StringFormat={}Table {0}}"
-                                                   Margin="10,3">
-                                                    <TextBlock.Style>
-                                                        <Style TargetType="TextBlock" BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}">
-                                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding SelectedStandard}" Value="{x:Static sectors:StandardsTypes.GS1}">
-                                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </TextBlock.Style>
-                                                </TextBlock>
-                                            </DockPanel>
-
-                                        </md:Card>
-
-                                        <DockPanel Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left">
-
-                                            <TextBlock Margin="6,0" Text="{Binding TargetDPI, StringFormat={}{0} dpi}" VerticalAlignment="Center"/>
-
-                                            <iconPacks:PackIconMaterial Margin="3" HorizontalAlignment="Left" VerticalAlignment="Center">
-                                                <iconPacks:PackIconMaterial.Style>
-                                                    <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
-                                                        <Setter Property="Kind" Value="LockOpenVariant"/>
-                                                        <Setter Property="ToolTip" Value="Image Roll is unlocked."/>
-
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding IsLocked}" Value="True">
-                                                                <Setter Property="Kind" Value="Lock"/>
-                                                                <Setter Property="ToolTip" Value="Image Roll is locked."/>
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </iconPacks:PackIconMaterial.Style>
-                                            </iconPacks:PackIconMaterial>
-
-
-                                            <iconPacks:PackIconMaterial Margin="3" HorizontalAlignment="Left" VerticalAlignment="Center">
-                                                <iconPacks:PackIconMaterial.Style>
-                                                    <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
-                                                        <Setter Property="Kind" Value="Database"/>
-                                                        <Setter Property="ToolTip" Value="Images are stored."/>
-
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding IsRooted}" Value="True">
-                                                                <Setter Property="Kind" Value="Folder"/>
-                                                                <Setter Property="ToolTip" Value="Images are rooted."/>
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </iconPacks:PackIconMaterial.Style>
-                                            </iconPacks:PackIconMaterial>
-
-                                        </DockPanel>
-                                    </Grid>
+                                <DockPanel Background="White">
+                                    <Image Height="36" Width="36" >
+                                        <Image.Style>
+                                            <Style TargetType="Image">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.GS1}">
+                                                        <Setter Property="Source" Value="/Assets/Images/GS1.png"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15415_15416}">
+                                                        <Setter Property="Source" Value="/Assets/Images/all-codes.png"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15416}">
+                                                        <Setter Property="Source" Value="/Assets/Images/barcode-2d.png"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15415}">
+                                                        <Setter Property="Source" Value="/Assets/Images/barcode-1d1.png"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.OCR_OCR}">
+                                                        <Setter Property="Source" Value="/Assets/Images/OCR.png"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.None}">
+                                                        <Setter Property="Source" Value="/Assets/Images/OCR.png"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Image.Style>
+                                    </Image>
                                 </DockPanel>
                             </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
+                        </mah:MetroTabControl.ItemTemplate>
+                    </mah:MetroTabControl>
 
-                </md:DrawerHost>
+               </md:DrawerHost>
             </DockPanel>
         </DockPanel>
 
@@ -376,13 +555,22 @@
 
                     <DockPanel>
                         <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Left">
-                            <TextBlock DockPanel.Dock="Top" Margin="6,0,0,3" Text="Fixed Image Rolls" Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"/>
+                            <DockPanel.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="{DynamicResource MahApps.Colors.Accent3}" Offset="0"/>
+                                    <GradientStop Color="{DynamicResource MahApps.Colors.HamburgerMenu}" Offset="1"/>
+                                </LinearGradientBrush>
+                            </DockPanel.Background>
+
+                            <TextBlock DockPanel.Dock="Top" Margin="6,0,6,3" Text="Fixed Image Rolls" Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"/>
                             <Border Style="{StaticResource imageBarHor}"/>
                         </DockPanel>
 
                         <DockPanel>
-                            <Button Visibility="Collapsed" Command="{Binding UIDToClipboardCommand}" Style="{StaticResource MahApps.Styles.Button.Hamburger}" ToolTip="New UID to Clipboard" Width="48"
-                            HorizontalAlignment="Left">
+                            <Button Visibility="Collapsed" ToolTip="New UID to Clipboard" 
+                                    Command="{Binding UIDToClipboardCommand}" 
+                                    Style="{StaticResource MahApps.Styles.Button.Hamburger}" 
+                                    Width="48" HorizontalAlignment="Left">
 
                                 <iconPacks:PackIconFontAwesome Kind="FingerprintSolid"
                                                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" Width="24" Height="24"/>
@@ -396,12 +584,161 @@
                 <Border Style="{StaticResource groupLeft}" />
                 <Border Style="{StaticResource groupBottom}"/>
 
-                <ListView Margin="3,3,0,0" Style="{StaticResource MahApps.Styles.ListBox}" ItemsSource="{Binding Source={StaticResource ResourceKey=FixedImageRolls}}"
+                <mah:MetroTabControl ItemsSource="{Binding Groups, Source={StaticResource ResourceKey=FixedImageRolls}}"
+                            TabStripPlacement="Left" Style="{StaticResource MahApps.Styles.TabControl}">
+                    <mah:MetroTabControl.ItemContainerStyle>
+                        <Style TargetType="TabItem" BasedOn="{StaticResource MahApps.Styles.TabItem}">
+                            <Setter Property="Content" Value="{Binding Converter={StaticResource ContentGeneratorConverter}, ConverterParameter={StaticResource fixedIRListView}}"/>
+
+                            <Setter Property="Background" Value="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"/>
+                            <Setter Property="BorderThickness" Value="1,1,1,0"/>
+                            <Setter Property="Margin" Value="0"/>
+
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=TabItem}}" Value="{x:Static sectors:StandardsTypes.GS1}">
+                                    <Setter Property="Background" Value="{DynamicResource MahApps.Colors.Accent3}"/>
+                                </DataTrigger>
+
+                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.GS1}">
+                                    <Setter Property="ToolTip" Value="GS1"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15415_15416}">
+                                    <Setter Property="ToolTip" Value="ISO/IEC 15416-15415"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15416}">
+                                    <Setter Property="ToolTip" Value="ISO/IEC 15416"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15415}">
+                                    <Setter Property="ToolTip" Value="ISO/IEC 15415"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.OCR_OCR}">
+                                    <Setter Property="ToolTip" Value="OCR/OCV"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.None}">
+                                    <Setter Property="ToolTip" Value="OCR/OCV"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+
+                        </Style>
+                    </mah:MetroTabControl.ItemContainerStyle>
+
+                    <mah:MetroTabControl.ItemTemplate>
+                        <DataTemplate>
+                            <DockPanel Background="White">
+                                <Image Height="36" Width="36" >
+                                    <Image.Style>
+                                        <Style TargetType="Image">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.GS1}">
+                                                    <Setter Property="Source" Value="/Assets/Images/GS1.png"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15415_15416}">
+                                                    <Setter Property="Source" Value="/Assets/Images/all-codes.png"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15416}">
+                                                    <Setter Property="Source" Value="/Assets/Images/barcode-2d.png"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15415}">
+                                                    <Setter Property="Source" Value="/Assets/Images/barcode-1d1.png"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.OCR_OCR}">
+                                                    <Setter Property="Source" Value="/Assets/Images/OCR.png"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.None}">
+                                                    <Setter Property="Source" Value="/Assets/Images/OCR.png"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+                            </DockPanel>
+                        </DataTemplate>
+                    </mah:MetroTabControl.ItemTemplate>
+                </mah:MetroTabControl>
+                
+                <!--<controlz:TabControlEx ContentTemplate="{StaticResource fixedIRListView}"  Margin="3" TabStripPlacement="Left" Style="{StaticResource MahApps.Styles.TabControl}"
+                                     ItemsSource="{Binding Groups, Source={StaticResource ResourceKey=FixedImageRolls}}">
+
+                    <controlz:TabControlEx.ItemContainerStyle>
+                        <Style TargetType="TabItem">
+                            <Setter Property="Background" Value="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"/>
+                            <Setter Property="BorderThickness" Value="1,1,1,0"/>
+                            <Setter Property="Margin" Value="0"/>
+                            
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=TabItem}}" Value="{x:Static sectors:StandardsTypes.GS1}">
+                                    <Setter Property="Background" Value="{DynamicResource MahApps.Colors.Accent3}"/>
+                                </DataTrigger>
+
+                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.GS1}">
+                                    <Setter Property="ToolTip" Value="GS1"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15415_15416}">
+                                    <Setter Property="ToolTip" Value="ISO/IEC 15416-15415"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15416}">
+                                    <Setter Property="ToolTip" Value="ISO/IEC 15416"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15415}">
+                                    <Setter Property="ToolTip" Value="ISO/IEC 15415"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.OCR_OCR}">
+                                    <Setter Property="ToolTip" Value="OCR/OCV"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.None}">
+                                    <Setter Property="ToolTip" Value="OCR/OCV"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </controlz:TabControlEx.ItemContainerStyle>
+
+                    <controlz:TabControlEx.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <DockPanel/>
+                        </ItemsPanelTemplate>
+                    </controlz:TabControlEx.ItemsPanel>
+
+                    <controlz:TabControlEx.ItemTemplate>
+                        <DataTemplate>
+                            <DockPanel Background="White">
+                                <Image Height="36" Width="36" >
+                                    <Image.Style>
+                                        <Style TargetType="Image">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.GS1}">
+                                                    <Setter Property="Source" Value="/Assets/Images/GS1.png"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15415_15416}">
+                                                    <Setter Property="Source" Value="/Assets/Images/all-codes.png"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15416}">
+                                                    <Setter Property="Source" Value="/Assets/Images/barcode-2d.png"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15415}">
+                                                    <Setter Property="Source" Value="/Assets/Images/barcode-1d1.png"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.OCR_OCR}">
+                                                    <Setter Property="Source" Value="/Assets/Images/OCR.png"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.None}">
+                                                    <Setter Property="Source" Value="/Assets/Images/OCR.png"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+                            </DockPanel>
+                        </DataTemplate>
+                    </controlz:TabControlEx.ItemTemplate>
+                </controlz:TabControlEx>-->
+                <!--<ListView Margin="3,3,0,0" Style="{StaticResource MahApps.Styles.ListBox}" ItemsSource="{Binding Source={StaticResource ResourceKey=FixedImageRolls}}"
                             SelectedItem="{Binding SelectedImageRoll}" ScrollViewer.VerticalScrollBarVisibility="Auto">
 
                     <ListView.GroupStyle>
 
-                        <!--Lens Name-->
+                        -->
+                <!--Lens Name-->
+                <!--
                         <GroupStyle>
                             <GroupStyle.ContainerStyle>
                                 <Style TargetType="{x:Type GroupItem}">
@@ -446,12 +783,16 @@
 
                     </ListView.GroupStyle>
 
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}"/>
+                    </ListView.ItemContainerStyle>
+
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <DockPanel>
+                            <DockPanel Margin="5">
                                 <Border Style="{StaticResource groupLeft}" Margin="0,0,6,0" Background="{DynamicResource MahApps.Brushes.Accent2}"/>
                                 <Border Style="{StaticResource groupBottom}" Margin="-6,3,0,0" Background="{DynamicResource MahApps.Brushes.Accent2}"/>
-                                
+
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
@@ -514,7 +855,14 @@
 
                                     <DockPanel Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left">
 
-                                        <TextBlock Margin="6,0" Text="{Binding TargetDPI, StringFormat={}{0} dpi}" VerticalAlignment="Center"/>
+                                        <TextBlock Margin="6,0" Text="{Binding TargetDPI, StringFormat={}{0} dpi}" VerticalAlignment="Center">
+                                            <TextBlock.Background>
+                                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                    <GradientStop Color="{DynamicResource MahApps.Colors.Accent2}" Offset="0"/>
+                                                    <GradientStop Color="{DynamicResource MahApps.Colors.Accent4}" Offset="1"/>
+                                                </LinearGradientBrush>
+                                            </TextBlock.Background>
+                                        </TextBlock>
 
                                         <iconPacks:PackIconMaterial Margin="3" HorizontalAlignment="Left" VerticalAlignment="Center">
                                             <iconPacks:PackIconMaterial.Style>
@@ -556,7 +904,7 @@
 
                         </DataTemplate>
                     </ListView.ItemTemplate>
-                </ListView>
+                </ListView>-->
             </DockPanel>
         </DockPanel>
     </DockPanel>

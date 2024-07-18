@@ -36,7 +36,15 @@ public class ImageRollsDatabase
     public void Close() => Connection?.Close();
 
     public int InsertOrReplaceImageRoll(ImageRollEntry rol) => Connection.InsertOrReplace(rol);
-    public bool ExistsImageRoll(string uid) => Connection.Table<ImageRollEntry>().Where(v => v.UID == uid).Count() > 0;
+    public bool ExistsImageRoll(string uid)
+    {
+        try
+        {
+            return Connection.Table<ImageRollEntry>().Where(v => v.UID == uid).Count() > 0;
+        }
+        catch { return false; }
+
+    }
     public ImageRollEntry SelectImageRoll(string uid) => Connection.Table<ImageRollEntry>().Where(v => v.UID == uid).FirstOrDefault();
     public List<ImageRollEntry> SelectAllImageRolls() => Connection.Query<ImageRollEntry>("select * from ImageRollEntry");
     public bool DeleteImageRoll(string uid) => Connection.Delete<ImageRollEntry>(uid) > 0;
