@@ -30,12 +30,10 @@
 
                     <DockPanel Width="36" DockPanel.Dock="Top" VerticalAlignment="Top" Margin="0,4,0,2">
                         <iconPacks:PackIconMaterial Height="18" Width="30" Kind="ImageText" HorizontalAlignment="Center"/>
-
                     </DockPanel>
-                    
+
                     <TextBlock Margin="11,0,0,0" Text="{Binding SourceImage.Order}" FontSize="{DynamicResource MahApps.Font.Size.Dialog.Message}"
                                    FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Left"/>
-
                 </DockPanel>
 
                 <Border Style="{StaticResource imageBar}" />
@@ -147,111 +145,7 @@
                     </Button.Style>
                 </Button>
 
-                <Separator>
-                    <Separator.Style>
-                        <Style TargetType="Separator">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Separator.Style>
-                </Separator>
-
-                <Button x:Name="btnMove" Click="btnMove_Click" Width="48"
-                            Content="{iconPacks:Material Kind=ArrowUpDownBold, Width=24, Height=24}"
-                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                            ToolTip="Move">
-                    <Button.Style>
-                        <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
-
-                <Popup x:Name="popMove" Width="{Binding ActualWidth, ElementName=btnMove}">
-
-                    <md:Card Style="{StaticResource MaterialDesignElevatedCard}" Padding="3" BorderThickness="2" BorderBrush="{DynamicResource MahApps.Brushes.Accent2}"
-                                 Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-                        <StackPanel>
-
-                            <Button Click="btnMoveImage_Click" Tag="top" VerticalAlignment="Top" BorderThickness="0" Margin="0,3"
-                                Content="{iconPacks:Material Kind=ArrowCollapseUp}"
-                                ToolTip="Move to Top">
-
-                                <Button.Style>
-                                    <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding SourceImage.Order}" Value="1">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Button.Style>
-                            </Button>
-
-                            <Button Click="btnMoveImage_Click" Tag="up" VerticalAlignment="Top" BorderThickness="0" Margin="0,3"
-                                Content="{iconPacks:Material Kind=ArrowUp}"
-                                ToolTip="Move Up">
-
-                                <Button.Style>
-                                    <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding SourceImage.Order}" Value="1">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Button.Style>
-                            </Button>
-
-                            <Separator/>
-
-                            <Button Click="btnMoveImage_Click" Tag="down" VerticalAlignment="Top" BorderThickness="0" Margin="0,3"
-                                    Content="{iconPacks:Material Kind=ArrowDown}"
-                                    ToolTip="Move Down">
-                                <Button.Style>
-                                    <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Button.Style>
-                            </Button>
-
-                            <Button  Click="btnMoveImage_Click" Tag="bottom" VerticalAlignment="Top" BorderThickness="0" Margin="0,3"
-                                Content="{iconPacks:Material Kind=ArrowCollapseDown}"
-                                ToolTip="Move to Bottom">
-
-                                <Button.Style>
-                                    <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Button.Style>
-                            </Button>
-
-                        </StackPanel>
-                    </md:Card>
-                </Popup>
-
-                <Button x:Name="btnAdd" Click="btnAdd_Click" Width="48"
+                <!--<Button x:Name="btnAdd" Click="btnAdd_Click" Width="48"
                             Content="{iconPacks:Material Kind=ImagePlus, Width=24, Height=24}"
                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                             ToolTip="Add Image">
@@ -347,23 +241,113 @@
 
                         </StackPanel>
                     </md:Card>
-                </Popup>
+                </Popup>-->
 
-                <Separator>
-                    <Separator.Style>
-                        <Style TargetType="Separator">
+            </DockPanel>
+        </md:Card>
+
+        <md:Card HorizontalAlignment="Left" DockPanel.Dock="Left" Width="48" Margin="3,3,0,0"
+                 Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+
+            <DockPanel>
+
+                <Button DockPanel.Dock="Top" x:Name="btnMove" Click="btnMove_Click" Height="48"
+                            Content="{iconPacks:Material Kind=ArrowUpDownBold, Width=24, Height=24}"
+                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                            ToolTip="Move">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
                                     <Setter Property="Visibility" Value="Collapsed"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
-                    </Separator.Style>
-                </Separator>
+                    </Button.Style>
+                </Button>
 
-                <Button Command="{Binding ImageResults.DeleteImageCommand}" CommandParameter="{Binding }" Width="48"
-                              ToolTip="Delete" Content="{iconPacks:Material Kind=Delete, Width=24, Height=24}"
-                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+                <Popup x:Name="popMove" Width="{Binding ActualWidth, ElementName=btnMove}">
+
+                    <md:Card Style="{StaticResource MaterialDesignElevatedCard}" Padding="3" BorderThickness="2" BorderBrush="{DynamicResource MahApps.Brushes.Accent2}"
+                                 Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                        <StackPanel>
+
+                            <Button Click="btnMoveImage_Click" Tag="top" VerticalAlignment="Top" BorderThickness="0" Margin="0,3"
+                                Content="{iconPacks:Material Kind=ArrowCollapseUp}"
+                                ToolTip="Move to Top">
+
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SourceImage.Order}" Value="1">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+
+                            <Button Click="btnMoveImage_Click" Tag="up" VerticalAlignment="Top" BorderThickness="0" Margin="0,3"
+                                Content="{iconPacks:Material Kind=ArrowUp}"
+                                ToolTip="Move Up">
+
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SourceImage.Order}" Value="1">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+
+                            <Separator/>
+
+                            <Button Click="btnMoveImage_Click" Tag="down" VerticalAlignment="Top" BorderThickness="0" Margin="0,3"
+                                    Content="{iconPacks:Material Kind=ArrowDown}"
+                                    ToolTip="Move Down">
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+
+                            <Button  Click="btnMoveImage_Click" Tag="bottom" VerticalAlignment="Top" BorderThickness="0" Margin="0,3"
+                                Content="{iconPacks:Material Kind=ArrowCollapseDown}"
+                                ToolTip="Move to Bottom">
+
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+
+                        </StackPanel>
+                    </md:Card>
+                </Popup>
+
+                <Button DockPanel.Dock="Top" Command="{Binding ImageResults.DeleteImageCommand}" CommandParameter="{Binding }" Height="48"
+                        ToolTip="Delete" Content="{iconPacks:Material Kind=Delete, Width=24, Height=24}"
+                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                        VerticalAlignment="Bottom">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
                             <Style.Triggers>
@@ -376,6 +360,7 @@
                 </Button>
 
             </DockPanel>
+
         </md:Card>
 
         <DockPanel DockPanel.Dock="Top">
@@ -397,5 +382,6 @@
                 </DockPanel>
             </ScrollViewer>
         </DockPanel>
+
     </DockPanel>
 </UserControl>
