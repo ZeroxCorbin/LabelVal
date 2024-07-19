@@ -12,12 +12,10 @@ using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using static System.ComponentModel.Design.ObjectSelectorEditor;
 
 namespace LabelVal.ImageRolls.ViewModels;
 
 [JsonObject(MemberSerialization.OptIn)]
-
 public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyChangedMessage<PrinterSettings>>
 {
     public Array StandardsTypes
@@ -132,7 +130,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     }
     public async Task LoadImagesFromDatabase()
     {
-        if(ImageRollsDatabase == null)
+        if (ImageRollsDatabase == null)
         {
             LogError("ImageRollsDatabase is null.");
             return;

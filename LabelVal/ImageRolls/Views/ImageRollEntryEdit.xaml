@@ -30,11 +30,11 @@
                 <ToggleButton IsChecked="{Binding WriteSectorsBeforeProcess}" Margin="7" Height="24" Width="24" VerticalAlignment="Top">
                     
                     <ToggleButton.Content>
-                        <iconPacks:PackIconMaterial Kind="FormatListBulletedSquare"/>
+                        <iconPacks:PackIconMaterial Kind="FormatListNumbered"/>
                     </ToggleButton.Content>
                     
                     <md:ToggleButtonAssist.OnContent>
-                        <iconPacks:PackIconMaterial Kind="FormatListBulletedSquare"/>
+                        <iconPacks:PackIconMaterial Kind="PlaylistEdit"/>
                     </md:ToggleButtonAssist.OnContent>
                     
                     <ToggleButton.Style>

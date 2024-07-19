@@ -79,45 +79,61 @@
 
             <Border Style="{StaticResource imageBar}"/>
 
-            <StackPanel Margin="5,3,3,3">
-                <iconPacks:PackIconMaterial Kind="Database" Margin="3" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-                <iconPacks:PackIconMaterial Margin="3" HorizontalAlignment="Left" VerticalAlignment="Center">
-                    <iconPacks:PackIconMaterial.Style>
-                        <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
-                            <Setter Property="Kind" Value="LockOpenVariant"/>
-                            <Setter Property="ToolTip" Value="Database is unlocked."/>
+                <iconPacks:PackIconMaterial Kind="Database" VerticalAlignment="Center" Margin="6,3,6,0"/>
 
-                            <Style.Triggers>
+                <md:Card Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3,3"  
+                                         Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                                         Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}">
 
-                                <DataTrigger Binding="{Binding Content.SelectedDatabase.IsLocked}" Value="True">
-                                    <Setter Property="Kind" Value="Lock"/>
-                                    <Setter Property="ToolTip" Value="Database is locked."/>
-                                </DataTrigger>
+                    <TextBlock Margin="3" HorizontalAlignment="Left" VerticalAlignment="Top" TextWrapping="Wrap">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock" BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}">
+                                <Setter Property="Text" Value="{Binding Content.SelectedDatabase.FileName}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Content.SelectedDatabase, Converter={StaticResource objectIsNull}}" Value="True">
+                                        <Setter Property="Text" Value="NO DATABASE SELECTED"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </md:Card>
 
-                                <DataTrigger Binding="{Binding Content.SelectedDatabase.IsPermLocked}" Value="True">
-                                    <Setter Property="Kind" Value="DatabaseLock"/>
-                                    <Setter Property="ToolTip" Value="Database is premanently locked."/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </iconPacks:PackIconMaterial.Style>
-                </iconPacks:PackIconMaterial>
-            </StackPanel>
+                <DockPanel Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" Margin="0,0,0,3">
+                    <iconPacks:PackIconMaterial Margin="3" HorizontalAlignment="Left" VerticalAlignment="Center">
+                        <iconPacks:PackIconMaterial.Style>
+                            <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
+                                <Setter Property="Kind" Value="LockOpenVariant"/>
+                                <Setter Property="ToolTip" Value="Database is unlocked."/>
 
-            <TextBlock Margin="3" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap">
-                <TextBlock.Style>
-                    <Style TargetType="TextBlock" BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}">
-                        <Setter Property="Text" Value="{Binding Content.SelectedDatabase.FileName}"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Content.SelectedDatabase, Converter={StaticResource objectIsNull}}" Value="True">
-                                <Setter Property="Text" Value="NO DATABASE SELECTED"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </TextBlock.Style>
-            </TextBlock>
+                                <Style.Triggers>
 
+                                    <DataTrigger Binding="{Binding Content.SelectedDatabase.IsLocked}" Value="True">
+                                        <Setter Property="Kind" Value="Lock"/>
+                                        <Setter Property="ToolTip" Value="Database is locked."/>
+                                    </DataTrigger>
+
+                                    <DataTrigger Binding="{Binding Content.SelectedDatabase.IsPermLocked}" Value="True">
+                                        <Setter Property="Kind" Value="DatabaseLock"/>
+                                        <Setter Property="ToolTip" Value="Database is premanently locked."/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </iconPacks:PackIconMaterial.Style>
+                    </iconPacks:PackIconMaterial>
+                </DockPanel>
+
+            </Grid>
         </DockPanel>
     </DataTemplate>
 
