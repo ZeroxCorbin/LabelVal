@@ -25,7 +25,9 @@ public partial class ImageResultEntry
     [ObservableProperty] private Sectors.ViewModels.Sector v5FocusedStoredSector = null;
     [ObservableProperty] private Sectors.ViewModels.Sector v5FocusedCurrentSector = null;
 
-    [ObservableProperty] private ImageEntry v5Image = null;
+    [ObservableProperty] private ImageEntry v5Image;
+    partial void OnV5ImageChanged(ImageEntry value) { if (value != null) value.InitPrinterVariables(SelectedPrinter); }
+
     public ImageEntry V5CurrentImage => V5Image;
     public ImageEntry V5StoredImage => V5ResultRow?.Stored;
 

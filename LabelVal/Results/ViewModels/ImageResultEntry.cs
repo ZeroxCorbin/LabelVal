@@ -46,22 +46,27 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
     partial void OnSelectedPrinterChanged(PrinterSettings value)
     {
         PrinterAreaOverlay = ShowPrinterAreaOverSource ? CreatePrinterAreaOverlay(true) : null;
-        OnShowDetailsChanged(ShowDetails);
+        SourceImage?.InitPrinterVariables(SelectedPrinter);
+
+        V275StoredImage?.InitPrinterVariables(SelectedPrinter);
+        V275CurrentImage?.InitPrinterVariables(SelectedPrinter);
+        
+        V5Image?.InitPrinterVariables(SelectedPrinter);
     }
     partial void OnSelectedDatabaseChanged(Databases.ImageResultsDatabase value) => GetStored();
 
     [ObservableProperty] private Sectors.ViewModels.Sector selectedSector;
 
     [ObservableProperty] private bool showDetails;
-    partial void OnShowDetailsChanged(bool value)
-    {
-        if (value)
-        {
-            SourceImage?.InitPrinterVariables(SelectedPrinter);
-            V275Image?.InitPrinterVariables(SelectedPrinter);
-            V5Image?.InitPrinterVariables(SelectedPrinter);
-        }
-    }
+    //partial void OnShowDetailsChanged(bool value)
+    //{
+    //    if (value)
+    //    {
+    //        SourceImage?.InitPrinterVariables(SelectedPrinter);
+    //        V275Image?.InitPrinterVariables(SelectedPrinter);
+    //        V5Image?.InitPrinterVariables(SelectedPrinter);
+    //    }
+    //}
 
     public ImageResultEntry(ImageEntry sourceImage, ImageResults imageResults)
     {
@@ -70,6 +75,8 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
 
         IsActive = true;
         RecieveAll();
+
+        SourceImage.InitPrinterVariables(SelectedPrinter);
     }
 
     private void RecieveAll()
@@ -105,7 +112,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             ImageRollUID = RollUID,
 
             SourceImage = JsonConvert.SerializeObject(SourceImage),
-            StoredImage = JsonConvert.SerializeObject(V275Image),
+            StoredImage = JsonConvert.SerializeObject(V275CurrentImage),
 
             Template = JsonConvert.SerializeObject(V275CurrentTemplate),
             Report = JsonConvert.SerializeObject(V275CurrentReport),
@@ -150,9 +157,9 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         try
         {
             byte[] bmp = type == "v275Stored"
-                    ? V275ResultRow.Stored.GetBitmapBytes()
+                    ? V275StoredImage.GetBitmapBytes()
                     : type == "v275Current"
-                    ? V275Image.GetBitmapBytes()
+                    ? V275CurrentImage.GetBitmapBytes()
                     : type == "v5Stored"
                     ? V5ResultRow.Stored.GetBitmapBytes()
                     : type == "v5Current" ? V5Image.GetBitmapBytes() : SourceImage.GetBitmapBytes();
@@ -179,13 +186,15 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
                 ImageRollUID = RollUID,
 
                 SourceImage = JsonConvert.SerializeObject(SourceImage),
-                StoredImage = JsonConvert.SerializeObject(V275Image),
 
+                StoredImage = JsonConvert.SerializeObject(V275CurrentImage),
                 Template = JsonConvert.SerializeObject(V275CurrentTemplate),
                 Report = JsonConvert.SerializeObject(V275CurrentReport),
             });
 
-            ClearRead(device, true);
+            ClearRead(device);
+
+            V275GetStored();
         }
         else if (device == "V5")
         {
@@ -204,7 +213,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
                 Report = JsonConvert.SerializeObject(V5CurrentReport),
             });
 
-            ClearRead(device, true);
+            ClearRead(device);
         }
         else if (device == "L95xx")
         {
@@ -273,8 +282,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         }
     }
     [RelayCommand]
-    private void ClearRead(string device) => ClearRead(device, false);
-    private void ClearRead(string device, bool getStored)
+    private void ClearRead(string device)
     {
         if (device == "V275")
         {
@@ -283,26 +291,8 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
 
             V275CurrentSectors.Clear();
             V275DiffSectors.Clear();
-
-            V275ResultRow = SelectedDatabase.Select_V275Result(RollUID, ImageUID);
-
-            if (V275ResultRow == null)
-            {
-                V275Image = null;
-                V275ImageOverlay = null;
-                IsV275ImageStored = false;
-            }
-            else
-            {
-                if (getStored)
-                    V275GetStored();
-                else
-                {
-                    V275Image = V275ResultRow.Stored;
-                    V275ImageOverlay = V275CreateSectorsImageOverlay(V275ResultRow._Job, false, V275ResultRow._Report, V275Image, V275StoredSectors);
-                    IsV275ImageStored = true;
-                }
-            }
+            V275CurrentImage = null;
+            V275CurrentImageOverlay = null;
         }
         else if (device == "V5")
         {
@@ -311,38 +301,16 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             V5CurrentSectors.Clear();
             V5DiffSectors.Clear();
 
-            V5ResultRow = SelectedDatabase.Select_V5Result(RollUID, ImageUID);
+            //V5CurrentImage = null;
+            //V5CurrentImageOverlay = null;
 
-            if (V5ResultRow == null)
-            {
-                V5Image = null;
-                V5ImageOverlay = null;
-                IsV5ImageStored = false;
-            }
-            else
-            {
-                if (getStored)
-                    V5GetStored();
-                else
-                {
-                    V5Image = V5ResultRow.Stored;
-                    V5ImageOverlay = V5CreateSectorsImageOverlay(V5ResultRow._Report);
-                    IsV5ImageStored = true;
-                }
-            }
         }
         else if (device == "L95xx")
         {
             L95xxCurrentReport = null;
 
             L95xxCurrentSectors.Remove(L95xxCurrentSectorSelected);
-            //L95xxDiffSectors.Clear();
 
-            L95xxResultRow = SelectedDatabase.Select_L95xxResult(RollUID, ImageUID);
-
-            if (L95xxResultRow != null)
-                if (getStored)
-                    L95xxGetStored();
         }
     }
 

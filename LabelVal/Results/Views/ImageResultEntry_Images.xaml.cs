@@ -26,10 +26,16 @@ public partial class ImageResultEntry_Images : UserControl
             e.Handled = true;
     }
 
-    private void V275Image_MouseDown(object sender, MouseButtonEventArgs e)
+    private void V275StoredImage_MouseDown(object sender, MouseButtonEventArgs e)
     {
         if (e.LeftButton == MouseButtonState.Pressed)
-            _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).V275Image, ((ViewModels.ImageResultEntry)DataContext).V275ImageOverlay);
+            _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).V275StoredImage, ((ViewModels.ImageResultEntry)DataContext).V275StoredImageOverlay);
+    }
+
+    private void V275CurrentImage_MouseDown(object sender, MouseButtonEventArgs e)
+    {
+        if (e.LeftButton == MouseButtonState.Pressed)
+            _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).V275CurrentImage, ((ViewModels.ImageResultEntry)DataContext).V275CurrentImageOverlay);
     }
 
     private void V5Image_MouseDown(object sender, MouseButtonEventArgs e)
@@ -58,5 +64,5 @@ public partial class ImageResultEntry_Images : UserControl
 
     private void btnShowPrinterAreaOverSourceToggle(object sender, RoutedEventArgs e) => ((ViewModels.ImageResultEntry)DataContext).ShowPrinterAreaOverSource = !((ViewModels.ImageResultEntry)DataContext).ShowPrinterAreaOverSource;
 
-    private void btnShowDetailsToggle(object sender, RoutedEventArgs e) => ((ViewModels.ImageResultEntry)DataContext).ShowDetails = !((ViewModels.ImageResultEntry)DataContext).ShowDetails;
+ 
 }

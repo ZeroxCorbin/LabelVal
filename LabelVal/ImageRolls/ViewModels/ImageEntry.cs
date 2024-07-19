@@ -94,8 +94,6 @@ public partial class ImageEntry : ObservableRecipient
         ImageHeight = Math.Round(Image.PixelHeight / Image.DpiY, 2);
         ImageTotalPixels = Image.PixelWidth * Image.PixelHeight;
 
-        V52ImageTotalPixelDeviation = 5488640 - ImageTotalPixels;
-
         IsActive = true;
     }
     public ImageEntry(string rollUID, byte[] placeholderImage)
@@ -125,8 +123,6 @@ public partial class ImageEntry : ObservableRecipient
         ImageHeight = Math.Round(Image.PixelHeight / Image.DpiY, 2);
         ImageTotalPixels = Image.PixelWidth * Image.PixelHeight;
 
-        V52ImageTotalPixelDeviation = 5488640 - ImageTotalPixels;
-
         IsActive = true;
     }
 
@@ -147,6 +143,8 @@ public partial class ImageEntry : ObservableRecipient
         DeviationHeightPercent = Math.Round(DeviationHeight / Image.PixelHeight * 100, 2);
 
         Printer2ImageTotalPixelDeviation = PrinterTotalPixels - ImageTotalPixels;
+
+        V52ImageTotalPixelDeviation = 5488640 - ImageTotalPixels;
     }
 
     public byte[] GetBitmapBytes(int dpi = 0)

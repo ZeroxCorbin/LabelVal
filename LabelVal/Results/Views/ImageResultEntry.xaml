@@ -344,6 +344,25 @@
                     </md:Card>
                 </Popup>
 
+                <Button DockPanel.Dock="Top" Height="48"
+                        Click="btnShowDetailsToggle" Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+
+                    <iconPacks:PackIconMaterial Kind="InformationVariant"/>
+
+                    <Button.Style>
+                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
+                            <Setter Property="ToolTip" Value="Show printer area overlay."/>
+
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ShowPrinterAreaOverSource}" Value="True">
+                                    <Setter Property="ToolTip" Value="Hide printer area overlay."/>
+                                </DataTrigger>
+
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                
                 <Button DockPanel.Dock="Top" Command="{Binding ImageResults.DeleteImageCommand}" CommandParameter="{Binding }" Height="48"
                         ToolTip="Delete" Content="{iconPacks:Material Kind=Delete, Width=24, Height=24}"
                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"

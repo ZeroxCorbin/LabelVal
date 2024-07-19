@@ -16,11 +16,30 @@ using V275_REST_lib.Models;
 namespace LabelVal.Results.ViewModels;
 public partial class ImageResultEntry
 {
-
-    [ObservableProperty] private Databases.V275Result v275ResultRow;
-
     public delegate void V275ProcessImageDelegate(ImageResultEntry imageResults, string type);
     public event V275ProcessImageDelegate V275ProcessImage;
+
+
+    [ObservableProperty] private Databases.V275Result v275ResultRow;
+    partial void OnV275ResultRowChanged(Databases.V275Result value)
+    {
+        if (value != null)
+            V275ResultRow?.Stored.InitPrinterVariables(SelectedPrinter);
+
+        OnPropertyChanged(nameof(V275StoredImage));
+    }
+
+    public ImageEntry V275StoredImage => V275ResultRow?.Stored;
+    [ObservableProperty] private DrawingImage v275StoredImageOverlay;
+
+    [ObservableProperty] private ImageEntry v275CurrentImage;
+    [ObservableProperty] private DrawingImage v275CurrentImageOverlay;
+    partial void OnV275CurrentImageChanged(ImageEntry value) 
+    { 
+        if (value != null)
+            value.InitPrinterVariables(SelectedPrinter);
+    }
+
 
     public Job V275CurrentTemplate { get; set; }
     public Report V275CurrentReport { get; private set; }
@@ -30,18 +49,6 @@ public partial class ImageResultEntry
     [ObservableProperty] private ObservableCollection<Sectors.ViewModels.SectorDifferences> v275DiffSectors = [];
     [ObservableProperty] private Sectors.ViewModels.Sector v275FocusedStoredSector = null;
     [ObservableProperty] private Sectors.ViewModels.Sector v275FocusedCurrentSector = null;
-
-    [ObservableProperty] private ImageEntry v275Image;
-    public ImageEntry V275CurrentImage => V275Image;
-    public ImageEntry V275StoredImage => V275ResultRow?.Stored;
-
-
-    [ObservableProperty] private DrawingImage v275ImageOverlay;
-    public DrawingImage V275CurrentImageOverlay => IsV275ImageStored ? null : V275ImageOverlay;
-    public DrawingImage V275StoredImageOverlay => IsV275ImageStored ? V275ImageOverlay : null;
-
-
-    [ObservableProperty] private bool isV275ImageStored;
 
     [ObservableProperty] private bool isV275Working = false;
     partial void OnIsV275WorkingChanged(bool value) => OnPropertyChanged(nameof(IsNotV275Working));
@@ -71,19 +78,8 @@ public partial class ImageResultEntry
         if (V275ResultRow == null)
         {
             V275StoredSectors.Clear();
-
-            if (V275CurrentSectors.Count == 0)
-            {
-                V275Image = null;
-                V275ImageOverlay = null;
-                IsV275ImageStored = false;
-            }
-
             return;
         }
-
-        V275Image = JsonConvert.DeserializeObject<ImageEntry>(V275ResultRow.StoredImage);
-        IsV275ImageStored = true;
 
         V275StoredSectors.Clear();
 
@@ -117,7 +113,7 @@ public partial class ImageResultEntry
             foreach (Sectors.ViewModels.Sector sec in tempSectors)
                 V275StoredSectors.Add(sec);
 
-            V275ImageOverlay = V275CreateSectorsImageOverlay(V275ResultRow._Job, false, V275ResultRow._Report, V275Image, V275StoredSectors);
+            V275StoredImageOverlay = V275CreateSectorsImageOverlay(V275ResultRow._Job, false, V275ResultRow._Report, V275StoredImage, V275StoredSectors);
         }
     }
 
@@ -131,12 +127,9 @@ public partial class ImageResultEntry
             V275CurrentTemplate = null;
             V275CurrentReport = null;
 
-            if (!IsV275ImageStored)
-            {
-                V275Image = null;
-                V275ImageOverlay = null;
-            }
-
+            V275CurrentImage = null;
+            V275CurrentImageOverlay = null;
+            
             return false;
         }
 
@@ -147,13 +140,11 @@ public partial class ImageResultEntry
         {
             int dpi = 600;// SelectedPrinter.PrinterName.Contains("ZT620") ? 300 : 600;
             ImageUtilities.SetBitmapDPI(report.image, dpi);
-            V275Image = new ImageEntry(RollUID, report.image, dpi);//ImageUtilities.ConvertToPng(report.image, 600);
-            IsV275ImageStored = false;
+            V275CurrentImage = new ImageEntry(RollUID, report.image, dpi);//ImageUtilities.ConvertToPng(report.image, 600);
         }
         else
         {
-            V275Image = SourceImage.Clone();
-            IsV275ImageStored = false;
+            V275CurrentImage = SourceImage.Clone();
         }
 
         V275CurrentSectors.Clear();
@@ -185,7 +176,7 @@ public partial class ImageResultEntry
             foreach (Sectors.ViewModels.Sector sec in tempSectors)
                 V275CurrentSectors.Add(sec);
 
-            V275ImageOverlay = V275CreateSectorsImageOverlay(V275CurrentTemplate, true, V275CurrentReport, V275Image, V275CurrentSectors);
+            V275CurrentImageOverlay = V275CreateSectorsImageOverlay(V275CurrentTemplate, true, V275CurrentReport, V275CurrentImage, V275CurrentSectors);
         }
 
         V275GetSectorDiff();

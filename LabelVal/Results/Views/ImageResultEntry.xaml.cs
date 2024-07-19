@@ -90,4 +90,6 @@ public partial class ImageResultEntry : UserControl
                     break;
             }
     }
+
+    private void btnShowDetailsToggle(object sender, RoutedEventArgs e) => ((ViewModels.ImageResultEntry)DataContext).ShowDetails = !((ViewModels.ImageResultEntry)DataContext).ShowDetails;
 }
