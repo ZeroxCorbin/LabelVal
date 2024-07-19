@@ -158,7 +158,7 @@
                             </Style.Triggers>
                         </Style>
                     </Button.Style>
-                </Button>
+                </Button>-->
 
                 <Popup x:Name="popAdd" Width="{Binding ActualWidth, ElementName=btnAdd}">
 
@@ -241,7 +241,7 @@
 
                         </StackPanel>
                     </md:Card>
-                </Popup>-->
+                </Popup>
 
             </DockPanel>
         </md:Card>
