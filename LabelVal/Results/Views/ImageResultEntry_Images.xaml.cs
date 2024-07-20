@@ -26,24 +26,6 @@ public partial class ImageResultEntry_Images : UserControl
             e.Handled = true;
     }
 
-    private void V275StoredImage_MouseDown(object sender, MouseButtonEventArgs e)
-    {
-        if (e.LeftButton == MouseButtonState.Pressed)
-            _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).V275StoredImage, ((ViewModels.ImageResultEntry)DataContext).V275StoredImageOverlay);
-    }
-
-    private void V275CurrentImage_MouseDown(object sender, MouseButtonEventArgs e)
-    {
-        if (e.LeftButton == MouseButtonState.Pressed)
-            _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).V275CurrentImage, ((ViewModels.ImageResultEntry)DataContext).V275CurrentImageOverlay);
-    }
-
-    private void V5Image_MouseDown(object sender, MouseButtonEventArgs e)
-    {
-        if (e.LeftButton == MouseButtonState.Pressed)
-            _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).V5Image, ((ViewModels.ImageResultEntry)DataContext).V5ImageOverlay);
-    }
-
     private bool ShowImage(ImageEntry image, DrawingImage overlay)
     {
         ImageViewerDialogViewModel dc = new();

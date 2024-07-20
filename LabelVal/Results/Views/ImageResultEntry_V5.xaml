@@ -8,7 +8,7 @@
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:sectors="clr-namespace:LabelVal.Sectors.Views"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-             xmlns:Converters="clr-namespace:LabelVal.Converters"
+             xmlns:converters="clr-namespace:LabelVal.Converters"
                 xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              
              xmlns:ViewModels="clr-namespace:LabelVal.Results.ViewModels"
@@ -16,40 +16,166 @@
              mc:Ignorable="d">
 
     <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="booltovis"/>
-        <Converters:BytesToImageConverter x:Key="bytesToImage"/>
-        <Converters:ShortenUIDConverter x:Key="shortenUID"/>
-        <Converters:StringToUpperSpacedConverter x:Key="stringToUpper"/>
-        <Converters:FloatStringTrimConverter x:Key="floatTrim"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="ImageDetailsTemplate.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
 
-        <Converters:ObjectIsNull x:Key="objectIsNull"/>
-        <Converters:EqualZeroOrNull x:Key="equalZeroOrNull"/>
-
-        <Image x:Key="V275Icon" Source="/Assets/Images/V275WhiteIcon.ico" />
-        <Image x:Key="V275Png" Source="/Assets/Images/V275WhiteIcon.png" />
-
-
-        <!--<CollectionViewSource x:Key="cvsV5StoredSectors" Source="{Binding V5StoredSectors}">
-            <CollectionViewSource.SortDescriptions>
-                <componentmodel:SortDescription PropertyName="Template.Center" Direction="Ascending"/>
-                --><!--<componentmodel:SortDescription PropertyName="Template.Top" Direction="Ascending"/>--><!--
-            </CollectionViewSource.SortDescriptions>
-
-        </CollectionViewSource>
-
-        <CollectionViewSource x:Key="cvsV5CurrentSectors" Source="{Binding V5CurrentSectors}">
-            <CollectionViewSource.SortDescriptions>
-                <componentmodel:SortDescription PropertyName="Template.Center" Direction="Ascending"/>
-                --><!--<componentmodel:SortDescription PropertyName="Template.Top" Direction="Ascending"/>--><!--
-            </CollectionViewSource.SortDescriptions>
-
-        </CollectionViewSource>-->
-
+            <converters:ShortenUIDConverter x:Key="shortenUID"/>
+            <converters:ObjectIsNull x:Key="objectIsNull"/>
+            <converters:DoubleToStringConverter x:Key="doubleToString"/>
+            <converters:EqualZeroOrNull x:Key="equalZeroOrNull"/>
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <DockPanel>
 
-        <!--V5 Sectors-->
+        <!--Images-->
+        <DockPanel DockPanel.Dock="Top">
+
+            <!--V5 Stored Image-->
+            <DockPanel>
+                <DockPanel.Style>
+                    <Style TargetType="{x:Type DockPanel}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding V5StoredImage, Converter={StaticResource objectIsNull}}" Value="False">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DockPanel.Style>
+
+                <md:Card HorizontalAlignment="Left" DockPanel.Dock="Top" Margin="3,3,0,0"
+                 Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+
+                    <DockPanel>
+
+                        <!--Title-->
+                        <md:Card Background="{DynamicResource OrangeBrush1}"
+                             HorizontalAlignment="Left" Padding="4,1" Margin="3">
+                            <TextBlock Text="Stored Image" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                        </md:Card>
+
+                        <Border Style="{StaticResource imageBar}" Margin="3,0"/>
+
+                        <!--Save Image-->
+                        <Button Command="{Binding SaveCommand}" CommandParameter="v5Stored" Width="28"
+                            Style="{StaticResource MahApps.Styles.Button.Hamburger}" 
+                            ToolTip="Save the image.">
+                            <iconPacks:PackIconMaterial Kind="ContentSave"/>
+                        </Button>
+
+                        <Border Style="{StaticResource imageBar}" Margin="3,0"/>
+
+                        <TextBlock VerticalAlignment="Center" Text="{Binding V5StoredImage.UID, Converter={StaticResource shortenUID}}" 
+                                ToolTip="{Binding V5StoredImage.UID}" Margin="3,0"/>
+
+
+                    </DockPanel>
+                </md:Card>
+
+                <DockPanel Background="Black">
+
+                    <Grid VerticalAlignment="Top" Margin="3" MouseDown="V5StoredImage_MouseDown">
+                        <Image Source="{Binding V5StoredImage.ImageLow}" 
+                       Margin="0" MaxHeight="400" Width="400"
+                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+
+                        <Image Source="{Binding V5StoredImageOverlay}" 
+                       Margin="0" MaxHeight="400" Width="400"
+                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+                    </Grid>
+
+                    <!--Details-->
+                    <ContentControl Content="{Binding V5StoredImage}" ContentTemplate="{StaticResource imageDetailsTemplate}"/>
+
+                </DockPanel>
+
+            </DockPanel>
+
+            <!--V5 Current Image-->
+            <DockPanel>
+                <DockPanel.Style>
+                    <Style TargetType="{x:Type DockPanel}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding V5CurrentImage, Converter={StaticResource objectIsNull}}" Value="False">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DockPanel.Style>
+
+                <md:Card HorizontalAlignment="Left" DockPanel.Dock="Top" Margin="3,3,0,0"
+                 Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+
+                    <DockPanel>
+
+                        <!--Title-->
+                        <md:Card Background="{DynamicResource OrangeBrush1}"
+                             HorizontalAlignment="Left" Padding="4,1" Margin="3">
+                            <TextBlock Text="Current Image" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                        </md:Card>
+
+                        <Border Style="{StaticResource imageBar}" Margin="3,0"/>
+
+                        <!--Save Image-->
+                        <Button Command="{Binding SaveCommand}" CommandParameter="v5Current" Width="28"
+                            Style="{StaticResource MahApps.Styles.Button.Hamburger}" 
+                            ToolTip="Save the image.">
+                            <iconPacks:PackIconMaterial Kind="ContentSave"/>
+                        </Button>
+
+
+                        <Button Margin="3" Command="{Binding ClearReadCommand}" CommandParameter="V5" ToolTip="Clear the current sectors and image.">
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding V5CurrentSectors.Count}" Value="0">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+
+                            <iconPacks:PackIconModern Kind="Close"/>
+
+                        </Button>
+
+                        <Border Style="{StaticResource imageBar}" Margin="3,0"/>
+
+                        <TextBlock VerticalAlignment="Center" Text="{Binding V5CurrentImage.UID, Converter={StaticResource shortenUID}}" 
+                                ToolTip="{Binding V5CurrentImage.UID}" Margin="3,0"/>
+
+                    </DockPanel>
+                </md:Card>
+
+                <DockPanel Background="Black">
+
+                    <Grid VerticalAlignment="Top" Margin="3" MouseDown="V5CurrentImage_MouseDown">
+                        <Image Source="{Binding V5CurrentImage.ImageLow}" 
+                       Margin="0" MaxHeight="400" Width="400"
+                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+
+                        <Image Source="{Binding V5CurrentImageOverlay}" 
+                       Margin="0" MaxHeight="400" Width="400"
+                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+                    </Grid>
+
+                    <!--Details-->
+                    <ContentControl Content="{Binding V5CurrentImage}" ContentTemplate="{StaticResource imageDetailsTemplate}"/>
+
+                </DockPanel>
+
+            </DockPanel>
+
+        </DockPanel>
+
+        <!--Sectors-->
         <DockPanel>
 
             <!--V5 Stored Sectors-->
@@ -276,8 +402,7 @@
 
                                             <MultiDataTrigger>
                                                 <MultiDataTrigger.Conditions>
-                                                    <Condition Binding="{Binding V5Image, Converter={StaticResource objectIsNull}}" Value="False"/>
-                                                    <Condition Binding="{Binding IsV5ImageStored}" Value="False"/>
+                                                    <Condition Binding="{Binding V5CurrentImage, Converter={StaticResource objectIsNull}}" Value="False"/>
                                                 </MultiDataTrigger.Conditions>
 
                                                 <Setter Property="Visibility" Value="Visible"/>
@@ -413,7 +538,7 @@
                                     </Style.Triggers>
                                 </Style>
                             </ItemsControl.Style>
-                            
+
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="2,1" />

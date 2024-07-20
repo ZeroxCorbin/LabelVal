@@ -8,7 +8,7 @@
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:sectors="clr-namespace:LabelVal.Sectors.Views"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-             xmlns:Converters="clr-namespace:LabelVal.Converters"
+             xmlns:converters="clr-namespace:LabelVal.Converters"
              xmlns:V275Converters="clr-namespace:LabelVal.V275.Converters"
                 xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              
@@ -17,72 +17,230 @@
              mc:Ignorable="d">
 
     <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="booltovis"/>
-        <Converters:BytesToImageConverter x:Key="bytesToImage"/>
-        <Converters:ShortenUIDConverter x:Key="shortenUID"/>
-        <Converters:StringToUpperSpacedConverter x:Key="stringToUpper"/>
-        <Converters:FloatStringTrimConverter x:Key="floatTrim"/>
-        <V275Converters:V275_OCMatchModeToString x:Key="matchModeToString"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="ImageDetailsTemplate.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
 
-        <Converters:ObjectIsNull x:Key="objectIsNull"/>
-        <Converters:EqualZeroOrNull x:Key="equalZeroOrNull"/>
-
-        <Image x:Key="V275Icon" Source="/Assets/Images/V275WhiteIcon.ico" />
-        <Image x:Key="V275Png" Source="/Assets/Images/V275WhiteIcon.png" />
-
-        <!--<CollectionViewSource x:Key="cvsV275StoredSectors" Source="{Binding V275StoredSectors}">
-            <CollectionViewSource.SortDescriptions>
-                <componentmodel:SortDescription PropertyName="Template.CenterPoint.Y" Direction="Ascending"/>
-                <componentmodel:SortDescription PropertyName="Template.CenterPoint.X" Direction="Ascending"/>
-                --><!--<componentmodel:SortDescription PropertyName="Template.Top" Direction="Ascending"/>--><!--
-            </CollectionViewSource.SortDescriptions>
-        </CollectionViewSource>
-
-        <CollectionViewSource x:Key="cvsV275CurrentSectors" Source="{Binding V275CurrentSectors}">
-            <CollectionViewSource.SortDescriptions>
-                <componentmodel:SortDescription PropertyName="Template.CenterPoint.Y" Direction="Ascending"/>
-                <componentmodel:SortDescription PropertyName="Template.CenterPoint.X" Direction="Ascending"/>
-            </CollectionViewSource.SortDescriptions>
-        </CollectionViewSource>-->
-
+            <converters:ShortenUIDConverter x:Key="shortenUID"/>
+            <converters:ObjectIsNull x:Key="objectIsNull"/>
+            <converters:DoubleToStringConverter x:Key="doubleToString"/>
+            <converters:EqualZeroOrNull x:Key="equalZeroOrNull"/>
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <DockPanel>
 
-        <!--V275-->
+        <!--Images-->
         <DockPanel DockPanel.Dock="Top">
 
-            <!--V275 Stored Sectors-->
-            <GroupBox d:Visibility="Visible" Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top"
-                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                md:ColorZoneAssist.Mode="Custom">
-                <GroupBox.Style>
-                    <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
+            <!--V275 Stored Image-->
+            <DockPanel>
+                <DockPanel.Style>
+                    <Style TargetType="{x:Type DockPanel}">
                         <Setter Property="Visibility" Value="Collapsed"/>
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding V275StoredSectors.Count, Converter={StaticResource equalZeroOrNull}}" Value="False">
+                            <DataTrigger Binding="{Binding V275StoredImage, Converter={StaticResource objectIsNull}}" Value="False">
                                 <Setter Property="Visibility" Value="Visible"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
-                </GroupBox.Style>
+                </DockPanel.Style>
 
-                <GroupBox.Header>
+                <md:Card HorizontalAlignment="Left" DockPanel.Dock="Top" Margin="3,3,0,0"
+                     Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
-                    <DockPanel Margin="-5">
+                    <DockPanel>
 
-                        <md:Card Background="{DynamicResource ColorBlindBrush1}" HorizontalAlignment="Left" Padding="4,1">
-                            <TextBlock Foreground="White" Text="Stored Sectors" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                        <!--Title-->
+                        <md:Card Background="{DynamicResource ColorBlindBrush1}"
+                             HorizontalAlignment="Left" Padding="4,1" Margin="3">
+                            <TextBlock Text="Stored Image" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                         </md:Card>
 
-                        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Border Style="{StaticResource imageBar}" Margin="3,0"/>
 
-                            <Button Command="{Binding ClearStoredCommand}" CommandParameter="V275" ToolTip="Remove the stored sectors from the database, permanently.&#x0a;(CAUTION) This can not be undone!">
+                        <!--Save Image-->
+                        <Button Command="{Binding SaveCommand}" CommandParameter="v275Stored" Width="28"
+                                Style="{StaticResource MahApps.Styles.Button.Hamburger}" 
+                                ToolTip="Save the image.">
+                            <iconPacks:PackIconMaterial Kind="ContentSave"/>
+                        </Button>
 
-                                <iconPacks:PackIconModern Kind="Delete" Height="14" Width="14"/>
+                        <Border Style="{StaticResource imageBar}" Margin="3,0"/>
+
+                        <TextBlock VerticalAlignment="Center" Text="{Binding V275StoredImage.UID, Converter={StaticResource shortenUID}}" 
+                                ToolTip="{Binding V275StoredImage.UID}" Margin="3,0"/>
+
+                    </DockPanel>
+                </md:Card>
+
+                <DockPanel Background="Black" VerticalAlignment="Top" HorizontalAlignment="Left">
+
+                    <Grid Margin="3" MouseDown="V275StoredImage_MouseDown">
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Setter Property="MaxHeight" Value="400"/>
+                                <Setter Property="MaxWidth" Value="400"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding V275CurrentImage, Converter={StaticResource objectIsNull}}" Value="False">
+                                        <Setter Property="MaxHeight" Value="184"/>
+                                        <Setter Property="MaxWidth" Value="184"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+
+                        <Image Source="{Binding V275StoredImage.ImageLow}" 
+                           RenderOptions.BitmapScalingMode="NearestNeighbor"
+                           HorizontalAlignment="Left" VerticalAlignment="Top"/>
+
+                        <Image Source="{Binding V275StoredImageOverlay}"
+                           RenderOptions.BitmapScalingMode="NearestNeighbor"
+                           HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                    </Grid>
+
+                    <!--Details-->
+                    <ContentControl Content="{Binding V275StoredImage}" ContentTemplate="{StaticResource imageDetailsTemplate}"/>
+
+                </DockPanel>
+
+            </DockPanel>
+
+            <!--V275 Current Image-->
+            <DockPanel>
+                <DockPanel.Style>
+                    <Style TargetType="{x:Type DockPanel}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding V275CurrentImage, Converter={StaticResource objectIsNull}}" Value="False">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DockPanel.Style>
+
+                <md:Card HorizontalAlignment="Left" DockPanel.Dock="Top" Margin="3,3,0,0"
+                 Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+
+                    <DockPanel>
+
+                        <!--Title-->
+                        <md:Card Background="{DynamicResource ColorBlindBrush1}"
+                             HorizontalAlignment="Left" Padding="4,1" Margin="3">
+                            <TextBlock Text="Current Image" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                        </md:Card>
+
+                        <Border Style="{StaticResource imageBar}" Margin="3,0"/>
+
+                        <!--Save Image-->
+                        <Button Command="{Binding SaveCommand}" CommandParameter="v275Current" Width="28"
+                                Style="{StaticResource MahApps.Styles.Button.Hamburger}" 
+                                ToolTip="Save the image.">
+                            <iconPacks:PackIconMaterial Kind="ContentSave"/>
+                        </Button>
+
+
+                        <Button Command="{Binding ClearReadCommand}" CommandParameter="V275" Width="28"
+                                ToolTip="Clear the current sectors and image.">
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding V275CurrentSectors.Count}" Value="0">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+
+                            <iconPacks:PackIconModern Kind="Close"/>
+
+                        </Button>
+
+                        <Border Style="{StaticResource imageBar}" Margin="3,0"/>
+
+                        <TextBlock VerticalAlignment="Center" Text="{Binding V275CurrentImage.UID, Converter={StaticResource shortenUID}}" 
+                                ToolTip="{Binding V275CurrentImage.UID}" Margin="3,0"/>
+
+                    </DockPanel>
+                </md:Card>
+
+                <DockPanel Background="Black">
+
+                    <Grid VerticalAlignment="Top" Margin="3" MouseDown="V275CurrentImage_MouseDown">
+                        <Image Source="{Binding V275CurrentImage.ImageLow}" 
+                       Margin="0" MaxHeight="400" Width="400"
+                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+
+                        <Image Source="{Binding V275CurrentImageOverlay}" 
+                       Margin="0" MaxHeight="400" Width="400"
+                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+                    </Grid>
+
+                    <!--Details-->
+                    <ContentControl Content="{Binding V275CurrentImage}" ContentTemplate="{StaticResource imageDetailsTemplate}"/>
+
+                </DockPanel>
+
+            </DockPanel>
+
+        </DockPanel>
+
+        <!--Sectors-->
+        <DockPanel>
+
+            <!--V275 Stored Sectors-->
+            <DockPanel>
+                <DockPanel.Style>
+                    <Style TargetType="{x:Type DockPanel}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Setter Property="LayoutTransform">
+                            <Setter.Value>
+                                <ScaleTransform ScaleX="1" ScaleY="1"/>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding V275StoredSectors.Count, Converter={StaticResource equalZeroOrNull}}" Value="False">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+
+                            <DataTrigger Binding="{Binding V275CurrentImage, Converter={StaticResource objectIsNull}}" Value="False">
+                                <Setter Property="LayoutTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="1" ScaleY="1"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DockPanel.Style>
+
+                <md:Card HorizontalAlignment="Left" DockPanel.Dock="Top" Margin="3,3,0,0"
+                     Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+
+                    <DockPanel>
+
+                        <!--Title-->
+                        <md:Card Background="{DynamicResource ColorBlindBrush1}"
+                             HorizontalAlignment="Left" Padding="4,1" Margin="3">
+                            <TextBlock Text="Stored Sectors" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                        </md:Card>
+
+                        <Border Style="{StaticResource imageBar}" Margin="3,0"/>
+
+                        <DockPanel>
+
+                            <Button Command="{Binding ClearStoredCommand}" CommandParameter="V275" Width="28"
+                                    ToolTip="Remove the stored sectors from the database, permanently.&#x0a;(CAUTION) This can not be undone!">
+
+                                <iconPacks:PackIconModern Kind="Delete"/>
 
                                 <Button.Style>
-                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
                                         <Setter Property="Visibility" Value="Visible"/>
                                         <Style.Triggers>
                                             <DataTrigger Value="0" Binding="{Binding V275StoredSectors.Count}">
@@ -96,12 +254,13 @@
                                 </Button.Style>
                             </Button>
 
-                            <Button Command="{Binding V275LoadCommand}"  ToolTip="Overwrite the template sectors with the stored data.">
+                            <Button Command="{Binding V275LoadCommand}"  Width="28"
+                                    ToolTip="Overwrite the template sectors with the stored data.">
 
-                                <iconPacks:PackIconMaterial Kind="Download" Height="14" Width="14"/>
+                                <iconPacks:PackIconMaterial Kind="Download"/>
 
                                 <Button.Style>
-                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
                                         <Setter Property="Visibility" Value="Visible"/>
                                         <Style.Triggers>
                                             <DataTrigger Value="{x:Null}" Binding="{Binding ImageResults.SelectedNode}">
@@ -123,15 +282,16 @@
                                     </Style>
                                 </Button.Style>
                             </Button>
-                        </StackPanel>
+                        </DockPanel>
 
-                        <Button x:Name="btnV275StoredSectors" Click="V275StoredSectors_Click" ToolTip="The all seeing eye! Click it...&#x0a;Hold Shift and click for more."
+                        <Button x:Name="btnV275StoredSectors" Click="V275StoredSectors_Click" Width="28"
+                                ToolTip="The all seeing eye! Click it...&#x0a;Hold Shift and click for more."
                                 HorizontalAlignment="Right">
 
-                            <iconPacks:PackIconModern Kind="Eye" Height="16" Width="16"/>
+                            <iconPacks:PackIconModern Kind="Eye"/>
 
                             <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
                                     <Setter Property="Visibility" Value="Visible"/>
                                     <Style.Triggers>
                                         <DataTrigger Value="0" Binding="{Binding V275StoredSectors.Count}">
@@ -144,7 +304,7 @@
                         </Button>
 
                     </DockPanel>
-                </GroupBox.Header>
+                </md:Card>
 
                 <ScrollViewer Margin="3" x:Name="ScrollV275StoredSectors" VerticalScrollBarVisibility="Auto"
                           mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
@@ -159,7 +319,7 @@
                             </Style.Triggers>
                         </Style>
                     </ScrollViewer.Style>
-                    
+
                     <DockPanel>
 
                         <GroupBox Margin="3" Padding="3"
@@ -227,14 +387,12 @@
                     </DockPanel>
                 </ScrollViewer>
 
-            </GroupBox>
+            </DockPanel>
 
             <!--V275 Current Sectors-->
-            <GroupBox d:Visibility="Visible" Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" 
-                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                md:ColorZoneAssist.Mode="Custom">
-                <GroupBox.Style>
-                    <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
+            <DockPanel>
+                <DockPanel.Style>
+                    <Style TargetType="{x:Type DockPanel}">
                         <Setter Property="Visibility" Value="Collapsed"/>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding V275CurrentSectors.Count, Converter={StaticResource equalZeroOrNull}}" Value="False">
@@ -242,91 +400,81 @@
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
-                </GroupBox.Style>
+                </DockPanel.Style>
 
-                <GroupBox.Header>
+                <md:Card HorizontalAlignment="Left" DockPanel.Dock="Top" Margin="3,3,0,0"
+                     Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
-                    <DockPanel Margin="-5">
+                    <DockPanel>
 
-                        <md:Card Background="{DynamicResource ColorBlindBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="4,1">
-                            <TextBlock Foreground="White" Text="Current Sectors" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                        <!--Title-->
+                        <md:Card Background="{DynamicResource ColorBlindBrush1}"
+                             HorizontalAlignment="Left" Padding="4,1" Margin="3">
+                            <TextBlock Text="Current Sectors" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                         </md:Card>
 
-                        <DockPanel Margin="3,0">
+                        <Border Style="{StaticResource imageBar}" Margin="3,0"/>
 
-                            <Button Command="{Binding StoreCommand}" CommandParameter="V275" ToolTip="Store the current sectors and images to the database.">
-                                <Button.Style>
-                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Value="0" Binding="{Binding V275CurrentSectors.Count}">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Button.Style>
+                        <Button Command="{Binding StoreCommand}" CommandParameter="V275" Width="28"
+                                    ToolTip="Store the current sectors and images to the database.">
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Value="0" Binding="{Binding V275CurrentSectors.Count}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
 
-                                <iconPacks:PackIconMaterial Kind="StorePlusOutline" Height="14" Width="14"/>
-                            </Button>
+                            <iconPacks:PackIconMaterial Kind="StorePlusOutline"/>
+                        </Button>
 
-                            <Button Command="{Binding ClearReadCommand}" CommandParameter="V275" ToolTip="Clear the current sectors and image.">
-
-                                <Button.Style>
-                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
-                                        <Setter Property="Visibility" Value="Visible"/>
-
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding V275CurrentSectors.Count}" Value="0">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                            </DataTrigger>
-
-                                            <MultiDataTrigger>
-                                                <MultiDataTrigger.Conditions>
-                                                    <Condition Binding="{Binding V275Image, Converter={StaticResource objectIsNull}}" Value="False"/>
-                                                    <Condition Binding="{Binding IsV275ImageStored}" Value="False"/>
-                                                </MultiDataTrigger.Conditions>
-
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                            </MultiDataTrigger>
-
-                                        </Style.Triggers>
-
-                                    </Style>
-                                </Button.Style>
-
-                                <iconPacks:PackIconMaterialDesign Kind="Clear" Height="14" Width="14"/>
-
-                            </Button>
-
-                            <Button Command="{Binding V275ReadCommand}" ToolTip="Read the last results and image from the V275.&#x0a;Just reads the data. No processing.">
-
-                                <Button.Style>
-                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Value="True" Binding="{Binding ImageResults.SelectedNode.IsLoggedIn_Monitor}">
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                            </DataTrigger>
-                                            <DataTrigger Value="True" Binding="{Binding ImageResults.SelectedNode.IsLoggedIn_Control}">
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Button.Style>
-
-                                <iconPacks:PackIconMaterial Kind="Upload" Height="14" Width="14"/>
-                            </Button>
-
-                            <!--<Button Command="{Binding InspectCommand}"
-                                    ToolTip="Inspect" Width="20" Height="20" BorderThickness="0" HorizontalAlignment="Left" Margin="3,0,3,0">
+                        <Button Command="{Binding ClearReadCommand}" CommandParameter="V275" Width="28"
+                                    ToolTip="Clear the current sectors and image.">
 
                             <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding V275CurrentSectors.Count}" Value="0">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding V275Image, Converter={StaticResource objectIsNull}}" Value="False"/>
+                                                <Condition Binding="{Binding IsV275ImageStored}" Value="False"/>
+                                            </MultiDataTrigger.Conditions>
+
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </MultiDataTrigger>
+
+                                    </Style.Triggers>
+
+                                </Style>
+                            </Button.Style>
+
+                            <iconPacks:PackIconMaterialDesign Kind="Clear"/>
+
+                        </Button>
+
+                        <Button Command="{Binding V275ReadCommand}" Width="28"
+                                ToolTip="Read the last results and image from the V275.&#x0a;Just reads the data. No processing.">
+
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
                                     <Setter Property="Visibility" Value="Collapsed"/>
                                     <Style.Triggers>
+                                        <DataTrigger Value="True" Binding="{Binding ImageResults.SelectedNode.IsLoggedIn_Monitor}">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
                                         <DataTrigger Value="True" Binding="{Binding ImageResults.SelectedNode.IsLoggedIn_Control}">
                                             <Setter Property="Visibility" Value="Visible"/>
                                         </DataTrigger>
@@ -334,16 +482,14 @@
                                 </Style>
                             </Button.Style>
 
-                            <iconPacks:PackIconMaterialDesign Kind="TouchApp" Margin="-1,-1,0,0" Height="14" Width="14"/>
+                            <iconPacks:PackIconMaterial Kind="Upload"/>
+                        </Button>
 
-                        </Button>-->
-
-                        </DockPanel>
-
-                        <Button Click="V275CurrentSectorDetails_Click" ToolTip="The all seeing eye! Click it...&#x0a;Hold Shift and click for more."
+                        <Button Click="V275CurrentSectorDetails_Click"  Width="28"
+                                ToolTip="The all seeing eye! Click it...&#x0a;Hold Shift and click for more."
                                 HorizontalAlignment="Right">
                             <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
                                     <Setter Property="Visibility" Value="Visible"/>
                                     <Style.Triggers>
                                         <DataTrigger Value="0" Binding="{Binding V275CurrentSectors.Count}">
@@ -352,11 +498,11 @@
                                     </Style.Triggers>
                                 </Style>
                             </Button.Style>
-                            <iconPacks:PackIconModern Kind="Eye" Height="16" Width="16"/>
+                            <iconPacks:PackIconModern Kind="Eye"/>
                         </Button>
 
                     </DockPanel>
-                </GroupBox.Header>
+                </md:Card>
 
                 <ScrollViewer x:Name="ScrollV275CurrentSectors"
                             Margin="3" VerticalScrollBarVisibility="Auto"
@@ -434,8 +580,8 @@
                         </ItemsControl>
                     </DockPanel>
                 </ScrollViewer>
-            
-            </GroupBox>
+
+            </DockPanel>
 
             <!--V275 Dissimilar Results-->
             <GroupBox d:Visibility="Visible" Margin="3" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" 
@@ -494,6 +640,5 @@
             </GroupBox>
 
         </DockPanel>
-
     </DockPanel>
 </UserControl>

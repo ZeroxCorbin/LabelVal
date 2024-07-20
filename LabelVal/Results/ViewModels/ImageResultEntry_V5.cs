@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LabelVal.ImageRolls.ViewModels;
+using LabelVal.Results.Databases;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -14,29 +15,33 @@ namespace LabelVal.Results.ViewModels;
 public partial class ImageResultEntry
 {
     [ObservableProperty] private Databases.V5Result v5ResultRow;
+    partial void OnV5ResultRowChanged(V5Result value)
+    {
+        if (value != null)
+            V5ResultRow?.Stored.InitPrinterVariables(SelectedPrinter);
 
-    //public Config V5CurrentTemplate { get; set; }
+        OnPropertyChanged(nameof(V5StoredImage));
+    }
+
+    public ImageEntry V5StoredImage => V5ResultRow?.Stored;
+    [ObservableProperty] private DrawingImage v5StoredImageOverlay;
+
+    [ObservableProperty] private ImageEntry v5CurrentImage;
+    [ObservableProperty] private DrawingImage v5CurrentImageOverlay;
+    partial void OnV5CurrentImageChanged(ImageEntry value)
+    {
+        if (value != null)
+            value.InitPrinterVariables(SelectedPrinter);
+    }
+
+    public V5_REST_Lib.Models.Config V5CurrentTemplate { get; set; }
     public JObject V5CurrentReport { get; private set; }
-    public V5_REST_Lib.Models.Results V5StoredReport { get; set; }
 
     [ObservableProperty] private ObservableCollection<Sectors.ViewModels.Sector> v5CurrentSectors = [];
     [ObservableProperty] private ObservableCollection<Sectors.ViewModels.Sector> v5StoredSectors = [];
     [ObservableProperty] private ObservableCollection<Sectors.ViewModels.SectorDifferences> v5DiffSectors = [];
     [ObservableProperty] private Sectors.ViewModels.Sector v5FocusedStoredSector = null;
     [ObservableProperty] private Sectors.ViewModels.Sector v5FocusedCurrentSector = null;
-
-    [ObservableProperty] private ImageEntry v5Image;
-    partial void OnV5ImageChanged(ImageEntry value) { if (value != null) value.InitPrinterVariables(SelectedPrinter); }
-
-    public ImageEntry V5CurrentImage => V5Image;
-    public ImageEntry V5StoredImage => V5ResultRow?.Stored;
-
-    [ObservableProperty] private DrawingImage v5ImageOverlay;
-    public DrawingImage V5CurrentImageOverlay => IsV5ImageStored ? null : V5ImageOverlay;
-    public DrawingImage V5StoredImageOverlay => IsV5ImageStored ? V5ImageOverlay : null;
-
-
-    [ObservableProperty] private bool isV5ImageStored;
 
     [ObservableProperty] private bool isV5Working = false;
     partial void OnIsV5WorkingChanged(bool value) => OnPropertyChanged(nameof(IsNotV5Working));
@@ -70,11 +75,11 @@ public partial class ImageResultEntry
             return;
         }
 
-        V5_REST_Lib.Models.NewConfig config = (V5_REST_Lib.Models.NewConfig)res.Object;
+        V5_REST_Lib.Models.Config config = (V5_REST_Lib.Models.Config)res.Object;
 
         if (imageType != "sensor")
         {
-            V5_REST_Lib.Models.NewConfig.Fileacquisitionsource fas = config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource;
+            V5_REST_Lib.Models.Config.Fileacquisitionsource fas = config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource;
             if (fas == null)
             {
                 LogError("The scanner is not in file aquire mode.");
@@ -122,37 +127,23 @@ public partial class ImageResultEntry
 
         IsV5Working = false;
     }
-
     public bool V5ProcessResults(V5_REST_Lib.Controller.TriggerResults triggerResults)
     {
         if (!triggerResults.OK)
         {
             LogError("Could not trigger the scanner.");
 
-            V5CurrentReport = null;
-
-            if (!IsV5ImageStored)
-            {
-                V5Image = null;
-                V5ImageOverlay = null;
-            }
+            ClearRead("V5");
 
             return false;
         }
+V5CurrentImage = new ImageEntry(RollUID, triggerResults.FullImage, 600);
+        //if (!ImageResults.SelectedScanner.IsSimulator)
+            
+        //else
+        //    V5CurrentImage = SourceImage.Clone();
 
         V5CurrentReport = JsonConvert.DeserializeObject<JObject>(triggerResults.ReportJSON);
-
-        if (!ImageResults.SelectedScanner.IsSimulator)
-        {
-            V5Image = new ImageEntry(RollUID, triggerResults.FullImage, 600);
-            //ImageUtilities.ConvertToPng(triggerResults.FullImage);
-            IsV5ImageStored = false;
-        }
-        else
-        {
-            V5Image = SourceImage.Clone();
-            IsV5ImageStored = false;
-        }
 
         V5CurrentSectors.Clear();
 
@@ -180,7 +171,7 @@ public partial class ImageResultEntry
 
         V5GetSectorDiff();
 
-        V5ImageOverlay = V5CreateSectorsImageOverlay(V5CurrentReport);
+        V5CurrentImageOverlay = V5CreateSectorsImageOverlay(V5CurrentReport, V5CurrentImage);
 
         return true;
     }
@@ -188,33 +179,22 @@ public partial class ImageResultEntry
 
     private void V5GetStored()
     {
+        V5StoredSectors.Clear();
+
         V5ResultRow = SelectedDatabase.Select_V5Result(RollUID, ImageUID);
 
         if (V5ResultRow == null)
         {
-            V5StoredSectors.Clear();
-
-            if (V5CurrentSectors.Count == 0)
-            {
-                V5Image = null;
-                V5ImageOverlay = null;
-                IsV5ImageStored = false;
-            }
-
+            LogDebug("No V5 result found.");       
             return;
         }
-
-        V5Image = JsonConvert.DeserializeObject<ImageEntry>(V5ResultRow.StoredImage);
-        IsV5ImageStored = true;
-
-        V5StoredSectors.Clear();
 
         List<Sectors.ViewModels.Sector> tempSectors = [];
         if (!string.IsNullOrEmpty(V5ResultRow.Report))
         {
             JObject results = V5ResultRow._Report;
 
-            V5ImageOverlay = V5CreateSectorsImageOverlay(results);
+            V5StoredImageOverlay = V5CreateSectorsImageOverlay(results, V275StoredImage);
 
             if (results["event"]?["name"].ToString() == "cycle-report-alt")
             {
@@ -320,14 +300,14 @@ public partial class ImageResultEntry
     }
     public int V5LoadTask() => 1;
 
-    private DrawingImage V5CreateSectorsImageOverlay(JObject results)
+    private DrawingImage V5CreateSectorsImageOverlay(JObject results, ImageRolls.ViewModels.ImageEntry image)
     {
         DrawingGroup drwGroup = new();
 
         //Draw the image outline the same size as the stored image
         GeometryDrawing border = new()
         {
-            Geometry = new RectangleGeometry(new Rect(0.5, 0.5, V5Image.Image.PixelWidth - 1, V5Image.Image.PixelHeight - 1)),
+            Geometry = new RectangleGeometry(new Rect(0.5, 0.5, image.Image.PixelWidth - 1, image.Image.PixelHeight - 1)),
             Pen = new Pen(Brushes.Transparent, 1)
         };
         drwGroup.Children.Add(border);

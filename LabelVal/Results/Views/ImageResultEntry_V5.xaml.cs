@@ -1,4 +1,7 @@
-﻿using LabelVal.Sectors.Views;
+﻿using LabelVal.Dialogs;
+using LabelVal.ImageRolls.ViewModels;
+using LabelVal.Sectors.Views;
+using MahApps.Metro.Controls.Dialogs;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -154,5 +157,34 @@ public partial class ImageResultEntry_V5 : UserControl
         bitmap.Render(visual);
         BitmapFrame frame = BitmapFrame.Create(bitmap);
         encoder.Frames.Add(frame);
+    }
+
+    private void V5StoredImage_MouseDown(object sender, MouseButtonEventArgs e)
+    {
+        if (e.LeftButton == MouseButtonState.Pressed)
+            _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).V5StoredImage, ((ViewModels.ImageResultEntry)DataContext).V5StoredImageOverlay);
+    }
+    private void V5CurrentImage_MouseDown(object sender, MouseButtonEventArgs e)
+    {
+        if (e.LeftButton == MouseButtonState.Pressed)
+            _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).V5CurrentImage, ((ViewModels.ImageResultEntry)DataContext).V5CurrentImageOverlay);
+    }
+
+    private bool ShowImage(ImageEntry image, DrawingImage overlay)
+    {
+        ImageViewerDialogViewModel dc = new();
+
+        dc.LoadImage(image.Image, overlay);
+        if (dc.Image == null) return false;
+
+        var yourParentWindow = (Main.Views.MainWindow)Window.GetWindow(this);
+
+        dc.Width = yourParentWindow.ActualWidth - 100;
+        dc.Height = yourParentWindow.ActualHeight - 100;
+
+        _ = DialogCoordinator.Instance.ShowMetroDialogAsync(yourParentWindow.DataContext, new ImageViewerDialogView() { DataContext = dc });
+
+        return true;
+
     }
 }

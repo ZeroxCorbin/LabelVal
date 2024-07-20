@@ -212,7 +212,7 @@
 		<None Remove="Assets\Image Rolls\VALIDATION 6x4\300\setting.imgr" />
 		<None Remove="Assets\Images\all-codes.png" />
 		<None Remove="Assets\Images\barcode-15416.png" />
-		<None Remove="Assets\Images\barcode-1d1.png" />
+		<None Remove="Assets\Images\barcode-1d.png" />
 		<None Remove="Assets\Images\barcodes.xcf" />
 		<None Remove="Assets\Images\ISO.png" />
 		<None Remove="Assets\Images\l95xx-white-outline.ico" />
@@ -691,7 +691,7 @@
 		<Content Include="Assets\Images\all-codes.png">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
-		<Content Include="Assets\Images\barcode-1d1.png">
+		<Content Include="Assets\Images\barcode-1d.png">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Images\l95xx-white-outline.ico">
@@ -711,7 +711,7 @@
 		<Resource Include="favicon.ico" />
 	</ItemGroup>
 	<ItemGroup>
-		<Content Include="Assets\Images\barcode-1d.png">
+		<Content Include="Assets\Images\barcode-1d1.png">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Images\barcode-2d.png">

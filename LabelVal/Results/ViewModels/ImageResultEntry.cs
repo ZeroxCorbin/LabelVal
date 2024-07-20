@@ -46,27 +46,20 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
     partial void OnSelectedPrinterChanged(PrinterSettings value)
     {
         PrinterAreaOverlay = ShowPrinterAreaOverSource ? CreatePrinterAreaOverlay(true) : null;
+
         SourceImage?.InitPrinterVariables(SelectedPrinter);
 
         V275StoredImage?.InitPrinterVariables(SelectedPrinter);
         V275CurrentImage?.InitPrinterVariables(SelectedPrinter);
         
-        V5Image?.InitPrinterVariables(SelectedPrinter);
+        V5StoredImage?.InitPrinterVariables(SelectedPrinter);
+        V5CurrentImage?.InitPrinterVariables(SelectedPrinter);
     }
     partial void OnSelectedDatabaseChanged(Databases.ImageResultsDatabase value) => GetStored();
 
     [ObservableProperty] private Sectors.ViewModels.Sector selectedSector;
 
     [ObservableProperty] private bool showDetails;
-    //partial void OnShowDetailsChanged(bool value)
-    //{
-    //    if (value)
-    //    {
-    //        SourceImage?.InitPrinterVariables(SelectedPrinter);
-    //        V275Image?.InitPrinterVariables(SelectedPrinter);
-    //        V5Image?.InitPrinterVariables(SelectedPrinter);
-    //    }
-    //}
 
     public ImageResultEntry(ImageEntry sourceImage, ImageResults imageResults)
     {
@@ -124,7 +117,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             ImageRollUID = RollUID,
 
             SourceImage = JsonConvert.SerializeObject(SourceImage),
-            StoredImage = JsonConvert.SerializeObject(V5Image),
+            StoredImage = JsonConvert.SerializeObject(V5CurrentImage),
 
             Report = JsonConvert.SerializeObject(V5CurrentReport),
         },
@@ -161,8 +154,10 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
                     : type == "v275Current"
                     ? V275CurrentImage.GetBitmapBytes()
                     : type == "v5Stored"
-                    ? V5ResultRow.Stored.GetBitmapBytes()
-                    : type == "v5Current" ? V5Image.GetBitmapBytes() : SourceImage.GetBitmapBytes();
+                    ? V5StoredImage.GetBitmapBytes()
+                    : type == "v5Current"
+                    ? V5CurrentImage.GetBitmapBytes() 
+                    : SourceImage.GetBitmapBytes();
             if (bmp != null)
             {
                 _ = SaveImageBytesToFile(path, bmp);
@@ -208,12 +203,14 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
                 ImageRollUID = RollUID,
 
                 SourceImage = JsonConvert.SerializeObject(SourceImage),
-                StoredImage = JsonConvert.SerializeObject(V5Image),
 
+                StoredImage = JsonConvert.SerializeObject(V5CurrentImage),
                 Report = JsonConvert.SerializeObject(V5CurrentReport),
             });
 
             ClearRead(device);
+
+            V5GetStored();
         }
         else if (device == "L95xx")
         {
@@ -297,13 +294,12 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         else if (device == "V5")
         {
             V5CurrentReport = null;
+            V5CurrentTemplate = null;
 
             V5CurrentSectors.Clear();
             V5DiffSectors.Clear();
-
-            //V5CurrentImage = null;
-            //V5CurrentImageOverlay = null;
-
+            V5CurrentImage = null;
+            V5CurrentImageOverlay = null;
         }
         else if (device == "L95xx")
         {

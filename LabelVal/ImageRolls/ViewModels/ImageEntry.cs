@@ -96,15 +96,13 @@ public partial class ImageEntry : ObservableRecipient
 
         IsActive = true;
     }
+    //This should only be used for a placeholder image
     public ImageEntry(string rollUID, byte[] placeholderImage)
     {
-        RollUID = rollUID;
-
         Image = BitmapImageUtilities.CreateBitmap(placeholderImage);
         UID = ImageUtilities.ImageUID(placeholderImage);
-
+        RollUID = rollUID;
         IsPlaceholder = true;
-
         IsActive = true;
     }
     public ImageEntry(string rollUID, byte[] image, int targetDpiWidth, int targetDpiHeight = 0, string comment = null)

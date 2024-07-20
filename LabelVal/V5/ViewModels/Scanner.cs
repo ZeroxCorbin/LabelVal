@@ -215,15 +215,15 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             return;
         }
 
-        NewConfig config = (V5_REST_Lib.Models.NewConfig)res.Object;
-        NewConfig.Source src = config.response.data.job.channelMap.acquisition.AcquisitionChannel.source;
+        Config config = (V5_REST_Lib.Models.Config)res.Object;
+        Config.Source src = config.response.data.job.channelMap.acquisition.AcquisitionChannel.source;
         if (!file)
         {
             if (src.SensorAcquisitionSource != null)
                 return;
 
             src.FileAcquisitionSource = null;
-            src.SensorAcquisitionSource = new V5_REST_Lib.Models.NewConfig.Sensoracquisitionsource()
+            src.SensorAcquisitionSource = new V5_REST_Lib.Models.Config.Sensoracquisitionsource()
             {
                 baseClass = "ChannelSource",
                 extlight = "inactive",
@@ -242,7 +242,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
                 return;
 
             src.SensorAcquisitionSource = null;
-            src.FileAcquisitionSource = new NewConfig.Fileacquisitionsource()
+            src.FileAcquisitionSource = new Config.Fileacquisitionsource()
             {
                 baseClass = "ChannelSource",
                 directory = SelectedDirectory ?? Directories.First(),
@@ -264,8 +264,8 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             return;
         }
 
-        NewConfig config = (V5_REST_Lib.Models.NewConfig)res.Object;
-        NewConfig.Source src = config.response.data.job.channelMap.acquisition.AcquisitionChannel.source;
+        Config config = (V5_REST_Lib.Models.Config)res.Object;
+        Config.Source src = config.response.data.job.channelMap.acquisition.AcquisitionChannel.source;
 
         if (src.FileAcquisitionSource.directory != directory)
         {
@@ -305,7 +305,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         V5_REST_Lib.Commands.Results res = await ScannerController.GetConfig();
         if (res.OK)
         {
-            NewConfig config = (NewConfig)res.Object;
+            Config config = (Config)res.Object;
             IsSimulator = config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource != null;
 
             V5_REST_Lib.Commands.Results meta = await ScannerController.Commands.GetMeta();

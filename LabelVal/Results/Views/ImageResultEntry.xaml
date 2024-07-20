@@ -132,6 +132,18 @@
 
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ImageResults.SelectedScanner.IsSimulator}" Value="True"/>
+                                        <Condition Binding="{Binding ImageResults.SelectedScanner.IsConnected}" Value="True"/>
+                                        <Condition Binding="{Binding V5ResultRow, Converter={StaticResource objectIsNull}}" Value="False"/>
+                                    </MultiDataTrigger.Conditions>
+
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Setter Property="CommandParameter" Value="v5Stored"/>
+                                    <Setter Property="ToolTip" Value="V5: Process the stored image with the simulator."/>
+                                </MultiDataTrigger>
+                                
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
                                         <Condition Binding="{Binding ImageResults.SelectedScanner.IsSimulator}" Value="False"/>
                                         <Condition Binding="{Binding ImageResults.SelectedScanner.IsConnected}" Value="True"/>
                                     </MultiDataTrigger.Conditions>

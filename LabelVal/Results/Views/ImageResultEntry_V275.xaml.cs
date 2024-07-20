@@ -1,4 +1,7 @@
-﻿using LabelVal.Sectors.Views;
+﻿using LabelVal.Dialogs;
+using LabelVal.ImageRolls.ViewModels;
+using LabelVal.Sectors.Views;
+using MahApps.Metro.Controls.Dialogs;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -171,5 +174,35 @@ public partial class ImageResultEntry_V275 : UserControl
         }
 
         //}
+    }
+
+
+    private void V275StoredImage_MouseDown(object sender, MouseButtonEventArgs e)
+    {
+        if (e.LeftButton == MouseButtonState.Pressed)
+            _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).V275StoredImage, ((ViewModels.ImageResultEntry)DataContext).V275StoredImageOverlay);
+    }
+    private void V275CurrentImage_MouseDown(object sender, MouseButtonEventArgs e)
+    {
+        if (e.LeftButton == MouseButtonState.Pressed)
+            _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).V275CurrentImage, ((ViewModels.ImageResultEntry)DataContext).V275CurrentImageOverlay);
+    }
+
+    private bool ShowImage(ImageEntry image, DrawingImage overlay)
+    {
+        ImageViewerDialogViewModel dc = new();
+
+        dc.LoadImage(image.Image, overlay);
+        if (dc.Image == null) return false;
+
+        var yourParentWindow = (Main.Views.MainWindow)Window.GetWindow(this);
+
+        dc.Width = yourParentWindow.ActualWidth - 100;
+        dc.Height = yourParentWindow.ActualHeight - 100;
+
+        _ = DialogCoordinator.Instance.ShowMetroDialogAsync(yourParentWindow.DataContext, new ImageViewerDialogView() { DataContext = dc });
+
+        return true;
+
     }
 }

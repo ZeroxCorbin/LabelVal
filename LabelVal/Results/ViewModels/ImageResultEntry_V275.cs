@@ -40,7 +40,6 @@ public partial class ImageResultEntry
             value.InitPrinterVariables(SelectedPrinter);
     }
 
-
     public Job V275CurrentTemplate { get; set; }
     public Report V275CurrentReport { get; private set; }
 
@@ -63,6 +62,7 @@ public partial class ImageResultEntry
     {
         IsV275Working = true;
         IsV275Faulted = false;
+
         BringIntoView?.Invoke();
         V275ProcessImage?.Invoke(this, imageType);
     }
@@ -72,17 +72,14 @@ public partial class ImageResultEntry
     private Task<int> V275Load() => V275LoadTask();
 
     private void V275GetStored()
-    {
+    {  
+        V275StoredSectors.Clear();
+
         V275ResultRow = SelectedDatabase.Select_V275Result(RollUID, ImageUID);
 
         if (V275ResultRow == null)
-        {
-            V275StoredSectors.Clear();
             return;
-        }
-
-        V275StoredSectors.Clear();
-
+        
         List<Sectors.ViewModels.Sector> tempSectors = [];
         if (!string.IsNullOrEmpty(V275ResultRow.Report) && !string.IsNullOrEmpty(V275ResultRow.Template))
         {
@@ -113,22 +110,19 @@ public partial class ImageResultEntry
             foreach (Sectors.ViewModels.Sector sec in tempSectors)
                 V275StoredSectors.Add(sec);
 
-            V275StoredImageOverlay = V275CreateSectorsImageOverlay(V275ResultRow._Job, false, V275ResultRow._Report, V275StoredImage, V275StoredSectors);
-        }
+        }          
+        
+        V275StoredImageOverlay = V275CreateSectorsImageOverlay(V275ResultRow._Job, true, V275ResultRow._Report, V275StoredImage, V275StoredSectors);
     }
 
     public async Task<bool> V275ReadTask(int repeat)
     {
         V275_REST_lib.Controller.FullReport report;
-        if ((report = await ImageResults.SelectedNode.Connection.Read(repeat, !ImageResults.SelectedNode.IsSimulator)) == null)
+        if ((report = await ImageResults.SelectedNode.Connection.Read(repeat, true)) == null)
         {
             LogError("Unable to read the repeat report from the node.");
 
-            V275CurrentTemplate = null;
-            V275CurrentReport = null;
-
-            V275CurrentImage = null;
-            V275CurrentImageOverlay = null;
+            ClearRead("V275");
             
             return false;
         }
@@ -144,7 +138,7 @@ public partial class ImageResultEntry
         }
         else
         {
-            V275CurrentImage = SourceImage.Clone();
+            V275CurrentImage = new ImageEntry(RollUID, report.image, ImageResults.SelectedImageRoll.TargetDPI);
         }
 
         V275CurrentSectors.Clear();
@@ -176,10 +170,11 @@ public partial class ImageResultEntry
             foreach (Sectors.ViewModels.Sector sec in tempSectors)
                 V275CurrentSectors.Add(sec);
 
-            V275CurrentImageOverlay = V275CreateSectorsImageOverlay(V275CurrentTemplate, true, V275CurrentReport, V275CurrentImage, V275CurrentSectors);
         }
 
         V275GetSectorDiff();
+
+        V275CurrentImageOverlay = V275CreateSectorsImageOverlay(V275CurrentTemplate, true, V275CurrentReport, V275CurrentImage, V275CurrentSectors);
 
         return true;
     }
