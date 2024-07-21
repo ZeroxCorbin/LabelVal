@@ -403,7 +403,7 @@
                       Style="{StaticResource MahApps.Styles.ScrollViewer}">
                 <DockPanel>
 
-                    <local:ImageResultEntry_Images DataContext="{Binding }" DockPanel.Dock="Top"/>
+                    <local:ImageResultEntry_Images DataContext="{Binding }"/>
 
                     <local:ImageResultEntry_V275 DataContext="{Binding }"/>
 

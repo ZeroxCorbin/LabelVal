@@ -28,8 +28,10 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <DockPanel>
-
+    <DockPanel MaxHeight="800">
+        <Border Style="{StaticResource groupLeft}" />
+        <Border Style="{StaticResource groupBottom}"/>
+        
         <!--Images-->
         <DockPanel DockPanel.Dock="Top">
 
@@ -84,22 +86,20 @@
                                 <Setter Property="MaxHeight" Value="400"/>
                                 <Setter Property="MaxWidth" Value="400"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding V5CurrentImage, Converter={StaticResource objectIsNull}}" Value="False">
+                                    <DataTrigger Binding="{Binding V5CurrentImage, Mode=OneWay, Converter={StaticResource objectIsNull}}" Value="False">
                                         <Setter Property="MaxHeight" Value="184"/>
                                         <Setter Property="MaxWidth" Value="184"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </Grid.Style>
-                        <Image Source="{Binding V5StoredImage.ImageLow}"
-                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+                        <Image Source="{Binding V5StoredImage.ImageLow, Mode=OneWay}" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
 
-                        <Image Source="{Binding V5StoredImageOverlay}"
-                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+                        <Image Source="{Binding V5StoredImageOverlay, Mode=OneWay}" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
                     </Grid>
 
                     <!--Details-->
-                    <ContentControl Content="{Binding V5StoredImage}" ContentTemplate="{StaticResource imageDetailsTemplate}"/>
+                    <ContentControl Content="{Binding V5StoredImage, Mode=OneWay}" ContentTemplate="{StaticResource imageDetailsTemplate}"/>
 
                 </DockPanel>
 
@@ -164,16 +164,25 @@
                     </DockPanel>
                 </md:Card>
 
-                <DockPanel Background="Black">
+                <DockPanel Background="Black" VerticalAlignment="Top" HorizontalAlignment="Left">
 
-                    <Grid VerticalAlignment="Top" Margin="3" MouseDown="V5CurrentImage_MouseDown">
-                        <Image Source="{Binding V5CurrentImage.ImageLow}" 
-                       Margin="0" MaxHeight="400" Width="400"
-                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+                    <Grid Margin="3" MouseDown="V5CurrentImage_MouseDown">
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Setter Property="MaxHeight" Value="400"/>
+                                <Setter Property="MaxWidth" Value="400"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding V5DiffSectors.Count, Mode=OneWay}" Value="0">
+                                        <Setter Property="MaxHeight" Value="184"/>
+                                        <Setter Property="MaxWidth" Value="184"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+                        
+                        <Image Source="{Binding V5CurrentImage.ImageLow, Mode=OneWay}" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
 
-                        <Image Source="{Binding V5CurrentImageOverlay}" 
-                       Margin="0" MaxHeight="400" Width="400"
-                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+                        <Image Source="{Binding V5CurrentImageOverlay, Mode=OneWay}" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
                     </Grid>
 
                     <!--Details-->
@@ -260,16 +269,6 @@
                 <ScrollViewer Margin="3" x:Name="ScrollV5StoredSectors" VerticalScrollBarVisibility="Auto"
                           mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
                           ScrollChanged="ScrollV5StoredSectors_ScrollChanged">
-                    <ScrollViewer.Style>
-                        <Style TargetType="{x:Type ScrollViewer}" BasedOn="{StaticResource MahApps.Styles.ScrollViewer}">
-                            <Setter Property="Height" Value="393"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding V5StoredSectors.Count}" Value="0">
-                                    <Setter Property="Height" Value="0"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </ScrollViewer.Style>
 
                     <DockPanel>
 
@@ -378,7 +377,7 @@
                                 </Style>
                             </Button.Style>
 
-                            <iconPacks:PackIconMaterial Kind="StorePlusOutline" Height="14" Width="14"/>
+                            <iconPacks:PackIconMaterial Kind="StorePlusOutline"/>
                         </Button>
 
                         <Button Command="{Binding ClearReadCommand}" CommandParameter="V5" Width="28"
@@ -405,7 +404,7 @@
                                 </Style>
                             </Button.Style>
 
-                            <iconPacks:PackIconMaterialDesign Kind="Clear" Height="14" Width="14"/>
+                            <iconPacks:PackIconMaterialDesign Kind="Clear"/>
 
                         </Button>
 
@@ -423,7 +422,7 @@
                                     </Style.Triggers>
                                 </Style>
                             </Button.Style>
-                            <iconPacks:PackIconModern Kind="Eye" Width="16" Height="16"/>
+                            <iconPacks:PackIconModern Kind="Eye"/>
                         </Button>
 
                     </DockPanel>
@@ -433,16 +432,6 @@
                         Margin="3" VerticalScrollBarVisibility="Auto"
                         mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
                         ScrollChanged="ScrollV5CurrentSectors_ScrollChanged">
-                    <ScrollViewer.Style>
-                        <Style TargetType="{x:Type ScrollViewer}" BasedOn="{StaticResource MahApps.Styles.ScrollViewer}">
-                            <Setter Property="Height" Value="393"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding V5CurrentSectors.Count}" Value="0">
-                                    <Setter Property="Height" Value="0"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </ScrollViewer.Style>
 
                     <DockPanel>
 
@@ -539,16 +528,6 @@
 
                 <ScrollViewer Margin="3" VerticalScrollBarVisibility="Auto"
                           mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True">
-                    <ScrollViewer.Style>
-                        <Style TargetType="{x:Type ScrollViewer}" BasedOn="{StaticResource MahApps.Styles.ScrollViewer}">
-                            <Setter Property="Height" Value="393"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding V5DiffSectors.Count}" Value="0">
-                                    <Setter Property="Height" Value="0"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </ScrollViewer.Style>
 
                     <ItemsControl ItemsSource="{Binding V5DiffSectors}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
                         <ItemsControl.ItemTemplate>

@@ -9,21 +9,24 @@
             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
             xmlns:local="clr-namespace:LabelVal.Sectors.Views"
             xmlns:ViewModels="clr-namespace:LabelVal.Sectors.ViewModels"
-            xmlns:Converters="clr-namespace:LabelVal.Converters"
-             xmlns:V275Converters="clr-namespace:LabelVal.V275.Converters"
+            xmlns:converters="clr-namespace:LabelVal.Converters"
+             xmlns:v275Converters="clr-namespace:LabelVal.V275.Converters"
+             xmlns:sectorConverter="clr-namespace:LabelVal.Sectors.Converters"
             d:DataContext="{d:DesignInstance Type=ViewModels:Sector}"
             mc:Ignorable="d" Loaded="UserControl_Loaded">
 
     <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="booltovis"/>
-        <Converters:StringToUpperSpacedConverter x:Key="stringToUpper"/>
-        <Converters:FloatStringTrimConverter x:Key="floatTrim"/>
-        <V275Converters:V275_OCMatchModeToString x:Key="matchModeToString"/>
-        <V275Converters:V275_GS1FormattedOutput x:Key="gs1FormattedOutput"/>
+        <converters:StringToUpperSpacedConverter x:Key="stringToUpper"/>
+        <v275Converters:V275_OCMatchModeToString x:Key="matchModeToString"/>
+        <v275Converters:V275_GS1FormattedOutput x:Key="gs1FormattedOutput"/>
+
+        <sectorConverter:ShortenString x:Key="shortenString"/>
     </UserControl.Resources>
 
-
-    <md:Card Width="217" Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Foreground="{DynamicResource MahApps.Brushes.Text}" Margin="3" Padding="0">
+    <md:Card Margin="3" Padding="0" 
+             Background="{DynamicResource MahApps.Brushes.ThemeBackground}" 
+             Foreground="{DynamicResource MahApps.Brushes.Text}" >
+        
         <DockPanel Margin="3">
 
             <DockPanel DockPanel.Dock="Top">
@@ -180,29 +183,29 @@
                     </TextBlock>
 
                     <!--Decode Text & OCR-->
-                    <TextBlock Margin="3,0" TextWrapping="Wrap" Name="txtDecodeText" Width="120">
+                    <TextBlock Margin="3,0" Name="txtDecodeText">
                         <TextBlock.Style>
                             <Style TargetType="{x:Type TextBlock}">
 
                                 <Style.Triggers>
 
                                     <DataTrigger Value="verify1D" Binding="{Binding Report.Type, Mode=OneTime}">
-                                        <Setter Property="Text" Value="{Binding Report.DecodeText, Mode=OneTime}"/>
+                                        <Setter Property="Text" Value="{Binding Report.DecodeText, Converter={StaticResource shortenString}, Mode=OneTime}"/>
                                     </DataTrigger>
 
                                     <DataTrigger Value="verify2D" Binding="{Binding Report.Type, Mode=OneTime}">
-                                        <Setter Property="Text" Value="{Binding Report.DecodeText, Mode=OneTime}"/>
+                                        <Setter Property="Text" Value="{Binding Report.DecodeText, Converter={StaticResource shortenString}, Mode=OneTime}"/>
                                     </DataTrigger>
 
                                     <DataTrigger Value="ocr" Binding="{Binding Report.Type, Mode=OneTime}">
-                                        <Setter Property="Text" Value="{Binding Report.Text, Mode=OneTime}"/>
+                                        <Setter Property="Text" Value="{Binding Report.Text, Converter={StaticResource shortenString}, Mode=OneTime}"/>
                                     </DataTrigger>
 
                                     <DataTrigger Value="ocv" Binding="{Binding Report.Type, Mode=OneTime}">
-                                        <Setter Property="Text" Value="{Binding Report.Text, Mode=OneTime}"/>
+                                        <Setter Property="Text" Value="{Binding Report.Text, Converter={StaticResource shortenString}, Mode=OneTime}"/>
                                     </DataTrigger>
 
-                                    <DataTrigger Value="blemish" Binding="{Binding Report.Type, Mode=OneTime}">
+                                    <DataTrigger Value="blemish" Binding="{Binding Report.Type, Converter={StaticResource shortenString}, Mode=OneTime}">
                                         <Setter Property="Text" Value=""/>
                                     </DataTrigger>
 
@@ -229,7 +232,8 @@
                 </Button>
 
                 <!--Overall Grade-->
-                <Button x:Name="btnOverallGrade" Width="30" Height="30" Margin="3" Click="btnOverallGrade_Click" VerticalAlignment="Top">
+                <Button x:Name="btnOverallGrade" Width="30" Height="30" Margin="3" Click="btnOverallGrade_Click"
+                        VerticalAlignment="Top" HorizontalAlignment="Right">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Square.Accent}">
                             <Setter Property="Background" Value="{DynamicResource CB_Green}"/>

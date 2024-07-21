@@ -74,8 +74,10 @@ public partial class RunResult : ObservableRecipient, IImageResultEntry, IRecipi
         if (value)
         {
             SourceImage?.InitPrinterVariables(SelectedPrinter);
+
             V275CurrentImage?.InitPrinterVariables(SelectedPrinter);
             V275StoredImage?.InitPrinterVariables(SelectedPrinter);
+
             V5CurrentImage?.InitPrinterVariables(SelectedPrinter);
             V5StoredImage?.InitPrinterVariables(SelectedPrinter);
         }

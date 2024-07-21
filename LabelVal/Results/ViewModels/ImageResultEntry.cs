@@ -46,20 +46,25 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
     partial void OnSelectedPrinterChanged(PrinterSettings value)
     {
         PrinterAreaOverlay = ShowPrinterAreaOverSource ? CreatePrinterAreaOverlay(true) : null;
-
-        SourceImage?.InitPrinterVariables(SelectedPrinter);
-
-        V275StoredImage?.InitPrinterVariables(SelectedPrinter);
-        V275CurrentImage?.InitPrinterVariables(SelectedPrinter);
-        
-        V5StoredImage?.InitPrinterVariables(SelectedPrinter);
-        V5CurrentImage?.InitPrinterVariables(SelectedPrinter);
     }
     partial void OnSelectedDatabaseChanged(Databases.ImageResultsDatabase value) => GetStored();
 
     [ObservableProperty] private Sectors.ViewModels.Sector selectedSector;
 
     [ObservableProperty] private bool showDetails;
+    partial void OnShowDetailsChanged(bool value)
+    {
+        if(value)
+        {
+            SourceImage?.InitPrinterVariables(SelectedPrinter);
+
+            V275CurrentImage?.InitPrinterVariables(SelectedPrinter);
+            V275StoredImage?.InitPrinterVariables(SelectedPrinter);
+
+            V5CurrentImage?.InitPrinterVariables(SelectedPrinter);
+            V5StoredImage?.InitPrinterVariables(SelectedPrinter);
+        }
+    }
 
     public ImageResultEntry(ImageEntry sourceImage, ImageResults imageResults)
     {
@@ -69,7 +74,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         IsActive = true;
         RecieveAll();
 
-        SourceImage.InitPrinterVariables(SelectedPrinter);
+       // SourceImage.InitPrinterVariables(SelectedPrinter);
     }
 
     private void RecieveAll()

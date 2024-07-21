@@ -19,26 +19,14 @@ public partial class ImageResultEntry
     public delegate void V275ProcessImageDelegate(ImageResultEntry imageResults, string type);
     public event V275ProcessImageDelegate V275ProcessImage;
 
-
     [ObservableProperty] private Databases.V275Result v275ResultRow;
-    partial void OnV275ResultRowChanged(Databases.V275Result value)
-    {
-        if (value != null)
-            V275ResultRow?.Stored.InitPrinterVariables(SelectedPrinter);
+    partial void OnV275ResultRowChanged(Databases.V275Result value) => V275StoredImage = V275ResultRow?.Stored;
 
-        OnPropertyChanged(nameof(V275StoredImage));
-    }
-
-    public ImageEntry V275StoredImage => V275ResultRow?.Stored;
+    [ObservableProperty] private ImageEntry v275StoredImage;
     [ObservableProperty] private DrawingImage v275StoredImageOverlay;
 
     [ObservableProperty] private ImageEntry v275CurrentImage;
     [ObservableProperty] private DrawingImage v275CurrentImageOverlay;
-    partial void OnV275CurrentImageChanged(ImageEntry value) 
-    { 
-        if (value != null)
-            value.InitPrinterVariables(SelectedPrinter);
-    }
 
     public Job V275CurrentTemplate { get; set; }
     public Report V275CurrentReport { get; private set; }
@@ -72,14 +60,14 @@ public partial class ImageResultEntry
     private Task<int> V275Load() => V275LoadTask();
 
     private void V275GetStored()
-    {  
+    {
         V275StoredSectors.Clear();
 
         V275ResultRow = SelectedDatabase.Select_V275Result(RollUID, ImageUID);
 
         if (V275ResultRow == null)
             return;
-        
+
         List<Sectors.ViewModels.Sector> tempSectors = [];
         if (!string.IsNullOrEmpty(V275ResultRow.Report) && !string.IsNullOrEmpty(V275ResultRow.Template))
         {
@@ -110,8 +98,8 @@ public partial class ImageResultEntry
             foreach (Sectors.ViewModels.Sector sec in tempSectors)
                 V275StoredSectors.Add(sec);
 
-        }          
-        
+        }
+
         V275StoredImageOverlay = V275CreateSectorsImageOverlay(V275ResultRow._Job, true, V275ResultRow._Report, V275StoredImage, V275StoredSectors);
     }
 
@@ -123,7 +111,7 @@ public partial class ImageResultEntry
             LogError("Unable to read the repeat report from the node.");
 
             ClearRead("V275");
-            
+
             return false;
         }
 
@@ -138,6 +126,7 @@ public partial class ImageResultEntry
         }
         else
         {
+            ImageUtilities.SetBitmapDPI(report.image, ImageResults.SelectedImageRoll.TargetDPI);
             V275CurrentImage = new ImageEntry(RollUID, report.image, ImageResults.SelectedImageRoll.TargetDPI);
         }
 
@@ -257,7 +246,7 @@ public partial class ImageResultEntry
 
         //ToDo: Sort the diff list
         foreach (Sectors.ViewModels.SectorDifferences d in diff)
-            if (d.IsNotEmpty)
+            if (d.IsNotEmpty || d.IsSectorMissing)
                 V275DiffSectors.Add(d);
 
     }

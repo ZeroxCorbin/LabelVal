@@ -15,24 +15,13 @@ namespace LabelVal.Results.ViewModels;
 public partial class ImageResultEntry
 {
     [ObservableProperty] private Databases.V5Result v5ResultRow;
-    partial void OnV5ResultRowChanged(V5Result value)
-    {
-        if (value != null)
-            V5ResultRow?.Stored.InitPrinterVariables(SelectedPrinter);
+    partial void OnV5ResultRowChanged(V5Result value) => V5StoredImage = value?.Stored;
 
-        OnPropertyChanged(nameof(V5StoredImage));
-    }
-
-    public ImageEntry V5StoredImage => V5ResultRow?.Stored;
+    [ObservableProperty] private ImageEntry v5StoredImage;
     [ObservableProperty] private DrawingImage v5StoredImageOverlay;
 
     [ObservableProperty] private ImageEntry v5CurrentImage;
     [ObservableProperty] private DrawingImage v5CurrentImageOverlay;
-    partial void OnV5CurrentImageChanged(ImageEntry value)
-    {
-        if (value != null)
-            value.InitPrinterVariables(SelectedPrinter);
-    }
 
     public V5_REST_Lib.Models.Config V5CurrentTemplate { get; set; }
     public JObject V5CurrentReport { get; private set; }
@@ -223,7 +212,7 @@ V5CurrentImage = new ImageEntry(RollUID, triggerResults.FullImage, 600);
 
         List<Sectors.ViewModels.SectorDifferences> diff = [];
 
-        //Compare; Do not check for missing her. To keep found at top of list.
+        //Compare; Do not check for missing here. To keep found at top of list.
         foreach (Sectors.ViewModels.Sector sec in V5StoredSectors)
         {
             foreach (Sectors.ViewModels.Sector cSec in V5CurrentSectors)
@@ -295,7 +284,7 @@ V5CurrentImage = new ImageEntry(RollUID, triggerResults.FullImage, 600);
             }
 
         foreach (Sectors.ViewModels.SectorDifferences d in diff)
-            if (d.IsNotEmpty)
+            if (d.IsNotEmpty || d.IsSectorMissing)
                 V5DiffSectors.Add(d);
     }
     public int V5LoadTask() => 1;

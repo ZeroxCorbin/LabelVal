@@ -520,7 +520,12 @@ public partial class ImageResults : ObservableRecipient,
             return;
         }
 
-        if (!await SelectedNode.Connection.Commands.SimulationTriggerImage(new V275_REST_Lib.Models.SimulationTrigger() { image = img.GetPngBytes(), dpi = (uint)Math.Round(img.Image.DpiX, 0) }))
+        if (!await SelectedNode.Connection.Commands.SimulationTriggerImage(
+            new V275_REST_Lib.Models.SimulationTrigger() 
+            { 
+                image = img.GetPngBytes(), 
+                dpi = (uint)Math.Round(img.Image.DpiX, 0)
+            }))
         {
             LogError("Error triggering the simulator.");
             imageResults.IsV275Working = false;

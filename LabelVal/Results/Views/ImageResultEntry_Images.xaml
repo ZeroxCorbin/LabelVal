@@ -33,7 +33,7 @@
     <!--Source Image-->
     <DockPanel>
 
-        <md:Card HorizontalAlignment="Left" DockPanel.Dock="Top" Margin="3,3,0,0"
+        <md:Card x:Name="crdSource" HorizontalAlignment="Left" DockPanel.Dock="Top" Margin="3,3,0,0"
                  Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
                  Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
@@ -75,20 +75,29 @@
                         <Setter Property="MaxWidth" Value="400"/>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding V275StoredImage, Converter={StaticResource objectIsNull}}" Value="False">
-                                <Setter Property="MaxHeight" Value="100"/>
-                                <Setter Property="MaxWidth" Value="100"/>
+                                <Setter Property="MaxHeight" Value="{Binding ActualWidth, ElementName=crdSource}"/>
+                                <Setter Property="MaxWidth" Value="{Binding ActualWidth, ElementName=crdSource}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding V275CurrentImage, Converter={StaticResource objectIsNull}}" Value="False">
+                                <Setter Property="MaxHeight" Value="{Binding ActualWidth, ElementName=crdSource}"/>
+                                <Setter Property="MaxWidth" Value="{Binding ActualWidth, ElementName=crdSource}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding V5StoredImage, Converter={StaticResource objectIsNull}}" Value="False">
+                                <Setter Property="MaxHeight" Value="{Binding ActualWidth, ElementName=crdSource}"/>
+                                <Setter Property="MaxWidth" Value="{Binding ActualWidth, ElementName=crdSource}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding V5CurrentImage, Converter={StaticResource objectIsNull}}" Value="False">
+                                <Setter Property="MaxHeight" Value="{Binding ActualWidth, ElementName=crdSource}"/>
+                                <Setter Property="MaxWidth" Value="{Binding ActualWidth, ElementName=crdSource}"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Grid.Style>
 
                 <Image x:Name="SourceImage" Source="{Binding SourceImage.ImageLow, Mode=OneTime}"
-                                RenderOptions.BitmapScalingMode="NearestNeighbor"
-                                HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                RenderOptions.BitmapScalingMode="NearestNeighbor"/>
 
-                <Image Source="{Binding PrinterAreaOverlay, Mode=OneWay}" Stretch="None"
-                                RenderOptions.BitmapScalingMode="NearestNeighbor"
-                                HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                <Image Source="{Binding PrinterAreaOverlay, Mode=OneWay}" Stretch="None" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
 
                 <Label HorizontalAlignment="Right" VerticalAlignment="Top" Margin="3">
                     <Label.Style>

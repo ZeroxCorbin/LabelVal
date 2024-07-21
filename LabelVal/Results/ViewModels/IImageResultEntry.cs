@@ -1,4 +1,5 @@
-﻿using LabelVal.ImageRolls.ViewModels;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Sectors.ViewModels;
 using System.Collections.ObjectModel;
 using System.Windows.Media;

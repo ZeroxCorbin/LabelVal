@@ -57,7 +57,8 @@ public partial class ImageEntry : ObservableRecipient
     [JsonProperty] public double ImageWidth { get; set; }
     [JsonProperty] public double ImageHeight { get; set; }
     [JsonProperty] public long ImageTotalPixels { get; set; }
-    [JsonProperty][property: SQLite.Ignore] public double V52ImageTotalPixelDeviation { get; private set; }
+
+    [ObservableProperty][property: SQLite.Ignore] private double v52ImageTotalPixelDeviation;
 
     [ObservableProperty][property: SQLite.Ignore] private double printerWidth;
     [ObservableProperty][property: SQLite.Ignore] private double printerHeight;

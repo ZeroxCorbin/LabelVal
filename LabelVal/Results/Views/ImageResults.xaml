@@ -132,7 +132,7 @@
 
         </DockPanel>
 
-        <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Left">
+        <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top">
             <Border Style="{StaticResource groupLeft}" />
             <Border Style="{StaticResource groupBottom}"/>
 
