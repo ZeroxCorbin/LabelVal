@@ -16,6 +16,9 @@ public partial class ImageViewerDialogViewModel : ObservableObject
     [ObservableProperty] private BitmapImage image;
     public List<DrawingImage> Overlays { get; set; } = new();
 
+    [ObservableProperty] private bool allowPan;
+    [ObservableProperty] private bool allowZoom;
+
     public void LoadImage(byte[] image, List<DrawingImage> overlays)
     {
         if (image == null || image.Length < 2)
@@ -34,7 +37,6 @@ public partial class ImageViewerDialogViewModel : ObservableObject
         foreach (var overlay in overlays)
             if (overlay != null) Overlays.Add(overlay);
     }
-
     public void LoadImage(byte[] image, DrawingImage overlay)
     {
         if (image == null || image.Length < 2)

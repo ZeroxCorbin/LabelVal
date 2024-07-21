@@ -5,6 +5,7 @@
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
                     xmlns:local="clr-namespace:LabelVal.Dialogs"
                     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
                     xmlns:ViewModelsDiag="clr-namespace:LabelVal.Dialogs"
                     xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
                     Dialog:DialogParticipation.Register="{Binding}"
@@ -27,33 +28,62 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            
-            <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-                <DockPanel Margin="3"> 
-                    
-                    <DockPanel DockPanel.Dock="Top">
-                        <TextBlock Text="{Binding Image.PixelWidth, Mode=OneTime}"  Foreground="White"/>
-                        <TextBlock Text="x" Foreground="White" Margin="3,0"/>
-                        <TextBlock Text="{Binding Image.PixelHeight, Mode=OneTime}"  Foreground="White"/>
-                    </DockPanel>
-                    
-                    <DockPanel HorizontalAlignment="Center">
-                        <TextBlock Text="{Binding Image.DpiX, StringFormat=N, Converter={StaticResource doubleToString}, Mode=OneTime}"  Foreground="White"/>
-                        <TextBlock Text="x" Foreground="White" Margin="3,0"/>
-                        <TextBlock Text="{Binding Image.DpiY, StringFormat=N, Converter={StaticResource doubleToString}, Mode=OneTime}"  Foreground="White"/>
-                    </DockPanel>
-                </DockPanel>
+
+            <DockPanel HorizontalAlignment="Right">
+
+                <Button Name="CloseButton" Click="CloseButton_Click" Margin="3" Width="30" Height="30" Style="{StaticResource MahApps.Styles.Button.Hamburger}">
+                    <iconPacks:Modern Kind="Close"/>
+                </Button>
+
+            </DockPanel>
+
+            <md:Card x:Name="crdSource" HorizontalAlignment="Center"
+                 Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
                 <DockPanel>
-                    <Button Name="Reset" Click="Reset_Click" Margin="3" Width="30" Height="30" Style="{StaticResource MahApps.Styles.Button.Square}">
-                        <iconPacks:PackIconMaterial Kind="ArrowExpandAll"/>
-                    </Button>
 
-                    <Button Name="CloseButton" Click="CloseButton_Click" Margin="3" Width="30" Height="30" Style="{StaticResource MahApps.Styles.Button.Square}">
-                        <iconPacks:Modern Kind="Close"/>
-                    </Button>
+                    <!--Title-->
+                    <!--<md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                             HorizontalAlignment="Left" Padding="4,1" Margin="3">
+                        <TextBlock Text="Source Image" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                    </md:Card>
+
+                    <Border Style="{StaticResource imageBar}" Margin="3,0"/>-->
+
+                    <DockPanel Margin="3">
+
+                        <TextBox  Text="{Binding Image.PixelWidth, Mode=OneWay}"
+                                 md:TextFieldAssist.SuffixText="px" 
+                                 Margin="5,0"
+                                 IsHitTestVisible="False" BorderThickness="0"/>
+
+                        <TextBox Text="{Binding Image.PixelHeight, Mode=OneWay}" 
+                                 md:TextFieldAssist.SuffixText="px" 
+                                 Margin="5,0"
+                                 IsHitTestVisible="False" BorderThickness="0"/>
+
+                        <DockPanel Margin="6,0">
+
+
+                            <TextBox Text="{Binding Image.DpiX, StringFormat=N, Converter={StaticResource doubleToString}, Mode=OneWay}"
+                                 md:TextFieldAssist.SuffixText="DPI" 
+                                 Margin="5,0"
+                                 IsHitTestVisible="False" BorderThickness="0"/>
+
+                            <TextBox Text="{Binding Image.DpiY, StringFormat=N, Converter={StaticResource doubleToString}, Mode=OneWay}"
+                                 md:TextFieldAssist.SuffixText="DPI" 
+                                 Margin="5,0"
+                                 IsHitTestVisible="False" BorderThickness="0"/>
+                        </DockPanel>
+
+                        <Button Name="Reset" Click="Reset_Click" Margin="3" Style="{StaticResource MahApps.Styles.Button.Hamburger}">
+                            <iconPacks:PackIconMaterial Kind="ArrowExpandAll"/>
+                        </Button>
+
+                    </DockPanel>
                 </DockPanel>
-            </DockPanel>
+            </md:Card>
 
             <paz:ZoomBorder Grid.Row="1" Name="ZoomBorder" ClipToBounds="True">
                 <Grid x:Name="grdOverlays" HorizontalAlignment="Center"/>
