@@ -98,10 +98,10 @@
                         <Image Source="{Binding V5StoredImageOverlay, Mode=OneWay}" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
                     </Grid>
 
-                    <!--Details-->
-                    <ContentControl Content="{Binding V5StoredImage, Mode=OneWay}" ContentTemplate="{StaticResource imageDetailsTemplate}"/>
-
+             
                 </DockPanel>
+       <!--Details-->
+                    <ContentControl Content="{Binding V5StoredImage, Mode=OneWay}" ContentTemplate="{StaticResource imageDetailsTemplate}"/>
 
             </DockPanel>
 
@@ -185,10 +185,10 @@
                         <Image Source="{Binding V5CurrentImageOverlay, Mode=OneWay}" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
                     </Grid>
 
-                    <!--Details-->
-                    <ContentControl Content="{Binding V5CurrentImage}" ContentTemplate="{StaticResource imageDetailsTemplate}"/>
-
+ 
                 </DockPanel>
+                   <!--Details-->
+                    <ContentControl Content="{Binding V5CurrentImage}" ContentTemplate="{StaticResource imageDetailsTemplate}"/>
 
             </DockPanel>
 

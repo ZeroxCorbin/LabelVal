@@ -75,20 +75,20 @@
                         <Setter Property="MaxWidth" Value="400"/>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding V275StoredImage, Converter={StaticResource objectIsNull}}" Value="False">
-                                <Setter Property="MaxHeight" Value="{Binding ActualWidth, ElementName=crdSource}"/>
-                                <Setter Property="MaxWidth" Value="{Binding ActualWidth, ElementName=crdSource}"/>
+                                <Setter Property="MaxHeight" Value="184"/>
+                                <Setter Property="MaxWidth" Value="184"/>
                             </DataTrigger>
                             <DataTrigger Binding="{Binding V275CurrentImage, Converter={StaticResource objectIsNull}}" Value="False">
-                                <Setter Property="MaxHeight" Value="{Binding ActualWidth, ElementName=crdSource}"/>
-                                <Setter Property="MaxWidth" Value="{Binding ActualWidth, ElementName=crdSource}"/>
+                                <Setter Property="MaxHeight" Value="184"/>
+                                <Setter Property="MaxWidth" Value="184"/>
                             </DataTrigger>
                             <DataTrigger Binding="{Binding V5StoredImage, Converter={StaticResource objectIsNull}}" Value="False">
-                                <Setter Property="MaxHeight" Value="{Binding ActualWidth, ElementName=crdSource}"/>
-                                <Setter Property="MaxWidth" Value="{Binding ActualWidth, ElementName=crdSource}"/>
+                                <Setter Property="MaxHeight" Value="184"/>
+                                <Setter Property="MaxWidth" Value="184"/>
                             </DataTrigger>
                             <DataTrigger Binding="{Binding V5CurrentImage, Converter={StaticResource objectIsNull}}" Value="False">
-                                <Setter Property="MaxHeight" Value="{Binding ActualWidth, ElementName=crdSource}"/>
-                                <Setter Property="MaxWidth" Value="{Binding ActualWidth, ElementName=crdSource}"/>
+                                <Setter Property="MaxHeight" Value="184"/>
+                                <Setter Property="MaxWidth" Value="184"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -123,9 +123,11 @@
             </Grid>
 
             <!--Details-->
-            <ContentControl Content="{Binding SourceImage}" ContentTemplate="{StaticResource imageDetailsTemplate}"/>
+        
+        </DockPanel> 
+        
+        <ContentControl Content="{Binding SourceImage}" ContentTemplate="{StaticResource imageDetailsTemplate}"/>
 
-        </DockPanel>
     </DockPanel>
 
 </UserControl>

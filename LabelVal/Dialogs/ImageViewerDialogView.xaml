@@ -22,8 +22,12 @@
 
     <Dialog:CustomDialog.DialogTop>
 
-        <DockPanel>
-
+        <Grid HorizontalAlignment="Center" VerticalAlignment="Top" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
             <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Right" VerticalAlignment="Bottom">
                 <DockPanel Margin="3"> 
                     
@@ -51,11 +55,11 @@
                 </DockPanel>
             </DockPanel>
 
-            <paz:ZoomBorder Name="ZoomBorder" Margin="3" HorizontalAlignment="Center" VerticalAlignment="Top" ClipToBounds="True">
-                <Grid x:Name="grdOverlays"/>
+            <paz:ZoomBorder Grid.Row="1" Name="ZoomBorder" ClipToBounds="True">
+                <Grid x:Name="grdOverlays" HorizontalAlignment="Center"/>
             </paz:ZoomBorder>
 
-        </DockPanel>
+        </Grid>
 
 
 

@@ -22,6 +22,7 @@ namespace LabelVal.Dialogs
     /// </summary>
     public partial class ImageViewerDialogView : MahApps.Metro.Controls.Dialogs.CustomDialog
     {
+        private Image _img;
         public ImageViewerDialogView()
         {
             InitializeComponent();
@@ -46,32 +47,33 @@ namespace LabelVal.Dialogs
             this.DataContext = null;
         }
 
-        private void Reset_Click(object sender, RoutedEventArgs e) => ZoomBorder.Reset();
+        private void Reset_Click(object sender, RoutedEventArgs e) { }// => ZoomBorder.Reset();
 
         private void CustomDialog_Loaded(object sender, RoutedEventArgs e)
         {
+            grdOverlays.Height = this.Height - 50;
+            ZoomBorder.Width = this.Width - 25;
+
             var high = ((ImageViewerDialogViewModel)DataContext).Image.PixelWidth;
             foreach (var overlay in ((ImageViewerDialogViewModel)DataContext).Overlays)
                 high = Math.Max(high, (int)overlay.Width);
 
-            var ratio = (this.ActualWidth - 100) / high;
-
-            var img = new Image
+            _img = new Image
             {
                 Source = ((ImageViewerDialogViewModel)DataContext).Image,
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalAlignment = HorizontalAlignment.Left,
-                Width = ((ImageViewerDialogViewModel)DataContext).Image.PixelWidth * ratio,
-                Height = ((ImageViewerDialogViewModel)DataContext).Image.PixelHeight * ratio,
+                Stretch = Stretch.Uniform,
+                StretchDirection = StretchDirection.Both
             };
-            RenderOptions.SetBitmapScalingMode(img, BitmapScalingMode.NearestNeighbor);
+            RenderOptions.SetBitmapScalingMode(_img, BitmapScalingMode.NearestNeighbor);
 
-            grdOverlays.Children.Add(img);
+            grdOverlays.Children.Add(_img);
 
-            AddOverlaysToGrid(ratio);
+            AddOverlaysToGrid();
         }
 
-        private void AddOverlaysToGrid(double ratio)
+        private void AddOverlaysToGrid()
         {
             foreach (var overlay in ((ImageViewerDialogViewModel)DataContext).Overlays)
             {
@@ -80,8 +82,8 @@ namespace LabelVal.Dialogs
                     Source = overlay,
                     VerticalAlignment = VerticalAlignment.Top,
                     HorizontalAlignment = HorizontalAlignment.Left,
-                    Width = overlay.Width * ratio,
-                    Height = overlay.Height * ratio,
+                    Width = _img.Width,
+                    Height = _img.Height,
 
                 };
                 RenderOptions.SetBitmapScalingMode(img, BitmapScalingMode.NearestNeighbor);
