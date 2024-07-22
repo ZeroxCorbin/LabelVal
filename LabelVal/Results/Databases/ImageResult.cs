@@ -3,6 +3,7 @@ using LabelVal.ImageRolls.ViewModels;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using V275_REST_lib.Models;
+using V5_REST_Lib.Models;
 
 namespace LabelVal.Results.Databases;
 public partial class ImageResult : ObservableObject
@@ -27,8 +28,8 @@ public class V275Result : ImageResult
 }
 public class V5Result : ImageResult
 {
-    [SQLite.Ignore] public JObject _Config => !string.IsNullOrEmpty(Template) ? JsonConvert.DeserializeObject<JObject>(Template) : null;
-    [SQLite.Ignore] public JObject _Report => !string.IsNullOrEmpty(Report) ? JsonConvert.DeserializeObject<JObject>(Report) : null;
+    [SQLite.Ignore] public Config _Config => !string.IsNullOrEmpty(Template) ? JsonConvert.DeserializeObject<Config>(Template) : null;
+    [SQLite.Ignore] public ResultsAlt _Report => !string.IsNullOrEmpty(Report) ? JsonConvert.DeserializeObject<ResultsAlt>(Report) : null;
 }
 
 public class L95xxResult : ImageResult { }

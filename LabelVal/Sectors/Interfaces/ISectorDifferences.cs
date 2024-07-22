@@ -45,11 +45,11 @@ public class GradeValue
 public class Grade
 {
     public string Name { get; set; }
-    public float Value { get; set; }
+    public double Value { get; set; }
     public string Letter { get; set; }
 
 
-    public Grade(string name, float value, string letter)
+    public Grade(string name, double value, string letter)
     {
         Value = value;
         Letter = letter;
@@ -68,10 +68,10 @@ public class Grade
 public class ValueResult
 {
     public string Name { get; set; }
-    public float Value { get; set; }
+    public double Value { get; set; }
     public string Result { get; set; }
 
-    public ValueResult(string name, float value, string result)
+    public ValueResult(string name, double value, string result)
     {
         Value = value;
         Result = result;

@@ -24,7 +24,7 @@ public partial class ImageResultEntry
     [ObservableProperty] private DrawingImage v5CurrentImageOverlay;
 
     public V5_REST_Lib.Models.Config V5CurrentTemplate { get; set; }
-    public JObject V5CurrentReport { get; private set; }
+    public V5_REST_Lib.Models.ResultsAlt V5CurrentReport { get; private set; }
 
     [ObservableProperty] private ObservableCollection<Sectors.Interfaces.ISector> v5CurrentSectors = [];
     [ObservableProperty] private ObservableCollection<Sectors.Interfaces.ISector> v5StoredSectors = [];
@@ -124,29 +124,15 @@ public partial class ImageResultEntry
 
             return false;
         }
-V5CurrentImage = new ImageEntry(RollUID, triggerResults.FullImage, 600);
-        //if (!ImageResults.SelectedScanner.IsSimulator)
-            
-        //else
-        //    V5CurrentImage = SourceImage.Clone();
 
-        V5CurrentReport = JsonConvert.DeserializeObject<JObject>(triggerResults.ReportJSON);
+        V5CurrentImage = new ImageEntry(RollUID, triggerResults.FullImage, 600);
+        V5CurrentReport = JsonConvert.DeserializeObject<V5_REST_Lib.Models.ResultsAlt>(triggerResults.ReportJSON);
 
         V5CurrentSectors.Clear();
 
         List<Sectors.Interfaces.ISector> tempSectors = [];
-
-        if (V5CurrentReport["event"]?["name"].ToString() == "cycle-report-alt")
-        {
-            foreach (JToken rSec in V5CurrentReport["event"]?["data"]?["decodeData"])
-                tempSectors.Add(new V5.Sectors.Sector(rSec.ToObject<V5_REST_Lib.Models.Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
-
-        }
-        else if (V5CurrentReport["event"]?["name"].ToString() == "cycle-report")
-        {
-            foreach (JToken rSec in V5CurrentReport["event"]["data"]["cycleConfig"]["qualifiedResults"])
-                tempSectors.Add(new V5.Sectors.Sector(rSec.ToObject<V5_REST_Lib.Models.Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
-        }
+        foreach (var rSec in V5CurrentReport._event.data.decodeData)
+            tempSectors.Add(new V5.Sectors.Sector(rSec, $"DecodeTool{rSec.toolSlot}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
 
         if (tempSectors.Count > 0)
         {
@@ -166,37 +152,26 @@ V5CurrentImage = new ImageEntry(RollUID, triggerResults.FullImage, 600);
 
     private void V5GetStored()
     {
-        if(SelectedDatabase == null)
+        if (SelectedDatabase == null)
             return;
-        
+
         V5StoredSectors.Clear();
 
         V5ResultRow = SelectedDatabase.Select_V5Result(RollUID, ImageUID);
 
         if (V5ResultRow == null)
         {
-            LogDebug("No V5 result found.");       
+            LogDebug("No V5 result found.");
             return;
         }
 
         List<Sectors.Interfaces.ISector> tempSectors = [];
         if (!string.IsNullOrEmpty(V5ResultRow.Report))
         {
-            JObject results = V5ResultRow._Report;
+            V5StoredImageOverlay = V5CreateSectorsImageOverlay(V5ResultRow._Report, V5StoredImage);
 
-            V5StoredImageOverlay = V5CreateSectorsImageOverlay(results, V5StoredImage);
-
-            if (results["event"]?["name"].ToString() == "cycle-report-alt")
-            {
-                foreach (JToken rSec in results["event"]?["data"]?["decodeData"])
-                    tempSectors.Add(new V5.Sectors.Sector(rSec.ToObject<V5_REST_Lib.Models.Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
-
-            }
-            else if (results["event"]?["name"].ToString() == "cycle-report")
-            {
-                foreach (JToken rSec in results["event"]["data"]["cycleConfig"]["qualifiedResults"])
-                    tempSectors.Add(new V5.Sectors.Sector(rSec.ToObject<V5_REST_Lib.Models.Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
-            }
+            foreach (var rSec in V5ResultRow._Report._event.data.decodeData)
+                tempSectors.Add(new V5.Sectors.Sector(rSec, $"DecodeTool{rSec.toolSlot}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
         }
 
         if (tempSectors.Count > 0)
@@ -290,7 +265,7 @@ V5CurrentImage = new ImageEntry(RollUID, triggerResults.FullImage, 600);
     }
     public int V5LoadTask() => 1;
 
-    private DrawingImage V5CreateSectorsImageOverlay(JObject results, ImageRolls.ViewModels.ImageEntry image)
+    private DrawingImage V5CreateSectorsImageOverlay(V5_REST_Lib.Models.ResultsAlt results, ImageRolls.ViewModels.ImageEntry image)
     {
         DrawingGroup drwGroup = new();
 
@@ -305,95 +280,63 @@ V5CurrentImage = new ImageEntry(RollUID, triggerResults.FullImage, 600);
         GeometryGroup secCenter = new();
         GeometryGroup bndAreas = new();
 
-        if (results["event"]?["name"].ToString() == "cycle-report-alt")
+        foreach (var sec in results._event.data.decodeData)
         {
-            foreach (JToken sec in results["event"]?["data"]?["decodeData"])
+            if (sec.boundingBox == null)
+                continue;
+
+            GeometryGroup secAreas = new();
+
+            double brushWidth = 4.0;
+            double halfBrushWidth = brushWidth / 2.0;
+
+            for (int i = 0; i < 4; i++)
             {
-                if (sec["boundingBox"] == null)
-                    continue;
+                int nextIndex = (i + 1) % 4;
 
-                GeometryGroup secAreas = new();
+                double dx = sec.boundingBox[nextIndex].x - sec.boundingBox[i].x;
+                double dy = sec.boundingBox[nextIndex].y - sec.boundingBox[i].y;
 
-                double brushWidth = 4.0;
-                double halfBrushWidth = brushWidth / 2.0;
+                // Calculate the length of the line segment
+                double length = Math.Sqrt((dx * dx) + (dy * dy));
 
-                for (int i = 0; i < 4; i++)
-                {
-                    int nextIndex = (i + 1) % 4;
+                // Normalize the direction to get a unit vector
+                double ux = dx / length;
+                double uy = dy / length;
 
-                    double dx = sec["boundingBox"][nextIndex]["x"].Value<double>() - sec["boundingBox"][i]["x"].Value<double>();
-                    double dy = sec["boundingBox"][nextIndex]["y"].Value<double>() - sec["boundingBox"][i]["y"].Value<double>();
+                // Calculate the normal vector (perpendicular to the direction)
+                double nx = -uy;
+                double ny = ux;
 
-                    // Calculate the length of the line segment
-                    double length = Math.Sqrt((dx * dx) + (dy * dy));
+                // Calculate the adjustment vector
+                double ax = nx * halfBrushWidth;
+                double ay = ny * halfBrushWidth;
 
-                    // Normalize the direction to get a unit vector
-                    double ux = dx / length;
-                    double uy = dy / length;
+                // Adjust the points
+                double startX = sec.boundingBox[i].x - ax;
+                double startY = sec.boundingBox[i].y - ay;
+                double endX = sec.boundingBox[nextIndex].x - ax;
+                double endY = sec.boundingBox[nextIndex].y - ay;
 
-                    // Calculate the normal vector (perpendicular to the direction)
-                    double nx = -uy;
-                    double ny = ux;
-
-                    // Calculate the adjustment vector
-                    double ax = nx * halfBrushWidth;
-                    double ay = ny * halfBrushWidth;
-
-                    // Adjust the points
-                    double startX = sec["boundingBox"][i]["x"].Value<double>() - ax;
-                    double startY = sec["boundingBox"][i]["y"].Value<double>() - ay;
-                    double endX = sec["boundingBox"][nextIndex]["x"].Value<double>() - ax;
-                    double endY = sec["boundingBox"][nextIndex]["y"].Value<double>() - ay;
-
-                    // Add the line to the geometry group
-                    secAreas.Children.Add(new LineGeometry(new Point(startX, startY), new Point(endX, endY)));
-                }
-
-                if (sec["grading"]?["grade"] != null)
-                {
-                    double grade = double.TryParse(sec["grading"]?["grade"].ToString(), out double g) ? g : 4.0;
-
-                    drwGroup.Children.Add(new GeometryDrawing(Brushes.Transparent, new Pen(GetGradeBrush(V5GetLetter(grade)), 4), secAreas));
-                }
-                else
-                {
-                    drwGroup.Children.Add(new GeometryDrawing(Brushes.Transparent, new Pen(Brushes.Black, 4), secAreas));
-                }
-                drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun($"DecodeTool{sec["toolSlot"]}", new Typeface("Arial"), 30.0, new Point(sec["boundingBox"][2]["x"].Value<double>() - 8, sec["boundingBox"][2]["y"].Value<double>() - 8))));
-
-                secCenter.Children.Add(new LineGeometry(new Point(sec["x"].Value<double>() + 10, sec["y"].Value<double>()), new Point(sec["x"].Value<double>() + -10, sec["y"].Value<double>())));
-                secCenter.Children.Add(new LineGeometry(new Point(sec["x"].Value<double>(), sec["y"].Value<double>() + 10), new Point(sec["x"].Value<double>(), sec["y"].Value<double>() + -10)));
-
-            }
-        }
-        else if (results["event"]?["name"].ToString() == "cycle-report")
-        {
-            foreach (JToken sec in results["event"]["data"]["cycleConfig"]["qualifiedResults"])
-            {
-                if (sec["boundingBox"] == null)
-                    continue;
-                GeometryGroup secAreas = new();
-                secAreas.Children.Add(new LineGeometry(
-                    new Point(sec["boundingBox"][0]["x"].Value<double>() - 2, sec["boundingBox"][0]["y"].Value<double>() - 2),
-                    new Point(sec["boundingBox"][1]["x"].Value<double>() + 2, sec["boundingBox"][1]["y"].Value<double>() - 2)));
-                secAreas.Children.Add(new LineGeometry(
-                    new Point(sec["boundingBox"][1]["x"].Value<double>() + 2, sec["boundingBox"][1]["y"].Value<double>() - 2),
-                    new Point(sec["boundingBox"][2]["x"].Value<double>() + 2, sec["boundingBox"][2]["y"].Value<double>() + 2)));
-                secAreas.Children.Add(new LineGeometry(
-                    new Point(sec["boundingBox"][2]["x"].Value<double>() + 2, sec["boundingBox"][2]["y"].Value<double>() + 2),
-                    new Point(sec["boundingBox"][3]["x"].Value<double>() - 2, sec["boundingBox"][3]["y"].Value<double>() + 2)));
-                secAreas.Children.Add(new LineGeometry(
-                    new Point(sec["boundingBox"][3]["x"].Value<double>() - 2, sec["boundingBox"][3]["y"].Value<double>() + 2),
-                    new Point(sec["boundingBox"][0]["x"].Value<double>() - 2, sec["boundingBox"][0]["y"].Value<double>() - 2)));
-
-                drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun($"DecodeTool{sec["toolSlot"]}", new Typeface("Arial"), 30.0, new Point(sec["boundingBox"][2]["x"].Value<double>() - 8, sec["boundingBox"][2]["y"].Value<double>() - 8))));
+                // Add the line to the geometry group
+                secAreas.Children.Add(new LineGeometry(new Point(startX, startY), new Point(endX, endY)));
             }
 
-            foreach (JToken sec in results["event"]["data"]["cycleConfig"]["job"]["toolList"])
+            if (sec.grading != null)
             {
-                foreach (JToken r in sec["SymbologyTool"]["regionList"])
-                    bndAreas.Children.Add(new RectangleGeometry(new Rect(r["Region"]["shape"]["RectShape"]["x"].Value<double>(), r["Region"]["shape"]["RectShape"]["y"].Value<double>(), r["Region"]["shape"]["RectShape"]["width"].Value<double>(), r["Region"]["shape"]["RectShape"]["height"].Value<double>())));
+                double grade = double.TryParse(sec.grading.grade, out double g) ? g : 4.0;
+
+                drwGroup.Children.Add(new GeometryDrawing(Brushes.Transparent, new Pen(GetGradeBrush(V5GetLetter(grade)), 4), secAreas));
             }
+            else
+            {
+                drwGroup.Children.Add(new GeometryDrawing(Brushes.Transparent, new Pen(Brushes.Black, 4), secAreas));
+            }
+            drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun($"DecodeTool{sec.toolSlot}", new Typeface("Arial"), 30.0, new Point(sec.boundingBox[2].x - 8, sec.boundingBox[2].y - 8))));
+
+            secCenter.Children.Add(new LineGeometry(new Point(sec.x + 10, sec.y), new Point(sec.x + -10, sec.y)));
+            secCenter.Children.Add(new LineGeometry(new Point(sec.x, sec.y + 10), new Point(sec.x, sec.y + -10)));
+
         }
 
         GeometryDrawing sectorCenters = new()

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using V275_REST_lib.Models;
+using V5_REST_Lib.Models;
 
 namespace LabelVal.V5.Sectors;
 
@@ -189,8 +190,8 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
     }
 
     public SectorDifferences() { }
-    public SectorDifferences(V5_REST_Lib.Models.Results_QualifiedResult results, string userName) => Process(results, userName);
-    public void Process(V5_REST_Lib.Models.Results_QualifiedResult results, string userName)
+    public SectorDifferences(ResultsAlt.Decodedata results, string userName) => Process(results, userName);
+    public void Process(ResultsAlt.Decodedata results, string userName)
     {
         UserName = userName;
         IsNotEmpty = false;
@@ -300,7 +301,7 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
         70 => "F",
         _ => throw new System.NotImplementedException(),
     };
-    private static string V5GetSymbolType(V5_REST_Lib.Models.Results_QualifiedResult results)
+    private static string V5GetSymbolType(ResultsAlt.Decodedata results)
     {
         if (results.Code128 != null)
             return "verify1D";

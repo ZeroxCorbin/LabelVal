@@ -5,7 +5,7 @@ namespace LabelVal.V5.Sectors
 {
     public class Template : ITemplate
     {
-        public Results_QualifiedResult V5Results { get; }
+        public V5_REST_Lib.Models.ResultsAlt.Decodedata V5Results { get; }
 
         public string Name { get; set; }
         public string Username { get; set; }
@@ -17,7 +17,7 @@ namespace LabelVal.V5.Sectors
         public TemplateMatchMode MatchSettings { get; set; }
         public BlemishMaskLayers BlemishMask { get; set; }
 
-        public Template(Results_QualifiedResult Report, string name)
+        public Template(V5_REST_Lib.Models.ResultsAlt.Decodedata Report, string name)
         {
             V5Results = Report;
 
@@ -39,7 +39,7 @@ namespace LabelVal.V5.Sectors
 
         public Template() { }
 
-        private string GetV5Symbology(Results_QualifiedResult Report)
+        private string GetV5Symbology(V5_REST_Lib.Models.ResultsAlt.Decodedata Report)
         {
             if (Report.Code128 != null)
                 return "Code128";

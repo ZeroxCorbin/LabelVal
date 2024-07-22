@@ -23,7 +23,7 @@ public class Report : IReport
     public string FormattedOut { get; set; }
     public ModuleData ExtendedData { get; set; }
 
-    public Report(Results_QualifiedResult v5)
+    public Report(V5_REST_Lib.Models.ResultsAlt.Decodedata v5)
     {
         Type = V5GetType(v5);
         SymbolType = V5GetSymbology(v5.type);
@@ -66,7 +66,7 @@ public class Report : IReport
     }
 
     private static string V5GetSymbology(string type) => type == "Datamatrix" ? "DataMatrix" : type;
-    private static string V5GetType(Results_QualifiedResult Report) =>
+    private static string V5GetType(V5_REST_Lib.Models.ResultsAlt.Decodedata Report) =>
         Report.Code128 != null
         ? "verify1D"
         : Report.Datamatrix != null

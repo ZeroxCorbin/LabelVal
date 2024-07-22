@@ -49,16 +49,16 @@
                                     </Grid.ColumnDefinitions>
 
                                     <StackPanel Orientation="Horizontal" Grid.Column="0">
-                                        <TextBlock Text="{Binding Path=name, Converter={StaticResource stringToUpper}, Mode=OneTime}"/>
+                                        <TextBlock Text="{Binding Path=Name, Converter={StaticResource stringToUpper}, Mode=OneTime}"/>
                                         <TextBlock Text=": "/>
-                                        <TextBlock Text="{Binding Path=data.subAlarm, Converter={StaticResource stringToUpper}, Mode=OneTime}" Grid.Column="1"/>
+                                        <TextBlock Text="{Binding Path=Data.SubAlarm, Converter={StaticResource stringToUpper}, Mode=OneTime}" Grid.Column="1"/>
                                     </StackPanel>
 
                                     <StackPanel Orientation="Horizontal" Grid.Column="2">
                                         <TextBlock Text=" ( "/>
-                                        <TextBlock Text="{Binding Path=data.text, StringFormat=N2, Converter={StaticResource floatTrim}, Mode=OneTime}"/>
+                                        <TextBlock Text="{Binding Path=Data.Text, StringFormat=N2, Converter={StaticResource floatTrim}, Mode=OneTime}"/>
                                         <TextBlock Text="/"/>
-                                        <TextBlock Text="{Binding Path=data.expected, StringFormat=N2, Converter={StaticResource floatTrim}, Mode=OneTime}"/>
+                                        <TextBlock Text="{Binding Path=Data.Expected, StringFormat=N2, Converter={StaticResource floatTrim}, Mode=OneTime}"/>
                                         <TextBlock Text=" )   "/>
 
                                         <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3">
@@ -66,10 +66,10 @@
                                                 <Style TargetType="{x:Type Border}">
                                                     <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
                                                     <Style.Triggers>
-                                                        <DataTrigger Value="2" Binding="{Binding category, Mode=OneTime}">
+                                                        <DataTrigger Value="2" Binding="{Binding Category, Mode=OneTime}">
                                                             <Setter Property="Background" Value="{DynamicResource SectorError_Brush}"/>
                                                         </DataTrigger>
-                                                        <DataTrigger Value="1" Binding="{Binding category, Mode=OneTime}">
+                                                        <DataTrigger Value="1" Binding="{Binding Category, Mode=OneTime}">
                                                             <Setter Property="Background" Value="{DynamicResource SectorWarning_Brush}"/>
                                                         </DataTrigger>
                                                     </Style.Triggers>
@@ -114,10 +114,10 @@
 
                                     <StackPanel Orientation="Horizontal" Grid.Column="2" >
                                         <TextBlock Text=" ( "/>
-                                        <TextBlock Text="{Binding Path=value, Mode=OneTime}" Grid.Column="1"/>
+                                        <TextBlock Text="{Binding Path=Value, Mode=OneTime}" Grid.Column="1"/>
                                         <TextBlock Text=" )   "/>
 
-                                        <TextBlock Text="{Binding Path=grade.value, StringFormat=N1, Mode=OneTime}" Grid.Column="1"/>
+                                        <TextBlock Text="{Binding Path=Grade.Value, StringFormat=N1, Mode=OneTime}" Grid.Column="1"/>
                                         <TextBlock Text=" "/>
 
                                         <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3">
@@ -125,16 +125,16 @@
                                                 <Style TargetType="{x:Type Border}">
                                                     <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
                                                     <Style.Triggers>
-                                                        <DataTrigger Value="B" Binding="{Binding grade.letter, Mode=OneTime}">
+                                                        <DataTrigger Value="B" Binding="{Binding Grade.Letter, Mode=OneTime}">
                                                             <Setter Property="Background" Value="{DynamicResource ISO_GradeB_Brush}"/>
                                                         </DataTrigger>
-                                                        <DataTrigger Value="C" Binding="{Binding grade.letter, Mode=OneTime}">
+                                                        <DataTrigger Value="C" Binding="{Binding Grade.Letter, Mode=OneTime}">
                                                             <Setter Property="Background" Value="{DynamicResource ISO_GradeC_Brush}"/>
                                                         </DataTrigger>
-                                                        <DataTrigger Value="D" Binding="{Binding grade.letter, Mode=OneTime}">
+                                                        <DataTrigger Value="D" Binding="{Binding Grade.Letter, Mode=OneTime}">
                                                             <Setter Property="Background" Value="{DynamicResource ISO_GradeD_Brush}"/>
                                                         </DataTrigger>
-                                                        <DataTrigger Value="F" Binding="{Binding grade.letter, Mode=OneTime}">
+                                                        <DataTrigger Value="F" Binding="{Binding Grade.Letter, Mode=OneTime}">
                                                             <Setter Property="Background" Value="{DynamicResource ISO_GradeF_Brush}"/>
                                                         </DataTrigger>
                                                     </Style.Triggers>
@@ -142,7 +142,7 @@
                                             </Border.Style>
                                         </Border>
                                         <TextBlock Text=" "/>
-                                        <TextBlock Text="{Binding Path=grade.letter, Mode=OneTime}"/>
+                                        <TextBlock Text="{Binding Path=Grade.Letter, Mode=OneTime}"/>
 
                                     </StackPanel>
 
@@ -181,7 +181,7 @@
 
                                     <StackPanel Orientation="Horizontal" Grid.Column="2" >
                                         <TextBlock Text=" ( "/>
-                                        <TextBlock Text="{Binding Path=value, Mode=OneTime}"/>
+                                        <TextBlock Text="{Binding Path=Value, Mode=OneTime}"/>
                                         <TextBlock Text=" )               "/>
                                     </StackPanel>
 
@@ -219,7 +219,7 @@
 
                                     <StackPanel Orientation="Horizontal" Grid.Column="2" >
                                         <TextBlock Text="( "/>
-                                        <TextBlock Text="{Binding Path=value, StringFormat=N1, Mode=OneTime}" Grid.Column="1"/>
+                                        <TextBlock Text="{Binding Path=Value, StringFormat=N1, Mode=OneTime}" Grid.Column="1"/>
                                         <TextBlock Text=" )   "/>
 
                                         <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3">
@@ -227,7 +227,7 @@
                                                 <Style TargetType="{x:Type Border}">
                                                     <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
                                                     <Style.Triggers>
-                                                        <DataTrigger Value="FAIL" Binding="{Binding Path=result, Mode=OneTime}">
+                                                        <DataTrigger Value="FAIL" Binding="{Binding Path=Result, Mode=OneTime}">
                                                             <Setter Property="Background" Value="{DynamicResource SectorError_Brush}"/>
                                                         </DataTrigger>
                                                     </Style.Triggers>
@@ -235,7 +235,7 @@
                                             </Border.Style>
                                         </Border>
                                         <TextBlock Text=" "/>
-                                        <TextBlock Text="{Binding Path=result, Mode=OneTime}"/>
+                                        <TextBlock Text="{Binding Path=Result, Mode=OneTime}"/>
 
                                     </StackPanel>
 
@@ -274,7 +274,7 @@
 
                                     <StackPanel Orientation="Horizontal" Grid.Column="2" >
                                         <TextBlock Text=" ( "/>
-                                        <TextBlock Text="{Binding Path=value, StringFormat=N2, Mode=OneTime}" Grid.Column="1"/>
+                                        <TextBlock Text="{Binding Path=Value, StringFormat=N2, Mode=OneTime}" Grid.Column="1"/>
                                         <TextBlock Text=" )   "/>
 
                                         <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3">
@@ -282,7 +282,7 @@
                                                 <Style TargetType="{x:Type Border}">
                                                     <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
                                                     <Style.Triggers>
-                                                        <DataTrigger Value="FAIL" Binding="{Binding Path=result, Mode=OneTime}">
+                                                        <DataTrigger Value="FAIL" Binding="{Binding Path=Result, Mode=OneTime}">
                                                             <Setter Property="Background" Value="{DynamicResource SectorError_Brush}"/>
                                                         </DataTrigger>
                                                     </Style.Triggers>
@@ -290,7 +290,7 @@
                                             </Border.Style>
                                         </Border>
                                         <TextBlock Text=" "/>
-                                        <TextBlock Text="{Binding Path=result, Mode=OneTime}"/>
+                                        <TextBlock Text="{Binding Path=Result, Mode=OneTime}"/>
 
                                     </StackPanel>
 
@@ -332,7 +332,7 @@
                                     </StackPanel>
 
                                     <StackPanel Orientation="Horizontal" Grid.Column="2" >
-                                        <TextBlock Text="{Binding Path=value, StringFormat=N1, Mode=OneTime}" Grid.Column="1"/>
+                                        <TextBlock Text="{Binding Path=Value, StringFormat=N1, Mode=OneTime}" Grid.Column="1"/>
 
                                         <TextBlock Text=" "/>
                                         <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3">
@@ -340,16 +340,16 @@
                                                 <Style TargetType="{x:Type Border}">
                                                     <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
                                                     <Style.Triggers>
-                                                        <DataTrigger Value="B" Binding="{Binding letter, Mode=OneTime}">
+                                                        <DataTrigger Value="B" Binding="{Binding Letter, Mode=OneTime}">
                                                             <Setter Property="Background" Value="{DynamicResource ISO_GradeB_Brush}"/>
                                                         </DataTrigger>
-                                                        <DataTrigger Value="C" Binding="{Binding letter, Mode=OneTime}">
+                                                        <DataTrigger Value="C" Binding="{Binding Letter, Mode=OneTime}">
                                                             <Setter Property="Background" Value="{DynamicResource ISO_GradeC_Brush}"/>
                                                         </DataTrigger>
-                                                        <DataTrigger Value="D" Binding="{Binding letter, Mode=OneTime}">
+                                                        <DataTrigger Value="D" Binding="{Binding Letter, Mode=OneTime}">
                                                             <Setter Property="Background" Value="{DynamicResource ISO_GradeD_Brush}"/>
                                                         </DataTrigger>
-                                                        <DataTrigger Value="F" Binding="{Binding letter, Mode=OneTime}">
+                                                        <DataTrigger Value="F" Binding="{Binding Letter, Mode=OneTime}">
                                                             <Setter Property="Background" Value="{DynamicResource ISO_GradeF_Brush}"/>
                                                         </DataTrigger>
                                                     </Style.Triggers>
@@ -357,7 +357,7 @@
                                             </Border.Style>
                                         </Border>
                                         <TextBlock Text=" "/>
-                                        <TextBlock Text="{Binding Path=letter, Mode=OneTime}"/>
+                                        <TextBlock Text="{Binding Path=Letter, Mode=OneTime}"/>
                                     </StackPanel>
 
                                 </Grid>
@@ -390,7 +390,7 @@
                                     </Grid.ColumnDefinitions>
 
                                     <StackPanel Orientation="Horizontal" Grid.Column="0">
-                                        <TextBlock Text="{Binding Path=type, Converter={StaticResource stringToUpper}, Mode=OneTime}"/>
+                                        <TextBlock Text="{Binding Path=Type, Converter={StaticResource stringToUpper}, Mode=OneTime}"/>
                                     </StackPanel>
 
                                 </Grid>

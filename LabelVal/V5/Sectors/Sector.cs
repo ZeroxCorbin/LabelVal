@@ -68,7 +68,7 @@ public class Sector : ISector
         }
     }
 
-    public Sector(Results_QualifiedResult results, string name, StandardsTypes standard, GS1TableNames table)
+    public Sector(V5_REST_Lib.Models.ResultsAlt.Decodedata results, string name, StandardsTypes standard, GS1TableNames table)
     {
         Report = new Report(results);
         Template = new Template(results, name);
@@ -91,7 +91,7 @@ public class Sector : ISector
         else if (highCat == 2)
             IsError = true;
     }
-    private StandardsTypes V5GetStandard(Results_Grading results)
+    private StandardsTypes V5GetStandard(ResultsAlt.Grading results)
         => results.standard != null ? results.standard switch
         {
             "iso15416" => StandardsTypes.ISO15416,
