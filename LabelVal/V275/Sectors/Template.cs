@@ -9,7 +9,6 @@ public class Template : ITemplate
     public string Name { get; set; }
     public string Username { get; set; }
     public int Top { get; set; }
-    public int Center { get; set; }
     public System.Drawing.Point CenterPoint { get; set; }
     public string Symbology { get; set; }
 
@@ -23,7 +22,6 @@ public class Template : ITemplate
         Name = sectorTemplate.name;
         Username = sectorTemplate.username;
         Top = sectorTemplate.top;
-        Center = sectorTemplate.top + sectorTemplate.height / 2 + sectorTemplate.left + sectorTemplate.width / 2;
         CenterPoint = new System.Drawing.Point(sectorTemplate.left + sectorTemplate.width / 2, sectorTemplate.top + sectorTemplate.height / 2);
 
         Symbology = sectorTemplate.symbology;

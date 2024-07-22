@@ -20,7 +20,6 @@ public interface ITemplate
     string Name { get; set; }
     string Username { get; set; }
     int Top { get; set; }
-    int Center { get; set; }
     Point CenterPoint { get; set; }
 
     string Symbology { get; set; }

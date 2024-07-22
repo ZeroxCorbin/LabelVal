@@ -124,6 +124,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             SourceImage = JsonConvert.SerializeObject(SourceImage),
             StoredImage = JsonConvert.SerializeObject(V5CurrentImage),
 
+            Template = JsonConvert.SerializeObject(V5CurrentTemplate),
             Report = JsonConvert.SerializeObject(V5CurrentReport),
         },
         L95xxResult = new Databases.L95xxResult
@@ -185,8 +186,8 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
                 ImageRollUID = RollUID,
 
                 SourceImage = JsonConvert.SerializeObject(SourceImage),
-
                 StoredImage = JsonConvert.SerializeObject(V275CurrentImage),
+
                 Template = JsonConvert.SerializeObject(V275CurrentTemplate),
                 Report = JsonConvert.SerializeObject(V275CurrentReport),
             });
@@ -207,8 +208,9 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
                 ImageRollUID = RollUID,
 
                 SourceImage = JsonConvert.SerializeObject(SourceImage),
-
                 StoredImage = JsonConvert.SerializeObject(V5CurrentImage),
+
+                Template = JsonConvert.SerializeObject(V5CurrentTemplate),
                 Report = JsonConvert.SerializeObject(V5CurrentReport),
             });
 

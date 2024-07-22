@@ -8,7 +8,6 @@ namespace LabelVal.LVS_95xx.Sectors
         public string Name { get; set; }
         public string Username { get; set; }
         public int Top { get; set; }
-        public int Center { get; set; }
         public System.Drawing.Point CenterPoint { get; set; }
         public string Symbology { get; set; }
 
@@ -20,7 +19,6 @@ namespace LabelVal.LVS_95xx.Sectors
             Name = template.Name;
             Username = template.Username;
             Top = template.Top;
-            Center = template.Center;
             CenterPoint = template.CenterPoint;
 
             Symbology = template.Symbology;

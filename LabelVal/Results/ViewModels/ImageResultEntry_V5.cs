@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using V5_REST_Lib.Models;
 
 namespace LabelVal.Results.ViewModels;
 public partial class ImageResultEntry
@@ -107,14 +108,14 @@ public partial class ImageResultEntry
             //config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.uid = DateTime.Now.Ticks.ToString();
             _ = await ImageResults.SelectedScanner.ScannerController.SendJob(config.response.data);
 
-            _ = V5ProcessResults(await ImageResults.SelectedScanner.ScannerController.Trigger_Wait_Return(true));
+            _ = V5ProcessResults(await ImageResults.SelectedScanner.ScannerController.Trigger_Wait_Return(true), config);
         }
         else
-            _ = V5ProcessResults(await ImageResults.SelectedScanner.ScannerController.Trigger_Wait_Return(true));
+            _ = V5ProcessResults(await ImageResults.SelectedScanner.ScannerController.Trigger_Wait_Return(true), config);
 
         IsV5Working = false;
     }
-    public bool V5ProcessResults(V5_REST_Lib.Controller.TriggerResults triggerResults)
+    public bool V5ProcessResults(V5_REST_Lib.Controller.TriggerResults triggerResults, Config config)
     {
         if (!triggerResults.OK)
         {
@@ -126,14 +127,19 @@ public partial class ImageResultEntry
         }
 
         V5CurrentImage = new ImageEntry(RollUID, triggerResults.FullImage, 600);
+        V5CurrentTemplate = config;
         V5CurrentReport = JsonConvert.DeserializeObject<V5_REST_Lib.Models.ResultsAlt>(triggerResults.ReportJSON);
 
         V5CurrentSectors.Clear();
 
         List<Sectors.Interfaces.ISector> tempSectors = [];
         foreach (var rSec in V5CurrentReport._event.data.decodeData)
-            tempSectors.Add(new V5.Sectors.Sector(rSec, $"DecodeTool{rSec.toolSlot}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
+        {
 
+          tempSectors.Add(new V5.Sectors.Sector(rSec, V5CurrentTemplate.response.data.job.toolList[rSec.toolSlot-1], $"DecodeTool{rSec.toolSlot}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
+
+        }
+  
         if (tempSectors.Count > 0)
         {
             SortList(tempSectors);
@@ -165,13 +171,19 @@ public partial class ImageResultEntry
             return;
         }
 
+        if(V5ResultRow.Report == null || V5ResultRow.Template == null)
+        {
+            LogDebug("V5 result is missing data.");
+            return;
+        }
+
         List<Sectors.Interfaces.ISector> tempSectors = [];
         if (!string.IsNullOrEmpty(V5ResultRow.Report))
         {
             V5StoredImageOverlay = V5CreateSectorsImageOverlay(V5ResultRow._Report, V5StoredImage);
 
             foreach (var rSec in V5ResultRow._Report._event.data.decodeData)
-                tempSectors.Add(new V5.Sectors.Sector(rSec, $"DecodeTool{rSec.toolSlot}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
+                tempSectors.Add(new V5.Sectors.Sector(rSec, V5ResultRow._Config.response.data.job.toolList[rSec.toolSlot-1], $"DecodeTool{rSec.toolSlot}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
         }
 
         if (tempSectors.Count > 0)

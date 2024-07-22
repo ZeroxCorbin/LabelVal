@@ -30,6 +30,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     public V5_REST_Lib.Controller ScannerController { get; } = new();
     public V5_REST_Lib.FTP.FTPClient FTPClient { get; } = new();
 
+
     [ObservableProperty][property: JsonProperty] private static string host;
     partial void OnHostChanged(string value) { ScannerController.Host = value; }
 

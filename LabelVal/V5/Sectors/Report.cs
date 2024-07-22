@@ -1,6 +1,5 @@
 ﻿using LabelVal.Sectors.Interfaces;
 using System;
-using V5_REST_Lib.Models;
 
 namespace LabelVal.V5.Sectors;
 
@@ -28,15 +27,24 @@ public class Report : IReport
         Type = V5GetType(v5);
         SymbolType = V5GetSymbology(v5.type);
         DecodeText = v5.dataUTF8;
-        //XDimension = v5.ppe;
 
         if (v5.grading != null)
-            if (Type == "verify1D")
+        {
+            if (v5.grading.standard == "iso15416")
+            {
                 if (v5.grading.iso15416 == null || v5.grading.iso15416.overall == null)
                 {
                     OverallGradeString = "No Grade";
-                    OverallGradeValue = 0;
-                    OverallGradeLetter = "F";
+                    if (v5.read)
+                    {
+                        OverallGradeValue = 0;
+                        OverallGradeLetter = "A";
+                    }
+                    else
+                    {
+                        OverallGradeValue = 0;
+                        OverallGradeLetter = "F";
+                    }
                 }
                 else
                 {
@@ -44,12 +52,22 @@ public class Report : IReport
                     OverallGradeValue = v5.grading.iso15416.overall.grade;
                     OverallGradeLetter = V5GetLetter(v5.grading.iso15416.overall.letter);
                 }
-            else if (Type == "verify2D")
+            }
+            else if (v5.grading.standard == "iso15415")
+            {
                 if (v5.grading.iso15415 == null)
                 {
                     OverallGradeString = "No Grade";
-                    OverallGradeValue = 0;
-                    OverallGradeLetter = "F";
+                    if (v5.read)
+                    {
+                        OverallGradeValue = 0;
+                        OverallGradeLetter = "A";
+                    }
+                    else
+                    {
+                        OverallGradeValue = 0;
+                        OverallGradeLetter = "F";
+                    }
                 }
                 else
                 {
@@ -57,11 +75,35 @@ public class Report : IReport
                     OverallGradeValue = v5.grading.iso15415.overall.grade;
                     OverallGradeLetter = V5GetLetter(v5.grading.iso15415.overall.letter);
                 }
+            }
+            else
+            {
+                OverallGradeString = "Unkown";
+                if (v5.read)
+                {
+                    OverallGradeValue = 0;
+                    OverallGradeLetter = "A";
+                }
+                else
+                {
+                    OverallGradeValue = 0;
+                    OverallGradeLetter = "F";
+                }
+            }
+        }
         else
         {
-            OverallGradeString = "No Grade";
-            OverallGradeValue = 0;
-            OverallGradeLetter = "F";
+            OverallGradeString = "Grade Disabled";
+            if (v5.read)
+            {
+                OverallGradeValue = 0;
+                OverallGradeLetter = "A";
+            }
+            else
+            {
+                OverallGradeValue = 0;
+                OverallGradeLetter = "F";
+            }
         }
     }
 
@@ -71,7 +113,7 @@ public class Report : IReport
         ? "verify1D"
         : Report.Datamatrix != null
         ? "verify2D"
-        : Report.QR != null ? "verify2D" : Report.PDF417 != null ? "verify1D" : Report.UPC != null ? "verify1D" : "Unknown";
+        : Report.QR != null ? "verify2D" : Report.PDF417 != null ? "verify1D" : Report.UPC != null ? "verify1D" : "unknown";
 
     private static string V5GetLetter(int grade) =>
         grade switch

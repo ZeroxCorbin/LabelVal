@@ -76,6 +76,9 @@
                                     </DataTrigger>
                                     <DataTrigger Value="blemish" Binding="{Binding Report.Type, Mode=OneTime}">
                                         <Setter Property="Source" Value="/Assets/Images/FlawTool.png"/>
+                                    </DataTrigger> 
+                                    <DataTrigger Value="unknown" Binding="{Binding Report.Type, Mode=OneTime}">
+                                        <Setter Property="Source" Value="/Assets/Images/all-codes.png"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -107,6 +110,10 @@
                                     </DataTrigger>
                                     <DataTrigger Value="blemish" Binding="{Binding Report.Type, Mode=OneTime}">
                                         <Setter Property="Text" Value=""/>
+                                    </DataTrigger>
+
+                                    <DataTrigger Value="unknown" Binding="{Binding Report.Type, Mode=OneTime}">
+                                        <Setter Property="Text" Value="{Binding Report.SymbolType, Converter={StaticResource stringToUpper}, Mode=OneTime}"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -151,6 +158,18 @@
                                     </DataTrigger>
                                     <DataTrigger Value="blemish" Binding="{Binding Report.Type, Mode=OneTime}">
                                         <Setter Property="Text" Value=""/>
+                                    </DataTrigger>
+
+                                    <DataTrigger Value="unknown" Binding="{Binding Report.Type, Mode=OneTime}">
+                                        <!--<Setter Property="Text" Value="{Binding Report.DecodeText, Mode=OneTime}"/>-->
+                                        <Setter Property="Text">
+                                            <Setter.Value>
+                                                <MultiBinding StringFormat="{}{0}{1}">
+                                                    <Binding Path="Report.DecodeText" Mode="OneTime"/>
+                                                    <Binding Path="Report.FormattedOut" Converter="{StaticResource gs1FormattedOutput}" FallbackValue=""/>
+                                                </MultiBinding>
+                                            </Setter.Value>
+                                        </Setter>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -209,6 +228,9 @@
                                         </DataTrigger>
                                         <DataTrigger Value="blemish" Binding="{Binding Report.Type, Mode=OneTime}">
                                             <Setter Property="Text" Value="{Binding Report.BlemishCount, Mode=OneTime}"/>
+                                        </DataTrigger>
+                                        <DataTrigger Value="unknown" Binding="{Binding Report.Type, Mode=OneTime}">
+                                            <Setter Property="Text" Value="{Binding Report.OverallGradeValue, StringFormat=N1, Mode=OneTime}"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>

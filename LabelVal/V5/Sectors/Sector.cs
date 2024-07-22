@@ -68,17 +68,17 @@ public class Sector : ISector
         }
     }
 
-    public Sector(V5_REST_Lib.Models.ResultsAlt.Decodedata results, string name, StandardsTypes standard, GS1TableNames table)
+    public Sector(ResultsAlt.Decodedata decodeData, Config.Toollist toollist, string name, StandardsTypes standard, GS1TableNames table)
     {
-        Report = new Report(results);
-        Template = new Template(results, name);
+        Report = new Report(decodeData);
+        Template = new Template(decodeData, toollist, name);
 
-        SectorDifferences = new SectorDifferences(results, Template.Username);
+        SectorDifferences = new SectorDifferences(decodeData, Template.Username);
 
         DesiredStandard = standard;
         DesiredGS1Table = table;
 
-        Standard = results.grading != null ? V5GetStandard(results.grading) : DesiredStandard;
+        Standard = decodeData.grading != null ? V5GetStandard(decodeData.grading) : DesiredStandard;
         GS1Table = GS1TableNames.None; //GS1 is not supported in V5, yet
 
         int highCat = 0;
