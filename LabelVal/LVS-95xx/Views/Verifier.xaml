@@ -52,8 +52,17 @@
 
                 </md:Card>
 
-                <Button Margin="3" Click="btnShowSettings_Click" Style="{StaticResource GroupHeaderCirlceButton}" ToolTip="Show Settings" 
+                <Button Margin="3" Click="btnShowSettings_Click" ToolTip="Show Settings" 
                         HorizontalAlignment="Center" VerticalAlignment="Top" Width="24" Height="24">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource GroupHeaderCirlceButton}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsDocked, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
                     <iconPacks:PackIconMaterial Kind="Cog" Height="18" Width="18"/>
                 </Button>
 
@@ -127,6 +136,16 @@
 
                 <Expander DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Right" md:ExpanderAssist.HorizontalHeaderPadding="6" MaxHeight="450"
                           Background="{DynamicResource MahApps.Brushes.Accent4}">
+
+                    <Expander.Style>
+                        <Style TargetType="Expander" BasedOn="{StaticResource MaterialDesignExpander}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsDocked, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Expander.Style>
 
                     <Expander.Header>
                         <TextBlock Text="Results" MinWidth="48"/>

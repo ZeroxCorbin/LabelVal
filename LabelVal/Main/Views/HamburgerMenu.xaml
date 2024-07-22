@@ -210,6 +210,7 @@
 
             <Border Style="{StaticResource imageBar}"/>
 
+            <!--Show the label name if not node is selected.-->
             <DockPanel>
                 <DockPanel.Style>
                     <Style TargetType="DockPanel">
@@ -224,8 +225,8 @@
 
                 <TextBlock Text="{Binding Label}" VerticalAlignment="Center" Margin="10,0,0,0"/>
             </DockPanel>
-
-            <DockPanel DockPanel.Dock="Top">
+            
+            <DockPanel>
                 <DockPanel.Style>
                     <Style TargetType="DockPanel">
                         <Setter Property="Visibility" Value="Visible"/>
@@ -237,115 +238,10 @@
                     </Style>
                 </DockPanel.Style>
 
-                <DockPanel DockPanel.Dock="Top" Margin="0">
+                <v275:NodeItem IsDocked="True" HorizontalAlignment="Left" DataContext="{Binding Content.SelectedNode}"/>
 
-                    <TextBox Margin="3" IsHitTestVisible="False" BorderThickness="0" 
-                        md:HintAssist.Hint="{loc:Loc Type}">
-                        <TextBox.Style>
-                            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                                <Setter Property="Text" Value="{loc:Loc Unknown}"/>
-                                <Style.Triggers>
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Value="camera" Binding="{Binding Content.SelectedNode.Inspection.device}"/>
-                                            <Condition Value="False" Binding="{Binding Content.SelectedNode.Is600Dpi}"/>
-                                        </MultiDataTrigger.Conditions>
-
-                                        <Setter Property="Foreground" Value="Red"/>
-                                    </MultiDataTrigger>
-
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Value="simulator" Binding="{Binding Content.SelectedNode.Inspection.device}"/>
-                                            <Condition Value="False" Binding="{Binding Content.SelectedNode.Is600Dpi}"/>
-                                        </MultiDataTrigger.Conditions>
-
-                                        <Setter Property="Foreground" Value="Yellow"/>
-                                    </MultiDataTrigger>
-
-                                    <DataTrigger Value="camera" Binding="{Binding Content.SelectedNode.Inspection.device}">
-                                        <Setter Property="Text" Value="{loc:Loc Camera}"/>
-                                    </DataTrigger>
-                                    <DataTrigger Value="simulator" Binding="{Binding Content.SelectedNode.Inspection.device}">
-                                        <Setter Property="Text" Value="{loc:Loc Simulator}"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBox.Style>
-                    </TextBox>
-
-                    <TextBox md:HintAssist.Hint="{loc:Loc Model}" Margin="3" IsHitTestVisible="False" BorderThickness="0">
-                        <TextBox.Style>
-                            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                                <Setter Property="Text" Value="{Binding Path=Content.SelectedNode.Details.printerModel}"/>
-                                <Style.Triggers>
-                                    <DataTrigger Value="False" Binding="{Binding Content.SelectedNode.IsWrongTemplateName}">
-                                        <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}"/>
-                                    </DataTrigger>
-                                    <DataTrigger Value="Unknown" Binding="{Binding Path=Content.SelectedNode.Details.printerModel}">
-                                        <Setter Property="Text" Value="-----"/>
-                                    </DataTrigger>
-
-                                </Style.Triggers>
-                            </Style>
-                        </TextBox.Style>
-                    </TextBox>
-
-                    <TextBox Text="{Binding Path=Content.SelectedNode.Details.cameraMAC, Mode=OneWay, Converter={StaticResource macAddressSplitConverter}, ConverterParameter=Last}"
-                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                         md:HintAssist.Hint="MAC" Margin="3" IsHitTestVisible="False" BorderThickness="0"/>
-
-                </DockPanel>
-
-                <DockPanel DockPanel.Dock="Top" Margin="0,-6,0,1">
-
-                    <TextBox Text="{Binding Content.SelectedNode.State, Converter={StaticResource localizeEnumValue}}" 
-                                 md:HintAssist.Hint="{loc:Loc State}" Margin="3" IsHitTestVisible="False">
-                        <TextBox.Style>
-                            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                                <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}"/>
-                                <Style.Triggers>
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Value="Editing" Binding="{Binding Content.SelectedNode.State}" />
-                                            <Condition Value="True" Binding="{Binding Content.SelectedNode.SelectedImageRoll.WriteSectorsBeforeProcess}" />
-                                        </MultiDataTrigger.Conditions>
-                                        <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}" />
-                                    </MultiDataTrigger>
-
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Value="Running" Binding="{Binding Content.SelectedNode.State}" />
-                                            <Condition Value="False" Binding="{Binding Content.SelectedNode.SelectedImageRoll.WriteSectorsBeforeProcess}" />
-                                        </MultiDataTrigger.Conditions>
-                                        <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}" />
-                                    </MultiDataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBox.Style>
-                    </TextBox>
-
-                    <TextBox md:HintAssist.Hint="{loc:Loc Template Name}" Margin="3" IsHitTestVisible="False">
-                        <TextBox.Style>
-                            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                                <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}"/>
-                                <Setter Property="Text" Value="{Binding Content.SelectedNode.JobName}"/>
-
-                                <Setter Property="Visibility" Value="Visible"/>
-                                <Style.Triggers>
-
-                                    <DataTrigger Value="" Binding="{Binding Content.SelectedNode.JobName}">
-                                        <Setter Property="Text" Value="-----"/>
-                                        <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}"/>
-                                    </DataTrigger>
-
-                                </Style.Triggers>
-                            </Style>
-                        </TextBox.Style>
-                    </TextBox>
-
-                </DockPanel>
             </DockPanel>
+
         </DockPanel>
     </DataTemplate>
 
@@ -361,6 +257,7 @@
 
             <Border Style="{StaticResource imageBar}"/>
 
+            <!--Show the label name if not node is selected.-->
             <DockPanel>
                 <DockPanel.Style>
                     <Style TargetType="DockPanel">
@@ -388,80 +285,7 @@
                     </Style>
                 </DockPanel.Style>
 
-                <DockPanel DockPanel.Dock="Top">
-
-                    <TextBox md:HintAssist.Hint="Acquire" Margin="3" IsHitTestVisible="False" BorderThickness="0">
-                        <TextBox.Style>
-                            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                                <Setter Property="Text" Value="{Binding Content.SelectedScanner.SelectedAcquisitionType}"/>
-                                <Style.Triggers>
-                                    <DataTrigger Value="False" Binding="{Binding Content.SelectedScanner.IsConnected}">
-                                        <Setter Property="Text" Value="-----"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBox.Style>
-                    </TextBox>
-
-                    <TextBox md:HintAssist.Hint="Model" Margin="3" IsHitTestVisible="False" BorderThickness="0">
-                        <TextBox.Style>
-                            <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                                <Setter Property="Text">
-                                    <Setter.Value>
-                                        <MultiBinding StringFormat="{}{0} {1}" Mode="OneWay">
-                                            <Binding Path="Content.SelectedScanner.SelectedCamera.Name"/>
-                                            <Binding Path="Content.SelectedScanner.SelectedCamera.Sensor.PixelCount"/>
-                                        </MultiBinding>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </TextBox.Style>
-                    </TextBox>
-
-                </DockPanel>
-
-                <DockPanel DockPanel.Dock="Top" Margin="0,-6,0,1">
-
-                    <TextBox Text="{Binding Content.SelectedScanner.ScannerMode}" md:HintAssist.Hint="Mode" Margin="3" IsHitTestVisible="False">
-                        <TextBox.Style>
-                            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                                <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}"/>
-                                <Style.Triggers>
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Value="Offline" Binding="{Binding Content.SelectedScanner.ScannerMode}" />
-                                        </MultiDataTrigger.Conditions>
-                                        <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}" />
-                                    </MultiDataTrigger>
-
-                                </Style.Triggers>
-                            </Style>
-                        </TextBox.Style>
-                    </TextBox>
-
-                    <TextBox md:HintAssist.Hint="Job Name" Margin="3" IsHitTestVisible="False">
-                        <TextBox.Style>
-                            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                                <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}"/>
-                                <Setter Property="Text" Value="{Binding Content.SelectedScanner.SelectedJob.jobName}"/>
-                                <Style.Triggers>
-
-                                    <DataTrigger Value="True" Binding="{Binding Content.SelectedScanner.SelectedJob, Converter={StaticResource objectIsNull}}">
-                                        <Setter Property="Text" Value="-----"/>
-                                        <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}"/>
-                                    </DataTrigger>
-
-
-                                    <DataTrigger Value="False" Binding="{Binding Content.SelectedScanner.IsWrongTemplateName}">
-                                        <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}"/>
-                                    </DataTrigger>
-
-                                </Style.Triggers>
-                            </Style>
-                        </TextBox.Style>
-                    </TextBox>
-
-                </DockPanel>
+                <v5:Scanner IsDocked="True" HorizontalAlignment="Left" DataContext="{Binding Content.SelectedScanner}"/>
 
             </DockPanel>
         </DockPanel>
@@ -505,34 +329,8 @@
                     </Style>
                 </DockPanel.Style>
 
-                <DockPanel DockPanel.Dock="Top">
-
-                    <TextBox Text="Camera" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="3" IsHitTestVisible="False" BorderThickness="0"
-                             md:HintAssist.Hint="Type"/>
-
-                    <TextBox Text="LVS-95xx" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="3" IsHitTestVisible="False" BorderThickness="0"
-                             md:HintAssist.Hint="Model"/>
-                </DockPanel>
-
-                <DockPanel DockPanel.Dock="Top" Margin="0,-6,0,1">
-
-                    <TextBox md:HintAssist.Hint="State"  Margin="3" IsHitTestVisible="False">
-                        <TextBox.Style>
-                            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                                <Setter Property="Text" Value="Offline"/>
-                                <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Content.SelectedVerifier.IsConnected}" Value="True">
-                                        <Setter Property="Text" Value="Run"/>
-                                        <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}"/>
-                                    </DataTrigger>
-
-                                </Style.Triggers>
-                            </Style>
-                        </TextBox.Style>
-                    </TextBox>
-                </DockPanel>
-
+                <L95xx:Verifier IsDocked="True" HorizontalAlignment="Left" DataContext="{Binding Content.SelectedVerifier}"/>
+                
             </DockPanel>
         </DockPanel>
     </DataTemplate>

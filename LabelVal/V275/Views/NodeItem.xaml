@@ -33,9 +33,10 @@
             </Style>
         </md:Card.Style>
 
-            <DockPanel Margin="3">
-
-                <md:Card VerticalAlignment="Top" Padding="3" Margin="3" Background="{DynamicResource MahApps.Brushes.Accent4}">
+        <DockPanel Margin="3">
+            <DockPanel>
+                
+                <md:Card DockPanel.Dock="Top" VerticalAlignment="Top" Padding="3" Margin="3" Background="{DynamicResource MahApps.Brushes.Accent4}">
 
                     <DockPanel>
 
@@ -85,260 +86,280 @@
                         </ToggleButton>
 
                     </DockPanel>
+
                 </md:Card>
+
+                <Button Margin="3" Click="btnOpenInBrowser_Click"
+                    HorizontalAlignment="Center" VerticalAlignment="Top" Width="24" Height="24"
+                    ToolTip="Open V275 web interface.">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsDocked, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="False">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                    <iconPacks:PackIconModern Height="18" Width="18" Kind="Browser" Margin="0,2,0,0"/>
+                </Button>
+                
+            </DockPanel>
+            
+            <DockPanel>
+
+                <DockPanel DockPanel.Dock="Top" Margin="1">
+                    <TextBox d:Text="camera" MinWidth="56" Margin="3"
+                                 md:HintAssist.Hint="{loc:Loc Type}" md:HintAssist.IsFloating="True" 
+                                 IsHitTestVisible="False" BorderThickness="0" >
+                        <TextBox.Style>
+                            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                                <Setter Property="Text" Value="{loc:Loc Unknown}"/>
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Value="camera" Binding="{Binding Inspection.device}"/>
+                                            <Condition Value="False" Binding="{Binding Is600Dpi}"/>
+                                        </MultiDataTrigger.Conditions>
+
+                                        <Setter Property="Foreground" Value="Red"/>
+                                    </MultiDataTrigger>
+
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Value="simulator" Binding="{Binding Inspection.device}"/>
+                                            <Condition Value="False" Binding="{Binding Is600Dpi}"/>
+                                        </MultiDataTrigger.Conditions>
+
+                                        <Setter Property="Foreground" Value="Yellow"/>
+                                    </MultiDataTrigger>
+
+                                    <DataTrigger Value="camera" Binding="{Binding Inspection.device}">
+                                        <Setter Property="Text" Value="{loc:Loc Camera}"/>
+                                    </DataTrigger>
+                                    <DataTrigger Value="simulator" Binding="{Binding Inspection.device}">
+                                        <Setter Property="Text" Value="{loc:Loc Simulator}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBox.Style>
+                    </TextBox>
+
+                    <TextBox d:Text="ZT610"  MinWidth="38" Margin="3" 
+                                 md:HintAssist.Hint="{loc:Loc Model}" md:HintAssist.IsFloating="True" 
+                                 IsHitTestVisible="False" BorderThickness="0">
+                        <TextBox.Style>
+                            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                                <Setter Property="Text" Value="{Binding Path=Details.printerModel}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Value="False" Binding="{Binding IsWrongTemplateName}">
+                                        <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}"/>
+                                    </DataTrigger>
+                                    <DataTrigger Value="Unknown" Binding="{Binding Path=Details.printerModel}">
+                                        <Setter Property="Text" Value="-----"/>
+                                    </DataTrigger>
+
+                                </Style.Triggers>
+                            </Style>
+                        </TextBox.Style>
+                    </TextBox>
+
+                    <TextBox d:Text="00:00:00:00:00" 
+                             Text="{Binding Path=Details.cameraMAC, Mode=OneWay, Converter={StaticResource macAddressSplitConverter}, ConverterParameter=Last}"
+                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                                Margin="3" md:HintAssist.Hint="MAC" md:HintAssist.IsFloating="True" IsHitTestVisible="False" BorderThickness="0" />
+
+                </DockPanel>
+
+                <DockPanel DockPanel.Dock="Top" Margin="1">
+
+                    <TextBox d:Text="State" Text="{Binding State, Converter={StaticResource LocalizeEnumValue}}" Margin="3,0" 
+                                 md:HintAssist.Hint="{loc:Loc State}" md:HintAssist.IsFloating="True" 
+                                 IsHitTestVisible="False" HorizontalAlignment="Left">
+                        <TextBox.Style>
+                            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                                <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}"/>
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Value="Editing" Binding="{Binding State}" />
+                                            <Condition Value="True" Binding="{Binding SelectedImageRoll.WriteSectorsBeforeProcess}" />
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}" />
+                                    </MultiDataTrigger>
+
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Value="Running" Binding="{Binding State}" />
+                                            <Condition Value="False" Binding="{Binding SelectedImageRoll.WriteSectorsBeforeProcess}" />
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}" />
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBox.Style>
+                    </TextBox>
+
+                    <ComboBox ItemsSource="{Binding Jobs.jobs}" SelectedValue="{Binding SelectedJob}" Margin="3,0"
+                                  md:HintAssist.Hint="{loc:Loc Template Name}" md:HintAssist.IsFloating="True" 
+                                  HorizontalAlignment="Left">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding name}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                        <ComboBox.Style>
+                            <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}">
+                                <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}"/>
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Setter Property="IsHitTestVisible" Value="True"/>
+                                <Style.Triggers>
+
+                                    <DataTrigger Value="False" Binding="{Binding IsWrongTemplateName}">
+                                        <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}"/>
+                                    </DataTrigger>
+
+                                    <DataTrigger Value="False" Binding="{Binding Jobs,Converter={StaticResource ObjectIsNull}}">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+
+                                    <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Monitor}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+
+                                    <DataTrigger Value="Running" Binding="{Binding State}">
+                                        <Setter Property="IsHitTestVisible" Value="False"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ComboBox.Style>
+                    </ComboBox>
+
+                    <TextBox d:Text="-----" Margin="3,0" md:HintAssist.Hint="{loc:Loc Template Name}" md:HintAssist.IsFloating="True" IsHitTestVisible="False" HorizontalAlignment="Left">
+                        <TextBox.Style>
+                            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                                <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}"/>
+                                <Setter Property="Text" Value="{Binding JobName}"/>
+
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+
+                                    <DataTrigger Value="" Binding="{Binding JobName}">
+                                        <Setter Property="Text" Value="-----"/>
+                                        <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}"/>
+                                    </DataTrigger>
+
+                                    <DataTrigger Value="True" Binding="{Binding Jobs, Converter={StaticResource ObjectIsNull}}">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+
+                                    <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Monitor}">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+
+                                </Style.Triggers>
+                            </Style>
+                        </TextBox.Style>
+                    </TextBox>
+
+                </DockPanel>
 
                 <DockPanel>
 
-                    <DockPanel DockPanel.Dock="Top" Margin="1">
-                        <TextBox d:Text="camera" MinWidth="56" Margin="3"
-                                 md:HintAssist.Hint="{loc:Loc Type}" md:HintAssist.IsFloating="True" 
-                                 IsHitTestVisible="False" BorderThickness="0" >
-                            <TextBox.Style>
-                                <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                                    <Setter Property="Text" Value="{loc:Loc Unknown}"/>
-                                    <Style.Triggers>
-                                        <MultiDataTrigger>
-                                            <MultiDataTrigger.Conditions>
-                                                <Condition Value="camera" Binding="{Binding Inspection.device}"/>
-                                                <Condition Value="False" Binding="{Binding Is600Dpi}"/>
-                                            </MultiDataTrigger.Conditions>
-                                            
-                                            <Setter Property="Foreground" Value="Red"/>
-                                        </MultiDataTrigger>
+                    <Button HorizontalAlignment="Left" Margin="3,0" BorderThickness="0" Width="38">
 
-                                        <MultiDataTrigger>
-                                            <MultiDataTrigger.Conditions>
-                                                <Condition Value="simulator" Binding="{Binding Inspection.device}"/>
-                                                <Condition Value="False" Binding="{Binding Is600Dpi}"/>
-                                            </MultiDataTrigger.Conditions>
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
 
-                                            <Setter Property="Foreground" Value="Yellow"/>
-                                        </MultiDataTrigger>
+                                    <DataTrigger Value="Editing" Binding="{Binding State}">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <iconPacks:PackIconMaterial Kind="Play"/>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Setter Property="Command" Value="{Binding SwitchRunCommand}"/>
+                                        <Setter Property="ToolTip" Value="{loc:Loc Run}"/>
+                                    </DataTrigger>
 
-                                        <DataTrigger Value="camera" Binding="{Binding Inspection.device}">
-                                            <Setter Property="Text" Value="{loc:Loc Camera}"/>
-                                        </DataTrigger>
-                                        <DataTrigger Value="simulator" Binding="{Binding Inspection.device}">
-                                            <Setter Property="Text" Value="{loc:Loc Simulator}"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBox.Style>
-                        </TextBox>
+                                    <DataTrigger Value="Running" Binding="{Binding State}">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <iconPacks:PackIconMaterial Kind="Stop"/>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Setter Property="Command" Value="{Binding SwitchEditCommand}"/>
+                                        <Setter Property="ToolTip" Value="{loc:Loc Stop}"/>
+                                    </DataTrigger>
 
-                        <TextBox d:Text="ZT610"  MinWidth="57" Margin="3" 
-                                 md:HintAssist.Hint="{loc:Loc Model}" md:HintAssist.IsFloating="True" 
-                                 IsHitTestVisible="False" BorderThickness="0">
-                            <TextBox.Style>
-                                <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                                    <Setter Property="Text" Value="{Binding Path=Details.printerModel}"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Value="False" Binding="{Binding IsWrongTemplateName}">
-                                            <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}"/>
-                                        </DataTrigger>
-                                        <DataTrigger Value="Unknown" Binding="{Binding Path=Details.printerModel}">
-                                            <Setter Property="Text" Value="-----"/>
-                                        </DataTrigger>
+                                    <DataTrigger Value="Paused" Binding="{Binding State}">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <iconPacks:PackIconMaterial Kind="SelectRemove"/>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Setter Property="Command" Value="{Binding RemoveRepeatCommand}"/>
+                                        <Setter Property="ToolTip" Value="{loc:Loc Remove}"/>
+                                    </DataTrigger>
 
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBox.Style>
-                        </TextBox>
+                                    <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Monitor}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
 
-                    <TextBox d:Text="00:00:00:00:00" Text="{Binding Path=Details.cameraMAC, Mode=OneWay, Converter={StaticResource macAddressSplitConverter}, ConverterParameter=Last}" Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                         Margin="3" md:HintAssist.Hint="MAC" md:HintAssist.IsFloating="True" IsHitTestVisible="False" BorderThickness="0" />
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
 
-                    </DockPanel>
+                    <Button HorizontalAlignment="Left" Margin="3,0" BorderThickness="0" Width="38">
 
-                    <DockPanel DockPanel.Dock="Top" Margin="1">
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
 
-                        <TextBox d:Text="State" Text="{Binding State, Converter={StaticResource LocalizeEnumValue}}" Margin="3,0" 
-                                 md:HintAssist.Hint="{loc:Loc State}" md:HintAssist.IsFloating="True" 
-                                 IsHitTestVisible="False" HorizontalAlignment="Left">
-                            <TextBox.Style>
-                                <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                                    <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}"/>
-                                    <Style.Triggers>
-                                        <MultiDataTrigger>
-                                            <MultiDataTrigger.Conditions>
-                                                <Condition Value="Editing" Binding="{Binding State}" />
-                                                <Condition Value="True" Binding="{Binding SelectedImageRoll.WriteSectorsBeforeProcess}" />
-                                            </MultiDataTrigger.Conditions>
-                                            <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}" />
-                                        </MultiDataTrigger>
-
-                                        <MultiDataTrigger>
-                                            <MultiDataTrigger.Conditions>
-                                                <Condition Value="Running" Binding="{Binding State}" />
-                                                <Condition Value="False" Binding="{Binding SelectedImageRoll.WriteSectorsBeforeProcess}" />
-                                            </MultiDataTrigger.Conditions>
-                                            <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}" />
-                                        </MultiDataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBox.Style>
-                        </TextBox>
-
-                        <ComboBox ItemsSource="{Binding Jobs.jobs}" SelectedValue="{Binding SelectedJob}" Margin="3,0"
-                                  md:HintAssist.Hint="{loc:Loc Template Name}" md:HintAssist.IsFloating="True" 
-                                  HorizontalAlignment="Left">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding name}"/>
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                            <ComboBox.Style>
-                                <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}">
-                                    <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}"/>
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                    <Setter Property="IsHitTestVisible" Value="True"/>
-                                    <Style.Triggers>
-
-                                        <DataTrigger Value="False" Binding="{Binding IsWrongTemplateName}">
-                                            <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}"/>
-                                        </DataTrigger>
-
-                                        <DataTrigger Value="False" Binding="{Binding Jobs,Converter={StaticResource ObjectIsNull}}">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-
-                                        <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Monitor}">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                        </DataTrigger>
-
-                                        <DataTrigger Value="Running" Binding="{Binding State}">
-                                            <Setter Property="IsHitTestVisible" Value="False"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </ComboBox.Style>
-                        </ComboBox>
-
-                        <TextBox d:Text="-----" Margin="3,0" md:HintAssist.Hint="{loc:Loc Template Name}" md:HintAssist.IsFloating="True" IsHitTestVisible="False" HorizontalAlignment="Left">
-                            <TextBox.Style>
-                                <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                                    <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}"/>
-                                    <Setter Property="Text" Value="{Binding JobName}"/>
-
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                    <Style.Triggers>
-
-                                        <DataTrigger Value="" Binding="{Binding JobName}">
-                                            <Setter Property="Text" Value="-----"/>
-                                            <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}"/>
-                                        </DataTrigger>
-
-                                        <DataTrigger Value="True" Binding="{Binding Jobs, Converter={StaticResource ObjectIsNull}}">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-
-                                        <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Monitor}">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBox.Style>
-                        </TextBox>
-          
-                    </DockPanel>
-
-                    <DockPanel>
-                        
-                        <Button HorizontalAlignment="Left" Margin="3,0" BorderThickness="0" Width="38">
-
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                    <Style.Triggers>
-
-                                        <DataTrigger Value="Editing" Binding="{Binding State}">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                            <Setter Property="Content">
-                                                <Setter.Value>
-                                                    <iconPacks:PackIconMaterial Kind="Play"/>
-                                                </Setter.Value>
-                                            </Setter>
-                                            <Setter Property="Command" Value="{Binding SwitchRunCommand}"/>
-                                            <Setter Property="ToolTip" Value="{loc:Loc Run}"/>
-                                        </DataTrigger>
-
-                                        <DataTrigger Value="Running" Binding="{Binding State}">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                            <Setter Property="Content">
-                                                <Setter.Value>
-                                                    <iconPacks:PackIconMaterial Kind="Stop"/>
-                                                </Setter.Value>
-                                            </Setter>
-                                            <Setter Property="Command" Value="{Binding SwitchEditCommand}"/>
-                                            <Setter Property="ToolTip" Value="{loc:Loc Stop}"/>
-                                        </DataTrigger>
-
-                                        <DataTrigger Value="Paused" Binding="{Binding State}">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                            <Setter Property="Content">
-                                                <Setter.Value>
-                                                    <iconPacks:PackIconMaterial Kind="SelectRemove"/>
-                                                </Setter.Value>
-                                            </Setter>
-                                            <Setter Property="Command" Value="{Binding RemoveRepeatCommand}"/>
-                                            <Setter Property="ToolTip" Value="{loc:Loc Remove}"/>
-                                        </DataTrigger>
-
-                                        <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Monitor}">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                        </DataTrigger>
-
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
-
-                        <Button HorizontalAlignment="Left" Margin="3,0" BorderThickness="0" Width="38">
-
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                    <Style.Triggers>
-                                        
-                                        <DataTrigger Value="True" Binding="{Binding Print.enabled}">
-                                            <Setter Property="Content">
-                                                <Setter.Value>
-                                                    <iconPacks:PackIconMaterial Kind="Printer"
+                                    <DataTrigger Value="True" Binding="{Binding Print.enabled}">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <iconPacks:PackIconMaterial Kind="Printer"
                                                         Foreground="{DynamicResource CB_Green}"/>
-                                                </Setter.Value>
-                                            </Setter>
-                                            <Setter Property="Command" Value="{Binding EnablePrintCommand}"/>
-                                            <Setter Property="CommandParameter" Value="0"/>
-                                            <Setter Property="ToolTip" Value="{loc:Loc Printing Enabled}"/>
-                                        </DataTrigger>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Setter Property="Command" Value="{Binding EnablePrintCommand}"/>
+                                        <Setter Property="CommandParameter" Value="0"/>
+                                        <Setter Property="ToolTip" Value="{loc:Loc Printing Enabled}"/>
+                                    </DataTrigger>
 
-                                        <DataTrigger Value="False" Binding="{Binding Print.enabled}">
-                                            <Setter Property="Content">
-                                                <Setter.Value>
-                                                    <iconPacks:PackIconMaterial Kind="PrinterAlert"
+                                    <DataTrigger Value="False" Binding="{Binding Print.enabled}">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <iconPacks:PackIconMaterial Kind="PrinterAlert"
                                                         Foreground="{DynamicResource SectorError_Brush}"/>
-                                                </Setter.Value>
-                                            </Setter>
-                                            <Setter Property="Command" Value="{Binding EnablePrintCommand}"/>
-                                            <Setter Property="CommandParameter" Value="1"/>
-                                            <Setter Property="ToolTip" Value="{loc:Loc Printing Disabled}"/>
-                                        </DataTrigger>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Setter Property="Command" Value="{Binding EnablePrintCommand}"/>
+                                        <Setter Property="CommandParameter" Value="1"/>
+                                        <Setter Property="ToolTip" Value="{loc:Loc Printing Disabled}"/>
+                                    </DataTrigger>
 
-                                        <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Control}">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-                                        <DataTrigger Value="True" Binding="{Binding IsSimulator}">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                        </DataTrigger>
-                                        
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
-                    </DockPanel>
+                                    <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Control}">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                    <DataTrigger Value="True" Binding="{Binding IsSimulator}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
                 </DockPanel>
             </DockPanel>
+        </DockPanel>
 
     </md:Card>
 </UserControl>

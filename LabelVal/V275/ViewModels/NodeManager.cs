@@ -164,7 +164,6 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
         }
 
         Node sel = App.Settings.GetValue<Node>(nameof(SelectedNode));
-
         foreach (Node node in Nodes)
         {
             if (sel != null && node.ID == sel.ID)

@@ -146,7 +146,7 @@
                             </StatusBar>
                         </DockPanel>
 
-                        <mah:HamburgerMenu  DisplayMode="CompactInline" x:Name="hamMenu" 
+                        <mah:HamburgerMenu OpenPaneLength="300" CanResizeOpenPane="False" DisplayMode="Inline" HamburgerVisibility="Collapsed" x:Name="hamMenu" 
                                 ItemsSource="{Binding MenuItems}"
                                 SelectedItem="{Binding SelectedMenuItem}"
                                 ItemTemplateSelector="{StaticResource menuItemTemplateSelector}"

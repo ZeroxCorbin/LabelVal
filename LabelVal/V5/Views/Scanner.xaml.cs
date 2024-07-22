@@ -7,16 +7,24 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Wpf.Controls.PanAndZoom;
 
 namespace LabelVal.V5.Views;
 
-/// <summary>
-/// Interaction logic for Scanner.xaml
-/// </summary>
 public partial class Scanner : UserControl
 {
-    //private string? CodeType { get => App.Settings.GetValue<string>(nameof(TestViewModel.TestSettings.CodeType)); set => App.Settings.SetValue(nameof(TestViewModel.TestSettings.CodeType), value); }
-    //private string? ExpectedOutDataUTF8 { get => App.Settings.GetValue<string>(nameof(TestViewModel.TestSettings.ExpectedOutDataUTF8)); set => App.Settings.SetValue(nameof(TestViewModel.TestSettings.ExpectedOutDataUTF8), value); }
+    public static readonly DependencyProperty IsDockedProperty =
+    DependencyProperty.Register(
+        nameof(IsDocked),
+        typeof(bool),
+        typeof(Scanner),
+        new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure));
+
+    public bool IsDocked
+    {
+        get => (bool)GetValue(IsDockedProperty);
+        set => SetValue(IsDockedProperty, value);
+    }
 
     public Scanner() => InitializeComponent();
 

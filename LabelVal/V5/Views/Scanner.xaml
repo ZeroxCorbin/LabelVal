@@ -21,6 +21,7 @@
     <md:Card HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="6" BorderThickness="1"  
              Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
              Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}">
+
         <md:Card.Style>
             <Style TargetType="md:Card" BasedOn="{StaticResource {x:Type md:Card}}">
                 <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent4}"/>
@@ -62,12 +63,22 @@
 
                 </md:Card>
 
-                <Button DockPanel.Dock="Top" Margin="3" Click="btnShowSettings_Click" Style="{StaticResource GroupHeaderCirlceButton}" ToolTip="Show Settings"
+                <Button DockPanel.Dock="Top" Margin="3" Click="btnShowSettings_Click" 
+                        ToolTip="Show Settings"
                             HorizontalAlignment="Center" VerticalAlignment="Top" Width="24" Height="24">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource GroupHeaderCirlceButton}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsDocked, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
                     <iconPacks:PackIconMaterial Kind="Cog" Height="18" Width="18"/>
                 </Button>
 
-                <Button DockPanel.Dock="Top" Margin="3" Click="btnOpenInBrowser_Click" Style="{StaticResource GroupHeaderCirlceButton}"
+                <Button DockPanel.Dock="Top" Margin="3" Click="btnOpenInBrowser_Click" Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                                 HorizontalAlignment="Center" VerticalAlignment="Top" Width="24" Height="24"
                             ToolTip="Open V5 WebLink. Shift + Click to open admin UI!">
                     <iconPacks:PackIconModern Height="18" Width="18" Kind="Browser" Margin="0,2,0,0"/>
@@ -420,9 +431,21 @@
 
             </md:DrawerHost>
 
-            <Expander DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Right" md:ExpanderAssist.HorizontalHeaderPadding="6" MaxHeight="450"
-                               Background="{DynamicResource MahApps.Brushes.Accent4}">
-
+            <Expander DockPanel.Dock="Top" VerticalAlignment="Top" 
+                      HorizontalAlignment="Right" md:ExpanderAssist.HorizontalHeaderPadding="6" 
+                      MaxHeight="450"
+                      Background="{DynamicResource MahApps.Brushes.Accent4}">
+                
+                <Expander.Style>
+                    <Style TargetType="Expander" BasedOn="{StaticResource MaterialDesignExpander}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsDocked, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Expander.Style>
+                
                 <Expander.Header>
                     <DockPanel>
 
