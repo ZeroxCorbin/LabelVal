@@ -91,11 +91,11 @@
 
                 <iconPacks:PackIconMaterial Kind="Database" VerticalAlignment="Center" Margin="6,3,6,0"/>
 
-                <md:Card Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3,3"  
+                <md:Card Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="3,3"  
                                          Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
                                          Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}">
 
-                    <TextBlock Margin="3" HorizontalAlignment="Left" VerticalAlignment="Top" TextWrapping="Wrap">
+                    <TextBlock Margin="6,3" HorizontalAlignment="Left" VerticalAlignment="Top" TextWrapping="Wrap">
                         <TextBlock.Style>
                             <Style TargetType="TextBlock" BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}">
                                 <Setter Property="Text" Value="{Binding Content.SelectedDatabase.FileName}"/>
