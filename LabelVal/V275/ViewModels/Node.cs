@@ -4,10 +4,12 @@ using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
 using MahApps.Metro.Controls.Dialogs;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using V275_REST_lib.Models;
@@ -25,16 +27,19 @@ public enum NodeStates
     Disconnected
 }
 
+[JsonObject(MemberSerialization.OptIn)]
 public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessage<ImageRollEntry>>
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
     public V275_REST_lib.Controller Connection { get; }
 
-    private string Host => App.Settings.GetValue<string>($"{NodeManager.ClassName}{nameof(NodeManager.Host)}");
-    private uint SystemPort => App.Settings.GetValue<uint>($"{NodeManager.ClassName}{nameof(NodeManager.SystemPort)}");
+    [JsonProperty] private string Host => App.Settings.GetValue<string>($"{NodeManager.ClassName}{nameof(NodeManager.Host)}");
+    [JsonProperty] private uint SystemPort => App.Settings.GetValue<uint>($"{NodeManager.ClassName}{nameof(NodeManager.SystemPort)}");
 
-    private static string UserName => App.Settings.GetValue<string>(nameof(NodeManager.UserName));
+    [JsonProperty] public uint ID { get; set; }
+
+    [JsonProperty] private static string UserName => App.Settings.GetValue<string>(nameof(NodeManager.UserName));
     private static string Password => App.Settings.GetValue<string>(nameof(NodeManager.Password));
 
     [ObservableProperty] private bool loginMonitor;
@@ -134,6 +139,7 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
     {
         SelectedImageRoll = imageRollEntry;
 
+        ID = nodeNumber;
         Connection = new V275_REST_lib.Controller(host, systemPort, nodeNumber);
 
         Connection.WebSocket.SessionStateChange += WebSocket_SessionStateChange;

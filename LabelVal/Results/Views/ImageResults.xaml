@@ -43,6 +43,7 @@
                     <Border Style="{StaticResource imageBar}" />
 
                     <DockPanel>
+                        
                         <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Left">
 
                             <DockPanel DockPanel.Dock="Top" Margin="6,0,6,3">
@@ -81,21 +82,21 @@
 
                                 <TextBlock Text="{Binding SelectedImageRoll.TargetDPI, StringFormat={} : {0} dpi}" Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"/>
                            </DockPanel>
+                            
                             <Border Style="{StaticResource imageBarHor}"/>
                         </DockPanel>
 
                         <DockPanel>
 
-                            <Button Command="{Binding AddImageTopCommand}" Width="48" 
-                                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                            ToolTip="Add Image(s)">
+                            <Button Command="{Binding AddImageTopCommand}" Width="48" Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                    ToolTip="Add Image(s)">
 
                                 <iconPacks:PackIconMaterial Kind="Image" Width="24" Height="24"
                                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
                             </Button>
 
                             <Button Command="{Binding AddV5ImageCommand}" Width="48"
-                            Content="{iconPacks:Material Kind=Camera, Width=24, Height=24}" ToolTipService.ShowOnDisabled="True">
+                                    Content="{iconPacks:Material Kind=Camera, Width=24, Height=24}" ToolTipService.ShowOnDisabled="True">
 
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">

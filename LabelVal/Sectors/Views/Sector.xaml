@@ -325,11 +325,6 @@
                 </Border>
             </Popup>
 
-            <Popup x:Name="popSymbolDetails" StaysOpen="False">
-
-
-            </Popup>
-
             <!--Alarms-->
             <Border DockPanel.Dock="Top" BorderThickness="3" Padding="1" CornerRadius="3" Margin="0,3" HorizontalAlignment="Stretch">
                 <Border.Style>

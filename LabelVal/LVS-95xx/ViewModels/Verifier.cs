@@ -13,7 +13,7 @@ public class VerifierPacket(string value)
 
 public partial class Verifier : ObservableRecipient
 {
-    public long ID { get; set; } = DateTime.Now.Ticks;
+    public string ID => SelectedComName;
 
     private SerialPortController PortController = new();
 

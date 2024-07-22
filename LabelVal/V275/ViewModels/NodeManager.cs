@@ -66,6 +66,7 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
 
     [ObservableProperty] private ObservableCollection<Node> nodes = [];
     [ObservableProperty][NotifyPropertyChangedRecipients] private Node selectedNode;
+    partial void OnSelectedNodeChanged(Node value) => App.Settings.SetValue(nameof(SelectedNode), value);
 
     public bool ShowTemplateNameMismatchDialog 
     { 
@@ -87,6 +88,8 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
             {
                 message.Reply(SelectedNode);
             });
+
+        _ = GetDevices();
     }
 
     [RelayCommand]
@@ -131,13 +134,11 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
                 LogWarning("No devices found.");
                 return;
             }
+
             foreach (Node node in srt)
                 Nodes.Add(node);
 
-            if (SelectedNode == null && Nodes.Count > 0)
-                SelectedNode = Nodes.First();
-
-            Product product = await SelectedNode.Connection.Commands.GetProduct();
+            Product product = await new V275_REST_lib.Controller(Host, SystemPort, 0).Commands.GetProduct();
             if (product != null)
             {
                 string curVer = product.part.Remove(0, product.part.LastIndexOf("-") + 1);
@@ -160,6 +161,14 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
         else
         {
             Nodes.Clear();
+        }
+
+        Node sel = App.Settings.GetValue<Node>(nameof(SelectedNode));
+
+        foreach (Node node in Nodes)
+        {
+            if (sel != null && node.ID == sel.ID)
+                SelectedNode = node;
         }
     }
 

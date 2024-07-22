@@ -10,7 +10,8 @@ public partial class VerifierManager : ObservableRecipient
     public ObservableCollection<Verifier> Verifiers { get; } = App.Settings.GetValue(nameof(Verifiers), new ObservableCollection<Verifier>(), true);
 
     [ObservableProperty][NotifyPropertyChangedRecipients] public Verifier selectedVerifier;
-
+    partial void OnSelectedVerifierChanged(Verifier value) => App.Settings.SetValue(nameof(SelectedVerifier), SelectedVerifier);
+    
     [ObservableProperty] public Verifier newVerifier;
 
     public VerifierManager()
