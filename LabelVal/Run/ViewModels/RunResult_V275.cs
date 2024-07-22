@@ -21,7 +21,7 @@ public partial class RunResult
         SourceImage = JsonConvert.DeserializeObject<ImageEntry>(StoredImageResultGroup.V275Result.SourceImage);
         V275StoredImage = JsonConvert.DeserializeObject<ImageEntry>(StoredImageResultGroup.V275Result.StoredImage);
 
-        List<Sectors.ViewModels.Sector> tempSectors = [];
+        List<Sectors.Interfaces.ISector> tempSectors = [];
         if (!string.IsNullOrEmpty(StoredImageResultGroup.V275Result.Report) && !string.IsNullOrEmpty(StoredImageResultGroup.V275Result.Template))
         {
             foreach (V275_REST_lib.Models.Job.Sector jSec in StoredImageResultGroup.V275Result._Job.sectors)
@@ -36,7 +36,7 @@ public partial class RunResult
                         if (fSec == null)
                             break;
 
-                        tempSectors.Add(new Sectors.ViewModels.Sector(jSec, fSec, RunEntry.GradingStandard, RunEntry.Gs1TableName));
+                        tempSectors.Add(new V275.Sectors.Sector(jSec, fSec, RunEntry.GradingStandard, RunEntry.Gs1TableName));
 
                         break;
                     }
@@ -48,7 +48,7 @@ public partial class RunResult
         {
             SortList(tempSectors);
 
-            foreach (Sectors.ViewModels.Sector sec in tempSectors)
+            foreach (Sectors.Interfaces.ISector sec in tempSectors)
                 V275StoredSectors.Add(sec);
 
             V275StoredImageOverlay = V275CreateSectorsImageOverlay(StoredImageResultGroup.V275Result._Job, false, StoredImageResultGroup.V275Result._Report, V275StoredImage, V275StoredSectors);
@@ -63,7 +63,7 @@ public partial class RunResult
 
         V275CurrentImage = JsonConvert.DeserializeObject<ImageEntry>(CurrentImageResultGroup.V275Result.StoredImage);
 
-        List<Sectors.ViewModels.Sector> tempSectors = [];
+        List<Sectors.Interfaces.ISector> tempSectors = [];
         if (!string.IsNullOrEmpty(CurrentImageResultGroup.V275Result.Report) && !string.IsNullOrEmpty(CurrentImageResultGroup.V275Result.Template))
         {
             foreach (V275_REST_lib.Models.Job.Sector jSec in CurrentImageResultGroup.V275Result._Job.sectors)
@@ -78,7 +78,7 @@ public partial class RunResult
                         if (fSec == null)
                             break;
 
-                        tempSectors.Add(new Sectors.ViewModels.Sector(jSec, fSec, RunEntry.GradingStandard, RunEntry.Gs1TableName));
+                        tempSectors.Add(new V275.Sectors.Sector(jSec, fSec, RunEntry.GradingStandard, RunEntry.Gs1TableName));
 
                         break;
                     }
@@ -90,7 +90,7 @@ public partial class RunResult
         {
             SortList(tempSectors);
 
-            foreach (Sectors.ViewModels.Sector sec in tempSectors)
+            foreach (Sectors.Interfaces.ISector sec in tempSectors)
                 V275CurrentSectors.Add(sec);
 
             V275CurrentImageOverlay = V275CreateSectorsImageOverlay(CurrentImageResultGroup.V275Result._Job, false, CurrentImageResultGroup.V275Result._Report, V275CurrentImage, V275CurrentSectors);
@@ -128,12 +128,12 @@ public partial class RunResult
     {
         V275DiffSectors.Clear();
 
-        List<Sectors.ViewModels.SectorDifferences> diff = [];
+        List<Sectors.Interfaces.ISectorDifferences> diff = [];
 
         //Compare; Do not check for missing her. To keep found at top of list.
-        foreach (Sectors.ViewModels.Sector sec in V275StoredSectors)
+        foreach (Sectors.Interfaces.ISector sec in V275StoredSectors)
         {
-            foreach (Sectors.ViewModels.Sector cSec in V275CurrentSectors)
+            foreach (Sectors.Interfaces.ISector cSec in V275CurrentSectors)
                 if (sec.Template.Name == cSec.Template.Name)
                 {
                     if (sec.Template.Symbology == cSec.Template.Symbology)
@@ -143,7 +143,7 @@ public partial class RunResult
                     }
                     else
                     {
-                        Sectors.ViewModels.SectorDifferences dat = new()
+                        V275.Sectors.SectorDifferences dat = new()
                         {
                             UserName = $"{sec.Template.Username} (SYMBOLOGY MISMATCH)",
                             IsSectorMissing = true,
@@ -155,10 +155,10 @@ public partial class RunResult
         }
 
         //Check for missing
-        foreach (Sectors.ViewModels.Sector sec in V275StoredSectors)
+        foreach (Sectors.Interfaces.ISector sec in V275StoredSectors)
         {
             bool found = false;
-            foreach (Sectors.ViewModels.Sector cSec in V275CurrentSectors)
+            foreach (Sectors.Interfaces.ISector cSec in V275CurrentSectors)
                 if (sec.Template.Name == cSec.Template.Name)
                 {
                     found = true;
@@ -167,7 +167,7 @@ public partial class RunResult
 
             if (!found)
             {
-                Sectors.ViewModels.SectorDifferences dat = new()
+                V275.Sectors.SectorDifferences dat = new()
                 {
                     UserName = $"{sec.Template.Username} (MISSING)",
                     IsSectorMissing = true,
@@ -179,10 +179,10 @@ public partial class RunResult
 
         //check for missing
         if (V275StoredSectors.Count > 0)
-            foreach (Sectors.ViewModels.Sector sec in V275CurrentSectors)
+            foreach (Sectors.Interfaces.ISector sec in V275CurrentSectors)
             {
                 bool found = false;
-                foreach (Sectors.ViewModels.Sector cSec in V275StoredSectors)
+                foreach (Sectors.Interfaces.ISector cSec in V275StoredSectors)
                     if (sec.Template.Name == cSec.Template.Name)
                     {
                         found = true;
@@ -191,7 +191,7 @@ public partial class RunResult
 
                 if (!found)
                 {
-                    Sectors.ViewModels.SectorDifferences dat = new()
+                    V275.Sectors.SectorDifferences dat = new()
                     {
                         UserName = $"{sec.Template.Username} (MISSING)",
                         IsSectorMissing = true,
@@ -202,13 +202,13 @@ public partial class RunResult
             }
 
         //ToDo: Sort the diff list
-        foreach (Sectors.ViewModels.SectorDifferences d in diff)
+        foreach (Sectors.Interfaces.ISectorDifferences d in diff)
             if (d.IsNotEmpty)
                 V275DiffSectors.Add(d);
 
     }
 
-    private DrawingImage V275CreateSectorsImageOverlay(V275_REST_lib.Models.Job template, bool isDetailed, V275_REST_lib.Models.Report report, ImageRolls.ViewModels.ImageEntry image, ObservableCollection<Sectors.ViewModels.Sector> sectors)
+    private DrawingImage V275CreateSectorsImageOverlay(V275_REST_lib.Models.Job template, bool isDetailed, V275_REST_lib.Models.Report report, ImageRolls.ViewModels.ImageEntry image, ObservableCollection<Sectors.Interfaces.ISector> sectors)
     {
         DrawingGroup drwGroup = new();
 
@@ -268,14 +268,14 @@ public partial class RunResult
 
         return geometryImage;
     }
-    private static DrawingGroup V275GetModuleGrid(Job.Sector[] sectors, ObservableCollection<Sectors.ViewModels.Sector> parsedSectors)
+    private static DrawingGroup V275GetModuleGrid(Job.Sector[] sectors, ObservableCollection<Sectors.Interfaces.ISector> parsedSectors)
     {
         DrawingGroup drwGroup = new();
         //GeometryGroup moduleGrid = new GeometryGroup();
 
         foreach (Job.Sector sec in sectors)
         {
-            Sectors.ViewModels.Sector sect = parsedSectors.FirstOrDefault((e) => e.Template.Name.Equals(sec.name));
+            Sectors.Interfaces.ISector sect = parsedSectors.FirstOrDefault((e) => e.Template.Name.Equals(sec.name));
 
             if (sect != null)
             {
@@ -286,7 +286,7 @@ public partial class RunResult
                 if (sec.symbology is "qr" or "dataMatrix")
                 {
 
-                    Sectors.ViewModels.Report res = sect.Report;
+                    Sectors.Interfaces.IReport res = sect.Report;
 
                     if (res.ExtendedData != null)
                     {

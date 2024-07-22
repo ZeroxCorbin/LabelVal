@@ -123,8 +123,8 @@ public partial class ImageRolls : ObservableRecipient
         if (string.IsNullOrEmpty(UserImageRoll.Name))
             return;
 
-        if (UserImageRoll.SelectedStandard is Sectors.ViewModels.StandardsTypes.GS1 &&
-            UserImageRoll.SelectedGS1Table is Sectors.ViewModels.GS1TableNames.None or Sectors.ViewModels.GS1TableNames.Unsupported)
+        if (UserImageRoll.SelectedStandard is Sectors.Interfaces.StandardsTypes.GS1 &&
+            UserImageRoll.SelectedGS1Table is Sectors.Interfaces.GS1TableNames.None or Sectors.Interfaces.GS1TableNames.Unsupported)
             return;
 
         if (ImageRollsDatabase == null)

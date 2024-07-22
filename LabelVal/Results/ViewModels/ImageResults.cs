@@ -6,7 +6,6 @@ using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Logging;
 using LabelVal.Messages;
 using LabelVal.Run.ViewModels;
-using LabelVal.Sectors.ViewModels;
 using LabelVal.Utilities;
 using LabelVal.V275.ViewModels;
 using LabelVal.V5.ViewModels;
@@ -663,26 +662,26 @@ public partial class ImageResults : ObservableRecipient,
         TempV275Repeat.Clear();
     }
 
-    private string V275GetTableID(GS1TableNames gS1TableTypes)
+    private string V275GetTableID(Sectors.Interfaces.GS1TableNames gS1TableTypes)
         => gS1TableTypes switch
         {
-            GS1TableNames._1 => "1",
-            GS1TableNames._2 => "2",
-            GS1TableNames._3 => "3",
-            GS1TableNames._4 => "4",
-            GS1TableNames._5 => "5",
-            GS1TableNames._6 => "6",
-            GS1TableNames._7_1 => "7.1",
-            GS1TableNames._7_2 => "7.2",
-            GS1TableNames._7_3 => "7.3",
-            GS1TableNames._7_4 => "7.4",
-            GS1TableNames._8 => "8",
-            GS1TableNames._9 => "9",
-            GS1TableNames._10 => "10",
-            GS1TableNames._11 => "11",
-            GS1TableNames._12_1 => "12.1",
-            GS1TableNames._12_2 => "12.2",
-            GS1TableNames._12_3 => "12.3",
+            Sectors.Interfaces.GS1TableNames._1 => "1",
+            Sectors.Interfaces.GS1TableNames._2 => "2",
+            Sectors.Interfaces.GS1TableNames._3 => "3",
+            Sectors.Interfaces.GS1TableNames._4 => "4",
+            Sectors.Interfaces.GS1TableNames._5 => "5",
+            Sectors.Interfaces.GS1TableNames._6 => "6",
+            Sectors.Interfaces.GS1TableNames._7_1 => "7.1",
+            Sectors.Interfaces.GS1TableNames._7_2 => "7.2",
+            Sectors.Interfaces.GS1TableNames._7_3 => "7.3",
+            Sectors.Interfaces.GS1TableNames._7_4 => "7.4",
+            Sectors.Interfaces.GS1TableNames._8 => "8",
+            Sectors.Interfaces.GS1TableNames._9 => "9",
+            Sectors.Interfaces.GS1TableNames._10 => "10",
+            Sectors.Interfaces.GS1TableNames._11 => "11",
+            Sectors.Interfaces.GS1TableNames._12_1 => "12.1",
+            Sectors.Interfaces.GS1TableNames._12_2 => "12.2",
+            Sectors.Interfaces.GS1TableNames._12_3 => "12.3",
             _ => "",
         };
 

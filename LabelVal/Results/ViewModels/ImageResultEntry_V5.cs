@@ -26,11 +26,11 @@ public partial class ImageResultEntry
     public V5_REST_Lib.Models.Config V5CurrentTemplate { get; set; }
     public JObject V5CurrentReport { get; private set; }
 
-    [ObservableProperty] private ObservableCollection<Sectors.ViewModels.Sector> v5CurrentSectors = [];
-    [ObservableProperty] private ObservableCollection<Sectors.ViewModels.Sector> v5StoredSectors = [];
-    [ObservableProperty] private ObservableCollection<Sectors.ViewModels.SectorDifferences> v5DiffSectors = [];
-    [ObservableProperty] private Sectors.ViewModels.Sector v5FocusedStoredSector = null;
-    [ObservableProperty] private Sectors.ViewModels.Sector v5FocusedCurrentSector = null;
+    [ObservableProperty] private ObservableCollection<Sectors.Interfaces.ISector> v5CurrentSectors = [];
+    [ObservableProperty] private ObservableCollection<Sectors.Interfaces.ISector> v5StoredSectors = [];
+    [ObservableProperty] private ObservableCollection<Sectors.Interfaces.ISectorDifferences> v5DiffSectors = [];
+    [ObservableProperty] private Sectors.Interfaces.ISector v5FocusedStoredSector = null;
+    [ObservableProperty] private Sectors.Interfaces.ISector v5FocusedCurrentSector = null;
 
     [ObservableProperty] private bool isV5Working = false;
     partial void OnIsV5WorkingChanged(bool value) => OnPropertyChanged(nameof(IsNotV5Working));
@@ -100,8 +100,6 @@ public partial class ImageResultEntry
                 ImageResults.SelectedScanner.FTPClient.UploadFile(SourceImage.GetPngBytes(), path);
             else if (imageType == "v5Stored")
                 ImageResults.SelectedScanner.FTPClient.UploadFile(V5ResultRow.Stored.GetPngBytes(), path);
-            else if (imageType == "v275Stored")
-                ImageResults.SelectedScanner.FTPClient.UploadFile(V275ResultRow.Stored.GetPngBytes(), path);
 
             ImageResults.SelectedScanner.FTPClient.Disconnect();
 
@@ -136,25 +134,25 @@ V5CurrentImage = new ImageEntry(RollUID, triggerResults.FullImage, 600);
 
         V5CurrentSectors.Clear();
 
-        List<Sectors.ViewModels.Sector> tempSectors = [];
+        List<Sectors.Interfaces.ISector> tempSectors = [];
 
         if (V5CurrentReport["event"]?["name"].ToString() == "cycle-report-alt")
         {
             foreach (JToken rSec in V5CurrentReport["event"]?["data"]?["decodeData"])
-                tempSectors.Add(new Sectors.ViewModels.Sector(rSec.ToObject<V5_REST_Lib.Models.Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
+                tempSectors.Add(new V5.Sectors.Sector(rSec.ToObject<V5_REST_Lib.Models.Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
 
         }
         else if (V5CurrentReport["event"]?["name"].ToString() == "cycle-report")
         {
             foreach (JToken rSec in V5CurrentReport["event"]["data"]["cycleConfig"]["qualifiedResults"])
-                tempSectors.Add(new Sectors.ViewModels.Sector(rSec.ToObject<V5_REST_Lib.Models.Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
+                tempSectors.Add(new V5.Sectors.Sector(rSec.ToObject<V5_REST_Lib.Models.Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
         }
 
         if (tempSectors.Count > 0)
         {
             SortList(tempSectors);
 
-            foreach (Sectors.ViewModels.Sector sec in tempSectors)
+            foreach (Sectors.Interfaces.ISector sec in tempSectors)
                 V5CurrentSectors.Add(sec);
         }
 
@@ -168,6 +166,9 @@ V5CurrentImage = new ImageEntry(RollUID, triggerResults.FullImage, 600);
 
     private void V5GetStored()
     {
+        if(SelectedDatabase == null)
+            return;
+        
         V5StoredSectors.Clear();
 
         V5ResultRow = SelectedDatabase.Select_V5Result(RollUID, ImageUID);
@@ -178,23 +179,23 @@ V5CurrentImage = new ImageEntry(RollUID, triggerResults.FullImage, 600);
             return;
         }
 
-        List<Sectors.ViewModels.Sector> tempSectors = [];
+        List<Sectors.Interfaces.ISector> tempSectors = [];
         if (!string.IsNullOrEmpty(V5ResultRow.Report))
         {
             JObject results = V5ResultRow._Report;
 
-            V5StoredImageOverlay = V5CreateSectorsImageOverlay(results, V275StoredImage);
+            V5StoredImageOverlay = V5CreateSectorsImageOverlay(results, V5StoredImage);
 
             if (results["event"]?["name"].ToString() == "cycle-report-alt")
             {
                 foreach (JToken rSec in results["event"]?["data"]?["decodeData"])
-                    tempSectors.Add(new Sectors.ViewModels.Sector(rSec.ToObject<V5_REST_Lib.Models.Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
+                    tempSectors.Add(new V5.Sectors.Sector(rSec.ToObject<V5_REST_Lib.Models.Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
 
             }
             else if (results["event"]?["name"].ToString() == "cycle-report")
             {
                 foreach (JToken rSec in results["event"]["data"]["cycleConfig"]["qualifiedResults"])
-                    tempSectors.Add(new Sectors.ViewModels.Sector(rSec.ToObject<V5_REST_Lib.Models.Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
+                    tempSectors.Add(new V5.Sectors.Sector(rSec.ToObject<V5_REST_Lib.Models.Results_QualifiedResult>(), $"DecodeTool{rSec["toolSlot"]}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
             }
         }
 
@@ -202,7 +203,7 @@ V5CurrentImage = new ImageEntry(RollUID, triggerResults.FullImage, 600);
         {
             SortList(tempSectors);
 
-            foreach (Sectors.ViewModels.Sector sec in tempSectors)
+            foreach (Sectors.Interfaces.ISector sec in tempSectors)
                 V5StoredSectors.Add(sec);
         }
     }
@@ -210,12 +211,12 @@ V5CurrentImage = new ImageEntry(RollUID, triggerResults.FullImage, 600);
     {
         V5DiffSectors.Clear();
 
-        List<Sectors.ViewModels.SectorDifferences> diff = [];
+        List<Sectors.Interfaces.ISectorDifferences> diff = [];
 
         //Compare; Do not check for missing here. To keep found at top of list.
-        foreach (Sectors.ViewModels.Sector sec in V5StoredSectors)
+        foreach (Sectors.Interfaces.ISector sec in V5StoredSectors)
         {
-            foreach (Sectors.ViewModels.Sector cSec in V5CurrentSectors)
+            foreach (Sectors.Interfaces.ISector cSec in V5CurrentSectors)
                 if (sec.Template.Name == cSec.Template.Name)
                 {
                     if (sec.Template.Symbology == cSec.Template.Symbology)
@@ -225,7 +226,7 @@ V5CurrentImage = new ImageEntry(RollUID, triggerResults.FullImage, 600);
                     }
                     else
                     {
-                        Sectors.ViewModels.SectorDifferences dat = new()
+                        V5.Sectors.SectorDifferences dat = new()
                         {
                             UserName = $"{sec.Template.Username} (SYMBOLOGY MISMATCH)",
                             IsSectorMissing = true,
@@ -237,10 +238,10 @@ V5CurrentImage = new ImageEntry(RollUID, triggerResults.FullImage, 600);
         }
 
         //Check for missing
-        foreach (Sectors.ViewModels.Sector sec in V5StoredSectors)
+        foreach (Sectors.Interfaces.ISector sec in V5StoredSectors)
         {
             bool found = false;
-            foreach (Sectors.ViewModels.Sector cSec in V5CurrentSectors)
+            foreach (Sectors.Interfaces.ISector cSec in V5CurrentSectors)
                 if (sec.Template.Name == cSec.Template.Name)
                 {
                     found = true;
@@ -249,7 +250,7 @@ V5CurrentImage = new ImageEntry(RollUID, triggerResults.FullImage, 600);
 
             if (!found)
             {
-                Sectors.ViewModels.SectorDifferences dat = new()
+                V5.Sectors.SectorDifferences dat = new()
                 {
                     UserName = $"{sec.Template.Username} (MISSING)",
                     IsSectorMissing = true,
@@ -261,10 +262,10 @@ V5CurrentImage = new ImageEntry(RollUID, triggerResults.FullImage, 600);
 
         //check for missing
         if (V5StoredSectors.Count > 0)
-            foreach (Sectors.ViewModels.Sector sec in V5CurrentSectors)
+            foreach (Sectors.Interfaces.ISector sec in V5CurrentSectors)
             {
                 bool found = false;
-                foreach (Sectors.ViewModels.Sector cSec in V5StoredSectors)
+                foreach (Sectors.Interfaces.ISector cSec in V5StoredSectors)
                     if (sec.Template.Name == cSec.Template.Name)
                     {
                         found = true;
@@ -273,7 +274,7 @@ V5CurrentImage = new ImageEntry(RollUID, triggerResults.FullImage, 600);
 
                 if (!found)
                 {
-                    Sectors.ViewModels.SectorDifferences dat = new()
+                    V5.Sectors.SectorDifferences dat = new()
                     {
                         UserName = $"{sec.Template.Username} (MISSING)",
                         IsSectorMissing = true,
@@ -283,7 +284,7 @@ V5CurrentImage = new ImageEntry(RollUID, triggerResults.FullImage, 600);
                 }
             }
 
-        foreach (Sectors.ViewModels.SectorDifferences d in diff)
+        foreach (Sectors.Interfaces.ISectorDifferences d in diff)
             if (d.IsNotEmpty || d.IsSectorMissing)
                 V5DiffSectors.Add(d);
     }

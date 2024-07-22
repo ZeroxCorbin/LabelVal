@@ -406,7 +406,7 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
             return;
         }
 
-        if (SelectedImageRoll.SelectedStandard != Sectors.ViewModels.StandardsTypes.GS1)
+        if (SelectedImageRoll.SelectedStandard != LabelVal.Sectors.Interfaces.StandardsTypes.GS1)
         {
             if (JobName.ToLower().Equals(SelectedImageRoll.Name.ToLower()))
                 return;

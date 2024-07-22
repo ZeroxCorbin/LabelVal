@@ -8,7 +8,7 @@
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              xmlns:viewModels="clr-namespace:LabelVal.ImageRolls.ViewModels"
-             xmlns:sectors="clr-namespace:LabelVal.Sectors.ViewModels"
+             xmlns:sectors="clr-namespace:LabelVal.Sectors.Interfaces"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:imageRollConverters="clr-namespace:LabelVal.ImageRolls.Converters"
              xmlns:converters="clr-namespace:LabelVal.Converters"

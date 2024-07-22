@@ -1,4 +1,5 @@
 ﻿using LabelVal.Results.Views;
+using LabelVal.Sectors.Interfaces;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,7 +10,7 @@ namespace LabelVal.Sectors.Views;
 public partial class Sector : UserControl
 {
 
-    private ViewModels.Sector ThisSector { get; set; }
+    private ISector ThisSector { get; set; }
     public string SectorName => ThisSector.Template.Username;
     public System.Drawing.Point SectorCenterPoint => ThisSector.Template.CenterPoint;
     public string GroupName { get; private set; }
@@ -35,7 +36,7 @@ public partial class Sector : UserControl
 
     private void UserControl_Loaded(object sender, RoutedEventArgs e)
     {
-        ThisSector = (ViewModels.Sector)DataContext;
+        ThisSector = (ISector)DataContext;
 
         GetSecotorDetails();
     }
@@ -81,24 +82,24 @@ public partial class Sector : UserControl
         switch (GroupName)
         {
             case "v275Stored":
-                ImageResultEntry.V275FocusedStoredSector = (ViewModels.Sector)this.DataContext;
+                ImageResultEntry.V275FocusedStoredSector = (ISector)this.DataContext;
                 break;
             case "v275Current":
-                ImageResultEntry.V275FocusedCurrentSector = (ViewModels.Sector)this.DataContext;
+                ImageResultEntry.V275FocusedCurrentSector = (ISector)this.DataContext;
                 ShowSameNameSector("v275Stored");
                 break;
             case "v5Stored":
-                ImageResultEntry.V5FocusedStoredSector = (ViewModels.Sector)this.DataContext;
+                ImageResultEntry.V5FocusedStoredSector = (ISector)this.DataContext;
                 break;
             case "v5Current":
-                ImageResultEntry.V5FocusedCurrentSector = (ViewModels.Sector)this.DataContext;
+                ImageResultEntry.V5FocusedCurrentSector = (ISector)this.DataContext;
                 ShowSameNameSector("v5Stored");
                 break;
             case "l95xxStored":
-                ImageResultEntry.L95xxFocusedStoredSector = (ViewModels.Sector)this.DataContext;
+                ImageResultEntry.L95xxFocusedStoredSector = (ISector)this.DataContext;
                 break;
             case "l95xxCurrent":
-                ImageResultEntry.L95xxFocusedCurrentSector = (ViewModels.Sector)this.DataContext;
+                ImageResultEntry.L95xxFocusedCurrentSector = (ISector)this.DataContext;
                 ShowSameNameSector("l95xxStored");
                 break;
         }
@@ -216,7 +217,7 @@ public partial class Sector : UserControl
             var sectors = Utilities.VisualTreeHelp.GetVisualChildren<Sector>(ire);
             foreach (var s in sectors)
             {
-                var vm = (ViewModels.Sector)s.DataContext;
+                var vm = (ISector)s.DataContext;
 
                 if (LibStaticUtilities.PositionMovement.IsPointWithinCircumference(SectorCenterPoint, 30, vm.Template.CenterPoint))
                 {

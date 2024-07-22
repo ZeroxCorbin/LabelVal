@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using LabelVal.Run.ViewModels;
-using LabelVal.Sectors.ViewModels;
+using LabelVal.Sectors.Interfaces;
 using System;
 
 namespace LabelVal.Run.Databases;

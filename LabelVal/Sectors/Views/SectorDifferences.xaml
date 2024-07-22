@@ -7,9 +7,9 @@
                 xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
             xmlns:local="clr-namespace:LabelVal.Sectors.Views"
-            xmlns:ViewModels="clr-namespace:LabelVal.Sectors.ViewModels"
+            xmlns:ViewModels="clr-namespace:LabelVal.Sectors.Interfaces"
             xmlns:Converters="clr-namespace:LabelVal.Converters"
-            d:DataContext="{d:DesignInstance Type=ViewModels:SectorDifferences}"
+            d:DataContext="{d:DesignInstance Type=ViewModels:ISectorDifferences}"
             mc:Ignorable="d" 
             d:DesignHeight="450" d:DesignWidth="800">
 

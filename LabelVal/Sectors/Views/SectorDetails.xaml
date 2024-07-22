@@ -8,10 +8,10 @@
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
             
             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-            xmlns:ViewModels="clr-namespace:LabelVal.Sectors.ViewModels"
+            xmlns:ViewModels="clr-namespace:LabelVal.Sectors.Interfaces"
             xmlns:Converters="clr-namespace:LabelVal.Converters"
             xmlns:V275Converters="clr-namespace:LabelVal.V275.Converters"
-             d:DataContext="{d:DesignInstance Type=ViewModels:Sector}"
+             d:DataContext="{d:DesignInstance Type=ViewModels:ISector}"
             mc:Ignorable="d">
 
     <UserControl.Resources>

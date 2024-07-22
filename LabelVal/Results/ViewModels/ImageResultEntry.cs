@@ -49,7 +49,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
     }
     partial void OnSelectedDatabaseChanged(Databases.ImageResultsDatabase value) => GetStored();
 
-    [ObservableProperty] private Sectors.ViewModels.Sector selectedSector;
+    [ObservableProperty] private Sectors.Interfaces.ISector selectedSector;
 
     [ObservableProperty] private bool showDetails;
     partial void OnShowDetailsChanged(bool value)
@@ -133,8 +133,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             SourceImageUID = ImageUID,
 
             SourceImage = JsonConvert.SerializeObject(SourceImage),
-
-            Report = JsonConvert.SerializeObject(L95xxStoredSectors.Select(x => new L95xxReport() { Report = x.L95xxPacket, Template = x.Template }).ToList()),
+            Report = JsonConvert.SerializeObject(L95xxStoredSectors.Select(x => new L95xxReport() { Report = ((LVS_95xx.Sectors.Sector)x).L95xxPacket, Template = x.Template }).ToList()),
         },
     };
 
@@ -228,7 +227,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             //Does the selected sector exist in the Stored sectors list?
             //If so, prompt to overwrite or cancel.
 
-            Sectors.ViewModels.Sector old = L95xxStoredSectors.FirstOrDefault(x => x.Template.Name == L95xxCurrentSectorSelected.Template.Name);
+            Sectors.Interfaces.ISector old = L95xxStoredSectors.FirstOrDefault(x => x.Template.Name == L95xxCurrentSectorSelected.Template.Name);
             if (old != null)
             {
                 if (await OkCancelDialog("Overwrite Stored Sector", $"The sector already exists.\r\nAre you sure you want to overwrite the stored sector?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
@@ -243,14 +242,14 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             L95xxCurrentSectors.Remove(L95xxCurrentSectorSelected);
 
             //Sort the stored list.
-            List<Sectors.ViewModels.Sector> secs = L95xxStoredSectors.ToList();
+            List<Sectors.Interfaces.ISector> secs = L95xxStoredSectors.ToList();
             SortList(secs);
             SortObservableCollectionByList(secs, L95xxStoredSectors);
 
             //Save the list to the database.
             List<L95xxReport> temp = [];
-            foreach (Sectors.ViewModels.Sector sec in L95xxStoredSectors)
-                temp.Add(new L95xxReport() { Report = sec.L95xxPacket, Template = sec.Template });
+            foreach (Sectors.Interfaces.ISector sec in L95xxStoredSectors)
+                temp.Add(new L95xxReport() { Report = ((LVS_95xx.Sectors.Sector)sec).L95xxPacket, Template = sec.Template });
 
             _ = SelectedDatabase.InsertOrReplace_L95xxResult(new Databases.L95xxResult
             {
@@ -387,7 +386,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         _ => Brushes.Black,
     };
 
-    public static void SortList(List<Sectors.ViewModels.Sector> list) => list.Sort((item1, item2) =>
+    public static void SortList(List<Sectors.Interfaces.ISector> list) => list.Sort((item1, item2) =>
         {
             double distance1 = Math.Sqrt(Math.Pow(item1.Template.CenterPoint.X, 2) + Math.Pow(item1.Template.CenterPoint.Y, 2));
             double distance2 = Math.Sqrt(Math.Pow(item2.Template.CenterPoint.X, 2) + Math.Pow(item2.Template.CenterPoint.Y, 2));

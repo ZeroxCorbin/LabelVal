@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace LabelVal.Sectors.ViewModels;
+namespace LabelVal.Sectors.Interfaces;
 
 public partial class SectorDifferencesSettings : ObservableObject
 {

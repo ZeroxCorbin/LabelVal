@@ -10,7 +10,7 @@
              
              xmlns:viewModels="clr-namespace:LabelVal.ImageRolls.ViewModels"
                 xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-             xmlns:sectors="clr-namespace:LabelVal.Sectors.ViewModels"
+             xmlns:sectors="clr-namespace:LabelVal.Sectors.Interfaces"
              xmlns:System="clr-namespace:System;assembly=mscorlib"
              d:DataContext="{d:DesignInstance Type=viewModels:ImageRollEntry}"
              mc:Ignorable="d">

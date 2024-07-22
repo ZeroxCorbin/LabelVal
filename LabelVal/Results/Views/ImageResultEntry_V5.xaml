@@ -172,10 +172,16 @@
                                 <Setter Property="MaxHeight" Value="400"/>
                                 <Setter Property="MaxWidth" Value="400"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding V5DiffSectors.Count, Mode=OneWay}" Value="0">
-                                        <Setter Property="MaxHeight" Value="184"/>
-                                        <Setter Property="MaxWidth" Value="184"/>
-                                    </DataTrigger>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding V5StoredImage, Converter={StaticResource objectIsNull}}" Value="False"/>
+                                            <Condition Binding="{Binding V5DiffSectors.Count}" Value="0"/>
+                                        </MultiDataTrigger.Conditions>
+                                        <MultiDataTrigger.Setters>
+                                            <Setter Property="MaxHeight" Value="184"/>
+                                            <Setter Property="MaxWidth" Value="184"/>
+                                        </MultiDataTrigger.Setters>
+                                    </MultiDataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </Grid.Style>

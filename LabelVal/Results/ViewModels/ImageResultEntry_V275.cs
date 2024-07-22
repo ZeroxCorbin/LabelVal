@@ -31,11 +31,11 @@ public partial class ImageResultEntry
     public Job V275CurrentTemplate { get; set; }
     public Report V275CurrentReport { get; private set; }
 
-    [ObservableProperty] private ObservableCollection<Sectors.ViewModels.Sector> v275CurrentSectors = [];
-    [ObservableProperty] private ObservableCollection<Sectors.ViewModels.Sector> v275StoredSectors = [];
-    [ObservableProperty] private ObservableCollection<Sectors.ViewModels.SectorDifferences> v275DiffSectors = [];
-    [ObservableProperty] private Sectors.ViewModels.Sector v275FocusedStoredSector = null;
-    [ObservableProperty] private Sectors.ViewModels.Sector v275FocusedCurrentSector = null;
+    [ObservableProperty] private ObservableCollection<Sectors.Interfaces.ISector> v275CurrentSectors = [];
+    [ObservableProperty] private ObservableCollection<Sectors.Interfaces.ISector> v275StoredSectors = [];
+    [ObservableProperty] private ObservableCollection<Sectors.Interfaces.ISectorDifferences> v275DiffSectors = [];
+    [ObservableProperty] private Sectors.Interfaces.ISector v275FocusedStoredSector = null;
+    [ObservableProperty] private Sectors.Interfaces.ISector v275FocusedCurrentSector = null;
 
     [ObservableProperty] private bool isV275Working = false;
     partial void OnIsV275WorkingChanged(bool value) => OnPropertyChanged(nameof(IsNotV275Working));
@@ -61,6 +61,9 @@ public partial class ImageResultEntry
 
     private void V275GetStored()
     {
+        if(SelectedDatabase == null)
+            return;
+
         V275StoredSectors.Clear();
 
         V275ResultRow = SelectedDatabase.Select_V275Result(RollUID, ImageUID);
@@ -68,7 +71,7 @@ public partial class ImageResultEntry
         if (V275ResultRow == null)
             return;
 
-        List<Sectors.ViewModels.Sector> tempSectors = [];
+        List<Sectors.Interfaces.ISector> tempSectors = [];
         if (!string.IsNullOrEmpty(V275ResultRow.Report) && !string.IsNullOrEmpty(V275ResultRow.Template))
         {
             foreach (Job.Sector jSec in V275ResultRow._Job.sectors)
@@ -83,7 +86,7 @@ public partial class ImageResultEntry
                         if (fSec == null)
                             break;
 
-                        tempSectors.Add(new Sectors.ViewModels.Sector(jSec, fSec, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
+                        tempSectors.Add(new V275.Sectors.Sector(jSec, fSec, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
 
                         break;
                     }
@@ -95,7 +98,7 @@ public partial class ImageResultEntry
         {
             SortList(tempSectors);
 
-            foreach (Sectors.ViewModels.Sector sec in tempSectors)
+            foreach (Sectors.Interfaces.ISector sec in tempSectors)
                 V275StoredSectors.Add(sec);
 
         }
@@ -132,7 +135,7 @@ public partial class ImageResultEntry
 
         V275CurrentSectors.Clear();
 
-        List<Sectors.ViewModels.Sector> tempSectors = [];
+        List<Sectors.Interfaces.ISector> tempSectors = [];
         foreach (Job.Sector jSec in V275CurrentTemplate.sectors)
         {
             foreach (JObject rSec in V275CurrentReport.inspectLabel.inspectSector)
@@ -140,12 +143,12 @@ public partial class ImageResultEntry
                 if (jSec.name == rSec["name"].ToString())
                 {
 
-                    object fSec = V275DeserializeSector(rSec, ImageResults.SelectedImageRoll.SelectedStandard != Sectors.ViewModels.StandardsTypes.GS1 && ImageResults.SelectedNode.IsOldISO);
+                    object fSec = V275DeserializeSector(rSec, ImageResults.SelectedImageRoll.SelectedStandard != Sectors.Interfaces.StandardsTypes.GS1 && ImageResults.SelectedNode.IsOldISO);
 
                     if (fSec == null)
                         break; //Not yet supported sector type
 
-                    tempSectors.Add(new Sectors.ViewModels.Sector(jSec, fSec, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
+                    tempSectors.Add(new V275.Sectors.Sector(jSec, fSec, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
 
                     break;
                 }
@@ -156,9 +159,8 @@ public partial class ImageResultEntry
         {
             SortList(tempSectors);
 
-            foreach (Sectors.ViewModels.Sector sec in tempSectors)
+            foreach (Sectors.Interfaces.ISector sec in tempSectors)
                 V275CurrentSectors.Add(sec);
-
         }
 
         V275GetSectorDiff();
@@ -171,12 +173,12 @@ public partial class ImageResultEntry
     {
         V275DiffSectors.Clear();
 
-        List<Sectors.ViewModels.SectorDifferences> diff = [];
+        List<Sectors.Interfaces.ISectorDifferences> diff = [];
 
         //Compare; Do not check for missing her. To keep found at top of list.
-        foreach (Sectors.ViewModels.Sector sec in V275StoredSectors)
+        foreach (Sectors.Interfaces.ISector sec in V275StoredSectors)
         {
-            foreach (Sectors.ViewModels.Sector cSec in V275CurrentSectors)
+            foreach (Sectors.Interfaces.ISector cSec in V275CurrentSectors)
                 if (sec.Template.Name == cSec.Template.Name)
                 {
                     if (sec.Template.Symbology == cSec.Template.Symbology)
@@ -186,7 +188,7 @@ public partial class ImageResultEntry
                     }
                     else
                     {
-                        Sectors.ViewModels.SectorDifferences dat = new()
+                        V275.Sectors.SectorDifferences dat = new()
                         {
                             UserName = $"{sec.Template.Username} (SYMBOLOGY MISMATCH)",
                             IsSectorMissing = true,
@@ -198,10 +200,10 @@ public partial class ImageResultEntry
         }
 
         //Check for missing
-        foreach (Sectors.ViewModels.Sector sec in V275StoredSectors)
+        foreach (Sectors.Interfaces.ISector sec in V275StoredSectors)
         {
             bool found = false;
-            foreach (Sectors.ViewModels.Sector cSec in V275CurrentSectors)
+            foreach (Sectors.Interfaces.ISector cSec in V275CurrentSectors)
                 if (sec.Template.Name == cSec.Template.Name)
                 {
                     found = true;
@@ -210,7 +212,7 @@ public partial class ImageResultEntry
 
             if (!found)
             {
-                Sectors.ViewModels.SectorDifferences dat = new()
+                V275.Sectors.SectorDifferences dat = new()
                 {
                     UserName = $"{sec.Template.Username} (MISSING)",
                     IsSectorMissing = true,
@@ -222,10 +224,10 @@ public partial class ImageResultEntry
 
         //check for missing
         if (V275StoredSectors.Count > 0)
-            foreach (Sectors.ViewModels.Sector sec in V275CurrentSectors)
+            foreach (Sectors.Interfaces.ISector sec in V275CurrentSectors)
             {
                 bool found = false;
-                foreach (Sectors.ViewModels.Sector cSec in V275StoredSectors)
+                foreach (Sectors.Interfaces.ISector cSec in V275StoredSectors)
                     if (sec.Template.Name == cSec.Template.Name)
                     {
                         found = true;
@@ -234,7 +236,7 @@ public partial class ImageResultEntry
 
                 if (!found)
                 {
-                    Sectors.ViewModels.SectorDifferences dat = new()
+                    V275.Sectors.SectorDifferences dat = new()
                     {
                         UserName = $"{sec.Template.Username} (MISSING)",
                         IsSectorMissing = true,
@@ -245,7 +247,7 @@ public partial class ImageResultEntry
             }
 
         //ToDo: Sort the diff list
-        foreach (Sectors.ViewModels.SectorDifferences d in diff)
+        foreach (Sectors.Interfaces.ISectorDifferences d in diff)
             if (d.IsNotEmpty || d.IsSectorMissing)
                 V275DiffSectors.Add(d);
 
@@ -269,7 +271,7 @@ public partial class ImageResultEntry
             return 2;
         }
 
-        foreach (Sectors.ViewModels.Sector sec in V275StoredSectors)
+        foreach (V275.Sectors.Sector sec in V275StoredSectors)
         {
             if (!await ImageResults.SelectedNode.Connection.AddSector(sec.Template.Name, JsonConvert.SerializeObject(sec.V275Sector)))
             {
@@ -328,7 +330,7 @@ public partial class ImageResultEntry
 
     //    return geometryImage;
     //}
-    private DrawingImage V275CreateSectorsImageOverlay(Job template, bool isDetailed, Report report, ImageRolls.ViewModels.ImageEntry image, ObservableCollection<Sectors.ViewModels.Sector> sectors)
+    private DrawingImage V275CreateSectorsImageOverlay(Job template, bool isDetailed, Report report, ImageRolls.ViewModels.ImageEntry image, ObservableCollection<Sectors.Interfaces.ISector> sectors)
     {
         DrawingGroup drwGroup = new();
 
@@ -414,14 +416,14 @@ public partial class ImageResultEntry
             glyphIndices, baselineOrigin, advanceWidths,
             null, null, null, null, null, null);
     }
-    private static DrawingGroup V275GetModuleGrid(Job.Sector[] sectors, ObservableCollection<Sectors.ViewModels.Sector> parsedSectors)
+    private static DrawingGroup V275GetModuleGrid(Job.Sector[] sectors, ObservableCollection<Sectors.Interfaces.ISector> parsedSectors)
     {
         DrawingGroup drwGroup = new();
         //GeometryGroup moduleGrid = new GeometryGroup();
 
         foreach (Job.Sector sec in sectors)
         {
-            Sectors.ViewModels.Sector sect = parsedSectors.FirstOrDefault((e) => e.Template.Name.Equals(sec.name));
+            Sectors.Interfaces.ISector sect = parsedSectors.FirstOrDefault((e) => e.Template.Name.Equals(sec.name));
 
             if (sect != null)
             {
@@ -432,7 +434,7 @@ public partial class ImageResultEntry
                 if (sec.symbology is "qr" or "dataMatrix")
                 {
 
-                    Sectors.ViewModels.Report res = sect.Report;
+                    Sectors.Interfaces.IReport res = sect.Report;
 
                     if (res.ExtendedData != null)
                     {

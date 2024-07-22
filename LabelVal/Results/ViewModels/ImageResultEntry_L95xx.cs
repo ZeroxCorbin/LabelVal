@@ -1,7 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
-using LabelVal.Sectors.ViewModels;
+using LabelVal.LVS_95xx.Sectors;
+using LabelVal.Sectors.Interfaces;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,7 +13,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
 {
     public class L95xxReport
     {
-        public Template Template { get; set; }
+        public ITemplate Template { get; set; }
         public string Report { get; set; }
     }
 
@@ -20,13 +21,13 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
 
     public List<L95xxReport> L95xxCurrentReport { get; private set; }
 
-    public ObservableCollection<Sectors.ViewModels.Sector> L95xxCurrentSectors { get; } = [];
-    public ObservableCollection<Sectors.ViewModels.Sector> L95xxStoredSectors { get; } = [];
-    public ObservableCollection<Sectors.ViewModels.SectorDifferences> L95xxDiffSectors { get; } = [];
-    [ObservableProperty] private Sectors.ViewModels.Sector l95xxFocusedStoredSector = null;
-    [ObservableProperty] private Sectors.ViewModels.Sector l95xxFocusedCurrentSector = null;
+    public ObservableCollection<Sectors.Interfaces.ISector> L95xxCurrentSectors { get; } = [];
+    public ObservableCollection<Sectors.Interfaces.ISector> L95xxStoredSectors { get; } = [];
+    public ObservableCollection<Sectors.Interfaces.ISectorDifferences> L95xxDiffSectors { get; } = [];
+    [ObservableProperty] private Sectors.Interfaces.ISector l95xxFocusedStoredSector = null;
+    [ObservableProperty] private Sectors.Interfaces.ISector l95xxFocusedCurrentSector = null;
 
-    [ObservableProperty] private Sectors.ViewModels.Sector l95xxCurrentSectorSelected;
+    [ObservableProperty] private Sectors.Interfaces.ISector l95xxCurrentSectorSelected;
 
     //[ObservableProperty] private byte[] l95xxImage = null;
     //[ObservableProperty] private DrawingImage l95xxSectorsImageOverlay;
@@ -46,18 +47,18 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
             App.Current.Dispatcher.BeginInvoke(() =>
             {
                 L95xxCurrentSectors.Add(new Sector(SelectedSector.Template, message.NewValue.Value, SelectedSector.DesiredStandard, SelectedSector.DesiredGS1Table));
-                List<Sector> secs = L95xxCurrentSectors.ToList();
+                List<ISector> secs = L95xxCurrentSectors.ToList();
                 SortList(secs);
 
                 SortObservableCollectionByList(secs, L95xxCurrentSectors);
             });
     }
 
-    public static void SortObservableCollectionByList(List<Sector> list, ObservableCollection<Sector> observableCollection)
+    public static void SortObservableCollectionByList(List<ISector> list, ObservableCollection<ISector> observableCollection)
     {
         for (int i = 0; i < list.Count; i++)
         {
-            Sector item = list[i];
+            ISector item = list[i];
             int currentIndex = observableCollection.IndexOf(item);
             if (currentIndex != i)
             {
@@ -68,6 +69,9 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
 
     private void L95xxGetStored()
     {
+        if(SelectedDatabase == null)
+            return;
+
         L95xxResultRow = SelectedDatabase.Select_L95xxResult(RollUID, ImageUID);
 
         if (L95xxResultRow == null)
@@ -79,9 +83,9 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
         List<L95xxReport> report = JsonConvert.DeserializeObject<List<L95xxReport>>(L95xxResultRow.Report);
 
         L95xxStoredSectors.Clear();
-        List<Sectors.ViewModels.Sector> tempSectors = [];
+        List<Sectors.Interfaces.ISector> tempSectors = [];
         foreach (L95xxReport rSec in report)
-            tempSectors.Add(new Sectors.ViewModels.Sector(rSec.Template, rSec.Report, StandardsTypes.None, GS1TableNames.None));
+            tempSectors.Add(new LVS_95xx.Sectors.Sector(rSec.Template, rSec.Report, StandardsTypes.None, GS1TableNames.None));
 
         if (tempSectors.Count > 0)
         {
@@ -96,7 +100,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
     {
         L95xxDiffSectors.Clear();
 
-        List<Sectors.ViewModels.SectorDifferences> diff = [];
+        List<Sectors.Interfaces.ISectorDifferences> diff = [];
 
         //Compare; Do not check for missing her. To keep found at top of list.
         foreach (Sector sec in L95xxStoredSectors)
@@ -111,7 +115,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
                     }
                     else
                     {
-                        SectorDifferences dat = new()
+                        LVS_95xx.Sectors.SectorDifferences dat = new()
                         {
                             UserName = $"{sec.Template.Username} (SYMBOLOGY MISMATCH)",
                             IsSectorMissing = true,
@@ -135,7 +139,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
 
             if (!found)
             {
-                SectorDifferences dat = new()
+                LVS_95xx.Sectors.SectorDifferences dat = new()
                 {
                     UserName = $"{sec.Template.Username} (MISSING)",
                     IsSectorMissing = true,
@@ -159,7 +163,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
 
                 if (!found)
                 {
-                    SectorDifferences dat = new()
+                    LVS_95xx.Sectors.SectorDifferences dat = new()
                     {
                         UserName = $"{sec.Template.Username} (MISSING)",
                         IsSectorMissing = true,
@@ -169,7 +173,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
                 }
             }
 
-        foreach (SectorDifferences d in diff)
+        foreach (LVS_95xx.Sectors.SectorDifferences d in diff)
             if (d.IsNotEmpty)
                 L95xxDiffSectors.Add(d);
     }

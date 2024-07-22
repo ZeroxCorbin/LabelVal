@@ -21,11 +21,11 @@ using System.Windows.Media;
 namespace LabelVal.Run.ViewModels;
 public partial class RunResult : ObservableRecipient, IImageResultEntry, IRecipient<PropertyChangedMessage<PrinterSettings>>
 {
-    [ObservableProperty] private ObservableCollection<Sectors.ViewModels.Sector> v275CurrentSectors = [];
-    [ObservableProperty] private ObservableCollection<Sectors.ViewModels.Sector> v275StoredSectors = [];
-    [ObservableProperty] private ObservableCollection<Sectors.ViewModels.SectorDifferences> v275DiffSectors = [];
-    [ObservableProperty] private Sectors.ViewModels.Sector v275FocusedStoredSector = null;
-    [ObservableProperty] private Sectors.ViewModels.Sector v275FocusedCurrentSector = null;
+    [ObservableProperty] private ObservableCollection<Sectors.Interfaces.ISector> v275CurrentSectors = [];
+    [ObservableProperty] private ObservableCollection<Sectors.Interfaces.ISector> v275StoredSectors = [];
+    [ObservableProperty] private ObservableCollection<Sectors.Interfaces.ISectorDifferences> v275DiffSectors = [];
+    [ObservableProperty] private Sectors.Interfaces.ISector v275FocusedStoredSector = null;
+    [ObservableProperty] private Sectors.Interfaces.ISector v275FocusedCurrentSector = null;
 
     [ObservableProperty] private ImageRolls.ViewModels.ImageEntry sourceImage;
     [ObservableProperty] private ImageRolls.ViewModels.ImageEntry v275CurrentImage;
@@ -34,11 +34,11 @@ public partial class RunResult : ObservableRecipient, IImageResultEntry, IRecipi
     [ObservableProperty] private System.Windows.Media.DrawingImage v275CurrentImageOverlay;
     [ObservableProperty] private System.Windows.Media.DrawingImage v275StoredImageOverlay;
 
-    [ObservableProperty] private ObservableCollection<Sectors.ViewModels.Sector> v5CurrentSectors = [];
-    [ObservableProperty] private ObservableCollection<Sectors.ViewModels.Sector> v5StoredSectors = [];
-    [ObservableProperty] private ObservableCollection<Sectors.ViewModels.SectorDifferences> v5DiffSectors = [];
-    [ObservableProperty] private Sectors.ViewModels.Sector v5FocusedStoredSector = null;
-    [ObservableProperty] private Sectors.ViewModels.Sector v5FocusedCurrentSector = null;
+    [ObservableProperty] private ObservableCollection<Sectors.Interfaces.ISector> v5CurrentSectors = [];
+    [ObservableProperty] private ObservableCollection<Sectors.Interfaces.ISector> v5StoredSectors = [];
+    [ObservableProperty] private ObservableCollection<Sectors.Interfaces.ISectorDifferences> v5DiffSectors = [];
+    [ObservableProperty] private Sectors.Interfaces.ISector v5FocusedStoredSector = null;
+    [ObservableProperty] private Sectors.Interfaces.ISector v5FocusedCurrentSector = null;
 
     [ObservableProperty] private ImageRolls.ViewModels.ImageEntry v5SourceImage;
     [ObservableProperty] private ImageRolls.ViewModels.ImageEntry v5CurrentImage;
@@ -47,11 +47,11 @@ public partial class RunResult : ObservableRecipient, IImageResultEntry, IRecipi
     [ObservableProperty] private System.Windows.Media.DrawingImage v5CurrentImageOverlay;
     [ObservableProperty] private System.Windows.Media.DrawingImage v5StoredImageOverlay;
 
-    [ObservableProperty] private ObservableCollection<Sectors.ViewModels.Sector> l95xxCurrentSectors = [];
-    [ObservableProperty] private ObservableCollection<Sectors.ViewModels.Sector> l95xxStoredSectors = [];
-    [ObservableProperty] private ObservableCollection<Sectors.ViewModels.SectorDifferences> l95xxDiffSectors = [];
-    [ObservableProperty] private Sectors.ViewModels.Sector l95xxFocusedStoredSector = null;
-    [ObservableProperty] private Sectors.ViewModels.Sector l95xxFocusedCurrentSector = null;
+    [ObservableProperty] private ObservableCollection<Sectors.Interfaces.ISector> l95xxCurrentSectors = [];
+    [ObservableProperty] private ObservableCollection<Sectors.Interfaces.ISector> l95xxStoredSectors = [];
+    [ObservableProperty] private ObservableCollection<Sectors.Interfaces.ISectorDifferences> l95xxDiffSectors = [];
+    [ObservableProperty] private Sectors.Interfaces.ISector l95xxFocusedStoredSector = null;
+    [ObservableProperty] private Sectors.Interfaces.ISector l95xxFocusedCurrentSector = null;
 
     public RunEntry RunEntry { get; }
 
@@ -171,7 +171,7 @@ public partial class RunResult : ObservableRecipient, IImageResultEntry, IRecipi
         "F" => (SolidColorBrush)App.Current.Resources["ISO_GradeF_Brush"],
         _ => Brushes.Black,
     };
-    public static void SortList(List<Sectors.ViewModels.Sector> list) => list.Sort((item1, item2) =>
+    public static void SortList(List<Sectors.Interfaces.ISector> list) => list.Sort((item1, item2) =>
     {
         double distance1 = Math.Sqrt(Math.Pow(item1.Template.CenterPoint.X, 2) + Math.Pow(item1.Template.CenterPoint.Y, 2));
         double distance2 = Math.Sqrt(Math.Pow(item2.Template.CenterPoint.X, 2) + Math.Pow(item2.Template.CenterPoint.Y, 2));
