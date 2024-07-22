@@ -23,8 +23,8 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
     public ObservableCollection<ValueResult> ValueResults { get; } = [];
     public ObservableCollection<ValueResult> Gs1ValueResults { get; } = [];
     public ObservableCollection<Grade> Gs1Grades { get; } = [];
-    public ObservableCollection<Value> Values { get; } = [];
-    public ObservableCollection<Report_InspectSector_Common.Alarm> Alarms { get; } = [];
+    public ObservableCollection<Value_> Values { get; } = [];
+    public ObservableCollection<Alarm> Alarms { get; } = [];
     public ObservableCollection<Blemish> Blemishes { get; } = [];
 
     public SectorDifferences() { }
@@ -85,7 +85,7 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
             }
 
         foreach (var src in Values)
-            if (compare.Values.FirstOrDefault((x) => x.Name == src.Name) is Value cmp)
+            if (compare.Values.FirstOrDefault((x) => x.Name == src.Name) is Value_ cmp)
             {
                 if (cmp == null) continue;
 
@@ -142,7 +142,7 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
             {
                 //if (Type != "blemish")
                 //{
-                if (aS.name == aC.name)
+                if (aS.Name == aC.Name)
                 {
                     found = true;
                     if (!ISectorDifferences.CompareAlarm(aS, aC))
@@ -168,7 +168,7 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
             {
                 //if (Type != "blemish")
                 //{
-                if (aS.name == aC.name)
+                if (aS.Name == aC.Name)
                 {
                     found = true;
                     if (!ISectorDifferences.CompareAlarm(aS, aC))
@@ -218,7 +218,7 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
                         if (prop1.GetValue(prop.GetValue(verify)) is Report_InspectSector_Blemish.Blemish[] dat)
                         {
                             foreach (var d in dat)
-                                Blemishes.Add(new Blemish(d));
+                                Blemishes.Add(new Blemish(d.top, d.left, d.height, d.width, d.type));
 
                             IsNotEmpty = Blemishes.Count > 0;
                         }
@@ -229,11 +229,11 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
                     {
                         if (prop1.GetValue(prop.GetValue(verify)) is Report_InspectSector_Common.Decode dat)
                         {
-                            GradeValues.Add(new GradeValue(prop1.Name, new Report_InspectSector_Common.GradeValue() { grade = dat.grade, value = dat.value }));
+                            GradeValues.Add(new GradeValue(prop1.Name, dat.value, new Grade(prop1.Name, dat.grade.value, dat.grade.letter)));
 
                             if (dat.edgeDetermination != null)
                                 if (Type == "verify1D")
-                                    ValueResults.Add(new ValueResult("edgeDetermination", dat.edgeDetermination));
+                                    ValueResults.Add(new ValueResult("edgeDetermination", dat.edgeDetermination.value, dat.edgeDetermination.result));
 
                             IsNotEmpty = true;
                         }
@@ -244,9 +244,8 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
                     {
                         if (prop1.GetValue(prop.GetValue(verify)) is Report_InspectSector_Common.GradeValue dat)
                         {
-                            GradeValues.Add(new GradeValue(prop1.Name, dat));
+                            GradeValues.Add(new GradeValue(prop1.Name, dat.value, new Grade(prop1.Name, dat.grade.value, dat.grade.letter)));
                             IsNotEmpty = true;
-
                         }
                         continue;
                     }
@@ -255,7 +254,7 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
                     {
                         if (prop1.GetValue(prop.GetValue(verify)) is Report_InspectSector_Common.ValueResult dat)
                         {
-                            ValueResults.Add(new ValueResult(prop1.Name, dat));
+                            ValueResults.Add(new ValueResult(prop1.Name, dat.value, dat.result));
                             IsNotEmpty = true;
                         }
                         continue;
@@ -265,7 +264,7 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
                     {
                         if (prop1.GetValue(prop.GetValue(verify)) is Report_InspectSector_Common.Value dat)
                         {
-                            Values.Add(new Value(prop1.Name, dat));
+                            Values.Add(new Value_(prop1.Name, dat.value));
                             IsNotEmpty = true;
                         }
                         continue;
@@ -276,7 +275,26 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
                         if (prop1.GetValue(prop.GetValue(verify)) is Report_InspectSector_Common.Alarm[] dat)
                         {
                             foreach (var d in dat)
-                                Alarms.Add(d);
+                            {
+                                Alarms.Add(new Alarm()
+                                {
+                                    Category = d.category,
+                                    Name = d.name,
+                                    Data = new SubAlarm_()
+                                    {
+                                        Index = d.data.index,
+                                        Expected = d.data.expected,
+                                        SubAlarm = d.data.subAlarm,
+                                        Text = d.data.text
+                                    },
+                                    UserAction = new Useraction()
+                                    {
+                                        Action = d.userAction.action,
+                                        Note = d.userAction.note,
+                                        User = d.userAction.user
+                                    }
+                                });
+                            }
 
                             IsNotEmpty = Alarms.Count > 0;
                         }
@@ -292,7 +310,7 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
                                 {
                                     if (prop2.GetValue(prop1.GetValue(prop.GetValue(verify))) is Report_InspectSector_Common.ValueResult dat)
                                     {
-                                        Gs1ValueResults.Add(new ValueResult(prop2.Name, dat));
+                                        Gs1ValueResults.Add(new ValueResult(prop2.Name, dat.value, dat.result));
                                         IsNotEmpty = true;
                                     }
                                     continue;
@@ -301,7 +319,7 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
                                 {
                                     if (prop2.GetValue(prop1.GetValue(prop.GetValue(verify))) is Report_InspectSector_Common.Grade dat)
                                     {
-                                        Gs1Grades.Add(new Grade(prop2.Name, dat));
+                                        Gs1Grades.Add(new Grade(prop2.Name, dat.value, dat.letter));
                                         IsNotEmpty = true;
                                     }
                                     continue;

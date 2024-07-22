@@ -92,9 +92,9 @@ public class Sector : ISector
             GS1Table = V275GetGS1Table(sector.gradingStandard.tableId);
 
         int highCat = 0;
-        foreach (V275_REST_lib.Models.Report_InspectSector_Common.Alarm alm in SectorDifferences.Alarms)
-            if (highCat < alm.category)
-                highCat = alm.category;
+        foreach (Alarm alm in SectorDifferences.Alarms)
+            if (highCat < alm.Category)
+                highCat = alm.Category;
 
         if (highCat == 1)
             IsWarning = true;

@@ -380,14 +380,14 @@
 
                                 <StackPanel Orientation="Horizontal" Grid.Column="2" >
 
-                                    <TextBlock Text="{Binding Path=value, StringFormat=N1, Mode=OneTime}" Grid.Column="1" Margin="3,0,3,0"/>
+                                    <TextBlock Text="{Binding Path=Value, StringFormat=N1, Mode=OneTime}" Grid.Column="1" Margin="3,0,3,0"/>
 
                                     <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3" Margin="2,0,2,0">
                                         <Border.Style>
                                             <Style TargetType="{x:Type Border}">
                                                 <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
                                                 <Style.Triggers>
-                                                    <DataTrigger Value="FAIL" Binding="{Binding Path=result, Mode=OneTime}">
+                                                    <DataTrigger Value="FAIL" Binding="{Binding Path=Result, Mode=OneTime}">
                                                         <Setter Property="Background" Value="{DynamicResource SectorError_Brush}"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>

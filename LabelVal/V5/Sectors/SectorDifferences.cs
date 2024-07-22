@@ -23,8 +23,8 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
     public ObservableCollection<ValueResult> ValueResults { get; } = [];
     public ObservableCollection<ValueResult> Gs1ValueResults { get; } = [];
     public ObservableCollection<Grade> Gs1Grades { get; } = [];
-    public ObservableCollection<Value> Values { get; } = [];
-    public ObservableCollection<Report_InspectSector_Common.Alarm> Alarms { get; } = [];
+    public ObservableCollection<Value_> Values { get; } = [];
+    public ObservableCollection<Alarm> Alarms { get; } = [];
     public ObservableCollection<Blemish> Blemishes { get; } = [];
 
     public ISectorDifferences Compare(ISectorDifferences compare)
@@ -83,7 +83,7 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
             }
 
         foreach (var src in Values)
-            if (compare.Values.FirstOrDefault((x) => x.Name == src.Name) is Value cmp)
+            if (compare.Values.FirstOrDefault((x) => x.Name == src.Name) is Value_ cmp)
             {
                 if (cmp == null) continue;
 
@@ -140,7 +140,7 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
             {
                 //if (Type != "blemish")
                 //{
-                if (aS.name == aC.name)
+                if (aS.Name == aC.Name)
                 {
                     found = true;
                     if (!ISectorDifferences.CompareAlarm(aS, aC))
@@ -166,7 +166,7 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
             {
                 //if (Type != "blemish")
                 //{
-                if (aS.name == aC.name)
+                if (aS.Name == aC.Name)
                 {
                     found = true;
                     if (!ISectorDifferences.CompareAlarm(aS, aC))
@@ -212,195 +212,80 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
         {
             IsNotEmpty = true;
 
-            GradeValues.Add(new GradeValue("decode",
-                new Report_InspectSector_Common.GradeValue()
-                {
-                    grade = new Report_InspectSector_Common.Grade() { letter = V5GetGradeLetter(results.grading.iso15415.decode.letter), value = results.grading.iso15415.decode.grade },
-                    value = results.grading.iso15415.decode.value
-                }));
+            GradeValues.Add(new GradeValue("contrast", results.grading.iso15415.contrast.value, new Grade("contrast", results.grading.iso15415.contrast.grade, V5GetGradeLetter(results.grading.iso15415.contrast.letter))));
 
-            GradeValues.Add(new GradeValue("contrast",
-                new Report_InspectSector_Common.GradeValue()
-                {
-                    grade = new Report_InspectSector_Common.Grade() { letter = V5GetGradeLetter(results.grading.iso15415.contrast.letter), value = results.grading.iso15415.contrast.grade },
-                    value = results.grading.iso15415.contrast.value
-                }));
+            GradeValues.Add(new GradeValue("modulation", results.grading.iso15415.modulation.value, new Grade("modulation", results.grading.iso15415.modulation.grade, V5GetGradeLetter(results.grading.iso15415.modulation.letter))));
 
-            GradeValues.Add(new GradeValue("modulation",
-                new Report_InspectSector_Common.GradeValue()
-                {
-                    grade = new Report_InspectSector_Common.Grade() { letter = V5GetGradeLetter(results.grading.iso15415.modulation.letter), value = results.grading.iso15415.modulation.grade },
-                    value = results.grading.iso15415.modulation.value
-                }));
+            GradeValues.Add(new GradeValue("reflectanceMargin", results.grading.iso15415.reflectanceMargin.value, new Grade("reflectanceMargin", results.grading.iso15415.reflectanceMargin.grade, V5GetGradeLetter(results.grading.iso15415.reflectanceMargin.letter))));
 
-            GradeValues.Add(new GradeValue("reflectanceMargin",
-                new Report_InspectSector_Common.GradeValue()
-                {
-                    grade = new Report_InspectSector_Common.Grade() { letter = V5GetGradeLetter(results.grading.iso15415.reflectanceMargin.letter), value = results.grading.iso15415.reflectanceMargin.grade },
-                    value = results.grading.iso15415.reflectanceMargin.value
-                }));
+            GradeValues.Add(new GradeValue("axialNonUniformity", results.grading.iso15415.axialNonUniformity.value, new Grade("axialNonUniformity", results.grading.iso15415.axialNonUniformity.grade, V5GetGradeLetter(results.grading.iso15415.axialNonUniformity.letter))));
 
-            GradeValues.Add(new GradeValue("axialNonUniformity",
-                new Report_InspectSector_Common.GradeValue()
-                {
-                    grade = new Report_InspectSector_Common.Grade() { letter = V5GetGradeLetter(results.grading.iso15415.axialNonUniformity.letter), value = results.grading.iso15415.axialNonUniformity.grade },
-                    value = results.grading.iso15415.axialNonUniformity.value
-                }));
+            GradeValues.Add(new GradeValue("gridNonUniformity", results.grading.iso15415.gridNonUniformity.value, new Grade("gridNonUniformity", results.grading.iso15415.gridNonUniformity.grade, V5GetGradeLetter(results.grading.iso15415.gridNonUniformity.letter))));
 
-            GradeValues.Add(new GradeValue("gridNonUniformity",
-                new Report_InspectSector_Common.GradeValue()
-                {
-                    grade = new Report_InspectSector_Common.Grade() { letter = V5GetGradeLetter(results.grading.iso15415.gridNonUniformity.letter), value = results.grading.iso15415.gridNonUniformity.grade },
-                    value = results.grading.iso15415.gridNonUniformity.value
-                }));
+            GradeValues.Add(new GradeValue("unusedECC", results.grading.iso15415.unusedECC.value, new Grade("unusedECC", results.grading.iso15415.unusedECC.grade, V5GetGradeLetter(results.grading.iso15415.unusedECC.letter))));
 
-            GradeValues.Add(new GradeValue("unusedECC",
-                new Report_InspectSector_Common.GradeValue()
-                {
-                    grade = new Report_InspectSector_Common.Grade() { letter = V5GetGradeLetter(results.grading.iso15415.unusedECC.letter), value = results.grading.iso15415.unusedECC.grade },
-                    value = results.grading.iso15415.unusedECC.value
-                }));
+            GradeValues.Add(new GradeValue("fixedPatternDamage", results.grading.iso15415.fixedPatternDamage.value, new Grade("fixedPatternDamage", results.grading.iso15415.fixedPatternDamage.grade, V5GetGradeLetter(results.grading.iso15415.fixedPatternDamage.letter))));
 
-            GradeValues.Add(new GradeValue("fixedPatternDamage",
-                new Report_InspectSector_Common.GradeValue()
-                {
-                    grade = new Report_InspectSector_Common.Grade() { letter = V5GetGradeLetter(results.grading.iso15415.fixedPatternDamage.letter), value = results.grading.iso15415.fixedPatternDamage.grade },
-                    value = results.grading.iso15415.fixedPatternDamage.value
-                }));
         }
         else if (Type == "verify1D" && results.grading.iso15416 is { overall: not null })
         {
             IsNotEmpty = true;
 
-            GradeValues.Add(new GradeValue("decode",
-                new Report_InspectSector_Common.GradeValue()
-                {
-                    grade = new Report_InspectSector_Common.Grade() { letter = V5GetGradeLetter(results.grading.iso15416.decode.letter), value = results.grading.iso15416.decode.grade },
-                    value = results.grading.iso15416.decode.value
-                }));
+            GradeValues.Add(new GradeValue("decode", results.grading.iso15416.decode.value, new Grade("decode", results.grading.iso15416.decode.grade, V5GetGradeLetter(results.grading.iso15416.decode.letter))));
 
-            GradeValues.Add(new GradeValue("symbolContrast",
-                new Report_InspectSector_Common.GradeValue()
-                {
-                    grade = new Report_InspectSector_Common.Grade() { letter = V5GetGradeLetter(results.grading.iso15416.symbolContrast.letter), value = results.grading.iso15416.symbolContrast.grade },
-                    value = results.grading.iso15416.symbolContrast.value
-                }));
+            GradeValues.Add(new GradeValue("symbolContrast", results.grading.iso15416.symbolContrast.value, new Grade("symbolContrast", results.grading.iso15416.symbolContrast.grade, V5GetGradeLetter(results.grading.iso15416.symbolContrast.letter))));
 
-            GradeValues.Add(new GradeValue("minimumEdgeContrast",
-                new Report_InspectSector_Common.GradeValue()
-                {
-                    grade = new Report_InspectSector_Common.Grade() { letter = V5GetGradeLetter(results.grading.iso15416.minimumEdgeContrast.letter), value = results.grading.iso15416.minimumEdgeContrast.grade },
-                    value = results.grading.iso15416.minimumEdgeContrast.value
-                }));
+            GradeValues.Add(new GradeValue("minimumEdgeContrast", results.grading.iso15416.minimumEdgeContrast.value, new Grade("minimumEdgeContrast", results.grading.iso15416.minimumEdgeContrast.grade, V5GetGradeLetter(results.grading.iso15416.minimumEdgeContrast.letter))));
 
-            GradeValues.Add(new GradeValue("modulation",
-                new Report_InspectSector_Common.GradeValue()
-                {
-                    grade = new Report_InspectSector_Common.Grade() { letter = V5GetGradeLetter(results.grading.iso15416.modulation.letter), value = results.grading.iso15416.modulation.grade },
-                    value = results.grading.iso15416.modulation.value
-                }));
+            GradeValues.Add(new GradeValue("modulation", results.grading.iso15416.modulation.value, new Grade("modulation", results.grading.iso15416.modulation.grade, V5GetGradeLetter(results.grading.iso15416.modulation.letter))));
 
-            GradeValues.Add(new GradeValue("defects",
-                new Report_InspectSector_Common.GradeValue()
-                {
-                    grade = new Report_InspectSector_Common.Grade() { letter = V5GetGradeLetter(results.grading.iso15416.defects.letter), value = results.grading.iso15416.defects.grade },
-                    value = results.grading.iso15416.defects.value
-                }));
+            GradeValues.Add(new GradeValue("defects", results.grading.iso15416.defects.value, new Grade("defects", results.grading.iso15416.defects.grade, V5GetGradeLetter(results.grading.iso15416.defects.letter))));
 
-            GradeValues.Add(new GradeValue("decodability",
-                new Report_InspectSector_Common.GradeValue()
-                {
-                    grade = new Report_InspectSector_Common.Grade() { letter = V5GetGradeLetter(results.grading.iso15416.decodability.letter), value = results.grading.iso15416.decodability.grade },
-                    value = results.grading.iso15416.decodability.value
-                }));
+            GradeValues.Add(new GradeValue("decodability", results.grading.iso15416.decodability.value, new Grade("decodability", results.grading.iso15416.decodability.grade, V5GetGradeLetter(results.grading.iso15416.decodability.letter))));
 
-            GradeValues.Add(new GradeValue("minimumReflectance",
-                new Report_InspectSector_Common.GradeValue()
-                {
-                    grade = new Report_InspectSector_Common.Grade() { letter = V5GetGradeLetter(results.grading.iso15416.minimumReflectance.letter), value = results.grading.iso15416.minimumReflectance.grade },
-                    value = results.grading.iso15416.minimumReflectance.value
-                }));
+            GradeValues.Add(new GradeValue("minimumReflectance", results.grading.iso15416.minimumReflectance.value, new Grade("minimumReflectance", results.grading.iso15416.minimumReflectance.grade, V5GetGradeLetter(results.grading.iso15416.minimumReflectance.letter))));
 
 
+            ValueResults.Add(new ValueResult("edgeDetermination", results.grading.iso15416.edgeDetermination.value, results.grading.iso15416.edgeDetermination.letter == 65 ? "PASS" : "FAIL"));
 
-            //GradeValues.Add(new GradeValue("edgeDetermination",
-            //    new Report_InspectSector_Common.GradeValue()
-            //    {
-            //        grade = new Report_InspectSector_Common.Grade() { letter = V5GetGradeLetter(results.grading.iso15416.edgeDetermination.letter), value = results.grading.iso15416.edgeDetermination.grade },
-            //        value = results.grading.iso15416.edgeDetermination.value
-            //    }));
-
-            //GradeValues.Add(new GradeValue("quietZone",
-            //    new Report_InspectSector_Common.GradeValue()
-            //    {
-            //        grade = new Report_InspectSector_Common.Grade() { letter = V5GetGradeLetter(results.grading.iso15416.quietZone.letter), value = results.grading.iso15416.quietZone.grade },
-            //        value = results.grading.iso15416.quietZone.value
-            //    }));
-
-            ValueResults.Add(new ValueResult("edgeDetermination", new Report_InspectSector_Common.ValueResult() { value = results.grading.iso15416.edgeDetermination.value, result = results.grading.iso15416.edgeDetermination.letter == 65 ? "PASS" : "FAIL" }));
-
-            ValueResults.Add(new ValueResult("quietZone", new Report_InspectSector_Common.ValueResult() { value = results.grading.iso15416.quietZone.value, result = results.grading.iso15416.quietZone.letter == 65 ? "PASS" : "FAIL" }));
-
-
-            //GradeValues.Add(new GradeValue("overall",
-            //    new Report_InspectSector_Common.GradeValue()
-            //    {
-            //        grade = new Report_InspectSector_Common.Grade() { letter = V5GetGradeLetter(results.grading.iso15416.overall.letter), value = results.grading.iso15416.overall.grade },
-            //        value = results.grading.iso15416.overall.value
-            //    }));
-
-
-
-
+            ValueResults.Add(new ValueResult("quietZone", results.grading.iso15416.quietZone.value, results.grading.iso15416.quietZone.letter == 65 ? "PASS" : "FAIL"));
         }
 
         if (Type == "verify2D")
         {
             if (results.Datamatrix != null)
             {
-                Values.Add(new Value("rows", new Report_InspectSector_Common.Value() { value = results.Datamatrix.rows }));
-                Values.Add(new Value("columns", new Report_InspectSector_Common.Value() { value = results.Datamatrix.columns }));
-
-
-                Values.Add(new Value("uec", new Report_InspectSector_Common.Value() { value = results.Datamatrix.uec }));
-                Values.Add(new Value("ecc", new Report_InspectSector_Common.Value() { value = results.Datamatrix.ecc }));
-
-                Values.Add(new Value("mirror", new Report_InspectSector_Common.Value() { value = results.Datamatrix.mirror ? 1 : 0 }));
-                Values.Add(new Value("readerConfig", new Report_InspectSector_Common.Value() { value = results.Datamatrix.readerConfig ? 1 : 0 }));
+                Values.Add(new Value_("rows", results.Datamatrix.rows));
+                Values.Add(new Value_("columns", results.Datamatrix.columns));
+                Values.Add(new Value_("uec", results.Datamatrix.uec));
+                Values.Add(new Value_("ecc", results.Datamatrix.ecc));
+                Values.Add(new Value_("mirror", results.Datamatrix.mirror ? 1 : 0));
+                Values.Add(new Value_("readerConfig", results.Datamatrix.readerConfig ? 1 : 0));
             }
             else if (results.QR != null)
             {
-                Values.Add(new Value("rows", new Report_InspectSector_Common.Value() { value = results.QR.rows }));
-                Values.Add(new Value("columns", new Report_InspectSector_Common.Value() { value = results.QR.columns }));
-
-
-                Values.Add(new Value("uec", new Report_InspectSector_Common.Value() { value = results.QR.uec }));
-                //Values.Add(new Value("ecl", new Report_InspectSector_Common.Value() { value = results.QR.ecl }));
-
-                Values.Add(new Value("mirror", new Report_InspectSector_Common.Value() { value = results.QR.mirror ? 1 : 0 }));
-                Values.Add(new Value("model", new Report_InspectSector_Common.Value() { value = results.QR.model }));
-                Values.Add(new Value("locatorCount", new Report_InspectSector_Common.Value() { value = results.QR.locator.Count() }));
+                Values.Add(new Value_("rows", results.QR.rows));
+                Values.Add(new Value_("columns", results.QR.columns));
+                Values.Add(new Value_("uec", results.QR.uec));
+                Values.Add(new Value_("mirror", results.QR.mirror ? 1 : 0));
+                Values.Add(new Value_("model", results.QR.model));
+                Values.Add(new Value_("locatorCount", results.QR.locator.Count()));
             }
-
-
         }
         else if (Type == "verify1D")
         {
             if (results.Code128 != null)
-                Values.Add(new Value("barCount", new Report_InspectSector_Common.Value() { value = results.Code128.barCount }));
+                Values.Add(new Value_("barCount", results.Code128.barCount));
             else if (results.PDF417 != null)
             {
-                Values.Add(new Value("rows", new Report_InspectSector_Common.Value() { value = results.PDF417.rows }));
-                Values.Add(new Value("columns", new Report_InspectSector_Common.Value() { value = results.PDF417.columns }));
-
-                Values.Add(new Value("ecc", new Report_InspectSector_Common.Value() { value = results.PDF417.ecc }));
+                Values.Add(new Value_("rows", results.PDF417.rows));
+                Values.Add(new Value_("columns", results.PDF417.columns));
+                Values.Add(new Value_("ecc", results.PDF417.ecc));
             }
             else if (results.UPC != null)
             {
-                Values.Add(new Value("barCount", new Report_InspectSector_Common.Value() { value = results.UPC.barCount }));
-                Values.Add(new Value("supplemental", new Report_InspectSector_Common.Value() { value = results.UPC.supplemental }));
-
-                //Values.Add(new Value("version", new Report_InspectSector_Common.Value() { value = results.UPC.version }));
+                Values.Add(new Value_("barCount", results.UPC.barCount));
+                Values.Add(new Value_("supplemental", results.UPC.supplemental));
             }
         }
 

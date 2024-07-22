@@ -23,8 +23,8 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
     public ObservableCollection<ValueResult> ValueResults { get; } = [];
     public ObservableCollection<ValueResult> Gs1ValueResults { get; } = [];
     public ObservableCollection<Grade> Gs1Grades { get; } = [];
-    public ObservableCollection<Value> Values { get; } = [];
-    public ObservableCollection<Report_InspectSector_Common.Alarm> Alarms { get; } = [];
+    public ObservableCollection<Value_> Values { get; } = [];
+    public ObservableCollection<Alarm> Alarms { get; } = [];
     public ObservableCollection<Blemish> Blemishes { get; } = [];
     public ISectorDifferences Compare(ISectorDifferences compare)
     {
@@ -82,7 +82,7 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
             }
 
         foreach (var src in Values)
-            if (compare.Values.FirstOrDefault((x) => x.Name == src.Name) is Value cmp)
+            if (compare.Values.FirstOrDefault((x) => x.Name == src.Name) is Value_ cmp)
             {
                 if (cmp == null) continue;
 
@@ -139,7 +139,7 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
             {
                 //if (Type != "blemish")
                 //{
-                if (aS.name == aC.name)
+                if (aS.Name == aC.Name)
                 {
                     found = true;
                     if (!ISectorDifferences.CompareAlarm(aS, aC))
@@ -165,7 +165,7 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
             {
                 //if (Type != "blemish")
                 //{
-                if (aS.name == aC.name)
+                if (aS.Name == aC.Name)
                 {
                     found = true;
                     if (!ISectorDifferences.CompareAlarm(aS, aC))
@@ -195,7 +195,7 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
         IsNotEmpty = false;
 
         float cellSizeX = 0, cellSizeY = 0;
-        var alarms = new List<Report_InspectSector_Common.Alarm>();
+        var alarms = new List<Alarm>();
 
         if (splitPacket.Find((e) => e.StartsWith("Cell size")) != null)
         {
@@ -214,103 +214,98 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
 
                 if (spl1[0].StartsWith("Warning"))
                 {
-                    alarms.Add(new Report_InspectSector_Common.Alarm() { name = spl1[1], category = 1 });
+                    alarms.Add(new Alarm() { Name = spl1[1], Category = 1 });
                     continue;
                 }
 
                 if (spl1[0].Equals("Decode"))
                 {
-                    GradeValues.Add(new GradeValue("decode",
-                        new Report_InspectSector_Common.GradeValue()
-                        {
-                            grade = spl1[1].StartsWith("PASS") ? new Report_InspectSector_Common.Grade() { letter = "A", value = 4.0f } : new Report_InspectSector_Common.Grade() { letter = "F", value = 0.0f },
-                            value = -1
-                        }));
+                    GradeValues.Add(new GradeValue("decode", -1, GetValues("Decode", splitPacket)[0].StartsWith("PASS") ? new Grade("Decode", 4.0f, "A") : new Grade("Decode", 0.0f, "F")));
                     continue;
                 }
 
                 if (spl1[0].Equals("Contrast"))
                 {
-                    GradeValues.Add(new GradeValue("contrast", GetGradeValue(spl1[1])));
+                    GradeValues.Add(GetGradeValue("contrast", spl1[1]));
                     continue;
                 }
 
                 if (spl1[0].StartsWith("Modulation"))
                 {
-                    GradeValues.Add(new GradeValue("modulation", new Report_InspectSector_Common.GradeValue() { grade = GetGrade(spl1[1]), value = -1 }));
+                    GradeValues.Add(new GradeValue("modulation", -1, GetGrade("modulation", spl1[1])));
                     continue;
                 }
 
                 if (spl1[0].StartsWith("Reflectance"))
                 {
-                    GradeValues.Add(new GradeValue("reflectance", new Report_InspectSector_Common.GradeValue() { grade = GetGrade(spl1[1]), value = -1 }));
+                    GradeValues.Add(new GradeValue("reflectance", -1, GetGrade("reflectance", spl1[1])));
                     continue;
                 }
 
                 if (spl1[0].StartsWith("Axial "))
                 {
-                    GradeValues.Add(new GradeValue("axialNonUniformity", GetGradeValue(spl1[1])));
+                    GradeValues.Add(GetGradeValue("axialNonUniformity",spl1[1]));
                     continue;
                 }
 
                 if (spl1[0].StartsWith("Grid "))
                 {
-                    GradeValues.Add(new GradeValue("gridNonUniformity", GetGradeValue(spl1[1])));
+                    GradeValues.Add(GetGradeValue("gridNonUniformity", spl1[1]));
                     continue;
                 }
 
                 if (spl1[0].StartsWith("Unused "))
                 {
-                    GradeValues.Add(new GradeValue("unusedECC", GetGradeValue(spl1[1])));
+                    GradeValues.Add(GetGradeValue("unusedECC", spl1[1]));
                     continue;
                 }
 
                 if (spl1[0].StartsWith("Fixed"))
                 {
-                    GradeValues.Add(new GradeValue("fixedPatternDamage", GetGradeValue(spl1[1])));
+                    GradeValues.Add(GetGradeValue("fixedPatternDamage", spl1[1]));
                     continue;
                 }
 
 
                 if (spl1[0].StartsWith("Rmin"))
                 {
-                    Values.Add(new Value("minimumReflectance", new Report_InspectSector_Common.Value() { value = ParseInt(spl1[1]) }));
+                    Values.Add(new Value_("minimumReflectance",ParseInt(spl1[1])));
                     continue;
                 }
                 if (spl1[0].StartsWith("Rmax"))
                 {
-                    Values.Add(new Value("maximumReflectance", new Report_InspectSector_Common.Value() { value = ParseInt(spl1[1]) }));
+                    Values.Add(new Value_("maximumReflectance", ParseInt(spl1[1])));
                     continue;
                 }
 
 
                 if (spl1[0].StartsWith("X print"))
                 {
-                    Gs1Grades.Add(new Grade("growthX", GetGrade(spl1[1])));
+                    Gs1Grades.Add(GetGrade("growthX", spl1[1]));
                     continue;
                 }
                 if (spl1[0].StartsWith("Y print"))
                 {
-                    Gs1Grades.Add(new Grade("growthY", GetGrade(spl1[1])));
+                    Gs1Grades.Add(GetGrade("growthY", spl1[1]));
                     continue;
                 }
 
                 if (spl1[0].StartsWith("Cell height"))
                 {
-                    var item = alarms.Find((e) => e.name.Contains("minimum Xdim"));
+                    var item = alarms.Find((e) => e.Name.Contains("minimum Xdim"));
 
                     cellSizeX = ParseFloat(spl1[1]);
 
-                    ValueResults.Add(new ValueResult("cellHeight", new Report_InspectSector_Common.ValueResult() { value = cellSizeX, result = item == null ? "PASS" : "FAIL" }));
+                    ValueResults.Add(new ValueResult("cellHeight", cellSizeX, item == null ? "PASS" : "FAIL"));
                     continue;
                 }
                 if (spl1[0].StartsWith("Cell width"))
                 {
-                    var item = alarms.Find((e) => e.name.Contains("minimum Xdim"));
+                    var item = alarms.Find((e) => e.Name.Contains("minimum Xdim"));
 
                     cellSizeY = ParseFloat(spl1[1]);
 
-                    ValueResults.Add(new ValueResult("cellWidth", new Report_InspectSector_Common.ValueResult() { value = cellSizeY, result = item == null ? "PASS" : "FAIL" }));
+                    ValueResults.Add(new ValueResult("cellWidth", cellSizeY, item == null ? "PASS" : "FAIL"));
 
                     continue;
                 }
@@ -318,36 +313,36 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
                 {
                     var spl2 = spl1[1].Split('x');
 
-                    ValueResults.Add(new ValueResult("symbolWidth", new Report_InspectSector_Common.ValueResult() { value = cellSizeX * ParseInt(spl2[0]), result = "PASS" }));
-                    ValueResults.Add(new ValueResult("symbolHeight", new Report_InspectSector_Common.ValueResult() { value = cellSizeY * ParseInt(spl2[1]), result = "PASS" }));
+                    ValueResults.Add(new ValueResult("symbolWidth", cellSizeX * ParseInt(spl2[0]), "PASS"));
+                    ValueResults.Add(new ValueResult("symbolHeight", cellSizeY * ParseInt(spl2[1]), "PASS"));
                     continue;
                 }
 
                 if (spl1[0].StartsWith("L1 ("))
                 {
-                    Gs1Grades.Add(new Grade("L1", GetGrade(spl1[1])));
+                    Gs1Grades.Add(GetGrade("L1", spl1[1]));
                     continue;
                 }
                 if (spl1[0].StartsWith("L2"))
                 {
-                    Gs1Grades.Add(new Grade("L2", GetGrade(spl1[1])));
+                    Gs1Grades.Add(GetGrade("L2", spl1[1]));
                     //sect.data.gs1SymbolQuality.L2 = GetGrade(spl1[1]);
                     continue;
                 }
                 if (spl1[0].StartsWith("QZL1"))
                 {
-                    Gs1Grades.Add(new Grade("QZL1", GetGrade(spl1[1])));
+                    Gs1Grades.Add(GetGrade("QZL1", spl1[1]));
                     continue;
                 }
                 if (spl1[0].StartsWith("QZL2"))
                 {
 
-                    Gs1Grades.Add(new Grade("QZL2", GetGrade(spl1[1])));
+                    Gs1Grades.Add(GetGrade("QZL2", spl1[1]));
                     continue;
                 }
                 if (spl1[0].StartsWith("OCTASA"))
                 {
-                    Gs1Grades.Add(new Grade("OCTASA", GetGrade(spl1[1])));
+                    Gs1Grades.Add(GetGrade("OCTASA", spl1[1]));
                     continue;
                 }
             }
@@ -358,7 +353,7 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
         else if (isPDF417)
         {
             //PDF417
-            GradeValues.Add(new GradeValue("symbolContrast", GetGradeValue(GetValues("Contrast", splitPacket)[0])));
+            GradeValues.Add(GetGradeValue("symbolContrast", GetValues("Contrast", splitPacket)[0]));
             foreach (var data in splitPacket)
             {
                 if (!data.Contains(','))
@@ -372,7 +367,7 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
                 {
                     var xdim = ParseFloat(spl1[1]);
 
-                    ValueResults.Add(new ValueResult("symbolXDim", new Report_InspectSector_Common.ValueResult() { value = xdim, result = "PASS" }));
+                    ValueResults.Add(new ValueResult("symbolXDim", xdim, "PASS"));
                     continue;
                 }
 
@@ -380,7 +375,7 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
                 {
                     var val = (int)Math.Ceiling(ParseFloat(spl1[1]));
 
-                    Values.Add(new Value("minimumReflectance", new Report_InspectSector_Common.Value() { value = val }));
+                    Values.Add(new Value_("minimumReflectance", val));
                     continue;
                 }
 
@@ -390,13 +385,13 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
 
                     if (spl2.Count() != 2) continue;
 
-                    GradeValues.Add(new GradeValue("CodewordY", new Report_InspectSector_Common.GradeValue() { grade = GetGrade(spl2[0]), value = ParseInt(spl2[1]) }));
+                    GradeValues.Add(new GradeValue("CodewordY", ParseInt(spl2[1]) , GetGrade("CodewordY", spl2[0])));
                     continue;
                 }
 
                 if (spl1[0].StartsWith("Codeword P"))
                 {
-                    GradeValues.Add(new GradeValue("CodewordP", new Report_InspectSector_Common.GradeValue() { grade = GetGrade(spl1[1]), value = -1 }));
+                    GradeValues.Add(new GradeValue("CodewordP", -1, GetGrade("CodewordP", spl1[1])));
                     continue;
                 }
             }
@@ -404,30 +399,18 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
         }
         else
         {
+            GradeValues.Add(new GradeValue("decode", -1, GetValues("Decode", splitPacket)[0].StartsWith("PASS") ? new Grade("Decode", 4.0f, "A") : new Grade("Decode", 0.0f, "F")));
 
-
-            GradeValues.Add(new GradeValue("decode",
-                new Report_InspectSector_Common.GradeValue()
-                {
-                    grade = GetValues("Decode,", splitPacket)[0].StartsWith("PASS") ? new Report_InspectSector_Common.Grade() { letter = "A", value = 4.0f } : new Report_InspectSector_Common.Grade() { letter = "F", value = 0.0f },
-                    value = -1
-                }));
-
-            GradeValues.Add(new GradeValue("symbolContrast", GetGradeValue(GetValues("Contrast", splitPacket)[0])));
+            GradeValues.Add(GetGradeValue("symbolContrast", GetValues("Contrast", splitPacket)[0]));
             // GradeValues.Add(new GradeValue("edgeContrast", GetGradeValue(GetValues("Contrast", splitPacket)[0])));
-            GradeValues.Add(new GradeValue("modulation", GetGradeValue(GetValues("Modulation", splitPacket)[0])));
-            GradeValues.Add(new GradeValue("defects", GetGradeValue(GetValues("Defects", splitPacket)[0])));
-            GradeValues.Add(new GradeValue("decodability", GetGradeValue(GetValues("Decodability", splitPacket)[0])));
-            GradeValues.Add(new GradeValue("MinRef",
-                new Report_InspectSector_Common.GradeValue()
-                {
-                    grade = GetValues("Min Ref", splitPacket)[0].StartsWith("PASS") ? new Report_InspectSector_Common.Grade() { letter = "A", value = 4.0f } : new Report_InspectSector_Common.Grade() { letter = "F", value = 0.0f },
-                    value = -1
-                }));
+            GradeValues.Add(GetGradeValue("modulation", GetValues("Modulation", splitPacket)[0]));
+            GradeValues.Add(GetGradeValue("defects", GetValues("Defects", splitPacket)[0]));
+            GradeValues.Add(GetGradeValue("decodability", GetValues("Decodability", splitPacket)[0]));
+            GradeValues.Add(new GradeValue("MinRef", -1, GetValues("Min Ref", splitPacket)[0].StartsWith("PASS") ? new Grade("Min Ref", 4.0f, "A") : new Grade("Min Ref", 0.0f, "F")));
 
-            Values.Add(new Value("maximumReflectance", new Report_InspectSector_Common.Value() { value = ParseInt(GetValues("Rmax", splitPacket)[0]) }));
+            Values.Add(new Value_("maximumReflectance", ParseInt(GetValues("Rmax", splitPacket)[0])));
 
-            ValueResults.Add(new ValueResult("edgeDetermination", new Report_InspectSector_Common.ValueResult() { value = 100, result = GetValues("Edge", splitPacket)[0] }));
+            ValueResults.Add(new ValueResult("edgeDetermination", 100, GetValues("Edge", splitPacket)[0]));
 
             foreach (var data in splitPacket)
             {
@@ -440,7 +423,7 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
 
                 if (spl1[0].StartsWith("Warning"))
                 {
-                    alarms.Add(new Report_InspectSector_Common.Alarm() { name = spl1[1], category = 1 });
+                    alarms.Add(new Alarm() { Name = spl1[1], Category = 1 });
                     continue;
                 }
 
@@ -448,14 +431,14 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
                 {
                     var val = (int)Math.Ceiling(ParseFloat(spl1[1]));
 
-                    Values.Add(new Value("minimumReflectance", new Report_InspectSector_Common.Value() { value = val }));
+                    Values.Add(new Value_("minimumReflectance", val));
                     continue;
                 }
 
 
                 if (spl1[0].StartsWith("Unused "))
                 {
-                    GradeValues.Add(new GradeValue("unusedErrorCorrection", GetGradeValue(spl1[1])));
+                    GradeValues.Add(GetGradeValue("unusedErrorCorrection",spl1[1]));
                     continue;
                 }
 
@@ -463,9 +446,9 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
                 {
                     var xdim = ParseFloat(spl1[1]);
 
-                    var item = alarms.Find((e) => e.name.Contains("minimum Xdim"));
+                    var item = alarms.Find((e) => e.Name.Contains("minimum Xdim"));
 
-                    ValueResults.Add(new ValueResult("symbolXDim", new Report_InspectSector_Common.ValueResult() { value = xdim, result = item == null ? "PASS" : "FAIL" }));
+                    ValueResults.Add(new ValueResult("symbolXDim", xdim, item == null ? "PASS" : "FAIL"));
 
                     continue;
                 }
@@ -474,9 +457,9 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
                 {
                     var val = ParseFloat(spl1[1]) * 1000;
 
-                    var item = alarms.Find((e) => e.name.Contains("minimum height"));
+                    var item = alarms.Find((e) => e.Name.Contains("minimum height"));
 
-                    ValueResults.Add(new ValueResult("barHeight", new Report_InspectSector_Common.ValueResult() { value = val, result = item == null ? "PASS" : "FAIL" }));
+                    ValueResults.Add(new ValueResult("barHeight", val, item == null ? "PASS" : "FAIL"));
                     continue;
                 }
 
@@ -489,13 +472,13 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
                         if (spl2.Count() != 2) continue;
 
 
-                        ValueResults.Add(new ValueResult("quietZoneLeft", new Report_InspectSector_Common.ValueResult() { value = ParseInt(spl2[0]), result = spl2[1] }));
-                        ValueResults.Add(new ValueResult("quietZoneRight", new Report_InspectSector_Common.ValueResult() { value = ParseInt(spl2[0]), result = spl2[1] }));
+                        ValueResults.Add(new ValueResult("quietZoneLeft", ParseInt(spl2[0]), spl2[1]));
+                        ValueResults.Add(new ValueResult("quietZoneRight", ParseInt(spl2[0]), spl2[1]));
                     }
                     else
                     {
-                        ValueResults.Add(new ValueResult("quietZoneLeft", new Report_InspectSector_Common.ValueResult() { value = 100, result = spl1[1] }));
-                        ValueResults.Add(new ValueResult("quietZoneRight", new Report_InspectSector_Common.ValueResult() { value = 100, result = spl1[1] }));
+                        ValueResults.Add(new ValueResult("quietZoneLeft", 100, spl1[1]));
+                        ValueResults.Add(new ValueResult("quietZoneRight", 100, spl1[1]));
                     }
 
                     continue;
@@ -544,7 +527,7 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
         return int.TryParse(digits, out var val) ? val : 0;
     }
 
-    private Report_InspectSector_Common.GradeValue GetGradeValue(string data)
+    private GradeValue GetGradeValue(string name, string data)
     {
         var spl2 = data.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -553,27 +536,13 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
 
         var tmp = ParseFloat(spl2[0]);
 
-        return new Report_InspectSector_Common.GradeValue()
-        {
-            grade = new Report_InspectSector_Common.Grade()
-            {
-                value = tmp,
-                letter = GetLetter(tmp)
-            },
-            value = ParseInt(spl2[1])
-        };
-
+        return new GradeValue(name, ParseInt(spl2[1]), new Grade(name, tmp, GetLetter(tmp)));
     }
 
-    private Report_InspectSector_Common.Grade GetGrade(string data)
+    private Grade GetGrade(string name, string data)
     {
         var tmp = ParseFloat(data);
-
-        return new Report_InspectSector_Common.Grade()
-        {
-            value = tmp,
-            letter = GetLetter(tmp)
-        };
+        return new Grade(name, tmp, GetLetter(tmp));
     }
 
     private static string GetLetter(float value)
