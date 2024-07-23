@@ -419,9 +419,9 @@
                                     <Setter Property="IsHitTestVisible" Value="True"/>
                                     <Style.Triggers>
 
-                                        <DataTrigger Value="False" Binding="{Binding IsWrongTemplateName}">
+                                        <!--<DataTrigger Value="False" Binding="{Binding IsWrongTemplateName}">
                                             <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}"/>
-                                        </DataTrigger>
+                                        </DataTrigger>-->
 
                                         <DataTrigger Value="False" Binding="{Binding Jobs, Converter={StaticResource ObjectIsNull}}">
                                             <Setter Property="Visibility" Value="Visible"/>
@@ -457,10 +457,6 @@
                                         </DataTrigger>
 
                                         <DataTrigger Value="True" Binding="{Binding Jobs, Converter={StaticResource ObjectIsNull}}">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-
-                                        <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Monitor}">
                                             <Setter Property="Visibility" Value="Visible"/>
                                         </DataTrigger>
 

@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using LabelVal.V275.ViewModels;
+using System.Collections.Generic;
 using System.IO;
 
 namespace LabelVal.Simulator;
 
 internal class SimulatorFileHandler
 {
-    public string SimulatorImageDirectory => App.Settings.GetValue<string>(nameof(SimulatorImageDirectory));
+    public string SimulatorImageDirectory => App.Settings.GetValue<string>($"{NodeManager.ClassName}{nameof(SimulatorImageDirectory)}");
 
     public bool SimulatorImageDirectoryExists => Directory.Exists(SimulatorImageDirectory);
 

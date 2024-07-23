@@ -37,8 +37,8 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
 
     [JsonProperty] public uint ID { get; set; }
 
-    [JsonProperty] private static string UserName => App.Settings.GetValue<string>(nameof(NodeManager.UserName));
-    private static string Password => App.Settings.GetValue<string>(nameof(NodeManager.Password));
+    [JsonProperty] private static string UserName => App.Settings.GetValue<string>($"{NodeManager.ClassName}{nameof(NodeManager.UserName)}");
+    private static string Password => App.Settings.GetValue<string>($"{NodeManager.ClassName}{nameof(NodeManager.Password)}");
 
     [ObservableProperty] private bool loginMonitor;
 
@@ -60,7 +60,7 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
     [ObservableProperty] private Print print;
 
     public bool IsSimulator => Inspection != null && Inspection.device.Equals("simulator");
-    private static string SimulatorImageDirectory => App.Settings.GetValue<string>(nameof(NodeManager.SimulatorImageDirectory));
+    private static string SimulatorImageDirectory => App.Settings.GetValue<string>($"{NodeManager.ClassName}{nameof(SimulatorImageDirectory)}");
 
     [ObservableProperty] private NodeStates state = NodeStates.Offline;
 
