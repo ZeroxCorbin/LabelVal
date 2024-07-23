@@ -289,9 +289,9 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
                                     },
                                     UserAction = new Useraction()
                                     {
-                                        Action = d.userAction.action,
-                                        Note = d.userAction.note,
-                                        User = d.userAction.user
+                                        Action = d.userAction?.action,
+                                        Note = d.userAction?.note,
+                                        User = d.userAction?.user
                                     }
                                 });
                             }
