@@ -30,8 +30,6 @@ public enum NodeStates
 [JsonObject(MemberSerialization.OptIn)]
 public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessage<ImageRollEntry>>
 {
-    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-
     public V275_REST_lib.Controller Connection { get; }
 
     [JsonProperty] private string Host => App.Settings.GetValue<string>($"{NodeManager.ClassName}{nameof(NodeManager.Host)}");
@@ -171,22 +169,33 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
     {
         if (IsLoggedIn)
         {
+            LogDebug($"Logging out. {UserName} @ {Host}:{SystemPort}");
             await Logout();
             return;
         }
 
         if (!PreLogin())
+        {
+            LogDebug($"Pre-Log in FAILED. {UserName} @ {Host}:{SystemPort}");
             return;
+        }
+            
 
         Connection.Commands.SystemPort = SystemPort;
         Connection.Commands.Host = Host;
 
+        LogDebug($"Logging in. {UserName} @ {Host}:{SystemPort}");
+
         if (await Connection.Commands.Login(UserName, Password, LoginMonitor))
         {
+            LogDebug($"Logged in. {(LoginMonitor ? "Monitor" : "Control")} {UserName} @ {Host}:{SystemPort}");
+
             PostLogin(LoginMonitor);
         }
         else
         {
+            LogDebug($"Login FAILED. {UserName} @ {Host}:{SystemPort}");
+
             IsLoggedIn_Control = false;
             IsLoggedIn_Monitor = false;
         }
@@ -204,16 +213,14 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
                 }
                 catch (Exception ex)
                 {
-                    //Label_StatusChanged(ex.Message);
-
-                    Logger.Error(ex);
+                    LogError(ex);
                     return false;
                 }
                 return true;
             }
             else
             {
-                // _ = OkDialog("Invalid Simulation Images Directory", $"Please select a valid simulator images directory.\r\n'{SimulatorImageDirectory}'");
+                LogError($"Invalid Simulation Images Directory: '{SimulatorImageDirectory}'");
                 return false;
             }
         }
@@ -425,4 +432,14 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
 
         IsWrongTemplateName = true;
     }
+
+    #region Logging
+    private readonly Logging.Logger logger = new();
+    public void LogInfo(string message) => logger.LogInfo(this.GetType(), message);
+    public void LogDebug(string message) => logger.LogDebug(this.GetType(), message);
+    public void LogWarning(string message) => logger.LogInfo(this.GetType(), message);
+    public void LogError(string message) => logger.LogError(this.GetType(), message);
+    public void LogError(Exception ex) => logger.LogError(this.GetType(), ex);
+    public void LogError(string message, Exception ex) => logger.LogError(this.GetType(), message, ex);
+    #endregion
 }
