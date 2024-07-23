@@ -321,7 +321,7 @@
                         </Button.Style>
                     </Button>
 
-                    <Button Width="24" Height="24">
+                    <Button HorizontalAlignment="Left" Margin="3,0" Width="24" Height="24">
 
                         <Button.Style>
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">

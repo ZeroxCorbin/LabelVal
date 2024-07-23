@@ -73,16 +73,6 @@
                 <md:DrawerHost.TopDrawerContent>
 
                     <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="3" Padding="2" HorizontalAlignment="Left">
-                        <md:Card.Style>
-                            <Style TargetType="{x:Type md:Card}">
-                                <Setter Property="Visibility" Value="Collapsed"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Path=IsTopDrawerOpen, RelativeSource={RelativeSource AncestorType=md:DrawerHost}}" Value="True">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </md:Card.Style>
 
                         <DockPanel>
                             <ComboBox ItemsSource="{Binding ComNameList}" SelectedItem="{Binding SelectedComName}" IsEnabled="{Binding IsNotConnected}"
