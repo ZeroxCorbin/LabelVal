@@ -179,7 +179,6 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
             LogDebug($"Pre-Log in FAILED. {UserName} @ {Host}:{SystemPort}");
             return;
         }
-            
 
         Connection.Commands.SystemPort = SystemPort;
         Connection.Commands.Host = Host;

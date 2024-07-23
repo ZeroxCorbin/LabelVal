@@ -19,7 +19,6 @@ public partial class Verifier : ObservableRecipient
 
     [JsonIgnore] public VerifierManager Manager { get; set; }
 
-
     [ObservableProperty] private bool isConnected;
     partial void OnIsConnectedChanged(bool value) => OnPropertyChanged(nameof(IsNotConnected));
     public bool IsNotConnected => !IsConnected;
@@ -29,7 +28,8 @@ public partial class Verifier : ObservableRecipient
 
     public ObservableCollection<string> ComNameList { get; } = [];
 
-    public string SelectedComName { get => App.Settings.GetValue("95xx_COM_Name", ""); set => App.Settings.SetValue("95xx_COM_Name", value); }
+    [ObservableProperty] private string selectedComName = App.Settings.GetValue("95xx_COM_Name", "");
+    partial void OnSelectedComNameChanged(string value) => App.Settings.SetValue("95xx_COM_Name", value);
 
     public Verifier()
     {

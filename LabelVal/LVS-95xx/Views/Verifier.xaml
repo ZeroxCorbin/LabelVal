@@ -68,7 +68,7 @@
 
             </DockPanel>
 
-            <md:DrawerHost x:Name="drwSettings" VerticalAlignment="Top">
+            <md:DrawerHost x:Name="drwSettings" VerticalAlignment="Top" DrawerClosing="drwSettings_DrawerClosing">
 
                 <md:DrawerHost.TopDrawerContent>
 
