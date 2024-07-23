@@ -101,19 +101,25 @@
 
                     <DockPanel DockPanel.Dock="Top">
 
-                        <TextBox d:Text="Camera" Text="Camera" Margin="3,0" BorderThickness="0"
+                        <TextBox d:Text="Camera" Text="Camera" Margin="6,3" BorderThickness="0"
                                  Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
                                  md:HintAssist.Hint="Type" IsHitTestVisible="False"/>
 
-                        <TextBox d:Text="LVS-95xx" Text="LVS-95xx" Margin="3,0" BorderThickness="0"
+                        <TextBox d:Text="LVS-95xx" Text="LVS-95xx" Margin="6,3" BorderThickness="0"
                                  Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                                  md:HintAssist.Hint="Model" IsHitTestVisible="False"/>
 
+
+                        <TextBox d:Text="192.168.188.2" Margin="6,3" BorderThickness="0"
+                             Text="{Binding Path=SelectedComName, Mode=OneWay}"
+                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                             md:HintAssist.Hint="Port" IsHitTestVisible="False" />
+                        
                     </DockPanel>
 
                     <DockPanel>
 
-                        <TextBox d:Text="State" Margin="3,0" BorderThickness="0"
+                        <TextBox d:Text="State" Margin="6,3" BorderThickness="0"
                                  md:HintAssist.Hint="State" IsHitTestVisible="False">
 
                             <TextBox.Style>
@@ -130,11 +136,13 @@
                                 </Style>
                             </TextBox.Style>
                         </TextBox>
+                        
                     </DockPanel>
                 </DockPanel>
             </md:DrawerHost>
 
-            <Expander DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Right" md:ExpanderAssist.HorizontalHeaderPadding="6" MaxHeight="450"
+            <Expander DockPanel.Dock="Top" VerticalAlignment="Top" 
+                      md:ExpanderAssist.HorizontalHeaderPadding="3" MaxHeight="450"
                       Background="{DynamicResource MahApps.Brushes.Accent4}">
 
                 <Expander.Style>
