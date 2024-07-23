@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using LabelVal.Main.Views;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace LabelVal.V5.Views;
@@ -24,4 +25,6 @@ public partial class ScannerManager : UserControl
         }
         view.IsLeftDrawerOpen = !view.IsLeftDrawerOpen;
     }
+
+    private void btnCollapseContent(object sender, RoutedEventArgs e) => ((MainWindow)App.Current.MainWindow).ClearSelectedMenuItem();
 }

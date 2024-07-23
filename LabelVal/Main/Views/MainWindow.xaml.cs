@@ -15,6 +15,8 @@ public partial class MainWindow : MetroWindow
         ((ViewModels.MainWindow)this.DataContext).DPIChangedMessage = new ViewModels.DPIChangedMessage(VisualTreeHelper.GetDpi(this));
     }
 
+    public void ClearSelectedMenuItem() => ((ViewModels.MainWindow)this.DataContext).SelectedMenuItem = null;
+
     private void MainWindow_DpiChanged(object sender, DpiChangedEventArgs e) => ((ViewModels.MainWindow)this.DataContext).DPIChangedMessage = new ViewModels.DPIChangedMessage(e.NewDpi);
 
     private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e) { }

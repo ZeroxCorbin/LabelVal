@@ -30,7 +30,10 @@
                 <Border Style="{StaticResource imageBar}"/>
 
                 <DockPanel>
-                    <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Left">
+                    <DockPanel DockPanel.Dock="Top">
+                        
+                    
+                    <DockPanel HorizontalAlignment="Left">
                         <DockPanel.Background>
                             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                                 <GradientStop Color="{DynamicResource MahApps.Colors.Accent3}" Offset="0"/>
@@ -42,6 +45,9 @@
                         <Border Style="{StaticResource imageBarHor}"/>
                     </DockPanel>
 
+                        <Button Click="btnCollapseContent" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="3" Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                Content="{iconPacks:Material Kind=ArrowCollapseLeft}"/>
+                    </DockPanel>
                     <DockPanel>
 
                         <Button Command="{Binding AddCommand}" ToolTip="New Verifier" Width="48">

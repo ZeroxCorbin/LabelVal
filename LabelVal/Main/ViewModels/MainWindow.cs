@@ -2,19 +2,17 @@
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.Messages;
-using MahApps.Metro.Controls.Dialogs;
 using RingBuffer;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace LabelVal.Main.ViewModels;
 
 public class DPIChangedMessage : ValueChangedMessage<DpiScale> { public DPIChangedMessage(DpiScale value) : base(value) { } }
 
-public partial class MainWindow : ObservableRecipient, IRecipient<SystemMessages.StatusMessage>
+public partial class MainWindow : ObservableRecipient
 {
     public static string Version => App.Version;
 
@@ -26,8 +24,8 @@ public partial class MainWindow : ObservableRecipient, IRecipient<SystemMessages
     public SystemMessages.StatusMessage SystemMessages_RecentError => SystemMessages_ErrorWarning.Count > 0 ? SystemMessages_ErrorWarning[SystemMessages_ErrorWarning.Head] : null;
 
     public ObservableCollection<HamburgerMenuItem> MenuItems { get; }
-    [ObservableProperty] HamburgerMenuItem selectedMenuItem;
- 
+    [ObservableProperty] private HamburgerMenuItem selectedMenuItem;
+
     public V275.ViewModels.V275Manager V275Manager { get; }
     public V275.ViewModels.NodeDetails NodeDetails { get; }
 
@@ -87,33 +85,4 @@ public partial class MainWindow : ObservableRecipient, IRecipient<SystemMessages
 
         SelectedMenuItem = MenuItems[0];
     }
-
-    public void Receive(SystemMessages.StatusMessage message)
-    {
-        switch (message.Value)
-        {
-            case SystemMessages.StatusMessageType.Error:
-                SystemMessages_ErrorWarning.Add(message);
-                OnPropertyChanged(nameof(SystemMessages_RecentError));
-                break;
-            case SystemMessages.StatusMessageType.Warning:
-                SystemMessages_ErrorWarning.Add(message);
-                OnPropertyChanged(nameof(SystemMessages_RecentError));
-                break;
-            case SystemMessages.StatusMessageType.Debug:
-                SystemMessages_InfoDebug.Add(message);
-                break;
-            case SystemMessages.StatusMessageType.Info:
-                SystemMessages_InfoDebug.Add(message);
-                break;
-        }
-    }
-
-    #region Dialogs
-
-    public static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
-    public async Task OkDialog(string title, string message) => _ = await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.Affirmative);
-    public async Task<string> GetStringDialog(string title, string message) => await DialogCoordinator.ShowInputAsync(this, title, message);
-
-    #endregion
 }

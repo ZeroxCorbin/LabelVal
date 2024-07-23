@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using LabelVal.Main.Views;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -60,4 +61,6 @@ public partial class NodeManager : UserControl
         };
         _ = Process.Start(ps);
     }
+
+    private void btnCollapseContent(object sender, RoutedEventArgs e) => ((MainWindow)App.Current.MainWindow).ClearSelectedMenuItem();
 }
