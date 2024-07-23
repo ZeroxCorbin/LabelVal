@@ -613,27 +613,6 @@
                                 <TextBlock Text="{Binding ScannerMode}" Margin="3,0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
 
                             </DockPanel>
-
-
-                            <Button Content="Add" Command="{Binding AddToImageRollCommand}" Margin="3,0" BorderThickness="0" HorizontalAlignment="Right">
-                                <Button.Style>
-                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding SelectedImageRoll, Converter={StaticResource ObjectIsNull}}" Value="True">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding RawImage, Converter={StaticResource ObjectIsNull}}" Value="True">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding FullResImages}" Value="False">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Button.Style>
-                            </Button>
-
                         </DockPanel>
                     </Expander.Header>
 
