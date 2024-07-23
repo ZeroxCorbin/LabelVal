@@ -42,8 +42,7 @@ public partial class App : Application
 
     public static string ImageResultsDatabaseDefaultName => "ImageResultsDatabase";
 
-    public static string AssetsImageResultsDatabasesRoot =>
-        $@"{Directory.GetCurrentDirectory()}\Assets\ImageResultsDatabases";
+    //public static string AssetsImageResultsDatabasesRoot => $@"{Directory.GetCurrentDirectory()}\Assets\ImageResultsDatabases";
 
     public static string ImageResultsDatabaseRoot => $"{UserDataDirectory}\\ImageResultsDatabases";
 
@@ -69,8 +68,8 @@ public partial class App : Application
         if (version != null)
             Version = version.ToString();
 
-        if (!Directory.Exists(AssetsImageResultsDatabasesRoot))
-            _ = Directory.CreateDirectory(AssetsImageResultsDatabasesRoot);
+        //if (!Directory.Exists(AssetsImageResultsDatabasesRoot))
+        //    _ = Directory.CreateDirectory(AssetsImageResultsDatabasesRoot);
 
         if (!Directory.Exists(UserDataDirectory))
             _ = Directory.CreateDirectory(UserDataDirectory);

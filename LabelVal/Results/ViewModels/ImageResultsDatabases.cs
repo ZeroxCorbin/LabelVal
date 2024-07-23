@@ -44,18 +44,18 @@ public partial class ImageResultsDatabases : ObservableRecipient
     {
         LogInfo($"Loading grading standards databases from file system. {App.ImageResultsDatabaseRoot}");
 
-        foreach (var file in Directory.EnumerateFiles(App.AssetsImageResultsDatabasesRoot))
-        {
-            LogDebug($"Found: {Path.GetFileName(file)}");
+        //foreach (var file in Directory.EnumerateFiles(App.AssetsImageResultsDatabasesRoot))
+        //{
+        //    LogDebug($"Found: {Path.GetFileName(file)}");
 
-            if (file.EndsWith(App.DatabaseExtension))
-            {
-                if (Databases.Any((a) => a.FilePath == file))
-                    continue;
+        //    if (file.EndsWith(App.DatabaseExtension))
+        //    {
+        //        if (Databases.Any((a) => a.FilePath == file))
+        //            continue;
 
-                Databases.Add(new Databases.ImageResultsDatabase(file));
-            }
-        }
+        //        Databases.Add(new Databases.ImageResultsDatabase(file));
+        //    }
+        //}
 
         foreach (var file in Directory.EnumerateFiles(App.ImageResultsDatabaseRoot))
         {
@@ -70,11 +70,15 @@ public partial class ImageResultsDatabases : ObservableRecipient
             }
         }
 
-        foreach (var db in Databases)
+        if(Databases.Count == 0)
         {
-            _ = db.Open();
-
+            var file = new Databases.ImageResultsDatabase(Path.Combine(App.ImageResultsDatabaseRoot, "My First Database" + App.DatabaseExtension));
+            _ = file.Open();
+            file.Close();
         }
+
+        foreach (var db in Databases)
+            _ = db.Open();
     }
     private void SelectImageResultsDatabase()
     {
