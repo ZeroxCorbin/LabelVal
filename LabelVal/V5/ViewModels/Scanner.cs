@@ -341,7 +341,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
                 SelectedAcquisitionType = "Camera";
             }
 
-            JobName = null;
+            JobName = "";
             JobName = config.response.data.job.name;
         }
     }
@@ -690,6 +690,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     private void PostLogout()
     {
         Jobs = null;
+        JobName = "";
         IsSimulator = false;
     }
 
