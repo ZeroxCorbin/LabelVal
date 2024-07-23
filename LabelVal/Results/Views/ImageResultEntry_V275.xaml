@@ -395,7 +395,7 @@
                                 <DataTemplate>
 
                                     <sectors:Sector >
-                                        <sectors:Sector.Style>
+                                        <!--<sectors:Sector.Style>
                                             <Style TargetType="{x:Type sectors:Sector}">
                                                 <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent}"/>
                                                 <Style.Triggers>
@@ -404,7 +404,7 @@
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
-                                        </sectors:Sector.Style>
+                                        </sectors:Sector.Style>-->
                                     </sectors:Sector>
 
                                 </DataTemplate>

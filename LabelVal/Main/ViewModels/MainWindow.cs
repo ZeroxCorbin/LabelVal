@@ -12,7 +12,7 @@ namespace LabelVal.Main.ViewModels;
 
 public class DPIChangedMessage : ValueChangedMessage<DpiScale> { public DPIChangedMessage(DpiScale value) : base(value) { } }
 
-public partial class MainWindow : ObservableRecipient
+public partial class MainWindow : ObservableRecipient, IRecipient<SystemMessages.StatusMessage>
 {
     public static string Version => App.Version;
 
@@ -84,5 +84,26 @@ public partial class MainWindow : ObservableRecipient
         ];
 
         SelectedMenuItem = MenuItems[0];
+    }
+
+    public void Receive(SystemMessages.StatusMessage message)
+    {
+        switch (message.Value)
+        {
+            case SystemMessages.StatusMessageType.Error:
+                SystemMessages_ErrorWarning.Add(message);
+                OnPropertyChanged(nameof(SystemMessages_RecentError));
+                break;
+            case SystemMessages.StatusMessageType.Warning:
+                SystemMessages_ErrorWarning.Add(message);
+                OnPropertyChanged(nameof(SystemMessages_RecentError));
+                break;
+            case SystemMessages.StatusMessageType.Debug:
+                SystemMessages_InfoDebug.Add(message);
+                break;
+            case SystemMessages.StatusMessageType.Info:
+                SystemMessages_InfoDebug.Add(message);
+                break;
+        }
     }
 }
