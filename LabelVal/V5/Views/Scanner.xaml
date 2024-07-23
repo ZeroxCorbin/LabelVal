@@ -18,7 +18,7 @@
         <Converters:ObjectIsNull x:Key="ObjectIsNull"/>
     </UserControl.Resources>
 
-    <md:Card HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="6" BorderThickness="1"  
+    <md:Card Margin="6" BorderThickness="1" VerticalAlignment="Top"
              Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
              Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}">
 
@@ -35,24 +35,24 @@
 
         <DockPanel Margin="3">
 
-            <DockPanel>
+            <DockPanel  VerticalAlignment="Top">
 
-                <md:Card DockPanel.Dock="Top" VerticalAlignment="Top" Padding="3" Margin="3" 
-                             Background="{DynamicResource MahApps.Brushes.Accent4}">
+                <md:Card DockPanel.Dock="Top" Padding="3" Margin="3"
+                         Background="{DynamicResource MahApps.Brushes.Accent4}">
 
                     <Button Command="{Binding ConnectCommand}" BorderThickness="0">
                         <Button.Style>
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
                                 <Setter Property="Content">
                                     <Setter.Value>
-                                        <iconPacks:Modern Kind="Connect" Height="16" Width="16"/>
+                                        <iconPacks:Modern Kind="Connect"/>
                                     </Setter.Value>
                                 </Setter>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsConnected}" Value="True">
                                         <Setter Property="Content">
                                             <Setter.Value>
-                                                <iconPacks:Modern Kind="Disconnect" Height="16" Width="16"/>
+                                                <iconPacks:Modern Kind="Disconnect"/>
                                             </Setter.Value>
                                         </Setter>
                                     </DataTrigger>
@@ -63,11 +63,10 @@
 
                 </md:Card>
 
-                <Button DockPanel.Dock="Top" Margin="3" Click="btnShowSettings_Click" 
-                        ToolTip="Show Settings"
-                            HorizontalAlignment="Center" VerticalAlignment="Top" Width="24" Height="24">
+                <Button DockPanel.Dock="Top" Margin="3" Width="24" Height="24" 
+                        Click="btnShowSettings_Click" ToolTip="Show Settings">
                     <Button.Style>
-                        <Style TargetType="Button" BasedOn="{StaticResource GroupHeaderCirlceButton}">
+                        <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsDocked, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
                                     <Setter Property="Visibility" Value="Collapsed"/>
@@ -75,18 +74,19 @@
                             </Style.Triggers>
                         </Style>
                     </Button.Style>
-                    <iconPacks:PackIconMaterial Kind="Cog" Height="18" Width="18"/>
+                    <iconPacks:PackIconMaterial Kind="Cog"/>
                 </Button>
 
-                <Button DockPanel.Dock="Top" Margin="3" Click="btnOpenInBrowser_Click" Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                HorizontalAlignment="Center" VerticalAlignment="Top" Width="24" Height="24"
-                            ToolTip="Open V5 WebLink. Shift + Click to open admin UI!">
-                    <iconPacks:PackIconModern Height="18" Width="18" Kind="Browser" Margin="0,2,0,0"/>
+                <Button DockPanel.Dock="Top" Margin="3" Width="24" Height="24"
+                        Click="btnOpenInBrowser_Click" 
+                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                        ToolTip="Open V5 WebLink. Shift + Click to open admin UI!">
+                    <iconPacks:PackIconModern Kind="Browser"/>
                 </Button>
 
             </DockPanel>
 
-            <md:DrawerHost x:Name="drwSettings">
+            <md:DrawerHost x:Name="drwSettings" VerticalAlignment="Top">
 
                 <md:DrawerHost.TopDrawerContent>
 
@@ -254,9 +254,10 @@
 
                     <DockPanel DockPanel.Dock="Top" Margin="0">
 
-                        <ComboBox ItemsSource="{Binding AcquisitionTypes}" SelectedValue="{Binding SelectedAcquisitionType}"
-                                      d:Text="Sensor" md:HintAssist.Hint="Acquire" MinWidth="56" Margin="3,0" HorizontalContentAlignment="Left"
-                                       md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
+                        <ComboBox d:Text="Sensor" Margin="6,3"
+                                  ItemsSource="{Binding AcquisitionTypes}"
+                                  SelectedValue="{Binding SelectedAcquisitionType}"
+                                  md:HintAssist.Hint="Acquire">
                             <ComboBox.Style>
                                 <Style TargetType="ComboBox" BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}">
                                     <Setter Property="Visibility" Value="Collapsed"/>
@@ -269,9 +270,9 @@
                             </ComboBox.Style>
                         </ComboBox>
 
-                        <TextBox d:Text="-----" Text="-----" md:HintAssist.Hint="Acquire" MinWidth="56" Margin="3,0" HorizontalContentAlignment="Left"
-                                    md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left" BorderThickness="0"
-                                    IsHitTestVisible="False">
+                        <!--Placeholder for Camera Model-->
+                        <TextBox d:Text="-----" Text="-----" Margin="6,3" BorderThickness="0"
+                                 md:HintAssist.Hint="Acquire" IsHitTestVisible="False">
                             <TextBox.Style>
                                 <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                     <Setter Property="Visibility" Value="Visible"/>
@@ -284,9 +285,8 @@
                             </TextBox.Style>
                         </TextBox>
 
-                        <TextBox d:Text="model" md:HintAssist.Hint="Model" MinWidth="86" Margin="3,0" HorizontalContentAlignment="Left"
-                                    md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left" BorderThickness="0"
-                                    IsHitTestVisible="False">
+                        <TextBox d:Text="model" Margin="6,3" BorderThickness="0"
+                                 md:HintAssist.Hint="Model" IsHitTestVisible="False">
                             <TextBox.Style>
                                 <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                     <Setter Property="Text">
@@ -303,13 +303,11 @@
 
                     </DockPanel>
 
-                    <ComboBox DockPanel.Dock="Top" ItemsSource="{Binding Directories}" SelectedValue="{Binding SelectedDirectory}" 
-                                      Margin="3,0" md:HintAssist.Hint="Directory" md:HintAssist.IsFloating="True" HorizontalAlignment="Left" BorderThickness="0">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding }"/>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
+                    <ComboBox DockPanel.Dock="Top" Margin="6,3"
+                              ItemsSource="{Binding Directories}"
+                              SelectedValue="{Binding SelectedDirectory}" 
+                              md:HintAssist.Hint="Directory">
+
                         <ComboBox.Style>
                             <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
@@ -320,31 +318,91 @@
                                 </Style.Triggers>
                             </Style>
                         </ComboBox.Style>
+
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding }"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+
                     </ComboBox>
 
-                    <DockPanel DockPanel.Dock="Top" Margin="1" HorizontalAlignment="Left" VerticalAlignment="Top">
+                    <DockPanel DockPanel.Dock="Top">
 
-                        <TextBox d:Text="Mode" Text="{Binding ScannerMode}" md:HintAssist.Hint="Mode" Margin="3,0" HorizontalContentAlignment="Center"
-                                md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left" 
-                                IsHitTestVisible="False">
-                            <TextBox.Style>
-                                <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                                    <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}"/>
-                                    <Style.Triggers>
-                                        <MultiDataTrigger>
-                                            <MultiDataTrigger.Conditions>
-                                                <Condition Value="Offline" Binding="{Binding ScannerMode}" />
-                                            </MultiDataTrigger.Conditions>
-                                            <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}" />
-                                        </MultiDataTrigger>
+                        <DockPanel>
 
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBox.Style>
-                        </TextBox>
+                            <TextBox DockPanel.Dock="Top" d:Text="Mode" Text="{Binding ScannerMode}" Margin="6,3"
+                                 md:HintAssist.Hint="Mode" IsHitTestVisible="False">
+                                <TextBox.Style>
+                                    <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                                        <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}"/>
+                                        <Style.Triggers>
+                                            <MultiDataTrigger>
+                                                <MultiDataTrigger.Conditions>
+                                                    <Condition Value="Offline" Binding="{Binding ScannerMode}" />
+                                                </MultiDataTrigger.Conditions>
+                                                <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}" />
+                                            </MultiDataTrigger>
 
-                        <ComboBox ItemsSource="{Binding Jobs}" SelectedValue="{Binding SelectedJob}" Margin="3,0"
-                                      md:HintAssist.Hint="Job Name" md:HintAssist.IsFloating="True" HorizontalAlignment="Left">
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBox.Style>
+                            </TextBox>
+
+                            <Button Margin="3,0" HorizontalAlignment="Left" Width="24" Height="24">
+
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+
+                                            <DataTrigger Value="Offline" Binding="{Binding ScannerMode}">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                                <Setter Property="Content">
+                                                    <Setter.Value>
+                                                        <iconPacks:PackIconMaterial Kind="SettingsHelper"/>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Setter Property="Command" Value="{Binding SwitchEditCommand}"/>
+                                                <Setter Property="ToolTip" Value="Setup"/>
+                                            </DataTrigger>
+
+                                            <DataTrigger Value="Setup" Binding="{Binding ScannerMode}">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                                <Setter Property="Content">
+                                                    <Setter.Value>
+                                                        <iconPacks:PackIconMaterial Kind="Play"/>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Setter Property="Command" Value="{Binding SwitchRunCommand}"/>
+                                                <Setter Property="ToolTip" Value="Run"/>
+                                            </DataTrigger>
+
+                                            <DataTrigger Value="Run" Binding="{Binding ScannerMode}">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                                <Setter Property="Content">
+                                                    <Setter.Value>
+                                                        <iconPacks:PackIconMaterial Kind="SettingsHelper"/>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Setter Property="Command" Value="{Binding SwitchEditCommand}"/>
+                                                <Setter Property="ToolTip" Value="Edit"/>
+                                            </DataTrigger>
+
+                                            <DataTrigger Value="False" Binding="{Binding IsConnected}">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+
+                        </DockPanel>
+                        
+                        <ComboBox ItemsSource="{Binding Jobs}" Margin="6,3" VerticalAlignment="Top"
+                                  SelectedValue="{Binding SelectedJob}"
+                                  md:HintAssist.Hint="Job Name">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding jobName}"/>
@@ -375,58 +433,6 @@
 
                     </DockPanel>
 
-                    <DockPanel>
-
-                        <Button HorizontalAlignment="Left" VerticalAlignment="Top" Margin="3,0" BorderThickness="0" Width="38">
-
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                    <Style.Triggers>
-
-                                        <DataTrigger Value="Offline" Binding="{Binding ScannerMode}">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                            <Setter Property="Content">
-                                                <Setter.Value>
-                                                    <iconPacks:PackIconMaterial Kind="SettingsHelper"/>
-                                                </Setter.Value>
-                                            </Setter>
-                                            <Setter Property="Command" Value="{Binding SwitchEditCommand}"/>
-                                            <Setter Property="ToolTip" Value="Setup"/>
-                                        </DataTrigger>
-
-                                        <DataTrigger Value="Setup" Binding="{Binding ScannerMode}">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                            <Setter Property="Content">
-                                                <Setter.Value>
-                                                    <iconPacks:PackIconMaterial Kind="Play"/>
-                                                </Setter.Value>
-                                            </Setter>
-                                            <Setter Property="Command" Value="{Binding SwitchRunCommand}"/>
-                                            <Setter Property="ToolTip" Value="Run"/>
-                                        </DataTrigger>
-
-                                        <DataTrigger Value="Run" Binding="{Binding ScannerMode}">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                            <Setter Property="Content">
-                                                <Setter.Value>
-                                                    <iconPacks:PackIconMaterial Kind="SettingsHelper"/>
-                                                </Setter.Value>
-                                            </Setter>
-                                            <Setter Property="Command" Value="{Binding SwitchEditCommand}"/>
-                                            <Setter Property="ToolTip" Value="Edit"/>
-                                        </DataTrigger>
-
-                                        <DataTrigger Value="False" Binding="{Binding IsConnected}">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                        </DataTrigger>
-
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
-
-                    </DockPanel>
                 </DockPanel>
 
             </md:DrawerHost>
@@ -435,7 +441,7 @@
                       HorizontalAlignment="Right" md:ExpanderAssist.HorizontalHeaderPadding="6" 
                       MaxHeight="450"
                       Background="{DynamicResource MahApps.Brushes.Accent4}">
-                
+
                 <Expander.Style>
                     <Style TargetType="Expander" BasedOn="{StaticResource MaterialDesignExpander}">
                         <Style.Triggers>
@@ -445,7 +451,7 @@
                         </Style.Triggers>
                     </Style>
                 </Expander.Style>
-                
+
                 <Expander.Header>
                     <DockPanel>
 

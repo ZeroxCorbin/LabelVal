@@ -19,9 +19,10 @@
         <converters:MACAddressSplitConverter x:Key="macAddressSplitConverter"/>
     </UserControl.Resources>
 
-    <md:Card HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="6" BorderThickness="1"  
+    <md:Card Margin="6" BorderThickness="1" VerticalAlignment="Top"
              Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
              Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}">
+        
         <md:Card.Style>
             <Style TargetType="md:Card" BasedOn="{StaticResource {x:Type md:Card}}">
                 <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent4}"/>
@@ -34,25 +35,27 @@
         </md:Card.Style>
 
         <DockPanel Margin="3">
-            <DockPanel>
+            
+            <DockPanel VerticalAlignment="Top">
                 
-                <md:Card DockPanel.Dock="Top" VerticalAlignment="Top" Padding="3" Margin="3" Background="{DynamicResource MahApps.Brushes.Accent4}">
+                <md:Card DockPanel.Dock="Top" Padding="3" Margin="3"
+                         Background="{DynamicResource MahApps.Brushes.Accent4}">
 
                     <DockPanel>
 
-                        <Button Margin="3" DockPanel.Dock="Top" Command="{Binding LoginCommand}" BorderThickness="0">
+                        <Button DockPanel.Dock="Top" Command="{Binding LoginCommand}" BorderThickness="0">
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
                                     <Setter Property="Content">
                                         <Setter.Value>
-                                            <iconPacks:Modern Kind="Connect" Height="16" Width="16"/>
+                                            <iconPacks:Modern Kind="Connect"/>
                                         </Setter.Value>
                                     </Setter>
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding IsLoggedIn}" Value="True">
                                             <Setter Property="Content">
                                                 <Setter.Value>
-                                                    <iconPacks:Modern Kind="Disconnect" Height="16" Width="16"/>
+                                                    <iconPacks:Modern Kind="Disconnect"/>
                                                 </Setter.Value>
                                             </Setter>
                                         </DataTrigger>
@@ -61,11 +64,13 @@
                             </Button.Style>
                         </Button>
 
-                        <ToggleButton IsChecked="{Binding LoginMonitor}" BorderThickness="0" Width="24" Height="24" Margin="3" HorizontalAlignment="Center" VerticalAlignment="Top"
-                                      ToolTipService.ShowOnDisabled="True" Background="{DynamicResource MahApps.Brushes.Accent3}">
+                        <ToggleButton Width="24" Height="24" Padding="0" BorderThickness="0"
+                                      IsChecked="{Binding LoginMonitor}"
+                                      ToolTipService.ShowOnDisabled="True">
 
                             <ToggleButton.Style>
-                                <Style TargetType="ToggleButton" BasedOn="{StaticResource MahApps.Styles.ToggleButton.Circle}">
+                                <Style TargetType="ToggleButton" BasedOn="{StaticResource MahApps.Styles.ToggleButton.ToolBar}">
+                                    
                                     <Setter Property="ToolTip" Value="Login control."/>
                                     <Setter Property="IsEnabled" Value="True"/>
                                     <Setter Property="Content" Value="{iconPacks:FontAwesome Kind=TerminalSolid}"/>
@@ -89,9 +94,8 @@
 
                 </md:Card>
 
-                <Button Margin="3" Click="btnOpenInBrowser_Click"
-                    HorizontalAlignment="Center" VerticalAlignment="Top" Width="24" Height="24"
-                    ToolTip="Open V275 web interface.">
+                <Button Margin="3" Click="btnOpenInBrowser_Click" Width="24" Height="24"
+                        ToolTip="Open V275 web interface.">
                     <Button.Style>
                         <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
                             <Style.Triggers>
@@ -101,17 +105,17 @@
                             </Style.Triggers>
                         </Style>
                     </Button.Style>
-                    <iconPacks:PackIconModern Height="18" Width="18" Kind="Browser" Margin="0,2,0,0"/>
+                    <iconPacks:PackIconModern Kind="Browser"/>
                 </Button>
                 
             </DockPanel>
-            
-            <DockPanel>
 
-                <DockPanel DockPanel.Dock="Top" Margin="1">
-                    <TextBox d:Text="camera" MinWidth="56" Margin="3"
-                                 md:HintAssist.Hint="{loc:Loc Type}" md:HintAssist.IsFloating="True" 
-                                 IsHitTestVisible="False" BorderThickness="0" >
+            <DockPanel VerticalAlignment="Top">
+
+                <DockPanel DockPanel.Dock="Top">
+                    
+                    <TextBox d:Text="camera" Margin="6,3" BorderThickness="0"
+                             md:HintAssist.Hint="{loc:Loc Type}" IsHitTestVisible="False">
                         <TextBox.Style>
                             <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                 <Setter Property="Text" Value="{loc:Loc Unknown}"/>
@@ -145,9 +149,8 @@
                         </TextBox.Style>
                     </TextBox>
 
-                    <TextBox d:Text="ZT610"  MinWidth="38" Margin="3" 
-                                 md:HintAssist.Hint="{loc:Loc Model}" md:HintAssist.IsFloating="True" 
-                                 IsHitTestVisible="False" BorderThickness="0">
+                    <TextBox d:Text="ZT610" Margin="6,3" BorderThickness="0"
+                             md:HintAssist.Hint="{loc:Loc Model}" IsHitTestVisible="False">
                         <TextBox.Style>
                             <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                 <Setter Property="Text" Value="{Binding Path=Details.printerModel}"/>
@@ -164,18 +167,18 @@
                         </TextBox.Style>
                     </TextBox>
 
-                    <TextBox d:Text="00:00:00:00:00" 
+                    <TextBox d:Text="00:00:00:00:00" Margin="6,3" BorderThickness="0"
                              Text="{Binding Path=Details.cameraMAC, Mode=OneWay, Converter={StaticResource macAddressSplitConverter}, ConverterParameter=Last}"
                              Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                                Margin="3" md:HintAssist.Hint="MAC" md:HintAssist.IsFloating="True" IsHitTestVisible="False" BorderThickness="0" />
+                             md:HintAssist.Hint="MAC" IsHitTestVisible="False" />
 
                 </DockPanel>
 
-                <DockPanel DockPanel.Dock="Top" Margin="1">
+                <DockPanel DockPanel.Dock="Top">
 
-                    <TextBox d:Text="State" Text="{Binding State, Converter={StaticResource LocalizeEnumValue}}" Margin="3,0" 
-                                 md:HintAssist.Hint="{loc:Loc State}" md:HintAssist.IsFloating="True" 
-                                 IsHitTestVisible="False" HorizontalAlignment="Left">
+                    <TextBox d:Text="State" Margin="6,3"
+                             Text="{Binding State, Converter={StaticResource LocalizeEnumValue}}" 
+                             md:HintAssist.Hint="{loc:Loc State}" IsHitTestVisible="False">
                         <TextBox.Style>
                             <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                 <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}"/>
@@ -200,14 +203,10 @@
                         </TextBox.Style>
                     </TextBox>
 
-                    <ComboBox ItemsSource="{Binding Jobs.jobs}" SelectedValue="{Binding SelectedJob}" Margin="3,0"
-                                  md:HintAssist.Hint="{loc:Loc Template Name}" md:HintAssist.IsFloating="True" 
-                                  HorizontalAlignment="Left">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding name}"/>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
+                    <ComboBox ItemsSource="{Binding Jobs.jobs}" Margin="6,3"
+                              SelectedValue="{Binding SelectedJob}"
+                              md:HintAssist.Hint="{loc:Loc Template Name}">
+
                         <ComboBox.Style>
                             <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}">
                                 <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}"/>
@@ -233,9 +232,16 @@
                                 </Style.Triggers>
                             </Style>
                         </ComboBox.Style>
+
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding name}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
                     </ComboBox>
 
-                    <TextBox d:Text="-----" Margin="3,0" md:HintAssist.Hint="{loc:Loc Template Name}" md:HintAssist.IsFloating="True" IsHitTestVisible="False" HorizontalAlignment="Left">
+                    <TextBox d:Text="-----" Margin="6,3"
+                             md:HintAssist.Hint="{loc:Loc Template Name}" IsHitTestVisible="False">
                         <TextBox.Style>
                             <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                 <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}"/>
@@ -266,10 +272,10 @@
 
                 <DockPanel>
 
-                    <Button HorizontalAlignment="Left" Margin="3,0" BorderThickness="0" Width="38">
+                    <Button Margin="3,0" Width="24" Height="24">
 
                         <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
                                 <Style.Triggers>
 
@@ -315,10 +321,10 @@
                         </Button.Style>
                     </Button>
 
-                    <Button HorizontalAlignment="Left" Margin="3,0" BorderThickness="0" Width="38">
+                    <Button Width="24" Height="24">
 
                         <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
                                 <Style.Triggers>
 
@@ -357,6 +363,7 @@
                             </Style>
                         </Button.Style>
                     </Button>
+                    
                 </DockPanel>
             </DockPanel>
         </DockPanel>

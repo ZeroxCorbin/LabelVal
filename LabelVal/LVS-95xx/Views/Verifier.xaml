@@ -17,16 +17,16 @@
         <Converters:BytesToImageConverter x:Key="bytesToImage"/>
     </UserControl.Resources>
 
-    <md:Card HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="6" BorderThickness="1"  
+    <md:Card Margin="6" BorderThickness="1"
              BorderBrush="{DynamicResource MahApps.Brushes.Accent4}"
              Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
              Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}">
 
         <DockPanel Margin="3">
 
-            <DockPanel>
+            <DockPanel VerticalAlignment="Top">
 
-                <md:Card DockPanel.Dock="Top" VerticalAlignment="Top" Padding="3" Margin="3"
+                <md:Card DockPanel.Dock="Top" Padding="3" Margin="3"
                          Background="{DynamicResource MahApps.Brushes.Accent4}">
 
                     <Button Command="{Binding ConnectCommand}" BorderThickness="0">
@@ -34,14 +34,14 @@
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button}">
                                 <Setter Property="Content">
                                     <Setter.Value>
-                                        <iconPacks:Modern Kind="Connect" Height="16" Width="16"/>
+                                        <iconPacks:Modern Kind="Connect"/>
                                     </Setter.Value>
                                 </Setter>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsConnected}" Value="True">
                                         <Setter Property="Content">
                                             <Setter.Value>
-                                                <iconPacks:Modern Kind="Disconnect" Height="16" Width="16"/>
+                                                <iconPacks:Modern Kind="Disconnect"/>
                                             </Setter.Value>
                                         </Setter>
                                     </DataTrigger>
@@ -68,7 +68,7 @@
 
             </DockPanel>
 
-            <md:DrawerHost x:Name="drwSettings">
+            <md:DrawerHost x:Name="drwSettings" VerticalAlignment="Top">
 
                 <md:DrawerHost.TopDrawerContent>
 
@@ -92,33 +92,35 @@
                             <Button Command="{Binding Manager.RemoveCommand}" CommandParameter="{Binding }" Style="{StaticResource GroupHeaderCirlceButton}" ToolTip="Delete this verifier?">
                                 <iconPacks:PackIconMaterial Kind="Delete" Height="14" Width="14"/>
                             </Button>
-                            
+
                         </DockPanel>
                     </md:Card>
                 </md:DrawerHost.TopDrawerContent>
 
                 <DockPanel>
 
-                    <DockPanel DockPanel.Dock="Top" Margin="1">
+                    <DockPanel DockPanel.Dock="Top">
 
-                        <TextBox d:Text="Camera" Text="Camera" Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
-                                     md:HintAssist.Hint="Type" MinWidth="56" Margin="3,0"
-                                md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left" BorderThickness="0"
-                                IsHitTestVisible="False">
-                        </TextBox>
+                        <TextBox d:Text="Camera" Text="Camera" Margin="3,0" BorderThickness="0"
+                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
+                                 md:HintAssist.Hint="Type" IsHitTestVisible="False"/>
 
-                        <TextBox d:Text="LVS-95xx" Text="LVS-95xx" Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                                      IsHitTestVisible="False" MinWidth="86" Margin="3,0" BorderThickness="0" md:HintAssist.Hint="Model" md:HintAssist.IsFloating="True"/>
+                        <TextBox d:Text="LVS-95xx" Text="LVS-95xx" Margin="3,0" BorderThickness="0"
+                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                                 md:HintAssist.Hint="Model" IsHitTestVisible="False"/>
+
                     </DockPanel>
 
-                    <DockPanel Margin="1" HorizontalAlignment="Left" VerticalAlignment="Top">
+                    <DockPanel>
 
-                        <TextBox d:Text="State" md:HintAssist.Hint="State" Margin="3,0" HorizontalContentAlignment="Center"
-                                md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left" 
-                                IsHitTestVisible="False">
+                        <TextBox d:Text="State" Margin="3,0" BorderThickness="0"
+                                 md:HintAssist.Hint="State" IsHitTestVisible="False">
+
                             <TextBox.Style>
                                 <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+
                                     <Setter Property="Text" Value="Offline"/>
+
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding IsConnected}" Value="True">
                                             <Setter Property="Text" Value="Run"/>
@@ -132,36 +134,31 @@
                 </DockPanel>
             </md:DrawerHost>
 
-            <DockPanel>
+            <Expander DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Right" md:ExpanderAssist.HorizontalHeaderPadding="6" MaxHeight="450"
+                      Background="{DynamicResource MahApps.Brushes.Accent4}">
 
-                <Expander DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Right" md:ExpanderAssist.HorizontalHeaderPadding="6" MaxHeight="450"
-                          Background="{DynamicResource MahApps.Brushes.Accent4}">
+                <Expander.Style>
+                    <Style TargetType="Expander" BasedOn="{StaticResource MaterialDesignExpander}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsDocked, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Expander.Style>
 
-                    <Expander.Style>
-                        <Style TargetType="Expander" BasedOn="{StaticResource MaterialDesignExpander}">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsDocked, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Expander.Style>
+                <Expander.Header>
+                    <TextBlock Text="Results" MinWidth="48"/>
+                </Expander.Header>
 
-                    <Expander.Header>
-                        <TextBlock Text="Results" MinWidth="48"/>
-                    </Expander.Header>
+                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Padding="1">
 
-                    <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Padding="1">
+                    <ScrollViewer Height="400" Width="300">
+                        <TextBox Text="{Binding ReadData.Value, Mode=OneWay}" IsReadOnly="True" BorderThickness="0" TextWrapping="Wrap"/>
+                    </ScrollViewer>
+                </md:Card>
 
-                        <ScrollViewer Height="400" Width="300">
-                            <TextBox Text="{Binding ReadData.Value, Mode=OneWay}" IsReadOnly="True" BorderThickness="0" TextWrapping="Wrap"/>
-                        </ScrollViewer>
-                    </md:Card>
-
-                </Expander>
-
-            </DockPanel>
-
+            </Expander>
 
         </DockPanel>
 

@@ -238,7 +238,7 @@
                     </Style>
                 </DockPanel.Style>
 
-                <v275:NodeItem IsDocked="True" HorizontalAlignment="Left" DataContext="{Binding Content.SelectedNode}"/>
+                <v275:NodeItem IsDocked="True" DataContext="{Binding Content.SelectedNode}"/>
 
             </DockPanel>
 
@@ -285,7 +285,7 @@
                     </Style>
                 </DockPanel.Style>
 
-                <v5:Scanner IsDocked="True" HorizontalAlignment="Left" DataContext="{Binding Content.SelectedScanner}"/>
+                <v5:Scanner IsDocked="True" DataContext="{Binding Content.SelectedScanner}"/>
 
             </DockPanel>
         </DockPanel>
@@ -329,7 +329,7 @@
                     </Style>
                 </DockPanel.Style>
 
-                <L95xx:Verifier IsDocked="True" HorizontalAlignment="Left" DataContext="{Binding Content.SelectedVerifier}"/>
+                <L95xx:Verifier IsDocked="True" DataContext="{Binding Content.SelectedVerifier}"/>
                 
             </DockPanel>
         </DockPanel>
