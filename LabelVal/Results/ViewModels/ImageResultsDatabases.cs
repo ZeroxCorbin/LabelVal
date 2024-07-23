@@ -44,19 +44,6 @@ public partial class ImageResultsDatabases : ObservableRecipient
     {
         LogInfo($"Loading grading standards databases from file system. {App.ImageResultsDatabaseRoot}");
 
-        //foreach (var file in Directory.EnumerateFiles(App.AssetsImageResultsDatabasesRoot))
-        //{
-        //    LogDebug($"Found: {Path.GetFileName(file)}");
-
-        //    if (file.EndsWith(App.DatabaseExtension))
-        //    {
-        //        if (Databases.Any((a) => a.FilePath == file))
-        //            continue;
-
-        //        Databases.Add(new Databases.ImageResultsDatabase(file));
-        //    }
-        //}
-
         foreach (var file in Directory.EnumerateFiles(App.ImageResultsDatabaseRoot))
         {
             LogDebug($"Found: {Path.GetFileName(file)}");
@@ -75,6 +62,8 @@ public partial class ImageResultsDatabases : ObservableRecipient
             var file = new Databases.ImageResultsDatabase(Path.Combine(App.ImageResultsDatabaseRoot, "My First Database" + App.DatabaseExtension));
             _ = file.Open();
             file.Close();
+
+            Databases.Add(new Databases.ImageResultsDatabase(file.FilePath));
         }
 
         foreach (var db in Databases)
