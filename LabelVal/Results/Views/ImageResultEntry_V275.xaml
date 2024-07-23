@@ -30,7 +30,22 @@
     </UserControl.Resources>
 
     <DockPanel MaxHeight="800">
-        <Border Style="{StaticResource groupLeft}" />
+        <Border>
+            <Border.Style>
+                <Style TargetType="{x:Type Border}" BasedOn="{StaticResource groupLeft}">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding V275StoredImage, Converter={StaticResource objectIsNull}}" Value="False">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+
+                        <DataTrigger Binding="{Binding V275CurrentImage, Converter={StaticResource objectIsNull}}" Value="False">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+        </Border>
         <Border Style="{StaticResource groupBottom}"/>
 
         <!--Images-->

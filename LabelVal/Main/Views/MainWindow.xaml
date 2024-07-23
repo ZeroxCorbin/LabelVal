@@ -42,6 +42,8 @@
                 <ResourceDictionary Source="HamburgerMenu.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
+            <converters:ObjectIsNull x:Key="objectIsNull"/>
+
             <printerConverters:PrinterSettingThousandthsToInches x:Key="printerSettingThousandthsToInches"/>
 
         </ResourceDictionary>
@@ -100,7 +102,6 @@
                         <local:AppSettingsControlView/>
                     </StackPanel>
 
-
                     <StackPanel Grid.Row="1">
                         <Label/>
                         <Label Content="Compare Settings" FontSize="18" HorizontalAlignment="Right"/>
@@ -110,7 +111,6 @@
                 </Grid>
 
             </mah:Flyout>
-
 
         </mah:FlyoutsControl>
     </mah:MetroWindow.Flyouts>
@@ -155,7 +155,7 @@
                             <mah:HamburgerMenu.ContentTemplate>
                                 <DataTemplate>
                                     <ContentControl Content="{Binding DataContext.SelectedMenuItem.Content, RelativeSource={RelativeSource AncestorType=mah:HamburgerMenu}}" 
-                            ContentTemplateSelector="{StaticResource contentItemTemplateSelector}"/>
+                                                    ContentTemplateSelector="{StaticResource contentItemTemplateSelector}"/>
                                 </DataTemplate>
                             </mah:HamburgerMenu.ContentTemplate>
                         </mah:HamburgerMenu>
@@ -163,8 +163,18 @@
                         <DockPanel >
 
                             <imageRolls:ImageRolls DataContext="{Binding ImageRolls}"/>
-                            
-                            <results:ImageResults DataContext="{Binding ImageResults}"/>
+
+                            <results:ImageResults DataContext="{Binding ImageResults}">
+                                <results:ImageResults.Style>
+                                    <Style TargetType="results:ImageResults">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SelectedImageRoll, Converter={StaticResource objectIsNull}}" Value="True">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </results:ImageResults.Style>
+                            </results:ImageResults>
 
                         </DockPanel>
                     </DockPanel>

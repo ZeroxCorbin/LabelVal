@@ -81,7 +81,8 @@
                                 </TextBlock>
 
                                 <TextBlock Text="{Binding SelectedImageRoll.TargetDPI, StringFormat={} : {0} dpi}" Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"/>
-                           </DockPanel>
+                           
+                            </DockPanel>
                             
                             <Border Style="{StaticResource imageBarHor}"/>
                         </DockPanel>
