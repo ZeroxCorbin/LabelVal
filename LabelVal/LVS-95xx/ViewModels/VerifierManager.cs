@@ -8,7 +8,6 @@ namespace LabelVal.LVS_95xx.ViewModels;
 public partial class VerifierManager : ObservableRecipient
 {
     public ObservableCollection<Verifier> Verifiers { get; } = App.Settings.GetValue(nameof(Verifiers), new ObservableCollection<Verifier>(), true);
-
     [ObservableProperty][NotifyPropertyChangedRecipients] public Verifier selectedVerifier;
     partial void OnSelectedVerifierChanged(Verifier value) => App.Settings.SetValue(nameof(SelectedVerifier), SelectedVerifier);
     
@@ -37,7 +36,8 @@ public partial class VerifierManager : ObservableRecipient
 
     [RelayCommand]
     private void Add() => NewVerifier = new Verifier() { Manager = this };
-
+    [RelayCommand]
+    private void Cancel() => NewVerifier = null;
     [RelayCommand]
     private void Remove(Verifier scanner)
     {
@@ -46,13 +46,11 @@ public partial class VerifierManager : ObservableRecipient
     }
 
     [RelayCommand]
-    private void Cancel() => NewVerifier = null;
-
-    [RelayCommand]
     private void Save()
     {
-        if (NewVerifier != null)
+        if (NewVerifier != null && NewVerifier != SelectedVerifier)
             Verifiers.Add(NewVerifier);
+
         NewVerifier = null;
 
         App.Settings.SetValue(nameof(Verifiers), Verifiers);

@@ -92,8 +92,8 @@
                 <md:DrawerHost.TopDrawerContent>
 
                     <md:Card Margin="3" Padding="2" HorizontalAlignment="Left"
-                                 Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
-                                 Foreground="{DynamicResource MahApps.Brushes.Text}">
+                            Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                            Foreground="{DynamicResource MahApps.Brushes.Text}">
                         <md:Card.Style>
                             <Style TargetType="{x:Type md:Card}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
@@ -242,9 +242,6 @@
                                     </TextBox.Style>
                                 </TextBox>
 
-                                <Button Command="{Binding Manager.RemoveCommand}" CommandParameter="{Binding }" Style="{StaticResource GroupHeaderCirlceButton}" ToolTip="Delete This Camera?">
-                                    <iconPacks:PackIconMaterial Kind="Delete" Height="14" Width="14"/>
-                                </Button>
                             </DockPanel>
                         </DockPanel>
                     </md:Card>

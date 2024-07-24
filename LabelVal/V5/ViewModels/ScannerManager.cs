@@ -9,7 +9,6 @@ namespace LabelVal.V5.ViewModels;
 public partial class ScannerManager : ObservableRecipient
 {
     public ObservableCollection<Scanner> Scanners { get; } = App.Settings.GetValue(nameof(Scanners), new ObservableCollection<Scanner>(), true);
-
     [ObservableProperty][NotifyPropertyChangedRecipients] private Scanner selectedScanner;
     partial void OnSelectedScannerChanged(Scanner value) => App.Settings.SetValue(nameof(SelectedScanner), value);
 
@@ -38,22 +37,23 @@ public partial class ScannerManager : ObservableRecipient
 
     [RelayCommand]
     private void Add() => NewScanner = new Scanner() { Manager = this };
-
     [RelayCommand]
-    private void Remove(Scanner scanner)
+    private void Edit() => NewScanner = SelectedScanner;
+    [RelayCommand]
+    private void Cancel() => NewScanner = null;
+    [RelayCommand]
+    private void Delete()
     {
-        Scanners.Remove(scanner);
+        Scanners.Remove(NewScanner);
+        NewScanner = null;
         Save();
     }
-
-    [RelayCommand]
-    public void Cancel() => NewScanner = null;
-
     [RelayCommand]
     private void Save()
     {
-        if (NewScanner != null)
+        if (NewScanner != null && NewScanner != SelectedScanner)
             Scanners.Add(NewScanner);
+
         NewScanner = null;
 
         App.Settings.SetValue(nameof(Scanners), Scanners);

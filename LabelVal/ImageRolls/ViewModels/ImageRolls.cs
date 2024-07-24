@@ -168,10 +168,7 @@ public partial class ImageRolls : ObservableRecipient
     }
 
     [RelayCommand]
-    public void Cancel()
-    {
-        UserImageRoll = null;
-    }
+    public void Cancel() => UserImageRoll = null;
 
     [RelayCommand]
     private void UIDToClipboard()

@@ -44,29 +44,28 @@
 
                         </DockPanel>
 
-                        <Button Click="btnCollapseContent" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="3" Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                        <Button Click="btnCollapseContent" Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                VerticalAlignment="Top" HorizontalAlignment="Right" Margin="3"
                                 Content="{iconPacks:Material Kind=ArrowCollapseLeft}"/>
 
                     </DockPanel>
-                    
-                    <Button  Click="btnShowSettings_Click" Style="{StaticResource MahApps.Styles.Button.Hamburger}" Width="48"
-                        ToolTip="{loc:Loc Settings}">
-                        <iconPacks:PackIconMaterial Kind="Cog"
-                                                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" Width="24" Height="24"/>
-                    </Button>
-                    
-                    <Button Command="{Binding GetDevicesCommand}" Style="{StaticResource MahApps.Styles.Button.Hamburger}" Width="48"
-                        ToolTip="{loc:Loc Refresh}">
-                        <iconPacks:PackIconModern Kind="Refresh" 
-                                              Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" Width="24" Height="24"/>
-                    </Button>
-                    
-                    <Button Click="btnOpenInBrowser_Click" Style="{StaticResource MahApps.Styles.Button.Hamburger}" Width="48" 
-                            HorizontalAlignment="Left">
-                        <iconPacks:PackIconModern Kind="Browser"
-                                              Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" Width="24" Height="24"/>
-                    </Button>
 
+                    <Button Click="btnShowSettings_Click" Style="{StaticResource MahApps.Styles.Button.Hamburger}" Width="48"
+                            ToolTip="{loc:Loc Settings}"
+                            Content="{iconPacks:Material Kind=Cog, Width=24, Height=24}"/>
+
+                    <Button Command="{Binding GetDevicesCommand}" Style="{StaticResource MahApps.Styles.Button.Hamburger}" Width="48"
+                            ToolTip="{loc:Loc Refresh}"
+                            Content="{iconPacks:Modern Kind=Refresh, Width=24, Height=24}"/>
+
+                    <Button Click="btnOpenInBrowser_Click" Style="{StaticResource MahApps.Styles.Button.Hamburger}" Width="48" 
+                            HorizontalAlignment="Left"
+                            Content="{iconPacks:Modern Kind=Browser, Width=24, Height=24}"/>
+
+                    <Button Click="btnShowDetails_Click" Style="{StaticResource MahApps.Styles.Button.Hamburger}" Width="48"
+                            HorizontalAlignment="Right"
+                            ToolTip="{loc:Loc Details}"
+                            Content="{iconPacks:Material Kind=CodeJson, Width=24, Height=24}"/>
 
                 </DockPanel>
             </DockPanel>
@@ -157,6 +156,7 @@
                             </DockPanel>
 
                             <DockPanel Margin="3">
+                                
                                 <TextBox Text="{Binding SimulatorImageDirectory, UpdateSourceTrigger=PropertyChanged}" Height="48" MaxWidth="220" Margin="3,0" HorizontalContentAlignment="Left" HorizontalAlignment="Left"
                                         md:HintAssist.Hint="Simulator Image Directory" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left" 
                                      md:TextFieldAssist.HasClearButton="True" TextWrapping="Wrap">
@@ -173,11 +173,6 @@
                                     </TextBox.Style>
                                 </TextBox>
 
-                                <Button Click="btnShowDetails_Click" Style="{StaticResource MahApps.Styles.Button.Hamburger}" HorizontalAlignment="Right" Width="48"
-                                    ToolTip="{loc:Loc Details}">
-                                    <iconPacks:PackIconMaterial Kind="CodeJson" Width="16" Height="16"/>
-                                </Button>
-
                             </DockPanel>
                         </DockPanel>
                     </md:Card>
@@ -187,15 +182,13 @@
                 <ListView ItemsSource="{Binding Nodes}" SelectedItem="{Binding SelectedNode}">
 
                     <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
-                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                        </Style>
+                        <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}"/>
                     </ListView.ItemContainerStyle>
 
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <local:NodeItem>
-                                <local:NodeItem.Style>
+                                <!--<local:NodeItem.Style>
                                     <Style TargetType="local:NodeItem">
                                         <Setter Property="IsHitTestVisible" Value="False"/>
                                         <Style.Triggers>
@@ -204,7 +197,7 @@
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
-                                </local:NodeItem.Style>
+                                </local:NodeItem.Style>-->
                             </local:NodeItem>
                         </DataTemplate>
                     </ListView.ItemTemplate>
