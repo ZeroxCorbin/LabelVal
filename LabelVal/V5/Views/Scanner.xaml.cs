@@ -116,4 +116,9 @@ public partial class Scanner : UserControl
     public void LogError(Exception ex) => logger.LogError(this.GetType(), ex);
     public void LogError(string message, Exception ex) => logger.LogError(this.GetType(), message, ex);
     #endregion
+
+    private void btnUnselect(object sender, RoutedEventArgs e)
+    {
+
+    }
 }

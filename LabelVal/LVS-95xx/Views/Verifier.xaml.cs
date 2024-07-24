@@ -22,8 +22,11 @@ public partial class Verifier : UserControl
 
     private void btnShowSettings_Click(object sender, RoutedEventArgs e) => drwSettings.IsTopDrawerOpen = !drwSettings.IsTopDrawerOpen;
 
-    private void drwSettings_DrawerClosing(object sender, MaterialDesignThemes.Wpf.DrawerClosingEventArgs e)
-    {
+    private void drwSettings_DrawerClosing(object sender, MaterialDesignThemes.Wpf.DrawerClosingEventArgs e) =>
         ((ViewModels.Verifier)this.DataContext).Manager.SaveCommand.Execute(null);
+
+    private void btnUnselect(object sender, RoutedEventArgs e)
+    {
+
     }
 }
