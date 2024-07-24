@@ -146,11 +146,13 @@
                             </StatusBar>
                         </DockPanel>
 
-                        <mah:HamburgerMenu OpenPaneLength="300" CanResizeOpenPane="False" DisplayMode="Inline" HamburgerVisibility="Collapsed" x:Name="hamMenu" 
-                                ItemsSource="{Binding MenuItems}"
-                                SelectedItem="{Binding SelectedMenuItem}"
-                                ItemTemplateSelector="{StaticResource menuItemTemplateSelector}"
-                                ItemClick="HamburgerMenu_ItemClick">
+                        <mah:HamburgerMenu x:Name="hamMenu" CanResizeOpenPane="False" 
+                                           DisplayMode="Inline" HamburgerVisibility="Collapsed"
+                                            ItemsSource="{Binding MenuItems}"
+                                            SelectedItem="{Binding SelectedMenuItem}"
+                                            ItemTemplateSelector="{StaticResource menuItemTemplateSelector}"
+                                            LayoutUpdated="hamMenu_LayoutUpdated"
+                                            ItemClick="hamMenu_ItemClick">
 
                             <mah:HamburgerMenu.ContentTemplate>
                                 <DataTemplate>

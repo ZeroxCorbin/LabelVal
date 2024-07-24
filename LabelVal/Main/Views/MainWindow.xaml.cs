@@ -1,6 +1,8 @@
 ﻿using ControlzEx.Theming;
 using MahApps.Metro.Controls;
+using System;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace LabelVal.Main.Views;
@@ -31,14 +33,31 @@ public partial class MainWindow : MetroWindow
     private void btnShowInfo_Click(object sender, RoutedEventArgs e) => popupInfo.IsOpen = true;
     private void btnShowError_Click(object sender, RoutedEventArgs e) => popupError.IsOpen = true;
 
-    private void HamburgerMenu_ItemClick(object sender, ItemClickEventArgs args)
+    private void hamMenu_ItemClick(object sender, ItemClickEventArgs args)
     {
         if (args.ClickedItem is Main.ViewModels.HamburgerMenuItem menuItem && menuItem.IsNotSelectable)
         {
             hamMenu.IsPaneOpen = true;
             args.Handled = true;
         }
-            
+    }
+
+    private bool update = false;
+    private void hamMenu_LayoutUpdated(object sender, System.EventArgs e)
+    {
+        Update();
+    }
+    private void Update()
+    {
+        double maxWidth = 280;
+        var res = Utilities.VisualTreeHelp.GetVisualChildren<ListBoxItem>(hamMenu);
+        if (res == null)
+            return;
+        
+        foreach (var item in res)
+            maxWidth = Math.Max(maxWidth, item.DesiredSize.Width);
+
+        hamMenu.OpenPaneLength = maxWidth + 1;
     }
 
 }

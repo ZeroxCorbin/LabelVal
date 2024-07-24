@@ -49,5 +49,10 @@ namespace LabelVal.V275.Views
             };
             _ = Process.Start(ps);
         }
+
+        private void btnUnselect(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

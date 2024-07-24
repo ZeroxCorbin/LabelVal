@@ -85,4 +85,28 @@ public static class VisualTreeHelp
         for (int i = 0; i < System.Windows.Media.VisualTreeHelper.GetChildrenCount(current); i++)
             GetVisualChildren(System.Windows.Media.VisualTreeHelper.GetChild(current, i), children);
     }
+
+    // New method with level variable
+    public static Collection<T> GetVisualChildren<T>(DependencyObject current, int level) where T : DependencyObject
+    {
+        Collection<T> children = [];
+        GetVisualChildren(current, children, level);
+        return children;
+    }
+
+    private static void GetVisualChildren<T>(DependencyObject current, Collection<T> children, int level) where T : DependencyObject
+    {
+        if (current == null || level < 0)
+            return;
+
+        if (current.GetType() == typeof(T))
+            children.Add((T)current);
+
+        if (level > 0)
+        {
+            var cnt = System.Windows.Media.VisualTreeHelper.GetChildrenCount(current);
+            for (int i = 0; i < cnt; i++)
+                GetVisualChildren(System.Windows.Media.VisualTreeHelper.GetChild(current, i), children, level - 1);
+        }
+    }
 }
