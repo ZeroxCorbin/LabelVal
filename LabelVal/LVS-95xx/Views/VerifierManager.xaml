@@ -47,7 +47,8 @@
 
                         <Button Click="btnCollapseContent" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="10,3"
                                 Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                Content="{iconPacks:Material Kind=ArrowCollapseLeft}"/>
+                                Content="{iconPacks:Material Kind=ArrowCollapseLeft}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
                     </DockPanel>
 
                     <DockPanel>

@@ -46,26 +46,31 @@
 
                         <Button Click="btnCollapseContent" Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                                 VerticalAlignment="Top" HorizontalAlignment="Right" Margin="3"
-                                Content="{iconPacks:Material Kind=ArrowCollapseLeft}"/>
+                                Content="{iconPacks:Material Kind=ArrowCollapseLeft}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
 
                     </DockPanel>
 
                     <Button Click="btnShowSettings_Click" Style="{StaticResource MahApps.Styles.Button.Hamburger}" Width="48"
                             ToolTip="{loc:Loc Settings}"
-                            Content="{iconPacks:Material Kind=Cog, Width=24, Height=24}"/>
+                            Content="{iconPacks:Material Kind=Cog, Width=24, Height=24}"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
 
                     <Button Command="{Binding GetDevicesCommand}" Style="{StaticResource MahApps.Styles.Button.Hamburger}" Width="48"
                             ToolTip="{loc:Loc Refresh}"
-                            Content="{iconPacks:Modern Kind=Refresh, Width=24, Height=24}"/>
+                            Content="{iconPacks:Modern Kind=Refresh, Width=24, Height=24}"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
 
                     <Button Click="btnOpenInBrowser_Click" Style="{StaticResource MahApps.Styles.Button.Hamburger}" Width="48" 
                             HorizontalAlignment="Left"
-                            Content="{iconPacks:Modern Kind=Browser, Width=24, Height=24}"/>
+                            Content="{iconPacks:Modern Kind=Browser, Width=24, Height=24}"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
 
                     <Button Click="btnShowDetails_Click" Style="{StaticResource MahApps.Styles.Button.Hamburger}" Width="48"
                             HorizontalAlignment="Right"
                             ToolTip="{loc:Loc Details}"
-                            Content="{iconPacks:Material Kind=CodeJson, Width=24, Height=24}"/>
+                            Content="{iconPacks:Material Kind=CodeJson, Width=24, Height=24}"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
 
                 </DockPanel>
             </DockPanel>

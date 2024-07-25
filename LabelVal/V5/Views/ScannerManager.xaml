@@ -48,14 +48,16 @@
 
                         <Button Click="btnCollapseContent" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="10,3" 
                                 Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                Content="{iconPacks:Material Kind=ArrowCollapseLeft}"/>
+                                Content="{iconPacks:Material Kind=ArrowCollapseLeft}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
                         
                     </DockPanel>
                     
                     <DockPanel>
                         
                         <Button Command="{Binding AddCommand}" ToolTip="New V5" Width="48"
-                                Content="{iconPacks:Material Kind=Plus, Width=24, Height=24}">
+                                Content="{iconPacks:Material Kind=Plus, Width=24, Height=24}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
                                     <Setter Property="Visibility" Value="Collapsed"/>
@@ -69,7 +71,8 @@
                         </Button>
 
                         <Button Command="{Binding EditCommand}" ToolTip="Edit Selected Camera" Width="48"
-                                Content="{iconPacks:Material Kind=SquareEditOutline, Width=24, Height=24}">
+                                Content="{iconPacks:Material Kind=SquareEditOutline, Width=24, Height=24}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
                                     <Setter Property="Visibility" Value="Visible"/>
@@ -86,7 +89,8 @@
                        </Button>
 
                         <Button Command="{Binding SaveCommand}" ToolTip="Save Camera" Width="48"
-                                Content="{iconPacks:Material Kind=ContentSave, Width=24, Height=24}">
+                                Content="{iconPacks:Material Kind=ContentSave, Width=24, Height=24}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
                                     <Setter Property="Visibility" Value="Collapsed"/>
@@ -100,7 +104,8 @@
                         </Button>
 
                         <Button Command="{Binding CancelCommand}" ToolTip="Cancel" Width="48"
-                                Content="{iconPacks:Material Kind=Cancel, Width=24, Height=24}">
+                                Content="{iconPacks:Material Kind=Cancel, Width=24, Height=24}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
                                     <Setter Property="Visibility" Value="Collapsed"/>
@@ -114,7 +119,8 @@
                         </Button>
 
                         <Button Command="{Binding DeleteCommand}" ToolTip="Delete" Width="48"
-                                Content="{iconPacks:Material Kind=Delete, Width=24, Height=24}">
+                                Content="{iconPacks:Material Kind=Delete, Width=24, Height=24}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
                                     <Setter Property="Visibility" Value="Collapsed"/>
@@ -126,13 +132,12 @@
                                 </Style>
                             </Button.Style>
                         </Button>
-                        
-                        <Button Click="btnShowDetails_Click" Style="{StaticResource MahApps.Styles.Button.Hamburger}" HorizontalAlignment="Right" Width="48">
 
-                            <iconPacks:PackIconMaterial Kind="CodeJson"
-                                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" Width="24" Height="24"/>
-                        </Button>
-                    
+                        <Button Click="btnShowDetails_Click" HorizontalAlignment="Right" Width="48" 
+                                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                Content="{iconPacks:Material Kind=CodeJson, Width=24, Height=24}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
+
                     </DockPanel>
                 </DockPanel>
             </DockPanel>
@@ -188,18 +193,7 @@
 
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <local:Scanner DataContext="{Binding }">
-                                <!--<local:Scanner.Style>
-                                    <Style TargetType="local:Scanner">
-                                        <Setter Property="IsHitTestVisible" Value="False"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListViewItem}}" Value="True">
-                                                <Setter Property="IsHitTestVisible" Value="True"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </local:Scanner.Style>-->
-                            </local:Scanner>
+                            <local:Scanner DataContext="{Binding }"/>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>

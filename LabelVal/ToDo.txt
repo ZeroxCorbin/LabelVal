@@ -11,7 +11,12 @@ When viewing the run results and it is a simulation run the sector outlines are 
 
 OCR OCV and blemish are checking the standard and should not.
 
+Work on Hash generation for images to include a seperate hash for the data.
 
+Rework the info button. Add a badge to indicate issue with DPI  or hash, ...
 
+Shrink all images.
+
+Placeholder image is displayed.
 
 

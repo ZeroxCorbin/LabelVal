@@ -19,7 +19,7 @@ public partial class ImageRolls : ObservableRecipient
     public ObservableCollection<ImageRollEntry> FixedImageRolls { get; } = [];
     public ObservableCollection<ImageRollEntry> UserImageRolls { get; } = [];
 
-    [ObservableProperty] private ImageRollEntry userImageRoll = null;
+    [ObservableProperty] private ImageRollEntry newImageRoll = null;
 
 
      [ObservableProperty][NotifyPropertyChangedRecipients] private ImageRollEntry selectedImageRoll;// = App.Settings.GetValue<ImageRollEntry>(nameof(SelectedImageRoll), null);
@@ -103,7 +103,7 @@ public partial class ImageRolls : ObservableRecipient
     {
         LogInfo("Adding image roll.");
 
-        UserImageRoll = new ImageRollEntry
+        NewImageRoll = new ImageRollEntry
         {
             ImageRollsDatabase = ImageRollsDatabase
         };
@@ -114,37 +114,37 @@ public partial class ImageRolls : ObservableRecipient
     {
         LogInfo("Editing image roll.");
 
-        UserImageRoll = SelectedUserImageRoll.CopyLite();
+        NewImageRoll = SelectedUserImageRoll.CopyLite();
     }
 
     [RelayCommand]
     public void Save()
     {
-        if (string.IsNullOrEmpty(UserImageRoll.Name))
+        if (string.IsNullOrEmpty(NewImageRoll.Name))
             return;
 
-        if (UserImageRoll.SelectedStandard is Sectors.Interfaces.StandardsTypes.GS1 &&
-            UserImageRoll.SelectedGS1Table is Sectors.Interfaces.GS1TableNames.None or Sectors.Interfaces.GS1TableNames.Unsupported)
+        if (NewImageRoll.SelectedStandard is Sectors.Interfaces.StandardsTypes.GS1 &&
+            NewImageRoll.SelectedGS1Table is Sectors.Interfaces.GS1TableNames.None or Sectors.Interfaces.GS1TableNames.Unsupported)
             return;
 
         if (ImageRollsDatabase == null)
             return;
 
-        if (ImageRollsDatabase.InsertOrReplaceImageRoll(UserImageRoll) > 0)
+        if (ImageRollsDatabase.InsertOrReplaceImageRoll(NewImageRoll) > 0)
         {
-            LogInfo($"Saved image roll: {UserImageRoll.Name}");
+            LogInfo($"Saved image roll: {NewImageRoll.Name}");
 
             LoadUserImageRollsList();
-            UserImageRoll = null;
+            NewImageRoll = null;
         }
         else
-            LogError($"Failed to save image roll: {UserImageRoll.Name}");
+            LogError($"Failed to save image roll: {NewImageRoll.Name}");
     }
 
     [RelayCommand]
     public void Delete()
     {
-        if (ImageRollsDatabase == null)
+        if (ImageRollsDatabase == null || SelectedUserImageRoll == null)
             return;
 
         foreach (var img in SelectedUserImageRoll.Images)
@@ -155,20 +155,20 @@ public partial class ImageRolls : ObservableRecipient
                 LogError($"Failed to delete image: {img.UID}");
         }
 
-        if (ImageRollsDatabase.DeleteImageRoll(UserImageRoll.UID))
+        if (ImageRollsDatabase.DeleteImageRoll(NewImageRoll.UID))
         {
-            LogInfo($"Deleted image roll: {UserImageRoll.UID}");
+            LogInfo($"Deleted image roll: {NewImageRoll.UID}");
 
             LoadUserImageRollsList();
-            UserImageRoll = null;
+            NewImageRoll = null;
             SelectedUserImageRoll = null;
         }
         else
-            LogError($"Failed to delete image roll: {UserImageRoll.UID}");
+            LogError($"Failed to delete image roll: {NewImageRoll.UID}");
     }
 
     [RelayCommand]
-    public void Cancel() => UserImageRoll = null;
+    public void Cancel() => NewImageRoll = null;
 
     [RelayCommand]
     private void UIDToClipboard()

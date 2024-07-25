@@ -42,17 +42,18 @@
                 <!--Title-->
                 <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
                              HorizontalAlignment="Left" Padding="4,1" Margin="3">
-                    <TextBlock Text="Source Image" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                    <TextBlock Text="Source Image" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
+                                Foreground="{DynamicResource MahApps.Brushes.Text}"/>
                 </md:Card>
 
                 <Border Style="{StaticResource imageBar}" Margin="3,0"/>
 
                 <!--Save Image-->
                 <Button Command="{Binding SaveCommand}" Width="28"
-                            Style="{StaticResource MahApps.Styles.Button.Hamburger}" 
-                            ToolTip="Save the image.">
-                    <iconPacks:PackIconMaterial Kind="ContentSave"/>
-                </Button>
+                        Style="{StaticResource MahApps.Styles.Button.Hamburger}" 
+                        ToolTip="Save the image."
+                        Content="{iconPacks:Material Kind=ContentSave}"
+                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
 
                 <Border Style="{StaticResource imageBar}" Margin="3,0"/>
 
@@ -64,7 +65,7 @@
         </md:Card>
 
         <!--Images-->
-        <DockPanel Background="Black" VerticalAlignment="Top" HorizontalAlignment="Left">
+        <DockPanel Margin="3" Background="Black" VerticalAlignment="Top" HorizontalAlignment="Left">
 
             <!--Images-->
             <Grid Margin="3" MouseDown="SourceImage_MouseDown" 
@@ -75,20 +76,20 @@
                         <Setter Property="MaxWidth" Value="400"/>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding V275StoredImage, Converter={StaticResource objectIsNull}}" Value="False">
-                                <Setter Property="MaxHeight" Value="184"/>
-                                <Setter Property="MaxWidth" Value="184"/>
+                                <Setter Property="MaxHeight" Value="200"/>
+                                <Setter Property="MaxWidth" Value="200"/>
                             </DataTrigger>
                             <DataTrigger Binding="{Binding V275CurrentImage, Converter={StaticResource objectIsNull}}" Value="False">
-                                <Setter Property="MaxHeight" Value="184"/>
-                                <Setter Property="MaxWidth" Value="184"/>
+                                <Setter Property="MaxHeight" Value="200"/>
+                                <Setter Property="MaxWidth" Value="200"/>
                             </DataTrigger>
                             <DataTrigger Binding="{Binding V5StoredImage, Converter={StaticResource objectIsNull}}" Value="False">
-                                <Setter Property="MaxHeight" Value="184"/>
-                                <Setter Property="MaxWidth" Value="184"/>
+                                <Setter Property="MaxHeight" Value="200"/>
+                                <Setter Property="MaxWidth" Value="200"/>
                             </DataTrigger>
                             <DataTrigger Binding="{Binding V5CurrentImage, Converter={StaticResource objectIsNull}}" Value="False">
-                                <Setter Property="MaxHeight" Value="184"/>
-                                <Setter Property="MaxWidth" Value="184"/>
+                                <Setter Property="MaxHeight" Value="200"/>
+                                <Setter Property="MaxWidth" Value="200"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>

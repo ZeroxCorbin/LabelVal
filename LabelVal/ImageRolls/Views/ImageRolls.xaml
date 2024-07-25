@@ -240,11 +240,11 @@
                                 <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15415}">
                                     <Setter Property="Source" Value="/Assets/Images/barcode-1d1.png"/>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.OCR_OCR}">
+                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.OCR_OCV}">
                                     <Setter Property="Source" Value="/Assets/Images/OCR.png"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.None}">
-                                    <Setter Property="Source" Value="/Assets/Images/OCR.png"/>
+                                    <Setter Property="Source" Value="/Assets/Images/all-codes.png"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -279,11 +279,11 @@
                 <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15415}">
                     <Setter Property="ToolTip" Value="ISO/IEC 15415"/>
                 </DataTrigger>
-                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.OCR_OCR}">
+                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.OCR_OCV}">
                     <Setter Property="ToolTip" Value="OCR/OCV"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.None}">
-                    <Setter Property="ToolTip" Value="OCR/OCV"/>
+                    <Setter Property="ToolTip" Value="None"/>
                 </DataTrigger>
             </Style.Triggers>
 
@@ -315,11 +315,11 @@
                 <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15415}">
                     <Setter Property="ToolTip" Value="ISO/IEC 15415"/>
                 </DataTrigger>
-                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.OCR_OCR}">
+                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.OCR_OCV}">
                     <Setter Property="ToolTip" Value="OCR/OCV"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.None}">
-                    <Setter Property="ToolTip" Value="OCR/OCV"/>
+                    <Setter Property="ToolTip" Value="None"/>
                 </DataTrigger>
             </Style.Triggers>
 
@@ -372,7 +372,7 @@
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding UserImageRoll, Converter={StaticResource objectIsNull}}" Value="True">
+                                            <DataTrigger Binding="{Binding NewImageRoll, Converter={StaticResource objectIsNull}}" Value="True">
                                                 <Setter Property="Visibility" Value="Visible"/>
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -392,7 +392,7 @@
                                             <DataTrigger Binding="{Binding SelectedUserImageRoll, Converter={StaticResource objectIsNull}}" Value="True">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
-                                            <DataTrigger Binding="{Binding UserImageRoll, Converter={StaticResource objectIsNull}}" Value="False">
+                                            <DataTrigger Binding="{Binding NewImageRoll, Converter={StaticResource objectIsNull}}" Value="False">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -408,7 +408,7 @@
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding UserImageRoll, Converter={StaticResource objectIsNull}}" Value="False">
+                                            <DataTrigger Binding="{Binding NewImageRoll, Converter={StaticResource objectIsNull}}" Value="False">
                                                 <Setter Property="Visibility" Value="Visible"/>
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -424,7 +424,7 @@
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding UserImageRoll, Converter={StaticResource objectIsNull}}" Value="False">
+                                            <DataTrigger Binding="{Binding NewImageRoll, Converter={StaticResource objectIsNull}}" Value="False">
                                                 <Setter Property="Visibility" Value="Visible"/>
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -440,7 +440,7 @@
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding UserImageRoll, Converter={StaticResource objectIsNull}}" Value="False">
+                                            <DataTrigger Binding="{Binding NewImageRoll, Converter={StaticResource objectIsNull}}" Value="False">
                                                 <Setter Property="Visibility" Value="Visible"/>
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -465,7 +465,7 @@
                         <Style TargetType="md:DrawerHost">
                             <Setter Property="IsTopDrawerOpen" Value="False"/>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding UserImageRoll, Converter={StaticResource objectIsNull}}" Value="False">
+                                <DataTrigger Binding="{Binding NewImageRoll, Converter={StaticResource objectIsNull}}" Value="False">
                                     <Setter Property="IsTopDrawerOpen" Value="True"/>
                                 </DataTrigger>
                             </Style.Triggers>
@@ -473,7 +473,7 @@
                     </md:DrawerHost.Style>
 
                     <md:DrawerHost.TopDrawerContent>
-                        <local:ImageRollEntryEdit DataContext="{Binding UserImageRoll}" />
+                        <local:ImageRollEntryEdit DataContext="{Binding NewImageRoll}" />
                     </md:DrawerHost.TopDrawerContent>
 
                     <mah:MetroTabControl ItemsSource="{Binding Groups, Source={StaticResource ResourceKey=UserImageRolls}}"
