@@ -7,9 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace LabelVal.Utilities;
-public class BitmapImageUtilities
+public static class BitmapImageUtilities
 {
-    public static System.Windows.Media.Imaging.BitmapImage LoadBitmap(string path, int pixelWidth = 0)
+    public static System.Windows.Media.Imaging.BitmapImage LoadBitmapImage(string path, int pixelWidth = 0)
     {
         var bitmap = new System.Windows.Media.Imaging.BitmapImage();
         bitmap.BeginInit();
@@ -19,8 +19,7 @@ public class BitmapImageUtilities
         bitmap.Freeze();
         return bitmap;
     }
-
-    public static void SaveBitmap(System.Windows.Media.Imaging.BitmapImage bitmap, string path)
+    public static void SaveBitmapImage(System.Windows.Media.Imaging.BitmapImage bitmap, string path)
     {
         var encoder = new System.Windows.Media.Imaging.PngBitmapEncoder();
         encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(bitmap));
@@ -30,7 +29,7 @@ public class BitmapImageUtilities
         }
     }
 
-    public static System.Windows.Media.Imaging.BitmapImage CreateBitmap(byte[] data)
+    public static System.Windows.Media.Imaging.BitmapImage CreateBitmapImage(byte[] data)
     {
         var bitmap = new System.Windows.Media.Imaging.BitmapImage();
         bitmap.BeginInit();
@@ -39,11 +38,10 @@ public class BitmapImageUtilities
         bitmap.Freeze();
         return bitmap;
     }
-
-    public static System.Windows.Media.Imaging.BitmapImage CreatePNG(System.Drawing.Bitmap png)
+    public static System.Windows.Media.Imaging.BitmapImage CreateBitmapImage(System.Drawing.Bitmap image, bool png = true)
     {
         var stream = new System.IO.MemoryStream();
-        png.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+        image.Save(stream, png ? System.Drawing.Imaging.ImageFormat.Png : System.Drawing.Imaging.ImageFormat.Bmp);
         stream.Position = 0;
 
         var wpfBitmap = new System.Windows.Media.Imaging.BitmapImage();
@@ -54,22 +52,7 @@ public class BitmapImageUtilities
         return wpfBitmap;
 
     }
-    public static System.Windows.Media.Imaging.BitmapImage CreateBitmap(System.Drawing.Bitmap bitmap)
-    {
-        var stream = new System.IO.MemoryStream();
-        bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Bmp);
-        stream.Position = 0;
-
-        var wpfBitmap = new System.Windows.Media.Imaging.BitmapImage();
-        wpfBitmap.BeginInit();
-        wpfBitmap.StreamSource = stream;
-        wpfBitmap.EndInit();
-        wpfBitmap.Freeze();
-        return wpfBitmap;
-
-    }
-
-    public static System.Windows.Media.Imaging.BitmapImage CreateBitmap(byte[] data, int decodePixelWidth, int decodePixelHeight = 0)
+    public static System.Windows.Media.Imaging.BitmapImage CreateBitmapImage(byte[] data, int decodePixelWidth, int decodePixelHeight = 0)
     {
         var bitmap = new System.Windows.Media.Imaging.BitmapImage();
         bitmap.BeginInit();
@@ -80,6 +63,7 @@ public class BitmapImageUtilities
         bitmap.Freeze();
         return bitmap;
     }
+
     public static System.Windows.Media.Imaging.BitmapImage CreateRandomBitmapImage(int width, int height)
     {
         var randomBitmap = new System.Drawing.Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
@@ -98,9 +82,8 @@ public class BitmapImageUtilities
             }
         }
 
-
         // Convert System.Drawing.Bitmap to System.Windows.Media.Imaging.BitmapImage
-        return CreateBitmap(randomBitmap);
+        return CreateBitmapImage(randomBitmap);
     }
 
     public static string ImageUID(System.Windows.Media.Imaging.BitmapImage image)
@@ -108,34 +91,32 @@ public class BitmapImageUtilities
         try
         {
             using SHA256 md5 = SHA256.Create();
-            return BitConverter.ToString(md5.ComputeHash(ImageToBytesPNG(image))).Replace("-", String.Empty);
+            return BitConverter.ToString(md5.ComputeHash(ImageToBytes(image))).Replace("-", String.Empty);
         }
         catch (Exception)
         {
             return string.Empty;
         }
     }
-
-    public static byte[] ImageToBytesPNG(System.Windows.Media.Imaging.BitmapImage image)
+    public static byte[] ImageToBytes(System.Windows.Media.Imaging.BitmapImage image, bool png = true)
     {
-        using (var ms = new System.IO.MemoryStream())
+        if (png)
+            using (var ms = new System.IO.MemoryStream())
+            {
+                var encoder = new System.Windows.Media.Imaging.PngBitmapEncoder();
+                encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(image));
+                encoder.Save(ms);
+                return ms.ToArray();
+            }
+        else
         {
-            var encoder = new System.Windows.Media.Imaging.PngBitmapEncoder();
-            encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(image));
-            encoder.Save(ms);
-            return ms.ToArray();
+            using (var ms = new System.IO.MemoryStream())
+            {
+                var encoder = new System.Windows.Media.Imaging.BmpBitmapEncoder();
+                encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(image));
+                encoder.Save(ms);
+                return ms.ToArray();
+            }
         }
     }
-
-    public static byte[] ImageToBytesBMP(System.Windows.Media.Imaging.BitmapImage image)
-    {
-        using (var ms = new System.IO.MemoryStream())
-        {
-            var encoder = new System.Windows.Media.Imaging.BmpBitmapEncoder();
-            encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(image));
-            encoder.Save(ms);
-            return ms.ToArray();
-        }
-    }
-
 }

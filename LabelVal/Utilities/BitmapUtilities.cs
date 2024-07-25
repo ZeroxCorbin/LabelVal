@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace LabelVal.Utilities;
-public class BitmapUtilities
+public static class BitmapUtilities
 {
     public static System.Drawing.Bitmap LoadBitmap(string path) => new System.Drawing.Bitmap(path);
     public static void SaveBitmap(System.Drawing.Bitmap bitmap, string path) => bitmap.Save(path);
@@ -30,6 +30,13 @@ public class BitmapUtilities
         bitmap.UnlockBits(data);
         return bitmap;
     }
+    public static System.Drawing.Bitmap CreateBitmap(byte[] bytes)
+    {
+        using (var ms = new System.IO.MemoryStream(bytes))
+        {
+            return new System.Drawing.Bitmap(ms);
+        }
+    }
 
     public static System.Drawing.Bitmap CreateRandomBitmap(int width, int height)
     {
@@ -49,7 +56,6 @@ public class BitmapUtilities
         }
         return bitmap;
     }
-
     public static System.Drawing.Bitmap CreateRandomBitmapFast(int width, int height)
     {
         var random = new Random();
@@ -80,16 +86,7 @@ public class BitmapUtilities
         return bitmap;
     }
 
-
-    public static System.Drawing.Bitmap BitmapFromBytes(byte[] bytes)
-    {
-        using (var ms = new System.IO.MemoryStream(bytes))
-        {
-            return new System.Drawing.Bitmap(ms);
-        }
-    }
-
-    public static byte[] BytesFromBitmap(System.Drawing.Bitmap bitmap)
+    public static byte[] GetBytes(System.Drawing.Bitmap bitmap)
     {
         using (var ms = new System.IO.MemoryStream())
         {
@@ -97,7 +94,6 @@ public class BitmapUtilities
             return ms.ToArray();
         }
     }
-
 
     public static System.Drawing.Bitmap ResizeBitmap(System.Drawing.Bitmap bitmap, int width, int height)
     {
@@ -108,7 +104,6 @@ public class BitmapUtilities
         }
         return resized;
     }
-
     public static System.Drawing.Bitmap CropBitmap(System.Drawing.Bitmap bitmap, int x, int y, int width, int height)
     {
         var cropped = new System.Drawing.Bitmap(width, height);
@@ -118,7 +113,6 @@ public class BitmapUtilities
         }
         return cropped;
     }
-
     public static System.Drawing.Bitmap RotateBitmap(System.Drawing.Bitmap bitmap, float angle)
     {
         var rotated = new System.Drawing.Bitmap(bitmap.Width, bitmap.Height);
@@ -131,7 +125,6 @@ public class BitmapUtilities
         }
         return rotated;
     }
-
     public static System.Drawing.Bitmap FlipBitmap(System.Drawing.Bitmap bitmap, bool horizontal, bool vertical)
     {
         var flipped = new System.Drawing.Bitmap(bitmap.Width, bitmap.Height);

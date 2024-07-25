@@ -1477,6 +1477,8 @@
 		<PackageReference Include="Npgsql">
 			<Version>8.0.3</Version>
 		</PackageReference>
+		<PackageReference Include="SharpVectors" Version="1.8.4.1" />
+		<PackageReference Include="SharpVectors.Wpf" Version="1.8.4.1" />
 		<PackageReference Include="sqlite-net-pcl">
 			<Version>1.9.172</Version>
 		</PackageReference>
