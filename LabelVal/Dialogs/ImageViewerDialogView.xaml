@@ -43,14 +43,6 @@
 
                 <DockPanel>
 
-                    <!--Title-->
-                    <!--<md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
-                             HorizontalAlignment="Left" Padding="4,1" Margin="3">
-                        <TextBlock Text="Source Image" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
-                    </md:Card>
-
-                    <Border Style="{StaticResource imageBar}" Margin="3,0"/>-->
-
                     <DockPanel Margin="3">
 
                         <TextBox  Text="{Binding Image.PixelWidth, Mode=OneWay}"
@@ -65,7 +57,6 @@
 
                         <DockPanel Margin="6,0">
 
-
                             <TextBox Text="{Binding Image.DpiX, StringFormat=N, Converter={StaticResource doubleToString}, Mode=OneWay}"
                                  md:TextFieldAssist.SuffixText="DPI" 
                                  Margin="5,0"
@@ -75,11 +66,13 @@
                                  md:TextFieldAssist.SuffixText="DPI" 
                                  Margin="5,0"
                                  IsHitTestVisible="False" BorderThickness="0"/>
+                            
                         </DockPanel>
 
-                        <Button Name="Reset" Click="Reset_Click" Margin="3" Style="{StaticResource MahApps.Styles.Button.Hamburger}">
-                            <iconPacks:PackIconMaterial Kind="ArrowExpandAll"/>
-                        </Button>
+                        <Button Name="Reset" Click="Reset_Click" Margin="3"
+                                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                Content="{iconPacks:Material Kind=ArrowExpandAll}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
 
                     </DockPanel>
                 </DockPanel>

@@ -97,7 +97,8 @@
 
                             <Button Command="{Binding AddV5ImageCommand}" Width="48"
                                     Content="{iconPacks:Material Kind=Camera, Width=24, Height=24}"
-                                    ToolTipService.ShowOnDisabled="True">
+                                    ToolTipService.ShowOnDisabled="True"
+                                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
@@ -109,6 +110,7 @@
                                                     <Condition Binding="{Binding SelectedScanner.IsConnected}" Value="True"/>
                                                     <Condition Binding="{Binding SelectedScanner.IsSimulator}" Value="False"/>
                                                 </MultiDataTrigger.Conditions>
+                                                
                                                 <Setter Property="IsEnabled" Value="True"/>
                                             </MultiDataTrigger>
 

@@ -204,7 +204,6 @@
 
                             <Button x:Name="btnV275StoredSectors" Click="V275StoredSectors_Click" Width="28"
                                 ToolTip="The all seeing eye! Click it...&#x0a;Hold Shift and click for more."
-                                HorizontalAlignment="Right"
                                 Content="{iconPacks:Modern Kind=Eye}"
                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
@@ -231,8 +230,8 @@
                         <DockPanel>
 
                             <GroupBox Margin="3" Padding="3"
-                            md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                            md:ColorZoneAssist.Mode="Custom">
+                                        md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                                        md:ColorZoneAssist.Mode="Custom">
                                 <GroupBox.Style>
                                     <Style TargetType="GroupBox" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
                                         <Setter Property="Visibility" Value="Visible"/>
@@ -288,7 +287,7 @@
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
 
-                                        <sectors:Sector/>
+                                        <sectors:Sector  Background="{DynamicResource AccentColorBrush}"/>
 
                                     </DataTemplate>
                                 </ListView.ItemTemplate>

@@ -29,106 +29,107 @@
 
 
     </UserControl.Resources>
-
-    <!--Source Image-->
+    
     <DockPanel>
+        <!--Source Image-->
+        <DockPanel>
 
-        <md:Card x:Name="crdSource" HorizontalAlignment="Left" DockPanel.Dock="Top" Margin="3,3,0,0"
+            <md:Card x:Name="crdSource" HorizontalAlignment="Left" DockPanel.Dock="Top" Margin="3,3,0,0"
                  Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
                  Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
-            <DockPanel>
+                <DockPanel>
 
-                <!--Title-->
-                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
-                             HorizontalAlignment="Left" Padding="4,1" Margin="3">
-                    <TextBlock Text="Source Image" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
+                    <!--Title-->
+                    <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                         HorizontalAlignment="Left" Padding="4,1" Margin="3">
+                        <TextBlock Text="Source Image" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
                                 Foreground="{DynamicResource MahApps.Brushes.Text}"/>
-                </md:Card>
+                    </md:Card>
 
-                <Border Style="{StaticResource imageBar}" Margin="3,0"/>
+                    <Border Style="{StaticResource imageBar}" Margin="3,0"/>
 
-                <!--Save Image-->
-                <Button Command="{Binding SaveCommand}" Width="28"
+                    <!--Save Image-->
+                    <Button Command="{Binding SaveCommand}" Width="28"
                         Style="{StaticResource MahApps.Styles.Button.Hamburger}" 
                         ToolTip="Save the image."
                         Content="{iconPacks:Material Kind=ContentSave}"
                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
 
-                <Border Style="{StaticResource imageBar}" Margin="3,0"/>
+                    <Border Style="{StaticResource imageBar}" Margin="3,0"/>
 
-                <TextBlock VerticalAlignment="Center" Text="{Binding ImageUID, Converter={StaticResource shortenUID}}" 
-                                ToolTip="{Binding ImageUID}" Margin="3,0"/>
+                    <TextBlock VerticalAlignment="Center" Text="{Binding ImageUID, Converter={StaticResource shortenUID}}" 
+                           ToolTip="{Binding ImageUID}" Margin="3,0"/>
 
-            </DockPanel>
+                </DockPanel>
 
-        </md:Card>
-
-        <!--Images-->
-        <DockPanel Margin="3" Background="Black" VerticalAlignment="Top" HorizontalAlignment="Left">
+            </md:Card>
 
             <!--Images-->
-            <Grid Margin="3" MouseDown="SourceImage_MouseDown" 
+            <DockPanel Margin="3" Background="Black" VerticalAlignment="Top" HorizontalAlignment="Left">
+
+                <!--Images-->
+                <Grid Margin="3" MouseDown="SourceImage_MouseDown" 
                   ContextMenu="{StaticResource cmImageModify}" ContextMenuOpening="SourceImage_ContextMenuOpening">
-                <Grid.Style>
-                    <Style TargetType="Grid">
-                        <Setter Property="MaxHeight" Value="400"/>
-                        <Setter Property="MaxWidth" Value="400"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding V275StoredImage, Converter={StaticResource objectIsNull}}" Value="False">
-                                <Setter Property="MaxHeight" Value="200"/>
-                                <Setter Property="MaxWidth" Value="200"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding V275CurrentImage, Converter={StaticResource objectIsNull}}" Value="False">
-                                <Setter Property="MaxHeight" Value="200"/>
-                                <Setter Property="MaxWidth" Value="200"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding V5StoredImage, Converter={StaticResource objectIsNull}}" Value="False">
-                                <Setter Property="MaxHeight" Value="200"/>
-                                <Setter Property="MaxWidth" Value="200"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding V5CurrentImage, Converter={StaticResource objectIsNull}}" Value="False">
-                                <Setter Property="MaxHeight" Value="200"/>
-                                <Setter Property="MaxWidth" Value="200"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Grid.Style>
-
-                <Image x:Name="SourceImage" Source="{Binding SourceImage.ImageLow, Mode=OneTime}"
-                                RenderOptions.BitmapScalingMode="NearestNeighbor"/>
-
-                <Image Source="{Binding PrinterAreaOverlay, Mode=OneWay}" Stretch="None" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
-
-                <Label HorizontalAlignment="Right" VerticalAlignment="Top" Margin="3">
-                    <Label.Style>
-                        <Style TargetType="{x:Type Label}">
-                            <Setter Property="Content">
-                                <Setter.Value>
-                                    <Grid Background="White">
-                                        <iconPacks:PackIconMaterial Width="20" Height="20" Kind="Information" Foreground="Red"/>
-                                    </Grid>
-                                </Setter.Value>
-                            </Setter>
-                            <Setter Property="ToolTip" Value="{Binding SourceImage.Comment}"/>
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Setter Property="MaxHeight" Value="400"/>
+                            <Setter Property="MaxWidth" Value="400"/>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding SourceImage.Comment}" Value="{x:Null}">
-                                    <Setter Property="Content" Value=""/>
-                                    <Setter Property="ToolTip" Value="{x:Null}"/>
+                                <DataTrigger Binding="{Binding V275StoredImage, Converter={StaticResource objectIsNull}}" Value="False">
+                                    <Setter Property="MaxHeight" Value="200"/>
+                                    <Setter Property="MaxWidth" Value="200"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding V275CurrentImage, Converter={StaticResource objectIsNull}}" Value="False">
+                                    <Setter Property="MaxHeight" Value="200"/>
+                                    <Setter Property="MaxWidth" Value="200"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding V5StoredImage, Converter={StaticResource objectIsNull}}" Value="False">
+                                    <Setter Property="MaxHeight" Value="200"/>
+                                    <Setter Property="MaxWidth" Value="200"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding V5CurrentImage, Converter={StaticResource objectIsNull}}" Value="False">
+                                    <Setter Property="MaxHeight" Value="200"/>
+                                    <Setter Property="MaxWidth" Value="200"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
-                    </Label.Style>
+                    </Grid.Style>
 
-                </Label>
-            </Grid>
+                    <Image x:Name="SourceImage" Source="{Binding SourceImage.ImageLow, Mode=OneTime}"
+                                RenderOptions.BitmapScalingMode="NearestNeighbor"/>
 
-            <!--Details-->
+                    <Image Source="{Binding PrinterAreaOverlay, Mode=OneWay}" Stretch="None" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+
+                    <Label HorizontalAlignment="Right" VerticalAlignment="Top" Margin="3">
+                        <Label.Style>
+                            <Style TargetType="{x:Type Label}">
+                                <Setter Property="Content">
+                                    <Setter.Value>
+                                        <Grid Background="White">
+                                            <iconPacks:PackIconMaterial Width="20" Height="20" Kind="Information" Foreground="Red"/>
+                                        </Grid>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="ToolTip" Value="{Binding SourceImage.Comment}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SourceImage.Comment}" Value="{x:Null}">
+                                        <Setter Property="Content" Value=""/>
+                                        <Setter Property="ToolTip" Value="{x:Null}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Label.Style>
+
+                    </Label>
+                </Grid>
+
+            </DockPanel>
+
+        </DockPanel>
         
-        </DockPanel> 
-        
+        <!--Details-->
         <ContentControl Content="{Binding SourceImage}" ContentTemplate="{StaticResource imageDetailsTemplate}"/>
-
+        
     </DockPanel>
-
 </UserControl>

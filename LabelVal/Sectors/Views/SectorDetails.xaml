@@ -636,10 +636,10 @@
                                         <Style TargetType="{x:Type Border}">
                                             <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
                                             <Style.Triggers>
-                                                <DataTrigger Value="2" Binding="{Binding category, Mode=OneTime}">
+                                                <DataTrigger Value="2" Binding="{Binding Category, Mode=OneTime}">
                                                     <Setter Property="Background" Value="{DynamicResource SectorError_Brush}"/>
                                                 </DataTrigger>
-                                                <DataTrigger Value="1" Binding="{Binding category, Mode=OneTime}">
+                                                <DataTrigger Value="1" Binding="{Binding Category, Mode=OneTime}">
                                                     <Setter Property="Background" Value="{DynamicResource SectorWarning_Brush}"/>
                                                 </DataTrigger>
                                             </Style.Triggers>

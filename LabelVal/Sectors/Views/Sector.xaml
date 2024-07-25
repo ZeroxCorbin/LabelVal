@@ -349,8 +349,8 @@
                         <HierarchicalDataTemplate>
                             <DockPanel Margin="2">
                                 <TextBlock TextWrapping="Wrap">
-                                    <Run Text="{Binding Path=name}"/>
-                                    <Run Text="{Binding Path=data.subAlarm}"/>
+                                    <Run Text="{Binding Path=Name}"/>
+                                    <Run Text="{Binding Path=Data.SubAlarm}"/>
                                 </TextBlock>
                             </DockPanel>
                         </HierarchicalDataTemplate>

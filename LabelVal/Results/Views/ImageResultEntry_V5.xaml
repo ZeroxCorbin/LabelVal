@@ -46,7 +46,7 @@
             </Border.Style>
         </Border>
         <Border Style="{StaticResource groupBottom}"/>
-        
+
         <!--Images-->
         <DockPanel>
 
@@ -100,7 +100,7 @@
                         <Image Source="{Binding V5StoredImage.ImageLow, Mode=OneWay}" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
 
                         <Image Source="{Binding V5StoredImageOverlay, Mode=OneWay}" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
-                        
+
                     </Grid>
 
                 </DockPanel>
@@ -121,8 +121,8 @@
                 </DockPanel.Style>
 
                 <md:Card HorizontalAlignment="Left" DockPanel.Dock="Top" Margin="3,3,0,0"
-                     Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
-                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+                         Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
                     <DockPanel>
 
@@ -135,16 +135,13 @@
                         <Border Style="{StaticResource imageBar}" Margin="3,0"/>
 
                         <Button Command="{Binding ClearStoredCommand}" CommandParameter="V5" Width="28"
-                                ToolTip="Remove the stored sectors from the database, permanently.&#x0a;(CAUTION) This can not be undone!">
-                            <iconPacks:PackIconModern Kind="Delete"/>
-
+                                ToolTip="Remove the stored sectors from the database, permanently.&#x0a;(CAUTION) This can not be undone!"
+                                Content="{iconPacks:Modern Kind=Delete}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
                                     <Setter Property="Visibility" Value="Visible"/>
                                     <Style.Triggers>
-                                        <DataTrigger Value="0" Binding="{Binding V5StoredSectors.Count}">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                        </DataTrigger>
                                         <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
                                             <Setter Property="Visibility" Value="Collapsed"/>
                                         </DataTrigger>
@@ -153,13 +150,10 @@
                             </Button.Style>
                         </Button>
 
-
-                        <Button Grid.Column="2" Click="V5StoredSectors_Click" Width="28"
+                        <Button Click="V5StoredSectors_Click" Width="28"
                                 ToolTip="The all seeing eye! Click it...&#x0a;Hold Shift and click for more."
-                                HorizontalAlignment="Right">
-
-                            <iconPacks:PackIconModern Kind="Eye"/>
-
+                                Content="{iconPacks:Modern Kind=Eye}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
                             <Button.Style>
                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
                                     <Setter Property="Visibility" Value="Visible"/>
@@ -170,21 +164,20 @@
                                     </Style.Triggers>
                                 </Style>
                             </Button.Style>
-
                         </Button>
 
                     </DockPanel>
                 </md:Card>
 
                 <ScrollViewer Margin="3" x:Name="ScrollV5StoredSectors" VerticalScrollBarVisibility="Auto"
-                          mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
-                          ScrollChanged="ScrollV5StoredSectors_ScrollChanged">
+                              mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
+                              ScrollChanged="ScrollV5StoredSectors_ScrollChanged">
 
                     <DockPanel>
 
                         <GroupBox Margin="3" Padding="3"
-                            md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                            md:ColorZoneAssist.Mode="Custom">
+                                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                                md:ColorZoneAssist.Mode="Custom">
                             <GroupBox.Style>
                                 <Style TargetType="GroupBox" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
                                     <Setter Property="Visibility" Value="Visible"/>
@@ -199,17 +192,17 @@
                             <GroupBox.Header>
                                 <DockPanel Margin="-5">
                                     <Button Margin="6,0,3,0" Click="btnSaveImage_Click" Style="{StaticResource GroupHeaderCirlceButton}"
-                                        ToolTip="Save as image.">
+                                            ToolTip="Save as image.">
                                         <iconPacks:PackIconMaterial Kind="ContentSave" Height="14" Width="14"/>
                                     </Button>
 
                                     <Button Click="btnCopyImage_Click" Style="{StaticResource GroupHeaderCirlceButton}"
-                                        ToolTip="Copy image to clipboard as PNG.">
+                                            ToolTip="Copy image to clipboard as PNG.">
                                         <iconPacks:PackIconMaterial Kind="ContentCopy" Height="14" Width="14"/>
                                     </Button>
 
                                     <Button Click="btnCloseDetails_Click" Style="{StaticResource GroupHeaderCirlceButton}"
-                                        ToolTip="Close this." HorizontalAlignment="Right" Tag="v5Stored">
+                                            ToolTip="Close this." HorizontalAlignment="Right" Tag="v5Stored">
                                         <iconPacks:PackIconMaterial Kind="Close" Height="14" Width="14"/>
                                     </Button>
                                 </DockPanel>
@@ -277,14 +270,14 @@
                 </DockPanel.Style>
 
                 <md:Card HorizontalAlignment="Left" DockPanel.Dock="Top" Margin="3,3,0,0"
-                 Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
-                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+                         Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
                     <DockPanel>
 
                         <!--Title-->
                         <md:Card Background="{DynamicResource OrangeBrush1}"
-                             HorizontalAlignment="Left" Padding="4,1" Margin="3">
+                                HorizontalAlignment="Left" Padding="4,1" Margin="3">
                             <TextBlock Text="Current Image" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                         </md:Card>
 
@@ -314,7 +307,7 @@
                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
 
                         <Border Style="{StaticResource imageBar}" Margin="3,0"/>
-                        
+
                         <!--Save Image-->
                         <Button Command="{Binding SaveCommand}" CommandParameter="v5Current" Width="28"
                                 Style="{StaticResource MahApps.Styles.Button.Hamburger}" 
@@ -328,17 +321,17 @@
                 <DockPanel Margin="3" Background="Black" VerticalAlignment="Top" HorizontalAlignment="Left">
 
                     <Grid Margin="3" MouseDown="V5CurrentImage_MouseDown" MaxHeight="200" MaxWidth="200">
-                       
+
                         <Image Source="{Binding V5CurrentImage.ImageLow, Mode=OneWay}" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
 
                         <Image Source="{Binding V5CurrentImageOverlay, Mode=OneWay}" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
-                        
+
                     </Grid>
-                    
+
                 </DockPanel>
-                
+
             </DockPanel>
-            
+
             <!--V5 Current Sectors-->
             <DockPanel>
                 <DockPanel.Style>
@@ -353,14 +346,14 @@
                 </DockPanel.Style>
 
                 <md:Card HorizontalAlignment="Left" DockPanel.Dock="Top" Margin="3,3,0,0"
-                     Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
-                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+                         Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
                     <DockPanel>
 
                         <!--Title-->
                         <md:Card Background="{DynamicResource OrangeBrush1}"
-                             HorizontalAlignment="Left" Padding="4,1" Margin="3">
+                                HorizontalAlignment="Left" Padding="4,1" Margin="3">
                             <TextBlock Text="Current Sectors" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                         </md:Card>
 
@@ -410,15 +403,15 @@
                 </md:Card>
 
                 <ScrollViewer x:Name="ScrollV5CurrentSectors"
-                        Margin="3" VerticalScrollBarVisibility="Auto"
-                        mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
-                        ScrollChanged="ScrollV5CurrentSectors_ScrollChanged">
+                            Margin="3" VerticalScrollBarVisibility="Auto"
+                            mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
+                            ScrollChanged="ScrollV5CurrentSectors_ScrollChanged">
 
                     <DockPanel>
 
                         <GroupBox Margin="3" Padding="3"
-                            md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                            md:ColorZoneAssist.Mode="Custom">
+                                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                                md:ColorZoneAssist.Mode="Custom">
                             <GroupBox.Style>
                                 <Style TargetType="GroupBox" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
                                     <Setter Property="Visibility" Value="Visible"/>
@@ -491,8 +484,8 @@
                 </DockPanel.Style>
 
                 <md:Card HorizontalAlignment="Left" DockPanel.Dock="Top" Margin="3,3,0,0"
-                     Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
-                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+                         Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
                     <DockPanel>
 
