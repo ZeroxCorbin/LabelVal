@@ -44,8 +44,8 @@ public partial class ImageEntry : ObservableRecipient
         get => GetPngBytes();
         set
         {
-            Image = BitmapImageUtilities.CreateBitmap(value);
-            ImageLow = BitmapImageUtilities.CreateBitmap(value, 400);
+            Image = BitmapImageUtilities.CreateBitmapImage(value);
+            ImageLow = BitmapImageUtilities.CreateBitmapImage(value, 400);
 
             UID = BitmapImageUtilities.ImageUID(Image);
         }
@@ -83,8 +83,8 @@ public partial class ImageEntry : ObservableRecipient
         TargetDpiHeight = targetDpiHeight;
         TargetDpiWidth = targetDpiWidth;
 
-        Image = BitmapImageUtilities.LoadBitmap(Path);
-        ImageLow = BitmapImageUtilities.LoadBitmap(Path, 400);
+        Image = BitmapImageUtilities.LoadBitmapImage(Path);
+        ImageLow = BitmapImageUtilities.LoadBitmapImage(Path, 400);
         UID = BitmapImageUtilities.ImageUID(Image);
 
         string cmt = Path.Replace(System.IO.Path.GetExtension(Path), ".txt");
@@ -100,7 +100,7 @@ public partial class ImageEntry : ObservableRecipient
     //This should only be used for a placeholder image
     public ImageEntry(string rollUID, byte[] placeholderImage)
     {
-        Image = BitmapImageUtilities.CreateBitmap(placeholderImage);
+        Image = BitmapImageUtilities.CreateBitmapImage(placeholderImage);
         UID = ImageUtilities.ImageUID(placeholderImage);
         RollUID = rollUID;
         IsPlaceholder = true;
@@ -111,8 +111,8 @@ public partial class ImageEntry : ObservableRecipient
         TargetDpiWidth = targetDpiWidth;
         TargetDpiHeight = targetDpiHeight != 0 ? targetDpiHeight : targetDpiWidth;
 
-        Image = BitmapImageUtilities.CreateBitmap(image);
-        ImageLow = BitmapImageUtilities.CreateBitmap(image, 400);
+        Image = BitmapImageUtilities.CreateBitmapImage(image);
+        ImageLow = BitmapImageUtilities.CreateBitmapImage(image, 400);
         UID = ImageUtilities.ImageUID(image);
         RollUID = rollUID;
 
@@ -153,7 +153,7 @@ public partial class ImageEntry : ObservableRecipient
 
         int tDpi = dpi == 0 ? TargetDpiWidth : dpi;
 
-        byte[] bmp = BitmapImageUtilities.ImageToBytesBMP(Image);
+        byte[] bmp = BitmapImageUtilities.ImageToBytes(Image, false);
 
         if (dpi != 0)
             ImageUtilities.SetBitmapDPI(bmp, (int)Image.DpiX);
@@ -161,5 +161,5 @@ public partial class ImageEntry : ObservableRecipient
         return bmp;
     }
 
-    public byte[] GetPngBytes() => Image != null ? BitmapImageUtilities.ImageToBytesPNG(Image) : null;
+    public byte[] GetPngBytes() => Image != null ? BitmapImageUtilities.ImageToBytes(Image) : null;
 }

@@ -3,9 +3,11 @@
                     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
                     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                    
+                    xmlns:local="clr-namespace:LabelVal.Main.Views"
                     xmlns:viewModels="clr-namespace:LabelVal.Main.ViewModels"
                     
-                    xmlns:loc="clr-namespace:LabelVal.Localization"
+                     xmlns:loc="clr-namespace:LabelVal.Localization"
                     
                     xmlns:printer="clr-namespace:LabelVal.Printer.Views"
                     xmlns:printerVm="clr-namespace:LabelVal.Printer.ViewModels"
@@ -64,8 +66,9 @@
     </DataTemplate>
 
     <!--Results Databases-->
-    <DataTemplate x:Key="imageRDMenuItem">
-        <DockPanel>
+    <DataTemplate x:Key="imageRDMenuItem" DataType="{x:Type resultsVm:ImageResultsDatabases}">
+        <!--DataContext must be set to Content here.-->
+        <DockPanel DataContext="{Binding Content}">
 
             <Border Style="{StaticResource hamMenuBottomBar}"/>
 
@@ -98,9 +101,9 @@
                     <TextBlock Margin="6,3" HorizontalAlignment="Left" VerticalAlignment="Top" TextWrapping="Wrap">
                         <TextBlock.Style>
                             <Style TargetType="TextBlock" BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}">
-                                <Setter Property="Text" Value="{Binding Content.SelectedDatabase.FileName}"/>
+                                <Setter Property="Text" Value="{Binding SelectedDatabase.FileName}"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Content.SelectedDatabase, Converter={StaticResource objectIsNull}}" Value="True">
+                                    <DataTrigger Binding="{Binding SelectedDatabase, Converter={StaticResource objectIsNull}}" Value="True">
                                         <Setter Property="Text" Value="NO DATABASE SELECTED"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -118,12 +121,12 @@
 
                                 <Style.Triggers>
 
-                                    <DataTrigger Binding="{Binding Content.SelectedDatabase.IsLocked}" Value="True">
+                                    <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
                                         <Setter Property="Kind" Value="Lock"/>
                                         <Setter Property="ToolTip" Value="Database is locked."/>
                                     </DataTrigger>
 
-                                    <DataTrigger Binding="{Binding Content.SelectedDatabase.IsPermLocked}" Value="True">
+                                    <DataTrigger Binding="{Binding SelectedDatabase.IsPermLocked}" Value="True">
                                         <Setter Property="Kind" Value="DatabaseLock"/>
                                         <Setter Property="ToolTip" Value="Database is premanently locked."/>
                                     </DataTrigger>
@@ -138,8 +141,9 @@
     </DataTemplate>
 
     <!--Run-->
-    <DataTemplate x:Key="runMenuItem">
-        <DockPanel>
+    <DataTemplate x:Key="runMenuItem" DataType="{x:Type runVm:RunControl}">
+        <!--DataContext must be set to Content here.-->
+        <DockPanel DataContext="{Binding Content}">
             <Border Style="{StaticResource hamMenuBottomBar}"/>
 
             <DockPanel Width="48" Height="48">
@@ -151,49 +155,42 @@
 
             <DockPanel Margin="10,0" HorizontalAlignment="Stretch" VerticalAlignment="Center">
 
-                <mah:NumericUpDown Value="{Binding Content.LoopCount}" Minimum="1" Maximum="999" Interval="1" Width="78" Height="30" HorizontalAlignment="Center"/>
+                <mah:NumericUpDown Value="{Binding LoopCount}" Minimum="1" Maximum="999" Interval="1" Width="78" Height="30" HorizontalAlignment="Center"/>
 
-                <Button Command="{Binding Content.StartStopCommand}" Width="36" Height="36">
-                    <Button.Style>
-                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
-                            <Setter Property="IsEnabled" Value="True"/>
+                <Grid HorizontalAlignment="Left">
+                    
+                    <Button Command="{Binding StartStopCommand}" Width="36" Height="36">
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
+                                <Setter Property="IsEnabled" Value="True"/>
+                                <Setter Property="Content" Value="{iconPacks:Material Kind=Play, Width=24, Height=24}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Value="False" Binding="{Binding SelectedNode.IsLoggedIn_Control}">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                    <DataTrigger Value="Running" Binding="{Binding RunController.State}">
+                                        <Setter Property="Content" Value="{iconPacks:Material Kind=Stop, Width=24, Height=24}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
 
-                            <Setter Property="Content">
-                                <Setter.Value>
-                                    <iconPacks:PackIconMaterial Kind="Play" Width="24" Height="24"/>
-                                </Setter.Value>
-                            </Setter>
+                    <mah:ProgressRing Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" Width="36" Height="36">
+                        <mah:ProgressRing.Style>
+                            <Style TargetType="{x:Type mah:ProgressRing}">
+                                <Setter Property="IsActive" Value="False"/>
+                                <Style.Triggers>
+                                    <DataTrigger Value="Running" Binding="{Binding RunController.State}">
+                                        <Setter Property="IsActive" Value="True"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </mah:ProgressRing.Style>
+                    </mah:ProgressRing>
+                </Grid>
 
-                            <Style.Triggers>
-                                <DataTrigger Value="False" Binding="{Binding Content.SelectedNode.IsLoggedIn_Control}">
-                                    <Setter Property="IsEnabled" Value="False"/>
-                                </DataTrigger>
-
-                                <DataTrigger Value="Running" Binding="{Binding Content.RunController.State}">
-                                    <Setter Property="Content">
-                                        <Setter.Value>
-                                            <iconPacks:PackIconMaterial Kind="Stop" Width="36" Height="36"/>
-                                        </Setter.Value>
-                                    </Setter>
-                                </DataTrigger>
-
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
-
-                <mah:ProgressRing Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" Width="36" Height="36">
-                    <mah:ProgressRing.Style>
-                        <Style TargetType="{x:Type mah:ProgressRing}">
-                            <Setter Property="IsActive" Value="False"/>
-                            <Style.Triggers>
-                                <DataTrigger Value="Running" Binding="{Binding Content.RunController.State}">
-                                    <Setter Property="IsActive" Value="True"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </mah:ProgressRing.Style>
-                </mah:ProgressRing>
+                <Button Command="{Binding OpenRunWindowCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"/>
             </DockPanel>
 
         </DockPanel>
@@ -225,7 +222,7 @@
 
                 <TextBlock Text="{Binding Label}" VerticalAlignment="Center" Margin="10,0,0,0"/>
             </DockPanel>
-            
+
             <DockPanel>
                 <DockPanel.Style>
                     <Style TargetType="DockPanel">
@@ -330,7 +327,7 @@
                 </DockPanel.Style>
 
                 <L95xx:Verifier IsDocked="True" DataContext="{Binding Content.SelectedVerifier}"/>
-                
+
             </DockPanel>
         </DockPanel>
     </DataTemplate>

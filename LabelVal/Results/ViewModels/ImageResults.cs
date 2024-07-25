@@ -187,7 +187,7 @@ public partial class ImageResults : ObservableRecipient,
     [RelayCommand]
     private void AddV5Image()
     {
-        byte[] bees = BitmapImageUtilities.ImageToBytesPNG(BitmapImageUtilities.CreateRandomBitmapImage(50, 50));
+        byte[] bees = BitmapImageUtilities.ImageToBytes(BitmapImageUtilities.CreateRandomBitmapImage(50, 50));
         ImageEntry imagEntry = SelectedImageRoll.GetNewImageEntry(bees);
         imagEntry.IsPlaceholder = true;
         imagEntry.IsNew = true;
