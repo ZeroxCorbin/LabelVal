@@ -12,6 +12,7 @@
                 xmlns:imageRollConverters="clr-namespace:LabelVal.ImageRolls.Converters"
              xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
                 xmlns:converters="clr-namespace:LabelVal.Converters"
+             xmlns:databases="clr-namespace:LabelVal.Run.Databases"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=viewModels:RunDatabases}">
     <UserControl.Resources>
@@ -81,7 +82,7 @@
                 </ListView.ItemContainerStyle>
 
                 <ListView.ItemTemplate>
-                    <DataTemplate>
+                    <DataTemplate DataType="{x:Type databases:RunEntry}">
                         <DockPanel Margin="5">
                             <Border Style="{StaticResource groupLeft}" Margin="0,0,6,0" Background="{DynamicResource MahApps.Brushes.Accent2}"/>
                             <Border Style="{StaticResource groupBottom}" Margin="-6,3,0,0" Background="{DynamicResource MahApps.Brushes.Accent2}"/>
@@ -94,9 +95,12 @@
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
 
-                                <iconPacks:PackIconMaterial Kind="Run" VerticalAlignment="Center" Margin="0,3,6,0">
+                                <TextBlock Grid.ColumnSpan="2" Text="{Binding StartDateTime}" Margin="3"/>
+                                
+                                <iconPacks:PackIconMaterial Grid.Row="1" Kind="Run" VerticalAlignment="Center" Margin="0,3,6,0">
                                     <iconPacks:PackIconMaterial.Style>
                                         <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
                                             <Setter Property="Foreground" Value="{DynamicResource CB_Green}"/>
@@ -110,17 +114,18 @@
                                     </iconPacks:PackIconMaterial.Style>
                                 </iconPacks:PackIconMaterial>
 
-                                <DockPanel Grid.Row="1">
+                                <DockPanel Grid.Row="2">
                                     <TextBlock Text="{Binding Loops}"/>
                                     <TextBlock Text="/"/>
                                     <TextBlock Text="{Binding CompletedLoops}"/>
                                 </DockPanel>
-        
-                                <md:Card Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3,0" 
+
+                                <md:Card Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3,0" 
                                    Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
                                    Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}">
 
                                     <DockPanel>
+                                        
                                         <TextBlock Text="{Binding ImageRollName}" TextWrapping="Wrap" Margin="10,3">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock" BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}">
@@ -151,7 +156,7 @@
 
                                 </md:Card>
 
-                                <DockPanel Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left">
+                                <DockPanel Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left">
 
                                     <TextBlock Margin="6,0" VerticalAlignment="Center">
                                         <TextBlock.Background>
@@ -173,7 +178,7 @@
                                         </TextBlock.Style>
                                     </TextBlock>
 
-                                    <iconPacks:PackIconMaterial Margin="3" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                    <!--<iconPacks:PackIconMaterial Margin="3" HorizontalAlignment="Left" VerticalAlignment="Center">
                                         <iconPacks:PackIconMaterial.Style>
                                             <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
                                                 <Setter Property="Kind" Value="FormatListNumbered"/>
@@ -187,7 +192,7 @@
                                                 </Style.Triggers>
                                             </Style>
                                         </iconPacks:PackIconMaterial.Style>
-                                    </iconPacks:PackIconMaterial>
+                                    </iconPacks:PackIconMaterial>-->
 
                                 </DockPanel>
                             </Grid>

@@ -26,18 +26,30 @@
                     <Border Style="{StaticResource imageBar}"/>
 
                     <DockPanel>
-                        <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Left">
-                            <DockPanel.Background>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                    <GradientStop Color="{DynamicResource MahApps.Colors.Accent3}" Offset="0"/>
-                                    <GradientStop Color="{DynamicResource MahApps.Colors.HamburgerMenu}" Offset="1"/>
-                                </LinearGradientBrush>
-                            </DockPanel.Background>
 
-                            <TextBlock DockPanel.Dock="Top" Margin="6,0,6,3" Text="Run History" Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"/>
-                            <Border Style="{StaticResource imageBarHor}"/>
+                        <DockPanel DockPanel.Dock="Top" >
+
+                            <DockPanel HorizontalAlignment="Left">
+                                <DockPanel.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="{DynamicResource MahApps.Colors.Accent3}" Offset="0"/>
+                                        <GradientStop Color="{DynamicResource MahApps.Colors.HamburgerMenu}" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </DockPanel.Background>
+
+                                <TextBlock DockPanel.Dock="Top" Margin="6,0,6,3" Text="Run History" Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"/>
+                                
+                                <Border Style="{StaticResource imageBarHor}"/>
+
+                            </DockPanel>
+
+                            <Button Click="btnCollapseContent" Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                VerticalAlignment="Top" HorizontalAlignment="Right" Margin="3"
+                                Content="{iconPacks:Material Kind=ArrowCollapseLeft}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
+
                         </DockPanel>
-
+                        
                         <DockPanel>
 
                             <Button Command="{Binding RunDatabases.RefreshAllCommand}" Width="48" 
@@ -47,6 +59,7 @@
                                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
 
                         </DockPanel>
+                        
                     </DockPanel>
                 </DockPanel>
             </md:Card>
