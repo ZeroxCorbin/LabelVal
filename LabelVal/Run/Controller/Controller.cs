@@ -37,7 +37,7 @@ public partial class Controller : ObservableObject
 
         LoopCount = loopCount;
 
-        RunEntry = new RunEntry(RunDatabase, ImageRollEntry.SelectedStandard, ImageRollEntry.SelectedGS1Table, v275Node.Product.part, v275Node.Details.cameraMAC, LoopCount);
+        RunEntry = new RunEntry(RunDatabase, ImageRollEntry, v275Node.Product.part, v275Node.Details.cameraMAC, LoopCount);
 
         if (!OpenDatabase() || !UpdateRunEntry())
             return false;
@@ -92,9 +92,6 @@ public partial class Controller : ObservableObject
                     }
 
                     wasLoop = CurrentLoopCount;
-
-                    RunEntry.CompletedLoops = CurrentLoopCount - 1;
-                    UpdateRunEntry();
 
                     LogInfo($"Run: Starting Loop {CurrentLoopCount.ToString()}");
                 }
@@ -162,6 +159,8 @@ public partial class Controller : ObservableObject
                 RunDatabase.InsertOrReplace(stored);
                 RunDatabase.InsertOrReplace(current);
             }
+
+            RunEntry.CompletedLoops = CurrentLoopCount;
         }
 
         RunEntry.EndTime = DateTime.Now.Ticks;
@@ -195,7 +194,6 @@ public partial class Controller : ObservableObject
     {
         if (state is RunStates.Complete or RunStates.Stopped or RunStates.Error)
         {
-
             _ = CurrentLabelCount != 0 ? UpdateRunEntry() : ExistRunEntry() && RemoveRunEntry();
             RunDatabase?.Close();
         }

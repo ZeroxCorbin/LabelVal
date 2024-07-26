@@ -5,10 +5,58 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:LabelVal.Run.Views"
              xmlns:viewModels="clr-namespace:LabelVal.Run.ViewModels"
+                xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=viewModels:RunManager}">
     <DockPanel>
-        <local:RunDatabases DataContext="{Binding RunDatabases}"/>
+        <DockPanel VerticalAlignment="Top">
+
+            <md:Card DockPanel.Dock="Top" Height="68" Margin="3,3,0,0"
+                     Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+
+                <DockPanel>
+
+                    <DockPanel Width="48" Height="48">
+                        <iconPacks:PackIconMaterial Width="36" Height="36" Kind="Run" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    </DockPanel>
+
+                    <Border Style="{StaticResource imageBar}"/>
+
+                    <DockPanel>
+                        <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Left">
+                            <DockPanel.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="{DynamicResource MahApps.Colors.Accent3}" Offset="0"/>
+                                    <GradientStop Color="{DynamicResource MahApps.Colors.HamburgerMenu}" Offset="1"/>
+                                </LinearGradientBrush>
+                            </DockPanel.Background>
+
+                            <TextBlock DockPanel.Dock="Top" Margin="6,0,6,3" Text="Run History" Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"/>
+                            <Border Style="{StaticResource imageBarHor}"/>
+                        </DockPanel>
+
+                        <DockPanel>
+
+                            <Button Command="{Binding RunDatabases.RefreshAllCommand}" Width="48" 
+                                    ToolTip="Refresh Runs" HorizontalAlignment="Left"
+                                    Content="{iconPacks:Material Kind=Refresh, Width=24, Height=24}"
+                                    Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
+
+                        </DockPanel>
+                    </DockPanel>
+                </DockPanel>
+            </md:Card>
+
+            <DockPanel>
+                <Border Style="{StaticResource groupLeft}" />
+                <Border Style="{StaticResource groupBottom}"/>
+
+                <local:RunDatabases DataContext="{Binding RunDatabases}"/>
+            </DockPanel>
+        </DockPanel>
     </DockPanel>
 </UserControl>

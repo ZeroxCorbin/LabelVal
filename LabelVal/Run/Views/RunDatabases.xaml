@@ -77,31 +77,120 @@
                 </ListView.GroupStyle>
 
                 <ListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
-                        <Setter Property="DockPanel.Dock" Value="Top"/>
-                    </Style>
+                    <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}"/>
                 </ListView.ItemContainerStyle>
 
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <DockPanel>
+                        <DockPanel Margin="5">
+                            <Border Style="{StaticResource groupLeft}" Margin="0,0,6,0" Background="{DynamicResource MahApps.Brushes.Accent2}"/>
+                            <Border Style="{StaticResource groupBottom}" Margin="-6,3,0,0" Background="{DynamicResource MahApps.Brushes.Accent2}"/>
 
-                            <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3">
-                                <Border.Style>
-                                    <Style TargetType="{x:Type Border}">
-                                        <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Value="False" Binding="{Binding IsComplete}">
-                                                <Setter Property="Background" Value="{DynamicResource SectorError_Brush}"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Border.Style>
-                            </Border>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
 
-                            <TextBlock Text="{Binding StartDateTime}" Margin="10,3" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                                <iconPacks:PackIconMaterial Kind="Run" VerticalAlignment="Center" Margin="0,3,6,0">
+                                    <iconPacks:PackIconMaterial.Style>
+                                        <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
+                                            <Setter Property="Foreground" Value="{DynamicResource CB_Green}"/>
 
+                                            <Style.Triggers>
+                                                <DataTrigger Value="False" Binding="{Binding IsComplete}">
+                                                    <Setter Property="Background" Value="{DynamicResource SectorError_Brush}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </iconPacks:PackIconMaterial.Style>
+                                </iconPacks:PackIconMaterial>
 
+                                <DockPanel Grid.Row="1">
+                                    <TextBlock Text="{Binding Loops}"/>
+                                    <TextBlock Text="/"/>
+                                    <TextBlock Text="{Binding CompletedLoops}"/>
+                                </DockPanel>
+        
+                                <md:Card Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3,0" 
+                                   Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                                   Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}">
+
+                                    <DockPanel>
+                                        <TextBlock Text="{Binding ImageRollName}" TextWrapping="Wrap" Margin="10,3">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock" BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding ImageRollName}" Value="">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+
+                                        <TextBlock Text="{Binding GradingStandard, Converter={StaticResource GS1TableNamesConverter}, StringFormat={}Table {0}}"
+                                                                   Margin="10,3">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock" BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding GradingStandard}" Value="{x:Static sectors:StandardsTypes.GS1}">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </DockPanel>
+
+                                </md:Card>
+
+                                <DockPanel Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left">
+
+                                    <TextBlock Margin="6,0" VerticalAlignment="Center">
+                                        <TextBlock.Background>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="{DynamicResource MahApps.Colors.Accent2}" Offset="0"/>
+                                                <GradientStop Color="{DynamicResource MahApps.Colors.Accent4}" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </TextBlock.Background>
+
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock" BasedOn="{StaticResource MahApps.Styles.TextBlock}">
+                                                <Setter Property="Text" Value="{Binding TargetDPI, StringFormat={}{0} DPI}"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding TargetDPI}" Value="0">
+                                                        <Setter Property="Text" Value="Any DPI"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+
+                                    <iconPacks:PackIconMaterial Margin="3" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                        <iconPacks:PackIconMaterial.Style>
+                                            <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
+                                                <Setter Property="Kind" Value="FormatListNumbered"/>
+                                                <Setter Property="ToolTip" Value="Images are stored."/>
+
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding WriteSectorsBeforeProcess}" Value="True">
+                                                        <Setter Property="Kind" Value="PlaylistEdit"/>
+                                                        <Setter Property="ToolTip" Value="Images are rooted."/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </iconPacks:PackIconMaterial.Style>
+                                    </iconPacks:PackIconMaterial>
+
+                                </DockPanel>
+                            </Grid>
                         </DockPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>
@@ -182,49 +271,8 @@
 
     </UserControl.Resources>
 
-    <DockPanel VerticalAlignment="Top">
-
-        <md:Card DockPanel.Dock="Top" Height="48" Margin="3,3,0,0"
-                     Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
-                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
-
-            <DockPanel>
-
-                <DockPanel Width="48" Height="48">
-                    <iconPacks:PackIconMaterial Width="36" Height="36" Kind="Run" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                </DockPanel>
-
-                <Border Style="{StaticResource imageBar}"/>
-
-                <DockPanel>
-                    <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Left">
-                        <DockPanel.Background>
-                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                <GradientStop Color="{DynamicResource MahApps.Colors.Accent3}" Offset="0"/>
-                                <GradientStop Color="{DynamicResource MahApps.Colors.HamburgerMenu}" Offset="1"/>
-                            </LinearGradientBrush>
-                        </DockPanel.Background>
-
-                        <TextBlock DockPanel.Dock="Top" Margin="6,0,6,3" Text="Run History" Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"/>
-                        <Border Style="{StaticResource imageBarHor}"/>
-                    </DockPanel>
-
-                    <DockPanel>
-
-
-                    </DockPanel>
-                </DockPanel>
-            </DockPanel>
-        </md:Card>
-
-        <DockPanel>
-            <Border Style="{StaticResource groupLeft}" />
-            <Border Style="{StaticResource groupBottom}"/>
-
-            <mah:MetroTabControl ItemsSource="{Binding Groups, Source={StaticResource ResourceKey=cvsRunEntriesList}}"
-                                TabStripPlacement="Left" Style="{StaticResource MahApps.Styles.TabControl}"
-                                ItemContainerStyle="{StaticResource runEntryICS}"
-                                ItemTemplate="{StaticResource runEntryIT}"/>
-        </DockPanel>
-    </DockPanel>
+    <mah:MetroTabControl ItemsSource="{Binding Groups, Source={StaticResource ResourceKey=cvsRunEntriesList}}"
+                        TabStripPlacement="Left" Style="{StaticResource MahApps.Styles.TabControl}"
+                        ItemContainerStyle="{StaticResource runEntryICS}"
+                        ItemTemplate="{StaticResource runEntryIT}"/>
 </UserControl>
