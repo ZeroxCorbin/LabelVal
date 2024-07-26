@@ -47,7 +47,7 @@ namespace LabelVal.Main.ViewModels
                 {
                     return ImageResultsDatabases;
                 }
-                else if (hmi.Content is Run.ViewModels.RunControl)
+                else if (hmi.Content is Run.ViewModels.RunManager)
                 {
                     return Run;
                 }

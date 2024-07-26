@@ -36,7 +36,7 @@
         <results:ImageResultsDatabases/>
     </DataTemplate>
     <DataTemplate x:Key="runContent">
-        <Grid Visibility="Collapsed"/>
+        <run:RunManager/>
     </DataTemplate>
     <DataTemplate x:Key="v275Content">
         <v275:V275Manager/>
@@ -141,7 +141,7 @@
     </DataTemplate>
 
     <!--Run-->
-    <DataTemplate x:Key="runMenuItem" DataType="{x:Type runVm:RunControl}">
+    <DataTemplate x:Key="runMenuItem" DataType="{x:Type runVm:RunManager}">
         <!--DataContext must be set to Content here.-->
         <DockPanel DataContext="{Binding Content}">
             <Border Style="{StaticResource hamMenuBottomBar}"/>
@@ -158,7 +158,7 @@
                 <mah:NumericUpDown Value="{Binding LoopCount}" Minimum="1" Maximum="999" Interval="1" Width="78" Height="30" HorizontalAlignment="Center"/>
 
                 <Grid HorizontalAlignment="Left">
-                    
+
                     <Button Command="{Binding StartStopCommand}" Width="36" Height="36">
                         <Button.Style>
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
@@ -168,7 +168,7 @@
                                     <DataTrigger Value="False" Binding="{Binding SelectedNode.IsLoggedIn_Control}">
                                         <Setter Property="IsEnabled" Value="False"/>
                                     </DataTrigger>
-                                    <DataTrigger Value="Running" Binding="{Binding RunController.State}">
+                                    <DataTrigger Value="Running" Binding="{Binding QuickRunController.RunController.State}">
                                         <Setter Property="Content" Value="{iconPacks:Material Kind=Stop, Width=24, Height=24}"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -181,7 +181,7 @@
                             <Style TargetType="{x:Type mah:ProgressRing}">
                                 <Setter Property="IsActive" Value="False"/>
                                 <Style.Triggers>
-                                    <DataTrigger Value="Running" Binding="{Binding RunController.State}">
+                                    <DataTrigger Value="Running" Binding="{Binding QuickRunController.RunController.State}">
                                         <Setter Property="IsActive" Value="True"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -190,7 +190,10 @@
                     </mah:ProgressRing>
                 </Grid>
 
-                <Button Command="{Binding OpenRunWindowCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"/>
+                <Button Command="{Binding OpenRunWindowCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}" Width="36" Height="36"
+                        HorizontalAlignment="Left"
+                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                        Content="{iconPacks:PicolIcons Kind=ServerRun, Width=24, Height=24}"/>
             </DockPanel>
 
         </DockPanel>

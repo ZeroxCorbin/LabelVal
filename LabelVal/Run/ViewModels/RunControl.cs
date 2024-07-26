@@ -1,40 +1,49 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
-using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
+using LabelVal.Results.ViewModels;
 using LabelVal.V275.ViewModels;
+using Mysqlx.Crud;
 using System;
+using System.Collections.ObjectModel;
 
 namespace LabelVal.Run.ViewModels;
-public partial class RunControl : ObservableRecipient, IRecipient<PropertyChangedMessage<Node>>, IRecipient<PropertyChangedMessage<ImageRollEntry>>
+public partial class RunControl : ObservableObject
 {
-    public Controller RunController { get; } = new();
+    public Controller RunController { get;  } = new();
 
-    private Results.ViewModels.ImageResults ImageResults { get; }
+    public ObservableCollection<ImageResultEntry> ImageResultsList { get; private set; }
 
-    [ObservableProperty] private Node selectedNode;
-    [ObservableProperty] private ImageRollEntry selectedImageRoll;
+    public Node SelectedNode { get; private set; }
+    public ImageRollEntry SelectedImageRoll { get; private set; }
 
-    [ObservableProperty] private int loopCount = App.Settings.GetValue(nameof(LoopCount), 1, true);
-    partial void OnLoopCountChanged(int value) { App.Settings.SetValue(nameof(LoopCount), value); }
+    private int LoopCount { get; set; }
 
-    public RunControl(Results.ViewModels.ImageResults imageResults)
+    /// <summary>
+    /// If using this constructor, you must call Update before StartStop.
+    /// </summary>
+    public RunControl() { }
+    
+    public RunControl(int loopCount, ObservableCollection<ImageResultEntry> imageResults, ImageRollEntry imageRollEntry, Node node)
     {
-        ImageResults = imageResults;
-        IsActive = true;
-        RecieveAll();
+        LoopCount = loopCount;
+        ImageResultsList = imageResults;
+        SelectedNode = node;
+        SelectedImageRoll = imageRollEntry;
     }
 
-    private void RecieveAll()
+    public void Update(int loopCount, ObservableCollection<ImageResultEntry> imageResults, ImageRollEntry imageRollEntry, Node node)
     {
-        RequestMessage<Node> mes1 = new();
-        WeakReferenceMessenger.Default.Send(mes1);
-        SelectedNode = mes1.Response;
+        if(RunController.State == RunStates.Running)
+        {
+            LogDebug("Cannot update RunControl while running");
+            return;
+        }
 
-        RequestMessage<ImageRollEntry> mes3 = new();
-        WeakReferenceMessenger.Default.Send(mes3);
-        SelectedImageRoll = mes3.Response;
+        LoopCount = loopCount;
+        ImageResultsList = imageResults;
+        SelectedNode = node;
+        SelectedImageRoll = imageRollEntry;
     }
 
     [RelayCommand]
@@ -45,13 +54,13 @@ public partial class RunControl : ObservableRecipient, IRecipient<PropertyChange
 
         if (RunController.State == RunStates.Running)
         {
-            LogInfo($"Stopping Run: {SelectedImageRoll.Name}; {LoopCount.ToString()}");
+            LogInfo($"Stopping Run: {SelectedImageRoll.Name}; {LoopCount}");
             RunController.Stop();
         }
         else
         {
-            LogInfo($"Starting Run: {SelectedImageRoll.Name}; {LoopCount.ToString()}");
-            RunController.StartAsync(ImageResults.ImageResultsList, SelectedImageRoll, SelectedNode, LoopCount);
+            LogInfo($"Starting Run: {SelectedImageRoll.Name}; {LoopCount}");
+            RunController.StartAsync(ImageResultsList, SelectedImageRoll, SelectedNode, LoopCount);
         }
     }
 
@@ -63,11 +72,6 @@ public partial class RunControl : ObservableRecipient, IRecipient<PropertyChange
 
         RunController.Reset();
     }
-
-    #region Recieve Messages
-    public void Receive(PropertyChangedMessage<Node> message) => SelectedNode = message.NewValue;
-    public void Receive(PropertyChangedMessage<ImageRollEntry> message) => SelectedImageRoll = message.NewValue;
-    #endregion
 
     #region Logging
     private readonly Logging.Logger logger = new();

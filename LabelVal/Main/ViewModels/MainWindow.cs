@@ -38,7 +38,7 @@ public partial class MainWindow : ObservableRecipient, IRecipient<SystemMessages
     public V5.ViewModels.ScannerManager ScannerManager { get; }
     public V5.ViewModels.ScannerDetails ScannerDetails { get; }
 
-    public Run.ViewModels.RunControl RunControl { get; }
+    public Run.ViewModels.RunManager RunManager { get; }
 
     public LVS_95xx.ViewModels.VerifierManager VerifierManager { get; }
 
@@ -72,10 +72,12 @@ public partial class MainWindow : ObservableRecipient, IRecipient<SystemMessages
         ImageResultsDatabases = new Results.ViewModels.ImageResultsDatabases();
         ImageResults = new Results.ViewModels.ImageResults();
 
+        RunManager = new Run.ViewModels.RunManager(ImageResults);
+
         MenuItems =
         [
             new HamburgerMenuItem { Label = "Printer", Content = Printer, IsNotSelectable = true },
-            new HamburgerMenuItem { Label = "Run", Content = ImageResults.RunControl, IsNotSelectable = true },
+            new HamburgerMenuItem { Label = "Run", Content = RunManager },
             new HamburgerMenuItem { Label = "Results", Content = ImageResultsDatabases },
 
             new HamburgerMenuItem { Label = "V275", Content = V275Manager },

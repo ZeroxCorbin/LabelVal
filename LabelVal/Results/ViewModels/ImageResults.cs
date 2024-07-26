@@ -28,16 +28,13 @@ public partial class ImageResults : ObservableRecipient,
     IRecipient<PropertyChangedMessage<Node>>,
     IRecipient<PropertyChangedMessage<Databases.ImageResultsDatabase>>,
     IRecipient<PropertyChangedMessage<Scanner>>,
-    IRecipient<PropertyChangedMessage<PrinterSettings>>,
-    IRecipient<SystemMessages.ControlMessage>
+    IRecipient<PropertyChangedMessage<PrinterSettings>>
 {
     private class V275Repeat
     {
         public ImageResultEntry ImageResult { get; set; }
         public int RepeatNumber { get; set; } = -1;
     }
-
-    public RunControl RunControl { get; }
 
     private int PrintCount => App.Settings.GetValue<int>(nameof(PrintCount));
     private int LoopCount => App.Settings.GetValue(nameof(LoopCount), 1);
@@ -72,7 +69,6 @@ public partial class ImageResults : ObservableRecipient,
 
     public ImageResults()
     {
-        RunControl = new RunControl(this);
         IsActive = true;
         RecieveAll();
     }
@@ -779,14 +775,6 @@ public partial class ImageResults : ObservableRecipient,
         if (SelectedScanner != null)
         {
             //SelectedScanner.ScannerController.ConfigUpdate += ScannerController_ConfigUpdate;
-        }
-    }
-    public void Receive(SystemMessages.ControlMessage message)
-    {
-        if (message.Sender == RunControl)
-        {
-            if (message.Value == "StartRun")
-                _ = StartRun();
         }
     }
     #endregion

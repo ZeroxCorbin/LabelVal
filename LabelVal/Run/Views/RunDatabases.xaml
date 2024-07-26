@@ -6,11 +6,18 @@
              xmlns:local="clr-namespace:LabelVal.Run.Views"
                 xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                 xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+                xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                xmlns:sectors="clr-namespace:LabelVal.Sectors.Interfaces"
              xmlns:viewModels="clr-namespace:LabelVal.Run.ViewModels"
+                xmlns:imageRollConverters="clr-namespace:LabelVal.ImageRolls.Converters"
              xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+                xmlns:converters="clr-namespace:LabelVal.Converters"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=viewModels:RunDatabases}">
     <UserControl.Resources>
+        <converters:ContentGeneratorConverter x:Key="ContentGeneratorConverter"/>
+        <imageRollConverters:GS1TableNamesConverter x:Key="GS1TableNamesConverter"/>
+
         <CollectionViewSource x:Key="cvsRunEntriesList" Source="{Binding RunEntriesList}">
             <CollectionViewSource.SortDescriptions>
                 <componentmodel:SortDescription PropertyName="GradingStandard" Direction="Ascending"/>
@@ -26,69 +33,198 @@
             </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
 
-    </UserControl.Resources>
-    
-    <DockPanel>
+        <CollectionViewSource x:Key="cvsRunEntriesList_NoGroup" Source="{Binding RunEntriesList}">
+            <CollectionViewSource.SortDescriptions>
+                <componentmodel:SortDescription PropertyName="GradingStandard" Direction="Ascending"/>
+                <componentmodel:SortDescription PropertyName="CameraMAC" Direction="Ascending"/>
+                <componentmodel:SortDescription PropertyName="ProductPart" Direction="Ascending"/>
+                <componentmodel:SortDescription PropertyName="StartDateTime" Direction="Descending"/>
+                <!--<componentmodel:SortDescription PropertyName="Template.Top" Direction="Ascending"/>-->
+            </CollectionViewSource.SortDescriptions>
+            <CollectionViewSource.GroupDescriptions>
+                <PropertyGroupDescription PropertyName="CameraMAC"/>
+                <PropertyGroupDescription PropertyName="ProductPart"/>
+            </CollectionViewSource.GroupDescriptions>
+        </CollectionViewSource>
 
-
-        <ListView Style="{StaticResource MahApps.Styles.ListView}" MinWidth="200" ItemsSource="{Binding Source={StaticResource ResourceKey=cvsRunEntriesList}}" 
-                  SelectedItem="{Binding SelectedRunEntry}" BorderThickness="0">
-            <ListView.GroupStyle>
-                <GroupStyle>
-                    <GroupStyle.ContainerStyle>
-                        <Style TargetType="{x:Type GroupItem}">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type GroupItem}">
-                                        <Expander BorderThickness="0" Margin="0,1" md:ExpanderAssist.ExpanderButtonPosition="Start"
-                                                          Style="{StaticResource MahApps.Styles.Expander}"
+        <DataTemplate x:Key="imageRollItemTemplate_ListView">
+            <ListView Style="{StaticResource MaterialDesignListView}" MinWidth="200"
+                          ItemsSource="{Binding Source={StaticResource ResourceKey=cvsRunEntriesList_NoGroup}}" 
+                          SelectedItem="{Binding DataContext.SelectedRunEntry, RelativeSource={RelativeSource AncestorType=UserControl}}" BorderThickness="0">
+                <ListView.GroupStyle>
+                    <GroupStyle>
+                        <GroupStyle.ContainerStyle>
+                            <Style TargetType="{x:Type GroupItem}">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type GroupItem}">
+                                            <Expander BorderThickness="0" Margin="0,1" md:ExpanderAssist.ExpanderButtonPosition="Start"
+                                                          Style="{StaticResource MaterialDesignExpander}"
                                                           mah:HeaderedControlHelper.HeaderBackground="{DynamicResource MahApps.Brushes.Accent4}">
-                                            <Expander.Header>
-                                                <TextBlock Text="{Binding Name}" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
-                                            </Expander.Header>
+                                                <Expander.Header>
+                                                    <TextBlock Text="{Binding Name}" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                                                </Expander.Header>
 
-                                            <ItemsPresenter />
+                                                <ItemsPresenter />
 
-                                        </Expander>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
+                                            </Expander>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </GroupStyle.ContainerStyle>
+                    </GroupStyle>
+                </ListView.GroupStyle>
+
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
+                        <Setter Property="DockPanel.Dock" Value="Top"/>
+                    </Style>
+                </ListView.ItemContainerStyle>
+
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <DockPanel>
+
+                            <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3">
+                                <Border.Style>
+                                    <Style TargetType="{x:Type Border}">
+                                        <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Value="False" Binding="{Binding IsComplete}">
+                                                <Setter Property="Background" Value="{DynamicResource SectorError_Brush}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                            </Border>
+
+                            <TextBlock Text="{Binding StartDateTime}" Margin="10,3" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+
+
+                        </DockPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </DataTemplate>
+
+        <DataTemplate x:Key="runEntryContent">
+            <ContentControl ContentTemplate="{StaticResource imageRollItemTemplate_ListView}"
+                            Content="{Binding Items}"/>
+        </DataTemplate>
+
+        <DataTemplate x:Key="runEntryIT">
+            <DockPanel Background="White">
+                <Image Height="36" Width="36" >
+                    <Image.Style>
+                        <Style TargetType="Image">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.GS1}">
+                                    <Setter Property="Source" Value="/Assets/Images/GS1.png"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15415_15416}">
+                                    <Setter Property="Source" Value="/Assets/Images/all-codes.png"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15416}">
+                                    <Setter Property="Source" Value="/Assets/Images/barcode-2d.png"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15415}">
+                                    <Setter Property="Source" Value="/Assets/Images/barcode-1d1.png"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.OCR_OCV}">
+                                    <Setter Property="Source" Value="/Assets/Images/OCR.png"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.None}">
+                                    <Setter Property="Source" Value="/Assets/Images/all-codes.png"/>
+                                </DataTrigger>
+                            </Style.Triggers>
                         </Style>
-                    </GroupStyle.ContainerStyle>
-                </GroupStyle>
-            </ListView.GroupStyle>
-            
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
-                    <Setter Property="DockPanel.Dock" Value="Top"/>
-                </Style>
-            </ListView.ItemContainerStyle>
+                    </Image.Style>
+                </Image>
+            </DockPanel>
+        </DataTemplate>
 
+        <Style x:Key="runEntryICS" TargetType="TabItem" BasedOn="{StaticResource MahApps.Styles.TabItem}">
 
-            <ListView.ItemTemplate>
-                <DataTemplate>
+            <!--This generates the content for the tab item-->
+            <Setter Property="Content" Value="{Binding Converter={StaticResource ContentGeneratorConverter}, ConverterParameter={StaticResource runEntryContent}}"/>
+
+            <Setter Property="Background" Value="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"/>
+            <Setter Property="BorderThickness" Value="1,1,1,0"/>
+            <Setter Property="Margin" Value="0"/>
+
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=TabItem}}" Value="{x:Static sectors:StandardsTypes.GS1}">
+                    <Setter Property="Background" Value="{DynamicResource MahApps.Colors.Accent3}"/>
+                </DataTrigger>
+
+                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.GS1}">
+                    <Setter Property="ToolTip" Value="GS1"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15415_15416}">
+                    <Setter Property="ToolTip" Value="ISO/IEC 15416-15415"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15416}">
+                    <Setter Property="ToolTip" Value="ISO/IEC 15416"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15415}">
+                    <Setter Property="ToolTip" Value="ISO/IEC 15415"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.OCR_OCV}">
+                    <Setter Property="ToolTip" Value="OCR/OCV"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.None}">
+                    <Setter Property="ToolTip" Value="None"/>
+                </DataTrigger>
+            </Style.Triggers>
+
+        </Style>
+
+    </UserControl.Resources>
+
+    <DockPanel VerticalAlignment="Top">
+
+        <md:Card DockPanel.Dock="Top" Height="48" Margin="3,3,0,0"
+                     Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+
+            <DockPanel>
+
+                <DockPanel Width="48" Height="48">
+                    <iconPacks:PackIconMaterial Width="36" Height="36" Kind="Run" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                </DockPanel>
+
+                <Border Style="{StaticResource imageBar}"/>
+
+                <DockPanel>
+                    <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Left">
+                        <DockPanel.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="{DynamicResource MahApps.Colors.Accent3}" Offset="0"/>
+                                <GradientStop Color="{DynamicResource MahApps.Colors.HamburgerMenu}" Offset="1"/>
+                            </LinearGradientBrush>
+                        </DockPanel.Background>
+
+                        <TextBlock DockPanel.Dock="Top" Margin="6,0,6,3" Text="Run History" Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"/>
+                        <Border Style="{StaticResource imageBarHor}"/>
+                    </DockPanel>
+
                     <DockPanel>
-
-                        <Border BorderBrush="{DynamicResource MahApps.Brushes.Accent}" BorderThickness="1" Height="10" Width="10" CornerRadius="3">
-                            <Border.Style>
-                                <Style TargetType="{x:Type Border}">
-                                    <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Value="False" Binding="{Binding IsComplete}">
-                                            <Setter Property="Background" Value="{DynamicResource SectorError_Brush}"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Border.Style>
-                        </Border>
-                        
-                        <TextBlock Text="{Binding StartDateTime}" Margin="10,3" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
 
 
                     </DockPanel>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+                </DockPanel>
+            </DockPanel>
+        </md:Card>
 
+        <DockPanel>
+            <Border Style="{StaticResource groupLeft}" />
+            <Border Style="{StaticResource groupBottom}"/>
+
+            <mah:MetroTabControl ItemsSource="{Binding Groups, Source={StaticResource ResourceKey=cvsRunEntriesList}}"
+                                TabStripPlacement="Left" Style="{StaticResource MahApps.Styles.TabControl}"
+                                ItemContainerStyle="{StaticResource runEntryICS}"
+                                ItemTemplate="{StaticResource runEntryIT}"/>
+        </DockPanel>
     </DockPanel>
 </UserControl>
