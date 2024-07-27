@@ -16,6 +16,7 @@
             mc:Ignorable="d" Loaded="UserControl_Loaded">
 
     <UserControl.Resources>
+        <converters:ObjectIsNull x:Key="objectIsNull"/>
         <converters:StringToUpperSpacedConverter x:Key="stringToUpper"/>
         <v275Converters:V275_OCMatchModeToString x:Key="matchModeToString"/>
         <v275Converters:V275_GS1FormattedOutput x:Key="gs1FormattedOutput"/>
@@ -197,26 +198,32 @@
 
                                     <DataTrigger Value="verify1D" Binding="{Binding Report.Type, Mode=OneTime}">
                                         <Setter Property="Text" Value="{Binding Report.DecodeText, Converter={StaticResource shortenString}, Mode=OneTime}"/>
+                                        <Setter Property="ToolTip" Value="{Binding Report.DecodeText, Mode=OneTime}"/>
                                     </DataTrigger>
 
                                     <DataTrigger Value="verify2D" Binding="{Binding Report.Type, Mode=OneTime}">
                                         <Setter Property="Text" Value="{Binding Report.DecodeText, Converter={StaticResource shortenString}, Mode=OneTime}"/>
+                                        <Setter Property="ToolTip" Value="{Binding Report.DecodeText, Mode=OneTime}"/>
                                     </DataTrigger>
 
                                     <DataTrigger Value="ocr" Binding="{Binding Report.Type, Mode=OneTime}">
                                         <Setter Property="Text" Value="{Binding Report.Text, Converter={StaticResource shortenString}, Mode=OneTime}"/>
+                                        <Setter Property="ToolTip" Value="{Binding Report.Text, Mode=OneTime}"/>
                                     </DataTrigger>
 
                                     <DataTrigger Value="ocv" Binding="{Binding Report.Type, Mode=OneTime}">
                                         <Setter Property="Text" Value="{Binding Report.Text, Converter={StaticResource shortenString}, Mode=OneTime}"/>
+                                        <Setter Property="ToolTip" Value="{Binding Report.Text, Mode=OneTime}"/>
                                     </DataTrigger>
 
                                     <DataTrigger Value="blemish" Binding="{Binding Report.Type, Converter={StaticResource shortenString}, Mode=OneTime}">
                                         <Setter Property="Text" Value=""/>
+                                        <Setter Property="ToolTip" Value=""/>
                                     </DataTrigger>
 
                                     <DataTrigger Value="unknown" Binding="{Binding Report.Type, Mode=OneTime}">
                                         <Setter Property="Text" Value="{Binding Report.DecodeText, Converter={StaticResource shortenString}, Mode=OneTime}"/>
+                                        <Setter Property="ToolTip" Value="{Binding Report.DecodeText, Mode=OneTime}"/>
                                     </DataTrigger>
 
                                 </Style.Triggers>
@@ -227,18 +234,21 @@
                 </DockPanel>
 
                 <!--GS1 AI Button-->
-                <Button Margin="0,19,0,0" Name="btnGS1DecodeText" Click="btnGS1DecodeText_Click" VerticalAlignment="Top">
+                <Button Margin="0,19,0,0" Name="btnGS1DecodeText" Click="btnGS1DecodeText_Click" VerticalAlignment="Top"
+                        Content="{iconPacks:Material Kind=ArrowDownBoldBox}">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Chromeless}">
                             <Setter Property="Visibility" Value="Visible"/>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Report.GS1Results, FallbackValue={x:Null}}" Value="{x:Null}">
+                                <DataTrigger Binding="{Binding Report.GS1Results, Converter={StaticResource objectIsNull}}" Value="True">
+                                    <Setter Property="Visibility" Value="Hidden"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Report.FormattedOut}" Value="">
                                     <Setter Property="Visibility" Value="Hidden"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </Button.Style>
-                    <iconPacks:PackIconMaterial Kind="ArrowDownBoldBox"/>
                 </Button>
 
                 <!--Overall Grade-->
