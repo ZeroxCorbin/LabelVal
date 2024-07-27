@@ -37,7 +37,9 @@ public partial class ImageResults : ObservableRecipient,
     }
 
     private int PrintCount => App.Settings.GetValue<int>(nameof(PrintCount));
-    private int LoopCount => App.Settings.GetValue(nameof(LoopCount), 1);
+
+    [ObservableProperty] private int imagesMaxHeight = App.Settings.GetValue(nameof(ImagesMaxHeight), 200, true);
+    partial void OnImagesMaxHeightChanged(int value) => App.Settings.SetValue(nameof(ImagesMaxHeight), value);
 
     public ObservableCollection<ImageResultEntry> ImageResultsList { get; } = [];
 

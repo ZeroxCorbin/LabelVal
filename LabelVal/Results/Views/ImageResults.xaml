@@ -129,6 +129,7 @@
 
                             </Button>
 
+                            <Slider Value="{Binding ImagesMaxHeight}" Minimum="100" Maximum="400" Width="100"/>
                         </DockPanel>
                     </DockPanel>
                 </DockPanel>

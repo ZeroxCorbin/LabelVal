@@ -31,6 +31,17 @@
     </UserControl.Resources>
     
     <DockPanel>
+        <DockPanel.Style>
+            <Style TargetType="DockPanel">
+                <Setter Property="Visibility" Value="Visible"/>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsPlaceholder}" Value="True">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </DockPanel.Style>
+        
         <!--Source Image-->
         <DockPanel>
 
@@ -70,27 +81,27 @@
 
                 <!--Images-->
                 <Grid Margin="3" MouseDown="SourceImage_MouseDown" 
-                  ContextMenu="{StaticResource cmImageModify}" ContextMenuOpening="SourceImage_ContextMenuOpening">
+                        ContextMenu="{StaticResource cmImageModify}" ContextMenuOpening="SourceImage_ContextMenuOpening">
                     <Grid.Style>
                         <Style TargetType="Grid">
                             <Setter Property="MaxHeight" Value="400"/>
                             <Setter Property="MaxWidth" Value="400"/>
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding V275StoredImage, Converter={StaticResource objectIsNull}}" Value="False">
-                                    <Setter Property="MaxHeight" Value="200"/>
-                                    <Setter Property="MaxWidth" Value="200"/>
+                                    <Setter Property="MaxHeight" Value="{Binding ImagesMaxHeight}"/>
+                                    <Setter Property="MaxWidth" Value="{Binding ImagesMaxHeight}"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding V275CurrentImage, Converter={StaticResource objectIsNull}}" Value="False">
-                                    <Setter Property="MaxHeight" Value="200"/>
-                                    <Setter Property="MaxWidth" Value="200"/>
+                                    <Setter Property="MaxHeight" Value="{Binding ImagesMaxHeight}"/>
+                                    <Setter Property="MaxWidth" Value="{Binding ImagesMaxHeight}"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding V5StoredImage, Converter={StaticResource objectIsNull}}" Value="False">
-                                    <Setter Property="MaxHeight" Value="200"/>
-                                    <Setter Property="MaxWidth" Value="200"/>
+                                    <Setter Property="MaxHeight" Value="{Binding ImagesMaxHeight}"/>
+                                    <Setter Property="MaxWidth" Value="{Binding ImagesMaxHeight}"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding V5CurrentImage, Converter={StaticResource objectIsNull}}" Value="False">
-                                    <Setter Property="MaxHeight" Value="200"/>
-                                    <Setter Property="MaxWidth" Value="200"/>
+                                    <Setter Property="MaxHeight" Value="{Binding ImagesMaxHeight}"/>
+                                    <Setter Property="MaxWidth" Value="{Binding ImagesMaxHeight}"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>

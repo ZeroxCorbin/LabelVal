@@ -10,6 +10,7 @@ using Microsoft.Win32;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing.Printing;
@@ -37,16 +38,15 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
 
     public bool IsPlaceholder => SourceImage.IsPlaceholder;
 
+    [ObservableProperty]private int imagesMaxHeight = App.Settings.GetValue(nameof(ImagesMaxHeight), 200, true);
+
     [ObservableProperty] private bool showPrinterAreaOverSource;
     [ObservableProperty] private DrawingImage printerAreaOverlay;
     partial void OnShowPrinterAreaOverSourceChanged(bool value) => PrinterAreaOverlay = ShowPrinterAreaOverSource ? CreatePrinterAreaOverlay(true) : null;
 
     [ObservableProperty] private PrinterSettings selectedPrinter;
     [ObservableProperty] private ImageResultsDatabase selectedDatabase;
-    partial void OnSelectedPrinterChanged(PrinterSettings value)
-    {
-        PrinterAreaOverlay = ShowPrinterAreaOverSource ? CreatePrinterAreaOverlay(true) : null;
-    }
+    partial void OnSelectedPrinterChanged(PrinterSettings value) => PrinterAreaOverlay = ShowPrinterAreaOverSource ? CreatePrinterAreaOverlay(true) : null;
     partial void OnSelectedDatabaseChanged(Databases.ImageResultsDatabase value) => GetStored();
 
     [ObservableProperty] private Sectors.Interfaces.ISector selectedSector;
@@ -74,7 +74,11 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         IsActive = true;
         RecieveAll();
 
-       // SourceImage.InitPrinterVariables(SelectedPrinter);
+        App.Settings.PropertyChanged += (s, e) =>
+        {
+            if (e.PropertyName == nameof(ImagesMaxHeight))
+                ImagesMaxHeight = App.Settings.GetValue(nameof(ImagesMaxHeight), 200, true);
+        };
     }
 
     private void RecieveAll()

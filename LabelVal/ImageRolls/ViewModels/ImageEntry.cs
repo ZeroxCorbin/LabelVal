@@ -25,7 +25,7 @@ public partial class ImageEntry : ObservableRecipient
     }
     private string name;
 
-    [ObservableProperty][property: JsonProperty] public int order = -1;
+    [ObservableProperty][property: JsonProperty] private int order = -1;
     [JsonProperty] public bool IsPlaceholder { get; set; }
     [property: SQLite.Ignore] public bool IsNew { get; set; }
 

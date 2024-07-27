@@ -95,7 +95,7 @@
 
                 <DockPanel Margin="3" Background="Black" VerticalAlignment="Top" HorizontalAlignment="Left">
 
-                    <Grid Margin="3" MouseDown="V5StoredImage_MouseDown" MaxHeight="200" MaxWidth="200">
+                    <Grid Margin="3" MouseDown="V5StoredImage_MouseDown" MaxHeight="{Binding ImageMaxHeight}" MaxWidth="{Binding ImageMaxHeight}">
 
                         <Image Source="{Binding V5StoredImage.ImageLow, Mode=OneWay}" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
 
@@ -320,7 +320,7 @@
 
                 <DockPanel Margin="3" Background="Black" VerticalAlignment="Top" HorizontalAlignment="Left">
 
-                    <Grid Margin="3" MouseDown="V5CurrentImage_MouseDown" MaxHeight="200" MaxWidth="200">
+                    <Grid Margin="3" MouseDown="V5CurrentImage_MouseDown" MaxHeight="{Binding ImagesMaxHeight}" MaxWidth="{Binding ImagesMaxHeight}">
 
                         <Image Source="{Binding V5CurrentImage.ImageLow, Mode=OneWay}" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
 
