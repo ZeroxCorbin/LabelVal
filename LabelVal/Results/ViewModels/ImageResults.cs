@@ -41,6 +41,9 @@ public partial class ImageResults : ObservableRecipient,
     [ObservableProperty] private int imagesMaxHeight = App.Settings.GetValue(nameof(ImagesMaxHeight), 200, true);
     partial void OnImagesMaxHeightChanged(int value) => App.Settings.SetValue(nameof(ImagesMaxHeight), value);
 
+    [ObservableProperty] private bool dualSectorColumns = App.Settings.GetValue(nameof(DualSectorColumns), false, true);
+    partial void OnDualSectorColumnsChanged(bool value) => App.Settings.SetValue(nameof(DualSectorColumns), value);
+
     public ObservableCollection<ImageResultEntry> ImageResultsList { get; } = [];
 
     [ObservableProperty] private Node selectedNode;

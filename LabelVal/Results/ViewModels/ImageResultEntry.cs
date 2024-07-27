@@ -38,7 +38,8 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
 
     public bool IsPlaceholder => SourceImage.IsPlaceholder;
 
-    [ObservableProperty]private int imagesMaxHeight = App.Settings.GetValue(nameof(ImagesMaxHeight), 200, true);
+    [ObservableProperty] private int imagesMaxHeight = App.Settings.GetValue<int>(nameof(ImagesMaxHeight));
+    [ObservableProperty] private bool dualSectorColumns = App.Settings.GetValue<bool>(nameof(DualSectorColumns));
 
     [ObservableProperty] private bool showPrinterAreaOverSource;
     [ObservableProperty] private DrawingImage printerAreaOverlay;
@@ -77,7 +78,9 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         App.Settings.PropertyChanged += (s, e) =>
         {
             if (e.PropertyName == nameof(ImagesMaxHeight))
-                ImagesMaxHeight = App.Settings.GetValue(nameof(ImagesMaxHeight), 200, true);
+                ImagesMaxHeight = App.Settings.GetValue<int>(nameof(ImagesMaxHeight));
+            else if (e.PropertyName == nameof(DualSectorColumns))
+                DualSectorColumns = App.Settings.GetValue<bool>(nameof(DualSectorColumns));
         };
     }
 

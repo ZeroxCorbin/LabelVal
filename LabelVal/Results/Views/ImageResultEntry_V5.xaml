@@ -226,6 +226,39 @@
                                 </Style>
                             </ItemsControl.Style>
 
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal">
+                                        <WrapPanel.Style>
+                                            <Style TargetType="WrapPanel">
+                                                <Setter Property="ItemWidth" Value="200"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="400">
+                                                        <Setter Property="MaxWidth" Value="400"/>
+                                                    </DataTrigger>
+
+                                                    <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="300">
+                                                        <Setter Property="MaxWidth" Value="400"/>
+                                                    </DataTrigger>
+
+                                                    <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="200">
+                                                        <Setter Property="MaxWidth" Value="200"/>
+                                                    </DataTrigger>
+
+                                                    <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="100">
+                                                        <Setter Property="MaxWidth" Value="200"/>
+                                                    </DataTrigger>
+
+                                                    <DataTrigger Binding="{Binding DualSectorColumns}" Value="True">
+                                                        <Setter Property="MaxWidth" Value="400"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </WrapPanel.Style>
+                                    </WrapPanel>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="2,1"/>
@@ -460,6 +493,39 @@
                                 </Style>
                             </ItemsControl.Style>
 
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal">
+                                        <WrapPanel.Style>
+                                            <Style TargetType="WrapPanel">
+                                                <Setter Property="ItemWidth" Value="200"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="400">
+                                                        <Setter Property="MaxWidth" Value="400"/>
+                                                    </DataTrigger>
+
+                                                    <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="300">
+                                                        <Setter Property="MaxWidth" Value="400"/>
+                                                    </DataTrigger>
+
+                                                    <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="200">
+                                                        <Setter Property="MaxWidth" Value="200"/>
+                                                    </DataTrigger>
+
+                                                    <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="100">
+                                                        <Setter Property="MaxWidth" Value="200"/>
+                                                    </DataTrigger>
+
+                                                    <DataTrigger Binding="{Binding DualSectorColumns}" Value="True">
+                                                        <Setter Property="MaxWidth" Value="400"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </WrapPanel.Style>
+                                    </WrapPanel>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="2,1" />

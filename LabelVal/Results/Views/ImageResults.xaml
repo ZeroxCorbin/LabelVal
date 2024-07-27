@@ -131,7 +131,10 @@
 
                         </DockPanel>
 
+                        <Border Style="{StaticResource imageBar}" Margin="0,0,9,0"/>
+
                         <DockPanel HorizontalAlignment="Right">
+
                             <md:SmartHint DockPanel.Dock="Top" Margin="3,0,3,0" HorizontalAlignment="Center">
                                 <md:SmartHint.Style>
                                     <Style TargetType="md:SmartHint">
@@ -155,12 +158,37 @@
                                     </Style>
                                 </md:SmartHint.Style>
                             </md:SmartHint>
+
                             <Slider Value="{Binding ImagesMaxHeight}" Width="48"
                                     Minimum="100" Maximum="400" TickPlacement="BottomRight" TickFrequency="100"
                                     Style="{StaticResource MahApps.Styles.Slider.Flat}"
                                     Height="24"
                                     mah:SliderHelper.ChangeValueBy="LargeChange" IsSnapToTickEnabled="True"/>
+
                         </DockPanel>
+
+                        <ToggleButton IsChecked="{Binding DualSectorColumns}" Width="48" 
+                                    md:ToggleButtonAssist.OnContent="{iconPacks:Modern Kind=ColumnTwo, Width=24, Height=24}"
+                                      Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                      Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}">
+                            <ToggleButton.Style>
+                                <Style TargetType="ToggleButton" BasedOn="{StaticResource MaterialDesignActionToggleButton}">
+                                    <Setter Property="ToolTip" Value="Columns based on image size."/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding DualSectorColumns}" Value="True">
+                                            <Setter Property="ToolTip" Value="Dual columns."/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ToggleButton.Style>
+
+                            <Grid>
+                                <iconPacks:PackIconModern Kind="ColumnTwo" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <iconPacks:PackIconMaterial Kind="AlphaA" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Center"
+                                                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"/>
+                            </Grid>
+                        </ToggleButton>
+                        
                     </DockPanel>
                 </DockPanel>
             </md:Card>

@@ -27,7 +27,7 @@
     <md:Card Margin="3" Padding="0" 
              Background="{DynamicResource MahApps.Brushes.ThemeBackground}" 
              Foreground="{DynamicResource MahApps.Brushes.Text}" >
-        
+
         <DockPanel Margin="3">
 
             <DockPanel DockPanel.Dock="Top">
@@ -116,7 +116,7 @@
             </DockPanel>
 
             <DockPanel DockPanel.Dock="Top">
-                
+
                 <!--Symbology Image-->
                 <Border Background="White" Height="30" Width="30" Margin="3,3,0,0" VerticalAlignment="Top">
                     <Border.Style>
@@ -189,67 +189,71 @@
                         </TextBlock.Style>
                     </TextBlock>
 
-                    <!--Decode Text & OCR-->
-                    <TextBlock Margin="3,0" Name="txtDecodeText">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}">
+                    <DockPanel>
 
-                                <Style.Triggers>
 
-                                    <DataTrigger Value="verify1D" Binding="{Binding Report.Type, Mode=OneTime}">
-                                        <Setter Property="Text" Value="{Binding Report.DecodeText, Converter={StaticResource shortenString}, Mode=OneTime}"/>
-                                        <Setter Property="ToolTip" Value="{Binding Report.DecodeText, Mode=OneTime}"/>
-                                    </DataTrigger>
+                        <!--Decode Text & OCR-->
+                        <TextBlock Margin="3,0" Name="txtDecodeText">
+                            <TextBlock.Style>
+                                <Style TargetType="{x:Type TextBlock}">
 
-                                    <DataTrigger Value="verify2D" Binding="{Binding Report.Type, Mode=OneTime}">
-                                        <Setter Property="Text" Value="{Binding Report.DecodeText, Converter={StaticResource shortenString}, Mode=OneTime}"/>
-                                        <Setter Property="ToolTip" Value="{Binding Report.DecodeText, Mode=OneTime}"/>
-                                    </DataTrigger>
+                                    <Style.Triggers>
 
-                                    <DataTrigger Value="ocr" Binding="{Binding Report.Type, Mode=OneTime}">
-                                        <Setter Property="Text" Value="{Binding Report.Text, Converter={StaticResource shortenString}, Mode=OneTime}"/>
-                                        <Setter Property="ToolTip" Value="{Binding Report.Text, Mode=OneTime}"/>
-                                    </DataTrigger>
+                                        <DataTrigger Value="verify1D" Binding="{Binding Report.Type, Mode=OneTime}">
+                                            <Setter Property="Text" Value="{Binding Report.DecodeText, Converter={StaticResource shortenString}, Mode=OneTime}"/>
+                                            <Setter Property="ToolTip" Value="{Binding Report.DecodeText, Mode=OneTime}"/>
+                                        </DataTrigger>
 
-                                    <DataTrigger Value="ocv" Binding="{Binding Report.Type, Mode=OneTime}">
-                                        <Setter Property="Text" Value="{Binding Report.Text, Converter={StaticResource shortenString}, Mode=OneTime}"/>
-                                        <Setter Property="ToolTip" Value="{Binding Report.Text, Mode=OneTime}"/>
-                                    </DataTrigger>
+                                        <DataTrigger Value="verify2D" Binding="{Binding Report.Type, Mode=OneTime}">
+                                            <Setter Property="Text" Value="{Binding Report.DecodeText, Converter={StaticResource shortenString}, Mode=OneTime}"/>
+                                            <Setter Property="ToolTip" Value="{Binding Report.DecodeText, Mode=OneTime}"/>
+                                        </DataTrigger>
 
-                                    <DataTrigger Value="blemish" Binding="{Binding Report.Type, Converter={StaticResource shortenString}, Mode=OneTime}">
-                                        <Setter Property="Text" Value=""/>
-                                        <Setter Property="ToolTip" Value=""/>
-                                    </DataTrigger>
+                                        <DataTrigger Value="ocr" Binding="{Binding Report.Type, Mode=OneTime}">
+                                            <Setter Property="Text" Value="{Binding Report.Text, Converter={StaticResource shortenString}, Mode=OneTime}"/>
+                                            <Setter Property="ToolTip" Value="{Binding Report.Text, Mode=OneTime}"/>
+                                        </DataTrigger>
 
-                                    <DataTrigger Value="unknown" Binding="{Binding Report.Type, Mode=OneTime}">
-                                        <Setter Property="Text" Value="{Binding Report.DecodeText, Converter={StaticResource shortenString}, Mode=OneTime}"/>
-                                        <Setter Property="ToolTip" Value="{Binding Report.DecodeText, Mode=OneTime}"/>
-                                    </DataTrigger>
+                                        <DataTrigger Value="ocv" Binding="{Binding Report.Type, Mode=OneTime}">
+                                            <Setter Property="Text" Value="{Binding Report.Text, Converter={StaticResource shortenString}, Mode=OneTime}"/>
+                                            <Setter Property="ToolTip" Value="{Binding Report.Text, Mode=OneTime}"/>
+                                        </DataTrigger>
 
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
+                                        <DataTrigger Value="blemish" Binding="{Binding Report.Type, Converter={StaticResource shortenString}, Mode=OneTime}">
+                                            <Setter Property="Text" Value=""/>
+                                            <Setter Property="ToolTip" Value=""/>
+                                        </DataTrigger>
+
+                                        <DataTrigger Value="unknown" Binding="{Binding Report.Type, Mode=OneTime}">
+                                            <Setter Property="Text" Value="{Binding Report.DecodeText, Converter={StaticResource shortenString}, Mode=OneTime}"/>
+                                            <Setter Property="ToolTip" Value="{Binding Report.DecodeText, Mode=OneTime}"/>
+                                        </DataTrigger>
+
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+
+                        <!--GS1 AI Button-->
+                        <Button Name="btnGS1DecodeText" Click="btnGS1DecodeText_Click" VerticalAlignment="Top"
+                                Content="{iconPacks:Material Kind=ArrowDownBoldBox}">
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Chromeless}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Report.GS1Results, Converter={StaticResource objectIsNull}}" Value="True">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Report.FormattedOut}" Value="">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </DockPanel>
 
                 </DockPanel>
-
-                <!--GS1 AI Button-->
-                <Button Margin="0,19,0,0" Name="btnGS1DecodeText" Click="btnGS1DecodeText_Click" VerticalAlignment="Top"
-                        Content="{iconPacks:Material Kind=ArrowDownBoldBox}">
-                    <Button.Style>
-                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Chromeless}">
-                            <Setter Property="Visibility" Value="Visible"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Report.GS1Results, Converter={StaticResource objectIsNull}}" Value="True">
-                                    <Setter Property="Visibility" Value="Hidden"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Report.FormattedOut}" Value="">
-                                    <Setter Property="Visibility" Value="Hidden"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
 
                 <!--Overall Grade-->
                 <Button x:Name="btnOverallGrade" Width="30" Height="30" Margin="3" Click="btnOverallGrade_Click"

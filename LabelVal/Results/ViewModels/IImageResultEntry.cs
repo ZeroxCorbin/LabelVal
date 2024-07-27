@@ -7,6 +7,8 @@ namespace LabelVal.Results.ViewModels;
 
 public interface IImageResultEntry
 {
+    static string Version { get; set; } = "1.0";
+
     ImageEntry SourceImage { get; }
 
     //V275

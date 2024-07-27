@@ -52,7 +52,7 @@
 
         <DockPanel>
 
-            <!--Images-->
+            <!--Stored-->
             <DockPanel>
 
                 <!--V275 Stored Image-->
@@ -289,6 +289,7 @@
                                         <WrapPanel Orientation="Horizontal">
                                             <WrapPanel.Style>
                                                 <Style TargetType="WrapPanel">
+                                                    <Setter Property="ItemWidth" Value="200"/>
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="400">
                                                             <Setter Property="MaxWidth" Value="400"/>
@@ -304,6 +305,10 @@
 
                                                         <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="100">
                                                             <Setter Property="MaxWidth" Value="200"/>
+                                                        </DataTrigger>
+
+                                                        <DataTrigger Binding="{Binding DualSectorColumns}" Value="True">
+                                                            <Setter Property="MaxWidth" Value="400"/>
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
@@ -341,7 +346,7 @@
                 </ContentControl.Style>
             </ContentControl>
             
-            <!--Sectors-->
+            <!--Current-->
             <DockPanel>
                 
                 <!--V275 Current Image-->
@@ -438,14 +443,14 @@
                     </DockPanel.Style>
 
                     <md:Card HorizontalAlignment="Left" DockPanel.Dock="Top" Margin="3,3,0,0"
-                     Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
-                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+                             Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                             Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
                         <DockPanel>
 
                             <!--Title-->
                             <md:Card Background="{DynamicResource ColorBlindBrush1}"
-                             HorizontalAlignment="Left" Padding="4,1" Margin="3">
+                                    HorizontalAlignment="Left" Padding="4,1" Margin="3">
                                 <TextBlock Text="Current Sectors" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                             </md:Card>
 
@@ -469,15 +474,15 @@
                             </Button>
 
                             <Button Command="{Binding ClearReadCommand}" CommandParameter="V275" Width="28"
-                                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                ToolTip="Clear the current sectors and image."
-                                Content="{iconPacks:MaterialDesign Kind=Clear}"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
+                                    Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                    ToolTip="Clear the current sectors and image."
+                                    Content="{iconPacks:MaterialDesign Kind=Clear}"
+                                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
 
                             <Button Command="{Binding V275ReadCommand}" Width="28"
-                                ToolTip="Read the last results and image from the V275.&#x0a;Just reads the data. No processing."
-                                Content="{iconPacks:Material Kind=Upload}"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+                                    ToolTip="Read the last results and image from the V275.&#x0a;Just reads the data. No processing."
+                                    Content="{iconPacks:Material Kind=Upload}"
+                                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
@@ -561,6 +566,39 @@
                                     </Style>
                                 </ItemsControl.Style>
 
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel Orientation="Horizontal">
+                                            <WrapPanel.Style>
+                                                <Style TargetType="WrapPanel">
+                                                    <Setter Property="ItemWidth" Value="200"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="400">
+                                                            <Setter Property="MaxWidth" Value="400"/>
+                                                        </DataTrigger>
+
+                                                        <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="300">
+                                                            <Setter Property="MaxWidth" Value="400"/>
+                                                        </DataTrigger>
+
+                                                        <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="200">
+                                                            <Setter Property="MaxWidth" Value="200"/>
+                                                        </DataTrigger>
+
+                                                        <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="100">
+                                                            <Setter Property="MaxWidth" Value="200"/>
+                                                        </DataTrigger>
+
+                                                        <DataTrigger Binding="{Binding DualSectorColumns}" Value="True">
+                                                            <Setter Property="MaxWidth" Value="400"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </WrapPanel.Style>
+                                        </WrapPanel>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="2,1"/>
