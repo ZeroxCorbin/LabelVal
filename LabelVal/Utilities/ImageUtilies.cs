@@ -10,7 +10,7 @@ namespace LabelVal.Utilities
     {
         private const double InchesPerMeter = 39.3701;
 
-        public static int GetImageDPI(byte[] image)
+        public static int GetBitmapDPI(byte[] image)
         {
             var value = BitConverter.ToInt32(image, 38);
             var res = GetDPI(value);

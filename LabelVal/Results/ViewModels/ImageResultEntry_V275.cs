@@ -129,7 +129,7 @@ public partial class ImageResultEntry
         }
         else
         {
-            ImageUtilities.SetBitmapDPI(report.image, ImageResults.SelectedImageRoll.TargetDPI);
+            ImageUtilities.SetBitmapDPI(report.image, (int)Math.Round(SourceImage.Image.DpiX));
             V275CurrentImage = new ImageEntry(RollUID, report.image, ImageResults.SelectedImageRoll.TargetDPI);
         }
 

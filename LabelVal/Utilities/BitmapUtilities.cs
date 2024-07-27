@@ -30,11 +30,22 @@ public static class BitmapUtilities
         bitmap.UnlockBits(data);
         return bitmap;
     }
-    public static System.Drawing.Bitmap CreateBitmap(byte[] bytes)
+    public static System.Drawing.Bitmap CreateBitmap(byte[] image)
     {
-        using (var ms = new System.IO.MemoryStream(bytes))
+        using (var ms = new System.IO.MemoryStream(image))
         {
             return new System.Drawing.Bitmap(ms);
+        }
+    }
+    public static System.Drawing.Bitmap CreateBitmap(byte[] image, int dpiX, int dpiY)
+    {
+        SetDPI(image, dpiX, dpiY);
+        using (var ms = new System.IO.MemoryStream(image))
+        {   
+            
+            var bitmap = new System.Drawing.Bitmap(ms);
+
+            return bitmap;
         }
     }
 
@@ -145,4 +156,59 @@ public static class BitmapUtilities
         return flipped;
     }
 
+
+
+    #region DPI
+    private const double InchesPerMeter = 39.3701;
+    public static void SetDPI(byte[] image, int dpiX, int dpiY)
+    {
+        if (IsPng(image))
+        {
+            SetPngDPI(image, dpiX, dpiY);
+        }
+        else
+        {
+            SetBitmapDPI(image, dpiX, dpiY);
+        }
+    }
+    public static bool IsPng(byte[] bytes)
+    {
+        // PNG files start with an 8-byte signature: 89 50 4E 47 0D 0A 1A 0A
+        byte[] pngSignature = new byte[] { 137, 80, 78, 71, 13, 10, 26, 10 };
+        return bytes.Take(pngSignature.Length).SequenceEqual(pngSignature);
+    }
+    public static void SetBitmapDPI(byte[] image, int dpiX, int dpiY)
+    {
+        var valueX = BitConverter.GetBytes(ConvertDPI(dpiX));
+        var valueY = BitConverter.GetBytes(ConvertDPI(dpiY));
+
+        int i = 38;
+        foreach (byte b in valueX)
+            image[i++] = b;
+
+        i = 42;
+        foreach (byte b in valueY)
+            image[i++] = b;
+    }
+    public static void SetPngDPI(byte[] image, int dpiX, int dpiY)
+    {
+        // Find the pHYs chunk and set the DPI values
+        int pos = 8; // Skip the PNG signature
+        while (pos < image.Length)
+        {
+            int length = BitConverter.ToInt32(image.Skip(pos).Take(4).Reverse().ToArray(), 0);
+            string type = Encoding.ASCII.GetString(image, pos + 4, 4);
+            if (type == "pHYs")
+            {
+                var dpiXBytes = BitConverter.GetBytes(ConvertDPI(dpiX)).Reverse().ToArray();
+                var dpiYBytes = BitConverter.GetBytes(ConvertDPI(dpiY)).Reverse().ToArray();
+                Array.Copy(dpiXBytes, 0, image, pos + 8, 4);
+                Array.Copy(dpiYBytes, 0, image, pos + 12, 4);
+                break;
+            }
+            pos += length + 12; // Move to the next chunk
+        }
+    }
+    private static int ConvertDPI(int dpi) => (int)Math.Round(dpi * InchesPerMeter);
+    #endregion
 }

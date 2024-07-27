@@ -129,7 +129,37 @@
 
                             </Button>
 
-                            <Slider Value="{Binding ImagesMaxHeight}" Minimum="100" Maximum="400" Width="100"/>
+                        </DockPanel>
+
+                        <DockPanel HorizontalAlignment="Right">
+                            <md:SmartHint DockPanel.Dock="Top" Margin="3,0,3,0" HorizontalAlignment="Center">
+                                <md:SmartHint.Style>
+                                    <Style TargetType="md:SmartHint">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="400">
+                                                <Setter Property="Hint" Value="Ex. Large"/>
+                                            </DataTrigger>
+
+                                            <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="300">
+                                                <Setter Property="Hint" Value="Large"/>
+                                            </DataTrigger>
+
+                                            <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="200">
+                                                <Setter Property="Hint" Value="Regular"/>
+                                            </DataTrigger>
+
+                                            <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="100">
+                                                <Setter Property="Hint" Value="Small"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </md:SmartHint.Style>
+                            </md:SmartHint>
+                            <Slider Value="{Binding ImagesMaxHeight}" Width="48"
+                                    Minimum="100" Maximum="400" TickPlacement="BottomRight" TickFrequency="100"
+                                    Style="{StaticResource MahApps.Styles.Slider.Flat}"
+                                    Height="24"
+                                    mah:SliderHelper.ChangeValueBy="LargeChange" IsSnapToTickEnabled="True"/>
                         </DockPanel>
                     </DockPanel>
                 </DockPanel>
