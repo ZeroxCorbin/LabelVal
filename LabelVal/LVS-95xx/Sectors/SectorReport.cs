@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using V275_REST_lib.Models;
-using V5_REST_Lib.Models;
 
 namespace LabelVal.LVS_95xx.Sectors;
 
@@ -11,6 +10,13 @@ public class Report : IReport
 {
     public string Type { get; set; }
     public string SymbolType { get; set; }
+
+    public double Top { get; set; }
+    public double Left { get; set; }
+    public double Width { get; set; }
+    public double Height { get; set; }
+    public double AngleDeg { get; set; }
+
     public string DecodeText { get; set; }
     public string Text { get; set; }
     public int BlemishCount { get; set; }
@@ -28,7 +34,6 @@ public class Report : IReport
 
     public Report(List<string> report)
     {
-
         Type = report.Find((e) => e.StartsWith("Cell size")) == null ? "verify1D" : "verify2D";
 
         foreach (string data in report)

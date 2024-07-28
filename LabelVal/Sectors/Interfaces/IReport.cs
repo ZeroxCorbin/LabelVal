@@ -55,6 +55,12 @@ public interface IReport
     string Type { get; set; }
     string SymbolType { get; set; }
 
+    double Top { get; set; }
+    double Left { get; set; }
+    double Width { get; set; }
+    double Height { get; set; }
+    double AngleDeg { get; set; }
+
     string Text { get; set; }
     string DecodeText { get; set; }
 

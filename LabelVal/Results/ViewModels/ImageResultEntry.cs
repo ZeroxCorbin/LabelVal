@@ -10,6 +10,7 @@ using Microsoft.Win32;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Diagnostics;
@@ -410,6 +411,245 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         DrawingImage geometryImage = new(drwGroup);
         geometryImage.Freeze();
         return geometryImage;
+    }
+
+    private DrawingImage CreateSectorsImageOverlay(ImageEntry image, ObservableCollection<Sectors.Interfaces.ISector> sectors)
+    {
+        DrawingGroup drwGroup = new();
+
+        //Draw the image outline the same size as the stored image
+        GeometryDrawing border = new()
+        {
+            Geometry = new RectangleGeometry(new Rect(0.5, 0.5, image.Image.PixelWidth - 1, image.Image.PixelHeight - 1)),
+            Pen = new Pen(Brushes.Transparent, 1)
+        };
+        drwGroup.Children.Add(border);
+
+        GeometryGroup secCenter = new();
+        foreach (Sectors.Interfaces.ISector newSec in sectors)
+        {
+            if (newSec.Report.SymbolType is "blemish" or "ocr" or "ocv")
+                continue;
+
+            GeometryDrawing sector = new()
+            {
+                Geometry = new RectangleGeometry(new Rect(newSec.Report.Left, newSec.Report.Top, newSec.Report.Width, newSec.Report.Height)),
+                Pen = new Pen(GetGradeBrush(newSec.Report.OverallGradeLetter), 5)
+            };
+            drwGroup.Children.Add(sector);
+            drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun(newSec.Template.Username, new Typeface("Arial"), 30.0, new Point(newSec.Report.Left - 8, newSec.Report.Top - 8))));
+
+            GeometryDrawing sectorT = new()
+            {
+                Geometry = new RectangleGeometry(new Rect(newSec.Template.Left, newSec.Template.Top, newSec.Template.Width, newSec.Template.Height)),
+                Pen = new Pen(Brushes.Black, 1)
+            };
+            drwGroup.Children.Add(sectorT);
+
+            double y = newSec.Report.Top + (newSec.Report.Height / 2);
+            double x = newSec.Report.Left + (newSec.Report.Width / 2);
+            secCenter.Children.Add(new LineGeometry(new Point(x + 10, y), new Point(x + -10, y)));
+            secCenter.Children.Add(new LineGeometry(new Point(x, y + 10), new Point(x, y + -10)));
+        }
+
+        GeometryDrawing sectorCenters = new()
+        {
+            Geometry = secCenter,
+            Pen = new Pen(Brushes.Red, 4)
+        };
+        drwGroup.Children.Add(sectorCenters);
+
+        drwGroup.Children.Add(GetModuleGrid(sectors));
+
+        DrawingImage geometryImage = new(drwGroup);
+        geometryImage.Freeze();
+
+        return geometryImage;
+    }
+
+    public static GlyphRun CreateGlyphRun(string text, Typeface typeface, double emSize, Point baselineOrigin)
+    {
+        GlyphTypeface glyphTypeface;
+
+        if (!typeface.TryGetGlyphTypeface(out glyphTypeface))
+        {
+            throw new ArgumentException(string.Format(
+                "{0}: no GlyphTypeface found", typeface.FontFamily));
+        }
+
+        ushort[] glyphIndices = new ushort[text.Length];
+        double[] advanceWidths = new double[text.Length];
+
+        for (int i = 0; i < text.Length; i++)
+        {
+            ushort glyphIndex = glyphTypeface.CharacterToGlyphMap[text[i]];
+            glyphIndices[i] = glyphIndex;
+            advanceWidths[i] = glyphTypeface.AdvanceWidths[glyphIndex] * emSize;
+        }
+
+        return new GlyphRun(
+            glyphTypeface, 0, false, emSize, (float)MonitorUtilities.GetDpi().PixelsPerDip,
+            glyphIndices, baselineOrigin, advanceWidths,
+            null, null, null, null, null, null);
+    }
+    private static DrawingGroup GetModuleGrid(ObservableCollection<Sectors.Interfaces.ISector> sectors)
+    {
+        DrawingGroup drwGroup = new();
+
+        foreach (Sectors.Interfaces.ISector sect in sectors)
+        {
+
+            if (sect == null)
+                continue;
+
+            if (sect.Report.SymbolType is "qrCode" or "dataMatrix")
+            {
+                Sectors.Interfaces.IReport res = sect.Report;
+
+                if (res.ExtendedData == null)
+                    continue;
+
+                if (res.ExtendedData.ModuleReflectance == null)
+                    continue;
+
+                GeometryGroup moduleGrid = new();
+                DrawingGroup textGrp = new();
+
+                double qzX = (sect.Report.SymbolType == "dataMatrix") ? 0 : res.ExtendedData.QuietZone;
+                double qzY = res.ExtendedData.QuietZone;
+
+                double dX = (sect.Report.SymbolType == "dataMatrix") ? 0 : (res.ExtendedData.DeltaX / 2);
+                double dY = (sect.Report.SymbolType == "dataMatrix") ? (res.ExtendedData.DeltaY * res.ExtendedData.NumRows) : (res.ExtendedData.DeltaY / 2);
+
+                double startX = -0.5;// sec.left + res.ExtendedData.Xnw - dX + 1 - (qzX * res.ExtendedData.DeltaX);
+                double startY = -0.5;// sec.top + res.ExtendedData.Ynw - dY + 1 - (qzY * res.ExtendedData.DeltaY);
+
+                int cnt = 0;
+
+                for (double row = -qzX; row < res.ExtendedData.NumRows + qzX; row++)
+                    for (double col = -qzY; col < res.ExtendedData.NumColumns + qzY; col++)
+                    {
+                        RectangleGeometry area1 = new(new Rect(startX + (res.ExtendedData.DeltaX * (col + qzX)), startY + (res.ExtendedData.DeltaY * (row + qzY)), res.ExtendedData.DeltaX, res.ExtendedData.DeltaY));
+                        moduleGrid.Children.Add(area1);
+
+                        string text = res.ExtendedData.ModuleModulation[cnt].ToString();
+                        Typeface typeface = new("Arial");
+                        if (typeface.TryGetGlyphTypeface(out GlyphTypeface _glyphTypeface))
+                        {
+                            ushort[] _glyphIndexes = new ushort[text.Length];
+                            double[] _advanceWidths = new double[text.Length];
+
+                            double textWidth = 0;
+                            for (int ix = 0; ix < text.Length; ix++)
+                            {
+                                ushort glyphIndex = _glyphTypeface.CharacterToGlyphMap[text[ix]];
+                                _glyphIndexes[ix] = glyphIndex;
+
+                                double width = _glyphTypeface.AdvanceWidths[glyphIndex] * 2;
+                                _advanceWidths[ix] = width;
+
+                                textWidth += width;
+                            }
+
+                            GlyphRun gr = new(_glyphTypeface, 0, false, 2, 1.0f, _glyphIndexes,
+                                new Point(startX + (res.ExtendedData.DeltaX * (col + qzX)) + 1,
+                                startY + (res.ExtendedData.DeltaY * (row + qzY)) + (_glyphTypeface.Height * (res.ExtendedData.DeltaY / 4))),
+                                _advanceWidths, null, null, null, null, null, null);
+
+                            GlyphRunDrawing grd = new(Brushes.Blue, gr);
+
+                            textGrp.Children.Add(grd);
+                        }
+
+                        text = res.ExtendedData.ModuleReflectance[cnt++].ToString();
+                        Typeface typeface1 = new("Arial");
+                        if (typeface1.TryGetGlyphTypeface(out GlyphTypeface _glyphTypeface1))
+                        {
+                            ushort[] _glyphIndexes = new ushort[text.Length];
+                            double[] _advanceWidths = new double[text.Length];
+
+                            double textWidth = 0;
+                            for (int ix = 0; ix < text.Length; ix++)
+                            {
+                                ushort glyphIndex = _glyphTypeface1.CharacterToGlyphMap[text[ix]];
+                                _glyphIndexes[ix] = glyphIndex;
+
+                                double width = _glyphTypeface1.AdvanceWidths[glyphIndex] * 2;
+                                _advanceWidths[ix] = width;
+
+                                textWidth += width;
+                            }
+
+                            GlyphRun gr = new(_glyphTypeface1, 0, false, 2, 1.0f, _glyphIndexes,
+                                new Point(startX + (res.ExtendedData.DeltaX * (col + qzX)) + 1,
+                                startY + (res.ExtendedData.DeltaY * (row + qzY)) + (_glyphTypeface1.Height * (res.ExtendedData.DeltaY / 2))),
+                                _advanceWidths, null, null, null, null, null, null);
+
+                            GlyphRunDrawing grd = new(Brushes.Blue, gr);
+                            textGrp.Children.Add(grd);
+                        }
+
+                        //FormattedText formattedText = new FormattedText(
+                        //    res.ExtendedData.ModuleReflectance[row + col].ToString(),
+                        //    CultureInfo.GetCultureInfo("en-us"),
+                        //    FlowDirection.LeftToRight,
+                        //    new Typeface("Arial"),
+                        //    4,
+                        //    System.Windows.Media.Brushes.Black // This brush does not matter since we use the geometry of the text.
+                        //);
+
+                        //// Build the geometry object that represents the text.
+                        //Geometry textGeometry = formattedText.BuildGeometry(new System.Windows.Point(startX + (res.ExtendedData.DeltaX * row), startY + (res.ExtendedData.DeltaY * col)));
+                        //moduleGrid.Children.Add(textGeometry);
+                    }
+
+                TransformGroup transGroup = new();
+
+                transGroup.Children.Add(new RotateTransform(
+                    sect.Template.Orientation,
+                    res.ExtendedData.DeltaX * (res.ExtendedData.NumColumns + (qzX * 2)) / 2,
+                    res.ExtendedData.DeltaY * (res.ExtendedData.NumRows + (qzY * 2)) / 2));
+
+                transGroup.Children.Add(new TranslateTransform(sect.Report.Left, sect.Report.Top));
+
+                if (sect.Template.Orientation == 0)
+                    transGroup.Children.Add(new TranslateTransform(
+                        res.ExtendedData.Xnw - (qzX * res.ExtendedData.DeltaX) - dX + 1,
+                        res.ExtendedData.Ynw - (qzY * res.ExtendedData.DeltaY) - dY + 1));
+
+                if (sect.Template.Orientation == 90)
+                {
+                    double x = sect.Report.SymbolType == "dataMatrix"
+                        ? sect.Report.Width - res.ExtendedData.Ynw - (qzY * res.ExtendedData.DeltaY) - 1
+                        : sect.Report.Width - res.ExtendedData.Ynw - dY - ((res.ExtendedData.NumColumns + qzY) * res.ExtendedData.DeltaY);
+                    transGroup.Children.Add(new TranslateTransform(
+                         x,
+                         res.ExtendedData.Xnw - (qzX * res.ExtendedData.DeltaX) - dX + 1));
+                }
+
+                if (sect.Template.Orientation == 180)
+                {
+                    transGroup.Children.Add(new TranslateTransform(
+                        res.ExtendedData.Xnw - (qzX * res.ExtendedData.DeltaX) - dX + 1,
+                        res.ExtendedData.Ynw - (qzY * res.ExtendedData.DeltaY) - dY + 1));
+                }
+
+                moduleGrid.Transform = transGroup;
+                textGrp.Transform = transGroup;
+
+                GeometryDrawing mGrid = new()
+                {
+                    Geometry = moduleGrid,
+                    Pen = new Pen(Brushes.Yellow, 0.25)
+                };
+
+                drwGroup.Children.Add(mGrid);
+                drwGroup.Children.Add(textGrp);
+
+            }
+        }
+
+        return drwGroup;
     }
 
     private static SolidColorBrush GetGradeBrush(string grade) => grade switch

@@ -108,7 +108,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
             foreach (Sector cSec in L95xxCurrentSectors)
                 if (sec.Template.Name == cSec.Template.Name)
                 {
-                    if (sec.Template.Symbology == cSec.Template.Symbology)
+                    if (sec.Template.SymbologyType == cSec.Template.SymbologyType)
                     {
                         diff.Add(sec.SectorDifferences.Compare(cSec.SectorDifferences));
                         continue;
@@ -119,7 +119,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
                         {
                             UserName = $"{sec.Template.Username} (SYMBOLOGY MISMATCH)",
                             IsSectorMissing = true,
-                            SectorMissingText = $"Stored Sector {sec.Template.Symbology} : Current Sector {cSec.Template.Symbology}"
+                            SectorMissingText = $"Stored Sector {sec.Template.SymbologyType} : Current Sector {cSec.Template.SymbologyType}"
                         };
                         diff.Add(dat);
                     }

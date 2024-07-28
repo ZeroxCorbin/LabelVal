@@ -1,5 +1,8 @@
 ﻿using LabelVal.Sectors.Interfaces;
 using System;
+using System.Net.NetworkInformation;
+using System.Windows;
+using System.Windows.Media;
 
 namespace LabelVal.V5.Sectors;
 
@@ -7,6 +10,13 @@ public class Report : IReport
 {
     public string Type { get; set; }
     public string SymbolType { get; set; }
+
+    public double Top { get; set; }
+    public double Left { get; set; }
+    public double Width { get; set; }
+    public double Height { get; set; }
+    public double AngleDeg { get; set; }
+
     public string DecodeText { get; set; }
     public string Text { get; set; }
     public int BlemishCount { get; set; }
@@ -27,6 +37,31 @@ public class Report : IReport
         Type = V5GetType(v5);
         SymbolType = V5GetSymbology(v5.type);
         DecodeText = v5.dataUTF8;
+
+        // Create the Rect
+        Rect rect = new(v5.x - v5.width / 2, v5.y - v5.height / 2, v5.width, v5.height);
+
+        // Create the RotateTransform
+        RotateTransform rotateTransform = new(v5.angleDeg, v5.x, v5.y);
+
+        // Apply the rotation to the Rect
+        Point topLeft = rotateTransform.Transform(new Point(rect.Left, rect.Top));
+        Point topRight = rotateTransform.Transform(new Point(rect.Right, rect.Top));
+        Point bottomLeft = rotateTransform.Transform(new Point(rect.Left, rect.Bottom));
+        Point bottomRight = rotateTransform.Transform(new Point(rect.Right, rect.Bottom));
+
+        // Calculate the new bounding box
+        double newLeft = Math.Min(Math.Min(topLeft.X, topRight.X), Math.Min(bottomLeft.X, bottomRight.X));
+        double newTop = Math.Min(Math.Min(topLeft.Y, topRight.Y), Math.Min(bottomLeft.Y, bottomRight.Y));
+        double newRight = Math.Max(Math.Max(topLeft.X, topRight.X), Math.Max(bottomLeft.X, bottomRight.X));
+        double newBottom = Math.Max(Math.Max(topLeft.Y, topRight.Y), Math.Max(bottomLeft.Y, bottomRight.Y));
+
+        // Update the properties
+        Top = newTop;
+        Left = newLeft;
+        Width = newRight - newLeft;
+        Height = newBottom - newTop;
+        AngleDeg = v5.angleDeg;
 
         if (v5.grading != null)
         {

@@ -8,10 +8,17 @@ public class Template : ITemplate
 
     public string Name { get; set; }
     public string Username { get; set; }
-    public int Top { get; set; }
-    public System.Drawing.Point CenterPoint { get; set; }
-    public string Symbology { get; set; }
 
+    public double Top { get; set; }
+    public double Left { get; set; }
+    public double Width { get; set; }
+    public double Height { get; set; }
+    public double AngleDeg { get; set; }
+
+    public System.Drawing.Point CenterPoint { get; set; }
+    public string SymbologyType { get; set; }
+
+public double Orientation { get; set; }
     public TemplateMatchMode MatchSettings { get; set; }
     public BlemishMaskLayers BlemishMask { get; set; }
 
@@ -21,10 +28,18 @@ public class Template : ITemplate
 
         Name = sectorTemplate.name;
         Username = sectorTemplate.username;
+
         Top = sectorTemplate.top;
+        Left = sectorTemplate.left;
+        Width = sectorTemplate.width;
+        Height = sectorTemplate.height;
+        AngleDeg = sectorTemplate.angle;
+
         CenterPoint = new System.Drawing.Point(sectorTemplate.left + sectorTemplate.width / 2, sectorTemplate.top + sectorTemplate.height / 2);
 
-        Symbology = sectorTemplate.symbology;
+        Orientation = sectorTemplate.orientation;
+
+        SymbologyType = sectorTemplate.symbology;
 
         if (sectorTemplate.matchSettings != null)
             MatchSettings = new TemplateMatchMode

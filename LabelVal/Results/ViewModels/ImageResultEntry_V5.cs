@@ -134,12 +134,8 @@ public partial class ImageResultEntry
 
         List<Sectors.Interfaces.ISector> tempSectors = [];
         foreach (var rSec in V5CurrentReport._event.data.decodeData)
-        {
-
           tempSectors.Add(new V5.Sectors.Sector(rSec, V5CurrentTemplate.response.data.job.toolList[rSec.toolSlot-1], $"DecodeTool{rSec.toolSlot}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
 
-        }
-  
         if (tempSectors.Count > 0)
         {
             SortList(tempSectors);
@@ -150,8 +146,8 @@ public partial class ImageResultEntry
 
         V5GetSectorDiff();
 
-        V5CurrentImageOverlay = V5CreateSectorsImageOverlay(V5CurrentReport, V5CurrentImage);
-
+        V5CurrentImageOverlay = CreateSectorsImageOverlay(V5CurrentImage, V5CurrentSectors);
+       
         return true;
     }
     [RelayCommand] private void V5Load() => _ = V5LoadTask();
@@ -180,8 +176,6 @@ public partial class ImageResultEntry
         List<Sectors.Interfaces.ISector> tempSectors = [];
         if (!string.IsNullOrEmpty(V5ResultRow.Report))
         {
-            V5StoredImageOverlay = V5CreateSectorsImageOverlay(V5ResultRow._Report, V5StoredImage);
-
             foreach (var rSec in V5ResultRow._Report._event.data.decodeData)
                 tempSectors.Add(new V5.Sectors.Sector(rSec, V5ResultRow._Config.response.data.job.toolList[rSec.toolSlot-1], $"DecodeTool{rSec.toolSlot}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
         }
@@ -192,7 +186,9 @@ public partial class ImageResultEntry
 
             foreach (Sectors.Interfaces.ISector sec in tempSectors)
                 V5StoredSectors.Add(sec);
-        }
+        } 
+        
+        V5StoredImageOverlay = CreateSectorsImageOverlay(V5StoredImage, V5StoredSectors);
     }
     private void V5GetSectorDiff()
     {
@@ -206,7 +202,7 @@ public partial class ImageResultEntry
             foreach (Sectors.Interfaces.ISector cSec in V5CurrentSectors)
                 if (sec.Template.Name == cSec.Template.Name)
                 {
-                    if (sec.Template.Symbology == cSec.Template.Symbology)
+                    if (sec.Template.SymbologyType == cSec.Template.SymbologyType)
                     {
                         diff.Add(sec.SectorDifferences.Compare(cSec.SectorDifferences));
                         continue;
@@ -217,7 +213,7 @@ public partial class ImageResultEntry
                         {
                             UserName = $"{sec.Template.Username} (SYMBOLOGY MISMATCH)",
                             IsSectorMissing = true,
-                            SectorMissingText = $"Stored Sector {sec.Template.Symbology} : Current Sector {cSec.Template.Symbology}"
+                            SectorMissingText = $"Stored Sector {sec.Template.SymbologyType} : Current Sector {cSec.Template.SymbologyType}"
                         };
                         diff.Add(dat);
                     }

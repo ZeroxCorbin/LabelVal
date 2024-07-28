@@ -19,11 +19,18 @@ public interface ITemplate
 {
     string Name { get; set; }
     string Username { get; set; }
-    int Top { get; set; }
+
+    double Top { get; set; }
+    double Left { get; set; }
+    double Width { get; set; }
+    double Height { get; set; }
+    double AngleDeg { get; set; }
+
     Point CenterPoint { get; set; }
 
-    string Symbology { get; set; }
+    string SymbologyType { get; set; }
 
+    public double Orientation { get; set; }
     TemplateMatchMode MatchSettings { get; set; }
     BlemishMaskLayers BlemishMask { get; set; }
 }
