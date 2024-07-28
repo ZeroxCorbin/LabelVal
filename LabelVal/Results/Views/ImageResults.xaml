@@ -43,7 +43,7 @@
                     <Border Style="{StaticResource imageBar}" />
 
                     <DockPanel>
-                        
+
                         <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Left">
 
                             <DockPanel DockPanel.Dock="Top" Margin="6,0,6,3">
@@ -81,9 +81,9 @@
                                 </TextBlock>
 
                                 <TextBlock Text="{Binding SelectedImageRoll.TargetDPI, StringFormat={} : {0} dpi}" Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"/>
-                           
+
                             </DockPanel>
-                            
+
                             <Border Style="{StaticResource imageBarHor}"/>
                         </DockPanel>
 
@@ -110,7 +110,7 @@
                                                     <Condition Binding="{Binding SelectedScanner.IsConnected}" Value="True"/>
                                                     <Condition Binding="{Binding SelectedScanner.IsSimulator}" Value="False"/>
                                                 </MultiDataTrigger.Conditions>
-                                                
+
                                                 <Setter Property="IsEnabled" Value="True"/>
                                             </MultiDataTrigger>
 
@@ -133,7 +133,7 @@
 
                         <Border Style="{StaticResource imageBar}" Margin="0,0,9,0"/>
 
-                        <DockPanel HorizontalAlignment="Right">
+                        <DockPanel Margin="0,0,9,0" HorizontalAlignment="Right">
 
                             <md:SmartHint DockPanel.Dock="Top" Margin="3,0,3,0" HorizontalAlignment="Center">
                                 <md:SmartHint.Style>
@@ -159,10 +159,9 @@
                                 </md:SmartHint.Style>
                             </md:SmartHint>
 
-                            <Slider Value="{Binding ImagesMaxHeight}" Width="48"
+                            <Slider Value="{Binding ImagesMaxHeight}" Width="48" Height="24"
                                     Minimum="100" Maximum="400" TickPlacement="BottomRight" TickFrequency="100"
                                     Style="{StaticResource MahApps.Styles.Slider.Flat}"
-                                    Height="24"
                                     mah:SliderHelper.ChangeValueBy="LargeChange" IsSnapToTickEnabled="True"/>
 
                         </DockPanel>
@@ -188,7 +187,32 @@
                                                             Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"/>
                             </Grid>
                         </ToggleButton>
-                        
+
+                        <ToggleButton IsChecked="{Binding ShowExtendedData}" Width="48" 
+                                      Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                      Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}">
+                            <ToggleButton.Style>
+                                <Style TargetType="ToggleButton" BasedOn="{StaticResource MaterialDesignActionToggleButton}">
+                                    <Setter Property="ToolTip" Value="Hiding 2D grid data."/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ShowExtendedData}" Value="True">
+                                            <Setter Property="ToolTip" Value="Displaying 2D grid data."/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ToggleButton.Style>
+
+                            <md:ToggleButtonAssist.OnContent>
+                                <Grid>
+                                    <iconPacks:PackIconModern Kind="Grid" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                    <iconPacks:PackIconJamIcons Kind="QrCode" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                </Grid>
+                            </md:ToggleButtonAssist.OnContent>
+                            <Grid>
+                                <iconPacks:PackIconJamIcons Kind="QrCode" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            </Grid>
+                        </ToggleButton>
+
                     </DockPanel>
                 </DockPanel>
             </md:Card>

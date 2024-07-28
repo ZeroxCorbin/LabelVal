@@ -459,7 +459,8 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         };
         drwGroup.Children.Add(sectorCenters);
 
-        drwGroup.Children.Add(GetModuleGrid(sectors));
+        if(ShowExtendedData)
+            drwGroup.Children.Add(GetModuleGrid(sectors));
 
         DrawingImage geometryImage = new(drwGroup);
         geometryImage.Freeze();
