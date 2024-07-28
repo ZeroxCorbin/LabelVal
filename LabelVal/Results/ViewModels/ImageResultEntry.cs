@@ -40,6 +40,31 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
 
     [ObservableProperty] private int imagesMaxHeight = App.Settings.GetValue<int>(nameof(ImagesMaxHeight));
     [ObservableProperty] private bool dualSectorColumns = App.Settings.GetValue<bool>(nameof(DualSectorColumns));
+    [ObservableProperty] private bool showExtendedData = App.Settings.GetValue<bool>(nameof(ShowExtendedData));
+    partial void OnShowExtendedDataChanged(bool value)
+    {
+        if (value)
+        {
+            //if(V275StoredImage != null)
+            //    V275StoredImageOverlay = V275CreateSectorsImageOverlay(V275StoredImage, V275StoredSectors);
+
+            //if (V275CurrentImage != null)
+            //    V275CurrentImageOverlay = V275CreateSectorsImageOverlay(V275CurrentImage, V275CurrentSectors);
+
+            //if (V5StoredImage != null)
+            //    V5StoredImageOverlay = V5CreateSectorsImageOverlay(V5ResultRow._Report, V5StoredImage);
+
+            //if (V5CurrentImage != null)
+            //    V5CurrentImageOverlay = V5CreateSectorsImageOverlay(V5CurrentReport, V5CurrentImage);
+        }
+        else
+        {
+            V275StoredImageOverlay = null;
+            V275CurrentImageOverlay = null;
+            V5StoredImageOverlay = null;
+            V5CurrentImageOverlay = null;
+        }
+    }
 
     [ObservableProperty] private bool showPrinterAreaOverSource;
     [ObservableProperty] private DrawingImage printerAreaOverlay;
@@ -55,16 +80,16 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
     [ObservableProperty] private bool showDetails;
     partial void OnShowDetailsChanged(bool value)
     {
-        if(value)
-        {
-            SourceImage?.InitPrinterVariables(SelectedPrinter);
+        //if(value)
+        //{
+        //    SourceImage?.InitPrinterVariables(SelectedPrinter);
 
-            V275CurrentImage?.InitPrinterVariables(SelectedPrinter);
-            V275StoredImage?.InitPrinterVariables(SelectedPrinter);
+        //    V275CurrentImage?.InitPrinterVariables(SelectedPrinter);
+        //    V275StoredImage?.InitPrinterVariables(SelectedPrinter);
 
-            V5CurrentImage?.InitPrinterVariables(SelectedPrinter);
-            V5StoredImage?.InitPrinterVariables(SelectedPrinter);
-        }
+        //    V5CurrentImage?.InitPrinterVariables(SelectedPrinter);
+        //    V5StoredImage?.InitPrinterVariables(SelectedPrinter);
+        //}
     }
 
     public ImageResultEntry(ImageEntry sourceImage, ImageResults imageResults)
@@ -81,6 +106,8 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
                 ImagesMaxHeight = App.Settings.GetValue<int>(nameof(ImagesMaxHeight));
             else if (e.PropertyName == nameof(DualSectorColumns))
                 DualSectorColumns = App.Settings.GetValue<bool>(nameof(DualSectorColumns));
+            else if (e.PropertyName == nameof(ShowExtendedData))
+                ShowExtendedData = App.Settings.GetValue<bool>(nameof(ShowExtendedData));
         };
     }
 

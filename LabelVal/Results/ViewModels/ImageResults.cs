@@ -44,6 +44,9 @@ public partial class ImageResults : ObservableRecipient,
     [ObservableProperty] private bool dualSectorColumns = App.Settings.GetValue(nameof(DualSectorColumns), false, true);
     partial void OnDualSectorColumnsChanged(bool value) => App.Settings.SetValue(nameof(DualSectorColumns), value);
 
+    [ObservableProperty] private bool showExtendedData = App.Settings.GetValue(nameof(ShowExtendedData), true, true);
+    partial void OnShowExtendedDataChanged(bool value) => App.Settings.SetValue(nameof(ShowExtendedData), value);
+
     public ObservableCollection<ImageResultEntry> ImageResultsList { get; } = [];
 
     [ObservableProperty] private Node selectedNode;
