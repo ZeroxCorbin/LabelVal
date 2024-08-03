@@ -134,13 +134,19 @@ public interface ISectorDifferences
 {
     public static SectorDifferencesSettings Settings { get; } = new SectorDifferencesSettings();
 
+    string Name { get; set; }
     string UserName { get; set; }
-    string Type { get; set; }
+
+    string SymbolType { get; set; }
+
     string Units { get; set; }
-    bool IsNotOCVMatch { get; set; }
+
     string OCVMatchText { get; set; }
+    bool IsNotOCVMatch { get; set; }
+
     bool IsSectorMissing { get; set; }
     string SectorMissingText { get; set; }
+
     bool IsNotEmpty { get; set; }
 
     ObservableCollection<GradeValue> GradeValues { get; }

@@ -191,7 +191,6 @@
 
                     <DockPanel>
 
-
                         <!--Decode Text & OCR-->
                         <TextBlock Margin="3,0" Name="txtDecodeText">
                             <TextBlock.Style>

@@ -86,7 +86,7 @@ public class Sector : ISector
             Standard = sector.gradingStandard.enabled ? StandardsTypes.GS1 : StandardsTypes.ISO15415_15416;
 
         if (Standard == StandardsTypes.GS1)
-            GS1Table = V275GetGS1Table(sector.gradingStandard.tableId);
+            GS1Table = GetGS1Table(sector.gradingStandard.tableId);
 
         int highCat = 0;
         foreach (Alarm alm in SectorDifferences.Alarms)
@@ -99,7 +99,7 @@ public class Sector : ISector
             IsError = true;
     }
 
-    private GS1TableNames V275GetGS1Table(string tableId)
+    private GS1TableNames GetGS1Table(string tableId)
     => tableId switch
     {
         "1" => GS1TableNames._1,

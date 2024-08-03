@@ -10,13 +10,19 @@ namespace LabelVal.LVS_95xx.Sectors;
 
 public partial class SectorDifferences : ObservableObject, ISectorDifferences
 {
+    [ObservableProperty] private string name;
     [ObservableProperty] private string userName;
-    [ObservableProperty] private string type;
+
+    [ObservableProperty] private string symbolType;
+
     [ObservableProperty] private string units;
+
     [ObservableProperty] private bool isNotOCVMatch = false;
     [ObservableProperty] private string oCVMatchText;
+
     [ObservableProperty] private bool isSectorMissing;
     [ObservableProperty] private string sectorMissingText;
+
     [ObservableProperty] private bool isNotEmpty = false;
 
     public ObservableCollection<GradeValue> GradeValues { get; } = [];
@@ -26,15 +32,17 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
     public ObservableCollection<Value_> Values { get; } = [];
     public ObservableCollection<Alarm> Alarms { get; } = [];
     public ObservableCollection<Blemish> Blemishes { get; } = [];
+   
     public ISectorDifferences Compare(ISectorDifferences compare)
     {
         var results = new SectorDifferences
         {
+            Name = Name,
             UserName = UserName,
-            Type = Type
+            SymbolType = SymbolType
         };
 
-        if (Type is "ocr" or "ocr")
+        if (SymbolType is "ocr" or "ocr")
         {
             if (!OCVMatchText.Equals(compare.OCVMatchText))
             {

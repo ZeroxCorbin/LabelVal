@@ -25,12 +25,12 @@ public interface ITemplate
     double Width { get; set; }
     double Height { get; set; }
     double AngleDeg { get; set; }
+    double Orientation { get; set; }
 
     Point CenterPoint { get; set; }
 
     string SymbologyType { get; set; }
 
-    public double Orientation { get; set; }
     TemplateMatchMode MatchSettings { get; set; }
     BlemishMaskLayers BlemishMask { get; set; }
 }

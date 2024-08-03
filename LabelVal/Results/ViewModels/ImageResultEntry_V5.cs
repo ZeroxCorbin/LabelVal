@@ -3,12 +3,9 @@ using CommunityToolkit.Mvvm.Input;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Results.Databases;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Media;
 using V5_REST_Lib.Models;
 
@@ -133,8 +130,8 @@ public partial class ImageResultEntry
         V5CurrentSectors.Clear();
 
         List<Sectors.Interfaces.ISector> tempSectors = [];
-        foreach (var rSec in V5CurrentReport._event.data.decodeData)
-          tempSectors.Add(new V5.Sectors.Sector(rSec, V5CurrentTemplate.response.data.job.toolList[rSec.toolSlot-1], $"DecodeTool{rSec.toolSlot}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
+        foreach (ResultsAlt.Decodedata rSec in V5CurrentReport._event.data.decodeData)
+            tempSectors.Add(new V5.Sectors.Sector(rSec, V5CurrentTemplate.response.data.job.toolList[rSec.toolSlot - 1], $"DecodeTool{rSec.toolSlot.ToString()}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
 
         if (tempSectors.Count > 0)
         {
@@ -147,7 +144,7 @@ public partial class ImageResultEntry
         V5GetSectorDiff();
 
         V5CurrentImageOverlay = CreateSectorsImageOverlay(V5CurrentImage, V5CurrentSectors);
-       
+
         return true;
     }
     [RelayCommand] private void V5Load() => _ = V5LoadTask();
@@ -167,7 +164,7 @@ public partial class ImageResultEntry
             return;
         }
 
-        if(V5ResultRow.Report == null || V5ResultRow.Template == null)
+        if (V5ResultRow.Report == null || V5ResultRow.Template == null)
         {
             LogDebug("V5 result is missing data.");
             return;
@@ -176,8 +173,8 @@ public partial class ImageResultEntry
         List<Sectors.Interfaces.ISector> tempSectors = [];
         if (!string.IsNullOrEmpty(V5ResultRow.Report))
         {
-            foreach (var rSec in V5ResultRow._Report._event.data.decodeData)
-                tempSectors.Add(new V5.Sectors.Sector(rSec, V5ResultRow._Config.response.data.job.toolList[rSec.toolSlot-1], $"DecodeTool{rSec.toolSlot}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
+            foreach (ResultsAlt.Decodedata rSec in V5ResultRow._Report._event.data.decodeData)
+                tempSectors.Add(new V5.Sectors.Sector(rSec, V5ResultRow._Config.response.data.job.toolList[rSec.toolSlot - 1], $"DecodeTool{rSec.toolSlot.ToString()}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
         }
 
         if (tempSectors.Count > 0)
@@ -186,8 +183,8 @@ public partial class ImageResultEntry
 
             foreach (Sectors.Interfaces.ISector sec in tempSectors)
                 V5StoredSectors.Add(sec);
-        } 
-        
+        }
+
         V5StoredImageOverlay = CreateSectorsImageOverlay(V5StoredImage, V5StoredSectors);
     }
     private void V5GetSectorDiff()

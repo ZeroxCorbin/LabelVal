@@ -98,6 +98,4 @@ public class Sector : ISector
         else if (highCat == 2)
             IsError = true;
     }
-    private StandardsTypes L95xxGetStandard(List<string> spl) => StandardsTypes.None;
-
 }

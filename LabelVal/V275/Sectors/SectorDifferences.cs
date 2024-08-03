@@ -10,8 +10,9 @@ namespace LabelVal.V275.Sectors;
 
 public partial class SectorDifferences : ObservableObject, ISectorDifferences
 {
+    [ObservableProperty] private string name;
     [ObservableProperty] private string userName;
-    [ObservableProperty] private string type;
+    [ObservableProperty] private string symbolType;
     [ObservableProperty] private string units;
     [ObservableProperty] private bool isNotOCVMatch = false;
     [ObservableProperty] private string oCVMatchText;
@@ -33,11 +34,12 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
     {
         var results = new SectorDifferences
         {
+            Name = Name,
             UserName = UserName,
-            Type = Type
+            SymbolType = SymbolType
         };
 
-        if (Type is "ocr" or "ocr")
+        if (SymbolType is "ocr" or "ocr")
         {
             if (!OCVMatchText.Equals(compare.OCVMatchText))
             {
@@ -198,7 +200,7 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
         foreach (var prop in verify.GetType().GetProperties())
         {
             if (prop.Name == "type")
-                Type = prop.GetValue(verify).ToString();
+                SymbolType = prop.GetValue(verify).ToString();
 
             if (prop.Name == "data")
                 foreach (var prop1 in prop.GetValue(verify).GetType().GetProperties())
@@ -206,7 +208,7 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
                     if (prop1.Name == "lengthUnit")
                         Units = (string)prop1.GetValue(prop.GetValue(verify));
 
-                    if (Type is "ocr" or "ocv")
+                    if (SymbolType is "ocr" or "ocv")
                     {
                         if (prop1.Name == "text")
                             OCVMatchText = (string)prop1.GetValue(prop.GetValue(verify));
@@ -232,7 +234,7 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
                             GradeValues.Add(new GradeValue(prop1.Name, dat.value, new Grade(prop1.Name, dat.grade.value, dat.grade.letter)));
 
                             if (dat.edgeDetermination != null)
-                                if (Type == "verify1D")
+                                if (SymbolType == "verify1D")
                                     ValueResults.Add(new ValueResult("edgeDetermination", dat.edgeDetermination.value, dat.edgeDetermination.result));
 
                             IsNotEmpty = true;

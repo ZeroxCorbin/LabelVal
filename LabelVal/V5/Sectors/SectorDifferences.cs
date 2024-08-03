@@ -1,18 +1,17 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using LabelVal.Sectors.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using V275_REST_lib.Models;
 using V5_REST_Lib.Models;
 
 namespace LabelVal.V5.Sectors;
 
 public partial class SectorDifferences : ObservableObject, ISectorDifferences
 {
+    [ObservableProperty] private string name;
     [ObservableProperty] private string userName;
-    [ObservableProperty] private string type;
+    [ObservableProperty] private string symbolType;
     [ObservableProperty] private string units;
     [ObservableProperty] private bool isNotOCVMatch = false;
     [ObservableProperty] private string oCVMatchText;
@@ -30,13 +29,14 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
 
     public ISectorDifferences Compare(ISectorDifferences compare)
     {
-        var results = new SectorDifferences
+        SectorDifferences results = new()
         {
+            Name = Name,
             UserName = UserName,
-            Type = Type
+            SymbolType = SymbolType
         };
 
-        if (Type is "ocr" or "ocr")
+        if (SymbolType is "ocr" or "ocr")
         {
             if (!OCVMatchText.Equals(compare.OCVMatchText))
             {
@@ -49,7 +49,7 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
             }
         }
 
-        foreach (var src in GradeValues)
+        foreach (GradeValue src in GradeValues)
             if (compare.GradeValues.FirstOrDefault((x) => x.Name == src.Name) is GradeValue cmp)
             {
                 if (cmp == null) continue;
@@ -66,7 +66,7 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
                 results.IsNotEmpty = true;
             }
 
-        foreach (var src in ValueResults)
+        foreach (ValueResult src in ValueResults)
             if (compare.ValueResults.FirstOrDefault((x) => x.Name == src.Name) is ValueResult cmp)
             {
                 if (cmp == null) continue;
@@ -83,7 +83,7 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
                 results.IsNotEmpty = true;
             }
 
-        foreach (var src in Values)
+        foreach (Value_ src in Values)
             if (compare.Values.FirstOrDefault((x) => x.Name == src.Name) is Value_ cmp)
             {
                 if (cmp == null) continue;
@@ -100,7 +100,7 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
                 results.IsNotEmpty = true;
             }
 
-        foreach (var src in Gs1ValueResults)
+        foreach (ValueResult src in Gs1ValueResults)
             if (compare.Gs1ValueResults.FirstOrDefault((x) => x.Name == src.Name) is ValueResult cmp)
             {
                 if (cmp == null) continue;
@@ -117,7 +117,7 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
                 results.IsNotEmpty = true;
             }
 
-        foreach (var src in Gs1Grades)
+        foreach (Grade src in Gs1Grades)
             if (compare.Gs1Grades.FirstOrDefault((x) => x.Name == src.Name) is Grade cmp)
             {
                 if (cmp == null) continue;
@@ -134,10 +134,10 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
                 results.IsNotEmpty = true;
             }
 
-        foreach (var aS in Alarms)
+        foreach (Alarm aS in Alarms)
         {
-            var found = false;
-            foreach (var aC in compare.Alarms)
+            bool found = false;
+            foreach (Alarm aC in compare.Alarms)
             {
                 //if (Type != "blemish")
                 //{
@@ -160,10 +160,10 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
             }
         }
 
-        foreach (var aS in compare.Alarms)
+        foreach (Alarm aS in compare.Alarms)
         {
-            var found = false;
-            foreach (var aC in Alarms)
+            bool found = false;
+            foreach (Alarm aC in Alarms)
             {
                 //if (Type != "blemish")
                 //{
@@ -196,7 +196,7 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
         UserName = userName;
         IsNotEmpty = false;
 
-        Type = V5GetSymbolType(results);
+        SymbolType = V5GetSymbolType(results);
         Units = "mil";
 
         OCVMatchText = null;
@@ -209,7 +209,7 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
         Gs1ValueResults.Clear();
         Gs1Grades.Clear();
 
-        if (Type == "verify2D" && results.grading.iso15415 != null)
+        if (SymbolType == "verify2D" && results.grading.iso15415 != null)
         {
             IsNotEmpty = true;
 
@@ -228,7 +228,7 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
             GradeValues.Add(new GradeValue("fixedPatternDamage", results.grading.iso15415.fixedPatternDamage.value, new Grade("fixedPatternDamage", results.grading.iso15415.fixedPatternDamage.grade, V5GetGradeLetter(results.grading.iso15415.fixedPatternDamage.letter))));
 
         }
-        else if (Type == "verify1D" && results.grading.iso15416 is { overall: not null })
+        else if (SymbolType == "verify1D" && results.grading.iso15416 is { overall: not null })
         {
             IsNotEmpty = true;
 
@@ -246,13 +246,12 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
 
             GradeValues.Add(new GradeValue("minimumReflectance", results.grading.iso15416.minimumReflectance.value, new Grade("minimumReflectance", results.grading.iso15416.minimumReflectance.grade, V5GetGradeLetter(results.grading.iso15416.minimumReflectance.letter))));
 
-
             ValueResults.Add(new ValueResult("edgeDetermination", results.grading.iso15416.edgeDetermination.value, results.grading.iso15416.edgeDetermination.letter == 65 ? "PASS" : "FAIL"));
 
             ValueResults.Add(new ValueResult("quietZone", results.grading.iso15416.quietZone.value, results.grading.iso15416.quietZone.letter == 65 ? "PASS" : "FAIL"));
         }
 
-        if (Type == "verify2D")
+        if (SymbolType == "verify2D")
         {
             if (results.Datamatrix != null)
             {
@@ -273,7 +272,7 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
                 Values.Add(new Value_("locatorCount", results.QR.locator.Count()));
             }
         }
-        else if (Type == "verify1D")
+        else if (SymbolType == "verify1D")
         {
             if (results.Code128 != null)
                 Values.Add(new Value_("barCount", results.Code128.barCount));
@@ -289,7 +288,6 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
                 Values.Add(new Value_("supplemental", results.UPC.supplemental));
             }
         }
-
     }
 
     private static string V5GetGradeLetter(int grade) => grade switch
@@ -309,8 +307,6 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
             return "verify2D";
         else if (results.QR != null)
             return "verify2D";
-        else if (results.PDF417 != null)
-            return "verify1D";
-        else return results.UPC != null ? "verify1D" : "Unknown";
+        else return results.PDF417 != null ? "verify1D" : results.UPC != null ? "verify1D" : "Unknown";
     }
 }
