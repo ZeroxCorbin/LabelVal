@@ -30,20 +30,22 @@
         <Image x:Key="flaw" Source="/Assets/Images/FlawTool.png" />
     </UserControl.Resources>
 
-    <md:Card MaxWidth="260" Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="3" Padding="0">
+    <md:Card Margin="3" Padding="0" 
+             Background="{DynamicResource MahApps.Brushes.ThemeBackground}" 
+             Foreground="{DynamicResource MahApps.Brushes.Text}" >
+
         <StackPanel Margin="3">
 
             <!--Name, Wrong Standard, Overall Grade String-->
-            <DockPanel>
-
+            <DockPanel DockPanel.Dock="Top" Margin="3">
                 <TextBlock DockPanel.Dock="Top" Text="WRONG STANDARD" HorizontalAlignment="Center" Background="{DynamicResource SectorError_Brush}"
-                       Visibility="{Binding IsWrongStandard, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneTime}"/>
+                    Visibility="{Binding IsWrongStandard, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneTime}"/>
 
                 <TextBlock Text="{Binding Template.Username, Mode=OneTime}"/>
 
                 <TextBlock Text="{Binding Report.OverallGradeString}" HorizontalAlignment="Right"/>
             </DockPanel>
-
+                
             <!--Icon, Symbology, Decode Text-->
             <DockPanel>
 
@@ -127,7 +129,6 @@
 
                                 <Style.Triggers>
                                     <DataTrigger Value="verify1D" Binding="{Binding Report.Type, Mode=OneTime}">
-                                        <!--<Setter Property="Text" Value="{Binding Report.DecodeText, Mode=OneTime}"/>-->
                                         <Setter Property="Text">
                                             <Setter.Value>
                                                 <MultiBinding StringFormat="{}{0}{1}">
@@ -138,7 +139,6 @@
                                         </Setter>
                                     </DataTrigger>
                                     <DataTrigger Value="verify2D" Binding="{Binding Report.Type, Mode=OneTime}">
-                                        <!--<Setter Property="Text" Value="{Binding Report.DecodeText, Mode=OneTime}"/>-->
                                         <Setter Property="Text">
                                             <Setter.Value>
                                                 <MultiBinding StringFormat="{}{0}{1}">
@@ -156,12 +156,12 @@
                                     <DataTrigger Value="ocv" Binding="{Binding Report.Type, Mode=OneTime}">
                                         <Setter Property="Text" Value="{Binding Report.Text, Mode=OneTime}"/>
                                     </DataTrigger>
+                                    
                                     <DataTrigger Value="blemish" Binding="{Binding Report.Type, Mode=OneTime}">
                                         <Setter Property="Text" Value=""/>
                                     </DataTrigger>
 
                                     <DataTrigger Value="unknown" Binding="{Binding Report.Type, Mode=OneTime}">
-                                        <!--<Setter Property="Text" Value="{Binding Report.DecodeText, Mode=OneTime}"/>-->
                                         <Setter Property="Text">
                                             <Setter.Value>
                                                 <MultiBinding StringFormat="{}{0}{1}">
@@ -175,6 +175,7 @@
                             </Style>
                         </TextBlock.Style>
                     </TextBlock>
+                    
                 </DockPanel>
 
                 <!--Overall Grade Button-->
@@ -183,6 +184,7 @@
                         <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Square.Accent}">
                             <Setter Property="Background" Value="{DynamicResource CB_Green}"/>
                             <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}"/>
+                            
                             <Style.Triggers>
                                 <DataTrigger Value="True" Binding="{Binding IsError, Mode=OneTime}">
                                     <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}"/>
@@ -203,7 +205,6 @@
                                 <DataTrigger Value="F" Binding="{Binding Report.OverallGradeLetter, Mode=OneTime}">
                                     <Setter Property="Background" Value="{DynamicResource ISO_GradeF_Brush}"/>
                                 </DataTrigger>
-
 
                             </Style.Triggers>
                         </Style>
@@ -238,7 +239,6 @@
                         </TextBlock>
                     </Button.Content>
                 </Button>
-
 
             </DockPanel>
 

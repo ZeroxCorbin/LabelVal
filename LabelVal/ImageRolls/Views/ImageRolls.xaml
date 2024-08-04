@@ -142,12 +142,12 @@
                             <iconPacks:PackIconMaterial.Style>
                                 <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
                                     <Setter Property="Kind" Value="FormatListNumbered"/>
-                                    <Setter Property="ToolTip" Value="Images are stored."/>
+                                    <Setter Property="ToolTip" Value="The template sectors are shared."/>
 
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding WriteSectorsBeforeProcess}" Value="True">
                                             <Setter Property="Kind" Value="PlaylistEdit"/>
-                                            <Setter Property="ToolTip" Value="Images are rooted."/>
+                                            <Setter Property="ToolTip" Value="The template sectors are independant."/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>

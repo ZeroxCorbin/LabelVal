@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using ControlzEx.Theming;
+using GS1.Encoders;
 using LabelVal.Messages;
 using LibSimpleDatabase;
 using NLog;
@@ -24,6 +25,8 @@ public partial class App : Application
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
     public static SimpleDatabase Settings { get; private set; }
+
+    public static GS1Encoder GS1Encoder = new GS1Encoder();
 
 #if DEBUG
     public static string WorkingDir => Directory.GetCurrentDirectory();

@@ -11,13 +11,13 @@ public class ShortenString : IValueConverter
         if (value is string s)
         {
             int len = s.Length;
-            if (len <= 10)
+            if (len <= 12)
             {
                 return s;
             }
             else
-                len = 10;
-            return s[..len] + " (...)";
+                len = 12;
+            return s[..len] + "...";
         }
         return value;
     }

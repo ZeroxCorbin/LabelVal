@@ -44,27 +44,17 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
     [ObservableProperty] private bool showExtendedData = App.Settings.GetValue<bool>(nameof(ShowExtendedData));
     partial void OnShowExtendedDataChanged(bool value)
     {
-        if (value)
-        {
-            //if(V275StoredImage != null)
-            //    V275StoredImageOverlay = V275CreateSectorsImageOverlay(V275StoredImage, V275StoredSectors);
+        if (V275StoredImage != null)
+            V275StoredImageOverlay = CreateSectorsImageOverlay(V275StoredImage, V275StoredSectors);
 
-            //if (V275CurrentImage != null)
-            //    V275CurrentImageOverlay = V275CreateSectorsImageOverlay(V275CurrentImage, V275CurrentSectors);
+        if (V275CurrentImage != null)
+            V275CurrentImageOverlay = CreateSectorsImageOverlay(V275CurrentImage, V275CurrentSectors);
 
-            //if (V5StoredImage != null)
-            //    V5StoredImageOverlay = V5CreateSectorsImageOverlay(V5ResultRow._Report, V5StoredImage);
+        if (V5StoredImage != null)
+            V5StoredImageOverlay = CreateSectorsImageOverlay(V5StoredImage, V5StoredSectors);
 
-            //if (V5CurrentImage != null)
-            //    V5CurrentImageOverlay = V5CreateSectorsImageOverlay(V5CurrentReport, V5CurrentImage);
-        }
-        else
-        {
-            V275StoredImageOverlay = null;
-            V275CurrentImageOverlay = null;
-            V5StoredImageOverlay = null;
-            V5CurrentImageOverlay = null;
-        }
+        if (V5CurrentImage != null)
+            V5CurrentImageOverlay = CreateSectorsImageOverlay(V5CurrentImage, V5CurrentSectors);
     }
 
     [ObservableProperty] private bool showPrinterAreaOverSource;

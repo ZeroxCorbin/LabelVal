@@ -1,0 +1,27 @@
+﻿<UserControl x:Class="LabelVal.Sectors.Views.PopupGS1DecodeText"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:LabelVal.Sectors.Views"
+             xmlns:v275Converters="clr-namespace:LabelVal.V275.Converters"
+             mc:Ignorable="d">
+    
+    <UserControl.Resources>
+        <v275Converters:V275_GS1FormattedOutput x:Key="gs1FormattedOutput"/>
+    </UserControl.Resources>
+
+    <Popup x:Name="Popup" StaysOpen="False">
+
+        <Border Padding="3" BorderThickness="2"
+                BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+
+            <Border BorderThickness="1" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="2">
+                <TextBlock Text="{Binding Report.DecodeText, Converter={StaticResource gs1FormattedOutput}}"  Margin="3"/>
+            </Border>
+        </Border>
+        
+    </Popup>
+
+</UserControl>

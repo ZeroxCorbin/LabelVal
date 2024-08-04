@@ -33,11 +33,11 @@ public class ModuleData
 
 public class Gs1results
 {
-    public bool validated { get; set; }
-    public string input { get; set; }
-    public string formattedOut { get; set; }
-    public Fields fields { get; set; }
-    public string error { get; set; }
+    public bool Validated { get; set; }
+    public string Input { get; set; }
+    public string FormattedOut { get; set; }
+    public Fields Fields { get; set; }
+    public string Error { get; set; }
 }
 
 public class Fields

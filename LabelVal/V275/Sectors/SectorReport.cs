@@ -57,16 +57,16 @@ public class Report : IReport
                 {
                     GS1Results = new Gs1results
                     {
-                        validated = v1D.data.gs1Results.validated,
-                        input = v1D.data.gs1Results.input,
-                        formattedOut = v1D.data.gs1Results.formattedOut,
-                        fields = new Fields
+                        Validated = v1D.data.gs1Results.validated,
+                        Input = v1D.data.gs1Results.input,
+                        FormattedOut = v1D.data.gs1Results.formattedOut,
+                        Fields = new Fields
                         {
                             _01 = v1D.data.gs1Results.fields._01,
                             _90 = v1D.data.gs1Results.fields._90,
                             _10 = v1D.data.gs1Results.fields._10
                         },
-                        error = v1D.data.gs1Results.error
+                        Error = v1D.data.gs1Results.error
                     };
                     FormattedOut = v1D.data.gs1Results.formattedOut;
                 }
@@ -96,16 +96,16 @@ public class Report : IReport
                 {
                     GS1Results = new Gs1results
                     {
-                        validated = v2D.data.gs1Results.validated,
-                        input = v2D.data.gs1Results.input,
-                        formattedOut = v2D.data.gs1Results.formattedOut,
-                        fields = new Fields
+                        Validated = v2D.data.gs1Results.validated,
+                        Input = v2D.data.gs1Results.input,
+                        FormattedOut = v2D.data.gs1Results.formattedOut,
+                        Fields = new Fields
                         {
                             _01 = v2D.data.gs1Results.fields._01,
                             _90 = v2D.data.gs1Results.fields._90,
                             _10 = v2D.data.gs1Results.fields._10
                         },
-                        error = v2D.data.gs1Results.error
+                        Error = v2D.data.gs1Results.error
                     };
                     FormattedOut = v2D.data.gs1Results.formattedOut;
                 }

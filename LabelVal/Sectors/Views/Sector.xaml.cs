@@ -18,6 +18,8 @@ public partial class Sector : UserControl
 
     private Results.ViewModels.IImageResultEntry ImageResultEntry { get; set; }
 
+    private PopupGS1DecodeText popGS1DecodeText = new();
+
     public bool IsSectorFocused => GroupName switch
     {
         "v275Stored" => ImageResultEntry.V275FocusedStoredSector != null,
@@ -62,7 +64,8 @@ public partial class Sector : UserControl
 
     private void btnGS1DecodeText_Click(object sender, RoutedEventArgs e)
     {
-        popGS1DecodeText.IsOpen = true;
+        popGS1DecodeText.Popup.PlacementTarget = gs1AiTextPopAnchor;
+        popGS1DecodeText.Popup.IsOpen = true;
     }
 
     private void btnOverallGrade_Click(object sender, RoutedEventArgs e)

@@ -1430,6 +1430,7 @@
 		</BootstrapperPackage>
 	</ItemGroup>
 	<ItemGroup>
+		<ProjectReference Include="..\..\gs1-syntax-engine\src\dotnet-lib\gs1encoders-dotnet-lib.csproj" />
 		<ProjectReference Include="..\..\JSONViewer_WPF\JSONViewer_WPF.csproj" />
 		<ProjectReference Include="..\..\LibDatabases\LibSimpleDatabase\LibSimpleDatabase.csproj" />
 		<ProjectReference Include="..\..\LibStaticUtilities\LibStaticUtilities\LibStaticUtilities.csproj" />
@@ -1548,4 +1549,7 @@
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+	  <Exec Command="xcopy /y /d &quot;C:\Users\Jack\GitHub\gs1-syntax-engine\src\c-lib\build\library\x64\$(Configuration)\gs1encoders.dll&quot; &quot;bin\$(Configuration)\$(TargetFramework)\&quot;" />
+	</Target>
 </Project>
