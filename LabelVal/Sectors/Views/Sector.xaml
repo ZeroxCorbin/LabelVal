@@ -410,9 +410,5 @@
             </Border>
 
         </DockPanel>
-
-
     </md:Card>
-
-
 </UserControl>

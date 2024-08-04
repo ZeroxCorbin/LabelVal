@@ -1430,13 +1430,13 @@
 		</BootstrapperPackage>
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\..\gs1-syntax-engine\src\dotnet-lib\gs1encoders-dotnet-lib.csproj" />
 		<ProjectReference Include="..\..\JSONViewer_WPF\JSONViewer_WPF.csproj" />
 		<ProjectReference Include="..\..\LibDatabases\LibSimpleDatabase\LibSimpleDatabase.csproj" />
 		<ProjectReference Include="..\..\LibStaticUtilities\LibStaticUtilities\LibStaticUtilities.csproj" />
 		<ProjectReference Include="..\..\RingBuffer\RingBuffer\RingBuffer.csproj" />
 		<ProjectReference Include="..\..\V275_REST_Lib\V275_REST_Lib.csproj" />
 		<ProjectReference Include="..\..\V5_REST_Lib\V5_REST_Lib.csproj" />
+		<ProjectReference Include="..\..\_Others\gs1-syntax-engine\src\dotnet-lib\gs1encoders-dotnet-lib.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />

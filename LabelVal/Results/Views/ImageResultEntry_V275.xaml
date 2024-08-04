@@ -140,8 +140,8 @@
                     </DockPanel.Style>
 
                     <md:Card HorizontalAlignment="Left" DockPanel.Dock="Top" Margin="3,3,0,0"
-                         Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
-                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+                             Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                             Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
                         <DockPanel>
 
@@ -224,16 +224,14 @@
                     </md:Card>
 
                     <ScrollViewer Margin="3" x:Name="ScrollV275StoredSectors" VerticalScrollBarVisibility="Auto"
-                          mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
-                          ScrollChanged="ScrollV275StoredSectors_ScrollChanged">
+                                  mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
+                                  ScrollChanged="ScrollV275StoredSectors_ScrollChanged">
 
                         <DockPanel>
 
-                            <GroupBox Margin="3" Padding="3"
-                                        md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                                        md:ColorZoneAssist.Mode="Custom">
-                                <GroupBox.Style>
-                                    <Style TargetType="GroupBox" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
+                            <DockPanel>
+                                <DockPanel.Style>
+                                    <Style TargetType="DockPanel">
                                         <Setter Property="Visibility" Value="Visible"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding V275FocusedStoredSector, Converter={StaticResource objectIsNull}}" Value="True">
@@ -241,31 +239,37 @@
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
-                                </GroupBox.Style>
 
-                                <GroupBox.Header>
-                                    <DockPanel Margin="-5">
-                                        <Button Margin="6,0,3,0" Click="btnSaveImage_Click" Style="{StaticResource GroupHeaderCirlceButton}"
-                                        ToolTip="Save as image.">
-                                            <iconPacks:PackIconMaterial Kind="ContentSave" Height="14" Width="14"/>
-                                        </Button>
+                                </DockPanel.Style>
 
-                                        <Button Click="btnCopyImage_Click" Style="{StaticResource GroupHeaderCirlceButton}"
-                                        ToolTip="Copy image to clipboard as PNG.">
-                                            <iconPacks:PackIconMaterial Kind="ContentCopy" Height="14" Width="14"/>
-                                        </Button>
+                                <md:Card DockPanel.Dock="Top" HorizontalAlignment="Right" Padding="3"
+                                         Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
-                                        <Button Click="btnCloseDetails_Click" Style="{StaticResource GroupHeaderCirlceButton}"
-                                        ToolTip="Close this." HorizontalAlignment="Right" Tag="v275Stored">
-                                            <iconPacks:PackIconMaterial Kind="Close" Height="14" Width="14"/>
-                                        </Button>
+                                    <DockPanel>
+
+                                        <Button Click="btnSaveImage_Click" Width="28"
+                                            Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                            ToolTip="Save as image." Content="{iconPacks:Material Kind=ContentSave}"
+                                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
+
+                                        <Button Click="btnCopyImage_Click" Width="28"
+                                            Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                            ToolTip="Copy image to clipboard as PNG." Content="{iconPacks:MaterialDesign Kind=ContentCopy}"
+                                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
+
+                                        <Button Click="btnCloseDetails_Click" Width="28"
+                                            Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                            ToolTip="Close this." Tag="v275Stored" Content="{iconPacks:MaterialDesign Kind=Close}"
+                                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
+
                                     </DockPanel>
-                                </GroupBox.Header>
+                                </md:Card>
 
                                 <sectors:SectorDetails DataContext="{Binding V275FocusedStoredSector}"/>
-
-                            </GroupBox>
-
+                                
+                            </DockPanel>
+                            
                             <ListView Padding="0,1,0,0" ItemsSource="{Binding V275StoredSectors}" 
                                   SelectedItem="{Binding SelectedSector}"
                                   Tag="v275Stored">
@@ -316,22 +320,23 @@
                                         </WrapPanel>
                                     </ItemsPanelTemplate>
                                 </ListView.ItemsPanel>
-                                
+
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
 
-                                        <sectors:Sector  Background="{DynamicResource AccentColorBrush}"/>
+                                        <sectors:Sector Background="{DynamicResource AccentColorBrush}"/>
 
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
                             </ListView>
+                            
                         </DockPanel>
                     </ScrollViewer>
 
                 </DockPanel>
 
             </DockPanel>
-            
+
             <!--Details-->
             <ContentControl Content="{Binding V275StoredImage, Mode=OneWay}" ContentTemplate="{StaticResource imageDetailsTemplate}">
                 <ContentControl.Style>
@@ -345,10 +350,10 @@
                     </Style>
                 </ContentControl.Style>
             </ContentControl>
-            
+
             <!--Current-->
             <DockPanel>
-                
+
                 <!--V275 Current Image-->
                 <DockPanel DockPanel.Dock="Top" Margin="3,0">
                     <DockPanel.Style>
@@ -400,7 +405,7 @@
                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
 
                             <Border Style="{StaticResource imageBar}" Margin="3,0"/>
-                            
+
                             <!--Save Image-->
                             <Button Command="{Binding SaveCommand}" CommandParameter="v275Current" Width="28"
                                 Style="{StaticResource MahApps.Styles.Button.Hamburger}" 
@@ -598,7 +603,7 @@
                                         </WrapPanel>
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
-                                
+
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="2,1"/>
@@ -624,8 +629,8 @@
                     </DockPanel.Style>
 
                     <md:Card HorizontalAlignment="Left" DockPanel.Dock="Top" Margin="3,3,0,0"
-                     Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
-                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+                             Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                             Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
                         <DockPanel>
 
@@ -660,7 +665,7 @@
                     </ScrollViewer>
 
                 </DockPanel>
-                
+
             </DockPanel>
 
             <!--Details-->
@@ -676,7 +681,7 @@
                     </Style>
                 </ContentControl.Style>
             </ContentControl>
-            
+
         </DockPanel>
 
 

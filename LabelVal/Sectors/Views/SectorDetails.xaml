@@ -209,6 +209,7 @@
                             </Style.Triggers>
                         </Style>
                     </Button.Style>
+                    
                     <Button.Content>
                         <TextBlock>
                             <TextBlock.Style>

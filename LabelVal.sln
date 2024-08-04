@@ -16,7 +16,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibStaticUtilities", "..\Li
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingBuffer", "..\RingBuffer\RingBuffer\RingBuffer.csproj", "{1B984D6C-AD49-40CD-AFCC-B96C4AD8F489}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gs1encoders-dotnet-lib", "..\gs1-syntax-engine\src\dotnet-lib\gs1encoders-dotnet-lib.csproj", "{EFBE8189-27F9-48C6-85A9-1221151BCB00}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gs1encoders-dotnet-lib", "..\_Others\gs1-syntax-engine\src\dotnet-lib\gs1encoders-dotnet-lib.csproj", "{EFBE8189-27F9-48C6-85A9-1221151BCB00}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
