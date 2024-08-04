@@ -17,8 +17,7 @@ internal class V275_GS1FormattedOutput : IValueConverter
         try
         {
             var regex = new Regex(Regex.Escape("\u001d"));
-            string scandata = (string)value;
-            scandata = regex.Replace(scandata, "^");
+            var scandata = regex.Replace((string)value, "^");
             App.GS1Encoder.DataStr = "^" + scandata;
         }
         catch (Exception E)
@@ -32,17 +31,20 @@ internal class V275_GS1FormattedOutput : IValueConverter
                 var regex = new Regex(Regex.Escape("|"));
                 markup = regex.Replace(markup, "⧚", 1);
                 markup = regex.Replace(markup, "⧛", 1);
-                return "AI content validation failed: " + markup;
+                return "AI content validation failed:\n" + markup;
             }
 
             return E.Message;
         }
 
         var sb = new System.Text.StringBuilder();
+        int i = 0;
         foreach (string s in App.GS1Encoder.HRI)
         {
+            if (i++ != 0)
+                sb.Append("\n");
+
             sb.Append(s);
-            sb.Append("\n");
         }
 
         return sb.ToString();
