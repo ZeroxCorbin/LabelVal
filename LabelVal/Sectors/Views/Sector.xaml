@@ -239,14 +239,11 @@
                     <Button.Style>
                         <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
                             <Setter Property="Visibility" Value="Visible"/>
-                            <!--<Style.Triggers>
+                            <Style.Triggers>
                                 <DataTrigger Binding="{Binding Report.GS1Results, Converter={StaticResource objectIsNull}}" Value="True">
                                     <Setter Property="Visibility" Value="Collapsed"/>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Report.FormattedOut}" Value="">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                </DataTrigger>
-                            </Style.Triggers>-->
+                            </Style.Triggers>
                         </Style>
                     </Button.Style>
                 </Button>

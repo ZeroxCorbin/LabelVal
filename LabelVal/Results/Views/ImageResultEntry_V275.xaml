@@ -226,59 +226,17 @@
                     <ScrollViewer Margin="3" x:Name="ScrollV275StoredSectors" VerticalScrollBarVisibility="Auto"
                                   mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
                                   ScrollChanged="ScrollV275StoredSectors_ScrollChanged">
-
-                        <DockPanel>
-
-                            <DockPanel>
-                                <DockPanel.Style>
-                                    <Style TargetType="DockPanel">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding V275FocusedStoredSector, Converter={StaticResource objectIsNull}}" Value="True">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-
-                                </DockPanel.Style>
-
-                                <md:Card DockPanel.Dock="Top" HorizontalAlignment="Right" Padding="3"
-                                         Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
-                                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
-
-                                    <DockPanel>
-
-                                        <Button Click="btnSaveImage_Click" Width="28"
-                                            Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                            ToolTip="Save as image." Content="{iconPacks:Material Kind=ContentSave}"
-                                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
-
-                                        <Button Click="btnCopyImage_Click" Width="28"
-                                            Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                            ToolTip="Copy image to clipboard as PNG." Content="{iconPacks:MaterialDesign Kind=ContentCopy}"
-                                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
-
-                                        <Button Click="btnCloseDetails_Click" Width="28"
-                                            Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                            ToolTip="Close this." Tag="v275Stored" Content="{iconPacks:MaterialDesign Kind=Close}"
-                                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
-
-                                    </DockPanel>
-                                </md:Card>
-
-                                <sectors:SectorDetails DataContext="{Binding V275FocusedStoredSector}"/>
-                                
-                            </DockPanel>
+                        <Grid>
                             
                             <ListView Padding="0,1,0,0" ItemsSource="{Binding V275StoredSectors}" 
                                   SelectedItem="{Binding SelectedSector}"
                                   Tag="v275Stored">
                                 <ListView.Style>
                                     <Style TargetType="ListView" BasedOn="{StaticResource MahApps.Styles.ListView}">
-                                        <Setter Property="Visibility" Value="Visible"/>
+                                        <Setter Property="IsEnabled" Value="True"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding V275FocusedStoredSector, Converter={StaticResource objectIsNull}}" Value="False">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Setter Property="IsEnabled" Value="False"/>
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
@@ -329,8 +287,56 @@
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
                             </ListView>
-                            
-                        </DockPanel>
+
+                            <DockPanel>
+                                <DockPanel.Style>
+                                    <Style TargetType="DockPanel">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding V275FocusedStoredSector, Converter={StaticResource objectIsNull}}" Value="True">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+
+                                </DockPanel.Style>
+
+                                <DockPanel.Background>
+                                    <SolidColorBrush 
+                                        Color="{DynamicResource MahApps.Colors.Accent}"
+                                        Opacity="0.5" />
+                                </DockPanel.Background>
+                                <DockPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    
+                                
+                                <md:Card DockPanel.Dock="Top" HorizontalAlignment="Right" Padding="3"
+                                         Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+
+                                    <DockPanel>
+
+                                        <Button Click="btnSaveImage_Click" Width="28"
+                                            Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                            ToolTip="Save as image." Content="{iconPacks:Material Kind=ContentSave}"
+                                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
+
+                                        <Button Click="btnCopyImage_Click" Width="28"
+                                            Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                            ToolTip="Copy image to clipboard as PNG." Content="{iconPacks:MaterialDesign Kind=ContentCopy}"
+                                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
+
+                                        <Button Click="btnCloseDetails_Click" Width="28"
+                                            Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                            ToolTip="Close this." Tag="v275Stored" Content="{iconPacks:MaterialDesign Kind=Close}"
+                                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
+
+                                    </DockPanel>
+                                </md:Card>
+
+                                <sectors:SectorDetails DataContext="{Binding V275FocusedStoredSector}"/>
+</DockPanel>
+                            </DockPanel>
+                        </Grid>
                     </ScrollViewer>
 
                 </DockPanel>
