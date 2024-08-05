@@ -118,22 +118,9 @@
                     <DockPanel.Style>
                         <Style TargetType="{x:Type DockPanel}">
                             <Setter Property="Visibility" Value="Collapsed"/>
-                            <Setter Property="LayoutTransform">
-                                <Setter.Value>
-                                    <ScaleTransform ScaleX="1" ScaleY="1"/>
-                                </Setter.Value>
-                            </Setter>
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding V275StoredSectors.Count, Converter={StaticResource equalZeroOrNull}}" Value="False">
                                     <Setter Property="Visibility" Value="Visible"/>
-                                </DataTrigger>
-
-                                <DataTrigger Binding="{Binding V275CurrentImage, Converter={StaticResource objectIsNull}}" Value="False">
-                                    <Setter Property="LayoutTransform">
-                                        <Setter.Value>
-                                            <ScaleTransform ScaleX="1" ScaleY="1"/>
-                                        </Setter.Value>
-                                    </Setter>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -227,16 +214,16 @@
                                   mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
                                   ScrollChanged="ScrollV275StoredSectors_ScrollChanged">
                         <Grid>
-                            
+
                             <ListView Padding="0,1,0,0" ItemsSource="{Binding V275StoredSectors}" 
                                   SelectedItem="{Binding SelectedSector}"
                                   Tag="v275Stored">
                                 <ListView.Style>
                                     <Style TargetType="ListView" BasedOn="{StaticResource MahApps.Styles.ListView}">
-                                        <Setter Property="IsEnabled" Value="True"/>
+                                        <Setter Property="Visibility" Value="Visible"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding V275FocusedStoredSector, Converter={StaticResource objectIsNull}}" Value="False">
-                                                <Setter Property="IsEnabled" Value="False"/>
+                                                <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
@@ -251,7 +238,9 @@
                                         <WrapPanel Orientation="Horizontal">
                                             <WrapPanel.Style>
                                                 <Style TargetType="WrapPanel">
+
                                                     <Setter Property="ItemWidth" Value="200"/>
+
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="400">
                                                             <Setter Property="MaxWidth" Value="400"/>
@@ -288,7 +277,7 @@
                                 </ListView.ItemTemplate>
                             </ListView>
 
-                            <DockPanel>
+                            <DockPanel VerticalAlignment="Top" HorizontalAlignment="Center">
                                 <DockPanel.Style>
                                     <Style TargetType="DockPanel">
                                         <Setter Property="Visibility" Value="Visible"/>
@@ -298,22 +287,15 @@
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
-
                                 </DockPanel.Style>
 
-                                <DockPanel.Background>
-                                    <SolidColorBrush 
-                                        Color="{DynamicResource MahApps.Colors.Accent}"
-                                        Opacity="0.5" />
-                                </DockPanel.Background>
-                                <DockPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                                    
-                                
-                                <md:Card DockPanel.Dock="Top" HorizontalAlignment="Right" Padding="3"
+                                <md:Card DockPanel.Dock="Top" HorizontalAlignment="Right" Margin="0,0,0,3"
                                          Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
                                          Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
                                     <DockPanel>
+
+                                        <DockPanel Height="26.62"/>
 
                                         <Button Click="btnSaveImage_Click" Width="28"
                                             Style="{StaticResource MahApps.Styles.Button.Hamburger}"
@@ -333,14 +315,33 @@
                                     </DockPanel>
                                 </md:Card>
 
-                                <sectors:SectorDetails DataContext="{Binding V275FocusedStoredSector}"/>
-</DockPanel>
+                                <sectors:SectorDetails DataContext="{Binding V275FocusedStoredSector}">
+                                    <sectors:SectorDetails.Style>
+                                        <Style TargetType="sectors:SectorDetails">
+                                            <Setter Property="Width" Value="200"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding DataContext.ImagesMaxHeight, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="400">
+                                                    <Setter Property="MaxWidth" Value="400"/>
+                                                    <Setter Property="Width" Value="auto"/>
+                                                </DataTrigger>
+
+                                                <DataTrigger Binding="{Binding DataContext.ImagesMaxHeight, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="300">
+                                                    <Setter Property="MaxWidth" Value="400"/>
+                                                    <Setter Property="Width" Value="auto"/>
+                                                </DataTrigger>
+
+                                                <DataTrigger Binding="{Binding DataContext.DualSectorColumns, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="True">
+                                                    <Setter Property="MaxWidth" Value="400"/>
+                                                    <Setter Property="Width" Value="auto"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </sectors:SectorDetails.Style>
+                                </sectors:SectorDetails>
                             </DockPanel>
                         </Grid>
                     </ScrollViewer>
-
                 </DockPanel>
-
             </DockPanel>
 
             <!--Details-->
@@ -524,44 +525,7 @@
                             mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
                             ScrollChanged="ScrollV275CurrentSectors_ScrollChanged">
 
-                        <DockPanel >
-
-                            <GroupBox Margin="3" Padding="3"
-                            md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                            md:ColorZoneAssist.Mode="Custom">
-                                <GroupBox.Style>
-                                    <Style TargetType="GroupBox" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding V275FocusedCurrentSector, Converter={StaticResource objectIsNull}}" Value="True">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </GroupBox.Style>
-
-                                <GroupBox.Header>
-                                    <DockPanel Margin="-5">
-                                        <Button Margin="6,0,3,0" Click="btnSaveImage_Click" Style="{StaticResource GroupHeaderCirlceButton}"
-                                        ToolTip="Save as image.">
-                                            <iconPacks:PackIconMaterial Kind="ContentSave" Height="14" Width="14"/>
-                                        </Button>
-
-                                        <Button Click="btnCopyImage_Click" Style="{StaticResource GroupHeaderCirlceButton}"
-                                        ToolTip="Copy image to clipboard as PNG.">
-                                            <iconPacks:PackIconMaterial Kind="ContentCopy" Height="14" Width="14"/>
-                                        </Button>
-
-                                        <Button Click="btnCloseDetails_Click" Style="{StaticResource GroupHeaderCirlceButton}"
-                                        ToolTip="Close this." HorizontalAlignment="Right" Tag="v275Current">
-                                            <iconPacks:PackIconMaterial Kind="Close" Height="14" Width="14"/>
-                                        </Button>
-                                    </DockPanel>
-                                </GroupBox.Header>
-
-                                <sectors:SectorDetails DataContext="{Binding V275FocusedCurrentSector}"/>
-
-                            </GroupBox>
+                        <Grid >
 
                             <ItemsControl Padding="0,2,0,0" ItemsSource="{Binding V275CurrentSectors}" 
                                        Tag="v275Current"
@@ -616,7 +580,55 @@
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
-                        </DockPanel>
+
+                            <DockPanel>
+                                <DockPanel.Style>
+                                    <Style TargetType="DockPanel">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding V275FocusedCurrentSector, Converter={StaticResource objectIsNull}}" Value="True">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </DockPanel.Style>
+
+                                <DockPanel.Background>
+                                    <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent}" Opacity="0.5" />
+                                </DockPanel.Background>
+
+                                <DockPanel VerticalAlignment="Top" HorizontalAlignment="Center">
+
+                                    <md:Card DockPanel.Dock="Top" HorizontalAlignment="Right" Padding="3"
+                                         Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+
+                                        <DockPanel>
+
+                                            <Button Click="btnSaveImage_Click" Width="28"
+                                                    Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                                    ToolTip="Save as image." Content="{iconPacks:Material Kind=ContentSave}"
+                                                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
+
+                                            <Button Click="btnCopyImage_Click" Width="28"
+                                                    Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                                    ToolTip="Copy image to clipboard as PNG." Content="{iconPacks:MaterialDesign Kind=ContentCopy}"
+                                                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
+
+                                            <Button Click="btnCloseDetails_Click" Width="28"
+                                                    Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                                    ToolTip="Close this." Tag="v275Current" Content="{iconPacks:MaterialDesign Kind=Close}"
+                                                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
+
+                                        </DockPanel>
+                                    </md:Card>
+
+                                    <sectors:SectorDetails DataContext="{Binding V275FocusedCurrentSector}" Width="200"/>
+
+                                </DockPanel>
+                            </DockPanel>
+
+                        </Grid>
                     </ScrollViewer>
 
                 </DockPanel>
