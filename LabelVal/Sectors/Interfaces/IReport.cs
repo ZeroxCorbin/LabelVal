@@ -69,6 +69,7 @@ public interface IReport
     double Score { get; set; }
     double XDimension { get; set; }
     double Aperture { get; set; }
+    string Units { get; set; }
 
     string OverallGradeString { get; set; }
     double OverallGradeValue { get; set; }

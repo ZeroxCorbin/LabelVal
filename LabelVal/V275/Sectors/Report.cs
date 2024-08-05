@@ -21,6 +21,7 @@ public class Report : IReport
     public double Score { get; set; }
     public double XDimension { get; set; }
     public double Aperture { get; set; }
+    public string Units { get; set; }
 
     public string OverallGradeString { get; set; }
     public double OverallGradeValue { get; set; }
@@ -42,6 +43,8 @@ public class Report : IReport
                 DecodeText = v1D.data.decodeText;
                 XDimension = v1D.data.xDimension;
                 Aperture = v1D.data.aperture;
+
+                Units = v1D.data.lengthUnit;
 
                 Top = v1D.top;
                 Left = v1D.left;
@@ -81,6 +84,8 @@ public class Report : IReport
                 DecodeText = v2D.data.decodeText;
                 XDimension = v2D.data.xDimension;
                 Aperture = v2D.data.aperture;
+
+                Units = v2D.data.lengthUnit;
 
                 Top = v2D.top;
                 Left = v2D.left;

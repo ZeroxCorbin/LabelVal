@@ -9,15 +9,16 @@
             
             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
             xmlns:ViewModels="clr-namespace:LabelVal.Sectors.Interfaces"
-            xmlns:Converters="clr-namespace:LabelVal.Converters"
+            xmlns:converters="clr-namespace:LabelVal.Converters"
             xmlns:V275Converters="clr-namespace:LabelVal.V275.Converters"
              d:DataContext="{d:DesignInstance Type=ViewModels:ISector}"
             mc:Ignorable="d">
 
     <UserControl.Resources>
+        <converters:ObjectIsNull x:Key="objectIsNull"/>
         <BooleanToVisibilityConverter x:Key="booltovis"/>
-        <Converters:StringToUpperSpacedConverter x:Key="stringToUpper"/>
-        <Converters:FloatStringTrimConverter x:Key="floatTrim"/>
+        <converters:StringToUpperSpacedConverter x:Key="stringToUpper"/>
+        <converters:FloatStringTrimConverter x:Key="floatTrim"/>
         <V275Converters:V275_OCMatchModeToString x:Key="MatchModeToString"/>
         <V275Converters:V275_GS1FormattedOutput x:Key="gs1FormattedOutput"/>
 
@@ -34,7 +35,7 @@
         <DockPanel.Background>
             <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent}" Opacity="0.5" />
         </DockPanel.Background>
-        
+
         <md:Card Margin="3" Padding="0" 
              Background="{DynamicResource MahApps.Brushes.ThemeBackground}" 
              Foreground="{DynamicResource MahApps.Brushes.Text}" >
@@ -176,7 +177,9 @@
                         <TextBlock DockPanel.Dock="Top" Margin="3,0" TextWrapping="Wrap">
                             <TextBlock.Style>
                                 <Style TargetType="{x:Type TextBlock}">
-
+                                    
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    
                                     <Style.Triggers>
                                         <DataTrigger Value="verify1D" Binding="{Binding Report.Type, Mode=OneTime}">
                                             <Setter Property="Text" Value="{Binding Report.DecodeText, Converter={StaticResource gs1FormattedOutput}}"/>
@@ -186,21 +189,10 @@
                                             <Setter Property="Text" Value="{Binding Report.DecodeText, Converter={StaticResource gs1FormattedOutput}}"/>
                                         </DataTrigger>
 
-                                        <DataTrigger Value="ocr" Binding="{Binding Report.Type, Mode=OneTime}">
-                                            <Setter Property="Text" Value=""/>
+                                        <DataTrigger Binding="{Binding Report.GS1Results, Converter={StaticResource objectIsNull}}" Value="False">
+                                            <Setter Property="Visibility" Value="Visible"/>
                                         </DataTrigger>
-
-                                        <DataTrigger Value="ocv" Binding="{Binding Report.Type, Mode=OneTime}">
-                                            <Setter Property="Text" Value=""/>
-                                        </DataTrigger>
-
-                                        <DataTrigger Value="blemish" Binding="{Binding Report.Type, Mode=OneTime}">
-                                            <Setter Property="Text" Value=""/>
-                                        </DataTrigger>
-
-                                        <DataTrigger Value="unknown" Binding="{Binding Report.Type, Mode=OneTime}">
-                                            <Setter Property="Text" Value=""/>
-                                        </DataTrigger>
+                                        
                                     </Style.Triggers>
                                 </Style>
                             </TextBlock.Style>
@@ -299,9 +291,13 @@
 
                     <UniformGrid DockPanel.Dock="Top" Rows="1">
                         <TextBox Text="{Binding Report.Aperture}" md:TextFieldAssist.PrefixText="Aperture"
-                             HorizontalAlignment="Center" BorderThickness="0"/>
+                             HorizontalAlignment="Center" BorderThickness="0"
+                             Margin="3,0" IsHitTestVisible="False"
+                             md:TextFieldAssist.SuffixText="{Binding Report.Units}"/>
                         <TextBox Text="{Binding Report.XDimension, StringFormat=N1}" md:TextFieldAssist.PrefixText="X-Dim"
-                             HorizontalAlignment="Left" BorderThickness="0"/>
+                             HorizontalAlignment="Left" BorderThickness="0"
+                              Margin="3,0" IsHitTestVisible="False"
+                             md:TextFieldAssist.SuffixText="{Binding Report.Units}"/>
                     </UniformGrid>
 
                 </DockPanel>
@@ -496,19 +492,20 @@
                                     <TextBlock Grid.Column="0" Text="{Binding Path=Name, Converter={StaticResource stringToUpper}, Mode=OneTime}"
                                            TextWrapping="Wrap"/>
 
-                                    <TextBlock Grid.Column="1" Margin="3,0" VerticalAlignment="Center">
-                                        <TextBlock.Style>
-                                            <Style TargetType="{x:Type TextBlock}">
+                                    <TextBox Grid.Column="1" VerticalAlignment="Center"
+                                             Margin="3,-3" BorderThickness="0" IsHitTestVisible="False"
+                                             md:TextFieldAssist.SuffixText="{Binding DataContext.Report.Units, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
+                                        <TextBox.Style>
+                                            <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignTextBox}">
                                                 <Setter Property="Text" Value="{Binding Path=Value, StringFormat=N1, Mode=OneTime}"/>
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}},
-                                                         Path=DataContext.SectorDifferences.Units}" Value="mm">
+                                                    <DataTrigger Binding="{Binding DataContext.Report.Units, RelativeSource={RelativeSource  AncestorType=ItemsControl}}" Value="mm">
                                                         <Setter Property="Text" Value="{Binding Path=Value, StringFormat=N3, Mode=OneTime}"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
+                                        </TextBox.Style>
+                                    </TextBox>
 
                                     <Border Grid.Column="2" BorderThickness="0" Height="10" Width="10" CornerRadius="5">
                                         <Border.Style>

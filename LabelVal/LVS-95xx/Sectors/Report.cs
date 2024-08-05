@@ -23,6 +23,7 @@ public class Report : IReport
     public double Score { get; set; }
     public double XDimension { get; set; }
     public double Aperture { get; set; }
+    public string Units { get; set; }
 
     public string OverallGradeString { get; set; }
     public double OverallGradeValue { get; set; }
