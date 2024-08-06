@@ -69,8 +69,8 @@
 
                     <Border Style="{StaticResource imageBar}" Margin="3,0"/>
 
-                    <TextBlock VerticalAlignment="Center" Text="{Binding ImageUID, Converter={StaticResource shortenUID}}" 
-                           ToolTip="{Binding ImageUID}" Margin="3,0"/>
+                    <TextBlock VerticalAlignment="Center" Text="{Binding SourceImageUID, Converter={StaticResource shortenUID}}" 
+                           ToolTip="{Binding SourceImageUID}" Margin="3,0"/>
 
                 </DockPanel>
 
