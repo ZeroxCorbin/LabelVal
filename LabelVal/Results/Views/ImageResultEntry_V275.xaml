@@ -213,6 +213,7 @@
                     <ScrollViewer Margin="3" x:Name="ScrollV275StoredSectors" VerticalScrollBarVisibility="Auto"
                                   mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
                                   ScrollChanged="ScrollV275StoredSectors_ScrollChanged">
+
                         <Grid>
 
                             <ListView Padding="0,1,0,0" ItemsSource="{Binding V275StoredSectors}" 
@@ -270,9 +271,7 @@
 
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
-
                                         <sectors:Sector Background="{DynamicResource AccentColorBrush}"/>
-
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
                             </ListView>
@@ -342,6 +341,7 @@
                         </Grid>
                     </ScrollViewer>
                 </DockPanel>
+                
             </DockPanel>
 
             <!--Details-->

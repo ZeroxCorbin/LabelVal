@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 
 namespace LabelVal.Sectors.Interfaces;
 
@@ -36,24 +38,18 @@ public class Gs1results
     public bool Validated { get; set; }
     public string Input { get; set; }
     public string FormattedOut { get; set; }
-    public Fields Fields { get; set; }
+    public List<string> Fields { get; set; }
     public string Error { get; set; }
 }
 
-public class Fields
-{
-    [JsonProperty("01")]
-    public string _01 { get; set; }
-    [JsonProperty("90")]
-    public string _90 { get; set; }
-    [JsonProperty("10")]
-    public string _10 { get; set; }
-}
 
 public interface IReport
 {
     string Type { get; set; }
     string SymbolType { get; set; }
+    double XDimension { get; set; }
+    double Aperture { get; set; }
+    string Units { get; set; }
 
     double Top { get; set; }
     double Left { get; set; }
@@ -61,22 +57,22 @@ public interface IReport
     double Height { get; set; }
     double AngleDeg { get; set; }
 
-    string Text { get; set; }
-    string DecodeText { get; set; }
-
-    string FormattedOut { get; set; }
-
-    double Score { get; set; }
-    double XDimension { get; set; }
-    double Aperture { get; set; }
-    string Units { get; set; }
-
     string OverallGradeString { get; set; }
     double OverallGradeValue { get; set; }
     string OverallGradeLetter { get; set; }
 
+    string DecodeText { get; set; }
+
+    //GS1
+    Gs1results GS1Results { get; set; }
+
+    //OCR\OCV
+    string Text { get; set; }
+    double Score { get; set; }
+
+    //Blemish
     int BlemishCount { get; set; }
 
-    Gs1results GS1Results { get; set; }
+    //V275 2D module data
     ModuleData ExtendedData { get; set; }
 }

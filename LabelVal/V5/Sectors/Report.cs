@@ -9,7 +9,6 @@ namespace LabelVal.V5.Sectors;
 public class Report : IReport
 {
     public string Type { get; set; }
-    public string SymbolType { get; set; }
 
     public double Top { get; set; }
     public double Left { get; set; }
@@ -17,20 +16,29 @@ public class Report : IReport
     public double Height { get; set; }
     public double AngleDeg { get; set; }
 
-    public string DecodeText { get; set; }
-    public string Text { get; set; }
-    public int BlemishCount { get; set; }
-    public double Score { get; set; }
+    //Verify1D, Verify2D
+    public string SymbolType { get; set; }
     public double XDimension { get; set; }
     public double Aperture { get; set; }
     public string Units { get; set; }
+
+    public string DecodeText { get; set; }
 
     public string OverallGradeString { get; set; }
     public double OverallGradeValue { get; set; }
     public string OverallGradeLetter { get; set; }
 
+    //GS1
     public Gs1results GS1Results { get; set; }
-    public string FormattedOut { get; set; }
+
+    //OCR
+    public string Text { get; set; }
+    public double Score { get; set; }
+
+    //Blemish
+    public int BlemishCount { get; set; }
+
+    //V275 2D module data
     public ModuleData ExtendedData { get; set; }
 
     public Report(V5_REST_Lib.Models.ResultsAlt.Decodedata v5)

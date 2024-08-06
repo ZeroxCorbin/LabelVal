@@ -500,6 +500,31 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
 
         }
     }
+
+    private string[] GetKeyValuePair(string key, List<string> report)
+    {
+        string item = report.Find((e) => e.StartsWith(key));
+
+        //if it was not found or the item does not contain a comma.
+        return item?.Contains(',') != true ? null : ([item[..item.IndexOf(',')], item[(item.IndexOf(',') + 1)..]]);
+    }
+    private List<string[]> GetMultipleKeyValuePairs(string key, List<string> report)
+    {
+        List<string> items = report.FindAll((e) => e.StartsWith(key));
+
+        if (items == null || items.Count == 0)
+            return null;
+
+        List<string[]> res = [];
+        foreach (string item in items)
+        {
+            if (!item.Contains(','))
+                continue;
+
+            res.Add([item[..item.IndexOf(',')], item[(item.IndexOf(',') + 1)..]]);
+        }
+        return res;
+    }
     private string[] GetValues(string name, List<string> splitPacket)
     {
         var warn = splitPacket.FindAll((e) => e.StartsWith(name));

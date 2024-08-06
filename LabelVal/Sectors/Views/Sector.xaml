@@ -329,7 +329,7 @@
             </Grid>
 
             <!--Alarms-->
-            <Border DockPanel.Dock="Top" BorderThickness="3" Padding="1" CornerRadius="3" Margin="0,3" HorizontalAlignment="Stretch">
+            <Border DockPanel.Dock="Top" BorderThickness="1" Padding="1" CornerRadius="3" Margin="0,3">
                 <Border.Style>
                     <Style TargetType="{x:Type Border}">
                         <Setter Property="Visibility" Value="Visible"/>
@@ -349,21 +349,25 @@
 
                 <ItemsControl ItemsSource="{Binding SectorDifferences.Alarms, Mode=OneTime}">
                     <ItemsControl.ItemTemplate>
-                        <HierarchicalDataTemplate>
-                            <DockPanel Margin="2">
+                        <DataTemplate>
+                            <DockPanel>
                                 <TextBlock TextWrapping="Wrap">
-                                    <Run Text="{Binding Path=Name}"/>
-                                    <Run Text="{Binding Path=Data.SubAlarm}"/>
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0} {1}">
+                                            <Binding Path="Name" Mode="OneTime"/>
+                                            <Binding Path="Data.SubAlarm" Mode="OneTime" FallbackValue=""/>
+                                        </MultiBinding>
+                                    </TextBlock.Text>
                                 </TextBlock>
                             </DockPanel>
-                        </HierarchicalDataTemplate>
+                        </DataTemplate>
                     </ItemsControl.ItemTemplate>
 
                 </ItemsControl>
             </Border>
 
             <!--Gs1ValueResults-->
-            <Border BorderThickness="1" Padding="1" CornerRadius="3" Visibility="{Binding IsGS1Standard, Mode=OneTime, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <!--<Border BorderThickness="1" Padding="1" CornerRadius="3" Visibility="{Binding IsGS1Standard, Mode=OneTime, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Border.Style>
                     <Style TargetType="{x:Type Border}">
                         <Setter Property="Visibility" Value="Visible"/>
@@ -408,7 +412,7 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-            </Border>
+            </Border>-->
 
         </DockPanel>
     </md:Card>

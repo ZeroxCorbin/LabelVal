@@ -17,9 +17,18 @@
                 BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
                 Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
 
-            <Border BorderThickness="1" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="2">
-                <TextBlock Text="{Binding Report.DecodeText, Converter={StaticResource gs1FormattedOutput}}"  Margin="3"/>
-            </Border>
+            <DockPanel>
+                <ItemsControl Margin="3,0" DockPanel.Dock="Top" ItemsSource="{Binding Report.GS1Results.Fields, Mode=OneTime}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding }" TextWrapping="Wrap"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <TextBlock Margin="3,0" TextWrapping="Wrap" Background="{StaticResource MahApps.Brushes.Accent3}"
+                           Text="{Binding Report.DecodeText, Converter={StaticResource gs1FormattedOutput}}"/>
+            </DockPanel>
         </Border>
         
     </Popup>

@@ -158,4 +158,14 @@ public partial class ImageResultEntry_L95xx : UserControl
         encoder.Frames.Add(frame);
     }
 
+    private void lstDissimilarSector_Click(object sender, MouseButtonEventArgs e)
+    {
+        SectorDifferences sndr = (SectorDifferences)sender;
+        System.Collections.ObjectModel.Collection<Sector> sectors = Utilities.VisualTreeHelp.GetVisualChildren<Sector>(this);
+        foreach (Sector s in sectors)
+        {
+            if (s.SectorName == ((Sectors.Interfaces.ISectorDifferences)sndr.DataContext).UserName)
+                s.ShowSectorDetails();
+        }
+    }
 }

@@ -1,5 +1,9 @@
 ﻿using LabelVal.Sectors.Interfaces;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Documents;
 using V275_REST_lib.Models;
 
 namespace LabelVal.V275.Sectors;
@@ -7,7 +11,6 @@ namespace LabelVal.V275.Sectors;
 public class Report : IReport
 {
     public string Type { get; set; }
-    public string SymbolType { get; set; }
 
     public double Top { get; set; }
     public double Left { get; set; }
@@ -15,20 +18,29 @@ public class Report : IReport
     public double Height { get; set; }
     public double AngleDeg { get; set; }
 
-    public string DecodeText { get; set; }
-    public string Text { get; set; }
-    public int BlemishCount { get; set; }
-    public double Score { get; set; }
+    //Verify1D, Verify2D
+    public string SymbolType { get; set; }
     public double XDimension { get; set; }
     public double Aperture { get; set; }
     public string Units { get; set; }
+
+    public string DecodeText { get; set; }
 
     public string OverallGradeString { get; set; }
     public double OverallGradeValue { get; set; }
     public string OverallGradeLetter { get; set; }
 
+    //GS1
     public Gs1results GS1Results { get; set; }
-    public string FormattedOut { get; set; }
+
+    //OCR
+    public string Text { get; set; }
+    public double Score { get; set; }
+
+    //Blemish
+    public int BlemishCount { get; set; }
+
+    //V275 2D module data
     public ModuleData ExtendedData { get; set; }
 
     public Report(object report)
@@ -37,14 +49,8 @@ public class Report : IReport
         {
             case Report_InspectSector_Verify1D:
                 Report_InspectSector_Verify1D v1D = (Report_InspectSector_Verify1D)report;
+
                 Type = v1D.type;
-                SymbolType = v1D.data.symbolType;
-
-                DecodeText = v1D.data.decodeText;
-                XDimension = v1D.data.xDimension;
-                Aperture = v1D.data.aperture;
-
-                Units = v1D.data.lengthUnit;
 
                 Top = v1D.top;
                 Left = v1D.left;
@@ -52,26 +58,31 @@ public class Report : IReport
                 Height = v1D.height;
                 AngleDeg = 0;
 
+                SymbolType = v1D.data.symbolType;
+                XDimension = v1D.data.xDimension;
+                Aperture = v1D.data.aperture;
+                Units = v1D.data.lengthUnit;
+
+                DecodeText = v1D.data.decodeText;
+
                 OverallGradeString = v1D.data.overallGrade._string;
                 OverallGradeValue = v1D.data.overallGrade.grade.value;
                 OverallGradeLetter = v1D.data.overallGrade.grade.letter;
 
                 if (v1D.data.gs1Results != null)
                 {
+                    var fld = new List<string>();
+                    foreach (JProperty f in v1D.data.gs1Results.fields)
+                        fld.Add($"({f.Name}) {f.Value.ToString().Trim('{', '}', ' ')}");
+
                     GS1Results = new Gs1results
                     {
                         Validated = v1D.data.gs1Results.validated,
                         Input = v1D.data.gs1Results.input,
                         FormattedOut = v1D.data.gs1Results.formattedOut,
-                        Fields = new Fields
-                        {
-                            _01 = v1D.data.gs1Results.fields._01,
-                            _90 = v1D.data.gs1Results.fields._90,
-                            _10 = v1D.data.gs1Results.fields._10
-                        },
+                        Fields = fld,
                         Error = v1D.data.gs1Results.error
                     };
-                    FormattedOut = v1D.data.gs1Results.formattedOut;
                 }
 
                 break;
@@ -79,13 +90,6 @@ public class Report : IReport
             case Report_InspectSector_Verify2D:
                 Report_InspectSector_Verify2D v2D = (Report_InspectSector_Verify2D)report;
                 Type = v2D.type;
-                SymbolType = v2D.data.symbolType;
-
-                DecodeText = v2D.data.decodeText;
-                XDimension = v2D.data.xDimension;
-                Aperture = v2D.data.aperture;
-
-                Units = v2D.data.lengthUnit;
 
                 Top = v2D.top;
                 Left = v2D.left;
@@ -93,26 +97,31 @@ public class Report : IReport
                 Height = v2D.height;
                 AngleDeg = 0;
 
+                SymbolType = v2D.data.symbolType;
+                XDimension = v2D.data.xDimension;
+                Aperture = v2D.data.aperture;
+                Units = v2D.data.lengthUnit;
+
+                DecodeText = v2D.data.decodeText;
+
                 OverallGradeString = v2D.data.overallGrade._string;
                 OverallGradeValue = v2D.data.overallGrade.grade.value;
                 OverallGradeLetter = v2D.data.overallGrade.grade.letter;
 
                 if (v2D.data.gs1Results != null)
                 {
+                    var fld = new List<string>();
+                    foreach (JProperty f in v2D.data.gs1Results.fields)
+                        fld.Add($"({f.Name}) {f.Value.ToString().Trim('{', '}', ' ')}");
+                    
                     GS1Results = new Gs1results
                     {
                         Validated = v2D.data.gs1Results.validated,
                         Input = v2D.data.gs1Results.input,
                         FormattedOut = v2D.data.gs1Results.formattedOut,
-                        Fields = new Fields
-                        {
-                            _01 = v2D.data.gs1Results.fields._01,
-                            _90 = v2D.data.gs1Results.fields._90,
-                            _10 = v2D.data.gs1Results.fields._10
-                        },
+                        Fields = fld,
                         Error = v2D.data.gs1Results.error
                     };
-                    FormattedOut = v2D.data.gs1Results.formattedOut;
                 }
 
                 if (v2D.data.extendedData != null)
@@ -122,9 +131,8 @@ public class Report : IReport
 
             case Report_InspectSector_OCR:
                 Report_InspectSector_OCR ocr = (Report_InspectSector_OCR)report;
+
                 Type = ocr.type;
-                Text = ocr.data.text;
-                Score = ocr.data.score;
 
                 Top = ocr.top;
                 Left = ocr.left;
@@ -132,13 +140,14 @@ public class Report : IReport
                 Height = ocr.height;
                 AngleDeg = 0;
 
+                Text = ocr.data.text;
+                Score = ocr.data.score;
                 break;
 
             case Report_InspectSector_OCV:
                 Report_InspectSector_OCV ocv = (Report_InspectSector_OCV)report;
+
                 Type = ocv.type;
-                Text = ocv.data.text;
-                Score = ocv.data.score;
 
                 Top = ocv.top;
                 Left = ocv.left;
@@ -146,12 +155,14 @@ public class Report : IReport
                 Height = ocv.height;
                 AngleDeg = 0;
 
+                Text = ocv.data.text;
+                Score = ocv.data.score;
                 break;
 
             case Report_InspectSector_Blemish:
                 Report_InspectSector_Blemish blem = (Report_InspectSector_Blemish)report;
+
                 Type = blem.type;
-                BlemishCount = blem.data.blemishCount;
 
                 Top = blem.top;
                 Left = blem.left;
@@ -159,6 +170,7 @@ public class Report : IReport
                 Height = blem.height;
                 AngleDeg = 0;
 
+                BlemishCount = blem.data.blemishCount;
                 break;
         }
     }

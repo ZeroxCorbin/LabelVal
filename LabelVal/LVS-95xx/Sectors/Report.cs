@@ -1,6 +1,8 @@
-﻿using LabelVal.Sectors.Interfaces;
+﻿using ControlzEx.Standard;
+using LabelVal.Sectors.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using V275_REST_lib.Models;
 
@@ -9,7 +11,6 @@ namespace LabelVal.LVS_95xx.Sectors;
 public class Report : IReport
 {
     public string Type { get; set; }
-    public string SymbolType { get; set; }
 
     public double Top { get; set; }
     public double Left { get; set; }
@@ -17,87 +18,101 @@ public class Report : IReport
     public double Height { get; set; }
     public double AngleDeg { get; set; }
 
-    public string DecodeText { get; set; }
-    public string Text { get; set; }
-    public int BlemishCount { get; set; }
-    public double Score { get; set; }
+    //Verify1D, Verify2D
+    public string SymbolType { get; set; }
     public double XDimension { get; set; }
     public double Aperture { get; set; }
     public string Units { get; set; }
+
+    public string DecodeText { get; set; }
 
     public string OverallGradeString { get; set; }
     public double OverallGradeValue { get; set; }
     public string OverallGradeLetter { get; set; }
 
+    //GS1
     public Gs1results GS1Results { get; set; }
-    public string FormattedOut { get; set; }
+
+    //OCR
+    public string Text { get; set; }
+    public double Score { get; set; }
+
+    //Blemish
+    public int BlemishCount { get; set; }
+
+    //V275 2D module data
     public ModuleData ExtendedData { get; set; }
 
     public Report(List<string> report)
     {
         Type = report.Find((e) => e.StartsWith("Cell size")) == null ? "verify1D" : "verify2D";
 
-        foreach (string data in report)
+        string[] sym = GetKeyValuePair("Symbology", report);
+        SymbolType = L95xxGetSymbolType(sym[1]);
+        XDimension = Type == "verify2D"
+            ? (double)L95xxParseFloat(GetKeyValuePair("Cell size", report)[1])
+            : (double)L95xxParseFloat(GetKeyValuePair("Xdim", report)[1]);
+        Aperture = L95xxParseFloat(GetKeyValuePair("Overall", report)[1].Split('/')[1]);
+        Units = "mil";
+
+        DecodeText = GetKeyValuePair("Decoded", report)[1];
+        
+        OverallGradeValue = L95xxGetGrade(GetKeyValuePair("Overall", report)[1]).value;
+        OverallGradeString = GetKeyValuePair("Overall", report)[1];
+        OverallGradeLetter = L95xxGetGrade(GetKeyValuePair("Overall", report)[1]).letter;
+
+        bool isGS1 = sym[1].StartsWith("GS1");
+        string error = null;
+        if (isGS1)
         {
-            if (!data.Contains(','))
-                continue;
-
-            string[] spl1 = [data[..data.IndexOf(',')], data[(data.IndexOf(',') + 1)..]];
-            if (spl1[0].StartsWith("Symbology"))
+            var res = GetMultipleKeyValuePair("GS1 Data", report);
+            foreach(var str in res)
             {
-                SymbolType = L95xxGetSymbolType(spl1[1]);
-
-                //verify1D
-                if (SymbolType == "dataBar")
-                {
-                    string item = report.Find((e) => e.StartsWith("DataBar"));
-                    if (item != null)
-                    {
-                        string[] spl2 = item.Split(',');
-
-                        if (spl2.Length != 2)
-                            continue;
-
-                        SymbolType += spl2[1];
-                    }
-                }
-                continue;
+                if (str[0].Equals("GS1 Data"))
+                    continue;
+                else
+                    error = str[1];
             }
 
-            if (spl1[0].StartsWith("Decoded"))
+            var list = new List<string>();
+            var spl = GetKeyValuePair("GS1 Data,", report)[1].Split('(', StringSplitOptions.RemoveEmptyEntries);
+            foreach(var str in spl)
+                list.Add($"({str}");
+            
+            GS1Results = new Gs1results()
             {
-                DecodeText = spl1[1];
-                continue;
-            }
-
-            //Verify2D
-            if (spl1[0].StartsWith("Cell size"))
-            {
-                XDimension = L95xxParseFloat(spl1[1]);
-                continue;
-            }
-
-            //Verify1D
-            if (spl1[0].StartsWith("Xdim"))
-            {
-                XDimension = L95xxParseFloat(spl1[1]);
-                continue;
-            }
-
-            if (spl1[0].StartsWith("Overall"))
-            {
-                string[] spl2 = spl1[1].Split('/');
-
-                if (spl2.Length < 3) continue;
-
-                OverallGradeValue = L95xxGetGrade(spl2[0]).value;// new Report_InspectSector_Common.Overallgrade() { grade = GetGrade(spl2[0]), _string = spl1[1] };
-                OverallGradeString = spl1[1];
-                OverallGradeLetter = L95xxGetGrade(spl2[0]).letter;
-
-                Aperture = L95xxParseFloat(spl2[1]);
-                continue;
-            }
+                Validated = true,
+                Input = GetKeyValuePair("Decoded", report)[1],
+                FormattedOut = GetKeyValuePair("GS1 Data,", report)[1],
+                Error = error,
+                Fields = list
+            };
         }
+    }
+
+    private string[] GetKeyValuePair(string key, List<string> report)
+    {
+        string item = report.Find((e) => e.StartsWith(key));
+
+        //if it was not found or the item does not contain a comma.
+        return item?.Contains(',') != true ? null : ([item[..item.IndexOf(',')], item[(item.IndexOf(',') + 1)..]]);
+    }
+    private List<string[]> GetMultipleKeyValuePair(string key, List<string> report)
+    {
+        List<string> items = report.FindAll((e) => e.StartsWith(key));
+
+        if (items == null || items.Count == 0)
+            return null;
+
+        List<string[]> res = [];
+        foreach (string item in items)
+        {
+            if (!item.Contains(','))
+                continue;
+
+            res.Add([item[..item.IndexOf(',')], item[(item.IndexOf(',') + 1)..]]);
+        }
+        return res;
     }
 
     private static string L95xxGetLetter(float value) =>
