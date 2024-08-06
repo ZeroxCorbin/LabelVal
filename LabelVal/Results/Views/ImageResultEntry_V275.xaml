@@ -149,9 +149,6 @@
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
                                         <Setter Property="Visibility" Value="Visible"/>
                                         <Style.Triggers>
-                                            <DataTrigger Value="0" Binding="{Binding V275StoredSectors.Count}">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                            </DataTrigger>
                                             <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
@@ -175,9 +172,6 @@
                                             <DataTrigger Value="False" Binding="{Binding ImageResults.SelectedNode.IsLoggedIn_Control}">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
-                                            <DataTrigger Value="0" Binding="{Binding V275StoredSectors.Count}">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                            </DataTrigger>
                                             <DataTrigger Value="Running" Binding="{Binding ImageResults.SelectedNode.Connection.V275_State}">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
@@ -190,22 +184,10 @@
                             </Button>
 
                             <Button x:Name="btnV275StoredSectors" Click="V275StoredSectors_Click" Width="28"
-                                ToolTip="The all seeing eye! Click it...&#x0a;Hold Shift and click for more."
-                                Content="{iconPacks:Modern Kind=Eye}"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
-
-                                <Button.Style>
-                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Value="0" Binding="{Binding V275StoredSectors.Count}">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Button.Style>
-
-                            </Button>
+                                    Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                    ToolTip="The all seeing eye! Click it...&#x0a;Hold Shift and click for more."
+                                    Content="{iconPacks:Modern Kind=Eye}"
+                                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
 
                         </DockPanel>
                     </md:Card>
@@ -341,7 +323,7 @@
                         </Grid>
                     </ScrollViewer>
                 </DockPanel>
-                
+
             </DockPanel>
 
             <!--Details-->

@@ -2,6 +2,7 @@
 using LabelVal.ImageRolls.ViewModels;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 using V275_REST_lib.Models;
 using V5_REST_Lib.Models;
 
@@ -32,4 +33,7 @@ public class V5Result : ImageResult
     [SQLite.Ignore] public ResultsAlt _Report => !string.IsNullOrEmpty(Report) ? JsonConvert.DeserializeObject<ResultsAlt>(Report) : null;
 }
 
-public class L95xxResult : ImageResult { }
+public class L95xxResult : ImageResult 
+{ 
+    [SQLite.Ignore] public List<ViewModels.ImageResultEntry.L95xxReport> _Report => !string.IsNullOrEmpty(Report) ? JsonConvert.DeserializeObject<List<ViewModels.ImageResultEntry.L95xxReport>>(Report) : null;
+}

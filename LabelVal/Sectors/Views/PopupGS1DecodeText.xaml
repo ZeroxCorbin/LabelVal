@@ -26,7 +26,7 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
 
-                <TextBlock Margin="3,0" TextWrapping="Wrap" Background="{StaticResource MahApps.Brushes.Accent3}"
+                <TextBlock Margin="3,0" TextWrapping="Wrap" Background="{DynamicResource MahApps.Brushes.Accent3}"
                            Text="{Binding Report.DecodeText, Converter={StaticResource gs1FormattedOutput}}"/>
             </DockPanel>
         </Border>

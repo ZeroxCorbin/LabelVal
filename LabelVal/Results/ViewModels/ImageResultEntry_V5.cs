@@ -123,7 +123,7 @@ public partial class ImageResultEntry
             return false;
         }
 
-        V5CurrentImage = new ImageEntry(RollUID, triggerResults.FullImage, 600);
+        V5CurrentImage = new ImageEntry(ImageRollUID, triggerResults.FullImage, 600);
         V5CurrentTemplate = config;
         V5CurrentReport = JsonConvert.DeserializeObject<V5_REST_Lib.Models.ResultsAlt>(triggerResults.ReportJSON);
 
@@ -156,7 +156,7 @@ public partial class ImageResultEntry
 
         V5StoredSectors.Clear();
 
-        V5ResultRow = SelectedDatabase.Select_V5Result(RollUID, ImageUID);
+        V5ResultRow = SelectedDatabase.Select_V5Result(ImageRollUID, SourceImageUID);
 
         if (V5ResultRow == null)
         {

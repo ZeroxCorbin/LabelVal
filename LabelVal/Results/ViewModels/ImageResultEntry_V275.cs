@@ -65,7 +65,7 @@ public partial class ImageResultEntry
 
         V275StoredSectors.Clear();
 
-        V275ResultRow = SelectedDatabase.Select_V275Result(RollUID, ImageUID);
+        V275ResultRow = SelectedDatabase.Select_V275Result(ImageRollUID, SourceImageUID);
 
         if (V275ResultRow == null)
             return;
@@ -124,12 +124,12 @@ public partial class ImageResultEntry
         {
             int dpi = 600;// SelectedPrinter.PrinterName.Contains("ZT620") ? 300 : 600;
             ImageUtilities.SetBitmapDPI(report.image, dpi);
-            V275CurrentImage = new ImageEntry(RollUID, report.image, dpi);//ImageUtilities.ConvertToPng(report.image, 600);
+            V275CurrentImage = new ImageEntry(ImageRollUID, report.image, dpi);//ImageUtilities.ConvertToPng(report.image, 600);
         }
         else
         {
             ImageUtilities.SetBitmapDPI(report.image, (int)Math.Round(SourceImage.Image.DpiX));
-            V275CurrentImage = new ImageEntry(RollUID, report.image, ImageResults.SelectedImageRoll.TargetDPI);
+            V275CurrentImage = new ImageEntry(ImageRollUID, report.image, ImageResults.SelectedImageRoll.TargetDPI);
         }
 
         V275CurrentSectors.Clear();

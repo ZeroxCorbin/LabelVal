@@ -27,9 +27,6 @@
         <Converters:ObjectIsNull x:Key="objectIsNull"/>
         <Converters:EqualZeroOrNull x:Key="equalZeroOrNull"/>
 
-        <Image x:Key="V275Icon" Source="/Assets/Images/V275WhiteIcon.ico" />
-        <Image x:Key="V275Png" Source="/Assets/Images/V275WhiteIcon.png" />
-
     </UserControl.Resources>
 
     <DockPanel>
@@ -64,17 +61,15 @@
 
                         <Border Style="{StaticResource imageBar}" Margin="3,0"/>
 
-                        <Button Command="{Binding ClearStoredCommand}" CommandParameter="L95xx" ToolTip="Remove the stored sectors from the database, permanently.&#x0a;(CAUTION) This can not be undone!">
-
-                            <iconPacks:PackIconModern Kind="Delete" Height="14" Width="14"/>
+                        <Button Command="{Binding ClearStoredCommand}" CommandParameter="L95xx" Width="28"
+                                ToolTip="Remove the stored sectors from the database, permanently.&#x0a;(CAUTION) This can not be undone!"
+                                Content="{iconPacks:Modern Kind=Delete}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
                             <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
                                     <Setter Property="Visibility" Value="Visible"/>
                                     <Style.Triggers>
-                                        <DataTrigger Value="0" Binding="{Binding L95xxStoredSectors.Count}">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                        </DataTrigger>
                                         <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
                                             <Setter Property="Visibility" Value="Collapsed"/>
                                         </DataTrigger>
@@ -83,24 +78,10 @@
                             </Button.Style>
                         </Button>
 
-                        <Button Click="L95xxStoredSectors_Click" ToolTip="The all seeing eye! Click it...&#x0a;Hold Shift and click for more."
-                                HorizontalAlignment="Right">
-
-                            <iconPacks:PackIconModern Kind="Eye" Height="16" Width="16"/>
-
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
-                                    <Setter Property="Visibility" Value="Visible"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Value="0" Binding="{Binding L95xxStoredSectors.Count}">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-
-                        </Button>
-
+                        <Button Click="L95xxStoredSectors_Click" Width="28"
+                                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                ToolTip="The all seeing eye! Click it...&#x0a;Hold Shift and click for more."
+                                Content="{iconPacks:Modern Kind=Eye}"/>
 
                     </DockPanel>
                 </md:Card>
@@ -160,7 +141,7 @@
                                     </WrapPanel>
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
-                            
+
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="2,1"/>
@@ -262,67 +243,48 @@
 
                         <Border Style="{StaticResource imageBar}" Margin="3,0"/>
 
-                        <DockPanel Margin="3,0">
+                        <Button Command="{Binding StoreCommand}" CommandParameter="L95xx" Width="28"
+                                ToolTip="Store the selected sector to the database."
+                                Content="{iconPacks:Material Kind=ChevronDoubleLeft}">
 
-                            <Button Command="{Binding StoreCommand}" CommandParameter="L95xx" ToolTip="Store the selected sector to the database.">
-                                <Button.Style>
-                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                        <Setter Property="IsEnabled" Value="True"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Value="0" Binding="{Binding L95xxCurrentSectors.Count}">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding L95xxCurrentSectorSelected, Converter={StaticResource objectIsNull}}" Value="True">
-                                                <Setter Property="IsEnabled" Value="False"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Button.Style>
-
-                                <iconPacks:PackIconMaterial Kind="ChevronDoubleLeft" Height="14" Width="14"/>
-                            </Button>
-
-                            <Button Command="{Binding ClearReadCommand}" CommandParameter="L95xx" ToolTip="Clear the selected sector.">
-
-                                <Button.Style>
-                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                        <Setter Property="IsEnabled" Value="True"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding L95xxCurrentSectors.Count}" Value="0">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding L95xxCurrentSectorSelected, Converter={StaticResource objectIsNull}}" Value="True">
-                                                <Setter Property="IsEnabled" Value="False"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Button.Style>
-
-                                <iconPacks:PackIconModern Kind="Delete" Height="14" Width="14"/>
-                            </Button>
-
-                        </DockPanel>
-
-                        <Button Click="L95xxCurrentSectorDetails_Click" ToolTip="The all seeing eye! Click it...&#x0a;Hold Shift and click for more."
-                                HorizontalAlignment="Right">
                             <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
                                     <Setter Property="Visibility" Value="Visible"/>
+                                    <Setter Property="IsEnabled" Value="True"/>
                                     <Style.Triggers>
-                                        <DataTrigger Value="0" Binding="{Binding L95xxCurrentSectors.Count}">
+                                        <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
                                             <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding L95xxCurrentSectorSelected, Converter={StaticResource objectIsNull}}" Value="True">
+                                            <Setter Property="IsEnabled" Value="False"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
                             </Button.Style>
-                            <iconPacks:PackIconModern Kind="Eye" Width="16" Height="16"/>
                         </Button>
 
+                        <Button Command="{Binding ClearReadCommand}" CommandParameter="L95xx" Width="28"
+                                ToolTip="Clear the selected sector."
+                                Content="{iconPacks:Modern Kind=Delete}">
+
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Setter Property="IsEnabled" Value="True"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding L95xxCurrentSectorSelected, Converter={StaticResource objectIsNull}}" Value="True">
+                                            <Setter Property="IsEnabled" Value="False"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+
+
+                        <Button Click="L95xxCurrentSectorDetails_Click" Width="28"
+                                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                ToolTip="The all seeing eye! Click it...&#x0a;Hold Shift and click for more."
+                                Content="{iconPacks:Modern Kind=Eye}"/>
 
                     </DockPanel>
                 </md:Card>
@@ -350,7 +312,7 @@
                             <ListView.ItemContainerStyle>
                                 <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}"/>
                             </ListView.ItemContainerStyle>
-                            
+
                             <ListView.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <WrapPanel Orientation="Horizontal">
@@ -385,7 +347,7 @@
                                     </WrapPanel>
                                 </ItemsPanelTemplate>
                             </ListView.ItemsPanel>
-                            
+
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <sectors:Sector Background="{DynamicResource AccentColorBrush}"/>

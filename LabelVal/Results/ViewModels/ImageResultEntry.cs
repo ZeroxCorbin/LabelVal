@@ -32,10 +32,10 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
     public event DeleteImageDelegate DeleteImage;
 
     public ImageEntry SourceImage { get; }
-    public string ImageUID => SourceImage.UID;
+    public string SourceImageUID => SourceImage.UID;
 
     public ImageResults ImageResults { get; }
-    public string RollUID => ImageResults.SelectedImageRoll.UID;
+    public string ImageRollUID => ImageResults.SelectedImageRoll.UID;
 
     public bool IsPlaceholder => SourceImage.IsPlaceholder;
 
@@ -116,8 +116,8 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
     public StoredImageResultGroup GetStoredImageResultGroup(string runUID) => new()
     {
         RunUID = runUID,
-        ImageRollUID = RollUID,
-        SourceImageUID = ImageUID,
+        ImageRollUID = ImageRollUID,
+        SourceImageUID = SourceImageUID,
         V275Result = V275ResultRow,
         V5Result = V5ResultRow,
         L95xxResult = L95xxResultRow,
@@ -126,13 +126,13 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
     public CurrentImageResultGroup GetCurrentImageResultGroup(string runUID) => new()
     {
         RunUID = runUID,
-        ImageRollUID = RollUID,
-        SourceImageUID = ImageUID,
+        ImageRollUID = ImageRollUID,
+        SourceImageUID = SourceImageUID,
         V275Result = new Databases.V275Result
         {
             RunUID = runUID,
-            SourceImageUID = ImageUID,
-            ImageRollUID = RollUID,
+            SourceImageUID = SourceImageUID,
+            ImageRollUID = ImageRollUID,
 
             SourceImage = JsonConvert.SerializeObject(SourceImage),
             StoredImage = JsonConvert.SerializeObject(V275CurrentImage),
@@ -143,8 +143,8 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         V5Result = new Databases.V5Result
         {
             RunUID = runUID,
-            SourceImageUID = ImageUID,
-            ImageRollUID = RollUID,
+            SourceImageUID = SourceImageUID,
+            ImageRollUID = ImageRollUID,
 
             SourceImage = JsonConvert.SerializeObject(SourceImage),
             StoredImage = JsonConvert.SerializeObject(V5CurrentImage),
@@ -155,11 +155,11 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         L95xxResult = new Databases.L95xxResult
         {
             RunUID = runUID,
-            ImageRollUID = RollUID,
-            SourceImageUID = ImageUID,
+            ImageRollUID = ImageRollUID,
+            SourceImageUID = SourceImageUID,
 
             SourceImage = JsonConvert.SerializeObject(SourceImage),
-            Report = JsonConvert.SerializeObject(L95xxStoredSectors.Select(x => new L95xxReport() { Report = ((LVS_95xx.Sectors.Sector)x).L95xxPacket, Template = x.Template }).ToList()),
+            Report = JsonConvert.SerializeObject(L95xxStoredSectors.Select(x => new L95xxReport() { Report = ((LVS_95xx.Sectors.Sector)x).L95xxPacket, Template = (LVS_95xx.Sectors.Template)x.Template }).ToList()),
         },
     };
 
@@ -207,8 +207,8 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
 
             _ = SelectedDatabase.InsertOrReplace_V275Result(new Databases.V275Result
             {
-                SourceImageUID = ImageUID,
-                ImageRollUID = RollUID,
+                SourceImageUID = SourceImageUID,
+                ImageRollUID = ImageRollUID,
 
                 SourceImage = JsonConvert.SerializeObject(SourceImage),
                 StoredImage = JsonConvert.SerializeObject(V275CurrentImage),
@@ -229,8 +229,8 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
 
             _ = SelectedDatabase.InsertOrReplace_V5Result(new Databases.V5Result
             {
-                SourceImageUID = ImageUID,
-                ImageRollUID = RollUID,
+                SourceImageUID = SourceImageUID,
+                ImageRollUID = ImageRollUID,
 
                 SourceImage = JsonConvert.SerializeObject(SourceImage),
                 StoredImage = JsonConvert.SerializeObject(V5CurrentImage),
@@ -276,12 +276,12 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             //Save the list to the database.
             List<L95xxReport> temp = [];
             foreach (Sectors.Interfaces.ISector sec in L95xxStoredSectors)
-                temp.Add(new L95xxReport() { Report = ((LVS_95xx.Sectors.Sector)sec).L95xxPacket, Template = sec.Template });
+                temp.Add(new L95xxReport() { Report = ((LVS_95xx.Sectors.Sector)sec).L95xxPacket, Template = (LVS_95xx.Sectors.Template)sec.Template });
 
             _ = SelectedDatabase.InsertOrReplace_L95xxResult(new Databases.L95xxResult
             {
-                ImageRollUID = RollUID,
-                SourceImageUID = ImageUID,
+                ImageRollUID = ImageRollUID,
+                SourceImageUID = SourceImageUID,
                 SourceImage = JsonConvert.SerializeObject(SourceImage),
                 Report = JsonConvert.SerializeObject(temp),
             });
@@ -294,17 +294,17 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         {
             if (device == "V275")
             {
-                _ = SelectedDatabase.Delete_V275Result(RollUID, ImageUID);
+                _ = SelectedDatabase.Delete_V275Result(ImageRollUID, SourceImageUID);
                 V275GetStored();
             }
             else if (device == "V5")
             {
-                _ = SelectedDatabase.Delete_V5Result(RollUID, ImageUID);
+                _ = SelectedDatabase.Delete_V5Result(ImageRollUID, SourceImageUID);
                 V5GetStored();
             }
             else if (device == "L95xx")
             {
-                _ = SelectedDatabase.Delete_L95xxResult(RollUID, ImageUID);
+                _ = SelectedDatabase.Delete_L95xxResult(ImageRollUID, SourceImageUID);
                 L95xxGetStored();
             }
         }

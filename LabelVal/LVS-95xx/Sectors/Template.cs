@@ -22,8 +22,12 @@ namespace LabelVal.LVS_95xx.Sectors
         public TemplateMatchMode MatchSettings { get; set; }
         public BlemishMaskLayers BlemishMask { get; set; }
 
+        public Template() { }
         public Template(ITemplate template)
         {
+            if(template == null)
+                return;
+            
             Name = template.Name;
             Username = template.Username;
 

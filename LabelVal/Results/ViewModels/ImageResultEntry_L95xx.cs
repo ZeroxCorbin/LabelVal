@@ -13,7 +13,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
 {
     public class L95xxReport
     {
-        public ITemplate Template { get; set; }
+        public Template Template { get; set; }
         public string Report { get; set; }
     }
 
@@ -72,7 +72,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
         if(SelectedDatabase == null)
             return;
 
-        L95xxResultRow = SelectedDatabase.Select_L95xxResult(RollUID, ImageUID);
+        L95xxResultRow = SelectedDatabase.Select_L95xxResult(ImageRollUID, SourceImageUID);
 
         if (L95xxResultRow == null)
         {
@@ -80,7 +80,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
             return;
         }
 
-        List<L95xxReport> report = JsonConvert.DeserializeObject<List<L95xxReport>>(L95xxResultRow.Report);
+        List<L95xxReport> report = L95xxResultRow._Report;
 
         L95xxStoredSectors.Clear();
         List<Sectors.Interfaces.ISector> tempSectors = [];

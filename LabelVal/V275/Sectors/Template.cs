@@ -18,7 +18,7 @@ public class Template : ITemplate
     public System.Drawing.Point CenterPoint { get; set; }
     public string SymbologyType { get; set; }
 
-public double Orientation { get; set; }
+    public double Orientation { get; set; }
     public TemplateMatchMode MatchSettings { get; set; }
     public BlemishMaskLayers BlemishMask { get; set; }
 
