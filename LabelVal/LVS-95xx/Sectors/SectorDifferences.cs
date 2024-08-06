@@ -228,7 +228,7 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
 
                 if (spl1[0].Equals("Decode"))
                 {
-                    GradeValues.Add(new GradeValue("decode", -1, GetValues("Decode", splitPacket)[0].StartsWith("PASS") ? new Grade("Decode", 4.0f, "A") : new Grade("Decode", 0.0f, "F")));
+                    GradeValues.Add(new GradeValue("decode", -1, GetValues("Decode,", splitPacket)[0].StartsWith("PASS") ? new Grade("", 4.0f, "A") : new Grade("Decode", 0.0f, "F")));
                     continue;
                 }
 

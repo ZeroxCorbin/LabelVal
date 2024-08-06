@@ -61,11 +61,12 @@ public class Report : IReport
         OverallGradeString = GetKeyValuePair("Overall", report)[1];
         OverallGradeLetter = L95xxGetGrade(GetKeyValuePair("Overall", report)[1]).letter;
 
-        bool isGS1 = sym[1].StartsWith("GS1");
+        var res = GetMultipleKeyValuePair("GS1 Data", report);
+        bool itThinksItIsGS1 = sym[1].StartsWith("GS1");
         string error = null;
-        if (isGS1)
+        if (res != null)
         {
-            var res = GetMultipleKeyValuePair("GS1 Data", report);
+            
             foreach(var str in res)
             {
                 if (str[0].Equals("GS1 Data"))

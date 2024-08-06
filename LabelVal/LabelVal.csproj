@@ -1550,6 +1550,6 @@
 		</None>
 	</ItemGroup>
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-	  <Exec Command="xcopy /y /d &quot;C:\Users\Jack\GitHub\gs1-syntax-engine\src\c-lib\build\library\x64\$(Configuration)\gs1encoders.dll&quot; &quot;bin\$(Configuration)\$(TargetFramework)\&quot;" />
+	  <Exec Command="xcopy /y /d &quot;C:\Users\Watson\Documents\GitHub\gs1-syntax-engine\src\c-lib\build\library\x64\$(Configuration)\gs1encoders.dll&quot; &quot;bin\$(Configuration)\$(TargetFramework)\&quot;" />
 	</Target>
 </Project>
