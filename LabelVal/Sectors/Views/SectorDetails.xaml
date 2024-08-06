@@ -667,13 +667,22 @@
                                             </Border.Style>
                                         </Border>
 
-                                        <TextBlock Margin="3,0" Text="{Binding Path=Name, Converter={StaticResource stringToUpper}, Mode=OneTime}"/>
-                                        <TextBlock Margin="3,0" Text="{Binding Path=Data.SubAlarm, Converter={StaticResource stringToUpper}, Mode=OneTime}" TextWrapping="Wrap"/>
+                                        <TextBlock Margin="3,0" Text="{Binding Name, Converter={StaticResource stringToUpper}, Mode=OneTime}"/>
+                                        <TextBlock Margin="3,0" Text="{Binding Data.SubAlarm, Converter={StaticResource stringToUpper}, Mode=OneTime}" TextWrapping="Wrap"/>
                                     </DockPanel>
 
                                     <DockPanel>
-                                        <TextBlock Margin="3,0" Text="{Binding Path=Data.Text, Mode=OneTime}"/>
-                                        <TextBlock Margin="3,0" Text="{Binding Path=Data.Expected, Mode=OneTime}"/>
+                                        <DockPanel.Style>
+                                            <Style TargetType="DockPanel">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Data.Text}" Value="{x:Null}">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </DockPanel.Style>
+                                        <TextBlock Margin="3,0" Text="{Binding Data.Text, Mode=OneTime}"/>
+                                        <TextBlock Margin="3,0" Text="{Binding Data.Expected, Mode=OneTime}"/>
                                     </DockPanel>
 
                                 </DockPanel>

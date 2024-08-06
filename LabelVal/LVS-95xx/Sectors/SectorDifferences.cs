@@ -234,19 +234,19 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
 
                 if (spl1[0].Equals("Contrast"))
                 {
-                    GradeValues.Add(GetGradeValue("contrast", spl1[1]));
+                    GradeValues.Add(GetGradeValue("symbolContrast", spl1[1]));
                     continue;
                 }
 
                 if (spl1[0].StartsWith("Modulation"))
                 {
-                    GradeValues.Add(new GradeValue("modulation", -1, GetGrade("modulation", spl1[1])));
+                    GradeValues.Add(new GradeValue("modulation", -1, GetGrade("", spl1[1])));
                     continue;
                 }
 
                 if (spl1[0].StartsWith("Reflectance"))
                 {
-                    GradeValues.Add(new GradeValue("reflectance", -1, GetGrade("reflectance", spl1[1])));
+                    GradeValues.Add(new GradeValue("reflectanceMargin", -1, GetGrade("", spl1[1])));
                     continue;
                 }
 
@@ -264,16 +264,15 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
 
                 if (spl1[0].StartsWith("Unused "))
                 {
-                    GradeValues.Add(GetGradeValue("unusedECC", spl1[1]));
+                    GradeValues.Add(GetGradeValue("unusedErrorCorrection", spl1[1]));
                     continue;
                 }
 
                 if (spl1[0].StartsWith("Fixed"))
                 {
-                    GradeValues.Add(GetGradeValue("fixedPatternDamage", spl1[1]));
+                    GradeValues.Add(new GradeValue("fixedPatternDamage", -1, new Grade("", ParseFloat(spl1[1]), GetLetter(ParseFloat(spl1[1])))));
                     continue;
                 }
-
 
                 if (spl1[0].StartsWith("Rmin"))
                 {
