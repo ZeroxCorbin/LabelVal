@@ -48,6 +48,7 @@ public class Report : IReport
         Type = report.Find((e) => e.StartsWith("Cell size")) == null ? "verify1D" : "verify2D";
 
         string[] sym = GetKeyValuePair("Symbology", report);
+
         SymbolType = L95xxGetSymbolType(sym[1]);
         XDimension = Type == "verify2D"
             ? (double)L95xxParseFloat(GetKeyValuePair("Cell size", report)[1])
@@ -61,12 +62,11 @@ public class Report : IReport
         OverallGradeString = GetKeyValuePair("Overall", report)[1];
         OverallGradeLetter = L95xxGetGrade(GetKeyValuePair("Overall", report)[1]).letter;
 
-        var res = GetMultipleKeyValuePair("GS1 Data", report);
+        var res = GetMultipleKeyValuePairs("GS1 Data", report);
         bool itThinksItIsGS1 = sym[1].StartsWith("GS1");
         string error = null;
         if (res != null)
         {
-            
             foreach(var str in res)
             {
                 if (str[0].Equals("GS1 Data"))
@@ -98,7 +98,7 @@ public class Report : IReport
         //if it was not found or the item does not contain a comma.
         return item?.Contains(',') != true ? null : ([item[..item.IndexOf(',')], item[(item.IndexOf(',') + 1)..]]);
     }
-    private List<string[]> GetMultipleKeyValuePair(string key, List<string> report)
+    private List<string[]> GetMultipleKeyValuePairs(string key, List<string> report)
     {
         List<string> items = report.FindAll((e) => e.StartsWith(key));
 

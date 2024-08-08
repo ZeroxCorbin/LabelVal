@@ -706,6 +706,9 @@
 		<Content Include="Assets\Images\v5-white-outline.ico">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
+		<Content Include="gs1encoders.dll">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
 	</ItemGroup>
 	<ItemGroup>
 		<Resource Include="favicon.ico" />
@@ -1549,7 +1552,4 @@
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-	  <Exec Command="xcopy /y /d &quot;C:\Users\Watson\Documents\GitHub\gs1-syntax-engine\src\c-lib\build\library\x64\$(Configuration)\gs1encoders.dll&quot; &quot;bin\$(Configuration)\$(TargetFramework)\&quot;" />
-	</Target>
 </Project>

@@ -406,10 +406,11 @@
                     <local:ImageResultEntry_Images DataContext="{Binding }"/>
 
                     <local:ImageResultEntry_V275 DataContext="{Binding }"/>
-
-                    <local:ImageResultEntry_V5 DataContext="{Binding }"/>
-
+                    
                     <local:ImageResultEntry_L95xx DataContext="{Binding }"/>
+                    
+                    <local:ImageResultEntry_V5 DataContext="{Binding }"/>
+                    
                 </DockPanel>
             </ScrollViewer>
         </DockPanel>
