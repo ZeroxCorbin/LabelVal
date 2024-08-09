@@ -6,28 +6,13 @@
 		<PublishUrl>publish\</PublishUrl>
 
 	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-		<DebugType>none</DebugType>
-		<GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
-		<IsPublishable>False</IsPublishable>
-	</PropertyGroup>
 	<PropertyGroup>
 		<ApplicationIcon>favicon.ico</ApplicationIcon>
 		<SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
 		<Title>Label Validator</Title>
-		<AssemblyVersion>4.0.3</AssemblyVersion>
-		<FileVersion>4.0.3</FileVersion>
+		<AssemblyVersion>4.1.2</AssemblyVersion>
+		<FileVersion>4.1.2</FileVersion>
 		<ApplicationManifest>Properties\app.manifest</ApplicationManifest>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-		<OutputPath>bin\x64\Debug\</OutputPath>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-		<DebugSymbols>true</DebugSymbols>
-		<OutputPath>bin\x64\Release\</OutputPath>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-		<IsPublishable>False</IsPublishable>
 	</PropertyGroup>
 	<ItemGroup>
 	  <Compile Remove="Assets\Image Rolls\VALIDATION\**" />
@@ -225,6 +210,7 @@
 		<None Remove="Assets\Images\v5-white-outline.ico" />
 		<None Remove="Assets\Images\v5-white-outline.xcf" />
 		<None Remove="Assets\Images\v5_1.png" />
+		<None Remove="gs1encoders.dll" />
 	</ItemGroup>
 	<ItemGroup>
 		<Page Remove="LVS-95xx\Views\LVS95xx_SerialPortView.xaml" />

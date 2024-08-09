@@ -31,12 +31,11 @@ public partial class App : Application
 #if DEBUG
     public static string WorkingDir => Directory.GetCurrentDirectory();
 #else
-        public static string WorkingDir { get; set; } =
- $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\\LabelVal_Data";
+        public static string WorkingDir { get; set; } = System.IO.Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), System.Reflection.Assembly.GetExecutingAssembly().GetName().Name);
 #endif
 
     public static string Version { get; set; }
-    public static string LocalAppData => System.IO.Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), System.Reflection.Assembly.GetExecutingAssembly().GetName().Name);
+    //public static string LocalAppData => System.IO.Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), System.Reflection.Assembly.GetExecutingAssembly().GetName().Name);
 
     public static string UserDataDirectory => $"{WorkingDir}\\UserData";
     public static string DatabaseExtension => ".sqlite";
@@ -136,8 +135,8 @@ public partial class App : Application
 
         if (Keyboard.IsKeyDown(Key.LeftCtrl))
         {
-            NLog.LogManager.GetCurrentClassLogger().Info($"CTRL Key pressed. Deleting contents of {LocalAppData}");
-            RecursiveDelete(new DirectoryInfo(LocalAppData));
+            NLog.LogManager.GetCurrentClassLogger().Info($"CTRL Key pressed. Deleting contents of {WorkingDir}");
+            RecursiveDelete(new DirectoryInfo(WorkingDir));
         }
     }
     protected override void OnExit(ExitEventArgs e)
@@ -179,6 +178,7 @@ public partial class App : Application
         string message = $"Unhandled exception ({source})";
         try
         {
+            MessageBox.Show($"{exception.Message}\r\n{exception.InnerException.Message}");
             Logger.Error(exception, message);
 
             AssemblyName assemblyName = Assembly.GetExecutingAssembly().GetName();
