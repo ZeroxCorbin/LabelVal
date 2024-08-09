@@ -62,6 +62,7 @@ public partial class App : Application
     public App()
     {
 
+
         //   ExtractRunDetails();
         // File.WriteAllText("setting.imgr", JsonConvert.SerializeObject(new ImageRolls.ViewModels.ImageRollEntry(), new Newtonsoft.Json.Converters.StringEnumConverter()));
         SetupExceptionHandling();
@@ -99,6 +100,12 @@ public partial class App : Application
 
         LogManager.GetCurrentClassLogger().Info($"Starting: {Version}");
 
+        if (Keyboard.IsKeyDown(Key.LeftCtrl))
+        {
+            NLog.LogManager.GetCurrentClassLogger().Info($"CTRL Key pressed. Deleting contents of {WorkingDir}");
+            RecursiveDelete(new DirectoryInfo(WorkingDir));
+        }
+
         try
         {
             Batteries.Init();
@@ -132,12 +139,6 @@ public partial class App : Application
             _ = ThemeManager.Current.ChangeTheme(this, res);
 
         ThemeManager.Current.ThemeChanged += Current_ThemeChanged;
-
-        if (Keyboard.IsKeyDown(Key.LeftCtrl))
-        {
-            NLog.LogManager.GetCurrentClassLogger().Info($"CTRL Key pressed. Deleting contents of {WorkingDir}");
-            RecursiveDelete(new DirectoryInfo(WorkingDir));
-        }
     }
     protected override void OnExit(ExitEventArgs e)
     {
@@ -209,6 +210,9 @@ public partial class App : Application
 
         foreach (DirectoryInfo dir in baseDir.EnumerateDirectories())
         {
+            if(dir.FullName.Contains("UserData"))
+                continue;
+
             RecursiveDelete(dir);
         }
         FileInfo[] files = baseDir.GetFiles();

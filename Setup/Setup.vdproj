@@ -202,12 +202,12 @@
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
         "ProductVersion" = "8:4.1.2"
-        "Manufacturer" = "8:OMRON"
+        "Manufacturer" = "8:TDDA"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
         "Title" = "8:Label Validator Setup"
         "Subject" = "8:"
-        "ARPCONTACT" = "8:Jack Bowling TDD"
+        "ARPCONTACT" = "8:Jack Bowling"
         "Keywords" = "8:"
         "ARPCOMMENTS" = "8:"
         "ARPURLINFOABOUT" = "8:"
@@ -729,7 +729,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_F71CBFBC1C4240D5A2F3891B407DC1C0"
             {
-            "SourcePath" = "8:..\\LabelVal\\obj\\Release\\net8.0-windows7.0\\apphost.exe"
+            "SourcePath" = "8:..\\LabelVal\\obj\\Debug\\net8.0-windows7.0\\apphost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_74904EA5F1254F3C82F2B766EEA69817"
