@@ -16,6 +16,7 @@
 
     <UserControl.Resources>
         <converters:ObjectIsNull x:Key="objectIsNull"/>
+        <converters:EqualZeroOrNull x:Key="equalZeroOrNull"/>
         <BooleanToVisibilityConverter x:Key="booltovis"/>
         <converters:StringToUpperSpacedConverter x:Key="stringToUpper"/>
         <converters:FloatStringTrimConverter x:Key="floatTrim"/>
@@ -497,11 +498,17 @@
                 <DockPanel>
                     <DockPanel.Style>
                         <Style TargetType="{x:Type DockPanel}">
-                            <Setter Property="Visibility" Value="Visible"/>
+                            <Setter Property="Visibility" Value="Collapsed"/>
                             <Style.Triggers>
-                                <DataTrigger Value="0" Binding="{Binding SectorDifferences.Gs1ValueResults.Count, Mode=OneTime}">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                </DataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Value="False" Binding="{Binding SectorDifferences.Gs1ValueResults.Count, Converter={StaticResource equalZeroOrNull}, Mode=OneTime}"/>
+                                        <Condition Value="GS1" Binding="{Binding Report.Standard}"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
                                 <DataTrigger Value="aztec" Binding="{Binding Report.SymbolType, Mode=OneTime}">
                                     <Setter Property="Visibility" Value="Collapsed"/>
                                 </DataTrigger>
@@ -667,8 +674,10 @@
                                             </Border.Style>
                                         </Border>
 
-                                        <TextBlock Margin="3,0" Text="{Binding Name, Converter={StaticResource stringToUpper}, Mode=OneTime}"/>
-                                        <TextBlock Margin="3,0" Text="{Binding Data.SubAlarm, Converter={StaticResource stringToUpper}, Mode=OneTime}" TextWrapping="Wrap"/>
+                                        <TextBlock Margin="3,0" Text="{Binding Name, Converter={StaticResource stringToUpper}, Mode=OneTime}"
+                                                   TextWrapping="Wrap"/>
+                                        <TextBlock Margin="3,0" Text="{Binding Data.SubAlarm, Converter={StaticResource stringToUpper}, Mode=OneTime}"
+                                                   TextWrapping="Wrap"/>
                                     </DockPanel>
 
                                     <DockPanel>
@@ -681,8 +690,11 @@
                                                 </Style.Triggers>
                                             </Style>
                                         </DockPanel.Style>
-                                        <TextBlock Margin="3,0" Text="{Binding Data.Text, Mode=OneTime}"/>
-                                        <TextBlock Margin="3,0" Text="{Binding Data.Expected, Mode=OneTime}"/>
+                                        
+                                        <TextBlock Margin="3,0" Text="{Binding Data.Text, Mode=OneTime}"
+                                                   TextWrapping="Wrap"/>
+                                        <TextBlock Margin="3,0" Text="{Binding Data.Expected, Mode=OneTime}"
+                                                   TextWrapping="Wrap"/>
                                     </DockPanel>
 
                                 </DockPanel>

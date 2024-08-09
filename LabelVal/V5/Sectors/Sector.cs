@@ -5,21 +5,17 @@ namespace LabelVal.V5.Sectors;
 
 public class Sector : ISector
 {
+    public ResultsAlt.Decodedata V5Sector { get; }
+
     public ITemplate Template { get; }
     public IReport Report { get; }
 
+    public ISectorDifferences SectorDifferences { get; }
     public bool IsWarning { get; }
     public bool IsError { get; }
 
-    public ISectorDifferences SectorDifferences { get; }
-
-    public StandardsTypes Standard { get; }
-    public GS1TableNames GS1Table { get; }
-
-    public StandardsTypes DesiredStandard { get; }
-    public GS1TableNames DesiredGS1Table { get; }
-
-    public bool IsGS1Standard => Standard == StandardsTypes.GS1;
+    public StandardsTypes DesiredStandard { get; set; }
+    public GS1TableNames DesiredGS1Table { get; set; }
     public bool IsWrongStandard
     {
         get
@@ -32,7 +28,7 @@ public class Sector : ISector
                     return true;
                 case StandardsTypes.ISO15415_15416:
                     {
-                        return Standard switch
+                        return Report.Standard switch
                         {
                             StandardsTypes.ISO15415_15416 or StandardsTypes.ISO15415 or StandardsTypes.ISO15416 or StandardsTypes.Unsupported => false,
                             _ => true,
@@ -40,7 +36,7 @@ public class Sector : ISector
                     }
                 case StandardsTypes.ISO15415:
                     {
-                        return Standard switch
+                        return Report.Standard switch
                         {
                             StandardsTypes.ISO15415_15416 or StandardsTypes.ISO15415 => false,
                             _ => true,
@@ -48,7 +44,7 @@ public class Sector : ISector
                     }
                 case StandardsTypes.ISO15416:
                     {
-                        return Standard switch
+                        return Report.Standard switch
                         {
                             StandardsTypes.ISO15415_15416 or StandardsTypes.ISO15416 => false,
                             _ => true,
@@ -56,9 +52,9 @@ public class Sector : ISector
                     }
                 case StandardsTypes.GS1:
                     {
-                        return Standard switch
+                        return Report.Standard switch
                         {
-                            StandardsTypes.GS1 => GS1Table != DesiredGS1Table,
+                            StandardsTypes.GS1 => Report.GS1Table != DesiredGS1Table,
                             _ => true,
                         };
                     }
@@ -70,6 +66,8 @@ public class Sector : ISector
 
     public Sector(ResultsAlt.Decodedata decodeData, Config.Toollist toollist, string name, StandardsTypes standard, GS1TableNames table)
     {
+        V5Sector = decodeData;
+
         Report = new Report(decodeData);
         Template = new Template(decodeData, toollist, name);
 
@@ -78,8 +76,8 @@ public class Sector : ISector
         DesiredStandard = standard;
         DesiredGS1Table = table;
 
-        Standard = decodeData.grading != null ? V5GetStandard(decodeData.grading) : DesiredStandard;
-        GS1Table = GS1TableNames.None; //GS1 is not supported in V5, yet
+        Report.Standard = decodeData.grading != null ? V5GetStandard(decodeData.grading) : StandardsTypes.None;
+        Report.GS1Table = GS1TableNames.None; //GS1 is not supported in V5, yet
 
         int highCat = 0;
         foreach (Alarm alm in SectorDifferences.Alarms)

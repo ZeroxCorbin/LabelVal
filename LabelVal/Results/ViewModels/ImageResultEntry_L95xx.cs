@@ -46,7 +46,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
         if (SelectedSector != null)
             App.Current.Dispatcher.BeginInvoke(() =>
             {
-                L95xxCurrentSectors.Add(new Sector(SelectedSector.Template, message.NewValue.Value, SelectedSector.DesiredStandard, SelectedSector.DesiredGS1Table));
+                L95xxCurrentSectors.Add(new Sector(SelectedSector.Template, message.NewValue.Value, SelectedSector.Report.Standard, SelectedSector.Report.GS1Table));
                 List<ISector> secs = L95xxCurrentSectors.ToList();
                 SortList(secs);
 

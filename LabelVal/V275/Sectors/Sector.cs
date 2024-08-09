@@ -9,18 +9,12 @@ public class Sector : ISector
     public ITemplate Template { get; }
     public IReport Report { get; }
 
+    public ISectorDifferences SectorDifferences { get; }
     public bool IsWarning { get; }
     public bool IsError { get; }
 
-    public ISectorDifferences SectorDifferences { get; }
-
-    public StandardsTypes Standard { get; }
-    public GS1TableNames GS1Table { get; }
-
     public StandardsTypes DesiredStandard { get; }
     public GS1TableNames DesiredGS1Table { get; }
-
-    public bool IsGS1Standard => Standard == StandardsTypes.GS1;
     public bool IsWrongStandard
     {
         get
@@ -33,7 +27,7 @@ public class Sector : ISector
                     return true;
                 case StandardsTypes.ISO15415_15416:
                     {
-                        return Standard switch
+                        return Report.Standard switch
                         {
                             StandardsTypes.ISO15415_15416 or StandardsTypes.ISO15415 or StandardsTypes.ISO15416 or StandardsTypes.Unsupported => false,
                             _ => true,
@@ -41,7 +35,7 @@ public class Sector : ISector
                     }
                 case StandardsTypes.ISO15415:
                     {
-                        return Standard switch
+                        return Report.Standard switch
                         {
                             StandardsTypes.ISO15415_15416 or StandardsTypes.ISO15415 => false,
                             _ => true,
@@ -49,7 +43,7 @@ public class Sector : ISector
                     }
                 case StandardsTypes.ISO15416:
                     {
-                        return Standard switch
+                        return Report.Standard switch
                         {
                             StandardsTypes.ISO15415_15416 or StandardsTypes.ISO15416 => false,
                             _ => true,
@@ -57,9 +51,9 @@ public class Sector : ISector
                     }
                 case StandardsTypes.GS1:
                     {
-                        return Standard switch
+                        return Report.Standard switch
                         {
-                            StandardsTypes.GS1 => GS1Table != DesiredGS1Table,
+                            StandardsTypes.GS1 => Report.GS1Table != DesiredGS1Table,
                             _ => true,
                         };
                     }
@@ -69,7 +63,6 @@ public class Sector : ISector
         }
     }
 
-    //V275
     public Sector(V275_REST_lib.Models.Job.Sector sector, object report, StandardsTypes standard, GS1TableNames table)
     {
         V275Sector = sector;
@@ -83,10 +76,10 @@ public class Sector : ISector
         DesiredGS1Table = table;
 
         if (sector.type is "verify1D" or "verify2D" && sector.gradingStandard != null)
-            Standard = sector.gradingStandard.enabled ? StandardsTypes.GS1 : StandardsTypes.ISO15415_15416;
+            Report.Standard = sector.gradingStandard.enabled ? StandardsTypes.GS1 : StandardsTypes.ISO15415_15416;
 
-        if (Standard == StandardsTypes.GS1)
-            GS1Table = GetGS1Table(sector.gradingStandard.tableId);
+        if (Report.Standard == StandardsTypes.GS1)
+            Report.GS1Table = GetGS1Table(sector.gradingStandard.tableId);
 
         int highCat = 0;
         foreach (Alarm alm in SectorDifferences.Alarms)

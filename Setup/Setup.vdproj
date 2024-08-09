@@ -175,6 +175,17 @@
             "Property" = "8:ProgramMenuFolder"
                 "Folders"
                 {
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_85DFBCBF60CE4AE687B109F37F1C1CB8"
+                    {
+                    "Name" = "8:TDDA"
+                    "AlwaysCreate" = "11:FALSE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_8713AEA8A9604E3EB594AA14838C82DE"
+                        "Folders"
+                        {
+                        }
+                    }
                 }
             }
         }
@@ -323,7 +334,7 @@
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
             "Target" = "8:_F71CBFBC1C4240D5A2F3891B407DC1C0"
-            "Folder" = "8:_F68B053890A244E1AFDC0BFF2C7DED63"
+            "Folder" = "8:_85DFBCBF60CE4AE687B109F37F1C1CB8"
             "WorkingFolder" = "8:_74904EA5F1254F3C82F2B766EEA69817"
             "Icon" = "8:_52ABBCF9E69846EEBB2363D3BAEFB042"
             "Feature" = "8:"

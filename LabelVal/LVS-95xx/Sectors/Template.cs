@@ -17,6 +17,7 @@ namespace LabelVal.LVS_95xx.Sectors
         public System.Drawing.Point CenterPoint { get; set; }
 
         public double Orientation { get; set; }
+
         public string SymbologyType { get; set; }
 
         public TemplateMatchMode MatchSettings { get; set; }
@@ -40,6 +41,7 @@ namespace LabelVal.LVS_95xx.Sectors
             CenterPoint = template.CenterPoint;
 
             Orientation = template.Orientation;
+
             SymbologyType = template.SymbologyType;
 
             MatchSettings = template.MatchSettings;

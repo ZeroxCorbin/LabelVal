@@ -30,6 +30,9 @@ public class Report : IReport
     public double OverallGradeValue { get; set; }
     public string OverallGradeLetter { get; set; }
 
+    public StandardsTypes Standard { get; set; }
+    public GS1TableNames GS1Table { get; set; }
+
     //GS1
     public Gs1results GS1Results { get; set; }
 

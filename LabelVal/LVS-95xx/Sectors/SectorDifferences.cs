@@ -343,14 +343,12 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
                 var spl2 = kv[1].Split(' ');
                 if (spl2.Count() == 2)
                 {
-                    ValueResults.Add(new ValueResult("quietZoneLeft", ParseInt(spl2[0]), spl2[1]));
-                    ValueResults.Add(new ValueResult("quietZoneRight", ParseInt(spl2[0]), spl2[1]));
+                    ValueResults.Add(new ValueResult("quietZone", ParseInt(spl2[0]), spl2[1]));
                 }
             }
             else
             {
-                ValueResults.Add(new ValueResult("quietZoneLeft", 100, kv[1]));
-                ValueResults.Add(new ValueResult("quietZoneRight", 100, kv[1]));
+                ValueResults.Add(new ValueResult("quietZone", 100, kv[1]));
             }
 
             foreach (var item in alarms)

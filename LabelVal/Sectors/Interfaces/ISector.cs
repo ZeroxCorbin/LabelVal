@@ -69,17 +69,11 @@ public interface ISector
     ITemplate Template { get; }
     IReport Report { get; }
 
+    ISectorDifferences SectorDifferences { get; }
     bool IsWarning { get; }
     bool IsError { get; }
 
     StandardsTypes DesiredStandard { get; }
     GS1TableNames DesiredGS1Table { get; }
-
-    StandardsTypes Standard { get; }
-    GS1TableNames GS1Table { get; }
-
-    bool IsGS1Standard { get; }
     bool IsWrongStandard { get; }
-
-    ISectorDifferences SectorDifferences { get; }
 }

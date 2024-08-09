@@ -63,6 +63,9 @@ public interface IReport
 
     string DecodeText { get; set; }
 
+    StandardsTypes Standard { get; set; }
+    GS1TableNames GS1Table { get; set; }
+
     //GS1
     Gs1results GS1Results { get; set; }
 

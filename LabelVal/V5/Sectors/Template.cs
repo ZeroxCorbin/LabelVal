@@ -20,6 +20,7 @@ public class Template : ITemplate
     public double AngleDeg { get; set; }
 
     public System.Drawing.Point CenterPoint { get; set; }
+
     public string SymbologyType { get; set; }
 
     public double Orientation { get; set; }
