@@ -55,7 +55,7 @@ public class Sector : ISector
                     {
                         return Report.Standard switch
                         {
-                            StandardsTypes.GS1 => Report.GS1Table != DesiredGS1Table,
+                            StandardsTypes.GS1 => Report.GS1Table != DesiredGS1Table && Report.GS1Table != GS1TableNames.Unsupported,
                             _ => true,
                         };
                     }
@@ -93,6 +93,28 @@ public class Sector : ISector
             IsError = true;
     }
 
+    public Sector(Models.FullReport report, ITemplate template, StandardsTypes standard, GS1TableNames table)
+    {
+        Report = new Report(report);
+        Template = new Template(template);
+
+        SectorDifferences = new SectorDifferences(reportData, Template.Username, Report.SymbolType == "pdf417");
+
+        DesiredStandard = standard;
+        DesiredGS1Table = table;
+
+        //Standard and GS1Table are set in the Report constructor.
+
+        int highCat = 0;
+        foreach (Alarm alm in SectorDifferences.Alarms)
+            if (highCat < alm.Category)
+                highCat = alm.Category;
+
+        if (highCat == 1)
+            IsWarning = true;
+        else if (highCat == 2)
+            IsError = true;
+    }
     private List<string[]> GetMultipleKeyValuePairs(string key, List<string> report)
     {
         List<string> items = report.FindAll((e) => e.StartsWith(key));

@@ -1,6 +1,5 @@
 ﻿using LabelVal.Sectors.Interfaces;
 using System;
-using System.Net.NetworkInformation;
 using System.Windows;
 using System.Windows.Media;
 
@@ -51,7 +50,7 @@ public class Report : IReport
         DecodeText = v5.dataUTF8;
 
         // Create the Rect
-        Rect rect = new(v5.x - v5.width / 2, v5.y - v5.height / 2, v5.width, v5.height);
+        Rect rect = new(v5.x - (v5.width / 2), v5.y - (v5.height / 2), v5.width, v5.height);
 
         // Create the RotateTransform
         RotateTransform rotateTransform = new(v5.angleDeg, v5.x, v5.y);

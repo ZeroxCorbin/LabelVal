@@ -1,8 +1,6 @@
-﻿using ControlzEx.Standard;
-using LabelVal.Sectors.Interfaces;
+﻿using LabelVal.Sectors.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using V275_REST_lib.Models;
 
@@ -52,25 +50,25 @@ public class Report : IReport
 
         string[] sym = GetKeyValuePair("Symbology", report);
 
-        SymbolType = L95xxGetSymbolType(sym[1]);
+        SymbolType = GetSymbolType(sym[1]);
         XDimension = Type == "verify2D"
-            ? (double)L95xxParseFloat(GetKeyValuePair("Cell size", report)[1])
-            : (double)L95xxParseFloat(GetKeyValuePair("Xdim", report)[1]);
-        Aperture = L95xxParseFloat(GetKeyValuePair("Overall", report)[1].Split('/')[1]);
+            ? (double)ParseFloat(GetKeyValuePair("Cell size", report)[1])
+            : (double)ParseFloat(GetKeyValuePair("Xdim", report)[1]);
+        Aperture = ParseFloat(GetKeyValuePair("Overall", report)[1].Split('/')[1]);
         Units = "mil";
 
         DecodeText = GetKeyValuePair("Decoded", report)[1];
-        
-        OverallGradeValue = L95xxGetGrade(GetKeyValuePair("Overall", report)[1]).value;
-        OverallGradeString = GetKeyValuePair("Overall", report)[1];
-        OverallGradeLetter = L95xxGetGrade(GetKeyValuePair("Overall", report)[1]).letter;
 
-        var res = GetMultipleKeyValuePairs("GS1 Data", report);
+        OverallGradeValue = GetGrade(GetKeyValuePair("Overall", report)[1]).value;
+        OverallGradeString = GetKeyValuePair("Overall", report)[1];
+        OverallGradeLetter = GetGrade(GetKeyValuePair("Overall", report)[1]).letter;
+
+        List<string[]> res = GetMultipleKeyValuePairs("GS1 Data", report);
         bool itThinksItIsGS1 = sym[1].StartsWith("GS1");
         string error = null;
         if (res != null)
         {
-            foreach(var str in res)
+            foreach (string[] str in res)
             {
                 if (str[0].Equals("GS1 Data"))
                     continue;
@@ -78,11 +76,11 @@ public class Report : IReport
                     error = str[1];
             }
 
-            var list = new List<string>();
-            var spl = GetKeyValuePair("GS1 Data,", report)[1].Split('(', StringSplitOptions.RemoveEmptyEntries);
-            foreach(var str in spl)
+            List<string> list = new();
+            string[] spl = GetKeyValuePair("GS1 Data,", report)[1].Split('(', StringSplitOptions.RemoveEmptyEntries);
+            foreach (string str in spl)
                 list.Add($"({str}");
-            
+
             GS1Results = new Gs1results()
             {
                 Validated = true,
@@ -93,6 +91,35 @@ public class Report : IReport
             };
         }
     }
+
+    public Report(Models.FullReport report)
+    {
+        Type = GetParameter("Cell size", report.ReportData) == null ? "verify1D" : "verify2D";
+
+        Top = report.Report.Y1;
+        Left = report.Report.X1;
+        Width = report.Report.SizeX;
+        Height = report.Report.SizeY;
+        AngleDeg = 0;
+
+        string sym = GetParameter("Symbology", report.ReportData);
+        SymbolType = GetSymbolType(sym);
+        XDimension = Type == "verify2D"
+            ? (double)ParseFloat(GetParameter("Cell size", report.ReportData))
+            : (double)ParseFloat(GetParameter("Xdim", report.ReportData));
+        Aperture = ParseFloat(GetParameter("Overall", report.ReportData).Split('/')[1]);
+        Units = "mil";
+
+        DecodeText = report.Report.DecodedText;
+
+        OverallGradeValue = GetGrade(GetParameter("Overall", report.ReportData)).value;
+        OverallGradeString = report.Report.OverallGrade;
+        OverallGradeLetter = GetGrade(GetParameter("Overall", report.ReportData)).letter;
+
+        Standard = GetStandard(GetParameter("Application standard", report.ReportData));
+        GS1Table = GetGS1Table(GetParameter("GS1 Table", report.ReportData));
+    }
+    private string GetParameter(string key, List<Models.ReportData> report) => report.Find((e) => e.ParameterName.StartsWith(key))?.ParameterValue;
 
     private string[] GetKeyValuePair(string key, List<string> report)
     {
@@ -119,7 +146,7 @@ public class Report : IReport
         return res;
     }
 
-    private static string L95xxGetLetter(float value) =>
+    private static string GetLetter(float value) =>
         value == 4.0f
         ? "A"
         : value is <= 3.9f and >= 3.0f
@@ -131,25 +158,51 @@ public class Report : IReport
         : value is <= 0.9f and >= 0.0f
         ? "F"
         : "F";
-
-    private static float L95xxParseFloat(string value)
+    private static float ParseFloat(string value)
     {
         string digits = new(value.Trim().TakeWhile("0123456789.".Contains).ToArray());
 
         return float.TryParse(digits, out float val) ? val : 0;
     }
-    private static Report_InspectSector_Common.Grade L95xxGetGrade(string data)
+    private static Report_InspectSector_Common.Grade GetGrade(string data)
     {
-        float tmp = L95xxParseFloat(data);
+        float tmp = ParseFloat(data);
 
         return new Report_InspectSector_Common.Grade()
         {
             value = tmp,
-            letter = L95xxGetLetter(tmp)
+            letter = GetLetter(tmp)
         };
     }
 
-    private static string L95xxGetSymbolType(string value) =>
+    private static StandardsTypes GetStandard(string value) =>
+        value.StartsWith("GS1")
+        ? StandardsTypes.GS1
+        : value.StartsWith("ISO")
+        ? StandardsTypes.ISO15415_15416
+        : StandardsTypes.Unsupported;
+    private static GS1TableNames GetGS1Table(string value) =>
+        string.IsNullOrEmpty(value) ? GS1TableNames.Unsupported :
+        value.StartsWith("Table 1") ? GS1TableNames._1 :
+        value.StartsWith("Table 1.1") ? GS1TableNames._1_8200 :
+        value.StartsWith("Table 2") ? GS1TableNames._2 :
+        value.StartsWith("Table 3") ? GS1TableNames._3 :
+        value.StartsWith("Table 4") ? GS1TableNames._4 :
+        value.StartsWith("Table 5") ? GS1TableNames._5 :
+        value.StartsWith("Table 6") ? GS1TableNames._6 :
+        value.StartsWith("Table 7.1") ? GS1TableNames._7_1 :
+        value.StartsWith("Table 7.2") ? GS1TableNames._7_2 :
+        value.StartsWith("Table 7.3") ? GS1TableNames._7_3 :
+        value.StartsWith("Table 7.4") ? GS1TableNames._7_4 :
+        value.StartsWith("Table 8") ? GS1TableNames._8 :
+        value.StartsWith("Table 9") ? GS1TableNames._9 :
+        value.StartsWith("Table 10") ? GS1TableNames._10 :
+        value.StartsWith("Table 11") ? GS1TableNames._11 :
+        value.StartsWith("Table 12") ? GS1TableNames._12_1 :
+        value.StartsWith("Table 12.2") ? GS1TableNames._12_2 :
+        value.StartsWith("Table 12.3") ? GS1TableNames._12_3
+        : GS1TableNames.Unsupported;
+    private static string GetSymbolType(string value) =>
         value.Contains("Code 128")
         ? "code128"
         : value.Contains("UPC-A")
@@ -174,5 +227,11 @@ public class Report : IReport
         ? "dataMatrix"
         : value.Contains("Aztec")
         ? "aztec"
-        : value.Contains("Codabar") ? "codaBar" : value.Contains("ITF") ? "i2of5" : value.Contains("PDF417") ? "pdf417" : "";
+        : value.Contains("Codabar")
+        ? "codaBar"
+        : value.Contains("ITF")
+        ? "i2of5"
+        : value.Contains("PDF417")
+        ? "pdf417"
+        : "";
 }

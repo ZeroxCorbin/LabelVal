@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using LabelVal.LVS_95xx.Controllers;
 using Newtonsoft.Json;
 using System;
 using System.Collections.ObjectModel;
@@ -16,6 +17,7 @@ public partial class Verifier : ObservableRecipient
     public string ID => SelectedComName;
 
     private SerialPortController PortController = new();
+    private L95xxDatabaseConnection DatabaseConnection = new();
 
     [JsonIgnore] public VerifierManager Manager { get; set; }
 
@@ -59,7 +61,15 @@ public partial class Verifier : ObservableRecipient
             PortController.Init(SelectedComName);
 
             if (PortController.Connect())
+            {
+                if (!DatabaseConnection.Connect())
+                {
+                    ClosePort();
+                    return;
+                }
+
                 IsConnected = true;
+            }
         }
         else
             ClosePort();
@@ -73,6 +83,7 @@ public partial class Verifier : ObservableRecipient
     {
         PortController.Disconnect();
         IsConnected = false;
+        DatabaseConnection.Disconnect();
     }
 
 }

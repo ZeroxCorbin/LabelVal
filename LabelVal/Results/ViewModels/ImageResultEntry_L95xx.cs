@@ -46,7 +46,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
         if (SelectedSector != null)
             App.Current.Dispatcher.BeginInvoke(() =>
             {
-                L95xxCurrentSectors.Add(new Sector(SelectedSector.Template, message.NewValue.Value, SelectedSector.Report.Standard, SelectedSector.Report.GS1Table));
+                L95xxCurrentSectors.Add(new Sector(SelectedSector.Template, message.NewValue.Value, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
                 List<ISector> secs = L95xxCurrentSectors.ToList();
                 SortList(secs);
 
@@ -85,7 +85,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
         L95xxStoredSectors.Clear();
         List<Sectors.Interfaces.ISector> tempSectors = [];
         foreach (L95xxReport rSec in report)
-            tempSectors.Add(new LVS_95xx.Sectors.Sector(rSec.Template, rSec.Report, StandardsTypes.None, GS1TableNames.None));
+            tempSectors.Add(new LVS_95xx.Sectors.Sector(rSec.Template, rSec.Report, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
 
         if (tempSectors.Count > 0)
         {

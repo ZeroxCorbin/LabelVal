@@ -4,7 +4,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace LabelVal.LVS_95xx
+namespace LabelVal.LVS_95xx.Controllers
 {
     public class SerialPortSetup
     {
