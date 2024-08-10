@@ -1,10 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using LabelVal.ImageRolls.ViewModels;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
-using V275_REST_lib.Models;
-using V5_REST_Lib.Models;
 
 namespace LabelVal.Results.Databases;
 public partial class ImageResult : ObservableObject
@@ -24,16 +21,16 @@ public partial class ImageResult : ObservableObject
 }
 public class V275Result : ImageResult
 {
-    [SQLite.Ignore] public Job _Job => !string.IsNullOrEmpty(Template) ? JsonConvert.DeserializeObject<Job>(Template) : null;
-    [SQLite.Ignore] public Report _Report => !string.IsNullOrEmpty(Report) ? JsonConvert.DeserializeObject<Report>(Report): null;
+    [SQLite.Ignore] public V275_REST_lib.Models.Job _Job => !string.IsNullOrEmpty(Template) ? JsonConvert.DeserializeObject<V275_REST_lib.Models.Job>(Template) : null;
+    [SQLite.Ignore] public V275_REST_lib.Models.Report _Report => !string.IsNullOrEmpty(Report) ? JsonConvert.DeserializeObject<V275_REST_lib.Models.Report>(Report): null;
 }
 public class V5Result : ImageResult
 {
-    [SQLite.Ignore] public Config _Config => !string.IsNullOrEmpty(Template) ? JsonConvert.DeserializeObject<Config>(Template) : null;
-    [SQLite.Ignore] public ResultsAlt _Report => !string.IsNullOrEmpty(Report) ? JsonConvert.DeserializeObject<ResultsAlt>(Report) : null;
+    [SQLite.Ignore] public V5_REST_Lib.Models.Config _Config => !string.IsNullOrEmpty(Template) ? JsonConvert.DeserializeObject<V5_REST_Lib.Models.Config>(Template) : null;
+    [SQLite.Ignore] public V5_REST_Lib.Models.ResultsAlt _Report => !string.IsNullOrEmpty(Report) ? JsonConvert.DeserializeObject<V5_REST_Lib.Models.ResultsAlt>(Report) : null;
 }
 
 public class L95xxResult : ImageResult 
-{ 
-    [SQLite.Ignore] public List<ViewModels.ImageResultEntry.L95xxReport> _Report => !string.IsNullOrEmpty(Report) ? JsonConvert.DeserializeObject<List<ViewModels.ImageResultEntry.L95xxReport>>(Report) : null;
+{
+     [SQLite.Ignore] public List<LabelVal.LVS_95xx.Models.FullReport> _Report => !string.IsNullOrEmpty(Report) ? JsonConvert.DeserializeObject<List<LabelVal.LVS_95xx.Models.FullReport>>(Report) : null;
 }

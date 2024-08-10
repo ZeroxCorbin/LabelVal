@@ -1,4 +1,7 @@
-﻿using LabelVal.Sectors.Views;
+﻿using LabelVal.Dialogs;
+using LabelVal.ImageRolls.ViewModels;
+using LabelVal.Sectors.Views;
+using MahApps.Metro.Controls.Dialogs;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -72,7 +75,7 @@ public partial class ImageResultEntry_L95xx : UserControl
         if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
         {
             var pop = new PopupJSONViewer();
-            pop.Viewer1.JSON = ((ViewModels.ImageResultEntry)DataContext).L95xxCurrentReport;
+            pop.Viewer1.JSON = ((ViewModels.ImageResultEntry)DataContext).L95xxResultRow.Report;
             pop.Viewer1.Title = "Report";
 
             pop.Popup.PlacementTarget = (Button)sender;
@@ -167,5 +170,34 @@ public partial class ImageResultEntry_L95xx : UserControl
             if (s.SectorName == ((Sectors.Interfaces.ISectorDifferences)sndr.DataContext).UserName)
                 s.ShowSectorDetails();
         }
+    }
+
+    private void L95xxStoredImage_MouseDown(object sender, MouseButtonEventArgs e)
+    {
+        if (e.LeftButton == MouseButtonState.Pressed)
+            _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).L95xxStoredImage, ((ViewModels.ImageResultEntry)DataContext).L95xxStoredImageOverlay);
+    }
+    private void L95xxCurrentImage_MouseDown(object sender, MouseButtonEventArgs e)
+    {
+        if (e.LeftButton == MouseButtonState.Pressed)
+            _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).L95xxCurrentImage, ((ViewModels.ImageResultEntry)DataContext).L95xxCurrentImageOverlay);
+    }
+
+    private bool ShowImage(ImageEntry image, DrawingImage overlay)
+    {
+        ImageViewerDialogViewModel dc = new();
+
+        dc.LoadImage(image.Image, overlay);
+        if (dc.Image == null) return false;
+
+        var yourParentWindow = (Main.Views.MainWindow)Window.GetWindow(this);
+
+        dc.Width = yourParentWindow.ActualWidth - 100;
+        dc.Height = yourParentWindow.ActualHeight - 100;
+
+        _ = DialogCoordinator.Instance.ShowMetroDialogAsync(yourParentWindow.DataContext, new ImageViewerDialogView() { DataContext = dc });
+
+        return true;
+
     }
 }

@@ -141,7 +141,7 @@
                                     <Setter Property="CommandParameter" Value="v5Stored"/>
                                     <Setter Property="ToolTip" Value="V5: Process the stored image with the simulator."/>
                                 </MultiDataTrigger>
-                                
+
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
                                         <Condition Binding="{Binding ImageResults.SelectedScanner.IsSimulator}" Value="False"/>
@@ -157,20 +157,32 @@
                     </Button.Style>
                 </Button>
 
-                <!--<Button x:Name="btnAdd" Click="btnAdd_Click" Width="48"
-                            Content="{iconPacks:Material Kind=ImagePlus, Width=24, Height=24}"
-                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                            ToolTip="Add Image">
-                    <Button.Style>
-                        <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
+                <!--L95xx Select-->
+                <ToggleButton IsChecked="{Binding IsL95xxSelected}" Width="48" 
+                                      Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                      Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}">
+                    <ToggleButton.Style>
+                        <Style TargetType="ToggleButton" BasedOn="{StaticResource MaterialDesignActionToggleButton}">
+                            <Setter Property="ToolTip" Value="Hiding 2D grid data."/>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="True">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                <DataTrigger Binding="{Binding IsL95xxSelected}" Value="True">
+                                    <Setter Property="ToolTip" Value="Displaying 2D grid data."/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
-                    </Button.Style>
-                </Button>-->
+                    </ToggleButton.Style>
+
+                    <md:ToggleButtonAssist.OnContent>
+                        <Grid Background="{DynamicResource OrangeBrush0}">
+                            <Image Source="/Assets/Images/l95xx-white-outline.ico"/>
+                        </Grid>
+                    </md:ToggleButtonAssist.OnContent>
+
+                    <Grid>
+                        <Image Source="/Assets/Images/l95xx-white-outline.ico" />
+                    </Grid>
+
+                </ToggleButton>
 
                 <Popup x:Name="popAdd" Width="{Binding ActualWidth, ElementName=btnAdd}">
 
@@ -374,7 +386,7 @@
                         </Style>
                     </Button.Style>
                 </Button>
-                
+
                 <Button DockPanel.Dock="Top" Command="{Binding ImageResults.DeleteImageCommand}" CommandParameter="{Binding }" Height="48"
                         ToolTip="Delete" Content="{iconPacks:Material Kind=Delete, Width=24, Height=24}"
                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
@@ -406,11 +418,11 @@
                     <local:ImageResultEntry_Images DataContext="{Binding }"/>
 
                     <local:ImageResultEntry_V275 DataContext="{Binding }"/>
-                    
+
                     <local:ImageResultEntry_L95xx DataContext="{Binding }"/>
-                    
+
                     <local:ImageResultEntry_V5 DataContext="{Binding }"/>
-                    
+
                 </DockPanel>
             </ScrollViewer>
         </DockPanel>

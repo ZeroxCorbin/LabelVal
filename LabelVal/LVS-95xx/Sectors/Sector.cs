@@ -1,4 +1,5 @@
-﻿using LabelVal.Sectors.Interfaces;
+﻿using LabelVal.LVS_95xx.Models;
+using LabelVal.Sectors.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,7 +7,7 @@ namespace LabelVal.LVS_95xx.Sectors;
 
 public class Sector : ISector
 {
-    public string L95xxPacket { get; }
+    public FullReport L95xxFullReport { get; }
 
     public ITemplate Template { get; }
     public IReport Report { get; }
@@ -66,39 +67,41 @@ public class Sector : ISector
     }
 
     //L95xx; The template is the currently selected sector.
-    public Sector(ITemplate template, string packet, StandardsTypes standard, GS1TableNames table)
+    //public Sector(ITemplate template, string packet, StandardsTypes standard, GS1TableNames table)
+    //{
+    //    L95xxPacket = packet;
+    //    List<string> spl = packet.Split('\r').ToList();
+
+    //    Report = new Report(spl);
+    //    Template = new Template(template);
+
+    //    SectorDifferences = new SectorDifferences(spl, Template.Username, Report.SymbolType == "pdf417");
+
+    //    DesiredStandard = standard;
+    //    DesiredGS1Table = table;
+
+    //    Report.Standard = GetMultipleKeyValuePairs("GS1 Data", spl) != null ? StandardsTypes.GS1 : StandardsTypes.ISO15415_15416;
+    //    Report.GS1Table = GS1TableNames.Unsupported;
+
+    //    int highCat = 0;
+    //    foreach (Alarm alm in SectorDifferences.Alarms)
+    //        if (highCat < alm.Category)
+    //            highCat = alm.Category;
+
+    //    if (highCat == 1)
+    //        IsWarning = true;
+    //    else if (highCat == 2)
+    //        IsError = true;
+    //}
+
+    public Sector(Models.FullReport report, StandardsTypes standard, GS1TableNames table)
     {
-        L95xxPacket = packet;
-        List<string> spl = packet.Split('\r').ToList();
+        L95xxFullReport = report;
 
-        Report = new Report(spl);
-        Template = new Template(template);
-
-        SectorDifferences = new SectorDifferences(spl, Template.Username, Report.SymbolType == "pdf417");
-
-        DesiredStandard = standard;
-        DesiredGS1Table = table;
-
-        Report.Standard = GetMultipleKeyValuePairs("GS1 Data", spl) != null ? StandardsTypes.GS1 : StandardsTypes.ISO15415_15416;
-        Report.GS1Table = GS1TableNames.Unsupported;
-
-        int highCat = 0;
-        foreach (Alarm alm in SectorDifferences.Alarms)
-            if (highCat < alm.Category)
-                highCat = alm.Category;
-
-        if (highCat == 1)
-            IsWarning = true;
-        else if (highCat == 2)
-            IsError = true;
-    }
-
-    public Sector(Models.FullReport report, ITemplate template, StandardsTypes standard, GS1TableNames table)
-    {
         Report = new Report(report);
-        Template = new Template(template);
+        Template = new Template(report, "NewName");
 
-        SectorDifferences = new SectorDifferences(reportData, Template.Username, Report.SymbolType == "pdf417");
+        SectorDifferences = new SectorDifferences(report, "NewName", Report.SymbolType == "pdf417");
 
         DesiredStandard = standard;
         DesiredGS1Table = table;

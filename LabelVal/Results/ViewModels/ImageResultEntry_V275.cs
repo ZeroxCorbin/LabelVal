@@ -30,9 +30,10 @@ public partial class ImageResultEntry
     public Job V275CurrentTemplate { get; set; }
     public Report V275CurrentReport { get; private set; }
 
-    [ObservableProperty] private ObservableCollection<Sectors.Interfaces.ISector> v275CurrentSectors = [];
-    [ObservableProperty] private ObservableCollection<Sectors.Interfaces.ISector> v275StoredSectors = [];
-    [ObservableProperty] private ObservableCollection<Sectors.Interfaces.ISectorDifferences> v275DiffSectors = [];
+    public ObservableCollection<Sectors.Interfaces.ISector> V275CurrentSectors { get; } = [];
+    public ObservableCollection<Sectors.Interfaces.ISector> V275StoredSectors { get; } = [];
+    public ObservableCollection<Sectors.Interfaces.ISectorDifferences> V275DiffSectors { get; } = [];
+
     [ObservableProperty] private Sectors.Interfaces.ISector v275FocusedStoredSector = null;
     [ObservableProperty] private Sectors.Interfaces.ISector v275FocusedCurrentSector = null;
 

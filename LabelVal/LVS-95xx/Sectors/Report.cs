@@ -44,53 +44,53 @@ public class Report : IReport
     //V275 2D module data
     public ModuleData ExtendedData { get; set; }
 
-    public Report(List<string> report)
-    {
-        Type = report.Find((e) => e.StartsWith("Cell size")) == null ? "verify1D" : "verify2D";
+    //public Report(List<string> report)
+    //{
+    //    Type = report.Find((e) => e.StartsWith("Cell size")) == null ? "verify1D" : "verify2D";
 
-        string[] sym = GetKeyValuePair("Symbology", report);
+    //    string[] sym = GetKeyValuePair("Symbology", report);
 
-        SymbolType = GetSymbolType(sym[1]);
-        XDimension = Type == "verify2D"
-            ? (double)ParseFloat(GetKeyValuePair("Cell size", report)[1])
-            : (double)ParseFloat(GetKeyValuePair("Xdim", report)[1]);
-        Aperture = ParseFloat(GetKeyValuePair("Overall", report)[1].Split('/')[1]);
-        Units = "mil";
+    //    SymbolType = GetSymbolType(sym[1]);
+    //    XDimension = Type == "verify2D"
+    //        ? (double)ParseFloat(GetKeyValuePair("Cell size", report)[1])
+    //        : (double)ParseFloat(GetKeyValuePair("Xdim", report)[1]);
+    //    Aperture = ParseFloat(GetKeyValuePair("Overall", report)[1].Split('/')[1]);
+    //    Units = "mil";
 
-        DecodeText = GetKeyValuePair("Decoded", report)[1];
+    //    DecodeText = GetKeyValuePair("Decoded", report)[1];
 
-        OverallGradeValue = GetGrade(GetKeyValuePair("Overall", report)[1]).value;
-        OverallGradeString = GetKeyValuePair("Overall", report)[1];
-        OverallGradeLetter = GetGrade(GetKeyValuePair("Overall", report)[1]).letter;
+    //    OverallGradeValue = GetGrade(GetKeyValuePair("Overall", report)[1]).value;
+    //    OverallGradeString = GetKeyValuePair("Overall", report)[1];
+    //    OverallGradeLetter = GetGrade(GetKeyValuePair("Overall", report)[1]).letter;
 
-        List<string[]> res = GetMultipleKeyValuePairs("GS1 Data", report);
-        bool itThinksItIsGS1 = sym[1].StartsWith("GS1");
-        string error = null;
-        if (res != null)
-        {
-            foreach (string[] str in res)
-            {
-                if (str[0].Equals("GS1 Data"))
-                    continue;
-                else
-                    error = str[1];
-            }
+    //    List<string[]> res = GetMultipleKeyValuePairs("GS1 Data", report);
+    //    bool itThinksItIsGS1 = sym[1].StartsWith("GS1");
+    //    string error = null;
+    //    if (res != null)
+    //    {
+    //        foreach (string[] str in res)
+    //        {
+    //            if (str[0].Equals("GS1 Data"))
+    //                continue;
+    //            else
+    //                error = str[1];
+    //        }
 
-            List<string> list = new();
-            string[] spl = GetKeyValuePair("GS1 Data,", report)[1].Split('(', StringSplitOptions.RemoveEmptyEntries);
-            foreach (string str in spl)
-                list.Add($"({str}");
+    //        List<string> list = new();
+    //        string[] spl = GetKeyValuePair("GS1 Data,", report)[1].Split('(', StringSplitOptions.RemoveEmptyEntries);
+    //        foreach (string str in spl)
+    //            list.Add($"({str}");
 
-            GS1Results = new Gs1results()
-            {
-                Validated = true,
-                Input = GetKeyValuePair("Decoded", report)[1],
-                FormattedOut = GetKeyValuePair("GS1 Data,", report)[1],
-                Error = error,
-                Fields = list
-            };
-        }
-    }
+    //        GS1Results = new Gs1results()
+    //        {
+    //            Validated = true,
+    //            Input = GetKeyValuePair("Decoded", report)[1],
+    //            FormattedOut = GetKeyValuePair("GS1 Data,", report)[1],
+    //            Error = error,
+    //            Fields = list
+    //        };
+    //    }
+    //}
 
     public Report(Models.FullReport report)
     {

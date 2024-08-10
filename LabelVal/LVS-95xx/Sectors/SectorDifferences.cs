@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using LabelVal.Sectors.Interfaces;
+using Org.BouncyCastle.Crypto.Prng;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -196,50 +197,211 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
     }
 
     public SectorDifferences() { }
-    public SectorDifferences(List<string> splitPacket, string userName, bool isPDF417) => Process(splitPacket, userName, isPDF417);
-    public void Process(List<string> splitPacket, string userName, bool isPDF417)
+    //public SectorDifferences(List<string> splitPacket, string userName, bool isPDF417) => Process(splitPacket, userName, isPDF417);
+    public SectorDifferences(Models.FullReport report, string userName, bool isPDF417) => Process(report, userName, isPDF417);
+    //public void Process(List<string> splitPacket, string userName, bool isPDF417)
+    //{
+    //    UserName = userName;
+    //    IsNotEmpty = false;
+
+    //    var alarms = new List<Alarm>();
+
+    //    var isGS1 = GetMultipleKeyValuePairs("GS1 Data", splitPacket) != null;
+
+    //    if (splitPacket.Find((e) => e.StartsWith("Cell size")) != null)
+    //    {
+    //        IsNotEmpty = true;
+
+    //        //Verify 2D
+    //        foreach (var a in GetMultipleKeyValuePairs("Warning", splitPacket))
+    //            alarms.Add(new Alarm() { Name = a[1], Category = 1 });
+
+    //        GradeValues.Add(new GradeValue("decode", -1, GetKeyValuePair("Decode,", splitPacket)[1].StartsWith("PASS") ? new Grade("", 4.0f, "A") : new Grade("Decode", 0.0f, "F")));
+    //        GradeValues.Add(GetGradeValue("symbolContrast", GetKeyValuePair("Contrast", splitPacket)[1]));
+    //        GradeValues.Add(new GradeValue("modulation", -1, GetGrade("", GetKeyValuePair("Modulation", splitPacket)[1])));
+    //        GradeValues.Add(new GradeValue("reflectanceMargin", -1, GetGrade("", GetKeyValuePair("Reflectance", splitPacket)[1])));
+    //        GradeValues.Add(GetGradeValue("axialNonUniformity", GetKeyValuePair("Axial ", splitPacket)[1]));
+    //        GradeValues.Add(GetGradeValue("gridNonUniformity", GetKeyValuePair("Grid ", splitPacket)[1]));
+    //        GradeValues.Add(GetGradeValue("unusedErrorCorrection", GetKeyValuePair("Unused ", splitPacket)[1]));
+
+    //        var fx = GetKeyValuePair("Fixed", splitPacket);
+    //        GradeValues.Add(new GradeValue("fixedPatternDamage", -1, new Grade("", ParseFloat(fx[1]), GetLetter(ParseFloat(fx[1])))));
+
+    //        Values.Add(new Value_("minimumReflectance", ParseInt(GetKeyValuePair("Rmin", splitPacket)[1])));
+    //        Values.Add(new Value_("maximumReflectance", ParseInt(GetKeyValuePair("Rmax", splitPacket)[1])));
+    //        Values.Add(new Value_("xPrintGrowthX", ParseInt(GetKeyValuePair("X print", splitPacket)[1])));
+    //        Values.Add(new Value_("xPrintGrowthY", ParseInt(GetKeyValuePair("Y print", splitPacket)[1])));
+
+    //        if (isGS1)
+    //        {
+    //            var ch = GetKeyValuePair("Cell width", splitPacket);
+    //            float cellSizeX = ParseFloat(ch[1]);
+
+    //            ch = GetKeyValuePair("Cell height", splitPacket);
+    //            float cellSizeY = ParseFloat(ch[1]);
+
+    //            var sz = GetKeyValuePair("Size", splitPacket);
+    //            var sz2 = sz[1].Split('x');
+    //            Gs1ValueResults.Add(new ValueResult("symbolWidth", cellSizeX * ParseInt(sz2[0]), "PASS"));
+    //            Gs1ValueResults.Add(new ValueResult("symbolHeight", cellSizeY * ParseInt(sz2[1]), "PASS"));
+
+    //            var al = alarms.Find((e) => e.Name.Contains("minimum Xdim"));
+    //            Gs1ValueResults.Add(new ValueResult("cellHeight", cellSizeX, al == null ? "PASS" : "FAIL"));
+    //            Gs1ValueResults.Add(new ValueResult("cellWidth", cellSizeY, al == null ? "PASS" : "FAIL"));
+
+    //            Gs1Grades.Add(GetGrade("L1", GetKeyValuePair("L1 (", splitPacket)[1]));
+    //            Gs1Grades.Add(GetGrade("L2", GetKeyValuePair("L2", splitPacket)[1]));
+    //            Gs1Grades.Add(GetGrade("QZL1", GetKeyValuePair("QZL1", splitPacket)[1]));
+    //            Gs1Grades.Add(GetGrade("QZL2", GetKeyValuePair("QZL2", splitPacket)[1]));
+    //            Gs1Grades.Add(GetGrade("OCTASA", GetKeyValuePair("OCTASA", splitPacket)[1]));
+    //        }
+
+    //        foreach (var a in alarms)
+    //            Alarms.Add(a);
+    //    }
+    //    else if (isPDF417)
+    //    {
+    //        //PDF417
+    //        GradeValues.Add(GetGradeValue("symbolContrast", GetValues("Contrast", splitPacket)[0]));
+    //        foreach (var data in splitPacket)
+    //        {
+    //            if (!data.Contains(','))
+    //                continue;
+
+    //            var spl1 = new string[2];
+    //            spl1[0] = data.Substring(0, data.IndexOf(','));
+    //            spl1[1] = data.Substring(data.IndexOf(',') + 1);
+
+    //            if (spl1[0].StartsWith("Xdim"))
+    //            {
+    //                var xdim = ParseFloat(spl1[1]);
+
+    //                ValueResults.Add(new ValueResult("symbolXDim", xdim, "PASS"));
+    //                continue;
+    //            }
+
+    //            if (spl1[0].StartsWith("Rmin"))
+    //            {
+    //                var val = (int)Math.Ceiling(ParseFloat(spl1[1]));
+
+    //                Values.Add(new Value_("minimumReflectance", val));
+    //                continue;
+    //            }
+
+    //            if (spl1[0].StartsWith("Codeword y"))
+    //            {
+    //                var spl2 = spl1[1].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+    //                if (spl2.Count() != 2) continue;
+
+    //                GradeValues.Add(new GradeValue("CodewordY", ParseInt(spl2[1]), GetGrade("CodewordY", spl2[0])));
+    //                continue;
+    //            }
+
+    //            if (spl1[0].StartsWith("Codeword P"))
+    //            {
+    //                GradeValues.Add(new GradeValue("CodewordP", -1, GetGrade("CodewordP", spl1[1])));
+    //                continue;
+    //            }
+    //        }
+
+    //    }
+    //    else
+    //    {
+    //        IsNotEmpty = true;
+
+    //        //Verify 1D
+    //        foreach (var a in GetMultipleKeyValuePairs("Warning", splitPacket))
+    //            alarms.Add(new Alarm() { Name = a[1], Category = 1 });
+
+    //        GradeValues.Add(new GradeValue("decode", -1, GetKeyValuePair("Decode,", splitPacket)[1].StartsWith("PASS") ? new Grade("", 4.0f, "A") : new Grade("Decode", 0.0f, "F")));
+    //        GradeValues.Add(GetGradeValue("symbolContrast", GetKeyValuePair("Contrast", splitPacket)[1]));
+    //        // GradeValues.Add(new GradeValue("edgeContrast", GetGradeValue(GetValues("Contrast", splitPacket)[0])));
+    //        GradeValues.Add(GetGradeValue("modulation", GetKeyValuePair("Modulation", splitPacket)[1]));
+    //        GradeValues.Add(GetGradeValue("defects", GetKeyValuePair("Defects", splitPacket)[1]));
+    //        GradeValues.Add(GetGradeValue("decodability", GetKeyValuePair("Decodability", splitPacket)[1]));
+    //        GradeValues.Add(new GradeValue("minimumReflectance", (int)Math.Ceiling(ParseFloat(GetKeyValuePair("Rmin", splitPacket)[1])), GetKeyValuePair("Min Ref", splitPacket)[1].StartsWith("PASS") ? new Grade("Min Ref", 4.0f, "A") : new Grade("Min Ref", 0.0f, "F")));
+
+    //        if (isGS1)
+    //        {
+    //            GradeValues.Add(GetGradeValue("unusedErrorCorrection", GetKeyValuePair("Unused ", splitPacket)[1]));
+
+    //            var kv1 = GetKeyValuePair("Xdim", splitPacket);
+    //            var item = alarms.Find((e) => e.Name.Contains("minimum Xdim"));
+    //            Gs1ValueResults.Add(new ValueResult("symbolXDim", ParseFloat(kv1[1]), item == null ? "PASS" : "FAIL"));
+
+    //            kv1 = GetKeyValuePair("Bar height", splitPacket);
+    //            item = alarms.Find((e) => e.Name.Contains("minimum height"));
+    //            Gs1ValueResults.Add(new ValueResult("symbolBarHeight", ParseFloat(kv1[1]), item == null ? "PASS" : "FAIL"));
+    //        }
+
+    //        Values.Add(new Value_("maximumReflectance", ParseInt(GetKeyValuePair("Rmax", splitPacket)[1])));
+
+    //        ValueResults.Add(new ValueResult("edgeDetermination", 100, GetKeyValuePair("Edge", splitPacket)[1]));
+
+    //        var kv = GetKeyValuePair("Quiet", splitPacket);
+    //        if (kv[1].Contains("ERR"))
+    //        {
+    //            var spl2 = kv[1].Split(' ');
+    //            if (spl2.Count() == 2)
+    //            {
+    //                ValueResults.Add(new ValueResult("quietZone", ParseInt(spl2[0]), spl2[1]));
+    //            }
+    //        }
+    //        else
+    //        {
+    //            ValueResults.Add(new ValueResult("quietZone", 100, kv[1]));
+    //        }
+
+    //        foreach (var item in alarms)
+    //            Alarms.Add(item);
+    //    }
+    //}
+
+    public void Process(Models.FullReport report, string userName, bool isPDF417)
     {
         UserName = userName;
         IsNotEmpty = false;
 
         var alarms = new List<Alarm>();
 
-        var isGS1 = GetMultipleKeyValuePairs("GS1 Data", splitPacket) != null;
+        var isGS1 = GetParameter("GS1 Data", report.ReportData) != null;
+        var is2D = GetParameter("Cell size", report.ReportData) != null;
 
-        if (splitPacket.Find((e) => e.StartsWith("Cell size")) != null)
+        if (is2D)
         {
             IsNotEmpty = true;
 
-            //Verify 2D
-            foreach (var a in GetMultipleKeyValuePairs("Warning", splitPacket))
-                alarms.Add(new Alarm() { Name = a[1], Category = 1 });
+            foreach (var war in GetParameters("Warning", report.ReportData))
+                alarms.Add(new Alarm() { Name = war, Category = 1 });
 
-            GradeValues.Add(new GradeValue("decode", -1, GetKeyValuePair("Decode,", splitPacket)[1].StartsWith("PASS") ? new Grade("", 4.0f, "A") : new Grade("Decode", 0.0f, "F")));
-            GradeValues.Add(GetGradeValue("symbolContrast", GetKeyValuePair("Contrast", splitPacket)[1]));
-            GradeValues.Add(new GradeValue("modulation", -1, GetGrade("", GetKeyValuePair("Modulation", splitPacket)[1])));
-            GradeValues.Add(new GradeValue("reflectanceMargin", -1, GetGrade("", GetKeyValuePair("Reflectance", splitPacket)[1])));
-            GradeValues.Add(GetGradeValue("axialNonUniformity", GetKeyValuePair("Axial ", splitPacket)[1]));
-            GradeValues.Add(GetGradeValue("gridNonUniformity", GetKeyValuePair("Grid ", splitPacket)[1]));
-            GradeValues.Add(GetGradeValue("unusedErrorCorrection", GetKeyValuePair("Unused ", splitPacket)[1]));
+            var par = GetParameter("Reflectance margin", report.ReportData);
+            GradeValues.Add(new GradeValue("decode", -1, GetParameter("Decode", report.ReportData).StartsWith("PASS") ? new Grade("", 4.0f, "A") : new Grade("Decode", 0.0f, "F")));
+            GradeValues.Add(GetGradeValue("symbolContrast", GetParameter("Contrast", report.ReportData)));
+            GradeValues.Add(new GradeValue("modulation", -1, GetGrade("", GetParameter("Modulation", report.ReportData))));
+            GradeValues.Add(new GradeValue("reflectanceMargin", -1, GetGrade("", GetParameter("Reflectance margin", report.ReportData))));
+            GradeValues.Add(GetGradeValue("axialNonUniformity", GetParameter("Axial nonuniformity", report.ReportData)));
+            GradeValues.Add(GetGradeValue("gridNonUniformity", GetParameter("Grid nonuniformity", report.ReportData)));
+            GradeValues.Add(GetGradeValue("unusedErrorCorrection", GetParameter("Unused EC", report.ReportData)));
 
-            var fx = GetKeyValuePair("Fixed", splitPacket);
-            GradeValues.Add(new GradeValue("fixedPatternDamage", -1, new Grade("", ParseFloat(fx[1]), GetLetter(ParseFloat(fx[1])))));
+            var fx = GetParameter("Fixed pattern damage", report.ReportData);
+            GradeValues.Add(new GradeValue("fixedPatternDamage", -1, new Grade("", ParseFloat(fx), GetLetter(ParseFloat(fx)))));
 
-            Values.Add(new Value_("minimumReflectance", ParseInt(GetKeyValuePair("Rmin", splitPacket)[1])));
-            Values.Add(new Value_("maximumReflectance", ParseInt(GetKeyValuePair("Rmax", splitPacket)[1])));
-            Values.Add(new Value_("xPrintGrowthX", ParseInt(GetKeyValuePair("X print", splitPacket)[1])));
-            Values.Add(new Value_("xPrintGrowthY", ParseInt(GetKeyValuePair("Y print", splitPacket)[1])));
+            Values.Add(new Value_("minimumReflectance", ParseInt(GetParameter("Rmin", report.ReportData))));
+            Values.Add(new Value_("maximumReflectance", ParseInt(GetParameter("Rmax", report.ReportData))));
+            Values.Add(new Value_("xPrintGrowthX", ParseInt(GetParameter("X print", report.ReportData))));
+            Values.Add(new Value_("xPrintGrowthY", ParseInt(GetParameter("Y print", report.ReportData))));
 
             if (isGS1)
             {
-                var ch = GetKeyValuePair("Cell width", splitPacket);
-                float cellSizeX = ParseFloat(ch[1]);
+                var ch = GetParameter("Cell width", report.ReportData);
+                float cellSizeX = ParseFloat(ch);
 
-                ch = GetKeyValuePair("Cell height", splitPacket);
-                float cellSizeY = ParseFloat(ch[1]);
+                ch = GetParameter("Cell height", report.ReportData);
+                float cellSizeY = ParseFloat(ch);
 
-                var sz = GetKeyValuePair("Size", splitPacket);
-                var sz2 = sz[1].Split('x');
+                var sz = GetParameter("Size", report.ReportData);
+                var sz2 = sz.Split('x');
                 Gs1ValueResults.Add(new ValueResult("symbolWidth", cellSizeX * ParseInt(sz2[0]), "PASS"));
                 Gs1ValueResults.Add(new ValueResult("symbolHeight", cellSizeY * ParseInt(sz2[1]), "PASS"));
 
@@ -247,114 +409,83 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
                 Gs1ValueResults.Add(new ValueResult("cellHeight", cellSizeX, al == null ? "PASS" : "FAIL"));
                 Gs1ValueResults.Add(new ValueResult("cellWidth", cellSizeY, al == null ? "PASS" : "FAIL"));
 
-                Gs1Grades.Add(GetGrade("L1", GetKeyValuePair("L1 (", splitPacket)[1]));
-                Gs1Grades.Add(GetGrade("L2", GetKeyValuePair("L2", splitPacket)[1]));
-                Gs1Grades.Add(GetGrade("QZL1", GetKeyValuePair("QZL1", splitPacket)[1]));
-                Gs1Grades.Add(GetGrade("QZL2", GetKeyValuePair("QZL2", splitPacket)[1]));
-                Gs1Grades.Add(GetGrade("OCTASA", GetKeyValuePair("OCTASA", splitPacket)[1]));
+                Gs1Grades.Add(GetGrade("L1", GetParameter("L1 (", report.ReportData)));
+                Gs1Grades.Add(GetGrade("L2", GetParameter("L2 (", report.ReportData)));
+                Gs1Grades.Add(GetGrade("QZL1", GetParameter("QZL1", report.ReportData)));
+                Gs1Grades.Add(GetGrade("QZL2", GetParameter("QZL2", report.ReportData)));
+                Gs1Grades.Add(GetGrade("OCTASA", GetParameter("OCTASA", report.ReportData)));
+
             }
 
             foreach (var a in alarms)
                 Alarms.Add(a);
+
         }
         else if (isPDF417)
         {
-            //PDF417
-            GradeValues.Add(GetGradeValue("symbolContrast", GetValues("Contrast", splitPacket)[0]));
-            foreach (var data in splitPacket)
-            {
-                if (!data.Contains(','))
-                    continue;
+            IsNotEmpty = true;
 
-                var spl1 = new string[2];
-                spl1[0] = data.Substring(0, data.IndexOf(','));
-                spl1[1] = data.Substring(data.IndexOf(',') + 1);
+            GradeValues.Add(GetGradeValue("symbolContrast", GetParameter("Contrast", report.ReportData)));
+            ValueResults.Add(new ValueResult("symbolXDim", ParseFloat(GetParameter("Xdim", report.ReportData)), "PASS"));
 
-                if (spl1[0].StartsWith("Xdim"))
-                {
-                    var xdim = ParseFloat(spl1[1]);
+            Values.Add(new Value_("minimumReflectance", (int)Math.Ceiling(ParseFloat(GetParameter("Rmin", report.ReportData)))));
 
-                    ValueResults.Add(new ValueResult("symbolXDim", xdim, "PASS"));
-                    continue;
-                }
+            var spl = GetParameter("Codeword y", report.ReportData).Split(' ');
+            if (spl.Count() == 2)
+                GradeValues.Add(new GradeValue("CodewordY", ParseInt(spl[1]), GetGrade("CodewordY", spl[0])));
+            else
+                GradeValues.Add(new GradeValue("CodewordY", -1, new Grade("CodewordY", 0.0f, "F")));
 
-                if (spl1[0].StartsWith("Rmin"))
-                {
-                    var val = (int)Math.Ceiling(ParseFloat(spl1[1]));
-
-                    Values.Add(new Value_("minimumReflectance", val));
-                    continue;
-                }
-
-                if (spl1[0].StartsWith("Codeword y"))
-                {
-                    var spl2 = spl1[1].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-                    if (spl2.Count() != 2) continue;
-
-                    GradeValues.Add(new GradeValue("CodewordY", ParseInt(spl2[1]), GetGrade("CodewordY", spl2[0])));
-                    continue;
-                }
-
-                if (spl1[0].StartsWith("Codeword P"))
-                {
-                    GradeValues.Add(new GradeValue("CodewordP", -1, GetGrade("CodewordP", spl1[1])));
-                    continue;
-                }
-            }
-
+            GradeValues.Add(new GradeValue("CodewordP", -1, GetGrade("CodewordP", GetParameter("Codeword P", report.ReportData))));
         }
         else
         {
             IsNotEmpty = true;
 
-            //Verify 1D
-            foreach (var a in GetMultipleKeyValuePairs("Warning", splitPacket))
-                alarms.Add(new Alarm() { Name = a[1], Category = 1 });
+            foreach (var war in GetParameters("Warning", report.ReportData))
+                alarms.Add(new Alarm() { Name = war, Category = 1 });
 
-            GradeValues.Add(new GradeValue("decode", -1, GetKeyValuePair("Decode,", splitPacket)[1].StartsWith("PASS") ? new Grade("", 4.0f, "A") : new Grade("Decode", 0.0f, "F")));
-            GradeValues.Add(GetGradeValue("symbolContrast", GetKeyValuePair("Contrast", splitPacket)[1]));
-            // GradeValues.Add(new GradeValue("edgeContrast", GetGradeValue(GetValues("Contrast", splitPacket)[0])));
-            GradeValues.Add(GetGradeValue("modulation", GetKeyValuePair("Modulation", splitPacket)[1]));
-            GradeValues.Add(GetGradeValue("defects", GetKeyValuePair("Defects", splitPacket)[1]));
-            GradeValues.Add(GetGradeValue("decodability", GetKeyValuePair("Decodability", splitPacket)[1]));
-            GradeValues.Add(new GradeValue("minimumReflectance", (int)Math.Ceiling(ParseFloat(GetKeyValuePair("Rmin", splitPacket)[1])), GetKeyValuePair("Min Ref", splitPacket)[1].StartsWith("PASS") ? new Grade("Min Ref", 4.0f, "A") : new Grade("Min Ref", 0.0f, "F")));
+            GradeValues.Add(new GradeValue("decode", -1, GetParameter("Decode", report.ReportData, true).StartsWith("PASS") ? new Grade("", 4.0f, "A") : new Grade("Decode", 0.0f, "F")));
+            GradeValues.Add(GetGradeValue("symbolContrast", GetParameter("Contrast", report.ReportData)));
+            GradeValues.Add(GetGradeValue("modulation", GetParameter("Modulation", report.ReportData)));
+            GradeValues.Add(GetGradeValue("defects", GetParameter("Defects", report.ReportData)));
+            GradeValues.Add(GetGradeValue("decodability", GetParameter("Decodability", report.ReportData)));
+            GradeValues.Add(new GradeValue("minimumReflectance", (int)Math.Ceiling(ParseFloat(GetParameter("Rmin", report.ReportData))), GetParameter("Min Ref", report.ReportData).StartsWith("PASS") ? new Grade("Min Ref", 4.0f, "A") : new Grade("Min Ref", 0.0f, "F")));
 
             if (isGS1)
             {
-                GradeValues.Add(GetGradeValue("unusedErrorCorrection", GetKeyValuePair("Unused ", splitPacket)[1]));
+                //GradeValues.Add(GetGradeValue("unusedErrorCorrection", GetParameter("Unused ", report.ReportData)));
 
-                var kv1 = GetKeyValuePair("Xdim", splitPacket);
+                var kv1 = GetParameter("Xdim", report.ReportData);
                 var item = alarms.Find((e) => e.Name.Contains("minimum Xdim"));
-                Gs1ValueResults.Add(new ValueResult("symbolXDim", ParseFloat(kv1[1]), item == null ? "PASS" : "FAIL"));
+                Gs1ValueResults.Add(new ValueResult("symbolXDim", ParseFloat(kv1), item == null ? "PASS" : "FAIL"));
 
-                kv1 = GetKeyValuePair("Bar height", splitPacket);
+                kv1 = GetParameter("Bar height", report.ReportData);
                 item = alarms.Find((e) => e.Name.Contains("minimum height"));
-                Gs1ValueResults.Add(new ValueResult("symbolBarHeight", ParseFloat(kv1[1]), item == null ? "PASS" : "FAIL"));
+                Gs1ValueResults.Add(new ValueResult("symbolBarHeight", ParseFloat(kv1), item == null ? "PASS" : "FAIL"));
             }
 
-            Values.Add(new Value_("maximumReflectance", ParseInt(GetKeyValuePair("Rmax", splitPacket)[1])));
+            Values.Add(new Value_("maximumReflectance", ParseInt(GetParameter("Rmax", report.ReportData))));
 
-            ValueResults.Add(new ValueResult("edgeDetermination", 100, GetKeyValuePair("Edge", splitPacket)[1]));
+            ValueResults.Add(new ValueResult("edgeDetermination", 100, GetParameter("Edge", report.ReportData)));
 
-            var kv = GetKeyValuePair("Quiet", splitPacket);
-            if (kv[1].Contains("ERR"))
+            var kv = GetParameter("Quiet", report.ReportData);
+            if (kv.Contains("ERR"))
             {
-                var spl2 = kv[1].Split(' ');
+                var spl2 = kv.Split(' ');
                 if (spl2.Count() == 2)
-                {
                     ValueResults.Add(new ValueResult("quietZone", ParseInt(spl2[0]), spl2[1]));
-                }
             }
             else
-            {
-                ValueResults.Add(new ValueResult("quietZone", 100, kv[1]));
-            }
+                ValueResults.Add(new ValueResult("quietZone", 100, kv));
 
             foreach (var item in alarms)
                 Alarms.Add(item);
         }
     }
+
+    private string GetParameter(string key, List<Models.ReportData> report, bool equal = false) => report.Find((e) => equal ? e.ParameterName.Equals(key) : e.ParameterName.StartsWith(key))?.ParameterValue;
+    private List<string> GetParameters(string key, List<Models.ReportData> report) => report.FindAll((e) => e.ParameterName.StartsWith(key)).Select((e) => e.ParameterValue).ToList();
 
     private string[] GetKeyValuePair(string key, List<string> report)
     {

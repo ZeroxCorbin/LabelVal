@@ -11,7 +11,7 @@ public class Report
     public int Y1 { get; set; }
     public int SizeX { get; set; }
     public int SizeY { get; set; }
-    public string Thumbnail { get; set; }
+    public byte[] Thumbnail { get; set; }
     public string Reference { get; set; }
     public string OverallGrade { get; set; }
     public string DecodedText { get; set; }

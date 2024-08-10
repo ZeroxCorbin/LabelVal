@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
+using LabelVal.LVS_95xx.Models;
 using LabelVal.Results.Databases;
 using LabelVal.Utilities;
 using MahApps.Metro.Controls.Dialogs;
@@ -159,7 +160,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             SourceImageUID = SourceImageUID,
 
             SourceImage = JsonConvert.SerializeObject(SourceImage),
-            Report = JsonConvert.SerializeObject(L95xxStoredSectors.Select(x => new L95xxReport() { Report = ((LVS_95xx.Sectors.Sector)x).L95xxPacket, Template = (LVS_95xx.Sectors.Template)x.Template }).ToList()),
+            //Report = JsonConvert.SerializeObject(L95xxStoredSectors.Select(x => new L95xxReport() { Report = ((LVS_95xx.Sectors.Sector)x).L95xxPacket, Template = (LVS_95xx.Sectors.Template)x.Template }).ToList()),
         },
     };
 
@@ -186,7 +187,11 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
                     : type == "v5Stored"
                     ? V5StoredImage.GetBitmapBytes()
                     : type == "v5Current"
-                    ? V5CurrentImage.GetBitmapBytes() 
+                    ? V5CurrentImage.GetBitmapBytes()
+                    : type == "l95xxStored"
+                    ? L95xxStoredImage.GetBitmapBytes()
+                    : type == "l95xxCurrent"
+                    ? L95xxCurrentImage.GetBitmapBytes()
                     : SourceImage.GetBitmapBytes();
             if (bmp != null)
             {
@@ -263,28 +268,30 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
                     L95xxStoredSectors.Remove(old);
             }
 
-            //Add the selected sector to the stored sectors list.
-            L95xxStoredSectors.Add(L95xxCurrentSectorSelected);
-            //Remove it from the current sectors list.
-            L95xxCurrentSectors.Remove(L95xxCurrentSectorSelected);
-
-            //Sort the stored list.
-            List<Sectors.Interfaces.ISector> secs = L95xxStoredSectors.ToList();
-            SortList(secs);
-            SortObservableCollectionByList(secs, L95xxStoredSectors);
+            if (L95xxResultRow != null)
+                L95xxResultRow._Report.Add(((LVS_95xx.Sectors.Sector)L95xxCurrentSectorSelected).L95xxFullReport);
 
             //Save the list to the database.
-            List<L95xxReport> temp = [];
-            foreach (Sectors.Interfaces.ISector sec in L95xxStoredSectors)
-                temp.Add(new L95xxReport() { Report = ((LVS_95xx.Sectors.Sector)sec).L95xxPacket, Template = (LVS_95xx.Sectors.Template)sec.Template });
+            List<FullReport> temp = [];
+            if(L95xxResultRow != null)
+                temp = L95xxResultRow._Report;
+            
+            temp.Add(((LVS_95xx.Sectors.Sector)L95xxCurrentSectorSelected).L95xxFullReport);
 
             _ = SelectedDatabase.InsertOrReplace_L95xxResult(new Databases.L95xxResult
             {
                 ImageRollUID = ImageRollUID,
                 SourceImageUID = SourceImageUID,
+
                 SourceImage = JsonConvert.SerializeObject(SourceImage),
+                StoredImage = JsonConvert.SerializeObject(L95xxCurrentImage),
+
                 Report = JsonConvert.SerializeObject(temp),
             });
+
+            ClearRead(device);
+
+            L95xxGetStored();
         }
     }
     [RelayCommand]
@@ -334,10 +341,17 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         }
         else if (device == "L95xx")
         {
-            L95xxCurrentReport = null;
+            //No CurrentReport for L95xx
+            //No template used for L95xx
 
             L95xxCurrentSectors.Remove(L95xxCurrentSectorSelected);
+            //Diff sectors not used for L95xx, yet
 
+            if(L95xxCurrentSectors.Count == 0)
+            {
+                L95xxCurrentImage = null;
+                L95xxCurrentImageOverlay = null;
+            }
         }
     }
 

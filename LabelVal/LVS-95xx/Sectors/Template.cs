@@ -47,5 +47,42 @@ namespace LabelVal.LVS_95xx.Sectors
             MatchSettings = template.MatchSettings;
             BlemishMask = template.BlemishMask;
         }
+
+        public Template(LabelVal.LVS_95xx.Models.FullReport report, string name)
+        {
+            if (report == null)
+                return;
+
+            Name = name;
+            Username = name;
+
+            Top = report.Report.Y1;
+            Left = report.Report.X1;
+            Width = report.Report.SizeX;
+            Height = report.Report.SizeY;
+            //AngleDeg = report.Report.Angle;
+
+            CenterPoint = new System.Drawing.Point(report.Report.X1 + (report.Report.SizeX / 2), report.Report.Y1 + (report.Report.SizeY / 2));
+
+            //Orientation = template.Orientation;
+
+            //SymbologyType = report.Report.;
+
+            //MatchSettings = template.MatchSettings;
+            //BlemishMask = template.BlemishMask;
+        }
+
+        private string GetSymbology(ResultsAlt.Decodedata report)
+        {
+            if (report.Code128 != null)
+                return "Code128";
+            else if (report.Datamatrix != null)
+                return "DataMatrix";
+            else if (report.QR != null)
+                return "QR";
+            else if (report.PDF417 != null)
+                return "PDF417";
+            else return report.UPC != null ? "UPC" : "Unknown";
+        }
     }
 }

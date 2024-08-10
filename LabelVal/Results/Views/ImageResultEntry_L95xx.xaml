@@ -17,16 +17,22 @@
              mc:Ignorable="d">
 
     <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="booltovis"/>
-        <Converters:BytesToImageConverter x:Key="bytesToImage"/>
-        <Converters:ShortenUIDConverter x:Key="shortenUID"/>
-        <Converters:StringToUpperSpacedConverter x:Key="stringToUpper"/>
-        <Converters:FloatStringTrimConverter x:Key="floatTrim"/>
-        <V275Converters:V275_OCMatchModeToString x:Key="matchModeToString"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="ImageDetailsTemplate.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
 
-        <Converters:ObjectIsNull x:Key="objectIsNull"/>
-        <Converters:EqualZeroOrNull x:Key="equalZeroOrNull"/>
+            <BooleanToVisibilityConverter x:Key="booltovis"/>
+            <Converters:BytesToImageConverter x:Key="bytesToImage"/>
+            <Converters:ShortenUIDConverter x:Key="shortenUID"/>
+            <Converters:StringToUpperSpacedConverter x:Key="stringToUpper"/>
+            <Converters:FloatStringTrimConverter x:Key="floatTrim"/>
+            <V275Converters:V275_OCMatchModeToString x:Key="matchModeToString"/>
 
+            <Converters:ObjectIsNull x:Key="objectIsNull"/>
+            <Converters:EqualZeroOrNull x:Key="equalZeroOrNull"/>
+            
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <DockPanel MaxHeight="800">
@@ -48,59 +54,64 @@
         <Border Style="{StaticResource groupLeft}"/>
 
         <Border Style="{StaticResource groupBottom}"/>
-        
-        <!--V275 Stored Image-->
-        <DockPanel DockPanel.Dock="Top">
-            <DockPanel.Style>
-                <Style TargetType="{x:Type DockPanel}">
-                    <Setter Property="Visibility" Value="Hidden"/>
-                </Style>
-            </DockPanel.Style>
 
-            <md:Card HorizontalAlignment="Left" DockPanel.Dock="Top" Margin="3,3,0,0"
+
+
+        <!--L95xx Stored-->
+        <DockPanel>
+
+            <!--L95xx Stored Image-->
+            <DockPanel DockPanel.Dock="Top">
+                <DockPanel.Style>
+                    <Style TargetType="{x:Type DockPanel}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding L95xxStoredImage, Converter={StaticResource objectIsNull}}" Value="False">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DockPanel.Style>
+
+                <md:Card HorizontalAlignment="Left" DockPanel.Dock="Top" Margin="3,3,0,0"
                      Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
                      Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
-                <DockPanel>
+                    <DockPanel>
 
-                    <!--Title-->
-                    <md:Card Background="{DynamicResource ColorBlindBrush1}"
+                        <!--Title-->
+                        <md:Card Background="{DynamicResource ColorBlindBrush1}"
                              HorizontalAlignment="Left" Padding="4,1" Margin="3">
-                        <TextBlock Text="Stored Image" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
-                    </md:Card>
+                            <TextBlock Text="Stored Image" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                        </md:Card>
 
-                    <Border Style="{StaticResource imageBar}" Margin="3,0"/>
+                        <Border Style="{StaticResource imageBar}" Margin="3,0"/>
 
-                    <!--Save Image-->
-                    <!--<Button Command="{Binding SaveCommand}" CommandParameter="v275Stored" Width="28"
+                        <!--Save Image-->
+                        <Button Command="{Binding SaveCommand}" CommandParameter="l95xxStored" Width="28"
                                 Style="{StaticResource MahApps.Styles.Button.Hamburger}" 
                                 ToolTip="Save the image."
                                 Content="{iconPacks:Material Kind=ContentSave}"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>-->
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
 
-                    <!--<Border Style="{StaticResource imageBar}" Margin="3,0"/>
 
-                            <TextBlock VerticalAlignment="Center" Text="{Binding V275StoredImage.UID, Converter={StaticResource shortenUID}}" 
-                                ToolTip="{Binding V275StoredImage.UID}" Margin="3,0"/>-->
+                    </DockPanel>
+                </md:Card>
+
+                <DockPanel Margin="3" Background="Black" VerticalAlignment="Top" HorizontalAlignment="Left">
+
+                    <Grid Margin="3" MouseDown="L95xxStoredImage_MouseDown" MaxHeight="{Binding ImagesMaxHeight}" MaxWidth="{Binding ImagesMaxHeight}">
+
+                        <Image Source="{Binding L95xxStoredImage.ImageLow, Mode=OneWay}" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+
+                        <Image Source="{Binding L95xxStoredImageOverlay, Mode=OneWay}" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+
+                    </Grid>
 
                 </DockPanel>
-            </md:Card>
-
-            <DockPanel Margin="3" Background="Black" VerticalAlignment="Top" HorizontalAlignment="Left">
-
-                <Grid Margin="3" MaxHeight="{Binding ImagesMaxHeight}" MaxWidth="{Binding ImagesMaxHeight}">
-
-                    <Image Source="{Binding V275StoredImage.ImageLow, Mode=OneWay}" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
-
-                </Grid>
 
             </DockPanel>
-
-        </DockPanel>
-
-        <!--L95xx Sectors-->
-        <DockPanel>
-
+            
             <!--L95xx Stored Sectors-->
             <DockPanel HorizontalAlignment="Left">
                 <DockPanel.Style>
@@ -281,6 +292,105 @@
                         </DockPanel>
                     </Grid>
                 </ScrollViewer>
+            </DockPanel>
+            
+        </DockPanel>
+
+        <!--Details-->
+        <ContentControl Content="{Binding L95xxStoredImage, Mode=OneWay}" ContentTemplate="{StaticResource imageDetailsTemplate}">
+            <ContentControl.Style>
+                <Style TargetType="{x:Type ContentControl}">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding L95xxStoredImage, Converter={StaticResource objectIsNull}}" Value="False">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ContentControl.Style>
+        </ContentControl>
+
+        <!--Current-->
+        <DockPanel>
+
+            <!--L95xx Current Image-->
+            <DockPanel DockPanel.Dock="Top" Margin="3,0">
+                <DockPanel.Style>
+                    <Style TargetType="{x:Type DockPanel}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding L95xxCurrentImage, Mode=OneWay, Converter={StaticResource objectIsNull}}" Value="False">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DockPanel.Style>
+
+                <md:Card HorizontalAlignment="Left" DockPanel.Dock="Top" Margin="3,3,0,0"
+                         Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+
+                    <DockPanel>
+
+                        <!--Title-->
+                        <md:Card Background="{DynamicResource OrangeBrush0}"
+                             HorizontalAlignment="Left" Padding="4,1" Margin="3">
+                            <TextBlock Text="Current Image" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                        </md:Card>
+
+                        <Border Style="{StaticResource imageBar}" Margin="3,0"/>
+
+                        <!--<Button Command="{Binding StoreCommand}" CommandParameter="l95xx" Width="28"
+                                ToolTip="Store the current sectors and images to the database."
+                                Content="{iconPacks:Material Kind=StorePlusOutline}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+
+                            <Button Command="{Binding ClearReadCommand}" CommandParameter="l95xx" Width="28"
+                                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                ToolTip="Clear the current sectors and image."
+                                Content="{iconPacks:MaterialDesign Kind=Clear}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>-->
+
+                        <Border Style="{StaticResource imageBar}" Margin="3,0"/>
+
+                        <!--Save Image-->
+                        <Button Command="{Binding SaveCommand}" CommandParameter="l95xxCurrent" Width="28"
+                                Style="{StaticResource MahApps.Styles.Button.Hamburger}" 
+                                ToolTip="Save the image."
+                                Content="{iconPacks:Material Kind=ContentSave}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
+
+                        <!--<Border Style="{StaticResource imageBar}" Margin="3,0"/>
+
+                            <TextBlock VerticalAlignment="Center" Text="{Binding V275CurrentImage.UID, Converter={StaticResource shortenUID}}" 
+                                ToolTip="{Binding V275CurrentImage.UID}" Margin="3,0"/>-->
+
+                    </DockPanel>
+                </md:Card>
+
+                <DockPanel Margin="3" Background="Black" VerticalAlignment="Top" HorizontalAlignment="Left">
+
+                    <Grid Margin="3" MouseDown="L95xxCurrentImage_MouseDown"  MaxHeight="{Binding ImagesMaxHeight}" MaxWidth="{Binding ImagesMaxHeight}">
+
+                        <Image Source="{Binding L95xxCurrentImage.ImageLow, Mode=OneWay}" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+
+                        <Image Source="{Binding L95xxCurrentImageOverlay, Mode=OneWay}" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+                    </Grid>
+
+                </DockPanel>
+
             </DockPanel>
 
             <!--L95xx Current Sectors-->
@@ -541,5 +651,19 @@
 
         </DockPanel>
 
+        <!--Details-->
+        <ContentControl Content="{Binding L95xxCurrentImage, Mode=OneWay}" ContentTemplate="{StaticResource imageDetailsTemplate}">
+            <ContentControl.Style>
+                <Style TargetType="{x:Type ContentControl}">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding L95xxCurrentImage, Converter={StaticResource objectIsNull}}" Value="False">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ContentControl.Style>
+        </ContentControl>
+        
     </DockPanel>
 </UserControl>

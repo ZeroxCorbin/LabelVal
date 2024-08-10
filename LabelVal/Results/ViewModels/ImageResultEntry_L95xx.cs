@@ -1,29 +1,35 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
+using LabelVal.ImageRolls.ViewModels;
 using LabelVal.LVS_95xx.Sectors;
 using LabelVal.Sectors.Interfaces;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Media;
+using static V5_REST_Lib.Controller;
+using V5_REST_Lib.Models;
 
 namespace LabelVal.Results.ViewModels;
-public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelVal.LVS_95xx.ViewModels.VerifierPacket>>
+public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelVal.LVS_95xx.Models.FullReport>>
 {
-    public class L95xxReport
-    {
-        public Template Template { get; set; }
-        public string Report { get; set; }
-    }
-
     [ObservableProperty] private Databases.L95xxResult l95xxResultRow;
+    partial void OnL95xxResultRowChanged(Databases.L95xxResult value) => L95xxStoredImage = L95xxResultRow?.Stored;
 
-    public List<L95xxReport> L95xxCurrentReport { get; private set; }
+    [ObservableProperty] private ImageEntry l95xxStoredImage;
+    [ObservableProperty] private DrawingImage l95xxStoredImageOverlay;
+
+    [ObservableProperty] private ImageEntry l95xxCurrentImage;
+    [ObservableProperty] private DrawingImage l95xxCurrentImageOverlay;
+
+    public List<LVS_95xx.Models.FullReport> L95xxCurrentReport { get; private set; }
 
     public ObservableCollection<Sectors.Interfaces.ISector> L95xxCurrentSectors { get; } = [];
     public ObservableCollection<Sectors.Interfaces.ISector> L95xxStoredSectors { get; } = [];
     public ObservableCollection<Sectors.Interfaces.ISectorDifferences> L95xxDiffSectors { get; } = [];
+
     [ObservableProperty] private Sectors.Interfaces.ISector l95xxFocusedStoredSector = null;
     [ObservableProperty] private Sectors.Interfaces.ISector l95xxFocusedCurrentSector = null;
 
@@ -41,17 +47,12 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
     partial void OnIsL95xxFaultedChanged(bool value) => OnPropertyChanged(nameof(IsNotL95xxFaulted));
     public bool IsNotL95xxFaulted => !IsL95xxFaulted;
 
-    public void Receive(PropertyChangedMessage<LabelVal.LVS_95xx.ViewModels.VerifierPacket> message)
-    {
-        if (SelectedSector != null)
-            App.Current.Dispatcher.BeginInvoke(() =>
-            {
-                L95xxCurrentSectors.Add(new Sector(SelectedSector.Template, message.NewValue.Value, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
-                List<ISector> secs = L95xxCurrentSectors.ToList();
-                SortList(secs);
+    [ObservableProperty] private bool isL95xxSelected = false;
 
-                SortObservableCollectionByList(secs, L95xxCurrentSectors);
-            });
+    public void Receive(PropertyChangedMessage<LabelVal.LVS_95xx.Models.FullReport> message)
+    {
+        if(IsL95xxSelected)
+            App.Current.Dispatcher.BeginInvoke(() => L95xxProcess(message.NewValue));
     }
 
     public static void SortObservableCollectionByList(List<ISector> list, ObservableCollection<ISector> observableCollection)
@@ -72,20 +73,21 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
         if(SelectedDatabase == null)
             return;
 
+        L95xxStoredSectors.Clear();
+
         L95xxResultRow = SelectedDatabase.Select_L95xxResult(ImageRollUID, SourceImageUID);
 
         if (L95xxResultRow == null)
         {
-            L95xxStoredSectors.Clear();
             return;
         }
 
-        List<L95xxReport> report = L95xxResultRow._Report;
+        List<LVS_95xx.Models.FullReport> report = L95xxResultRow._Report;
 
         L95xxStoredSectors.Clear();
         List<Sectors.Interfaces.ISector> tempSectors = [];
-        foreach (L95xxReport rSec in report)
-            tempSectors.Add(new LVS_95xx.Sectors.Sector(rSec.Template, rSec.Report, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
+        foreach (var rSec in report)
+            tempSectors.Add(new Sector(rSec, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
 
         if (tempSectors.Count > 0)
         {
@@ -94,6 +96,39 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
             foreach (Sector sec in tempSectors)
                 L95xxStoredSectors.Add(sec);
         }
+    }
+
+    private void L95xxProcess(LabelVal.LVS_95xx.Models.FullReport message)
+    {
+        L95xxCurrentSectors.Add(new Sector(message, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
+        List<ISector> secs = L95xxCurrentSectors.ToList();
+        SortList(secs);
+        SortObservableCollectionByList(secs, L95xxCurrentSectors);
+
+
+        L95xxCurrentImage = new ImageEntry(ImageRollUID, message.Report.Thumbnail, 600);
+        //V5CurrentTemplate = config;
+        //V5CurrentReport = JsonConvert.DeserializeObject<V5_REST_Lib.Models.ResultsAlt>(triggerResults.ReportJSON);
+
+        //V5CurrentSectors.Clear();
+
+        //List<Sectors.Interfaces.ISector> tempSectors = [];
+        //foreach (ResultsAlt.Decodedata rSec in V5CurrentReport._event.data.decodeData)
+        //    tempSectors.Add(new V5.Sectors.Sector(rSec, V5CurrentTemplate.response.data.job.toolList[rSec.toolSlot - 1], $"DecodeTool{rSec.toolSlot.ToString()}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
+
+        //if (tempSectors.Count > 0)
+        //{
+        //    SortList(tempSectors);
+
+        //    foreach (Sectors.Interfaces.ISector sec in tempSectors)
+        //        V5CurrentSectors.Add(sec);
+        //}
+
+        //V5GetSectorDiff();
+
+        //V5CurrentImageOverlay = CreateSectorsImageOverlay(V5CurrentImage, V5CurrentSectors);
+
+        //return true;
     }
 
     private void L95xxGetSectorDiff()

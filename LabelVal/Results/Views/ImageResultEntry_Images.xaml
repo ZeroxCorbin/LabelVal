@@ -103,6 +103,14 @@
                                     <Setter Property="MaxHeight" Value="{Binding ImagesMaxHeight}"/>
                                     <Setter Property="MaxWidth" Value="{Binding ImagesMaxHeight}"/>
                                 </DataTrigger>
+                                <DataTrigger Binding="{Binding L95xxStoredImage, Converter={StaticResource objectIsNull}}" Value="False">
+                                    <Setter Property="MaxHeight" Value="{Binding ImagesMaxHeight}"/>
+                                    <Setter Property="MaxWidth" Value="{Binding ImagesMaxHeight}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding L95xxCurrentImage, Converter={StaticResource objectIsNull}}" Value="False">
+                                    <Setter Property="MaxHeight" Value="{Binding ImagesMaxHeight}"/>
+                                    <Setter Property="MaxWidth" Value="{Binding ImagesMaxHeight}"/>
+                                </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </Grid.Style>

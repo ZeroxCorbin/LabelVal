@@ -24,9 +24,10 @@ public partial class ImageResultEntry
     public V5_REST_Lib.Models.Config V5CurrentTemplate { get; set; }
     public V5_REST_Lib.Models.ResultsAlt V5CurrentReport { get; private set; }
 
-    [ObservableProperty] private ObservableCollection<Sectors.Interfaces.ISector> v5CurrentSectors = [];
-    [ObservableProperty] private ObservableCollection<Sectors.Interfaces.ISector> v5StoredSectors = [];
-    [ObservableProperty] private ObservableCollection<Sectors.Interfaces.ISectorDifferences> v5DiffSectors = [];
+    public ObservableCollection<Sectors.Interfaces.ISector> V5CurrentSectors { get; } = [];
+    public ObservableCollection<Sectors.Interfaces.ISector> V5StoredSectors { get; } = [];
+    public ObservableCollection<Sectors.Interfaces.ISectorDifferences> V5DiffSectors { get; } = [];
+
     [ObservableProperty] private Sectors.Interfaces.ISector v5FocusedStoredSector = null;
     [ObservableProperty] private Sectors.Interfaces.ISector v5FocusedCurrentSector = null;
 
