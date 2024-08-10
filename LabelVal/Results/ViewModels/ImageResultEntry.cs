@@ -264,12 +264,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             {
                 if (await OkCancelDialog("Overwrite Stored Sector", $"The sector already exists.\r\nAre you sure you want to overwrite the stored sector?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
                     return;
-                else //Remove the old sector from the stored list.
-                    L95xxStoredSectors.Remove(old);
             }
-
-            if (L95xxResultRow != null)
-                L95xxResultRow._Report.Add(((LVS_95xx.Sectors.Sector)L95xxCurrentSectorSelected).L95xxFullReport);
 
             //Save the list to the database.
             List<FullReport> temp = [];

@@ -91,6 +91,7 @@ public partial class Verifier : ObservableRecipient
 
         full.Report = DatabaseConnection.GetReport(reportID);
         full.ReportData = DatabaseConnection.GetReportData(reportID);
+        full.Packet = packet;
 
         ReadData = full;
     }

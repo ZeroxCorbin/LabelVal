@@ -375,8 +375,7 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
             foreach (var war in GetParameters("Warning", report.ReportData))
                 alarms.Add(new Alarm() { Name = war, Category = 1 });
 
-            var par = GetParameter("Reflectance margin", report.ReportData);
-            GradeValues.Add(new GradeValue("decode", -1, GetParameter("Decode", report.ReportData).StartsWith("PASS") ? new Grade("", 4.0f, "A") : new Grade("Decode", 0.0f, "F")));
+            GradeValues.Add(new GradeValue("decode", -1, GetParameter("Decode", report.ReportData, true).StartsWith("PASS") ? new Grade("", 4.0f, "A") : new Grade("Decode", 0.0f, "F")));
             GradeValues.Add(GetGradeValue("symbolContrast", GetParameter("Contrast", report.ReportData)));
             GradeValues.Add(new GradeValue("modulation", -1, GetGrade("", GetParameter("Modulation", report.ReportData))));
             GradeValues.Add(new GradeValue("reflectanceMargin", -1, GetGrade("", GetParameter("Reflectance margin", report.ReportData))));

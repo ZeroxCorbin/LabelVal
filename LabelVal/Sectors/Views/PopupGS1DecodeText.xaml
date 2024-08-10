@@ -27,7 +27,7 @@
                 </ItemsControl>
 
                 <TextBlock Margin="3,0" TextWrapping="Wrap" Background="{DynamicResource MahApps.Brushes.Accent3}"
-                           Text="{Binding Report.DecodeText, Converter={StaticResource gs1FormattedOutput}}"/>
+                           Text="{Binding Report.GS1Results.Input, Converter={StaticResource gs1FormattedOutput}}"/>
             </DockPanel>
         </Border>
         

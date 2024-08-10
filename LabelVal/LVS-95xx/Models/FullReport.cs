@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace LabelVal.LVS_95xx.Models;
 public class FullReport
 {
-    public Template Template { get; set; }
+    public string Packet { get; set; }
     public Report Report { get; set; }
     public List<ReportData> ReportData { get; set; }
 }

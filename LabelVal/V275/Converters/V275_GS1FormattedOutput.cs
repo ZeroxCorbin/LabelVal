@@ -16,9 +16,18 @@ internal class V275_GS1FormattedOutput : IValueConverter
 
         try
         {
-            var regex = new Regex(Regex.Escape("\u001d"));
-            var scandata = regex.Replace((string)value, "^");
-            App.GS1Encoder.DataStr = "^" + scandata;
+            //Regex regex;
+            //string scandata = "";
+            //if (((string)value).Contains("\u001d"))
+            //{
+            //    regex = new Regex(Regex.Escape("\u001d"));
+            //    scandata = "^";
+            //}
+            //else
+            //    regex = new Regex(Regex.Escape("#"));
+            
+            //scandata += regex.Replace((string)value, "^");
+            App.GS1Encoder.DataStr = (string)value;
         }
         catch (Exception E)
         {

@@ -166,7 +166,7 @@
                 <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Padding="1">
 
                     <ScrollViewer Height="400" Width="300">
-                        <TextBox Text="{Binding ReadData.Value, Mode=OneWay}" IsReadOnly="True" BorderThickness="0" TextWrapping="Wrap"/>
+                        <TextBox Text="{Binding ReadData.Packet, Mode=OneWay}" IsReadOnly="True" BorderThickness="0" TextWrapping="Wrap"/>
                     </ScrollViewer>
                 </md:Card>
 

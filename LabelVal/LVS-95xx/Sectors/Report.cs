@@ -110,7 +110,7 @@ public class Report : IReport
         Aperture = ParseFloat(GetParameter("Overall", report.ReportData).Split('/')[1]);
         Units = "mil";
 
-        DecodeText = report.Report.DecodedText;
+        DecodeText = report.Report.DecodedText.Replace("#", "");
 
         OverallGradeValue = GetGrade(GetParameter("Overall", report.ReportData)).value;
         OverallGradeString = report.Report.OverallGrade;
@@ -118,8 +118,28 @@ public class Report : IReport
 
         Standard = GetStandard(GetParameter("Application standard", report.ReportData));
         GS1Table = GetGS1Table(GetParameter("GS1 Table", report.ReportData));
+
+        var res = GetParameter("GS1 Data", report.ReportData, true);
+        if (res != null)
+        {
+            var err = GetParameter("GS1 Data Structure", report.ReportData);
+
+            List<string> list = new();
+            string[] spl = res.Split('(', StringSplitOptions.RemoveEmptyEntries);
+            foreach (string str in spl)
+                list.Add($"({str}");
+
+            GS1Results = new Gs1results()
+            {
+                Validated = true,
+                Input = report.Report.DecodedText.Replace("#", "^"),
+                FormattedOut = res,
+                Error = err,
+                Fields = list
+            };
+        }
     }
-    private string GetParameter(string key, List<Models.ReportData> report) => report.Find((e) => e.ParameterName.StartsWith(key))?.ParameterValue;
+    private string GetParameter(string key, List<Models.ReportData> report, bool equal = false) => report.Find((e) => equal ? e.ParameterName.Equals(key) : e.ParameterName.StartsWith(key))?.ParameterValue;
 
     private string[] GetKeyValuePair(string key, List<string> report)
     {

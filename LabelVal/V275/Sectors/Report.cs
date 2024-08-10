@@ -120,7 +120,7 @@ public class Report : IReport
                     GS1Results = new Gs1results
                     {
                         Validated = v2D.data.gs1Results.validated,
-                        Input = v2D.data.gs1Results.input,
+                        Input = "^" + v2D.data.gs1Results.input.Replace("\u001d", "^"),
                         FormattedOut = v2D.data.gs1Results.formattedOut,
                         Fields = fld,
                         Error = v2D.data.gs1Results.error

@@ -80,7 +80,7 @@
                     <DockPanel>
 
                         <!--Title-->
-                        <md:Card Background="{DynamicResource ColorBlindBrush1}"
+                        <md:Card Background="{DynamicResource OrangeBrush0}"
                              HorizontalAlignment="Left" Padding="4,1" Margin="3">
                             <TextBlock Text="Stored Image" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                         </md:Card>

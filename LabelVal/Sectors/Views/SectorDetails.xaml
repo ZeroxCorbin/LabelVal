@@ -192,11 +192,11 @@
                                     
                                     <Style.Triggers>
                                         <DataTrigger Value="verify1D" Binding="{Binding Report.Type, Mode=OneTime}">
-                                            <Setter Property="Text" Value="{Binding Report.DecodeText, Converter={StaticResource gs1FormattedOutput}}"/>
+                                            <Setter Property="Text" Value="{Binding Report.GS1Results.Input, Converter={StaticResource gs1FormattedOutput}}"/>
                                         </DataTrigger>
 
                                         <DataTrigger Value="verify2D" Binding="{Binding Report.Type, Mode=OneTime}">
-                                            <Setter Property="Text" Value="{Binding Report.DecodeText, Converter={StaticResource gs1FormattedOutput}}"/>
+                                            <Setter Property="Text" Value="{Binding Report.GS1Results.Input, Converter={StaticResource gs1FormattedOutput}}"/>
                                         </DataTrigger>
 
                                         <DataTrigger Binding="{Binding Report.GS1Results, Converter={StaticResource objectIsNull}}" Value="False">
@@ -207,30 +207,6 @@
                                 </Style>
                             </TextBlock.Style>
                         </TextBlock>
-
-                        <!--<TextBlock DockPanel.Dock="Top" Margin="3,0" TextWrapping="Wrap">
-                            <TextBlock.Style>
-                                <Style TargetType="{x:Type TextBlock}">
-
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-
-                                    <Style.Triggers>
-                                        <DataTrigger Value="verify1D" Binding="{Binding Report.Type, Mode=OneTime}">
-                                            <Setter Property="Text" Value="{Binding Report.GS1Results.FormattedOut}"/>
-                                        </DataTrigger>
-
-                                        <DataTrigger Value="verify2D" Binding="{Binding Report.Type, Mode=OneTime}">
-                                            <Setter Property="Text" Value="{Binding Report.GS1Results.FormattedOut}"/>
-                                        </DataTrigger>
-
-                                        <DataTrigger Binding="{Binding Report.GS1Results, Converter={StaticResource objectIsNull}}" Value="False">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>-->
 
                     </DockPanel>
 
