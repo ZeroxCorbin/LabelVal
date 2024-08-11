@@ -198,7 +198,7 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
 
     public SectorDifferences() { }
     //public SectorDifferences(List<string> splitPacket, string userName, bool isPDF417) => Process(splitPacket, userName, isPDF417);
-    public SectorDifferences(Models.FullReport report, string userName, bool isPDF417) => Process(report, userName, isPDF417);
+    public SectorDifferences(Models.FullReport report, bool isPDF417) => Process(report, isPDF417);
     //public void Process(List<string> splitPacket, string userName, bool isPDF417)
     //{
     //    UserName = userName;
@@ -358,9 +358,9 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
     //    }
     //}
 
-    public void Process(Models.FullReport report, string userName, bool isPDF417)
+    public void Process(Models.FullReport report, bool isPDF417)
     {
-        UserName = userName;
+        UserName = report.Name;
         IsNotEmpty = false;
 
         var alarms = new List<Alarm>();

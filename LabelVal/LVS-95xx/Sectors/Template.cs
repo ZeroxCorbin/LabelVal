@@ -48,13 +48,13 @@ namespace LabelVal.LVS_95xx.Sectors
             BlemishMask = template.BlemishMask;
         }
 
-        public Template(LabelVal.LVS_95xx.Models.FullReport report, string name)
+        public Template(LabelVal.LVS_95xx.Models.FullReport report)
         {
             if (report == null)
                 return;
 
-            Name = name;
-            Username = name;
+            Name = report.Name;
+            Username = report.Name;
 
             Top = report.Report.Y1;
             Left = report.Report.X1;

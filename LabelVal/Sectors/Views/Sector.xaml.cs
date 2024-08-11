@@ -222,7 +222,8 @@ public partial class Sector : UserControl
             {
                 var vm = (ISector)s.DataContext;
 
-                if (LibStaticUtilities.PositionMovement.IsPointWithinCircumference(SectorCenterPoint, 30, vm.Template.CenterPoint))
+                if(ISector.FallsWithin(ThisSector, vm.Template.CenterPoint))
+                //if (LibStaticUtilities.PositionMovement.IsPointWithinCircumference(SectorCenterPoint, 30, vm.Template.CenterPoint))
                 {
                     s.ShowSectorDetails();
                 }

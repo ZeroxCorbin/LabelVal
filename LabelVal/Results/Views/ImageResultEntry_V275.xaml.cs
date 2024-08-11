@@ -234,4 +234,9 @@ public partial class ImageResultEntry_V275 : UserControl
         return true;
 
     }
+
+    private void lstStoredSectorClick(object sender, MouseButtonEventArgs e)
+    {
+        e.Handled = true;
+    }
 }

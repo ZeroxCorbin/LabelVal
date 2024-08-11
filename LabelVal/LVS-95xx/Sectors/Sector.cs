@@ -71,9 +71,9 @@ public class Sector : ISector
         L95xxFullReport = report;
 
         Report = new Report(report);
-        Template = new Template(report, "NewName");
+        Template = new Template(report);
 
-        SectorDifferences = new SectorDifferences(report, "NewName", Report.SymbolType == "pdf417");
+        SectorDifferences = new SectorDifferences(report, Report.SymbolType == "pdf417");
 
         DesiredStandard = standard;
         DesiredGS1Table = table;

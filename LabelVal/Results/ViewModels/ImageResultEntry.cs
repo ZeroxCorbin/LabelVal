@@ -67,8 +67,6 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
     partial void OnSelectedPrinterChanged(PrinterSettings value) => PrinterAreaOverlay = ShowPrinterAreaOverSource ? CreatePrinterAreaOverlay(true) : null;
     partial void OnSelectedDatabaseChanged(Databases.ImageResultsDatabase value) => GetStored();
 
-    [ObservableProperty] private Sectors.Interfaces.ISector selectedSector;
-
     [ObservableProperty] private bool showDetails;
     partial void OnShowDetailsChanged(bool value)
     {
@@ -268,9 +266,9 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
 
             //Save the list to the database.
             List<FullReport> temp = [];
-            if(L95xxResultRow != null)
+            if (L95xxResultRow != null)
                 temp = L95xxResultRow._Report;
-            
+
             temp.Add(((LVS_95xx.Sectors.Sector)L95xxCurrentSectorSelected).L95xxFullReport);
 
             _ = SelectedDatabase.InsertOrReplace_L95xxResult(new Databases.L95xxResult
@@ -342,7 +340,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             L95xxCurrentSectors.Remove(L95xxCurrentSectorSelected);
             //Diff sectors not used for L95xx, yet
 
-            if(L95xxCurrentSectors.Count == 0)
+            if (L95xxCurrentSectors.Count == 0)
             {
                 L95xxCurrentImage = null;
                 L95xxCurrentImageOverlay = null;
@@ -424,6 +422,12 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         };
         drwGroup.Children.Add(border);
 
+        // Define a scaling factor (e.g., text height should be 5% of the image height)
+        double scalingFactor = 0.04;
+
+        // Calculate the renderingEmSize based on the image height and scaling factor
+        double renderingEmSize = image.Image.PixelHeight * scalingFactor;
+
         GeometryGroup secCenter = new();
         foreach (Sectors.Interfaces.ISector newSec in sectors)
         {
@@ -432,17 +436,19 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
 
             GeometryDrawing sector = new()
             {
-                Geometry = new RectangleGeometry(new Rect(newSec.Report.Left, newSec.Report.Top, newSec.Report.Width, newSec.Report.Height)),
-                Pen = new Pen(GetGradeBrush(newSec.Report.OverallGradeLetter), 5)
+                Geometry = new RectangleGeometry(new Rect(newSec.Report.Left - 3, newSec.Report.Top - 3, newSec.Report.Width + 6, newSec.Report.Height + 6)),
+                Pen = new Pen(GetGradeBrush(newSec.Report.OverallGradeLetter), 6)
             };
             drwGroup.Children.Add(sector);
-            drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun(newSec.Template.Username, new Typeface("Arial"), 30.0, new Point(newSec.Report.Left - 8, newSec.Report.Top - 8))));
+            drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun(newSec.Template.Username, new Typeface(SystemFonts.MessageFontFamily, SystemFonts.MessageFontStyle, SystemFonts.MessageFontWeight, new FontStretch()), renderingEmSize, new Point(newSec.Report.Left - 8, newSec.Report.Top - 8))));
 
             GeometryDrawing sectorT = new()
             {
                 Geometry = new RectangleGeometry(new Rect(newSec.Template.Left, newSec.Template.Top, newSec.Template.Width, newSec.Template.Height)),
-                Pen = new Pen(Brushes.Black, 1)
+                Pen = new Pen(Brushes.Black, 1),
+                Brush = newSec.IsWarning ? new SolidColorBrush(Color.FromArgb(25, 255, 255, 0)) : newSec.IsError ? new SolidColorBrush(Color.FromArgb(25, 255, 0, 0)) : Brushes.Transparent
             };
+
             drwGroup.Children.Add(sectorT);
 
             double y = newSec.Report.Top + (newSec.Report.Height / 2);
@@ -458,7 +464,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         };
         drwGroup.Children.Add(sectorCenters);
 
-        if(ShowExtendedData)
+        if (ShowExtendedData)
             drwGroup.Children.Add(GetModuleGrid(sectors));
 
         DrawingImage geometryImage = new(drwGroup);
@@ -469,6 +475,9 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
 
     public static GlyphRun CreateGlyphRun(string text, Typeface typeface, double emSize, Point baselineOrigin)
     {
+        if (text == null)
+            return null;
+
         GlyphTypeface glyphTypeface;
 
         if (!typeface.TryGetGlyphTypeface(out glyphTypeface))

@@ -170,12 +170,12 @@
 
                     <Grid>
 
-                        <ItemsControl Padding="0,2,0,0" ItemsSource="{Binding L95xxStoredSectors}" 
+                        <ListBox Padding="0,2,0,0" ItemsSource="{Binding L95xxStoredSectors}" 
                                       Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
                                       Tag="l95xxStored">
 
-                            <ItemsControl.Style>
-                                <Style TargetType="ItemsControl">
+                            <ListBox.Style>
+                                <Style TargetType="ListBox" BasedOn="{StaticResource MahApps.Styles.ListBox}">
                                     <Setter Property="Visibility" Value="Visible"/>
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding L95xxFocusedStoredSector, Converter={StaticResource objectIsNull}}" Value="False">
@@ -183,9 +183,16 @@
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
-                            </ItemsControl.Style>
+                            </ListBox.Style>
 
-                            <ItemsControl.ItemsPanel>
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem" BasedOn="{StaticResource MahApps.Styles.ListBoxItem}">
+                                    <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+                                    <Setter Property="Padding" Value="2"/>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+
+                            <ListBox.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <WrapPanel Orientation="Horizontal">
                                         <WrapPanel.Style>
@@ -218,15 +225,15 @@
                                         </WrapPanel.Style>
                                     </WrapPanel>
                                 </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
+                            </ListBox.ItemsPanel>
 
-                            <ItemsControl.ItemTemplate>
+                            <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="2,1"/>
                                 </DataTemplate>
-                            </ItemsControl.ItemTemplate>
+                            </ListBox.ItemTemplate>
 
-                        </ItemsControl>
+                        </ListBox>
 
                         <DockPanel VerticalAlignment="Top" HorizontalAlignment="Center">
                             <DockPanel.Style>

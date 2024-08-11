@@ -51,7 +51,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
 
     public void Receive(PropertyChangedMessage<LabelVal.LVS_95xx.Models.FullReport> message)
     {
-        if(IsL95xxSelected)
+        if (IsL95xxSelected)
             App.Current.Dispatcher.BeginInvoke(() => L95xxProcess(message.NewValue));
     }
 
@@ -70,7 +70,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
 
     private void L95xxGetStored()
     {
-        if(SelectedDatabase == null)
+        if (SelectedDatabase == null)
             return;
 
         L95xxStoredSectors.Clear();
@@ -96,10 +96,35 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
             foreach (Sector sec in tempSectors)
                 L95xxStoredSectors.Add(sec);
         }
+
+        L95xxStoredImageOverlay = CreateSectorsImageOverlay(L95xxStoredImage, L95xxStoredSectors);
     }
 
     private void L95xxProcess(LabelVal.LVS_95xx.Models.FullReport message)
     {
+        var center = new System.Drawing.Point(message.Report.X1 + (message.Report.SizeX / 2), message.Report.Y1 + (message.Report.SizeY / 2));
+
+        string name = null;
+
+        foreach (var sec in L95xxStoredSectors)
+            if (ISector.FallsWithin(sec, center))
+                name = sec.Template.Username;
+
+        if (name == null)
+            foreach (var sec in V275StoredSectors)
+                if (ISector.FallsWithin(sec, center))
+                    name = sec.Template.Username;
+
+        if (name == null)
+            foreach (var sec in V5StoredSectors)
+                if (ISector.FallsWithin(sec, center))
+                    name = sec.Template.Username;
+
+        if (name == null)
+            name = $"Verify_{L95xxCurrentSectors.Count + 1}";
+
+        message.Name = name;
+
         L95xxCurrentSectors.Add(new Sector(message, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
         List<ISector> secs = L95xxCurrentSectors.ToList();
         SortList(secs);
@@ -107,6 +132,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
 
 
         L95xxCurrentImage = new ImageEntry(ImageRollUID, message.Report.Thumbnail, 600);
+        L95xxCurrentImageOverlay = CreateSectorsImageOverlay(L95xxCurrentImage, L95xxCurrentSectors);
         //V5CurrentTemplate = config;
         //V5CurrentReport = JsonConvert.DeserializeObject<V5_REST_Lib.Models.ResultsAlt>(triggerResults.ReportJSON);
 

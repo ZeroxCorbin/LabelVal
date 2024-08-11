@@ -76,4 +76,8 @@ public interface ISector
     StandardsTypes DesiredStandard { get; }
     GS1TableNames DesiredGS1Table { get; }
     bool IsWrongStandard { get; }
+
+    public static bool FallsWithin(ISector sector, System.Drawing.Point point) =>
+        point.X >= sector.Template.Left && point.X <= sector.Template.Left + sector.Template.Width &&
+        point.Y >= sector.Template.Top && point.Y <= sector.Template.Top + sector.Template.Height;
 }
