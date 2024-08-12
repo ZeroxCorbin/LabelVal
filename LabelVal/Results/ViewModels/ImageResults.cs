@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Logging;
+using LabelVal.LVS_95xx.ViewModels;
 using LabelVal.Messages;
 using LabelVal.Run.ViewModels;
 using LabelVal.Utilities;
@@ -28,6 +29,7 @@ public partial class ImageResults : ObservableRecipient,
     IRecipient<PropertyChangedMessage<Node>>,
     IRecipient<PropertyChangedMessage<Databases.ImageResultsDatabase>>,
     IRecipient<PropertyChangedMessage<Scanner>>,
+    IRecipient<PropertyChangedMessage<Verifier>>,
     IRecipient<PropertyChangedMessage<PrinterSettings>>
 {
     private class V275Repeat
@@ -55,6 +57,7 @@ public partial class ImageResults : ObservableRecipient,
     [ObservableProperty] private PrinterSettings selectedPrinter;
     [ObservableProperty] private Databases.ImageResultsDatabase selectedDatabase;
     [ObservableProperty] private Scanner selectedScanner;
+    [ObservableProperty] private Verifier selectedVerifier;
     partial void OnSelectedImageRollChanged(ImageRollEntry oldValue, ImageRollEntry newValue)
     {
         if (oldValue != null)
@@ -102,6 +105,10 @@ public partial class ImageResults : ObservableRecipient,
         RequestMessage<Scanner> mes5 = new();
         WeakReferenceMessenger.Default.Send(mes5);
         SelectedScanner = mes5.Response;
+
+        RequestMessage<Verifier> mes6 = new();
+        WeakReferenceMessenger.Default.Send(mes6);
+        SelectedVerifier = mes6.Response;
     }
 
     public void ClearImageResultsList()
@@ -785,6 +792,7 @@ public partial class ImageResults : ObservableRecipient,
             //SelectedScanner.ScannerController.ConfigUpdate += ScannerController_ConfigUpdate;
         }
     }
+    public void Receive(PropertyChangedMessage<Verifier> message) => SelectedVerifier = message.NewValue;
     #endregion
 
     #region Dialogs

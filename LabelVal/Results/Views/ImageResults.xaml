@@ -89,20 +89,25 @@
 
                         <DockPanel HorizontalAlignment="Left">
 
-                            <Button Command="{Binding AddImageTopCommand}" Width="48" 
+                            <Button Command="{Binding AddImageTopCommand}" Width="42"
                                     Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                                     ToolTip="Add Image(s)"
                                     Content="{iconPacks:Material Kind=Image, Width=24, Height=24}"
                                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
 
-                            <Button Command="{Binding AddV5ImageCommand}" Width="48"
-                                    Content="{iconPacks:Material Kind=Camera, Width=24, Height=24}"
+                            <Button Command="{Binding AddV5ImageCommand}" Width="42" Height="42"
+                                    Background="{DynamicResource OrangeBrush1}" BorderBrush="{DynamicResource OrangeBrush1}"
                                     ToolTipService.ShowOnDisabled="True"
                                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
+                                <Grid>
+
+                                    <Image Width="24" Height="24" Source="/Assets/Images/v5-white-outline.ico" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                </Grid>
+                                
                                 <Button.Style>
-                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
-                                        <Setter Property="IsEnabled" Value="False"/>
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.MetroSquare}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
                                         <Setter Property="ToolTip" Value="V5: Trigger"/>
                                         <Style.Triggers>
                                             <MultiDataTrigger>
@@ -111,7 +116,7 @@
                                                     <Condition Binding="{Binding SelectedScanner.IsSimulator}" Value="False"/>
                                                 </MultiDataTrigger.Conditions>
 
-                                                <Setter Property="IsEnabled" Value="True"/>
+                                                <Setter Property="Visibility" Value="Visible"/>
                                             </MultiDataTrigger>
 
                                             <DataTrigger Binding="{Binding SelectedScanner.IsConnected}" Value="False">
@@ -223,7 +228,7 @@
             <Border Style="{StaticResource groupLeft}" />
             <Border Style="{StaticResource groupBottom}"/>
 
-            <ScrollViewer Margin="0,0,3,0" Style="{StaticResource MahApps.Styles.ScrollViewer}">
+            <ScrollViewer Margin="0,3,3,0" Style="{StaticResource MahApps.Styles.ScrollViewer}">
 
                 <ItemsControl ItemsSource="{Binding Source={StaticResource cvsImageResultsList}}">
                     <ItemsControl.ItemTemplate>

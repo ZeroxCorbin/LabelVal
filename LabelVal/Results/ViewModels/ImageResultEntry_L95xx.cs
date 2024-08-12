@@ -53,6 +53,8 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
     {
         if (IsL95xxSelected)
             App.Current.Dispatcher.BeginInvoke(() => L95xxProcess(message.NewValue));
+
+        
     }
 
     public static void SortObservableCollectionByList(List<ISector> list, ObservableCollection<ISector> observableCollection)

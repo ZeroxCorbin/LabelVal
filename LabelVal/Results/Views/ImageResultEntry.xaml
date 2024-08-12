@@ -20,7 +20,7 @@
 
     <DockPanel>
 
-        <md:Card HorizontalAlignment="Left" DockPanel.Dock="Top" Height="48" Margin="3,3,0,0"
+        <md:Card HorizontalAlignment="Left" DockPanel.Dock="Top" Height="48" Margin="3,0,0,0"
                  Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
                  Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
@@ -106,7 +106,7 @@
 
                 <!--V5 Process Source Image-->
                 <Button Command="{Binding V5ProcessCommand}" Width="48" Height="48"
-                        BorderBrush="{DynamicResource YellowBrush2}" Background="{DynamicResource OrangeBrush1}">
+                        Background="{DynamicResource OrangeBrush1}">
 
                     <Grid>
                         <mah:ProgressRing IsActive="{Binding IsV5Working}" Width="28" Height="28" Foreground="White"/>
@@ -116,7 +116,7 @@
                     <Button.Style>
                         <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.MetroSquare}">
                             <Setter Property="Visibility" Value="Collapsed"/>
-
+                            <Setter Property="BorderBrush" Value="{DynamicResource OrangeBrush1}"/>
                             <Style.Triggers>
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
@@ -128,6 +128,7 @@
                                     <Setter Property="Visibility" Value="Visible"/>
                                     <Setter Property="CommandParameter" Value="source"/>
                                     <Setter Property="ToolTip" Value="V5: Process the source image with the simulator."/>
+                                    <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}"/>
                                 </MultiDataTrigger>
 
                                 <MultiDataTrigger>
@@ -140,6 +141,7 @@
                                     <Setter Property="Visibility" Value="Visible"/>
                                     <Setter Property="CommandParameter" Value="v5Stored"/>
                                     <Setter Property="ToolTip" Value="V5: Process the stored image with the simulator."/>
+                                    <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}"/>
                                 </MultiDataTrigger>
 
                                 <MultiDataTrigger>
@@ -159,21 +161,26 @@
 
                 <!--L95xx Select-->
                 <ToggleButton IsChecked="{Binding IsL95xxSelected}" Width="48" 
-                                      Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                      Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}">
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                            Background="{DynamicResource OrangeBrush0}">
                     <ToggleButton.Style>
                         <Style TargetType="ToggleButton" BasedOn="{StaticResource MaterialDesignActionToggleButton}">
-                            <Setter Property="ToolTip" Value="Hiding 2D grid data."/>
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Setter Property="ToolTip" Value=""/>
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsL95xxSelected}" Value="True">
-                                    <Setter Property="ToolTip" Value="Displaying 2D grid data."/>
+                                    <Setter Property="ToolTip" Value="L95xx Data is redirected here."/>
                                 </DataTrigger>
-                            </Style.Triggers>
+                                <DataTrigger Binding="{Binding ImageResults.SelectedVerifier.IsConnected}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>  
+
                         </Style>
                     </ToggleButton.Style>
 
                     <md:ToggleButtonAssist.OnContent>
-                        <Grid Background="{DynamicResource OrangeBrush0}">
+                        <Grid>
                             <Image Source="/Assets/Images/l95xx-white-outline.ico"/>
                         </Grid>
                     </md:ToggleButtonAssist.OnContent>
