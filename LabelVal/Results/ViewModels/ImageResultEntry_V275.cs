@@ -103,8 +103,11 @@ public partial class ImageResultEntry
 
         }
 
-        V275StoredImageOverlay = CreateSectorsImageOverlay(V275StoredImage, V275StoredSectors);
+        UpdateV275StoredImageOverlay();
     }
+
+    public void UpdateV275StoredImageOverlay() => V275StoredImageOverlay = CreateSectorsImageOverlay(V275StoredImage, V275StoredSectors);
+    public void UpdateV275CurrentImageOverlay() => V275StoredImageOverlay = CreateSectorsImageOverlay(V275CurrentImage, V275CurrentSectors);
 
     public async Task<bool> V275ReadTask(int repeat)
     {
@@ -165,7 +168,7 @@ public partial class ImageResultEntry
 
         V275GetSectorDiff();
 
-        V275CurrentImageOverlay = CreateSectorsImageOverlay(V275CurrentImage, V275CurrentSectors);
+        UpdateV275CurrentImageOverlay();
 
         return true;
     }

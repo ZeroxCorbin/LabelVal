@@ -37,7 +37,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     [ObservableProperty][property: JsonProperty] private static int port;
     partial void OnPortChanged(int value) { ScannerController.Port = value; }
 
-    [ObservableProperty][property: JsonProperty] private static bool fullResImages = true;
+    [ObservableProperty][property: JsonProperty] private bool fullResImages = true;
 
     [ObservableProperty][property: JsonProperty] private static string fTPUsername;
     partial void OnFTPUsernameChanged(string value) { FTPClient.Username = value; }
@@ -420,6 +420,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         {
             try
             {
+                
                 RawImage = ImageUtilities.ConvertToPng(await ScannerController.GetImageFullRes(json));
                 IsWaitingForFullImage = false;
                 return;

@@ -121,4 +121,12 @@ public partial class Scanner : UserControl
     {
 
     }
+
+    private void drwSettings_DrawerClosing(object sender, MaterialDesignThemes.Wpf.DrawerClosingEventArgs e)
+    {
+        if(e.Dock == Dock.Top)
+            {
+            ((ViewModels.Scanner)DataContext).Manager.SaveCommand.Execute(null);
+        }
+    }
 }

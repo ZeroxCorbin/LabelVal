@@ -13,4 +13,6 @@ public partial class ImageResultsDatabases : UserControl
         if(sender is Button button && button.DataContext is Databases.ImageResultsDatabase ir)
             ir.IsLocked = !ir.IsLocked;
     }
+
+    private void btnCollapseContent(object sender, System.Windows.RoutedEventArgs e) => ((Main.Views.MainWindow)App.Current.MainWindow).ClearSelectedMenuItem();
 }

@@ -113,7 +113,7 @@ public partial class ImageResultEntry_V275 : UserControl
         {
             if (((ViewModels.ImageResultEntry)DataContext).L95xxResultRow != null)
             {
-                var pop = new PopupJSONViewer();
+                PopupJSONViewer pop = new();
                 pop.Viewer1.JSON = ((ViewModels.ImageResultEntry)DataContext).L95xxResultRow.Report;
                 pop.Viewer1.Title = "Report";
 
@@ -123,7 +123,7 @@ public partial class ImageResultEntry_V275 : UserControl
         }
         else
         {
-            var pop = new PopupSectorsDetails
+            PopupSectorsDetails pop = new()
             {
                 DataContext = ((ViewModels.ImageResultEntry)DataContext).L95xxStoredSectors
             };
@@ -205,7 +205,6 @@ public partial class ImageResultEntry_V275 : UserControl
         //}
     }
 
-
     private void V275StoredImage_MouseDown(object sender, MouseButtonEventArgs e)
     {
         if (e.LeftButton == MouseButtonState.Pressed)
@@ -224,7 +223,7 @@ public partial class ImageResultEntry_V275 : UserControl
         dc.LoadImage(image.Image, overlay);
         if (dc.Image == null) return false;
 
-        var yourParentWindow = (Main.Views.MainWindow)Window.GetWindow(this);
+        Main.Views.MainWindow yourParentWindow = (Main.Views.MainWindow)Window.GetWindow(this);
 
         dc.Width = yourParentWindow.ActualWidth - 100;
         dc.Height = yourParentWindow.ActualHeight - 100;
@@ -235,8 +234,50 @@ public partial class ImageResultEntry_V275 : UserControl
 
     }
 
-    private void lstStoredSectorClick(object sender, MouseButtonEventArgs e)
+    private void lstStoredSectorClick(object sender, MouseButtonEventArgs e) => e.Handled = true;
+
+    private void currentSectorMouseEnter(object sender, MouseEventArgs e)
     {
-        e.Handled = true;
+        if (sender is Sector sectorView)
+        {
+            if (sectorView.DataContext is Sectors.Interfaces.ISector sector)
+                sector.IsFocused = true;
+
+            if (this.DataContext is ViewModels.ImageResultEntry ire)
+                App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV275CurrentImageOverlay());
+        }
+    }
+    private void currentSectorMouseLeave(object sender, MouseEventArgs e)
+    {
+        if (sender is Sector sectorView)
+        {
+            if (sectorView.DataContext is Sectors.Interfaces.ISector sector)
+                sector.IsFocused = false;
+
+            if (this.DataContext is ViewModels.ImageResultEntry ire)
+                App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV275CurrentImageOverlay());
+        }
+    }
+    private void storedSectorMouseEnter(object sender, MouseEventArgs e)
+    {
+        if (sender is Sector sectorView)
+        {
+            if (sectorView.DataContext is Sectors.Interfaces.ISector sector)
+                sector.IsFocused = true;
+
+            if (this.DataContext is ViewModels.ImageResultEntry ire)
+                App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV275StoredImageOverlay());
+        }
+    }
+    private void storedSectorMouseLeave(object sender, MouseEventArgs e)
+    {
+        if (sender is Sector sectorView)
+        {
+            if (sectorView.DataContext is Sectors.Interfaces.ISector sector)
+                sector.IsFocused = false;
+
+            if (this.DataContext is ViewModels.ImageResultEntry ire)
+                App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV275StoredImageOverlay());
+        }
     }
 }

@@ -3,6 +3,8 @@ using System.Drawing.Imaging;
 using System.Drawing;
 using System.IO;
 using System.Security.Cryptography;
+using System.Reflection.Metadata;
+using System.Windows.Media.Imaging;
 
 namespace LabelVal.Utilities
 {
@@ -46,33 +48,73 @@ namespace LabelVal.Utilities
 
 
 
-        public static byte[] ConvertToPng(byte[] img, int dpi)
+        public static byte[] ConvertToPng(byte[] img, int dpi, double angle)
         {
             if (dpi > 0)
                 SetBitmapDPI(img, dpi);
 
             System.Windows.Media.Imaging.PngBitmapEncoder encoder = new();
-
             using var ms = new System.IO.MemoryStream(img);
             using MemoryStream stream = new();
 
-            encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(ms));
+            // Create a BitmapImage from the byte array
+            var bitmapImage = new System.Windows.Media.Imaging.BitmapImage();
+            bitmapImage.BeginInit();
+            bitmapImage.StreamSource = ms;
+            bitmapImage.CacheOption = System.Windows.Media.Imaging.BitmapCacheOption.OnLoad;
+            bitmapImage.EndInit();
+            bitmapImage.Freeze();
+
+            // Apply rotation if angle is not zero
+            if (angle != 0)
+            {
+                var transformedBitmap = new System.Windows.Media.Imaging.TransformedBitmap(
+                    bitmapImage, new System.Windows.Media.RotateTransform(angle));
+                encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(transformedBitmap));
+            }
+            else
+            {
+                encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(bitmapImage));
+            }
+
             encoder.Save(stream);
             stream.Close();
 
             return stream.ToArray();
         }
 
-        public static byte[] ConvertToPng(byte[] img)
+        public static byte[] ConvertToPng(byte[] img, double angle = 0)
         {
-            System.Windows.Media.Imaging.PngBitmapEncoder encoder = new();
-            using var ms = new System.IO.MemoryStream(img);
-            using MemoryStream stream = new();
-            encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(ms));
-            encoder.Save(stream);
-            stream.Close();
+  
+                System.Windows.Media.Imaging.PngBitmapEncoder encoder = new();
+                using var ms = new System.IO.MemoryStream(img);
+                using MemoryStream stream = new();
 
-            return stream.ToArray();
+                // Create a BitmapImage from the byte array
+                var bitmapImage = new System.Windows.Media.Imaging.BitmapImage();
+                bitmapImage.BeginInit();
+                bitmapImage.StreamSource = ms;
+                bitmapImage.CacheOption = System.Windows.Media.Imaging.BitmapCacheOption.OnLoad;
+                bitmapImage.EndInit();
+                bitmapImage.Freeze();
+
+                // Apply rotation if angle is not zero
+                if (angle != 0)
+                {
+                    var transformedBitmap = new System.Windows.Media.Imaging.TransformedBitmap(
+                        bitmapImage, new System.Windows.Media.RotateTransform(angle));
+                    encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(transformedBitmap));
+                }
+                else
+                {
+                    encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(bitmapImage));
+                }
+
+                encoder.Save(stream);
+                stream.Close();
+
+                return stream.ToArray();
+            
         }
 
 

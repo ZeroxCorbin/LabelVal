@@ -97,7 +97,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
                 L95xxStoredSectors.Add(sec);
         }
 
-        L95xxStoredImageOverlay = CreateSectorsImageOverlay(L95xxStoredImage, L95xxStoredSectors);
+        UpdateL95xxStoredImageOverlay();
     }
 
     private void L95xxProcess(LabelVal.LVS_95xx.Models.FullReport message)
@@ -132,7 +132,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
 
 
         L95xxCurrentImage = new ImageEntry(ImageRollUID, message.Report.Thumbnail, 600);
-        L95xxCurrentImageOverlay = CreateSectorsImageOverlay(L95xxCurrentImage, L95xxCurrentSectors);
+        UpdateL95xxCurrentImageOverlay();
         //V5CurrentTemplate = config;
         //V5CurrentReport = JsonConvert.DeserializeObject<V5_REST_Lib.Models.ResultsAlt>(triggerResults.ReportJSON);
 
@@ -156,6 +156,8 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
 
         //return true;
     }
+    public void UpdateL95xxStoredImageOverlay() => L95xxStoredImageOverlay = CreateSectorsImageOverlay(L95xxStoredImage, L95xxStoredSectors);
+    public void UpdateL95xxCurrentImageOverlay() => L95xxStoredImageOverlay = CreateSectorsImageOverlay(L95xxCurrentImage, L95xxCurrentSectors);
 
     private void L95xxGetSectorDiff()
     {

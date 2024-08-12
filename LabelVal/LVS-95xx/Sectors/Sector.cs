@@ -66,6 +66,8 @@ public class Sector : ISector
         }
     }
 
+    public bool IsFocused { get; set; }
+
     public Sector(Models.FullReport report, StandardsTypes standard, GS1TableNames table)
     {
         L95xxFullReport = report;
@@ -90,6 +92,8 @@ public class Sector : ISector
         else if (highCat == 2)
             IsError = true;
     }
+
+
     private List<string[]> GetMultipleKeyValuePairs(string key, List<string> report)
     {
         List<string> items = report.FindAll((e) => e.StartsWith(key));

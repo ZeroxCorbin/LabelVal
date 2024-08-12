@@ -187,4 +187,49 @@ public partial class ImageResultEntry_V5 : UserControl
         return true;
 
     }
+
+    private void currentSectorMouseEnter(object sender, MouseEventArgs e)
+    {
+        if (sender is Sector sectorView)
+        {
+            if (sectorView.DataContext is Sectors.Interfaces.ISector sector)
+                sector.IsFocused = true;
+
+            if (this.DataContext is ViewModels.ImageResultEntry ire)
+                App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV5CurrentImageOverlay());
+        }
+    }
+    private void currentSectorMouseLeave(object sender, MouseEventArgs e)
+    {
+        if (sender is Sector sectorView)
+        {
+            if (sectorView.DataContext is Sectors.Interfaces.ISector sector)
+                sector.IsFocused = false;
+
+            if (this.DataContext is ViewModels.ImageResultEntry ire)
+                App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV5CurrentImageOverlay());
+        }
+    }
+    private void storedSectorMouseEnter(object sender, MouseEventArgs e)
+    {
+        if (sender is Sector sectorView)
+        {
+            if (sectorView.DataContext is Sectors.Interfaces.ISector sector)
+                sector.IsFocused = true;
+
+            if (this.DataContext is ViewModels.ImageResultEntry ire)
+                App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV5StoredImageOverlay());
+        }
+    }
+    private void storedSectorMouseLeave(object sender, MouseEventArgs e)
+    {
+        if (sender is Sector sectorView)
+        {
+            if (sectorView.DataContext is Sectors.Interfaces.ISector sector)
+                sector.IsFocused = false;
+
+            if (this.DataContext is ViewModels.ImageResultEntry ire)
+                App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV5StoredImageOverlay());
+        }
+    }
 }

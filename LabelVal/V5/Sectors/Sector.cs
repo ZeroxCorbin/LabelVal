@@ -64,6 +64,8 @@ public class Sector : ISector
         }
     }
 
+    public bool IsFocused { get; set; }
+
     public Sector(ResultsAlt.Decodedata decodeData, Config.Toollist toollist, string name, StandardsTypes standard, GS1TableNames table)
     {
         V5Sector = decodeData;

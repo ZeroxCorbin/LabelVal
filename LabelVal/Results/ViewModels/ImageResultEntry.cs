@@ -12,8 +12,6 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing.Printing;
 using System.IO;
@@ -396,9 +394,11 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
 
         GeometryDrawing printer = new()
         {
-            Geometry = new System.Windows.Media.RectangleGeometry(new Rect(lineWidth / 2, lineWidth / 2,
-            (SelectedPrinter.DefaultPageSettings.PaperSize.Width / 100 * SelectedPrinter.DefaultPageSettings.PrinterResolution.X * xRatio) - lineWidth,
-            (SelectedPrinter.DefaultPageSettings.PaperSize.Height / 100 * SelectedPrinter.DefaultPageSettings.PrinterResolution.Y * yRatio) - lineWidth)),
+            Geometry = new System.Windows.Media.RectangleGeometry(new Rect(
+                lineWidth / 2,
+                lineWidth / 2,
+                (SelectedPrinter.DefaultPageSettings.PaperSize.Width / 100 * SelectedPrinter.DefaultPageSettings.PrinterResolution.X * xRatio) - lineWidth,
+                (SelectedPrinter.DefaultPageSettings.PaperSize.Height / 100 * SelectedPrinter.DefaultPageSettings.PrinterResolution.Y * yRatio) - lineWidth)),
             Pen = new System.Windows.Media.Pen(System.Windows.Media.Brushes.Red, lineWidth)
         };
 
@@ -412,6 +412,12 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
 
     private DrawingImage CreateSectorsImageOverlay(ImageEntry image, ObservableCollection<Sectors.Interfaces.ISector> sectors)
     {
+        if(sectors == null || sectors.Count == 0)
+            return null;
+
+        if (image == null)
+            return null;
+
         DrawingGroup drwGroup = new();
 
         //Draw the image outline the same size as the stored image
@@ -427,6 +433,10 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
 
         // Calculate the renderingEmSize based on the image height and scaling factor
         double renderingEmSize = image.Image.PixelHeight * scalingFactor;
+        double renderingEmSizeHalf = renderingEmSize / 2;
+
+        double warnSecThickness = renderingEmSize / 5;
+        double warnSecThicknessHalf = warnSecThickness / 2;
 
         GeometryGroup secCenter = new();
         foreach (Sectors.Interfaces.ISector newSec in sectors)
@@ -434,27 +444,47 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             if (newSec.Report.SymbolType is "blemish" or "ocr" or "ocv")
                 continue;
 
-            GeometryDrawing sector = new()
-            {
-                Geometry = new RectangleGeometry(new Rect(newSec.Report.Left - 3, newSec.Report.Top - 3, newSec.Report.Width + 6, newSec.Report.Height + 6)),
-                Pen = new Pen(GetGradeBrush(newSec.Report.OverallGradeLetter), 6)
-            };
-            drwGroup.Children.Add(sector);
-            drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun(newSec.Template.Username, new Typeface(SystemFonts.MessageFontFamily, SystemFonts.MessageFontStyle, SystemFonts.MessageFontWeight, new FontStretch()), renderingEmSize, new Point(newSec.Report.Left - 8, newSec.Report.Top - 8))));
+            bool hasReportSec = newSec.Report.Width > 0;
 
             GeometryDrawing sectorT = new()
             {
-                Geometry = new RectangleGeometry(new Rect(newSec.Template.Left, newSec.Template.Top, newSec.Template.Width, newSec.Template.Height)),
-                Pen = new Pen(Brushes.Black, 1),
-                Brush = newSec.IsWarning ? new SolidColorBrush(Color.FromArgb(25, 255, 255, 0)) : newSec.IsError ? new SolidColorBrush(Color.FromArgb(25, 255, 0, 0)) : Brushes.Transparent
+                Geometry = new RectangleGeometry(new Rect(newSec.Template.Left + renderingEmSizeHalf, newSec.Template.Top + renderingEmSizeHalf, newSec.Template.Width - renderingEmSize, newSec.Template.Height - renderingEmSize)),
+                Pen = new Pen(GetGradeBrush(newSec.Report.OverallGradeLetter, (byte)(newSec.IsFocused ? 0xFF : 0x28)), renderingEmSize),
             };
-
             drwGroup.Children.Add(sectorT);
 
-            double y = newSec.Report.Top + (newSec.Report.Height / 2);
-            double x = newSec.Report.Left + (newSec.Report.Width / 2);
-            secCenter.Children.Add(new LineGeometry(new Point(x + 10, y), new Point(x + -10, y)));
-            secCenter.Children.Add(new LineGeometry(new Point(x, y + 10), new Point(x, y + -10)));
+            GeometryDrawing warnSector = new()
+            {
+                Geometry = new RectangleGeometry(new Rect(
+                    newSec.Template.Left - warnSecThicknessHalf,
+                    newSec.Template.Top - warnSecThicknessHalf,
+                       newSec.Template.Width + warnSecThickness,
+                       newSec.Template.Height + warnSecThickness)),
+
+                Pen = new Pen(
+                    newSec.IsWarning ? new SolidColorBrush(Colors.Yellow) :
+                        newSec.IsError ? new SolidColorBrush(Colors.Red) : Brushes.Transparent,
+                    warnSecThickness)
+            };
+            drwGroup.Children.Add(warnSector);    
+
+            drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun(newSec.Template.Username, new Typeface(SystemFonts.MessageFontFamily, SystemFonts.MessageFontStyle, SystemFonts.MessageFontWeight, new FontStretch()), renderingEmSize, new Point(newSec.Template.Left - 8, newSec.Template.Top - 8))));
+
+            if (hasReportSec)
+            {
+                GeometryDrawing sector = new()
+                {
+                    Geometry = new RectangleGeometry(new Rect(newSec.Report.Left + 0.5, newSec.Report.Top + 0.5, newSec.Report.Width, newSec.Report.Height)),
+                    Pen = new Pen(Brushes.Black, 1)
+                };
+                sector.Geometry.Transform = new RotateTransform(newSec.Report.AngleDeg, newSec.Report.Left + (newSec.Report.Width / 2), newSec.Report.Top + (newSec.Report.Height / 2));
+                drwGroup.Children.Add(sector);
+
+                double y = newSec.Report.Top + (newSec.Report.Height / 2);
+                double x = newSec.Report.Left + (newSec.Report.Width / 2);
+                secCenter.Children.Add(new LineGeometry(new Point(x + 10, y), new Point(x + -10, y)));
+                secCenter.Children.Add(new LineGeometry(new Point(x, y + 10), new Point(x, y + -10)));
+            }
         }
 
         GeometryDrawing sectorCenters = new()
@@ -466,6 +496,8 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
 
         if (ShowExtendedData)
             drwGroup.Children.Add(GetModuleGrid(sectors));
+
+       // drwGroup.Transform = new RotateTransform(ImageResults.SelectedScanner.RotateImage ? 180 : 0);
 
         DrawingImage geometryImage = new(drwGroup);
         geometryImage.Freeze();
@@ -497,9 +529,20 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         }
 
         return new GlyphRun(
-            glyphTypeface, 0, false, emSize, (float)MonitorUtilities.GetDpi().PixelsPerDip,
-            glyphIndices, baselineOrigin, advanceWidths,
-            null, null, null, null, null, null);
+            glyphTypeface,
+            0,
+            false,
+            emSize,
+            (float)MonitorUtilities.GetDpi().PixelsPerDip,
+            glyphIndices,
+            baselineOrigin,
+            advanceWidths,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null);
     }
     private static DrawingGroup GetModuleGrid(ObservableCollection<Sectors.Interfaces.ISector> sectors)
     {
@@ -560,10 +603,23 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
                                 textWidth += width;
                             }
 
-                            GlyphRun gr = new(_glyphTypeface, 0, false, 2, 1.0f, _glyphIndexes,
-                                new Point(startX + (res.ExtendedData.DeltaX * (col + qzX)) + 1,
-                                startY + (res.ExtendedData.DeltaY * (row + qzY)) + (_glyphTypeface.Height * (res.ExtendedData.DeltaY / 4))),
-                                _advanceWidths, null, null, null, null, null, null);
+                            GlyphRun gr = new(
+                                _glyphTypeface,
+                                0,
+                                false,
+                                2,
+                                1.0f,
+                                _glyphIndexes,
+                                new Point(
+                                    startX + (res.ExtendedData.DeltaX * (col + qzX)) + 1,
+                                    startY + (res.ExtendedData.DeltaY * (row + qzY)) + (_glyphTypeface.Height * (res.ExtendedData.DeltaY / 4))),
+                                _advanceWidths,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null);
 
                             GlyphRunDrawing grd = new(Brushes.Blue, gr);
 
@@ -589,10 +645,23 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
                                 textWidth += width;
                             }
 
-                            GlyphRun gr = new(_glyphTypeface1, 0, false, 2, 1.0f, _glyphIndexes,
-                                new Point(startX + (res.ExtendedData.DeltaX * (col + qzX)) + 1,
-                                startY + (res.ExtendedData.DeltaY * (row + qzY)) + (_glyphTypeface1.Height * (res.ExtendedData.DeltaY / 2))),
-                                _advanceWidths, null, null, null, null, null, null);
+                            GlyphRun gr = new(
+                                _glyphTypeface1,
+                                0,
+                                false,
+                                2,
+                                1.0f,
+                                _glyphIndexes,
+                                new Point(
+                                    startX + (res.ExtendedData.DeltaX * (col + qzX)) + 1,
+                                    startY + (res.ExtendedData.DeltaY * (row + qzY)) + (_glyphTypeface1.Height * (res.ExtendedData.DeltaY / 2))),
+                                _advanceWidths,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null);
 
                             GlyphRunDrawing grd = new(Brushes.Blue, gr);
                             textGrp.Children.Add(grd);
@@ -632,8 +701,8 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
                         ? sect.Report.Width - res.ExtendedData.Ynw - (qzY * res.ExtendedData.DeltaY) - 1
                         : sect.Report.Width - res.ExtendedData.Ynw - dY - ((res.ExtendedData.NumColumns + qzY) * res.ExtendedData.DeltaY);
                     transGroup.Children.Add(new TranslateTransform(
-                         x,
-                         res.ExtendedData.Xnw - (qzX * res.ExtendedData.DeltaX) - dX + 1));
+                        x,
+                        res.ExtendedData.Xnw - (qzX * res.ExtendedData.DeltaX) - dX + 1));
                 }
 
                 if (sect.Template.Orientation == 180)
@@ -661,35 +730,36 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         return drwGroup;
     }
 
-    private static SolidColorBrush GetGradeBrush(string grade) => grade switch
+    private static SolidColorBrush GetGradeBrush(string grade, byte trans) => grade switch
     {
-        "A" => (SolidColorBrush)App.Current.Resources["CB_Green"],
-        "B" => (SolidColorBrush)App.Current.Resources["ISO_GradeB_Brush"],
-        "C" => (SolidColorBrush)App.Current.Resources["ISO_GradeC_Brush"],
-        "D" => (SolidColorBrush)App.Current.Resources["ISO_GradeD_Brush"],
-        "F" => (SolidColorBrush)App.Current.Resources["ISO_GradeF_Brush"],
+        "A" => ChangeTransparency((SolidColorBrush)App.Current.Resources["CB_Green"], trans),
+        "B" => ChangeTransparency((SolidColorBrush)App.Current.Resources["ISO_GradeB_Brush"], trans),
+        "C" => ChangeTransparency((SolidColorBrush)App.Current.Resources["ISO_GradeC_Brush"], trans),
+        "D" => ChangeTransparency((SolidColorBrush)App.Current.Resources["ISO_GradeD_Brush"], trans),
+        "F" => ChangeTransparency((SolidColorBrush)App.Current.Resources["ISO_GradeF_Brush"], trans),
         _ => Brushes.Black,
     };
+    private static SolidColorBrush ChangeTransparency(SolidColorBrush original, byte trans) => new(Color.FromArgb(trans, original.Color.R, original.Color.G, original.Color.B));
 
     public static void SortList(List<Sectors.Interfaces.ISector> list) => list.Sort((item1, item2) =>
-        {
-            double distance1 = Math.Sqrt(Math.Pow(item1.Template.CenterPoint.X, 2) + Math.Pow(item1.Template.CenterPoint.Y, 2));
-            double distance2 = Math.Sqrt(Math.Pow(item2.Template.CenterPoint.X, 2) + Math.Pow(item2.Template.CenterPoint.Y, 2));
-            int distanceComparison = distance1.CompareTo(distance2);
+    {
+        double distance1 = Math.Sqrt(Math.Pow(item1.Template.CenterPoint.X, 2) + Math.Pow(item1.Template.CenterPoint.Y, 2));
+        double distance2 = Math.Sqrt(Math.Pow(item2.Template.CenterPoint.X, 2) + Math.Pow(item2.Template.CenterPoint.Y, 2));
+        int distanceComparison = distance1.CompareTo(distance2);
 
-            if (distanceComparison == 0)
+        if (distanceComparison == 0)
+        {
+            // If distances are equal, sort by X coordinate, then by Y if necessary
+            int xComparison = item1.Template.CenterPoint.X.CompareTo(item2.Template.CenterPoint.X);
+            if (xComparison == 0)
             {
-                // If distances are equal, sort by X coordinate, then by Y if necessary
-                int xComparison = item1.Template.CenterPoint.X.CompareTo(item2.Template.CenterPoint.X);
-                if (xComparison == 0)
-                {
-                    // If X coordinates are equal, sort by Y coordinate
-                    return item1.Template.CenterPoint.Y.CompareTo(item2.Template.CenterPoint.Y);
-                }
-                return xComparison;
+                // If X coordinates are equal, sort by Y coordinate
+                return item1.Template.CenterPoint.Y.CompareTo(item2.Template.CenterPoint.Y);
             }
-            return distanceComparison;
-        });
+            return xComparison;
+        }
+        return distanceComparison;
+    });
 
     #region Recieve Messages
     public void Receive(PropertyChangedMessage<Databases.ImageResultsDatabase> message) => SelectedDatabase = message.NewValue;

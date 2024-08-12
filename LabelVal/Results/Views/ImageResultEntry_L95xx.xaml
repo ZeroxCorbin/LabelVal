@@ -229,7 +229,9 @@
 
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="2,1"/>
+                                    <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="2,1"
+                                                        MouseEnter="storedSectorMouseEnter"
+                                                        MouseLeave="storedSectorMouseLeave"/>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
 
@@ -478,12 +480,13 @@
                                   ScrollChanged="ScrollL95xxCurrentSectors_ScrollChanged">
                     <Grid>
 
-                        <ListView Padding="0,1,0,0" ItemsSource="{Binding L95xxCurrentSectors}" SelectedItem="{Binding L95xxCurrentSectorSelected}"
+                        <ListBox Padding="0,1,0,0" ItemsSource="{Binding L95xxCurrentSectors}" 
+                                  SelectedItem="{Binding L95xxCurrentSectorSelected}"
                                       Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
                                        Tag="l95xxCurrent">
 
-                            <ListView.Style>
-                                <Style TargetType="ListView" BasedOn="{StaticResource MahApps.Styles.ListView}">
+                            <ListBox.Style>
+                                <Style TargetType="ListBox" BasedOn="{StaticResource MahApps.Styles.ListBox}">
                                     <Setter Property="Visibility" Value="Visible"/>
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding L95xxFocusedCurrentSector, Converter={StaticResource objectIsNull}}" Value="False">
@@ -491,13 +494,13 @@
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
-                            </ListView.Style>
+                            </ListBox.Style>
 
-                            <ListView.ItemContainerStyle>
-                                <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}"/>
-                            </ListView.ItemContainerStyle>
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem" BasedOn="{StaticResource MahApps.Styles.ListBoxItem}"/>
+                            </ListBox.ItemContainerStyle>
 
-                            <ListView.ItemsPanel>
+                            <ListBox.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <WrapPanel Orientation="Horizontal">
                                         <WrapPanel.Style>
@@ -530,14 +533,16 @@
                                         </WrapPanel.Style>
                                     </WrapPanel>
                                 </ItemsPanelTemplate>
-                            </ListView.ItemsPanel>
+                            </ListBox.ItemsPanel>
 
-                            <ItemsControl.ItemTemplate>
+                            <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <sectors:Sector Background="{DynamicResource AccentColorBrush}"/>
+                                    <sectors:Sector Background="{DynamicResource AccentColorBrush}"
+                                                        MouseEnter="storedSectorMouseEnter"
+                                                        MouseLeave="storedSectorMouseLeave"/>
                                 </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ListView>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
 
                         <DockPanel VerticalAlignment="Top" HorizontalAlignment="Center">
                             <DockPanel.Style>

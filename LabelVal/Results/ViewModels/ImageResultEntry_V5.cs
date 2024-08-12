@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Results.Databases;
+using LabelVal.Utilities;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -144,10 +145,13 @@ public partial class ImageResultEntry
 
         V5GetSectorDiff();
 
-        V5CurrentImageOverlay = CreateSectorsImageOverlay(V5CurrentImage, V5CurrentSectors);
+        UpdateV5CurrentImageOverlay();
 
         return true;
     }
+    public void UpdateV5StoredImageOverlay() => V5StoredImageOverlay = CreateSectorsImageOverlay(V5StoredImage, V5StoredSectors);
+    public void UpdateV5CurrentImageOverlay() => V5CurrentImageOverlay = CreateSectorsImageOverlay(V5CurrentImage, V5CurrentSectors);
+
     [RelayCommand] private void V5Load() => _ = V5LoadTask();
 
     private void V5GetStored()
@@ -186,7 +190,7 @@ public partial class ImageResultEntry
                 V5StoredSectors.Add(sec);
         }
 
-        V5StoredImageOverlay = CreateSectorsImageOverlay(V5StoredImage, V5StoredSectors);
+        UpdateV5StoredImageOverlay();
     }
     private void V5GetSectorDiff()
     {

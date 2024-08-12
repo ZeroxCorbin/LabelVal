@@ -49,29 +49,11 @@ public class Report : IReport
         SymbolType = V5GetSymbology(v5.type);
         DecodeText = v5.dataUTF8;
 
-        // Create the Rect
-        Rect rect = new(v5.x - (v5.width / 2), v5.y - (v5.height / 2), v5.width, v5.height);
-
-        // Create the RotateTransform
-        RotateTransform rotateTransform = new(v5.angleDeg, v5.x, v5.y);
-
-        // Apply the rotation to the Rect
-        Point topLeft = rotateTransform.Transform(new Point(rect.Left, rect.Top));
-        Point topRight = rotateTransform.Transform(new Point(rect.Right, rect.Top));
-        Point bottomLeft = rotateTransform.Transform(new Point(rect.Left, rect.Bottom));
-        Point bottomRight = rotateTransform.Transform(new Point(rect.Right, rect.Bottom));
-
-        // Calculate the new bounding box
-        double newLeft = Math.Min(Math.Min(topLeft.X, topRight.X), Math.Min(bottomLeft.X, bottomRight.X));
-        double newTop = Math.Min(Math.Min(topLeft.Y, topRight.Y), Math.Min(bottomLeft.Y, bottomRight.Y));
-        double newRight = Math.Max(Math.Max(topLeft.X, topRight.X), Math.Max(bottomLeft.X, bottomRight.X));
-        double newBottom = Math.Max(Math.Max(topLeft.Y, topRight.Y), Math.Max(bottomLeft.Y, bottomRight.Y));
-
         // Update the properties
-        Top = newTop;
-        Left = newLeft;
-        Width = newRight - newLeft;
-        Height = newBottom - newTop;
+        Left = v5.x - (v5.width / 2);
+        Top = v5.y - (v5.height / 2);
+        Width = v5.width;
+        Height = v5.height;
         AngleDeg = v5.angleDeg;
 
         if (v5.grading != null)

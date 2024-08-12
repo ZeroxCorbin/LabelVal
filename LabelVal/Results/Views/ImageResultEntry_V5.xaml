@@ -223,7 +223,9 @@
 
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="2,1"/>
+                                    <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="2,1"
+                                                        MouseEnter="storedSectorMouseEnter"
+                                                        MouseLeave="storedSectorMouseLeave"/>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
@@ -517,7 +519,9 @@
 
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="2,1" />
+                                    <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="2,1"
+                                                    MouseEnter="currentSectorMouseEnter"
+                                                    MouseLeave="currentSectorMouseLeave"/>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
