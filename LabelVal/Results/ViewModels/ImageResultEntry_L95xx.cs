@@ -102,6 +102,12 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
 
     private void L95xxProcess(LabelVal.LVS_95xx.Models.FullReport message)
     {
+        if(message == null || message.Report == null)
+            return;
+
+        if(message.Report.OverallGrade.StartsWith("Bar"))
+            return;
+        
         var center = new System.Drawing.Point(message.Report.X1 + (message.Report.SizeX / 2), message.Report.Y1 + (message.Report.SizeY / 2));
 
         string name = null;

@@ -425,17 +425,17 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
             IsNotEmpty = true;
 
             GradeValues.Add(GetGradeValue("symbolContrast", GetParameter("Contrast", report.ReportData)));
-            ValueResults.Add(new ValueResult("symbolXDim", ParseFloat(GetParameter("Xdim", report.ReportData)), "PASS"));
+            ValueResults.Add(new ValueResult("symbolXDim", ParseFloat(GetParameter("XDim", report.ReportData)), "PASS"));
 
             Values.Add(new Value_("minimumReflectance", (int)Math.Ceiling(ParseFloat(GetParameter("Rmin", report.ReportData)))));
 
-            var spl = GetParameter("Codeword y", report.ReportData).Split(' ');
+            var spl = GetParameter("Codeword Yield", report.ReportData).Split(' ');
             if (spl.Count() == 2)
-                GradeValues.Add(new GradeValue("CodewordY", ParseInt(spl[1]), GetGrade("CodewordY", spl[0])));
+                GradeValues.Add(new GradeValue("CodewordYield", ParseInt(spl[1]), GetGrade("", spl[0])));
             else
-                GradeValues.Add(new GradeValue("CodewordY", -1, new Grade("CodewordY", 0.0f, "F")));
+                GradeValues.Add(new GradeValue("CodewordYield", -1, new Grade("", 0.0f, "F")));
 
-            GradeValues.Add(new GradeValue("CodewordP", -1, GetGrade("CodewordP", GetParameter("Codeword P", report.ReportData))));
+            GradeValues.Add(new GradeValue("CodewordPQ", -1, GetGrade("", GetParameter("Codeword PQ", report.ReportData))));
         }
         else
         {

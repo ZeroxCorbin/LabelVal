@@ -106,7 +106,7 @@ public class Report : IReport
         SymbolType = GetSymbolType(sym);
         XDimension = Type == "verify2D"
             ? (double)ParseFloat(GetParameter("Cell size", report.ReportData))
-            : (double)ParseFloat(GetParameter("Xdim", report.ReportData));
+            : sym != "PDF417" ? (double)ParseFloat(GetParameter("Xdim", report.ReportData)) : (double)ParseFloat(GetParameter("XDim", report.ReportData));
         Aperture = ParseFloat(GetParameter("Overall", report.ReportData).Split('/')[1]);
         Units = "mil";
 
