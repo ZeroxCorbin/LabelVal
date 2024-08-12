@@ -9,6 +9,7 @@ using System.Linq;
 
 namespace LabelVal.LVS_95xx.ViewModels;
 
+[JsonObject(MemberSerialization.OptIn)]
 public partial class Verifier : ObservableRecipient
 {
     public string ID => SelectedComName;
@@ -27,8 +28,7 @@ public partial class Verifier : ObservableRecipient
 
     public ObservableCollection<string> ComNameList { get; } = [];
 
-    [ObservableProperty] private string selectedComName = App.Settings.GetValue("95xx_COM_Name", "");
-    partial void OnSelectedComNameChanged(string value) => App.Settings.SetValue("95xx_COM_Name", value);
+    [ObservableProperty][property: JsonProperty] private string selectedComName;
 
     public Verifier()
     {
