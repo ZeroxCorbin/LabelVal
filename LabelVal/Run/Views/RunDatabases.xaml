@@ -139,7 +139,7 @@
                                             </TextBlock.Style>
                                         </TextBlock>
 
-                                        <TextBlock Text="{Binding GradingStandard, Converter={StaticResource GS1TableNamesConverter}, StringFormat={}Table {0}}"
+                                        <TextBlock Text="{Binding Gs1TableName, Converter={StaticResource GS1TableNamesConverter}, StringFormat={}Table {0}}"
                                                                    Margin="10,3">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock" BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}">

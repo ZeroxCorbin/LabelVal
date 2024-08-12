@@ -160,16 +160,17 @@
                 </Button>
 
                 <!--L95xx Select-->
-                <ToggleButton IsChecked="{Binding IsL95xxSelected}" Width="48" 
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                            Background="{DynamicResource OrangeBrush0}">
+                <ToggleButton IsChecked="{Binding IsL95xxSelected}" Width="48" BorderBrush="{DynamicResource OrangeBrush0}"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
                     <ToggleButton.Style>
-                        <Style TargetType="ToggleButton" BasedOn="{StaticResource MaterialDesignActionToggleButton}">
+                        <Style TargetType="ToggleButton" BasedOn="{StaticResource MahApps.Styles.ToggleButton}">
                             <Setter Property="Visibility" Value="Collapsed"/>
                             <Setter Property="ToolTip" Value=""/>
+                            <Setter Property="Background" Value="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"/>
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsL95xxSelected}" Value="True">
                                     <Setter Property="ToolTip" Value="L95xx Data is redirected here."/>
+                                    <Setter Property="Background" Value="{DynamicResource OrangeBrush0}"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding ImageResults.SelectedVerifier.IsConnected}" Value="True">
                                     <Setter Property="Visibility" Value="Visible"/>
@@ -180,7 +181,7 @@
                     </ToggleButton.Style>
 
                     <md:ToggleButtonAssist.OnContent>
-                        <Grid>
+                        <Grid Background="{DynamicResource OrangeBrush0}">
                             <Image Source="/Assets/Images/l95xx-white-outline.ico"/>
                         </Grid>
                     </md:ToggleButtonAssist.OnContent>

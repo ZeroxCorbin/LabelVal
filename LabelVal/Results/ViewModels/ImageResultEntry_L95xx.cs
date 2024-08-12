@@ -165,7 +165,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
         //return true;
     }
     public void UpdateL95xxStoredImageOverlay() => L95xxStoredImageOverlay = CreateSectorsImageOverlay(L95xxStoredImage, L95xxStoredSectors);
-    public void UpdateL95xxCurrentImageOverlay() => L95xxStoredImageOverlay = CreateSectorsImageOverlay(L95xxCurrentImage, L95xxCurrentSectors);
+    public void UpdateL95xxCurrentImageOverlay() => L95xxCurrentImageOverlay = CreateSectorsImageOverlay(L95xxCurrentImage, L95xxCurrentSectors);
 
     private void L95xxGetSectorDiff()
     {
