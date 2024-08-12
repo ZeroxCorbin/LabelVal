@@ -18,28 +18,72 @@ public partial class ImageResultEntry_V275 : UserControl
 
     private void btnCloseDetails_Click(object sender, RoutedEventArgs e)
     {
+        var ire = (ViewModels.ImageResultEntry)DataContext;
+
         if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
         {
-            ((ViewModels.ImageResultEntry)DataContext).V275FocusedStoredSector = null;
-            ((ViewModels.ImageResultEntry)DataContext).V275FocusedCurrentSector = null;
-            ((ViewModels.ImageResultEntry)DataContext).V5FocusedStoredSector = null;
-            ((ViewModels.ImageResultEntry)DataContext).V5FocusedCurrentSector = null;
-            ((ViewModels.ImageResultEntry)DataContext).L95xxFocusedStoredSector = null;
-            ((ViewModels.ImageResultEntry)DataContext).L95xxFocusedCurrentSector = null;
+            if (ire.V275FocusedStoredSector != null)
+            {
+                ire.V275FocusedStoredSector.IsFocused = false;
+                ire.V275FocusedStoredSector = null;
+                App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV275StoredImageOverlay());
+            }
+            if (ire.V275FocusedCurrentSector != null)
+            {
+                ire.V275FocusedCurrentSector.IsFocused = false;
+                ire.V275FocusedCurrentSector = null;
+                App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV275CurrentImageOverlay());
+            }
+            if (ire.V5FocusedStoredSector != null)
+            {
+                ire.V5FocusedStoredSector.IsFocused = false;
+                ire.V5FocusedStoredSector = null;
+                App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV5StoredImageOverlay());
+            }
+            if (ire.V5FocusedCurrentSector != null)
+            {
+                ire.V5FocusedCurrentSector.IsFocused = false;
+                ire.V5FocusedCurrentSector = null;
+                App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV5CurrentImageOverlay());
+            }
+            if (ire.L95xxFocusedStoredSector != null)
+            {
+                ire.L95xxFocusedStoredSector.IsFocused = false;
+                ire.L95xxFocusedStoredSector = null;
+                App.Current.Dispatcher.BeginInvoke(() => ire.UpdateL95xxStoredImageOverlay());
+            }
+            if (ire.L95xxFocusedCurrentSector != null)
+            {
+                ire.L95xxFocusedCurrentSector.IsFocused = false;
+                ire.L95xxFocusedCurrentSector = null;
+                App.Current.Dispatcher.BeginInvoke(() => ire.UpdateL95xxCurrentImageOverlay());
+            }
         }
         else
         {
             switch ((string)((Button)sender).Tag)
             {
                 case "v275Stored":
-                    ((ViewModels.ImageResultEntry)DataContext).V275FocusedStoredSector = null;
+                    if (ire.V275FocusedStoredSector != null)
+                    {
+                        ire.V275FocusedStoredSector.IsFocused = false;
+                        ire.V275FocusedStoredSector = null;
+                        App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV275StoredImageOverlay());
+                    }
                     break;
                 case "v275Current":
-                    ((ViewModels.ImageResultEntry)DataContext).V275FocusedCurrentSector = null;
-                    ((ViewModels.ImageResultEntry)DataContext).V275FocusedStoredSector = null;
-                    break;
-                case "l95xxStored":
-                    ((ViewModels.ImageResultEntry)DataContext).L95xxFocusedStoredSector = null;
+                    if (ire.V275FocusedStoredSector != null)
+                    {
+                        ire.V275FocusedStoredSector.IsFocused = false;
+                        ire.V275FocusedStoredSector = null;
+                        App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV275StoredImageOverlay());
+                    }
+                    if (ire.V275FocusedCurrentSector != null)
+                    {
+                        ire.V275FocusedCurrentSector.IsFocused = false;
+                        ire.V275FocusedCurrentSector = null;
+                        App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV275CurrentImageOverlay());
+                    }
                     break;
             }
         }
@@ -241,7 +285,7 @@ public partial class ImageResultEntry_V275 : UserControl
         if (sender is Sector sectorView)
         {
             if (sectorView.DataContext is Sectors.Interfaces.ISector sector)
-                sector.IsFocused = true;
+                sector.IsMouseOver = true;
 
             if (this.DataContext is ViewModels.ImageResultEntry ire)
                 App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV275CurrentImageOverlay());
@@ -252,7 +296,7 @@ public partial class ImageResultEntry_V275 : UserControl
         if (sender is Sector sectorView)
         {
             if (sectorView.DataContext is Sectors.Interfaces.ISector sector)
-                sector.IsFocused = false;
+                sector.IsMouseOver = false;
 
             if (this.DataContext is ViewModels.ImageResultEntry ire)
                 App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV275CurrentImageOverlay());
@@ -263,7 +307,7 @@ public partial class ImageResultEntry_V275 : UserControl
         if (sender is Sector sectorView)
         {
             if (sectorView.DataContext is Sectors.Interfaces.ISector sector)
-                sector.IsFocused = true;
+                sector.IsMouseOver = true;
 
             if (this.DataContext is ViewModels.ImageResultEntry ire)
                 App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV275StoredImageOverlay());
@@ -274,7 +318,7 @@ public partial class ImageResultEntry_V275 : UserControl
         if (sender is Sector sectorView)
         {
             if (sectorView.DataContext is Sectors.Interfaces.ISector sector)
-                sector.IsFocused = false;
+                sector.IsMouseOver = false;
 
             if (this.DataContext is ViewModels.ImageResultEntry ire)
                 App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV275StoredImageOverlay());

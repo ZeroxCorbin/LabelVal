@@ -78,6 +78,7 @@ public interface ISector
     bool IsWrongStandard { get; }
 
     bool IsFocused { get; set; }
+    bool IsMouseOver { get; set; }
 
     public static bool FallsWithin(ISector sector, System.Drawing.Point point) =>
         point.X >= sector.Template.Left && point.X <= sector.Template.Left + sector.Template.Width &&

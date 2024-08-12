@@ -449,7 +449,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             GeometryDrawing sectorT = new()
             {
                 Geometry = new RectangleGeometry(new Rect(newSec.Template.Left + renderingEmSizeHalf, newSec.Template.Top + renderingEmSizeHalf, newSec.Template.Width - renderingEmSize, newSec.Template.Height - renderingEmSize)),
-                Pen = new Pen(GetGradeBrush(newSec.Report.OverallGradeLetter, (byte)(newSec.IsFocused ? 0xFF : 0x28)), renderingEmSize),
+                Pen = new Pen(GetGradeBrush(newSec.Report.OverallGradeLetter, (byte)(newSec.IsFocused || newSec.IsMouseOver ? 0xFF : 0x28)), renderingEmSize),
             };
             drwGroup.Children.Add(sectorT);
 

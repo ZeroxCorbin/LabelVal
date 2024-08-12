@@ -64,6 +64,7 @@ public class Sector : ISector
     }
 
     public bool IsFocused { get; set; }
+    public bool IsMouseOver { get; set; }
 
     public Sector(V275_REST_lib.Models.Job.Sector sector, object report, StandardsTypes standard, GS1TableNames table)
     {

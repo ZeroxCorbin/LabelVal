@@ -42,7 +42,6 @@ public partial class Sector : UserControl
 
         GetSecotorDetails();
     }
-
     private void GetSecotorDetails()
     {
         var list = Utilities.VisualTreeHelp.GetVisualParent<ListView>(this);
@@ -75,143 +74,6 @@ public partial class Sector : UserControl
         else
             ShowSectorDetails();
     }
-
-    public void ShowSectorDetails()
-    {
-        if (ImageResultEntry == null)
-            return;
-
-        //This lets us know which sector is being focused on
-        switch (GroupName)
-        {
-            case "v275Stored":
-                ImageResultEntry.V275FocusedStoredSector = (ISector)this.DataContext;
-                break;
-            case "v275Current":
-                ImageResultEntry.V275FocusedCurrentSector = (ISector)this.DataContext;
-                ShowSameNameSector("v275Stored");
-                break;
-            case "v5Stored":
-                ImageResultEntry.V5FocusedStoredSector = (ISector)this.DataContext;
-                break;
-            case "v5Current":
-                ImageResultEntry.V5FocusedCurrentSector = (ISector)this.DataContext;
-                ShowSameNameSector("v5Stored");
-                break;
-            case "l95xxStored":
-                ImageResultEntry.L95xxFocusedStoredSector = (ISector)this.DataContext;
-                break;
-            case "l95xxCurrent":
-                ImageResultEntry.L95xxFocusedCurrentSector = (ISector)this.DataContext;
-                ShowSameNameSector("l95xxStored");
-                break;
-        }
-    }
-
-    public void HideSectorDetails()
-    {
-        if (ImageResultEntry == null)
-            return;
-
-        switch (GroupName)
-        {
-            case "v275Stored":
-                ImageResultEntry.V275FocusedStoredSector = null;
-                break;
-            case "v275Current":
-                ImageResultEntry.V275FocusedCurrentSector = null;
-                HideSameNameSector("v275Stored");
-                break;
-            case "v5Stored":
-                ImageResultEntry.V5FocusedStoredSector = null;
-                break;
-            case "v5Current":
-                ImageResultEntry.V5FocusedCurrentSector = null;
-                HideSameNameSector("v5Stored");
-                break;
-            case "l95xxStored":
-                ImageResultEntry.L95xxFocusedStoredSector = null;
-                break;
-            case "l95xxCurrent":
-                ImageResultEntry.L95xxFocusedCurrentSector = null;
-                HideSameNameSector("l95xxStored");
-                break;
-        }
-    }
-
-    private void ShowSameNameSector(string targetGroup)
-    {
-        Collection<Sector> sectors = null;
-
-        if (targetGroup.StartsWith("v275"))
-        {
-            var ire = Utilities.VisualTreeHelp.GetVisualParent<ImageResultEntry_V275>(this);
-            if (ire != null)
-                sectors = Utilities.VisualTreeHelp.GetVisualChildren<Sector>(ire);
-
-        }
-        else if (targetGroup.StartsWith("v5"))
-        {
-            var ire = Utilities.VisualTreeHelp.GetVisualParent<ImageResultEntry_V5>(this);
-            if (ire != null)
-                sectors = Utilities.VisualTreeHelp.GetVisualChildren<Sector>(ire);
-
-        }
-        else if (targetGroup.StartsWith("l95"))
-        {
-            var ire = Utilities.VisualTreeHelp.GetVisualParent<ImageResultEntry_L95xx>(this);
-            if (ire != null)
-                sectors = Utilities.VisualTreeHelp.GetVisualChildren<Sector>(ire);
-
-        }
-
-        if(sectors != null)
-            foreach (var s in sectors)
-            {
-                if (s.GroupName == targetGroup && s.SectorName == SectorName)
-                {
-                    if (!s.IsSectorFocused)
-                        s.ShowSectorDetails();
-                    break;
-                }
-            }
-    }
-
-
-    private void HideSameNameSector(string targetGroup)
-    {
-        Collection<Sector> sectors = null;
-
-        if (targetGroup.StartsWith("v275"))
-        {
-            var ire = Utilities.VisualTreeHelp.GetVisualParent<ImageResultEntry_V275>(this);
-            if (ire != null)
-                sectors = Utilities.VisualTreeHelp.GetVisualChildren<Sector>(ire);
-        }
-        else if (targetGroup.StartsWith("v5"))
-        {
-            var ire = Utilities.VisualTreeHelp.GetVisualParent<ImageResultEntry_V5>(this);
-            if (ire != null)
-                sectors = Utilities.VisualTreeHelp.GetVisualChildren<Sector>(ire);
-        }
-        else if (targetGroup.StartsWith("l95"))
-        {
-            var ire = Utilities.VisualTreeHelp.GetVisualParent<ImageResultEntry_L95xx>(this);
-            if (ire != null)
-                sectors = Utilities.VisualTreeHelp.GetVisualChildren<Sector>(ire);
-        }
-
-        foreach (var s in sectors)
-        {
-            if (s.GroupName == targetGroup && s.SectorName == SectorName)
-            {
-                if (!s.IsSectorFocused)
-                    s.HideSectorDetails();
-                break;
-            }
-        }
-    }
-
     private void ShowAllLikeSectors()
     {
         var ire = Utilities.VisualTreeHelp.GetVisualParent<ImageResultEntry>(this);
@@ -222,13 +84,166 @@ public partial class Sector : UserControl
             {
                 var vm = (ISector)s.DataContext;
 
-                if(ISector.FallsWithin(ThisSector, vm.Template.CenterPoint))
-                //if (LibStaticUtilities.PositionMovement.IsPointWithinCircumference(SectorCenterPoint, 30, vm.Template.CenterPoint))
-                {
+                if (ISector.FallsWithin(ThisSector, vm.Template.CenterPoint))
                     s.ShowSectorDetails();
-                }
             }
         }
     }
+
+    public void ShowSectorDetails()
+    {
+        if (ImageResultEntry == null)
+            return;
+
+        ((ISector)this.DataContext).IsFocused = true;
+
+        //This lets us know which sector is being focused on
+        switch (GroupName)
+        {
+            case "v275Stored":
+                ImageResultEntry.V275FocusedStoredSector = (ISector)this.DataContext;
+                App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.ImageResultEntry)ImageResultEntry).UpdateV275StoredImageOverlay());
+                break;
+            case "v275Current":
+                ImageResultEntry.V275FocusedCurrentSector = (ISector)this.DataContext;
+                App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.ImageResultEntry)ImageResultEntry).UpdateV275CurrentImageOverlay());
+                //ShowSameNameSector("v275Stored");
+                break;
+            case "v5Stored":
+                ImageResultEntry.V5FocusedStoredSector = (ISector)this.DataContext;
+                App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.ImageResultEntry)ImageResultEntry).UpdateV5StoredImageOverlay());
+                break;
+            case "v5Current":
+                ImageResultEntry.V5FocusedCurrentSector = (ISector)this.DataContext;
+                App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.ImageResultEntry)ImageResultEntry).UpdateV5CurrentImageOverlay());
+                //ShowSameNameSector("v5Stored");
+                break;
+            case "l95xxStored":
+                ImageResultEntry.L95xxFocusedStoredSector = (ISector)this.DataContext;
+                App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.ImageResultEntry)ImageResultEntry).UpdateL95xxStoredImageOverlay());
+                break;
+            case "l95xxCurrent":
+                ImageResultEntry.L95xxFocusedCurrentSector = (ISector)this.DataContext;
+                App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.ImageResultEntry)ImageResultEntry).UpdateL95xxCurrentImageOverlay());
+                //ShowSameNameSector("l95xxStored");
+                break;
+        }
+
+
+    }
+
+    //public void HideSectorDetails()
+    //{
+    //    if (ImageResultEntry == null)
+    //        return;
+
+    //    ((ISector)this.DataContext).IsFocused = false;
+
+    //    switch (GroupName)
+    //    {
+    //        case "v275Stored":
+    //            ImageResultEntry.V275FocusedStoredSector = null;
+    //            App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.ImageResultEntry)ImageResultEntry).UpdateV275StoredImageOverlay());
+    //            break;
+    //        case "v275Current":
+    //            ImageResultEntry.V275FocusedCurrentSector = null;
+    //            App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.ImageResultEntry)ImageResultEntry).UpdateV275CurrentImageOverlay());
+    //            //HideSameNameSector("v275Stored");
+    //            break;
+    //        case "v5Stored":
+    //            ImageResultEntry.V5FocusedStoredSector = null;
+    //            App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.ImageResultEntry)ImageResultEntry).UpdateV5StoredImageOverlay());
+    //            break;
+    //        case "v5Current":
+    //            ImageResultEntry.V5FocusedCurrentSector = null;
+    //            App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.ImageResultEntry)ImageResultEntry).UpdateV5CurrentImageOverlay());
+    //            //HideSameNameSector("v5Stored");
+    //            break;
+    //        case "l95xxStored":
+    //            ImageResultEntry.L95xxFocusedStoredSector = null;
+    //            App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.ImageResultEntry)ImageResultEntry).UpdateL95xxStoredImageOverlay());
+    //            break;
+    //        case "l95xxCurrent":
+    //            ImageResultEntry.L95xxFocusedCurrentSector = null;
+    //            App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.ImageResultEntry)ImageResultEntry).UpdateL95xxCurrentImageOverlay());
+    //            //HideSameNameSector("l95xxStored");
+    //            break;
+    //    }
+    //}
+
+    //private void ShowSameNameSector(string targetGroup)
+    //{
+    //    Collection<Sector> sectors = null;
+
+    //    if (targetGroup.StartsWith("v275"))
+    //    {
+    //        var ire = Utilities.VisualTreeHelp.GetVisualParent<ImageResultEntry_V275>(this);
+    //        if (ire != null)
+    //            sectors = Utilities.VisualTreeHelp.GetVisualChildren<Sector>(ire);
+
+    //    }
+    //    else if (targetGroup.StartsWith("v5"))
+    //    {
+    //        var ire = Utilities.VisualTreeHelp.GetVisualParent<ImageResultEntry_V5>(this);
+    //        if (ire != null)
+    //            sectors = Utilities.VisualTreeHelp.GetVisualChildren<Sector>(ire);
+
+    //    }
+    //    else if (targetGroup.StartsWith("l95"))
+    //    {
+    //        var ire = Utilities.VisualTreeHelp.GetVisualParent<ImageResultEntry_L95xx>(this);
+    //        if (ire != null)
+    //            sectors = Utilities.VisualTreeHelp.GetVisualChildren<Sector>(ire);
+
+    //    }
+
+    //    if(sectors != null)
+    //        foreach (var s in sectors)
+    //        {
+    //            if (s.GroupName == targetGroup && s.SectorName == SectorName)
+    //            {
+    //                if (!s.IsSectorFocused)
+    //                    s.ShowSectorDetails();
+    //                break;
+    //            }
+    //        }
+    //}
+
+
+    //private void HideSameNameSector(string targetGroup)
+    //{
+    //    Collection<Sector> sectors = null;
+
+    //    if (targetGroup.StartsWith("v275"))
+    //    {
+    //        var ire = Utilities.VisualTreeHelp.GetVisualParent<ImageResultEntry_V275>(this);
+    //        if (ire != null)
+    //            sectors = Utilities.VisualTreeHelp.GetVisualChildren<Sector>(ire);
+    //    }
+    //    else if (targetGroup.StartsWith("v5"))
+    //    {
+    //        var ire = Utilities.VisualTreeHelp.GetVisualParent<ImageResultEntry_V5>(this);
+    //        if (ire != null)
+    //            sectors = Utilities.VisualTreeHelp.GetVisualChildren<Sector>(ire);
+    //    }
+    //    else if (targetGroup.StartsWith("l95"))
+    //    {
+    //        var ire = Utilities.VisualTreeHelp.GetVisualParent<ImageResultEntry_L95xx>(this);
+    //        if (ire != null)
+    //            sectors = Utilities.VisualTreeHelp.GetVisualChildren<Sector>(ire);
+    //    }
+
+    //    foreach (var s in sectors)
+    //    {
+    //        if (s.GroupName == targetGroup && s.SectorName == SectorName)
+    //        {
+    //            if (!s.IsSectorFocused)
+    //                s.HideSectorDetails();
+    //            break;
+    //        }
+    //    }
+    //}
+
+
 
 }
