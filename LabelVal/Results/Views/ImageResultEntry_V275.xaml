@@ -223,26 +223,20 @@
                                         <WrapPanel Orientation="Horizontal">
                                             <WrapPanel.Style>
                                                 <Style TargetType="WrapPanel">
-
                                                     <Setter Property="ItemWidth" Value="200"/>
-
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="400">
                                                             <Setter Property="MaxWidth" Value="400"/>
                                                         </DataTrigger>
-
                                                         <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="300">
                                                             <Setter Property="MaxWidth" Value="400"/>
                                                         </DataTrigger>
-
                                                         <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="200">
                                                             <Setter Property="MaxWidth" Value="200"/>
                                                         </DataTrigger>
-
                                                         <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="100">
                                                             <Setter Property="MaxWidth" Value="200"/>
                                                         </DataTrigger>
-
                                                         <DataTrigger Binding="{Binding DualSectorColumns}" Value="True">
                                                             <Setter Property="MaxWidth" Value="400"/>
                                                         </DataTrigger>
@@ -513,11 +507,9 @@
 
                         <Grid >
 
-                            <ItemsControl Padding="0,2,0,0" ItemsSource="{Binding V275CurrentSectors}" 
-                                       Tag="v275Current"
-                                      Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
-                                <ItemsControl.Style>
-                                    <Style TargetType="ItemsControl">
+                            <ListBox Padding="0,1,0,0" ItemsSource="{Binding V275CurrentSectors}" Tag="v275Current">
+                                <ListBox.Style>
+                                    <Style TargetType="ListBox" BasedOn="{StaticResource MahApps.Styles.ListBox}">
                                         <Setter Property="Visibility" Value="Visible"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding V275FocusedCurrentSector, Converter={StaticResource objectIsNull}}" Value="False">
@@ -525,9 +517,16 @@
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
-                                </ItemsControl.Style>
+                                </ListBox.Style>
 
-                                <ItemsControl.ItemsPanel>
+                                <ListBox.ItemContainerStyle>
+                                    <Style TargetType="ListBoxItem" BasedOn="{StaticResource MahApps.Styles.ListBoxItem}">
+                                        <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+                                        <Setter Property="Padding" Value="2"/>
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
+
+                                <ListBox.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <WrapPanel Orientation="Horizontal">
                                             <WrapPanel.Style>
@@ -558,16 +557,16 @@
                                             </WrapPanel.Style>
                                         </WrapPanel>
                                     </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
+                                </ListBox.ItemsPanel>
 
-                                <ItemsControl.ItemTemplate>
+                                <ListBox.ItemTemplate>
                                     <DataTemplate>
-                                        <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="2,1"
+                                        <sectors:Sector Background="{DynamicResource AccentColorBrush}"
                                                         MouseEnter="currentSectorMouseEnter"
                                                         MouseLeave="currentSectorMouseLeave"/>
                                     </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
 
                             <DockPanel>
                                 <DockPanel.Style>

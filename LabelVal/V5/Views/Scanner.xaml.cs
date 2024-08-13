@@ -26,7 +26,12 @@ public partial class Scanner : UserControl
         set => SetValue(IsDockedProperty, value);
     }
 
-    public Scanner() => InitializeComponent();
+    public Scanner()
+    {
+        InitializeComponent();
+    }
+
+
 
     private void SourceImage_MouseDown(object sender, MouseButtonEventArgs e)
     {

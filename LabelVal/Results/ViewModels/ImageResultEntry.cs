@@ -170,7 +170,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
     [RelayCommand]
     private void Save(string type)
     {
-        SendTo95xxApplication();
+        //SendTo95xxApplication();
 
         string path = GetSaveFilePath();
         if (string.IsNullOrEmpty(path)) return;
@@ -448,7 +448,11 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
 
             GeometryDrawing sectorT = new()
             {
-                Geometry = new RectangleGeometry(new Rect(newSec.Template.Left + renderingEmSizeHalf, newSec.Template.Top + renderingEmSizeHalf, newSec.Template.Width - renderingEmSize, newSec.Template.Height - renderingEmSize)),
+                Geometry = new RectangleGeometry(new Rect(
+                    newSec.Template.Left + renderingEmSizeHalf,
+                    newSec.Template.Top + renderingEmSizeHalf,
+                    Math.Clamp(newSec.Template.Width - renderingEmSize, 0, double.MaxValue),
+                    Math.Clamp(newSec.Template.Height - renderingEmSize, 0, double.MaxValue))),
                 Pen = new Pen(GetGradeBrush(newSec.Report.OverallGradeLetter, (byte)(newSec.IsFocused || newSec.IsMouseOver ? 0xFF : 0x28)), renderingEmSize),
             };
             drwGroup.Children.Add(sectorT);
@@ -477,7 +481,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
                     Geometry = new RectangleGeometry(new Rect(newSec.Report.Left + 0.5, newSec.Report.Top + 0.5, newSec.Report.Width, newSec.Report.Height)),
                     Pen = new Pen(Brushes.Black, 1)
                 };
-                sector.Geometry.Transform = new RotateTransform(newSec.Report.AngleDeg, newSec.Report.Left + (newSec.Report.Width / 2), newSec.Report.Top + (newSec.Report.Height / 2));
+                //sector.Geometry.Transform = new RotateTransform(newSec.Report.AngleDeg, newSec.Report.Left + (newSec.Report.Width / 2), newSec.Report.Top + (newSec.Report.Height / 2));
                 drwGroup.Children.Add(sector);
 
                 double y = newSec.Report.Top + (newSec.Report.Height / 2);
@@ -737,7 +741,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         "C" => ChangeTransparency((SolidColorBrush)App.Current.Resources["ISO_GradeC_Brush"], trans),
         "D" => ChangeTransparency((SolidColorBrush)App.Current.Resources["ISO_GradeD_Brush"], trans),
         "F" => ChangeTransparency((SolidColorBrush)App.Current.Resources["ISO_GradeF_Brush"], trans),
-        _ => Brushes.Black,
+        _ => ChangeTransparency((SolidColorBrush)App.Current.Resources["CB_Green"], trans),
     };
     private static SolidColorBrush ChangeTransparency(SolidColorBrush original, byte trans) => new(Color.FromArgb(trans, original.Color.R, original.Color.G, original.Color.B));
 

@@ -9,6 +9,18 @@ namespace LabelVal.Sectors.Views;
 
 public partial class Sector : UserControl
 {
+    public static readonly DependencyProperty HideErrorsWarningsProperty =
+                            DependencyProperty.Register(
+                            nameof(HideErrorsWarnings),
+                            typeof(bool),
+                            typeof(Sector),
+                            new FrameworkPropertyMetadata(App.Settings.GetValue<bool>(nameof(HideErrorsWarnings)), FrameworkPropertyMetadataOptions.AffectsMeasure));
+
+    public bool HideErrorsWarnings
+    {
+        get => (bool)GetValue(HideErrorsWarningsProperty);
+        set => SetValue(HideErrorsWarningsProperty, value);
+    }
 
     private ISector ThisSector { get; set; }
     public string SectorName => ThisSector.Template.Username;
@@ -34,6 +46,15 @@ public partial class Sector : UserControl
     public Sector()
     {
         InitializeComponent();
+
+        App.Settings.PropertyChanged += Settings_PropertyChanged;
+    }
+
+    private void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == "HideErrorsWarnings")
+            HideErrorsWarnings = App.Settings.GetValue<bool>(nameof(HideErrorsWarnings));
+
     }
 
     private void UserControl_Loaded(object sender, RoutedEventArgs e)

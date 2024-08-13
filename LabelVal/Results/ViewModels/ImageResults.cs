@@ -4,9 +4,11 @@ using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Logging;
+using LabelVal.LVS_95xx.Sectors;
 using LabelVal.LVS_95xx.ViewModels;
 using LabelVal.Messages;
 using LabelVal.Run.ViewModels;
+using LabelVal.Sectors.Interfaces;
 using LabelVal.Utilities;
 using LabelVal.V275.ViewModels;
 using LabelVal.V5.ViewModels;
@@ -30,7 +32,8 @@ public partial class ImageResults : ObservableRecipient,
     IRecipient<PropertyChangedMessage<Databases.ImageResultsDatabase>>,
     IRecipient<PropertyChangedMessage<Scanner>>,
     IRecipient<PropertyChangedMessage<Verifier>>,
-    IRecipient<PropertyChangedMessage<PrinterSettings>>
+    IRecipient<PropertyChangedMessage<PrinterSettings>>,
+    IRecipient<PropertyChangedMessage<LabelVal.LVS_95xx.Models.FullReport>>
 {
     private class V275Repeat
     {
@@ -48,6 +51,9 @@ public partial class ImageResults : ObservableRecipient,
 
     [ObservableProperty] private bool showExtendedData = App.Settings.GetValue(nameof(ShowExtendedData), true, true);
     partial void OnShowExtendedDataChanged(bool value) => App.Settings.SetValue(nameof(ShowExtendedData), value);
+
+    [ObservableProperty] private bool hideErrorsWarnings = App.Settings.GetValue(nameof(HideErrorsWarnings), false, true);
+    partial void OnHideErrorsWarningsChanged(bool value) => App.Settings.SetValue(nameof(HideErrorsWarnings), value);
 
     public ObservableCollection<ImageResultEntry> ImageResultsList { get; } = [];
 
@@ -72,6 +78,20 @@ public partial class ImageResults : ObservableRecipient,
         }
         else
             Application.Current.Dispatcher.Invoke(ClearImageResultsList);
+    }
+
+    [ObservableProperty] bool isL95xxSelected;
+    partial void OnIsL95xxSelectedChanging(bool value) => ResetL95xxSelected();
+    private bool reseting;
+    public bool ResetL95xxSelected()
+    {
+        if (reseting) return false;
+
+        reseting = true;
+        foreach (ImageResultEntry lab in ImageResultsList)
+            lab.IsL95xxSelected = false;
+
+        return reseting = false;
     }
 
     private Dictionary<int, V275Repeat> TempV275Repeat { get; } = [];
@@ -161,8 +181,13 @@ public partial class ImageResults : ObservableRecipient,
         ImageResultEntry tmp = new(img, this);
         tmp.V275ProcessImage += V275ProcessImage;
 
-        if (img.IsNew)
+        if (img.NewType == "V5")
             tmp.V5ProcessCommand.Execute("sensor");
+
+        if (img.NewType == "L95xx")
+            tmp.L95xxProcess(newMessage);
+
+        newMessage = null;
 
         ImageResultsList.Add(tmp);
     }
@@ -174,6 +199,8 @@ public partial class ImageResults : ObservableRecipient,
             itm.V275ProcessImage -= V275ProcessImage;
             //img.DeleteImage -= DeleteImage;
             ImageResultsList.Remove(itm);
+
+            SelectedImageRoll.ImageRollsDatabase.DeleteImage(img.UID);
         }
 
         // Reorder the remaining items in the list
@@ -188,7 +215,7 @@ public partial class ImageResults : ObservableRecipient,
     [RelayCommand]
     public void DeleteImage(ImageResultEntry imageToDelete) =>
         // Remove the specified image from the list
-        SelectedImageRoll.DeleteImage(imageToDelete.SourceImage);
+        SelectedImageRoll.Images.Remove(imageToDelete.SourceImage);
 
     [RelayCommand] private void MoveImageTop(ImageResultEntry imageResult) => ChangeOrderTo(imageResult, 1);
     [RelayCommand] private void MoveImageUp(ImageResultEntry imageResult) => AdjustOrderForMove(imageResult, false);
@@ -201,7 +228,7 @@ public partial class ImageResults : ObservableRecipient,
         byte[] bees = BitmapImageUtilities.ImageToBytes(BitmapImageUtilities.CreateRandomBitmapImage(50, 50));
         ImageEntry imagEntry = SelectedImageRoll.GetNewImageEntry(bees);
         imagEntry.IsPlaceholder = true;
-        imagEntry.IsNew = true;
+        imagEntry.NewType = "V5";
 
         SelectedImageRoll.AddImage(imagEntry);
     }
@@ -232,6 +259,56 @@ public partial class ImageResults : ObservableRecipient,
         List<ImageResultEntry> newImages = PromptForNewImages(); // Prompt the user to select multiple images
         if (newImages != null && newImages.Count != 0)
             InsertImageAtOrder(newImages, ImageResultsList.Count + 1);
+    }
+
+    LabelVal.LVS_95xx.Models.FullReport newMessage;
+    private void L95xxProcess(LabelVal.LVS_95xx.Models.FullReport message)
+    {
+        if (message == null || message.Report == null)
+            return;
+
+        if (message.Report.OverallGrade.StartsWith("Bar"))
+            return;
+
+        message.Name = "Verify_1";
+        newMessage = message;
+
+       // byte[] bees = BitmapImageUtilities.ImageToBytes(BitmapImageUtilities.CreateRandomBitmapImage(50, 50));
+        ImageEntry imagEntry = SelectedImageRoll.GetNewImageEntry(message.Report.Thumbnail);
+        imagEntry.NewType = "L95xx";
+
+        SelectedImageRoll.AddImage(imagEntry);
+
+        //L95xxCurrentSectors.Add(new Sector(message, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
+        //List<ISector> secs = L95xxCurrentSectors.ToList();
+        //SortList(secs);
+        //SortObservableCollectionByList(secs, L95xxCurrentSectors);
+
+
+        //L95xxCurrentImage = new ImageEntry(ImageRollUID, message.Report.Thumbnail, 600);
+        //UpdateL95xxCurrentImageOverlay();
+        //V5CurrentTemplate = config;
+        //V5CurrentReport = JsonConvert.DeserializeObject<V5_REST_Lib.Models.ResultsAlt>(triggerResults.ReportJSON);
+
+        //V5CurrentSectors.Clear();
+
+        //List<Sectors.Interfaces.ISector> tempSectors = [];
+        //foreach (ResultsAlt.Decodedata rSec in V5CurrentReport._event.data.decodeData)
+        //    tempSectors.Add(new V5.Sectors.Sector(rSec, V5CurrentTemplate.response.data.job.toolList[rSec.toolSlot - 1], $"DecodeTool{rSec.toolSlot.ToString()}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
+
+        //if (tempSectors.Count > 0)
+        //{
+        //    SortList(tempSectors);
+
+        //    foreach (Sectors.Interfaces.ISector sec in tempSectors)
+        //        V5CurrentSectors.Add(sec);
+        //}
+
+        //V5GetSectorDiff();
+
+        //V5CurrentImageOverlay = CreateSectorsImageOverlay(V5CurrentImage, V5CurrentSectors);
+
+        //return true;
     }
 
     private ImageResultEntry PromptForNewImage()
@@ -793,6 +870,11 @@ public partial class ImageResults : ObservableRecipient,
         }
     }
     public void Receive(PropertyChangedMessage<Verifier> message) => SelectedVerifier = message.NewValue;
+    public void Receive(PropertyChangedMessage<LabelVal.LVS_95xx.Models.FullReport> message)
+    {
+        if (IsL95xxSelected)
+            App.Current.Dispatcher.BeginInvoke(() => L95xxProcess(message.NewValue));
+    }
     #endregion
 
     #region Dialogs

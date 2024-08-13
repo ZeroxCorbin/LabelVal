@@ -27,7 +27,7 @@ public partial class ImageEntry : ObservableRecipient
 
     [ObservableProperty][property: JsonProperty] private int order = -1;
     [JsonProperty] public bool IsPlaceholder { get; set; }
-    [property: SQLite.Ignore] public bool IsNew { get; set; }
+    [property: SQLite.Ignore] public string NewType { get; set; }
 
     [JsonProperty] public string Path { get; set; }
     [JsonProperty] public string Comment { get; set; }
@@ -35,7 +35,7 @@ public partial class ImageEntry : ObservableRecipient
     [property: SQLite.Ignore] public BitmapImage Image { get; private set; }
     [property: SQLite.Ignore] public BitmapImage ImageLow { get; private set; }
 
-    [JsonProperty][SQLite.PrimaryKey][SQLite.Unique] public string UID { get; set; }
+    [JsonProperty][SQLite.PrimaryKey] public string UID { get; set; }
     [JsonProperty] public string RollUID { get; set; }
 
     [JsonProperty]
@@ -47,7 +47,7 @@ public partial class ImageEntry : ObservableRecipient
             Image = BitmapImageUtilities.CreateBitmapImage(value);
             ImageLow = BitmapImageUtilities.CreateBitmapImage(value, 400);
 
-            UID = BitmapImageUtilities.ImageUID(Image);
+            //UID = BitmapImageUtilities.ImageUID(Image);
         }
     }
 

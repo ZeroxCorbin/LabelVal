@@ -48,13 +48,12 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
     public bool IsNotL95xxFaulted => !IsL95xxFaulted;
 
     [ObservableProperty] private bool isL95xxSelected = false;
+    partial void OnIsL95xxSelectedChanging(bool value) => ImageResults.IsL95xxSelected = ImageResults.IsL95xxSelected ? false : ImageResults.ResetL95xxSelected();
 
     public void Receive(PropertyChangedMessage<LabelVal.LVS_95xx.Models.FullReport> message)
     {
         if (IsL95xxSelected)
             App.Current.Dispatcher.BeginInvoke(() => L95xxProcess(message.NewValue));
-
-        
     }
 
     public static void SortObservableCollectionByList(List<ISector> list, ObservableCollection<ISector> observableCollection)
@@ -102,7 +101,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
         UpdateL95xxStoredImageOverlay();
     }
 
-    private void L95xxProcess(LabelVal.LVS_95xx.Models.FullReport message)
+    public void L95xxProcess(LabelVal.LVS_95xx.Models.FullReport message)
     {
         if(message == null || message.Report == null)
             return;

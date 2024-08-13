@@ -337,6 +337,9 @@
                             <DataTrigger Value="0" Binding="{Binding SectorDifferences.Alarms.Count, Mode=OneTime}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
                             </DataTrigger>
+                            <DataTrigger Value="True" Binding="{Binding HideErrorsWarnings, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
                             <DataTrigger Value="True" Binding="{Binding IsError, Mode=OneTime}">
                                 <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}"/>
                             </DataTrigger>

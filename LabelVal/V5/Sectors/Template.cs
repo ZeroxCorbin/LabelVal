@@ -35,10 +35,24 @@ public class Template : ITemplate
         Username = name;
 
         // Update the properties
-        Left = toolList.SymbologyTool.regionList[0].Region.shape.RectShape.x;
-        Top = toolList.SymbologyTool.regionList[0].Region.shape.RectShape.y;
-        Width = toolList.SymbologyTool.regionList[0].Region.shape.RectShape.width;
-        Height = toolList.SymbologyTool.regionList[0].Region.shape.RectShape.height;
+        if(toolList.SymbologyTool.regionList.Length > 0 && toolList.SymbologyTool.regionList[0].Region.shape.type == "RectShape")
+        {
+            Left = toolList.SymbologyTool.regionList[0].Region.shape.RectShape.x;
+            Top = toolList.SymbologyTool.regionList[0].Region.shape.RectShape.y;
+            Width = toolList.SymbologyTool.regionList[0].Region.shape.RectShape.width;
+            Height = toolList.SymbologyTool.regionList[0].Region.shape.RectShape.height;
+        }
+        else
+        {
+            if (report.region != null)
+            {
+                Left = report.region.xOffset;
+                Top = report.region.yOffset;
+                Width = report.region.width;
+                Height = report.region.height;
+            }
+        }
+
         AngleDeg = 0;
 
         CenterPoint = new System.Drawing.Point(report.x, report.y);

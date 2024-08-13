@@ -36,7 +36,7 @@
 
                 <DockPanel>
 
-                    <DockPanel Width="48" Height="48">
+                    <DockPanel Width="48" Height="48" Margin="0,0,2,0">
                         <iconPacks:PackIconMaterial Width="36" Height="36" Kind="ImageMultiple" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                     </DockPanel>
 
@@ -89,52 +89,80 @@
 
                         <DockPanel HorizontalAlignment="Left">
 
-                            <Button Command="{Binding AddImageTopCommand}" Width="42"
-                                    Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                            <Button Command="{Binding AddImageTopCommand}" Width="48"
                                     ToolTip="Add Image(s)"
                                     Content="{iconPacks:Material Kind=Image, Width=24, Height=24}"
-                                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
+                                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SelectedImageRoll.IsLocked}" Value="False">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
 
-                            <Button Command="{Binding AddV5ImageCommand}" Width="42" Height="42"
+                            <Button Command="{Binding AddV5ImageCommand}" Width="48" Height="42"
                                     Background="{DynamicResource OrangeBrush1}" BorderBrush="{DynamicResource OrangeBrush1}"
                                     ToolTipService.ShowOnDisabled="True"
                                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
-                                <Grid>
-
-                                    <Image Width="24" Height="24" Source="/Assets/Images/v5-white-outline.ico" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                </Grid>
-                                
+                                <Image Width="24" Height="24" Source="/Assets/Images/v5-white-outline.ico" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                  
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.MetroSquare}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
-                                        <Setter Property="ToolTip" Value="V5: Trigger"/>
                                         <Style.Triggers>
                                             <MultiDataTrigger>
                                                 <MultiDataTrigger.Conditions>
                                                     <Condition Binding="{Binding SelectedScanner.IsConnected}" Value="True"/>
                                                     <Condition Binding="{Binding SelectedScanner.IsSimulator}" Value="False"/>
+                                                    <Condition Binding="{Binding SelectedImageRoll.IsLocked}" Value="False"/>
                                                 </MultiDataTrigger.Conditions>
 
                                                 <Setter Property="Visibility" Value="Visible"/>
                                             </MultiDataTrigger>
-
-                                            <DataTrigger Binding="{Binding SelectedScanner.IsConnected}" Value="False">
-                                                <Setter Property="ToolTip" Value="Scanner not connected"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding SelectedScanner.IsSimulator}" Value="True">
-                                                <Setter Property="ToolTip" Value="Camera not set to Sensor."/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
-                                                <Setter Property="ToolTip" Value="The Results Database is locked."/>
-                                            </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
                                 </Button.Style>
-
                             </Button>
 
                         </DockPanel>
+
+                        <ToggleButton IsChecked="{Binding IsL95xxSelected}" Width="48" BorderBrush="{DynamicResource OrangeBrush0}"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+                            <ToggleButton.Style>
+                                <Style TargetType="ToggleButton" BasedOn="{StaticResource MahApps.Styles.ToggleButton}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Setter Property="ToolTip" Value=""/>
+                                    <Setter Property="Background" Value="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsL95xxSelected}" Value="True">
+                                            <Setter Property="ToolTip" Value="L95xx Data is redirected here."/>
+                                            <Setter Property="Background" Value="{DynamicResource OrangeBrush0}"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding SelectedVerifier.IsConnected}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+
+                                </Style>
+                            </ToggleButton.Style>
+
+                            <md:ToggleButtonAssist.OnContent>
+                                <Grid Background="{DynamicResource OrangeBrush0}">
+                                    <Image Source="/Assets/Images/l95xx-white-outline.ico"/>
+                                </Grid>
+                            </md:ToggleButtonAssist.OnContent>
+
+                            <Grid>
+                                <Image Source="/Assets/Images/l95xx-white-outline.ico" />
+                            </Grid>
+
+                        </ToggleButton>
 
                         <Border Style="{StaticResource imageBar}" Margin="0,0,9,0"/>
 
@@ -171,6 +199,30 @@
 
                         </DockPanel>
 
+                        <ToggleButton IsChecked="{Binding HideErrorsWarnings}" Width="48" 
+                                      Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                      Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}">
+                            <ToggleButton.Style>
+                                <Style TargetType="ToggleButton" BasedOn="{StaticResource MaterialDesignActionToggleButton}">
+                                    <Setter Property="ToolTip" Value="Hiding 2D grid data."/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding HideErrorsWarnings}" Value="True">
+                                            <Setter Property="ToolTip" Value="Displaying 2D grid data."/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ToggleButton.Style>
+
+                            <md:ToggleButtonAssist.OnContent>
+
+                                <iconPacks:PackIconFontAwesome Kind="BellSlashSolid" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
+                            </md:ToggleButtonAssist.OnContent>
+
+                            <iconPacks:PackIconFontAwesome Kind="BellSolid" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
+                        </ToggleButton>
+                        
                         <ToggleButton IsChecked="{Binding DualSectorColumns}" Width="48" 
                                     md:ToggleButtonAssist.OnContent="{iconPacks:Modern Kind=ColumnTwo, Width=24, Height=24}"
                                       Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"

@@ -286,8 +286,8 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
 
     public void DeleteImage(ImageEntry imageEntry)
     {
-        ImageRollsDatabase.DeleteImage(imageEntry.UID);
-        Images.Remove(imageEntry);
+        if(ImageRollsDatabase.DeleteImage(imageEntry.UID))
+            Images.Remove(imageEntry);
         ImageCount = Images.Count;
     }
 

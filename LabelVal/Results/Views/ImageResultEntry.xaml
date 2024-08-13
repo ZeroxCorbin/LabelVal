@@ -175,20 +175,16 @@
                                 <DataTrigger Binding="{Binding ImageResults.SelectedVerifier.IsConnected}" Value="True">
                                     <Setter Property="Visibility" Value="Visible"/>
                                 </DataTrigger>
-                            </Style.Triggers>  
+                            </Style.Triggers>
 
                         </Style>
                     </ToggleButton.Style>
 
                     <md:ToggleButtonAssist.OnContent>
-                        <Grid Background="{DynamicResource OrangeBrush0}">
-                            <Image Source="/Assets/Images/l95xx-white-outline.ico"/>
-                        </Grid>
+                        <Image Source="/Assets/Images/l95xx-white-outline.ico"/>
                     </md:ToggleButtonAssist.OnContent>
 
-                    <Grid>
-                        <Image Source="/Assets/Images/l95xx-white-outline.ico" />
-                    </Grid>
+                    <Image Source="/Assets/Images/l95xx-white-outline.ico" />
 
                 </ToggleButton>
 

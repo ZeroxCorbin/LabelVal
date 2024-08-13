@@ -170,9 +170,7 @@
 
                     <Grid>
 
-                        <ListBox Padding="0,2,0,0" ItemsSource="{Binding L95xxStoredSectors}" 
-                                      Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
-                                      Tag="l95xxStored">
+                        <ListBox Padding="0,1,0,0" ItemsSource="{Binding L95xxStoredSectors}" Tag="l95xxStored">
 
                             <ListBox.Style>
                                 <Style TargetType="ListBox" BasedOn="{StaticResource MahApps.Styles.ListBox}">
@@ -197,26 +195,20 @@
                                     <WrapPanel Orientation="Horizontal">
                                         <WrapPanel.Style>
                                             <Style TargetType="WrapPanel">
-
                                                 <Setter Property="ItemWidth" Value="200"/>
-
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="400">
                                                         <Setter Property="MaxWidth" Value="400"/>
                                                     </DataTrigger>
-
                                                     <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="300">
                                                         <Setter Property="MaxWidth" Value="400"/>
                                                     </DataTrigger>
-
                                                     <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="200">
                                                         <Setter Property="MaxWidth" Value="200"/>
                                                     </DataTrigger>
-
                                                     <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="100">
                                                         <Setter Property="MaxWidth" Value="200"/>
                                                     </DataTrigger>
-
                                                     <DataTrigger Binding="{Binding DualSectorColumns}" Value="True">
                                                         <Setter Property="MaxWidth" Value="400"/>
                                                     </DataTrigger>
@@ -229,7 +221,7 @@
 
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <sectors:Sector Background="{DynamicResource AccentColorBrush}" Margin="2,1"
+                                    <sectors:Sector Background="{DynamicResource AccentColorBrush}"
                                                         MouseEnter="storedSectorMouseEnter"
                                                         MouseLeave="storedSectorMouseLeave"/>
                                 </DataTemplate>
@@ -349,42 +341,12 @@
 
                         <Border Style="{StaticResource imageBar}" Margin="3,0"/>
 
-                        <!--<Button Command="{Binding StoreCommand}" CommandParameter="l95xx" Width="28"
-                                ToolTip="Store the current sectors and images to the database."
-                                Content="{iconPacks:Material Kind=StorePlusOutline}"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
-
-                                <Button.Style>
-                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Button.Style>
-                            </Button>
-
-                            <Button Command="{Binding ClearReadCommand}" CommandParameter="l95xx" Width="28"
-                                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                ToolTip="Clear the current sectors and image."
-                                Content="{iconPacks:MaterialDesign Kind=Clear}"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>-->
-
-                        <Border Style="{StaticResource imageBar}" Margin="3,0"/>
-
                         <!--Save Image-->
                         <Button Command="{Binding SaveCommand}" CommandParameter="l95xxCurrent" Width="28"
                                 Style="{StaticResource MahApps.Styles.Button.Hamburger}" 
                                 ToolTip="Save the image."
                                 Content="{iconPacks:Material Kind=ContentSave}"
                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
-
-                        <!--<Border Style="{StaticResource imageBar}" Margin="3,0"/>
-
-                            <TextBlock VerticalAlignment="Center" Text="{Binding V275CurrentImage.UID, Converter={StaticResource shortenUID}}" 
-                                ToolTip="{Binding V275CurrentImage.UID}" Margin="3,0"/>-->
 
                     </DockPanel>
                 </md:Card>
@@ -480,10 +442,8 @@
                                   ScrollChanged="ScrollL95xxCurrentSectors_ScrollChanged">
                     <Grid>
 
-                        <ListBox Padding="0,1,0,0" ItemsSource="{Binding L95xxCurrentSectors}" 
-                                  SelectedItem="{Binding L95xxCurrentSectorSelected}"
-                                      Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
-                                       Tag="l95xxCurrent">
+                        <ListBox Padding="0,1,0,0" ItemsSource="{Binding L95xxCurrentSectors}" Tag="l95xxCurrent" 
+                                  SelectedItem="{Binding L95xxCurrentSectorSelected}">
 
                             <ListBox.Style>
                                 <Style TargetType="ListBox" BasedOn="{StaticResource MahApps.Styles.ListBox}">
@@ -497,7 +457,10 @@
                             </ListBox.Style>
 
                             <ListBox.ItemContainerStyle>
-                                <Style TargetType="ListBoxItem" BasedOn="{StaticResource MahApps.Styles.ListBoxItem}"/>
+                                <Style TargetType="ListBoxItem" BasedOn="{StaticResource MahApps.Styles.ListBoxItem}">
+                                    <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+                                    <Setter Property="Padding" Value="2"/>
+                                </Style>
                             </ListBox.ItemContainerStyle>
 
                             <ListBox.ItemsPanel>
@@ -505,26 +468,20 @@
                                     <WrapPanel Orientation="Horizontal">
                                         <WrapPanel.Style>
                                             <Style TargetType="WrapPanel">
-
                                                 <Setter Property="ItemWidth" Value="200"/>
-
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="400">
                                                         <Setter Property="MaxWidth" Value="400"/>
                                                     </DataTrigger>
-
                                                     <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="300">
                                                         <Setter Property="MaxWidth" Value="400"/>
                                                     </DataTrigger>
-
                                                     <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="200">
                                                         <Setter Property="MaxWidth" Value="200"/>
                                                     </DataTrigger>
-
                                                     <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="100">
                                                         <Setter Property="MaxWidth" Value="200"/>
                                                     </DataTrigger>
-
                                                     <DataTrigger Binding="{Binding DualSectorColumns}" Value="True">
                                                         <Setter Property="MaxWidth" Value="400"/>
                                                     </DataTrigger>
