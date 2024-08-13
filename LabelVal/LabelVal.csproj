@@ -1450,7 +1450,7 @@
 		</PackageReference>
 		<PackageReference Include="MaterialDesignThemes.MahApps" Version="3.1.0" />
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-		<PackageReference Include="Microsoft.Net.Http.Headers" Version="8.0.7" />
+		<PackageReference Include="Microsoft.Net.Http.Headers" Version="8.0.8" />
 		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf">
 			<Version>1.1.122</Version>
 		</PackageReference>
@@ -1462,13 +1462,13 @@
 			<Version>5.5.2</Version>
 		</PackageReference>
 		<PackageReference Include="NLog">
-			<Version>5.3.2</Version>
+			<Version>5.3.3</Version>
 		</PackageReference>
 		<PackageReference Include="Npgsql">
 			<Version>8.0.3</Version>
 		</PackageReference>
-		<PackageReference Include="SharpVectors" Version="1.8.4.1" />
-		<PackageReference Include="SharpVectors.Wpf" Version="1.8.4.1" />
+		<PackageReference Include="SharpVectors" Version="1.8.4.2" />
+		<PackageReference Include="SharpVectors.Wpf" Version="1.8.4.2" />
 		<PackageReference Include="sqlite-net-pcl">
 			<Version>1.9.172</Version>
 		</PackageReference>
@@ -1496,7 +1496,7 @@
 		<PackageReference Include="System.Data.SQLite">
 			<Version>1.0.118</Version>
 		</PackageReference>
-		<PackageReference Include="System.Drawing.Common" Version="8.0.7" />
+		<PackageReference Include="System.Drawing.Common" Version="8.0.8" />
 		<PackageReference Include="System.IO.Ports" Version="8.0.0" />
 		<PackageReference Include="System.Management" Version="8.0.0" />
 		<PackageReference Include="WindowsAPICodePack" Version="8.0.4" />
