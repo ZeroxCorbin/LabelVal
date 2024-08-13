@@ -469,7 +469,7 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
             ValueResults.Add(new ValueResult("edgeDetermination", 100, GetParameter("Edge", report.ReportData)));
 
             var kv = GetParameter("Quiet", report.ReportData);
-            if (kv.Contains("ERR"))
+            if (kv != null && kv.Contains("ERR"))
             {
                 var spl2 = kv.Split(' ');
                 if (spl2.Count() == 2)
