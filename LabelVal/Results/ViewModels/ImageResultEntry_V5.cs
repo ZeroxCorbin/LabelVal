@@ -55,7 +55,7 @@ public partial class ImageResultEntry
             return;
         }
 
-        V5_REST_Lib.Commands.Results res = await ImageResults.SelectedScanner.ScannerController.GetConfig();
+        V5_REST_Lib.Commands.Results res = await ImageResults.SelectedScanner.Controller.GetConfig();
 
         if (!res.OK)
         {
@@ -113,12 +113,12 @@ public partial class ImageResultEntry
 
             //Attempt to update the directory in the FileAcquisitionSource
             //config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.uid = DateTime.Now.Ticks.ToString();
-            _ = await ImageResults.SelectedScanner.ScannerController.SendJob(config.response.data);
+            _ = await ImageResults.SelectedScanner.Controller.SendJob(config.response.data);
 
-            _ = V5ProcessResults(await ImageResults.SelectedScanner.ScannerController.Trigger_Wait_Return(true), config);
+            _ = V5ProcessResults(await ImageResults.SelectedScanner.Controller.Trigger_Wait_Return(true), config);
         }
         else
-            _ = V5ProcessResults(await ImageResults.SelectedScanner.ScannerController.Trigger_Wait_Return(true), config);
+            _ = V5ProcessResults(await ImageResults.SelectedScanner.Controller.Trigger_Wait_Return(true), config);
 
         IsV5Working = false;
     }

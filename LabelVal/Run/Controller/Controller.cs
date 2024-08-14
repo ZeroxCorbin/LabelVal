@@ -2,6 +2,7 @@
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Run.Databases;
 using LabelVal.V275.ViewModels;
+using LabelVal.V5.ViewModels;
 using Newtonsoft.Json;
 using System;
 using System.Collections.ObjectModel;
@@ -21,23 +22,32 @@ public partial class Controller : ObservableObject
     public RunEntry RunEntry { get; private set; }
     private string RunUID => RunEntry.UID;
 
-    public Node V275Node { get; private set; }
     public ImageRollEntry ImageRollEntry { get; private set; }
+
+    public Node V275 { get; private set; }
+    private bool HasV275 => V275 != null;
+
+    public Scanner V5 { get; private set; }
+    private bool HasV5 => V5 != null;
 
     public int LoopCount { get; private set; }
     public int CurrentLoopCount { get; private set; }
     public int CurrentLabelCount { get; private set; }
 
-    public bool StartAsync(ObservableCollection<Results.ViewModels.ImageResultEntry> imageResultEntries, ImageRollEntry imageRollEntry, Node v275Node, int loopCount)
+    public bool StartAsync(ObservableCollection<Results.ViewModels.ImageResultEntry> imageResultEntries, ImageRollEntry imageRollEntry,
+        Node v275,
+        Scanner v5,
+        int loopCount)
     {
-        ImageRollEntry = imageRollEntry;
-        V275Node = v275Node;
-
         ImageResultEntries = imageResultEntries;
+        ImageRollEntry = imageRollEntry;
+
+        V275 = v275;
+        V5 = v5;
 
         LoopCount = loopCount;
 
-        RunEntry = new RunEntry(RunDatabase, ImageRollEntry, v275Node.Product.part, v275Node.Details.cameraMAC, LoopCount);
+        RunEntry = new RunEntry(RunDatabase, ImageRollEntry, LoopCount);
 
         if (!OpenDatabase() || !UpdateRunEntry())
             return false;
@@ -56,13 +66,28 @@ public partial class Controller : ObservableObject
     {
         CurrentLabelCount = 0;
 
-        if (!await V275Node.Connection.SwitchToEdit())
+        RequestedState = UpdateRunState(RunStates.Running);
+
+        if (HasV275)
         {
-            LogError("Failed to switch to edit mode.");
+            LogInfo("Run: V275, Pre-Run");
+
+            if (await PreRunV275() != RunStates.Running)
+                return State;
+        }
+        else if (HasV5)
+        {
+            LogInfo("Run: V5, Pre-Run");
+
+            if (await PreRunV5() != RunStates.Running)
+                return State;
+        }
+        else
+        {
+            LogError("Run: No device selected for run.");
             return UpdateRunState(RunStates.Error);
         }
 
-        RequestedState = UpdateRunState(RunStates.Running);
         LogInfo($"Run: Loop Count {LoopCount.ToString()}");
 
         int wasLoop = 0;
@@ -70,74 +95,43 @@ public partial class Controller : ObservableObject
         {
             foreach (Results.ViewModels.ImageResultEntry ire in ImageResultEntries)
             {
-                if (ire.V275StoredSectors.Count == 0)
-                {
-                    LogDebug("Run: No sectors to process.");
+                var useV275 = HasV275 && ire.V275StoredSectors.Count > 0;
+                if (!useV275)
+                    LogInfo("Run: V275, No sectors to process.");
+                var useV5 = HasV5 && ire.V5StoredSectors.Count > 0;
+                if (!useV275)
+                    LogInfo("Run: V5, No sectors to process.");
+                if (!useV275 && !useV5)
                     continue;
-                }
 
                 CurrentLoopCount = i + 1;
                 if (CurrentLoopCount != wasLoop)
                 {
-                    //If running a non-GS1 label then this will reset the match to file and sequences.
-                    //If running a GS1 label then edit mode is required.
-                    if (HasSequencing(ire))
-                    {
-                        //Switch to edit to allow the Match files and Sequencing to reset.
-                        if (!await V275Node.Connection.SwitchToEdit())
-                        {
-                            LogError("Run: Failed to switch to edit mode.");
-                            return UpdateRunState(RunStates.Error);
-                        }
-                    }
+                    if (useV275)
+                        if (await PreLoopV275(ire) != RunStates.Running)
+                            return State;
+
+                    if (useV5)
+                        if (await PreLoopV5(ire) != RunStates.Running)
+                            return State;
 
                     wasLoop = CurrentLoopCount;
-
                     LogInfo($"Run: Starting Loop {CurrentLoopCount.ToString()}");
-                }
-
-                if (!ImageRollEntry.WriteSectorsBeforeProcess)
-                {
-                    if (!await V275Node.Connection.SwitchToRun())
-                    {
-                        LogError("Failed to switch to run mode.");
-                        return UpdateRunState(RunStates.Error);
-                    }
                 }
 
                 if (RequestedState != RunStates.Running)
                     return UpdateRunState(RequestedState);
 
-                //This must occur before the print so it is added to the image
+                //This must occur before the print so it is added to the V275 image
                 CurrentLabelCount++;
 
-                //Start the V275 processing the image.
-                if (V275Node.IsSimulator)
-                    ire.V275ProcessCommand.Execute("v275Stored");
-                else
-                    ire.V275ProcessCommand.Execute("source");
+                if(useV275)
+                    if(await ProcessV275(ire) != RunStates.Running)
+                        return State;
 
-                //Wait for the V275 to finish processing the image or fault.
-                DateTime start = DateTime.Now;
-                while (ire.IsV275Working)
-                {
-                    if (RequestedState != RunStates.Running)
-                        return UpdateRunState(RequestedState);
-
-                    if (DateTime.Now - start > TimeSpan.FromMilliseconds(10000))
-                    {
-                        LogError("Run: Timeout waiting for results.");
-                        return UpdateRunState(RunStates.Error);
-                    }
-
-                    if (ire.IsV275Faulted)
-                    {
-                        LogError("Run: Error when interacting with V275.");
-                        return UpdateRunState(RunStates.Error);
-                    }
-
-                    Thread.Sleep(1);
-                };
+                if (useV5)
+                    if (await ProcessV5(ire) != RunStates.Running)
+                        return State;
 
                 Results.Databases.StoredImageResultGroup stored = ire.GetStoredImageResultGroup(RunUID);
                 Results.Databases.CurrentImageResultGroup current = ire.GetCurrentImageResultGroup(RunUID);
@@ -166,6 +160,94 @@ public partial class Controller : ObservableObject
         RunEntry.EndTime = DateTime.Now.Ticks;
 
         return UpdateRunState(RunStates.Complete);
+    }
+
+    private async Task<RunStates> PreRunV275()
+    {
+        if (!await V275.Controller.SwitchToEdit())
+        {
+            LogError("Run: V275, Failed to switch to edit mode.");
+            return UpdateRunState(RunStates.Error);
+        }
+        return State;
+    }
+
+    private async Task<RunStates> PreLoopV275(Results.ViewModels.ImageResultEntry ire)
+    {
+        //If running a non-GS1 label then this will reset the match to file and sequences.
+        //If running a GS1 label then edit mode is required.
+        if (HasSequencing(ire))
+        {
+            //Switch to edit to allow the Match files and Sequencing to reset.
+            if (!await V275.Controller.SwitchToEdit())
+            {
+                LogError("Run: V275, Failed to switch to edit mode.");
+                return UpdateRunState(RunStates.Error);
+            }
+        }
+
+        if (!ImageRollEntry.WriteSectorsBeforeProcess)
+        {
+            if (!await V275.Controller.SwitchToRun())
+            {
+                LogError("Run: V275, Failed to switch to run mode.");
+                return UpdateRunState(RunStates.Error);
+            }
+        }
+        return State;
+    }
+
+    private async Task<RunStates> ProcessV275(Results.ViewModels.ImageResultEntry ire)
+    {
+        //Start the V275 processing the image.
+        if (V275.IsSimulator)
+            ire.V275ProcessCommand.Execute("v275Stored");
+        else
+            ire.V275ProcessCommand.Execute("source");
+
+        //Wait for the V275 to finish processing the image or fault.
+        DateTime start = DateTime.Now;
+        while (ire.IsV275Working)
+        {
+            if (RequestedState != RunStates.Running)
+                return UpdateRunState(RequestedState);
+
+            if (DateTime.Now - start > TimeSpan.FromMilliseconds(10000))
+            {
+                LogError("Run: Timeout waiting for results.");
+                return UpdateRunState(RunStates.Error);
+            }
+
+            if (ire.IsV275Faulted)
+            {
+                LogError("Run: Error when interacting with V275.");
+                return UpdateRunState(RunStates.Error);
+            }
+
+            Thread.Sleep(1);
+        };
+
+        return State;
+    }
+
+    private async Task<RunStates> PreRunV5()
+    {
+        if (!await V5.Controller.SwitchToEdit())
+        {
+            LogError("Run: V5, Failed to switch to edit mode.");
+            return UpdateRunState(RunStates.Error);
+        }
+        return State;
+    }
+    private async Task<RunStates> PreLoopV5(Results.ViewModels.ImageResultEntry ire)
+    {
+        return State;
+    }
+    private async Task<RunStates> ProcessV5(Results.ViewModels.ImageResultEntry ire)
+    {
+        ire.V5ProcessCommand.Execute(V5.IsSimulator ? "file" : "sensor");
+
+        return State;
     }
 
     private static bool HasSequencing(Results.ViewModels.ImageResultEntry label)

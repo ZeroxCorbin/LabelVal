@@ -3,18 +3,20 @@ using CommunityToolkit.Mvvm.Input;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Results.ViewModels;
 using LabelVal.V275.ViewModels;
-using Mysqlx.Crud;
+using LabelVal.V5.ViewModels;
 using System;
 using System.Collections.ObjectModel;
 
 namespace LabelVal.Run.ViewModels;
 public partial class RunControl : ObservableObject
 {
-    public Controller RunController { get;  } = new();
+    public Controller RunController { get; } = new();
 
     public ObservableCollection<ImageResultEntry> ImageResultsList { get; private set; }
 
-    public Node SelectedNode { get; private set; }
+    public Node V275 { get; private set; }
+    public Scanner V5 { get; private set; }
+
     public ImageRollEntry SelectedImageRoll { get; private set; }
 
     private int LoopCount { get; set; }
@@ -23,18 +25,19 @@ public partial class RunControl : ObservableObject
     /// If using this constructor, you must call Update before StartStop.
     /// </summary>
     public RunControl() { }
-    
-    public RunControl(int loopCount, ObservableCollection<ImageResultEntry> imageResults, ImageRollEntry imageRollEntry, Node node)
+
+    public RunControl(int loopCount, ObservableCollection<ImageResultEntry> imageResults, ImageRollEntry imageRollEntry, Node v275, Scanner v5)
     {
         LoopCount = loopCount;
         ImageResultsList = imageResults;
-        SelectedNode = node;
         SelectedImageRoll = imageRollEntry;
+        V275 = v275;
+        V5 = v5;
     }
 
-    public void Update(int loopCount, ObservableCollection<ImageResultEntry> imageResults, ImageRollEntry imageRollEntry, Node node)
+    public void Update(int loopCount, ObservableCollection<ImageResultEntry> imageResults, ImageRollEntry imageRollEntry, Node v275, Scanner v5)
     {
-        if(RunController.State == RunStates.Running)
+        if (RunController.State == RunStates.Running)
         {
             LogDebug("Cannot update RunControl while running");
             return;
@@ -42,25 +45,26 @@ public partial class RunControl : ObservableObject
 
         LoopCount = loopCount;
         ImageResultsList = imageResults;
-        SelectedNode = node;
         SelectedImageRoll = imageRollEntry;
+        V275 = v275;
+        V5 = v5;
     }
 
     [RelayCommand]
     private void StartStop()
     {
-        if (RunController == null || SelectedImageRoll == null || SelectedNode == null)
+        if (RunController == null || SelectedImageRoll == null)
             return;
 
         if (RunController.State == RunStates.Running)
         {
-            LogInfo($"Stopping Run: {SelectedImageRoll.Name}; {LoopCount}");
+            LogInfo($"Stopping Run: {SelectedImageRoll.Name}; {LoopCount.ToString()}");
             RunController.Stop();
         }
         else
         {
-            LogInfo($"Starting Run: {SelectedImageRoll.Name}; {LoopCount}");
-            RunController.StartAsync(ImageResultsList, SelectedImageRoll, SelectedNode, LoopCount);
+            LogInfo($"Starting Run: {SelectedImageRoll.Name}; {LoopCount.ToString()}");
+            RunController.StartAsync(ImageResultsList, SelectedImageRoll, V275, V5, LoopCount);
         }
     }
 

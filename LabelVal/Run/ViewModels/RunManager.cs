@@ -5,15 +5,17 @@ using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Results.ViewModels;
 using LabelVal.V275.ViewModels;
+using LabelVal.V5.ViewModels;
 using System;
 using System.Collections.ObjectModel;
 
 namespace LabelVal.Run.ViewModels;
 
-public partial class RunManager : ObservableRecipient, IRecipient<PropertyChangedMessage<Node>>, IRecipient<PropertyChangedMessage<ImageRollEntry>>
+public partial class RunManager : ObservableRecipient, IRecipient<PropertyChangedMessage<Node>>, IRecipient<PropertyChangedMessage<Scanner>>  ,IRecipient<PropertyChangedMessage<ImageRollEntry>>
 {
     private ImageResults ImageResults { get; }
     [ObservableProperty] private Node selectedNode;
+    [ObservableProperty] private Scanner selectedScanner;
     [ObservableProperty] private ImageRollEntry selectedImageRoll;
 
     public ObservableCollection<RunControl> RunControllers { get; } = [];
@@ -59,7 +61,7 @@ public partial class RunManager : ObservableRecipient, IRecipient<PropertyChange
         else
         {
             LogInfo($"Starting Run: {SelectedImageRoll.Name}; {LoopCount}");
-            QuickRunController.Update(LoopCount, ImageResults.ImageResultsList, SelectedImageRoll, SelectedNode);
+            QuickRunController.Update(LoopCount, ImageResults.ImageResultsList, SelectedImageRoll, SelectedNode, SelectedScanner);
             QuickRunController.StartStopCommand.Execute(null);
         }
     }
@@ -76,6 +78,7 @@ public partial class RunManager : ObservableRecipient, IRecipient<PropertyChange
     #region Recieve Messages
     public void Receive(PropertyChangedMessage<Node> message) => SelectedNode = message.NewValue;
     public void Receive(PropertyChangedMessage<ImageRollEntry> message) => SelectedImageRoll = message.NewValue;
+    public void Receive(PropertyChangedMessage<Scanner> message) => SelectedScanner = message.NewValue;
     #endregion
 
 

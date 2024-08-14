@@ -528,7 +528,7 @@ public partial class ImageResults : ObservableRecipient,
             {
                 imageResults.IsV275Working = false;
 
-                if (!await SelectedNode.Connection.Commands.SimulationTrigger())
+                if (!await SelectedNode.Controller.Commands.SimulationTrigger())
                     LogError("Error triggering the simulator.");
             }
         }
@@ -573,7 +573,7 @@ public partial class ImageResults : ObservableRecipient,
 
         //Trigger the simulator if it is using the local file system
         if (SelectedNode.IsSimulator && V275Host.Equals("127.0.0.1"))
-            _ = await SelectedNode.Connection.Commands.SimulationTrigger();
+            _ = await SelectedNode.Controller.Commands.SimulationTrigger();
     }
 
     private Task StartPrint(ImageResultEntry imageResults) => Task.Run(() =>
@@ -607,7 +607,7 @@ public partial class ImageResults : ObservableRecipient,
             return;
         }
 
-        if (!await SelectedNode.Connection.Commands.SimulationTriggerImage(
+        if (!await SelectedNode.Controller.Commands.SimulationTriggerImage(
             new V275_REST_Lib.Models.SimulationTrigger() 
             { 
                 image = img.GetPngBytes(), 
@@ -708,7 +708,7 @@ public partial class ImageResults : ObservableRecipient,
         if (TempV275Repeat[repeat].ImageResult.ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess)
         {
             if (repeat > 0)
-                if (!await SelectedNode.Connection.Commands.SetRepeat(repeat))
+                if (!await SelectedNode.Controller.Commands.SetRepeat(repeat))
                 {
                     ProcessRepeatFault(repeat);
                     return;
@@ -724,13 +724,13 @@ public partial class ImageResults : ObservableRecipient,
 
             if (i == 2)
             {
-                List<Sector_New_Verify> sectors = SelectedNode.Connection.CreateSectors(SelectedNode.Connection.SetupDetectEvent, V275GetTableID(SelectedImageRoll.SelectedGS1Table), SelectedNode.Symbologies);
+                List<Sector_New_Verify> sectors = SelectedNode.Controller.CreateSectors(SelectedNode.Controller.SetupDetectEvent, V275GetTableID(SelectedImageRoll.SelectedGS1Table), SelectedNode.Symbologies);
 
                 LogInfo("Creating sectors.");
 
                 foreach (Sector_New_Verify sec in sectors)
                 {
-                    if (!await SelectedNode.Connection.AddSector(sec.name, JsonConvert.SerializeObject(sec)))
+                    if (!await SelectedNode.Controller.AddSector(sec.name, JsonConvert.SerializeObject(sec)))
                     {
                         ProcessRepeatFault(repeat);
                         return;
@@ -838,9 +838,9 @@ public partial class ImageResults : ObservableRecipient,
     {
         if (SelectedNode != null)
         {
-            SelectedNode.Connection.WebSocket.SetupCapture -= WebSocket_SetupCapture;
-            SelectedNode.Connection.WebSocket.LabelEnd -= WebSocket_LabelEnd;
-            SelectedNode.Connection.WebSocket.StateChange -= WebSocket_StateChange;
+            SelectedNode.Controller.WebSocket.SetupCapture -= WebSocket_SetupCapture;
+            SelectedNode.Controller.WebSocket.LabelEnd -= WebSocket_LabelEnd;
+            SelectedNode.Controller.WebSocket.StateChange -= WebSocket_StateChange;
 
         }
 
@@ -848,9 +848,9 @@ public partial class ImageResults : ObservableRecipient,
 
         if (SelectedNode == null) return;
 
-        SelectedNode.Connection.WebSocket.SetupCapture += WebSocket_SetupCapture;
-        SelectedNode.Connection.WebSocket.LabelEnd += WebSocket_LabelEnd;
-        SelectedNode.Connection.WebSocket.StateChange += WebSocket_StateChange;
+        SelectedNode.Controller.WebSocket.SetupCapture += WebSocket_SetupCapture;
+        SelectedNode.Controller.WebSocket.LabelEnd += WebSocket_LabelEnd;
+        SelectedNode.Controller.WebSocket.StateChange += WebSocket_StateChange;
     }
     public void Receive(PropertyChangedMessage<ImageRollEntry> message) => SelectedImageRoll = message.NewValue;
     public void Receive(PropertyChangedMessage<PrinterSettings> message) => SelectedPrinter = message.NewValue;

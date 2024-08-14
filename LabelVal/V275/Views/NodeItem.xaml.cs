@@ -41,7 +41,7 @@ namespace LabelVal.V275.Views
 
         private void btnOpenInBrowser_Click(object sender, RoutedEventArgs e)
         {
-            var v275 = $"http://{((ViewModels.Node)DataContext).Connection.Commands.Host}:{((ViewModels.Node)DataContext).Connection.Commands.SystemPort}";
+            var v275 = $"http://{((ViewModels.Node)DataContext).Controller.Commands.Host}:{((ViewModels.Node)DataContext).Controller.Commands.SystemPort}";
             var ps = new ProcessStartInfo(v275)
             {
                 UseShellExecute = true,

@@ -27,15 +27,15 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 {
     [JsonProperty] public long ID { get; set; } = DateTime.Now.Ticks;
 
-    public V5_REST_Lib.Controller ScannerController { get; } = new();
+    public V5_REST_Lib.Controller Controller { get; } = new();
     public V5_REST_Lib.FTP.FTPClient FTPClient { get; } = new();
 
 
     [ObservableProperty][property: JsonProperty] private static string host;
-    partial void OnHostChanged(string value) { ScannerController.Host = value; }
+    partial void OnHostChanged(string value) { Controller.Host = value; }
 
     [ObservableProperty][property: JsonProperty] private static int port;
-    partial void OnPortChanged(int value) { ScannerController.Port = value; }
+    partial void OnPortChanged(int value) { Controller.Port = value; }
 
     [ObservableProperty][property: JsonProperty] private bool fullResImages = true;
 
@@ -208,7 +208,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
     private async void SwitchAquisitionType(bool file)
     {
-        V5_REST_Lib.Commands.Results res = await ScannerController.GetConfig();
+        V5_REST_Lib.Commands.Results res = await Controller.GetConfig();
 
         if (!res.OK)
         {
@@ -253,11 +253,11 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             //src.uid = DateTime.Now.Ticks.ToString();
         }
 
-        _ = await ScannerController.SendJob(config.response.data);
+        _ = await Controller.SendJob(config.response.data);
     }
     private async void ChangeDirectory(string directory)
     {
-        V5_REST_Lib.Commands.Results res = await ScannerController.GetConfig();
+        V5_REST_Lib.Commands.Results res = await Controller.GetConfig();
 
         if (!res.OK)
         {
@@ -272,23 +272,23 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         {
             src.FileAcquisitionSource.directory = directory;
             //src.uid = DateTime.Now.Ticks.ToString();
-            _ = await ScannerController.SendJob(config.response.data);
+            _ = await Controller.SendJob(config.response.data);
         }
     }
 
     public ScannerManager Manager { get; set; }
     public Scanner()
     {
-        ScannerController.StateChanged += ScannerController_StateChanged;
-        ScannerController.ScannerModeChanged += ScannerController_ScannerModeChanged;
-        ScannerController.ImageUpdate += ScannerController_ImageUpdate;
-        ScannerController.ResultUpdate += ScannerController_ResultUpdate;
-        ScannerController.ConfigUpdate += ScannerController_ConfigUpdate;
+        Controller.StateChanged += ScannerController_StateChanged;
+        Controller.ScannerModeChanged += ScannerController_ScannerModeChanged;
+        Controller.ImageUpdate += ScannerController_ImageUpdate;
+        Controller.ResultUpdate += ScannerController_ResultUpdate;
+        Controller.ConfigUpdate += ScannerController_ConfigUpdate;
 
         // SelectedCamera = Cameras.Available.FirstOrDefault();
 
-        Host = ScannerController.Host;
-        Port = ScannerController.Port;
+        Host = Controller.Host;
+        Port = Controller.Port;
 
         FTPUsername = FTPClient.Username;
         FTPPassword = FTPClient.Password;
@@ -303,13 +303,13 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
     private async void ScannerController_ConfigUpdate(JObject json)
     {
-        V5_REST_Lib.Commands.Results res = await ScannerController.GetConfig();
+        V5_REST_Lib.Commands.Results res = await Controller.GetConfig();
         if (res.OK)
         {
             Config config = (Config)res.Object;
             IsSimulator = config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource != null;
 
-            V5_REST_Lib.Commands.Results meta = await ScannerController.Commands.GetMeta();
+            V5_REST_Lib.Commands.Results meta = await Controller.Commands.GetMeta();
             if (meta.OK)
             {
                 Meta metaConfig = (Meta)meta.Object;
@@ -420,8 +420,8 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         {
             try
             {
-                
-                RawImage = ImageUtilities.ConvertToPng(await ScannerController.GetImageFullRes(json));
+
+                RawImage = ImageUtilities.ConvertToPng(await Controller.GetImageFullRes(json));
                 IsWaitingForFullImage = false;
                 return;
             }
@@ -655,25 +655,25 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     {
         ScannerMode = V5_REST_Lib.Controller.ScannerModes.Offline;
 
-        if (!ScannerController.IsConnected)
+        if (!Controller.IsConnected)
         {
             if (!await PreLogin())
                 return;
 
-            if (await Task.Run(ScannerController.Connect))
+            if (await Task.Run(Controller.Connect))
                 return;
 
-            await Task.Run(ScannerController.Disconnect);
+            await Task.Run(Controller.Disconnect);
         }
         else
-            await Task.Run(ScannerController.Disconnect);
+            await Task.Run(Controller.Disconnect);
 
         PostLogout();
     }
 
     private async Task<bool> PreLogin()
     {
-        V5_REST_Lib.Commands.Results jobs = await ScannerController.Commands.GetJobSlots();
+        V5_REST_Lib.Commands.Results jobs = await Controller.Commands.GetJobSlots();
         if (jobs.OK)
         {
             JobSlots job = (JobSlots)jobs.Object;
@@ -717,7 +717,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
                     {
                         running = true;
 
-                        if (await ScannerController.Trigger_Wait() != true)
+                        if (await Controller.Trigger_Wait() != true)
                             return;
 
                         if (stop)
@@ -736,7 +736,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         {
             IsWaitingForFullImage = FullResImages;
 
-            if (await ScannerController.Trigger_Wait())
+            if (await Controller.Trigger_Wait())
             {
                 if (FullResImages)
                     await WaitForImage();
@@ -770,21 +770,21 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     {
         Clear();
 
-        bool res = await ScannerController.QuickSet_Focus_Wait(QuickSet_Focus);
+        bool res = await Controller.QuickSet_Focus_Wait(QuickSet_Focus);
     }
     [RelayCommand]
     private async Task QuickSetPhotometry()
     {
         Clear();
 
-        bool res = await ScannerController.QuickSet_Photometry_Wait(QuickSet_Photometry);
+        bool res = await Controller.QuickSet_Photometry_Wait(QuickSet_Photometry);
     }
     [RelayCommand]
     private async Task SysInfo()
     {
         Clear();
 
-        V5_REST_Lib.Commands.Results res = await ScannerController.GetSysInfo();
+        V5_REST_Lib.Commands.Results res = await Controller.GetSysInfo();
         if (res.OK)
         {
             ExplicitMessages = res.Data;
@@ -794,7 +794,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     private async Task Config()
     {
         Clear();
-        V5_REST_Lib.Commands.Results res = await ScannerController.GetConfig();
+        V5_REST_Lib.Commands.Results res = await Controller.GetConfig();
         if (res.OK)
         {
             ExplicitMessages = res.Data;
@@ -803,25 +803,24 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
     private async Task ChangeJob(JobSlots.Datum job)
     {
-        _ = await ScannerController.Commands.PutJobSlots(job);
+        _ = await Controller.Commands.PutJobSlots(job);
         ScannerController_ConfigUpdate(null);
     }
     [RelayCommand]
     private async Task SwitchRun()
     {
-        _ = await ScannerController.Commands.ModeRun();
+        _ = await Controller.Commands.ModeRun();
         ScannerController_ConfigUpdate(null);
     }
     [RelayCommand]
-    private async Task SwitchEdit()
+    public async Task SwitchEdit()
     {
-        if (await ScannerController.Commands.ModeSetup())
-            _ = ScannerController.Commands.TriggerEnable();
+        _ = await Controller.SwitchToEdit();
         ScannerController_ConfigUpdate(null);
     }
 
     [RelayCommand]
-    private void Reboot() => _ = ScannerController.Reboot();
+    private void Reboot() => _ = Controller.Reboot();
     [RelayCommand]
     private void AddToImageRoll()
     {

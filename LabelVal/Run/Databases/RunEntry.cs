@@ -8,14 +8,14 @@ namespace LabelVal.Run.Databases;
 public partial class RunEntry : ObservableObject
 {
     public RunEntry() { }
-    public RunEntry(RunDatabase runDatabase, ImageRollEntry imageRoll,
-        string productPart, string cameraMAC, int loops)
+    public RunEntry(RunDatabase runDatabase, ImageRollEntry imageRoll,int loops)
+        //string productPart, string cameraMAC, )
     {
         RunDatabase = runDatabase;
 
-        ProductPart = productPart;
-        CameraMAC = cameraMAC;
-        PrinterName = imageRoll.SelectedPrinter.PrinterName;
+        //ProductPart = productPart;
+        //CameraMAC = cameraMAC;
+        //PrinterName = imageRoll.SelectedPrinter.PrinterName;
 
         ImageRollName = imageRoll.Name;
         GradingStandard = imageRoll.SelectedStandard;
@@ -36,9 +36,9 @@ public partial class RunEntry : ObservableObject
 
     [SQLite.Ignore] public RunDatabase RunDatabase { get; set; }
 
-    public string ProductPart { get; set; }
-    public string CameraMAC { get; set; }
-    public string PrinterName { get; set; }
+    //public string ProductPart { get; set; }
+    //public string CameraMAC { get; set; }
+    //public string PrinterName { get; set; }
 
     public string ImageRollName { get; set; }
     public StandardsTypes GradingStandard { get; set; }

@@ -112,7 +112,7 @@ public partial class ImageResultEntry
     public async Task<bool> V275ReadTask(int repeat)
     {
         V275_REST_lib.Controller.FullReport report;
-        if ((report = await ImageResults.SelectedNode.Connection.Read(repeat, true)) == null)
+        if ((report = await ImageResults.SelectedNode.Controller.Read(repeat, true)) == null)
         {
             LogError("Unable to read the repeat report from the node.");
 
@@ -257,17 +257,17 @@ public partial class ImageResultEntry
     }
     public async Task<int> V275LoadTask()
     {
-        if (!await ImageResults.SelectedNode.Connection.DeleteSectors())
+        if (!await ImageResults.SelectedNode.Controller.DeleteSectors())
         {
-            LogError(ImageResults.SelectedNode.Connection.Status);
+            LogError(ImageResults.SelectedNode.Controller.Status);
             return -1;
         }
 
         if (V275StoredSectors.Count == 0)
         {
-            if (!await ImageResults.SelectedNode.Connection.DetectSectors())
+            if (!await ImageResults.SelectedNode.Controller.DetectSectors())
             {
-                LogError(ImageResults.SelectedNode.Connection.Status);
+                LogError(ImageResults.SelectedNode.Controller.Status);
                 return -1;
             }
 
@@ -276,9 +276,9 @@ public partial class ImageResultEntry
 
         foreach (V275.Sectors.Sector sec in V275StoredSectors)
         {
-            if (!await ImageResults.SelectedNode.Connection.AddSector(sec.Template.Name, JsonConvert.SerializeObject(sec.V275Sector)))
+            if (!await ImageResults.SelectedNode.Controller.AddSector(sec.Template.Name, JsonConvert.SerializeObject(sec.V275Sector)))
             {
-                LogError(ImageResults.SelectedNode.Connection.Status);
+                LogError(ImageResults.SelectedNode.Controller.Status);
                 return -1;
             }
 
@@ -286,11 +286,11 @@ public partial class ImageResultEntry
             {
                 foreach (Job.Layer layer in sec.Template.BlemishMask.Layers)
                 {
-                    if (!await ImageResults.SelectedNode.Connection.AddMask(sec.Template.Name, JsonConvert.SerializeObject(layer)))
+                    if (!await ImageResults.SelectedNode.Controller.AddMask(sec.Template.Name, JsonConvert.SerializeObject(layer)))
                     {
                         if (layer.value != 0)
                         {
-                            LogError(ImageResults.SelectedNode.Connection.Status);
+                            LogError(ImageResults.SelectedNode.Controller.Status);
                             return -1;
                         }
                     }

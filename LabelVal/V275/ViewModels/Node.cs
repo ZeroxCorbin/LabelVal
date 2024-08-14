@@ -30,7 +30,7 @@ public enum NodeStates
 [JsonObject(MemberSerialization.OptIn)]
 public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessage<ImageRollEntry>>
 {
-    public V275_REST_lib.Controller Connection { get; }
+    public V275_REST_lib.Controller Controller { get; }
 
     [JsonProperty] private string Host => App.Settings.GetValue<string>($"{NodeManager.ClassName}{nameof(NodeManager.Host)}");
     [JsonProperty] private uint SystemPort => App.Settings.GetValue<uint>($"{NodeManager.ClassName}{nameof(NodeManager.SystemPort)}");
@@ -111,8 +111,8 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
     }
     private async Task ChangeJob(string name)
     {
-        if (await Connection.Commands.UnloadJob())
-            if (await Connection.Commands.LoadJob(name))
+        if (await Controller.Commands.UnloadJob())
+            if (await Controller.Commands.LoadJob(name))
             {
 
             }
@@ -138,10 +138,10 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
         SelectedImageRoll = imageRollEntry;
 
         ID = nodeNumber;
-        Connection = new V275_REST_lib.Controller(host, systemPort, nodeNumber);
+        Controller = new V275_REST_lib.Controller(host, systemPort, nodeNumber);
 
-        Connection.WebSocket.SessionStateChange += WebSocket_SessionStateChange;
-        Connection.StateChanged += V275_StateChanged;
+        Controller.WebSocket.SessionStateChange += WebSocket_SessionStateChange;
+        Controller.StateChanged += V275_StateChanged;
 
         App.Settings.PropertyChanged -= Settings_PropertyChanged;
         App.Settings.PropertyChanged += Settings_PropertyChanged;
@@ -180,12 +180,12 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
             return;
         }
 
-        Connection.Commands.SystemPort = SystemPort;
-        Connection.Commands.Host = Host;
+        Controller.Commands.SystemPort = SystemPort;
+        Controller.Commands.Host = Host;
 
         LogDebug($"Logging in. {UserName} @ {Host}:{SystemPort}");
 
-        if (await Connection.Commands.Login(UserName, Password, LoginMonitor))
+        if (await Controller.Commands.Login(UserName, Password, LoginMonitor))
         {
             LogDebug($"Logged in. {(LoginMonitor ? "Monitor" : "Control")} {UserName} @ {Host}:{SystemPort}");
 
@@ -229,7 +229,7 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
     {
         // Set the login data based on whether the login is for monitoring or control
         LoginData.accessLevel = isLoggedIn_Monitor ? "monitor" : "control";
-        LoginData.token = Connection.Commands.Token; // Store the authentication token
+        LoginData.token = Controller.Commands.Token; // Store the authentication token
         LoginData.id = UserName; // Store the user's ID
         LoginData.state = "0"; // Set the login state to '0' indicating a successful login
 
@@ -238,41 +238,41 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
         IsLoggedIn_Control = !isLoggedIn_Monitor;
 
         // Fetch and store the camera configuration, symbologies, and calibration data from the server
-        ConfigurationCamera = await Connection.Commands.GetCameraConfig();
-        Symbologies = await Connection.Commands.GetSymbologies();
-        Calibration = await Connection.Commands.GetCalibration();
-        Jobs = await Connection.Commands.GetJobs();
-        Print = await Connection.Commands.GetPrint();
+        ConfigurationCamera = await Controller.Commands.GetCameraConfig();
+        Symbologies = await Controller.Commands.GetSymbologies();
+        Calibration = await Controller.Commands.GetCalibration();
+        Jobs = await Controller.Commands.GetJobs();
+        Print = await Controller.Commands.GetPrint();
 
         //If the system is in simulator mode, adjust the simulation settings
         if (IsSimulator)
         {
-            Simulation = await Connection.Commands.GetSimulation();
+            Simulation = await Controller.Commands.GetSimulation();
 
             if (Simulation != null)
                 if (!Host.Equals("127.0.0.1"))
                 {
                     Simulation.mode = "trigger";
                     Simulation.dwellMs = 1;
-                    _ = await Connection.Commands.PutSimulation(Simulation);
+                    _ = await Controller.Commands.PutSimulation(Simulation);
                 }
                 else
                 {
                     Simulation.mode = "continuous";
                     Simulation.dwellMs = 1000;
-                    _ = await Connection.Commands.PutSimulation(Simulation);
+                    _ = await Controller.Commands.PutSimulation(Simulation);
                 }
 
-            Simulation = await Connection.Commands.GetSimulation();
+            Simulation = await Controller.Commands.GetSimulation();
         }
         else
             Simulation = null;
 
         // Request the server to send extended data
-        _ = await Connection.Commands.SetSendExtendedData(true);
+        _ = await Controller.Commands.SetSendExtendedData(true);
 
         // Attempt to start the WebSocket connection for receiving node events
-        if (!await Connection.WebSocket.StartAsync(Connection.Commands.URLs.WS_NodeEvents))
+        if (!await Controller.WebSocket.StartAsync(Controller.Commands.URLs.WS_NodeEvents))
             return; // If the WebSocket connection cannot be started, exit the method
     }
 
@@ -282,11 +282,11 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
 
         PreLogout();
 
-        _ = await Connection.Commands.Logout();
+        _ = await Controller.Commands.Logout();
 
         try
         {
-            await Connection.WebSocket.StopAsync();
+            await Controller.WebSocket.StopAsync();
         }
         catch { }
 
@@ -314,25 +314,25 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
         //If the system is in simulator mode, adjust the simulation settings
         if (IsSimulator)
         {
-            Simulation = await Connection.Commands.GetSimulation();
+            Simulation = await Controller.Commands.GetSimulation();
 
             // If the current simulation mode is 'continuous', change it to 'trigger' with a dwell time of 1ms
             if (Simulation != null && Simulation.mode != "continuous")
             {
                 Simulation.mode = "continuous";
                 Simulation.dwellMs = 1000;
-                _ = await Connection.Commands.PutSimulation(Simulation);
+                _ = await Controller.Commands.PutSimulation(Simulation);
             }
 
             // Fetch the simulation settings again to ensure they have been updated correctly
-            Simulation = await Connection.Commands.GetSimulation();
+            Simulation = await Controller.Commands.GetSimulation();
             if (Simulation != null && Simulation.mode != "continuous")
             {
                 // If the mode is not 'continuous', additional handling could be implemented here
             }
         }
 
-        _ = await Connection.Commands.SetSendExtendedData(false);
+        _ = await Controller.Commands.SetSendExtendedData(false);
     }
 
     [RelayCommand]
@@ -342,18 +342,18 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
         {
             if (IsBackupVoid && (string)parameter == "1")
             {
-                if (!await Connection.Commands.Print(false))
+                if (!await Controller.Commands.Print(false))
                     return;
 
                 Thread.Sleep(50);
             }
 
-            _ = await Connection.Commands.Print((string)parameter == "1");
+            _ = await Controller.Commands.Print((string)parameter == "1");
         }
         else
-            _ = await Connection.SimulatorTogglePrint();
+            _ = await Controller.SimulatorTogglePrint();
 
-        Print = await Connection.Commands.GetPrint();
+        Print = await Controller.Commands.GetPrint();
 
     }
 
@@ -362,23 +362,23 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
     {
         int repeat;
 
-        repeat = await Connection.GetLatestRepeat();
+        repeat = await Controller.GetLatestRepeat();
         if (repeat == -9999)
             return;
 
-        if (!await Connection.Commands.RemoveRepeat(repeat))
+        if (!await Controller.Commands.RemoveRepeat(repeat))
         {
             return;
         }
 
-        if (!await Connection.Commands.ResumeJob())
+        if (!await Controller.Commands.ResumeJob())
         {
             return;
         }
     }
     //[RelayCommand] private void TriggerSim() => _ = Connection.Commands.TriggerSimulator();
-    [RelayCommand] private async Task SwitchRun() => await Connection.SwitchToRun();
-    [RelayCommand] private async Task SwitchEdit() => await Connection.SwitchToEdit();
+    [RelayCommand] private async Task SwitchRun() => await Controller.SwitchToRun();
+    [RelayCommand] private async Task SwitchEdit() => await Controller.SwitchToEdit();
 
     private void WebSocket_SessionStateChange(Events_System ev)
     {

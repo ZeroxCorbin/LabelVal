@@ -102,7 +102,7 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
         Node system = new(Host, SystemPort, 0, SelectedImageRoll);
 
         Devices dev;
-        if ((dev = await system.Connection.Commands.GetDevices()) != null)
+        if ((dev = await system.Controller.Commands.GetDevices()) != null)
         {
             List<Node> lst = new();
             foreach (Devices.Node node in dev.nodes)
@@ -120,13 +120,13 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
                 Node newNode = new(Host, SystemPort, (uint)node.enumeration, SelectedImageRoll) { Details = node, Camera = camera };
 
                 Inspection insp;
-                if ((insp = await newNode.Connection.Commands.GetInspection()) != null)
+                if ((insp = await newNode.Controller.Commands.GetInspection()) != null)
                     newNode.Inspection = insp;
 
                 lst.Add(newNode);
             }
 
-            List<Node> srt = lst.OrderBy(n => n.Connection.Commands.NodeNumber).ToList();
+            List<Node> srt = lst.OrderBy(n => n.Controller.Commands.NodeNumber).ToList();
 
             Nodes.Clear();
             if (srt.Count == 0)
