@@ -89,6 +89,14 @@ public partial class ImageResultEntry
 
             ImageResults.SelectedScanner.FTPClient.Connect();
 
+            if(!ImageResults.SelectedScanner.FTPClient.Connect())
+            {
+                LogError(ImageResults.SelectedScanner.FTPClient.ResultMessage);
+                IsV5Faulted = true;
+                IsV5Working = false;
+                return;
+            }
+
             if (!ImageResults.SelectedScanner.FTPClient.DirectoryExists(path))
                 ImageResults.SelectedScanner.FTPClient.CreateRemoteDir(path);
             else
@@ -178,8 +186,12 @@ public partial class ImageResultEntry
         List<Sectors.Interfaces.ISector> tempSectors = [];
         if (!string.IsNullOrEmpty(V5ResultRow.Report))
         {
-            foreach (ResultsAlt.Decodedata rSec in V5ResultRow._Report._event.data.decodeData)
-                tempSectors.Add(new V5.Sectors.Sector(rSec, V5ResultRow._Config.response.data.job.toolList[rSec.toolSlot - 1], $"DecodeTool{rSec.toolSlot.ToString()}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
+            if (V5ResultRow._Report._event.data.decodeData != null)
+                foreach (ResultsAlt.Decodedata rSec in V5ResultRow._Report._event.data.decodeData)
+                    tempSectors.Add(new V5.Sectors.Sector(rSec, V5ResultRow._Config.response.data.job.toolList[rSec.toolSlot - 1], $"DecodeTool{rSec.toolSlot.ToString()}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
+            else
+                foreach (var rSec in V5ResultRow._ReportOld._event.data.cycleConfig.qualifiedResults)
+                    tempSectors.Add(new V5.Sectors.Sector(JsonConvert.DeserializeObject<ResultsAlt.Decodedata>(JsonConvert.SerializeObject(rSec)), V5ResultRow._Config.response.data.job.toolList[rSec.toolSlot - 1], $"DecodeTool{rSec.toolSlot.ToString()}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
         }
 
         if (tempSectors.Count > 0)

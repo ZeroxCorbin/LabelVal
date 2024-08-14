@@ -74,6 +74,7 @@ public class Report : IReport
         //Width = newRight - newLeft;
         //Height = newBottom - newTop;
         //AngleDeg = v5.angleDeg;
+        if(v5.boundingBox != null) 
         (Top, Left, Width, Height) = ConvertBoundingBox(v5.boundingBox);
 
         if (v5.grading != null)

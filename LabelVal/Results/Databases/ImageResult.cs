@@ -28,6 +28,7 @@ public class V5Result : ImageResult
 {
     [SQLite.Ignore] public V5_REST_Lib.Models.Config _Config => !string.IsNullOrEmpty(Template) ? JsonConvert.DeserializeObject<V5_REST_Lib.Models.Config>(Template) : null;
     [SQLite.Ignore] public V5_REST_Lib.Models.ResultsAlt _Report => !string.IsNullOrEmpty(Report) ? JsonConvert.DeserializeObject<V5_REST_Lib.Models.ResultsAlt>(Report) : null;
+    [SQLite.Ignore] public V5_REST_Lib.Models.Results _ReportOld => !string.IsNullOrEmpty(Report) ? JsonConvert.DeserializeObject<V5_REST_Lib.Models.Results>(Report) : null;
 }
 
 public class L95xxResult : ImageResult 
