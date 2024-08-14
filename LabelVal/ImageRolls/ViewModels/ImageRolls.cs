@@ -82,6 +82,10 @@ public partial class ImageRolls : ObservableRecipient
     }
     private void LoadUserImageRollsList()
     {
+        foreach (var db in ImageRollsDatabase)
+            db.Value.Close();
+        ImageRollsDatabase.Clear();
+
         ImageRollsDatabase.Add("default", new Databases.ImageRollsDatabase().Open(App.ImageRollsDatabasePath));
 
         foreach (var file in Directory.EnumerateFiles(App.ImageRollsRoot, "*.sqlite"))
@@ -90,7 +94,6 @@ public partial class ImageRolls : ObservableRecipient
                 continue;
             ImageRollsDatabase.Add(Path.GetFileName(file), new Databases.ImageRollsDatabase().Open(file));
         }
-
 
         UserImageRolls.Clear();
         foreach (var db in ImageRollsDatabase)
@@ -159,13 +162,13 @@ public partial class ImageRolls : ObservableRecipient
 
         foreach (var img in SelectedUserImageRoll.Images)
         {
-            if (SelectedImageRoll.ImageRollsDatabase.DeleteImage(img.UID))
+            if (SelectedUserImageRoll.ImageRollsDatabase.DeleteImage(img.UID))
                 LogInfo($"Deleted image: {img.UID}");
             else
                 LogError($"Failed to delete image: {img.UID}");
         }
 
-        if (SelectedImageRoll.ImageRollsDatabase.DeleteImageRoll(NewImageRoll.UID))
+        if (SelectedUserImageRoll.ImageRollsDatabase.DeleteImageRoll(NewImageRoll.UID))
         {
             LogInfo($"Deleted image roll: {NewImageRoll.UID}");
 

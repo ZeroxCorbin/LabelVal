@@ -85,7 +85,7 @@
                                                          Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
                                                          Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}">
 
-                        <DockPanel>
+                        <DockPanel MaxWidth="280">
                             <TextBlock Text="{Binding Name}" TextWrapping="Wrap" Margin="10,3">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock" BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}">

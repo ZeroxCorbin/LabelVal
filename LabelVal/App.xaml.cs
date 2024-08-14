@@ -46,7 +46,7 @@ public partial class App : Application
 
     //public static string AssetsImageResultsDatabasesRoot => $@"{Directory.GetCurrentDirectory()}\Assets\ImageResultsDatabases";
 
-    public static string ImageResultsDatabaseRoot => $"{UserDataDirectory}\\ImageResultsDatabases";
+    public static string ImageResultsDatabaseRoot => $@"{UserDataDirectory}\Image Results";
 
     public static string AssetsImageRollRoot => $@"{Directory.GetCurrentDirectory()}\Assets\Image Rolls";
     public static string ImageRollsRoot => $"{UserDataDirectory}\\Image Rolls";
@@ -76,8 +76,13 @@ public partial class App : Application
 
         if (!Directory.Exists(UserDataDirectory))
             _ = Directory.CreateDirectory(UserDataDirectory);
+
+        if (Directory.Exists($@"{UserDataDirectory}\ImageResultsDatabases"))
+            Directory.Move($@"{UserDataDirectory}\ImageResultsDatabases", ImageResultsDatabaseRoot);
+
         if (!Directory.Exists(ImageResultsDatabaseRoot))
             _ = Directory.CreateDirectory(ImageResultsDatabaseRoot);
+        
         if (!Directory.Exists(ImageRollsRoot))
             _ = Directory.CreateDirectory(ImageRollsRoot);
 
