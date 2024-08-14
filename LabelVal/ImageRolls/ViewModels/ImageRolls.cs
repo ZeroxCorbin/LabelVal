@@ -6,6 +6,7 @@ using LabelVal.Messages;
 using Mysqlx.Crud;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing.Printing;
 using System.IO;
@@ -22,13 +23,13 @@ public partial class ImageRolls : ObservableRecipient
     [ObservableProperty] private ImageRollEntry newImageRoll = null;
 
 
-     [ObservableProperty][NotifyPropertyChangedRecipients] private ImageRollEntry selectedImageRoll;// = App.Settings.GetValue<ImageRollEntry>(nameof(SelectedImageRoll), null);
+    [ObservableProperty][NotifyPropertyChangedRecipients] private ImageRollEntry selectedImageRoll;// = App.Settings.GetValue<ImageRollEntry>(nameof(SelectedImageRoll), null);
     partial void OnSelectedImageRollChanged(ImageRollEntry value) { App.Settings.SetValue(nameof(SelectedImageRoll), value); if (value != null) SelectedUserImageRoll = null; }
 
     [ObservableProperty][NotifyPropertyChangedRecipients] private ImageRollEntry selectedUserImageRoll;// = App.Settings.GetValue<ImageRollEntry>(nameof(SelectedUserImageRoll), null);
-    partial void OnSelectedUserImageRollChanged(ImageRollEntry value) { if(value != null) App.Settings.SetValue(nameof(SelectedUserImageRoll), value); if (value != null) SelectedImageRoll = null; }
+    partial void OnSelectedUserImageRollChanged(ImageRollEntry value) { if (value != null) App.Settings.SetValue(nameof(SelectedUserImageRoll), value); if (value != null) SelectedImageRoll = null; }
 
-    private Databases.ImageRollsDatabase ImageRollsDatabase { get; } = new Databases.ImageRollsDatabase();
+    private Dictionary<string, Databases.ImageRollsDatabase> ImageRollsDatabase { get; } = new Dictionary<string, Databases.ImageRollsDatabase>();
 
     public ImageRolls()
     {
@@ -40,10 +41,8 @@ public partial class ImageRolls : ObservableRecipient
         });
 
         LoadFixedImageRollsList();
-
-        ImageRollsDatabase.Open(App.ImageRollsDatabasePath);
-
         LoadUserImageRollsList();
+
 
         IsActive = true;
     }
@@ -83,18 +82,29 @@ public partial class ImageRolls : ObservableRecipient
     }
     private void LoadUserImageRollsList()
     {
-        LogInfo($"Loading user image rolls from database. {App.ImageRollsDatabasePath}");
+        ImageRollsDatabase.Add("default", new Databases.ImageRollsDatabase().Open(App.ImageRollsDatabasePath));
 
-        UserImageRolls.Clear();
-
-        foreach (var roll in ImageRollsDatabase.SelectAllImageRolls())
+        foreach (var file in Directory.EnumerateFiles(App.ImageRollsRoot, "*.sqlite"))
         {
-            LogDebug($"Found: {roll.Name}");
-
-            roll.ImageRollsDatabase = ImageRollsDatabase;
-            UserImageRolls.Add(roll);
+            if (file.Equals(App.ImageRollsDatabasePath))
+                continue;
+            ImageRollsDatabase.Add(Path.GetFileName(file), new Databases.ImageRollsDatabase().Open(file));
         }
 
+
+        UserImageRolls.Clear();
+        foreach (var db in ImageRollsDatabase)
+        {
+            LogInfo($"Loading user image rolls from database. {db.Key}");
+
+            foreach (var roll in db.Value.SelectAllImageRolls())
+            {
+                LogDebug($"Found: {roll.Name}");
+
+                roll.ImageRollsDatabase = db.Value;
+                UserImageRolls.Add(roll);
+            }
+        }
         LogInfo($"Processed {UserImageRolls.Count} user image rolls.");
     }
 
@@ -105,7 +115,7 @@ public partial class ImageRolls : ObservableRecipient
 
         NewImageRoll = new ImageRollEntry
         {
-            ImageRollsDatabase = ImageRollsDatabase
+            ImageRollsDatabase = ImageRollsDatabase["default"],
         };
     }
 
@@ -127,10 +137,10 @@ public partial class ImageRolls : ObservableRecipient
             NewImageRoll.SelectedGS1Table is Sectors.Interfaces.GS1TableNames.None or Sectors.Interfaces.GS1TableNames.Unsupported)
             return;
 
-        if (ImageRollsDatabase == null)
+        if (SelectedImageRoll == null)
             return;
 
-        if (ImageRollsDatabase.InsertOrReplaceImageRoll(NewImageRoll) > 0)
+        if (SelectedImageRoll.ImageRollsDatabase.InsertOrReplaceImageRoll(NewImageRoll) > 0)
         {
             LogInfo($"Saved image roll: {NewImageRoll.Name}");
 
@@ -149,13 +159,13 @@ public partial class ImageRolls : ObservableRecipient
 
         foreach (var img in SelectedUserImageRoll.Images)
         {
-            if (ImageRollsDatabase.DeleteImage(img.UID))
+            if (SelectedImageRoll.ImageRollsDatabase.DeleteImage(img.UID))
                 LogInfo($"Deleted image: {img.UID}");
             else
                 LogError($"Failed to delete image: {img.UID}");
         }
 
-        if (ImageRollsDatabase.DeleteImageRoll(NewImageRoll.UID))
+        if (SelectedImageRoll.ImageRollsDatabase.DeleteImageRoll(NewImageRoll.UID))
         {
             LogInfo($"Deleted image roll: {NewImageRoll.UID}");
 

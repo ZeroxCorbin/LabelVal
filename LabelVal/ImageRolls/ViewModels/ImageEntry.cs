@@ -9,13 +9,9 @@ using System.Windows.Media.Imaging;
 namespace LabelVal.ImageRolls.ViewModels;
 
 [JsonObject(MemberSerialization.OptIn)]
-public partial class ImageEntry : ObservableRecipient
+public partial class ImageEntry : ObservableObject
 {
     public string ToJSON() => JsonConvert.SerializeObject(this);
-
-    [ObservableProperty]
-    [property: SQLite.Ignore]
-    private bool isActive;
 
     [JsonProperty]
     public string Name
@@ -74,7 +70,7 @@ public partial class ImageEntry : ObservableRecipient
 
     [ObservableProperty][property: SQLite.Ignore] private double printer2ImageTotalPixelDeviation;
 
-    public ImageEntry() => IsActive = true;
+    public ImageEntry() { }
     public ImageEntry(string rollUID, string path, int targetDpiWidth, int targetDpiHeight)
     {
         RollUID = rollUID;
@@ -94,8 +90,6 @@ public partial class ImageEntry : ObservableRecipient
         ImageWidth = Math.Round(Image.PixelWidth / Image.DpiX, 2);
         ImageHeight = Math.Round(Image.PixelHeight / Image.DpiY, 2);
         ImageTotalPixels = Image.PixelWidth * Image.PixelHeight;
-
-        IsActive = true;
     }
     //This should only be used for a placeholder image
     public ImageEntry(string rollUID, byte[] placeholderImage)
@@ -104,7 +98,6 @@ public partial class ImageEntry : ObservableRecipient
         UID = ImageUtilities.ImageUID(placeholderImage);
         RollUID = rollUID;
         IsPlaceholder = true;
-        IsActive = true;
     }
     public ImageEntry(string rollUID, byte[] image, int targetDpiWidth, int targetDpiHeight = 0, string comment = null)
     {
@@ -121,8 +114,6 @@ public partial class ImageEntry : ObservableRecipient
         ImageWidth = Math.Round(Image.PixelWidth / Image.DpiX, 2);
         ImageHeight = Math.Round(Image.PixelHeight / Image.DpiY, 2);
         ImageTotalPixels = Image.PixelWidth * Image.PixelHeight;
-
-        IsActive = true;
     }
 
     public ImageEntry Clone() => new(RollUID, GetBitmapBytes(), TargetDpiWidth, TargetDpiHeight, Comment);

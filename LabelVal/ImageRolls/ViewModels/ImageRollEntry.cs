@@ -83,6 +83,13 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
         IsActive = true;
         RecieveAll();
     }
+    public ImageRollEntry(bool inactive)
+    {
+        IsActive = inactive;
+
+        if(IsActive)
+            RecieveAll();
+    }
     public ImageRollEntry(string name, string path, Databases.ImageRollsDatabase imageRollsDatabase)
     {
         IsActive = true;
