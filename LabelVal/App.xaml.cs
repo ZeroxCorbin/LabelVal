@@ -65,7 +65,7 @@ public partial class App : Application
 
         //   ExtractRunDetails();
         // File.WriteAllText("setting.imgr", JsonConvert.SerializeObject(new ImageRolls.ViewModels.ImageRollEntry(), new Newtonsoft.Json.Converters.StringEnumConverter()));
-       // SetupExceptionHandling();
+       SetupExceptionHandling();
 
         Version version = Assembly.GetExecutingAssembly().GetName().Version;
         if (version != null)

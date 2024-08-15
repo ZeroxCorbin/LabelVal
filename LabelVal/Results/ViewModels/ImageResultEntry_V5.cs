@@ -46,7 +46,7 @@ public partial class ImageResultEntry
         IsV5Faulted = false;
         IsV5Working = true;
 
-        BringIntoView?.Invoke();
+        //BringIntoView?.Invoke();
 
         if (ImageResults.SelectedScanner == null)
         {

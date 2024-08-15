@@ -45,6 +45,24 @@ public partial class Controller : ObservableObject
         V275 = v275;
         V5 = v5;
 
+        if (!HasV275 && !HasV5)
+        {
+            LogError("Run: No device selected for run.");
+            return false;
+        }
+
+        if(HasV275 && !V275.IsLoggedIn_Control)
+        {
+            LogError("Run: V275, Not logged in.");
+            return false;
+        }
+
+        if (HasV5 && !V5.IsConnected)
+        {
+            LogError("Run: V5, Not connected.");
+            return false;
+        }
+
         LoopCount = loopCount;
 
         RunEntry = new RunEntry(RunDatabase, ImageRollEntry, LoopCount);
@@ -75,17 +93,13 @@ public partial class Controller : ObservableObject
             if (await PreRunV275() != RunStates.Running)
                 return State;
         }
-        else if (HasV5)
+
+        if (HasV5)
         {
             LogInfo("Run: V5, Pre-Run");
 
             if (await PreRunV5() != RunStates.Running)
                 return State;
-        }
-        else
-        {
-            LogError("Run: No device selected for run.");
-            return UpdateRunState(RunStates.Error);
         }
 
         LogInfo($"Run: Loop Count {LoopCount.ToString()}");
@@ -96,11 +110,13 @@ public partial class Controller : ObservableObject
             foreach (Results.ViewModels.ImageResultEntry ire in ImageResultEntries)
             {
                 var useV275 = HasV275 && ire.V275StoredSectors.Count > 0;
-                if (!useV275)
+                if (ire.V275StoredSectors.Count == 0)
                     LogInfo("Run: V275, No sectors to process.");
+
                 var useV5 = HasV5 && ire.V5StoredSectors.Count > 0;
-                if (!useV5)
+                if (ire.V5StoredSectors.Count == 0)
                     LogInfo("Run: V5, No sectors to process.");
+
                 if (!useV275 && !useV5)
                     continue;
 
@@ -245,7 +261,7 @@ public partial class Controller : ObservableObject
     }
     private async Task<RunStates> ProcessV5(Results.ViewModels.ImageResultEntry ire)
     {
-        App.Current.Dispatcher.Invoke(()=> ire.V5ProcessCommand.Execute(V5.IsSimulator ? "file" : "sensor"));
+        App.Current.Dispatcher.Invoke(()=> ire.V5ProcessCommand.Execute(V5.IsSimulator ? "source" : "sensor"));
 
         return State;
     }

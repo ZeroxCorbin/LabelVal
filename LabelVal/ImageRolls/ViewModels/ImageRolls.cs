@@ -133,6 +133,9 @@ public partial class ImageRolls : ObservableRecipient
     [RelayCommand]
     public void Save()
     {
+        if (NewImageRoll == null)
+            return;
+
         if (string.IsNullOrEmpty(NewImageRoll.Name))
             return;
 
@@ -140,10 +143,7 @@ public partial class ImageRolls : ObservableRecipient
             NewImageRoll.SelectedGS1Table is Sectors.Interfaces.GS1TableNames.None or Sectors.Interfaces.GS1TableNames.Unsupported)
             return;
 
-        if (SelectedImageRoll == null)
-            return;
-
-        if (SelectedImageRoll.ImageRollsDatabase.InsertOrReplaceImageRoll(NewImageRoll) > 0)
+        if (NewImageRoll.ImageRollsDatabase.InsertOrReplaceImageRoll(NewImageRoll) > 0)
         {
             LogInfo($"Saved image roll: {NewImageRoll.Name}");
 
