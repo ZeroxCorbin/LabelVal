@@ -92,6 +92,12 @@
 
                     </DockPanel>
 
+                    <DockPanel DockPanel.Dock="Top" Margin="0,3,0,0">
+                        <TextBox Text="{Binding ImageBitDepth, Mode=OneWay}" BorderThickness="0" HorizontalContentAlignment="Center"
+                                md:HintAssist.Hint="Bit Depth" IsHitTestVisible="False"
+                                Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                    </DockPanel>
+
                 </DockPanel>
 
             </md:Card>

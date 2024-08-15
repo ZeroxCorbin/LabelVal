@@ -38,6 +38,7 @@ public static class BitmapImageUtilities
         bitmap.Freeze();
         return bitmap;
     }
+
     public static System.Windows.Media.Imaging.BitmapImage CreateBitmapImage(System.Drawing.Bitmap image, bool png = true)
     {
         var stream = new System.IO.MemoryStream();

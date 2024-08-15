@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using LabelVal.Utilities;
 using Newtonsoft.Json;
+using NHibernate.Hql.Ast.ANTLR.Tree;
 using System;
 using System.Drawing.Printing;
 using System.IO;
@@ -28,6 +29,8 @@ public partial class ImageEntry : ObservableObject
     [JsonProperty] public string Path { get; set; }
     [JsonProperty] public string Comment { get; set; }
 
+    public byte[] OriginalImage { get; set; }
+
     [property: SQLite.Ignore] public BitmapImage Image { get; private set; }
     [property: SQLite.Ignore] public BitmapImage ImageLow { get; private set; }
 
@@ -37,13 +40,13 @@ public partial class ImageEntry : ObservableObject
     [JsonProperty]
     public byte[] ImageBytes
     {
-        get => GetPngBytes();
+        get => OriginalImage;
         set
         {
-            Image = BitmapImageUtilities.CreateBitmapImage(value);
-            ImageLow = BitmapImageUtilities.CreateBitmapImage(value, 400);
+            OriginalImage = value;
 
-            //UID = BitmapImageUtilities.ImageUID(Image);
+            Image = BitmapImageUtilities.CreateBitmapImage(OriginalImage);
+            ImageLow = BitmapImageUtilities.CreateBitmapImage(OriginalImage, 400);
         }
     }
 
@@ -53,6 +56,8 @@ public partial class ImageEntry : ObservableObject
     [JsonProperty] public double ImageWidth { get; set; }
     [JsonProperty] public double ImageHeight { get; set; }
     [JsonProperty] public long ImageTotalPixels { get; set; }
+    public int ImageBitDepth => Image.Format.BitsPerPixel;
+
 
     [ObservableProperty][property: SQLite.Ignore] private double v52ImageTotalPixelDeviation;
 
@@ -73,15 +78,17 @@ public partial class ImageEntry : ObservableObject
     public ImageEntry() { }
     public ImageEntry(string rollUID, string path, int targetDpiWidth, int targetDpiHeight)
     {
+        OriginalImage = File.ReadAllBytes(path);
+        UID = ImageUtilities.ImageUID(OriginalImage);
         RollUID = rollUID;
 
         Path = path;
+
+        Image = BitmapImageUtilities.CreateBitmapImage(OriginalImage);
+        ImageLow = BitmapImageUtilities.CreateBitmapImage(OriginalImage, 400);
+
         TargetDpiHeight = targetDpiHeight;
         TargetDpiWidth = targetDpiWidth;
-
-        Image = BitmapImageUtilities.LoadBitmapImage(Path);
-        ImageLow = BitmapImageUtilities.LoadBitmapImage(Path, 400);
-        UID = BitmapImageUtilities.ImageUID(Image);
 
         string cmt = Path.Replace(System.IO.Path.GetExtension(Path), ".txt");
         if (File.Exists(cmt))
@@ -94,29 +101,34 @@ public partial class ImageEntry : ObservableObject
     //This should only be used for a placeholder image
     public ImageEntry(string rollUID, byte[] placeholderImage)
     {
-        Image = BitmapImageUtilities.CreateBitmapImage(placeholderImage);
-        UID = ImageUtilities.ImageUID(placeholderImage);
+        OriginalImage = placeholderImage;
+        UID = ImageUtilities.ImageUID(OriginalImage);
         RollUID = rollUID;
+
+        Image = BitmapImageUtilities.CreateBitmapImage(OriginalImage);
+
         IsPlaceholder = true;
     }
     public ImageEntry(string rollUID, byte[] image, int targetDpiWidth, int targetDpiHeight = 0, string comment = null)
     {
-        TargetDpiWidth = targetDpiWidth;
-        TargetDpiHeight = targetDpiHeight != 0 ? targetDpiHeight : targetDpiWidth;
-
-        Image = BitmapImageUtilities.CreateBitmapImage(image);
-        ImageLow = BitmapImageUtilities.CreateBitmapImage(image, 400);
-        UID = ImageUtilities.ImageUID(image);
+        OriginalImage = image;
+        UID = ImageUtilities.ImageUID(OriginalImage);
         RollUID = rollUID;
 
+        Image = BitmapImageUtilities.CreateBitmapImage(OriginalImage);
+        ImageLow = BitmapImageUtilities.CreateBitmapImage(OriginalImage, 400);
+
         Comment = comment;
+
+        TargetDpiWidth = targetDpiWidth;
+        TargetDpiHeight = targetDpiHeight != 0 ? targetDpiHeight : targetDpiWidth;
 
         ImageWidth = Math.Round(Image.PixelWidth / Image.DpiX, 2);
         ImageHeight = Math.Round(Image.PixelHeight / Image.DpiY, 2);
         ImageTotalPixels = Image.PixelWidth * Image.PixelHeight;
     }
 
-    public ImageEntry Clone() => new(RollUID, GetBitmapBytes(), TargetDpiWidth, TargetDpiHeight, Comment);
+    public ImageEntry Clone() => new(RollUID, OriginalImage, TargetDpiWidth, TargetDpiHeight, Comment);
 
     public void InitPrinterVariables(PrinterSettings printer)
     {
@@ -137,20 +149,20 @@ public partial class ImageEntry : ObservableObject
         V52ImageTotalPixelDeviation = 5488640 - ImageTotalPixels;
     }
 
-    public byte[] GetBitmapBytes(int dpi = 0)
-    {
-        if (Image == null)
-            return null;
+    //public byte[] GetBitmapBytes(int dpi = 0)
+    //{
+    //    if (Image == null)
+    //        return null;
 
-        int tDpi = dpi == 0 ? TargetDpiWidth : dpi;
+    //    int tDpi = dpi == 0 ? TargetDpiWidth : dpi;
 
-        byte[] bmp = BitmapImageUtilities.ImageToBytes(Image, false);
+    //    byte[] bmp = BitmapImageUtilities.ImageToBytes(Image, false);
 
-        if (dpi != 0)
-            ImageUtilities.SetBitmapDPI(bmp, (int)Image.DpiX);
+    //    if (dpi != 0)
+    //        ImageUtilities.SetBitmapDPI(bmp, (int)Image.DpiX);
 
-        return bmp;
-    }
+    //    return bmp;
+    //}
 
     public byte[] GetPngBytes() => Image != null ? BitmapImageUtilities.ImageToBytes(Image) : null;
 }

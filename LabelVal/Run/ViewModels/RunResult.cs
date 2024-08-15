@@ -120,14 +120,18 @@ public partial class RunResult : ObservableRecipient, IImageResultEntry, IRecipi
         try
         {
             byte[] bmp = type == "v275Stored"
-                    ? V275StoredImage.GetBitmapBytes()
+                    ? V275StoredImage.OriginalImage
                     : type == "v275Current"
-                    ? V275CurrentImage.GetBitmapBytes()
+                    ? V275CurrentImage.OriginalImage
                     : type == "v5Stored"
-                    ? V5StoredImage.GetBitmapBytes()
+                    ? V5StoredImage.OriginalImage
                     : type == "v5Current"
-                    ? V5CurrentImage.GetBitmapBytes()
-                    : SourceImage.GetBitmapBytes();
+                    ? V5CurrentImage.OriginalImage
+                    //: type == "l95xxStored"
+                    //? L95xxStoredImage.OriginalImage
+                    //: type == "l95xxCurrent"
+                    //? L95xxCurrentImage.OriginalImage
+                    : SourceImage.OriginalImage;
             if (bmp != null)
             {
                 _ = SaveImageBytesToFile(path, bmp);

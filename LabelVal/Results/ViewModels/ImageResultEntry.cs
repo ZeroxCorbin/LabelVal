@@ -177,21 +177,23 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         try
         {
             byte[] bmp = type == "v275Stored"
-                    ? V275StoredImage.GetBitmapBytes()
+                    ? V275StoredImage.OriginalImage
                     : type == "v275Current"
-                    ? V275CurrentImage.GetBitmapBytes()
+                    ? V275CurrentImage.OriginalImage
                     : type == "v5Stored"
-                    ? V5StoredImage.GetBitmapBytes()
+                    ? V5StoredImage.OriginalImage
                     : type == "v5Current"
-                    ? V5CurrentImage.GetBitmapBytes()
+                    ? V5CurrentImage.OriginalImage
                     : type == "l95xxStored"
-                    ? L95xxStoredImage.GetBitmapBytes()
+                    ? L95xxStoredImage.OriginalImage
                     : type == "l95xxCurrent"
-                    ? L95xxCurrentImage.GetBitmapBytes()
-                    : SourceImage.GetBitmapBytes();
+                    ? L95xxCurrentImage.OriginalImage
+                    : SourceImage.OriginalImage;
             if (bmp != null)
             {
-                _ = SaveImageBytesToFile(path, bmp);
+                ImageQuantUtilities.RawBitmapToQuantImageBytes(bmp);
+                File.WriteAllBytes(path, bmp);
+                File.WriteAllBytes(path, bmp);
                 Clipboard.SetText(path);
             }
         }
@@ -360,8 +362,8 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
     {
         SaveFileDialog saveFileDialog1 = new()
         {
-            Filter = "Bitmap Image|*.bmp",//|Gif Image|*.gif|JPeg Image|*.jpg";
-            Title = "Save an Image File"
+            Filter = "PNG Image|*.png",
+            Title = "Save as PNG Image File"
         };
         _ = saveFileDialog1.ShowDialog();
 

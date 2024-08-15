@@ -665,10 +665,10 @@ public partial class ImageResults : ObservableRecipient,
                     }
                 }
             }
-
+             
             if (type == "source")
             {
-                if (!sim.SaveImage(prepend + Path.GetFileName(imageResults.SourceImage.Path), imageResults.SourceImage.GetBitmapBytes()))
+                if (!sim.SaveImage(prepend + Path.GetFileName(imageResults.SourceImage.Path), imageResults.SourceImage.OriginalImage))
                 {
                     LogError("Could not copy the image to the simulator images directory.");
                     imageResults.IsV275Working = false;
@@ -677,7 +677,7 @@ public partial class ImageResults : ObservableRecipient,
             }
             else if (type == "v275Stored")
             {
-                if (!sim.SaveImage(prepend + Path.GetFileName(imageResults.SourceImage.Path), imageResults.V275ResultRow.Stored.GetPngBytes()))
+                if (!sim.SaveImage(prepend + Path.GetFileName(imageResults.SourceImage.Path), imageResults.V275ResultRow.Stored.OriginalImage))
                 {
                     LogError("Could not save the image to the simulator images directory.");
                     imageResults.IsV275Working = false;
@@ -686,7 +686,7 @@ public partial class ImageResults : ObservableRecipient,
             }
             else if (type == "v5Stored")
             {
-                if (!sim.SaveImage(prepend + Path.GetFileName(imageResults.SourceImage.Path), imageResults.V5ResultRow.Stored.GetPngBytes()))
+                if (!sim.SaveImage(prepend + Path.GetFileName(imageResults.SourceImage.Path), imageResults.V5ResultRow.Stored.OriginalImage))
                 {
                     LogError("Could not save the image to the simulator images directory.");
                     imageResults.IsV275Working = false;

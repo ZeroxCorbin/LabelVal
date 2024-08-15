@@ -1,4 +1,5 @@
 ﻿using nQuant;
+using System;
 using System.Drawing;
 using System.IO;
 
@@ -23,6 +24,37 @@ public static class ImageQuantUtilities
 
         Image quantizedImage = new WuQuantizer().QuantizeImage(bmp);
         return CreateBitmapImage(ImageToBytes(quantizedImage));
+    }
+
+    public static int GetBitDepth(Bitmap bitmap)
+    {
+        switch (bitmap.PixelFormat)
+        {
+            case System.Drawing.Imaging.PixelFormat.Format1bppIndexed:
+                return 1;
+            case System.Drawing.Imaging.PixelFormat.Format4bppIndexed:
+                return 4;
+            case System.Drawing.Imaging.PixelFormat.Format8bppIndexed:
+                return 8;
+            case System.Drawing.Imaging.PixelFormat.Format16bppArgb1555:
+            case System.Drawing.Imaging.PixelFormat.Format16bppGrayScale:
+            case System.Drawing.Imaging.PixelFormat.Format16bppRgb555:
+            case System.Drawing.Imaging.PixelFormat.Format16bppRgb565:
+                return 16;
+            case System.Drawing.Imaging.PixelFormat.Format24bppRgb:
+                return 24;
+            case System.Drawing.Imaging.PixelFormat.Format32bppArgb:
+            case System.Drawing.Imaging.PixelFormat.Format32bppPArgb:
+            case System.Drawing.Imaging.PixelFormat.Format32bppRgb:
+                return 32;
+            case System.Drawing.Imaging.PixelFormat.Format48bppRgb:
+                return 48;
+            case System.Drawing.Imaging.PixelFormat.Format64bppArgb:
+            case System.Drawing.Imaging.PixelFormat.Format64bppPArgb:
+                return 64;
+            default:
+                return 0;
+        }
     }
 
     private static System.Windows.Media.Imaging.BitmapImage CreateBitmapImage(byte[] data)
