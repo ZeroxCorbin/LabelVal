@@ -162,11 +162,14 @@
                     <Button Command="{Binding StartStopCommand}" Width="36" Height="36">
                         <Button.Style>
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
-                                <Setter Property="IsEnabled" Value="True"/>
+                                <Setter Property="IsEnabled" Value="False"/>
                                 <Setter Property="Content" Value="{iconPacks:Material Kind=Play, Width=24, Height=24}"/>
                                 <Style.Triggers>
-                                    <DataTrigger Value="False" Binding="{Binding SelectedNode.IsLoggedIn_Control}">
-                                        <Setter Property="IsEnabled" Value="False"/>
+                                    <DataTrigger Value="True" Binding="{Binding SelectedNode.IsLoggedIn_Control}">
+                                        <Setter Property="IsEnabled" Value="True"/>
+                                    </DataTrigger>
+                                    <DataTrigger Value="True" Binding="{Binding SelectedScanner.IsConnected}">
+                                        <Setter Property="IsEnabled" Value="True"/>
                                     </DataTrigger>
                                     <DataTrigger Value="Running" Binding="{Binding QuickRunController.RunController.State}">
                                         <Setter Property="Content" Value="{iconPacks:Material Kind=Stop, Width=24, Height=24}"/>

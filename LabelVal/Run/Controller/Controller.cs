@@ -99,7 +99,7 @@ public partial class Controller : ObservableObject
                 if (!useV275)
                     LogInfo("Run: V275, No sectors to process.");
                 var useV5 = HasV5 && ire.V5StoredSectors.Count > 0;
-                if (!useV275)
+                if (!useV5)
                     LogInfo("Run: V5, No sectors to process.");
                 if (!useV275 && !useV5)
                     continue;
@@ -245,7 +245,7 @@ public partial class Controller : ObservableObject
     }
     private async Task<RunStates> ProcessV5(Results.ViewModels.ImageResultEntry ire)
     {
-        ire.V5ProcessCommand.Execute(V5.IsSimulator ? "file" : "sensor");
+        App.Current.Dispatcher.Invoke(()=> ire.V5ProcessCommand.Execute(V5.IsSimulator ? "file" : "sensor"));
 
         return State;
     }

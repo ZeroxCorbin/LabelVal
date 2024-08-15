@@ -45,12 +45,16 @@ public partial class RunManager : ObservableRecipient, IRecipient<PropertyChange
         RequestMessage<ImageRollEntry> mes3 = new();
         WeakReferenceMessenger.Default.Send(mes3);
         SelectedImageRoll = mes3.Response;
+
+        RequestMessage<Scanner> mes4 = new();
+        WeakReferenceMessenger.Default.Send(mes4);
+        SelectedScanner = mes4.Response;
     }
 
     [RelayCommand]
     private void StartStop()
     {
-        if (QuickRunController == null || SelectedImageRoll == null || SelectedNode == null)
+        if (QuickRunController == null || SelectedImageRoll == null)
             return;
 
         if (QuickRunController.RunController.State == RunStates.Running)
