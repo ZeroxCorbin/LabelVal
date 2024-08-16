@@ -32,11 +32,10 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
 
     public ImageEntry SourceImage { get; }
     public string SourceImageUID => SourceImage.UID;
+    public bool IsPlaceholder => SourceImage.IsPlaceholder;
 
     public ImageResults ImageResults { get; }
     public string ImageRollUID => ImageResults.SelectedImageRoll.UID;
-
-    public bool IsPlaceholder => SourceImage.IsPlaceholder;
 
     [ObservableProperty] private int imagesMaxHeight = App.Settings.GetValue<int>(nameof(ImagesMaxHeight));
     [ObservableProperty] private bool dualSectorColumns = App.Settings.GetValue<bool>(nameof(DualSectorColumns));
@@ -131,11 +130,11 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             SourceImageUID = SourceImageUID,
             ImageRollUID = ImageRollUID,
 
-            SourceImage = JsonConvert.SerializeObject(SourceImage),
-            StoredImage = JsonConvert.SerializeObject(V275CurrentImage),
+            SourceImage = SourceImage.Serialize,
+            StoredImage = V275CurrentImage.Serialize,
 
-            Template = JsonConvert.SerializeObject(V275CurrentTemplate),
-            Report = JsonConvert.SerializeObject(V275CurrentReport),
+            Template = V275SerializeTemplate,
+            Report = V275SerializeReport,
         },
         V5Result = new Databases.V5Result
         {
@@ -143,11 +142,11 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             SourceImageUID = SourceImageUID,
             ImageRollUID = ImageRollUID,
 
-            SourceImage = JsonConvert.SerializeObject(SourceImage),
-            StoredImage = JsonConvert.SerializeObject(V5CurrentImage),
+            SourceImage = SourceImage.Serialize,
+            StoredImage = V5CurrentImage.Serialize,
 
-            Template = JsonConvert.SerializeObject(V5CurrentTemplate),
-            Report = JsonConvert.SerializeObject(V5CurrentReport),
+            Template = V5SerializeTemplate,
+            Report = V5SerializeReport,
         },
         L95xxResult = new Databases.L95xxResult
         {
@@ -155,7 +154,8 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             ImageRollUID = ImageRollUID,
             SourceImageUID = SourceImageUID,
 
-            SourceImage = JsonConvert.SerializeObject(SourceImage),
+            SourceImage = SourceImage.Serialize,
+            Report = L95xxSerializeReport
             //Report = JsonConvert.SerializeObject(L95xxStoredSectors.Select(x => new L95xxReport() { Report = ((LVS_95xx.Sectors.Sector)x).L95xxPacket, Template = (LVS_95xx.Sectors.Template)x.Template }).ToList()),
         },
     };
@@ -170,29 +170,27 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
     [RelayCommand]
     private void Save(string type)
     {
-        //SendTo95xxApplication();
-
         string path = GetSaveFilePath();
+
         if (string.IsNullOrEmpty(path)) return;
+
         try
         {
             byte[] bmp = type == "v275Stored"
-                    ? V275StoredImage.OriginalImage
+                    ? V275StoredImage.ImageBytes
                     : type == "v275Current"
-                    ? V275CurrentImage.OriginalImage
+                    ? V275CurrentImage.ImageBytes
                     : type == "v5Stored"
-                    ? V5StoredImage.OriginalImage
+                    ? V5StoredImage.ImageBytes
                     : type == "v5Current"
-                    ? V5CurrentImage.OriginalImage
+                    ? V5CurrentImage.ImageBytes
                     : type == "l95xxStored"
-                    ? L95xxStoredImage.OriginalImage
+                    ? L95xxStoredImage.ImageBytes
                     : type == "l95xxCurrent"
-                    ? L95xxCurrentImage.OriginalImage
-                    : SourceImage.OriginalImage;
+                    ? L95xxCurrentImage.ImageBytes
+                    : SourceImage.ImageBytes;
             if (bmp != null)
             {
-                ImageQuantUtilities.RawBitmapToQuantImageBytes(bmp);
-                File.WriteAllBytes(path, bmp);
                 File.WriteAllBytes(path, bmp);
                 Clipboard.SetText(path);
             }

@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using LabelVal.Utilities;
 using Newtonsoft.Json;
-using NHibernate.Hql.Ast.ANTLR.Tree;
 using System;
 using System.Drawing.Printing;
 using System.IO;
@@ -12,7 +11,7 @@ namespace LabelVal.ImageRolls.ViewModels;
 [JsonObject(MemberSerialization.OptIn)]
 public partial class ImageEntry : ObservableObject
 {
-    public string ToJSON() => JsonConvert.SerializeObject(this);
+    public string Serialize => JsonConvert.SerializeObject(this);
 
     [JsonProperty]
     public string Name
@@ -29,7 +28,7 @@ public partial class ImageEntry : ObservableObject
     [JsonProperty] public string Path { get; set; }
     [JsonProperty] public string Comment { get; set; }
 
-    public byte[] OriginalImage { get; set; }
+    private byte[] OriginalImage { get; set; }
 
     [property: SQLite.Ignore] public BitmapImage Image { get; private set; }
     [property: SQLite.Ignore] public BitmapImage ImageLow { get; private set; }
@@ -79,7 +78,7 @@ public partial class ImageEntry : ObservableObject
     public ImageEntry(string rollUID, string path, int targetDpiWidth, int targetDpiHeight)
     {
         OriginalImage = File.ReadAllBytes(path);
-        UID = ImageUtilities.ImageUID(OriginalImage);
+        UID = ImageUtilities.GetImageUID(OriginalImage);
         RollUID = rollUID;
 
         Path = path;
@@ -102,7 +101,7 @@ public partial class ImageEntry : ObservableObject
     public ImageEntry(string rollUID, byte[] placeholderImage)
     {
         OriginalImage = placeholderImage;
-        UID = ImageUtilities.ImageUID(OriginalImage);
+        UID = ImageUtilities.GetImageUID(OriginalImage);
         RollUID = rollUID;
 
         Image = BitmapImageUtilities.CreateBitmapImage(OriginalImage);
@@ -112,7 +111,7 @@ public partial class ImageEntry : ObservableObject
     public ImageEntry(string rollUID, byte[] image, int targetDpiWidth, int targetDpiHeight = 0, string comment = null)
     {
         OriginalImage = image;
-        UID = ImageUtilities.ImageUID(OriginalImage);
+        UID = ImageUtilities.GetImageUID(OriginalImage);
         RollUID = rollUID;
 
         Image = BitmapImageUtilities.CreateBitmapImage(OriginalImage);
@@ -148,21 +147,4 @@ public partial class ImageEntry : ObservableObject
 
         V52ImageTotalPixelDeviation = 5488640 - ImageTotalPixels;
     }
-
-    //public byte[] GetBitmapBytes(int dpi = 0)
-    //{
-    //    if (Image == null)
-    //        return null;
-
-    //    int tDpi = dpi == 0 ? TargetDpiWidth : dpi;
-
-    //    byte[] bmp = BitmapImageUtilities.ImageToBytes(Image, false);
-
-    //    if (dpi != 0)
-    //        ImageUtilities.SetBitmapDPI(bmp, (int)Image.DpiX);
-
-    //    return bmp;
-    //}
-
-    public byte[] GetPngBytes() => Image != null ? BitmapImageUtilities.ImageToBytes(Image) : null;
 }

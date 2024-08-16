@@ -25,6 +25,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
     [ObservableProperty] private DrawingImage l95xxCurrentImageOverlay;
 
     public List<LVS_95xx.Models.FullReport> L95xxCurrentReport { get; private set; }
+    public string L95xxSerializeReport => JsonConvert.SerializeObject(L95xxCurrentReport);
 
     public ObservableCollection<Sectors.Interfaces.ISector> L95xxCurrentSectors { get; } = [];
     public ObservableCollection<Sectors.Interfaces.ISector> L95xxStoredSectors { get; } = [];

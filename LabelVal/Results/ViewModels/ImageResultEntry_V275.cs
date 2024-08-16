@@ -28,7 +28,9 @@ public partial class ImageResultEntry
     [ObservableProperty] private DrawingImage v275CurrentImageOverlay;
 
     public Job V275CurrentTemplate { get; set; }
+    public string V275SerializeTemplate => JsonConvert.SerializeObject(V275CurrentTemplate);
     public Report V275CurrentReport { get; private set; }
+    public string V275SerializeReport => JsonConvert.SerializeObject(V275CurrentReport);
 
     public ObservableCollection<Sectors.Interfaces.ISector> V275CurrentSectors { get; } = [];
     public ObservableCollection<Sectors.Interfaces.ISector> V275StoredSectors { get; } = [];
@@ -126,14 +128,12 @@ public partial class ImageResultEntry
 
         if (!ImageResults.SelectedNode.IsSimulator)
         {
-            int dpi = 600;// SelectedPrinter.PrinterName.Contains("ZT620") ? 300 : 600;
-            ImageUtilities.SetBitmapDPI(report.image, dpi);
-            V275CurrentImage = new ImageEntry(ImageRollUID, report.image, dpi);//ImageUtilities.ConvertToPng(report.image, 600);
+            int dpi = 600;
+            V275CurrentImage = new ImageEntry(ImageRollUID, ImageUtilities.GetPng(report.image, dpi), dpi);
         }
         else
         {
-            ImageUtilities.SetBitmapDPI(report.image, (int)Math.Round(SourceImage.Image.DpiX));
-            V275CurrentImage = new ImageEntry(ImageRollUID, report.image, ImageResults.SelectedImageRoll.TargetDPI);
+            V275CurrentImage = new ImageEntry(ImageRollUID, ImageUtilities.GetPng(report.image, (int)Math.Round(SourceImage.Image.DpiX)), ImageResults.SelectedImageRoll.TargetDPI);
         }
 
         V275CurrentSectors.Clear();

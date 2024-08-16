@@ -23,7 +23,9 @@ public partial class ImageResultEntry
     [ObservableProperty] private DrawingImage v5CurrentImageOverlay;
 
     public V5_REST_Lib.Models.Config V5CurrentTemplate { get; set; }
+    public string V5SerializeTemplate => JsonConvert.SerializeObject(V5CurrentTemplate);
     public V5_REST_Lib.Models.ResultsAlt V5CurrentReport { get; private set; }
+    public string V5SerializeReport => JsonConvert.SerializeObject(V5CurrentReport);
 
     public ObservableCollection<Sectors.Interfaces.ISector> V5CurrentSectors { get; } = [];
     public ObservableCollection<Sectors.Interfaces.ISector> V5StoredSectors { get; } = [];
@@ -105,9 +107,9 @@ public partial class ImageResultEntry
             path = $"{path}/image.png";
 
             if (imageType == "source")
-                ImageResults.SelectedScanner.FTPClient.UploadFile(SourceImage.GetPngBytes(), path);
+                ImageResults.SelectedScanner.FTPClient.UploadFile(SourceImage.ImageBytes, path);
             else if (imageType == "v5Stored")
-                ImageResults.SelectedScanner.FTPClient.UploadFile(V5ResultRow.Stored.GetPngBytes(), path);
+                ImageResults.SelectedScanner.FTPClient.UploadFile(V5ResultRow.Stored.ImageBytes, path);
 
             ImageResults.SelectedScanner.FTPClient.Disconnect();
 

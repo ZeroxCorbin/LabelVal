@@ -120,21 +120,21 @@ public partial class RunResult : ObservableRecipient, IImageResultEntry, IRecipi
         try
         {
             byte[] bmp = type == "v275Stored"
-                    ? V275StoredImage.OriginalImage
+                    ? V275StoredImage.ImageBytes
                     : type == "v275Current"
-                    ? V275CurrentImage.OriginalImage
+                    ? V275CurrentImage.ImageBytes
                     : type == "v5Stored"
-                    ? V5StoredImage.OriginalImage
+                    ? V5StoredImage.ImageBytes
                     : type == "v5Current"
-                    ? V5CurrentImage.OriginalImage
+                    ? V5CurrentImage.ImageBytes
                     //: type == "l95xxStored"
                     //? L95xxStoredImage.OriginalImage
                     //: type == "l95xxCurrent"
                     //? L95xxCurrentImage.OriginalImage
-                    : SourceImage.OriginalImage;
+                    : SourceImage.ImageBytes;
             if (bmp != null)
             {
-                _ = SaveImageBytesToFile(path, bmp);
+                File.WriteAllBytes(path, bmp);
                 Clipboard.SetText(path);
             }
         }
@@ -206,11 +206,7 @@ public partial class RunResult : ObservableRecipient, IImageResultEntry, IRecipi
 
         return saveFileDialog1.FileName;
     }
-    private string SaveImageBytesToFile(string path, byte[] img)
-    {
-        File.WriteAllBytes(path, img);
-        return "";
-    }
+
 
     public DrawingImage CreatePrinterAreaOverlay(bool useRatio)
     {

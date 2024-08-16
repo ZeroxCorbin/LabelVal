@@ -610,7 +610,7 @@ public partial class ImageResults : ObservableRecipient,
         if (!await SelectedNode.Controller.Commands.SimulationTriggerImage(
             new V275_REST_Lib.Models.SimulationTrigger() 
             { 
-                image = img.GetPngBytes(), 
+                image = img.ImageBytes, 
                 dpi = (uint)Math.Round(img.Image.DpiX, 0)
             }))
         {
@@ -668,7 +668,7 @@ public partial class ImageResults : ObservableRecipient,
              
             if (type == "source")
             {
-                if (!sim.SaveImage(prepend + Path.GetFileName(imageResults.SourceImage.Path), imageResults.SourceImage.OriginalImage))
+                if (!sim.SaveImage(prepend + Path.GetFileName(imageResults.SourceImage.Path), imageResults.SourceImage.ImageBytes))
                 {
                     LogError("Could not copy the image to the simulator images directory.");
                     imageResults.IsV275Working = false;
@@ -677,7 +677,7 @@ public partial class ImageResults : ObservableRecipient,
             }
             else if (type == "v275Stored")
             {
-                if (!sim.SaveImage(prepend + Path.GetFileName(imageResults.SourceImage.Path), imageResults.V275ResultRow.Stored.OriginalImage))
+                if (!sim.SaveImage(prepend + Path.GetFileName(imageResults.SourceImage.Path), imageResults.V275ResultRow.Stored.ImageBytes))
                 {
                     LogError("Could not save the image to the simulator images directory.");
                     imageResults.IsV275Working = false;
@@ -686,7 +686,7 @@ public partial class ImageResults : ObservableRecipient,
             }
             else if (type == "v5Stored")
             {
-                if (!sim.SaveImage(prepend + Path.GetFileName(imageResults.SourceImage.Path), imageResults.V5ResultRow.Stored.OriginalImage))
+                if (!sim.SaveImage(prepend + Path.GetFileName(imageResults.SourceImage.Path), imageResults.V5ResultRow.Stored.ImageBytes))
                 {
                     LogError("Could not save the image to the simulator images directory.");
                     imageResults.IsV275Working = false;
