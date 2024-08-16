@@ -135,7 +135,8 @@ public partial class ImageResultEntry
             return false;
         }
 
-        V5CurrentImage = new ImageEntry(ImageRollUID, triggerResults.FullImage, 600);
+        V5CurrentImage = new ImageEntry(ImageRollUID, ImageUtilities.GetPng(triggerResults.FullImage), 96);
+
         V5CurrentTemplate = config;
         V5CurrentReport = JsonConvert.DeserializeObject<V5_REST_Lib.Models.ResultsAlt>(triggerResults.ReportJSON);
 

@@ -7,6 +7,7 @@ using System.Reflection.Metadata;
 using System.Windows.Media.Imaging;
 using System.Linq;
 using Org.BouncyCastle.Tls;
+using static LabelVal.Utilities.ImageUtilities;
 
 namespace LabelVal.Utilities
 {
@@ -37,28 +38,11 @@ namespace LabelVal.Utilities
             using var bitmap = new Bitmap(ms);
             using var stream = new MemoryStream();
 
-            // Get the original properties
-            float dpiX = bitmap.HorizontalResolution;
-            float dpiY = bitmap.VerticalResolution;
-            PixelFormat pixelFormat = bitmap.PixelFormat;
-            PropertyItem[] propertyItems = bitmap.PropertyItems;
+            var dpiX = bitmap.HorizontalResolution;
+            var dpiY = bitmap.VerticalResolution;
 
-            // Create a new bitmap with the same properties
-            var newBitmap = new Bitmap(bitmap.Width, bitmap.Height, pixelFormat);
-            newBitmap.SetResolution(dpiX, dpiY);
-
-            using (var graphics = Graphics.FromImage(newBitmap))
-            {
-                graphics.DrawImage(bitmap, 0, 0, bitmap.Width, bitmap.Height);
-            }
-
-            // Copy metadata
-            foreach (var propertyItem in propertyItems)
-            {
-                newBitmap.SetPropertyItem(propertyItem);
-            }
-
-            newBitmap.Save(stream, ImageFormat.Png);
+            bitmap.SetResolution(dpiX, dpiY);
+            bitmap.Save(stream, ImageFormat.Png);
             return stream.ToArray();
         }
         /// <summary>
@@ -93,32 +77,14 @@ namespace LabelVal.Utilities
                 {
                     return SetPngDPI(img, dpiX, dpiY); ;
                 }
-
             }
 
             using var ms = new MemoryStream(img);
             using var bitmap = new Bitmap(ms);
             using var stream = new MemoryStream();
 
-            PixelFormat pixelFormat = bitmap.PixelFormat;
-            PropertyItem[] propertyItems = bitmap.PropertyItems;
-
-            // Create a new bitmap with the same properties
-            var newBitmap = new Bitmap(bitmap.Width, bitmap.Height, pixelFormat);
-            newBitmap.SetResolution(dpiX, dpiY);
-
-            using (var graphics = Graphics.FromImage(newBitmap))
-            {
-                graphics.DrawImage(bitmap, 0, 0, bitmap.Width, bitmap.Height);
-            }
-
-            // Copy metadata
-            foreach (var propertyItem in propertyItems)
-            {
-                newBitmap.SetPropertyItem(propertyItem);
-            }
-
-            newBitmap.Save(stream, ImageFormat.Png);
+            bitmap.SetResolution(dpiX, dpiY);
+            bitmap.Save(stream, ImageFormat.Png);
             return stream.ToArray();
         }
 
@@ -150,7 +116,7 @@ namespace LabelVal.Utilities
         /// <param name="dpiX"></param>
         /// <param name="dpiY"></param>
         /// <exception cref="ArgumentException"></exception>
-        public static void SetImageDPI(byte[] image, int dpiX, int dpiY = 0)
+        public static byte[] SetImageDPI(byte[] image, int dpiX, int dpiY = 0)
         {
             if (dpiX <= 0)
             {
@@ -164,11 +130,11 @@ namespace LabelVal.Utilities
 
             if (IsPng(image))
             {
-                SetPngDPI(image, dpiX, dpiY);
+                return SetPngDPI(image, dpiX, dpiY);
             }
             else if (IsBmp(image))
             {
-                SetBitmapDPI(image, dpiX, dpiY);
+                return SetBitmapDPI(image, dpiX, dpiY);
             }
             else
             {
@@ -266,7 +232,7 @@ namespace LabelVal.Utilities
                 Y = DotsPerInch(BitConverter.ToInt32(image, 42))
             };
         }
-        private static void SetBitmapDPI(byte[] image, int dpiX, int dpiY)
+        private static byte[] SetBitmapDPI(byte[] image, int dpiX, int dpiY)
         {
             if (image.Length < 54) // Minimum size for BMP with BITMAPINFOHEADER
             {
@@ -287,6 +253,8 @@ namespace LabelVal.Utilities
             {
                 image[i] = BitConverter.GetBytes(dpiYInMeters)[i - 42];
             }
+
+            return image;
         }
         private static byte[] ExtractBitmapData(byte[] image)
         {
@@ -383,6 +351,7 @@ namespace LabelVal.Utilities
 
                     // Skip the CRC
                     reader.BaseStream.Seek(4, SeekOrigin.Current);
+
                     return image;
                 }
                 else
