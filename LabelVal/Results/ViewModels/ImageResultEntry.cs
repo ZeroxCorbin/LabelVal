@@ -130,8 +130,8 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             SourceImageUID = SourceImageUID,
             ImageRollUID = ImageRollUID,
 
-            SourceImage = SourceImage.Serialize,
-            StoredImage = V275CurrentImage.Serialize,
+            SourceImage = SourceImage?.Serialize,
+            StoredImage = V275CurrentImage?.Serialize,
 
             Template = V275SerializeTemplate,
             Report = V275SerializeReport,
@@ -142,8 +142,8 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             SourceImageUID = SourceImageUID,
             ImageRollUID = ImageRollUID,
 
-            SourceImage = SourceImage.Serialize,
-            StoredImage = V5CurrentImage.Serialize,
+            SourceImage = SourceImage?.Serialize,
+            StoredImage = V5CurrentImage?.Serialize,
 
             Template = V5SerializeTemplate,
             Report = V5SerializeReport,
@@ -154,7 +154,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             ImageRollUID = ImageRollUID,
             SourceImageUID = SourceImageUID,
 
-            SourceImage = SourceImage.Serialize,
+            SourceImage = SourceImage?.Serialize,
             Report = L95xxSerializeReport
             //Report = JsonConvert.SerializeObject(L95xxStoredSectors.Select(x => new L95xxReport() { Report = ((LVS_95xx.Sectors.Sector)x).L95xxPacket, Template = (LVS_95xx.Sectors.Template)x.Template }).ToList()),
         },

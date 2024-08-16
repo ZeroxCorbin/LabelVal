@@ -321,7 +321,7 @@
                         </Grid>
                     </ScrollViewer>
                 </DockPanel>
-                
+
             </DockPanel>
 
             <!--Details-->
@@ -500,7 +500,7 @@
                         </DockPanel>
                     </md:Card>
 
-                    <ScrollViewer x:Name="ScrollV275CurrentSectors"  HorizontalAlignment="Left"
+                    <ScrollViewer x:Name="ScrollV275CurrentSectors"
                             Margin="3" VerticalScrollBarVisibility="Auto"
                             mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
                             ScrollChanged="ScrollV275CurrentSectors_ScrollChanged">
@@ -568,7 +568,7 @@
                                 </ListBox.ItemTemplate>
                             </ListBox>
 
-                            <DockPanel>
+                            <DockPanel VerticalAlignment="Top" HorizontalAlignment="Center">
                                 <DockPanel.Style>
                                     <Style TargetType="DockPanel">
                                         <Setter Property="Visibility" Value="Visible"/>
@@ -580,57 +580,56 @@
                                     </Style>
                                 </DockPanel.Style>
 
-                                <DockPanel VerticalAlignment="Top" HorizontalAlignment="Center">
-
-                                    <md:Card DockPanel.Dock="Top" HorizontalAlignment="Right" Padding="3"
+                                <md:Card DockPanel.Dock="Top" HorizontalAlignment="Right" Margin="0,0,0,3"
                                          Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
                                          Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
-                                        <DockPanel>
+                                    <DockPanel>
 
-                                            <Button Click="btnSaveImage_Click" Width="28"
+                                        <DockPanel Height="26.62"/>
+
+                                        <Button Click="btnSaveImage_Click" Width="28"
                                                     Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                                                     ToolTip="Save as image." Content="{iconPacks:Material Kind=ContentSave}"
                                                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
 
-                                            <Button Click="btnCopyImage_Click" Width="28"
+                                        <Button Click="btnCopyImage_Click" Width="28"
                                                     Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                                                     ToolTip="Copy image to clipboard as PNG." Content="{iconPacks:MaterialDesign Kind=ContentCopy}"
                                                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
 
-                                            <Button Click="btnCloseDetails_Click" Width="28"
+                                        <Button Click="btnCloseDetails_Click" Width="28"
                                                     Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                                                     ToolTip="Close this." Tag="v275Current" Content="{iconPacks:MaterialDesign Kind=Close}"
                                                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
 
-                                        </DockPanel>
-                                    </md:Card>
+                                    </DockPanel>
+                                </md:Card>
 
-                                    <sectors:SectorDetails DataContext="{Binding V275FocusedCurrentSector}">
-                                        <sectors:SectorDetails.Style>
-                                            <Style TargetType="sectors:SectorDetails">
-                                                <Setter Property="Width" Value="200"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding DataContext.ImagesMaxHeight, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="400">
-                                                        <Setter Property="MaxWidth" Value="400"/>
-                                                        <Setter Property="Width" Value="auto"/>
-                                                    </DataTrigger>
+                                <sectors:SectorDetails DataContext="{Binding V275FocusedCurrentSector}">
+                                    <sectors:SectorDetails.Style>
+                                        <Style TargetType="sectors:SectorDetails">
+                                            <Setter Property="Width" Value="200"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding DataContext.ImagesMaxHeight, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="400">
+                                                    <Setter Property="MaxWidth" Value="400"/>
+                                                    <Setter Property="Width" Value="auto"/>
+                                                </DataTrigger>
 
-                                                    <DataTrigger Binding="{Binding DataContext.ImagesMaxHeight, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="300">
-                                                        <Setter Property="MaxWidth" Value="400"/>
-                                                        <Setter Property="Width" Value="auto"/>
-                                                    </DataTrigger>
+                                                <DataTrigger Binding="{Binding DataContext.ImagesMaxHeight, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="300">
+                                                    <Setter Property="MaxWidth" Value="400"/>
+                                                    <Setter Property="Width" Value="auto"/>
+                                                </DataTrigger>
 
-                                                    <DataTrigger Binding="{Binding DataContext.DualSectorColumns, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="True">
-                                                        <Setter Property="MaxWidth" Value="400"/>
-                                                        <Setter Property="Width" Value="auto"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </sectors:SectorDetails.Style>
-                                    </sectors:SectorDetails>
+                                                <DataTrigger Binding="{Binding DataContext.DualSectorColumns, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="True">
+                                                    <Setter Property="MaxWidth" Value="400"/>
+                                                    <Setter Property="Width" Value="auto"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </sectors:SectorDetails.Style>
+                                </sectors:SectorDetails>
 
-                                </DockPanel>
                             </DockPanel>
 
                         </Grid>
