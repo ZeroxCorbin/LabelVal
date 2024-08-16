@@ -46,8 +46,6 @@ namespace LabelVal.Utilities
                 image[i++] = b;
         }
 
-
-
         public static byte[] ConvertToPng(byte[] img, int dpi, double angle)
         {
             if (dpi > 0)
@@ -82,7 +80,6 @@ namespace LabelVal.Utilities
 
             return stream.ToArray();
         }
-
         public static byte[] ConvertToPng(byte[] img, double angle = 0)
         {
   
@@ -116,7 +113,33 @@ namespace LabelVal.Utilities
                 return stream.ToArray();
             
         }
+        public static byte[] ConvertToPng(byte[] img, int dpi)
+        {
+            if (IsPng(img))
+                return img;
+            
+            using var ms = new MemoryStream(img);
+            using var bitmap = new Bitmap(ms);
+            using var stream = new MemoryStream();
 
+            bitmap.SetResolution(dpi, dpi);
+            bitmap.Save(stream, ImageFormat.Png);
+            return stream.ToArray();
+        }
+        public static byte[] ConvertToPng(byte[] img)
+        {
+            if (IsPng(img))
+            {
+                return img;
+            }
+
+            using var ms = new MemoryStream(img);
+            using var bitmap = new Bitmap(ms);
+            using var stream = new MemoryStream();
+
+            bitmap.Save(stream, ImageFormat.Png);
+            return stream.ToArray();
+        }
 
 
         public static byte[] AddOverlayPNG(byte[] img, byte[] overlay)
@@ -317,6 +340,33 @@ namespace LabelVal.Utilities
                 }
             }
 
+        }
+
+        private static bool IsPng(byte[] img)
+        {
+            if (img.Length < 8)
+            {
+                return false;
+            }
+
+            return img[0] == 0x89 &&
+                   img[1] == 0x50 &&
+                   img[2] == 0x4E &&
+                   img[3] == 0x47 &&
+                   img[4] == 0x0D &&
+                   img[5] == 0x0A &&
+                   img[6] == 0x1A &&
+                   img[7] == 0x0A;
+        }
+
+        private static bool IsBmp(byte[] img)
+        {
+            if (img.Length < 2)
+            {
+                return false;
+            }
+
+            return img[0] == 0x42 && img[1] == 0x4D; // 'B' and 'M' in ASCII
         }
 
     }
