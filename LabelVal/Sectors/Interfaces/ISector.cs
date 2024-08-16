@@ -81,6 +81,8 @@ public interface ISector
     bool IsMouseOver { get; set; }
 
     public static bool FallsWithin(ISector sector, System.Drawing.Point point) =>
-        point.X >= sector.Template.Left && point.X <= sector.Template.Left + sector.Template.Width &&
-        point.Y >= sector.Template.Top && point.Y <= sector.Template.Top + sector.Template.Height;
+        point.X >= sector.Template.Left
+            && point.X <= sector.Template.Left + sector.Template.Width &&
+            point.Y >= sector.Template.Top
+            && point.Y <= sector.Template.Top + sector.Template.Height;
 }

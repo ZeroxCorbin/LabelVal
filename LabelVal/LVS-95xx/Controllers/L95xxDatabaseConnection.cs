@@ -25,7 +25,7 @@ public class L95xxDatabaseConnection
             string str1 = str.ToString();
 
             Connection.ConnectionString = @"Provider=Microsoft.ACE.OLEDB.12.0;" +
-                                          @"Data Source=C:\Users\Public\LVS-95XX\LVS-95XX.mdb;User ID=Admin";
+                @"Data Source=C:\Users\Public\LVS-95XX\LVS-95XX.mdb;User ID=Admin";
             Connection.Open();
         }
         catch (Exception)
