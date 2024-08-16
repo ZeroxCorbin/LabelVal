@@ -11,6 +11,7 @@ using System.Linq;
 using System.Windows.Media;
 using static V5_REST_Lib.Controller;
 using V5_REST_Lib.Models;
+using LabelVal.Utilities;
 
 namespace LabelVal.Results.ViewModels;
 public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelVal.LVS_95xx.Models.FullReport>>
@@ -139,7 +140,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
         SortObservableCollectionByList(secs, L95xxCurrentSectors);
 
 
-        L95xxCurrentImage = new ImageEntry(ImageRollUID, message.Report.Thumbnail, 600);
+        L95xxCurrentImage = new ImageEntry(ImageRollUID, ImageUtilities.GetPng(message.Report.Thumbnail), 600);
         UpdateL95xxCurrentImageOverlay();
         //V5CurrentTemplate = config;
         //V5CurrentReport = JsonConvert.DeserializeObject<V5_REST_Lib.Models.ResultsAlt>(triggerResults.ReportJSON);

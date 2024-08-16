@@ -580,10 +580,6 @@
                                     </Style>
                                 </DockPanel.Style>
 
-                                <DockPanel.Background>
-                                    <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent}" Opacity="0.5" />
-                                </DockPanel.Background>
-
                                 <DockPanel VerticalAlignment="Top" HorizontalAlignment="Center">
 
                                     <md:Card DockPanel.Dock="Top" HorizontalAlignment="Right" Padding="3"
@@ -610,7 +606,29 @@
                                         </DockPanel>
                                     </md:Card>
 
-                                    <sectors:SectorDetails DataContext="{Binding V275FocusedCurrentSector}" Width="200"/>
+                                    <sectors:SectorDetails DataContext="{Binding V275FocusedCurrentSector}">
+                                        <sectors:SectorDetails.Style>
+                                            <Style TargetType="sectors:SectorDetails">
+                                                <Setter Property="Width" Value="200"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding DataContext.ImagesMaxHeight, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="400">
+                                                        <Setter Property="MaxWidth" Value="400"/>
+                                                        <Setter Property="Width" Value="auto"/>
+                                                    </DataTrigger>
+
+                                                    <DataTrigger Binding="{Binding DataContext.ImagesMaxHeight, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="300">
+                                                        <Setter Property="MaxWidth" Value="400"/>
+                                                        <Setter Property="Width" Value="auto"/>
+                                                    </DataTrigger>
+
+                                                    <DataTrigger Binding="{Binding DataContext.DualSectorColumns, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="True">
+                                                        <Setter Property="MaxWidth" Value="400"/>
+                                                        <Setter Property="Width" Value="auto"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </sectors:SectorDetails.Style>
+                                    </sectors:SectorDetails>
 
                                 </DockPanel>
                             </DockPanel>

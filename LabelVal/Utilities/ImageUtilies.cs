@@ -84,6 +84,66 @@ public static class ImageUtilities
         bitmap.Save(stream, ImageFormat.Png);
         return stream.ToArray();
     }
+    /// <summary>
+    /// Get BMP image from PNG or BMP image.
+    /// </summary>
+    /// <param name="img"></param>
+    /// <returns></returns>
+    public static byte[] GetBmp(byte[] img)
+    {
+        if (IsBmp(img))
+        {
+            return img;
+        }
+
+        using MemoryStream ms = new(img);
+        using Bitmap bitmap = new(ms);
+        using MemoryStream stream = new();
+
+        bitmap.Save(stream, ImageFormat.Bmp);
+        return stream.ToArray();
+    }
+    /// <summary>
+    /// Get BMP image from PNG or BMP image. Sets the DPI in the BMP image, if needed.
+    /// </summary>
+    /// <param name="img"></param>
+    /// <param name="dpiX"></param>
+    /// <param name="dpiY"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
+    public static byte[] GetBmp(byte[] img, int dpiX, int dpiY = 0)
+    {
+        if (dpiX <= 0)
+        {
+            throw new ArgumentException("DPI value must be greater than zero.");
+        }
+
+        if (dpiY <= 0)
+        {
+            dpiY = dpiX; // Use dpiX if dpiY is not provided or invalid
+        }
+
+        if (IsBmp(img))
+        {
+            DPI dpi = GetBitmapDPI(img);
+            if (dpi.X == dpiX && dpi.Y == dpiY)
+            {
+                return img;
+            }
+            else
+            {
+                return SetBitmapDPI(img, dpiX, dpiY);
+            }
+        }
+
+        using MemoryStream ms = new(img);
+        using Bitmap bitmap = new(ms);
+        using MemoryStream stream = new();
+
+        bitmap.SetResolution(dpiX, dpiY);
+        bitmap.Save(stream, ImageFormat.Bmp);
+        return stream.ToArray();
+    }
 
     /// <summary>
     /// Get the DPI of a PNG or BMP image.

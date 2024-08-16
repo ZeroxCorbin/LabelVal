@@ -191,7 +191,11 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
                     : SourceImage.ImageBytes;
             if (bmp != null)
             {
-                File.WriteAllBytes(path, bmp);
+                if (Path.GetExtension(path).Contains("png", StringComparison.InvariantCultureIgnoreCase))
+                    File.WriteAllBytes(path, bmp);
+                else
+                    File.WriteAllBytes(path, ImageUtilities.GetBmp(bmp));
+
                 Clipboard.SetText(path);
             }
         }
@@ -360,8 +364,8 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
     {
         SaveFileDialog saveFileDialog1 = new()
         {
-            Filter = "PNG Image|*.png",
-            Title = "Save as PNG Image File"
+            Filter = "PNG Image|*.png|Bitmap Image|*.bmp",
+            Title = "Save Image File"
         };
         _ = saveFileDialog1.ShowDialog();
 
