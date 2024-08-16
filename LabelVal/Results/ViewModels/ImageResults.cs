@@ -166,13 +166,13 @@ public partial class ImageResults : ObservableRecipient,
     {
         if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
         {
-            ImageEntry itm = e.NewItems.Cast<ImageEntry>().FirstOrDefault();
-            AddImageResultEntry(itm);
+            foreach(var itm in e.NewItems.Cast<ImageEntry>())
+                AddImageResultEntry(itm);
         }
         else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
         {
-            ImageEntry itm = e.OldItems.Cast<ImageEntry>().FirstOrDefault();
-            RemoveImageResultEntry(itm);
+            foreach (var itm in e.OldItems.Cast<ImageEntry>())
+                RemoveImageResultEntry(itm);
         }
     }
 
