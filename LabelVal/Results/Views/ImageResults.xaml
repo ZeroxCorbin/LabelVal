@@ -245,7 +245,7 @@
                             </Grid>
                         </ToggleButton>
 
-                        <ToggleButton IsChecked="{Binding ShowExtendedData}" Width="48" 
+                        <ToggleButton IsChecked="{Binding ShowExtendedData}" Width="48" HorizontalAlignment="Left"
                                       Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                                       Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}">
                             <ToggleButton.Style>

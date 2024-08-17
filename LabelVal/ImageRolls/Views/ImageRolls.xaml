@@ -485,7 +485,7 @@
         </DockPanel>
 
         <!--Fixed Image Rolls-->
-        <DockPanel>
+        <DockPanel MinHeight="310">
 
             <md:Card DockPanel.Dock="Top" Height="48" Margin="3,3,0,0"
                      Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"

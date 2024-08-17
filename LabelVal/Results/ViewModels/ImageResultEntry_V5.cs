@@ -43,7 +43,7 @@ public partial class ImageResultEntry
     public bool IsNotV5Faulted => !IsV5Faulted;
 
     [RelayCommand]
-    private async Task V5Process(string imageType)
+    public async Task V5Process(string imageType)
     {
         IsV5Faulted = false;
         IsV5Working = true;
@@ -57,74 +57,41 @@ public partial class ImageResultEntry
             return;
         }
 
-        V5_REST_Lib.Commands.Results res = await ImageResults.SelectedScanner.Controller.GetConfig();
-
-        if (!res.OK)
-        {
-            LogError("Could not get scanner configuration.");
-            IsV5Working = false;
-            return;
-        }
-
-        V5_REST_Lib.Models.Config config = (V5_REST_Lib.Models.Config)res.Object;
-
         if (imageType != "sensor")
         {
-            V5_REST_Lib.Models.Config.Fileacquisitionsource fas = config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource;
-            if (fas == null)
-            {
-                LogError("The scanner is not in file aquire mode.");
-                IsV5Working = false;
-                return;
-            }
-
-            //Rotate directory names to accomadate V5 
-            bool isFirst = fas.directory != ImageResults.SelectedScanner.FTPClient.ImagePath1Root;
-
-            string path = isFirst
-                ? ImageResults.SelectedScanner.FTPClient.ImagePath1
-                : ImageResults.SelectedScanner.FTPClient.ImagePath2;
-
-            fas.directory = isFirst
-                ? ImageResults.SelectedScanner.FTPClient.ImagePath1Root
-                : ImageResults.SelectedScanner.FTPClient.ImagePath2Root;
-
-            ImageResults.SelectedScanner.FTPClient.Connect();
-
-            if(!ImageResults.SelectedScanner.FTPClient.Connect())
-            {
-                LogError(ImageResults.SelectedScanner.FTPClient.ResultMessage);
-                IsV5Faulted = true;
-                IsV5Working = false;
-                return;
-            }
-
-            if (!ImageResults.SelectedScanner.FTPClient.DirectoryExists(path))
-                ImageResults.SelectedScanner.FTPClient.CreateRemoteDir(path);
-            else
-                ImageResults.SelectedScanner.FTPClient.DeleteRemoteFiles(path);
-
-            path = $"{path}/image.png";
-
+            Config config = null;
             if (imageType == "source")
-                ImageResults.SelectedScanner.FTPClient.UploadFile(SourceImage.ImageBytes, path);
+                config = await ImageResults.SelectedScanner.Controller.ChangeImage(SourceImage.ImageBytes, false);
             else if (imageType == "v5Stored")
-                ImageResults.SelectedScanner.FTPClient.UploadFile(V5ResultRow.Stored.ImageBytes, path);
+                config = await ImageResults.SelectedScanner.Controller.ChangeImage(V5ResultRow.Stored.ImageBytes, false);
 
-            ImageResults.SelectedScanner.FTPClient.Disconnect();
+            if(config == null)
+            {
+                LogError("Could not change the image.");
+                IsV5Working = false;
+                return;
+            }
 
-            //Attempt to update the directory in the FileAcquisitionSource
-            //config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.uid = DateTime.Now.Ticks.ToString();
-            _ = await ImageResults.SelectedScanner.Controller.SendJob(config.response.data);
-
-            _ = V5ProcessResults(await ImageResults.SelectedScanner.Controller.Trigger_Wait_Return(true), config);
+            V5ProcessResults(await ImageResults.SelectedScanner.Controller.Trigger_Wait_Return(true), config);
         }
         else
-            _ = V5ProcessResults(await ImageResults.SelectedScanner.Controller.Trigger_Wait_Return(true), config);
+        {
+            var config = await ImageResults.SelectedScanner.Controller.GetConfig();
+
+            if (!config.OK)
+            {
+                LogError("Could not get the configuration.");
+                IsV5Working = false;
+                return;
+            }
+
+            V5ProcessResults(await ImageResults.SelectedScanner.Controller.Trigger_Wait_Return(true), (Config)config.Object);
+        }
+            
 
         IsV5Working = false;
     }
-    public bool V5ProcessResults(V5_REST_Lib.Controller.TriggerResults triggerResults, Config config)
+    public void V5ProcessResults(V5_REST_Lib.Controller.TriggerResults triggerResults, Config config)
     {
         if (!triggerResults.OK)
         {
@@ -132,7 +99,7 @@ public partial class ImageResultEntry
 
             ClearRead("V5");
 
-            return false;
+            return;
         }
 
         V5CurrentImage = new ImageEntry(ImageRollUID, ImageUtilities.GetPng(triggerResults.FullImage), 96);
@@ -158,8 +125,8 @@ public partial class ImageResultEntry
 
         UpdateV5CurrentImageOverlay();
 
-        return true;
     }
+
     public void UpdateV5StoredImageOverlay() => V5StoredImageOverlay = CreateSectorsImageOverlay(V5StoredImage, V5StoredSectors);
     public void UpdateV5CurrentImageOverlay() => V5CurrentImageOverlay = CreateSectorsImageOverlay(V5CurrentImage, V5CurrentSectors);
 

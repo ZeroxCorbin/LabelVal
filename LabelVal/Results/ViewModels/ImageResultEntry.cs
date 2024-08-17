@@ -130,8 +130,8 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             SourceImageUID = SourceImageUID,
             ImageRollUID = ImageRollUID,
 
-            SourceImage = SourceImage.Serialize,
-            StoredImage = V275CurrentImage.Serialize,
+            SourceImage = SourceImage?.Serialize,
+            StoredImage = V275CurrentImage?.Serialize,
 
             Template = V275SerializeTemplate,
             Report = V275SerializeReport,
@@ -142,8 +142,8 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             SourceImageUID = SourceImageUID,
             ImageRollUID = ImageRollUID,
 
-            SourceImage = SourceImage.Serialize,
-            StoredImage = V5CurrentImage.Serialize,
+            SourceImage = SourceImage?.Serialize,
+            StoredImage = V5CurrentImage?.Serialize,
 
             Template = V5SerializeTemplate,
             Report = V5SerializeReport,
@@ -154,7 +154,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             ImageRollUID = ImageRollUID,
             SourceImageUID = SourceImageUID,
 
-            SourceImage = SourceImage.Serialize,
+            SourceImage = SourceImage?.Serialize,
             Report = L95xxSerializeReport
             //Report = JsonConvert.SerializeObject(L95xxStoredSectors.Select(x => new L95xxReport() { Report = ((LVS_95xx.Sectors.Sector)x).L95xxPacket, Template = (LVS_95xx.Sectors.Template)x.Template }).ToList()),
         },
@@ -423,11 +423,14 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             return null;
 
         DrawingGroup drwGroup = new();
+        // Define the clipping rectangle based on the image bounds
+        Rect imageBounds = new Rect(0.5, 0.5, image.Image.PixelWidth - 1, image.Image.PixelHeight - 1);
+        drwGroup.ClipGeometry = new RectangleGeometry(imageBounds);
 
         //Draw the image outline the same size as the stored image
         GeometryDrawing border = new()
         {
-            Geometry = new RectangleGeometry(new Rect(0.5, 0.5, image.Image.PixelWidth - 1, image.Image.PixelHeight - 1)),
+            Geometry = new RectangleGeometry(new Rect(0, 0, image.Image.PixelWidth, image.Image.PixelHeight)),
             Pen = new Pen(Brushes.Transparent, 1)
         };
         drwGroup.Children.Add(border);

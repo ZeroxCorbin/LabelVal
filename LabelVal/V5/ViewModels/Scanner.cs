@@ -28,8 +28,6 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     [JsonProperty] public long ID { get; set; } = DateTime.Now.Ticks;
 
     public V5_REST_Lib.Controller Controller { get; } = new();
-    public V5_REST_Lib.FTP.FTPClient FTPClient { get; } = new();
-
 
     [ObservableProperty][property: JsonProperty] private static string host;
     partial void OnHostChanged(string value) { Controller.Host = value; }
@@ -40,19 +38,19 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     [ObservableProperty][property: JsonProperty] private bool fullResImages = true;
 
     [ObservableProperty][property: JsonProperty] private static string fTPUsername;
-    partial void OnFTPUsernameChanged(string value) { FTPClient.Username = value; }
+    partial void OnFTPUsernameChanged(string value) { Controller.FTPClient.Username = value; }
 
     [ObservableProperty][property: JsonProperty] private static string fTPPassword;
-    partial void OnFTPPasswordChanged(string value) { FTPClient.Password = value; }
+    partial void OnFTPPasswordChanged(string value) { Controller.FTPClient.Password = value; }
 
     [ObservableProperty][property: JsonProperty] private static string fTPHost;
-    partial void OnFTPHostChanged(string value) { FTPClient.Host = value; }
+    partial void OnFTPHostChanged(string value) { Controller.FTPClient.Host = value; }
 
     [ObservableProperty][property: JsonProperty] private static int fTPPort;
-    partial void OnFTPPortChanged(int value) { FTPClient.Port = value; }
+    partial void OnFTPPortChanged(int value) { Controller.FTPClient.Port = value; }
 
     [ObservableProperty][property: JsonProperty] private static string fTPRemotePath;
-    partial void OnFTPRemotePathChanged(string value) { FTPClient.RemotePath = value; }
+    partial void OnFTPRemotePathChanged(string value) { Controller.FTPClient.RemotePath = value; }
 
     [ObservableProperty] private bool isSimulator;
 
@@ -290,11 +288,11 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         Host = Controller.Host;
         Port = Controller.Port;
 
-        FTPUsername = FTPClient.Username;
-        FTPPassword = FTPClient.Password;
-        FTPHost = FTPClient.Host;
-        FTPPort = FTPClient.Port;
-        FTPRemotePath = FTPClient.RemotePath;
+        FTPUsername = Controller.FTPClient.Username;
+        FTPPassword = Controller.FTPClient.Password;
+        FTPHost = Controller.FTPClient.Host;
+        FTPPort = Controller.FTPClient.Port;
+        FTPRemotePath = Controller.FTPClient.RemotePath;
 
         IsActive = true;
     }

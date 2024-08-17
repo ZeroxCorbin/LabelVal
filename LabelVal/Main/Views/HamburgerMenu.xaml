@@ -159,6 +159,19 @@
 
                 <Grid HorizontalAlignment="Left">
 
+                    <mah:ProgressRing Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" Width="36" Height="36">
+                        <mah:ProgressRing.Style>
+                            <Style TargetType="{x:Type mah:ProgressRing}">
+                                <Setter Property="IsActive" Value="False"/>
+                                <Style.Triggers>
+                                    <DataTrigger Value="Running" Binding="{Binding QuickRunController.RunController.State}">
+                                        <Setter Property="IsActive" Value="True"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </mah:ProgressRing.Style>
+                    </mah:ProgressRing>
+
                     <Button Command="{Binding StartStopCommand}" Width="36" Height="36">
                         <Button.Style>
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
@@ -178,19 +191,6 @@
                             </Style>
                         </Button.Style>
                     </Button>
-
-                    <mah:ProgressRing Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}" Width="36" Height="36">
-                        <mah:ProgressRing.Style>
-                            <Style TargetType="{x:Type mah:ProgressRing}">
-                                <Setter Property="IsActive" Value="False"/>
-                                <Style.Triggers>
-                                    <DataTrigger Value="Running" Binding="{Binding QuickRunController.RunController.State}">
-                                        <Setter Property="IsActive" Value="True"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </mah:ProgressRing.Style>
-                    </mah:ProgressRing>
                 </Grid>
 
                 <Button Command="{Binding OpenRunWindowCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}" Width="36" Height="36"

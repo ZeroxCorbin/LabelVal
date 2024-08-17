@@ -142,7 +142,7 @@ public partial class Controller : ObservableObject
                 CurrentLabelCount++;
 
                 if(useV275)
-                    if(await ProcessV275(ire) != RunStates.Running)
+                    if(ProcessV275(ire) != RunStates.Running)
                         return State;
 
                 if (useV5)
@@ -213,7 +213,7 @@ public partial class Controller : ObservableObject
         return State;
     }
 
-    private async Task<RunStates> ProcessV275(Results.ViewModels.ImageResultEntry ire)
+    private RunStates ProcessV275(Results.ViewModels.ImageResultEntry ire)
     {
         //Start the V275 processing the image.
         if (V275.IsSimulator)
@@ -222,26 +222,26 @@ public partial class Controller : ObservableObject
             ire.V275ProcessCommand.Execute("source");
 
         //Wait for the V275 to finish processing the image or fault.
-        DateTime start = DateTime.Now;
-        while (ire.IsV275Working)
-        {
-            if (RequestedState != RunStates.Running)
-                return UpdateRunState(RequestedState);
+        //DateTime start = DateTime.Now;
+        //while (ire.IsV275Working)
+        //{
+        //    if (RequestedState != RunStates.Running)
+        //        return UpdateRunState(RequestedState);
 
-            if (DateTime.Now - start > TimeSpan.FromMilliseconds(10000))
-            {
-                LogError("Run: Timeout waiting for results.");
-                return UpdateRunState(RunStates.Error);
-            }
+        //    if (DateTime.Now - start > TimeSpan.FromMilliseconds(10000))
+        //    {
+        //        LogError("Run: Timeout waiting for results.");
+        //        return UpdateRunState(RunStates.Error);
+        //    }
 
-            if (ire.IsV275Faulted)
-            {
-                LogError("Run: Error when interacting with V275.");
-                return UpdateRunState(RunStates.Error);
-            }
+        //    if (ire.IsV275Faulted)
+        //    {
+        //        LogError("Run: Error when interacting with V275.");
+        //        return UpdateRunState(RunStates.Error);
+        //    }
 
-            Thread.Sleep(1);
-        };
+        //    Thread.Sleep(1);
+        //};
 
         return State;
     }
@@ -261,7 +261,40 @@ public partial class Controller : ObservableObject
     }
     private async Task<RunStates> ProcessV5(Results.ViewModels.ImageResultEntry ire)
     {
-        App.Current.Dispatcher.Invoke(()=> ire.V5ProcessCommand.Execute(V5.IsSimulator ? "source" : "sensor"));
+        V5_REST_Lib.Models.Config config = null;
+        if (V5.IsSimulator)
+        {
+            
+            config = await V5.Controller.ChangeImage(ire.V5ResultRow.Stored.ImageBytes, true);
+
+            if (config == null)
+            {
+                LogError("Could not change the image.");
+                return UpdateRunState(RunStates.Error);
+            }
+        }
+        else
+        {
+            var cfgRes = await V5.Controller.GetConfig();
+
+            if (!cfgRes.OK)
+            {
+                LogError("Could not get the configuration.");
+                return UpdateRunState(RunStates.Error);
+            }
+
+            config = (V5_REST_Lib.Models.Config)cfgRes.Object;
+        }
+
+        var res = await V5.Controller.Trigger_Wait_Return(true);
+
+        if(!res.OK)
+        {
+            LogError("Could not trigger the scanner.");
+            return UpdateRunState(RunStates.Error);
+        }
+
+        App.Current.Dispatcher.Invoke(() => ire.V5ProcessResults(res, config));
 
         return State;
     }
@@ -292,6 +325,8 @@ public partial class Controller : ObservableObject
     {
         if (state is RunStates.Complete or RunStates.Stopped or RunStates.Error)
         {
+            V5?.Controller?.FTPClient?.Disconnect();
+
             _ = CurrentLabelCount != 0 ? UpdateRunEntry() : ExistRunEntry() && RemoveRunEntry();
             RunDatabase?.Close();
         }
