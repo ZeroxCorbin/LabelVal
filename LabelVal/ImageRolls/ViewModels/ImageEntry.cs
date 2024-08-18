@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using LabelVal.Utilities;
 using Newtonsoft.Json;
+using SharpVectors.Dom;
 using System;
 using System.Drawing.Printing;
 using System.IO;
@@ -95,16 +96,7 @@ public partial class ImageEntry : ObservableObject
         ImageHeight = Math.Round(Image.PixelHeight / Image.DpiY, 2);
         ImageTotalPixels = Image.PixelWidth * Image.PixelHeight;
     }
-    //This should only be used for a placeholder image
-    public ImageEntry(string rollUID, byte[] placeholderImage)
-    {
-        ImageBytes = placeholderImage;
-        UID = ImageUtilities.GetImageUID(ImageBytes);
 
-        RollUID = rollUID;
-
-        IsPlaceholder = true;
-    }
     public ImageEntry(string rollUID, byte[] image, int targetDpiWidth, int targetDpiHeight = 0, string comment = null)
     {
         ImageBytes = image;

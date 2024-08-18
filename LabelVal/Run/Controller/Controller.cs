@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using LabelVal.ImageRolls.ViewModels;
+using LabelVal.Results.Databases;
 using LabelVal.Run.Databases;
 using LabelVal.V275.ViewModels;
 using LabelVal.V5.ViewModels;
@@ -15,7 +16,7 @@ public partial class Controller : ObservableObject
 {
     [ObservableProperty] private RunStates state;
     [ObservableProperty] private RunStates requestedState;
-
+    [ObservableProperty] private bool updateUI = true;
     public ObservableCollection<Results.ViewModels.ImageResultEntry> ImageResultEntries { get; private set; }
 
     private RunDatabase RunDatabase { get; set; }
@@ -145,8 +146,9 @@ public partial class Controller : ObservableObject
                     if(ProcessV275(ire) != RunStates.Running)
                         return State;
 
+                V5Result v5Res = new();
                 if (useV5)
-                    if (await ProcessV5(ire) != RunStates.Running)
+                    if ((v5Res = await ProcessV5(ire)) == null)
                         return State;
 
                 Results.Databases.StoredImageResultGroup stored = ire.GetStoredImageResultGroup(RunUID);
@@ -157,6 +159,8 @@ public partial class Controller : ObservableObject
                     LogError("Run: Failed to get stored or current image result group.");
                     return UpdateRunState(RunStates.Error);
                 }
+
+                current.V5Result = v5Res;
 
                 stored.Order = CurrentLabelCount;
                 stored.Loop = CurrentLoopCount;
@@ -237,14 +241,24 @@ public partial class Controller : ObservableObject
     {
         return State;
     }
-    private async Task<RunStates> ProcessV5(Results.ViewModels.ImageResultEntry ire)
+    private async Task<V5Result> ProcessV5(Results.ViewModels.ImageResultEntry ire)
     {
+        Results.Databases.V5Result v5 = new()
+        {
+            RunUID = RunUID,
+            SourceImageUID = ire.SourceImageUID,
+            ImageRollUID = ire.ImageRollUID,
+
+            SourceImage = ire.SourceImage?.Serialize,
+        };
+
         if (V5.IsSimulator)
         {
             if (!await V5.ChangeImage(ire.V5ResultRow.Stored.ImageBytes, true))
             {
                 LogError("Could not change the image.");
-                return UpdateRunState(RunStates.Error);
+                UpdateRunState(RunStates.Error);
+                return null;
             }
         }
 
@@ -253,12 +267,18 @@ public partial class Controller : ObservableObject
         if(!res.OK)
         {
             LogError("Could not trigger the scanner.");
-            return UpdateRunState(RunStates.Error);
+            UpdateRunState(RunStates.Error);
+            return null;
         }
 
-        App.Current.Dispatcher.Invoke(() => ire.V5ProcessResults(res));
+        v5.Template = V5.Config.Serialize;
+        v5.Report = res.ReportJSON;
+        v5.StoredImage = JsonConvert.SerializeObject(new ImageEntry(ire.ImageRollUID, res.FullImage, 0));
 
-        return State;
+        if(UpdateUI)
+            _ = App.Current.Dispatcher.BeginInvoke(() => ire.V5ProcessResults(res));
+
+        return v5;
     }
 
     //private async Task<V5_REST_Lib.Controller.TriggerResults> ProcessV5(Results.ViewModels.ImageResultEntry ire)
