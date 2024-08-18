@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:LabelVal.ImageRolls.Views"
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              xmlns:viewModels="clr-namespace:LabelVal.ImageRolls.ViewModels"
              xmlns:sectors="clr-namespace:LabelVal.Sectors.Interfaces"
@@ -51,8 +52,8 @@
             </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
 
-        <DataTemplate x:Key="imageRollItemTemplate_ListView">
-            <DockPanel Margin="5">
+        <DataTemplate x:Key="imageRollItemTemplate_ListView" DataType="viewModels:ImageRollEntry">
+            <DockPanel Margin="5" MaxWidth="240">
                 <Border Style="{StaticResource groupLeft}" Margin="0,0,6,0" Background="{DynamicResource MahApps.Brushes.Accent2}"/>
                 <Border Style="{StaticResource groupBottom}" Margin="-6,3,0,0" Background="{DynamicResource MahApps.Brushes.Accent2}"/>
 
@@ -82,24 +83,52 @@
                     </TextBlock>
 
                     <md:Card Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3,0" 
-                                                         Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
-                                                         Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}">
+                            Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                            Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}">
 
-                        <DockPanel MaxWidth="280">
-                            <TextBlock Text="{Binding Name}" TextWrapping="Wrap" Margin="10,3">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock" BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}">
-                                        <Setter Property="Visibility" Value="Visible"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <ScrollViewer x:Name="scrName" md:ScrollViewerAssist.BubbleVerticalScroll="True" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto" md:ScrollViewerAssist.IsAutoHideEnabled="True">
+                                <ScrollViewer.Resources>
+                                    <sys:Double x:Key="{x:Static SystemParameters.HorizontalScrollBarHeightKey}">8</sys:Double>
+                                </ScrollViewer.Resources>
+
+                                <TextBlock Text="{Binding Name}" TextWrapping="Wrap" Margin="3,3">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock" BasedOn="{StaticResource MaterialDesignBodyMediumTextBlock}">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Name}" Value="">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding HorizontalScrollBarVisibility, RelativeSource={RelativeSource AncestorType=ScrollViewer}}" Value="True">
+                                                    <Setter Property="md:TextFieldAssist.SuffixText" Value="..."/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </ScrollViewer>
+
+                            <md:SmartHint Margin="3,0" Grid.Column="1" Hint="..." FontSize="18">
+                                <md:SmartHint.Style>
+                                    <Style TargetType="md:SmartHint">
+                                        <Setter Property="Visibility" Value="Hidden"/>
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Name}" Value="">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            <DataTrigger Binding="{Binding ComputedHorizontalScrollBarVisibility, ElementName=scrName}" Value="Visible">
+                                                <Setter Property="Visibility" Value="Visible"/>
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
+                                </md:SmartHint.Style>
+                            </md:SmartHint>
 
-                            <TextBlock Text="{Binding SelectedGS1Table, Converter={StaticResource GS1TableNamesConverter}, StringFormat={}Table {0}}"
+                            <TextBlock Grid.Column="2" Text="{Binding SelectedGS1Table, Converter={StaticResource GS1TableNamesConverter}, StringFormat={}Table {0}}"
                                                                     Margin="10,3">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock" BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}">
@@ -112,7 +141,7 @@
                                     </Style>
                                 </TextBlock.Style>
                             </TextBlock>
-                        </DockPanel>
+                        </Grid>
 
                     </md:Card>
 
@@ -125,7 +154,7 @@
                                     <GradientStop Color="{DynamicResource MahApps.Colors.Accent4}" Offset="1"/>
                                 </LinearGradientBrush>
                             </TextBlock.Background>
-                            
+
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock" BasedOn="{StaticResource MahApps.Styles.TextBlock}">
                                     <Setter Property="Text" Value="{Binding TargetDPI, StringFormat={}{0} DPI}"/>
@@ -153,7 +182,7 @@
                                 </Style>
                             </iconPacks:PackIconMaterial.Style>
                         </iconPacks:PackIconMaterial>
-                        
+
                         <iconPacks:PackIconMaterial Margin="3" HorizontalAlignment="Left" VerticalAlignment="Center">
                             <iconPacks:PackIconMaterial.Style>
                                 <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
@@ -188,7 +217,7 @@
                         </iconPacks:PackIconMaterial>
 
 
-                        
+
                     </DockPanel>
                 </Grid>
             </DockPanel>
@@ -252,7 +281,7 @@
                 </Image>
             </DockPanel>
         </DataTemplate>
-        
+
         <Style x:Key="fixedImageRollICS" TargetType="TabItem" BasedOn="{StaticResource MahApps.Styles.TabItem}">
 
             <!--This generates the content for the tab item-->
@@ -325,10 +354,14 @@
 
         </Style>
 
-        
+
     </UserControl.Resources>
 
-    <DockPanel VerticalAlignment="Top" Margin="3,3,0,0">
+    <Grid VerticalAlignment="Top" Margin="3,3,0,0">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
 
         <!--User Image Rolls-->
         <DockPanel DockPanel.Dock="Top">
@@ -365,7 +398,7 @@
                         </DockPanel>
 
                         <DockPanel>
-                            
+
                             <Button Command="{Binding AddCommand}" ToolTip="New Image Roll" Width="48">
 
                                 <Button.Style>
@@ -485,7 +518,7 @@
         </DockPanel>
 
         <!--Fixed Image Rolls-->
-        <DockPanel MinHeight="310">
+        <DockPanel Grid.Row="1" MinHeight="310">
 
             <md:Card DockPanel.Dock="Top" Height="48" Margin="3,3,0,0"
                      Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
@@ -520,7 +553,7 @@
                         </DockPanel>
 
                         <DockPanel>
-                            
+
                             <Button Visibility="Collapsed" ToolTip="New UID to Clipboard" 
                                     Command="{Binding UIDToClipboardCommand}" 
                                     Style="{StaticResource MahApps.Styles.Button.Hamburger}" 
@@ -529,7 +562,7 @@
                                 <iconPacks:PackIconFontAwesome Kind="FingerprintSolid"
                                                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" Width="24" Height="24"/>
                             </Button>
-                            
+
                         </DockPanel>
                     </DockPanel>
                 </DockPanel>
@@ -543,7 +576,9 @@
                                     TabStripPlacement="Left" Style="{StaticResource MahApps.Styles.TabControl}"
                                     ItemContainerStyle="{StaticResource fixedImageRollICS}"
                                     ItemTemplate="{StaticResource imageRollItemTemplate}"/>
+
+
             </DockPanel>
         </DockPanel>
-    </DockPanel>
+    </Grid>
 </UserControl>

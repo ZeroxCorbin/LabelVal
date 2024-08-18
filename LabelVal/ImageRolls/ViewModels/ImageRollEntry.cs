@@ -49,14 +49,12 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
         }
     }
 
-    [ObservableProperty][property: JsonProperty][property: SQLite.PrimaryKey] private string uID = Guid.NewGuid().ToString();
-    [ObservableProperty][property: JsonProperty] private string name;
-    [ObservableProperty] private string path;
-    partial void OnPathChanged(string value) => OnPropertyChanged(nameof(IsRooted));
+    [JsonProperty][SQLite.PrimaryKey] public string UID { get; set; } = Guid.NewGuid().ToString();
+    public string Path { get; set; }
     [SQLite.Ignore] public bool IsRooted => !string.IsNullOrEmpty(Path);
 
+    [ObservableProperty][property: JsonProperty] private string name;
     [ObservableProperty][property: JsonProperty] private int imageCount;
-
     [ObservableProperty][property: JsonProperty("Standard")][property: SQLite.Column("Standard")] private StandardsTypes selectedStandard;
     partial void OnSelectedStandardChanged(StandardsTypes value) { if (value != Sectors.Interfaces.StandardsTypes.GS1) SelectedGS1Table = Sectors.Interfaces.GS1TableNames.None; OnPropertyChanged(nameof(StandardDescription)); }
     public string StandardDescription => SelectedStandard.GetDescription();
