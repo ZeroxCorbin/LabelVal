@@ -55,7 +55,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
     public void Receive(PropertyChangedMessage<LabelVal.LVS_95xx.Models.FullReport> message)
     {
         if (IsL95xxSelected)
-            App.Current.Dispatcher.BeginInvoke(() => L95xxProcess(message.NewValue));
+            App.Current.Dispatcher.BeginInvoke(() => L95xxProcessResults(message.NewValue));
     }
 
     public static void SortObservableCollectionByList(List<ISector> list, ObservableCollection<ISector> observableCollection)
@@ -103,7 +103,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
         UpdateL95xxStoredImageOverlay();
     }
 
-    public void L95xxProcess(LabelVal.LVS_95xx.Models.FullReport message)
+    public void L95xxProcessResults(LabelVal.LVS_95xx.Models.FullReport message)
     {
         if(message == null || message.Report == null)
             return;
@@ -142,28 +142,6 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
 
         L95xxCurrentImage = new ImageEntry(ImageRollUID, ImageUtilities.GetPng(message.Report.Thumbnail), 600);
         UpdateL95xxCurrentImageOverlay();
-        //V5CurrentTemplate = config;
-        //V5CurrentReport = JsonConvert.DeserializeObject<V5_REST_Lib.Models.ResultsAlt>(triggerResults.ReportJSON);
-
-        //V5CurrentSectors.Clear();
-
-        //List<Sectors.Interfaces.ISector> tempSectors = [];
-        //foreach (ResultsAlt.Decodedata rSec in V5CurrentReport._event.data.decodeData)
-        //    tempSectors.Add(new V5.Sectors.Sector(rSec, V5CurrentTemplate.response.data.job.toolList[rSec.toolSlot - 1], $"DecodeTool{rSec.toolSlot.ToString()}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
-
-        //if (tempSectors.Count > 0)
-        //{
-        //    SortList(tempSectors);
-
-        //    foreach (Sectors.Interfaces.ISector sec in tempSectors)
-        //        V5CurrentSectors.Add(sec);
-        //}
-
-        //V5GetSectorDiff();
-
-        //V5CurrentImageOverlay = CreateSectorsImageOverlay(V5CurrentImage, V5CurrentSectors);
-
-        //return true;
     }
     public void UpdateL95xxStoredImageOverlay() => L95xxStoredImageOverlay = CreateSectorsImageOverlay(L95xxStoredImage, L95xxStoredSectors);
     public void UpdateL95xxCurrentImageOverlay() => L95xxCurrentImageOverlay = CreateSectorsImageOverlay(L95xxCurrentImage, L95xxCurrentSectors);

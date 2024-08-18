@@ -27,7 +27,7 @@ public partial class Controller : ObservableObject
     public Node V275 { get; private set; }
     private bool HasV275 => V275 != null;
 
-    public Scanner V5 { get; private set; }
+    public V5_REST_Lib.Controller V5 { get; private set; }
     private bool HasV5 => V5 != null;
 
     public int LoopCount { get; private set; }
@@ -36,7 +36,7 @@ public partial class Controller : ObservableObject
 
     public bool StartAsync(ObservableCollection<Results.ViewModels.ImageResultEntry> imageResultEntries, ImageRollEntry imageRollEntry,
         Node v275,
-        Scanner v5,
+        V5_REST_Lib.Controller v5,
         int loopCount)
     {
         ImageResultEntries = imageResultEntries;
@@ -221,34 +221,12 @@ public partial class Controller : ObservableObject
         else
             ire.V275ProcessCommand.Execute("source");
 
-        //Wait for the V275 to finish processing the image or fault.
-        //DateTime start = DateTime.Now;
-        //while (ire.IsV275Working)
-        //{
-        //    if (RequestedState != RunStates.Running)
-        //        return UpdateRunState(RequestedState);
-
-        //    if (DateTime.Now - start > TimeSpan.FromMilliseconds(10000))
-        //    {
-        //        LogError("Run: Timeout waiting for results.");
-        //        return UpdateRunState(RunStates.Error);
-        //    }
-
-        //    if (ire.IsV275Faulted)
-        //    {
-        //        LogError("Run: Error when interacting with V275.");
-        //        return UpdateRunState(RunStates.Error);
-        //    }
-
-        //    Thread.Sleep(1);
-        //};
-
         return State;
     }
 
     private async Task<RunStates> PreRunV5()
     {
-        if (!await V5.Controller.SwitchToEdit())
+        if (!await V5.SwitchToEdit())
         {
             LogError("Run: V5, Failed to switch to edit mode.");
             return UpdateRunState(RunStates.Error);
@@ -263,14 +241,14 @@ public partial class Controller : ObservableObject
     {
         if (V5.IsSimulator)
         {
-            if (!await V5.Controller.ChangeImage(ire.V5ResultRow.Stored.ImageBytes, true))
+            if (!await V5.ChangeImage(ire.V5ResultRow.Stored.ImageBytes, true))
             {
                 LogError("Could not change the image.");
                 return UpdateRunState(RunStates.Error);
             }
         }
 
-        var res = await V5.Controller.Trigger_Wait_Return(true);
+        var res = await V5.Trigger_Wait_Return(true);
 
         if(!res.OK)
         {
@@ -282,6 +260,29 @@ public partial class Controller : ObservableObject
 
         return State;
     }
+
+    //private async Task<V5_REST_Lib.Controller.TriggerResults> ProcessV5(Results.ViewModels.ImageResultEntry ire)
+    //{
+    //    if (V5.IsSimulator)
+    //    {
+    //        if (!await V5.ChangeImage(ire.V5ResultRow.Stored.ImageBytes, true))
+    //        {
+    //            LogError("Could not change the image.");
+    //            return null;
+    //        }
+    //    }
+
+    //    var res = await V5.Trigger_Wait_Return(true);
+
+    //    if (!res.OK)
+    //    {
+    //        LogError("Could not trigger the scanner.");
+    //        return null;
+    //    }
+
+    //    return res;
+    //}
+
 
     private static bool HasSequencing(Results.ViewModels.ImageResultEntry label)
     {
@@ -309,7 +310,7 @@ public partial class Controller : ObservableObject
     {
         if (state is RunStates.Complete or RunStates.Stopped or RunStates.Error)
         {
-            V5?.Controller?.FTPClient?.Disconnect();
+            V5?.FTPClient?.Disconnect();
 
             _ = CurrentLabelCount != 0 ? UpdateRunEntry() : ExistRunEntry() && RemoveRunEntry();
             RunDatabase?.Close();

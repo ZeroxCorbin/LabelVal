@@ -166,7 +166,7 @@ public partial class ImageResults : ObservableRecipient,
     {
         if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
         {
-            foreach(var itm in e.NewItems.Cast<ImageEntry>())
+            foreach (var itm in e.NewItems.Cast<ImageEntry>())
                 AddImageResultEntry(itm);
         }
         else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
@@ -181,13 +181,11 @@ public partial class ImageResults : ObservableRecipient,
         ImageResultEntry tmp = new(img, this);
         tmp.V275ProcessImage += V275ProcessImage;
 
-        if (img.NewType == "V5")
-            tmp.V5ProcessCommand.Execute("sensor");
-
-        if (img.NewType == "L95xx")
-            tmp.L95xxProcess(newMessage);
-
-        newMessage = null;
+        if (img.NewData is V5_REST_Lib.Controller.TriggerResults v5)
+            tmp.V5ProcessResults(v5);
+        
+        else if (img.NewData is LVS_95xx.Models.FullReport l95)
+            tmp.L95xxProcessResults(l95);
 
         ImageResultsList.Add(tmp);
     }
@@ -223,15 +221,22 @@ public partial class ImageResults : ObservableRecipient,
     [RelayCommand] private void MoveImageBottom(ImageResultEntry imageResult) => ChangeOrderTo(imageResult, ImageResultsList.Count);
 
     [RelayCommand]
-    private void AddV5Image()
+    private async Task AddV5Image()
     {
-        byte[] bees = BitmapImageUtilities.ImageToBytes(BitmapImageUtilities.CreateRandomBitmapImage(50, 50));
-        ImageEntry imagEntry = SelectedImageRoll.GetNewImageEntry(bees);
-        imagEntry.IsPlaceholder = true;
-        imagEntry.NewType = "V5";
+        var res = await ProcessV5();
+
+        if (res == null)
+            return;
+
+        ImageEntry imagEntry = SelectedImageRoll.GetNewImageEntry(res.FullImage);
+        if (imagEntry == null)
+            return;
+
+        imagEntry.NewData = res;
 
         SelectedImageRoll.AddImage(imagEntry);
     }
+
     [RelayCommand]
     private void AddImageTop()
     {
@@ -261,7 +266,19 @@ public partial class ImageResults : ObservableRecipient,
             InsertImageAtOrder(newImages, ImageResultsList.Count + 1);
     }
 
-    LabelVal.LVS_95xx.Models.FullReport newMessage;
+    private async Task<V5_REST_Lib.Controller.TriggerResults> ProcessV5()
+    {
+        var res = await SelectedScanner.Controller.Trigger_Wait_Return(true);
+
+        if (!res.OK)
+        {
+            LogError("Could not trigger the scanner.");
+            return null;
+        }
+
+        return res;
+    }
+
     private void L95xxProcess(LabelVal.LVS_95xx.Models.FullReport message)
     {
         if (message == null || message.Report == null)
@@ -271,11 +288,10 @@ public partial class ImageResults : ObservableRecipient,
             return;
 
         message.Name = "Verify_1";
-        newMessage = message;
 
-       // byte[] bees = BitmapImageUtilities.ImageToBytes(BitmapImageUtilities.CreateRandomBitmapImage(50, 50));
+        // byte[] bees = BitmapImageUtilities.ImageToBytes(BitmapImageUtilities.CreateRandomBitmapImage(50, 50));
         ImageEntry imagEntry = SelectedImageRoll.GetNewImageEntry(message.Report.Thumbnail);
-        imagEntry.NewType = "L95xx";
+        imagEntry.NewData = message;
 
         SelectedImageRoll.AddImage(imagEntry);
 
@@ -608,9 +624,9 @@ public partial class ImageResults : ObservableRecipient,
         }
 
         if (!await SelectedNode.Controller.Commands.SimulationTriggerImage(
-            new V275_REST_Lib.Models.SimulationTrigger() 
-            { 
-                image = img.ImageBytes, 
+            new V275_REST_Lib.Models.SimulationTrigger()
+            {
+                image = img.ImageBytes,
                 dpi = (uint)Math.Round(img.Image.DpiX, 0)
             }))
         {
@@ -665,7 +681,7 @@ public partial class ImageResults : ObservableRecipient,
                     }
                 }
             }
-             
+
             if (type == "source")
             {
                 if (!sim.SaveImage(prepend + Path.GetFileName(imageResults.SourceImage.Path), imageResults.SourceImage.ImageBytes))

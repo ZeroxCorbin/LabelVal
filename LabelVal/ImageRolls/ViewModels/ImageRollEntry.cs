@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.Extensions;
 using LabelVal.Sectors.Interfaces;
+using LabelVal.Utilities;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -207,7 +208,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     {
         try
         {
-            ImageEntry image = new(UID, rawImage, TargetDPI, TargetDPI)
+            ImageEntry image = new(UID, ImageUtilities.GetPng(rawImage), TargetDPI, TargetDPI)
             {
                 Order = Images.Count > 0 ? Images.Max(img => img.Order) + 1 : 1
             };

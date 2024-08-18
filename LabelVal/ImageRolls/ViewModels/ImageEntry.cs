@@ -23,7 +23,7 @@ public partial class ImageEntry : ObservableObject
 
     [ObservableProperty][property: JsonProperty] private int order = -1;
     [JsonProperty] public bool IsPlaceholder { get; set; }
-    [property: SQLite.Ignore] public string NewType { get; set; }
+    [property: SQLite.Ignore] public object NewData { get; set; }
 
     [JsonProperty] public string Path { get; set; }
     [JsonProperty] public string Comment { get; set; }
