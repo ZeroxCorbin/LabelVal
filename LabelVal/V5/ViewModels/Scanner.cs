@@ -90,7 +90,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     [ObservableProperty] private DrawingImage imageOverlay;
     [ObservableProperty] private DrawingImage imageFocusRegionOverlay;
 
-    public static List<CameraDetails> AvailableCameras => V5_REST_Lib.Cameras.Cameras.Available;
+    public static List<CameraDetails> AvailableCameras => CameraModels.Available;
 
     [ObservableProperty][property: JsonProperty] private CameraDetails selectedCamera;
     partial void OnSelectedCameraChanged(CameraDetails value) => _ = App.Current.Dispatcher.BeginInvoke(() =>
@@ -142,7 +142,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         }
     }
 
-    [ObservableProperty] private V5_REST_Lib.Controller.ScannerModes scannerMode;
+    [ObservableProperty] private V5_REST_Lib.Controller.CameraModes scannerMode;
 
     [ObservableProperty] private ImageRollEntry selectedImageRoll;
 
@@ -206,16 +206,13 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
     private async void SwitchAquisitionType(bool file)
     {
-        V5_REST_Lib.Commands.Results res = await Controller.GetConfig();
-
-        if (!res.OK)
+        if (!Controller.IsConfigValid)
         {
             LogError("Could not get scanner configuration.");
             return;
         }
 
-        Config config = (V5_REST_Lib.Models.Config)res.Object;
-        Config.Source src = config.response.data.job.channelMap.acquisition.AcquisitionChannel.source;
+        Config.Source src = Controller.Config.response.data.job.channelMap.acquisition.AcquisitionChannel.source;
         if (!file)
         {
             if (src.SensorAcquisitionSource != null)
@@ -251,26 +248,22 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             //src.uid = DateTime.Now.Ticks.ToString();
         }
 
-        _ = await Controller.SendJob(config.response.data);
+        _ = await Controller.SendJob(Controller.Config.response.data);
     }
     private async void ChangeDirectory(string directory)
     {
-        V5_REST_Lib.Commands.Results res = await Controller.GetConfig();
-
-        if (!res.OK)
+        if (!Controller.IsConfigValid)
         {
             LogError("Could not get scanner configuration.");
             return;
         }
 
-        Config config = (V5_REST_Lib.Models.Config)res.Object;
-        Config.Source src = config.response.data.job.channelMap.acquisition.AcquisitionChannel.source;
+        Config.Source src = Controller.Config.response.data.job.channelMap.acquisition.AcquisitionChannel.source;
 
         if (src.FileAcquisitionSource.directory != directory)
         {
             src.FileAcquisitionSource.directory = directory;
-            //src.uid = DateTime.Now.Ticks.ToString();
-            _ = await Controller.SendJob(config.response.data);
+            _ = await Controller.SendJob(Controller.Config.response.data);
         }
     }
 
@@ -278,7 +271,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     public Scanner()
     {
         Controller.StateChanged += ScannerController_StateChanged;
-        Controller.ScannerModeChanged += ScannerController_ScannerModeChanged;
+        Controller.CameraModeChanged += ScannerController_CameraModeChanged;
         Controller.ImageUpdate += ScannerController_ImageUpdate;
         Controller.ResultUpdate += ScannerController_ResultUpdate;
         Controller.ConfigUpdate += ScannerController_ConfigUpdate;
@@ -299,13 +292,11 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
     public void Receive(PropertyChangedMessage<ImageRollEntry> message) => SelectedImageRoll = message.NewValue;
 
-    private async void ScannerController_ConfigUpdate(JObject json)
+    private async void ScannerController_ConfigUpdate()
     {
-        V5_REST_Lib.Commands.Results res = await Controller.GetConfig();
-        if (res.OK)
+        if (Controller.IsConfigValid)
         {
-            Config config = (Config)res.Object;
-            IsSimulator = config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource != null;
+            IsSimulator = Controller.Config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource != null;
 
             V5_REST_Lib.Commands.Results meta = await Controller.Commands.GetMeta();
             if (meta.OK)
@@ -332,7 +323,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             if (IsSimulator)
             {
                 SelectedAcquisitionType = "File";
-                SelectedDirectory = config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource.directory;
+                SelectedDirectory = Controller.Config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource.directory;
             }
             else
             {
@@ -340,7 +331,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             }
 
             JobName = "";
-            JobName = config.response.data.job.name;
+            JobName = Controller.Config.response.data.job.name;
         }
     }
 
@@ -350,7 +341,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     //        stop = true;
     //}
 
-    private void ScannerController_ScannerModeChanged(V5_REST_Lib.Controller.ScannerModes mode) => ScannerMode = mode;
+    private void ScannerController_CameraModeChanged(V5_REST_Lib.Controller.CameraModes mode) => ScannerMode = mode;
     private void ScannerController_ResultUpdate(JObject json)
     {
         if (json != null)
@@ -456,9 +447,6 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         IsEventWSConnected = eventWS;
         IsResultWSConnected = resultsWS;
         IsImageWSConnected = imageWS;
-
-        if (IsEventWSConnected && IsResultWSConnected && IsImageWSConnected)
-            PostLogin();
     }
 
     private void CheckOverlay()
@@ -651,7 +639,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     [RelayCommand]
     private async Task Connect()
     {
-        ScannerMode = V5_REST_Lib.Controller.ScannerModes.Offline;
+        ScannerMode = V5_REST_Lib.Controller.CameraModes.Offline;
 
         if (!Controller.IsConnected)
         {
@@ -683,8 +671,6 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         else
             return false;
     }
-
-    private void PostLogin() => ScannerController_ConfigUpdate(null);
 
     private void PostLogout()
     {
@@ -801,20 +787,18 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
     private async Task ChangeJob(JobSlots.Datum job)
     {
-        _ = await Controller.Commands.PutJobSlots(job);
-        ScannerController_ConfigUpdate(null);
+        var res = await Controller.ChangeJobSlot(job);
+
     }
     [RelayCommand]
     private async Task SwitchRun()
     {
         _ = await Controller.Commands.ModeRun();
-        ScannerController_ConfigUpdate(null);
     }
     [RelayCommand]
     public async Task SwitchEdit()
     {
         _ = await Controller.SwitchToEdit();
-        ScannerController_ConfigUpdate(null);
     }
 
     [RelayCommand]

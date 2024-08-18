@@ -59,39 +59,32 @@ public partial class ImageResultEntry
 
         if (imageType != "sensor")
         {
-            Config config = null;
             if (imageType == "source")
-                config = await ImageResults.SelectedScanner.Controller.ChangeImage(SourceImage.ImageBytes, false);
+                await ImageResults.SelectedScanner.Controller.ChangeImage(SourceImage.ImageBytes, false);
             else if (imageType == "v5Stored")
-                config = await ImageResults.SelectedScanner.Controller.ChangeImage(V5ResultRow.Stored.ImageBytes, false);
-
-            if(config == null)
-            {
-                LogError("Could not change the image.");
-                IsV5Working = false;
+                await ImageResults.SelectedScanner.Controller.ChangeImage(V5ResultRow.Stored.ImageBytes, false);
+            else
                 return;
-            }
 
-            V5ProcessResults(await ImageResults.SelectedScanner.Controller.Trigger_Wait_Return(true), config);
+
+            V5ProcessResults(await ImageResults.SelectedScanner.Controller.Trigger_Wait_Return(true));
         }
         else
         {
-            var config = await ImageResults.SelectedScanner.Controller.GetConfig();
-
-            if (!config.OK)
+            if (!ImageResults.SelectedScanner.Controller.IsConfigValid)
             {
                 LogError("Could not get the configuration.");
                 IsV5Working = false;
                 return;
             }
 
-            V5ProcessResults(await ImageResults.SelectedScanner.Controller.Trigger_Wait_Return(true), (Config)config.Object);
+            V5ProcessResults(await ImageResults.SelectedScanner.Controller.Trigger_Wait_Return(true));
         }
-            
+
 
         IsV5Working = false;
     }
-    public void V5ProcessResults(V5_REST_Lib.Controller.TriggerResults triggerResults, Config config)
+    public void V5ProcessResults(V5_REST_Lib.Controller.TriggerResults triggerResults)
     {
         if (!triggerResults.OK)
         {
@@ -104,7 +97,7 @@ public partial class ImageResultEntry
 
         V5CurrentImage = new ImageEntry(ImageRollUID, ImageUtilities.GetPng(triggerResults.FullImage), 96);
 
-        V5CurrentTemplate = config;
+        V5CurrentTemplate = ImageResults.SelectedScanner.Controller.Config;
         V5CurrentReport = JsonConvert.DeserializeObject<V5_REST_Lib.Models.ResultsAlt>(triggerResults.ReportJSON);
 
         V5CurrentSectors.Clear();

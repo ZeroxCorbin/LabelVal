@@ -77,14 +77,12 @@ public partial class ImageEntry : ObservableObject
     public ImageEntry() { }
     public ImageEntry(string rollUID, string path, int targetDpiWidth, int targetDpiHeight)
     {
-        OriginalImage = File.ReadAllBytes(path);
-        UID = ImageUtilities.GetImageUID(OriginalImage);
+        ImageBytes = File.ReadAllBytes(path);
+        UID = ImageUtilities.GetImageUID(ImageBytes);
+
         RollUID = rollUID;
 
         Path = path;
-
-        Image = BitmapImageUtilities.CreateBitmapImage(OriginalImage);
-        ImageLow = BitmapImageUtilities.CreateBitmapImage(OriginalImage, 400);
 
         TargetDpiHeight = targetDpiHeight;
         TargetDpiWidth = targetDpiWidth;
@@ -100,22 +98,19 @@ public partial class ImageEntry : ObservableObject
     //This should only be used for a placeholder image
     public ImageEntry(string rollUID, byte[] placeholderImage)
     {
-        OriginalImage = placeholderImage;
-        UID = ImageUtilities.GetImageUID(OriginalImage);
-        RollUID = rollUID;
+        ImageBytes = placeholderImage;
+        UID = ImageUtilities.GetImageUID(ImageBytes);
 
-        Image = BitmapImageUtilities.CreateBitmapImage(OriginalImage);
+        RollUID = rollUID;
 
         IsPlaceholder = true;
     }
     public ImageEntry(string rollUID, byte[] image, int targetDpiWidth, int targetDpiHeight = 0, string comment = null)
     {
-        OriginalImage = image;
-        UID = ImageUtilities.GetImageUID(OriginalImage);
-        RollUID = rollUID;
+        ImageBytes = image;
+        UID = ImageUtilities.GetImageUID(ImageBytes);
 
-        Image = BitmapImageUtilities.CreateBitmapImage(OriginalImage);
-        ImageLow = BitmapImageUtilities.CreateBitmapImage(OriginalImage, 400);
+        RollUID = rollUID;
 
         Comment = comment;
 
@@ -127,7 +122,7 @@ public partial class ImageEntry : ObservableObject
         ImageTotalPixels = Image.PixelWidth * Image.PixelHeight;
     }
 
-    public ImageEntry Clone() => new(RollUID, OriginalImage, TargetDpiWidth, TargetDpiHeight, Comment);
+    public ImageEntry Clone() => new(RollUID, ImageBytes, TargetDpiWidth, TargetDpiHeight, Comment);
 
     public void InitPrinterVariables(PrinterSettings printer)
     {

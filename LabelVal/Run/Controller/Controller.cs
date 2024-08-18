@@ -261,29 +261,13 @@ public partial class Controller : ObservableObject
     }
     private async Task<RunStates> ProcessV5(Results.ViewModels.ImageResultEntry ire)
     {
-        V5_REST_Lib.Models.Config config = null;
         if (V5.IsSimulator)
         {
-            
-            config = await V5.Controller.ChangeImage(ire.V5ResultRow.Stored.ImageBytes, true);
-
-            if (config == null)
+            if (!await V5.Controller.ChangeImage(ire.V5ResultRow.Stored.ImageBytes, true))
             {
                 LogError("Could not change the image.");
                 return UpdateRunState(RunStates.Error);
             }
-        }
-        else
-        {
-            var cfgRes = await V5.Controller.GetConfig();
-
-            if (!cfgRes.OK)
-            {
-                LogError("Could not get the configuration.");
-                return UpdateRunState(RunStates.Error);
-            }
-
-            config = (V5_REST_Lib.Models.Config)cfgRes.Object;
         }
 
         var res = await V5.Controller.Trigger_Wait_Return(true);
@@ -294,7 +278,7 @@ public partial class Controller : ObservableObject
             return UpdateRunState(RunStates.Error);
         }
 
-        App.Current.Dispatcher.Invoke(() => ire.V5ProcessResults(res, config));
+        App.Current.Dispatcher.Invoke(() => ire.V5ProcessResults(res));
 
         return State;
     }
