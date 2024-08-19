@@ -15,4 +15,14 @@ public partial class ImageResultsDatabases : UserControl
     }
 
     private void btnCollapseContent(object sender, System.Windows.RoutedEventArgs e) => ((Main.Views.MainWindow)App.Current.MainWindow).ClearSelectedMenuItem();
+
+    private void btnOpenImageResultLocation(object sender, System.Windows.RoutedEventArgs e)
+    {
+        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo()
+        {
+            FileName = $"{App.ImageResultsDatabaseRoot}\\",
+            UseShellExecute = true,
+            Verb = "open"
+        });
+    }
 }

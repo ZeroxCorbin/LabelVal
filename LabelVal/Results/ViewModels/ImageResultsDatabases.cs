@@ -5,30 +5,35 @@ using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.Messages;
 using MahApps.Metro.Controls.Dialogs;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Documents;
 
 namespace LabelVal.Results.ViewModels;
 public partial class ImageResultsDatabases : ObservableRecipient
 {
+    [ObservableProperty] private FileFolderEntry fileRoot = App.Settings.GetValue<FileFolderEntry>("ImageResultsDatabases_FileRoot", true);
+    partial void OnFileRootChanged(FileFolderEntry value) => App.Settings.SetValue("ImageResultsDatabases_FileRoot", value);
+
     public ObservableCollection<Databases.ImageResultsDatabase> Databases { get; } = [];
 
     [ObservableProperty][NotifyPropertyChangedRecipients] private Databases.ImageResultsDatabase selectedDatabase;
-    partial void OnSelectedDatabaseChanged(Databases.ImageResultsDatabase value) => SelectedDatabaseFilePath = value != null ? value.FilePath : "";
+    partial void OnSelectedDatabaseChanged(Databases.ImageResultsDatabase value) => App.Settings.SetValue("SelectedImageResultDatabaseFFE", value?.File);
 
 
-    [ObservableProperty] private string selectedDatabaseFilePath = App.Settings.GetValue(nameof(SelectedDatabaseFilePath), "");
-    partial void OnSelectedDatabaseFilePathChanged(string value) => App.Settings.SetValue(nameof(SelectedDatabaseFilePath), value);
+    [ObservableProperty] private bool rightAlignOverflow = App.Settings.GetValue(nameof(RightAlignOverflow), false);
+    partial void OnRightAlignOverflowChanged(bool value) => App.Settings.SetValue(nameof(RightAlignOverflow), value);
 
     private ObservableCollection<string> OrphandStandards { get; } = [];
 
-  
+
     public ImageResultsDatabases()
     {
-        LoadImageResultsDatabasesList();
+        UpdateImageResultsDatabasesList();
         SelectImageResultsDatabase();
 
         WeakReferenceMessenger.Default.Register<RequestMessage<Databases.ImageResultsDatabase>>(
@@ -39,40 +44,119 @@ public partial class ImageResultsDatabases : ObservableRecipient
             });
     }
 
-
-    private void LoadImageResultsDatabasesList()
+    private FileFolderEntry EnumerateFolders(FileFolderEntry root)
     {
-        LogInfo($"Loading grading standards databases from file system. {App.ImageResultsDatabaseRoot}");
+        var currentDirectories = Directory.EnumerateDirectories(root.Path).ToHashSet();
+        var currentFiles = Directory.EnumerateFiles(root.Path, "*.sqlite").ToHashSet();
 
-        foreach (var file in Directory.EnumerateFiles(App.ImageResultsDatabaseRoot))
+        // Remove directories that no longer exist
+        for (int i = root.Count - 1; i >= 0; i--)
         {
-            LogDebug($"Found: {Path.GetFileName(file)}");
+            var child = root[i];
+            if (child.IsDirectory && !currentDirectories.Contains(child.Path))
+                root.RemoveAt(i);
+        }
 
-            if (file.EndsWith(App.DatabaseExtension))
+        // Remove files that no longer exist
+        for (int i = root.Count - 1; i >= 0; i--)
+        {
+            var child = root[i];
+            if (!child.IsDirectory && !currentFiles.Contains(child.Path))
+                root.RemoveAt(i);
+        }
+
+        // Add new directories
+        foreach (var dir in currentDirectories)
+            if (!root.Any(child => child.Path == dir))
             {
-                if (Databases.Any((a) => a.FilePath == file))
-                    continue;
+                var newDir = new FileFolderEntry(dir);
+                root.Add(EnumerateFolders(newDir));
+            }
 
-                Databases.Add(new Databases.ImageResultsDatabase(file));
+        // Add new files
+        foreach (var file in currentFiles)
+            if (!root.Any(child => child.Path == file))
+            {
+                var newFile = new FileFolderEntry(file);
+                root.Add(newFile);
+            }
+
+        return root;
+    }
+
+    private void UpdateImageResultsDatabasesList()
+    {
+        LogInfo($"Loading Image Results databases from file system. {App.ImageResultsDatabaseRoot}");
+
+        FileRoot = EnumerateFolders(new FileFolderEntry(App.ImageResultsDatabaseRoot));
+        UpdateDatabases(FileRoot);
+
+        if (Databases.Count == 0)
+        {
+            var file = new Databases.ImageResultsDatabase(new FileFolderEntry(Path.Combine(App.ImageResultsDatabaseRoot, "My First Database" + App.DatabaseExtension)));
+            file.Close();
+
+            FileRoot = EnumerateFolders(new FileFolderEntry(App.ImageResultsDatabaseRoot));
+        }
+    }
+    private List<FileFolderEntry> CollectSelectedFiles(FileFolderEntry root)
+    {
+        var selectedFiles = new List<FileFolderEntry>();
+
+        foreach (var child in root)
+        {
+            if (child.IsDirectory)
+            {
+                selectedFiles.AddRange(CollectSelectedFiles(child));
+            }
+            else if (child.IsSelected)
+            {
+                selectedFiles.Add(child);
             }
         }
 
-        if(Databases.Count == 0)
-        {
-            var file = new Databases.ImageResultsDatabase(Path.Combine(App.ImageResultsDatabaseRoot, "My First Database" + App.DatabaseExtension));
-            _ = file.Open();
-            file.Close();
+        return selectedFiles;
+    }
 
-            Databases.Add(new Databases.ImageResultsDatabase(file.FilePath));
+    private void UpdateDatabases(FileFolderEntry root)
+    {
+        var selectedFiles = CollectSelectedFiles(root).Select(file => file.Path).ToHashSet();
+
+        // Remove databases that no longer exist
+        for (int i = Databases.Count - 1; i >= 0; i--)
+        {
+            var db = Databases[i];
+            if (!selectedFiles.Contains(db.File.Path))
+            {
+                Databases[i].Close();
+                Databases.RemoveAt(i);
+            }
         }
 
-        foreach (var db in Databases)
-            _ = db.Open();
+        // Add new databases
+        foreach (var file in selectedFiles)
+        {
+            if (!Databases.Any(db => db.File.Path == file))
+            {
+                var newDatabase = new Databases.ImageResultsDatabase(new FileFolderEntry(file));
+                Databases.Add(newDatabase);
+            }
+        }
     }
+
     private void SelectImageResultsDatabase()
     {
-        var res = Databases.Where((a) => a.FilePath == SelectedDatabaseFilePath);
-        if (res.FirstOrDefault() != null)
+        var val = App.Settings.GetValue<FileFolderEntry>("SelectedImageResultDatabaseFFE");
+
+        if(val == null)
+        {
+            if (Databases.Count > 0)
+                SelectedDatabase = Databases.First();
+            return;
+        }
+
+        var res = Databases.Where((a) => a.File.Path == val.Path);
+        if (res.Any())
             SelectedDatabase = res.FirstOrDefault();
         else if (Databases.Count > 0)
             SelectedDatabase = Databases.First();
@@ -90,11 +174,10 @@ public partial class ImageResultsDatabases : ObservableRecipient
             return;
         }
 
-        var file = new Databases.ImageResultsDatabase(Path.Combine(App.ImageResultsDatabaseRoot, res + App.DatabaseExtension));
-        _ = file.Open();
+        var file = new Databases.ImageResultsDatabase(new FileFolderEntry(Path.Combine(App.ImageResultsDatabaseRoot, res + App.DatabaseExtension)));
         file.Close();
 
-        LoadImageResultsDatabasesList();
+        UpdateImageResultsDatabasesList();
     }
 
     [RelayCommand]
@@ -116,31 +199,29 @@ public partial class ImageResultsDatabases : ObservableRecipient
     }
     [RelayCommand]
     private async Task Delete(Databases.ImageResultsDatabase imageResultsDatabase)
-    { 
+    {
         if (imageResultsDatabase == null)
             return;
-        
-        if (imageResultsDatabase.IsPermLocked)
-            return;
 
-        if (imageResultsDatabase.IsLocked)
+        if (imageResultsDatabase.IsLocked || imageResultsDatabase.IsPermLocked)
         {
             _ = OkDialog("Database is Locked", "The database is locked. Unlock the database before deleting.");
             return;
         }
 
-        if(await OkCancelDialog("Delete Database", $"Are you sure you want to delete the database '{imageResultsDatabase.FileName}'?") != MessageDialogResult.Affirmative)
+        if (await OkCancelDialog("Delete Database", $"Are you sure you want to delete the database '{imageResultsDatabase.File.Name}'?") != MessageDialogResult.Affirmative)
             return;
 
         imageResultsDatabase.Close();
 
-        if (File.Exists(imageResultsDatabase.FilePath))
+        if (File.Exists(imageResultsDatabase.File.Path))
         {
-            File.Delete(imageResultsDatabase.FilePath);
-            Databases.Remove(imageResultsDatabase);
+            File.Delete(imageResultsDatabase.File.Path);
 
-            if(SelectedDatabase == imageResultsDatabase)
+            if (SelectedDatabase == imageResultsDatabase)
                 SelectedDatabase = null;
+
+            FileRoot = EnumerateFolders(new FileFolderEntry(App.ImageResultsDatabaseRoot));
         }
     }
 

@@ -4,6 +4,8 @@
                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
                 xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+                xmlns:sys="clr-namespace:System;assembly=mscorlib"
                 xmlns:local="clr-namespace:LabelVal.Results.Views"
                 xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"  
                 xmlns:ViewModels="clr-namespace:LabelVal.Results.ViewModels"  
@@ -22,38 +24,68 @@
 
             <DockPanel>
 
-                <DockPanel Width="48" Height="48">
-                    <StackPanel Width="36" Height="36" VerticalAlignment="Center" Margin="0,2">
-                        <iconPacks:PackIconMaterial Height="14" Width="30" Kind="ImageText" HorizontalAlignment="Center"/>
-                        <iconPacks:PackIconMaterial Margin="0,0,0,1" Height="6" Kind="ChevronDown" HorizontalAlignment="Center"/>
-                        <iconPacks:PackIconMaterial Height="14" Width="36" Kind="Database" HorizontalAlignment="Center"/>
-                    </StackPanel>
-                </DockPanel>
+                <DockPanel>
 
+                    <DockPanel DockPanel.Dock="Top" Width="36" Height="36">
+                        <StackPanel Width="36" Height="36" VerticalAlignment="Center" Margin="0,2">
+                            <iconPacks:PackIconMaterial Height="14" Width="30" Kind="ImageText" HorizontalAlignment="Center"/>
+                            <iconPacks:PackIconMaterial Margin="0,0,0,1" Height="6" Kind="ChevronDown" HorizontalAlignment="Center"/>
+                            <iconPacks:PackIconMaterial Height="14" Width="36" Kind="Database" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </DockPanel>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <Button Click="btnOpenImageResultLocation" Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                Content="{iconPacks:Modern Kind=Folder}" HorizontalAlignment="Left"/>
+
+                        <mah:DropDownButton Grid.Column="1" ItemsSource="{Binding FileRoot}" ArrowVisibility="Collapsed"
+                                            ButtonStyle="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                            Content="{iconPacks:Material Kind=FolderArrowDown}"
+                                            BorderThickness="0" HorizontalAlignment="Right">
+                            <mah:DropDownButton.ItemTemplate>
+                                <HierarchicalDataTemplate ItemsSource="{Binding }">
+                                    <DockPanel>
+                                        <CheckBox IsChecked="{Binding IsSelected}"/>
+                                        <TextBlock Text="{Binding Name}"/>
+                                    </DockPanel>
+                                    
+                                </HierarchicalDataTemplate>
+                            </mah:DropDownButton.ItemTemplate>
+                        </mah:DropDownButton>
+
+                    </Grid>
+                    
+                </DockPanel>
                 <Border Style="{StaticResource imageBar}" />
 
                 <DockPanel>
                     <DockPanel DockPanel.Dock="Top">
-                    <DockPanel HorizontalAlignment="Left">
-                        <DockPanel.Background>
-                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                <GradientStop Color="{DynamicResource MahApps.Colors.Accent3}" Offset="0"/>
-                                <GradientStop Color="{DynamicResource MahApps.Colors.HamburgerMenu}" Offset="1"/>
-                            </LinearGradientBrush>
-                        </DockPanel.Background>
-                        
-                        <TextBlock DockPanel.Dock="Top" Margin="6,0,0,3" Text="Results Database" Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"/>
-                       
-                        <Border Style="{StaticResource imageBarHor}"/>
-                    
-                    </DockPanel>
+                        <DockPanel HorizontalAlignment="Left">
+                            <DockPanel.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="{DynamicResource MahApps.Colors.Accent3}" Offset="0"/>
+                                    <GradientStop Color="{DynamicResource MahApps.Colors.HamburgerMenu}" Offset="1"/>
+                                </LinearGradientBrush>
+                            </DockPanel.Background>
+
+                            <TextBlock DockPanel.Dock="Top" Margin="6,0,0,3" Text="Results Database" Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"/>
+
+                            <Border Style="{StaticResource imageBarHor}"/>
+
+                        </DockPanel>
+
                         <Button Click="btnCollapseContent" Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                                 VerticalAlignment="Top" HorizontalAlignment="Right" Margin="3"
                                 Content="{iconPacks:Material Kind=ArrowCollapseLeft}"
                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
 
                     </DockPanel>
-                    
+
                     <Button ToolTip="New Database" Command="{Binding CreateImageResultsDatabaseCommand}" Width="48" HorizontalAlignment="Left"
                             Style="{StaticResource MahApps.Styles.Button.Hamburger}">
                         <iconPacks:PackIconMaterial Kind="Plus"
@@ -91,7 +123,64 @@
                                          Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
                                          Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}">
 
-                                    <TextBlock Text="{Binding FileName}" TextWrapping="Wrap" Margin="10,3" Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}" />
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <ScrollViewer x:Name="scrName"
+                                                      md:ScrollViewerAssist.BubbleVerticalScroll="True" 
+                                                      VerticalScrollBarVisibility="Disabled" 
+                                                      HorizontalScrollBarVisibility="Auto"
+                                                      md:ScrollViewerAssist.IsAutoHideEnabled="True">
+                                            <ScrollViewer.Style>
+                                                <Style TargetType="ScrollViewer" BasedOn="{StaticResource MaterialDesignScrollViewer}">
+                                                    <Setter Property="FlowDirection" Value="LeftToRight"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding DataContext.RightAlignOverflow, RelativeSource={RelativeSource AncestorType=ListView}}" Value="True">
+                                                            <Setter Property="FlowDirection" Value="RightToLeft"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </ScrollViewer.Style>
+
+                                            <ScrollViewer.Resources>
+                                                <sys:Double x:Key="{x:Static SystemParameters.HorizontalScrollBarHeightKey}">8</sys:Double>
+                                            </ScrollViewer.Resources>
+
+                                            <TextBlock Text="{Binding File.Name}" Margin="3,3">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock" BasedOn="{StaticResource MaterialDesignBodyMediumTextBlock}">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                        <Setter Property="FlowDirection" Value="LeftToRight"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding HorizontalScrollBarVisibility, RelativeSource={RelativeSource AncestorType=ScrollViewer}}" Value="True">
+                                                                <Setter Property="md:TextFieldAssist.SuffixText" Value="..."/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding DataContext.RightAlignOverflow, RelativeSource={RelativeSource AncestorType=ListView}}" Value="True">
+                                                                <Setter Property="FlowDirection" Value="LeftToRight"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </ScrollViewer>
+
+                                        <md:SmartHint Margin="3,0" Grid.Column="1" Hint="..." FontSize="18">
+                                            <md:SmartHint.Style>
+                                                <Style TargetType="md:SmartHint">
+                                                    <Setter Property="Visibility" Value="Hidden"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding ComputedHorizontalScrollBarVisibility, ElementName=scrName}" Value="Visible">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </md:SmartHint.Style>
+                                        </md:SmartHint>
+                                    </Grid>
+
                                 </md:Card>
 
                                 <DockPanel Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left">

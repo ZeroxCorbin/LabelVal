@@ -248,9 +248,9 @@
             <Setter Property="Margin" Value="0"/>
 
             <Style.Triggers>
-                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=TabItem}}" Value="{x:Static sectors:StandardsTypes.GS1}">
+                <!--<DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=TabItem}}" Value="{x:Static sectors:StandardsTypes.GS1}">
                     <Setter Property="Background" Value="{DynamicResource MahApps.Colors.Accent3}"/>
-                </DataTrigger>
+                </DataTrigger>-->
 
                 <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.GS1}">
                     <Setter Property="ToolTip" Value="GS1"/>

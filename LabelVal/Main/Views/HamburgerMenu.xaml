@@ -101,7 +101,7 @@
                     <TextBlock Margin="6,3" HorizontalAlignment="Left" VerticalAlignment="Top" TextWrapping="Wrap">
                         <TextBlock.Style>
                             <Style TargetType="TextBlock" BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}">
-                                <Setter Property="Text" Value="{Binding SelectedDatabase.FileName}"/>
+                                <Setter Property="Text" Value="{Binding SelectedDatabase.File.Name}"/>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding SelectedDatabase, Converter={StaticResource objectIsNull}}" Value="True">
                                         <Setter Property="Text" Value="NO DATABASE SELECTED"/>

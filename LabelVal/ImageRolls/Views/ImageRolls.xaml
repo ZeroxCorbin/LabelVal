@@ -251,35 +251,45 @@
             </ListView>
         </DataTemplate>
 
-        <DataTemplate x:Key="imageRollItemTemplate">
-            <DockPanel Background="White">
-                <Image Height="36" Width="36" >
-                    <Image.Style>
-                        <Style TargetType="Image">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.GS1}">
-                                    <Setter Property="Source" Value="/Assets/Images/GS1.png"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15415_15416}">
-                                    <Setter Property="Source" Value="/Assets/Images/all-codes.png"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15416}">
-                                    <Setter Property="Source" Value="/Assets/Images/barcode-2d.png"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15415}">
-                                    <Setter Property="Source" Value="/Assets/Images/barcode-1d1.png"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.OCR_OCV}">
-                                    <Setter Property="Source" Value="/Assets/Images/OCR.png"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.None}">
-                                    <Setter Property="Source" Value="/Assets/Images/all-codes.png"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Image.Style>
-                </Image>
+        <DataTemplate x:Key="imageRollItemTemplate" DataType="{x:Type TabItem}">
+
+            <DockPanel Name="dockBackground">
+                <DockPanel Background="White" Margin="6">
+                    <Image Height="36" Width="36">
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.GS1}">
+                                        <Setter Property="Source" Value="/Assets/Images/GS1.png"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15415_15416}">
+                                        <Setter Property="Source" Value="/Assets/Images/all-codes.png"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15416}">
+                                        <Setter Property="Source" Value="/Assets/Images/barcode-2d.png"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15415}">
+                                        <Setter Property="Source" Value="/Assets/Images/barcode-1d1.png"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.OCR_OCV}">
+                                        <Setter Property="Source" Value="/Assets/Images/OCR.png"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.None}">
+                                        <Setter Property="Source" Value="/Assets/Images/all-codes.png"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
+                </DockPanel>
+
             </DockPanel>
+
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding Path=IsSelected ,RelativeSource={RelativeSource AncestorType=TabItem}}" Value="True">
+                    <Setter TargetName="dockBackground" Property="Background" Value="{DynamicResource MahApps.Brushes.Accent}"/>
+                </DataTrigger>
+            </DataTemplate.Triggers>
         </DataTemplate>
 
         <Style x:Key="fixedImageRollICS" TargetType="TabItem" BasedOn="{StaticResource MahApps.Styles.TabItem}">
@@ -328,9 +338,9 @@
             <Setter Property="Margin" Value="0"/>
 
             <Style.Triggers>
-                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=TabItem}}" Value="{x:Static sectors:StandardsTypes.GS1}">
+                <!--<DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=TabItem}}" Value="{x:Static sectors:StandardsTypes.GS1}">
                     <Setter Property="Background" Value="{DynamicResource MahApps.Colors.Accent3}"/>
-                </DataTrigger>
+                </DataTrigger>-->
 
                 <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.GS1}">
                     <Setter Property="ToolTip" Value="GS1"/>
@@ -512,7 +522,8 @@
                     <mah:MetroTabControl ItemsSource="{Binding Groups, Source={StaticResource ResourceKey=UserImageRolls}}"
                                         TabStripPlacement="Left" Style="{StaticResource MahApps.Styles.TabControl}"
                                          ItemContainerStyle="{StaticResource userImageRollICS}"
-                                         ItemTemplate="{StaticResource imageRollItemTemplate}"/>
+                                         ItemTemplate="{StaticResource imageRollItemTemplate}">
+                    </mah:MetroTabControl>
                 </md:DrawerHost>
             </DockPanel>
         </DockPanel>

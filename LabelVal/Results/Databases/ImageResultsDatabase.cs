@@ -1,4 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using LabelVal.Results.ViewModels;
+using Org.BouncyCastle.Tls;
 using SQLite;
 using System;
 using System.Collections.Generic;
@@ -9,31 +11,22 @@ public class ImageResultsDatabase : ObservableObject, IDisposable
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-    public string FilePath { get; private set; }
-    public string FileName => System.IO.Path.GetFileNameWithoutExtension(FilePath);
-
-    private SQLiteConnection Connection { get; set; } = null;
+    public FileFolderEntry File { get; private set; }
+    private SQLiteConnection Connection { get; set; }
 
     public ImageResultsDatabase() { }
-    public ImageResultsDatabase(string dbFilePath) => FilePath = dbFilePath;
-
-    public ImageResultsDatabase Open(string dbFilePath)
+    public ImageResultsDatabase(FileFolderEntry fileEntry)
     {
-        FilePath = dbFilePath;
-        return Open();
+        File = fileEntry;
+        Connection = new SQLiteConnection($"Data Source={File.Name}; Version=3;");
+
+        Open();
     }
 
-    public ImageResultsDatabase Open()
+    private ImageResultsDatabase Open()
     {
-        Logger.Info("Opening Database: {file}", FilePath);
-
-        if (string.IsNullOrEmpty(FilePath))
-            return null;
-
         try
         {
-            Connection ??= new SQLiteConnection(FilePath);
-
             _ = Connection.CreateTable<V275Result>();
             _ = Connection.CreateTable<V5Result>();
             _ = Connection.CreateTable<L95xxResult>();
@@ -51,7 +44,7 @@ public class ImageResultsDatabase : ObservableObject, IDisposable
             return null;
         }
     }
-    public void Close() => Connection?.Close();
+    public void Close() { Connection?.Close(); }
 
     public int? InsertOrReplace_V275Result(V275Result result) => Connection?.InsertOrReplace(result);
     public bool Exists_V275Result(string imageRollUID, string imageUID) => Connection?.Table<V275Result>().Where(v => v.SourceImageUID == imageUID && v.ImageRollUID == imageRollUID).Count() > 0;
@@ -73,7 +66,7 @@ public class ImageResultsDatabase : ObservableObject, IDisposable
 
     public List<string> AllTableNames()
     {
-        using var con = new System.Data.SQLite.SQLiteConnection($"Data Source={FilePath}; Version=3;");
+        using var con = new System.Data.SQLite.SQLiteConnection($"Data Source={File.Name}; Version=3;");
         con.Open();
 
         using System.Data.SQLite.SQLiteCommand command = new("SELECT name FROM sqlite_master WHERE type='table';", con);
@@ -139,9 +132,7 @@ public class ImageResultsDatabase : ObservableObject, IDisposable
 
     public void Dispose()
     {
-        Connection?.Close();
         Connection?.Dispose();
-
         GC.SuppressFinalize(this);
     }
 }
