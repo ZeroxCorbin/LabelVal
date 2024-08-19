@@ -26,7 +26,7 @@
 
                 <DockPanel>
 
-                    <DockPanel DockPanel.Dock="Top" Width="36" Height="36">
+                    <DockPanel DockPanel.Dock="Top" Width="48" Height="44">
                         <StackPanel Width="36" Height="36" VerticalAlignment="Center" Margin="0,2">
                             <iconPacks:PackIconMaterial Height="14" Width="30" Kind="ImageText" HorizontalAlignment="Center"/>
                             <iconPacks:PackIconMaterial Margin="0,0,0,1" Height="6" Kind="ChevronDown" HorizontalAlignment="Center"/>
@@ -40,13 +40,13 @@
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
                         
-                        <Button Click="btnOpenImageResultLocation" Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                Content="{iconPacks:Modern Kind=Folder}" HorizontalAlignment="Left"/>
+                        <Button HorizontalAlignment="Center" Click="btnOpenImageResultLocation" Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                Content="{iconPacks:Modern Kind=Folder}"/>
 
                         <mah:DropDownButton Grid.Column="1" ItemsSource="{Binding FileRoot}" ArrowVisibility="Collapsed"
                                             ButtonStyle="{StaticResource MahApps.Styles.Button.Hamburger}"
                                             Content="{iconPacks:Material Kind=FolderArrowDown}"
-                                            BorderThickness="0" HorizontalAlignment="Right">
+                                            BorderThickness="0" HorizontalAlignment="Center">
                             <mah:DropDownButton.ItemTemplate>
                                 <HierarchicalDataTemplate ItemsSource="{Binding }">
                                     <DockPanel>

@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -8,7 +9,7 @@ namespace LabelVal.Results.ViewModels;
 
 [JsonObject(MemberSerialization.OptIn)]
 public partial class FileFolderEntry : List<FileFolderEntry>, INotifyPropertyChanged
-{ 
+{
     public event PropertyChangedEventHandler PropertyChanged;
     private void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
@@ -56,9 +57,16 @@ public partial class FileFolderEntry : List<FileFolderEntry>, INotifyPropertyCha
 
     private string GetName(string path)
     {
-        if (IsFile)
-            return System.IO.Path.GetFileNameWithoutExtension(Path);
-        else
-            return System.IO.Path.GetDirectoryName(path.TrimEnd(System.IO.Path.DirectorySeparatorChar));
+        try
+        {
+            if (IsFile)
+                return System.IO.Path.GetFileNameWithoutExtension(Path);
+            else
+                return path.Substring(path.LastIndexOf('\\') + 1);
+        }
+        catch (Exception)
+        {
+            return "";
+        }
     }
 }
