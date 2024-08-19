@@ -18,8 +18,6 @@ public class ImageResultsDatabase : ObservableObject, IDisposable
     public ImageResultsDatabase(FileFolderEntry fileEntry)
     {
         File = fileEntry;
-        Connection = new SQLiteConnection($"Data Source={File.Name}; Version=3;");
-
         Open();
     }
 
@@ -27,6 +25,8 @@ public class ImageResultsDatabase : ObservableObject, IDisposable
     {
         try
         {
+            Connection ??= new SQLiteConnection(File.Path);
+
             _ = Connection.CreateTable<V275Result>();
             _ = Connection.CreateTable<V5Result>();
             _ = Connection.CreateTable<L95xxResult>();

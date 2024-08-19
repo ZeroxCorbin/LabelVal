@@ -97,6 +97,7 @@ public partial class ImageResultsDatabases : ObservableRecipient
             file.Close();
 
             FileRoot = EnumerateFolders(new FileFolderEntry(App.ImageResultsDatabaseRoot));
+            UpdateDatabases(FileRoot);
         }
     }
     private List<FileFolderEntry> CollectSelectedFiles(FileFolderEntry root)

@@ -33,6 +33,12 @@ public partial class FileFolderEntry : List<FileFolderEntry>, INotifyPropertyCha
                 IsDirectory = true;
                 Name = GetName(value);
             }
+            else
+                if(System.IO.Path.GetFileName(path) != "")
+            {
+                IsFile = true;
+                Name = GetName(value);
+            }
         }
     }
     public bool IsDirectory { get; private set; }
