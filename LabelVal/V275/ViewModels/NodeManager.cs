@@ -6,6 +6,7 @@ using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Logging;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,26 +17,28 @@ using V275_REST_Lib.Models;
 
 namespace LabelVal.V275.ViewModels;
 
+[JsonObject(MemberSerialization.OptIn)]
 public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChangedMessage<ImageRollEntry>>
 {
-    public static readonly string ClassName = typeof(NodeManager).FullName;
+    public V275Manager Manager { get; set; }
 
-    [ObservableProperty] private string host = App.Settings.GetValue($"{NodeManager.ClassName}{nameof(NodeManager.Host)}", "127.0.0.1", true);
+    [ObservableProperty][property: JsonProperty] private string host = "127.0.0.1"; //App.Settings.GetValue($"{NodeManager.ClassName}{nameof(NodeManager.Host)}", "127.0.0.1", true);
     partial void OnHostChanged(string value)
     {
-        if (string.IsNullOrEmpty(value))
-            _ = App.Current.Dispatcher.BeginInvoke(() => Host = "127.0.0.1");
-        else
-            App.Settings.SetValue($"{NodeManager.ClassName}{nameof(NodeManager.Host)}", value);
+        foreach (var nd in Nodes)
+            nd.Host = value;
     }
 
-    [ObservableProperty] private uint systemPort = App.Settings.GetValue($"{NodeManager.ClassName}{nameof(NodeManager.SystemPort)}", GetPortNumber(), true);
+    [ObservableProperty][property: JsonProperty] private uint systemPort = GetPortNumber(); //App.Settings.GetValue($"{NodeManager.ClassName}{nameof(NodeManager.SystemPort)}", GetPortNumber(), true);
     partial void OnSystemPortChanged(uint value)
     {
         if (!LibStaticUtilities_IPHostPort.Ports.IsPortValid(value))
             _ = App.Current.Dispatcher.BeginInvoke(() => SystemPort = GetPortNumber());
         else
-            App.Settings.SetValue($"{NodeManager.ClassName}{nameof(NodeManager.SystemPort)}", value);
+        {
+            foreach (var nd in Nodes)
+                nd.SystemPort = value;
+        }
     }
     public string SystemPortString
     {
@@ -45,34 +48,45 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
             if (value == null || !LibStaticUtilities_IPHostPort.Ports.IsPortValid(value))
                 _ = App.Current.Dispatcher.BeginInvoke(() => { SystemPort = GetPortNumber(); OnPropertyChanged(nameof(SystemPortString)); });
             else
-                App.Settings.SetValue($"{NodeManager.ClassName}{nameof(NodeManager.SystemPort)}", uint.Parse(value));
+                SystemPort = uint.Parse(value);
         }
     }
 
-    [ObservableProperty] private string userName = App.Settings.GetValue($"{NodeManager.ClassName}{nameof(NodeManager.UserName)}", "admin", true);
-    partial void OnUserNameChanged(string value) => App.Settings.SetValue($"{NodeManager.ClassName}{nameof(UserName)}", value);
+    [ObservableProperty][property: JsonProperty] private string userName = "admin";// App.Settings.GetValue($"{NodeManager.ClassName}{nameof(NodeManager.UserName)}", "admin", true);
+    partial void OnUserNameChanged(string value)
+    {
+        foreach (var nd in Nodes)
+            nd.UserName = value;
+    }
 
-    [ObservableProperty] private string password = App.Settings.GetValue($"{NodeManager.ClassName}{nameof(Password)}", "admin", true);
-    partial void OnPasswordChanged(string value) => App.Settings.SetValue($"{NodeManager.ClassName}{nameof(Password)}", value);
+    [ObservableProperty][property: JsonProperty] private string password = "admin"; // App.Settings.GetValue($"{NodeManager.ClassName}{nameof(Password)}", "admin", true);
+    partial void OnPasswordChanged(string value)
+    {
+        foreach (var nd in Nodes)
+            nd.Password = value;
+    }
 
-    [ObservableProperty] private string simulatorImageDirectory = App.Settings.GetValue($"{NodeManager.ClassName}{nameof(SimulatorImageDirectory)}", GetSimulationDirectory(), true);
+    [ObservableProperty][property: JsonProperty] private string simulatorImageDirectory = GetSimulationDirectory();
     partial void OnSimulatorImageDirectoryChanged(string value)
     {
         if (string.IsNullOrEmpty(value))
             _ = App.Current.Dispatcher.BeginInvoke(() => SimulatorImageDirectory = GetSimulationDirectory());
         else
-            App.Settings.SetValue($"{NodeManager.ClassName}{nameof(SimulatorImageDirectory)}", value);
+        {
+            foreach (var nd in Nodes)
+                nd.SimulatorImageDirectory = value;
+        }
     }
 
     [ObservableProperty] private ObservableCollection<Node> nodes = [];
     [ObservableProperty][NotifyPropertyChangedRecipients] private Node selectedNode;
     partial void OnSelectedNodeChanged(Node value) => App.Settings.SetValue(nameof(SelectedNode), value);
 
-    public bool ShowTemplateNameMismatchDialog 
-    { 
-        get => App.Settings.GetValue($"{NodeManager.ClassName}{nameof(NodeManager.ShowTemplateNameMismatchDialog)}", true, true); 
-        set => App.Settings.SetValue($"{NodeManager.ClassName}{nameof(NodeManager.ShowTemplateNameMismatchDialog)}", value); 
-    }
+    //public bool ShowTemplateNameMismatchDialog
+    //{
+    //    get => App.Settings.GetValue($"{NodeManager.ClassName}{nameof(NodeManager.ShowTemplateNameMismatchDialog)}", true, true);
+    //    set => App.Settings.SetValue($"{NodeManager.ClassName}{nameof(NodeManager.ShowTemplateNameMismatchDialog)}", value);
+    //}
 
     [ObservableProperty] private bool isGetDevices = false;
 
@@ -88,8 +102,6 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
             {
                 message.Reply(SelectedNode);
             });
-
-        _ = GetDevices();
     }
 
     [RelayCommand]
@@ -117,7 +129,8 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
 
                 Devices.Camera camera = dev.cameras.FirstOrDefault(c => c.mac == node.cameraMAC);
 
-                Node newNode = new(Host, SystemPort, (uint)node.enumeration, SelectedImageRoll) { Details = node, Camera = camera };
+                Node newNode = new(Host, SystemPort, (uint)node.enumeration, SelectedImageRoll)
+                { Manager = this, Details = node, Camera = camera, SimulatorImageDirectory = SimulatorImageDirectory, UserName = UserName, Password = Password };
 
                 Inspection insp;
                 if ((insp = await newNode.Controller.Commands.GetInspection()) != null)
@@ -166,7 +179,7 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
         Node sel = App.Settings.GetValue<Node>(nameof(SelectedNode));
         foreach (Node node in Nodes)
         {
-            if (sel != null && node.ID == sel.ID)
+            if (sel != null && (node.Host == sel.Host && node.SystemPort == sel.SystemPort && node.NodeNumber == sel.NodeNumber))
                 SelectedNode = node;
         }
     }

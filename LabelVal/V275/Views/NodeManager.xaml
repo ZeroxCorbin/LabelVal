@@ -38,16 +38,31 @@
                                 </LinearGradientBrush>
                             </DockPanel.Background>
 
-                            <TextBlock DockPanel.Dock="Top" Margin="6,0,0,3" Text="V275 Systems" Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"/>
+                            <TextBlock DockPanel.Dock="Top" Margin="6,0,0,3">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock" BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}">
+                                        <Setter Property="Text">
+                                            <Setter.Value>
+                                                <MultiBinding StringFormat="{}{0}:{1}">
+                                                    <Binding Path="Host"/>
+                                                    <Binding Path="SystemPort"/>
+                                                </MultiBinding>
+                                                
+                                            </Setter.Value>
+                                        </Setter>
+
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
 
                             <Border Style="{StaticResource imageBarHor}"/>
 
                         </DockPanel>
 
-                        <Button Click="btnCollapseContent" Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                        <!--<Button Click="btnCollapseContent" Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                                 VerticalAlignment="Top" HorizontalAlignment="Right" Margin="3"
                                 Content="{iconPacks:Material Kind=ArrowCollapseLeft}"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>-->
 
                     </DockPanel>
 
@@ -66,11 +81,11 @@
                             Content="{iconPacks:Modern Kind=Browser, Width=24, Height=24}"
                             Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
 
-                    <Button Click="btnShowDetails_Click" Style="{StaticResource MahApps.Styles.Button.Hamburger}" Width="48"
+                    <!--<Button Click="btnShowDetails_Click" Style="{StaticResource MahApps.Styles.Button.Hamburger}" Width="48"
                             HorizontalAlignment="Right"
                             ToolTip="{loc:Loc Details}"
                             Content="{iconPacks:Material Kind=CodeJson, Width=24, Height=24}"
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>-->
 
                 </DockPanel>
             </DockPanel>
@@ -80,7 +95,7 @@
             <Border Style="{StaticResource groupLeft}" />
             <Border Style="{StaticResource groupBottom}"/>
 
-            <md:DrawerHost x:Name="drwSettings" Margin="3,3,0,0">
+            <md:DrawerHost x:Name="drwSettings" Margin="3,3,0,0" DrawerClosing="drwSettings_DrawerClosing">
 
                 <md:DrawerHost.TopDrawerContent>
 

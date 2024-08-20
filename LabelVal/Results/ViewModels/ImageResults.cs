@@ -96,8 +96,6 @@ public partial class ImageResults : ObservableRecipient,
 
     private Dictionary<int, V275Repeat> TempV275Repeat { get; } = [];
 
-    private string V275Host => App.Settings.GetValue<string>($"{NodeManager.ClassName}{nameof(NodeManager.Host)}");
-
     public ImageResults()
     {
         IsActive = true;
@@ -106,29 +104,29 @@ public partial class ImageResults : ObservableRecipient,
 
     private void RecieveAll()
     {
-        RequestMessage<Node> mes1 = new();
-        WeakReferenceMessenger.Default.Send(mes1);
-        SelectedNode = mes1.Response;
+        //var ret1 = WeakReferenceMessenger.Default.Send(new RequestMessage<Node>());
+        //if(ret1.HasReceivedResponse)
+        //    SelectedNode = ret1.Response;
 
-        RequestMessage<ImageRollEntry> mes3 = new();
-        WeakReferenceMessenger.Default.Send(mes3);
-        SelectedImageRoll = mes3.Response;
+        var ret2 = WeakReferenceMessenger.Default.Send(new RequestMessage<PrinterSettings>());
+        if (ret2.HasReceivedResponse)
+            SelectedPrinter = ret2.Response;
 
-        RequestMessage<PrinterSettings> mes2 = new();
-        WeakReferenceMessenger.Default.Send(mes2);
-        SelectedPrinter = mes2.Response;
+        var ret3 = WeakReferenceMessenger.Default.Send(new RequestMessage<ImageRollEntry>());
+        if (ret3.HasReceivedResponse)
+            SelectedImageRoll = ret3.Response;
 
-        RequestMessage<Databases.ImageResultsDatabase> mes4 = new();
-        WeakReferenceMessenger.Default.Send(mes4);
-        SelectedDatabase = mes4.Response;
+        var ret4 = WeakReferenceMessenger.Default.Send(new RequestMessage<Databases.ImageResultsDatabase>());
+        if (ret4.HasReceivedResponse)
+            SelectedDatabase = ret4.Response;
 
-        RequestMessage<Scanner> mes5 = new();
-        WeakReferenceMessenger.Default.Send(mes5);
-        SelectedScanner = mes5.Response;
+        var ret5 = WeakReferenceMessenger.Default.Send(new RequestMessage<Scanner>());
+        if (ret5.HasReceivedResponse)
+            SelectedScanner = ret5.Response;
 
-        RequestMessage<Verifier> mes6 = new();
-        WeakReferenceMessenger.Default.Send(mes6);
-        SelectedVerifier = mes6.Response;
+        var ret6 = WeakReferenceMessenger.Default.Send(new RequestMessage<Verifier>());
+        if (ret6.HasReceivedResponse)
+            SelectedVerifier = ret6.Response;
     }
 
     public void ClearImageResultsList()
@@ -534,7 +532,7 @@ public partial class ImageResults : ObservableRecipient,
             PrintingImageResult = null;
         }
 
-        if (SelectedNode.IsSimulator && !V275Host.Equals("127.0.0.1"))
+        if (SelectedNode.IsSimulator && !SelectedNode.Host.Equals("127.0.0.1"))
             V275ProcessImage_API(imageResults, type);
         else if (SelectedNode.IsSimulator)
         {
@@ -588,7 +586,7 @@ public partial class ImageResults : ObservableRecipient,
             await SelectedNode.EnablePrint("1");
 
         //Trigger the simulator if it is using the local file system
-        if (SelectedNode.IsSimulator && V275Host.Equals("127.0.0.1"))
+        if (SelectedNode.IsSimulator && SelectedNode.Host.Equals("127.0.0.1"))
             _ = await SelectedNode.Controller.Commands.SimulationTrigger();
     }
 
@@ -642,7 +640,7 @@ public partial class ImageResults : ObservableRecipient,
             int verRes = 1;
             string prepend = "";
 
-            Simulator.SimulatorFileHandler sim = new();
+            Simulator.SimulatorFileHandler sim = new(SelectedNode.SimulatorImageDirectory);
 
             if (!sim.DeleteAllImages())
             {

@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
 using MahApps.Metro.Controls.Dialogs;
 using Newtonsoft.Json;
+using Org.BouncyCastle.Bcpg.OpenPgp;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -32,13 +33,16 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
 {
     public V275_REST_lib.Controller Controller { get; }
 
-    [JsonProperty] private string Host => App.Settings.GetValue<string>($"{NodeManager.ClassName}{nameof(NodeManager.Host)}");
-    [JsonProperty] private uint SystemPort => App.Settings.GetValue<uint>($"{NodeManager.ClassName}{nameof(NodeManager.SystemPort)}");
+    [JsonProperty]public string Host { get => Controller.Commands.Host; set => Controller.Commands.Host = value; }
+    [JsonProperty]public uint SystemPort { get => Controller.Commands.SystemPort; set => Controller.Commands.SystemPort = value; }
+    [JsonProperty]public uint NodeNumber { get => Controller.Commands.NodeNumber; set => Controller.Commands.NodeNumber = value; }
 
-    [JsonProperty] public uint ID { get; set; }
+    public string UserName { get; set; }
+    public string Password { get; set; }
 
-    [JsonProperty] private static string UserName => App.Settings.GetValue<string>($"{NodeManager.ClassName}{nameof(NodeManager.UserName)}");
-    private static string Password => App.Settings.GetValue<string>($"{NodeManager.ClassName}{nameof(NodeManager.Password)}");
+    public string SimulatorImageDirectory { get; set; }
+
+    public NodeManager Manager { get; set; }
 
     [ObservableProperty] private bool loginMonitor;
 
@@ -60,7 +64,7 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
     [ObservableProperty] private Print print;
 
     public bool IsSimulator => Inspection != null && Inspection.device.Equals("simulator");
-    private static string SimulatorImageDirectory => App.Settings.GetValue<string>($"{NodeManager.ClassName}{nameof(SimulatorImageDirectory)}");
+
 
     [ObservableProperty] private NodeStates state = NodeStates.Offline;
 
@@ -137,7 +141,6 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
     {
         SelectedImageRoll = imageRollEntry;
 
-        ID = nodeNumber;
         Controller = new V275_REST_lib.Controller(host, systemPort, nodeNumber);
 
         Controller.WebSocket.SessionStateChange += WebSocket_SessionStateChange;
@@ -179,9 +182,6 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
             LogDebug($"Pre-Log in FAILED. {UserName} @ {Host}:{SystemPort}");
             return;
         }
-
-        Controller.Commands.SystemPort = SystemPort;
-        Controller.Commands.Host = Host;
 
         LogDebug($"Logging in. {UserName} @ {Host}:{SystemPort}");
 

@@ -11,7 +11,7 @@ using System.Collections.ObjectModel;
 
 namespace LabelVal.Run.ViewModels;
 
-public partial class RunManager : ObservableRecipient, IRecipient<PropertyChangedMessage<Node>>, IRecipient<PropertyChangedMessage<Scanner>>  ,IRecipient<PropertyChangedMessage<ImageRollEntry>>
+public partial class RunManager : ObservableRecipient, IRecipient<PropertyChangedMessage<Node>>, IRecipient<PropertyChangedMessage<Scanner>>, IRecipient<PropertyChangedMessage<ImageRollEntry>>
 {
     private ImageResults ImageResults { get; }
     [ObservableProperty] private Node selectedNode;
@@ -38,17 +38,17 @@ public partial class RunManager : ObservableRecipient, IRecipient<PropertyChange
 
     private void RecieveAll()
     {
-        RequestMessage<Node> mes1 = new();
-        WeakReferenceMessenger.Default.Send(mes1);
-        SelectedNode = mes1.Response;
+        //var ret1 = WeakReferenceMessenger.Default.Send(new RequestMessage<Node>());
+        //if (ret1.HasReceivedResponse)
+        //    SelectedNode = ret1.Response;
 
-        RequestMessage<ImageRollEntry> mes3 = new();
-        WeakReferenceMessenger.Default.Send(mes3);
-        SelectedImageRoll = mes3.Response;
+        var ret2 = WeakReferenceMessenger.Default.Send(new RequestMessage<ImageRollEntry>());
+        if (ret2.HasReceivedResponse)
+            SelectedImageRoll = ret2.Response;
 
-        RequestMessage<Scanner> mes4 = new();
-        WeakReferenceMessenger.Default.Send(mes4);
-        SelectedScanner = mes4.Response;
+        var ret3 = WeakReferenceMessenger.Default.Send(new RequestMessage<Scanner>());
+        if (ret3.HasReceivedResponse)
+            SelectedScanner = ret3.Response;
     }
 
     [RelayCommand]

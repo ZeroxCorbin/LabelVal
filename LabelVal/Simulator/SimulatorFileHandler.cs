@@ -6,7 +6,9 @@ namespace LabelVal.Simulator;
 
 internal class SimulatorFileHandler
 {
-    public string SimulatorImageDirectory => App.Settings.GetValue<string>($"{NodeManager.ClassName}{nameof(SimulatorImageDirectory)}");
+    public SimulatorFileHandler(string path) => SimulatorImageDirectory = path;
+    
+    public string SimulatorImageDirectory { get; private set; }
 
     public bool SimulatorImageDirectoryExists => Directory.Exists(SimulatorImageDirectory);
 

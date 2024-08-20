@@ -9,6 +9,7 @@ namespace LabelVal.V5.ViewModels;
 public partial class ScannerManager : ObservableRecipient
 {
     public ObservableCollection<Scanner> Scanners { get; } = App.Settings.GetValue(nameof(Scanners), new ObservableCollection<Scanner>(), true);
+
     [ObservableProperty][NotifyPropertyChangedRecipients] private Scanner selectedScanner;
     partial void OnSelectedScannerChanged(Scanner value) => App.Settings.SetValue(nameof(SelectedScanner), value);
 

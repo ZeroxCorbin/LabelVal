@@ -91,6 +91,13 @@ public partial class Scanner : UserControl
     }
 
     private void btnShowSettings_Click(object sender, RoutedEventArgs e) => drwSettings.IsTopDrawerOpen = !drwSettings.IsTopDrawerOpen;
+    private void drwSettings_DrawerClosing(object sender, MaterialDesignThemes.Wpf.DrawerClosingEventArgs e)
+    {
+        if(e.Dock == Dock.Top)
+            {
+            ((ViewModels.Scanner)DataContext).Manager.SaveCommand.Execute(null);
+        }
+    }
 
     private void btnOpenInBrowser_Click(object sender, RoutedEventArgs e)
     {
@@ -127,11 +134,5 @@ public partial class Scanner : UserControl
 
     }
 
-    private void drwSettings_DrawerClosing(object sender, MaterialDesignThemes.Wpf.DrawerClosingEventArgs e)
-    {
-        if(e.Dock == Dock.Top)
-            {
-            ((ViewModels.Scanner)DataContext).Manager.SaveCommand.Execute(null);
-        }
-    }
+
 }

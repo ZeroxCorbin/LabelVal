@@ -10,7 +10,8 @@ namespace LabelVal.V275.Views;
 /// </summary>
 public partial class NodeManager : UserControl
 {
-    public NodeManager() {
+    public NodeManager()
+    {
         //Register KeyUpEvent to all TextBox elements
         EventManager.RegisterClassHandler(typeof(TextBox),
             TextBox.KeyUpEvent,
@@ -48,7 +49,7 @@ public partial class NodeManager : UserControl
         }
         view.IsLeftDrawerOpen = !view.IsLeftDrawerOpen;
     }
-     
+
     private void btnShowSettings_Click(object sender, RoutedEventArgs e) => drwSettings.IsTopDrawerOpen = !drwSettings.IsTopDrawerOpen;
 
     private void btnOpenInBrowser_Click(object sender, RoutedEventArgs e)
@@ -63,4 +64,12 @@ public partial class NodeManager : UserControl
     }
 
     private void btnCollapseContent(object sender, RoutedEventArgs e) => ((MainWindow)App.Current.MainWindow).ClearSelectedMenuItem();
+
+    private void drwSettings_DrawerClosing(object sender, MaterialDesignThemes.Wpf.DrawerClosingEventArgs e)
+    {
+        if (e.Dock == Dock.Top)
+        {
+            ((ViewModels.NodeManager)DataContext).Manager.SaveCommand.Execute(null);
+        }
+    }
 }

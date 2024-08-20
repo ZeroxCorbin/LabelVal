@@ -113,6 +113,11 @@ public partial class ImageRolls : UserControl
 
     private void btnOpenImageRollsLocation(object sender, RoutedEventArgs e)
     {
-
+        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo()
+        {
+            FileName = $"{App.ImageRollsRoot}\\",
+            UseShellExecute = true,
+            Verb = "open"
+        });
     }
 }
