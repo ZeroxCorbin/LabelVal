@@ -77,28 +77,38 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     [SQLite.Ignore] public ObservableCollection<ImageEntry> Images { get; set; } = [];
     [SQLite.Ignore] public Databases.ImageRollsDatabase ImageRollsDatabase { get; set; }
 
+    [ObservableProperty] private bool rightAlignOverflow = App.Settings.GetValue(nameof(RightAlignOverflow), false);
+
     public ImageRollEntry()
     {
+        App.Settings.PropertyChanged += Settings_PropertyChanged;
         IsActive = true;
         RecieveAll();
     }
-    public ImageRollEntry(bool inactive)
+
+    private void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        IsActive = inactive;
-
-        if(IsActive)
-            RecieveAll();
+        if (e.PropertyName == nameof(RightAlignOverflow))
+            RightAlignOverflow = App.Settings.GetValue(nameof(RightAlignOverflow), false);
     }
-    public ImageRollEntry(string name, string path, Databases.ImageRollsDatabase imageRollsDatabase)
-    {
-        IsActive = true;
-        RecieveAll();
 
-        ImageRollsDatabase = imageRollsDatabase;
+    //public ImageRollEntry(bool inactive)
+    //{
+    //    IsActive = inactive;
 
-        Name = name;
-        Path = path;
-    }
+    //    if(IsActive)
+    //        RecieveAll();
+    //}
+    //public ImageRollEntry(string name, string path, Databases.ImageRollsDatabase imageRollsDatabase)
+    //{
+    //    IsActive = true;
+    //    RecieveAll();
+
+    //    ImageRollsDatabase = imageRollsDatabase;
+
+    //    Name = name;
+    //    Path = path;
+    //}
 
     private void RecieveAll()
     {

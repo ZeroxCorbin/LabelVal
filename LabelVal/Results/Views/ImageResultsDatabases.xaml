@@ -85,7 +85,11 @@
                                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" Width="24" Height="24"/>
                     </Button>
 
-                    <ToggleButton HorizontalAlignment="Right" IsChecked="{Binding RightAlignOverflow}"  Content="{iconPacks:Modern Kind=AlignLeft}" md:ToggleButtonAssist.OnContent="{iconPacks:Modern Kind=AlignRight}"/>
+                    <ToggleButton  Margin="3,6" HorizontalAlignment="Right" VerticalAlignment="Bottom" IsChecked="{Binding RightAlignOverflow}"  Content="{iconPacks:Modern Kind=AlignLeft}" md:ToggleButtonAssist.OnContent="{iconPacks:Modern Kind=AlignRight}">
+                        <ToggleButton.LayoutTransform>
+                            <ScaleTransform ScaleX="0.5" ScaleY="0.5"/>
+                        </ToggleButton.LayoutTransform>
+                    </ToggleButton>
                 </DockPanel>
             </DockPanel>
         </md:Card>
@@ -120,11 +124,33 @@
 
                                     <Grid>
                                         <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="auto"/>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="auto"/>
                                         </Grid.ColumnDefinitions>
 
-                                        <ScrollViewer x:Name="scrName"
+                                        <md:SmartHint Margin="3,0" Grid.Column="0" Hint="..." FontSize="18">
+                                            
+                                            <md:SmartHint.Style>
+                                                <Style TargetType="md:SmartHint">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                    <Style.Triggers>
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding DataContext.RightAlignOverflow, RelativeSource={RelativeSource AncestorType=ListView}}" Value="True"/>
+                                                                <Condition Binding="{Binding ComputedHorizontalScrollBarVisibility, ElementName=scrName}" Value="Visible"/>
+                                                            </MultiDataTrigger.Conditions>
+                                                            <MultiDataTrigger.Setters>
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </MultiDataTrigger.Setters>
+                                                        </MultiDataTrigger>
+                                                        
+                                                     </Style.Triggers>
+                                                </Style>
+                                            </md:SmartHint.Style>
+                                        </md:SmartHint>
+                                        
+                                        <ScrollViewer Grid.Column="1" x:Name="scrName"
                                                       md:ScrollViewerAssist.BubbleVerticalScroll="True" 
                                                       VerticalScrollBarVisibility="Disabled" 
                                                       HorizontalScrollBarVisibility="Auto"
@@ -147,12 +173,8 @@
                                             <TextBlock Text="{Binding File.Name}" Margin="3,3">
                                                 <TextBlock.Style>
                                                     <Style TargetType="TextBlock" BasedOn="{StaticResource MaterialDesignBodyMediumTextBlock}">
-                                                        <Setter Property="Visibility" Value="Visible"/>
                                                         <Setter Property="FlowDirection" Value="LeftToRight"/>
                                                         <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding HorizontalScrollBarVisibility, RelativeSource={RelativeSource AncestorType=ScrollViewer}}" Value="True">
-                                                                <Setter Property="md:TextFieldAssist.SuffixText" Value="..."/>
-                                                            </DataTrigger>
                                                             <DataTrigger Binding="{Binding DataContext.RightAlignOverflow, RelativeSource={RelativeSource AncestorType=ListView}}" Value="True">
                                                                 <Setter Property="FlowDirection" Value="LeftToRight"/>
                                                             </DataTrigger>
@@ -162,14 +184,20 @@
                                             </TextBlock>
                                         </ScrollViewer>
 
-                                        <md:SmartHint Margin="3,0" Grid.Column="1" Hint="..." FontSize="18">
+                                        <md:SmartHint Margin="3,0" Grid.Column="2" Hint="..." FontSize="18">
                                             <md:SmartHint.Style>
                                                 <Style TargetType="md:SmartHint">
-                                                    <Setter Property="Visibility" Value="Hidden"/>
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
                                                     <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding ComputedHorizontalScrollBarVisibility, ElementName=scrName}" Value="Visible">
-                                                            <Setter Property="Visibility" Value="Visible"/>
-                                                        </DataTrigger>
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding DataContext.RightAlignOverflow, RelativeSource={RelativeSource AncestorType=ListView}}" Value="False"/>
+                                                                <Condition Binding="{Binding ComputedHorizontalScrollBarVisibility, ElementName=scrName}" Value="Visible"/>
+                                                            </MultiDataTrigger.Conditions>
+                                                            <MultiDataTrigger.Setters>
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </MultiDataTrigger.Setters>
+                                                        </MultiDataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
                                             </md:SmartHint.Style>

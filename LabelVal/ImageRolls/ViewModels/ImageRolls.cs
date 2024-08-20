@@ -34,6 +34,7 @@ public partial class ImageRolls : ObservableRecipient
     [ObservableProperty][NotifyPropertyChangedRecipients] private ImageRollEntry selectedUserImageRoll;// = App.Settings.GetValue<ImageRollEntry>(nameof(SelectedUserImageRoll), null);
     partial void OnSelectedUserImageRollChanged(ImageRollEntry value) { if (value != null) App.Settings.SetValue(nameof(SelectedUserImageRoll), value); if (value != null) SelectedImageRoll = null; }
 
+    
     [ObservableProperty] private bool rightAlignOverflow = App.Settings.GetValue(nameof(RightAlignOverflow), false);
     partial void OnRightAlignOverflowChanged(bool value) => App.Settings.SetValue(nameof(RightAlignOverflow), value);
 

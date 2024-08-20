@@ -64,7 +64,7 @@ public partial class RunControl : ObservableObject
         else
         {
             LogInfo($"Starting Run: {SelectedImageRoll.Name}; {LoopCount.ToString()}");
-            RunController.StartAsync(ImageResultsList, SelectedImageRoll, V275, V5.Controller, LoopCount);
+            RunController.StartAsync(ImageResultsList, SelectedImageRoll, V275, V5?.Controller, LoopCount);
         }
     }
 

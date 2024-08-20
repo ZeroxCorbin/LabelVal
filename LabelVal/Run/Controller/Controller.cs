@@ -225,6 +225,29 @@ public partial class Controller : ObservableObject
         else
             ire.V275ProcessCommand.Execute("source");
 
+
+        //Wait for the V275 to finish processing the image or fault.
+        DateTime start = DateTime.Now;
+        while (ire.IsV275Working)
+        {
+            if (RequestedState != RunStates.Running)
+                return UpdateRunState(RequestedState);
+
+            if (DateTime.Now - start > TimeSpan.FromMilliseconds(10000))
+            {
+                LogError("Run: Timeout waiting for results.");
+                return UpdateRunState(RunStates.Error);
+            }
+
+            if (ire.IsV275Faulted)
+            {
+                LogError("Run: Error when interacting with V275.");
+                return UpdateRunState(RunStates.Error);
+            }
+
+            Thread.Sleep(1);
+        };
+
         return State;
     }
 
