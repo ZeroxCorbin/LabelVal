@@ -41,7 +41,7 @@ public partial class FileFolderEntry : ObservableObject
     public bool IsDirectory { get; private set; }
     public bool IsFile { get; private set; }
 
-    [ObservableProperty][property: JsonProperty] public bool isSelected = true;
+    [JsonProperty][ObservableProperty] public bool isSelected = true;
     partial void OnIsSelectedChanged(bool value)
     {
         foreach (var child in this.Children)
