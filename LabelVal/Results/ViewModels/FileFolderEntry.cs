@@ -8,11 +8,8 @@ using System.ComponentModel;
 namespace LabelVal.Results.ViewModels;
 
 [JsonObject(MemberSerialization.OptIn)]
-public partial class FileFolderEntry : List<FileFolderEntry>, INotifyPropertyChanged
+public partial class FileFolderEntry : ObservableObject
 {
-    public event PropertyChangedEventHandler PropertyChanged;
-    private void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
     public string Name { get; private set; }
 
     private string path;
@@ -34,7 +31,7 @@ public partial class FileFolderEntry : List<FileFolderEntry>, INotifyPropertyCha
                 Name = GetName(value);
             }
             else
-                if(System.IO.Path.GetFileName(path) != "")
+                if (System.IO.Path.GetFileName(path) != "")
             {
                 IsFile = true;
                 Name = GetName(value);
@@ -44,20 +41,15 @@ public partial class FileFolderEntry : List<FileFolderEntry>, INotifyPropertyCha
     public bool IsDirectory { get; private set; }
     public bool IsFile { get; private set; }
 
-    private bool isSelected = true;
-
-    [JsonProperty] public bool IsSelected { get => isSelected; set => OnIsSelectedChanged(value); }
-    private void OnIsSelectedChanged(bool value)
+    [ObservableProperty][property: JsonProperty] public bool isSelected = true;
+    partial void OnIsSelectedChanged(bool value)
     {
-        isSelected = value;
-        foreach (var child in this)
+        foreach (var child in this.Children)
             child.IsSelected = value;
-
-        OnPropertyChanged("IsSelected");
     }
 
-    //[JsonProperty]
-    //public ObservableCollection<FileFolderEntry> Children { get; } = [];
+    [JsonProperty]
+    public ObservableCollection<FileFolderEntry> Children { get; } = [];
 
     public FileFolderEntry(string path) => Path = path;
 

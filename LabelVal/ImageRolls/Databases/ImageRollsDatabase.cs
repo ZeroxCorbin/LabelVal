@@ -1,4 +1,5 @@
 ﻿using LabelVal.ImageRolls.ViewModels;
+using LabelVal.Results.ViewModels;
 using SQLite;
 using System;
 using System.Collections.Generic;
@@ -8,29 +9,22 @@ public class ImageRollsDatabase
 {
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
+    public FileFolderEntry File { get; private set; }
     private SQLiteConnection Connection { get; set; } = null;
 
-    public ImageRollsDatabase Open(string dbFilePath)
+    public ImageRollsDatabase(FileFolderEntry fileFolderEntry) { File = fileFolderEntry; Open(); }
+    private void Open()
     {
-        Logger.Info("Opening Database: {file}", dbFilePath);
-
-        if (string.IsNullOrEmpty(dbFilePath))
-            return null;
-
         try
         {
-            if (Connection == null)
-                Connection = new SQLiteConnection(dbFilePath);
+            Connection ??= new SQLiteConnection(File.Path);
 
             Connection.CreateTable<ImageRollEntry>();
             Connection.CreateTable<ImageEntry>();
-
-            return this;
         }
         catch (Exception e)
         {
             Logger.Error(e);
-            return null;
         }
     }
     public void Close() => Connection?.Close();

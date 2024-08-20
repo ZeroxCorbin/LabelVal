@@ -25,42 +25,35 @@
             <DockPanel>
 
                 <DockPanel>
-
-                    <DockPanel DockPanel.Dock="Top" Width="48" Height="44">
-                        <StackPanel Width="36" Height="36" VerticalAlignment="Center" Margin="0,2">
-                            <iconPacks:PackIconMaterial Height="14" Width="30" Kind="ImageText" HorizontalAlignment="Center"/>
-                            <iconPacks:PackIconMaterial Margin="0,0,0,1" Height="6" Kind="ChevronDown" HorizontalAlignment="Center"/>
-                            <iconPacks:PackIconMaterial Height="14" Width="36" Kind="Database" HorizontalAlignment="Center"/>
+                    <Button DockPanel.Dock="Top" HorizontalAlignment="Center" Click="btnOpenImageResultLocation"
+                            Style="{StaticResource MahApps.Styles.Button.Hamburger}">
+                        <StackPanel Height="34" Width="36" VerticalAlignment="Top" Margin="0,2">
+                            <iconPacks:PackIconMaterial Height="12" Width="22" Kind="ImageText" HorizontalAlignment="Center"/>
+                            <iconPacks:PackIconMaterial Margin="0,0,0,1" Height="5" Kind="ChevronDown" HorizontalAlignment="Center"/>
+                            <iconPacks:PackIconMaterial Height="12" Width="36" Kind="Database" HorizontalAlignment="Center"/>
                         </StackPanel>
-                    </DockPanel>
+                    </Button>
 
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                        </Grid.ColumnDefinitions>
-                        
-                        <Button HorizontalAlignment="Center" Click="btnOpenImageResultLocation" Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                Content="{iconPacks:Modern Kind=Folder}"/>
+                    <Border DockPanel.Dock="Top" Style="{StaticResource imageBarHor}"/>
 
-                        <mah:DropDownButton Grid.Column="1" ItemsSource="{Binding FileRoot}" ArrowVisibility="Collapsed"
+                    <mah:DropDownButton ItemsSource="{Binding FileRoot.Children}"
                                             ButtonStyle="{StaticResource MahApps.Styles.Button.Hamburger}"
                                             Content="{iconPacks:Material Kind=FolderArrowDown}"
                                             BorderThickness="0" HorizontalAlignment="Center">
-                            <mah:DropDownButton.ItemTemplate>
-                                <HierarchicalDataTemplate ItemsSource="{Binding }">
-                                    <DockPanel>
-                                        <CheckBox IsChecked="{Binding IsSelected}"/>
-                                        <TextBlock Text="{Binding Name}"/>
-                                    </DockPanel>
-                                    
-                                </HierarchicalDataTemplate>
-                            </mah:DropDownButton.ItemTemplate>
-                        </mah:DropDownButton>
+                        <mah:DropDownButton.ItemTemplate>
+                            <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                                <DockPanel>
+                                    <CheckBox IsChecked="{Binding IsSelected}"/>
+                                    <TextBlock Text="{Binding Name}"/>
+                                </DockPanel>
 
-                    </Grid>
-                    
+                            </HierarchicalDataTemplate>
+                        </mah:DropDownButton.ItemTemplate>
+                    </mah:DropDownButton>
+
+
                 </DockPanel>
+                
                 <Border Style="{StaticResource imageBar}" />
 
                 <DockPanel>
@@ -91,6 +84,8 @@
                         <iconPacks:PackIconMaterial Kind="Plus"
                                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" Width="24" Height="24"/>
                     </Button>
+
+                    <ToggleButton HorizontalAlignment="Right" IsChecked="{Binding RightAlignOverflow}"  Content="{iconPacks:Modern Kind=AlignLeft}" md:ToggleButtonAssist.OnContent="{iconPacks:Modern Kind=AlignRight}"/>
                 </DockPanel>
             </DockPanel>
         </md:Card>

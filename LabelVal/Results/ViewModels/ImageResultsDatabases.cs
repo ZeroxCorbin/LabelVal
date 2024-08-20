@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
-using LabelVal.Messages;
 using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Collections.Generic;
@@ -10,13 +9,11 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Documents;
 
 namespace LabelVal.Results.ViewModels;
 public partial class ImageResultsDatabases : ObservableRecipient
 {
-    [ObservableProperty] private FileFolderEntry fileRoot = App.Settings.GetValue<FileFolderEntry>("ImageResultsDatabases_FileRoot", true);
+    [ObservableProperty] private FileFolderEntry fileRoot = App.Settings.GetValue<FileFolderEntry>("ImageResultsDatabases_FileRoot", new FileFolderEntry(App.ImageResultsDatabaseRoot), true);
     partial void OnFileRootChanged(FileFolderEntry value) => App.Settings.SetValue("ImageResultsDatabases_FileRoot", value);
 
     public ObservableCollection<Databases.ImageResultsDatabase> Databases { get; } = [];
@@ -24,15 +21,13 @@ public partial class ImageResultsDatabases : ObservableRecipient
     [ObservableProperty][NotifyPropertyChangedRecipients] private Databases.ImageResultsDatabase selectedDatabase;
     partial void OnSelectedDatabaseChanged(Databases.ImageResultsDatabase value) => App.Settings.SetValue("SelectedImageResultDatabaseFFE", value?.File);
 
-
     [ObservableProperty] private bool rightAlignOverflow = App.Settings.GetValue(nameof(RightAlignOverflow), false);
     partial void OnRightAlignOverflowChanged(bool value) => App.Settings.SetValue(nameof(RightAlignOverflow), value);
 
-    private ObservableCollection<string> OrphandStandards { get; } = [];
-
-
     public ImageResultsDatabases()
     {
+        UpdateFileFolderEvents(FileRoot);
+
         UpdateImageResultsDatabasesList();
         SelectImageResultsDatabase();
 
@@ -46,65 +41,69 @@ public partial class ImageResultsDatabases : ObservableRecipient
 
     private FileFolderEntry EnumerateFolders(FileFolderEntry root)
     {
-        var currentDirectories = Directory.EnumerateDirectories(root.Path).ToHashSet();
-        var currentFiles = Directory.EnumerateFiles(root.Path, "*.sqlite").ToHashSet();
+        HashSet<string> currentDirectories = Directory.EnumerateDirectories(root.Path).ToHashSet();
+        HashSet<string> currentFiles = Directory.EnumerateFiles(root.Path, "*.sqlite").ToHashSet();
 
         // Remove directories that no longer exist
-        for (int i = root.Count - 1; i >= 0; i--)
+        for (int i = root.Children.Count - 1; i >= 0; i--)
         {
-            var child = root[i];
+            FileFolderEntry child = root.Children[i];
             if (child.IsDirectory && !currentDirectories.Contains(child.Path))
-                root.RemoveAt(i);
+                root.Children.RemoveAt(i);
         }
 
         // Remove files that no longer exist
-        for (int i = root.Count - 1; i >= 0; i--)
+        for (int i = root.Children.Count - 1; i >= 0; i--)
         {
-            var child = root[i];
+            FileFolderEntry child = root.Children[i];
             if (!child.IsDirectory && !currentFiles.Contains(child.Path))
-                root.RemoveAt(i);
+                root.Children.RemoveAt(i);
         }
 
         // Add new directories
-        foreach (var dir in currentDirectories)
-            if (!root.Any(child => child.Path == dir))
-            {
-                var newDir = new FileFolderEntry(dir);
-                root.Add(EnumerateFolders(newDir));
-            }
+        foreach (string dir in currentDirectories)
+            if (!root.Children.Any(child => child.Path == dir))
+                root.Children.Add(EnumerateFolders(GetFileFolderEntry(dir)));
 
         // Add new files
-        foreach (var file in currentFiles)
-            if (!root.Any(child => child.Path == file))
-            {
-                var newFile = new FileFolderEntry(file);
-                root.Add(newFile);
-            }
+        foreach (string file in currentFiles)
+            if (!root.Children.Any(child => child.Path == file))
+                root.Children.Add(GetFileFolderEntry(file));
 
         return root;
     }
-
-    private void UpdateImageResultsDatabasesList()
+    private FileFolderEntry GetFileFolderEntry(string path)
     {
-        LogInfo($"Loading Image Results databases from file system. {App.ImageResultsDatabaseRoot}");
-
-        FileRoot = EnumerateFolders(new FileFolderEntry(App.ImageResultsDatabaseRoot));
-        UpdateDatabases(FileRoot);
-
-        if (Databases.Count == 0)
+        FileFolderEntry ffe = new(path);
+        ffe.PropertyChanged += (s, e) =>
         {
-            var file = new Databases.ImageResultsDatabase(new FileFolderEntry(Path.Combine(App.ImageResultsDatabaseRoot, "My First Database" + App.DatabaseExtension)));
-            file.Close();
+            if (e.PropertyName == "IsSelected")
+            {
+                UpdateDatabases(FileRoot);
+                App.Settings.SetValue("ImageResultsDatabases_FileRoot", FileRoot);
+            }
+        };
+        return ffe;
+    }
+    private void UpdateFileFolderEvents(FileFolderEntry root)
+    {
+        root.PropertyChanged += (s, e) =>
+        {
+            if (e.PropertyName == "IsSelected")
+            {
+                UpdateDatabases(FileRoot);
+                App.Settings.SetValue("ImageResultsDatabases_FileRoot", FileRoot);
+            }
+        };
 
-            FileRoot = EnumerateFolders(new FileFolderEntry(App.ImageResultsDatabaseRoot));
-            UpdateDatabases(FileRoot);
-        }
+        foreach (FileFolderEntry child in root.Children)
+            UpdateFileFolderEvents(child);
     }
     private List<FileFolderEntry> CollectSelectedFiles(FileFolderEntry root)
     {
-        var selectedFiles = new List<FileFolderEntry>();
+        List<FileFolderEntry> selectedFiles = new();
 
-        foreach (var child in root)
+        foreach (FileFolderEntry child in root.Children)
         {
             if (child.IsDirectory)
             {
@@ -119,14 +118,30 @@ public partial class ImageResultsDatabases : ObservableRecipient
         return selectedFiles;
     }
 
+    private void UpdateImageResultsDatabasesList()
+    {
+        LogInfo($"Loading Image Results databases from file system. {App.ImageResultsDatabaseRoot}");
+
+        FileRoot = EnumerateFolders(FileRoot);
+        UpdateDatabases(FileRoot);
+
+        if (Databases.Count == 0)
+        {
+            Databases.ImageResultsDatabase file = new(new FileFolderEntry(Path.Combine(App.ImageResultsDatabaseRoot, "My First Database" + App.DatabaseExtension)));
+            file.Close();
+
+            FileRoot = EnumerateFolders(FileRoot);
+            UpdateDatabases(FileRoot);
+        }
+    }
     private void UpdateDatabases(FileFolderEntry root)
     {
-        var selectedFiles = CollectSelectedFiles(root).Select(file => file.Path).ToHashSet();
+        HashSet<string> selectedFiles = CollectSelectedFiles(root).Select(file => file.Path).ToHashSet();
 
         // Remove databases that no longer exist
         for (int i = Databases.Count - 1; i >= 0; i--)
         {
-            var db = Databases[i];
+            Databases.ImageResultsDatabase db = Databases[i];
             if (!selectedFiles.Contains(db.File.Path))
             {
                 Databases[i].Close();
@@ -135,11 +150,11 @@ public partial class ImageResultsDatabases : ObservableRecipient
         }
 
         // Add new databases
-        foreach (var file in selectedFiles)
+        foreach (string file in selectedFiles)
         {
             if (!Databases.Any(db => db.File.Path == file))
             {
-                var newDatabase = new Databases.ImageResultsDatabase(new FileFolderEntry(file));
+                Databases.ImageResultsDatabase newDatabase = new(new FileFolderEntry(file));
                 Databases.Add(newDatabase);
             }
         }
@@ -147,16 +162,16 @@ public partial class ImageResultsDatabases : ObservableRecipient
 
     private void SelectImageResultsDatabase()
     {
-        var val = App.Settings.GetValue<FileFolderEntry>("SelectedImageResultDatabaseFFE");
+        FileFolderEntry val = App.Settings.GetValue<FileFolderEntry>("SelectedImageResultDatabaseFFE");
 
-        if(val == null)
+        if (val == null)
         {
             if (Databases.Count > 0)
                 SelectedDatabase = Databases.First();
             return;
         }
 
-        var res = Databases.Where((a) => a.File.Path == val.Path);
+        IEnumerable<Databases.ImageResultsDatabase> res = Databases.Where((a) => a.File.Path == val.Path);
         if (res.Any())
             SelectedDatabase = res.FirstOrDefault();
         else if (Databases.Count > 0)
@@ -166,7 +181,7 @@ public partial class ImageResultsDatabases : ObservableRecipient
     [RelayCommand]
     private async Task CreateImageResultsDatabase()
     {
-        var res = await GetStringDialog("New Standards Database", "What is the name of the new database?");
+        string res = await GetStringDialog("New Standards Database", "What is the name of the new database?");
         if (res == null) return;
 
         if (string.IsNullOrEmpty(res) || res.IndexOfAny(System.IO.Path.GetInvalidFileNameChars()) >= 0)
@@ -175,7 +190,7 @@ public partial class ImageResultsDatabases : ObservableRecipient
             return;
         }
 
-        var file = new Databases.ImageResultsDatabase(new FileFolderEntry(Path.Combine(App.ImageResultsDatabaseRoot, res + App.DatabaseExtension)));
+        Databases.ImageResultsDatabase file = new(new FileFolderEntry(Path.Combine(App.ImageResultsDatabaseRoot, res + App.DatabaseExtension)));
         file.Close();
 
         UpdateImageResultsDatabasesList();
@@ -222,10 +237,9 @@ public partial class ImageResultsDatabases : ObservableRecipient
             if (SelectedDatabase == imageResultsDatabase)
                 SelectedDatabase = null;
 
-            FileRoot = EnumerateFolders(new FileFolderEntry(App.ImageResultsDatabaseRoot));
+            FileRoot = EnumerateFolders(FileRoot);
         }
     }
-
 
     #region Dialogs
     public static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;

@@ -110,4 +110,9 @@ public partial class ImageRolls : UserControl
         ((ViewModels.ImageRolls)par.DataContext).SelectedUserImageRoll = (ViewModels.ImageRollEntry)((ListView)sender).SelectedItem;
 
     }
+
+    private void btnOpenImageRollsLocation(object sender, RoutedEventArgs e)
+    {
+
+    }
 }

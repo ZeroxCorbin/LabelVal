@@ -21,7 +21,7 @@ public class ImageResultsDatabase : ObservableObject, IDisposable
         Open();
     }
 
-    private ImageResultsDatabase Open()
+    private void Open()
     {
         try
         {
@@ -35,13 +35,10 @@ public class ImageResultsDatabase : ObservableObject, IDisposable
 
             OnPropertyChanged(nameof(IsLocked));
             OnPropertyChanged(nameof(IsNotLocked));
-
-            return this;
         }
         catch (Exception e)
         {
             Logger.Error(e);
-            return null;
         }
     }
     public void Close() { Connection?.Close(); }
