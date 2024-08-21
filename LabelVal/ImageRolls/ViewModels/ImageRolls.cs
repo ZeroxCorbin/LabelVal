@@ -252,7 +252,7 @@ public partial class ImageRolls : ObservableRecipient
     {
         LogInfo("Editing image roll.");
 
-        NewImageRoll = SelectedUserImageRoll.CopyLite();
+        NewImageRoll = SelectedUserImageRoll;
     }
 
     [RelayCommand]

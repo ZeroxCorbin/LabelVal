@@ -11,52 +11,45 @@ internal class V275_GS1FormattedOutput : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        if (value == null)
-            return null;
-
-        try
+        if (value is string val)
         {
-            //Regex regex;
-            //string scandata = "";
-            //if (((string)value).Contains("\u001d"))
-            //{
-            //    regex = new Regex(Regex.Escape("\u001d"));
-            //    scandata = "^";
-            //}
-            //else
-            //    regex = new Regex(Regex.Escape("#"));
-            
-            var scandata = ((string)value).Replace("^", "");
-            App.GS1Encoder.DataStr = scandata;
-        }
-        catch (Exception E)
-        {
-            if (!(E is GS1EncoderParameterException) && !(E is GS1EncoderScanDataException))
-                throw;
-
-            string markup = App.GS1Encoder.ErrMarkup;
-            if (!markup.Equals(""))
+            try
             {
-                var regex = new Regex(Regex.Escape("|"));
-                markup = regex.Replace(markup, "⧚", 1);
-                markup = regex.Replace(markup, "⧛", 1);
-                return "AI content validation failed:\n" + markup;
+                if (val.StartsWith("^h", StringComparison.InvariantCultureIgnoreCase))
+                    val = val.Replace("^", "");
+
+                App.GS1Encoder.DataStr = val;
+            }
+            catch (Exception E)
+            {
+                if (!(E is GS1EncoderParameterException) && !(E is GS1EncoderScanDataException))
+                    throw;
+
+                string markup = App.GS1Encoder.ErrMarkup;
+                if (!markup.Equals(""))
+                {
+                    var regex = new Regex(Regex.Escape("|"));
+                    markup = regex.Replace(markup, "⧚", 1);
+                    markup = regex.Replace(markup, "⧛", 1);
+                    return "AI content validation failed:\n" + markup;
+                }
+
+                return E.Message;
             }
 
-            return E.Message;
+            var sb = new System.Text.StringBuilder();
+            int i = 0;
+            foreach (string s in App.GS1Encoder.HRI)
+            {
+                if (i++ != 0)
+                    sb.Append("\n");
+
+                sb.Append(s);
+            }
+
+            return sb.ToString();
         }
-
-        var sb = new System.Text.StringBuilder();
-        int i = 0;
-        foreach (string s in App.GS1Encoder.HRI)
-        {
-            if (i++ != 0)
-                sb.Append("\n");
-
-            sb.Append(s);
-        }
-
-        return sb.ToString();
+        return value;
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => null;
