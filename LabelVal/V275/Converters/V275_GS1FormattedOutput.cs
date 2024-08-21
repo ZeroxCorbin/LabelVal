@@ -26,8 +26,8 @@ internal class V275_GS1FormattedOutput : IValueConverter
             //else
             //    regex = new Regex(Regex.Escape("#"));
             
-            //scandata += regex.Replace((string)value, "^");
-            App.GS1Encoder.DataStr = (string)value;
+            var scandata = ((string)value).Replace("^", "");
+            App.GS1Encoder.DataStr = scandata;
         }
         catch (Exception E)
         {
