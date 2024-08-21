@@ -114,7 +114,7 @@
                                 </md:SmartHint.Style>
                             </md:SmartHint>
                             
-                            <ScrollViewer Grid.Column="1" x:Name="scrName" md:ScrollViewerAssist.BubbleVerticalScroll="True" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto" md:ScrollViewerAssist.IsAutoHideEnabled="True">
+                            <ScrollViewer Grid.Column="1" Focusable="False" x:Name="scrName" md:ScrollViewerAssist.BubbleVerticalScroll="True" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto" md:ScrollViewerAssist.IsAutoHideEnabled="True">
                                 <ScrollViewer.Style>
                                     <Style TargetType="ScrollViewer" BasedOn="{StaticResource MaterialDesignScrollViewer}">
                                         <Setter Property="FlowDirection" Value="LeftToRight"/>
