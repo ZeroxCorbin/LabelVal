@@ -20,13 +20,12 @@ public partial class Verifier : UserControl
 
     public Verifier() => InitializeComponent();
 
-    private void btnShowSettings_Click(object sender, RoutedEventArgs e) => drwSettings.IsTopDrawerOpen = !drwSettings.IsTopDrawerOpen;
+    private void btnShowSettings_Click(object sender, RoutedEventArgs e) =>
+        drwSettings.IsTopDrawerOpen = !drwSettings.IsTopDrawerOpen;
 
     private void drwSettings_DrawerClosing(object sender, MaterialDesignThemes.Wpf.DrawerClosingEventArgs e) =>
         ((ViewModels.Verifier)this.DataContext).Manager.SaveCommand.Execute(null);
 
-    private void btnUnselect(object sender, RoutedEventArgs e)
-    {
-
-    }
+    private void btnUnselect(object sender, RoutedEventArgs e)=>
+        ((ViewModels.Verifier)this.DataContext).Manager.SelectedDevice = null;
 }

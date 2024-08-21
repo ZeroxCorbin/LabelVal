@@ -19,7 +19,7 @@
         <converters:IPAddressSplitConverter x:Key="ipAddressSplitConverter"/>
     </UserControl.Resources>
 
-    <md:Card Margin="6" BorderThickness="1" VerticalAlignment="Top"
+    <md:Card Margin="6" BorderThickness="1" VerticalAlignment="Top" HorizontalAlignment="Stretch"
              Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
              Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}">
 
@@ -308,19 +308,6 @@
                              Text="{Binding Path=Host, Mode=OneWay, Converter={StaticResource ipAddressSplitConverter}, ConverterParameter=Last}"
                              Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                              md:HintAssist.Hint="IP" IsHitTestVisible="False" />
-
-                        <Button Click="btnUnselect" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="3"
-                            Content="{iconPacks:Material Kind=ArrowCollapseRight}">
-                            <Button.Style>
-                                <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsDocked, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="False">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
 
                     </DockPanel>
 
@@ -799,6 +786,20 @@
 
             </Expander>
 
+            <Button Click="btnUnselect" HorizontalAlignment="Right" VerticalAlignment="Top" Padding="8,6"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                            Content="{iconPacks:Material Kind=ArrowCollapseRight}">
+                <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsDocked, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="False">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+            
         </DockPanel>
 
     </md:Card>

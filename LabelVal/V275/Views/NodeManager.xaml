@@ -122,7 +122,7 @@
                                         <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                             <Setter Property="IsEnabled" Value="True"/>
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding SelectedNode.IsLoggedIn}" Value="True">
+                                                <DataTrigger Binding="{Binding Manager.SelectedDevice.IsLoggedIn}" Value="True">
                                                     <Setter Property="IsEnabled" Value="False"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -137,7 +137,7 @@
                                         <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                             <Setter Property="IsEnabled" Value="True"/>
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding SelectedNode.IsLoggedIn}" Value="True">
+                                                <DataTrigger Binding="{Binding Manager.SelectedDevice.IsLoggedIn}" Value="True">
                                                     <Setter Property="IsEnabled" Value="False"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -151,7 +151,7 @@
                                         <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                             <Setter Property="IsEnabled" Value="True"/>
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding SelectedNode.IsLoggedIn}" Value="True">
+                                                <DataTrigger Binding="{Binding Manager.SelectedDevice.IsLoggedIn}" Value="True">
                                                     <Setter Property="IsEnabled" Value="False"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -165,7 +165,7 @@
                                         <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                             <Setter Property="IsEnabled" Value="True"/>
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding SelectedNode.IsLoggedIn}" Value="True">
+                                                <DataTrigger Binding="{Binding Manager.SelectedDevice.IsLoggedIn}" Value="True">
                                                     <Setter Property="IsEnabled" Value="False"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -185,7 +185,7 @@
                                             <Setter Property="IsEnabled" Value="True"/>
                                             <Setter Property="md:HintAssist.FloatingOffset" Value="0,-20"/>
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding SelectedNode.IsLoggedIn}" Value="True">
+                                                <DataTrigger Binding="{Binding Manager.SelectedDevice.IsLoggedIn}" Value="True">
                                                     <Setter Property="IsEnabled" Value="False"/>
                                                 </DataTrigger>
                                             </Style.Triggers>

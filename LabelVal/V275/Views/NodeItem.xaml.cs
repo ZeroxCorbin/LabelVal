@@ -50,9 +50,7 @@ namespace LabelVal.V275.Views
             _ = Process.Start(ps);
         }
 
-        private void btnUnselect(object sender, RoutedEventArgs e)
-        {
-
-        }
+        private void btnUnselect(object sender, RoutedEventArgs e)=>
+            ((ViewModels.Node)this.DataContext).Manager.Manager.SelectedDevice = null;
     }
 }

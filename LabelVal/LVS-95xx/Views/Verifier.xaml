@@ -105,20 +105,6 @@
                              Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                              md:HintAssist.Hint="Port" IsHitTestVisible="False" />
 
-                        <Button Click="btnUnselect" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="3"
-                            Content="{iconPacks:Material Kind=ArrowCollapseRight}">
-                            <Button.Style>
-                                <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsDocked, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="False">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
-                        
-
                     </DockPanel>
 
                     <DockPanel>
@@ -171,6 +157,20 @@
                 </md:Card>
 
             </Expander>
+
+            <Button Click="btnUnselect" HorizontalAlignment="Right" VerticalAlignment="Top" Padding="8,6"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                            Content="{iconPacks:Material Kind=ArrowCollapseRight}">
+                <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsDocked, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="False">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
 
         </DockPanel>
 
