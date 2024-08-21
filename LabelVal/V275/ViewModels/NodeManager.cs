@@ -79,8 +79,7 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
     }
 
     [ObservableProperty] private ObservableCollection<Node> nodes = [];
-    [ObservableProperty][NotifyPropertyChangedRecipients] private Node selectedNode;
-    partial void OnSelectedNodeChanged(Node value) => App.Settings.SetValue(nameof(SelectedNode), value);
+
 
     //public bool ShowTemplateNameMismatchDialog
     //{
@@ -91,18 +90,6 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
     [ObservableProperty] private bool isGetDevices = false;
 
     [ObservableProperty] private ImageRollEntry selectedImageRoll;
-
-    public NodeManager()
-    {
-        IsActive = true;
-
-        WeakReferenceMessenger.Default.Register<RequestMessage<Node>>(
-            this,
-            (recipient, message) =>
-            {
-                message.Reply(SelectedNode);
-            });
-    }
 
     [RelayCommand]
     private async Task GetDevices()
@@ -176,11 +163,11 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
             Nodes.Clear();
         }
 
-        Node sel = App.Settings.GetValue<Node>(nameof(SelectedNode));
+        Node sel = App.Settings.GetValue<Node>($"V275_{nameof(Manager.SelectedDevice)}");
         foreach (Node node in Nodes)
         {
             if (sel != null && (node.Host == sel.Host && node.SystemPort == sel.SystemPort && node.NodeNumber == sel.NodeNumber))
-                SelectedNode = node;
+                Manager.SelectedDevice = node;
         }
     }
 

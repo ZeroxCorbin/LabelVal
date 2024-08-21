@@ -8,55 +8,38 @@ namespace LabelVal.V5.ViewModels;
 
 public partial class ScannerManager : ObservableRecipient
 {
-    public ObservableCollection<Scanner> Scanners { get; } = App.Settings.GetValue(nameof(Scanners), new ObservableCollection<Scanner>(), true);
+    public ObservableCollection<Scanner> Devices { get; } = App.Settings.GetValue($"V5_{nameof(Devices)}", new ObservableCollection<Scanner>(), true);
 
-    [ObservableProperty][NotifyPropertyChangedRecipients] private Scanner selectedScanner;
-    partial void OnSelectedScannerChanged(Scanner value) => App.Settings.SetValue(nameof(SelectedScanner), value);
-
-    [ObservableProperty] private Scanner newScanner;
+    [ObservableProperty][NotifyPropertyChangedRecipients] private Scanner selectedDevice;
+    partial void OnSelectedDeviceChanged(Scanner value) => App.Settings.SetValue($"V5_{nameof(SelectedDevice)}", value);
 
     public ScannerManager()
     {
-        Scanner sel = App.Settings.GetValue<Scanner>(nameof(SelectedScanner));
+        Scanner sel = App.Settings.GetValue<Scanner>($"V5_{nameof(SelectedDevice)}");
 
-        foreach (Scanner scanner in Scanners)
+        foreach (Scanner dev in Devices)
         {
-            scanner.Manager = this;
+            dev.Manager = this;
 
             if (sel != null)
-                if (scanner.ID == sel.ID)
-                    SelectedScanner = scanner;
+                if (dev.ID == sel.ID)
+                    SelectedDevice = dev;
         }
 
         WeakReferenceMessenger.Default.Register<RequestMessage<Scanner>>(
             this,
             (recipient, message) =>
             {
-                message.Reply(SelectedScanner);
+                message.Reply(SelectedDevice);
             });
     }
 
+    [RelayCommand] private void Add() { Devices.Add(new Scanner() { Manager = this }); Save(); }
     [RelayCommand]
-    private void Add() => NewScanner = new Scanner() { Manager = this };
-    [RelayCommand]
-    private void Edit() => NewScanner = SelectedScanner;
-    [RelayCommand]
-    private void Cancel() => NewScanner = null;
-    [RelayCommand]
-    private void Delete()
+    private void Delete(Scanner scanner)
     {
-        Scanners.Remove(NewScanner);
-        NewScanner = null;
+        Devices.Remove(scanner);
         Save();
     }
-    [RelayCommand]
-    private void Save()
-    {
-        if (NewScanner != null && NewScanner != SelectedScanner)
-            Scanners.Add(NewScanner);
-
-        NewScanner = null;
-
-        App.Settings.SetValue(nameof(Scanners), Scanners);
-    }
+    [RelayCommand] private void Save() => App.Settings.SetValue($"V5_{nameof(Devices)}", Devices);
 }

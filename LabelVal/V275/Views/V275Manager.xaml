@@ -24,13 +24,11 @@
 
             <DockPanel>
 
-
                 <DockPanel Width="48" >
                     <Grid Height="42" Margin="3">
                         <Image Width="20" Source="/Assets/Images/v275-white-outline.ico" VerticalAlignment="Top" HorizontalAlignment="Left"/>
                         <Image Width="20" Source="/Assets/Images/v275-white-outline.ico" VerticalAlignment="Top" HorizontalAlignment="Right"/>
                         <Image Width="20" Source="/Assets/Images/v275-white-outline.ico" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
-
                     </Grid>
                 </DockPanel>
 
@@ -50,108 +48,29 @@
                             <TextBlock DockPanel.Dock="Top" Margin="6,0,0,3" Text="V275 Systems" Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"/>
 
                             <Border Style="{StaticResource imageBarHor}"/>
+
                         </DockPanel>
 
-                        <Button Click="btnCollapseContent" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="10,3" 
-                                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                Content="{iconPacks:Material Kind=ArrowCollapseLeft}"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
+                        <Button Click="btnCollapseContent" Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" 
+                                HorizontalAlignment="Right" Padding="8,0"
+                                Content="{iconPacks:Material Kind=ArrowCollapseLeft}"/>
 
                     </DockPanel>
 
-                    <DockPanel>
-
-                        <Button Command="{Binding AddCommand}" ToolTip="New V275" Width="48"
+                    <Button Command="{Binding AddCommand}" ToolTip="New V275 System" Width="48" HorizontalAlignment="Left"
                                 Content="{iconPacks:Material Kind=Plus, Width=24, Height=24}"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding NewNodeManager, Converter={StaticResource objectIsNull}}" Value="True">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
-
-                        <Button Command="{Binding EditCommand}" ToolTip="Edit Selected Camera" Width="48"
-                                Content="{iconPacks:Material Kind=SquareEditOutline, Width=24, Height=24}"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
-                                    <Setter Property="Visibility" Value="Visible"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding NewNodeManager, Converter={StaticResource objectIsNull}}" Value="False">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding NewNodeManager, Converter={StaticResource objectIsNull}}" Value="True">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
-
-                        <Button Command="{Binding SaveCommand}" ToolTip="Save Camera" Width="48"
-                                Content="{iconPacks:Material Kind=ContentSave, Width=24, Height=24}"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding NewNodeManager, Converter={StaticResource objectIsNull}}" Value="False">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
-
-                        <Button Command="{Binding CancelCommand}" ToolTip="Cancel" Width="48"
-                                Content="{iconPacks:Material Kind=Cancel, Width=24, Height=24}"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding NewNodeManager, Converter={StaticResource objectIsNull}}" Value="False">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
-
-                        <Button Command="{Binding DeleteCommand}" ToolTip="Delete" Width="48"
-                                Content="{iconPacks:Material Kind=Delete, Width=24, Height=24}"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding NewNodeManager, Converter={StaticResource objectIsNull}}" Value="False">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
-
-                        <!--<Button Click="btnShowDetails_Click" HorizontalAlignment="Right" Width="48" 
                                 Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                Content="{iconPacks:Material Kind=CodeJson, Width=24, Height=24}"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>-->
-
-                    </DockPanel>
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
                 </DockPanel>
             </DockPanel>
         </md:Card>
 
+        <DockPanel DockPanel.Dock="Top">
+            <Border Style="{StaticResource groupLeft}" />
+            <Border Style="{StaticResource groupBottom}"/>
 
-        <DockPanel>
-            <ItemsControl ItemsSource="{Binding NodeManagers}">
+            <ItemsControl ItemsSource="{Binding Devices}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <local:NodeManager DataContext="{Binding }"/>

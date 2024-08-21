@@ -7,52 +7,39 @@ using System.Collections.ObjectModel;
 namespace LabelVal.LVS_95xx.ViewModels;
 public partial class VerifierManager : ObservableRecipient
 {
-    public ObservableCollection<Verifier> Verifiers { get; } = App.Settings.GetValue(nameof(Verifiers), new ObservableCollection<Verifier>(), true);
-    [ObservableProperty][NotifyPropertyChangedRecipients] public Verifier selectedVerifier;
-    partial void OnSelectedVerifierChanged(Verifier value) => App.Settings.SetValue(nameof(SelectedVerifier), SelectedVerifier);
-    
-    [ObservableProperty] public Verifier newVerifier;
+    public ObservableCollection<Verifier> Devices { get; } = App.Settings.GetValue($"L95xx_{nameof(Devices)}", new ObservableCollection<Verifier>(), true);
+
+    [ObservableProperty][NotifyPropertyChangedRecipients] public Verifier selectedDevice;
+    partial void OnSelectedDeviceChanged(Verifier value) => App.Settings.SetValue($"L95xx_{nameof(SelectedDevice)}", SelectedDevice);
 
     public VerifierManager()
     {
-        Verifier sel = App.Settings.GetValue<Verifier>(nameof(SelectedVerifier));
+        Verifier sel = App.Settings.GetValue<Verifier>($"L95xx_{nameof(SelectedDevice)}");
 
-        foreach (Verifier verifier in Verifiers)
+        foreach (Verifier dev in Devices)
         {
-            verifier.Manager = this;
+            dev.Manager = this;
 
             if (sel != null)
-                if (verifier.ID == sel.ID)
-                    SelectedVerifier = verifier;
+                if (dev.ID == sel.ID)
+                    SelectedDevice = dev;
         }
 
         WeakReferenceMessenger.Default.Register<RequestMessage<Verifier>>(
             this,
             (recipient, message) =>
             {
-                message.Reply(SelectedVerifier);
+                message.Reply(SelectedDevice);
             });
     }
 
+    [RelayCommand] private void Add() { Devices.Add(new Verifier() { Manager = this }); Save(); }
     [RelayCommand]
-    private void Add() => NewVerifier = new Verifier() { Manager = this };
-    [RelayCommand]
-    private void Cancel() => NewVerifier = null;
-    [RelayCommand]
-    private void Remove(Verifier scanner)
+    private void Delete(Verifier device)
     {
-        Verifiers.Remove(scanner);
+        Devices.Remove(device);
         Save();
     }
+    [RelayCommand] private void Save() => App.Settings.SetValue($"L95xx_{nameof(Devices)}", Devices);
 
-    [RelayCommand]
-    private void Save()
-    {
-        if (NewVerifier != null && NewVerifier != SelectedVerifier)
-            Verifiers.Add(NewVerifier);
-
-        NewVerifier = null;
-
-        App.Settings.SetValue(nameof(Verifiers), Verifiers);
-    }
 }

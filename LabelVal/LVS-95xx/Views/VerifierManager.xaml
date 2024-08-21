@@ -43,64 +43,21 @@
                             <TextBlock DockPanel.Dock="Top" Margin="6,0,6,3" Text="L95xx Verifiers" Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"/>
 
                             <Border Style="{StaticResource imageBarHor}"/>
+                            
                         </DockPanel>
 
-                        <Button Click="btnCollapseContent" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="10,3"
-                                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                Content="{iconPacks:Material Kind=ArrowCollapseLeft}"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
+                        <Button Click="btnCollapseContent" Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" 
+                                HorizontalAlignment="Right" Padding="8,0"
+                                Content="{iconPacks:Material Kind=ArrowCollapseLeft}"/>
+
                     </DockPanel>
 
-                    <DockPanel>
+                    <Button Command="{Binding AddCommand}" ToolTip="New L95xx" Width="48" HorizontalAlignment="Left"
+                            Content="{iconPacks:Material Kind=Plus, Width=24, Height=24}"
+                            Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
 
-                        <Button Command="{Binding AddCommand}" ToolTip="New Verifier" Width="48">
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding NewVerifier, Converter={StaticResource objectIsNull}}" Value="True">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-
-                            <iconPacks:PackIconMaterial Kind="Plus"
-                                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" Width="24" Height="24"/>
-                        </Button>
-
-                        <Button Command="{Binding SaveCommand}" ToolTip="Save Verifier" Width="48">
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding NewVerifier, Converter={StaticResource objectIsNull}}" Value="False">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-
-                            <iconPacks:PackIconMaterial Kind="ContentSave"
-                                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" Width="24" Height="24"/>
-                        </Button>
-
-                        <Button Command="{Binding CancelCommand}" ToolTip="Cancel" Width="48">
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding NewVerifier, Converter={StaticResource objectIsNull}}" Value="False">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-
-                            <iconPacks:PackIconMaterial Kind="Cancel"
-                                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" Width="24" Height="24"/>
-                        </Button>
-                    </DockPanel>
                 </DockPanel>
             </DockPanel>
 
@@ -110,28 +67,15 @@
             <Border Style="{StaticResource groupLeft}" />
             <Border Style="{StaticResource groupBottom}"/>
 
-            <ListView Margin="3,3,0,0" ItemsSource="{Binding Verifiers}" SelectedItem="{Binding SelectedVerifier}">
+            <ListView Margin="3,3,0,0" Style="{StaticResource MahApps.Styles.ListView}"
+                      ItemsSource="{Binding Devices}" SelectedItem="{Binding SelectedDevice}">
                 <ListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                    </Style>
+                    <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}"/>
                 </ListView.ItemContainerStyle>
 
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <local:Verifier DataContext="{Binding }">
-                            <!--<local:Verifier.Style>
-                                <Style TargetType="local:Verifier">
-                                    <Setter Property="IsHitTestVisible" Value="False"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListViewItem}}" Value="True">
-                                            <Setter Property="IsHitTestVisible" Value="True"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </local:Verifier.Style>-->
-                        </local:Verifier>
-
+                        <local:Verifier DataContext="{Binding }"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

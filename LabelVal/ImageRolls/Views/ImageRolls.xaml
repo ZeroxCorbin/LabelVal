@@ -94,7 +94,7 @@
                                 <ColumnDefinition Width="auto"/>
                             </Grid.ColumnDefinitions>
 
-                            <md:SmartHint Grid.Column="0" Margin="3,0" Hint="..." FontSize="18">
+                            <md:SmartHint Grid.Column="0" Margin="3,0" Hint="..." FontSize="14">
                                 <md:SmartHint.Style>
                                     <Style TargetType="md:SmartHint">
                                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -114,7 +114,12 @@
                                 </md:SmartHint.Style>
                             </md:SmartHint>
                             
-                            <ScrollViewer Grid.Column="1" Focusable="False" x:Name="scrName" md:ScrollViewerAssist.BubbleVerticalScroll="True" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto" md:ScrollViewerAssist.IsAutoHideEnabled="True">
+                            <ScrollViewer Grid.Column="1" Focusable="False" x:Name="scrName" Padding="3,0" 
+                                          md:ScrollViewerAssist.BubbleVerticalScroll="True" 
+                                          VerticalScrollBarVisibility="Disabled" 
+                                          HorizontalScrollBarVisibility="Auto" 
+                                          md:ScrollViewerAssist.IsAutoHideEnabled="True">
+                                
                                 <ScrollViewer.Style>
                                     <Style TargetType="ScrollViewer" BasedOn="{StaticResource MaterialDesignScrollViewer}">
                                         <Setter Property="FlowDirection" Value="LeftToRight"/>
@@ -125,12 +130,12 @@
                                         </Style.Triggers>
                                     </Style>
                                 </ScrollViewer.Style>
-
+                                
                                 <ScrollViewer.Resources>
                                     <sys:Double x:Key="{x:Static SystemParameters.HorizontalScrollBarHeightKey}">8</sys:Double>
                                 </ScrollViewer.Resources>
-
-                                <TextBlock Text="{Binding Name}" TextWrapping="Wrap" Margin="3,3">
+                                
+                                <TextBlock Text="{Binding Name}">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock" BasedOn="{StaticResource MaterialDesignBodyMediumTextBlock}">
                                             <Setter Property="FlowDirection" Value="LeftToRight"/>
@@ -144,8 +149,7 @@
                                 </TextBlock>
                             </ScrollViewer>
                             
-                            <md:SmartHint Grid.Column="2" Margin="3,0" Hint="..." FontSize="18">
-
+                            <md:SmartHint Grid.Column="2" Margin="3,0" Hint="..." FontSize="14">
                                 <md:SmartHint.Style>
                                     <Style TargetType="md:SmartHint">
                                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -418,15 +422,18 @@
                  Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
                 <DockPanel>
-
                     <DockPanel>
-                        <Button DockPanel.Dock="Top" HorizontalAlignment="Center" Click="btnOpenImageRollsLocation"
-                            Style="{StaticResource MahApps.Styles.Button.Hamburger}">
+                        
+                        <Button DockPanel.Dock="Top" HorizontalAlignment="Center" Click="btnOpenImageRollsLocation" Width="48"
+                                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
                             <StackPanel Width="36" Height="36" VerticalAlignment="Center" Margin="0,2">
+                                
                                 <DockPanel>
                                     <iconPacks:PackIconMaterial Height="14" Kind="ImageMultiple" HorizontalAlignment="Center"/>
                                     <iconPacks:PackIconMaterial Height="14" Kind="ImageMultiple" HorizontalAlignment="Center"/>
                                 </DockPanel>
+                                
                                 <iconPacks:PackIconMaterial Margin="0,0,0,1" Height="6" Kind="ChevronDown" HorizontalAlignment="Center"/>
                                 <iconPacks:PackIconMaterial Height="14" Width="36" Kind="Database" HorizontalAlignment="Center"/>
                             </StackPanel>
@@ -434,23 +441,24 @@
 
                         <Border DockPanel.Dock="Top" Style="{StaticResource imageBarHor}"/>
 
-                        <mah:DropDownButton ItemsSource="{Binding FileRoot.Children}"
+                        <mah:DropDownButton ItemsSource="{Binding FileRoot.Children}" Width="36" BorderThickness="0"
                                             ButtonStyle="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                            Content="{iconPacks:Material Kind=FolderArrowDown}"
-                                            BorderThickness="0" HorizontalAlignment="Center">
+                                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
                             <mah:DropDownButton.ItemTemplate>
                                 <HierarchicalDataTemplate ItemsSource="{Binding Children}">
                                     <DockPanel>
                                         <CheckBox IsChecked="{Binding IsSelected}"/>
                                         <TextBlock Text="{Binding Name}"/>
                                     </DockPanel>
-
                                 </HierarchicalDataTemplate>
                             </mah:DropDownButton.ItemTemplate>
+
+                            <mah:DropDownButton.Icon>
+                                <iconPacks:PackIconMaterial Kind="Database"/>
+                            </mah:DropDownButton.Icon>
                         </mah:DropDownButton>
 
                     </DockPanel>
-
 
                     <Border Style="{StaticResource imageBar}"/>
 
@@ -552,15 +560,13 @@
                                 <iconPacks:PackIconMaterial Kind="Delete"
                                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" Width="24" Height="24"/>
                             </Button>
-
                         </DockPanel>
 
                         <ToggleButton Margin="3,6" HorizontalAlignment="Right" VerticalAlignment="Bottom" IsChecked="{Binding RightAlignOverflow}"  Content="{iconPacks:Modern Kind=AlignLeft}" md:ToggleButtonAssist.OnContent="{iconPacks:Modern Kind=AlignRight}">
                             <ToggleButton.LayoutTransform>
-                                <ScaleTransform ScaleX="0.5" ScaleY="0.5"/>
+                                <ScaleTransform ScaleX="0.8" ScaleY="0.8"/>
                             </ToggleButton.LayoutTransform>
                         </ToggleButton>
-
 
                     </DockPanel>
                 </DockPanel>

@@ -42,35 +42,25 @@
                             </DockPanel.Background>
 
                             <TextBlock DockPanel.Dock="Top" Margin="6,0,0,3" Text="V5 Cameras" Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"/>
-                            
+
                             <Border Style="{StaticResource imageBarHor}"/>
                         </DockPanel>
 
-                        <Button Click="btnCollapseContent" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="10,3" 
-                                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                Content="{iconPacks:Material Kind=ArrowCollapseLeft}"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
-                        
-                    </DockPanel>
-                    
-                    <DockPanel>
-                        
-                        <Button Command="{Binding AddCommand}" ToolTip="New V5" Width="48"
-                                Content="{iconPacks:Material Kind=Plus, Width=24, Height=24}"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding NewScanner, Converter={StaticResource objectIsNull}}" Value="True">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
+                        <Button Click="btnCollapseContent" Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" 
+                                HorizontalAlignment="Right" Padding="8,0"
+                                Content="{iconPacks:Material Kind=ArrowCollapseLeft}"/>
 
-                        <Button Command="{Binding EditCommand}" ToolTip="Edit Selected Camera" Width="48"
+                    </DockPanel>
+
+                    <DockPanel>
+
+                        <Button Command="{Binding AddCommand}" ToolTip="New V5" Width="48" HorizontalAlignment="Left"
+                                Content="{iconPacks:Material Kind=Plus, Width=24, Height=24}"
+                                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
+
+                        <!--<Button Command="{Binding EditCommand}" ToolTip="Edit Selected Camera" Width="48"
                                 Content="{iconPacks:Material Kind=SquareEditOutline, Width=24, Height=24}"
                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
                             <Button.Style>
@@ -136,7 +126,7 @@
                         <Button Click="btnShowDetails_Click" HorizontalAlignment="Right" Width="48" 
                                 Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                                 Content="{iconPacks:Material Kind=CodeJson, Width=24, Height=24}"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>-->
 
                     </DockPanel>
                 </DockPanel>
@@ -147,58 +137,20 @@
             <Border Style="{StaticResource groupLeft}" />
             <Border Style="{StaticResource groupBottom}"/>
 
-            <md:DrawerHost x:Name="drwEditCamera" Margin="3,3,0,0">
-                <md:DrawerHost.Style>
-                    <Style TargetType="md:DrawerHost">
-                        <Setter Property="IsTopDrawerOpen" Value="False"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding NewScanner, Converter={StaticResource objectIsNull}}" Value="False">
-                                <Setter Property="IsTopDrawerOpen" Value="True"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </md:DrawerHost.Style>
+            <ListView Margin="3,3,0,0" Style="{StaticResource MahApps.Styles.ListView}"
+                      ItemsSource="{Binding Devices}" SelectedItem="{Binding SelectedDevice}">
 
-                <md:DrawerHost.TopDrawerContent>
-                    <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="3" Padding="2" HorizontalAlignment="Left">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}"/>
+                </ListView.ItemContainerStyle>
 
-                        <DockPanel>
-                            
-                            <ComboBox ItemsSource="{Binding NewScanner.AvailableCameras}" SelectedValue="{Binding NewScanner.SelectedCamera}" md:HintAssist.Hint="Model" Style="{StaticResource MaterialDesignFloatingHintComboBox}"
-                                      IsReadOnly="True" Margin="3,0" HorizontalContentAlignment="Center" VerticalAlignment="Stretch" BorderThickness="0"
-                                      md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
-                                <ComboBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <DockPanel>
-                                            <TextBlock Text="{Binding Name}"/>
-                                            <TextBlock Text="{Binding Sensor.PixelCount, StringFormat={} {0}MP}"/>
-                                        </DockPanel>
-                                    </DataTemplate>
-                                </ComboBox.ItemTemplate>
-                            </ComboBox>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <local:Scanner DataContext="{Binding }"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
 
-                        </DockPanel>
-                    </md:Card>
-
-                </md:DrawerHost.TopDrawerContent>
-
-                <ListView Style="{StaticResource MahApps.Styles.ListView}"
-                      ItemsSource="{Binding Scanners}" SelectedItem="{Binding SelectedScanner}">
-
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}">
-                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                        </Style>
-                    </ListView.ItemContainerStyle>
-
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <local:Scanner DataContext="{Binding }"/>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-
-            </md:DrawerHost>
         </DockPanel>
 
     </DockPanel>

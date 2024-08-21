@@ -73,8 +73,11 @@
             <Border Style="{StaticResource hamMenuBottomBar}"/>
 
             <DockPanel Width="48" Height="48">
-                <StackPanel Width="36" Height="36" VerticalAlignment="Center" Margin="0,2">
-                    <iconPacks:PackIconMaterial Height="14" Width="30" Kind="ImageText" HorizontalAlignment="Center"/>
+                <StackPanel Height="36" Width="36" VerticalAlignment="Top" Margin="0,2">
+                    <DockPanel>
+                        <iconPacks:PackIconMaterial Height="14" Kind="ImageMultiple" HorizontalAlignment="Center"/>
+                        <iconPacks:PackIconMaterial Height="14" Kind="ListBoxOutline" HorizontalAlignment="Center"/>
+                    </DockPanel>
                     <iconPacks:PackIconMaterial Margin="0,0,0,1" Height="6" Kind="ChevronDown" HorizontalAlignment="Center"/>
                     <iconPacks:PackIconMaterial Height="14" Width="36" Kind="Database" HorizontalAlignment="Center"/>
                 </StackPanel>
@@ -196,6 +199,7 @@
                 <Button Command="{Binding OpenRunWindowCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}" Width="36" Height="36"
                         HorizontalAlignment="Left"
                         Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                         Content="{iconPacks:PicolIcons Kind=ServerRun, Width=24, Height=24}"/>
             </DockPanel>
 
@@ -219,7 +223,7 @@
                     <Style TargetType="DockPanel">
                         <Setter Property="Visibility" Value="Collapsed"/>
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Content.SelectedNode, Converter={StaticResource objectIsNull}}" Value="True">
+                            <DataTrigger Binding="{Binding Content.SelectedDevice, Converter={StaticResource objectIsNull}}" Value="True">
                                 <Setter Property="Visibility" Value="Visible"/>
                             </DataTrigger>
                         </Style.Triggers>
@@ -234,14 +238,14 @@
                     <Style TargetType="DockPanel">
                         <Setter Property="Visibility" Value="Visible"/>
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Content.SelectedNode, Converter={StaticResource objectIsNull}}" Value="True">
+                            <DataTrigger Binding="{Binding Content.SelectedDevice, Converter={StaticResource objectIsNull}}" Value="True">
                                 <Setter Property="Visibility" Value="Collapsed"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </DockPanel.Style>
 
-                <v275:NodeItem IsDocked="True" DataContext="{Binding Content.SelectedNode}"/>
+                <v275:NodeItem IsDocked="True" DataContext="{Binding Content.SelectedDevice}"/>
 
             </DockPanel>
 
@@ -266,7 +270,7 @@
                     <Style TargetType="DockPanel">
                         <Setter Property="Visibility" Value="Collapsed"/>
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Content.SelectedScanner, Converter={StaticResource objectIsNull}}" Value="True">
+                            <DataTrigger Binding="{Binding Content.SelectedDevice, Converter={StaticResource objectIsNull}}" Value="True">
                                 <Setter Property="Visibility" Value="Visible"/>
                             </DataTrigger>
                         </Style.Triggers>
@@ -281,14 +285,14 @@
                     <Style TargetType="DockPanel">
                         <Setter Property="Visibility" Value="Visible"/>
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Content.SelectedScanner, Converter={StaticResource objectIsNull}}" Value="True">
+                            <DataTrigger Binding="{Binding Content.SelectedDevice, Converter={StaticResource objectIsNull}}" Value="True">
                                 <Setter Property="Visibility" Value="Collapsed"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </DockPanel.Style>
 
-                <v5:Scanner IsDocked="True" DataContext="{Binding Content.SelectedScanner}"/>
+                <v5:Scanner IsDocked="True" DataContext="{Binding Content.SelectedDevice}"/>
 
             </DockPanel>
         </DockPanel>
@@ -309,7 +313,7 @@
                     <Style TargetType="DockPanel">
                         <Setter Property="Visibility" Value="Collapsed"/>
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Content.SelectedVerifier, Converter={StaticResource objectIsNull}}" Value="True">
+                            <DataTrigger Binding="{Binding Content.SelectedDevice, Converter={StaticResource objectIsNull}}" Value="True">
                                 <Setter Property="Visibility" Value="Visible"/>
                             </DataTrigger>
                         </Style.Triggers>
@@ -325,14 +329,14 @@
                     <Style TargetType="DockPanel">
                         <Setter Property="Visibility" Value="Visible"/>
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Content.SelectedVerifier, Converter={StaticResource objectIsNull}}" Value="True">
+                            <DataTrigger Binding="{Binding Content.SelectedDevice, Converter={StaticResource objectIsNull}}" Value="True">
                                 <Setter Property="Visibility" Value="Collapsed"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </DockPanel.Style>
 
-                <L95xx:Verifier IsDocked="True" DataContext="{Binding Content.SelectedVerifier}"/>
+                <L95xx:Verifier IsDocked="True" DataContext="{Binding Content.SelectedDevice}"/>
 
             </DockPanel>
         </DockPanel>

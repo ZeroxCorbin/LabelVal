@@ -95,7 +95,7 @@
             <Border Style="{StaticResource groupLeft}" />
             <Border Style="{StaticResource groupBottom}"/>
 
-            <md:DrawerHost x:Name="drwSettings" Margin="3,3,0,0" DrawerClosing="drwSettings_DrawerClosing">
+            <md:DrawerHost x:Name="drwSettings" DrawerClosing="drwSettings_DrawerClosing">
 
                 <md:DrawerHost.TopDrawerContent>
 
@@ -193,13 +193,19 @@
                                     </TextBox.Style>
                                 </TextBox>
 
+                                <Button Command="{Binding Manager.DeleteCommand}" CommandParameter="{Binding }"
+                                        Style="{StaticResource GroupHeaderCirlceButton}"
+                                        Content="{iconPacks:Material Kind=Delete, Height=14, Width=14}"
+                                        ToolTip="Delete this device?"/>
+
                             </DockPanel>
                         </DockPanel>
                     </md:Card>
 
                 </md:DrawerHost.TopDrawerContent>
 
-                <ListView ItemsSource="{Binding Nodes}" SelectedItem="{Binding SelectedNode}">
+                <ListView Margin="3,3,0,0" Style="{StaticResource MahApps.Styles.ListView}"
+                          ItemsSource="{Binding Nodes}" SelectedItem="{Binding Manager.SelectedDevice}">
 
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}"/>
@@ -207,18 +213,7 @@
 
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <local:NodeItem>
-                                <!--<local:NodeItem.Style>
-                                    <Style TargetType="local:NodeItem">
-                                        <Setter Property="IsHitTestVisible" Value="False"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListViewItem}}" Value="True">
-                                                <Setter Property="IsHitTestVisible" Value="True"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </local:NodeItem.Style>-->
-                            </local:NodeItem>
+                            <local:NodeItem/>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>

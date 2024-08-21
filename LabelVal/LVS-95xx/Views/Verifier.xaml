@@ -79,7 +79,7 @@
                                   Style="{StaticResource MaterialDesignFloatingHintComboBox}"
                                         md:HintAssist.Hint="COM Port" md:HintAssist.IsFloating="True"/>
 
-                            <Button Command="{Binding Manager.RemoveCommand}" CommandParameter="{Binding }" Style="{StaticResource GroupHeaderCirlceButton}" ToolTip="Delete this verifier?">
+                            <Button Command="{Binding Manager.DeleteCommand}" CommandParameter="{Binding }" Style="{StaticResource GroupHeaderCirlceButton}" ToolTip="Delete this verifier?">
                                 <iconPacks:PackIconMaterial Kind="Delete" Height="14" Width="14"/>
                             </Button>
 

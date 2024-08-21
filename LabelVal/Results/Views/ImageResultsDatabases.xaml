@@ -25,35 +25,42 @@
             <DockPanel>
 
                 <DockPanel>
-                    <Button DockPanel.Dock="Top" HorizontalAlignment="Center" Click="btnOpenImageResultLocation"
-                            Style="{StaticResource MahApps.Styles.Button.Hamburger}">
-                        <StackPanel Height="34" Width="36" VerticalAlignment="Top" Margin="0,2">
-                            <iconPacks:PackIconMaterial Height="12" Width="22" Kind="ImageText" HorizontalAlignment="Center"/>
-                            <iconPacks:PackIconMaterial Margin="0,0,0,1" Height="5" Kind="ChevronDown" HorizontalAlignment="Center"/>
-                            <iconPacks:PackIconMaterial Height="12" Width="36" Kind="Database" HorizontalAlignment="Center"/>
+                    <Button DockPanel.Dock="Top" HorizontalAlignment="Center" Width="48"
+                            Click="btnOpenImageResultLocation"
+                            Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+                        <StackPanel Height="36" Width="36" VerticalAlignment="Top" Margin="0,2">
+                            <DockPanel>
+                                <iconPacks:PackIconMaterial Height="14" Kind="ImageMultiple" HorizontalAlignment="Center"/>
+                                <iconPacks:PackIconMaterial Height="14" Kind="ListBoxOutline" HorizontalAlignment="Center"/>
+                            </DockPanel>
+                            <iconPacks:PackIconMaterial Margin="0,0,0,1" Height="6" Kind="ChevronDown" HorizontalAlignment="Center"/>
+                            <iconPacks:PackIconMaterial Height="14" Width="36" Kind="Database" HorizontalAlignment="Center"/>
                         </StackPanel>
                     </Button>
 
                     <Border DockPanel.Dock="Top" Style="{StaticResource imageBarHor}"/>
 
-                    <mah:DropDownButton ItemsSource="{Binding FileRoot.Children}"
-                                            ButtonStyle="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                            Content="{iconPacks:Material Kind=FolderArrowDown}"
-                                            BorderThickness="0" HorizontalAlignment="Center">
+                    <mah:DropDownButton ItemsSource="{Binding FileRoot.Children}" BorderThickness="0" Width="36"
+                                        ButtonStyle="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
                         <mah:DropDownButton.ItemTemplate>
                             <HierarchicalDataTemplate ItemsSource="{Binding Children}">
                                 <DockPanel>
                                     <CheckBox IsChecked="{Binding IsSelected}"/>
                                     <TextBlock Text="{Binding Name}"/>
                                 </DockPanel>
-
                             </HierarchicalDataTemplate>
                         </mah:DropDownButton.ItemTemplate>
+
+                        <mah:DropDownButton.Icon>
+                            <iconPacks:PackIconMaterial Kind="Database"/>
+                        </mah:DropDownButton.Icon>
+
                     </mah:DropDownButton>
 
-
                 </DockPanel>
-                
+
                 <Border Style="{StaticResource imageBar}" />
 
                 <DockPanel>
@@ -73,21 +80,24 @@
                         </DockPanel>
 
                         <Button Click="btnCollapseContent" Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                VerticalAlignment="Top" HorizontalAlignment="Right" Margin="3"
-                                Content="{iconPacks:Material Kind=ArrowCollapseLeft}"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" 
+                                HorizontalAlignment="Right" Padding="8,0"
+                                Content="{iconPacks:Material Kind=ArrowCollapseLeft}"/>
 
                     </DockPanel>
 
                     <Button ToolTip="New Database" Command="{Binding CreateImageResultsDatabaseCommand}" Width="48" HorizontalAlignment="Left"
-                            Style="{StaticResource MahApps.Styles.Button.Hamburger}">
-                        <iconPacks:PackIconMaterial Kind="Plus"
-                                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" Width="24" Height="24"/>
+                            Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+                        <iconPacks:PackIconMaterial Kind="Plus" Width="24" Height="24"/>
                     </Button>
 
-                    <ToggleButton  Margin="3,6" HorizontalAlignment="Right" VerticalAlignment="Bottom" IsChecked="{Binding RightAlignOverflow}"  Content="{iconPacks:Modern Kind=AlignLeft}" md:ToggleButtonAssist.OnContent="{iconPacks:Modern Kind=AlignRight}">
+                    <ToggleButton  Margin="6,0" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                   IsChecked="{Binding RightAlignOverflow}"
+                                   Content="{iconPacks:Modern Kind=AlignLeft}"
+                                   md:ToggleButtonAssist.OnContent="{iconPacks:Modern Kind=AlignRight}">
                         <ToggleButton.LayoutTransform>
-                            <ScaleTransform ScaleX="0.5" ScaleY="0.5"/>
+                            <ScaleTransform ScaleX="0.8" ScaleY="0.8"/>
                         </ToggleButton.LayoutTransform>
                     </ToggleButton>
                 </DockPanel>
@@ -130,7 +140,7 @@
                                         </Grid.ColumnDefinitions>
 
                                         <md:SmartHint Margin="3,0" Grid.Column="0" Hint="..." FontSize="18">
-                                            
+
                                             <md:SmartHint.Style>
                                                 <Style TargetType="md:SmartHint">
                                                     <Setter Property="Visibility" Value="Collapsed"/>
@@ -144,12 +154,12 @@
                                                                 <Setter Property="Visibility" Value="Visible"/>
                                                             </MultiDataTrigger.Setters>
                                                         </MultiDataTrigger>
-                                                        
-                                                     </Style.Triggers>
+
+                                                    </Style.Triggers>
                                                 </Style>
                                             </md:SmartHint.Style>
                                         </md:SmartHint>
-                                        
+
                                         <ScrollViewer Grid.Column="1" x:Name="scrName"
                                                       md:ScrollViewerAssist.BubbleVerticalScroll="True" 
                                                       VerticalScrollBarVisibility="Disabled" 

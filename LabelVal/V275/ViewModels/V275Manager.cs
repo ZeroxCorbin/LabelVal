@@ -2,54 +2,49 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
+using Org.BouncyCastle.Asn1.GM;
 using System.Collections.ObjectModel;
 
 namespace LabelVal.V275.ViewModels;
 
-public partial class V275Manager : ObservableRecipient, IRecipient<PropertyChangedMessage<Node>>
+public partial class V275Manager : ObservableRecipient
 {
-    public ObservableCollection<NodeManager> NodeManagers { get; } = App.Settings.GetValue(nameof(NodeManagers), new ObservableCollection<NodeManager>(), true);
+    public ObservableCollection<NodeManager> Devices { get; } = App.Settings.GetValue($"V275_{nameof(Devices)}", new ObservableCollection<NodeManager>(), true);
 
-    [ObservableProperty] private NodeManager newNodeManager;    
-
-    [ObservableProperty] private Node selectedNode;
+    [ObservableProperty][NotifyPropertyChangedRecipients] private Node selectedDevice;
+    partial void OnSelectedDeviceChanged(Node value) => App.Settings.SetValue($"V275_{nameof(SelectedDevice)}", value);
 
     public V275Manager()
     {
-        foreach (var nm in NodeManagers)
-        {
-nm.Manager = this;
-            nm.GetDevicesCommand.Execute(null);
-        }
-            
+        Node sel = App.Settings.GetValue<Node>($"V275_{nameof(SelectedDevice)}");
 
-        IsActive = true;
+        foreach (var dev in Devices)
+        {
+            dev.Manager = this;
+            dev.GetDevicesCommand.Execute(null);
+        }
+
+        WeakReferenceMessenger.Default.Register<RequestMessage<Node>>( this,
+            (recipient, message) =>
+            {
+                message.Reply(SelectedDevice);
+            });
     }
 
-    public void Receive(PropertyChangedMessage<Node> message) => SelectedNode = message.NewValue;
-
     [RelayCommand]
-    private void Add() => NewNodeManager = new NodeManager() { Manager = this };
-    //[RelayCommand]
-    //private void Edit() => NewNodeManager = SelectedNode.Manager;
-    [RelayCommand]
-    private void Cancel() => NewNodeManager = null;
-    [RelayCommand]
-    private void Delete()
+    private void Add()
     {
-        NodeManagers.Remove(NewNodeManager);
-        NewNodeManager = null;
+        var nm = new NodeManager { Manager = this };
+        nm.GetDevicesCommand.Execute(null);
+        Devices.Add(nm);
         Save();
     }
     [RelayCommand]
-    private void Save()
+    private void Delete(NodeManager nodeMan)
     {
-        if (NewNodeManager != null && !NodeManagers.Contains(NewNodeManager))
-            NodeManagers.Add(NewNodeManager);
-
-        NewNodeManager = null;
-
-        App.Settings.SetValue(nameof(NodeManagers), NodeManagers);
+        Devices.Remove(nodeMan);
+        Save();
     }
+    [RelayCommand] private void Save() => App.Settings.SetValue($"V275_{nameof(Devices)}", Devices);
 
 }
