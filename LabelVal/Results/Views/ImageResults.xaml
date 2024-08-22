@@ -194,8 +194,8 @@
 
                             <Slider Value="{Binding ImagesMaxHeight}" Width="48" Height="24"
                                     Minimum="100" Maximum="400" TickPlacement="BottomRight" TickFrequency="100"
-                                    Style="{StaticResource MahApps.Styles.Slider.Flat}"
-                                    mah:SliderHelper.ChangeValueBy="LargeChange" IsSnapToTickEnabled="True"/>
+                                    mah:SliderHelper.ChangeValueBy="LargeChange" IsSnapToTickEnabled="True"
+                                    Style="{StaticResource MahApps.Styles.Slider.Flat}"/>
 
                         </DockPanel>
 
@@ -204,10 +204,10 @@
                                       Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}">
                             <ToggleButton.Style>
                                 <Style TargetType="ToggleButton" BasedOn="{StaticResource MaterialDesignActionToggleButton}">
-                                    <Setter Property="ToolTip" Value="Hiding 2D grid data."/>
+                                    <Setter Property="ToolTip" Value="Alarms are being displayed."/>
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding HideErrorsWarnings}" Value="True">
-                                            <Setter Property="ToolTip" Value="Displaying 2D grid data."/>
+                                            <Setter Property="ToolTip" Value="Alarms are hidden."/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>

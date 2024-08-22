@@ -194,8 +194,9 @@
                     </md:Card>
 
                     <ScrollViewer Margin="3" x:Name="ScrollV275StoredSectors" VerticalScrollBarVisibility="Auto"
-                                  mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
-                                  ScrollChanged="ScrollV275StoredSectors_ScrollChanged">
+                                  md:ScrollViewerAssist.BubbleVerticalScroll="True" Focusable="False"
+                                  ScrollChanged="ScrollV275StoredSectors_ScrollChanged" 
+                                  Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}">
 
                         <Grid>
 
@@ -320,6 +321,7 @@
                             </DockPanel>
                         </Grid>
                     </ScrollViewer>
+                    
                 </DockPanel>
 
             </DockPanel>
@@ -500,10 +502,11 @@
                         </DockPanel>
                     </md:Card>
 
-                    <ScrollViewer x:Name="ScrollV275CurrentSectors"
+                    <ScrollViewer x:Name="ScrollV275CurrentSectors" HorizontalAlignment="Left"
                             Margin="3" VerticalScrollBarVisibility="Auto"
                             mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
-                            ScrollChanged="ScrollV275CurrentSectors_ScrollChanged">
+                            ScrollChanged="ScrollV275CurrentSectors_ScrollChanged"
+                                  Style="{StaticResource MahApps.Styles.ScrollViewer.Hamburger}">
 
                         <Grid >
 
@@ -542,15 +545,15 @@
                                                         </DataTrigger>
 
                                                         <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="200">
-                                                            <Setter Property="MaxWidth" Value="200"/>
+                                                            <Setter Property="MaxWidth" Value="210"/>
                                                         </DataTrigger>
 
                                                         <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="100">
-                                                            <Setter Property="MaxWidth" Value="200"/>
+                                                            <Setter Property="MaxWidth" Value="210"/>
                                                         </DataTrigger>
 
                                                         <DataTrigger Binding="{Binding DualSectorColumns}" Value="True">
-                                                            <Setter Property="MaxWidth" Value="400"/>
+                                                            <Setter Property="MaxWidth" Value="420"/>
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>

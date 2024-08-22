@@ -22,6 +22,10 @@
 
             </ResourceDictionary.MergedDictionaries>
 
+            <Style TargetType="ScrollBar">
+                <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Control.Background}"/>
+            </Style>
+
             <Style TargetType="ToolTip">
 
                 <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.ThemeBackground}"/>

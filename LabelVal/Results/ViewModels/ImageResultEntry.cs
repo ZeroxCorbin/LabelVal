@@ -37,8 +37,11 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
     public ImageResults ImageResults { get; }
     public string ImageRollUID => ImageResults.SelectedImageRoll.UID;
 
+    /// <see cref="ImagesMaxHeight"/>>
     [ObservableProperty] private int imagesMaxHeight = App.Settings.GetValue<int>(nameof(ImagesMaxHeight));
+    /// <see cref="DualSectorColumns"/>>
     [ObservableProperty] private bool dualSectorColumns = App.Settings.GetValue<bool>(nameof(DualSectorColumns));
+    /// <see cref="ShowExtendedData"/>>
     [ObservableProperty] private bool showExtendedData = App.Settings.GetValue<bool>(nameof(ShowExtendedData));
     partial void OnShowExtendedDataChanged(bool value)
     {
@@ -55,7 +58,9 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             V5CurrentImageOverlay = CreateSectorsImageOverlay(V5CurrentImage, V5CurrentSectors);
     }
 
+    /// <see cref="ShowPrinterAreaOverSource"/>>
     [ObservableProperty] private bool showPrinterAreaOverSource;
+    /// <see cref="PrinterAreaOverlay"/>>
     [ObservableProperty] private DrawingImage printerAreaOverlay;
     partial void OnShowPrinterAreaOverSourceChanged(bool value) => PrinterAreaOverlay = ShowPrinterAreaOverSource ? CreatePrinterAreaOverlay(true) : null;
 

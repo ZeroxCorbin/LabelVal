@@ -80,40 +80,7 @@
             <DockPanel Margin="3" Background="Black" VerticalAlignment="Top" HorizontalAlignment="Left">
 
                 <!--Images-->
-                <Grid Margin="3" MouseDown="SourceImage_MouseDown" 
-                        ContextMenu="{StaticResource cmImageModify}" ContextMenuOpening="SourceImage_ContextMenuOpening">
-                    <Grid.Style>
-                        <Style TargetType="Grid">
-                            <Setter Property="MaxHeight" Value="400"/>
-                            <Setter Property="MaxWidth" Value="400"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding V275StoredImage, Converter={StaticResource objectIsNull}}" Value="False">
-                                    <Setter Property="MaxHeight" Value="{Binding ImagesMaxHeight}"/>
-                                    <Setter Property="MaxWidth" Value="{Binding ImagesMaxHeight}"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding V275CurrentImage, Converter={StaticResource objectIsNull}}" Value="False">
-                                    <Setter Property="MaxHeight" Value="{Binding ImagesMaxHeight}"/>
-                                    <Setter Property="MaxWidth" Value="{Binding ImagesMaxHeight}"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding V5StoredImage, Converter={StaticResource objectIsNull}}" Value="False">
-                                    <Setter Property="MaxHeight" Value="{Binding ImagesMaxHeight}"/>
-                                    <Setter Property="MaxWidth" Value="{Binding ImagesMaxHeight}"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding V5CurrentImage, Converter={StaticResource objectIsNull}}" Value="False">
-                                    <Setter Property="MaxHeight" Value="{Binding ImagesMaxHeight}"/>
-                                    <Setter Property="MaxWidth" Value="{Binding ImagesMaxHeight}"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding L95xxStoredImage, Converter={StaticResource objectIsNull}}" Value="False">
-                                    <Setter Property="MaxHeight" Value="{Binding ImagesMaxHeight}"/>
-                                    <Setter Property="MaxWidth" Value="{Binding ImagesMaxHeight}"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding L95xxCurrentImage, Converter={StaticResource objectIsNull}}" Value="False">
-                                    <Setter Property="MaxHeight" Value="{Binding ImagesMaxHeight}"/>
-                                    <Setter Property="MaxWidth" Value="{Binding ImagesMaxHeight}"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Grid.Style>
+                <Grid Margin="3" MouseDown="SourceImage_MouseDown" MaxHeight="{Binding ImagesMaxHeight}" MaxWidth="{Binding ImagesMaxHeight}"                      ContextMenu="{StaticResource cmImageModify}" ContextMenuOpening="SourceImage_ContextMenuOpening">
 
                     <Image x:Name="SourceImage" Source="{Binding SourceImage.ImageLow, Mode=OneTime}"
                                 RenderOptions.BitmapScalingMode="NearestNeighbor"/>

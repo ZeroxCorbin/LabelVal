@@ -6,17 +6,18 @@ namespace LabelVal.Sectors.Converters;
 
 public class ShortenString : IValueConverter
 {
+    private const int MaxLength = 13;
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
         if (value is string s)
         {
             int len = s.Length;
-            if (len <= 12)
+            if (len <= MaxLength)
             {
                 return s;
             }
             else
-                len = 12;
+                len = MaxLength;
             return s[..len] + "...";
         }
         return value;
