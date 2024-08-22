@@ -10,8 +10,8 @@
 		<ApplicationIcon>favicon.ico</ApplicationIcon>
 		<SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
 		<Title>Label Validator</Title>
-		<AssemblyVersion>4.2.31</AssemblyVersion>
-		<FileVersion>4.2.31</FileVersion>
+		<AssemblyVersion>4.2.64</AssemblyVersion>
+		<FileVersion>4.2.64</FileVersion>
 		<ApplicationManifest>Properties\app.manifest</ApplicationManifest>
 	</PropertyGroup>
 	<ItemGroup>
