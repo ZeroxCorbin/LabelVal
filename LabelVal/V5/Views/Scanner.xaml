@@ -300,6 +300,11 @@
                                             </MultiBinding>
                                         </Setter.Value>
                                     </Setter>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsConnected}" Value="False">
+                                            <Setter Property="Text" Value="-----"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
                                 </Style>
                             </TextBox.Style>
                         </TextBox>
@@ -799,7 +804,7 @@
                     </Style>
                 </Button.Style>
             </Button>
-            
+
         </DockPanel>
 
     </md:Card>

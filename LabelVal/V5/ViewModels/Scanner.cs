@@ -320,6 +320,10 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
                 });
             }
 
+            if(Controller.IsSysInfoValid)
+            {
+                SelectedCamera = AvailableCameras.FirstOrDefault((e) => Controller.SysInfo.response.data.hwal.lens.lensName.StartsWith(e.FocalLength.ToString()) && Controller.SysInfo.response.data.hwal.sensor.description.StartsWith(e.Sensor.PixelCount.ToString()));
+            }
             if (IsSimulator)
             {
                 SelectedAcquisitionType = "File";
