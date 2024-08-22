@@ -76,7 +76,7 @@
                         <DockPanel>
 
                             <!--Title-->
-                            <md:Card Background="{DynamicResource ColorBlindBrush1}"
+                            <md:Card Background="{DynamicResource V275_Brush}"
                              HorizontalAlignment="Left" Padding="4,1" Margin="3">
                                 <TextBlock Text="Stored Image" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                             </md:Card>
@@ -134,7 +134,7 @@
                         <DockPanel>
 
                             <!--Title-->
-                            <md:Card Background="{DynamicResource ColorBlindBrush1}"
+                            <md:Card Background="{DynamicResource V275_Brush}"
                                 HorizontalAlignment="Left" Padding="4,1" Margin="3">
                                 <TextBlock Text="Stored Sectors" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                             </md:Card>
@@ -195,9 +195,7 @@
 
                     <ScrollViewer Margin="3" x:Name="ScrollV275StoredSectors" VerticalScrollBarVisibility="Auto"
                                   md:ScrollViewerAssist.BubbleVerticalScroll="True" Focusable="False"
-                                  ScrollChanged="ScrollV275StoredSectors_ScrollChanged" 
-                                  Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}">
-
+                                  ScrollChanged="ScrollV275StoredSectors_ScrollChanged">
                         <Grid>
 
                             <ListBox Padding="0,1,0,0" ItemsSource="{Binding V275StoredSectors}" Tag="v275Stored">
@@ -363,7 +361,7 @@
                         <DockPanel>
 
                             <!--Title-->
-                            <md:Card Background="{DynamicResource ColorBlindBrush1}"
+                            <md:Card Background="{DynamicResource V275_Brush}"
                              HorizontalAlignment="Left" Padding="4,1" Margin="3">
                                 <TextBlock Text="Current Image" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                             </md:Card>
@@ -443,7 +441,7 @@
                         <DockPanel>
 
                             <!--Title-->
-                            <md:Card Background="{DynamicResource ColorBlindBrush1}"
+                            <md:Card Background="{DynamicResource V275_Brush}"
                                     HorizontalAlignment="Left" Padding="4,1" Margin="3">
                                 <TextBlock Text="Current Sectors" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                             </md:Card>
@@ -660,7 +658,7 @@
                         <DockPanel>
 
                             <!--Title-->
-                            <md:Card Background="{DynamicResource ColorBlindBrush1}"
+                            <md:Card Background="{DynamicResource V275_Brush}"
                              HorizontalAlignment="Left" Padding="4,1" Margin="3">
                                 <TextBlock Text="Dissimilar Results" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                             </md:Card>

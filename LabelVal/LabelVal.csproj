@@ -199,7 +199,8 @@
 		<None Remove="Assets\Images\barcode-15416.png" />
 		<None Remove="Assets\Images\barcode-1d.png" />
 		<None Remove="Assets\Images\barcodes.xcf" />
-		<None Remove="Assets\Images\ISO.png" />
+		<None Remove="Assets\Images\iec.png" />
+		<None Remove="Assets\Images\iso.png" />
 		<None Remove="Assets\Images\l95xx-white-outline.ico" />
 		<None Remove="Assets\Images\l95xx-white-outline.xcf" />
 		<None Remove="Assets\Images\v275-black-outline.ico" />
@@ -678,6 +679,12 @@
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Images\barcode-1d.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Images\iec.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\Images\iso.png">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Images\l95xx-white-outline.ico">

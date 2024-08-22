@@ -20,7 +20,7 @@
 
             <DockPanel>
 
-                <DockPanel Width="48" Background="{DynamicResource ColorBlindBrush1}">
+                <DockPanel Width="48" Background="{DynamicResource V275_Brush}">
                     <Image Width="36" Height="36" Source="/Assets/Images/v275-white-outline.ico" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 </DockPanel>
 

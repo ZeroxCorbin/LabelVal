@@ -23,7 +23,6 @@
                  Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
             <DockPanel>
-
                 <DockPanel>
                     <Button DockPanel.Dock="Top" HorizontalAlignment="Center" Width="48"
                             Click="btnOpenImageResultLocation"
@@ -110,29 +109,37 @@
 
             <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="3,3,0,0" 
                       Style="{StaticResource MahApps.Styles.ListBox}" ItemsSource="{Binding Databases}" SelectedItem="{Binding SelectedDatabase}">
+
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}"/>
+                </ListView.ItemContainerStyle>
+
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <DockPanel>
-                            <Border Style="{StaticResource groupLeft}" Margin="0,0,6,0" Background="{DynamicResource MahApps.Brushes.Accent2}"/>
-                            <Border Style="{StaticResource groupBottom}" Margin="-6,3,0,0" Background="{DynamicResource MahApps.Brushes.Accent2}"/>
+                            <DockPanel Margin="3" MaxWidth="240" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                                <DockPanel.Style>
+                                    <Style TargetType="DockPanel">
+                                        <Setter Property="TextElement.Foreground" Value="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
+                                    </Style>
+                                </DockPanel.Style>
 
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
+                                <Border Style="{StaticResource groupLeft}" Margin="0,0,6,0" Background="{DynamicResource MahApps.Brushes.Accent2}"/>
+                                <Border Style="{StaticResource groupBottom}" Margin="-6,3,0,0" Background="{DynamicResource MahApps.Brushes.Accent2}"/>
 
-                                <iconPacks:PackIconMaterial Kind="Database" VerticalAlignment="Center" Margin="0,3,6,0"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
 
-                                <md:Card Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="3,0"  
-                                         Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
-                                         Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}">
+                                    <iconPacks:PackIconMaterial Kind="Database" VerticalAlignment="Center" Margin="0,3,6,0"/>
 
-                                    <Grid>
+                                    <Grid Grid.Column="1">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="auto"/>
                                             <ColumnDefinition Width="*"/>
@@ -165,6 +172,12 @@
                                                       VerticalScrollBarVisibility="Disabled" 
                                                       HorizontalScrollBarVisibility="Auto"
                                                       md:ScrollViewerAssist.IsAutoHideEnabled="True">
+
+                                            <ScrollViewer.Resources>
+                                                <Style TargetType="ScrollBar"/>
+                                                <sys:Double x:Key="{x:Static SystemParameters.HorizontalScrollBarHeightKey}">8</sys:Double>
+                                            </ScrollViewer.Resources>
+
                                             <ScrollViewer.Style>
                                                 <Style TargetType="ScrollViewer" BasedOn="{StaticResource MaterialDesignScrollViewer}">
                                                     <Setter Property="FlowDirection" Value="LeftToRight"/>
@@ -175,10 +188,6 @@
                                                     </Style.Triggers>
                                                 </Style>
                                             </ScrollViewer.Style>
-
-                                            <ScrollViewer.Resources>
-                                                <sys:Double x:Key="{x:Static SystemParameters.HorizontalScrollBarHeightKey}">8</sys:Double>
-                                            </ScrollViewer.Resources>
 
                                             <TextBlock Text="{Binding File.Name}" Margin="3,3">
                                                 <TextBlock.Style>
@@ -214,53 +223,52 @@
                                         </md:SmartHint>
                                     </Grid>
 
-                                </md:Card>
+                                    <DockPanel Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left">
 
-                                <DockPanel Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left">
+                                        <Button Click="btnLockImageResultsDatabase_Click" Margin="3">
+                                            <Button.Style>
+                                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
+                                                    <Setter Property="Content">
+                                                        <Setter.Value>
+                                                            <iconPacks:PackIconMaterial Kind="LockOpenVariant"/>
+                                                        </Setter.Value>
+                                                    </Setter>
 
-                                    <Button Click="btnLockImageResultsDatabase_Click" Margin="3">
-                                        <Button.Style>
-                                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
-                                                <Setter Property="Content">
-                                                    <Setter.Value>
-                                                        <iconPacks:PackIconMaterial Kind="LockOpenVariant"/>
-                                                    </Setter.Value>
-                                                </Setter>
+                                                    <Setter Property="ToolTip" Value="Database is unlocked. Click to lock."/>
 
-                                                <Setter Property="ToolTip" Value="Database is unlocked. Click to lock."/>
+                                                    <Style.Triggers>
 
-                                                <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsLocked}" Value="True">
+                                                            <Setter Property="Content">
+                                                                <Setter.Value>
+                                                                    <iconPacks:PackIconMaterial Kind="Lock"/>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                            <Setter Property="ToolTip" Value="Database is locked. Click to unlock."/>
+                                                        </DataTrigger>
 
-                                                    <DataTrigger Binding="{Binding IsLocked}" Value="True">
-                                                        <Setter Property="Content">
-                                                            <Setter.Value>
-                                                                <iconPacks:PackIconMaterial Kind="Lock"/>
-                                                            </Setter.Value>
-                                                        </Setter>
-                                                        <Setter Property="ToolTip" Value="Database is locked. Click to unlock."/>
-                                                    </DataTrigger>
+                                                        <DataTrigger Binding="{Binding IsPermLocked}" Value="True">
+                                                            <Setter Property="Content">
+                                                                <Setter.Value>
+                                                                    <iconPacks:PackIconMaterial Kind="DatabaseLock"/>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                            <Setter Property="ToolTip" Value="Database is premanently locked."/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
 
-                                                    <DataTrigger Binding="{Binding IsPermLocked}" Value="True">
-                                                        <Setter Property="Content">
-                                                            <Setter.Value>
-                                                                <iconPacks:PackIconMaterial Kind="DatabaseLock"/>
-                                                            </Setter.Value>
-                                                        </Setter>
-                                                        <Setter Property="ToolTip" Value="Database is premanently locked."/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Button.Style>
-                                    </Button>
-
-                                    <Button Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=ListView}}" CommandParameter="{Binding }" Margin="3"
+                                        <Button Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=ListView}}" CommandParameter="{Binding }" Margin="3"
                                         Content="{iconPacks:Material Kind=Delete}"
                                         Style="{StaticResource MahApps.Styles.Button.Hamburger}"/>
 
-                                </DockPanel>
-                            </Grid>
+                                    </DockPanel>
+                                    
+                                </Grid>
+                            </DockPanel>
                         </DockPanel>
-
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

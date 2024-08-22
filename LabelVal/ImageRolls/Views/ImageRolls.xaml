@@ -21,7 +21,7 @@
 
     <UserControl.Resources>
 
-        
+
         <converters:ObjectIsNull x:Key="objectIsNull"/>
         <converters:ContentGeneratorConverter x:Key="ContentGeneratorConverter"/>
 
@@ -62,11 +62,11 @@
                         <Setter Property="TextElement.Foreground" Value="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
                     </Style>
                 </DockPanel.Style>
-                
+
                 <Border Style="{StaticResource groupLeft}" Margin="0,0,6,0" Background="{DynamicResource MahApps.Brushes.Accent2}"/>
                 <Border Style="{StaticResource groupBottom}" Margin="-6,3,0,0" Background="{DynamicResource MahApps.Brushes.Accent2}"/>
 
-                <Grid> 
+                <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
@@ -124,7 +124,11 @@
                                           VerticalScrollBarVisibility="Disabled" 
                                           HorizontalScrollBarVisibility="Auto" 
                                           md:ScrollViewerAssist.IsAutoHideEnabled="True">
-
+                            <ScrollViewer.Resources>
+                                <Style TargetType="ScrollBar"/>
+                                <sys:Double x:Key="{x:Static SystemParameters.HorizontalScrollBarHeightKey}">8</sys:Double>
+                            </ScrollViewer.Resources>
+                            
                             <ScrollViewer.Style>
                                 <Style TargetType="ScrollViewer" BasedOn="{StaticResource MaterialDesignScrollViewer}">
                                     <Setter Property="FlowDirection" Value="LeftToRight"/>
@@ -136,9 +140,7 @@
                                 </Style>
                             </ScrollViewer.Style>
 
-                            <ScrollViewer.Resources>
-                                <sys:Double x:Key="{x:Static SystemParameters.HorizontalScrollBarHeightKey}">8</sys:Double>
-                            </ScrollViewer.Resources>
+
 
                             <TextBlock Text="{Binding Name}">
                                 <TextBlock.Style>
@@ -272,7 +274,7 @@
 
             <ListView Loaded="ListView_Loaded" SelectionChanged="ListView_SelectionChanged" ItemsSource="{Binding Items}"
                       ItemTemplate="{StaticResource imageRollItemTemplate_ListView}"
-                      Margin="3,3,0,0" Style="{StaticResource MahApps.Styles.ListBox}"
+                      Margin="3,3,0,0" Style="{StaticResource MahApps.Styles.ListView}"
                       ScrollViewer.VerticalScrollBarVisibility="Auto">
 
                 <ListView.ItemContainerStyle>
@@ -284,10 +286,11 @@
 
         <DataTemplate x:Key="userIRListView">
 
+
             <ListView Loaded="ListViewUser_Loaded" SelectionChanged="ListViewUser_SelectionChanged"
                       ItemTemplate="{StaticResource imageRollItemTemplate_ListView}"
-                      ItemsSource="{Binding Items}" Margin="3,3,0,0" Style="{StaticResource MahApps.Styles.ListBox}"
-                      ScrollViewer.VerticalScrollBarVisibility="Auto">
+                      ItemsSource="{Binding Items}" Margin="3,3,0,0" Style="{StaticResource MahApps.Styles.ListView}"
+                      md:ScrollViewerAssist.IsAutoHideEnabled="True">
 
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}"/>
@@ -299,7 +302,8 @@
         <DataTemplate x:Key="imageRollItemTemplate" DataType="{x:Type TabItem}">
 
             <DockPanel Name="dockBackground" Margin="-3,0">
-                <DockPanel Background="White" Margin="6">
+                <Grid Background="White" Margin="6">
+                    
                     <Image Height="36" Width="36">
                         <Image.Style>
                             <Style TargetType="Image">
@@ -325,8 +329,44 @@
                                 </Style.Triggers>
                             </Style>
                         </Image.Style>
+                    </Image> 
+                    <Image Width="22" Height="22" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15415_15416}">
+                                        <Setter Property="Source" Value="/Assets/Images/iec.png"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15416}">
+                                        <Setter Property="Source" Value="/Assets/Images/iec.png"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15415}">
+                                        <Setter Property="Source" Value="/Assets/Images/iec.png"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
                     </Image>
-                </DockPanel>
+                    <Image Width="22" Height="22" VerticalAlignment="Top" HorizontalAlignment="Left">
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15415_15416}">
+                                        <Setter Property="Source" Value="/Assets/Images/iso.png"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15416}">
+                                        <Setter Property="Source" Value="/Assets/Images/iso.png"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15415}">
+                                        <Setter Property="Source" Value="/Assets/Images/iso.png"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
+
+
+                </Grid>
 
             </DockPanel>
 

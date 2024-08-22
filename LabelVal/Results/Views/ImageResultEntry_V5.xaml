@@ -70,7 +70,7 @@
                     <DockPanel>
 
                         <!--Title-->
-                        <md:Card Background="{DynamicResource OrangeBrush1}"
+                        <md:Card Background="{DynamicResource V5_Brush}"
                              HorizontalAlignment="Left" Padding="4,1" Margin="3">
                             <TextBlock Text="Stored Image" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                         </md:Card>
@@ -127,7 +127,7 @@
                     <DockPanel>
 
                         <!--Title-->
-                        <md:Card Background="{DynamicResource OrangeBrush1}"
+                        <md:Card Background="{DynamicResource V5_Brush}"
                              HorizontalAlignment="Left" Padding="4,1" Margin="3">
                             <TextBlock Text="Stored Sectors" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                         </md:Card>
@@ -340,7 +340,7 @@
                     <DockPanel>
 
                         <!--Title-->
-                        <md:Card Background="{DynamicResource OrangeBrush1}"
+                        <md:Card Background="{DynamicResource V5_Brush}"
                                 HorizontalAlignment="Left" Padding="4,1" Margin="3">
                             <TextBlock Text="Current Image" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                         </md:Card>
@@ -416,7 +416,7 @@
                     <DockPanel>
 
                         <!--Title-->
-                        <md:Card Background="{DynamicResource OrangeBrush1}"
+                        <md:Card Background="{DynamicResource V5_Brush}"
                                 HorizontalAlignment="Left" Padding="4,1" Margin="3">
                             <TextBlock Text="Current Sectors" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                         </md:Card>
@@ -619,7 +619,7 @@
                     <DockPanel>
 
                         <!--Title-->
-                        <md:Card Background="{DynamicResource OrangeBrush1}"
+                        <md:Card Background="{DynamicResource V5_Brush}"
                              HorizontalAlignment="Left" Padding="4,1" Margin="3">
                             <TextBlock Text="Dissimilar Results" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                         </md:Card>

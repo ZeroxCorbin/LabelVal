@@ -211,7 +211,7 @@
         <DockPanel>
             <Border Style="{StaticResource hamMenuBottomBar}"/>
 
-            <DockPanel MinHeight="48" Width="48" Background="{DynamicResource ColorBlindBrush1}">
+            <DockPanel MinHeight="48" Width="48" Background="{DynamicResource V275_Brush}">
                 <Image Width="36" Height="36" Source="/Assets/Images/v275-white-outline.ico" VerticalAlignment="Center" HorizontalAlignment="Center"/>
             </DockPanel>
 
@@ -258,7 +258,7 @@
 
             <Border Style="{StaticResource hamMenuBottomBar}"/>
 
-            <DockPanel Width="48" MinHeight="48" Background="{DynamicResource OrangeBrush1}">
+            <DockPanel Width="48" MinHeight="48" Background="{DynamicResource V5_Brush}">
                 <Image Width="36" Height="36" Source="/Assets/Images/v5-white-outline.ico" VerticalAlignment="Center" HorizontalAlignment="Center"/>
             </DockPanel>
 
@@ -302,7 +302,7 @@
     <DataTemplate x:Key="l95xxMenuItem">
         <DockPanel>
 
-            <DockPanel Width="48" MinHeight="48" Background="{DynamicResource OrangeBrush0}">
+            <DockPanel Width="48" MinHeight="48" Background="{DynamicResource L95xx_Brush}">
                 <Image Width="36" Height="36" Source="/Assets/Images/l95xx-white-outline.ico" VerticalAlignment="Center" HorizontalAlignment="Center"/>
             </DockPanel>
 

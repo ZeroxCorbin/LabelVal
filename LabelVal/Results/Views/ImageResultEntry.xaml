@@ -52,7 +52,7 @@
 
                 <!--V275-->
                 <Button Command="{Binding V275ProcessCommand}" Width="48" Height="48" 
-                        BorderBrush="{DynamicResource YellowBrush2}" Background="{DynamicResource ColorBlindBrush1}">
+                        BorderBrush="{DynamicResource YellowBrush2}" Background="{DynamicResource V275_Brush}">
 
                     <Grid>
                         <mah:ProgressRing IsActive="{Binding IsV275Working}" Width="28" Height="28" Foreground="White"/>
@@ -106,7 +106,7 @@
 
                 <!--V5 Process Source Image-->
                 <Button Command="{Binding V5ProcessCommand}" Width="48" Height="48"
-                        Background="{DynamicResource OrangeBrush1}">
+                        Background="{DynamicResource V5_Brush}">
 
                     <Grid>
                         <mah:ProgressRing IsActive="{Binding IsV5Working}" Width="28" Height="28" Foreground="White"/>
@@ -116,7 +116,7 @@
                     <Button.Style>
                         <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.MetroSquare}">
                             <Setter Property="Visibility" Value="Collapsed"/>
-                            <Setter Property="BorderBrush" Value="{DynamicResource OrangeBrush1}"/>
+                            <Setter Property="BorderBrush" Value="{DynamicResource V5_Brush}"/>
                             <Style.Triggers>
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
@@ -160,7 +160,7 @@
                 </Button>
 
                 <!--L95xx Select-->
-                <ToggleButton IsChecked="{Binding IsL95xxSelected}" Width="48" BorderBrush="{DynamicResource OrangeBrush0}"
+                <ToggleButton IsChecked="{Binding IsL95xxSelected}" Width="48" BorderBrush="{DynamicResource L95xx_Brush}"
                             Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
                     <ToggleButton.Style>
                         <Style TargetType="ToggleButton" BasedOn="{StaticResource MahApps.Styles.ToggleButton}">
@@ -170,7 +170,7 @@
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsL95xxSelected}" Value="True">
                                     <Setter Property="ToolTip" Value="L95xx Data is redirected here."/>
-                                    <Setter Property="Background" Value="{DynamicResource OrangeBrush0}"/>
+                                    <Setter Property="Background" Value="{DynamicResource L95xx_Brush}"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding ImageResults.SelectedVerifier.IsConnected}" Value="True">
                                     <Setter Property="Visibility" Value="Visible"/>

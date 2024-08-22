@@ -22,17 +22,15 @@
 
             </ResourceDictionary.MergedDictionaries>
 
-            <Style TargetType="ScrollBar">
-                <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Control.Background}"/>
+            <Style TargetType="ScrollBar" BasedOn="{StaticResource MahApps.Styles.ScrollBar}">
+                <!--<Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Control.Background}"/>-->
             </Style>
 
             <Style TargetType="ToolTip">
-
                 <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.ThemeBackground}"/>
                 <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
-
             </Style>
-            
+
             <Style x:Key="GroupHeaderCirlceButton" TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button.Circle}">
                 <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.ThemeBackground}"/>
                 <Setter Property="BorderThickness" Value="0"/>
@@ -81,20 +79,7 @@
                 <Setter Property="VerticalAlignment" Value="Top"/>
                 <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent}"/>
             </Style>
-            
-            <!--<Style x:Key="GroupHeaderCirlceActionButton" TargetType="Button" BasedOn="{StaticResource MaterialDesignFloatingActionButton}">
-                <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.ThemeBackground}"/>
-                <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
-                <Setter Property="BorderThickness" Value="0"/>
-                <Setter Property="Width" Value="22"/>
-                <Setter Property="Height" Value="22"/>
-                <Setter Property="Padding" Value="0"/>
-                <Setter Property="Margin" Value="3,0"/>
-                <Setter Property="HorizontalAlignment" Value="Left"/>
-                <Setter Property="md:ButtonProgressAssist.IsIndeterminate" Value="True"/>
-                <Setter Property="md:ButtonProgressAssist.Value" Value="-1"/>
-            </Style>-->
-
+  
             <SolidColorBrush x:Key="HighlightBrush" Color="{DynamicResource Primary700}"/>
             <SolidColorBrush x:Key="AccentBaseColorBrush" Color="{DynamicResource Primary600}" />
             <SolidColorBrush x:Key="AccentColorBrush" Color="{DynamicResource Primary500}"/>
@@ -136,6 +121,17 @@
 
             <Color x:Key="SectorError">Red</Color>
             <SolidColorBrush x:Key="SectorError_Brush" Color="{StaticResource SectorError}"/>
+
+
+
+            <Color x:Key="V275">#193cbc</Color>
+            <SolidColorBrush x:Key="V275_Brush" Color="{StaticResource V275}"/>
+
+            <Color x:Key="V5">#CC5500</Color>
+            <SolidColorBrush x:Key="V5_Brush" Color="{StaticResource V5}"/>
+
+            <Color x:Key="L95xx">#4F000B</Color>
+            <SolidColorBrush x:Key="L95xx_Brush" Color="{StaticResource L95xx}"/>
 
             
             <Color x:Key="Orange0">#4F000B</Color>

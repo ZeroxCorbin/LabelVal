@@ -55,7 +55,7 @@
 
                     <DockPanel Margin="-5">
 
-                        <md:Card Background="{DynamicResource ColorBlindBrush1}" HorizontalAlignment="Left" Padding="4,1">
+                        <md:Card Background="{DynamicResource V275_Brush}" HorizontalAlignment="Left" Padding="4,1">
                             <TextBlock Foreground="White" Text="Stored Sectors" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                         </md:Card>
 
@@ -226,7 +226,7 @@
 
                     <DockPanel Margin="-5">
 
-                        <md:Card Background="{DynamicResource ColorBlindBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="4,1">
+                        <md:Card Background="{DynamicResource V275_Brush}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="4,1">
                             <TextBlock Foreground="White" Text="Current Sectors" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                         </md:Card>
 
@@ -345,7 +345,7 @@
 
                     <DockPanel Margin="-5">
 
-                        <md:Card Background="{DynamicResource ColorBlindBrush1}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
+                        <md:Card Background="{DynamicResource V275_Brush}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="1">
                             <TextBlock Foreground="White" Text="Dissimilar Results" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
                         </md:Card>
 

@@ -328,7 +328,7 @@
                     </Button>
 
                     <!--Title-->
-                    <md:Card Background="{DynamicResource ColorBlindBrush1}" HorizontalAlignment="Left" Padding="4,1" Margin="6,0">
+                    <md:Card Background="{DynamicResource V275_Brush}" HorizontalAlignment="Left" Padding="4,1" Margin="6,0">
                         <TextBlock Foreground="White" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}">
                             <TextBlock.Style>
                                 <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource MahApps.Styles.TextBlock}">
@@ -561,7 +561,7 @@
                     </Button>
 
                     <!--Title-->
-                    <md:Card Background="{DynamicResource ColorBlindBrush1}" HorizontalAlignment="Left" Padding="4,1" Margin="6,0">
+                    <md:Card Background="{DynamicResource V275_Brush}" HorizontalAlignment="Left" Padding="4,1" Margin="6,0">
                         <TextBlock Foreground="White" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}">
                             <TextBlock.Style>
                                 <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource MahApps.Styles.TextBlock}">
@@ -795,7 +795,7 @@
                     </Button>
 
                     <!--Title-->
-                    <md:Card Background="{DynamicResource OrangeBrush1}" HorizontalAlignment="Left" Padding="4,1" Margin="6,0">
+                    <md:Card Background="{DynamicResource V5_Brush}" HorizontalAlignment="Left" Padding="4,1" Margin="6,0">
                         <TextBlock Foreground="White" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}">
                             <TextBlock.Style>
                                 <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource MahApps.Styles.TextBlock}">
@@ -1026,7 +1026,7 @@
                     </Button>
 
                     <!--Title-->
-                    <md:Card Background="{DynamicResource OrangeBrush1}" HorizontalAlignment="Left" Padding="4,1" Margin="6,0">
+                    <md:Card Background="{DynamicResource V5_Brush}" HorizontalAlignment="Left" Padding="4,1" Margin="6,0">
                         <TextBlock Foreground="White" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}">
                             <TextBlock.Style>
                                 <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource MahApps.Styles.TextBlock}">

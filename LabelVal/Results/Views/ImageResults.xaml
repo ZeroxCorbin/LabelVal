@@ -106,7 +106,7 @@
                             </Button>
 
                             <Button Command="{Binding AddV5ImageCommand}" Width="48" Height="42"
-                                    Background="{DynamicResource OrangeBrush1}" BorderBrush="{DynamicResource OrangeBrush1}"
+                                    Background="{DynamicResource V5_Brush}" BorderBrush="{DynamicResource V5_Brush}"
                                     ToolTipService.ShowOnDisabled="True"
                                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
@@ -132,7 +132,7 @@
 
                         </DockPanel>
 
-                        <ToggleButton IsChecked="{Binding IsL95xxSelected}" Width="48" BorderBrush="{DynamicResource OrangeBrush0}"
+                        <ToggleButton IsChecked="{Binding IsL95xxSelected}" Width="48" BorderBrush="{DynamicResource L95xx_Brush}"
                             Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
                             <ToggleButton.Style>
                                 <Style TargetType="ToggleButton" BasedOn="{StaticResource MahApps.Styles.ToggleButton}">
@@ -142,7 +142,7 @@
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding IsL95xxSelected}" Value="True">
                                             <Setter Property="ToolTip" Value="L95xx Data is redirected here."/>
-                                            <Setter Property="Background" Value="{DynamicResource OrangeBrush0}"/>
+                                            <Setter Property="Background" Value="{DynamicResource L95xx_Brush}"/>
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding SelectedVerifier.IsConnected}" Value="True">
                                             <Setter Property="Visibility" Value="Visible"/>
@@ -153,7 +153,7 @@
                             </ToggleButton.Style>
 
                             <md:ToggleButtonAssist.OnContent>
-                                <Grid Background="{DynamicResource OrangeBrush0}">
+                                <Grid Background="{DynamicResource L95xx_Brush}">
                                     <Image Source="/Assets/Images/l95xx-white-outline.ico"/>
                                 </Grid>
                             </md:ToggleButtonAssist.OnContent>
