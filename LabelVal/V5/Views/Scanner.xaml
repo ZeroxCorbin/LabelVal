@@ -98,7 +98,7 @@
                             <Style TargetType="{x:Type md:Card}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Path=IsTopDrawerOpen, RelativeSource={RelativeSource AncestorType=md:DrawerHost}}" Value="True">
+                                    <DataTrigger Binding="{Binding IsTopDrawerOpen, ElementName=drwSettings}" Value="True">
                                         <Setter Property="Visibility" Value="Visible"/>
                                     </DataTrigger>
                                 </Style.Triggers>

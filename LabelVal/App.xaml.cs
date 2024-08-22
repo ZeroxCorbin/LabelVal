@@ -48,9 +48,9 @@ public partial class App : Application
 
     public static string ImageResultsDatabaseRoot => $@"{UserDataDirectory}\Image Results";
 
-    public static string AssetsImageRollRoot => $@"{Directory.GetCurrentDirectory()}\Assets\Image Rolls";
-    public static string ImageRollsRoot => $"{UserDataDirectory}\\Image Rolls";
-    public static string ImageRollsDatabasePath => $"{ImageRollsRoot}\\ImageRolls.sqlite";
+    public static string AssetsImageRollsRoot => $@"{Directory.GetCurrentDirectory()}\Assets\Image Rolls";
+    public static string UserImageRollsRoot => $"{UserDataDirectory}\\Image Rolls";
+    public static string UserImageRollDefaultFile => $"{UserImageRollsRoot}\\ImageRolls.sqlite";
 
     public static string RunsRoot => $"{UserDataDirectory}\\Runs";
     public static string RunLedgerDatabaseName => $"RunLedger{DatabaseExtension}";
@@ -61,30 +61,20 @@ public partial class App : Application
 
     public App()
     {
-
-
-        //   ExtractRunDetails();
-        // File.WriteAllText("setting.imgr", JsonConvert.SerializeObject(new ImageRolls.ViewModels.ImageRollEntry(), new Newtonsoft.Json.Converters.StringEnumConverter()));
        //SetupExceptionHandling();
 
         Version version = Assembly.GetExecutingAssembly().GetName().Version;
         if (version != null)
             Version = version.ToString();
 
-        //if (!Directory.Exists(AssetsImageResultsDatabasesRoot))
-        //    _ = Directory.CreateDirectory(AssetsImageResultsDatabasesRoot);
-
         if (!Directory.Exists(UserDataDirectory))
             _ = Directory.CreateDirectory(UserDataDirectory);
-
-        if (Directory.Exists($@"{UserDataDirectory}\ImageResultsDatabases"))
-            Directory.Move($@"{UserDataDirectory}\ImageResultsDatabases", ImageResultsDatabaseRoot);
 
         if (!Directory.Exists(ImageResultsDatabaseRoot))
             _ = Directory.CreateDirectory(ImageResultsDatabaseRoot);
         
-        if (!Directory.Exists(ImageRollsRoot))
-            _ = Directory.CreateDirectory(ImageRollsRoot);
+        if (!Directory.Exists(UserImageRollsRoot))
+            _ = Directory.CreateDirectory(UserImageRollsRoot);
 
         if (!Directory.Exists(RunsRoot))
             _ = Directory.CreateDirectory(RunsRoot);
@@ -234,7 +224,7 @@ public partial class App : Application
 
     private void FixFiducial()
     {
-        foreach (string dir in Directory.EnumerateDirectories(AssetsImageRollRoot))
+        foreach (string dir in Directory.EnumerateDirectories(AssetsImageRollsRoot))
             if (Directory.Exists($"{dir}\\300"))
                 foreach (string imgFile in Directory.EnumerateFiles($"{dir}\\300"))
                     if (Path.GetExtension(imgFile) == ".png")
@@ -274,7 +264,7 @@ public partial class App : Application
 
     private void FixRotation()
     {
-        foreach (string dir in Directory.EnumerateDirectories(AssetsImageRollRoot))
+        foreach (string dir in Directory.EnumerateDirectories(AssetsImageRollsRoot))
             foreach (string imgFile in Directory.EnumerateFiles($"{dir}\\600"))
                 if (imgFile.Contains("PRINT QUALITY"))
                     RotateImage(imgFile);

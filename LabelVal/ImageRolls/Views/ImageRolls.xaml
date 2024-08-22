@@ -410,8 +410,8 @@
 
     <Grid VerticalAlignment="Top" Margin="3,3,0,0">
         <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <!--User Image Rolls-->

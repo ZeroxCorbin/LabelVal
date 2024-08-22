@@ -115,7 +115,7 @@ public partial class ImageRolls : UserControl
     {
         System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo()
         {
-            FileName = $"{App.ImageRollsRoot}\\",
+            FileName = $"{App.UserImageRollsRoot}\\",
             UseShellExecute = true,
             Verb = "open"
         });

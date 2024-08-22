@@ -112,9 +112,9 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
 
     private void RecieveAll()
     {
-        RequestMessage<PrinterSettings> message = new();
-        WeakReferenceMessenger.Default.Send(message);
-        SelectedPrinter = message.Response;
+        var ret1 = WeakReferenceMessenger.Default.Send(new RequestMessage<PrinterSettings>());
+        if (ret1.HasReceivedResponse)
+            SelectedPrinter = ret1.Response;
     }
     public void Receive(PropertyChangedMessage<PrinterSettings> message) => SelectedPrinter = message.NewValue;
 
@@ -125,7 +125,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
         if (Images.Count > 0)
             return;
 
-        LogInfo($"Loading label images from standards directory: {App.AssetsImageRollRoot}\\{Name}\\");
+        LogInfo($"Loading label images from standards directory: {App.AssetsImageRollsRoot}\\{Name}\\");
 
         List<string> images = [];
         foreach (string f in Directory.EnumerateFiles(Path))

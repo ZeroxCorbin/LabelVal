@@ -47,6 +47,7 @@ public partial class Sector : UserControl
     {
         InitializeComponent();
 
+        HideErrorsWarnings = App.Settings.GetValue<bool>(nameof(HideErrorsWarnings));
         App.Settings.PropertyChanged += Settings_PropertyChanged;
     }
 
