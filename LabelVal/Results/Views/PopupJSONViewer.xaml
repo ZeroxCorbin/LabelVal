@@ -5,32 +5,41 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:LabelVal.Results.Views"
              xmlns:md="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
+                xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:json="clr-namespace:JSONViewer_WPF;assembly=JSONViewer_WPF"
              mc:Ignorable="d">
 
-    <Popup x:Name="Popup" StaysOpen="False">
+    <Popup x:Name="Popup" StaysOpen="True" >
 
         <DockPanel>
-            
-            <md:Card>
+
+            <Button DockPanel.Dock="Top" Click="btnClose" ToolTip="Close" Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" 
+                                HorizontalAlignment="Right" Padding="8,0" Height="28"
+                                Content="{iconPacks:Material Kind=Close}"/>
+
+            <DockPanel>
+
                 <json:JsonViewer x:Name="Viewer1" ShowSaveButton="True" MinWidth="300"/>
-            </md:Card>
-            
-            <md:Card>
-                <md:Card.Style>
-                    <Style TargetType="{x:Type md:Card}">
-                        <Setter Property="Visibility" Value="Visible"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding ElementName=Viewer2, Path=JSON}" Value="{x:Null}">
-                                <Setter Property="Visibility" Value="Collapsed"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </md:Card.Style>
-                
-                <json:JsonViewer x:Name="Viewer2" ShowSaveButton="True" MinWidth="300"/>
-            </md:Card>
-            
+
+                <DockPanel>
+                    <DockPanel.Style>
+                        <Style TargetType="DockPanel">
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ElementName=Viewer2, Path=JSON}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DockPanel.Style>
+
+                    <json:JsonViewer x:Name="Viewer2" ShowSaveButton="True" MinWidth="300"/>
+                    
+                </DockPanel>
+
+            </DockPanel>
+
         </DockPanel>
     </Popup>
 </UserControl>

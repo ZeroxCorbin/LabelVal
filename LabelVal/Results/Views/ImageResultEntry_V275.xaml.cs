@@ -102,7 +102,7 @@ public partial class ImageResultEntry_V275 : UserControl
                 pop.Viewer2.JSON = ((ViewModels.ImageResultEntry)DataContext).V275ResultRow.Report;
                 pop.Viewer2.Title = "Report";
 
-                pop.Popup.PlacementTarget = (Button)sender;
+                pop.Popup.PlacementTarget = ScrollV275StoredSectors;
                 pop.Popup.IsOpen = true;
             }
         }
@@ -113,7 +113,7 @@ public partial class ImageResultEntry_V275 : UserControl
                 DataContext = ((ViewModels.ImageResultEntry)DataContext).V275StoredSectors
             };
 
-            pop.Popup.PlacementTarget = (Button)sender;
+            pop.Popup.PlacementTarget = ScrollV275StoredSectors;
             pop.Popup.IsOpen = true;
         }
     }
@@ -150,32 +150,6 @@ public partial class ImageResultEntry_V275 : UserControl
     {
         if (e.VerticalChange != 0)
             ScrollV275StoredSectors.ScrollToVerticalOffset(e.VerticalOffset);
-    }
-
-    private void L95xxStoredSectors_Click(object sender, RoutedEventArgs e)
-    {
-        if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
-        {
-            if (((ViewModels.ImageResultEntry)DataContext).L95xxResultRow != null)
-            {
-                PopupJSONViewer pop = new();
-                pop.Viewer1.JSON = ((ViewModels.ImageResultEntry)DataContext).L95xxResultRow.Report;
-                pop.Viewer1.Title = "Report";
-
-                pop.Popup.PlacementTarget = (Button)sender;
-                pop.Popup.IsOpen = true;
-            }
-        }
-        else
-        {
-            PopupSectorsDetails pop = new()
-            {
-                DataContext = ((ViewModels.ImageResultEntry)DataContext).L95xxStoredSectors
-            };
-
-            pop.Popup.PlacementTarget = (Button)sender;
-            pop.Popup.IsOpen = true;
-        }
     }
 
     private void btnSaveImage_Click(object sender, RoutedEventArgs e)

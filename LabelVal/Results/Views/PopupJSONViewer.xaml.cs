@@ -10,4 +10,9 @@ public partial class PopupJSONViewer : UserControl
     {
         InitializeComponent();
     }
+
+    private void btnClose(object sender, System.Windows.RoutedEventArgs e)
+    {
+        Popup.IsOpen = false;   
+    }
 }

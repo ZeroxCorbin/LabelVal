@@ -99,7 +99,8 @@ public partial class ImageResultEntry_V5 : UserControl
                 pop.Viewer1.JSON = ((ViewModels.ImageResultEntry)DataContext).V5ResultRow.Report;
                 pop.Viewer1.Title = "Report";
 
-                pop.Popup.PlacementTarget = (Button)sender;
+                pop.Popup.PlacementTarget = ScrollV5StoredSectors;
+                pop.Popup.Placement = System.Windows.Controls.Primitives.PlacementMode.Center;
                 pop.Popup.IsOpen = true;
             }
         }
@@ -110,7 +111,8 @@ public partial class ImageResultEntry_V5 : UserControl
                 DataContext = ((ViewModels.ImageResultEntry)DataContext).V5StoredSectors
             };
 
-            pop.Popup.PlacementTarget = (Button)sender;
+            pop.Popup.PlacementTarget = ScrollV5StoredSectors;
+            pop.Popup.Placement = System.Windows.Controls.Primitives.PlacementMode.Center;
             pop.Popup.IsOpen = true;
         }
     }
