@@ -44,54 +44,6 @@ public class Report : IReport
     //V275 2D module data
     public ModuleData ExtendedData { get; set; }
 
-    //public Report(List<string> report)
-    //{
-    //    Type = report.Find((e) => e.StartsWith("Cell size")) == null ? "verify1D" : "verify2D";
-
-    //    string[] sym = GetKeyValuePair("Symbology", report);
-
-    //    SymbolType = GetSymbolType(sym[1]);
-    //    XDimension = Type == "verify2D"
-    //        ? (double)ParseFloat(GetKeyValuePair("Cell size", report)[1])
-    //        : (double)ParseFloat(GetKeyValuePair("Xdim", report)[1]);
-    //    Aperture = ParseFloat(GetKeyValuePair("Overall", report)[1].Split('/')[1]);
-    //    Units = "mil";
-
-    //    DecodeText = GetKeyValuePair("Decoded", report)[1];
-
-    //    OverallGradeValue = GetGrade(GetKeyValuePair("Overall", report)[1]).value;
-    //    OverallGradeString = GetKeyValuePair("Overall", report)[1];
-    //    OverallGradeLetter = GetGrade(GetKeyValuePair("Overall", report)[1]).letter;
-
-    //    List<string[]> res = GetMultipleKeyValuePairs("GS1 Data", report);
-    //    bool itThinksItIsGS1 = sym[1].StartsWith("GS1");
-    //    string error = null;
-    //    if (res != null)
-    //    {
-    //        foreach (string[] str in res)
-    //        {
-    //            if (str[0].Equals("GS1 Data"))
-    //                continue;
-    //            else
-    //                error = str[1];
-    //        }
-
-    //        List<string> list = new();
-    //        string[] spl = GetKeyValuePair("GS1 Data,", report)[1].Split('(', StringSplitOptions.RemoveEmptyEntries);
-    //        foreach (string str in spl)
-    //            list.Add($"({str}");
-
-    //        GS1Results = new Gs1results()
-    //        {
-    //            Validated = true,
-    //            Input = GetKeyValuePair("Decoded", report)[1],
-    //            FormattedOut = GetKeyValuePair("GS1 Data,", report)[1],
-    //            Error = error,
-    //            Fields = list
-    //        };
-    //    }
-    //}
-
     public Report(Models.FullReport report)
     {
         Type = GetParameter("Cell size", report.ReportData) == null ? "verify1D" : "verify2D";
@@ -113,7 +65,7 @@ public class Report : IReport
         DecodeText = report.Report.DecodedText.Replace("#", "");
 
         OverallGradeValue = GetGrade(GetParameter("Overall", report.ReportData)).value;
-        OverallGradeString = report.Report.OverallGrade;
+        OverallGradeString = report.Report.OverallGrade.Replace("DPM", "");
         OverallGradeLetter = GetGrade(GetParameter("Overall", report.ReportData)).letter;
 
         Standard = GetStandard(GetParameter("Application standard", report.ReportData));
@@ -186,6 +138,7 @@ public class Report : IReport
     }
     private static Report_InspectSector_Common.Grade GetGrade(string data)
     {
+       data = data.Replace("DPM", "");
         float tmp = ParseFloat(data);
 
         return new Report_InspectSector_Common.Grade()
@@ -200,6 +153,8 @@ public class Report : IReport
         ? StandardsTypes.GS1
         : value.StartsWith("ISO")
         ? StandardsTypes.ISO15415_15416
+        : value.Contains("29158")
+        ? StandardsTypes.ISO29158
         : StandardsTypes.Unsupported;
     private static GS1TableNames GetGS1Table(string value) =>
         string.IsNullOrEmpty(value) ? GS1TableNames.Unsupported :
@@ -239,7 +194,7 @@ public class Report : IReport
         ? "code39"
         : value.Contains("Code 93")
         ? "code93"
-        : value.StartsWith("GS1 QR")
+        : value.Contains("QR")
         ? "qrCode"
         : value.StartsWith("Micro")
         ? "microQrCode"

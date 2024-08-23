@@ -405,7 +405,7 @@
                                     </Grid.ColumnDefinitions>
 
                                     <TextBlock Grid.Column="0" Text="{Binding Path=Name, Converter={StaticResource stringToUpper}, Mode=OneTime}"/>
-                                    <TextBlock Grid.Column="1" Text="{Binding Path=Value, Mode=OneTime, StringFormat={}({0})}"
+                                    <TextBlock Grid.Column="1" Text="{Binding Path=Value, Mode=OneTime, StringFormat={}{0}}"
                                            VerticalAlignment="Center"/>
                                 </Grid>
                             </DataTemplate>

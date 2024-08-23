@@ -154,10 +154,13 @@ public partial class ImageResultEntry_V275 : UserControl
 
     private void btnSaveImage_Click(object sender, RoutedEventArgs e)
     {
+        var parent = Utilities.VisualTreeHelp.GetVisualParent<DockPanel>((Button)sender, 2);
+        var sectorDetails = Utilities.VisualTreeHelp.GetVisualChild<Sectors.Views.SectorDetails>(parent);
+
         if (sectorDetails != null)
         {
             string path;
-            if ((path = Utilities.FileUtilities.SaveFileDialog($"{((Sectors.Interfaces.ISector) sectorDetails.DataContext).Template.Username}", "PNG|*.png", "Save sector details.")) != "")
+            if ((path = Utilities.FileUtilities.SaveFileDialog($"{((Sectors.Interfaces.ISector)sectorDetails.DataContext).Template.Username}", "PNG|*.png", "Save sector details.")) != "")
             {
                 try
                 {
@@ -169,9 +172,11 @@ public partial class ImageResultEntry_V275 : UserControl
     }
     private void btnCopyImage_Click(object sender, RoutedEventArgs e)
     {
+        var parent = Utilities.VisualTreeHelp.GetVisualParent<DockPanel>((Button)sender, 2);
+        var sectorDetails = Utilities.VisualTreeHelp.GetVisualChild<Sectors.Views.SectorDetails>(parent);
+
         if (sectorDetails != null)
             CopyToClipboard(sectorDetails);
-
     }
     public void SaveToPng(FrameworkElement visual, string fileName)
     {

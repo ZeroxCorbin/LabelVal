@@ -28,6 +28,14 @@ public class Sector : ISector
                     return false;
                 case StandardsTypes.Unsupported:
                     return true;
+                case StandardsTypes.ISO29158:
+                    {
+                        return Report.Standard switch
+                        {
+                            StandardsTypes.ISO29158 => false,
+                            _ => true,
+                        };
+                    }
                 case StandardsTypes.ISO15415_15416:
                     {
                         return Report.Standard switch
@@ -76,7 +84,7 @@ public class Sector : ISector
         Report = new Report(report);
         Template = new Template(report);
 
-        SectorDifferences = new SectorDifferences(report, Report.SymbolType == "pdf417");
+        SectorDifferences = new SectorDifferences(report, Report.SymbolType == "pdf417", Report.Standard);
 
         DesiredStandard = standard;
         DesiredGS1Table = table;

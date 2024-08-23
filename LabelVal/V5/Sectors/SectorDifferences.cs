@@ -213,42 +213,65 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
         {
             IsNotEmpty = true;
 
-            GradeValues.Add(new GradeValue("contrast", results.grading.iso15415.contrast.value, new Grade("contrast", results.grading.iso15415.contrast.grade, V5GetGradeLetter(results.grading.iso15415.contrast.letter))));
+            GradeValues.Add(new GradeValue("contrast", results.grading.iso15415.contrast.value, new Grade("", results.grading.iso15415.contrast.grade, V5GetGradeLetter(results.grading.iso15415.contrast.letter))));
 
-            GradeValues.Add(new GradeValue("modulation", results.grading.iso15415.modulation.value, new Grade("modulation", results.grading.iso15415.modulation.grade, V5GetGradeLetter(results.grading.iso15415.modulation.letter))));
+            GradeValues.Add(new GradeValue("modulation", results.grading.iso15415.modulation.value, new Grade("", results.grading.iso15415.modulation.grade, V5GetGradeLetter(results.grading.iso15415.modulation.letter))));
 
-            GradeValues.Add(new GradeValue("reflectanceMargin", results.grading.iso15415.reflectanceMargin.value, new Grade("reflectanceMargin", results.grading.iso15415.reflectanceMargin.grade, V5GetGradeLetter(results.grading.iso15415.reflectanceMargin.letter))));
+            GradeValues.Add(new GradeValue("reflectanceMargin", results.grading.iso15415.reflectanceMargin.value, new Grade("", results.grading.iso15415.reflectanceMargin.grade, V5GetGradeLetter(results.grading.iso15415.reflectanceMargin.letter))));
 
             GradeValues.Add(new GradeValue("axialNonUniformity", results.grading.iso15415.axialNonUniformity.value, new Grade("axialNonUniformity", results.grading.iso15415.axialNonUniformity.grade, V5GetGradeLetter(results.grading.iso15415.axialNonUniformity.letter))));
 
-            GradeValues.Add(new GradeValue("gridNonUniformity", results.grading.iso15415.gridNonUniformity.value, new Grade("gridNonUniformity", results.grading.iso15415.gridNonUniformity.grade, V5GetGradeLetter(results.grading.iso15415.gridNonUniformity.letter))));
+            GradeValues.Add(new GradeValue("gridNonUniformity", results.grading.iso15415.gridNonUniformity.value, new Grade("", results.grading.iso15415.gridNonUniformity.grade, V5GetGradeLetter(results.grading.iso15415.gridNonUniformity.letter))));
 
-            GradeValues.Add(new GradeValue("unusedECC", results.grading.iso15415.unusedECC.value, new Grade("unusedECC", results.grading.iso15415.unusedECC.grade, V5GetGradeLetter(results.grading.iso15415.unusedECC.letter))));
+            GradeValues.Add(new GradeValue("unusedECC", results.grading.iso15415.unusedECC.value, new Grade("", results.grading.iso15415.unusedECC.grade, V5GetGradeLetter(results.grading.iso15415.unusedECC.letter))));
 
-            GradeValues.Add(new GradeValue("fixedPatternDamage", results.grading.iso15415.fixedPatternDamage.value, new Grade("fixedPatternDamage", results.grading.iso15415.fixedPatternDamage.grade, V5GetGradeLetter(results.grading.iso15415.fixedPatternDamage.letter))));
+            GradeValues.Add(new GradeValue("fixedPatternDamage", results.grading.iso15415.fixedPatternDamage.value, new Grade("", results.grading.iso15415.fixedPatternDamage.grade, V5GetGradeLetter(results.grading.iso15415.fixedPatternDamage.letter))));
 
         }
         else if (SymbolType == "verify1D" && results.grading.iso15416 is { overall: not null })
         {
             IsNotEmpty = true;
 
-            GradeValues.Add(new GradeValue("decode", results.grading.iso15416.decode.value, new Grade("decode", results.grading.iso15416.decode.grade, V5GetGradeLetter(results.grading.iso15416.decode.letter))));
+            GradeValues.Add(new GradeValue("decode", results.grading.iso15416.decode.value, new Grade("", results.grading.iso15416.decode.grade, V5GetGradeLetter(results.grading.iso15416.decode.letter))));
 
-            GradeValues.Add(new GradeValue("symbolContrast", results.grading.iso15416.symbolContrast.value, new Grade("symbolContrast", results.grading.iso15416.symbolContrast.grade, V5GetGradeLetter(results.grading.iso15416.symbolContrast.letter))));
+            GradeValues.Add(new GradeValue("symbolContrast", results.grading.iso15416.symbolContrast.value, new Grade("", results.grading.iso15416.symbolContrast.grade, V5GetGradeLetter(results.grading.iso15416.symbolContrast.letter))));
 
-            GradeValues.Add(new GradeValue("minimumEdgeContrast", results.grading.iso15416.minimumEdgeContrast.value, new Grade("minimumEdgeContrast", results.grading.iso15416.minimumEdgeContrast.grade, V5GetGradeLetter(results.grading.iso15416.minimumEdgeContrast.letter))));
+            GradeValues.Add(new GradeValue("minimumEdgeContrast", results.grading.iso15416.minimumEdgeContrast.value, new Grade("", results.grading.iso15416.minimumEdgeContrast.grade, V5GetGradeLetter(results.grading.iso15416.minimumEdgeContrast.letter))));
 
-            GradeValues.Add(new GradeValue("modulation", results.grading.iso15416.modulation.value, new Grade("modulation", results.grading.iso15416.modulation.grade, V5GetGradeLetter(results.grading.iso15416.modulation.letter))));
+            GradeValues.Add(new GradeValue("modulation", results.grading.iso15416.modulation.value, new Grade("", results.grading.iso15416.modulation.grade, V5GetGradeLetter(results.grading.iso15416.modulation.letter))));
 
-            GradeValues.Add(new GradeValue("defects", results.grading.iso15416.defects.value, new Grade("defects", results.grading.iso15416.defects.grade, V5GetGradeLetter(results.grading.iso15416.defects.letter))));
+            GradeValues.Add(new GradeValue("defects", results.grading.iso15416.defects.value, new Grade("", results.grading.iso15416.defects.grade, V5GetGradeLetter(results.grading.iso15416.defects.letter))));
 
-            GradeValues.Add(new GradeValue("decodability", results.grading.iso15416.decodability.value, new Grade("decodability", results.grading.iso15416.decodability.grade, V5GetGradeLetter(results.grading.iso15416.decodability.letter))));
+            GradeValues.Add(new GradeValue("decodability", results.grading.iso15416.decodability.value, new Grade("", results.grading.iso15416.decodability.grade, V5GetGradeLetter(results.grading.iso15416.decodability.letter))));
 
-            GradeValues.Add(new GradeValue("minimumReflectance", results.grading.iso15416.minimumReflectance.value, new Grade("minimumReflectance", results.grading.iso15416.minimumReflectance.grade, V5GetGradeLetter(results.grading.iso15416.minimumReflectance.letter))));
+            GradeValues.Add(new GradeValue("minimumReflectance", results.grading.iso15416.minimumReflectance.value, new Grade("", results.grading.iso15416.minimumReflectance.grade, V5GetGradeLetter(results.grading.iso15416.minimumReflectance.letter))));
 
             ValueResults.Add(new ValueResult("edgeDetermination", results.grading.iso15416.edgeDetermination.value, results.grading.iso15416.edgeDetermination.letter == 65 ? "PASS" : "FAIL"));
 
             ValueResults.Add(new ValueResult("quietZone", results.grading.iso15416.quietZone.value, results.grading.iso15416.quietZone.letter == 65 ? "PASS" : "FAIL"));
+        }
+        if (SymbolType == "verify2D" && results.grading.standard == "iso29158")
+        {
+            IsNotEmpty = true;
+
+            var spl = results.grading.gradeReport.Split(' ');
+
+            GradeValues.Add(new GradeValue("decode", -1, new Grade("", double.Parse(spl[1]), GetLetter(double.Parse(spl[1])))));
+            
+            GradeValues.Add(new GradeValue("axialNonUniformity", -1, new Grade("", double.Parse(spl[2]), GetLetter(double.Parse(spl[2])))));
+
+            GradeValues.Add(new GradeValue("cellContrast", -1, new Grade("", double.Parse(spl[3]), GetLetter(double.Parse(spl[3])))));
+           
+            GradeValues.Add(new GradeValue("cellModulation", -1, new Grade("", double.Parse(spl[4]), GetLetter(double.Parse(spl[4])))));
+
+            GradeValues.Add(new GradeValue("fixedPatternDamage", -1, new Grade("", double.Parse(spl[5]), GetLetter(double.Parse(spl[5])))));
+
+            GradeValues.Add(new GradeValue("gridNonUniformity", -1, new Grade("", double.Parse(spl[6]), GetLetter(double.Parse(spl[6])))));
+
+            //GradeValues.Add(new GradeValue("minimumReflectance", -1, new Grade("", double.Parse(spl[7]), GetLetter(double.Parse(spl[7])))));
+
+            GradeValues.Add(new GradeValue("unusedECC", -1, new Grade("", double.Parse(spl[8]), GetLetter(double.Parse(spl[8])))));
+
         }
 
         if (SymbolType == "verify2D")
@@ -299,6 +322,8 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
         70 => "F",
         _ => throw new System.NotImplementedException(),
     };
+
+
     private static string V5GetSymbolType(ResultsAlt.Decodedata results)
     {
         if (results.Code128 != null)
@@ -309,4 +334,17 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
             return "verify2D";
         else return results.PDF417 != null ? "verify1D" : results.UPC != null ? "verify1D" : "Unknown";
     }
+
+    private static string GetLetter(double value) =>
+value == 4.0f
+? "A"
+: value is <= 3.9f and >= 3.0f
+? "B"
+: value is <= 2.9f and >= 2.0f
+? "C"
+: value is <= 1.9f and >= 1.0f
+? "D"
+: value is <= 0.9f and >= 0.0f
+? "F"
+: "F";
 }

@@ -26,6 +26,14 @@ public class Sector : ISector
                     return false;
                 case StandardsTypes.Unsupported:
                     return true;
+                case StandardsTypes.ISO29158:
+                    {
+                        return Report.Standard switch
+                        {
+                            StandardsTypes.ISO29158 => false,
+                            _ => true,
+                        };
+                    }
                 case StandardsTypes.ISO15415_15416:
                     {
                         return Report.Standard switch
@@ -97,6 +105,7 @@ public class Sector : ISector
         {
             "iso15416" => StandardsTypes.ISO15416,
             "iso15415" => StandardsTypes.ISO15415,
+            "iso29158" => StandardsTypes.ISO29158,
             _ => StandardsTypes.Unsupported,
         } : StandardsTypes.None;
 }

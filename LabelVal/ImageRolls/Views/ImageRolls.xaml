@@ -323,6 +323,9 @@
                                     <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.OCR_OCV}">
                                         <Setter Property="Source" Value="/Assets/Images/OCR.png"/>
                                     </DataTrigger>
+                                    <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO29158}">
+                                        <Setter Property="Source" Value="/Assets/Images/dpm.png"/>
+                                    </DataTrigger>
                                     <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.None}">
                                         <Setter Property="Source" Value="/Assets/Images/all-codes.png"/>
                                     </DataTrigger>

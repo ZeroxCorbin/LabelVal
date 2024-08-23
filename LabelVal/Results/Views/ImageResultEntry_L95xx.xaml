@@ -267,29 +267,32 @@
                                 </DockPanel>
                             </md:Card>
 
-                            <sectors:SectorDetails DataContext="{Binding L95xxFocusedStoredSector}">
-                                <sectors:SectorDetails.Style>
-                                    <Style TargetType="sectors:SectorDetails">
-                                        <Setter Property="Width" Value="200"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding DataContext.ImagesMaxHeight, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="400">
-                                                <Setter Property="MaxWidth" Value="400"/>
-                                                <Setter Property="Width" Value="auto"/>
-                                            </DataTrigger>
+                            <!--Keep this Dockapnel. It is used for Saving and Coping the SectorDetails Visual.-->
+                            <DockPanel>
+                                <sectors:SectorDetails DataContext="{Binding L95xxFocusedStoredSector}">
+                                    <sectors:SectorDetails.Style>
+                                        <Style TargetType="sectors:SectorDetails">
+                                            <Setter Property="Width" Value="200"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding DataContext.ImagesMaxHeight, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="400">
+                                                    <Setter Property="MaxWidth" Value="400"/>
+                                                    <Setter Property="Width" Value="auto"/>
+                                                </DataTrigger>
 
-                                            <DataTrigger Binding="{Binding DataContext.ImagesMaxHeight, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="300">
-                                                <Setter Property="MaxWidth" Value="400"/>
-                                                <Setter Property="Width" Value="auto"/>
-                                            </DataTrigger>
+                                                <DataTrigger Binding="{Binding DataContext.ImagesMaxHeight, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="300">
+                                                    <Setter Property="MaxWidth" Value="400"/>
+                                                    <Setter Property="Width" Value="auto"/>
+                                                </DataTrigger>
 
-                                            <DataTrigger Binding="{Binding DataContext.DualSectorColumns, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="True">
-                                                <Setter Property="MaxWidth" Value="400"/>
-                                                <Setter Property="Width" Value="auto"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </sectors:SectorDetails.Style>
-                            </sectors:SectorDetails>
+                                                <DataTrigger Binding="{Binding DataContext.DualSectorColumns, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="True">
+                                                    <Setter Property="MaxWidth" Value="400"/>
+                                                    <Setter Property="Width" Value="auto"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </sectors:SectorDetails.Style>
+                                </sectors:SectorDetails>
+                            </DockPanel>
                         </DockPanel>
                     </Grid>
                 </ScrollViewer>
@@ -539,29 +542,32 @@
                                 </DockPanel>
                             </md:Card>
 
-                            <sectors:SectorDetails DataContext="{Binding L95xxFocusedCurrentSector}">
-                                <sectors:SectorDetails.Style>
-                                    <Style TargetType="sectors:SectorDetails">
-                                        <Setter Property="Width" Value="200"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding DataContext.ImagesMaxHeight, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="400">
-                                                <Setter Property="MaxWidth" Value="400"/>
-                                                <Setter Property="Width" Value="auto"/>
-                                            </DataTrigger>
+                            <!--Keep this Dockapnel. It is used for Saving and Coping the SectorDetails Visual.-->
+                            <DockPanel>
+                                <sectors:SectorDetails DataContext="{Binding L95xxFocusedCurrentSector}">
+                                    <sectors:SectorDetails.Style>
+                                        <Style TargetType="sectors:SectorDetails">
+                                            <Setter Property="Width" Value="200"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding DataContext.ImagesMaxHeight, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="400">
+                                                    <Setter Property="MaxWidth" Value="400"/>
+                                                    <Setter Property="Width" Value="auto"/>
+                                                </DataTrigger>
 
-                                            <DataTrigger Binding="{Binding DataContext.ImagesMaxHeight, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="300">
-                                                <Setter Property="MaxWidth" Value="400"/>
-                                                <Setter Property="Width" Value="auto"/>
-                                            </DataTrigger>
+                                                <DataTrigger Binding="{Binding DataContext.ImagesMaxHeight, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="300">
+                                                    <Setter Property="MaxWidth" Value="400"/>
+                                                    <Setter Property="Width" Value="auto"/>
+                                                </DataTrigger>
 
-                                            <DataTrigger Binding="{Binding DataContext.DualSectorColumns, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="True">
-                                                <Setter Property="MaxWidth" Value="400"/>
-                                                <Setter Property="Width" Value="auto"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </sectors:SectorDetails.Style>
-                            </sectors:SectorDetails>
+                                                <DataTrigger Binding="{Binding DataContext.DualSectorColumns, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="True">
+                                                    <Setter Property="MaxWidth" Value="400"/>
+                                                    <Setter Property="Width" Value="auto"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </sectors:SectorDetails.Style>
+                                </sectors:SectorDetails>
+                            </DockPanel>
                         </DockPanel>
                     </Grid>
                 </ScrollViewer>

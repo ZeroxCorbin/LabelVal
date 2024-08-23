@@ -103,9 +103,16 @@ public class Report : IReport
 
                 }
             }
-            else if (v5.grading.standard == "iso15418")
+            else if (v5.grading.standard == "iso29158")
             {
-                if (v5.grading.iso15415 == null)
+                if (v5.grading.format == "grade")
+                {
+
+                    OverallGradeString = "";
+                    OverallGradeValue = double.Parse(v5.grading.grade);
+                    OverallGradeLetter = GetLetter(float.Parse(v5.grading.grade));
+                }
+                else
                 {
                     OverallGradeString = "No Grade";
                     if (v5.read)
@@ -118,16 +125,6 @@ public class Report : IReport
                         OverallGradeValue = 0;
                         OverallGradeLetter = "F";
                     }
-                }
-                else
-                {
-                    if (v5.grading.iso15415.overall != null)
-                    {
-                        OverallGradeString = $"{v5.grading.iso15415.overall.grade:f1}/00/600";
-                        OverallGradeValue = v5.grading.iso15415.overall.grade;
-                        OverallGradeLetter = V5GetLetter(v5.grading.iso15415.overall.letter);
-                    }
-
                 }
             }
             else
@@ -195,4 +192,18 @@ public class Report : IReport
             70 => "F",
             _ => throw new NotImplementedException(),
         };
+
+    private static string GetLetter(float value) =>
+    value == 4.0f
+    ? "A"
+    : value is <= 3.9f and >= 3.0f
+    ? "B"
+    : value is <= 2.9f and >= 2.0f
+    ? "C"
+    : value is <= 1.9f and >= 1.0f
+    ? "D"
+    : value is <= 0.9f and >= 0.0f
+    ? "F"
+    : "F";
+
 }
