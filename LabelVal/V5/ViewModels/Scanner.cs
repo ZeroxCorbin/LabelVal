@@ -320,6 +320,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             {
                 SelectedCamera = AvailableCameras.FirstOrDefault((e) => Controller.SysInfo.response.data.hwal.lens.lensName.StartsWith(e.FocalLength.ToString()) && Controller.SysInfo.response.data.hwal.sensor.description.StartsWith(e.Sensor.PixelCount.ToString()));
             }
+
             if (IsSimulator)
             {
                 SelectedAcquisitionType = "File";
@@ -333,6 +334,8 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             JobName = "";
             JobName = Controller.Config.response.data.job.name;
         }
+        else
+            LogError("V5 Config update but Config is invalid.");
     }
 
     //private void RunController_StateChanged(RunController.States state, string msg)
