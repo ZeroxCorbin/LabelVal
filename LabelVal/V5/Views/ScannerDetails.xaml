@@ -11,26 +11,73 @@
              d:DataContext="{d:DesignInstance Type=ViewModels:ScannerDetails}"
              mc:Ignorable="d">
     <ScrollViewer>
-        <GroupBox Margin="3" Padding="3"
-                          Style="{StaticResource MaterialDesignCardGroupBox}"
-                    md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                    md:ColorZoneAssist.Mode="Custom">
 
-            <GroupBox.Header>
-                <DockPanel Margin="-5">
-                    <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="2,1">
-                        <TextBlock Text="Scanner JSON" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
-                    </md:Card>
+        <DockPanel VerticalAlignment="Top" Margin="3,3,0,0">
 
-                    <Button Click="btnCloseDetails" Style="{StaticResource GroupHeaderCirlceButton}" ToolTip="Close" Margin="6,0,3,0" HorizontalAlignment="Right">
-                        <iconPacks:Material Kind="Close" Height="16" Width="16"/>
-                    </Button>
+            <md:Card DockPanel.Dock="Top" Height="48" Margin="3,3,0,0" 
+                 Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+
+                <DockPanel>
+
+                    <DockPanel Width="48" Background="{DynamicResource V5_Brush}">
+                        <Image Width="36" Height="36" Source="/Assets/Images/v5-white-outline.ico" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    </DockPanel>
+
+                    <Border Style="{StaticResource imageBar}"/>
+
+                    <DockPanel>
+                        <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top">
+
+                            <DockPanel HorizontalAlignment="Left">
+                                <DockPanel.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="{DynamicResource MahApps.Colors.Accent3}" Offset="0"/>
+                                        <GradientStop Color="{DynamicResource MahApps.Colors.HamburgerMenu}" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </DockPanel.Background>
+
+                                <TextBlock DockPanel.Dock="Top" Margin="6,0,0,3" Text="V5 Cameras" Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"/>
+
+                                <Border Style="{StaticResource imageBarHor}"/>
+                            </DockPanel>
+
+                            <Button Click="btnCloseDetails" ToolTip="Close" Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" 
+                                HorizontalAlignment="Right" Padding="8,0"
+                                Content="{iconPacks:Material Kind=Close}"/>
+
+                        </DockPanel>
+
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Top" Margin="6,0,0,3">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock" BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}">
+                                        <Setter Property="Text">
+                                            <Setter.Value>
+                                                <MultiBinding StringFormat="{}{0}:{1}">
+                                                    <Binding Path="SelectedScanner.MAC"/>
+                                                    <Binding Path="SystemPort"/>
+                                                </MultiBinding>
+
+                                            </Setter.Value>
+                                        </Setter>
+
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </DockPanel>
+                    </DockPanel>
                 </DockPanel>
-            </GroupBox.Header>
 
+            </md:Card>
+            
             <StackPanel>
-                <json:JsonViewer JSON="{Binding SelectedScanner}" HideButtons="True" Title="Product" />
+                <json:JsonViewer JSON="{Binding SelectedScanner.Controller.SysInfoJSON}" ShowSaveButton="True" Title="System Info" />
+                <json:JsonViewer JSON="{Binding SelectedScanner.Controller.BootConfigJSON}" ShowSaveButton="True" Title="Boot Config" />
+                <json:JsonViewer JSON="{Binding SelectedScanner.Controller.ConfigJSON}" ShowSaveButton="True" Title="Config" />
             </StackPanel>
-        </GroupBox>
+            
+        </DockPanel>
     </ScrollViewer>
 </UserControl>

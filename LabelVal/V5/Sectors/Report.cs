@@ -1,8 +1,6 @@
 ﻿using LabelVal.Sectors.Interfaces;
 using System;
 using System.Linq;
-using System.Windows;
-using System.Windows.Media;
 
 namespace LabelVal.V5.Sectors;
 
@@ -50,32 +48,8 @@ public class Report : IReport
         SymbolType = V5GetSymbology(v5.type);
         DecodeText = v5.dataUTF8;
 
-        //// Create the Rect
-        //Rect rect = new(v5.x - (v5.width / 2), v5.y - (v5.height / 2), v5.width, v5.height);
-
-        //// Create the RotateTransform
-        //RotateTransform rotateTransform = new(v5.angleDeg, v5.x, v5.y);
-
-        //// Apply the rotation to the Rect
-        //Point topLeft = rotateTransform.Transform(new Point(rect.Left, rect.Top));
-        //Point topRight = rotateTransform.Transform(new Point(rect.Right, rect.Top));
-        //Point bottomLeft = rotateTransform.Transform(new Point(rect.Left, rect.Bottom));
-        //Point bottomRight = rotateTransform.Transform(new Point(rect.Right, rect.Bottom));
-
-        //// Calculate the new bounding box
-        //double newLeft = Math.Min(Math.Min(topLeft.X, topRight.X), Math.Min(bottomLeft.X, bottomRight.X));
-        //double newTop = Math.Min(Math.Min(topLeft.Y, topRight.Y), Math.Min(bottomLeft.Y, bottomRight.Y));
-        //double newRight = Math.Max(Math.Max(topLeft.X, topRight.X), Math.Max(bottomLeft.X, bottomRight.X));
-        //double newBottom = Math.Max(Math.Max(topLeft.Y, topRight.Y), Math.Max(bottomLeft.Y, bottomRight.Y));
-
-        //// Update the properties
-        //Top = newTop;
-        //Left = newLeft;
-        //Width = newRight - newLeft;
-        //Height = newBottom - newTop;
-        //AngleDeg = v5.angleDeg;
-        if(v5.boundingBox != null) 
-        (Top, Left, Width, Height) = ConvertBoundingBox(v5.boundingBox);
+        if (v5.boundingBox != null)
+            (Top, Left, Width, Height) = ConvertBoundingBox(v5.boundingBox);
 
         if (v5.grading != null)
         {
@@ -120,7 +94,34 @@ public class Report : IReport
                 }
                 else
                 {
-                    if(v5.grading.iso15415.overall != null)
+                    if (v5.grading.iso15415.overall != null)
+                    {
+                        OverallGradeString = $"{v5.grading.iso15415.overall.grade:f1}/00/600";
+                        OverallGradeValue = v5.grading.iso15415.overall.grade;
+                        OverallGradeLetter = V5GetLetter(v5.grading.iso15415.overall.letter);
+                    }
+
+                }
+            }
+            else if (v5.grading.standard == "iso15418")
+            {
+                if (v5.grading.iso15415 == null)
+                {
+                    OverallGradeString = "No Grade";
+                    if (v5.read)
+                    {
+                        OverallGradeValue = 0;
+                        OverallGradeLetter = "A";
+                    }
+                    else
+                    {
+                        OverallGradeValue = 0;
+                        OverallGradeLetter = "F";
+                    }
+                }
+                else
+                {
+                    if (v5.grading.iso15415.overall != null)
                     {
                         OverallGradeString = $"{v5.grading.iso15415.overall.grade:f1}/00/600";
                         OverallGradeValue = v5.grading.iso15415.overall.grade;

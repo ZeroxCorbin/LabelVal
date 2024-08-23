@@ -121,12 +121,12 @@
                                     </Style.Triggers>
                                 </Style>
                             </Button.Style>
-                        </Button>
+                        </Button>-->
 
                         <Button Click="btnShowDetails_Click" HorizontalAlignment="Right" Width="48" 
                                 Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                                 Content="{iconPacks:Material Kind=CodeJson, Width=24, Height=24}"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>-->
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
 
                     </DockPanel>
                 </DockPanel>

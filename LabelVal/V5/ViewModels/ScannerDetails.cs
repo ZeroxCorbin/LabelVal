@@ -13,24 +13,24 @@ public partial class ScannerDetails : ObservableRecipient, IRecipient<PropertyCh
     public ScannerDetails() => IsActive = true;
     public void Receive(PropertyChangedMessage<Scanner> message)
     {
-        if (SelectedScanner != null)
-            SelectedScanner.PropertyChanged -= SelectedScanner_PropertyChanged;
+        //if (SelectedScanner != null)
+        //    SelectedScanner.PropertyChanged -= SelectedScanner_PropertyChanged;
 
         SelectedScanner = message.NewValue;
 
-        if (SelectedScanner != null)
-            SelectedScanner.PropertyChanged += SelectedScanner_PropertyChanged;
+        //if (SelectedScanner != null)
+        //    SelectedScanner.PropertyChanged += SelectedScanner_PropertyChanged;
     }
 
-    private void SelectedScanner_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-    {
+    //private void SelectedScanner_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    //{
 
-        if (e.PropertyName == "SelectedCamera")
-        {
-            var tmp = SelectedScanner as Scanner;
-            SelectedScanner = null;
-            SelectedScanner = tmp;
-        }
+    //    if (e.PropertyName == "SelectedCamera")
+    //    {
+    //        var tmp = SelectedScanner as Scanner;
+    //        SelectedScanner = null;
+    //        SelectedScanner = tmp;
+    //    }
 
-    }
+    //}
 }

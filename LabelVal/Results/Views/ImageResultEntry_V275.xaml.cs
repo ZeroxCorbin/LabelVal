@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using static V5_REST_Lib.Cameras.CameraDetails;
 
 namespace LabelVal.Results.Views;
 /// <summary>
@@ -179,16 +180,14 @@ public partial class ImageResultEntry_V275 : UserControl
 
     private void btnSaveImage_Click(object sender, RoutedEventArgs e)
     {
-        Sector sect = Utilities.VisualTreeHelp.GetVisualParent<Sector>((Button)sender);
-
-        if (sect != null)
+        if (sectorDetails != null)
         {
             string path;
-            if ((path = Utilities.FileUtilities.SaveFileDialog("plot", "PNG|*.png", "Save sector details.")) != "")
+            if ((path = Utilities.FileUtilities.SaveFileDialog($"{((Sectors.Interfaces.ISector) sectorDetails.DataContext).Template.Username}", "PNG|*.png", "Save sector details.")) != "")
             {
                 try
                 {
-                    SaveToPng(sect, path);
+                    SaveToPng(sectorDetails, path);
                 }
                 catch { }
             }
@@ -196,10 +195,8 @@ public partial class ImageResultEntry_V275 : UserControl
     }
     private void btnCopyImage_Click(object sender, RoutedEventArgs e)
     {
-        Sector sect = Utilities.VisualTreeHelp.GetVisualParent<Sector>((Button)sender);
-
-        if (sect != null)
-            CopyToClipboard(sect);
+        if (sectorDetails != null)
+            CopyToClipboard(sectorDetails);
 
     }
     public void SaveToPng(FrameworkElement visual, string fileName)

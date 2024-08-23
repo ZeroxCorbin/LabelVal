@@ -81,11 +81,11 @@
                             Content="{iconPacks:Modern Kind=Browser, Width=24, Height=24}"
                             Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
 
-                    <!--<Button Click="btnShowDetails_Click" Style="{StaticResource MahApps.Styles.Button.Hamburger}" Width="48"
+                    <Button Click="btnShowDetails_Click" Style="{StaticResource MahApps.Styles.Button.Hamburger}" Width="48"
                             HorizontalAlignment="Right"
                             ToolTip="{loc:Loc Details}"
                             Content="{iconPacks:Material Kind=CodeJson, Width=24, Height=24}"
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>-->
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
 
                 </DockPanel>
             </DockPanel>

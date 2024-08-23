@@ -69,16 +69,12 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
     // private TestViewModel TestViewModel { get; }
 
+    [ObservableProperty] private bool isConnected;
+    [ObservableProperty] private bool isSupvWSConnected;
     [ObservableProperty] private bool isEventWSConnected;
-    partial void OnIsEventWSConnectedChanged(bool value) => OnPropertyChanged(nameof(IsConnected));
-
     [ObservableProperty] private bool isImageWSConnected;
-    partial void OnIsImageWSConnectedChanged(bool value) => OnPropertyChanged(nameof(IsConnected));
-
     [ObservableProperty] private bool isResultWSConnected;
-    partial void OnIsResultWSConnectedChanged(bool value) => OnPropertyChanged(nameof(IsConnected));
 
-    public bool IsConnected => IsEventWSConnected || IsImageWSConnected || IsResultWSConnected;
 
     [ObservableProperty] private string eventMessages;
     [ObservableProperty] private string explicitMessages;
@@ -446,11 +442,13 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
         return img;
     }
-    private void ScannerController_StateChanged(bool eventWS, bool resultsWS, bool imageWS)
+    private void ScannerController_StateChanged(bool isConnected)
     {
-        IsEventWSConnected = eventWS;
-        IsResultWSConnected = resultsWS;
-        IsImageWSConnected = imageWS;
+        IsConnected = isConnected;
+        IsSupvWSConnected = Controller.IsSupvWSConnected;
+        IsEventWSConnected = Controller.IsEventWSConnected;
+        IsResultWSConnected = Controller.IsResultWSConnected;
+        IsImageWSConnected = Controller.IsImageWSConnected;
     }
 
     private void CheckOverlay()

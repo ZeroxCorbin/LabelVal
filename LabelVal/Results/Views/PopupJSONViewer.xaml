@@ -13,7 +13,7 @@
         <DockPanel>
             
             <md:Card>
-                <json:JsonViewer x:Name="Viewer1" MinWidth="300"/>
+                <json:JsonViewer x:Name="Viewer1" ShowSaveButton="True" MinWidth="300"/>
             </md:Card>
             
             <md:Card>
@@ -28,7 +28,7 @@
                     </Style>
                 </md:Card.Style>
                 
-                <json:JsonViewer x:Name="Viewer2" MinWidth="300"/>
+                <json:JsonViewer x:Name="Viewer2" ShowSaveButton="True" MinWidth="300"/>
             </md:Card>
             
         </DockPanel>
