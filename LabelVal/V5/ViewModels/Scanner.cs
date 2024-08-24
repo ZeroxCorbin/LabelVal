@@ -26,33 +26,7 @@ namespace LabelVal.V5.ViewModels;
 public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMessage<ImageRollEntry>>
 {
     [JsonProperty] public long ID { get; set; } = DateTime.Now.Ticks;
-
-    public V5_REST_Lib.Controller Controller { get; } = new();
-
-    [ObservableProperty][property: JsonProperty] private static string host;
-    partial void OnHostChanged(string value) { Controller.Host = value; }
-
-    [ObservableProperty][property: JsonProperty] private static int port;
-    partial void OnPortChanged(int value) { Controller.Port = value; }
-
-    [ObservableProperty][property: JsonProperty] private bool fullResImages = true;
-
-    [ObservableProperty][property: JsonProperty] private static string fTPUsername;
-    partial void OnFTPUsernameChanged(string value) { Controller.FTPClient.Username = value; }
-
-    [ObservableProperty][property: JsonProperty] private static string fTPPassword;
-    partial void OnFTPPasswordChanged(string value) { Controller.FTPClient.Password = value; }
-
-    [ObservableProperty][property: JsonProperty] private static string fTPHost;
-    partial void OnFTPHostChanged(string value) { Controller.FTPClient.Host = value; }
-
-    [ObservableProperty][property: JsonProperty] private static int fTPPort;
-    partial void OnFTPPortChanged(int value) { Controller.FTPClient.Port = value; }
-
-    [ObservableProperty][property: JsonProperty] private static string fTPRemotePath;
-    partial void OnFTPRemotePathChanged(string value) { Controller.FTPClient.RemotePath = value; }
-
-    [ObservableProperty] private bool isSimulator;
+    [JsonProperty] public V5_REST_Lib.Controller Controller { get; } = new();
 
     [JsonProperty]
     public int RepeatedTriggerDelay
@@ -66,15 +40,6 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         }
     }
     private int repeatedTriggerDelay = 50;
-
-    // private TestViewModel TestViewModel { get; }
-
-    [ObservableProperty] private bool isConnected;
-    [ObservableProperty] private bool isSupvWSConnected;
-    [ObservableProperty] private bool isEventWSConnected;
-    [ObservableProperty] private bool isImageWSConnected;
-    [ObservableProperty] private bool isResultWSConnected;
-
 
     [ObservableProperty] private string eventMessages;
     [ObservableProperty] private string explicitMessages;
@@ -91,21 +56,21 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     [ObservableProperty][property: JsonProperty] private CameraDetails selectedCamera;
     partial void OnSelectedCameraChanged(CameraDetails value) => _ = App.Current.Dispatcher.BeginInvoke(() =>
     {
-        if (IsSimulator)
+        if (Controller.IsSimulator)
             ImageFocusRegionOverlay = null;
         else
             ImageFocusRegionOverlay = CreateFocusRegionOverlay();
     });
+
 
     [ObservableProperty][property: JsonProperty] private double quickSet_ImagePercent = 0.33d;
     partial void OnQuickSet_ImagePercentChanged(double value) => _ = App.Current.Dispatcher.BeginInvoke(() =>
     {
-        if (IsSimulator)
+        if (Controller.IsSimulator)
             ImageFocusRegionOverlay = null;
         else
             ImageFocusRegionOverlay = CreateFocusRegionOverlay();
     });
-
     private QuickSet_Photometry QuickSet_Photometry
     {
         get
@@ -137,6 +102,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             return new QuickSet_Focus((float)x, (float)y, (float)width, (float)height);
         }
     }
+
 
     [ObservableProperty] private V5_REST_Lib.Controller.CameraModes scannerMode;
 
@@ -269,23 +235,12 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         Controller.PropertyChanged += Controller_PropertyChanged;
         Controller.CameraModeChanged += ScannerController_CameraModeChanged;
 
-        Host = Controller.Host;
-        Port = Controller.Port;
-
-        FTPUsername = Controller.FTPClient.Username;
-        FTPPassword = Controller.FTPClient.Password;
-        FTPHost = Controller.FTPClient.Host;
-        FTPPort = Controller.FTPClient.Port;
-        FTPRemotePath = Controller.FTPClient.RemotePath;
-
         IsActive = true;
     }
 
     private void Controller_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == "IsConnected")
-            IsConnected = Controller.IsConnected;
-        else if(e.PropertyName == "Config")
+        if(e.PropertyName == "Config")
             ScannerController_ConfigUpdate();
         else if (e.PropertyName == "SysInfo")
             ScannerController_SysInfoUpdate();
@@ -293,16 +248,6 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             ScannerController_ImageUpdate(Controller.Image);
         else if (e.PropertyName == "Report")
             ScannerController_ReportUpdate(Controller.Report);
-        else if (e.PropertyName == "SupvWsState")
-            IsSupvWSConnected = Controller.SupvWsState == System.Net.WebSockets.WebSocketState.Open;
-        else if (e.PropertyName == "EventWsState")
-            IsEventWSConnected = Controller.EventWsState == System.Net.WebSockets.WebSocketState.Open;
-        else if (e.PropertyName == "ResultWsState")
-            IsResultWSConnected = Controller.ResultWsState == System.Net.WebSockets.WebSocketState.Open;
-        else if (e.PropertyName == "ImageWsState")
-            IsImageWSConnected = Controller.ImageWsState == System.Net.WebSockets.WebSocketState.Open;
-        else if (e.PropertyName == "IsConnected")
-            IsConnected = Controller.IsConnected;
     }
     public void Receive(PropertyChangedMessage<ImageRollEntry> message) => SelectedImageRoll = message.NewValue;
 
@@ -310,7 +255,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     {
         if (Controller.IsConfigValid)
         {
-            IsSimulator = Controller.Config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource != null;
+            Controller.IsSimulator = Controller.Config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource != null;
 
             V5_REST_Lib.Commands.Results meta = await Controller.Commands.GetMeta();
             if (meta.OK)
@@ -334,7 +279,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
                 });
             }
 
-            if (IsSimulator)
+            if (Controller.IsSimulator)
             {
                 SelectedAcquisitionType = "File";
                 SelectedDirectory = Controller.Config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource.directory;
@@ -444,7 +389,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             return;
         }
 
-        if (FullResImages)
+        if (Controller.FullResImages)
         {
             try
             {
@@ -482,20 +427,12 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
         return img;
     }
-    private void ScannerController_StateChanged()
-    {
-        IsConnected = Controller.IsConnected;
-        IsSupvWSConnected = Controller.SupvWsState == System.Net.WebSockets.WebSocketState.Open;
-        IsEventWSConnected = Controller.EventWsState == System.Net.WebSockets.WebSocketState.Open;
-        IsResultWSConnected = Controller.ResultWsState == System.Net.WebSockets.WebSocketState.Open;
-        IsImageWSConnected = Controller.ImageWsState == System.Net.WebSockets.WebSocketState.Open;
-    }
 
     private void CheckOverlay()
     {
         ImageOverlay = Results.Count > 0 ? V5CreateSectorsImageOverlay(ResultsJObject) : null;
 
-        ImageFocusRegionOverlay = IsSimulator ? null : CreateFocusRegionOverlay();
+        ImageFocusRegionOverlay = Controller.IsSimulator ? null : CreateFocusRegionOverlay();
     }
     private DrawingImage CreateFocusRegionOverlay()
     {
@@ -514,7 +451,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
         GeometryGroup secAreas = new();
 
-        int div = FullResImages ? 1 : 2;
+        int div = Controller.FullResImages ? 1 : 2;
 
         secAreas.Children.Add(new RectangleGeometry(
             new Rect(
@@ -542,7 +479,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
         DrawingGroup drwGroup = new();
 
-        int div = FullResImages ? 1 : 2;
+        int div = Controller.FullResImages ? 1 : 2;
 
         //Draw the image outline the same size as the stored image
         GeometryDrawing border = new()
@@ -718,7 +655,6 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     {
         Jobs = null;
         JobName = "";
-        IsSimulator = false;
     }
 
     private bool running;
@@ -760,11 +696,11 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             });
         else
         {
-            IsWaitingForFullImage = FullResImages;
+            IsWaitingForFullImage = Controller.FullResImages;
 
             if (await Controller.Trigger_Wait())
             {
-                if (FullResImages)
+                if (Controller.FullResImages)
                     await WaitForImage();
 
                 CheckOverlay();

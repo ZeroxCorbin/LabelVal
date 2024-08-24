@@ -184,7 +184,7 @@
                                     <DataTrigger Value="True" Binding="{Binding SelectedNode.IsLoggedIn_Control}">
                                         <Setter Property="IsEnabled" Value="True"/>
                                     </DataTrigger>
-                                    <DataTrigger Value="True" Binding="{Binding SelectedScanner.IsConnected}">
+                                    <DataTrigger Value="True" Binding="{Binding SelectedScanner.Controller.IsConnected}">
                                         <Setter Property="IsEnabled" Value="True"/>
                                     </DataTrigger>
                                     <DataTrigger Value="Running" Binding="{Binding QuickRunController.RunController.State}">

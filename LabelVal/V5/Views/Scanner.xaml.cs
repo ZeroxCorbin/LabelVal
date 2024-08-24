@@ -102,8 +102,8 @@ public partial class Scanner : UserControl
     private void btnOpenInBrowser_Click(object sender, RoutedEventArgs e)
     {
         string addr = Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)
-            ? $"http://{((ViewModels.Scanner)DataContext).Host}:9898"
-            : $"http://{((ViewModels.Scanner)DataContext).Host}:{((ViewModels.Scanner)DataContext).Port}";
+            ? $"http://{((ViewModels.Scanner)DataContext).Controller.Host}:9898"
+            : $"http://{((ViewModels.Scanner)DataContext).Controller.Host}:{((ViewModels.Scanner)DataContext).Controller.Port}";
 
         ProcessStartInfo ps = new(addr)
         {

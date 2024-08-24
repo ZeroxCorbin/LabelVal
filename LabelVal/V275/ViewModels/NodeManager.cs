@@ -80,13 +80,6 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
 
     [ObservableProperty] private ObservableCollection<Node> nodes = [];
 
-
-    //public bool ShowTemplateNameMismatchDialog
-    //{
-    //    get => App.Settings.GetValue($"{NodeManager.ClassName}{nameof(NodeManager.ShowTemplateNameMismatchDialog)}", true, true);
-    //    set => App.Settings.SetValue($"{NodeManager.ClassName}{nameof(NodeManager.ShowTemplateNameMismatchDialog)}", value);
-    //}
-
     [ObservableProperty] private bool isGetDevices = false;
 
     [ObservableProperty] private ImageRollEntry selectedImageRoll;

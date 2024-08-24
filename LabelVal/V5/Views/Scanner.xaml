@@ -27,7 +27,7 @@
             <Style TargetType="md:Card" BasedOn="{StaticResource {x:Type md:Card}}">
                 <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent4}"/>
                 <Style.Triggers>
-                    <DataTrigger Binding="{Binding IsSimulator}" Value="True">
+                    <DataTrigger Binding="{Binding Controller.IsSimulator}" Value="True">
                         <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}"/>
                     </DataTrigger>
                 </Style.Triggers>
@@ -50,7 +50,7 @@
                                     </Setter.Value>
                                 </Setter>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                    <DataTrigger Binding="{Binding Controller.IsConnected}" Value="True">
                                         <Setter Property="Content">
                                             <Setter.Value>
                                                 <iconPacks:Modern Kind="Disconnect"/>
@@ -108,13 +108,13 @@
                         <DockPanel>
 
                             <DockPanel DockPanel.Dock="Top" Margin="3">
-                                <TextBox Text="{Binding Host}" md:HintAssist.Hint="IP Address" MinWidth="50" Margin="3,0"  HorizontalContentAlignment="Center"
+                                <TextBox Text="{Binding Controller.Host}" md:HintAssist.Hint="IP Address" MinWidth="50" Margin="3,0"  HorizontalContentAlignment="Center"
                                         md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
                                     <TextBox.Style>
                                         <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                             <Setter Property="IsEnabled" Value="True"/>
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                                <DataTrigger Binding="{Binding Controller.IsConnected}" Value="True">
                                                     <Setter Property="IsEnabled" Value="False"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -122,13 +122,13 @@
                                     </TextBox.Style>
                                 </TextBox>
 
-                                <TextBox Text="{Binding Port}" md:HintAssist.Hint="Port" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center"
+                                <TextBox Text="{Binding Controller.Port}" md:HintAssist.Hint="Port" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center"
                                          md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
                                     <TextBox.Style>
                                         <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                             <Setter Property="IsEnabled" Value="True"/>
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                                <DataTrigger Binding="{Binding Controller.IsConnected}" Value="True">
                                                     <Setter Property="IsEnabled" Value="False"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -142,7 +142,7 @@
                                         <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                             <Setter Property="IsEnabled" Value="True"/>
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                                <DataTrigger Binding="{Binding Controller.IsConnected}" Value="True">
                                                     <Setter Property="IsEnabled" Value="False"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -158,7 +158,7 @@
                                              md:HintAssist.Hint="Trigger Delay" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left"
                                              md:TextFieldAssist.SuffixText="ms"/>
 
-                                <mah:ToggleSwitch IsOn="{Binding FullResImages}"
+                                <mah:ToggleSwitch IsOn="{Binding Controller.FullResImages}"
                                           Content="Full Res. Images"
                                           Margin="3" >
                                     <mah:ToggleSwitch.RenderTransform>
@@ -169,13 +169,13 @@
                             </DockPanel>
 
                             <DockPanel DockPanel.Dock="Top" Margin="3">
-                                <TextBox Text="{Binding FTPHost}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center"
+                                <TextBox Text="{Binding Controller.FTPClient.Host}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center"
                                             md:HintAssist.Hint="SFTP IP Address" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
                                     <TextBox.Style>
                                         <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                             <Setter Property="IsEnabled" Value="True"/>
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                                <DataTrigger Binding="{Binding Controller.IsConnected}" Value="True">
                                                     <Setter Property="IsEnabled" Value="False"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -183,13 +183,13 @@
                                     </TextBox.Style>
                                 </TextBox>
 
-                                <TextBox Text="{Binding FTPPort}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center"
+                                <TextBox Text="{Binding Controller.FTPClient.Port}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center"
                                   md:HintAssist.Hint="SFTP Port" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
                                     <TextBox.Style>
                                         <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                             <Setter Property="IsEnabled" Value="True"/>
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                                <DataTrigger Binding="{Binding Controller.IsConnected}" Value="True">
                                                     <Setter Property="IsEnabled" Value="False"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -197,13 +197,13 @@
                                     </TextBox.Style>
                                 </TextBox>
 
-                                <TextBox Text="{Binding FTPUsername}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center"
+                                <TextBox Text="{Binding Controller.FTPClient.Username}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center"
                                  md:HintAssist.Hint="SFTP User name" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
                                     <TextBox.Style>
                                         <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                             <Setter Property="IsEnabled" Value="True"/>
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                                <DataTrigger Binding="{Binding Controller.IsConnected}" Value="True">
                                                     <Setter Property="IsEnabled" Value="False"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -211,13 +211,13 @@
                                     </TextBox.Style>
                                 </TextBox>
 
-                                <TextBox Text="{Binding FTPPassword}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center" HorizontalAlignment="Left"
+                                <TextBox Text="{Binding Controller.FTPClient.Password}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center" HorizontalAlignment="Left"
                                  md:HintAssist.Hint="SFTP Password" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
                                     <TextBox.Style>
                                         <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                             <Setter Property="IsEnabled" Value="True"/>
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                                <DataTrigger Binding="{Binding Controller.IsConnected}" Value="True">
                                                     <Setter Property="IsEnabled" Value="False"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -228,13 +228,13 @@
                             </DockPanel>
 
                             <DockPanel Margin="3">
-                                <TextBox Text="{Binding FTPRemotePath}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center" HorizontalAlignment="Left"
+                                <TextBox Text="{Binding Controller.FTPClient.RemotePath}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center" HorizontalAlignment="Left"
                                         md:HintAssist.Hint="Remote Path" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
                                     <TextBox.Style>
                                         <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                             <Setter Property="IsEnabled" Value="True"/>
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                                <DataTrigger Binding="{Binding Controller.IsConnected}" Value="True">
                                                     <Setter Property="IsEnabled" Value="False"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -265,7 +265,7 @@
                                 <Style TargetType="ComboBox" BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}">
                                     <Setter Property="Visibility" Value="Collapsed"/>
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                        <DataTrigger Binding="{Binding Controller.IsConnected}" Value="True">
                                             <Setter Property="Visibility" Value="Visible"/>
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -280,7 +280,7 @@
                                 <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                     <Setter Property="Visibility" Value="Visible"/>
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                        <DataTrigger Binding="{Binding Controller.IsConnected}" Value="True">
                                             <Setter Property="Visibility" Value="Collapsed"/>
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -301,7 +301,7 @@
                                         </Setter.Value>
                                     </Setter>
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsConnected}" Value="False">
+                                        <DataTrigger Binding="{Binding Controller.IsConnected}" Value="False">
                                             <Setter Property="Text" Value="-----"/>
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -310,7 +310,7 @@
                         </TextBox>
 
                         <TextBox d:Text="192.168.188.2" Margin="6,3" BorderThickness="0"
-                             Text="{Binding Path=Host, Mode=OneWay, Converter={StaticResource ipAddressSplitConverter}, ConverterParameter=Last}"
+                             Text="{Binding Path=Controller.Host, Mode=OneWay, Converter={StaticResource ipAddressSplitConverter}, ConverterParameter=Last}"
                              Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                              md:HintAssist.Hint="IP" IsHitTestVisible="False" />
 
@@ -325,9 +325,13 @@
                             <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsSimulator}" Value="True">
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Value="True" Binding="{Binding Controller.IsConnected}"/>
+                                            <Condition Value="True" Binding="{Binding Controller.IsSimulator}"/>
+                                        </MultiDataTrigger.Conditions>
                                         <Setter Property="Visibility" Value="Visible"/>
-                                    </DataTrigger>
+                                    </MultiDataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </ComboBox.Style>
@@ -402,7 +406,7 @@
                                                 <Setter Property="ToolTip" Value="Edit"/>
                                             </DataTrigger>
 
-                                            <DataTrigger Value="False" Binding="{Binding IsConnected}">
+                                            <DataTrigger Value="False" Binding="{Binding Controller.IsConnected}">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
 
@@ -528,7 +532,7 @@
                                     <Style TargetType="{x:Type md:Card}">
                                         <Setter Property="Visibility" Value="Visible"/>
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsSimulator}" Value="True">
+                                            <DataTrigger Binding="{Binding Controller.IsSimulator}" Value="True">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -572,7 +576,7 @@
                                         <Style TargetType="{x:Type Ellipse}">
                                             <Setter Property="Fill" Value="Gray"/>
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsEventWSConnected}" Value="True">
+                                                <DataTrigger Binding="{Binding Controller.EventWsState}" Value="Open">
                                                     <Setter Property="Fill" Value="Green"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -589,7 +593,7 @@
                                         <Style TargetType="{x:Type Ellipse}">
                                             <Setter Property="Fill" Value="Gray"/>
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsResultWSConnected}" Value="True">
+                                                <DataTrigger Binding="{Binding Controller.ResultWsState}" Value="Open">
                                                     <Setter Property="Fill" Value="Green"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -606,7 +610,7 @@
                                         <Style TargetType="{x:Type Ellipse}">
                                             <Setter Property="Fill" Value="Gray"/>
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsImageWSConnected}" Value="True">
+                                                <DataTrigger Binding="{Binding Controller.ImageWsState}" Value="Open">
                                                     <Setter Property="Fill" Value="Green"/>
                                                 </DataTrigger>
                                             </Style.Triggers>

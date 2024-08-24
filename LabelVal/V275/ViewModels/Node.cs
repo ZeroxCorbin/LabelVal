@@ -30,19 +30,26 @@ public enum NodeStates
 
 [JsonObject(MemberSerialization.OptIn)]
 public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessage<ImageRollEntry>>
-{
+{   
+    public NodeManager Manager { get; set; }
     public V275_REST_lib.Controller Controller { get; }
 
-    [JsonProperty]public string Host { get => Controller.Commands.Host; set => Controller.Commands.Host = value; }
-    [JsonProperty]public uint SystemPort { get => Controller.Commands.SystemPort; set => Controller.Commands.SystemPort = value; }
-    [JsonProperty]public uint NodeNumber { get => Controller.Commands.NodeNumber; set => Controller.Commands.NodeNumber = value; }
+    [ObservableProperty][property: JsonProperty] private string host;
+    partial void OnHostChanged(string value) => Controller.Commands.Host = value;
 
-    public string UserName { get; set; }
-    public string Password { get; set; }
+    [ObservableProperty][property: JsonProperty] private uint systemPort;
+    partial void OnSystemPortChanged(uint value) => Controller.Commands.SystemPort = value;
 
-    public string SimulatorImageDirectory { get; set; }
+    [ObservableProperty][property: JsonProperty] private uint nodeNumber;
+    partial void OnNodeNumberChanged(uint value) => Controller.Commands.NodeNumber = value;
 
-    public NodeManager Manager { get; set; }
+
+    [ObservableProperty] string userName;
+    [ObservableProperty] string password;
+
+    [ObservableProperty] string simulatorImageDirectory;
+
+
 
     [ObservableProperty] private bool loginMonitor;
 

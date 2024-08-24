@@ -118,8 +118,8 @@
                                         <Style.Triggers>
                                             <MultiDataTrigger>
                                                 <MultiDataTrigger.Conditions>
-                                                    <Condition Binding="{Binding SelectedScanner.IsConnected}" Value="True"/>
-                                                    <Condition Binding="{Binding SelectedScanner.IsSimulator}" Value="False"/>
+                                                    <Condition Binding="{Binding SelectedScanner.Controller.IsConnected}" Value="True"/>
+                                                    <Condition Binding="{Binding SelectedScanner.Controller.IsSimulator}" Value="False"/>
                                                     <Condition Binding="{Binding SelectedImageRoll.IsLocked}" Value="False"/>
                                                 </MultiDataTrigger.Conditions>
 
