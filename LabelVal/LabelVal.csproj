@@ -36,6 +36,7 @@
 		<Compile Remove="Run\ViewModels\Result.cs" />
 		<Compile Remove="Run\ViewModels\Run.cs" />
 		<Compile Remove="Run\Views\RunControl.xaml.cs" />
+		<Compile Remove="Utilities\ImageSharpUtilities.cs" />
 		<Compile Remove="V275\ViewModels\ImageResultEntry.cs" />
 		<Compile Remove="V275\ViewModels\ImageResults.cs" />
 		<Compile Remove="V275\ViewModels\SectorDifferences.cs" />

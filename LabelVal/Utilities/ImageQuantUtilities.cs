@@ -13,7 +13,7 @@ public static class ImageQuantUtilities
             return image;
 
         Image quantizedImage = new WuQuantizer().QuantizeImage(bmp);
-        return ImageToBytes(quantizedImage); ;
+        return ImageToPNGBytes(quantizedImage); ;
     }
 
     public static System.Windows.Media.Imaging.BitmapImage RawBitmapToQuantBitmapImage(byte[] image)
@@ -79,6 +79,13 @@ public static class ImageQuantUtilities
             return null;
         }
         
+    }
+
+    public static byte[] ImageToPNGBytes(System.Drawing.Image image)
+    {
+        using MemoryStream ms = new();
+        image.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+        return ms.ToArray();
     }
 
     private static byte[] ImageToBytes(System.Drawing.Image image)

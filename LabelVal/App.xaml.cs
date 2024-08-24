@@ -2,10 +2,12 @@
 using ControlzEx.Theming;
 using GS1.Encoders;
 using LabelVal.Messages;
+using LabelVal.Utilities;
 using LibSimpleDatabase;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
+using Org.BouncyCastle.Crypto.Prng;
 using SQLitePCL;
 using System;
 using System.Drawing;
@@ -14,6 +16,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Automation;
 using System.Windows.Input;
 
 namespace LabelVal;
@@ -61,7 +64,7 @@ public partial class App : Application
 
     public App()
     {
-       //SetupExceptionHandling();
+        //SetupExceptionHandling();
 
         Version version = Assembly.GetExecutingAssembly().GetName().Version;
         if (version != null)
@@ -72,7 +75,7 @@ public partial class App : Application
 
         if (!Directory.Exists(ImageResultsDatabaseRoot))
             _ = Directory.CreateDirectory(ImageResultsDatabaseRoot);
-        
+
         if (!Directory.Exists(UserImageRollsRoot))
             _ = Directory.CreateDirectory(UserImageRollsRoot);
 
@@ -125,6 +128,8 @@ public partial class App : Application
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
+
+        //ConvertToIndexedPNG();
 
         LogManager.GetCurrentClassLogger().Info($"Starting: Getting colorblind setting.");
         ChangeColorBlindTheme(Settings.GetValue("App.IsColorBlind", false));
@@ -196,7 +201,7 @@ public partial class App : Application
 
         if (shutdown)
         {
-             _ = MessageBox.Show($"{message}\r\n{exception.Message}", "Unhandled Exception!", MessageBoxButton.OK);
+            _ = MessageBox.Show($"{message}\r\n{exception.Message}", "Unhandled Exception!", MessageBoxButton.OK);
             Current.Dispatcher.Invoke(Shutdown);
         }
         else
@@ -210,7 +215,7 @@ public partial class App : Application
 
         foreach (DirectoryInfo dir in baseDir.EnumerateDirectories())
         {
-            if(dir.FullName.Contains("UserData"))
+            if (dir.FullName.Contains("UserData"))
                 continue;
 
             RecursiveDelete(dir);
@@ -223,6 +228,46 @@ public partial class App : Application
         }
         baseDir.Delete();
     }
+
+    private void ConvertToIndexedPNG()
+    {
+        var outDir = Directory.CreateDirectory($"{UserDataDirectory}\\IndexedPNG");
+        foreach (string dir in Directory.EnumerateDirectories(AssetsImageRollsRoot))
+        {
+            var dirName = Path.GetFileName(dir);
+            DirectoryInfo imgDir;
+
+            if (Directory.Exists($"{dir}\\600"))
+            {
+                imgDir = Directory.CreateDirectory($"{outDir.FullName}\\{dirName}\\600");
+                foreach (string file in Directory.EnumerateFiles($"{dir}\\600"))
+                {
+                    var newFileName = $"{imgDir.FullName}\\{Path.GetFileName(file)}";
+                    if(Path.GetExtension(file) is ".bmp" or ".png")
+                        File.WriteAllBytes(newFileName, ImageUtilities.GetPng(File.ReadAllBytes(file), PixelFormat.Format8bppIndexed));
+                    else
+                        File.Copy(file, newFileName);
+                }
+            }
+                
+            if (Directory.Exists($"{dir}\\300"))
+            {
+                imgDir = Directory.CreateDirectory($"{outDir.FullName}\\{dirName}\\300"); 
+                
+                foreach (string file in Directory.EnumerateFiles($"{dir}\\300"))
+                {
+                    var newFileName = $"{imgDir.FullName}\\{Path.GetFileName(file)}";
+                    if (Path.GetExtension(file) is ".bmp" or ".png")
+                        File.WriteAllBytes(newFileName, ImageUtilities.GetPng(File.ReadAllBytes(file), PixelFormat.Format8bppIndexed));
+                    else
+                        File.Copy(file, newFileName);
+                }
+            }
+
+        }
+
+    }
+
     private void ConvertDatabases()
     {
     }

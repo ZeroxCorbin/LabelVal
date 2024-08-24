@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SharpVectors.Converters;
+using SharpVectors.Dom.Svg;
+using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -11,6 +13,10 @@ namespace LabelVal.Utilities;
 public static class ImageUtilities
 {
     private const double InchesPerMeter = 39.3701;
+    private const int PngSignatureLength = 8;
+    private const int PhysChunkLength = 9;
+    private const int PhysChunkType = 0x70485973; // 'pHYs' in ASCII
+    private const int IdatChunkType = 0x49444154; // 'IDAT' in ASCII
 
     public class DPI
     {
@@ -84,6 +90,21 @@ public static class ImageUtilities
         bitmap.Save(stream, ImageFormat.Png);
         return stream.ToArray();
     }
+    public static byte[] GetPng(byte[] img, PixelFormat pixelFormat)
+    {
+        if (IsPng(img))
+            return GetPngPixelFormat(img) == pixelFormat ? img : SetPngPixelFormat(img, pixelFormat);
+
+        byte[] res = IsBmp(img) ? SetBmpPixelFormat(img, pixelFormat) : throw new ArgumentException("Unsupported image format.");
+
+        using MemoryStream ms = new(res);
+        using Bitmap bitmap = new(ms);
+        using MemoryStream stream = new();
+
+        bitmap.Save(stream, ImageFormat.Png);
+        return stream.ToArray();
+    }
+
     /// <summary>
     /// Get BMP image from PNG or BMP image.
     /// </summary>
@@ -238,38 +259,59 @@ public static class ImageUtilities
         }
     }
 
-    private static bool IsPng(byte[] img) => img.Length >= 8
-        && img[0] == 0x89 &&
+    private static bool IsPng(byte[] img) =>
+        img.Length >= 8 &&
+        img[0] == 0x89 &&
         img[1] == 0x50 &&
         img[2] == 0x4E &&
         img[3] == 0x47 &&
         img[4] == 0x0D &&
         img[5] == 0x0A &&
         img[6] == 0x1A &&
-        img[7] == 0x0A;
-    private static bool IsBmp(byte[] img)
-    {
-        if (img.Length < 2)
-        {
-            return false;
-        }
+        img[7] == 0x0A &&
+        img.Length > PngSignatureLength + PhysChunkLength;
+    private static bool IsBmp(byte[] img) =>
+        img.Length >= 2 &&
+        img[0] == 0x42 &&
+        img[1] == 0x4D &&
+        img.Length >= 54;
 
-        return img[0] == 0x42 && img[1] == 0x4D; // 'B' and 'M' in ASCII
-    }
-
-    private static DPI GetBitmapDPI(byte[] image) => image.Length < 54
-            ? throw new ArgumentException("Invalid BMP file.")
+    private static DPI GetBitmapDPI(byte[] image) =>
+        IsBmp(image) == false
+            ? throw new ArgumentException("The provided byte array is not a valid BMP image.")
             : new DPI
             {
                 X = DotsPerInch(BitConverter.ToInt32(image, 38)),
                 Y = DotsPerInch(BitConverter.ToInt32(image, 42))
             };
-    private static byte[] SetBitmapDPI(byte[] image, int dpiX, int dpiY)
+    /// <summary>
+    /// Get the pixel format of a BMP image by reading the header bytes.
+    /// </summary>
+    /// <param name="image">BMP image byte array</param>
+    /// <returns>PixelFormat</returns>
+    public static PixelFormat GetBmpPixelFormat(byte[] image)
     {
-        if (image.Length < 54) // Minimum size for BMP with BITMAPINFOHEADER
+        if (!IsBmp(image))
+            throw new ArgumentException("The provided byte array is not a valid BMP image.");
+
+        // Bit count per pixel is at byte 28 in the BMP header
+        int bitCount = BitConverter.ToInt16(image, 28);
+
+        return bitCount switch
         {
-            throw new ArgumentException("Invalid BMP file.");
-        }
+            1 => PixelFormat.Format1bppIndexed,
+            4 => PixelFormat.Format4bppIndexed,
+            8 => PixelFormat.Format8bppIndexed,
+            16 => PixelFormat.Format16bppRgb565,
+            24 => PixelFormat.Format24bppRgb,
+            32 => PixelFormat.Format32bppArgb,
+            _ => throw new NotSupportedException("Unsupported BMP bit count.")
+        };
+    }
+    public static byte[] SetBitmapDPI(byte[] image, int dpiX, int dpiY)
+    {
+        if (!IsBmp(image))
+            throw new ArgumentException("The provided byte array is not a valid BMP image.");
 
         int dpiXInMeters = DotsPerMeter(dpiX);
         int dpiYInMeters = DotsPerMeter(dpiY);
@@ -288,12 +330,29 @@ public static class ImageUtilities
 
         return image;
     }
+    /// <summary>
+    /// Converts a BMP byte array to a new PixelFormat.
+    /// </summary>
+    /// <param name="image">BMP image byte array</param>
+    /// <param name="newPixelFormat">The new PixelFormat</param>
+    /// <returns>Converted BMP image byte array</returns>
+    private static byte[] SetBmpPixelFormat(byte[] image, PixelFormat newPixelFormat)
+    {
+        if (!IsBmp(image))
+            throw new ArgumentException("The provided byte array is not a valid BMP image.");
+
+        using MemoryStream inputStream = new(image);
+        using Bitmap originalBitmap = new(inputStream);
+        using Bitmap newBitmap = originalBitmap.Clone(new Rectangle(0, 0, originalBitmap.Width, originalBitmap.Height), newPixelFormat);
+
+        using MemoryStream outputStream = new();
+        newBitmap.Save(outputStream, ImageFormat.Bmp);
+        return outputStream.ToArray();
+    }
     private static byte[] ExtractBitmapData(byte[] image)
     {
-        if (image.Length < 54) // Minimum size for BMP with BITMAPINFOHEADER
-        {
-            throw new ArgumentException("Invalid BMP file.");
-        }
+        if (!IsBmp(image))
+            throw new ArgumentException("The provided byte array is not a valid BMP image.");
 
         int dataOffset = BitConverter.ToInt32(image, 10);
         return image[dataOffset..];
@@ -301,14 +360,8 @@ public static class ImageUtilities
 
     private static DPI GetPngDPI(byte[] image)
     {
-        const int PngSignatureLength = 8;
-        const int PhysChunkLength = 9;
-        const int PhysChunkType = 0x70485973; // 'pHYs' in ASCII
-
-        if (image.Length < PngSignatureLength + PhysChunkLength)
-        {
-            throw new ArgumentException("Invalid PNG file.");
-        }
+        if (!IsPng(image))
+            throw new ArgumentException("The provided byte array is not a valid PNG image.");
 
         using MemoryStream ms = new(image);
         using BinaryReader reader = new(ms);
@@ -344,15 +397,33 @@ public static class ImageUtilities
 
         throw new ArgumentException("pHYs chunk not found in PNG file.");
     }
+    /// <summary>
+    /// Get the pixel format of a PNG image by reading the header bytes.
+    /// </summary>
+    /// <param name="image">PNG image byte array</param>
+    /// <returns>PixelFormat</returns>
+    public static PixelFormat GetPngPixelFormat(byte[] image)
+    {
+        if (!IsPng(image))
+            throw new ArgumentException("The provided byte array is not a valid PNG image.");
+
+        // Color type is at byte 25 in the PNG header
+        byte colorType = image[25];
+
+        return colorType switch
+        {
+            0 => PixelFormat.Format8bppIndexed, // Grayscale
+            2 => PixelFormat.Format24bppRgb,    // Truecolor
+            3 => PixelFormat.Format8bppIndexed, // Indexed-color
+            4 => PixelFormat.Format16bppGrayScale, // Grayscale with alpha
+            6 => PixelFormat.Format32bppArgb,   // Truecolor with alpha
+            _ => throw new NotSupportedException("Unsupported PNG color type.")
+        };
+    }
     private static byte[] SetPngDPI(byte[] image, int dpiX, int dpiY)
     {
-        const int PngSignatureLength = 8;
-        const int PhysChunkType = 0x70485973; // 'pHYs' in ASCII
-
-        if (image.Length < PngSignatureLength)
-        {
-            throw new ArgumentException("Invalid PNG file.");
-        }
+        if (!IsPng(image))
+            throw new ArgumentException("The provided byte array is not a valid PNG image.");
 
         using MemoryStream ms = new(image);
         using BinaryReader reader = new(ms);
@@ -390,21 +461,39 @@ public static class ImageUtilities
 
         throw new ArgumentException("pHYs chunk not found in PNG file.");
     }
+    /// <summary>
+    /// Converts a PNG byte array to a new PixelFormat.
+    /// </summary>
+    /// <param name="image">PNG image byte array</param>
+    /// <param name="newPixelFormat">The new PixelFormat</param>
+    /// <returns>Converted PNG image byte array</returns>
+    public static byte[] SetPngPixelFormat(byte[] image, PixelFormat newPixelFormat)
+    {
+        if (!IsPng(image))
+            throw new ArgumentException("The provided byte array is not a valid PNG image.");
+
+        using MemoryStream inputStream = new(image);
+        using Bitmap originalBitmap = new(inputStream);
+        Bitmap newBitmap = new Bitmap(originalBitmap.Width, originalBitmap.Height, newPixelFormat);
+
+        // Use Graphics to draw the original bitmap onto the new bitmap
+        using (Graphics g = Graphics.FromImage(newBitmap))
+            g.DrawImage(originalBitmap, new Rectangle(0, 0, newBitmap.Width, newBitmap.Height));
+
+        using MemoryStream outputStream = new();
+        newBitmap.Save(outputStream, ImageFormat.Png);
+        return outputStream.ToArray();
+    }
     private static byte[] ExtractPngData(byte[] image)
     {
-        const int pngSignatureLength = 8;
-        const int idatChunkType = 0x49444154; // 'IDAT' in ASCII
-
-        if (image.Length < pngSignatureLength)
-        {
-            throw new ArgumentException("Invalid PNG file.");
-        }
+        if (!IsPng(image))
+            throw new ArgumentException("The provided byte array is not a valid PNG image.");
 
         using MemoryStream ms = new(image);
         using BinaryReader reader = new(ms);
 
         // Skip the PNG signature
-        reader.BaseStream.Seek(pngSignatureLength, SeekOrigin.Begin);
+        reader.BaseStream.Seek(PngSignatureLength, SeekOrigin.Begin);
 
         using MemoryStream dataStream = new();
 
@@ -413,7 +502,7 @@ public static class ImageUtilities
             int chunkLength = BitConverter.ToInt32(reader.ReadBytes(4).Reverse().ToArray(), 0);
             int chunkType = BitConverter.ToInt32(reader.ReadBytes(4), 0);
 
-            if (chunkType == idatChunkType)
+            if (chunkType == IdatChunkType)
             {
                 byte[] chunkData = reader.ReadBytes(chunkLength);
                 dataStream.Write(chunkData, 0, chunkLength);
@@ -436,184 +525,184 @@ public static class ImageUtilities
     //If BalanceInfo = Asc("C") Or BalanceInfo = Asc("3") Then
     //  ColorFlag = Chr(BalanceInfo)
     //End If
-    public static void SetBitmapColorFlag(byte[] image, char balanceInfo)
-    {
-        byte[] value = BitConverter.GetBytes(balanceInfo);
-
-        int i = 7;
-        foreach (byte b in value)
-            image[i++] = b;
-    }
-
-    public static byte[] RotatePNG(byte[] img, double angle = 0)
-    {
-
-        System.Windows.Media.Imaging.PngBitmapEncoder encoder = new();
-        using MemoryStream ms = new(img);
-        using MemoryStream stream = new();
-
-        // Create a BitmapImage from the byte array
-        BitmapImage bitmapImage = new();
-        bitmapImage.BeginInit();
-        bitmapImage.StreamSource = ms;
-        bitmapImage.CacheOption = System.Windows.Media.Imaging.BitmapCacheOption.OnLoad;
-        bitmapImage.EndInit();
-        bitmapImage.Freeze();
-
-        // Apply rotation if angle is not zero
-        if (angle != 0)
-        {
-            TransformedBitmap transformedBitmap = new(
-                bitmapImage, new System.Windows.Media.RotateTransform(angle));
-            encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(transformedBitmap));
-        }
-        else
-        {
-            encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(bitmapImage));
-        }
-
-        encoder.Save(stream);
-        stream.Close();
-
-        return stream.ToArray();
-
-    }
-
-    public static byte[] AddOverlayPNG(byte[] img, byte[] overlay)
-    {
-
-        System.Windows.Media.DrawingGroup dg = new();
-
-        BitmapImage renderBitmap1 = CreateBitmap(img);
-        BitmapImage renderBitmap2 = CreateBitmap(overlay);
-
-        System.Windows.Media.ImageDrawing id1 = new(renderBitmap1, new System.Windows.Rect(0, 0, renderBitmap1.Width, renderBitmap1.Height));
-        System.Windows.Media.ImageDrawing id2 = new(renderBitmap2, new System.Windows.Rect(0, 0, renderBitmap2.Width, renderBitmap2.Height));
-
-        dg.Children.Add(id1);
-        dg.Children.Add(id2);
-
-        RenderTargetBitmap combinedImg = new(
-            (int)renderBitmap1.Width,
-            (int)renderBitmap1.Height, 96, 96, System.Windows.Media.PixelFormats.Pbgra32);
-
-        System.Windows.Media.DrawingVisual dv = new();
-        using (System.Windows.Media.DrawingContext dc = dv.RenderOpen())
-        {
-            dc.DrawDrawing(dg);
-        }
-
-        combinedImg.Render(dv);
-
-        System.Windows.Media.Imaging.PngBitmapEncoder encoder = new();
-        using MemoryStream stream = new();
-        encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(combinedImg));
-
-        encoder.Save(stream);
-        stream.Close();
-
-        return stream.ToArray();
-
-    }
-
-    //public static byte[] ConvertToBmp(byte[] img)
+    //public static void SetBitmapColorFlag(byte[] image, char balanceInfo)
     //{
-    //    System.Windows.Media.Imaging.BmpBitmapEncoder encoder = new();
-    //    using var ms = new System.IO.MemoryStream(img);
+    //    byte[] value = BitConverter.GetBytes(balanceInfo);
+
+    //    int i = 7;
+    //    foreach (byte b in value)
+    //        image[i++] = b;
+    //}
+
+    //public static byte[] RotatePNG(byte[] img, double angle = 0)
+    //{
+
+    //    System.Windows.Media.Imaging.PngBitmapEncoder encoder = new();
+    //    using MemoryStream ms = new(img);
     //    using MemoryStream stream = new();
-    //    encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(ms));
+
+    //    // Create a BitmapImage from the byte array
+    //    BitmapImage bitmapImage = new();
+    //    bitmapImage.BeginInit();
+    //    bitmapImage.StreamSource = ms;
+    //    bitmapImage.CacheOption = System.Windows.Media.Imaging.BitmapCacheOption.OnLoad;
+    //    bitmapImage.EndInit();
+    //    bitmapImage.Freeze();
+
+    //    // Apply rotation if angle is not zero
+    //    if (angle != 0)
+    //    {
+    //        TransformedBitmap transformedBitmap = new(
+    //            bitmapImage, new System.Windows.Media.RotateTransform(angle));
+    //        encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(transformedBitmap));
+    //    }
+    //    else
+    //    {
+    //        encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(bitmapImage));
+    //    }
+
     //    encoder.Save(stream);
     //    stream.Close();
 
     //    return stream.ToArray();
+
     //}
-    //public static byte[] ConvertToBmp(byte[] img, int dpi)
+
+    //public static byte[] AddOverlayPNG(byte[] img, byte[] overlay)
     //{
-    //    System.Windows.Media.Imaging.BmpBitmapEncoder encoder = new();
-    //    using var ms = new System.IO.MemoryStream(img);
+
+    //    System.Windows.Media.DrawingGroup dg = new();
+
+    //    BitmapImage renderBitmap1 = CreateBitmap(img);
+    //    BitmapImage renderBitmap2 = CreateBitmap(overlay);
+
+    //    System.Windows.Media.ImageDrawing id1 = new(renderBitmap1, new System.Windows.Rect(0, 0, renderBitmap1.Width, renderBitmap1.Height));
+    //    System.Windows.Media.ImageDrawing id2 = new(renderBitmap2, new System.Windows.Rect(0, 0, renderBitmap2.Width, renderBitmap2.Height));
+
+    //    dg.Children.Add(id1);
+    //    dg.Children.Add(id2);
+
+    //    RenderTargetBitmap combinedImg = new(
+    //        (int)renderBitmap1.Width,
+    //        (int)renderBitmap1.Height, 96, 96, System.Windows.Media.PixelFormats.Pbgra32);
+
+    //    System.Windows.Media.DrawingVisual dv = new();
+    //    using (System.Windows.Media.DrawingContext dc = dv.RenderOpen())
+    //    {
+    //        dc.DrawDrawing(dg);
+    //    }
+
+    //    combinedImg.Render(dv);
+
+    //    System.Windows.Media.Imaging.PngBitmapEncoder encoder = new();
     //    using MemoryStream stream = new();
-    //    encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(ms));
+    //    encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(combinedImg));
+
     //    encoder.Save(stream);
     //    stream.Close();
 
-    //    byte[] ret = stream.ToArray();
+    //    return stream.ToArray();
 
-    //    if (dpi > 0)
-    //        SetBitmapDPI(ret, dpi);
-
-    //    return ret;
     //}
-    public static System.Windows.Media.Imaging.BitmapImage CreateBitmap(byte[] data, int decodePixelWidth = 0)
-    {
-        if (data == null || data.Length < 2)
-            return null;
 
-        try
-        {
-            System.Windows.Media.Imaging.BitmapImage img = new();
+    ////public static byte[] ConvertToBmp(byte[] img)
+    ////{
+    ////    System.Windows.Media.Imaging.BmpBitmapEncoder encoder = new();
+    ////    using var ms = new System.IO.MemoryStream(img);
+    ////    using MemoryStream stream = new();
+    ////    encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(ms));
+    ////    encoder.Save(stream);
+    ////    stream.Close();
 
-            using (MemoryStream memStream = new(data))
-            {
-                img.BeginInit();
-                img.CacheOption = System.Windows.Media.Imaging.BitmapCacheOption.OnLoad;
-                img.StreamSource = memStream;
-                img.DecodePixelWidth = decodePixelWidth;
-                img.EndInit();
-                img.Freeze();
+    ////    return stream.ToArray();
+    ////}
+    ////public static byte[] ConvertToBmp(byte[] img, int dpi)
+    ////{
+    ////    System.Windows.Media.Imaging.BmpBitmapEncoder encoder = new();
+    ////    using var ms = new System.IO.MemoryStream(img);
+    ////    using MemoryStream stream = new();
+    ////    encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(ms));
+    ////    encoder.Save(stream);
+    ////    stream.Close();
 
-            }
-            return img;
-        }
-        catch { }
+    ////    byte[] ret = stream.ToArray();
 
-        return null;
-    }
+    ////    if (dpi > 0)
+    ////        SetBitmapDPI(ret, dpi);
 
-    public static byte[] ImageToBytes(System.Drawing.Image image)
-    {
-        System.Drawing.ImageConverter converter = new();
-        return (byte[])converter.ConvertTo(image, typeof(byte[]));
-    }
+    ////    return ret;
+    ////}
+    //public static System.Windows.Media.Imaging.BitmapImage CreateBitmap(byte[] data, int decodePixelWidth = 0)
+    //{
+    //    if (data == null || data.Length < 2)
+    //        return null;
 
-    private static byte[] imageToBytes(System.Windows.Media.ImageSource imageSource)
-    {
-        System.Windows.Media.Imaging.PngBitmapEncoder encoder = new();
-        byte[] bytes = null;
+    //    try
+    //    {
+    //        System.Windows.Media.Imaging.BitmapImage img = new();
 
-        if (imageSource is System.Windows.Media.Imaging.BitmapSource bitmapSource)
-        {
-            encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(bitmapSource));
+    //        using (MemoryStream memStream = new(data))
+    //        {
+    //            img.BeginInit();
+    //            img.CacheOption = System.Windows.Media.Imaging.BitmapCacheOption.OnLoad;
+    //            img.StreamSource = memStream;
+    //            img.DecodePixelWidth = decodePixelWidth;
+    //            img.EndInit();
+    //            img.Freeze();
 
-            using MemoryStream stream = new();
-            encoder.Save(stream);
-            bytes = stream.ToArray();
-        }
+    //        }
+    //        return img;
+    //    }
+    //    catch { }
 
-        return bytes;
-    }
-    public static byte[] ImageToBytes(this System.Windows.Media.DrawingImage source)
-    {
-        System.Windows.Media.DrawingVisual drawingVisual = new();
-        System.Windows.Media.DrawingContext drawingContext = drawingVisual.RenderOpen();
-        drawingContext.DrawImage(source, new System.Windows.Rect(new System.Windows.Point(0, 0), new System.Windows.Size(source.Width, source.Height)));
-        drawingContext.Close();
+    //    return null;
+    //}
 
-        RenderTargetBitmap bmp = new((int)source.Width, (int)source.Height, 96, 96, System.Windows.Media.PixelFormats.Pbgra32);
-        bmp.Render(drawingVisual);
-        return imageToBytes(bmp);
-    }
+    //public static byte[] ImageToBytes(System.Drawing.Image image)
+    //{
+    //    System.Drawing.ImageConverter converter = new();
+    //    return (byte[])converter.ConvertTo(image, typeof(byte[]));
+    //}
 
-    public static System.Windows.Media.Imaging.BitmapSource ToBitmapSource(this System.Windows.Media.DrawingImage source)
-    {
-        System.Windows.Media.DrawingVisual drawingVisual = new();
-        System.Windows.Media.DrawingContext drawingContext = drawingVisual.RenderOpen();
-        drawingContext.DrawImage(source, new System.Windows.Rect(new System.Windows.Point(0, 0), new System.Windows.Size(source.Width, source.Height)));
-        drawingContext.Close();
+    //private static byte[] imageToBytes(System.Windows.Media.ImageSource imageSource)
+    //{
+    //    System.Windows.Media.Imaging.PngBitmapEncoder encoder = new();
+    //    byte[] bytes = null;
 
-        RenderTargetBitmap bmp = new((int)source.Width, (int)source.Height, 96, 96, System.Windows.Media.PixelFormats.Pbgra32);
-        bmp.Render(drawingVisual);
-        return bmp;
-    }
+    //    if (imageSource is System.Windows.Media.Imaging.BitmapSource bitmapSource)
+    //    {
+    //        encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(bitmapSource));
+
+    //        using MemoryStream stream = new();
+    //        encoder.Save(stream);
+    //        bytes = stream.ToArray();
+    //    }
+
+    //    return bytes;
+    //}
+    //public static byte[] ImageToBytes(this System.Windows.Media.DrawingImage source)
+    //{
+    //    System.Windows.Media.DrawingVisual drawingVisual = new();
+    //    System.Windows.Media.DrawingContext drawingContext = drawingVisual.RenderOpen();
+    //    drawingContext.DrawImage(source, new System.Windows.Rect(new System.Windows.Point(0, 0), new System.Windows.Size(source.Width, source.Height)));
+    //    drawingContext.Close();
+
+    //    RenderTargetBitmap bmp = new((int)source.Width, (int)source.Height, 96, 96, System.Windows.Media.PixelFormats.Pbgra32);
+    //    bmp.Render(drawingVisual);
+    //    return imageToBytes(bmp);
+    //}
+
+    //public static System.Windows.Media.Imaging.BitmapSource ToBitmapSource(this System.Windows.Media.DrawingImage source)
+    //{
+    //    System.Windows.Media.DrawingVisual drawingVisual = new();
+    //    System.Windows.Media.DrawingContext drawingContext = drawingVisual.RenderOpen();
+    //    drawingContext.DrawImage(source, new System.Windows.Rect(new System.Windows.Point(0, 0), new System.Windows.Size(source.Width, source.Height)));
+    //    drawingContext.Close();
+
+    //    RenderTargetBitmap bmp = new((int)source.Width, (int)source.Height, 96, 96, System.Windows.Media.PixelFormats.Pbgra32);
+    //    bmp.Render(drawingVisual);
+    //    return bmp;
+    //}
 
     public static void RedrawFiducial(string path, bool is300)
     {
