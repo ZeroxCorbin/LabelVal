@@ -288,7 +288,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         else if(e.PropertyName == "Config")
             ScannerController_ConfigUpdate();
         else if (e.PropertyName == "SysInfo")
-            ScannerController_ConfigUpdate();
+            ScannerController_SysInfoUpdate();
         else if(e.PropertyName == "Image")
             ScannerController_ImageUpdate(Controller.Image);
         else if (e.PropertyName == "Report")
@@ -359,6 +359,19 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         else
             LogError("V5 Config update but SysInfo is invalid.");
     }
+
+    private void ScannerController_SysInfoUpdate()
+    {
+        if (Controller.IsSysInfoValid)
+        {
+            SelectedCamera = AvailableCameras.FirstOrDefault((e) => Controller.SysInfo.response.data.hwal.lens.lensName.StartsWith(e.FocalLength.ToString()) && Controller.SysInfo.response.data.hwal.sensor.description.StartsWith(e.Sensor.PixelCount.ToString()));
+            if (SelectedCamera == null)
+                LogError("Could not find a camera matching the current lens and sensor.");
+        }
+        else
+            LogError("V5 Config update but SysInfo is invalid.");
+    }
+
 
     //private void RunController_StateChanged(RunController.States state, string msg)
     //{
