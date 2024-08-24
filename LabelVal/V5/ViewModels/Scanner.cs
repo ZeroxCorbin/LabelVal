@@ -266,13 +266,8 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     public ScannerManager Manager { get; set; }
     public Scanner()
     {
-        Controller.StateChanged += ScannerController_StateChanged;
+        Controller.PropertyChanged += Controller_PropertyChanged;
         Controller.CameraModeChanged += ScannerController_CameraModeChanged;
-        Controller.ImageUpdate += ScannerController_ImageUpdate;
-        Controller.ResultUpdate += ScannerController_ResultUpdate;
-        Controller.ConfigUpdate += ScannerController_ConfigUpdate;
-
-        // SelectedCamera = Cameras.Available.FirstOrDefault();
 
         Host = Controller.Host;
         Port = Controller.Port;
@@ -286,6 +281,29 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         IsActive = true;
     }
 
+    private void Controller_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == "IsConnected")
+            IsConnected = Controller.IsConnected;
+        else if(e.PropertyName == "Config")
+            ScannerController_ConfigUpdate();
+        else if (e.PropertyName == "SysInfo")
+            ScannerController_ConfigUpdate();
+        else if(e.PropertyName == "Image")
+            ScannerController_ImageUpdate(Controller.Image);
+        else if (e.PropertyName == "Report")
+            ScannerController_ReportUpdate(Controller.Report);
+        else if (e.PropertyName == "SupvWsState")
+            IsSupvWSConnected = Controller.SupvWsState == System.Net.WebSockets.WebSocketState.Open;
+        else if (e.PropertyName == "EventWsState")
+            IsEventWSConnected = Controller.EventWsState == System.Net.WebSockets.WebSocketState.Open;
+        else if (e.PropertyName == "ResultWsState")
+            IsResultWSConnected = Controller.ResultWsState == System.Net.WebSockets.WebSocketState.Open;
+        else if (e.PropertyName == "ImageWsState")
+            IsImageWSConnected = Controller.ImageWsState == System.Net.WebSockets.WebSocketState.Open;
+        else if (e.PropertyName == "IsConnected")
+            IsConnected = Controller.IsConnected;
+    }
     public void Receive(PropertyChangedMessage<ImageRollEntry> message) => SelectedImageRoll = message.NewValue;
 
     private async void ScannerController_ConfigUpdate()
@@ -316,11 +334,6 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
                 });
             }
 
-            if(Controller.IsSysInfoValid)
-            {
-                SelectedCamera = AvailableCameras.FirstOrDefault((e) => Controller.SysInfo.response.data.hwal.lens.lensName.StartsWith(e.FocalLength.ToString()) && Controller.SysInfo.response.data.hwal.sensor.description.StartsWith(e.Sensor.PixelCount.ToString()));
-            }
-
             if (IsSimulator)
             {
                 SelectedAcquisitionType = "File";
@@ -336,6 +349,15 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         }
         else
             LogError("V5 Config update but Config is invalid.");
+
+        if (Controller.IsSysInfoValid)
+        {
+            SelectedCamera = AvailableCameras.FirstOrDefault((e) => Controller.SysInfo.response.data.hwal.lens.lensName.StartsWith(e.FocalLength.ToString()) && Controller.SysInfo.response.data.hwal.sensor.description.StartsWith(e.Sensor.PixelCount.ToString()));
+            if(SelectedCamera == null)
+                LogError("Could not find a camera matching the current lens and sensor.");
+        }
+        else
+            LogError("V5 Config update but SysInfo is invalid.");
     }
 
     //private void RunController_StateChanged(RunController.States state, string msg)
@@ -345,7 +367,8 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     //}
 
     private void ScannerController_CameraModeChanged(V5_REST_Lib.Controller.CameraModes mode) => ScannerMode = mode;
-    private void ScannerController_ResultUpdate(JObject json)
+
+    private void ScannerController_ReportUpdate(JObject json)
     {
         if (json != null)
         {
@@ -431,6 +454,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
         RawImage = null;
     }
+
     private BitmapImage GetImage(byte[] raw)
     {
         BitmapImage img = new();
@@ -445,13 +469,13 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
         return img;
     }
-    private void ScannerController_StateChanged(bool isConnected)
+    private void ScannerController_StateChanged()
     {
-        IsConnected = isConnected;
-        IsSupvWSConnected = Controller.IsSupvWSConnected;
-        IsEventWSConnected = Controller.IsEventWSConnected;
-        IsResultWSConnected = Controller.IsResultWSConnected;
-        IsImageWSConnected = Controller.IsImageWSConnected;
+        IsConnected = Controller.IsConnected;
+        IsSupvWSConnected = Controller.SupvWsState == System.Net.WebSockets.WebSocketState.Open;
+        IsEventWSConnected = Controller.EventWsState == System.Net.WebSockets.WebSocketState.Open;
+        IsResultWSConnected = Controller.ResultWsState == System.Net.WebSockets.WebSocketState.Open;
+        IsImageWSConnected = Controller.ImageWsState == System.Net.WebSockets.WebSocketState.Open;
     }
 
     private void CheckOverlay()
