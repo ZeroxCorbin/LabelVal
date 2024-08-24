@@ -23,4 +23,6 @@ If printer is slow open the umage details anyway.
 
 Work on grid view for runs and result views.
 
+Scroll to latestest image insert.
 
+Save the compare settings in the job/run entry.

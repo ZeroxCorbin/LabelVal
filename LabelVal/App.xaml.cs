@@ -101,6 +101,7 @@ public partial class App : Application
             RecursiveDelete(new DirectoryInfo(WorkingDir));
         }
 
+        LogManager.GetCurrentClassLogger().Info($"Starting: Plugging in batteries.");
         try
         {
             Batteries.Init();
@@ -124,9 +125,11 @@ public partial class App : Application
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
-        
+
+        LogManager.GetCurrentClassLogger().Info($"Starting: Getting colorblind setting.");
         ChangeColorBlindTheme(Settings.GetValue("App.IsColorBlind", false));
 
+        LogManager.GetCurrentClassLogger().Info($"Starting: Getting color theme.");
         string res = Settings.GetValue("App.Theme", "Dark.Steel", true);
         if (res.Contains("#"))
             ThemeManager.Current.SyncTheme(ThemeSyncMode.SyncAll);
@@ -134,6 +137,8 @@ public partial class App : Application
             _ = ThemeManager.Current.ChangeTheme(this, res);
 
         ThemeManager.Current.ThemeChanged += Current_ThemeChanged;
+
+        LogManager.GetCurrentClassLogger().Info($"Starting: Complete");
     }
     protected override void OnExit(ExitEventArgs e)
     {
