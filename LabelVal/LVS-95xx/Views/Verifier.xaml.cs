@@ -28,4 +28,7 @@ public partial class Verifier : UserControl
 
     private void btnUnselect(object sender, RoutedEventArgs e)=>
         ((ViewModels.Verifier)this.DataContext).Manager.SelectedDevice = null;
+
+    private void drwSettings_DrawerOpened(object sender, MaterialDesignThemes.Wpf.DrawerOpenedEventArgs e) =>
+        ((ViewModels.Verifier)this.DataContext).RefreshComListCommand.Execute(null);
 }

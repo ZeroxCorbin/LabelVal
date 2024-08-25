@@ -68,31 +68,69 @@
 
             </DockPanel>
 
-            <md:DrawerHost x:Name="drwSettings" VerticalAlignment="Top" DrawerClosing="drwSettings_DrawerClosing">
+            <md:DrawerHost x:Name="drwSettings" VerticalAlignment="Top" DrawerClosing="drwSettings_DrawerClosing" DrawerOpened="drwSettings_DrawerOpened">
 
                 <md:DrawerHost.TopDrawerContent>
 
                     <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="3" Padding="2" HorizontalAlignment="Left">
+                        <md:Card.Style>
+                            <Style TargetType="md:Card">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsTopDrawerOpen, RelativeSource={RelativeSource AncestorType=md:DrawerHost}}" Value="False">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </md:Card.Style>
 
-                        <DockPanel>
-                            <ComboBox ItemsSource="{Binding AvailablePorts}" SelectedItem="{Binding SelectedComName}"
+                        <DockPanel Margin="3">
+
+                            <DockPanel DockPanel.Dock="Top">
+                                <ComboBox ItemsSource="{Binding AvailablePorts}" SelectedItem="{Binding SelectedComName}"
                                         md:HintAssist.Hint="COM Port" md:HintAssist.IsFloating="True">
-                                <ComboBox.Style>
-                                    <Style TargetType="ComboBox" BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}">
-                                        <Setter Property="IsEnabled" Value="True"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Controller.SerialPort.IsListening}" Value="True">
-                                                <Setter Property="IsEnabled" Value="False"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </ComboBox.Style>
-                            </ComboBox>
+                                    <ComboBox.Style>
+                                        <Style TargetType="ComboBox" BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}">
+                                            <Setter Property="IsEnabled" Value="True"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Controller.SerialPort.IsListening}" Value="True">
+                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ComboBox.Style>
+                                </ComboBox>
 
-                            <Button Command="{Binding Manager.DeleteCommand}" CommandParameter="{Binding }" Style="{StaticResource GroupHeaderCirlceButton}" ToolTip="Delete this verifier?">
-                                <iconPacks:PackIconMaterial Kind="Delete" Height="14" Width="14"/>
-                            </Button>
+                                <Button Command="{Binding RefreshComListCommand}" VerticalAlignment="Bottom"
+                                        ToolTip="Refresh"
+                                        Content="{iconPacks:Material Kind=Refresh}"
+                                        Style="{StaticResource GroupHeaderCirlceButton}"/>
 
+                                <Button Command="{Binding Manager.DeleteCommand}" CommandParameter="{Binding }"
+                                        Margin="10,0" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                                        ToolTip="Delete this verifier?"
+                                        Content="{iconPacks:Material Kind=Delete}"
+                                        Style="{StaticResource GroupHeaderCirlceButton}"/>
+
+                            </DockPanel>
+
+                            <DockPanel Margin="3">
+                                
+                                <TextBox Text="{Binding DatabasePath, UpdateSourceTrigger=PropertyChanged}" Height="48" MaxWidth="220" Margin="3,0" HorizontalContentAlignment="Left" HorizontalAlignment="Left"
+                                        md:HintAssist.Hint="LVS95xx Database" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left" 
+                                     md:TextFieldAssist.HasClearButton="True" TextWrapping="Wrap">
+                                    <TextBox.Style>
+                                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                                            <Setter Property="IsEnabled" Value="True"/>
+                                            <Setter Property="md:HintAssist.FloatingOffset" Value="0,-20"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Manager.SelectedDevice.IsLoggedIn}" Value="True">
+                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
+                            </DockPanel>
                         </DockPanel>
                     </md:Card>
                 </md:DrawerHost.TopDrawerContent>
@@ -136,7 +174,7 @@
                                 </Style>
                             </TextBox.Style>
                         </TextBox>
-                        
+
                     </DockPanel>
                 </DockPanel>
             </md:DrawerHost>

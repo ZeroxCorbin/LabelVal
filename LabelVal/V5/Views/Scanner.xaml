@@ -96,10 +96,9 @@
                             Foreground="{DynamicResource MahApps.Brushes.Text}">
                         <md:Card.Style>
                             <Style TargetType="{x:Type md:Card}">
-                                <Setter Property="Visibility" Value="Collapsed"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsTopDrawerOpen, ElementName=drwSettings}" Value="True">
-                                        <Setter Property="Visibility" Value="Visible"/>
+                                    <DataTrigger Binding="{Binding IsTopDrawerOpen, RelativeSource={RelativeSource AncestorType=md:DrawerHost}}" Value="False">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>

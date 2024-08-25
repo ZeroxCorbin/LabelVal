@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Documents;
 
 namespace LabelVal.LVS_95xx.ViewModels;
 
@@ -21,6 +22,11 @@ public partial class Verifier : ObservableRecipient
     [ObservableProperty][property: JsonProperty] private string selectedComName;
     [ObservableProperty][property: JsonProperty] private string selectedComBaudRate = "9600";
     [ObservableProperty][property: JsonProperty] private string databasePath = @"C:\Users\Public\LVS-95XX\LVS-95XX.mdb";
+    partial void OnDatabasePathChanged(string value)
+    {
+        if(string.IsNullOrEmpty(value))
+            App.Current.Dispatcher.BeginInvoke(() => DatabasePath = @"C:\Users\Public\LVS-95XX\LVS-95XX.mdb");
+    }
 
     [RelayCommand]
     private void Connect()
@@ -34,10 +40,15 @@ public partial class Verifier : ObservableRecipient
     [RelayCommand]
     private void RefreshComList()
     {
-        AvailablePorts.Clear();
-
-        foreach (var name in System.IO.Ports.SerialPort.GetPortNames())
-            AvailablePorts.Add(name);
+        var names = System.IO.Ports.SerialPort.GetPortNames();
+        foreach (var name in names)
+        {
+            if (!AvailablePorts.Contains(name))
+                AvailablePorts.Add(name);
+        }
+        var toRemove = AvailablePorts.Where(name => !names.Contains(name)).ToList();
+        foreach (var name in toRemove)
+            _ = AvailablePorts.Remove(name);
     }
 
     private void PostLogin()
