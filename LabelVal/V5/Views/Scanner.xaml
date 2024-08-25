@@ -242,8 +242,8 @@
                                 </TextBox>
 
                                 <Button Command="{Binding Manager.DeleteCommand}" CommandParameter="{Binding }"
-                                        Style="{StaticResource GroupHeaderCirlceButton}"
-                                        Content="{iconPacks:Material Kind=Delete, Height=14, Width=14}"
+                                        Style="{StaticResource GroupHeaderCirlceButton}" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                                        Content="{iconPacks:Material Kind=Delete}"
                                         ToolTip="Delete this device?"/>
 
                             </DockPanel>

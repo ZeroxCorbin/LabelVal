@@ -83,10 +83,10 @@
                             </Style>
                         </md:Card.Style>
 
-                        <DockPanel Margin="3">
+                        <DockPanel>
 
                             <DockPanel DockPanel.Dock="Top">
-                                <ComboBox ItemsSource="{Binding AvailablePorts}" SelectedItem="{Binding SelectedComName}"
+                                <ComboBox ItemsSource="{Binding AvailablePorts}" SelectedItem="{Binding SelectedComName}" Margin="3"
                                         md:HintAssist.Hint="COM Port" md:HintAssist.IsFloating="True">
                                     <ComboBox.Style>
                                         <Style TargetType="ComboBox" BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}">
@@ -105,17 +105,11 @@
                                         Content="{iconPacks:Material Kind=Refresh}"
                                         Style="{StaticResource GroupHeaderCirlceButton}"/>
 
-                                <Button Command="{Binding Manager.DeleteCommand}" CommandParameter="{Binding }"
-                                        Margin="10,0" HorizontalAlignment="Right" VerticalAlignment="Bottom"
-                                        ToolTip="Delete this verifier?"
-                                        Content="{iconPacks:Material Kind=Delete}"
-                                        Style="{StaticResource GroupHeaderCirlceButton}"/>
-
                             </DockPanel>
 
-                            <DockPanel Margin="3">
+                            <DockPanel>
                                 
-                                <TextBox Text="{Binding DatabasePath, UpdateSourceTrigger=PropertyChanged}" Height="48" MaxWidth="220" Margin="3,0" HorizontalContentAlignment="Left" HorizontalAlignment="Left"
+                                <TextBox Text="{Binding DatabasePath, UpdateSourceTrigger=PropertyChanged}" Height="48" MaxWidth="220" Margin="3" HorizontalContentAlignment="Left" HorizontalAlignment="Left"
                                         md:HintAssist.Hint="LVS95xx Database" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left" 
                                      md:TextFieldAssist.HasClearButton="True" TextWrapping="Wrap">
                                     <TextBox.Style>
@@ -130,6 +124,12 @@
                                         </Style>
                                     </TextBox.Style>
                                 </TextBox>
+
+                                <Button Command="{Binding Manager.DeleteCommand}" CommandParameter="{Binding }"
+                                        Margin="10,0" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                                        ToolTip="Delete this verifier?"
+                                        Content="{iconPacks:Material Kind=Delete}"
+                                        Style="{StaticResource GroupHeaderCirlceButton}"/>
                             </DockPanel>
                         </DockPanel>
                     </md:Card>
