@@ -75,9 +75,10 @@
                     <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="3" Padding="2" HorizontalAlignment="Left">
                         <md:Card.Style>
                             <Style TargetType="md:Card">
+                                <Setter Property="Visibility" Value="Collapsed"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsTopDrawerOpen, RelativeSource={RelativeSource AncestorType=md:DrawerHost}}" Value="False">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    <DataTrigger Binding="{Binding IsTopDrawerOpen, ElementName=drwSettings}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -117,7 +118,7 @@
                                             <Setter Property="IsEnabled" Value="True"/>
                                             <Setter Property="md:HintAssist.FloatingOffset" Value="0,-20"/>
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Manager.SelectedDevice.IsLoggedIn}" Value="True">
+                                                <DataTrigger Binding="{Binding Controller.SerialPort.IsListening}" Value="True">
                                                     <Setter Property="IsEnabled" Value="False"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
