@@ -38,7 +38,7 @@
                                     </Setter.Value>
                                 </Setter>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                    <DataTrigger Binding="{Binding Controller.SerialPort.IsListening}" Value="True">
                                         <Setter Property="Content">
                                             <Setter.Value>
                                                 <iconPacks:Modern Kind="Disconnect"/>
@@ -75,9 +75,19 @@
                     <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="3" Padding="2" HorizontalAlignment="Left">
 
                         <DockPanel>
-                            <ComboBox ItemsSource="{Binding ComNameList}" SelectedItem="{Binding SelectedComName}" IsEnabled="{Binding IsNotConnected}"
-                                  Style="{StaticResource MaterialDesignFloatingHintComboBox}"
-                                        md:HintAssist.Hint="COM Port" md:HintAssist.IsFloating="True"/>
+                            <ComboBox ItemsSource="{Binding AvailablePorts}" SelectedItem="{Binding SelectedComName}"
+                                        md:HintAssist.Hint="COM Port" md:HintAssist.IsFloating="True">
+                                <ComboBox.Style>
+                                    <Style TargetType="ComboBox" BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}">
+                                        <Setter Property="IsEnabled" Value="True"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Controller.SerialPort.IsListening}" Value="True">
+                                                <Setter Property="IsEnabled" Value="False"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ComboBox.Style>
+                            </ComboBox>
 
                             <Button Command="{Binding Manager.DeleteCommand}" CommandParameter="{Binding }" Style="{StaticResource GroupHeaderCirlceButton}" ToolTip="Delete this verifier?">
                                 <iconPacks:PackIconMaterial Kind="Delete" Height="14" Width="14"/>
@@ -118,7 +128,7 @@
                                     <Setter Property="Text" Value="Offline"/>
 
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                        <DataTrigger Binding="{Binding Controller.SerialPort.IsListening}" Value="True">
                                             <Setter Property="Text" Value="Run"/>
                                         </DataTrigger>
 
@@ -152,7 +162,7 @@
                 <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Padding="1">
 
                     <ScrollViewer Height="400" Width="300">
-                        <TextBox Text="{Binding ReadData.Packet, Mode=OneWay}" IsReadOnly="True" BorderThickness="0" TextWrapping="Wrap"/>
+                        <TextBox Text="{Binding Controller.ReadData.Packet, Mode=OneWay}" IsReadOnly="True" BorderThickness="0" TextWrapping="Wrap"/>
                     </ScrollViewer>
                 </md:Card>
 

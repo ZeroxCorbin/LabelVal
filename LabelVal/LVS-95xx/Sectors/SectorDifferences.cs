@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using L95xx_Lib.Models;
 using LabelVal.Sectors.Interfaces;
 using Org.BouncyCastle.Crypto.Prng;
 using System;
@@ -197,8 +198,8 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
     }
 
     public SectorDifferences() { }
-    public SectorDifferences(Models.FullReport report, bool isPDF417, StandardsTypes standard) => Process(report, isPDF417, standard);
-    public void Process(Models.FullReport report, bool isPDF417, StandardsTypes standard)
+    public SectorDifferences(FullReport report, bool isPDF417, StandardsTypes standard) => Process(report, isPDF417, standard);
+    public void Process(FullReport report, bool isPDF417, StandardsTypes standard)
     {
         UserName = report.Name;
         IsNotEmpty = false;
@@ -361,8 +362,8 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
         }
     }
 
-    private string GetParameter(string key, List<Models.ReportData> report, bool equal = false) => report.Find((e) => equal ? e.ParameterName.Equals(key) : e.ParameterName.StartsWith(key))?.ParameterValue;
-    private List<string> GetParameters(string key, List<Models.ReportData> report) => report.FindAll((e) => e.ParameterName.StartsWith(key)).Select((e) => e.ParameterValue).ToList();
+    private string GetParameter(string key, List<ReportData> report, bool equal = false) => report.Find((e) => equal ? e.ParameterName.Equals(key) : e.ParameterName.StartsWith(key))?.ParameterValue;
+    private List<string> GetParameters(string key, List<ReportData> report) => report.FindAll((e) => e.ParameterName.StartsWith(key)).Select((e) => e.ParameterValue).ToList();
 
     private string[] GetKeyValuePair(string key, List<string> report)
     {

@@ -144,7 +144,7 @@
                                             <Setter Property="ToolTip" Value="L95xx Data is redirected here."/>
                                             <Setter Property="Background" Value="{DynamicResource L95xx_Brush}"/>
                                         </DataTrigger>
-                                        <DataTrigger Binding="{Binding SelectedVerifier.IsConnected}" Value="True">
+                                        <DataTrigger Binding="{Binding SelectedVerifier.Controller.SerialPort.IsListening}" Value="True">
                                             <Setter Property="Visibility" Value="Visible"/>
                                         </DataTrigger>
                                     </Style.Triggers>

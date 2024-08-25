@@ -120,8 +120,8 @@
                             <Style.Triggers>
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding ImageResults.SelectedScanner.IsSimulator}" Value="True"/>
-                                        <Condition Binding="{Binding ImageResults.SelectedScanner.IsConnected}" Value="True"/>
+                                        <Condition Binding="{Binding ImageResults.SelectedScanner.Controller.IsSimulator}" Value="True"/>
+                                        <Condition Binding="{Binding ImageResults.SelectedScanner.Controller.IsConnected}" Value="True"/>
                                         <Condition Binding="{Binding V5ResultRow, Converter={StaticResource objectIsNull}}" Value="True"/>
                                     </MultiDataTrigger.Conditions>
 
@@ -133,8 +133,8 @@
 
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding ImageResults.SelectedScanner.IsSimulator}" Value="True"/>
-                                        <Condition Binding="{Binding ImageResults.SelectedScanner.IsConnected}" Value="True"/>
+                                        <Condition Binding="{Binding ImageResults.SelectedScanner.Controller.IsSimulator}" Value="True"/>
+                                        <Condition Binding="{Binding ImageResults.SelectedScanner.Controller.IsConnected}" Value="True"/>
                                         <Condition Binding="{Binding V5ResultRow, Converter={StaticResource objectIsNull}}" Value="False"/>
                                     </MultiDataTrigger.Conditions>
 
@@ -146,8 +146,8 @@
 
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding ImageResults.SelectedScanner.IsSimulator}" Value="False"/>
-                                        <Condition Binding="{Binding ImageResults.SelectedScanner.IsConnected}" Value="True"/>
+                                        <Condition Binding="{Binding ImageResults.SelectedScanner.Controller.IsSimulator}" Value="False"/>
+                                        <Condition Binding="{Binding ImageResults.SelectedScanner.Controller.IsConnected}" Value="True"/>
                                     </MultiDataTrigger.Conditions>
 
                                     <Setter Property="Visibility" Value="Visible"/>
@@ -172,7 +172,7 @@
                                     <Setter Property="ToolTip" Value="L95xx Data is redirected here."/>
                                     <Setter Property="Background" Value="{DynamicResource L95xx_Brush}"/>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding ImageResults.SelectedVerifier.IsConnected}" Value="True">
+                                <DataTrigger Binding="{Binding ImageResults.SelectedVerifier.Controller.SerialPort.IsListening}" Value="True">
                                     <Setter Property="Visibility" Value="Visible"/>
                                 </DataTrigger>
                             </Style.Triggers>

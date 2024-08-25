@@ -1,4 +1,4 @@
-﻿using LabelVal.LVS_95xx.Models;
+﻿using L95xx_Lib.Models;
 using LabelVal.Sectors.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
@@ -77,7 +77,7 @@ public class Sector : ISector
     public bool IsFocused { get; set; }
     public bool IsMouseOver { get; set; }
 
-    public Sector(Models.FullReport report, StandardsTypes standard, GS1TableNames table)
+    public Sector(FullReport report, StandardsTypes standard, GS1TableNames table)
     {
         L95xxFullReport = report;
 

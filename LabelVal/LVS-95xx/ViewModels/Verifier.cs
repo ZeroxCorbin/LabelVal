@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using LabelVal.LVS_95xx.Controllers;
-using LabelVal.LVS_95xx.Models;
+using L95xx_Lib.Controllers;
 using Newtonsoft.Json;
 using System;
 using System.Collections.ObjectModel;
@@ -11,115 +10,45 @@ namespace LabelVal.LVS_95xx.ViewModels;
 
 [JsonObject(MemberSerialization.OptIn)]
 public partial class Verifier : ObservableRecipient
-{
-    public string ID => SelectedComName;
+{   
+    [JsonProperty] public long ID { get; set; } = DateTime.Now.Ticks;
 
-    private SerialPortController PortController = new();
-    private L95xxDatabaseConnection DatabaseConnection = new();
+    public VerifierManager Manager { get; set; }
+    public Controller Controller { get; } = new();
 
-    [JsonIgnore] public VerifierManager Manager { get; set; }
-
-    [ObservableProperty] private bool isConnected;
-    partial void OnIsConnectedChanged(bool value) => OnPropertyChanged(nameof(IsNotConnected));
-    public bool IsNotConnected => !IsConnected;
-
-
-    [ObservableProperty][NotifyPropertyChangedRecipients] private Models.FullReport readData;
-
-    public ObservableCollection<string> ComNameList { get; } = [];
+    public ObservableCollection<string> AvailablePorts { get; } = [];
 
     [ObservableProperty][property: JsonProperty] private string selectedComName;
-
-    public Verifier()
-    {
-        PortController.PacketAvailable -= PortController_PacketAvailable;
-        PortController.PacketAvailable += PortController_PacketAvailable;
-
-        PortController.Exception -= PortController_Exception;
-        PortController.Exception += PortController_Exception;
-
-        LoadComList();
-    }
-
-    private void LoadComList()
-    {
-        ComNameList.Clear();
-        PortController.GetCOMList();
-
-        foreach (var com in PortController.COMPortsAvailable)
-            ComNameList.Add(com);
-    }
+    [ObservableProperty][property: JsonProperty] private string selectedComBaudRate = "9600";
+    [ObservableProperty][property: JsonProperty] private string databasePath = @"C:\Users\Public\LVS-95XX\LVS-95XX.mdb";
 
     [RelayCommand]
     private void Connect()
     {
-        if (!string.IsNullOrEmpty(SelectedComName) && !IsConnected)
-        {
-            PortController.Init(SelectedComName);
-
-            if (PortController.Connect())
-            {
-                if (!DatabaseConnection.Connect())
-                {
-                    ClosePort();
-                    return;
-                }
-                PostLogin();
-                IsConnected = true;
-
-            }
-        }
+        if(Controller.SerialPort.IsListening)
+            Controller.Disconnect();
         else
-            ClosePort();
+            Controller.Connect(SelectedComName, DatabasePath);
+    }
+
+    [RelayCommand]
+    private void RefreshComList()
+    {
+        AvailablePorts.Clear();
+
+        foreach (var name in System.IO.Ports.SerialPort.GetPortNames())
+            AvailablePorts.Add(name);
     }
 
     private void PostLogin()
     {
-        var cur = DatabaseConnection.ReadSetting("Report", "ReportImageReduction");
-        var table = DatabaseConnection.ReadSetting("GS1", "Table");
+        var cur = Controller.Database.ReadSetting("Report", "ReportImageReduction");
+        var table = Controller.Database.ReadSetting("GS1", "Table");
         //Update database setting to allow storing full resolution images to the report.
         if (cur != "1")
-            DatabaseConnection.WriteSetting("Report", "ReportImageReduction", "1");
+            Controller.Database.WriteSetting("Report", "ReportImageReduction", "1");
     }
 
-    private void PortController_Exception(object sender, EventArgs e) => ClosePort();
-    private void PortController_PacketAvailable(string packet)
-    {
-        var full = new FullReport();
 
-        var reportID = GetReportID(packet);
-
-        full.Report = DatabaseConnection.GetReport(reportID);
-        full.ReportData = DatabaseConnection.GetReportData(reportID);
-        full.Packet = packet;
-
-        ReadData = full;
-    }
-
-    private string GetReportID(string packet)
-    {
-        var pt = packet.IndexOf("ReportID,");
-        if (pt == -1)
-            return null;
-
-        return GetInt(packet.Substring(pt + 9));
-    }
-
-    [RelayCommand]
-    private void ClosePort()
-    {
-        PortController.Disconnect();
-        IsConnected = false;
-        DatabaseConnection.Disconnect();
-    }
-
-    private static string GetInt(string value)
-    {
-        var digits = new string(value.Trim().TakeWhile(c =>
-                                ("0123456789").Contains(c)
-                                ).ToArray());
-
-        return digits;
-    }
 
 }

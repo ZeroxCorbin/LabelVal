@@ -1,20 +1,19 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
+using L95xx_Lib.Models;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.LVS_95xx.Sectors;
 using LabelVal.Sectors.Interfaces;
+using LabelVal.Utilities;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Media;
-using static V5_REST_Lib.Controller;
-using V5_REST_Lib.Models;
-using LabelVal.Utilities;
 
 namespace LabelVal.Results.ViewModels;
-public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelVal.LVS_95xx.Models.FullReport>>
+public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullReport>>
 {
     [ObservableProperty] private Databases.L95xxResult l95xxResultRow;
     partial void OnL95xxResultRowChanged(Databases.L95xxResult value) => L95xxStoredImage = L95xxResultRow?.Stored;
@@ -25,7 +24,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
     [ObservableProperty] private ImageEntry l95xxCurrentImage;
     [ObservableProperty] private DrawingImage l95xxCurrentImageOverlay;
 
-    public List<LVS_95xx.Models.FullReport> L95xxCurrentReport { get; private set; }
+    public List<FullReport> L95xxCurrentReport { get; private set; }
     public string L95xxSerializeReport => JsonConvert.SerializeObject(L95xxCurrentReport);
 
     public ObservableCollection<Sectors.Interfaces.ISector> L95xxCurrentSectors { get; } = [];
@@ -52,7 +51,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
     [ObservableProperty] private bool isL95xxSelected = false;
     partial void OnIsL95xxSelectedChanging(bool value) => ImageResults.IsL95xxSelected = ImageResults.IsL95xxSelected ? false : ImageResults.ResetL95xxSelected();
 
-    public void Receive(PropertyChangedMessage<LabelVal.LVS_95xx.Models.FullReport> message)
+    public void Receive(PropertyChangedMessage<FullReport> message)
     {
         if (IsL95xxSelected)
             App.Current.Dispatcher.BeginInvoke(() => L95xxProcessResults(message.NewValue));
@@ -85,7 +84,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
             return;
         }
 
-        List<LVS_95xx.Models.FullReport> report = L95xxResultRow._Report;
+        List<FullReport> report = L95xxResultRow._Report;
 
         L95xxStoredSectors.Clear();
         List<Sectors.Interfaces.ISector> tempSectors = [];
@@ -103,14 +102,14 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<LabelV
         UpdateL95xxStoredImageOverlay();
     }
 
-    public void L95xxProcessResults(LabelVal.LVS_95xx.Models.FullReport message)
+    public void L95xxProcessResults(FullReport message)
     {
-        if(message == null || message.Report == null)
+        if (message == null || message.Report == null)
             return;
 
-        if(message.Report.OverallGrade.StartsWith("Bar"))
+        if (message.Report.OverallGrade.StartsWith("Bar"))
             return;
-        
+
         var center = new System.Drawing.Point(message.Report.X1 + (message.Report.SizeX / 2), message.Report.Y1 + (message.Report.SizeY / 2));
 
         string name = null;

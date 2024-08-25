@@ -1433,6 +1433,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\gs1-syntax-engine\src\dotnet-lib\gs1encoders-dotnet-lib.csproj" />
 		<ProjectReference Include="..\..\JSONViewer_WPF\JSONViewer_WPF.csproj" />
+		<ProjectReference Include="..\..\L95xx_Lib\L95xx_Lib.csproj" />
 		<ProjectReference Include="..\..\LibDatabases\LibSimpleDatabase\LibSimpleDatabase.csproj" />
 		<ProjectReference Include="..\..\LibStaticUtilities\LibStaticUtilities\LibStaticUtilities.csproj" />
 		<ProjectReference Include="..\..\RingBuffer\RingBuffer\RingBuffer.csproj" />

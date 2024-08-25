@@ -1,4 +1,5 @@
-﻿using LabelVal.Sectors.Interfaces;
+﻿using L95xx_Lib.Models;
+using LabelVal.Sectors.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,7 +45,7 @@ public class Report : IReport
     //V275 2D module data
     public ModuleData ExtendedData { get; set; }
 
-    public Report(Models.FullReport report)
+    public Report(FullReport report)
     {
         Type = GetParameter("Cell size", report.ReportData) == null ? "verify1D" : "verify2D";
 
@@ -91,7 +92,7 @@ public class Report : IReport
             };
         }
     }
-    private string GetParameter(string key, List<Models.ReportData> report, bool equal = false) => report.Find((e) => equal ? e.ParameterName.Equals(key) : e.ParameterName.StartsWith(key))?.ParameterValue;
+    private string GetParameter(string key, List<ReportData> report, bool equal = false) => report.Find((e) => equal ? e.ParameterName.Equals(key) : e.ParameterName.StartsWith(key))?.ParameterValue;
 
     private string[] GetKeyValuePair(string key, List<string> report)
     {

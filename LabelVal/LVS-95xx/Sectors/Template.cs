@@ -1,4 +1,5 @@
-﻿using LabelVal.Sectors.Interfaces;
+﻿using L95xx_Lib.Models;
+using LabelVal.Sectors.Interfaces;
 using V5_REST_Lib.Models;
 
 namespace LabelVal.LVS_95xx.Sectors
@@ -48,7 +49,7 @@ namespace LabelVal.LVS_95xx.Sectors
             BlemishMask = template.BlemishMask;
         }
 
-        public Template(LabelVal.LVS_95xx.Models.FullReport report)
+        public Template(FullReport report)
         {
             if (report == null)
                 return;
