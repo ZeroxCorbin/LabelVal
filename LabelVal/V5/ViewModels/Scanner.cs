@@ -41,6 +41,17 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     }
     private int repeatedTriggerDelay = 50;
 
+    [ObservableProperty][property: JsonProperty] private double quickSet_ImagePercent = 0.33d;
+    partial void OnQuickSet_ImagePercentChanged(double value) => _ = App.Current.Dispatcher.BeginInvoke(() =>
+    {
+        if (Controller.IsSimulator)
+            ImageFocusRegionOverlay = null;
+        else
+            ImageFocusRegionOverlay = CreateFocusRegionOverlay();
+    });
+
+    [ObservableProperty][property: JsonProperty] private bool fullResImages = false;
+
     [ObservableProperty] private string eventMessages;
     [ObservableProperty] private string explicitMessages;
 
@@ -53,7 +64,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
     public static List<CameraDetails> AvailableCameras => CameraModels.Available;
 
-    [ObservableProperty][property: JsonProperty] private CameraDetails selectedCamera;
+    [ObservableProperty] private CameraDetails selectedCamera;
     partial void OnSelectedCameraChanged(CameraDetails value) => _ = App.Current.Dispatcher.BeginInvoke(() =>
     {
         if (Controller.IsSimulator)
@@ -62,15 +73,6 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             ImageFocusRegionOverlay = CreateFocusRegionOverlay();
     });
 
-
-    [ObservableProperty][property: JsonProperty] private double quickSet_ImagePercent = 0.33d;
-    partial void OnQuickSet_ImagePercentChanged(double value) => _ = App.Current.Dispatcher.BeginInvoke(() =>
-    {
-        if (Controller.IsSimulator)
-            ImageFocusRegionOverlay = null;
-        else
-            ImageFocusRegionOverlay = CreateFocusRegionOverlay();
-    });
     private QuickSet_Photometry QuickSet_Photometry
     {
         get
@@ -233,8 +235,6 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     public Scanner()
     {
         Controller.PropertyChanged += Controller_PropertyChanged;
-        Controller.CameraModeChanged += ScannerController_CameraModeChanged;
-
         IsActive = true;
     }
 
@@ -324,8 +324,6 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     //        stop = true;
     //}
 
-    private void ScannerController_CameraModeChanged(V5_REST_Lib.Controller.CameraModes mode) => ScannerMode = mode;
-
     private void ScannerController_ReportUpdate(JObject json)
     {
         if (json != null)
@@ -389,7 +387,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             return;
         }
 
-        if (Controller.FullResImages)
+        if (FullResImages)
         {
             try
             {
@@ -451,7 +449,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
         GeometryGroup secAreas = new();
 
-        int div = Controller.FullResImages ? 1 : 2;
+        int div = FullResImages ? 1 : 2;
 
         secAreas.Children.Add(new RectangleGeometry(
             new Rect(
@@ -479,7 +477,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
         DrawingGroup drwGroup = new();
 
-        int div = Controller.FullResImages ? 1 : 2;
+        int div = FullResImages ? 1 : 2;
 
         //Draw the image outline the same size as the stored image
         GeometryDrawing border = new()
@@ -657,50 +655,50 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         JobName = "";
     }
 
+    CancellationTokenSource _tokenSrc;
     private bool running;
     private bool stop;
     [RelayCommand]
     private async Task Trigger()
     {
-        if (running == true)
+        if(_tokenSrc != null)
         {
-            stop = true;
+            _tokenSrc.Cancel();
             return;
         }
 
         Clear();
 
         if (RepeatTrigger)
-            _ = Task.Run(async () =>
+        {
+            _tokenSrc = new CancellationTokenSource();
+            var cnlToken = _tokenSrc.Token;
+            _ = App.Current.Dispatcher.BeginInvoke(async () =>
             {
                 try
                 {
-                    while (RepeatTrigger)
+                    while (RepeatTrigger && !_tokenSrc.IsCancellationRequested)
                     {
-                        running = true;
-
                         if (await Controller.Trigger_Wait() != true)
-                            return;
-
-                        if (stop)
-                            return;
-
+                            _tokenSrc.Token.ThrowIfCancellationRequested();
+                        CheckOverlay();
                     }
+                    _tokenSrc.Token.ThrowIfCancellationRequested();
                 }
                 finally
                 {
                     CheckOverlay();
-                    stop = false;
-                    running = false;
+                    _tokenSrc = null;
                 }
             });
+        }
         else
         {
-            IsWaitingForFullImage = Controller.FullResImages;
+            IsWaitingForFullImage = FullResImages;
 
             if (await Controller.Trigger_Wait())
             {
-                if (Controller.FullResImages)
+                if (FullResImages)
                     await WaitForImage();
 
                 CheckOverlay();

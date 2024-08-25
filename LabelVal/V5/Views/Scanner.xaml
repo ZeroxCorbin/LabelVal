@@ -158,7 +158,7 @@
                                              md:HintAssist.Hint="Trigger Delay" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left"
                                              md:TextFieldAssist.SuffixText="ms"/>
 
-                                <mah:ToggleSwitch IsOn="{Binding Controller.FullResImages}"
+                                <mah:ToggleSwitch IsOn="{Binding FullResImages}"
                                           Content="Full Res. Images"
                                           Margin="3" >
                                     <mah:ToggleSwitch.RenderTransform>
@@ -348,7 +348,7 @@
 
                         <DockPanel>
 
-                            <TextBox DockPanel.Dock="Top" d:Text="Mode" Text="{Binding ScannerMode}" Margin="6,3"
+                            <TextBox DockPanel.Dock="Top" d:Text="Mode" Text="{Binding Controller.CameraMode}" Margin="6,3"
                                  md:HintAssist.Hint="Mode" IsHitTestVisible="False">
                                 <TextBox.Style>
                                     <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
@@ -356,7 +356,7 @@
                                         <Style.Triggers>
                                             <MultiDataTrigger>
                                                 <MultiDataTrigger.Conditions>
-                                                    <Condition Value="Offline" Binding="{Binding ScannerMode}" />
+                                                    <Condition Value="Offline" Binding="{Binding Controller.CameraMode}" />
                                                 </MultiDataTrigger.Conditions>
                                                 <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}" />
                                             </MultiDataTrigger>
@@ -373,7 +373,7 @@
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                         <Style.Triggers>
 
-                                            <DataTrigger Value="Offline" Binding="{Binding ScannerMode}">
+                                            <DataTrigger Value="Offline" Binding="{Binding Controller.CameraMode}">
                                                 <Setter Property="Visibility" Value="Visible"/>
                                                 <Setter Property="Content">
                                                     <Setter.Value>
@@ -384,7 +384,7 @@
                                                 <Setter Property="ToolTip" Value="Setup"/>
                                             </DataTrigger>
 
-                                            <DataTrigger Value="Setup" Binding="{Binding ScannerMode}">
+                                            <DataTrigger Value="Setup" Binding="{Binding Controller.CameraMode}">
                                                 <Setter Property="Visibility" Value="Visible"/>
                                                 <Setter Property="Content">
                                                     <Setter.Value>
@@ -395,7 +395,7 @@
                                                 <Setter Property="ToolTip" Value="Run"/>
                                             </DataTrigger>
 
-                                            <DataTrigger Value="Run" Binding="{Binding ScannerMode}">
+                                            <DataTrigger Value="Run" Binding="{Binding Controller.CameraMode}">
                                                 <Setter Property="Visibility" Value="Visible"/>
                                                 <Setter Property="Content">
                                                     <Setter.Value>
@@ -438,7 +438,7 @@
                                             <Setter Property="Visibility" Value="Visible"/>
                                         </DataTrigger>
 
-                                        <DataTrigger Value="Run" Binding="{Binding ScannerMode}">
+                                        <DataTrigger Value="Run" Binding="{Binding Controller.CameraMode}">
                                             <Setter Property="IsHitTestVisible" Value="False"/>
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -620,7 +620,7 @@
                                 <TextBlock Text="I" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Image Web Socket State"/>
                             </Grid>
 
-                            <TextBlock Text="{Binding ScannerMode}" Margin="3,0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Controller.CameraMode}" Margin="3,0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
 
                         </DockPanel>
                     </DockPanel>
