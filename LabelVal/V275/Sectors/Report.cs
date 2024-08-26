@@ -4,7 +4,7 @@ using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Documents;
-using V275_REST_lib.Models;
+using V275_REST_Lib.Models;
 
 namespace LabelVal.V275.Sectors;
 

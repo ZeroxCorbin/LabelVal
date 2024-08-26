@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using V275_REST_lib.Models;
+using V275_REST_Lib.Models;
 using V275_REST_Lib.Models;
 
 namespace LabelVal.V275.ViewModels;
@@ -20,13 +20,17 @@ namespace LabelVal.V275.ViewModels;
 [JsonObject(MemberSerialization.OptIn)]
 public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChangedMessage<ImageRollEntry>>
 {
-    public V275Manager Manager { get; set; }
+    [JsonProperty] public long ID { get; set; } = DateTime.Now.Ticks;
+
+    public V275Manager Manager { get; set; } 
+
+    [ObservableProperty] private ObservableCollection<Node> nodes = [];
 
     [ObservableProperty][property: JsonProperty] private string host = "127.0.0.1"; //App.Settings.GetValue($"{NodeManager.ClassName}{nameof(NodeManager.Host)}", "127.0.0.1", true);
     partial void OnHostChanged(string value)
     {
         foreach (var nd in Nodes)
-            nd.Host = value;
+            nd.Controller.Host = value;
     }
 
     [ObservableProperty][property: JsonProperty] private uint systemPort = GetPortNumber(); //App.Settings.GetValue($"{NodeManager.ClassName}{nameof(NodeManager.SystemPort)}", GetPortNumber(), true);
@@ -37,7 +41,7 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
         else
         {
             foreach (var nd in Nodes)
-                nd.SystemPort = value;
+                nd.Controller.SystemPort = value;
         }
     }
     public string SystemPortString
@@ -56,14 +60,14 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
     partial void OnUserNameChanged(string value)
     {
         foreach (var nd in Nodes)
-            nd.UserName = value;
+            nd.Controller.UserName = value;
     }
 
     [ObservableProperty][property: JsonProperty] private string password = "admin"; // App.Settings.GetValue($"{NodeManager.ClassName}{nameof(Password)}", "admin", true);
     partial void OnPasswordChanged(string value)
     {
         foreach (var nd in Nodes)
-            nd.Password = value;
+            nd.Controller.Password = value;
     }
 
     [ObservableProperty][property: JsonProperty] private string simulatorImageDirectory = GetSimulationDirectory();
@@ -74,11 +78,11 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
         else
         {
             foreach (var nd in Nodes)
-                nd.SimulatorImageDirectory = value;
+                nd.Controller.SimulatorImageDirectory = value;
         }
     }
 
-    [ObservableProperty] private ObservableCollection<Node> nodes = [];
+
 
     [ObservableProperty] private bool isGetDevices = false;
 
@@ -91,15 +95,14 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
 
         //Reset();
 
-        Node system = new(Host, SystemPort, 0, SelectedImageRoll);
+        Node system = new(Host, SystemPort, 0, UserName, Password, SelectedImageRoll);
 
-        Devices dev;
-        if ((dev = await system.Controller.Commands.GetDevices()) != null)
+        if ((await system.Controller.Commands.GetDevices()).Object is Devices dev)
         {
             List<Node> lst = new();
             foreach (Devices.Node node in dev.nodes)
             {
-                if (lst.Any(n => n.Details.cameraMAC == node.cameraMAC))
+                if (lst.Any(n => n.Controller.Node.cameraMAC == node.cameraMAC))
                 {
                     LogWarning($"Duplicate device MAC: {node.cameraMAC}");
                     continue;
@@ -107,19 +110,11 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
 
                 LogDebug($"Adding Device MAC: {node.cameraMAC}");
 
-                Devices.Camera camera = dev.cameras.FirstOrDefault(c => c.mac == node.cameraMAC);
-
-                Node newNode = new(Host, SystemPort, (uint)node.enumeration, SelectedImageRoll)
-                { Manager = this, Details = node, Camera = camera, SimulatorImageDirectory = SimulatorImageDirectory, UserName = UserName, Password = Password };
-
-                Inspection insp;
-                if ((insp = await newNode.Controller.Commands.GetInspection()) != null)
-                    newNode.Inspection = insp;
-
+                Node newNode = new(Host, SystemPort, (uint)node.enumeration, UserName, Password, SelectedImageRoll) { Manager = this };
                 lst.Add(newNode);
             }
 
-            List<Node> srt = lst.OrderBy(n => n.Controller.Commands.NodeNumber).ToList();
+            List<Node> srt = lst.OrderBy(n => n.Controller.NodeNumber).ToList();
 
             Nodes.Clear();
             if (srt.Count == 0)
@@ -131,25 +126,25 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
             foreach (Node node in srt)
                 Nodes.Add(node);
 
-            Product product = await new V275_REST_lib.Controller(Host, SystemPort, 0).Commands.GetProduct();
-            if (product != null)
-            {
-                string curVer = product.part.Remove(0, product.part.LastIndexOf("-") + 1);
+            //Product product = await new V275_REST_Lib.Controller(Host, SystemPort, 0).Commands.GetProduct();
+            //if (product != null)
+            //{
+            //    string curVer = product.part.Remove(0, product.part.LastIndexOf("-") + 1);
 
-                bool res = false;
-                if (Version.TryParse(curVer, out Version result))
-                {
-                    Version baseVer = Version.Parse("1.2.0.0000");
-                    res = result.CompareTo(baseVer) < 0;
-                }
+            //    bool res = false;
+            //    if (Version.TryParse(curVer, out Version result))
+            //    {
+            //        Version baseVer = Version.Parse("1.2.0.0000");
+            //        res = result.CompareTo(baseVer) < 0;
+            //    }
 
-                foreach (Node node in Nodes)
-                {
-                    node.SelectedImageRoll = SelectedImageRoll;
-                    node.Product = product;
-                    node.IsOldISO = res;
-                }
-            }
+            //    foreach (Node node in Nodes)
+            //    {
+            //        node.SelectedImageRoll = SelectedImageRoll;
+            //        node.Product = product;
+            //        node.IsOldISO = res;
+            //    }
+            //}
         }
         else
         {
@@ -159,7 +154,7 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
         Node sel = App.Settings.GetValue<Node>($"V275_{nameof(Manager.SelectedDevice)}");
         foreach (Node node in Nodes)
         {
-            if (sel != null && (node.Host == sel.Host && node.SystemPort == sel.SystemPort && node.NodeNumber == sel.NodeNumber))
+            if (sel != null && (node.Controller.Host == sel.Controller.Host && node.Controller.SystemPort == sel.Controller.SystemPort && node.Controller.NodeNumber == sel.Controller.NodeNumber))
                 Manager.SelectedDevice = node;
         }
     }

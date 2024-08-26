@@ -105,9 +105,6 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         }
     }
 
-
-    [ObservableProperty] private V5_REST_Lib.Controller.CameraModes scannerMode;
-
     [ObservableProperty] private ImageRollEntry selectedImageRoll;
 
     [ObservableProperty] private bool repeatTrigger;
@@ -240,11 +237,11 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
     private void Controller_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        if(e.PropertyName == "Config")
+        if (e.PropertyName == "Config")
             ScannerController_ConfigUpdate();
         else if (e.PropertyName == "SysInfo")
             ScannerController_SysInfoUpdate();
-        else if(e.PropertyName == "Image")
+        else if (e.PropertyName == "Image")
             ScannerController_ImageUpdate(Controller.Image);
         else if (e.PropertyName == "Report")
             ScannerController_ReportUpdate(Controller.Report);
@@ -255,8 +252,6 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     {
         if (Controller.IsConfigValid)
         {
-            Controller.IsSimulator = Controller.Config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource != null;
-
             V5_REST_Lib.Commands.Results meta = await Controller.Commands.GetMeta();
             if (meta.OK)
             {
@@ -298,7 +293,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         if (Controller.IsSysInfoValid)
         {
             SelectedCamera = AvailableCameras.FirstOrDefault((e) => Controller.SysInfo.response.data.hwal.lens.lensName.StartsWith(e.FocalLength.ToString()) && Controller.SysInfo.response.data.hwal.sensor.description.StartsWith(e.Sensor.PixelCount.ToString()));
-            if(SelectedCamera == null)
+            if (SelectedCamera == null)
                 LogError("Could not find a camera matching the current lens and sensor.");
         }
         else
@@ -616,8 +611,6 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     [RelayCommand]
     private async Task Connect()
     {
-        ScannerMode = V5_REST_Lib.Controller.CameraModes.Offline;
-
         if (!Controller.IsConnected)
         {
             if (!await PreLogin())
@@ -661,7 +654,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     [RelayCommand]
     private async Task Trigger()
     {
-        if(_tokenSrc != null)
+        if (_tokenSrc != null)
         {
             _tokenSrc.Cancel();
             return;
@@ -744,20 +737,20 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     {
         Clear();
 
-        V5_REST_Lib.Commands.Results res = await Controller.GetSysInfo();
+        V5_REST_Lib.Commands.Results res = await Controller.Commands.GetSysInfo();
         if (res.OK)
         {
-            ExplicitMessages = res.Data;
+            ExplicitMessages = res.Json;
         }
     }
     [RelayCommand]
     private async Task Config()
     {
         Clear();
-        V5_REST_Lib.Commands.Results res = await Controller.GetConfig();
+        V5_REST_Lib.Commands.Results res = await Controller.Commands.GetConfig();
         if (res.OK)
         {
-            ExplicitMessages = res.Data;
+            ExplicitMessages = res.Json;
         }
     }
 
@@ -777,8 +770,6 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         _ = await Controller.SwitchToEdit();
     }
 
-    [RelayCommand]
-    private void Reboot() => _ = Controller.Reboot();
     [RelayCommand]
     private void AddToImageRoll()
     {

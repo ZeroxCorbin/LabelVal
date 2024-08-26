@@ -8,9 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Media;
-using V275_REST_lib.Models;
+using V275_REST_Lib.Models;
 
 namespace LabelVal.Results.ViewModels;
 public partial class ImageResultEntry
@@ -113,7 +112,7 @@ public partial class ImageResultEntry
 
     public async Task<bool> V275ReadTask(int repeat)
     {
-        V275_REST_lib.Controller.FullReport report;
+        V275_REST_Lib.Controller.FullReport report;
         if ((report = await ImageResults.SelectedNode.Controller.Read(repeat, true)) == null)
         {
             LogError("Unable to read the repeat report from the node.");
@@ -126,7 +125,7 @@ public partial class ImageResultEntry
         V275CurrentTemplate = report.job;
         V275CurrentReport = report.report;
 
-        if (!ImageResults.SelectedNode.IsSimulator)
+        if (!ImageResults.SelectedNode.Controller.IsSimulator)
         {
             int dpi = 600;
             V275CurrentImage = new ImageEntry(ImageRollUID, ImageUtilities.GetPng(report.image, dpi), dpi);
@@ -146,7 +145,7 @@ public partial class ImageResultEntry
                 if (jSec.name == rSec["name"].ToString())
                 {
 
-                    object fSec = V275DeserializeSector(rSec, ImageResults.SelectedImageRoll.SelectedStandard != Sectors.Interfaces.StandardsTypes.GS1 && ImageResults.SelectedNode.IsOldISO);
+                    object fSec = V275DeserializeSector(rSec, ImageResults.SelectedImageRoll.SelectedStandard != Sectors.Interfaces.StandardsTypes.GS1 && ImageResults.SelectedNode.Controller.IsOldISO);
 
                     if (fSec == null)
                         break; //Not yet supported sector type
@@ -258,18 +257,12 @@ public partial class ImageResultEntry
     public async Task<int> V275LoadTask()
     {
         if (!await ImageResults.SelectedNode.Controller.DeleteSectors())
-        {
-            LogError(ImageResults.SelectedNode.Controller.Status);
             return -1;
-        }
 
         if (V275StoredSectors.Count == 0)
         {
             if (!await ImageResults.SelectedNode.Controller.DetectSectors())
-            {
-                LogError(ImageResults.SelectedNode.Controller.Status);
                 return -1;
-            }
 
             return 2;
         }
@@ -277,10 +270,7 @@ public partial class ImageResultEntry
         foreach (V275.Sectors.Sector sec in V275StoredSectors)
         {
             if (!await ImageResults.SelectedNode.Controller.AddSector(sec.Template.Name, JsonConvert.SerializeObject(sec.V275Sector)))
-            {
-                LogError(ImageResults.SelectedNode.Controller.Status);
                 return -1;
-            }
 
             if (sec.Template.BlemishMask.Layers != null)
             {
@@ -289,10 +279,7 @@ public partial class ImageResultEntry
                     if (!await ImageResults.SelectedNode.Controller.AddMask(sec.Template.Name, JsonConvert.SerializeObject(layer)))
                     {
                         if (layer.value != 0)
-                        {
-                            LogError(ImageResults.SelectedNode.Controller.Status);
                             return -1;
-                        }
                     }
                 }
             }

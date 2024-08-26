@@ -97,10 +97,10 @@
                                             <DataTrigger Value="0" Binding="{Binding V275StoredSectors.Count}">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
-                                            <DataTrigger Value="Running" Binding="{Binding ImageResults.SelectedNode.Connection.V275_State}">
+                                            <DataTrigger Value="Running" Binding="{Binding ImageResults.SelectedNode.Connection.State}">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
-                                            <DataTrigger Value="Idle" Binding="{Binding ImageResults.SelectedNode.Connection.V275_State}">
+                                            <DataTrigger Value="Idle" Binding="{Binding ImageResults.SelectedNode.Connection.State}">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
                                         </Style.Triggers>

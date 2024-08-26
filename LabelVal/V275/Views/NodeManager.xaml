@@ -130,7 +130,7 @@
                                     </TextBox.Style>
                                 </TextBox>
 
-                                <TextBox Text="{Binding SystemPortString}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center"
+                                <TextBox Text="{Binding SystemPort}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center"
                                          md:HintAssist.Hint="Port" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left"
                                      md:TextFieldAssist.HasClearButton="True">
                                     <TextBox.Style>

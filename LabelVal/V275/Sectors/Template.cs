@@ -4,7 +4,7 @@ namespace LabelVal.V275.Sectors;
 
 public class Template : ITemplate
 {
-    public V275_REST_lib.Models.Job.Sector V275Sector { get; }
+    public V275_REST_Lib.Models.Job.Sector V275Sector { get; }
 
     public string Name { get; set; }
     public string Username { get; set; }
@@ -23,7 +23,7 @@ public class Template : ITemplate
     public TemplateMatchMode MatchSettings { get; set; }
     public BlemishMaskLayers BlemishMask { get; set; }
 
-    public Template(V275_REST_lib.Models.Job.Sector sectorTemplate)
+    public Template(V275_REST_Lib.Models.Job.Sector sectorTemplate)
     {
         V275Sector = sectorTemplate;
 

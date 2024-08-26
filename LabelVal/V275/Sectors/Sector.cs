@@ -4,7 +4,7 @@ namespace LabelVal.V275.Sectors;
 
 public class Sector : ISector
 {
-    public V275_REST_lib.Models.Job.Sector V275Sector { get; }
+    public V275_REST_Lib.Models.Job.Sector V275Sector { get; }
 
     public ITemplate Template { get; }
     public IReport Report { get; }
@@ -74,7 +74,7 @@ public class Sector : ISector
     public bool IsFocused { get; set; }
     public bool IsMouseOver { get; set; }
 
-    public Sector(V275_REST_lib.Models.Job.Sector sector, object report, StandardsTypes standard, GS1TableNames table)
+    public Sector(V275_REST_Lib.Models.Job.Sector sector, object report, StandardsTypes standard, GS1TableNames table)
     {
         V275Sector = sector;
 

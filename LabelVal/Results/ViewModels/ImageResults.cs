@@ -5,11 +5,7 @@ using CommunityToolkit.Mvvm.Messaging.Messages;
 using L95xx_Lib.Models;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Logging;
-using LabelVal.LVS_95xx.Sectors;
 using LabelVal.LVS_95xx.ViewModels;
-using LabelVal.Messages;
-using LabelVal.Run.ViewModels;
-using LabelVal.Sectors.Interfaces;
 using LabelVal.Utilities;
 using LabelVal.V275.ViewModels;
 using LabelVal.V5.ViewModels;
@@ -24,7 +20,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using V275_REST_lib.Models;
+using V275_REST_Lib;
+using V275_REST_Lib.Models;
 
 namespace LabelVal.Results.ViewModels;
 public partial class ImageResults : ObservableRecipient,
@@ -180,9 +177,9 @@ public partial class ImageResults : ObservableRecipient,
         ImageResultEntry tmp = new(img, this);
         tmp.V275ProcessImage += V275ProcessImage;
 
-        if (img.NewData is V5_REST_Lib.Controller.TriggerResults v5)
+        if (img.NewData is V5_REST_Lib.TriggerResults v5)
             tmp.V5ProcessResults(v5);
-        
+
         else if (img.NewData is FullReport l95)
             tmp.L95xxProcessResults(l95);
 
@@ -265,7 +262,7 @@ public partial class ImageResults : ObservableRecipient,
             InsertImageAtOrder(newImages, ImageResultsList.Count + 1);
     }
 
-    private async Task<V5_REST_Lib.Controller.TriggerResults> ProcessV5()
+    private async Task<V5_REST_Lib.TriggerResults> ProcessV5()
     {
         var res = await SelectedScanner.Controller.Trigger_Wait_Return(true);
 
@@ -522,7 +519,7 @@ public partial class ImageResults : ObservableRecipient,
             return;
         }
 
-        if (SelectedNode.IsLoggedIn_Control)
+        if (SelectedNode.Controller.IsLoggedIn_Control)
         {
             WaitForRepeat = true;
             PrintingImageResult = imageResults;
@@ -533,17 +530,17 @@ public partial class ImageResults : ObservableRecipient,
             PrintingImageResult = null;
         }
 
-        if (SelectedNode.IsSimulator && !SelectedNode.Host.Equals("127.0.0.1"))
+        if (SelectedNode.Controller.IsSimulator && !SelectedNode.Controller.Host.Equals("127.0.0.1"))
             V275ProcessImage_API(imageResults, type);
-        else if (SelectedNode.IsSimulator)
+        else if (SelectedNode.Controller.IsSimulator)
         {
             V275ProcessImage_FileSystem(imageResults, type);
 
-            if (!SelectedNode.IsLoggedIn_Control)
+            if (!SelectedNode.Controller.IsLoggedIn_Control)
             {
                 imageResults.IsV275Working = false;
 
-                if (!await SelectedNode.Controller.Commands.SimulationTrigger())
+                if (!(await SelectedNode.Controller.Commands.SimulationTrigger()).OK)
                     LogError("Error triggering the simulator.");
             }
         }
@@ -552,7 +549,7 @@ public partial class ImageResults : ObservableRecipient,
             //Do not wait for completion
             _ = StartPrint(imageResults);
 
-            if (!SelectedNode.IsLoggedIn_Control)
+            if (!SelectedNode.Controller.IsLoggedIn_Control)
                 imageResults.IsV275Working = false;
         }
 
@@ -583,11 +580,11 @@ public partial class ImageResults : ObservableRecipient,
         });
 
 
-        if (!SelectedNode.IsSimulator && SelectedNode.State != V275.ViewModels.NodeStates.Idle && SelectedNode.IsLoggedIn_Control)
-            await SelectedNode.EnablePrint("1");
+        if (!SelectedNode.Controller.IsSimulator && SelectedNode.Controller.State != NodeStates.Idle && SelectedNode.Controller.IsLoggedIn_Control)
+            await SelectedNode.EnablePrint(true);
 
         //Trigger the simulator if it is using the local file system
-        if (SelectedNode.IsSimulator && SelectedNode.Host.Equals("127.0.0.1"))
+        if (SelectedNode.Controller.IsSimulator && SelectedNode.Controller.Host.Equals("127.0.0.1"))
             _ = await SelectedNode.Controller.Commands.SimulationTrigger();
     }
 
@@ -622,12 +619,12 @@ public partial class ImageResults : ObservableRecipient,
             return;
         }
 
-        if (!await SelectedNode.Controller.Commands.SimulationTriggerImage(
+        if (!(await SelectedNode.Controller.Commands.SimulationTriggerImage(
             new V275_REST_Lib.Models.SimulationTrigger()
             {
                 image = img.ImageBytes,
                 dpi = (uint)Math.Round(img.Image.DpiX, 0)
-            }))
+            })).OK)
         {
             LogError("Error triggering the simulator.");
             imageResults.IsV275Working = false;
@@ -641,11 +638,11 @@ public partial class ImageResults : ObservableRecipient,
             int verRes = 1;
             string prepend = "";
 
-            Simulator.SimulatorFileHandler sim = new(SelectedNode.SimulatorImageDirectory);
+            Simulator.SimulatorFileHandler sim = new(SelectedNode.Controller.SimulatorImageDirectory);
 
             if (!sim.DeleteAllImages())
             {
-                string verCur = SelectedNode.Product.part?[(SelectedNode.Product.part.LastIndexOf('-') + 1)..];
+                string verCur = SelectedNode.Controller.Product.part?[(SelectedNode.Controller.Product.part.LastIndexOf('-') + 1)..];
 
                 if (verCur != null)
                 {
@@ -723,7 +720,7 @@ public partial class ImageResults : ObservableRecipient,
         if (TempV275Repeat[repeat].ImageResult.ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess)
         {
             if (repeat > 0)
-                if (!await SelectedNode.Controller.Commands.SetRepeat(repeat))
+                if (!(await SelectedNode.Controller.Commands.SetRepeat(repeat)).OK)
                 {
                     ProcessRepeatFault(repeat);
                     return;
@@ -739,7 +736,7 @@ public partial class ImageResults : ObservableRecipient,
 
             if (i == 2)
             {
-                List<Sector_New_Verify> sectors = SelectedNode.Controller.CreateSectors(SelectedNode.Controller.SetupDetectEvent, V275GetTableID(SelectedImageRoll.SelectedGS1Table), SelectedNode.Symbologies);
+                List<Sector_New_Verify> sectors = SelectedNode.Controller.CreateSectors(SelectedNode.Controller.SetupDetectEvent, V275GetTableID(SelectedImageRoll.SelectedGS1Table), SelectedNode.Controller.Symbologies);
 
                 LogInfo("Creating sectors.");
 
@@ -804,13 +801,13 @@ public partial class ImageResults : ObservableRecipient,
         TempV275Repeat.Add(ev.data.repeat, new V275Repeat() { ImageResult = PrintingImageResult, RepeatNumber = ev.data.repeat });
         PrintingImageResult = null;
 
-        if (SelectedNode.IsLoggedIn_Control)
+        if (SelectedNode.Controller.IsLoggedIn_Control)
             if (!TempV275Repeat.ContainsKey(ev.data.repeat + 1))
                 App.Current.Dispatcher.Invoke(new Action(() => ProcessRepeat(ev.data.repeat)));
     }
     private void WebSocket_LabelEnd(Events_System ev)
     {
-        if (SelectedNode.State == V275.ViewModels.NodeStates.Editing)
+        if (SelectedNode.Controller.State == NodeStates.Editing)
             return;
         if (PrintingImageResult == null)
             return;
@@ -818,7 +815,7 @@ public partial class ImageResults : ObservableRecipient,
         TempV275Repeat.Add(ev.data.repeat, new V275Repeat() { ImageResult = PrintingImageResult, RepeatNumber = ev.data.repeat });
         PrintingImageResult = null;
 
-        if (SelectedNode.IsLoggedIn_Control)
+        if (SelectedNode.Controller.IsLoggedIn_Control)
             if (!TempV275Repeat.ContainsKey(ev.data.repeat + 1))
                 App.Current.Dispatcher.Invoke(new Action(() => ProcessRepeat(ev.data.repeat)));
     }
@@ -853,9 +850,9 @@ public partial class ImageResults : ObservableRecipient,
     {
         if (SelectedNode != null)
         {
-            SelectedNode.Controller.WebSocket.SetupCapture -= WebSocket_SetupCapture;
-            SelectedNode.Controller.WebSocket.LabelEnd -= WebSocket_LabelEnd;
-            SelectedNode.Controller.WebSocket.StateChange -= WebSocket_StateChange;
+            //SelectedNode.Controller.WebSocket.SetupCapture -= WebSocket_SetupCapture;
+            //SelectedNode.Controller.WebSocket.LabelEnd -= WebSocket_LabelEnd;
+            //SelectedNode.Controller.WebSocket.StateChange -= WebSocket_StateChange;
 
         }
 
@@ -863,9 +860,9 @@ public partial class ImageResults : ObservableRecipient,
 
         if (SelectedNode == null) return;
 
-        SelectedNode.Controller.WebSocket.SetupCapture += WebSocket_SetupCapture;
-        SelectedNode.Controller.WebSocket.LabelEnd += WebSocket_LabelEnd;
-        SelectedNode.Controller.WebSocket.StateChange += WebSocket_StateChange;
+        //SelectedNode.Controller.WebSocket.SetupCapture += WebSocket_SetupCapture;
+        //SelectedNode.Controller.WebSocket.LabelEnd += WebSocket_LabelEnd;
+        //SelectedNode.Controller.WebSocket.StateChange += WebSocket_StateChange;
     }
     public void Receive(PropertyChangedMessage<ImageRollEntry> message) => SelectedImageRoll = message.NewValue;
     public void Receive(PropertyChangedMessage<PrinterSettings> message) => SelectedPrinter = message.NewValue;

@@ -177,7 +177,7 @@
                 <DockPanel DockPanel.Dock="Top">
 
                     <TextBox d:Text="State" Margin="6,3"
-                             Text="{Binding State, Converter={StaticResource LocalizeEnumValue}}" 
+                             Text="{Binding Controller.State, Converter={StaticResource LocalizeEnumValue}}" 
                              md:HintAssist.Hint="{loc:Loc State}" IsHitTestVisible="False">
                         <TextBox.Style>
                             <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
@@ -185,7 +185,7 @@
                                 <Style.Triggers>
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
-                                            <Condition Value="Editing" Binding="{Binding State}" />
+                                            <Condition Value="Editing" Binding="{Binding Controller.State}" />
                                             <Condition Value="True" Binding="{Binding SelectedImageRoll.WriteSectorsBeforeProcess}" />
                                         </MultiDataTrigger.Conditions>
                                         <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}" />
@@ -193,7 +193,7 @@
 
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
-                                            <Condition Value="Running" Binding="{Binding State}" />
+                                            <Condition Value="Running" Binding="{Binding Controller.State}" />
                                             <Condition Value="False" Binding="{Binding SelectedImageRoll.WriteSectorsBeforeProcess}" />
                                         </MultiDataTrigger.Conditions>
                                         <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}" />
@@ -226,7 +226,7 @@
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                     </DataTrigger>
 
-                                    <DataTrigger Value="Running" Binding="{Binding State}">
+                                    <DataTrigger Value="Running" Binding="{Binding Controller.State}">
                                         <Setter Property="IsHitTestVisible" Value="False"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -279,7 +279,7 @@
                                 <Setter Property="Visibility" Value="Collapsed"/>
                                 <Style.Triggers>
 
-                                    <DataTrigger Value="Editing" Binding="{Binding State}">
+                                    <DataTrigger Value="Editing" Binding="{Binding Controller.State}">
                                         <Setter Property="Visibility" Value="Visible"/>
                                         <Setter Property="Content">
                                             <Setter.Value>
@@ -290,7 +290,7 @@
                                         <Setter Property="ToolTip" Value="{loc:Loc Run}"/>
                                     </DataTrigger>
 
-                                    <DataTrigger Value="Running" Binding="{Binding State}">
+                                    <DataTrigger Value="Running" Binding="{Binding Controller.State}">
                                         <Setter Property="Visibility" Value="Visible"/>
                                         <Setter Property="Content">
                                             <Setter.Value>
@@ -301,7 +301,7 @@
                                         <Setter Property="ToolTip" Value="{loc:Loc Stop}"/>
                                     </DataTrigger>
 
-                                    <DataTrigger Value="Paused" Binding="{Binding State}">
+                                    <DataTrigger Value="Paused" Binding="{Binding Controller.State}">
                                         <Setter Property="Visibility" Value="Visible"/>
                                         <Setter Property="Content">
                                             <Setter.Value>

@@ -12,7 +12,7 @@ public class TemplateMatchMode
 
 public class BlemishMaskLayers
 {
-    public V275_REST_lib.Models.Job.Layer[] Layers { get; set; }
+    public V275_REST_Lib.Models.Job.Layer[] Layers { get; set; }
 }
 
 public interface ITemplate

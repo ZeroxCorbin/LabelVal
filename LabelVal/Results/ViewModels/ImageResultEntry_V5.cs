@@ -84,7 +84,7 @@ public partial class ImageResultEntry
 
         IsV5Working = false;
     }
-    public void V5ProcessResults(V5_REST_Lib.Controller.TriggerResults triggerResults)
+    public void V5ProcessResults(V5_REST_Lib.TriggerResults triggerResults)
     {
         if (!triggerResults.OK)
         {

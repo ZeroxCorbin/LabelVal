@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
-using V275_REST_lib.Models;
+using V275_REST_Lib.Models;
 
 namespace LabelVal.Run.ViewModels;
 public partial class RunResult
@@ -24,7 +24,7 @@ public partial class RunResult
         List<Sectors.Interfaces.ISector> tempSectors = [];
         if (!string.IsNullOrEmpty(StoredImageResultGroup.V275Result.Report) && !string.IsNullOrEmpty(StoredImageResultGroup.V275Result.Template))
         {
-            foreach (V275_REST_lib.Models.Job.Sector jSec in StoredImageResultGroup.V275Result._Job.sectors)
+            foreach (V275_REST_Lib.Models.Job.Sector jSec in StoredImageResultGroup.V275Result._Job.sectors)
             {
                 foreach (JObject rSec in StoredImageResultGroup.V275Result._Report.inspectLabel.inspectSector)
                 {
@@ -66,7 +66,7 @@ public partial class RunResult
         List<Sectors.Interfaces.ISector> tempSectors = [];
         if (!string.IsNullOrEmpty(CurrentImageResultGroup.V275Result.Report) && !string.IsNullOrEmpty(CurrentImageResultGroup.V275Result.Template))
         {
-            foreach (V275_REST_lib.Models.Job.Sector jSec in CurrentImageResultGroup.V275Result._Job.sectors)
+            foreach (V275_REST_Lib.Models.Job.Sector jSec in CurrentImageResultGroup.V275Result._Job.sectors)
             {
                 foreach (JObject rSec in CurrentImageResultGroup.V275Result._Report.inspectLabel.inspectSector)
                 {
@@ -208,7 +208,7 @@ public partial class RunResult
 
     }
 
-    private DrawingImage V275CreateSectorsImageOverlay(V275_REST_lib.Models.Job template, bool isDetailed, V275_REST_lib.Models.Report report, ImageRolls.ViewModels.ImageEntry image, ObservableCollection<Sectors.Interfaces.ISector> sectors)
+    private DrawingImage V275CreateSectorsImageOverlay(V275_REST_Lib.Models.Job template, bool isDetailed, V275_REST_Lib.Models.Report report, ImageRolls.ViewModels.ImageEntry image, ObservableCollection<Sectors.Interfaces.ISector> sectors)
     {
         DrawingGroup drwGroup = new();
 
@@ -222,7 +222,7 @@ public partial class RunResult
 
         GeometryGroup secCenter = new();
 
-        foreach (V275_REST_lib.Models.Job.Sector jSec in template.sectors)
+        foreach (V275_REST_Lib.Models.Job.Sector jSec in template.sectors)
         {
             foreach (JObject rSec in report.inspectLabel.inspectSector.Cast<JObject>())
             {

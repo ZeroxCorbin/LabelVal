@@ -21,8 +21,8 @@ public partial class ImageResult : ObservableObject
 }
 public class V275Result : ImageResult
 {
-    [SQLite.Ignore][JsonIgnore] public V275_REST_lib.Models.Job _Job => !string.IsNullOrEmpty(Template) ? JsonConvert.DeserializeObject<V275_REST_lib.Models.Job>(Template) : null;
-    [SQLite.Ignore][JsonIgnore] public V275_REST_lib.Models.Report _Report => !string.IsNullOrEmpty(Report) ? JsonConvert.DeserializeObject<V275_REST_lib.Models.Report>(Report): null;
+    [SQLite.Ignore][JsonIgnore] public V275_REST_Lib.Models.Job _Job => !string.IsNullOrEmpty(Template) ? JsonConvert.DeserializeObject<V275_REST_Lib.Models.Job>(Template) : null;
+    [SQLite.Ignore][JsonIgnore] public V275_REST_Lib.Models.Report _Report => !string.IsNullOrEmpty(Report) ? JsonConvert.DeserializeObject<V275_REST_Lib.Models.Report>(Report): null;
 }
 public class V5Result : ImageResult
 {

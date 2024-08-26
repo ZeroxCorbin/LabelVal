@@ -173,10 +173,10 @@
                                             <DataTrigger Value="False" Binding="{Binding ImageResults.SelectedNode.IsLoggedIn_Control}">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
-                                            <DataTrigger Value="Running" Binding="{Binding ImageResults.SelectedNode.Controller.V275_State}">
+                                            <DataTrigger Value="Running" Binding="{Binding ImageResults.SelectedNode.Controller.State}">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
-                                            <DataTrigger Value="Idle" Binding="{Binding ImageResults.SelectedNode.Controller.V275_State}">
+                                            <DataTrigger Value="Idle" Binding="{Binding ImageResults.SelectedNode.Controller.State}">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
                                         </Style.Triggers>

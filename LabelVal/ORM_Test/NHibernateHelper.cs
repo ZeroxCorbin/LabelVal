@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NHibernate.Tool.hbm2ddl;
-using V275_REST_lib.Models;
+using V275_REST_Lib.Models;
 using FluentNHibernate.Automapping;
 
 namespace LabelVal.ORM_Test

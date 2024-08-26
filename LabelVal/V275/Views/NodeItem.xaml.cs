@@ -1,18 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace LabelVal.V275.Views
 {
@@ -41,7 +29,7 @@ namespace LabelVal.V275.Views
 
         private void btnOpenInBrowser_Click(object sender, RoutedEventArgs e)
         {
-            var v275 = $"http://{((ViewModels.Node)DataContext).Controller.Commands.Host}:{((ViewModels.Node)DataContext).Controller.Commands.SystemPort}";
+            var v275 = $"http://{((ViewModels.Node)DataContext).Controller.Host}:{((ViewModels.Node)DataContext).Controller.SystemPort}";
             var ps = new ProcessStartInfo(v275)
             {
                 UseShellExecute = true,
@@ -50,7 +38,7 @@ namespace LabelVal.V275.Views
             _ = Process.Start(ps);
         }
 
-        private void btnUnselect(object sender, RoutedEventArgs e)=>
+        private void btnUnselect(object sender, RoutedEventArgs e) =>
             ((ViewModels.Node)this.DataContext).Manager.Manager.SelectedDevice = null;
     }
 }

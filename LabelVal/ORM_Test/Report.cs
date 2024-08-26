@@ -38,7 +38,7 @@ namespace LabelVal.ORM_Test
         public virtual byte[] repeatImage { get; set; }
 
         public Report() { }
-        public Report(V275_REST_lib.Models.Report report)
+        public Report(V275_REST_Lib.Models.Report report)
         {
             repeat = report.inspectLabel.repeat;
             voidRepeat = report.inspectLabel.voidRepeat;

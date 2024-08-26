@@ -3,7 +3,6 @@ using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Results.Databases;
 using LabelVal.Run.Databases;
 using LabelVal.V275.ViewModels;
-using LabelVal.V5.ViewModels;
 using Newtonsoft.Json;
 using System;
 using System.Collections.ObjectModel;
@@ -52,7 +51,7 @@ public partial class Controller : ObservableObject
             return false;
         }
 
-        if(HasV275 && !V275.IsLoggedIn_Control)
+        if (HasV275 && !V275.Controller.IsLoggedIn_Control)
         {
             LogError("Run: V275, Not logged in.");
             return false;
@@ -142,8 +141,8 @@ public partial class Controller : ObservableObject
                 //This must occur before the print so it is added to the V275 image
                 CurrentLabelCount++;
 
-                if(useV275)
-                    if(ProcessV275(ire) != RunStates.Running)
+                if (useV275)
+                    if (ProcessV275(ire) != RunStates.Running)
                         return State;
 
                 V5Result v5Res = new();
@@ -220,7 +219,7 @@ public partial class Controller : ObservableObject
     private RunStates ProcessV275(Results.ViewModels.ImageResultEntry ire)
     {
         //Start the V275 processing the image.
-        if (V275.IsSimulator)
+        if (V275.Controller.IsSimulator)
             ire.V275ProcessCommand.Execute("v275Stored");
         else
             ire.V275ProcessCommand.Execute("source");
@@ -287,7 +286,7 @@ public partial class Controller : ObservableObject
 
         var res = await V5.Trigger_Wait_Return(true);
 
-        if(!res.OK)
+        if (!res.OK)
         {
             LogError("Could not trigger the scanner.");
             UpdateRunState(RunStates.Error);
@@ -298,7 +297,7 @@ public partial class Controller : ObservableObject
         v5.Report = res.ReportJSON;
         v5.StoredImage = JsonConvert.SerializeObject(new ImageEntry(ire.ImageRollUID, res.FullImage, 0));
 
-        if(UpdateUI)
+        if (UpdateUI)
             _ = App.Current.Dispatcher.BeginInvoke(() => ire.V5ProcessResults(res));
 
         return v5;
@@ -329,9 +328,9 @@ public partial class Controller : ObservableObject
 
     private static bool HasSequencing(Results.ViewModels.ImageResultEntry label)
     {
-        V275_REST_lib.Models.Job template = JsonConvert.DeserializeObject<V275_REST_lib.Models.Job>(label.V275ResultRow.Template);
+        V275_REST_Lib.Models.Job template = JsonConvert.DeserializeObject<V275_REST_Lib.Models.Job>(label.V275ResultRow.Template);
 
-        foreach (V275_REST_lib.Models.Job.Sector sect in template.sectors)
+        foreach (V275_REST_Lib.Models.Job.Sector sect in template.sectors)
         {
             if (sect.matchSettings != null)
                 if (sect.matchSettings.matchMode is >= 3 and <= 6)
