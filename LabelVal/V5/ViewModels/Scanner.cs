@@ -252,7 +252,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     {
         if (Controller.IsConfigValid)
         {
-            V5_REST_Lib.Commands.Results meta = await Controller.Commands.GetMeta();
+            V5_REST_Lib.Results meta = await Controller.Commands.GetMeta();
             if (meta.OK)
             {
                 Meta metaConfig = (Meta)meta.Object;
@@ -629,7 +629,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
     private async Task<bool> PreLogin()
     {
-        V5_REST_Lib.Commands.Results jobs = await Controller.Commands.GetJobSlots();
+        V5_REST_Lib.Results jobs = await Controller.Commands.GetJobSlots();
         if (jobs.OK)
         {
             JobSlots job = (JobSlots)jobs.Object;
@@ -737,7 +737,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     {
         Clear();
 
-        V5_REST_Lib.Commands.Results res = await Controller.Commands.GetSysInfo();
+        V5_REST_Lib.Results res = await Controller.Commands.GetSysInfo();
         if (res.OK)
         {
             ExplicitMessages = res.Json;
@@ -747,7 +747,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     private async Task Config()
     {
         Clear();
-        V5_REST_Lib.Commands.Results res = await Controller.Commands.GetConfig();
+        V5_REST_Lib.Results res = await Controller.Commands.GetConfig();
         if (res.OK)
         {
             ExplicitMessages = res.Json;

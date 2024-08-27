@@ -27,7 +27,7 @@
             <Style TargetType="md:Card" BasedOn="{StaticResource {x:Type md:Card}}">
                 <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent4}"/>
                 <Style.Triggers>
-                    <DataTrigger Binding="{Binding IsSimulator}" Value="True">
+                    <DataTrigger Binding="{Binding Controller.IsSimulator}" Value="True">
                         <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}"/>
                     </DataTrigger>
                 </Style.Triggers>
@@ -52,7 +52,7 @@
                                         </Setter.Value>
                                     </Setter>
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsLoggedIn}" Value="True">
+                                        <DataTrigger Binding="{Binding Controller.IsLoggedIn}" Value="True">
                                             <Setter Property="Content">
                                                 <Setter.Value>
                                                     <iconPacks:Modern Kind="Disconnect"/>
@@ -82,7 +82,7 @@
                                             <Setter Property="Content" Value="{iconPacks:Modern Kind=Monitor}"/>
                                         </DataTrigger>
 
-                                        <DataTrigger Binding="{Binding IsLoggedIn}" Value="True">
+                                        <DataTrigger Binding="{Binding Controller.IsLoggedIn}" Value="True">
                                             <Setter Property="IsEnabled" Value="False"/>
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -122,8 +122,8 @@
                                 <Style.Triggers>
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
-                                            <Condition Value="camera" Binding="{Binding Inspection.device}"/>
-                                            <Condition Value="False" Binding="{Binding Is600Dpi}"/>
+                                            <Condition Value="camera" Binding="{Binding Controller.Inspection.device}"/>
+                                            <Condition Value="False" Binding="{Binding Controller.Is600Dpi}"/>
                                         </MultiDataTrigger.Conditions>
 
                                         <Setter Property="Foreground" Value="Red"/>
@@ -131,17 +131,17 @@
 
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
-                                            <Condition Value="simulator" Binding="{Binding Inspection.device}"/>
-                                            <Condition Value="False" Binding="{Binding Is600Dpi}"/>
+                                            <Condition Value="simulator" Binding="{Binding Controller.Inspection.device}"/>
+                                            <Condition Value="False" Binding="{Binding Controller.Is600Dpi}"/>
                                         </MultiDataTrigger.Conditions>
 
                                         <Setter Property="Foreground" Value="Yellow"/>
                                     </MultiDataTrigger>
 
-                                    <DataTrigger Value="camera" Binding="{Binding Inspection.device}">
+                                    <DataTrigger Value="camera" Binding="{Binding Controller.Inspection.device}">
                                         <Setter Property="Text" Value="{loc:Loc Camera}"/>
                                     </DataTrigger>
-                                    <DataTrigger Value="simulator" Binding="{Binding Inspection.device}">
+                                    <DataTrigger Value="simulator" Binding="{Binding Controller.Inspection.device}">
                                         <Setter Property="Text" Value="{loc:Loc Simulator}"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -153,12 +153,12 @@
                              md:HintAssist.Hint="{loc:Loc Model}" IsHitTestVisible="False">
                         <TextBox.Style>
                             <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                                <Setter Property="Text" Value="{Binding Path=Details.printerModel}"/>
+                                <Setter Property="Text" Value="{Binding Path=Controller.Node.printerModel}"/>
                                 <Style.Triggers>
                                     <DataTrigger Value="False" Binding="{Binding IsWrongTemplateName}">
                                         <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}"/>
                                     </DataTrigger>
-                                    <DataTrigger Value="Unknown" Binding="{Binding Path=Details.printerModel}">
+                                    <DataTrigger Value="Unknown" Binding="{Binding Path=Controller.Node.printerModel}">
                                         <Setter Property="Text" Value="-----"/>
                                     </DataTrigger>
 
@@ -168,7 +168,7 @@
                     </TextBox>
 
                     <TextBox d:Text="00:00:00:00:00" Margin="6,3" BorderThickness="0"
-                             Text="{Binding Path=Details.cameraMAC, Mode=OneWay, Converter={StaticResource macAddressSplitConverter}, ConverterParameter=Last}"
+                             Text="{Binding Path=Controller.Node.cameraMAC, Mode=OneWay, Converter={StaticResource macAddressSplitConverter}, ConverterParameter=Last}"
                              Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                              md:HintAssist.Hint="MAC" IsHitTestVisible="False" />
 
@@ -203,7 +203,7 @@
                         </TextBox.Style>
                     </TextBox>
 
-                    <ComboBox ItemsSource="{Binding Jobs.jobs}" Margin="6,3"
+                    <ComboBox ItemsSource="{Binding Controller.Jobs.jobs}" Margin="6,3"
                               SelectedValue="{Binding SelectedJob}"
                               md:HintAssist.Hint="{loc:Loc Template Name}">
 
@@ -218,11 +218,11 @@
                                         <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}"/>
                                     </DataTrigger>
 
-                                    <DataTrigger Value="False" Binding="{Binding Jobs,Converter={StaticResource ObjectIsNull}}">
+                                    <DataTrigger Value="False" Binding="{Binding Controller.Jobs,Converter={StaticResource ObjectIsNull}}">
                                         <Setter Property="Visibility" Value="Visible"/>
                                     </DataTrigger>
 
-                                    <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Monitor}">
+                                    <DataTrigger Value="True" Binding="{Binding Controller.IsLoggedIn_Monitor}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                     </DataTrigger>
 
@@ -245,21 +245,21 @@
                         <TextBox.Style>
                             <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                                 <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}"/>
-                                <Setter Property="Text" Value="{Binding JobName}"/>
+                                <Setter Property="Text" Value="{Binding Controller.JobName, Mode=OneWay}"/>
 
                                 <Setter Property="Visibility" Value="Collapsed"/>
                                 <Style.Triggers>
 
-                                    <DataTrigger Value="" Binding="{Binding JobName}">
+                                    <DataTrigger Value="" Binding="{Binding Controller.JobName, Mode=OneWay}">
                                         <Setter Property="Text" Value="-----"/>
                                         <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}"/>
                                     </DataTrigger>
 
-                                    <DataTrigger Value="True" Binding="{Binding Jobs, Converter={StaticResource ObjectIsNull}}">
+                                    <DataTrigger Value="True" Binding="{Binding Controller.Jobs, Converter={StaticResource ObjectIsNull}}">
                                         <Setter Property="Visibility" Value="Visible"/>
                                     </DataTrigger>
 
-                                    <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Monitor}">
+                                    <DataTrigger Value="True" Binding="{Binding Controller.IsLoggedIn_Monitor}">
                                         <Setter Property="Visibility" Value="Visible"/>
                                     </DataTrigger>
 
@@ -312,7 +312,7 @@
                                         <Setter Property="ToolTip" Value="{loc:Loc Remove}"/>
                                     </DataTrigger>
 
-                                    <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Monitor}">
+                                    <DataTrigger Value="True" Binding="{Binding Controller.IsLoggedIn_Monitor}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                     </DataTrigger>
 
@@ -322,13 +322,12 @@
                     </Button>
 
                     <Button HorizontalAlignment="Left" Margin="3,0" Width="24" Height="24">
-
                         <Button.Style>
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
                                 <Style.Triggers>
 
-                                    <DataTrigger Value="True" Binding="{Binding Print.enabled}">
+                                    <DataTrigger Value="True" Binding="{Binding Controller.Print.enabled}">
                                         <Setter Property="Content">
                                             <Setter.Value>
                                                 <iconPacks:PackIconMaterial Kind="Printer"
@@ -336,11 +335,11 @@
                                             </Setter.Value>
                                         </Setter>
                                         <Setter Property="Command" Value="{Binding EnablePrintCommand}"/>
-                                        <Setter Property="CommandParameter" Value="0"/>
+                                        <Setter Property="CommandParameter" Value="{StaticResource FalseValue}"/>
                                         <Setter Property="ToolTip" Value="{loc:Loc Printing Enabled}"/>
                                     </DataTrigger>
 
-                                    <DataTrigger Value="False" Binding="{Binding Print.enabled}">
+                                    <DataTrigger Value="False" Binding="{Binding Controller.Print.enabled}">
                                         <Setter Property="Content">
                                             <Setter.Value>
                                                 <iconPacks:PackIconMaterial Kind="PrinterAlert"
@@ -348,14 +347,14 @@
                                             </Setter.Value>
                                         </Setter>
                                         <Setter Property="Command" Value="{Binding EnablePrintCommand}"/>
-                                        <Setter Property="CommandParameter" Value="1"/>
+                                        <Setter Property="CommandParameter" Value="{StaticResource TrueValue}"/>
                                         <Setter Property="ToolTip" Value="{loc:Loc Printing Disabled}"/>
                                     </DataTrigger>
 
-                                    <DataTrigger Value="True" Binding="{Binding IsLoggedIn_Control}">
+                                    <DataTrigger Value="True" Binding="{Binding Controller.IsLoggedIn_Control}">
                                         <Setter Property="Visibility" Value="Visible"/>
                                     </DataTrigger>
-                                    <DataTrigger Value="True" Binding="{Binding IsSimulator}">
+                                    <DataTrigger Value="True" Binding="{Binding Controller.IsSimulator}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                     </DataTrigger>
 

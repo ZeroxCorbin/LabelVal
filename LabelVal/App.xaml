@@ -2,7 +2,10 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                 xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+                xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:local="clr-namespace:LabelVal"
+             
+             
              StartupUri="Main/Views/MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
@@ -22,6 +25,9 @@
 
             </ResourceDictionary.MergedDictionaries>
 
+            <sys:Boolean x:Key="FalseValue">False</sys:Boolean>
+            <sys:Boolean x:Key="TrueValue">True</sys:Boolean>
+            
             <Style TargetType="ScrollBar" BasedOn="{StaticResource MahApps.Styles.ScrollBar}">
                 <!--<Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Control.Background}"/>-->
             </Style>

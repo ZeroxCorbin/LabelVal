@@ -181,7 +181,7 @@
                                 <Setter Property="IsEnabled" Value="False"/>
                                 <Setter Property="Content" Value="{iconPacks:Material Kind=Play, Width=24, Height=24}"/>
                                 <Style.Triggers>
-                                    <DataTrigger Value="True" Binding="{Binding SelectedNode.IsLoggedIn_Control}">
+                                    <DataTrigger Value="True" Binding="{Binding SelectedNode.Controller.IsLoggedIn_Control}">
                                         <Setter Property="IsEnabled" Value="True"/>
                                     </DataTrigger>
                                     <DataTrigger Value="True" Binding="{Binding SelectedScanner.Controller.IsConnected}">
