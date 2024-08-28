@@ -21,6 +21,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using V275_REST_Lib;
+using V275_REST_Lib.Enumerations;
 using V275_REST_Lib.Models;
 
 namespace LabelVal.Results.ViewModels;
@@ -31,7 +32,7 @@ public partial class ImageResults : ObservableRecipient,
     IRecipient<PropertyChangedMessage<Scanner>>,
     IRecipient<PropertyChangedMessage<Verifier>>,
     IRecipient<PropertyChangedMessage<PrinterSettings>>,
-    IRecipient<PropertyChangedMessage<FullReport>>
+    IRecipient<PropertyChangedMessage<L95xx_Lib.Models.FullReport>>
 {
     private class V275Repeat
     {
@@ -180,7 +181,7 @@ public partial class ImageResults : ObservableRecipient,
         if (img.NewData is V5_REST_Lib.TriggerResults v5)
             tmp.V5ProcessResults(v5);
 
-        else if (img.NewData is FullReport l95)
+        else if (img.NewData is L95xx_Lib.Models.FullReport l95)
             tmp.L95xxProcessResults(l95);
 
         ImageResultsList.Add(tmp);
@@ -275,7 +276,7 @@ public partial class ImageResults : ObservableRecipient,
         return res;
     }
 
-    private void L95xxProcess(FullReport message)
+    private void L95xxProcess(L95xx_Lib.Models.FullReport message)
     {
         if (message == null || message.Report == null)
             return;
@@ -519,30 +520,38 @@ public partial class ImageResults : ObservableRecipient,
             return;
         }
 
-        if (SelectedNode.Controller.IsLoggedIn_Control)
+        var lab = new Label
         {
-            WaitForRepeat = true;
-            PrintingImageResult = imageResults;
+            Table = (GS1TableNames)SelectedImageRoll.SelectedGS1Table,
+        };
+
+        if (type == "source")
+        {
+            lab.Image = imageResults.SourceImage.ImageBytes;
+            lab.Dpi = (int)Math.Round(imageResults.SourceImage.Image.DpiX, 0);
+            lab.Sectors = [];
+            lab.Table = (GS1TableNames)SelectedImageRoll.SelectedGS1Table;
         }
-        else
+        else if (type == "v275Stored")
         {
-            WaitForRepeat = false;
-            PrintingImageResult = null;
+            lab.Image = imageResults.V275ResultRow.Stored.ImageBytes;
+            lab.Dpi = (int)Math.Round(imageResults.V275ResultRow.Stored.Image.DpiX, 0);
+            lab.Sectors = [.. imageResults.V275ResultRow._Job.sectors];
+            lab.Table = (GS1TableNames)SelectedImageRoll.SelectedGS1Table;
+        }
+        else if (type == "v5Stored")
+        {
+            lab.Image = imageResults.V5ResultRow.Stored.ImageBytes;
+            lab.Dpi = (int)Math.Round(imageResults.V5ResultRow.Stored.Image.DpiX, 0);
+            lab.Sectors = null;
+            lab.Table = GS1TableNames.None;
         }
 
-        if (SelectedNode.Controller.IsSimulator && !SelectedNode.Controller.Host.Equals("127.0.0.1"))
-            V275ProcessImage_API(imageResults, type);
-        else if (SelectedNode.Controller.IsSimulator)
+        imageResults.IsV275Working = true;
+
+        if (SelectedNode.Controller.IsSimulator)
         {
-            V275ProcessImage_FileSystem(imageResults, type);
-
-            if (!SelectedNode.Controller.IsLoggedIn_Control)
-            {
-                imageResults.IsV275Working = false;
-
-                if (!(await SelectedNode.Controller.Commands.SimulationTrigger()).OK)
-                    LogError("Error triggering the simulator.");
-            }
+            await SelectedNode.Controller.ProcessImage_Simulator(lab);
         }
         else
         {
@@ -552,40 +561,6 @@ public partial class ImageResults : ObservableRecipient,
             if (!SelectedNode.Controller.IsLoggedIn_Control)
                 imageResults.IsV275Working = false;
         }
-
-        if (imageResults.IsV275Working == false)
-        {
-            WaitForRepeat = false;
-            PrintingImageResult = null;
-            return;
-        }
-
-        //This will wait for the repeat to complete or turn off the working flag if it takes too long
-        _ = Task.Run(() =>
-        {
-            DateTime start = DateTime.Now;
-            while (WaitForRepeat)
-            {
-                if ((DateTime.Now - start) > TimeSpan.FromMilliseconds(10000))
-                {
-                    WaitForRepeat = false;
-
-                    PrintingImageResult = null;
-
-                    imageResults.IsV275Faulted = true;
-                    imageResults.IsV275Working = false;
-                    return;
-                }
-            }
-        });
-
-
-        if (!SelectedNode.Controller.IsSimulator && SelectedNode.Controller.State != NodeStates.Idle && SelectedNode.Controller.IsLoggedIn_Control)
-            await SelectedNode.EnablePrint(true);
-
-        //Trigger the simulator if it is using the local file system
-        if (SelectedNode.Controller.IsSimulator && SelectedNode.Controller.Host.Equals("127.0.0.1"))
-            _ = await SelectedNode.Controller.Commands.SimulationTrigger();
     }
 
     private Task StartPrint(ImageResultEntry imageResults) => Task.Run(() =>
@@ -882,7 +857,7 @@ public partial class ImageResults : ObservableRecipient,
         }
     }
     public void Receive(PropertyChangedMessage<Verifier> message) => SelectedVerifier = message.NewValue;
-    public void Receive(PropertyChangedMessage<FullReport> message)
+    public void Receive(PropertyChangedMessage<L95xx_Lib.Models.FullReport> message)
     {
         if (IsL95xxSelected)
             App.Current.Dispatcher.BeginInvoke(() => L95xxProcess(message.NewValue));

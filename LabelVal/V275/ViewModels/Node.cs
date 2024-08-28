@@ -29,51 +29,22 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
     public V275_REST_Lib.Controller Controller { get; }
 
     [ObservableProperty] private bool loginMonitor;
-    //partial void OnJobNameChanged(string value)
-    //{
-    //    if (Jobs == null)
-    //    {
-    //        SelectedJob = null;
-    //        return;
-    //    }
 
-    //    var jb = Jobs.jobs.FirstOrDefault((e) => e.name == JobName);
-
-    //    if (jb != null)
-    //    {
-    //        if (SelectedJob != jb)
-    //        {
-    //            userChange = true;
-    //            SelectedJob = jb;
-
-    //        }
-    //    }
-    //}
-    private bool userChange;
-
-
+    private bool systemChangedJob;
     [ObservableProperty] private Jobs.Job selectedJob;
     partial void OnSelectedJobChanged(Jobs.Job value)
     {
-        if (value == null)
+        if (value == null || systemChangedJob)
         {
-            userChange = false;
-            return;
-        }
-
-        if (userChange)
-        {
-            userChange = false;
+            systemChangedJob = false;
             return;
         }
 
         App.Current.Dispatcher.BeginInvoke(() => Controller.ChangeJob(value.name));
     }
 
-
     [ObservableProperty] private ImageRollEntry selectedImageRoll;
     partial void OnSelectedImageRollChanged(ImageRollEntry value) => CheckTemplateName();
-
 
     [ObservableProperty] private bool isWrongTemplateName = false;
 
@@ -82,16 +53,37 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
         SelectedImageRoll = imageRollEntry;
 
         Controller = new V275_REST_Lib.Controller(host, systemPort, nodeNumber, userName, password);
+        Controller.PropertyChanged += Controller_PropertyChanged;
+        
 
-        App.Settings.PropertyChanged -= Settings_PropertyChanged;
-        App.Settings.PropertyChanged += Settings_PropertyChanged;
+        //App.Settings.PropertyChanged -= Settings_PropertyChanged;
+        //App.Settings.PropertyChanged += Settings_PropertyChanged;
 
         IsActive = true;
     }
 
+    private void Controller_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(V275_REST_Lib.Controller.JobName))
+        {
+            if (string.IsNullOrEmpty(Controller.JobName))
+            {
+                SelectedJob = null;
+                CheckTemplateName();
+                return;
+            }
+
+            if(Controller.JobName != SelectedJob?.name)
+                systemChangedJob = true;
+
+            SelectedJob = Controller.Jobs.jobs.FirstOrDefault((e) => e.name == Controller.JobName);
+            CheckTemplateName();
+        }
+    }
+
     ~Node()
     {
-        App.Settings.PropertyChanged -= Settings_PropertyChanged;
+        //App.Settings.PropertyChanged -= Settings_PropertyChanged;
     }
 
     public async Task OkDialog(string title, string message) => _ = await DialogCoordinator.Instance.ShowMessageAsync(this, title, message, MessageDialogStyle.Affirmative);
@@ -119,15 +111,7 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
     [RelayCommand] private Task<bool> SwitchRun() => Controller.SwitchToRun();
     [RelayCommand] private Task<bool> SwitchEdit() => Controller.SwitchToEdit();
 
-    private void WebSocket_SessionStateChange(Events_System ev)
-    {
-        //if (ev.data.id == LoginData.id)
-        if (ev.data.state == "0")
-            if (ev.data.accessLevel == "control")
-                if (Controller.LoginData.accessLevel == "control")
-                    if (ev.data.token != Controller.LoginData.token)
-                        _ = Logout();
-    }
+
     //private void StateChanged(string state, string jobName, int dpi)
     //{
     //    State = Enum.Parse<NodeStates>(state);

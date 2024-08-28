@@ -205,7 +205,7 @@
                 </md:DrawerHost.TopDrawerContent>
 
                 <ListView Margin="3,3,0,0" Style="{StaticResource MahApps.Styles.ListView}"
-                          ItemsSource="{Binding Nodes}" SelectedItem="{Binding Manager.SelectedDevice.Controller}">
+                          ItemsSource="{Binding Nodes}" SelectedItem="{Binding Manager.SelectedDevice}">
 
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}"/>

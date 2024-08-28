@@ -112,7 +112,7 @@ public partial class ImageResultEntry
 
     public async Task<bool> V275ReadTask(int repeat)
     {
-        V275_REST_Lib.Controller.FullReport report;
+        V275_REST_Lib.FullReport report;
         if ((report = await ImageResults.SelectedNode.Controller.Read(repeat, true)) == null)
         {
             LogError("Unable to read the repeat report from the node.");
@@ -122,17 +122,17 @@ public partial class ImageResultEntry
             return false;
         }
 
-        V275CurrentTemplate = report.job;
-        V275CurrentReport = report.report;
+        V275CurrentTemplate = report.Job;
+        V275CurrentReport = report.Report;
 
         if (!ImageResults.SelectedNode.Controller.IsSimulator)
         {
             int dpi = 600;
-            V275CurrentImage = new ImageEntry(ImageRollUID, ImageUtilities.GetPng(report.image, dpi), dpi);
+            V275CurrentImage = new ImageEntry(ImageRollUID, ImageUtilities.GetPng(report.Image, dpi), dpi);
         }
         else
         {
-            V275CurrentImage = new ImageEntry(ImageRollUID, ImageUtilities.GetPng(report.image, (int)Math.Round(SourceImage.Image.DpiX)), ImageResults.SelectedImageRoll.TargetDPI);
+            V275CurrentImage = new ImageEntry(ImageRollUID, ImageUtilities.GetPng(report.Image, (int)Math.Round(SourceImage.Image.DpiX)), ImageResults.SelectedImageRoll.TargetDPI);
         }
 
         V275CurrentSectors.Clear();

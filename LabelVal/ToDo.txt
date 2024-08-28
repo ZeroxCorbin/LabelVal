@@ -26,3 +26,9 @@ Work on grid view for runs and result views.
 Scroll to latestest image insert.
 
 Save the compare settings in the job/run entry.
+
+Click on the (I)nfo button and see a timedate stamp of when the current.
+
+Popups need to be flyouts.
+
+V5 color of the bounding box.

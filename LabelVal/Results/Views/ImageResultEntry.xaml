@@ -66,8 +66,8 @@
                             <Style.Triggers>
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding ImageResults.SelectedNode.IsSimulator}" Value="False"/>
-                                        <Condition Binding="{Binding ImageResults.SelectedNode.IsLoggedIn_Control}" Value="True"/>
+                                        <Condition Binding="{Binding ImageResults.SelectedNode.Controller.IsSimulator}" Value="False"/>
+                                        <Condition Binding="{Binding ImageResults.SelectedNode.Controller.IsLoggedIn_Control}" Value="True"/>
                                     </MultiDataTrigger.Conditions>
 
                                     <Setter Property="Visibility" Value="Visible"/>
@@ -77,8 +77,8 @@
 
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding ImageResults.SelectedNode.IsSimulator}" Value="True"/>
-                                        <Condition Binding="{Binding ImageResults.SelectedNode.IsLoggedIn}" Value="True"/>
+                                        <Condition Binding="{Binding ImageResults.SelectedNode.Controller.IsSimulator}" Value="True"/>
+                                        <Condition Binding="{Binding ImageResults.SelectedNode.Controller.IsLoggedIn}" Value="True"/>
                                         <Condition Binding="{Binding V275ResultRow, Converter={StaticResource objectIsNull}}" Value="True"/>
                                     </MultiDataTrigger.Conditions>
 
@@ -89,8 +89,8 @@
 
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding ImageResults.SelectedNode.IsSimulator}" Value="True"/>
-                                        <Condition Binding="{Binding ImageResults.SelectedNode.IsLoggedIn}" Value="True"/>
+                                        <Condition Binding="{Binding ImageResults.SelectedNode.Controller.IsSimulator}" Value="True"/>
+                                        <Condition Binding="{Binding ImageResults.SelectedNode.Controller.IsLoggedIn}" Value="True"/>
                                         <Condition Binding="{Binding V275ResultRow.StoredImage, Converter={StaticResource objectIsNull}}" Value="False"/>
                                     </MultiDataTrigger.Conditions>
 

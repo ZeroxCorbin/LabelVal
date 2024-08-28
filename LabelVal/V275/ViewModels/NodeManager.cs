@@ -13,7 +13,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using V275_REST_Lib.Models;
-using V275_REST_Lib.Models;
 
 namespace LabelVal.V275.ViewModels;
 
@@ -22,7 +21,7 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
 {
     [JsonProperty] public long ID { get; set; } = DateTime.Now.Ticks;
 
-    public V275Manager Manager { get; set; } 
+    public V275Manager Manager { get; set; }
 
     [ObservableProperty] private ObservableCollection<Node> nodes = [];
 
@@ -83,17 +82,12 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
     }
 
 
-
-    [ObservableProperty] private bool isGetDevices = false;
-
     [ObservableProperty] private ImageRollEntry selectedImageRoll;
 
     [RelayCommand]
     private async Task GetDevices()
     {
         LogInfo("Loading V275 devices.");
-
-        //Reset();
 
         Node system = new(Host, SystemPort, 0, UserName, Password, SelectedImageRoll);
 
@@ -125,26 +119,6 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
 
             foreach (Node node in srt)
                 Nodes.Add(node);
-
-            //Product product = await new V275_REST_Lib.Controller(Host, SystemPort, 0).Commands.GetProduct();
-            //if (product != null)
-            //{
-            //    string curVer = product.part.Remove(0, product.part.LastIndexOf("-") + 1);
-
-            //    bool res = false;
-            //    if (Version.TryParse(curVer, out Version result))
-            //    {
-            //        Version baseVer = Version.Parse("1.2.0.0000");
-            //        res = result.CompareTo(baseVer) < 0;
-            //    }
-
-            //    foreach (Node node in Nodes)
-            //    {
-            //        node.SelectedImageRoll = SelectedImageRoll;
-            //        node.Product = product;
-            //        node.IsOldISO = res;
-            //    }
-            //}
         }
         else
         {
@@ -158,7 +132,6 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
                 Manager.SelectedDevice = node;
         }
     }
-
     private static uint GetPortNumber()
     {
         object res = Registry.GetValue("HKEY_LOCAL_MACHINE\\Software\\OMRON\\V275Service", "SystemServerPort", 8080);

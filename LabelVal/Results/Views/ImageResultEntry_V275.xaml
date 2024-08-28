@@ -167,10 +167,10 @@
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
                                         <Setter Property="Visibility" Value="Visible"/>
                                         <Style.Triggers>
-                                            <DataTrigger Value="{x:Null}" Binding="{Binding ImageResults.SelectedNode}">
+                                            <DataTrigger Value="{x:Null}" Binding="{Binding ImageResults.SelectedNode, Mode=OneWay}">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
-                                            <DataTrigger Value="False" Binding="{Binding ImageResults.SelectedNode.IsLoggedIn_Control}">
+                                            <DataTrigger Value="False" Binding="{Binding ImageResults.SelectedNode.Controller.IsLoggedIn_Control}">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
                                             <DataTrigger Value="Running" Binding="{Binding ImageResults.SelectedNode.Controller.State}">
@@ -483,10 +483,10 @@
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                         <Style.Triggers>
-                                            <DataTrigger Value="True" Binding="{Binding ImageResults.SelectedNode.IsLoggedIn_Monitor}">
+                                            <DataTrigger Value="True" Binding="{Binding ImageResults.SelectedNode.Controller.IsLoggedIn_Monitor}">
                                                 <Setter Property="Visibility" Value="Visible"/>
                                             </DataTrigger>
-                                            <DataTrigger Value="True" Binding="{Binding ImageResults.SelectedNode.IsLoggedIn_Control}">
+                                            <DataTrigger Value="True" Binding="{Binding ImageResults.SelectedNode.Controller.IsLoggedIn_Control}">
                                                 <Setter Property="Visibility" Value="Visible"/>
                                             </DataTrigger>
                                         </Style.Triggers>
