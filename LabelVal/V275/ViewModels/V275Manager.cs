@@ -16,7 +16,7 @@ public partial class V275Manager : ObservableRecipient
 
     public V275Manager()
     {
-        Node sel = App.Settings.GetValue<Node>($"V275_{nameof(SelectedDevice)}");
+        //Node sel = App.Settings.GetValue<Node>($"V275_{nameof(SelectedDevice)}");
 
         foreach (var dev in Devices)
         {

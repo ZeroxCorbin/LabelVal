@@ -26,7 +26,7 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
 {
     public long ID { get; set; } = DateTime.Now.Ticks;
     public NodeManager Manager { get; set; }
-    public V275_REST_Lib.Controller Controller { get; }
+    [JsonProperty] public V275_REST_Lib.Controller Controller { get; set; }
 
     [ObservableProperty] private bool loginMonitor;
 
@@ -48,17 +48,13 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
 
     [ObservableProperty] private bool isWrongTemplateName = false;
 
-    public Node(string host, uint systemPort, uint nodeNumber, string userName, string password, ImageRollEntry imageRollEntry)
+    public Node(string host, uint systemPort, uint nodeNumber, string userName, string password, string dir, ImageRollEntry imageRollEntry)
     {
         SelectedImageRoll = imageRollEntry;
 
-        Controller = new V275_REST_Lib.Controller(host, systemPort, nodeNumber, userName, password);
+        Controller = new V275_REST_Lib.Controller(host, systemPort, nodeNumber, userName, password, dir);
         Controller.PropertyChanged += Controller_PropertyChanged;
         
-
-        //App.Settings.PropertyChanged -= Settings_PropertyChanged;
-        //App.Settings.PropertyChanged += Settings_PropertyChanged;
-
         IsActive = true;
     }
 
@@ -81,33 +77,14 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
         }
     }
 
-    ~Node()
-    {
-        //App.Settings.PropertyChanged -= Settings_PropertyChanged;
-    }
-
     public async Task OkDialog(string title, string message) => _ = await DialogCoordinator.Instance.ShowMessageAsync(this, title, message, MessageDialogStyle.Affirmative);
 
     public void Receive(PropertyChangedMessage<ImageRollEntry> message) => SelectedImageRoll = message.NewValue;
 
-    private void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-    {
-        //if (e.PropertyName == "SelectedLanguage")
-        //    OnPropertyChanged(nameof(State));
-    }
-
-    [RelayCommand]
-    private Task Login() => Controller.Login(LoginMonitor);
-
-    [RelayCommand]
-    private Task Logout() => Controller.Logout();
-
-    [RelayCommand]
-    public Task EnablePrint(bool enable) => Controller.TogglePrint(enable);
-
-    [RelayCommand]
-    private Task RemoveRepeat() => Controller.RemoveRepeat();
-    //[RelayCommand] private void TriggerSim() => _ = Connection.Commands.TriggerSimulator();
+    [RelayCommand] private Task Login() => Controller.Login(LoginMonitor);
+    [RelayCommand] private Task Logout() => Controller.Logout();
+    [RelayCommand] public Task EnablePrint(bool enable) => Controller.TogglePrint(enable);
+    [RelayCommand] private Task RemoveRepeat() => Controller.RemoveRepeat();
     [RelayCommand] private Task<bool> SwitchRun() => Controller.SwitchToRun();
     [RelayCommand] private Task<bool> SwitchEdit() => Controller.SwitchToEdit();
 

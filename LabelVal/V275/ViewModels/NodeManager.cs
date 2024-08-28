@@ -25,14 +25,14 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
 
     [ObservableProperty] private ObservableCollection<Node> nodes = [];
 
-    [ObservableProperty][property: JsonProperty] private string host = "127.0.0.1"; //App.Settings.GetValue($"{NodeManager.ClassName}{nameof(NodeManager.Host)}", "127.0.0.1", true);
+    [ObservableProperty][property: JsonProperty] private string host; //App.Settings.GetValue($"{NodeManager.ClassName}{nameof(NodeManager.Host)}", "127.0.0.1", true);
     partial void OnHostChanged(string value)
     {
         foreach (var nd in Nodes)
             nd.Controller.Host = value;
     }
 
-    [ObservableProperty][property: JsonProperty] private uint systemPort = GetPortNumber(); //App.Settings.GetValue($"{NodeManager.ClassName}{nameof(NodeManager.SystemPort)}", GetPortNumber(), true);
+    [ObservableProperty][property: JsonProperty] private uint systemPort; //App.Settings.GetValue($"{NodeManager.ClassName}{nameof(NodeManager.SystemPort)}", GetPortNumber(), true);
     partial void OnSystemPortChanged(uint value)
     {
         if (!LibStaticUtilities_IPHostPort.Ports.IsPortValid(value))
@@ -55,21 +55,21 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
         }
     }
 
-    [ObservableProperty][property: JsonProperty] private string userName = "admin";// App.Settings.GetValue($"{NodeManager.ClassName}{nameof(NodeManager.UserName)}", "admin", true);
+    [ObservableProperty][property: JsonProperty] private string userName;// App.Settings.GetValue($"{NodeManager.ClassName}{nameof(NodeManager.UserName)}", "admin", true);
     partial void OnUserNameChanged(string value)
     {
         foreach (var nd in Nodes)
             nd.Controller.UserName = value;
     }
 
-    [ObservableProperty][property: JsonProperty] private string password = "admin"; // App.Settings.GetValue($"{NodeManager.ClassName}{nameof(Password)}", "admin", true);
+    [ObservableProperty][property: JsonProperty] private string password; // App.Settings.GetValue($"{NodeManager.ClassName}{nameof(Password)}", "admin", true);
     partial void OnPasswordChanged(string value)
     {
         foreach (var nd in Nodes)
             nd.Controller.Password = value;
     }
 
-    [ObservableProperty][property: JsonProperty] private string simulatorImageDirectory = GetSimulationDirectory();
+    [ObservableProperty][property: JsonProperty] private string simulatorImageDirectory;
     partial void OnSimulatorImageDirectoryChanged(string value)
     {
         if (string.IsNullOrEmpty(value))
@@ -84,12 +84,26 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
 
     [ObservableProperty] private ImageRollEntry selectedImageRoll;
 
+
+    public NodeManager()
+    {
+        Host ??= "127.0.0.1";
+
+        if(SystemPort == 0)
+            SystemPort = GetPortNumber();
+
+        UserName ??= "admin";
+        Password ??= "admin";
+
+        SimulatorImageDirectory ??= GetSimulationDirectory();
+    }
+
     [RelayCommand]
     private async Task GetDevices()
     {
         LogInfo("Loading V275 devices.");
 
-        Node system = new(Host, SystemPort, 0, UserName, Password, SelectedImageRoll);
+        Node system = new(Host, SystemPort, 0, UserName, Password, SimulatorImageDirectory, SelectedImageRoll);
 
         if ((await system.Controller.Commands.GetDevices()).Object is Devices dev)
         {
@@ -104,7 +118,8 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
 
                 LogDebug($"Adding Device MAC: {node.cameraMAC}");
 
-                Node newNode = new(Host, SystemPort, (uint)node.enumeration, UserName, Password, SelectedImageRoll) { Manager = this };
+                Node newNode = new(Host, SystemPort, (uint)node.enumeration, UserName, Password, SimulatorImageDirectory, SelectedImageRoll) { Manager = this };
+                newNode.Controller.Initialize();
                 lst.Add(newNode);
             }
 
@@ -119,6 +134,7 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
 
             foreach (Node node in srt)
                 Nodes.Add(node);
+                
         }
         else
         {
