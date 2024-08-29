@@ -71,7 +71,7 @@
                                     </MultiDataTrigger.Conditions>
 
                                     <Setter Property="Visibility" Value="Visible"/>
-                                    <Setter Property="CommandParameter" Value="print"/>
+                                    <Setter Property="CommandParameter" Value="source"/>
                                     <Setter Property="ToolTip" Value="Print the source image and read the results."/>
                                 </MultiDataTrigger>
 

@@ -50,7 +50,12 @@ public partial class ImageResultEntry
 
     [RelayCommand]
     private async Task V275Process(string type)
-    {
+    {        
+        var simAddSec = ImageResults.SelectedNode.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && V275ResultRow?._Job?.sectors != null;
+        var simDetSec = ImageResults.SelectedNode.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && V275ResultRow?._Job?.sectors == null;
+        var camAddSec = !ImageResults.SelectedNode.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && V275ResultRow?._Job?.sectors != null;
+        var camDetSec = !ImageResults.SelectedNode.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && V275ResultRow?._Job?.sectors == null;
+
         BringIntoView?.Invoke();
 
         var lab = new Label
@@ -58,31 +63,24 @@ public partial class ImageResultEntry
             Table = (GS1TableNames)ImageResults.SelectedImageRoll.SelectedGS1Table,
         };
 
-        if (type == "source")
+        if (type == "source" || type == "print")
         {
             lab.Image = SourceImage.ImageBytes;
             lab.Dpi = (int)Math.Round(SourceImage.Image.DpiX, 0);
-            lab.Sectors = [];
+            lab.Sectors = simDetSec || camDetSec ? [] : camAddSec ? [.. V275ResultRow._Job.sectors] : null;
             lab.Table = (GS1TableNames)ImageResults.SelectedImageRoll.SelectedGS1Table;
         }
         else if (type == "v275Stored")
         {
             lab.Image = V275ResultRow.Stored.ImageBytes;
             lab.Dpi = (int)Math.Round(V275ResultRow.Stored.Image.DpiX, 0);
-            lab.Sectors = ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess ? [.. V275ResultRow._Job.sectors] : null;
+            lab.Sectors =[.. V275ResultRow._Job.sectors];
             lab.Table = (GS1TableNames)ImageResults.SelectedImageRoll.SelectedGS1Table;
-        }
-        else if (type == "v5Stored")
-        {
-            lab.Image = V5ResultRow.Stored.ImageBytes;
-            lab.Dpi = (int)Math.Round(V5ResultRow.Stored.Image.DpiX, 0);
-            lab.Sectors = null;
-            lab.Table = GS1TableNames.None;
         }
 
         lab.RepeatAvailable = V275ProcessRepeat;
 
-        if (ImageResults.SelectedNode == null)
+        if (type == "print")
         {
             LogInfo("No node selected. Just printing!");
             PrintImage(lab.Image, PrintCount, SelectedPrinter.PrinterName);
@@ -106,64 +104,9 @@ public partial class ImageResultEntry
         }
 
     }
-    [RelayCommand]
-    private Task<bool> V275Read() => V275ReadTask(0);
-    [RelayCommand]
-    private Task<int> V275Load() => V275LoadTask();
-
-    private void V275GetStored()
-    {
-        if (SelectedDatabase == null)
-            return;
-
-        V275StoredSectors.Clear();
-
-        V275ResultRow = SelectedDatabase.Select_V275Result(ImageRollUID, SourceImageUID);
-
-        if (V275ResultRow == null)
-            return;
-
-        List<Sectors.Interfaces.ISector> tempSectors = [];
-        if (!string.IsNullOrEmpty(V275ResultRow.Report) && !string.IsNullOrEmpty(V275ResultRow.Template))
-        {
-            foreach (Job.Sector jSec in V275ResultRow._Job.sectors)
-            {
-                foreach (JObject rSec in V275ResultRow._Report.inspectLabel.inspectSector)
-                {
-                    if (jSec.name == rSec["name"].ToString())
-                    {
-
-                        object fSec = V275DeserializeSector(rSec, false);
-
-                        if (fSec == null)
-                            break;
-
-                        tempSectors.Add(new V275.Sectors.Sector(jSec, fSec, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
-
-                        break;
-                    }
-                }
-            }
-        }
-
-        if (tempSectors.Count > 0)
-        {
-            SortList(tempSectors);
-
-            foreach (Sectors.Interfaces.ISector sec in tempSectors)
-                V275StoredSectors.Add(sec);
-
-        }
-
-        UpdateV275StoredImageOverlay();
-    }
-
-    public void UpdateV275StoredImageOverlay() => V275StoredImageOverlay = CreateSectorsImageOverlay(V275StoredImage, V275StoredSectors);
-    public void UpdateV275CurrentImageOverlay() => V275CurrentImageOverlay = CreateSectorsImageOverlay(V275CurrentImage, V275CurrentSectors);
-
     private void V275ProcessRepeat(Repeat repeat)
     {
-        if(repeat == null)
+        if (repeat == null)
         {
             LogError("Repeat is null.");
             IsV275Working = false;
@@ -171,7 +114,7 @@ public partial class ImageResultEntry
             return;
         }
 
-        if(repeat.FullReport == null)
+        if (repeat.FullReport == null)
         {
             IsV275Working = false;
             IsV275Faulted = true;
@@ -234,22 +177,6 @@ public partial class ImageResultEntry
 
         IsV275Working = false;
         IsV275Faulted = false;
-    }
-
-    public async Task<bool> V275ReadTask(int repeat)
-    {
-        V275_REST_Lib.FullReport report;
-        if ((report = await ImageResults.SelectedNode.Controller.GetFullReport(repeat, true)) == null)
-        {
-            LogError("Unable to read the repeat report from the node.");
-
-            ClearRead("V275");
-
-            return false;
-        }
-
-        V275ProcessRepeat(new Repeat(0, null) { FullReport = report });
-        return true;
     }
     private void V275GetSectorDiff()
     {
@@ -334,6 +261,25 @@ public partial class ImageResultEntry
                 V275DiffSectors.Add(d);
 
     }
+    public void UpdateV275CurrentImageOverlay() => V275CurrentImageOverlay = CreateSectorsImageOverlay(V275CurrentImage, V275CurrentSectors);
+
+    [RelayCommand] private Task<bool> V275Read() => V275ReadTask(0);
+    public async Task<bool> V275ReadTask(int repeat)
+    {
+        V275_REST_Lib.FullReport report;
+        if ((report = await ImageResults.SelectedNode.Controller.GetFullReport(repeat, true)) == null)
+        {
+            LogError("Unable to read the repeat report from the node.");
+            ClearRead("V275");
+            return false;
+        }
+
+        V275ProcessRepeat(new Repeat(0, null) { FullReport = report });
+        return true;
+    }
+
+    [RelayCommand]
+    private Task<int> V275Load() => V275LoadTask();
     public async Task<int> V275LoadTask()
     {
         if (!await ImageResults.SelectedNode.Controller.DeleteSectors())
@@ -368,6 +314,52 @@ public partial class ImageResultEntry
         return 1;
     }
 
+    private void V275GetStored()
+    {
+        if (SelectedDatabase == null)
+            return;
+
+        V275StoredSectors.Clear();
+
+        V275ResultRow = SelectedDatabase.Select_V275Result(ImageRollUID, SourceImageUID);
+
+        if (V275ResultRow == null)
+            return;
+
+        List<Sectors.Interfaces.ISector> tempSectors = [];
+        if (!string.IsNullOrEmpty(V275ResultRow.Report) && !string.IsNullOrEmpty(V275ResultRow.Template))
+        {
+            foreach (Job.Sector jSec in V275ResultRow._Job.sectors)
+            {
+                foreach (JObject rSec in V275ResultRow._Report.inspectLabel.inspectSector)
+                {
+                    if (jSec.name == rSec["name"].ToString())
+                    {
+
+                        object fSec = V275DeserializeSector(rSec, false);
+
+                        if (fSec == null)
+                            break;
+
+                        tempSectors.Add(new V275.Sectors.Sector(jSec, fSec, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
+
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (tempSectors.Count > 0)
+        {
+            SortList(tempSectors);
+
+            foreach (Sectors.Interfaces.ISector sec in tempSectors)
+                V275StoredSectors.Add(sec);
+
+        }
+
+        UpdateV275StoredImageOverlay();
+    }
     private static object V275DeserializeSector(JObject reportSec, bool removeGS1Data)
     {
         if (reportSec["type"].ToString() == "verify1D")
@@ -395,4 +387,7 @@ public partial class ImageResultEntry
                                         : (object)null;
         }
     }
+    public void UpdateV275StoredImageOverlay() => V275StoredImageOverlay = CreateSectorsImageOverlay(V275StoredImage, V275StoredSectors);
+
+
 }

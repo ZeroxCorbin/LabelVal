@@ -114,8 +114,6 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
     [RelayCommand] private Task<bool> SwitchRun() => Controller.SwitchToRun();
     [RelayCommand] private Task<bool> SwitchEdit() => Controller.SwitchToEdit();
 
-
-
     #region Logging
     private readonly Logging.Logger logger = new();
     public void LogInfo(string message) => logger.LogInfo(this.GetType(), message);

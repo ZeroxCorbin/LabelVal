@@ -66,6 +66,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
     [ObservableProperty] private DrawingImage printerAreaOverlay;
     partial void OnShowPrinterAreaOverSourceChanged(bool value) => PrinterAreaOverlay = ShowPrinterAreaOverSource ? CreatePrinterAreaOverlay(true) : null;
 
+    private V275_REST_Lib.Printer.Controller PrinterController { get; } = new();
     [ObservableProperty] private PrinterSettings selectedPrinter;
     [ObservableProperty] private ImageResultsDatabase selectedDatabase;
     partial void OnSelectedPrinterChanged(PrinterSettings value) => PrinterAreaOverlay = ShowPrinterAreaOverSource ? CreatePrinterAreaOverlay(true) : null;
@@ -387,8 +388,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
 
     private void PrintImage(byte[] image, int count, string printerName) => Task.Run(() =>
     {
-        V275_REST_Lib.Printer.Controller printer = new();
-        printer.Print(image, count, printerName, "");
+        PrinterController.Print(image, count, printerName, "");
     });
 
     public DrawingImage CreatePrinterAreaOverlay(bool useRatio)
