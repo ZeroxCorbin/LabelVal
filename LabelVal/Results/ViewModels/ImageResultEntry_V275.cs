@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using V275_REST_Lib;
+using V275_REST_Lib.Enumerations;
 using V275_REST_Lib.Models;
 
 namespace LabelVal.Results.ViewModels;
@@ -47,13 +49,62 @@ public partial class ImageResultEntry
     public bool IsNotV275Faulted => !IsV275Faulted;
 
     [RelayCommand]
-    private void V275Process(string imageType)
+    private async Task V275Process(string type)
     {
+        BringIntoView?.Invoke();
+
+        var lab = new Label
+        {
+            Table = (GS1TableNames)ImageResults.SelectedImageRoll.SelectedGS1Table,
+        };
+
+        if (type == "source")
+        {
+            lab.Image = SourceImage.ImageBytes;
+            lab.Dpi = (int)Math.Round(SourceImage.Image.DpiX, 0);
+            lab.Sectors = [];
+            lab.Table = (GS1TableNames)ImageResults.SelectedImageRoll.SelectedGS1Table;
+        }
+        else if (type == "v275Stored")
+        {
+            lab.Image = V275ResultRow.Stored.ImageBytes;
+            lab.Dpi = (int)Math.Round(V275ResultRow.Stored.Image.DpiX, 0);
+            lab.Sectors = ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess ? [.. V275ResultRow._Job.sectors] : null;
+            lab.Table = (GS1TableNames)ImageResults.SelectedImageRoll.SelectedGS1Table;
+        }
+        else if (type == "v5Stored")
+        {
+            lab.Image = V5ResultRow.Stored.ImageBytes;
+            lab.Dpi = (int)Math.Round(V5ResultRow.Stored.Image.DpiX, 0);
+            lab.Sectors = null;
+            lab.Table = GS1TableNames.None;
+        }
+
+        lab.RepeatAvailable = V275ProcessRepeat;
+
+        if (ImageResults.SelectedNode == null)
+        {
+            LogInfo("No node selected. Just printing!");
+            PrintImage(lab.Image, PrintCount, SelectedPrinter.PrinterName);
+            return;
+        }
+
         IsV275Working = true;
         IsV275Faulted = false;
 
-        BringIntoView?.Invoke();
-        V275ProcessImage?.Invoke(this, imageType);
+        if (ImageResults.SelectedNode.Controller.IsSimulator)
+        {
+            LogInfo("Processing image with simulator.");
+            IsV275Working = await ImageResults.SelectedNode.Controller.ProcessImage_Simulator(lab);
+            IsV275Faulted = !IsV275Working;
+        }
+        else
+        {
+            LogInfo("Processing image with printer.");
+            IsV275Working = ImageResults.SelectedNode.Controller.ProcessImage_Printer(lab, PrintCount, SelectedPrinter.PrinterName);
+            IsV275Faulted = !IsV275Working;
+        }
+
     }
     [RelayCommand]
     private Task<bool> V275Read() => V275ReadTask(0);
@@ -110,29 +161,41 @@ public partial class ImageResultEntry
     public void UpdateV275StoredImageOverlay() => V275StoredImageOverlay = CreateSectorsImageOverlay(V275StoredImage, V275StoredSectors);
     public void UpdateV275CurrentImageOverlay() => V275CurrentImageOverlay = CreateSectorsImageOverlay(V275CurrentImage, V275CurrentSectors);
 
-    public async Task<bool> V275ReadTask(int repeat)
+    private void V275ProcessRepeat(Repeat repeat)
     {
-        V275_REST_Lib.FullReport report;
-        if ((report = await ImageResults.SelectedNode.Controller.Read(repeat, true)) == null)
+        if(repeat == null)
         {
-            LogError("Unable to read the repeat report from the node.");
-
-            ClearRead("V275");
-
-            return false;
+            LogError("Repeat is null.");
+            IsV275Working = false;
+            IsV275Faulted = true;
+            return;
         }
 
-        V275CurrentTemplate = report.Job;
-        V275CurrentReport = report.Report;
+        if(repeat.FullReport == null)
+        {
+            IsV275Working = false;
+            IsV275Faulted = true;
+            LogError("Fullreport is null.");
+            return;
+        }
+
+        if (!App.Current.Dispatcher.CheckAccess())
+        {
+            App.Current.Dispatcher.Invoke(() => V275ProcessRepeat(repeat));
+            return;
+        }
+
+        V275CurrentTemplate = repeat.FullReport.Job;
+        V275CurrentReport = repeat.FullReport.Report;
 
         if (!ImageResults.SelectedNode.Controller.IsSimulator)
         {
             int dpi = 600;
-            V275CurrentImage = new ImageEntry(ImageRollUID, ImageUtilities.GetPng(report.Image, dpi), dpi);
+            V275CurrentImage = new ImageEntry(ImageRollUID, ImageUtilities.GetPng(repeat.FullReport.Image, dpi), dpi);
         }
         else
         {
-            V275CurrentImage = new ImageEntry(ImageRollUID, ImageUtilities.GetPng(report.Image, (int)Math.Round(SourceImage.Image.DpiX)), ImageResults.SelectedImageRoll.TargetDPI);
+            V275CurrentImage = new ImageEntry(ImageRollUID, ImageUtilities.GetPng(repeat.FullReport.Image, (int)Math.Round(SourceImage.Image.DpiX)), ImageResults.SelectedImageRoll.TargetDPI);
         }
 
         V275CurrentSectors.Clear();
@@ -169,6 +232,23 @@ public partial class ImageResultEntry
 
         UpdateV275CurrentImageOverlay();
 
+        IsV275Working = false;
+        IsV275Faulted = false;
+    }
+
+    public async Task<bool> V275ReadTask(int repeat)
+    {
+        V275_REST_Lib.FullReport report;
+        if ((report = await ImageResults.SelectedNode.Controller.GetFullReport(repeat, true)) == null)
+        {
+            LogError("Unable to read the repeat report from the node.");
+
+            ClearRead("V275");
+
+            return false;
+        }
+
+        V275ProcessRepeat(new Repeat(0, null) { FullReport = report });
         return true;
     }
     private void V275GetSectorDiff()

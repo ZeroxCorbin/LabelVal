@@ -58,6 +58,8 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             V5CurrentImageOverlay = CreateSectorsImageOverlay(V5CurrentImage, V5CurrentSectors);
     }
 
+    private int PrintCount => App.Settings.GetValue<int>(nameof(PrintCount));
+
     /// <see cref="ShowPrinterAreaOverSource"/>>
     [ObservableProperty] private bool showPrinterAreaOverSource;
     /// <see cref="PrinterAreaOverlay"/>>
@@ -382,6 +384,12 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
 
         return "";
     }
+
+    private void PrintImage(byte[] image, int count, string printerName) => Task.Run(() =>
+    {
+        V275_REST_Lib.Printer.Controller printer = new();
+        printer.Print(image, count, printerName, "");
+    });
 
     public DrawingImage CreatePrinterAreaOverlay(bool useRatio)
     {

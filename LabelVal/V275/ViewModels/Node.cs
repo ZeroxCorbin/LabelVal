@@ -24,7 +24,6 @@ namespace LabelVal.V275.ViewModels;
 [JsonObject(MemberSerialization.OptIn)]
 public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessage<ImageRollEntry>>
 {
-    public long ID { get; set; } = DateTime.Now.Ticks;
     public NodeManager Manager { get; set; }
     [JsonProperty] public V275_REST_Lib.Controller Controller { get; set; }
 
@@ -52,7 +51,7 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
     {
         SelectedImageRoll = imageRollEntry;
 
-        Controller = new V275_REST_Lib.Controller(host, systemPort, nodeNumber, userName, password, dir);
+        Controller = new Controller(host, systemPort, nodeNumber, userName, password, dir);
         Controller.PropertyChanged += Controller_PropertyChanged;
         
         IsActive = true;
@@ -81,30 +80,6 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
 
     public void Receive(PropertyChangedMessage<ImageRollEntry> message) => SelectedImageRoll = message.NewValue;
 
-    [RelayCommand] private Task Login() => Controller.Login(LoginMonitor);
-    [RelayCommand] private Task Logout() => Controller.Logout();
-    [RelayCommand] public Task EnablePrint(bool enable) => Controller.TogglePrint(enable);
-    [RelayCommand] private Task RemoveRepeat() => Controller.RemoveRepeat();
-    [RelayCommand] private Task<bool> SwitchRun() => Controller.SwitchToRun();
-    [RelayCommand] private Task<bool> SwitchEdit() => Controller.SwitchToEdit();
-
-
-    //private void StateChanged(string state, string jobName, int dpi)
-    //{
-    //    State = Enum.Parse<NodeStates>(state);
-    //    JobName = jobName;
-    //    Dpi = dpi;
-
-    //    if (JobName != "")
-    //        CheckTemplateName();
-    //    else if (State == NodeStates.Idle)
-    //        CheckTemplateName();
-    //    else
-    //    {
-
-    //    }
-    //}
-
     public void CheckTemplateName()
     {
         IsWrongTemplateName = false;
@@ -131,6 +106,15 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
 
         IsWrongTemplateName = true;
     }
+
+    [RelayCommand] private Task Login() => Controller.Login(LoginMonitor);
+    [RelayCommand] private Task Logout() => Controller.Logout();
+    [RelayCommand] public Task EnablePrint(bool enable) => Controller.TogglePrint(enable);
+    [RelayCommand] private Task RemoveRepeat() => Controller.RemoveRepeat();
+    [RelayCommand] private Task<bool> SwitchRun() => Controller.SwitchToRun();
+    [RelayCommand] private Task<bool> SwitchEdit() => Controller.SwitchToEdit();
+
+
 
     #region Logging
     private readonly Logging.Logger logger = new();

@@ -81,9 +81,7 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
         }
     }
 
-
     [ObservableProperty] private ImageRollEntry selectedImageRoll;
-
 
     public NodeManager()
     {
