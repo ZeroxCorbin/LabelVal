@@ -166,7 +166,7 @@ public partial class ImageResults : ObservableRecipient,
     {
         ImageResultEntry tmp = new(img, this);
 
-        if (img.NewData is V5_REST_Lib.TriggerResults v5)
+        if (img.NewData is V5_REST_Lib.Controller.FullReport v5)
             tmp.V5ProcessResults(v5);
 
         else if (img.NewData is L95xx_Lib.Models.FullReport l95)
@@ -248,7 +248,7 @@ public partial class ImageResults : ObservableRecipient,
             InsertImageAtOrder(newImages, ImageResultsList.Count + 1);
     }
 
-    private async Task<V5_REST_Lib.TriggerResults> ProcessV5()
+    private async Task<V5_REST_Lib.Controller.FullReport> ProcessV5()
     {
         var res = await SelectedScanner.Controller.Trigger_Wait_Return(true);
 

@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Media;
-using V5_REST_Lib.Models;
 
 namespace LabelVal.Results.ViewModels;
 public partial class ImageResultEntry
@@ -43,67 +42,56 @@ public partial class ImageResultEntry
     public bool IsNotV5Faulted => !IsV5Faulted;
 
     [RelayCommand]
-    public async Task V5Process(string imageType)
+    public void V5Process(string imageType)
     {
-        IsV5Faulted = false;
-        IsV5Working = true;
+        var simAddSec = ImageResults.SelectedScanner.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && !string.IsNullOrEmpty(V5ResultRow?.Template);
+        var simDetSec = ImageResults.SelectedScanner.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && string.IsNullOrEmpty(V5ResultRow?.Template);
+        var camAddSec = !ImageResults.SelectedScanner.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && !string.IsNullOrEmpty(V5ResultRow?.Template);
+        var camDetSec = !ImageResults.SelectedScanner.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && string.IsNullOrEmpty(V5ResultRow?.Template);
 
-        //BringIntoView?.Invoke();
+        BringIntoView?.Invoke();
 
-        if (ImageResults.SelectedScanner == null)
+        var lab = new V5_REST_Lib.Controller.Label
         {
-            LogError("No scanner selected.");
+            DetectSectors = simDetSec || camDetSec,
+            Config = simAddSec || camAddSec ? ImageResults.SelectedScanner.Controller.Config : null,
+            RepeatAvailable = V5ProcessResults
+        };
+
+        if (imageType == "source")
+                lab.Image = SourceImage.ImageBytes;
+            else if (imageType == "v5Stored")
+                lab.Image = V5StoredImage.ImageBytes;
+
+        IsV5Working = true;
+        IsV5Faulted = false;
+
+        _ = ImageResults.SelectedScanner.Controller.ProcessLabel(lab);
+    }
+
+    public void V5ProcessResults(V5_REST_Lib.Controller.Repeat repeat) => V5ProcessResults(repeat?.FullReport);
+    public void V5ProcessResults(V5_REST_Lib.Controller.FullReport report)
+    {
+        if (report == null)
+        {
+            LogError("Can not proces null results.");
+
+            ClearRead("V5");
+
+            IsV5Faulted = true;
             IsV5Working = false;
             return;
         }
 
-        if (imageType != "sensor")
-        {
-            if (imageType == "source")
-                await ImageResults.SelectedScanner.Controller.ChangeImage(SourceImage.ImageBytes, false);
-            else if (imageType == "v5Stored")
-                await ImageResults.SelectedScanner.Controller.ChangeImage(V5ResultRow.Stored.ImageBytes, false);
-            else
-                return;
-
-
-            V5ProcessResults(await ImageResults.SelectedScanner.Controller.Trigger_Wait_Return(true));
-        }
-        else
-        {
-            if (!ImageResults.SelectedScanner.Controller.IsConfigValid)
-            {
-                LogError("Could not get the configuration.");
-                IsV5Working = false;
-                return;
-            }
-
-            V5ProcessResults(await ImageResults.SelectedScanner.Controller.Trigger_Wait_Return(true));
-        }
-
-
-        IsV5Working = false;
-    }
-    public void V5ProcessResults(V5_REST_Lib.TriggerResults triggerResults)
-    {
-        if (!triggerResults.OK)
-        {
-            LogError("Could not trigger the scanner.");
-
-            ClearRead("V5");
-
-            return;
-        }
-
-        V5CurrentImage = new ImageEntry(ImageRollUID, ImageUtilities.GetPng(triggerResults.FullImage), 96);
+        V5CurrentImage = new ImageEntry(ImageRollUID, ImageUtilities.GetPng(report.FullImage), 96);
 
         V5CurrentTemplate = ImageResults.SelectedScanner.Controller.Config;
-        V5CurrentReport = JsonConvert.DeserializeObject<V5_REST_Lib.Models.ResultsAlt>(triggerResults.ReportJSON);
+        V5CurrentReport = JsonConvert.DeserializeObject<V5_REST_Lib.Models.ResultsAlt>(report.ReportJSON);
 
         V5CurrentSectors.Clear();
 
         List<Sectors.Interfaces.ISector> tempSectors = [];
-        foreach (ResultsAlt.Decodedata rSec in V5CurrentReport._event.data.decodeData)
+        foreach (V5_REST_Lib.Models.ResultsAlt.Decodedata rSec in V5CurrentReport._event.data.decodeData)
             tempSectors.Add(new V5.Sectors.Sector(rSec, V5CurrentTemplate.response.data.job.toolList[rSec.toolSlot - 1], $"DecodeTool{rSec.toolSlot.ToString()}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
 
         if (tempSectors.Count > 0)
@@ -118,6 +106,7 @@ public partial class ImageResultEntry
 
         UpdateV5CurrentImageOverlay();
 
+        IsV5Working = false;
     }
 
     public void UpdateV5StoredImageOverlay() => V5StoredImageOverlay = CreateSectorsImageOverlay(V5StoredImage, V5StoredSectors);
@@ -150,11 +139,11 @@ public partial class ImageResultEntry
         if (!string.IsNullOrEmpty(V5ResultRow.Report))
         {
             if (V5ResultRow._Report._event.data.decodeData != null)
-                foreach (ResultsAlt.Decodedata rSec in V5ResultRow._Report._event.data.decodeData)
+                foreach (V5_REST_Lib.Models.ResultsAlt.Decodedata rSec in V5ResultRow._Report._event.data.decodeData)
                     tempSectors.Add(new V5.Sectors.Sector(rSec, V5ResultRow._Config.response.data.job.toolList[rSec.toolSlot - 1], $"DecodeTool{rSec.toolSlot.ToString()}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
             else
                 foreach (var rSec in V5ResultRow._ReportOld._event.data.cycleConfig.qualifiedResults)
-                    tempSectors.Add(new V5.Sectors.Sector(JsonConvert.DeserializeObject<ResultsAlt.Decodedata>(JsonConvert.SerializeObject(rSec)), V5ResultRow._Config.response.data.job.toolList[rSec.toolSlot - 1], $"DecodeTool{rSec.toolSlot.ToString()}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
+                    tempSectors.Add(new V5.Sectors.Sector(JsonConvert.DeserializeObject<V5_REST_Lib.Models.ResultsAlt.Decodedata>(JsonConvert.SerializeObject(rSec)), V5ResultRow._Config.response.data.job.toolList[rSec.toolSlot - 1], $"DecodeTool{rSec.toolSlot.ToString()}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
         }
 
         if (tempSectors.Count > 0)

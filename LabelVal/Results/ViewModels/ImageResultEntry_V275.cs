@@ -9,9 +9,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Media;
-using V275_REST_Lib;
-using V275_REST_Lib.Enumerations;
-using V275_REST_Lib.Models;
 
 namespace LabelVal.Results.ViewModels;
 public partial class ImageResultEntry
@@ -28,9 +25,9 @@ public partial class ImageResultEntry
     [ObservableProperty] private ImageEntry v275CurrentImage;
     [ObservableProperty] private DrawingImage v275CurrentImageOverlay;
 
-    public Job V275CurrentTemplate { get; set; }
+    public V275_REST_Lib.Models.Job V275CurrentTemplate { get; set; }
     public string V275SerializeTemplate => JsonConvert.SerializeObject(V275CurrentTemplate);
-    public Report V275CurrentReport { get; private set; }
+    public V275_REST_Lib.Models.Report V275CurrentReport { get; private set; }
     public string V275SerializeReport => JsonConvert.SerializeObject(V275CurrentReport);
 
     public ObservableCollection<Sectors.Interfaces.ISector> V275CurrentSectors { get; } = [];
@@ -58,9 +55,9 @@ public partial class ImageResultEntry
 
         BringIntoView?.Invoke();
 
-        var lab = new Label
+        var lab = new V275_REST_Lib.Label
         {
-            Table = (GS1TableNames)ImageResults.SelectedImageRoll.SelectedGS1Table,
+            Table = (V275_REST_Lib.Enumerations.GS1TableNames)ImageResults.SelectedImageRoll.SelectedGS1Table,
         };
 
         if (type == "source" || type == "print")
@@ -68,17 +65,15 @@ public partial class ImageResultEntry
             lab.Image = SourceImage.ImageBytes;
             lab.Dpi = (int)Math.Round(SourceImage.Image.DpiX, 0);
             lab.Sectors = simDetSec || camDetSec ? [] : camAddSec ? [.. V275ResultRow._Job.sectors] : null;
-            lab.Table = (GS1TableNames)ImageResults.SelectedImageRoll.SelectedGS1Table;
+            lab.Table = (V275_REST_Lib.Enumerations.GS1TableNames)ImageResults.SelectedImageRoll.SelectedGS1Table;
         }
         else if (type == "v275Stored")
         {
             lab.Image = V275ResultRow.Stored.ImageBytes;
             lab.Dpi = (int)Math.Round(V275ResultRow.Stored.Image.DpiX, 0);
-            lab.Sectors =[.. V275ResultRow._Job.sectors];
-            lab.Table = (GS1TableNames)ImageResults.SelectedImageRoll.SelectedGS1Table;
+            lab.Sectors = simAddSec || camAddSec ? [.. V275ResultRow._Job.sectors] : null;
+            lab.Table = (V275_REST_Lib.Enumerations.GS1TableNames)ImageResults.SelectedImageRoll.SelectedGS1Table;
         }
-
-        lab.RepeatAvailable = V275ProcessRepeat;
 
         if (type == "print")
         {
@@ -90,21 +85,23 @@ public partial class ImageResultEntry
         IsV275Working = true;
         IsV275Faulted = false;
 
+        lab.RepeatAvailable = V275ProcessRepeat;
+
         if (ImageResults.SelectedNode.Controller.IsSimulator)
         {
             LogInfo("Processing image with simulator.");
-            IsV275Working = await ImageResults.SelectedNode.Controller.ProcessImage_Simulator(lab);
+            IsV275Working = await ImageResults.SelectedNode.Controller.ProcessLabel_Simulator(lab);
             IsV275Faulted = !IsV275Working;
         }
         else
         {
             LogInfo("Processing image with printer.");
-            IsV275Working = ImageResults.SelectedNode.Controller.ProcessImage_Printer(lab, PrintCount, SelectedPrinter.PrinterName);
+            IsV275Working = ImageResults.SelectedNode.Controller.ProcessLabel_Printer(lab, PrintCount, SelectedPrinter.PrinterName);
             IsV275Faulted = !IsV275Working;
         }
 
     }
-    private void V275ProcessRepeat(Repeat repeat)
+    private void V275ProcessRepeat(V275_REST_Lib.Repeat repeat)
     {
         if (repeat == null)
         {
@@ -144,7 +141,7 @@ public partial class ImageResultEntry
         V275CurrentSectors.Clear();
 
         List<Sectors.Interfaces.ISector> tempSectors = [];
-        foreach (Job.Sector jSec in V275CurrentTemplate.sectors)
+        foreach (V275_REST_Lib.Models.Job.Sector jSec in V275CurrentTemplate.sectors)
         {
             foreach (JObject rSec in V275CurrentReport.inspectLabel.inspectSector)
             {
@@ -274,12 +271,11 @@ public partial class ImageResultEntry
             return false;
         }
 
-        V275ProcessRepeat(new Repeat(0, null) { FullReport = report });
+        V275ProcessRepeat(new V275_REST_Lib.Repeat(0, null) { FullReport = report });
         return true;
     }
 
-    [RelayCommand]
-    private Task<int> V275Load() => V275LoadTask();
+    [RelayCommand] private Task<int> V275Load() => V275LoadTask();
     public async Task<int> V275LoadTask()
     {
         if (!await ImageResults.SelectedNode.Controller.DeleteSectors())
@@ -300,7 +296,7 @@ public partial class ImageResultEntry
 
             if (sec.Template.BlemishMask.Layers != null)
             {
-                foreach (Job.Layer layer in sec.Template.BlemishMask.Layers)
+                foreach (V275_REST_Lib.Models.Job.Layer layer in sec.Template.BlemishMask.Layers)
                 {
                     if (!await ImageResults.SelectedNode.Controller.AddMask(sec.Template.Name, JsonConvert.SerializeObject(layer)))
                     {
@@ -329,7 +325,7 @@ public partial class ImageResultEntry
         List<Sectors.Interfaces.ISector> tempSectors = [];
         if (!string.IsNullOrEmpty(V275ResultRow.Report) && !string.IsNullOrEmpty(V275ResultRow.Template))
         {
-            foreach (Job.Sector jSec in V275ResultRow._Job.sectors)
+            foreach (V275_REST_Lib.Models.Job.Sector jSec in V275ResultRow._Job.sectors)
             {
                 foreach (JObject rSec in V275ResultRow._Report.inspectLabel.inspectSector)
                 {
@@ -367,23 +363,23 @@ public partial class ImageResultEntry
             if (removeGS1Data)
                 _ = ((JObject)reportSec["data"]).Remove("gs1SymbolQuality");
 
-            return JsonConvert.DeserializeObject<Report_InspectSector_Verify1D>(reportSec.ToString());
+            return JsonConvert.DeserializeObject<V275_REST_Lib.Models.Report_InspectSector_Verify1D>(reportSec.ToString());
         }
         else if (reportSec["type"].ToString() == "verify2D")
         {
             if (removeGS1Data)
                 _ = ((JObject)reportSec["data"]).Remove("gs1SymbolQuality");
 
-            return JsonConvert.DeserializeObject<Report_InspectSector_Verify2D>(reportSec.ToString());
+            return JsonConvert.DeserializeObject<V275_REST_Lib.Models.Report_InspectSector_Verify2D>(reportSec.ToString());
         }
         else
         {
             return reportSec["type"].ToString() == "ocr"
-                ? JsonConvert.DeserializeObject<Report_InspectSector_OCR>(reportSec.ToString())
+                ? JsonConvert.DeserializeObject<V275_REST_Lib.Models.Report_InspectSector_OCR>(reportSec.ToString())
                 : reportSec["type"].ToString() == "ocv"
-                            ? JsonConvert.DeserializeObject<Report_InspectSector_OCV>(reportSec.ToString())
+                            ? JsonConvert.DeserializeObject<V275_REST_Lib.Models.Report_InspectSector_OCV>(reportSec.ToString())
                             : reportSec["type"].ToString() == "blemish"
-                                        ? JsonConvert.DeserializeObject<Report_InspectSector_Blemish>(reportSec.ToString())
+                                        ? JsonConvert.DeserializeObject<V275_REST_Lib.Models.Report_InspectSector_Blemish>(reportSec.ToString())
                                         : (object)null;
         }
     }

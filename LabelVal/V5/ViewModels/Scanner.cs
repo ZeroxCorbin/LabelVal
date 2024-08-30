@@ -299,7 +299,6 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         else
             LogError("V5 Config update but SysInfo is invalid.");
     }
-
     private void ScannerController_SysInfoUpdate()
     {
         if (Controller.IsSysInfoValid)
@@ -311,14 +310,6 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         else
             LogError("V5 Config update but SysInfo is invalid.");
     }
-
-
-    //private void RunController_StateChanged(RunController.States state, string msg)
-    //{
-    //    if (state == RunController.States.Running)
-    //        stop = true;
-    //}
-
     private void ScannerController_ReportUpdate(JObject json)
     {
         if (json != null)
