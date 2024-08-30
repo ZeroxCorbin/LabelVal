@@ -293,7 +293,7 @@ public partial class Controller : ObservableObject
             return null;
         }
 
-        v5.Template = V5.Config.Serialize;
+        v5.Template = JsonConvert.SerializeObject(V5.Config);
         v5.Report = res.ReportJSON;
         v5.StoredImage = JsonConvert.SerializeObject(new ImageEntry(ire.ImageRollUID, res.FullImage, 0));
 

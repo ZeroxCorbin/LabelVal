@@ -182,10 +182,8 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             src.FileAcquisitionSource = null;
             src.SensorAcquisitionSource = new V5_REST_Lib.Models.Config.Sensoracquisitionsource()
             {
-                baseClass = "ChannelSource",
                 extlight = "inactive",
                 targeting = true,
-                text = "Sensor",
                 trigdebounce = 5000,
                 trigpolarity = "normally-open",
                 uiScale = 1,
