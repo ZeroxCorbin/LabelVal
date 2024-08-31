@@ -54,14 +54,14 @@ public partial class ImageResultEntry
         var lab = new V5_REST_Lib.Controller.Label
         {
             DetectSectors = simDetSec || camDetSec,
-            Config = simAddSec || camAddSec ? ImageResults.SelectedScanner.Controller.Config : null,
+            Config = simAddSec || camAddSec ? V5ResultRow._Config : null,
             RepeatAvailable = V5ProcessResults
         };
 
         if (imageType == "source")
                 lab.Image = SourceImage.ImageBytes;
             else if (imageType == "v5Stored")
-                lab.Image = V5StoredImage.ImageBytes;
+                lab.Image = V5ResultRow.Stored.ImageBytes;
 
         IsV5Working = true;
         IsV5Faulted = false;

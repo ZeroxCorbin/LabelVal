@@ -276,7 +276,7 @@ public partial class Controller : ObservableObject
 
         if (V5.IsSimulator)
         {
-            if (!await V5.ChangeImage(ire.V5ResultRow.Stored.ImageBytes, true))
+            if (!await V5.ChangeImage(ire.V5ResultRow.Stored.ImageBytes, false))
             {
                 LogError("Could not change the image.");
                 UpdateRunState(RunStates.Error);

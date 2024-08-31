@@ -202,6 +202,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
                 baseClass = "ChannelSource",
                 directory = SelectedDirectory ?? Directories.First(),
                 uiScale = 1,
+                text = "File",
             };
             src.type = "FileAcquisitionSource";
             //src.uid = DateTime.Now.Ticks.ToString();
