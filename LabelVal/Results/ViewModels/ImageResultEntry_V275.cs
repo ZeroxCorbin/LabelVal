@@ -121,7 +121,7 @@ public partial class ImageResultEntry
 
         if (!App.Current.Dispatcher.CheckAccess())
         {
-            App.Current.Dispatcher.Invoke(() => V275ProcessRepeat(repeat));
+            App.Current.Dispatcher.BeginInvoke(() => V275ProcessRepeat(repeat));
             return;
         }
 

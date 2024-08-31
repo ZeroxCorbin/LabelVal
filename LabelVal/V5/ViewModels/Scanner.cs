@@ -116,9 +116,9 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
     private bool IsWaitingForFullImage;
 
-    [ObservableProperty] private List<JobSlots.Datum> jobs;
-    [ObservableProperty] private JobSlots.Datum selectedJob;
-    partial void OnSelectedJobChanged(JobSlots.Datum value)
+    public ObservableCollection<JobSlots.Datum> JobSlots { get; } = new();
+    [ObservableProperty] private JobSlots.Datum selectedJobSlot;
+    partial void OnSelectedJobSlotChanged(JobSlots.Datum value)
     {
         if (value == null)
         {
@@ -139,20 +139,20 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     [ObservableProperty] private string jobName = "";
     partial void OnJobNameChanged(string value)
     {
-        if (Jobs == null)
+        if (JobSlots == null)
         {
-            SelectedJob = null;
+            SelectedJobSlot = null;
             return;
         }
 
-        var jb = Jobs.FirstOrDefault((e) => e.jobName == JobName);
+        var jb = JobSlots.FirstOrDefault((e) => e.jobName == JobName);
 
         if (jb != null)
         {
-            if (SelectedJob != jb)
+            if (SelectedJobSlot != jb)
             {
                 userChange = true;
-                SelectedJob = jb;
+                SelectedJobSlot = jb;
             }
         }
     }
@@ -167,48 +167,8 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
     private async void SwitchAquisitionType(bool file)
     {
-        if (!Controller.IsConfigValid)
-        {
-            LogError("Could not get scanner configuration.");
-            return;
-        }
-
-        Config.Source src = Controller.Config.response.data.job.channelMap.acquisition.AcquisitionChannel.source;
-        if (!file)
-        {
-            if (src.SensorAcquisitionSource != null)
-                return;
-
-            src.FileAcquisitionSource = null;
-            src.SensorAcquisitionSource = new V5_REST_Lib.Models.Config.Sensoracquisitionsource()
-            {
-                extlight = "inactive",
-                targeting = true,
-                trigdebounce = 5000,
-                trigpolarity = "normally-open",
-                uiScale = 1,
-            };
-            src.type = "SensorAcquisitionSource";
-            // src.uid = DateTime.Now.Ticks.ToString();
-        }
-        else
-        {
-            if (src.FileAcquisitionSource != null)
-                return;
-
-            src.SensorAcquisitionSource = null;
-            src.FileAcquisitionSource = new Config.Fileacquisitionsource()
-            {
-                baseClass = "ChannelSource",
-                directory = SelectedDirectory ?? Directories.First(),
-                uiScale = 1,
-                text = "File",
-            };
-            src.type = "FileAcquisitionSource";
-            //src.uid = DateTime.Now.Ticks.ToString();
-        }
-
-        _ = await Controller.SendJob(Controller.Config.response.data);
+        if(!await Controller.SwitchAquisitionType(file, SelectedDirectory ?? Directories.First()))
+            LogError("Could not switch acquisition type.");
     }
     private async void ChangeDirectory(string directory)
     {
@@ -223,7 +183,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         if (src.FileAcquisitionSource.directory != directory)
         {
             src.FileAcquisitionSource.directory = directory;
-            _ = await Controller.SendJob(Controller.Config.response.data);
+            _ = await Controller.SetConfig(Controller.Config.response.data);
         }
     }
 
@@ -244,6 +204,9 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             ScannerController_ImageUpdate(Controller.Image);
         else if (e.PropertyName == "Report")
             ScannerController_ReportUpdate(Controller.Report);
+        else if(e.PropertyName == "JobSlots")
+            ScannerController_JobSlotsUpdate();
+
     }
     public void Receive(PropertyChangedMessage<ImageRollEntry> message) => SelectedImageRoll = message.NewValue;
 
@@ -368,7 +331,6 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         if (json == null)
         {
             RawImage = null;
-            IsWaitingForFullImage = false;
             return;
         }
 
@@ -376,24 +338,40 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         {
             try
             {
-
                 RawImage = ImageUtilities.GetPng(await Controller.GetImageFullRes(json));
-                IsWaitingForFullImage = false;
-                return;
             }
-            catch { }
+            catch { RawImage = null; }
         }
         else
         {
             try
             {
                 RawImage = ImageUtilities.GetPng((byte[])json["msgData"]?["images"]?[0]?["imgData"]);
-                return;
             }
-            catch { }
+            catch { RawImage = null; }
+        }
+    }
+
+    private void ScannerController_JobSlotsUpdate()
+    {
+        if (!App.Current.Dispatcher.CheckAccess())
+        {
+            _ = App.Current.Dispatcher.BeginInvoke(ScannerController_JobSlotsUpdate);
+            return;
         }
 
-        RawImage = null;
+        if (Controller.IsJobSlotsValid)
+        {
+            foreach (JobSlots.Datum job in Controller.JobSlots.response.data)
+                if(!JobSlots.Any((e) => e.jobName == job.jobName && e.slotIndex == job.slotIndex))
+                    JobSlots.Add(job);
+
+            foreach (JobSlots.Datum job in JobSlots.ToArray())
+                if (!Controller.JobSlots.response.data.Any((e) => e.jobName == job.jobName && e.slotIndex == job.slotIndex))
+                    JobSlots.Remove(job);
+        }
+        else
+            JobSlots.Clear();
     }
 
     private BitmapImage GetImage(byte[] raw)
@@ -414,7 +392,6 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     private void CheckOverlay()
     {
         ImageOverlay = Results.Count > 0 ? V5CreateSectorsImageOverlay(ResultsJObject) : null;
-
         ImageFocusRegionOverlay = Controller.IsSimulator ? null : CreateFocusRegionOverlay();
     }
     private DrawingImage CreateFocusRegionOverlay()
@@ -603,8 +580,8 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     {
         if (!Controller.IsConnected)
         {
-            if (!await PreLogin())
-                return;
+            //if (!await PreLogin())
+            //    return;
 
             if (await Task.Run(Controller.Connect))
                 return;
@@ -617,24 +594,25 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         PostLogout();
     }
 
-    private async Task<bool> PreLogin()
-    {
-        V5_REST_Lib.Results jobs = await Controller.Commands.GetJobSlots();
-        if (jobs.OK)
-        {
-            JobSlots job = (JobSlots)jobs.Object;
-            if (job != null)
-                Jobs = job.response.data;
+    //private async Task<bool> PreLogin()
+    //{
+    //    V5_REST_Lib.Results jobs = await Controller.Commands.GetJobSlots();
+    //    if (jobs.OK)
+    //    {
+    //        JobSlots job = (JobSlots)jobs.Object;
+    //        if (job != null)
+    //            JobSlots = job.response.data;
 
-            return true;
-        }
-        else
-            return false;
-    }
+    //        return true;
+    //    }
+    //    else
+    //        return false;
+    //}
 
     private void PostLogout()
     {
-        Jobs = null;
+        JobSlots.Clear();
+        SelectedJobSlot = null;
         JobName = "";
     }
 
@@ -642,12 +620,12 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     private bool running;
     private bool stop;
     [RelayCommand]
-    private async Task Trigger()
+    private Task Trigger()
     {
         if (_tokenSrc != null)
         {
             _tokenSrc.Cancel();
-            return;
+            return Task.CompletedTask;
         }
 
         Clear();
@@ -656,7 +634,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         {
             _tokenSrc = new CancellationTokenSource();
             var cnlToken = _tokenSrc.Token;
-            _ = App.Current.Dispatcher.BeginInvoke(async () =>
+            return App.Current.Dispatcher.Invoke(async () =>
             {
                 try
                 {
@@ -664,7 +642,6 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
                     {
                         if (await Controller.Trigger_Wait() != true)
                             _tokenSrc.Token.ThrowIfCancellationRequested();
-                        CheckOverlay();
                     }
                     _tokenSrc.Token.ThrowIfCancellationRequested();
                 }
@@ -676,36 +653,10 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             });
         }
         else
-        {
-            IsWaitingForFullImage = FullResImages;
+            _ = Controller.Commands.Trigger();
 
-            if (await Controller.Trigger_Wait())
-            {
-                if (FullResImages)
-                    await WaitForImage();
-
-                CheckOverlay();
-            }
-            else
-                IsWaitingForFullImage = false;
-
-        }
-    }
-
-    private async Task<bool> WaitForImage()
-    {
-        await Task.Run(() =>
-        {
-            DateTime start = DateTime.Now;
-            while (IsWaitingForFullImage)
-            {
-                if ((DateTime.Now - start) > TimeSpan.FromMilliseconds(2000))
-                    break;
-                Thread.Sleep(1);
-            }
-        });
-
-        return !IsWaitingForFullImage;
+        return Task.CompletedTask;
+        
     }
 
     [RelayCommand]
@@ -744,21 +695,12 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         }
     }
 
-    private async Task ChangeJob(JobSlots.Datum job)
-    {
-        var res = await Controller.ChangeJobSlot(job);
+    private async Task ChangeJob(JobSlots.Datum job) => await Controller.ChangeJobSlot(job);
 
-    }
     [RelayCommand]
-    private async Task SwitchRun()
-    {
-        _ = await Controller.Commands.ModeRun();
-    }
+    private async Task SwitchRun() => await Controller.Commands.ModeRun();
     [RelayCommand]
-    public async Task SwitchEdit()
-    {
-        _ = await Controller.SwitchToEdit();
-    }
+    public async Task SwitchEdit() => await Controller.SwitchToEdit();
 
     [RelayCommand]
     private void AddToImageRoll()
@@ -793,10 +735,11 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
     private void Clear()
     {
-        Image = null;
+        RawImage = null;
         ImageOverlay = null;
         ImageFocusRegionOverlay = null;
 
+        ResultsJObject = null;
         Results.Clear();
         ExplicitMessages = null;
         Capture = null;

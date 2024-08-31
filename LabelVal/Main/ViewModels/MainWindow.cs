@@ -12,7 +12,7 @@ namespace LabelVal.Main.ViewModels;
 
 public class DPIChangedMessage : ValueChangedMessage<DpiScale> { public DPIChangedMessage(DpiScale value) : base(value) { } }
 
-public partial class MainWindow : ObservableRecipient, IRecipient<SystemMessages.StatusMessage>
+public partial class MainWindow : ObservableRecipient, IRecipient<SystemMessages.StatusMessage>, IRecipient<V5_REST_Lib.Messages.LoggerMessage>, IRecipient<V275_REST_Lib.Messages.LoggerMessage>
 {
     public static string Version => App.Version;
 
@@ -90,6 +90,12 @@ public partial class MainWindow : ObservableRecipient, IRecipient<SystemMessages
 
     public void Receive(SystemMessages.StatusMessage message)
     {
+        if (!App.Current.Dispatcher.CheckAccess())
+        {
+            App.Current.Dispatcher.BeginInvoke(() => Receive(message));
+            return;
+        }
+
         switch (message.Value)
         {
             case SystemMessages.StatusMessageType.Error:
@@ -105,6 +111,59 @@ public partial class MainWindow : ObservableRecipient, IRecipient<SystemMessages
                 break;
             case SystemMessages.StatusMessageType.Info:
                 SystemMessages_InfoDebug.Add(message);
+                break;
+        }
+    }
+
+    public void Receive(V5_REST_Lib.Messages.LoggerMessage message)
+    {
+        if (!App.Current.Dispatcher.CheckAccess())
+        {
+            App.Current.Dispatcher.BeginInvoke(() => Receive(message));
+            return;
+        }
+
+        switch (message.Value) {
+            case V5_REST_Lib.Messages.LoggerMessageTypes.Error:
+                SystemMessages_ErrorWarning.Add(new SystemMessages.StatusMessage(message.Message, SystemMessages.StatusMessageType.Error));
+                OnPropertyChanged(nameof(SystemMessages_RecentError));
+                break;
+            case V5_REST_Lib.Messages.LoggerMessageTypes.Warning:
+                SystemMessages_ErrorWarning.Add(new SystemMessages.StatusMessage(message.Message, SystemMessages.StatusMessageType.Warning));
+                OnPropertyChanged(nameof(SystemMessages_RecentError));
+                break;
+            case V5_REST_Lib.Messages.LoggerMessageTypes.Debug:
+                SystemMessages_InfoDebug.Add(new SystemMessages.StatusMessage(message.Message, SystemMessages.StatusMessageType.Debug));
+                break;
+            case V5_REST_Lib.Messages.LoggerMessageTypes.Info:
+                SystemMessages_InfoDebug.Add(new SystemMessages.StatusMessage(message.Message, SystemMessages.StatusMessageType.Info));
+                break;
+        }
+    }
+
+    public void Receive(V275_REST_Lib.Messages.LoggerMessage message)
+    {
+        if (!App.Current.Dispatcher.CheckAccess())
+        {
+            App.Current.Dispatcher.BeginInvoke(() => Receive(message));
+            return; 
+        }
+
+        switch (message.Value)
+        {
+            case V275_REST_Lib.Messages.LoggerMessageTypes.Error:
+                SystemMessages_ErrorWarning.Add(new SystemMessages.StatusMessage(message.Message, SystemMessages.StatusMessageType.Error));
+                OnPropertyChanged(nameof(SystemMessages_RecentError));
+                break;
+            case V275_REST_Lib.Messages.LoggerMessageTypes.Warning:
+                SystemMessages_ErrorWarning.Add(new SystemMessages.StatusMessage(message.Message, SystemMessages.StatusMessageType.Warning));
+                OnPropertyChanged(nameof(SystemMessages_RecentError));
+                break;
+            case V275_REST_Lib.Messages.LoggerMessageTypes.Debug:
+                SystemMessages_InfoDebug.Add(new SystemMessages.StatusMessage(message.Message, SystemMessages.StatusMessageType.Debug));
+                break;
+            case V275_REST_Lib.Messages.LoggerMessageTypes.Info:
+                SystemMessages_InfoDebug.Add(new SystemMessages.StatusMessage(message.Message, SystemMessages.StatusMessageType.Info));
                 break;
         }
     }

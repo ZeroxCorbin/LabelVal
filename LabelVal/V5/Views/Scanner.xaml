@@ -16,6 +16,8 @@
     <UserControl.Resources>
         <converters:BytesToImageConverter x:Key="bytesToImage"/>
         <converters:ObjectIsNull x:Key="ObjectIsNull"/>
+        <converters:IsEnumerationNullOrEmpty x:Key="IsEnumerationNullOrEmpty"/>
+        <converters:GreaterThanZero x:Key="GreaterThanZero"/>
         <converters:IPAddressSplitConverter x:Key="ipAddressSplitConverter"/>
     </UserControl.Resources>
 
@@ -419,8 +421,8 @@
 
 
 
-                        <ComboBox ItemsSource="{Binding Jobs}" Margin="6,3" VerticalAlignment="Top"
-                                  SelectedValue="{Binding SelectedJob}"
+                        <ComboBox ItemsSource="{Binding JobSlots}" Margin="6,3" VerticalAlignment="Top"
+                                  SelectedValue="{Binding SelectedJobSlot}"
                                   md:HintAssist.Hint="Job Name">
 
                             <ComboBox.Style>
@@ -434,7 +436,7 @@
                                             <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}"/>
                                         </DataTrigger>-->
 
-                                        <DataTrigger Value="False" Binding="{Binding Jobs, Converter={StaticResource ObjectIsNull}}">
+                                        <DataTrigger Value="True" Binding="{Binding JobSlots.Count, Converter={StaticResource GreaterThanZero}}">
                                             <Setter Property="Visibility" Value="Visible"/>
                                         </DataTrigger>
 
@@ -452,7 +454,7 @@
                             </ComboBox.ItemTemplate>
                         </ComboBox>
 
-                        <TextBox d:Text="-----" Margin="6,3"
+                        <TextBox d:Text="-----" Margin="6,3" VerticalAlignment="Top"
                              md:HintAssist.Hint="Job Name" IsHitTestVisible="False">
                             <TextBox.Style>
                                 <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
@@ -467,7 +469,7 @@
                                             <Setter Property="BorderBrush" Value="{DynamicResource SectorError_Brush}"/>
                                         </DataTrigger>
 
-                                        <DataTrigger Value="True" Binding="{Binding Jobs, Converter={StaticResource ObjectIsNull}}">
+                                        <DataTrigger Value="0" Binding="{Binding JobSlots.Count}">
                                             <Setter Property="Visibility" Value="Visible"/>
                                         </DataTrigger>
 
