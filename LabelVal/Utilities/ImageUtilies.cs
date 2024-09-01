@@ -349,13 +349,23 @@ public static class ImageUtilities
         newBitmap.Save(outputStream, ImageFormat.Bmp);
         return outputStream.ToArray();
     }
-    private static byte[] ExtractBitmapData(byte[] image)
+    public static byte[] ExtractBitmapData(byte[] image)
     {
         if (!IsBmp(image))
             throw new ArgumentException("The provided byte array is not a valid BMP image.");
 
         int dataOffset = BitConverter.ToInt32(image, 10);
         return image[dataOffset..];
+    }
+    public static byte[] ExtractBitmapIndexedColorPallet(byte[] image)
+    {
+        if (!IsBmp(image))
+            throw new ArgumentException("The provided byte array is not a valid BMP image.");
+
+        int dataOffset = BitConverter.ToInt32(image, 10);
+        int palletOffset = 54;
+
+        return image[palletOffset..dataOffset];
     }
 
     private static DPI GetPngDPI(byte[] image)
