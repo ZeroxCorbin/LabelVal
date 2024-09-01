@@ -57,7 +57,6 @@ public partial class ImageResults : ObservableRecipient,
 
     [ObservableProperty] private Node selectedNode;
     [ObservableProperty] private ImageRollEntry selectedImageRoll;
-
     [ObservableProperty] private PrinterSettings selectedPrinter;
     [ObservableProperty] private Databases.ImageResultsDatabase selectedDatabase;
     [ObservableProperty] private Scanner selectedScanner;
@@ -72,7 +71,7 @@ public partial class ImageResults : ObservableRecipient,
 
         if (newValue != null)
         {
-            LoadImageResultsList();
+            _ = LoadImageResultsList();
         }
         else
             Application.Current.Dispatcher.Invoke(() => ImageResultsList.Clear());
@@ -80,6 +79,7 @@ public partial class ImageResults : ObservableRecipient,
 
     [ObservableProperty] bool isL95xxSelected;
     partial void OnIsL95xxSelectedChanging(bool value) => ResetL95xxSelected();
+
     private bool reseting;
     public bool ResetL95xxSelected()
     {
@@ -92,7 +92,6 @@ public partial class ImageResults : ObservableRecipient,
         return reseting = false;
     }
 
-    private Dictionary<int, V275Repeat> TempV275Repeat { get; } = [];
 
     public ImageResults()
     {
@@ -127,26 +126,23 @@ public partial class ImageResults : ObservableRecipient,
             SelectedVerifier = ret6.Response;
     }
 
-    public async void LoadImageResultsList()
+    public async Task LoadImageResultsList()
     {
-        Application.Current.Dispatcher.Invoke(() => ImageResultsList.Clear());
-
         if (SelectedImageRoll == null)
             return;
+
+        var clrTsk = Application.Current.Dispatcher.BeginInvoke(() => ImageResultsList.Clear());
 
         if (SelectedImageRoll.Images.Count == 0)
             await SelectedImageRoll.LoadImages();
 
-        List<Task> taskList = new();
+        clrTsk.Wait();
+
         foreach (ImageEntry img in SelectedImageRoll.Images)
-        {
-            Task tsk = App.Current.Dispatcher.BeginInvoke(() => AddImageResultEntry(img)).Task;
-            taskList.Add(tsk);
-        }
-
-        await Task.WhenAll([.. taskList]);
-
+            AddImageResultEntry(img);
+        
         SelectedImageRoll.Images.CollectionChanged += SelectedImageRoll_Images_CollectionChanged;
+
     }
     private void SelectedImageRoll_Images_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
@@ -244,8 +240,8 @@ public partial class ImageResults : ObservableRecipient,
     private void AddImageBottom()
     {
         List<ImageResultEntry> newImages = PromptForNewImages(); // Prompt the user to select multiple images
-        if (newImages != null && newImages.Count != 0)
-            InsertImageAtOrder(newImages, ImageResultsList.Count + 1);
+            if (newImages != null && newImages.Count != 0)
+                InsertImageAtOrder(newImages, ImageResultsList.Count + 1);
     }
 
     private async Task<V5_REST_Lib.Controller.FullReport> ProcessV5()

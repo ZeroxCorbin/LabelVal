@@ -13,6 +13,7 @@ using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Shapes;
 
 namespace LabelVal.ImageRolls.ViewModels;
 
@@ -138,7 +139,11 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
         int i = 1;
         foreach (string f in sorted)
         {
-            Task tsk = App.Current.Dispatcher.BeginInvoke(() => AddImage(f, i++)).Task;
+            ImageEntry image = GetNewImageEntry(f, i++);
+            if (image == null)
+                continue;
+
+            Task tsk = App.Current.Dispatcher.BeginInvoke(() => AddImage(image)).Task;
             taskList.Add(tsk);
         }
 
@@ -238,7 +243,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     }
 
     [RelayCommand]
-    private void AddFirstImages()
+    private async Task AddImagesFromDrive()
     {
         Utilities.FileUtilities.LoadFileDialogSettings settings = new()
         {
@@ -253,50 +258,74 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
 
         if (Utilities.FileUtilities.LoadFileDialog(settings))
         {
+            //Sort the selected files by name
             List<string> sorted = settings.SelectedFiles.OrderBy(x => x).ToList();
+
             int last = 0;
             if (Images.Count > 0)
             {
                 List<ImageEntry> sortedImages = Images.OrderBy(x => x.Order).ToList();
                 last = sortedImages.Last().Order;
             }
-
+            List<ImageEntry> newImgs = [];
             int i = last + 1;
             foreach (string f in sorted)
-                AddImage(f, i++);
-        }
-    }
-    private void AddImage(string path, int order)
-    {
-        try
-        {
-            ImageEntry image = GetNewImageEntry(path, order);
-            if (image == null)
-                return;
+                newImgs.Add(GetNewImageEntry(f, i++));
 
-            SaveImage(image);
-            Images.Add(image);
-            ImageCount = Images.Count;
-        }
-        catch (Exception ex)
-        {
-            LogError($"Failed to load image: {Path}", ex);
+            AddImages(newImgs);
         }
     }
+
     public void AddImage(ImageEntry image)
-    {
-        try
-        {
-            if (image == null)
+    { 
+        if (image == null)
                 return;
 
-            SaveImage(image);
+        if (!App.Current.Dispatcher.CheckAccess())
+        {
+            _ = App.Current.Dispatcher.BeginInvoke(() => AddImage(image));
+            return;
+        }
+
+        //Add new/update ImageEntry in database if not Rooted
+        SaveImage(image);
+
+        try
+        {
             Images.Add(image);
             ImageCount = Images.Count;
         }
         catch (Exception ex)
         {
             LogError($"Failed to load image: {Path}", ex);
+        }
+    }
+
+    public void AddImages(List<ImageEntry> images)
+    {  
+        if (images == null || images.Count == 0)
+            return;
+
+        if (!App.Current.Dispatcher.CheckAccess())
+        {
+            _ = App.Current.Dispatcher.BeginInvoke(() => AddImages(images));
+            return;
+        }
+
+        foreach (var image in images)
+        {
+            //Add new/update ImageEntry in database if not Rooted
+            SaveImage(image);
+
+            try
+            {
+                Images.Add(image);
+                ImageCount = Images.Count;
+            }
+            catch (Exception ex)
+            {
+                LogError($"Failed to load image: {Path}", ex);
+            }            
         }
     }
 
