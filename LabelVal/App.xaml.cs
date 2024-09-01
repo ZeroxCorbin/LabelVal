@@ -104,17 +104,17 @@ public partial class App : Application
             RecursiveDelete(new DirectoryInfo(WorkingDir));
         }
 
-        LogManager.GetCurrentClassLogger().Info($"Starting: Plugging in batteries.");
-        try
-        {
-            Batteries.Init();
-        }
-        catch (Exception ex)
-        {
-            LogManager.GetCurrentClassLogger().Error(ex);
-            Shutdown();
-            return;
-        }
+        //LogManager.GetCurrentClassLogger().Info($"Starting: Plugging in batteries.");
+        //try
+        //{
+        //    Batteries.Init();
+        //}
+        //catch (Exception ex)
+        //{
+        //    LogManager.GetCurrentClassLogger().Error(ex);
+        //    Shutdown();
+        //    return;
+        //}
 
         Settings = new SimpleDatabase().Open(Path.Combine(UserDataDirectory, SettingsDatabaseName));
 
