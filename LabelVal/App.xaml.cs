@@ -64,7 +64,7 @@ public partial class App : Application
 
     public App()
     {
-        //SetupExceptionHandling();
+        SetupExceptionHandling();
 
         Version version = Assembly.GetExecutingAssembly().GetName().Version;
         if (version != null)
@@ -244,7 +244,7 @@ public partial class App : Application
                 {
                     var newFileName = $"{imgDir.FullName}\\{Path.GetFileName(file)}";
                     if(Path.GetExtension(file) is ".bmp" or ".png")
-                        File.WriteAllBytes(newFileName, ImageUtilities.GetPng(File.ReadAllBytes(file), PixelFormat.Format8bppIndexed));
+                        File.WriteAllBytes(newFileName, LibImageUtilities.ImageUtilities_PNG.GetPng(File.ReadAllBytes(file), PixelFormat.Format8bppIndexed));
                     else
                         File.Copy(file, newFileName);
                 }
@@ -258,7 +258,7 @@ public partial class App : Application
                 {
                     var newFileName = $"{imgDir.FullName}\\{Path.GetFileName(file)}";
                     if (Path.GetExtension(file) is ".bmp" or ".png")
-                        File.WriteAllBytes(newFileName, ImageUtilities.GetPng(File.ReadAllBytes(file), PixelFormat.Format8bppIndexed));
+                        File.WriteAllBytes(newFileName, LibImageUtilities.ImageUtilities_PNG.GetPng(File.ReadAllBytes(file), PixelFormat.Format8bppIndexed));
                     else
                         File.Copy(file, newFileName);
                 }

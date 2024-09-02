@@ -3,31 +3,27 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-                xmlns:h="clr-namespace:HelixToolkit.Wpf;assembly=HelixToolkit.Wpf"
+             xmlns:hx="http://helix-toolkit.org/wpf/SharpDX"
              xmlns:local="clr-namespace:LabelVal.ImageViewer3D.Views"
-                xmlns:converters="clr-namespace:LabelVal.Converters"
+             xmlns:converters="clr-namespace:LabelVal.Converters"
              xmlns:vm="clr-namespace:LabelVal.ImageViewer3D.ViewModels"
              d:DataContext="{d:DesignInstance Type=vm:ImageViewer3D}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-
     <UserControl.Resources>
-        <converters:BindingProxy x:Key="proxy" Data="{Binding}" />
+        <DataTemplate x:Key="Template1">
+            <hx:MeshGeometryModel3D Geometry="{Binding Geometry}" Transform="{Binding Transform}" Material="{Binding Material}"/>
+        </DataTemplate>
     </UserControl.Resources>
-    <Grid>
-        <h:HelixViewport3D ItemsSource="{Binding Visuals}"
-                            Background="{h:LinearGradientBrush Gray, White}"
-                           ShowCameraInfo="True" 
-                           ShowCoordinateSystem="True" MinWidth="360">
-            <h:HelixViewport3D.Camera>
-                <PerspectiveCamera 
-                    Position="{Binding Camera.Position,Mode=TwoWay, Source={StaticResource proxy}}"
-                    LookDirection="{Binding Camera.LookDirection,Mode=TwoWay, Source={StaticResource proxy}}"
-                    UpDirection="{Binding Camera.UpDirection,Mode=TwoWay, Source={StaticResource proxy}}"
-                    FieldOfView="{Binding Camera.FieldOfView,Mode=TwoWay, Source={StaticResource proxy}}"
-                    />
-            </h:HelixViewport3D.Camera>
-
-        </h:HelixViewport3D>
-    </Grid>
+    <Grid x:Name="grid">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <hx:Viewport3DX EffectsManager="{Binding ElementName=grid, Path = DataContext.EffectsManager}">
+            <hx:AmbientLight3D />
+            <hx:DirectionalLight3D Direction = "-2,-5,-2"/>
+            <hx:ItemsModel3D ItemTemplate="{StaticResource Template1}" ItemsSource="{Binding Items}"/>
+        </hx:Viewport3DX>
+        </Grid>
 </UserControl>

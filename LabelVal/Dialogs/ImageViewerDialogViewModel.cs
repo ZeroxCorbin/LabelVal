@@ -10,7 +10,9 @@ namespace LabelVal.Dialogs;
 
 public partial class ImageViewerDialogViewModel : ObservableObject
 {
+    /// <see cref="Width"/>
     [ObservableProperty] private double width;
+    /// <see cref="Height"/>
     [ObservableProperty] private double height;
 
     [ObservableProperty] private BitmapImage image;

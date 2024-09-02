@@ -83,7 +83,7 @@ public partial class ImageResultEntry
             return;
         }
 
-        V5CurrentImage = new ImageEntry(ImageRollUID, ImageUtilities.GetPng(report.FullImage), 96);
+        V5CurrentImage = new ImageEntry(ImageRollUID, LibImageUtilities.ImageUtilities_PNG.GetPng(report.FullImage), 96);
 
         V5CurrentTemplate = ImageResults.SelectedScanner.Controller.Config;
         V5CurrentReport = JsonConvert.DeserializeObject<V5_REST_Lib.Models.ResultsAlt>(report.ReportJSON);

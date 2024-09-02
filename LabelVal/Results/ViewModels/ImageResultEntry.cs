@@ -202,7 +202,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
                 if (Path.GetExtension(path).Contains("png", StringComparison.InvariantCultureIgnoreCase))
                     File.WriteAllBytes(path, bmp);
                 else
-                    File.WriteAllBytes(path, ImageUtilities.GetBmp(bmp));
+                    File.WriteAllBytes(path, LibImageUtilities.ImageUtilities_BMP.GetBmp(bmp));
 
                 Clipboard.SetText(path);
             }
@@ -358,7 +358,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         }
     }
 
-    [RelayCommand] private void RedoFiducial() => ImageUtilities.RedrawFiducial(SourceImage.Path, false);
+    [RelayCommand] private void RedoFiducial() => LibImageUtilities.ImageUtilities.RedrawFiducial(SourceImage.Path, false);
 
     [RelayCommand] private void Delete() => DeleteImage?.Invoke(this);
     //const UInt32 WM_KEYDOWN = 0x0100;
@@ -429,7 +429,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
 
     private DrawingImage CreateSectorsImageOverlay(ImageEntry image, ObservableCollection<Sectors.Interfaces.ISector> sectors)
     {
-        if(sectors == null || sectors.Count == 0)
+        if (sectors == null || sectors.Count == 0)
             return null;
 
         if (image == null)
@@ -490,7 +490,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
                         newSec.IsError ? new SolidColorBrush(Colors.Red) : Brushes.Transparent,
                     warnSecThickness)
             };
-            drwGroup.Children.Add(warnSector);    
+            drwGroup.Children.Add(warnSector);
 
             drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun(newSec.Template.Username, new Typeface(SystemFonts.MessageFontFamily, SystemFonts.MessageFontStyle, SystemFonts.MessageFontWeight, new FontStretch()), renderingEmSize, new Point(newSec.Template.Left - 8, newSec.Template.Top - 8))));
 
@@ -521,7 +521,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         if (ShowExtendedData)
             drwGroup.Children.Add(GetModuleGrid(sectors));
 
-       // drwGroup.Transform = new RotateTransform(ImageResults.SelectedScanner.RotateImage ? 180 : 0);
+        // drwGroup.Transform = new RotateTransform(ImageResults.SelectedScanner.RotateImage ? 180 : 0);
 
         DrawingImage geometryImage = new(drwGroup);
         geometryImage.Freeze();

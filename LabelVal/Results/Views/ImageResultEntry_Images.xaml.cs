@@ -1,6 +1,7 @@
 ﻿using LabelVal.Dialogs;
 using LabelVal.ImageRolls.ViewModels;
 using MahApps.Metro.Controls.Dialogs;
+using SharpDX.Direct2D1;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -16,9 +17,10 @@ public partial class ImageResultEntry_Images : UserControl
     public ImageResultEntry_Images() => InitializeComponent();
     private void SourceImage_MouseDown(object sender, MouseButtonEventArgs e)
     {
-        if (e.LeftButton == MouseButtonState.Pressed)
-            _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).SourceImage, ((ViewModels.ImageResultEntry)DataContext).ShowPrinterAreaOverSource ? ((ViewModels.ImageResultEntry)DataContext).CreatePrinterAreaOverlay(false) : null);
-        
+        if (e.LeftButton == MouseButtonState.Pressed && !(Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)))
+            ShowImage(((ViewModels.ImageResultEntry)DataContext).SourceImage, ((ViewModels.ImageResultEntry)DataContext).ShowPrinterAreaOverSource ? ((ViewModels.ImageResultEntry)DataContext).CreatePrinterAreaOverlay(false) : null);
+        else if (e.LeftButton == MouseButtonState.Pressed)
+            Show3DImage(((ViewModels.ImageResultEntry)DataContext).SourceImage.ImageBytes);
     }
     private void SourceImage_ContextMenuOpening(object sender, ContextMenuEventArgs e)
     {
@@ -26,12 +28,12 @@ public partial class ImageResultEntry_Images : UserControl
             e.Handled = true;
     }
 
-    private bool ShowImage(ImageEntry image, DrawingImage overlay)
+    private void ShowImage(ImageEntry image, DrawingImage overlay)
     {
         ImageViewerDialogViewModel dc = new();
 
         dc.LoadImage(image.Image, overlay);
-        if (dc.Image == null) return false;
+        if (dc.Image == null) return;
 
         var yourParentWindow = (Main.Views.MainWindow)Window.GetWindow(this);
 
@@ -40,7 +42,30 @@ public partial class ImageResultEntry_Images : UserControl
 
         _ = DialogCoordinator.Instance.ShowMetroDialogAsync(yourParentWindow.DataContext, new ImageViewerDialogView() { DataContext = dc });
 
-        return true;
+
+    }
+
+    private void Show3DImage(byte[] image)
+    {
+
+        var img = new ImageViewer3D.ViewModels.ImageViewer3D();
+
+        img.LoadImage(image);
+
+        var yourParentWindow = (Main.Views.MainWindow)Window.GetWindow(this);
+
+        var tmp = new ImageViewer3D.Views.ImageViewer3DWindow() { DataContext  = img };
+        tmp.Closed += (s, e) => img.Dispose();
+        tmp.Owner = yourParentWindow;
+        tmp.Show();
+
+        //img.Width = yourParentWindow.ActualWidth - 100;
+        //img.Height = yourParentWindow.ActualHeight - 100;
+
+        //var tmp = new ImageViewer3DDialogView() { DataContext = img };
+        //tmp.Unloaded += (s, e) => 
+        //img.Dispose();
+        //_ = DialogCoordinator.Instance.ShowMetroDialogAsync(yourParentWindow.DataContext, tmp);
 
     }
 

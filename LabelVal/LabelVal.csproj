@@ -1417,6 +1417,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<Folder Include="Assets\Image Rolls\GS1 TABLE 1\300\" />
+		<Folder Include="NewFolder\" />
 	</ItemGroup>
 	<ItemGroup>
 		<BootstrapperPackage Include=".NETFramework,Version=v4.8">
@@ -1435,6 +1436,7 @@
 		<ProjectReference Include="..\..\JSONViewer_WPF\JSONViewer_WPF.csproj" />
 		<ProjectReference Include="..\..\L95xx_Lib\L95xx_Lib.csproj" />
 		<ProjectReference Include="..\..\LibDatabases\LibSimpleDatabase\LibSimpleDatabase.csproj" />
+		<ProjectReference Include="..\..\LibImageUtilities\LibImageUtilities.csproj" />
 		<ProjectReference Include="..\..\LibStaticUtilities\LibStaticUtilities\LibStaticUtilities.csproj" />
 		<ProjectReference Include="..\..\RingBuffer\RingBuffer\RingBuffer.csproj" />
 		<ProjectReference Include="..\..\V275_REST_Lib\V275_REST_Lib.csproj" />
@@ -1445,13 +1447,16 @@
 		<PackageReference Include="ControlzEx">
 			<Version>5.0.2</Version>
 		</PackageReference>
+		<PackageReference Include="DotImaging.BitmapInterop" Version="5.2.0" />
+		<PackageReference Include="DotImaging.Image" Version="5.2.0" />
+		<PackageReference Include="DotImaging.IO" Version="5.2.0" />
 		<PackageReference Include="FluentNHibernate">
 			<Version>3.4.0</Version>
 		</PackageReference>
 		<PackageReference Include="Google.Protobuf">
 			<Version>3.28.0</Version>
 		</PackageReference>
-		<PackageReference Include="HelixToolkit.Wpf" Version="2.25.0" />
+		<PackageReference Include="HelixToolkit.Wpf.SharpDX" Version="2.25.0" />
 		<PackageReference Include="Iesi.Collections">
 			<Version>4.1.1</Version>
 		</PackageReference>

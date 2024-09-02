@@ -5,7 +5,9 @@ using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.Extensions;
 using LabelVal.Sectors.Interfaces;
 using LabelVal.Utilities;
+using Microsoft.Extensions.FileSystemGlobbing.Internal.PathSegments;
 using Newtonsoft.Json;
+using SharpDX.Direct2D1;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -197,7 +199,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     {
         try
         {
-            ImageEntry image = new(UID, path, TargetDPI, TargetDPI)
+            ImageEntry image = new(UID, LibImageUtilities.ImageUtilities_PNG.GetPng(File.ReadAllBytes(path)), TargetDPI, TargetDPI)
             {
                 Order = order
             };
@@ -221,7 +223,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     {
         try
         {
-            ImageEntry image = new(UID, ImageUtilities.GetPng(rawImage), TargetDPI, TargetDPI)
+            ImageEntry image = new(UID, LibImageUtilities.ImageUtilities_PNG.GetPng(rawImage), TargetDPI, TargetDPI)
             {
                 Order = Images.Count > 0 ? Images.Max(img => img.Order) + 1 : 1
             };
