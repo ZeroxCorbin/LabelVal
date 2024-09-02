@@ -363,3 +363,5 @@ MigrationBackup/
 FodyWeavers.xsd
 /.idea/.idea.LabelVal/.idea
 /LabelVal/Assets/_Working
+/LabelVal/opencv_core2412.dll
+/LabelVal/opencv_highgui2412.dll
