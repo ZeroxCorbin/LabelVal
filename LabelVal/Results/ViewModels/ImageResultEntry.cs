@@ -202,7 +202,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
                 if (Path.GetExtension(path).Contains("png", StringComparison.InvariantCultureIgnoreCase))
                     File.WriteAllBytes(path, LibImageUtilities.ImageTypes.Png.Utilities.GetPng(bmp));
                 else
-                    File.WriteAllBytes(path, LibImageUtilities.ImageUtilities_BMP.GetBmp(bmp));
+                    File.WriteAllBytes(path, LibImageUtilities.ImageTypes.Bmp.Utilities.GetBmp(bmp));
 
                 Clipboard.SetText(path);
             }
