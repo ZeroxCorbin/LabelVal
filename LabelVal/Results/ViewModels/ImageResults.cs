@@ -92,7 +92,6 @@ public partial class ImageResults : ObservableRecipient,
         return reseting = false;
     }
 
-
     public ImageResults()
     {
         IsActive = true;
