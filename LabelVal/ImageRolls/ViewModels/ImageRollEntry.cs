@@ -200,7 +200,12 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     {
         try
         {
-            ImageEntry image = new(UID, LibImageUtilities.ImageTypes.Png.Utilities.GetPng(File.ReadAllBytes(path)), TargetDPI, TargetDPI)
+            var png = LibImageUtilities.ImageTypes.Png.Utilities.GetPng(File.ReadAllBytes(path));
+            LibImageUtilities.ImageTypes.Png.Png pngImage = new(png);
+            if(!pngImage.Chunks.ContainsKey(ChunkTypes.pHYs))
+                pngImage.Chunks.Add(ChunkTypes.pHYs, new PHYS_Chunk());
+
+            ImageEntry image = new(UID, pngImage.GetBytes(), TargetDPI, TargetDPI)
             {
                 Order = order
             };
