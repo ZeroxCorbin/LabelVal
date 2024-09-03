@@ -3,6 +3,7 @@ using ControlzEx.Theming;
 using GS1.Encoders;
 using LabelVal.Messages;
 using LabelVal.Utilities;
+using LibImageUtilities.ImageTypes.Png;
 using LibSimpleDatabase;
 using NLog;
 using NLog.Config;
@@ -244,7 +245,7 @@ public partial class App : Application
                 {
                     var newFileName = $"{imgDir.FullName}\\{Path.GetFileName(file)}";
                     if(Path.GetExtension(file) is ".bmp" or ".png")
-                        File.WriteAllBytes(newFileName, LibImageUtilities.ImageUtilities_PNG.GetPng(File.ReadAllBytes(file), PixelFormat.Format8bppIndexed));
+                        File.WriteAllBytes(newFileName, LibImageUtilities.ImageTypes.Png.Utilities.GetPng(File.ReadAllBytes(file), PixelFormat.Format8bppIndexed));
                     else
                         File.Copy(file, newFileName);
                 }
@@ -258,7 +259,7 @@ public partial class App : Application
                 {
                     var newFileName = $"{imgDir.FullName}\\{Path.GetFileName(file)}";
                     if (Path.GetExtension(file) is ".bmp" or ".png")
-                        File.WriteAllBytes(newFileName, LibImageUtilities.ImageUtilities_PNG.GetPng(File.ReadAllBytes(file), PixelFormat.Format8bppIndexed));
+                        File.WriteAllBytes(newFileName, LibImageUtilities.ImageTypes.Png.Utilities.GetPng(File.ReadAllBytes(file), PixelFormat.Format8bppIndexed));
                     else
                         File.Copy(file, newFileName);
                 }

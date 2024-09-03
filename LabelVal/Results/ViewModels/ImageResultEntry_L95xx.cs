@@ -6,6 +6,7 @@ using LabelVal.ImageRolls.ViewModels;
 using LabelVal.LVS_95xx.Sectors;
 using LabelVal.Sectors.Interfaces;
 using LabelVal.Utilities;
+using LibImageUtilities.ImageTypes.Png;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -139,7 +140,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
         SortObservableCollectionByList(secs, L95xxCurrentSectors);
 
 
-        L95xxCurrentImage = new ImageEntry(ImageRollUID, LibImageUtilities.ImageUtilities_PNG.GetPng(message.Report.Thumbnail), 600);
+        L95xxCurrentImage = new ImageEntry(ImageRollUID, LibImageUtilities.ImageTypes.Png.Utilities.GetPng(message.Report.Thumbnail), 600);
         UpdateL95xxCurrentImageOverlay();
     }
     public void UpdateL95xxStoredImageOverlay() => L95xxStoredImageOverlay = CreateSectorsImageOverlay(L95xxStoredImage, L95xxStoredSectors);

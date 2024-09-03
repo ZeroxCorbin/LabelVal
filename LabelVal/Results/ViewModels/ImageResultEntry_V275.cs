@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Utilities;
+using LibImageUtilities.ImageTypes.Png;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -131,11 +132,11 @@ public partial class ImageResultEntry
         if (!ImageResults.SelectedNode.Controller.IsSimulator)
         {
             int dpi = 600;
-            V275CurrentImage = new ImageEntry(ImageRollUID, LibImageUtilities.ImageUtilities_PNG.GetPng(repeat.FullReport.Image, dpi), dpi);
+            V275CurrentImage = new ImageEntry(ImageRollUID, LibImageUtilities.ImageTypes.Png.Utilities.GetPng(repeat.FullReport.Image, dpi), dpi);
         }
         else
         {
-            V275CurrentImage = new ImageEntry(ImageRollUID, LibImageUtilities.ImageUtilities_PNG.GetPng(repeat.FullReport.Image, (int)Math.Round(SourceImage.Image.DpiX)), ImageResults.SelectedImageRoll.TargetDPI);
+            V275CurrentImage = new ImageEntry(ImageRollUID, LibImageUtilities.ImageTypes.Png.Utilities.GetPng(repeat.FullReport.Image, (int)Math.Round(SourceImage.Image.DpiX)), ImageResults.SelectedImageRoll.TargetDPI);
         }
 
         V275CurrentSectors.Clear();

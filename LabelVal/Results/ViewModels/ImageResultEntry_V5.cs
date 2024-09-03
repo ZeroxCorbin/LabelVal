@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Results.Databases;
 using LabelVal.Utilities;
+using LibImageUtilities.ImageTypes.Png;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -83,7 +84,7 @@ public partial class ImageResultEntry
             return;
         }
 
-        V5CurrentImage = new ImageEntry(ImageRollUID, LibImageUtilities.ImageUtilities_PNG.GetPng(report.FullImage), 96);
+        V5CurrentImage = new ImageEntry(ImageRollUID, LibImageUtilities.ImageTypes.Png.Utilities.GetPng(report.FullImage), 96);
 
         V5CurrentTemplate = ImageResults.SelectedScanner.Controller.Config;
         V5CurrentReport = JsonConvert.DeserializeObject<V5_REST_Lib.Models.ResultsAlt>(report.ReportJSON);

@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Messages;
 using LabelVal.Utilities;
+using LibImageUtilities.ImageTypes.Png;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -338,7 +339,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         {
             try
             {
-                RawImage = LibImageUtilities.ImageUtilities_PNG.GetPng(await Controller.GetImageFullRes(json));
+                RawImage = LibImageUtilities.ImageTypes.Png.Utilities.GetPng(await Controller.GetImageFullRes(json));
             }
             catch { RawImage = null; }
         }
@@ -346,7 +347,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         {
             try
             {
-                RawImage = LibImageUtilities.ImageUtilities_PNG.GetPng((byte[])json["msgData"]?["images"]?[0]?["imgData"]);
+                RawImage = LibImageUtilities.ImageTypes.Png.Utilities.GetPng((byte[])json["msgData"]?["images"]?[0]?["imgData"]);
             }
             catch { RawImage = null; }
         }
