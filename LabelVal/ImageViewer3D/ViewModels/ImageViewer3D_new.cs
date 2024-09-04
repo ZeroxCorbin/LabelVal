@@ -97,20 +97,19 @@ namespace LabelVal.ImageViewer3D.ViewModels
             this.Camera = this.defaultOrthographicCamera;
             
             // setup lighting            
-            this.AmbientLightColor = new Color4(0f, 0f, 0f, 0f);
+            this.AmbientLightColor = new Color4(50f, 50f, 50f, 50f);
             this.DirectionalLightColor = Color.White;
-            this.DirectionalLightDirection = new Vector3D(-0, -0, -10);
-
+            this.DirectionalLightDirection = new Vector3D(-0, -0, -200);
 
             // scene model3d
             var b1 = new MeshBuilder(true, true, true);
             b1.AddBox(new Vector3(0, 0, 0), 1, 1, 255 / 4, BoxFaces.All);
             Model = b1.ToMeshGeometry3D();
-            for (int i = 0; i < Model.TextureCoordinates.Count; ++i)
-            {
-                var tex = Model.TextureCoordinates[i];
-                Model.TextureCoordinates[i] = new Vector2(tex.X * 0.5f, tex.Y * 0.5f);
-            }
+            //for (int i = 0; i < Model.TextureCoordinates.Count; ++i)
+            //{
+            //    var tex = Model.TextureCoordinates[i];
+            //    Model.TextureCoordinates[i] = new Vector2(tex.X * 0.5f, tex.Y * 0.5f);
+            //}
 
             //var l1 = new LineBuilder();
             //l1.AddBox(new Vector3(0, 0, 0), 1.1, 1.1, 1.1);

@@ -26,18 +26,9 @@
             Title="{Binding Title}"
             Grid.Row="0"
             Camera="{Binding Camera}"
-            CoordinateSystemLabelForeground="White"
             EffectsManager="{Binding EffectsManager}"
-            EnableRenderFrustum="false"
-            ShowCoordinateSystem="True"
-            ShowCameraInfo="True"
             SubTitle="{Binding SubTitle}"
-            TextBrush="Black"
-            ShowCameraTarget="True"
-            ShowFrameRate="True"
-            ShowViewCube="True"
-            ShowFrameDetails="True"
-            UseDefaultGestures="True">
+            TextBrush="Black">
             <hx:Viewport3DX.InputBindings>
                 <KeyBinding Key="B" Command="hx:ViewportCommands.BackView" />
                 <KeyBinding Key="F" Command="hx:ViewportCommands.FrontView" />
