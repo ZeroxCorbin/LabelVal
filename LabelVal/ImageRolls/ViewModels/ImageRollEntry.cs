@@ -200,7 +200,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     {
         try
         {
-            var png = LibImageUtilities.ImageTypes.Png.Utilities.GetPng(File.ReadAllBytes(path), System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
+            var png = LibImageUtilities.ImageTypes.Png.Utilities.GetPng(File.ReadAllBytes(path));
             LibImageUtilities.ImageTypes.Png.Png pngImage = new(png);
             if(!pngImage.Chunks.ContainsKey(ChunkTypes.pHYs))
                 pngImage.Chunks.Add(ChunkTypes.pHYs, new PHYS_Chunk());

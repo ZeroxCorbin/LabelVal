@@ -7,23 +7,56 @@
              xmlns:local="clr-namespace:LabelVal.ImageViewer3D.Views"
              xmlns:converters="clr-namespace:LabelVal.Converters"
              xmlns:vm="clr-namespace:LabelVal.ImageViewer3D.ViewModels"
-             d:DataContext="{d:DesignInstance Type=vm:ImageViewer3D}"
+                xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             d:DataContext="{d:DesignInstance Type=vm:ImageViewer3D_new}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <UserControl.Resources>
-        <DataTemplate x:Key="Template1">
-            <hx:MeshGeometryModel3D Geometry="{Binding Geometry}" Transform="{Binding Transform}" Material="{Binding Material}"/>
-        </DataTemplate>
-    </UserControl.Resources>
+
     <Grid x:Name="grid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <hx:Viewport3DX EffectsManager="{Binding ElementName=grid, Path = DataContext.EffectsManager}">
-            <hx:AmbientLight3D />
-            <hx:DirectionalLight3D Direction = "-2,-5,-2"/>
-            <hx:ItemsModel3D ItemTemplate="{StaticResource Template1}" ItemsSource="{Binding Items}"/>
+        <hx:Viewport3DX
+            x:Name="view1"
+            Title="{Binding Title}"
+            Grid.Row="0"
+            Camera="{Binding Camera}"
+            CoordinateSystemLabelForeground="Black"
+            EffectsManager="{Binding EffectsManager}"
+            EnableRenderFrustum="false"
+            ShowCameraInfo="True"
+            ShowCoordinateSystem="True"
+            ShowCameraTarget="True"
+            ShowFrameDetails="True"
+            SubTitle="{Binding SubTitle}"
+            TextBrush="Black"
+            UseDefaultGestures="True">
+            <hx:Viewport3DX.InputBindings>
+                <KeyBinding Command="hx:ViewportCommands.ZoomExtents" Gesture="Control+E" />
+                <MouseBinding Command="hx:ViewportCommands.Rotate" Gesture="Shift+RightClick" />
+                <MouseBinding Command="hx:ViewportCommands.Zoom" Gesture="MiddleClick" />
+                <MouseBinding Command="hx:ViewportCommands.Pan" Gesture="RightClick" />
+            </hx:Viewport3DX.InputBindings>
+            <hx:DirectionalLight3D Direction="{Binding Camera.LookDirection}" Color="{Binding DirectionalLightColor}" />
+
+            <!--<hx:EnvironmentMap3D x:Name="envMap" Texture="{Binding Texture}" />-->
+
+            <hx:InstancingMeshGeometryModel3D
+                x:Name="mesh"
+                CullMode="Back"
+                Geometry="{Binding Model}"
+                InstanceParamArray="{Binding InstanceParam}"
+                Instances="{Binding ModelInstances}"
+                Material="{Binding ModelMaterial}"
+                Transform="{Binding ModelTransform}">
+                <hx:InstancingMeshGeometryModel3D.OctreeManager>
+                    <hx:InstancingModel3DOctreeManager
+                        x:Name="manager"
+                        EnableOctreeOutput="True"
+                        RecordHitPathBoundingBoxes="True" />
+                </hx:InstancingMeshGeometryModel3D.OctreeManager>
+            </hx:InstancingMeshGeometryModel3D>
         </hx:Viewport3DX>
-        </Grid>
+    </Grid>
 </UserControl>

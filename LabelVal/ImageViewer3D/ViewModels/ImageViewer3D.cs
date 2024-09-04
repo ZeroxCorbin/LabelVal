@@ -17,7 +17,7 @@ public partial class ImageViewer3D : BaseViewModel
 
     [ObservableProperty] private byte[] originalImage;
     [ObservableProperty] private byte[] indexedColorPallet;
-    [ObservableProperty] Dictionary<byte, Color4> colorPallet;
+    [ObservableProperty] Dictionary<byte, PhongMaterial> colorPallet;
     [ObservableProperty] private byte[] bytes;
 
     public List<Shape> Items { get; } = new List<Shape>();
@@ -50,16 +50,16 @@ public partial class ImageViewer3D : BaseViewModel
         return true;
     }
 
-    private Dictionary<byte, Color4> GetColorPallet()
+    private Dictionary<byte, PhongMaterial> GetColorPallet()
     {
-        var pallet = new Dictionary<byte, Color4>();
+        var pallet = new Dictionary<byte, PhongMaterial>();
         for (int i = 0; i < 256; i++)
         {
             var r = IndexedColorPallet[i * 4 + 2] / 255.0f;
             var g = IndexedColorPallet[i * 4 + 1] / 255.0f;
             var b = IndexedColorPallet[i * 4] / 255.0f;
             var color4 = new Color4(r, g, b, 1.0f);
-            pallet.Add((byte)i, color4);
+            pallet.Add((byte)i, new PhongMaterial { DiffuseColor = color4 });
         }
         return pallet;
     }
@@ -87,8 +87,8 @@ public partial class ImageViewer3D : BaseViewModel
             {
                 var z = image[pixelDataOffset + y * rowSize + x];
                 if (z == 255) continue;
-                var color = ColorPallet[z];
-                var material = new PhongMaterial { DiffuseColor = color };
+                var material = ColorPallet[z];
+
                 Items.Add(new Cube() { Transform = new TranslateTransform3D(x, y, z), Material = material });
             }
         }

@@ -48,9 +48,10 @@ public partial class ImageResultEntry_Images : UserControl
     private void Show3DImage(byte[] image)
     {
 
-        var img = new ImageViewer3D.ViewModels.ImageViewer3D();
+     
+        var bmp = LibImageUtilities.ImageTypes.Bmp.Utilities.GetBmp(image, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
 
-        img.LoadImage(image);
+        var img = new ImageViewer3D.ViewModels.ImageViewer3D_new(bmp);
 
         var yourParentWindow = (Main.Views.MainWindow)Window.GetWindow(this);
 
