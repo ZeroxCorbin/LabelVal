@@ -11,55 +11,20 @@
              d:DataContext="{d:DesignInstance Type=vm:ImageViewer3D_new}"
         mc:Ignorable="d"
         Title="ImageViewer3DWindow" Height="450" Width="800">
-    <mah:MetroWindow.Resources>
-        <DataTemplate x:Key="Template1">
-            <hx:MeshGeometryModel3D Geometry="{Binding Geometry}" Transform="{Binding Transform}" Material="{Binding Material}"/>
-        </DataTemplate>
-    </mah:MetroWindow.Resources>
+
     <Grid x:Name="grid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <hx:Viewport3DX
-            x:Name="view1"
-            Title="{Binding Title}"
-            Grid.Row="0"
-            Camera="{Binding Camera}"
-            EffectsManager="{Binding EffectsManager}"
-            SubTitle="{Binding SubTitle}"
-            TextBrush="Black">
-            <hx:Viewport3DX.InputBindings>
-                <KeyBinding Key="B" Command="hx:ViewportCommands.BackView" />
-                <KeyBinding Key="F" Command="hx:ViewportCommands.FrontView" />
-                <KeyBinding Key="U" Command="hx:ViewportCommands.TopView" />
-                <KeyBinding Key="D" Command="hx:ViewportCommands.BottomView" />
-                <KeyBinding Key="L" Command="hx:ViewportCommands.LeftView" />
-                <KeyBinding Key="R" Command="hx:ViewportCommands.RightView" />
-                <KeyBinding Command="hx:ViewportCommands.ZoomExtents" Gesture="Control+E" />
-                <MouseBinding Command="hx:ViewportCommands.Rotate" Gesture="RightClick" />
-                <MouseBinding Command="hx:ViewportCommands.Zoom" Gesture="MiddleClick" />
-                <MouseBinding Command="hx:ViewportCommands.Pan" Gesture="Shift+RightClick" />
-            </hx:Viewport3DX.InputBindings>
-            <hx:DirectionalLight3D Direction="{Binding Camera.LookDirection}" Color="White" />
+        <hx:Viewport3DX x:Name="view1" Camera="{Binding Camera}" EffectsManager="{Binding EffectsManager}">
 
-            <!--<hx:EnvironmentMap3D x:Name="envMap" Texture="{Binding Texture}" />-->
+            <!-- Lighting setup -->
+            <hx:AmbientLight3D Color="{Binding AmbientLightColor}" />
+            <hx:DirectionalLight3D Direction="1,1,1" Color="White" />
 
-            <hx:InstancingMeshGeometryModel3D
-                x:Name="mesh"
-                CullMode="Back"
-                Geometry="{Binding Model}"
-                InstanceParamArray="{Binding InstanceParam}"
-                Instances="{Binding ModelInstances}"
-                Material="{Binding ModelMaterial}"
-                Transform="{Binding ModelTransform}">
-                <hx:InstancingMeshGeometryModel3D.OctreeManager>
-                    <hx:InstancingModel3DOctreeManager
-                        x:Name="manager"
-                        EnableOctreeOutput="False"
-                        RecordHitPathBoundingBoxes="False" />
-                </hx:InstancingMeshGeometryModel3D.OctreeManager>
-            </hx:InstancingMeshGeometryModel3D>
+            <!-- 3D Model setup -->
+            <hx:MeshGeometryModel3D Geometry="{Binding MeshGeometry}" Material="{Binding Material}"/>
         </hx:Viewport3DX>
     </Grid>
 </mah:MetroWindow>

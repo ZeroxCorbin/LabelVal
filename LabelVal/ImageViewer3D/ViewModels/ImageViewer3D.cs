@@ -1,11 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using HelixToolkit.Wpf.SharpDX;
 using LabelVal.ImageViewer3D.Models;
-using LabelVal.Utilities;
 using SharpDX;
 using System;
 using System.Collections.Generic;
-using System.Windows.Media.Media3D;
 
 namespace LabelVal.ImageViewer3D.ViewModels;
 
@@ -19,6 +17,9 @@ public partial class ImageViewer3D : BaseViewModel
     [ObservableProperty] private byte[] indexedColorPallet;
     [ObservableProperty] Dictionary<byte, PhongMaterial> colorPallet;
     [ObservableProperty] private byte[] bytes;
+
+    public MeshGeometry3D MeshGeometry { get; set; }
+    public PhongMaterial Material { get; set; }
 
     public List<Shape> Items { get; } = new List<Shape>();
 
@@ -89,7 +90,7 @@ public partial class ImageViewer3D : BaseViewModel
                 if (z == 255) continue;
                 var material = ColorPallet[z];
 
-                Items.Add(new Cube() { Transform = new TranslateTransform3D(x, y, z), Material = material });
+                Items.Add(new Cube() { Transform = new System.Windows.Media.Media3D.TranslateTransform3D(x, y, z), Material = material });
             }
         }
     }

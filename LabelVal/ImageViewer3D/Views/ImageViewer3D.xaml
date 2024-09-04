@@ -42,7 +42,7 @@
 
             <!--<hx:EnvironmentMap3D x:Name="envMap" Texture="{Binding Texture}" />-->
 
-            <hx:InstancingMeshGeometryModel3D
+            <!--<hx:InstancingMeshGeometryModel3D
                 x:Name="mesh"
                 CullMode="Back"
                 Geometry="{Binding Model}"
@@ -56,7 +56,9 @@
                         EnableOctreeOutput="True"
                         RecordHitPathBoundingBoxes="True" />
                 </hx:InstancingMeshGeometryModel3D.OctreeManager>
-            </hx:InstancingMeshGeometryModel3D>
+            </hx:InstancingMeshGeometryModel3D>-->
+
+            <hx:MeshGeometryModel3D Geometry="{Binding MeshGeometry}" Material="{Binding Material}" />
         </hx:Viewport3DX>
     </Grid>
 </UserControl>
