@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using HelixToolkit.Wpf.SharpDX;
 using LabelVal.ImageViewer3D.Mesh;
+using LabelVal.Utilities;
+using SharpDX;
 using System;
 using System.IO;
 using Color = SharpDX.Color;
@@ -11,16 +13,21 @@ namespace LabelVal.ImageViewer3D.ViewModels
 {
     public partial class ImageViewer3D_SingleMesh : BaseViewModel
     {
+        [ObservableProperty] private Vector3D directionalLightDirection;
+        [ObservableProperty] private Color4 directionalLightColor;
+        [ObservableProperty] private Color4 ambientLightColor;
+
         [ObservableProperty] MeshGeometry3D meshGeometry;
         [ObservableProperty] PhongMaterial material;
         [ObservableProperty] private System.Windows.Media.Media3D.Transform3D meshTransform;
 
         public ImageViewer3D_SingleMesh(byte[] image)
         {
-
             var bmp = LibImageUtilities.ImageTypes.Bmp.Utilities.GetBmp(image, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
 
-            Title = "Instancing Demo";
+            this.Title = "ImageViewDemo";
+            this.SubTitle = "WPF & SharpDX";
+
             EffectsManager = new DefaultEffectsManager();
 
             // The width of the image is at byte 18 to 21
@@ -49,31 +56,36 @@ namespace LabelVal.ImageViewer3D.ViewModels
             };
             this.Camera = this.defaultOrthographicCamera;
 
+            // setup lighting            
+            SetupLighting();
+
+            this.MeshTransform = new System.Windows.Media.Media3D.TranslateTransform3D(-0, -0, -0);
+            this.MeshTransform = new System.Windows.Media.Media3D.TranslateTransform3D(0, 0, 0);
+
             BuildImageMesh(image, bmp);
+        }
+
+        private void SetupLighting()
+        {
+            this.AmbientLightColor = new Color4(1.0f, 1.0f, 1.0f, 1.0f); // Slight ambient light
+            this.DirectionalLightColor = Color.White;
+            this.DirectionalLightDirection = new Vector3D(1, 1, 1); // Off-axis directional light
         }
 
         private void BuildImageMesh(byte[] image, byte[] bmp)
         {
-            var bitmapImage = Utilities.BitmapImageUtilities.CreateBitmapImage(image);
-            if (bitmapImage == null)
-                return;
-
-            Material = new PhongMaterial
+           Material = new PhongMaterial
             {
                 DiffuseColor = Color.White, // Set the material color here
                 DiffuseMap = new MemoryStream(image),
+                
             };
 
-            var mesh = new MeshGeneration();
-            MeshGeometry = mesh.CreateSurfaceMeshGeometry3D(bmp);
-
-            MeshTransform = new System.Windows.Media.Media3D.TranslateTransform3D(0, 0, 0);
+            MeshGeometry = MeshGeneration.CreateSurfaceMeshGeometry3D(bmp);
         }
 
         protected override void Dispose(bool disposing)
         {
-            //timer.Stop();
-            //timer.Tick -= Timer_Tick;
             base.Dispose(disposing);
         }
     }

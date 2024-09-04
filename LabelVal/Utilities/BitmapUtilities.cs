@@ -7,7 +7,12 @@ using System.Threading.Tasks;
 namespace LabelVal.Utilities;
 public static class BitmapUtilities
 {
-    public static System.Drawing.Bitmap LoadBitmap(string path) => new System.Drawing.Bitmap(path);
+    public static System.Drawing.Bitmap GetBitmap(byte[] image)
+    {
+        using var ms = new System.IO.MemoryStream(image);
+        return new System.Drawing.Bitmap(ms);
+    }
+        public static System.Drawing.Bitmap LoadBitmap(string path) => new System.Drawing.Bitmap(path);
     public static void SaveBitmap(System.Drawing.Bitmap bitmap, string path) => bitmap.Save(path);
 
     public static System.Drawing.Bitmap CreateBitmap(int width, int height) => new System.Drawing.Bitmap(width, height);
@@ -97,13 +102,11 @@ public static class BitmapUtilities
         return bitmap;
     }
 
-    public static byte[] GetBytes(System.Drawing.Bitmap bitmap)
+    public static byte[] GetBytes(this System.Drawing.Bitmap bitmap)
     {
-        using (var ms = new System.IO.MemoryStream())
-        {
-            bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
-            return ms.ToArray();
-        }
+        using var ms = new System.IO.MemoryStream();
+        bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
+        return ms.ToArray();
     }
 
     public static System.Drawing.Bitmap ResizeBitmap(System.Drawing.Bitmap bitmap, int width, int height)

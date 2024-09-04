@@ -36,7 +36,7 @@ public partial class ImageOverlayTesting : BaseViewModel
 
     //public ExifReader ExifReader { get; private set; }
 
-    public ImageOverlayTesting()
+    public ImageOverlayTesting(byte[] image)
     {
         this.Title = "ImageViewDemo";
         this.SubTitle = "WPF & SharpDX";
@@ -66,6 +66,8 @@ public partial class ImageOverlayTesting : BaseViewModel
         this.PlaneTransform = new Media3D.TranslateTransform3D(-0, -0, -0);
         //this.PlaneMaterial.ReflectiveColor = Color.Black;
         this.PlaneTransform = new Media3D.TranslateTransform3D(0, 0, 0);
+
+        SetImages(LabelVal.Utilities.BitmapImageUtilities.CreateBitmapImage(image));
     }
 
     private void SetImages(BitmapSource img)

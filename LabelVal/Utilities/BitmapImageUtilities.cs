@@ -39,6 +39,24 @@ public static class BitmapImageUtilities
         return bitmap;
     }
 
+    public static System.Windows.Media.Imaging.BitmapImage CreateBitmapImage(byte[] data, bool flip)
+    {
+        if (flip)
+        {
+            var bitmap = new System.Windows.Media.Imaging.BitmapImage();
+            bitmap.BeginInit();
+            bitmap.StreamSource = new System.IO.MemoryStream(data);
+            bitmap.Rotation = System.Windows.Media.Imaging.Rotation.Rotate180;
+            bitmap.EndInit();
+            bitmap.Freeze();
+            return bitmap;
+        }
+        else
+        {
+            return CreateBitmapImage(data);
+        }
+    }
+
     public static System.Windows.Media.Imaging.BitmapImage CreateBitmapImage(System.Drawing.Bitmap image, bool png = true)
     {
         var stream = new System.IO.MemoryStream();

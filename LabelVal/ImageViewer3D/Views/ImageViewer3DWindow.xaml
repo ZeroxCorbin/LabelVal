@@ -129,11 +129,25 @@
         </hx:Viewport3DX>-->
         
         <!--ImageViewer3D_SingleMesh--> 
-        <hx:Viewport3DX x:Name="view1" Camera="{Binding Camera}" EffectsManager="{Binding EffectsManager}">
+        <!--<hx:Viewport3DX x:Name="view1" Camera="{Binding Camera}" EffectsManager="{Binding EffectsManager}">
  
             <hx:AmbientLight3D Color="White" />
             <hx:DirectionalLight3D Direction="1,1,1" Color="White" />
 
+            <hx:MeshGeometryModel3D Geometry="{Binding MeshGeometry}" Material="{Binding Material}" Transform="{Binding MeshTransform}"/>
+        </hx:Viewport3DX>-->
+        <hx:Viewport3DX
+            x:Name="view1"
+            Title="{Binding Title}"
+            Camera="{Binding Camera}"
+            CoordinateSystemLabelForeground="White"
+            EffectsManager="{Binding EffectsManager}"
+            SubTitle="{Binding SubTitle}"
+            TextBrush="Black"
+            
+            UseDefaultGestures="True">
+            <hx:AmbientLight3D Color="{Binding AmbientLightColor, Mode=OneWay}"/>
+            <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirection}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />
             <hx:MeshGeometryModel3D Geometry="{Binding MeshGeometry}" Material="{Binding Material}" Transform="{Binding MeshTransform}"/>
         </hx:Viewport3DX>
 
