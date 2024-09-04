@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace LabelVal.ImageViewer3D.ViewModels;
 
 
-public partial class ImageViewer3D : BaseViewModel
+public partial class ImageViewer3D_IndividualMeshs : BaseViewModel
 {
     [ObservableProperty] double width;
     [ObservableProperty] double height;
@@ -23,9 +23,11 @@ public partial class ImageViewer3D : BaseViewModel
 
     public List<Shape> Items { get; } = new List<Shape>();
 
-    public ImageViewer3D()
+    public ImageViewer3D_IndividualMeshs(byte[] image)
     {
         EffectsManager = new DefaultEffectsManager();
+
+            LoadImage(image);
 
     }
     public bool LoadImage(byte[] image)

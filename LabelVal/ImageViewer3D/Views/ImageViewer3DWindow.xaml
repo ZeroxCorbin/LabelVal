@@ -8,23 +8,182 @@
         xmlns:hx="http://helix-toolkit.org/wpf/SharpDX"
                               xmlns:vm="clr-namespace:LabelVal.ImageViewer3D.ViewModels"
                 xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-             d:DataContext="{d:DesignInstance Type=vm:ImageViewer3D_new}"
+             d:DataContext="{d:DesignInstance Type=vm:ImageViewer3D_SingleMesh}"
         mc:Ignorable="d"
         Title="ImageViewer3DWindow" Height="450" Width="800">
 
-    <Grid x:Name="grid">
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <hx:Viewport3DX x:Name="view1" Camera="{Binding Camera}" EffectsManager="{Binding EffectsManager}">
 
-            <!-- Lighting setup -->
-            <hx:AmbientLight3D Color="{Binding AmbientLightColor}" />
+        <!--ImageOverlayTesting-->
+        <!--<Menu Grid.Row="0" VerticalAlignment="Top">
+            <MenuItem Header="File">
+                <MenuItem
+                    Command="{Binding OpenCommand}"
+                    Header="Open"
+                    InputGestureText="Ctrl+O" />
+            </MenuItem>
+        </Menu>
+
+        <hx:Viewport3DX
+            x:Name="view1"
+            Title="{Binding Title}"
+            Grid.Row="1"
+            Grid.Column="2"
+            Camera="{Binding Camera}"
+            CoordinateSystemLabelForeground="White"
+            EffectsManager="{Binding EffectsManager}"
+            SubTitle="{Binding SubTitle}"
+            TextBrush="Black"
+            UseDefaultGestures="False">
+            <hx:Viewport3DX.InputBindings>
+                <KeyBinding Command="hx:ViewportCommands.ZoomExtents" Gesture="Control+E" />
+                <MouseBinding Command="hx:ViewportCommands.Rotate" Gesture="Shift+RightClick" />
+                <MouseBinding Command="hx:ViewportCommands.Zoom" Gesture="MiddleClick" />
+                <MouseBinding Command="hx:ViewportCommands.Pan" Gesture="RightClick" />
+            </hx:Viewport3DX.InputBindings>
+            <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirection}" Color="{Binding DirectionalLightColor}" />
+            <hx:MeshGeometryModel3D
+                x:Name="plane"
+                Geometry="{Binding Plane}"
+                Material="{Binding PlaneMaterial}"
+                Transform="{Binding PlaneTransform}" />
+            <hx:LineGeometryModel3D
+                x:Name="grid"
+                DepthBias="-10"
+                Geometry="{Binding Grid}"
+                Smoothness="0"
+                Thickness="1.0"
+                Transform="{Binding GridTransform}"
+                Color="{Binding GridColor}" />
+        </hx:Viewport3DX>
+
+        <StackPanel Grid.Row="1">
+            <Expander
+                x:Name="lightPanel"
+                Width="150"
+                Margin="10"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                BorderBrush="LightGray"
+                Header="Properties"
+                IsExpanded="True">
+                <Expander.Background>
+                    <SolidColorBrush Opacity="0.25" Color="WhiteSmoke" />
+                </Expander.Background>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <CheckBox
+                        Grid.Row="0"
+                        Margin="3"
+                        IsChecked="{Binding IsRendering, ElementName=grid}">
+                        Render Grid
+                    </CheckBox>
+                </Grid>
+            </Expander>
+        </StackPanel>
+        <StatusBar Grid.Row="1" VerticalAlignment="Bottom">
+            <StatusBar.Background>
+                <SolidColorBrush Opacity="0.5" Color="WhiteSmoke" />
+            </StatusBar.Background>
+            <StatusBarItem>
+                <TextBlock
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Text="{Binding FrameRate, ElementName=view1, StringFormat=D3D11 - \{0:0.00\} FPS}" />
+            </StatusBarItem>
+            <Separator />
+            <StatusBarItem>
+                <TextBlock Text="{Binding Camera.Position, StringFormat=Position: \{0:0.0\}}" />
+            </StatusBarItem>
+            <Separator />
+            <StatusBarItem>
+                <TextBlock Text="{Binding Camera.LookDirection, StringFormat=LookDirection: \{0:0.0\}}" />
+            </StatusBarItem>
+            <Separator />
+            <StatusBarItem>
+                <TextBlock Text="{Binding Camera.UpDirection, StringFormat=UpDirection: \{0:0.0\}}" />
+            </StatusBarItem>
+            <Separator />
+            <StatusBarItem>
+                <TextBlock Text="{Binding Items.Count, ElementName=view1, StringFormat=Children: \{0\}}" />
+            </StatusBarItem>
+        </StatusBar>-->
+
+
+        <!--ImageViewer3D_IndividualMeshs-->
+        <!--<Grid.Resources>
+            <DataTemplate x:Key="Template1">
+                <hx:MeshGeometryModel3D Geometry="{Binding Geometry}" Transform="{Binding Transform}" Material="{Binding Material}"/>
+            </DataTemplate>
+        </Grid.Resources>
+        <hx:Viewport3DX EffectsManager="{Binding ElementName=grid, Path = DataContext.EffectsManager}">
+            <hx:AmbientLight3D />
+            <hx:DirectionalLight3D Direction = "-2,-5,-2"/>
+            <hx:ItemsModel3D ItemTemplate="{StaticResource Template1}" ItemsSource="{Binding Items}"/>
+        </hx:Viewport3DX>-->
+        
+        <!--ImageViewer3D_SingleMesh--> 
+        <hx:Viewport3DX x:Name="view1" Camera="{Binding Camera}" EffectsManager="{Binding EffectsManager}">
+ 
+            <hx:AmbientLight3D Color="White" />
             <hx:DirectionalLight3D Direction="1,1,1" Color="White" />
 
-            <!-- 3D Model setup -->
-            <hx:MeshGeometryModel3D Geometry="{Binding MeshGeometry}" Material="{Binding Material}"/>
+            <hx:MeshGeometryModel3D Geometry="{Binding MeshGeometry}" Material="{Binding Material}" Transform="{Binding MeshTransform}"/>
         </hx:Viewport3DX>
+
+        <!--ImageViewer3D_Instancing-->
+        <!--<hx:Viewport3DX
+            x:Name="view1"
+            Title="{Binding Title}"
+            Grid.Row="0"
+            Camera="{Binding Camera}"
+            CoordinateSystemLabelForeground="White"
+            EffectsManager="{Binding EffectsManager}"
+            EnableRenderFrustum="false"
+            ShowCoordinateSystem="True"
+            ShowCameraInfo="True"
+            SubTitle="{Binding SubTitle}"
+            TextBrush="Black"
+            ShowCameraTarget="True"
+            ShowFrameRate="True"
+            ShowViewCube="True"
+            ShowFrameDetails="True"
+            UseDefaultGestures="True">
+            <hx:Viewport3DX.InputBindings>
+                <KeyBinding Key="B" Command="hx:ViewportCommands.BackView" />
+                <KeyBinding Key="F" Command="hx:ViewportCommands.FrontView" />
+                <KeyBinding Key="U" Command="hx:ViewportCommands.TopView" />
+                <KeyBinding Key="D" Command="hx:ViewportCommands.BottomView" />
+                <KeyBinding Key="L" Command="hx:ViewportCommands.LeftView" />
+                <KeyBinding Key="R" Command="hx:ViewportCommands.RightView" />
+                <KeyBinding Command="hx:ViewportCommands.ZoomExtents" Gesture="Control+E" />
+                <MouseBinding Command="hx:ViewportCommands.Rotate" Gesture="RightClick" />
+                <MouseBinding Command="hx:ViewportCommands.Zoom" Gesture="MiddleClick" />
+                <MouseBinding Command="hx:ViewportCommands.Pan" Gesture="Shift+RightClick" />
+            </hx:Viewport3DX.InputBindings>
+            <hx:DirectionalLight3D Direction="{Binding Camera.LookDirection}" Color="White" />
+
+            <hx:InstancingMeshGeometryModel3D
+                x:Name="mesh"
+                CullMode="Back"
+                Geometry="{Binding Model}"
+                InstanceParamArray="{Binding InstanceParam}"
+                Instances="{Binding ModelInstances}"
+                Material="{Binding ModelMaterial}"
+                Transform="{Binding ModelTransform}">
+                <hx:InstancingMeshGeometryModel3D.OctreeManager>
+                    <hx:InstancingModel3DOctreeManager
+                        x:Name="manager"
+                        EnableOctreeOutput="False"
+                        RecordHitPathBoundingBoxes="False" />
+                </hx:InstancingMeshGeometryModel3D.OctreeManager>
+            </hx:InstancingMeshGeometryModel3D>
+        </hx:Viewport3DX>-->
     </Grid>
 </mah:MetroWindow>
