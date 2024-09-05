@@ -12,6 +12,10 @@ namespace LabelVal.ImageViewer3D.ViewModels
 {
     public partial class ImageViewer3D_SingleMesh : BaseViewModel
     {
+        [ObservableProperty] double width;
+        [ObservableProperty] double height;
+
+        public System.Windows.Media.Imaging.BitmapImage Image { get; }
         public List<System.Windows.Media.Media3D.Vector3D> DirectionalLightDirections { get; } = [];
 
         [ObservableProperty] private Color4 directionalLightColor;
@@ -26,9 +30,7 @@ namespace LabelVal.ImageViewer3D.ViewModels
         public ImageViewer3D_SingleMesh(byte[] image)
         {
             var bmp = LibImageUtilities.ImageTypes.Bmp.Utilities.GetBmp(image, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
-
-            this.Title = "ImageViewDemo";
-            this.SubTitle = "WPF & SharpDX";
+            Image = Utilities.BitmapImageUtilities.CreateBitmapImage(image);
 
             EffectsManager = new DefaultEffectsManager();
 
@@ -85,7 +87,9 @@ namespace LabelVal.ImageViewer3D.ViewModels
 
         private void BuildImageMesh(byte[] image, byte[] bmp)
         {
+            //The material needs a 32 Bpp image
             image = LibImageUtilities.ImageTypes.Png.Utilities.GetPng(image, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+           
             Material = new PhongMaterial
             {
                 DiffuseColor = Color.White, // Set the material color here

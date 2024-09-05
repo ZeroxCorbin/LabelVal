@@ -18,6 +18,7 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
 
+        <local:ImageViewer3D Grid.Row="1" DataContext="{Binding }"/>
         <!--ImageOverlayTesting-->
         <!--<Menu Grid.Row="0" VerticalAlignment="Top">
             <MenuItem Header="File">
@@ -136,7 +137,7 @@
 
             <hx:MeshGeometryModel3D Geometry="{Binding MeshGeometry}" Material="{Binding Material}" Transform="{Binding MeshTransform}"/>
         </hx:Viewport3DX>-->
-        <hx:Viewport3DX
+        <!--<hx:Viewport3DX
             x:Name="view1"
             BackgroundColor="#4C4A4A"
             Title="{Binding Title}"
@@ -161,7 +162,7 @@
             <hx:MeshGeometryModel3D Geometry="{Binding MeshGeometry}" Material="{Binding Material}" Transform="{Binding MeshTransform}"/>
             <hx:LineGeometryModel3D Visibility="Collapsed" Geometry="{Binding NormalLines}" Color="Yellow" Thickness="1.0"/>
             <hx:PostEffectMeshBorderHighlight EffectName="highlight" />
-        </hx:Viewport3DX>
+        </hx:Viewport3DX>-->
 
         <!--ImageViewer3D_Instancing-->
         <!--<hx:Viewport3DX

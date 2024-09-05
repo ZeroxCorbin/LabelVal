@@ -1,7 +1,7 @@
 ﻿using LabelVal.Dialogs;
 using LabelVal.ImageRolls.ViewModels;
+using LabelVal.ImageViewer3D.Views;
 using MahApps.Metro.Controls.Dialogs;
-using SharpDX.Direct2D1;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -53,22 +53,22 @@ public partial class ImageResultEntry_Images : UserControl
 
         var yourParentWindow = (Main.Views.MainWindow)Window.GetWindow(this);
 
-        var tmp = new ImageViewer3D.Views.ImageViewer3DWindow() { DataContext  = img };
-        tmp.Closed += (s, e) => img.Dispose();
-        tmp.Owner = yourParentWindow;
-        tmp.Show();
+        //var tmp = new ImageViewer3D.Views.ImageViewer3DWindow() { DataContext  = img };
+        //tmp.Closed += (s, e) => img.Dispose();
+        //tmp.Owner = yourParentWindow;
+        //tmp.Show();
 
-        //img.Width = yourParentWindow.ActualWidth - 100;
-        //img.Height = yourParentWindow.ActualHeight - 100;
+        img.Width = yourParentWindow.ActualWidth - 100;
+        img.Height = yourParentWindow.ActualHeight - 100;
 
-        //var tmp = new ImageViewer3DDialogView() { DataContext = img };
-        //tmp.Unloaded += (s, e) => 
-        //img.Dispose();
-        //_ = DialogCoordinator.Instance.ShowMetroDialogAsync(yourParentWindow.DataContext, tmp);
+        var tmp = new ImageViewer3DDialogView() { DataContext = img };
+        tmp.Unloaded += (s, e) =>
+        img.Dispose();
+        _ = DialogCoordinator.Instance.ShowMetroDialogAsync(yourParentWindow.DataContext, tmp);
 
     }
 
     private void btnShowPrinterAreaOverSourceToggle(object sender, RoutedEventArgs e) => ((ViewModels.ImageResultEntry)DataContext).ShowPrinterAreaOverSource = !((ViewModels.ImageResultEntry)DataContext).ShowPrinterAreaOverSource;
 
- 
+
 }

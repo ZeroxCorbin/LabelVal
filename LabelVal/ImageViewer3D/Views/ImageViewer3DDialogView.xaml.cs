@@ -4,7 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace LabelVal.Dialogs;
+namespace LabelVal.ImageViewer3D.Views;
 
 public partial class ImageViewer3DDialogView : MahApps.Metro.Controls.Dialogs.CustomDialog
 {
@@ -31,4 +31,8 @@ public partial class ImageViewer3DDialogView : MahApps.Metro.Controls.Dialogs.Cu
 
     }
 
+    private void Reset_Click(object sender, RoutedEventArgs e)
+    {
+
+    }
 }
