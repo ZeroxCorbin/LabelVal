@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HelixToolkit.Wpf.SharpDX;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -31,8 +32,5 @@ public partial class ImageViewer3DDialogView : MahApps.Metro.Controls.Dialogs.Cu
 
     }
 
-    private void Reset_Click(object sender, RoutedEventArgs e)
-    {
-
-    }
+    private void Reset_Click(object sender, RoutedEventArgs e) => ImageViewer3D.ViewPort.ZoomExtents();
 }

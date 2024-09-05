@@ -15,8 +15,26 @@ namespace LabelVal.ImageViewer3D.ViewModels
 {
     public partial class ImageViewer3D_SingleMesh : BaseViewModel
     {
+        [ObservableProperty] private bool whiteFront = App.Settings.GetValue(nameof(WhiteFront), false, true);
+        partial void OnWhiteFrontChanged(bool value)
+        {
+            App.Settings.SetValue(nameof(WhiteFront), value);
+            BuildImageMesh();
+        }
+
+        [ObservableProperty] private bool showWireframe = App.Settings.GetValue(nameof(ShowWireframe), false, true);
+        partial void OnShowWireframeChanged(bool value) => App.Settings.SetValue(nameof(ShowWireframe), value);
+
+        [ObservableProperty] private bool showNormals = App.Settings.GetValue(nameof(ShowNormals), false, true);
+        partial void OnShowNormalsChanged(bool value) => App.Settings.SetValue(nameof(ShowNormals), value);
+
         [ObservableProperty] double width;
+        partial void OnWidthChanged(double value) => Width3DWindow = Width - 100;
         [ObservableProperty] double height;
+        partial void OnHeightChanged(double value) => Height3DWindow = Height - 100;
+
+        [ObservableProperty] double width3DWindow;
+        [ObservableProperty] double height3DWindow;
 
         public System.Windows.Media.Imaging.BitmapImage Image { get; }
         public List<System.Windows.Media.Media3D.Vector3D> DirectionalLightDirections { get; } = [];
@@ -30,13 +48,19 @@ namespace LabelVal.ImageViewer3D.ViewModels
 
         [ObservableProperty] private LineGeometry3D normalLines;
 
+        private byte[] BitmapArray { get; }
+        private byte[] OriginalImageArray { get; }
+
         public ImageViewer3D_SingleMesh(byte[] image)
         {
             var format = image.GetImagePixelFormat();
             // Convert the image to a 8bpp indexed bmp, if needed. This will be used to generate the mesh
-            byte[] bmp = format != System.Drawing.Imaging.PixelFormat.Format8bppIndexed
+            BitmapArray = format != System.Drawing.Imaging.PixelFormat.Format8bppIndexed
                 ? image.GetBmp(System.Drawing.Imaging.PixelFormat.Format8bppIndexed)
                 : image.GetBmp();
+
+            //The material needs a 32 Bpp image
+            OriginalImageArray = LibImageUtilities.ImageTypes.Png.Utilities.GetPng(image, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
             // Convert the image to a BitmapImage for display
             Image = Utilities.BitmapImageUtilities.CreateBitmapImage(image);
@@ -70,7 +94,7 @@ namespace LabelVal.ImageViewer3D.ViewModels
             // setup lighting            
             SetupLighting();
 
-            BuildImageMesh(image, bmp);
+            BuildImageMesh();
         }
 
         private void SetupLighting()
@@ -89,30 +113,24 @@ namespace LabelVal.ImageViewer3D.ViewModels
             DirectionalLightDirections.Add(new System.Windows.Media.Media3D.Vector3D(-1, -1, -1));
 
         }
-
-        private void BuildImageMesh(byte[] image, byte[] bmp)
+        private void BuildImageMesh()
         {
-            //The material needs a 32 Bpp image
-            image = LibImageUtilities.ImageTypes.Png.Utilities.GetPng(image, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-
             MeshMaterial = new PhongMaterial
             {
                 DiffuseColor = Color.White, // Set the material color here
-                DiffuseMap = new MemoryStream(image),
+                DiffuseMap = new MemoryStream(OriginalImageArray),
             };
-
-            MeshGeometry = MeshGeneration.CreateSurfaceMeshGeometry3D(bmp);
+            
+            MeshGeometry = MeshGeneration.CreateSurfaceMeshGeometry3D(BitmapArray, WhiteFront);
             MeshTransform = new System.Windows.Media.Media3D.TranslateTransform3D(0, 0, 0);
 
             // Add normal visualization
             AddNormalVisualization();
         }
-
         private void AddNormalVisualization()
         {
             NormalLines = VisualizeNormals(MeshGeometry);
         }
-
         public static LineGeometry3D VisualizeNormals(MeshGeometry3D meshGeometry)
         {
             var lineBuilder = new LineBuilder();

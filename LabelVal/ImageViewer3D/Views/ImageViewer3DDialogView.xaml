@@ -69,16 +69,55 @@
 
                         </DockPanel>
 
+                        <ToggleButton IsChecked="{Binding WhiteFront}" Width="48" Style="{StaticResource MahApps.Styles.ToggleButton}"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+
+                            <md:ToggleButtonAssist.OnContent>
+                                <iconPacks:Material Kind="ImageFilterBlackWhite"/>
+                            </md:ToggleButtonAssist.OnContent>
+
+                            <iconPacks:Material Kind="BlackMesa"/>
+
+                        </ToggleButton>
+
+                        <ToggleButton IsChecked="{Binding ShowWireframe}" Width="48" Style="{StaticResource MahApps.Styles.ToggleButton}"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+
+                            <md:ToggleButtonAssist.OnContent>
+                                <iconPacks:Material Kind="ImageFilterBlackWhite"/>
+                            </md:ToggleButtonAssist.OnContent>
+
+                            <iconPacks:Material Kind="BlackMesa"/>
+
+                        </ToggleButton>
+
+                        <ToggleButton IsChecked="{Binding ShowNormals}" Width="48" Style="{StaticResource MahApps.Styles.ToggleButton}"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+
+                            <md:ToggleButtonAssist.OnContent>
+                                <iconPacks:Material Kind="ImageFilterBlackWhite"/>
+                            </md:ToggleButtonAssist.OnContent>
+
+                            <iconPacks:Material Kind="BlackMesa"/>
+
+                        </ToggleButton>
+                        
                         <Button Name="Reset" Click="Reset_Click" Margin="3"
                                 Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                                 Content="{iconPacks:Material Kind=ArrowExpandAll}"
                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
 
+
+
+
                     </DockPanel>
                 </DockPanel>
             </md:Card>
 
-            <iv3d:ImageViewer3D x:Name="ImageViewer3D" MaxHeight="{Binding Height}" MaxWidth="{Binding Width}" Grid.Row="1" DataContext="{Binding }"/>
+            <iv3d:ImageViewer3D x:Name="ImageViewer3D" Grid.Row="1"
+                                DataContext="{Binding }"
+                                MaxHeight="{Binding Height3DWindow}" 
+                                MaxWidth="{Binding Width3DWindow}"/>
 
         </Grid>
 

@@ -24,7 +24,7 @@ namespace LabelVal.ImageViewer3D.Mesh
             }
         }
 
-        public static MeshGeometry3D CreateSurfaceMeshGeometry3D(byte[] image)
+        public static MeshGeometry3D CreateSurfaceMeshGeometry3D(byte[] image, bool whiteFront)
         {
             var points = new List<Vertex>();
             // The offset to the start of the pixel data is at byte 10 to 13
@@ -41,7 +41,7 @@ namespace LabelVal.ImageViewer3D.Mesh
             {
                 for (int x = 0; x < width; x++)
                 {
-                    double z = -image[pixelDataOffset + y * rowSize + x]; // Use pixel value as Z position
+                    double z = whiteFront ? image[pixelDataOffset + y * rowSize + x] : -image[pixelDataOffset + y * rowSize + x]; // Use pixel value as Z position
                     points.Add(new Vertex(x, y, z)); // Keep the Y-coordinate unchanged
                 }
             }
