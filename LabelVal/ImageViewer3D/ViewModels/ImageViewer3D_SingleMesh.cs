@@ -2,6 +2,9 @@
 using HelixToolkit.Wpf.SharpDX;
 using LabelVal.ImageViewer3D.Mesh;
 using LabelVal.Utilities;
+using LibImageUtilities.ImageTypes;
+using LibImageUtilities.ImageTypes.Bmp;
+using LibImageUtilities.ImageTypes.Png;
 using SharpDX;
 using System;
 using System.Collections.Generic;
@@ -22,22 +25,26 @@ namespace LabelVal.ImageViewer3D.ViewModels
         [ObservableProperty] private Color4 ambientLightColor;
 
         [ObservableProperty] MeshGeometry3D meshGeometry;
-        [ObservableProperty] PhongMaterial material;
+        [ObservableProperty] PhongMaterial meshMaterial;
         [ObservableProperty] private System.Windows.Media.Media3D.Transform3D meshTransform;
 
         [ObservableProperty] private LineGeometry3D normalLines;
 
         public ImageViewer3D_SingleMesh(byte[] image)
         {
-            var bmp = LibImageUtilities.ImageTypes.Bmp.Utilities.GetBmp(image, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
+            var format = image.GetImagePixelFormat();
+            // Convert the image to a 8bpp indexed bmp, if needed. This will be used to generate the mesh
+            byte[] bmp = format != System.Drawing.Imaging.PixelFormat.Format8bppIndexed
+                ? image.GetBmp(System.Drawing.Imaging.PixelFormat.Format8bppIndexed)
+                : image.GetBmp();
+
+            // Convert the image to a BitmapImage for display
             Image = Utilities.BitmapImageUtilities.CreateBitmapImage(image);
 
             EffectsManager = new DefaultEffectsManager();
 
-            // The width of the image is at byte 18 to 21
-            int width = BitConverter.ToInt32(bmp, 18);
-            // The height of the image is at byte 22 to 25
-            int height = BitConverter.ToInt32(bmp, 22);
+            int width = Image.PixelWidth;
+            int height = Image.PixelHeight;
 
             // camera setup
             // Set up the default perspective camera
@@ -63,8 +70,6 @@ namespace LabelVal.ImageViewer3D.ViewModels
             // setup lighting            
             SetupLighting();
 
-            this.MeshTransform = new System.Windows.Media.Media3D.TranslateTransform3D(0, 0, 0);
-
             BuildImageMesh(image, bmp);
         }
 
@@ -89,14 +94,15 @@ namespace LabelVal.ImageViewer3D.ViewModels
         {
             //The material needs a 32 Bpp image
             image = LibImageUtilities.ImageTypes.Png.Utilities.GetPng(image, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-           
-            Material = new PhongMaterial
+
+            MeshMaterial = new PhongMaterial
             {
                 DiffuseColor = Color.White, // Set the material color here
                 DiffuseMap = new MemoryStream(image),
             };
 
             MeshGeometry = MeshGeneration.CreateSurfaceMeshGeometry3D(bmp);
+            MeshTransform = new System.Windows.Media.Media3D.TranslateTransform3D(0, 0, 0);
 
             // Add normal visualization
             AddNormalVisualization();

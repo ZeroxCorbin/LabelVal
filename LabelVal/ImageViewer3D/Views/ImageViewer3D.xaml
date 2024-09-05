@@ -15,7 +15,7 @@
     <DockPanel>
 
         <hx:Viewport3DX x:Name="ViewPort"
-            BackgroundColor="#4C4A4A"
+            BackgroundColor="#FFFFFF"
             Title="{Binding Title}"
             Camera="{Binding Camera}"
             CoordinateSystemLabelForeground="Black"
@@ -35,9 +35,9 @@
             <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[6]}" Color="{Binding DirectionalLightColor}" />
             <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[7]}" Color="{Binding DirectionalLightColor}" />
             <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[8]}" Color="{Binding DirectionalLightColor}" />
-            <hx:MeshGeometryModel3D Geometry="{Binding MeshGeometry}" Material="{Binding Material}" Transform="{Binding MeshTransform}"/>
+            <hx:MeshGeometryModel3D Geometry="{Binding MeshGeometry}" Material="{Binding MeshMaterial}" Transform="{Binding MeshTransform}"/>
             <hx:LineGeometryModel3D Visibility="Collapsed" Geometry="{Binding NormalLines}" Color="Yellow" Thickness="1.0"/>
-            <hx:PostEffectMeshBorderHighlight EffectName="highlight" />
+            <!--<hx:PostEffectMeshBorderHighlight EffectName="highlight" />-->
         </hx:Viewport3DX>
     </DockPanel>
 </UserControl>

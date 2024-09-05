@@ -6,6 +6,7 @@ using L95xx_Lib.Models;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Results.Databases;
 using LabelVal.Utilities;
+using LibImageUtilities.ImageTypes;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using Newtonsoft.Json;
@@ -358,7 +359,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         }
     }
 
-    [RelayCommand] private void RedoFiducial() => LibImageUtilities.ImageUtilities.RedrawFiducial(SourceImage.Path, false);
+    [RelayCommand] private void RedoFiducial() => ImageUtilities.RedrawFiducial(SourceImage.Path, false);
 
     [RelayCommand] private void Delete() => DeleteImage?.Invoke(this);
     //const UInt32 WM_KEYDOWN = 0x0100;

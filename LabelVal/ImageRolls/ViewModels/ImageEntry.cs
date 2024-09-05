@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using LabelVal.Utilities;
+using LibImageUtilities.ImageTypes;
 using Newtonsoft.Json;
 using SharpVectors.Dom;
 using System;
@@ -79,7 +80,7 @@ public partial class ImageEntry : ObservableObject
     public ImageEntry(string rollUID, string path, int targetDpiWidth, int targetDpiHeight)
     {
         ImageBytes = File.ReadAllBytes(path);
-        UID = LibImageUtilities.ImageUtilities.GetImageUID(ImageBytes);
+        UID = ImageUtilities.GetImageUID(ImageBytes);
 
         RollUID = rollUID;
 
@@ -100,7 +101,7 @@ public partial class ImageEntry : ObservableObject
     public ImageEntry(string rollUID, byte[] image, int targetDpiWidth, int targetDpiHeight = 0, string comment = null)
     {
         ImageBytes = image;
-        UID = LibImageUtilities.ImageUtilities.GetImageUID(ImageBytes);
+        UID = ImageUtilities.GetImageUID(ImageBytes);
 
         RollUID = rollUID;
 

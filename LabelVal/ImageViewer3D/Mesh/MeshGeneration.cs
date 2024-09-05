@@ -29,10 +29,8 @@ namespace LabelVal.ImageViewer3D.Mesh
             var points = new List<Vertex>();
             // The offset to the start of the pixel data is at byte 10 to 13
             int pixelDataOffset = BitConverter.ToInt32(image, 10);
-
             // The width of the image is at byte 18 to 21
             int width = BitConverter.ToInt32(image, 18);
-
             // The height of the image is at byte 22 to 25
             int height = BitConverter.ToInt32(image, 22);
 
@@ -89,7 +87,7 @@ namespace LabelVal.ImageViewer3D.Mesh
             meshGeometry.Positions = new Vector3Collection(positions);
             meshGeometry.TextureCoordinates = new Vector2Collection(textureCoordinates);
             meshGeometry.Indices = new IntCollection(indices);
-            CalculateNormalsNeg(meshGeometry);
+            CalculateNormalsOut(meshGeometry);
             return meshGeometry;
         }
 
@@ -158,7 +156,7 @@ namespace LabelVal.ImageViewer3D.Mesh
             meshGeometry.Positions = new Vector3Collection(positions);
             meshGeometry.TextureCoordinates = new Vector2Collection(textureCoordinates);
             meshGeometry.Indices = new IntCollection(indices);
-            CalculateNormals(meshGeometry);
+            CalculateNormalsOut(meshGeometry);
             return meshGeometry;
         }
 
@@ -293,11 +291,11 @@ namespace LabelVal.ImageViewer3D.Mesh
             meshGeometry.Positions = new Vector3Collection(positions);
             meshGeometry.TextureCoordinates = new Vector2Collection(textureCoordinates);
             meshGeometry.Indices = new IntCollection(indices);
-            CalculateNormals(meshGeometry);
+            CalculateNormalsOut(meshGeometry);
             return meshGeometry;
         }
 
-        public static void CalculateNormals(MeshGeometry3D meshGeometry)
+        public static void CalculateNormalsIn(MeshGeometry3D meshGeometry)
         {
             var normals = new Vector3Collection(meshGeometry.Positions.Count);
             for (int i = 0; i < meshGeometry.Positions.Count; i++)
@@ -330,7 +328,7 @@ namespace LabelVal.ImageViewer3D.Mesh
 
             meshGeometry.Normals = normals;
         }
-        public static void CalculateNormalsNeg(MeshGeometry3D meshGeometry)
+        public static void CalculateNormalsOut(MeshGeometry3D meshGeometry)
         {
             var normals = new Vector3Collection(meshGeometry.Positions.Count);
             for (int i = 0; i < meshGeometry.Positions.Count; i++)
