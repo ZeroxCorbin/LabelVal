@@ -138,17 +138,29 @@
         </hx:Viewport3DX>-->
         <hx:Viewport3DX
             x:Name="view1"
+            BackgroundColor="#4C4A4A"
             Title="{Binding Title}"
             Camera="{Binding Camera}"
-            CoordinateSystemLabelForeground="White"
+            CoordinateSystemLabelForeground="Black"
             EffectsManager="{Binding EffectsManager}"
             SubTitle="{Binding SubTitle}"
             TextBrush="Black"
-            
             UseDefaultGestures="True">
-            <hx:AmbientLight3D Color="{Binding AmbientLightColor, Mode=OneWay}"/>
-            <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirection}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />
+            <hx:AmbientLight3D Color="{Binding AmbientLightColor}"/>
+            <hx:DirectionalLight3D Direction="{Binding Camera.LookDirection}" Color="White"/>
+            <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[0]}" Color="{Binding DirectionalLightColor}" />
+            <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[0]}" Color="{Binding DirectionalLightColor}" />
+            <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[1]}" Color="{Binding DirectionalLightColor}" />
+            <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[2]}" Color="{Binding DirectionalLightColor}" />
+            <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[3]}" Color="{Binding DirectionalLightColor}" />
+            <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[4]}" Color="{Binding DirectionalLightColor}" />
+            <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[5]}" Color="{Binding DirectionalLightColor}" />
+            <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[6]}" Color="{Binding DirectionalLightColor}" />
+            <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[7]}" Color="{Binding DirectionalLightColor}" />
+            <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[8]}" Color="{Binding DirectionalLightColor}" />
             <hx:MeshGeometryModel3D Geometry="{Binding MeshGeometry}" Material="{Binding Material}" Transform="{Binding MeshTransform}"/>
+            <hx:LineGeometryModel3D Visibility="Collapsed" Geometry="{Binding NormalLines}" Color="Yellow" Thickness="1.0"/>
+            <hx:PostEffectMeshBorderHighlight EffectName="highlight" />
         </hx:Viewport3DX>
 
         <!--ImageViewer3D_Instancing-->

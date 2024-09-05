@@ -89,11 +89,9 @@ namespace LabelVal.ImageViewer3D.Mesh
             meshGeometry.Positions = new Vector3Collection(positions);
             meshGeometry.TextureCoordinates = new Vector2Collection(textureCoordinates);
             meshGeometry.Indices = new IntCollection(indices);
-            CalculateNormals(meshGeometry);
+            CalculateNormalsNeg(meshGeometry);
             return meshGeometry;
         }
-
-
 
         public static MeshGeometry3D CreateSurfaceMeshGeometry3D_AllSurfaces(byte[] image)
         {
@@ -164,142 +162,140 @@ namespace LabelVal.ImageViewer3D.Mesh
             return meshGeometry;
         }
 
-  
-
-    public static MeshGeometry3D CreateSolidBodyMeshGeometry3D(byte[] image)
-    {
-        var points = new List<Vertex>();
-        // The offset to the start of the pixel data is at byte 10 to 13
-        int pixelDataOffset = BitConverter.ToInt32(image, 10);
-
-        // The width of the image is at byte 18 to 21
-        int width = BitConverter.ToInt32(image, 18);
-
-        // The height of the image is at byte 22 to 25
-        int height = BitConverter.ToInt32(image, 22);
-
-        // Calculate the row size with padding
-        int rowSize = (width + 3) & ~3; // Align to 4-byte boundary
-
-        for (int y = 0; y < height; y++)
+        public static MeshGeometry3D CreateSolidBodyMeshGeometry3D(byte[] image)
         {
-            for (int x = 0; x < width; x++)
+            var points = new List<Vertex>();
+            // The offset to the start of the pixel data is at byte 10 to 13
+            int pixelDataOffset = BitConverter.ToInt32(image, 10);
+
+            // The width of the image is at byte 18 to 21
+            int width = BitConverter.ToInt32(image, 18);
+
+            // The height of the image is at byte 22 to 25
+            int height = BitConverter.ToInt32(image, 22);
+
+            // Calculate the row size with padding
+            int rowSize = (width + 3) & ~3; // Align to 4-byte boundary
+
+            for (int y = 0; y < height; y++)
             {
-                double z = -image[pixelDataOffset + y * rowSize + x];
-                points.Add(new Vertex(x, y, z));
+                for (int x = 0; x < width; x++)
+                {
+                    double z = -image[pixelDataOffset + y * rowSize + x];
+                    points.Add(new Vertex(x, y, z));
+                }
             }
-        }
 
-        var meshGeometry = new MeshGeometry3D();
+            var meshGeometry = new MeshGeometry3D();
 
-        // Create arrays for positions and texture coordinates
-        var positions = new List<Vector3>();
-        var textureCoordinates = new List<Vector2>();
-        var indices = new List<int>();
+            // Create arrays for positions and texture coordinates
+            var positions = new List<Vector3>();
+            var textureCoordinates = new List<Vector2>();
+            var indices = new List<int>();
 
-        // Fill positions and texture coordinates for the top surface
-        for (int i = 0; i < points.Count; i++)
-        {
-            var point = points[i];
-            positions.Add(new Vector3((float)point.X, (float)point.Y, (float)point.Z));
-            textureCoordinates.Add(new Vector2((float)point.X / (width - 1), (float)point.Y / (height - 1)));
-        }
-
-        // Fill positions and texture coordinates for the bottom surface
-        for (int i = 0; i < points.Count; i++)
-        {
-            var point = points[i];
-            positions.Add(new Vector3((float)point.X, (float)point.Y, 0)); // Z = 0 for the bottom surface
-            textureCoordinates.Add(new Vector2((float)point.X / (width - 1), (float)point.Y / (height - 1)));
-        }
-
-        // Generate indices for the top surface
-        for (int y = 0; y < height - 1; y++)
-        {
-            for (int x = 0; x < width - 1; x++)
+            // Fill positions and texture coordinates for the top surface
+            for (int i = 0; i < points.Count; i++)
             {
-                int topLeft = y * width + x;
-                int topRight = topLeft + 1;
-                int bottomLeft = topLeft + width;
-                int bottomRight = bottomLeft + 1;
-
-                // First triangle
-                indices.Add(topLeft);
-                indices.Add(bottomLeft);
-                indices.Add(topRight);
-
-                // Second triangle
-                indices.Add(topRight);
-                indices.Add(bottomLeft);
-                indices.Add(bottomRight);
+                var point = points[i];
+                positions.Add(new Vector3((float)point.X, (float)point.Y, (float)point.Z));
+                textureCoordinates.Add(new Vector2((float)point.X / (width - 1), (float)point.Y / (height - 1)));
             }
-        }
 
-        // Generate indices for the bottom surface
-        int offset = points.Count;
-        for (int y = 0; y < height - 1; y++)
-        {
-            for (int x = 0; x < width - 1; x++)
+            // Fill positions and texture coordinates for the bottom surface
+            for (int i = 0; i < points.Count; i++)
             {
-                int topLeft = y * width + x + offset;
-                int topRight = topLeft + 1;
-                int bottomLeft = topLeft + width;
-                int bottomRight = bottomLeft + 1;
-
-                // First triangle
-                indices.Add(topLeft);
-                indices.Add(topRight);
-                indices.Add(bottomLeft);
-
-                // Second triangle
-                indices.Add(topRight);
-                indices.Add(bottomRight);
-                indices.Add(bottomLeft);
+                var point = points[i];
+                positions.Add(new Vector3((float)point.X, (float)point.Y, 0)); // Z = 0 for the bottom surface
+                textureCoordinates.Add(new Vector2((float)point.X / (width - 1), (float)point.Y / (height - 1)));
             }
-        }
 
-        // Generate indices for the side faces
-        for (int y = 0; y < height - 1; y++)
-        {
-            for (int x = 0; x < width - 1; x++)
+            // Generate indices for the top surface
+            for (int y = 0; y < height - 1; y++)
             {
-                int topLeft = y * width + x;
-                int topRight = topLeft + 1;
-                int bottomLeft = topLeft + width;
-                int bottomRight = bottomLeft + 1;
+                for (int x = 0; x < width - 1; x++)
+                {
+                    int topLeft = y * width + x;
+                    int topRight = topLeft + 1;
+                    int bottomLeft = topLeft + width;
+                    int bottomRight = bottomLeft + 1;
 
-                int topLeftBottom = topLeft + offset;
-                int topRightBottom = topRight + offset;
-                int bottomLeftBottom = bottomLeft + offset;
-                int bottomRightBottom = bottomRight + offset;
+                    // First triangle
+                    indices.Add(topLeft);
+                    indices.Add(bottomLeft);
+                    indices.Add(topRight);
 
-                // Side face 1
-                indices.Add(topLeft);
-                indices.Add(bottomLeft);
-                indices.Add(topLeftBottom);
-
-                indices.Add(topLeftBottom);
-                indices.Add(bottomLeft);
-                indices.Add(bottomLeftBottom);
-
-                // Side face 2
-                indices.Add(topRight);
-                indices.Add(topRightBottom);
-                indices.Add(bottomRight);
-
-                indices.Add(topRightBottom);
-                indices.Add(bottomRightBottom);
-                indices.Add(bottomRight);
+                    // Second triangle
+                    indices.Add(topRight);
+                    indices.Add(bottomLeft);
+                    indices.Add(bottomRight);
+                }
             }
-        }
 
-        // Assign the arrays to the meshGeometry
-        meshGeometry.Positions = new Vector3Collection(positions);
-        meshGeometry.TextureCoordinates = new Vector2Collection(textureCoordinates);
-        meshGeometry.Indices = new IntCollection(indices);
+            // Generate indices for the bottom surface
+            int offset = points.Count;
+            for (int y = 0; y < height - 1; y++)
+            {
+                for (int x = 0; x < width - 1; x++)
+                {
+                    int topLeft = y * width + x + offset;
+                    int topRight = topLeft + 1;
+                    int bottomLeft = topLeft + width;
+                    int bottomRight = bottomLeft + 1;
+
+                    // First triangle
+                    indices.Add(topLeft);
+                    indices.Add(topRight);
+                    indices.Add(bottomLeft);
+
+                    // Second triangle
+                    indices.Add(topRight);
+                    indices.Add(bottomRight);
+                    indices.Add(bottomLeft);
+                }
+            }
+
+            // Generate indices for the side faces
+            for (int y = 0; y < height - 1; y++)
+            {
+                for (int x = 0; x < width - 1; x++)
+                {
+                    int topLeft = y * width + x;
+                    int topRight = topLeft + 1;
+                    int bottomLeft = topLeft + width;
+                    int bottomRight = bottomLeft + 1;
+
+                    int topLeftBottom = topLeft + offset;
+                    int topRightBottom = topRight + offset;
+                    int bottomLeftBottom = bottomLeft + offset;
+                    int bottomRightBottom = bottomRight + offset;
+
+                    // Side face 1
+                    indices.Add(topLeft);
+                    indices.Add(bottomLeft);
+                    indices.Add(topLeftBottom);
+
+                    indices.Add(topLeftBottom);
+                    indices.Add(bottomLeft);
+                    indices.Add(bottomLeftBottom);
+
+                    // Side face 2
+                    indices.Add(topRight);
+                    indices.Add(topRightBottom);
+                    indices.Add(bottomRight);
+
+                    indices.Add(topRightBottom);
+                    indices.Add(bottomRightBottom);
+                    indices.Add(bottomRight);
+                }
+            }
+
+            // Assign the arrays to the meshGeometry
+            meshGeometry.Positions = new Vector3Collection(positions);
+            meshGeometry.TextureCoordinates = new Vector2Collection(textureCoordinates);
+            meshGeometry.Indices = new IntCollection(indices);
             CalculateNormals(meshGeometry);
-        return meshGeometry;
-    }
+            return meshGeometry;
+        }
 
         public static void CalculateNormals(MeshGeometry3D meshGeometry)
         {
@@ -325,6 +321,79 @@ namespace LabelVal.ImageViewer3D.Mesh
                 normals[index1] += normal;
                 normals[index2] += normal;
                 normals[index3] += normal;
+            }
+
+            for (int i = 0; i < normals.Count; i++)
+            {
+                normals[i].Normalize();
+            }
+
+            meshGeometry.Normals = normals;
+        }
+        public static void CalculateNormalsNeg(MeshGeometry3D meshGeometry)
+        {
+            var normals = new Vector3Collection(meshGeometry.Positions.Count);
+            for (int i = 0; i < meshGeometry.Positions.Count; i++)
+            {
+                normals.Add(new Vector3(0, 0, 0));
+            }
+
+            for (int i = 0; i < meshGeometry.Indices.Count; i += 3)
+            {
+                int index1 = meshGeometry.Indices[i];
+                int index2 = meshGeometry.Indices[i + 1];
+                int index3 = meshGeometry.Indices[i + 2];
+
+                var p1 = meshGeometry.Positions[index1];
+                var p2 = meshGeometry.Positions[index2];
+                var p3 = meshGeometry.Positions[index3];
+
+                var normal = Vector3.Cross(p2 - p1, p3 - p1);
+                normal.Normalize();
+
+                normals[index1] += normal;
+                normals[index2] += normal;
+                normals[index3] += normal;
+            }
+
+            for (int i = 0; i < normals.Count; i++)
+            {
+                normals[i].Normalize();
+                normals[i] = -normals[i]; // Flip the normal direction
+            }
+
+            meshGeometry.Normals = normals;
+        }
+        public static void CalculateNormalsAndReverse(MeshGeometry3D meshGeometry)
+        {
+            var normals = new Vector3Collection(meshGeometry.Positions.Count);
+            for (int i = 0; i < meshGeometry.Positions.Count; i++)
+            {
+                normals.Add(new Vector3(0, 0, 0));
+            }
+
+            for (int i = 0; i < meshGeometry.Indices.Count; i += 3)
+            {
+                int index1 = meshGeometry.Indices[i];
+                int index2 = meshGeometry.Indices[i + 1];
+                int index3 = meshGeometry.Indices[i + 2];
+
+                var p1 = meshGeometry.Positions[index1];
+                var p2 = meshGeometry.Positions[index2];
+                var p3 = meshGeometry.Positions[index3];
+
+                var normal = Vector3.Cross(p2 - p1, p3 - p1);
+                normal.Normalize();
+
+                normals[index1] += normal;
+                normals[index2] += normal;
+                normals[index3] += normal;
+
+                // Calculate and add the normal for the opposite direction
+                var reverseNormal = -normal;
+                normals[index1] += reverseNormal;
+                normals[index2] += reverseNormal;
+                normals[index3] += reverseNormal;
             }
 
             for (int i = 0; i < normals.Count; i++)
