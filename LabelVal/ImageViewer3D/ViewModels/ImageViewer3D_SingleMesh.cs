@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using HelixToolkit.Wpf.SharpDX;
 using LabelVal.ImageViewer3D.Mesh;
+using LabelVal.ImageViewer3D.Processing;
 using LabelVal.Utilities;
 using LibImageUtilities.ImageTypes;
 using LibImageUtilities.ImageTypes.Bmp;
@@ -51,6 +52,8 @@ namespace LabelVal.ImageViewer3D.ViewModels
         private byte[] BitmapArray { get; }
         private byte[] OriginalImageArray { get; }
 
+        private byte[] SobelImageArray { get; }
+
         public ImageViewer3D_SingleMesh(byte[] image)
         {
             var format = image.GetImagePixelFormat();
@@ -58,6 +61,20 @@ namespace LabelVal.ImageViewer3D.ViewModels
             BitmapArray = format != System.Drawing.Imaging.PixelFormat.Format8bppIndexed
                 ? image.GetBmp(System.Drawing.Imaging.PixelFormat.Format8bppIndexed)
                 : image.GetBmp();
+
+            var wd = image.GetImageWidth();
+            var ht = image.GetImageHeight();
+            try
+            {
+                var test = new Bmp(BitmapArray);
+                test.Confirm();
+            }
+            catch (Exception e)
+            {
+                
+            }
+
+           // SobelImageArray = SobelEdgeDetection.CreateBitmapFromEdgeDetection1ByteColor(SobelEdgeDetection.ApplySobelEdgeDetection1ByteColor(BitmapArray, wd, ht), wd, ht);
 
             //The material needs a 32 Bpp image
             OriginalImageArray = LibImageUtilities.ImageTypes.Png.Utilities.GetPng(image, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
