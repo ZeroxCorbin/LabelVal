@@ -40,8 +40,8 @@ namespace LabelVal.ImageViewer3D.ViewModels
         public System.Windows.Media.Imaging.BitmapImage Image { get; }
         public List<System.Windows.Media.Media3D.Vector3D> DirectionalLightDirections { get; } = [];
 
-        [ObservableProperty] private Color4 directionalLightColor;
-        [ObservableProperty] private Color4 ambientLightColor;
+        [ObservableProperty] private System.Windows.Media.Color directionalLightColor;
+        [ObservableProperty] private System.Windows.Media.Color ambientLightColor;
 
         [ObservableProperty] MeshGeometry3D meshGeometry;
         [ObservableProperty] PhongMaterial meshMaterial;
@@ -61,19 +61,6 @@ namespace LabelVal.ImageViewer3D.ViewModels
             BitmapArray = format != System.Drawing.Imaging.PixelFormat.Format8bppIndexed
                 ? image.GetBmp(System.Drawing.Imaging.PixelFormat.Format8bppIndexed)
                 : image.GetBmp();
-
-            var wd = image.GetImageWidth();
-            var ht = image.GetImageHeight();
-            try
-            {
-                var test = new Bmp(BitmapArray);
-                test.Confirm();
-                BitmapArray = test.RawData;
-            }
-            catch (Exception e)
-            {
-                
-            }
 
            // SobelImageArray = SobelEdgeDetection.CreateBitmapFromEdgeDetection1ByteColor(SobelEdgeDetection.ApplySobelEdgeDetection1ByteColor(BitmapArray, wd, ht), wd, ht);
 
@@ -119,24 +106,35 @@ namespace LabelVal.ImageViewer3D.ViewModels
         {
             //this.AmbientLightColor = new Color4(1.0f, 1.0f, 1.0f, 1.0f); // Slight ambient light
 
-            this.DirectionalLightColor = Color.White;
+            this.DirectionalLightColor = System.Windows.Media.Colors.LightGray;
             // Add light directions for all quadrants
-            DirectionalLightDirections.Add(new System.Windows.Media.Media3D.Vector3D(1, 1, 1));
-            DirectionalLightDirections.Add(new System.Windows.Media.Media3D.Vector3D(-1, 1, 1));
-            DirectionalLightDirections.Add(new System.Windows.Media.Media3D.Vector3D(1, -1, 1));
-            DirectionalLightDirections.Add(new System.Windows.Media.Media3D.Vector3D(-1, -1, 1));
-            DirectionalLightDirections.Add(new System.Windows.Media.Media3D.Vector3D(1, 1, -1));
-            DirectionalLightDirections.Add(new System.Windows.Media.Media3D.Vector3D(-1, 1, -1));
-            DirectionalLightDirections.Add(new System.Windows.Media.Media3D.Vector3D(1, -1, -1));
-            DirectionalLightDirections.Add(new System.Windows.Media.Media3D.Vector3D(-1, -1, -1));
+            // Add light directions for all quadrants
+            DirectionalLightDirections.Add(new System.Windows.Media.Media3D.Vector3D(1, 1, 1));  // Quadrant 1
+            DirectionalLightDirections.Add(new System.Windows.Media.Media3D.Vector3D(-1, 1, 1)); // Quadrant 2
+            DirectionalLightDirections.Add(new System.Windows.Media.Media3D.Vector3D(1, -1, 1)); // Quadrant 3
+            DirectionalLightDirections.Add(new System.Windows.Media.Media3D.Vector3D(-1, -1, 1)); // Quadrant 4
+            DirectionalLightDirections.Add(new System.Windows.Media.Media3D.Vector3D(1, 1, -1));  // Quadrant 5
+            DirectionalLightDirections.Add(new System.Windows.Media.Media3D.Vector3D(-1, 1, -1)); // Quadrant 6
+            DirectionalLightDirections.Add(new System.Windows.Media.Media3D.Vector3D(1, -1, -1)); // Quadrant 7
+            DirectionalLightDirections.Add(new System.Windows.Media.Media3D.Vector3D(-1, -1, -1)); // Quadrant 8
+
+            // Add light directions from the center of each face of the cube
+            DirectionalLightDirections.Add(new System.Windows.Media.Media3D.Vector3D(1, 0, 0));  // Right face
+            DirectionalLightDirections.Add(new System.Windows.Media.Media3D.Vector3D(-1, 0, 0)); // Left face
+            DirectionalLightDirections.Add(new System.Windows.Media.Media3D.Vector3D(0, 1, 0));  // Top face
+            DirectionalLightDirections.Add(new System.Windows.Media.Media3D.Vector3D(0, -1, 0)); // Bottom face
+            DirectionalLightDirections.Add(new System.Windows.Media.Media3D.Vector3D(0, 0, 1));  // Front face
+            DirectionalLightDirections.Add(new System.Windows.Media.Media3D.Vector3D(0, 0, -1)); // Back face
+
 
         }
         private void BuildImageMesh()
         {
             MeshMaterial = new PhongMaterial
             {
-                DiffuseColor = Color.White, // Set the material color here
+                DiffuseColor = Color4.White, // Set the material color here
                 DiffuseMap = new MemoryStream(OriginalImageArray),
+                AmbientColor = Color4.White,
             };
             
             MeshGeometry = MeshGeneration.CreateSurfaceMeshGeometry3D(BitmapArray, WhiteFront);

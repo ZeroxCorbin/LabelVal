@@ -26,22 +26,47 @@
             CoordinateSystemLabelForeground="Black"
             EffectsManager="{Binding EffectsManager}"
             SubTitle="{Binding SubTitle}"
+                        ShowCameraTarget="True"
             TextBrush="Black"
             UseDefaultGestures="True">
+
             <hx:AmbientLight3D Color="{Binding AmbientLightColor}"/>
-            <hx:DirectionalLight3D Direction="{Binding Camera.LookDirection}" Color="White"/>
+
+            <!-- Directional lights for all quadrants -->
             <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[0]}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />
+            <!-- Quadrant 1 -->
             <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[1]}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />
+            <!-- Quadrant 2 -->
             <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[2]}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />
+            <!-- Quadrant 3 -->
             <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[3]}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />
+            <!-- Quadrant 4 -->
             <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[4]}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />
+            <!-- Quadrant 5 -->
             <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[5]}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />
+            <!-- Quadrant 6 -->
             <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[6]}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />
+            <!-- Quadrant 7 -->
             <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[7]}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />
+            <!-- Quadrant 8 -->
+
+            <!-- Directional lights from the center of each face of the cube -->
             <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[8]}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />
+            <!-- Right face -->
+            <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[9]}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />
+            <!-- Left face -->
+            <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[10]}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />
+            <!-- Top face -->
+            <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[11]}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />
+            <!-- Bottom face -->
+            <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[12]}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />
+            <!-- Front face -->
+            <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[13]}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />
+            <!-- Back face -->
+            
             <hx:MeshGeometryModel3D RenderWireframe="{Binding ShowWireframe}" WireframeColor="Black" Geometry="{Binding MeshGeometry}" Material="{Binding MeshMaterial}" Transform="{Binding MeshTransform}"/>
             <hx:LineGeometryModel3D Visibility="{Binding ShowNormals, Converter={StaticResource BooleanToVisibilityConverter}}" Geometry="{Binding NormalLines}" Color="Yellow" Thickness="1.0"/>
-            <hx:PostEffectMeshBorderHighlight EffectName="highlight" />
+            <!--<hx:PostEffectMeshBorderHighlight />-->
         </hx:Viewport3DX>
     </DockPanel>
 </UserControl>

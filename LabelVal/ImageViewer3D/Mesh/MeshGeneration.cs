@@ -87,7 +87,13 @@ namespace LabelVal.ImageViewer3D.Mesh
             meshGeometry.Positions = new Vector3Collection(positions);
             meshGeometry.TextureCoordinates = new Vector2Collection(textureCoordinates);
             meshGeometry.Indices = new IntCollection(indices);
-            CalculateNormalsOut(meshGeometry);
+            meshGeometry.Normals = meshGeometry.CalculateNormals();
+
+            // Reverse the normals
+            for (int i = 0; i < meshGeometry.Normals.Count; i++)
+            {
+                meshGeometry.Normals[i] = -meshGeometry.Normals[i];
+            }
             return meshGeometry;
         }
 
@@ -156,7 +162,7 @@ namespace LabelVal.ImageViewer3D.Mesh
             meshGeometry.Positions = new Vector3Collection(positions);
             meshGeometry.TextureCoordinates = new Vector2Collection(textureCoordinates);
             meshGeometry.Indices = new IntCollection(indices);
-            CalculateNormalsOut(meshGeometry);
+            meshGeometry.Normals = meshGeometry.CalculateNormals();
             return meshGeometry;
         }
 
@@ -291,7 +297,7 @@ namespace LabelVal.ImageViewer3D.Mesh
             meshGeometry.Positions = new Vector3Collection(positions);
             meshGeometry.TextureCoordinates = new Vector2Collection(textureCoordinates);
             meshGeometry.Indices = new IntCollection(indices);
-            CalculateNormalsOut(meshGeometry);
+            meshGeometry.Normals = meshGeometry.CalculateNormals();
             return meshGeometry;
         }
 
