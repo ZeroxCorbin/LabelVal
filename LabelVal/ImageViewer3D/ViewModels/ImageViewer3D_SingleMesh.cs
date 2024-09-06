@@ -68,6 +68,7 @@ namespace LabelVal.ImageViewer3D.ViewModels
             {
                 var test = new Bmp(BitmapArray);
                 test.Confirm();
+                BitmapArray = test.RawData;
             }
             catch (Exception e)
             {
