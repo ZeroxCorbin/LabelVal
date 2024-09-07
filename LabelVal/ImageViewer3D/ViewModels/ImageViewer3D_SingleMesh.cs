@@ -164,6 +164,7 @@ namespace LabelVal.ImageViewer3D.ViewModels
 
             ConstrainDimension = new Vector3(Image.PixelWidth, Image.PixelHeight, WhiteFront ? -255 : 255);
 
+            PlaneXy = new Plane(new Vector3(0, 0, 1), WhiteFront ? PlaneXy.D != 0 ? PlaneXy.D + 255 : 0 : PlaneXy.D != 0 ? PlaneXy.D + -255 : -255);
             // Add normal visualization
             AddNormalVisualization();
         }

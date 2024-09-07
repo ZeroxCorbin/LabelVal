@@ -70,28 +70,31 @@
                 Transform="{Binding MeshTransform}"/>
 
             <local:CrossSectionPlaneManipulator3D
-                CutPlane="{Binding PlaneXy, Mode=TwoWay}"
+                CutPlane="{Binding PlaneXy, Mode=TwoWay}"            
                 IsRendering="{Binding EnablePlaneXy}"
-                ConstrainAxis="{Binding ConstraintPlaneXy_AxisZ}"
-                ConstrainDimensions="{Binding ConstrainDimension}"
+                ConstrainAxis="{Binding ConstraintPlaneXy_AxisZ, Mode=OneWay}"
+                ConstrainDimensions="{Binding ConstrainDimension, Mode=OneWay}"
                 EdgeMaterial="{Binding PlaneMaterialXy}"
-                CornerMaterial="{Binding PlaneMaterialXy}"/>
+                CornerMaterial="{Binding PlaneMaterialXy}"
+                IsEnabled="{Binding EnablePlaneXy}"/>
 
             <local:CrossSectionPlaneManipulator3D
                 CutPlane="{Binding PlaneYz, Mode=TwoWay}"
                 IsRendering="{Binding EnablePlaneYz}"
-                ConstrainAxis="{Binding ConstraintPlaneYz_AxisX}"
-                ConstrainDimensions="{Binding ConstrainDimension}" 
+                ConstrainAxis="{Binding ConstraintPlaneYz_AxisX, Mode=OneWay}"
+                ConstrainDimensions="{Binding ConstrainDimension, Mode=OneWay}" 
                 EdgeMaterial="{Binding PlaneMaterialYz}"
-                CornerMaterial="{Binding PlaneMaterialYz}"/>
+                CornerMaterial="{Binding PlaneMaterialYz}"
+                IsEnabled="{Binding EnablePlaneYz}"/>
 
             <local:CrossSectionPlaneManipulator3D
                 CutPlane="{Binding PlaneZx, Mode=TwoWay}"
                 IsRendering="{Binding EnablePlaneZx}"
-                ConstrainAxis="{Binding ConstraintPlaneZx_AxisY}"
-                ConstrainDimensions="{Binding ConstrainDimension}"
+                ConstrainAxis="{Binding ConstraintPlaneZx_AxisY, Mode=OneWay}"
+                ConstrainDimensions="{Binding ConstrainDimension, Mode=OneWay}"
                 EdgeMaterial="{Binding PlaneMaterialZx}"
-                CornerMaterial="{Binding PlaneMaterialZx}"/>
+                CornerMaterial="{Binding PlaneMaterialZx}"
+                IsEnabled="{Binding EnablePlaneZx}"/>
             
             <!--<hx:MeshGeometryModel3D RenderWireframe="{Binding ShowWireframe}" WireframeColor="Black" Geometry="{Binding MeshGeometry}" Material="{Binding MeshMaterial}" Transform="{Binding MeshTransform}"/>
             <hx:LineGeometryModel3D Visibility="{Binding ShowNormals, Converter={StaticResource BooleanToVisibilityConverter}}" Geometry="{Binding NormalLines}" Color="Yellow" Thickness="1.0"/>-->

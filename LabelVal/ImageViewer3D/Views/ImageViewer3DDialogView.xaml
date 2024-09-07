@@ -4,6 +4,7 @@
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
                     xmlns:local="clr-namespace:LabelVal.ImageViewer3D.Views"
+                     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                      xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
                     xmlns:vm="clr-namespace:LabelVal.ImageViewer3D.ViewModels"
@@ -24,12 +25,59 @@
     <dialog:CustomDialog.DialogTop>
 
         <Grid HorizontalAlignment="Center" VerticalAlignment="Top" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <DockPanel HorizontalAlignment="Right">
+            <StackPanel Grid.Column="0" Grid.Row="1">
+
+                <ToggleButton IsChecked="{Binding EnablePlaneXy}" Width="48" Height="48" Background="Blue">
+                    <ToggleButton.Style>
+                        <Style TargetType="ToggleButton" BasedOn="{StaticResource MahApps.Styles.ToggleButton.Flat}">
+                            <Setter Property="Content" Value="{iconPacks:Material Kind=AxisZArrow}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding EnablePlaneXy}" Value="False">
+                                    <Setter Property="Content" Value="{iconPacks:Material Kind=AxisZArrowLock}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ToggleButton.Style>
+                </ToggleButton>
+
+                <ToggleButton IsChecked="{Binding EnablePlaneYz}" Width="48" Height="48" Background="Red">
+                    <ToggleButton.Style>
+                        <Style TargetType="ToggleButton" BasedOn="{StaticResource MahApps.Styles.ToggleButton.Flat}">
+                            <Setter Property="Content" Value="{iconPacks:Material Kind=AxisXArrow}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding EnablePlaneYz}" Value="False">
+                                    <Setter Property="Content" Value="{iconPacks:Material Kind=AxisXArrowLock}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ToggleButton.Style>
+                </ToggleButton>
+
+                <ToggleButton IsChecked="{Binding EnablePlaneZx}" Width="48" Height="48" Background="Green">
+                    <ToggleButton.Style>
+                        <Style TargetType="ToggleButton" BasedOn="{StaticResource MahApps.Styles.ToggleButton.Flat}">
+                            <Setter Property="Content" Value="{iconPacks:Material Kind=AxisYArrow}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding EnablePlaneZx}" Value="False">
+                                    <Setter Property="Content" Value="{iconPacks:Material Kind=AxisYArrowLock}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ToggleButton.Style>
+
+                </ToggleButton>
+            </StackPanel>
+
+            <DockPanel Grid.Column="1" Grid.Row="0" HorizontalAlignment="Right">
 
                 <Button Name="CloseButton" Click="CloseButton_Click" Margin="3" Width="30" Height="30" Style="{StaticResource MahApps.Styles.Button.Hamburger}">
                     <iconPacks:Modern Kind="Close"/>
@@ -37,7 +85,7 @@
 
             </DockPanel>
 
-            <md:Card x:Name="crdSource" HorizontalAlignment="Center"
+            <md:Card Grid.Column="1" Grid.Row="0" x:Name="crdSource" HorizontalAlignment="Center"
                  Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
                  Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
@@ -101,7 +149,7 @@
                             <iconPacks:Material Kind="BlackMesa"/>
 
                         </ToggleButton>-->
-                        
+
                         <Button Name="Reset" Click="Reset_Click" Margin="3"
                                 Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                                 Content="{iconPacks:Material Kind=ArrowExpandAll}"
@@ -111,43 +159,11 @@
 
 
                     </DockPanel>
-                    <!--<DockPanel>
 
-                        <ToggleButton IsChecked="{Binding EnablePlaneXy}" Width="48" Style="{StaticResource MahApps.Styles.ToggleButton}"
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
-
-                            <md:ToggleButtonAssist.OnContent>
-                                <iconPacks:Material Kind="ImageFilterBlackWhite"/>
-                            </md:ToggleButtonAssist.OnContent>
-
-                            <iconPacks:Material Kind="BlackMesa"/>
-
-                        </ToggleButton>
-                        <ToggleButton IsChecked="{Binding EnablePlaneYz}" Width="48" Style="{StaticResource MahApps.Styles.ToggleButton}"
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
-
-                            <md:ToggleButtonAssist.OnContent>
-                                <iconPacks:Material Kind="ImageFilterBlackWhite"/>
-                            </md:ToggleButtonAssist.OnContent>
-
-                            <iconPacks:Material Kind="BlackMesa"/>
-
-                        </ToggleButton>
-                        <ToggleButton IsChecked="{Binding EnablePlaneZx}" Width="48" Style="{StaticResource MahApps.Styles.ToggleButton}"
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
-
-                            <md:ToggleButtonAssist.OnContent>
-                                <iconPacks:Material Kind="ImageFilterBlackWhite"/>
-                            </md:ToggleButtonAssist.OnContent>
-
-                            <iconPacks:Material Kind="BlackMesa"/>
-
-                        </ToggleButton>
-                    </DockPanel>-->
                 </DockPanel>
             </md:Card>
 
-            <iv3d:ImageViewer3D x:Name="ImageViewer3D" Grid.Row="1"
+            <iv3d:ImageViewer3D Grid.Column="1" Grid.Row="1" x:Name="ImageViewer3D"
                                 DataContext="{Binding }"
                                 MaxHeight="{Binding Height3DWindow}" 
                                 MaxWidth="{Binding Width3DWindow}"/>

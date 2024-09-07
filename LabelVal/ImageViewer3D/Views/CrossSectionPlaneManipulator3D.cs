@@ -30,8 +30,9 @@ namespace LabelVal.ImageViewer3D.Views
                         var v1 = plane.Normal.FindAnyPerpendicular();
                         var v2 = Vector3.Cross(plane.Normal, v1);
                         model.currentRotation = new Matrix(v2.X, v2.Y, v2.Z, 0, v1.X, v1.Y, v1.Z, 0, -plane.Normal.X, -plane.Normal.Y, -plane.Normal.Z, 0, 0, 0, 0, 1);
-                        model.UpdateTransform();
+                        model.UpdateTransform(false);
                     }
+                    model.internalUpdate = false;
                 }));
 
 
@@ -105,8 +106,6 @@ namespace LabelVal.ImageViewer3D.Views
                     var model = d as CrossSectionPlaneManipulator3D;
                     model.UpdateScaling((float)model.CornerScale, (float)(double)e.NewValue, (float)model.SizeScale, model.ConstrainDimensions);
                 }));
-
-
 
         public Material CornerMaterial
         {
@@ -270,12 +269,12 @@ namespace LabelVal.ImageViewer3D.Views
         }
         private void SceneNode_OnVisibleChanged(object sender, BoolArgs e)
         {
-            if (e.Value)
-            {
-                totalTransform = currentRotation = currentTranslation = Matrix.Identity;
-                Transform = new MatrixTransform3D(totalTransform.ToMatrix3D());
-                UpdateCutPlane();
-            }
+            //if (e.Value)
+            //{
+            //    totalTransform = currentRotation = currentTranslation = Matrix.Identity;
+            //    Transform = new MatrixTransform3D(totalTransform.ToMatrix3D());
+            //    //UpdateCutPlane();
+            //}
         }
 
         private void OnEdgeMouse3DDown(object sender, RoutedEventArgs e)
@@ -471,7 +470,6 @@ namespace LabelVal.ImageViewer3D.Views
            
             var planeNormal = Vector3.TransformNormal(new Vector3(0, 0, -1), currentRotation);
             CutPlane = new Plane(-currentTranslation.TranslationVector, planeNormal);
-            //UpdateScaling((float)CornerScale, (float)EdgeThicknessScale, (float)SizeScale, ConstrainDimensions);
         }
 
         private void UpdateTransform(bool updateCutPlane = true)
