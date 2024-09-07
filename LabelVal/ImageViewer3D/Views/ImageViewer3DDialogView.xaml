@@ -91,7 +91,7 @@
 
                         </ToggleButton>
 
-                        <ToggleButton IsChecked="{Binding ShowNormals}" Width="48" Style="{StaticResource MahApps.Styles.ToggleButton}"
+                        <!--<ToggleButton IsChecked="{Binding ShowNormals}" Width="48" Style="{StaticResource MahApps.Styles.ToggleButton}"
                             Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
                             <md:ToggleButtonAssist.OnContent>
@@ -100,7 +100,7 @@
 
                             <iconPacks:Material Kind="BlackMesa"/>
 
-                        </ToggleButton>
+                        </ToggleButton>-->
                         
                         <Button Name="Reset" Click="Reset_Click" Margin="3"
                                 Style="{StaticResource MahApps.Styles.Button.Hamburger}"
@@ -111,6 +111,39 @@
 
 
                     </DockPanel>
+                    <!--<DockPanel>
+
+                        <ToggleButton IsChecked="{Binding EnablePlaneXy}" Width="48" Style="{StaticResource MahApps.Styles.ToggleButton}"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+
+                            <md:ToggleButtonAssist.OnContent>
+                                <iconPacks:Material Kind="ImageFilterBlackWhite"/>
+                            </md:ToggleButtonAssist.OnContent>
+
+                            <iconPacks:Material Kind="BlackMesa"/>
+
+                        </ToggleButton>
+                        <ToggleButton IsChecked="{Binding EnablePlaneYz}" Width="48" Style="{StaticResource MahApps.Styles.ToggleButton}"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+
+                            <md:ToggleButtonAssist.OnContent>
+                                <iconPacks:Material Kind="ImageFilterBlackWhite"/>
+                            </md:ToggleButtonAssist.OnContent>
+
+                            <iconPacks:Material Kind="BlackMesa"/>
+
+                        </ToggleButton>
+                        <ToggleButton IsChecked="{Binding EnablePlaneZx}" Width="48" Style="{StaticResource MahApps.Styles.ToggleButton}"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+
+                            <md:ToggleButtonAssist.OnContent>
+                                <iconPacks:Material Kind="ImageFilterBlackWhite"/>
+                            </md:ToggleButtonAssist.OnContent>
+
+                            <iconPacks:Material Kind="BlackMesa"/>
+
+                        </ToggleButton>
+                    </DockPanel>-->
                 </DockPanel>
             </md:Card>
 

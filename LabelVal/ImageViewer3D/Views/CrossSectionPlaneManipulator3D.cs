@@ -132,33 +132,6 @@ namespace LabelVal.ImageViewer3D.Views
                 (d as CrossSectionPlaneManipulator3D).UpdateEdgeMaterial(e.NewValue as Material);
             }));
 
-        public Color4 PlaneColor
-        {
-            get { return (Color4)GetValue(PlaneColorProperty); }
-            set { SetValue(PlaneColorProperty, value); }
-        }
-
-        public static readonly DependencyProperty PlaneColorProperty =
-            DependencyProperty.Register("PlaneColor", typeof(Color4), typeof(CrossSectionPlaneManipulator3D),
-            new PropertyMetadata(new Color4(1, 1, 1, 1), (d, e) =>
-            {
-                var manipulator = d as CrossSectionPlaneManipulator3D;
-                manipulator?.UpdatePlaneColor((Color4)e.NewValue);
-            }));
-
-        private void UpdatePlaneColor(Color4 color)
-        {
-            // Update the color of your edge and corner materials here
-            if (EdgeMaterial is PhongMaterial edgeMaterial)
-            {
-                edgeMaterial.DiffuseColor = color;
-            }
-            if (CornerMaterial is PhongMaterial cornerMaterial)
-            {
-                cornerMaterial.DiffuseColor = color;
-            }
-        }
-
         public float RotationSensitivity { set; get; } = 1;
 
         private readonly static Geometry3D NodeGeometry;
@@ -190,7 +163,6 @@ namespace LabelVal.ImageViewer3D.Views
             EdgeHGeometry.OctreeParameter.MinimumOctantSize = 0.01f;
             EdgeHGeometry.UpdateOctree();
         }
-
 
         public CrossSectionPlaneManipulator3D()
         {
@@ -229,55 +201,60 @@ namespace LabelVal.ImageViewer3D.Views
 
         private void UpdateScaling(float cornerScale, float edgeThicknessScale, float sizeScale, Vector3 constrainDim)
         {
+            if (constrainDim == Vector3.Zero)
+                return;
+
+            var edgeScale = edgeThicknessScale > 1 ? edgeThicknessScale : (float)Math.Max((constrainDim.X + constrainDim.Y) * 0.05, 1);
+            var crnScale = cornerScale > 1 ? cornerScale : (float)Math.Max((constrainDim.X + constrainDim.Y) * 0.055, 1);
             if (ConstrainAxis.HasValue && ConstrainAxis.Value.X != 0)
             {
                 edgeHandle.Instances =
                 [
-                    Matrix.Scaling(constrainDim.Y, edgeThicknessScale, edgeThicknessScale),
-                    Matrix.Scaling(constrainDim.Y, edgeThicknessScale, edgeThicknessScale) * Matrix.Translation(0 , constrainDim.Z ,0 ),
-                    Matrix.Scaling(constrainDim.Z, edgeThicknessScale, edgeThicknessScale) * Matrix.RotationAxis(new Vector3(0, 0, 1), (float)(Math.PI / 2)),
-                    Matrix.Scaling(constrainDim.Z, edgeThicknessScale, edgeThicknessScale) * Matrix.RotationAxis(new Vector3(0, 0, 1), (float)(Math.PI / 2)) * Matrix.Translation(constrainDim.Y ,0 ,0)
+                    Matrix.Scaling(constrainDim.Y, edgeScale, edgeScale),
+                    Matrix.Scaling(constrainDim.Y, edgeScale, edgeScale) * Matrix.Translation(0 , constrainDim.Z ,0 ),
+                    Matrix.Scaling(constrainDim.Z, edgeScale, edgeScale) * Matrix.RotationAxis(new Vector3(0, 0, 1), (float)(Math.PI / 2)),
+                    Matrix.Scaling(constrainDim.Z, edgeScale, edgeScale) * Matrix.RotationAxis(new Vector3(0, 0, 1), (float)(Math.PI / 2)) * Matrix.Translation(constrainDim.Y ,0 ,0)
                 ];
                 cornerHandle.Instances =
                 [
-                    Matrix.Scaling(cornerScale),
-                    Matrix.Scaling(cornerScale) * Matrix.Translation(0 ,constrainDim.Z ,0 ),
-                    Matrix.Scaling(cornerScale) * Matrix.Translation(constrainDim.Y ,constrainDim.Z ,0 ),
-                    Matrix.Scaling(cornerScale) * Matrix.Translation(constrainDim.Y ,0 ,0 ),
+                    Matrix.Scaling(crnScale),
+                    Matrix.Scaling(crnScale) * Matrix.Translation(0 ,constrainDim.Z ,0 ),
+                    Matrix.Scaling(crnScale) * Matrix.Translation(constrainDim.Y ,constrainDim.Z ,0 ),
+                    Matrix.Scaling(crnScale) * Matrix.Translation(constrainDim.Y ,0 ,0 ),
                 ];
             } 
             else if (ConstrainAxis.HasValue && ConstrainAxis.Value.Y != 0)
             {
                 edgeHandle.Instances =
                 [
-                    Matrix.Scaling(constrainDim.X, edgeThicknessScale, edgeThicknessScale),
-                    Matrix.Scaling(constrainDim.X, edgeThicknessScale, edgeThicknessScale) * Matrix.Translation(0 ,-constrainDim.Z ,0 ),
-                    Matrix.Scaling(-constrainDim.Z, edgeThicknessScale, edgeThicknessScale) * Matrix.RotationAxis(new Vector3(0, 0, 1), (float)(Math.PI / 2)),
-                    Matrix.Scaling(-constrainDim.Z, edgeThicknessScale, edgeThicknessScale) * Matrix.RotationAxis(new Vector3(0, 0, 1), (float)(Math.PI / 2)) * Matrix.Translation( constrainDim.X ,0 ,0)
+                    Matrix.Scaling(constrainDim.X, edgeScale, edgeScale),
+                    Matrix.Scaling(constrainDim.X, edgeScale, edgeScale) * Matrix.Translation(0 ,-constrainDim.Z ,0 ),
+                    Matrix.Scaling(-constrainDim.Z, edgeScale, edgeScale) * Matrix.RotationAxis(new Vector3(0, 0, 1), (float)(Math.PI / 2)),
+                    Matrix.Scaling(-constrainDim.Z, edgeScale, edgeScale) * Matrix.RotationAxis(new Vector3(0, 0, 1), (float)(Math.PI / 2)) * Matrix.Translation( constrainDim.X ,0 ,0)
                 ];
                 cornerHandle.Instances =
                 [
-                    Matrix.Scaling(cornerScale),
-                    Matrix.Scaling(cornerScale) * Matrix.Translation(0 ,-constrainDim.Z ,0 ),
-                    Matrix.Scaling(cornerScale) * Matrix.Translation(constrainDim.X ,-constrainDim.Z ,0 ),
-                    Matrix.Scaling(cornerScale) * Matrix.Translation(constrainDim.X ,0 ,0 ),
+                    Matrix.Scaling(crnScale),
+                    Matrix.Scaling(crnScale) * Matrix.Translation(0 ,-constrainDim.Z ,0 ),
+                    Matrix.Scaling(crnScale) * Matrix.Translation(constrainDim.X ,-constrainDim.Z ,0 ),
+                    Matrix.Scaling(crnScale) * Matrix.Translation(constrainDim.X ,0 ,0 ),
                 ];
             }
             else if (ConstrainAxis.HasValue && ConstrainAxis.Value.Z != 0)
             {
                 edgeHandle.Instances =
                 [
-                    Matrix.Scaling(constrainDim.Y, edgeThicknessScale, edgeThicknessScale),
-                    Matrix.Scaling(constrainDim.Y, edgeThicknessScale, edgeThicknessScale) * Matrix.Translation(0 ,constrainDim.X ,0 ),
-                    Matrix.Scaling(constrainDim.X, edgeThicknessScale, edgeThicknessScale) * Matrix.RotationAxis(new Vector3(0, 0, 1), (float)(Math.PI / 2)),
-                    Matrix.Scaling(constrainDim.X, edgeThicknessScale, edgeThicknessScale) * Matrix.RotationAxis(new Vector3(0, 0, 1), (float)(Math.PI / 2)) * Matrix.Translation(constrainDim.Y ,0 ,0)
+                    Matrix.Scaling(constrainDim.Y, edgeScale, edgeScale),
+                    Matrix.Scaling(constrainDim.Y, edgeScale, edgeScale) * Matrix.Translation(0 ,constrainDim.X ,0 ),
+                    Matrix.Scaling(constrainDim.X, edgeScale, edgeScale) * Matrix.RotationAxis(new Vector3(0, 0, 1), (float)(Math.PI / 2)),
+                    Matrix.Scaling(constrainDim.X, edgeScale, edgeScale) * Matrix.RotationAxis(new Vector3(0, 0, 1), (float)(Math.PI / 2)) * Matrix.Translation(constrainDim.Y ,0 ,0)
                 ];
                 cornerHandle.Instances =
                 [
-                    Matrix.Scaling(cornerScale),
-                    Matrix.Scaling(cornerScale) * Matrix.Translation(0 ,constrainDim.X ,0 ),
-                    Matrix.Scaling(cornerScale) * Matrix.Translation(constrainDim.Y ,constrainDim.X ,0 ),
-                    Matrix.Scaling(cornerScale) * Matrix.Translation(constrainDim.Y ,0 ,0 ),
+                    Matrix.Scaling(crnScale),
+                    Matrix.Scaling(crnScale) * Matrix.Translation(0 ,constrainDim.X ,0 ),
+                    Matrix.Scaling(crnScale) * Matrix.Translation(constrainDim.Y ,constrainDim.X ,0 ),
+                    Matrix.Scaling(crnScale) * Matrix.Translation(constrainDim.Y ,0 ,0 ),
                 ];
             }
 
@@ -491,8 +468,10 @@ namespace LabelVal.ImageViewer3D.Views
 
         private void UpdateCutPlane()
         {
+           
             var planeNormal = Vector3.TransformNormal(new Vector3(0, 0, -1), currentRotation);
             CutPlane = new Plane(-currentTranslation.TranslationVector, planeNormal);
+            //UpdateScaling((float)CornerScale, (float)EdgeThicknessScale, (float)SizeScale, ConstrainDimensions);
         }
 
         private void UpdateTransform(bool updateCutPlane = true)

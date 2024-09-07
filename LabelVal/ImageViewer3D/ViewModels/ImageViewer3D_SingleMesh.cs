@@ -80,8 +80,6 @@ namespace LabelVal.ImageViewer3D.ViewModels
 
         public ImageViewer3D_SingleMesh(byte[] image)
         {
-
-
             var format = image.GetImagePixelFormat();
             // Convert the image to a 8bpp indexed bmp, if needed. This will be used to generate the mesh
             BitmapArray = format != System.Drawing.Imaging.PixelFormat.Format8bppIndexed

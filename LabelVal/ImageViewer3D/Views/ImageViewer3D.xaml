@@ -11,9 +11,6 @@
              d:DataContext="{d:DesignInstance Type=vm:ImageViewer3D_SingleMesh}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <UserControl.Resources>
-
-    </UserControl.Resources>
 
     <DockPanel>
 
@@ -36,112 +33,66 @@
 
             <!-- Directional lights for all quadrants -->
             <hx:DirectionalLight3D Direction="{Binding Camera.LookDirection}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />
-             <!--Quadrant 1--> 
-            
             <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[1]}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />
-             <!--Quadrant 2--> 
-            
             <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[2]}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />
-            
-             <!--Quadrant 3--> 
-            
             <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[3]}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />
-            
-             <!--Quadrant 4--> 
-            
             <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[4]}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />
-            
-             <!--Quadrant 5--> 
-            
             <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[5]}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />
-            
-             <!--Quadrant 6--> 
-            
             <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[6]}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />
-            
-             <!--Quadrant 7--> 
-            
             <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[7]}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />
             
-             <!--Quadrant 8--> 
-
-             <!--Directional lights from the center of each face of the cube--> 
-            
+            <!--Directional lights from the center of each face of the cube-->
             <!--<hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[8]}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />-->
-            
-             <!--Right face--> 
-            
+            <!--Right face-->
             <!--<hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[9]}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />-->
-            
-             <!--Left face--> 
-            
+            <!--Left face-->
             <!--<hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[10]}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />-->
-            
-             <!--Top face--> 
-            
+            <!--Top face-->
             <!--<hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[11]}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />-->
-            
-             <!--Bottom face--> 
-            
+            <!--Bottom face-->
             <!--<hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[12]}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />-->
-            
-             <!--Front face--> 
-            
+            <!--Front face-->
             <!--<hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[13]}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />-->
-            
-             <!--Back face-->
+            <!--Back face-->
 
             <hx:CrossSectionMeshGeometryModel3D
                 x:Name="crossModelX"
+                IsHitTestVisible="False"
                 CuttingOperation="{Binding CuttingOperation}"
                 EnablePlane1="{Binding EnablePlaneXy}"
                 EnablePlane2="{Binding EnablePlaneYz}"
                 EnablePlane3="{Binding EnablePlaneZx}"
                 Geometry="{Binding MeshGeometry}"
-                IsHitTestVisible="True"
                 Material="{Binding MeshMaterial}"
                 Plane1="{Binding PlaneXy}"
                 Plane2="{Binding PlaneYz}"
                 Plane3="{Binding PlaneZx}"
-                Transform="{Binding MeshTransform}"
-                />
+                Transform="{Binding MeshTransform}"/>
 
             <local:CrossSectionPlaneManipulator3D
-                CornerScale="50"
                 CutPlane="{Binding PlaneXy, Mode=TwoWay}"
-                EdgeThicknessScale="25"
                 IsRendering="{Binding EnablePlaneXy}"
                 ConstrainAxis="{Binding ConstraintPlaneXy_AxisZ}"
                 ConstrainDimensions="{Binding ConstrainDimension}"
-                SizeScale="100" 
                 EdgeMaterial="{Binding PlaneMaterialXy}"
                 CornerMaterial="{Binding PlaneMaterialXy}"/>
-            <!-- Blue -->
 
             <local:CrossSectionPlaneManipulator3D
-                CornerScale="50"
                 CutPlane="{Binding PlaneYz, Mode=TwoWay}"
-                EdgeThicknessScale="25"
                 IsRendering="{Binding EnablePlaneYz}"
                 ConstrainAxis="{Binding ConstraintPlaneYz_AxisX}"
-                ConstrainDimensions="{Binding ConstrainDimension}"
-                SizeScale="100"               
+                ConstrainDimensions="{Binding ConstrainDimension}" 
                 EdgeMaterial="{Binding PlaneMaterialYz}"
                 CornerMaterial="{Binding PlaneMaterialYz}"/>
-            <!-- Red -->
 
             <local:CrossSectionPlaneManipulator3D
-                CornerScale="50"
                 CutPlane="{Binding PlaneZx, Mode=TwoWay}"
-                EdgeThicknessScale="25"
                 IsRendering="{Binding EnablePlaneZx}"
                 ConstrainAxis="{Binding ConstraintPlaneZx_AxisY}"
                 ConstrainDimensions="{Binding ConstrainDimension}"
-                SizeScale="100"              
                 EdgeMaterial="{Binding PlaneMaterialZx}"
                 CornerMaterial="{Binding PlaneMaterialZx}"/>
-            <!-- Green -->
-
+            
             <!--<hx:MeshGeometryModel3D RenderWireframe="{Binding ShowWireframe}" WireframeColor="Black" Geometry="{Binding MeshGeometry}" Material="{Binding MeshMaterial}" Transform="{Binding MeshTransform}"/>
             <hx:LineGeometryModel3D Visibility="{Binding ShowNormals, Converter={StaticResource BooleanToVisibilityConverter}}" Geometry="{Binding NormalLines}" Color="Yellow" Thickness="1.0"/>-->
             <!--<hx:PostEffectMeshBorderHighlight />-->
