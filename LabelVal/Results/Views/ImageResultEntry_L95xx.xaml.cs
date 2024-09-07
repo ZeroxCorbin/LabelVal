@@ -1,5 +1,6 @@
 ﻿using LabelVal.Dialogs;
 using LabelVal.ImageRolls.ViewModels;
+using LabelVal.ImageViewer3D.Views;
 using LabelVal.Sectors.Interfaces;
 using LabelVal.Sectors.Views;
 using MahApps.Metro.Controls.Dialogs;
@@ -223,13 +224,17 @@ public partial class ImageResultEntry_L95xx : UserControl
 
     private void L95xxStoredImage_MouseDown(object sender, MouseButtonEventArgs e)
     {
-        if (e.LeftButton == MouseButtonState.Pressed)
+        if (e.LeftButton == MouseButtonState.Pressed && !(Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)))
             _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).L95xxStoredImage, ((ViewModels.ImageResultEntry)DataContext).L95xxStoredImageOverlay);
+        else if (e.LeftButton == MouseButtonState.Pressed)
+            Show3DImage(((ViewModels.ImageResultEntry)DataContext).L95xxStoredImage.ImageBytes);
     }
     private void L95xxCurrentImage_MouseDown(object sender, MouseButtonEventArgs e)
     {
-        if (e.LeftButton == MouseButtonState.Pressed)
+        if (e.LeftButton == MouseButtonState.Pressed && !(Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)))
             _ = ShowImage(((ViewModels.ImageResultEntry)DataContext).L95xxCurrentImage, ((ViewModels.ImageResultEntry)DataContext).L95xxCurrentImageOverlay);
+        else if (e.LeftButton == MouseButtonState.Pressed)
+            Show3DImage(((ViewModels.ImageResultEntry)DataContext).L95xxCurrentImage.ImageBytes);
     }
 
     private bool ShowImage(ImageEntry image, DrawingImage overlay)
@@ -293,5 +298,21 @@ public partial class ImageResultEntry_L95xx : UserControl
             if (this.DataContext is ViewModels.ImageResultEntry ire)
                 App.Current.Dispatcher.BeginInvoke(() => ire.UpdateL95xxStoredImageOverlay());
         }
+    }
+
+    private void Show3DImage(byte[] image)
+    {
+        var img = new ImageViewer3D.ViewModels.ImageViewer3D_SingleMesh(image);
+
+        var yourParentWindow = (Main.Views.MainWindow)Window.GetWindow(this);
+
+        img.Width = yourParentWindow.ActualWidth - 100;
+        img.Height = yourParentWindow.ActualHeight - 100;
+
+        var tmp = new ImageViewer3DDialogView() { DataContext = img };
+        tmp.Unloaded += (s, e) =>
+        img.Dispose();
+        _ = DialogCoordinator.Instance.ShowMetroDialogAsync(yourParentWindow.DataContext, tmp);
+
     }
 }

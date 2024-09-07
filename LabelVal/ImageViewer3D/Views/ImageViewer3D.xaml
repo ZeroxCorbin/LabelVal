@@ -23,12 +23,24 @@
             EffectsManager="{Binding EffectsManager}"
             EnableCursorPosition="True"
             MSAA="Disable"
-            RotateAroundMouseDownPoint="False"
+            RotateAroundMouseDownPoint="True"
             SubTitle="{Binding SubTitle}"
             TextBrush="Black"
             ShowCoordinateSystem="True"
-            UseDefaultGestures="True">
-
+            UseDefaultGestures="False">
+            <local:CustomViewport3DX.InputBindings>
+                <KeyBinding Key="B" Command="hx:ViewportCommands.BackView" />
+                <KeyBinding Key="F" Command="hx:ViewportCommands.FrontView" />
+                <KeyBinding Key="U" Command="hx:ViewportCommands.TopView" />
+                <KeyBinding Key="D" Command="hx:ViewportCommands.BottomView" />
+                <KeyBinding Key="L" Command="hx:ViewportCommands.LeftView" />
+                <KeyBinding Key="R" Command="hx:ViewportCommands.RightView" />
+                <KeyBinding Command="hx:ViewportCommands.ZoomExtents" Gesture="Control+E" />
+                <MouseBinding Gesture="Shift+LeftClick" Command="hx:ViewportCommands.SetTarget"/>
+                <MouseBinding Command="hx:ViewportCommands.Pan" Gesture="LeftClick" />
+                <MouseBinding Command="hx:ViewportCommands.Zoom" Gesture="MiddleClick" />
+                <MouseBinding Command="hx:ViewportCommands.Rotate" Gesture="RightClick" />
+            </local:CustomViewport3DX.InputBindings>
             <hx:AmbientLight3D Color="{Binding AmbientLightColor}"/>
 
             <!-- Directional lights for all quadrants -->
@@ -56,7 +68,6 @@
             <!--Back face-->
 
             <hx:CrossSectionMeshGeometryModel3D
-                x:Name="crossModelX"
                 IsHitTestVisible="False"
                 CuttingOperation="{Binding CuttingOperation}"
                 EnablePlane1="{Binding EnablePlaneXy}"
@@ -96,8 +107,8 @@
                 CornerMaterial="{Binding PlaneMaterialZx}"
                 IsEnabled="{Binding EnablePlaneZx}"/>
             
-            <!--<hx:MeshGeometryModel3D RenderWireframe="{Binding ShowWireframe}" WireframeColor="Black" Geometry="{Binding MeshGeometry}" Material="{Binding MeshMaterial}" Transform="{Binding MeshTransform}"/>
-            <hx:LineGeometryModel3D Visibility="{Binding ShowNormals, Converter={StaticResource BooleanToVisibilityConverter}}" Geometry="{Binding NormalLines}" Color="Yellow" Thickness="1.0"/>-->
+            <!--<hx:MeshGeometryModel3D RenderWireframe="{Binding ShowWireframe}" WireframeColor="Black" Geometry="{Binding MeshGeometry}" Material="{Binding MeshMaterial}" Transform="{Binding MeshTransform}"/>-->
+            <hx:LineGeometryModel3D Visibility="{Binding ShowNormals, Converter={StaticResource BooleanToVisibilityConverter}}" Geometry="{Binding NormalLines}" Color="Yellow" Thickness="1.0"/>
             <!--<hx:PostEffectMeshBorderHighlight />-->
         </local:CustomViewport3DX>
     </DockPanel>

@@ -35,46 +35,122 @@
             </Grid.RowDefinitions>
 
             <StackPanel Grid.Column="0" Grid.Row="1">
-
-                <ToggleButton IsChecked="{Binding EnablePlaneXy}" Width="48" Height="48" Background="Blue">
+                
+                <TextBlock Text="Near" Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"/>
+                
+                <ToggleButton IsChecked="{Binding WhiteFront}" Width="48" Height="48">
                     <ToggleButton.Style>
                         <Style TargetType="ToggleButton" BasedOn="{StaticResource MahApps.Styles.ToggleButton.Flat}">
-                            <Setter Property="Content" Value="{iconPacks:Material Kind=AxisZArrow}"/>
+
+                            <Setter Property="Content">
+                                <Setter.Value>
+                                    <Grid Height="32" Width="32">
+                                        <DockPanel VerticalAlignment="Top" HorizontalAlignment="Left">
+                                            <iconPacks:PackIconMaterial Kind="Square" Foreground="Black" Width="22" Height="22" BorderThickness="0"/>
+                                        </DockPanel>
+                                        <DockPanel VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                                             <iconPacks:PackIconMaterial Kind="Square" Foreground="White" Width="28" Height="20" BorderThickness="0"/>
+                                        </DockPanel>
+                                    </Grid>
+                                </Setter.Value>
+                            </Setter>
+                            
+                            
+                            <Setter Property="Background" Value="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding WhiteFront}" Value="False">
+                                    <Setter Property="Content">
+                                        <Setter.Value>
+                                            <Grid Height="32" Width="32">
+                                                <DockPanel VerticalAlignment="Top" HorizontalAlignment="Left">
+                                                    <iconPacks:PackIconMaterial Kind="Square" Foreground="White" Width="20" Height="20" BorderThickness="0"/>
+                                                </DockPanel>
+                                                <DockPanel VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                                                    <iconPacks:PackIconMaterial Kind="Square" Foreground="Black" Width="30" Height="22" BorderThickness="0"/>
+                                                </DockPanel>
+                                            </Grid>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ToggleButton.Style>
+                </ToggleButton>
+                
+                <Separator/>
+                
+                <TextBlock Text="Norm." Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"/>
+
+                <ToggleButton IsChecked="{Binding ShowNormals}" Width="48" Height="48" ToolTip="Show Normals"
+                            Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                              Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+                    <ToggleButton.Style>
+                        <Style TargetType="ToggleButton" BasedOn="{StaticResource MahApps.Styles.ToggleButton.Flat}">
+                            <Setter Property="Content" Value="{iconPacks:Material Kind=TextureBox, Height=28, Width=28}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ShowNormals}" Value="False">
+                                    <Setter Property="Content" Value="{iconPacks:Material Kind=SlashForward, Height=28, Width=28}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ToggleButton.Style>
+                </ToggleButton>
+
+                <Separator/>
+
+                <TextBlock Text="Planes" Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"/>
+
+                <ToggleButton IsChecked="{Binding EnablePlaneXy}" Width="48" Height="48"
+                              Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                                Foreground="Blue">
+                    <ToggleButton.Style>
+                        <Style TargetType="ToggleButton" BasedOn="{StaticResource MahApps.Styles.ToggleButton.Flat}">
+                            <Setter Property="Content" Value="{iconPacks:Material Kind=AxisZArrow, Height=28, Width=28}"/>
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding EnablePlaneXy}" Value="False">
-                                    <Setter Property="Content" Value="{iconPacks:Material Kind=AxisZArrowLock}"/>
+                                    <Setter Property="Content" Value="{iconPacks:Material Kind=AxisZArrowLock, Height=28, Width=28}"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </ToggleButton.Style>
                 </ToggleButton>
 
-                <ToggleButton IsChecked="{Binding EnablePlaneYz}" Width="48" Height="48" Background="Red">
+                <ToggleButton IsChecked="{Binding EnablePlaneYz}" Width="48" Height="48"
+                               Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                                Foreground="Red">
                     <ToggleButton.Style>
                         <Style TargetType="ToggleButton" BasedOn="{StaticResource MahApps.Styles.ToggleButton.Flat}">
-                            <Setter Property="Content" Value="{iconPacks:Material Kind=AxisXArrow}"/>
+                            <Setter Property="Content" Value="{iconPacks:Material Kind=AxisXArrow, Height=28, Width=28}"/>
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding EnablePlaneYz}" Value="False">
-                                    <Setter Property="Content" Value="{iconPacks:Material Kind=AxisXArrowLock}"/>
+                                    <Setter Property="Content" Value="{iconPacks:Material Kind=AxisXArrowLock, Height=28, Width=28}"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </ToggleButton.Style>
                 </ToggleButton>
 
-                <ToggleButton IsChecked="{Binding EnablePlaneZx}" Width="48" Height="48" Background="Green">
+                <ToggleButton IsChecked="{Binding EnablePlaneZx}" Width="48" Height="48"
+                              Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                                Foreground="Green">
                     <ToggleButton.Style>
                         <Style TargetType="ToggleButton" BasedOn="{StaticResource MahApps.Styles.ToggleButton.Flat}">
-                            <Setter Property="Content" Value="{iconPacks:Material Kind=AxisYArrow}"/>
+                            <Setter Property="Content" Value="{iconPacks:Material Kind=AxisYArrow, Height=28, Width=28}"/>
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding EnablePlaneZx}" Value="False">
-                                    <Setter Property="Content" Value="{iconPacks:Material Kind=AxisYArrowLock}"/>
+                                    <Setter Property="Content" Value="{iconPacks:Material Kind=AxisYArrowLock, Height=28, Width=28}"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </ToggleButton.Style>
 
                 </ToggleButton>
+
+                <Button Command="{Binding ResetCuttingPlanesCommand}" Content="{iconPacks:Material Kind=Refresh, Height=28, Width=28}"
+                        Width="48" Height="48" Style="{StaticResource MahApps.Styles.Button.Flat}"
+                        Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
             </StackPanel>
 
             <DockPanel Grid.Column="1" Grid.Row="0" HorizontalAlignment="Right">
@@ -117,17 +193,6 @@
 
                         </DockPanel>
 
-                        <ToggleButton IsChecked="{Binding WhiteFront}" Width="48" Style="{StaticResource MahApps.Styles.ToggleButton}"
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
-
-                            <md:ToggleButtonAssist.OnContent>
-                                <iconPacks:Material Kind="ImageFilterBlackWhite"/>
-                            </md:ToggleButtonAssist.OnContent>
-
-                            <iconPacks:Material Kind="BlackMesa"/>
-
-                        </ToggleButton>
-
                         <ToggleButton IsChecked="{Binding ShowWireframe}" Width="48" Style="{StaticResource MahApps.Styles.ToggleButton}"
                             Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
@@ -139,16 +204,7 @@
 
                         </ToggleButton>
 
-                        <!--<ToggleButton IsChecked="{Binding ShowNormals}" Width="48" Style="{StaticResource MahApps.Styles.ToggleButton}"
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
-                            <md:ToggleButtonAssist.OnContent>
-                                <iconPacks:Material Kind="ImageFilterBlackWhite"/>
-                            </md:ToggleButtonAssist.OnContent>
-
-                            <iconPacks:Material Kind="BlackMesa"/>
-
-                        </ToggleButton>-->
 
                         <Button Name="Reset" Click="Reset_Click" Margin="3"
                                 Style="{StaticResource MahApps.Styles.Button.Hamburger}"

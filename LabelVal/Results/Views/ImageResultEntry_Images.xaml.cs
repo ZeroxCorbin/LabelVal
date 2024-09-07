@@ -47,16 +47,9 @@ public partial class ImageResultEntry_Images : UserControl
 
     private void Show3DImage(byte[] image)
     {
-
-
         var img = new ImageViewer3D.ViewModels.ImageViewer3D_SingleMesh(image);
 
         var yourParentWindow = (Main.Views.MainWindow)Window.GetWindow(this);
-
-        //var tmp = new ImageViewer3D.Views.ImageViewer3DWindow() { DataContext  = img };
-        //tmp.Closed += (s, e) => img.Dispose();
-        //tmp.Owner = yourParentWindow;
-        //tmp.Show();
 
         img.Width = yourParentWindow.ActualWidth - 100;
         img.Height = yourParentWindow.ActualHeight - 100;

@@ -467,7 +467,6 @@ namespace LabelVal.ImageViewer3D.Views
 
         private void UpdateCutPlane()
         {
-           
             var planeNormal = Vector3.TransformNormal(new Vector3(0, 0, -1), currentRotation);
             CutPlane = new Plane(-currentTranslation.TranslationVector, planeNormal);
         }

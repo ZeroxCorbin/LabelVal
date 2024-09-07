@@ -90,10 +90,10 @@ namespace LabelVal.ImageViewer3D.Mesh
             meshGeometry.Normals = meshGeometry.CalculateNormals();
 
             // Reverse the normals
-            for (int i = 0; i < meshGeometry.Normals.Count; i++)
-            {
-                meshGeometry.Normals[i] = -meshGeometry.Normals[i];
-            }
+            //for (int i = 0; i < meshGeometry.Normals.Count; i++)
+            //{
+            //    meshGeometry.Normals[i] = -meshGeometry.Normals[i];
+            //}
             return meshGeometry;
         }
 

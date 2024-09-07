@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using HelixToolkit.Wpf.SharpDX;
 using LabelVal.ImageViewer3D.Mesh;
 using LabelVal.ImageViewer3D.Processing;
@@ -124,6 +125,13 @@ namespace LabelVal.ImageViewer3D.ViewModels
             SetupLighting();
 
             BuildImageMesh();
+        }
+
+        [RelayCommand] private void ResetCuttingPlanes()
+        {
+            PlaneXy = new Plane(new Vector3(0, 0, 1), WhiteFront ?  0 : -255);
+            PlaneYz = new Plane(new Vector3(1, 0, 0), 0);
+            PlaneZx = new Plane(new Vector3(0, 1, 0), 0);
         }
 
         private void SetupLighting()
