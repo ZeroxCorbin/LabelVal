@@ -48,14 +48,40 @@ namespace LabelVal.ImageViewer3D.ViewModels
         [ObservableProperty] private System.Windows.Media.Media3D.Transform3D meshTransform;
 
         [ObservableProperty] private LineGeometry3D normalLines;
+        public MeshGeometry3D BoxModel { get; private set; }
 
         private byte[] BitmapArray { get; }
         private byte[] OriginalImageArray { get; }
 
         private byte[] SobelImageArray { get; }
 
+
+        [ObservableProperty] private Vector3? constraintPlaneYz_AxisX = new Vector3(1, 0, 0);
+        [ObservableProperty] private Vector3? constraintPlaneZx_AxisY = new Vector3(0, 1, 0);
+        [ObservableProperty] private Vector3? constraintPlaneXy_AxisZ = new Vector3(0, 0, 1);
+        [ObservableProperty] private Vector3? constrainDimension;
+
+        [ObservableProperty] private bool enablePlaneXy = true;
+        [ObservableProperty] private Plane planeXy = new Plane(new Vector3(0, 0, 1), 0);
+        [ObservableProperty] PhongMaterial planeMaterialXy = PhongMaterials.Blue;
+
+        [ObservableProperty] private bool enablePlaneYz = true;
+        [ObservableProperty] private Plane planeYz = new Plane(new Vector3(1, 0, 0), 0);
+        [ObservableProperty] PhongMaterial planeMaterialYz = PhongMaterials.Red;
+
+        [ObservableProperty] private bool enablePlaneZx = true;
+        [ObservableProperty] private Plane planeZx = new Plane(new Vector3(0, 1, 0), 0);
+        [ObservableProperty] PhongMaterial planeMaterialZx = PhongMaterials.Green;
+
+        [ObservableProperty] private int cuttingOperationIndex;
+        partial void OnCuttingOperationIndexChanged(int value) => CuttingOperation = (CuttingOperation)value;
+
+        [ObservableProperty] private CuttingOperation cuttingOperation = CuttingOperation.Intersect;
+
         public ImageViewer3D_SingleMesh(byte[] image)
         {
+
+
             var format = image.GetImagePixelFormat();
             // Convert the image to a 8bpp indexed bmp, if needed. This will be used to generate the mesh
             BitmapArray = format != System.Drawing.Imaging.PixelFormat.Format8bppIndexed
@@ -125,8 +151,6 @@ namespace LabelVal.ImageViewer3D.ViewModels
             DirectionalLightDirections.Add(new System.Windows.Media.Media3D.Vector3D(0, -1, 0)); // Bottom face
             DirectionalLightDirections.Add(new System.Windows.Media.Media3D.Vector3D(0, 0, 1));  // Front face
             DirectionalLightDirections.Add(new System.Windows.Media.Media3D.Vector3D(0, 0, -1)); // Back face
-
-
         }
         private void BuildImageMesh()
         {
@@ -139,6 +163,8 @@ namespace LabelVal.ImageViewer3D.ViewModels
             
             MeshGeometry = MeshGeneration.CreateSurfaceMeshGeometry3D(BitmapArray, WhiteFront);
             MeshTransform = new System.Windows.Media.Media3D.TranslateTransform3D(0, 0, 0);
+
+            ConstrainDimension = new Vector3(Image.PixelWidth, Image.PixelHeight, WhiteFront ? -255 : 255);
 
             // Add normal visualization
             AddNormalVisualization();
