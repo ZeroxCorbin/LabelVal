@@ -32,6 +32,8 @@
         <Image x:Key="flaw" Source="/Assets/Images/FlawTool.png" />
     </UserControl.Resources>
 
+
+    
     <DockPanel>
         <DockPanel.Background>
             <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent}" Opacity="0.5" />

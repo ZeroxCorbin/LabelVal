@@ -51,14 +51,38 @@
                 </Button>
 
                 <!--V275-->
-                <Button Command="{Binding V275ProcessCommand}" Width="48" Height="48" 
+                <Button Command="{Binding V275ProcessCommand}" Width="48" Height="48" Padding="0" Margin="0"
                         Background="{DynamicResource V275_Brush}">
 
                     <Grid>
-                        <mah:ProgressRing IsActive="{Binding IsV275Working}" Width="28" Height="28" Foreground="White"/>
-                        <Image Width="24" Height="24" Source="/Assets/Images/v275-white-outline.ico" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                    </Grid>
 
+                        <mah:Badged BadgeBackground="{DynamicResource MahApps.HamburgerMenu.Pane.Background}" BadgeMargin="3" BadgePlacementMode="BottomRight">
+                            <mah:Badged.Badge>
+                                <iconPacks:PackIconMaterial Kind="MagicStaff" Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
+                            </mah:Badged.Badge>
+
+                            <mah:Badged.Style>
+                                <Style TargetType="mah:Badged">
+
+
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+
+                                </Style>
+                            </mah:Badged.Style>
+
+                        </mah:Badged>
+                        
+                        <Grid>
+                            <mah:ProgressRing IsActive="{Binding IsV275Working}" Width="28" Height="28" Foreground="White"/>
+                            <Image Width="24" Height="24" Source="/Assets/Images/v275-white-outline.ico" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        </Grid>
+                    </Grid>
+                    
                     <Button.Style>
                         <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.MetroSquare}">
                             <Setter Property="Visibility" Value="Collapsed"/>
@@ -76,6 +100,9 @@
                                     <Setter Property="ToolTip" Value="Print the source image and read the results."/>
                                 </MultiDataTrigger>
 
+
+                                <!--Is Logged In with Simulator
+                                No Stored Results-->
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
                                         <Condition Binding="{Binding ImageResults.SelectedNode.Controller.IsSimulator}" Value="True"/>
@@ -89,6 +116,8 @@
                                     <Setter Property="ToolTip" Value="V275: Process the source image with the simulator."/>
                                 </MultiDataTrigger>
 
+                                <!--Is Logged In with Simulator
+                                Has Stored Results-->
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
                                         <Condition Binding="{Binding ImageResults.SelectedNode.Controller.IsSimulator}" Value="True"/>
