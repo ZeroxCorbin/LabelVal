@@ -6,7 +6,7 @@
 
     <converters:ShortenUIDConverter x:Key="shortenUID"/>
     <converters:ObjectIsNull x:Key="objectIsNull"/>
-    <converters:DoubleToStringConverter x:Key="doubleToString"/>
+    <converters:Double2String x:Key="double2String"/>
 
 
     <DataTemplate x:Key="imageDetailsTemplate" DataType="{x:Type image:ImageEntry}">
@@ -56,7 +56,7 @@
 
                     <DockPanel Margin="3,0" DockPanel.Dock="Top" HorizontalAlignment="Center">
 
-                        <TextBox BorderThickness="0" Text="{Binding Image.DpiX, Mode=OneWay, StringFormat=N, Converter={StaticResource doubleToString}}"
+                        <TextBox BorderThickness="0" Text="{Binding Image.DpiX, Mode=OneWay, StringFormat=N, Converter={StaticResource double2String}}"
                                  md:HintAssist.Hint="" IsHitTestVisible="False"
                                  Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                                  md:HintAssist.FloatingHintHorizontalAlignment="Center"/>
@@ -66,7 +66,7 @@
                                  md:HintAssist.FloatingHintHorizontalAlignment="Center"
                                  HorizontalContentAlignment="Center"/>
 
-                        <TextBox BorderThickness="0" Text="{Binding Image.DpiY, Mode=OneWay, StringFormat=N, Converter={StaticResource doubleToString}}"
+                        <TextBox BorderThickness="0" Text="{Binding Image.DpiY, Mode=OneWay, StringFormat=N, Converter={StaticResource double2String}}"
                                  md:HintAssist.Hint="" IsHitTestVisible="False"
                                  Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                                  md:HintAssist.FloatingHintHorizontalAlignment="Center"/>

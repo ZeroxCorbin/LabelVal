@@ -15,8 +15,7 @@
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="booltovis"/>
-        <Converters:StringToUpperSpacedConverter x:Key="stringToUpper"/>
-        <Converters:FloatStringTrimConverter x:Key="floatTrim"/>
+        <Converters:StringCamelUnspaced2StringPascalSpaced x:Key="stringToUpper"/>
     </UserControl.Resources>
 
     <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Foreground="{DynamicResource MahApps.Brushes.Text}" Margin="3" Padding="0">

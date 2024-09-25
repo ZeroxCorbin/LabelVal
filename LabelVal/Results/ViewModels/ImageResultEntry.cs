@@ -118,56 +118,56 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         SelectedDatabase = mes4.Response;
     }
 
-    public StoredImageResultGroup GetStoredImageResultGroup(string runUID) => new()
-    {
-        RunUID = runUID,
-        ImageRollUID = ImageRollUID,
-        SourceImageUID = SourceImageUID,
-        V275Result = V275ResultRow,
-        V5Result = V5ResultRow,
-        L95xxResult = L95xxResultRow,
-    };
+    //public StoredImageResultGroup GetStoredImageResultGroup(string runUID) => new()
+    //{
+    //    RunUID = runUID,
+    //    ImageRollUID = ImageRollUID,
+    //    SourceImageUID = SourceImageUID,
+    //    V275Result = V275ResultRow,
+    //    V5Result = V5ResultRow,
+    //    L95xxResult = L95xxResultRow,
+    //};
 
-    public CurrentImageResultGroup GetCurrentImageResultGroup(string runUID) => new()
-    {
-        RunUID = runUID,
-        ImageRollUID = ImageRollUID,
-        SourceImageUID = SourceImageUID,
-        V275Result = new Databases.V275Result
-        {
-            RunUID = runUID,
-            SourceImageUID = SourceImageUID,
-            ImageRollUID = ImageRollUID,
+    //public CurrentImageResultGroup GetCurrentImageResultGroup(string runUID) => new()
+    //{
+    //    RunUID = runUID,
+    //    ImageRollUID = ImageRollUID,
+    //    SourceImageUID = SourceImageUID,
+    //    V275Result = new Databases.V275Result
+    //    {
+    //        RunUID = runUID,
+    //        SourceImageUID = SourceImageUID,
+    //        ImageRollUID = ImageRollUID,
 
-            SourceImage = SourceImage?.Serialize,
-            StoredImage = V275CurrentImage?.Serialize,
+    //        SourceImage = SourceImage?.Serialize,
+    //        StoredImage = V275CurrentImage?.Serialize,
 
-            Template = V275SerializeTemplate,
-            Report = V275SerializeReport,
-        },
-        V5Result = new Databases.V5Result
-        {
-            RunUID = runUID,
-            SourceImageUID = SourceImageUID,
-            ImageRollUID = ImageRollUID,
+    //        Template = V275SerializeTemplate,
+    //        Report = V275SerializeReport,
+    //    },
+    //    V5Result = new Databases.V5Result
+    //    {
+    //        RunUID = runUID,
+    //        SourceImageUID = SourceImageUID,
+    //        ImageRollUID = ImageRollUID,
 
-            SourceImage = SourceImage?.Serialize,
-            StoredImage = V5CurrentImage?.Serialize,
+    //        SourceImage = SourceImage?.Serialize,
+    //        StoredImage = V5CurrentImage?.Serialize,
 
-            Template = V5SerializeTemplate,
-            Report = V5SerializeReport,
-        },
-        L95xxResult = new Databases.L95xxResult
-        {
-            RunUID = runUID,
-            ImageRollUID = ImageRollUID,
-            SourceImageUID = SourceImageUID,
+    //        Template = V5SerializeTemplate,
+    //        Report = V5SerializeReport,
+    //    },
+    //    L95xxResult = new Databases.L95xxResult
+    //    {
+    //        RunUID = runUID,
+    //        ImageRollUID = ImageRollUID,
+    //        SourceImageUID = SourceImageUID,
 
-            SourceImage = SourceImage?.Serialize,
-            Report = L95xxSerializeReport
-            //Report = JsonConvert.SerializeObject(L95xxStoredSectors.Select(x => new L95xxReport() { Report = ((LVS_95xx.Sectors.Sector)x).L95xxPacket, Template = (LVS_95xx.Sectors.Template)x.Template }).ToList()),
-        },
-    };
+    //        SourceImage = SourceImage?.Serialize,
+    //        Report = L95xxSerializeReport
+    //        //Report = JsonConvert.SerializeObject(L95xxStoredSectors.Select(x => new L95xxReport() { Report = ((LVS_95xx.Sectors.Sector)x).L95xxPacket, Template = (LVS_95xx.Sectors.Template)x.Template }).ToList()),
+    //    },
+    //};
 
     private void GetStored()
     {

@@ -17,14 +17,11 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="booltovis"/>
-        <converters:BytesToImageConverter x:Key="bytesToImage"/>
         <converters:ShortenUIDConverter x:Key="shortenUID"/>
-        <converters:StringToUpperSpacedConverter x:Key="stringToUpper"/>
-        <converters:FloatStringTrimConverter x:Key="floatTrim"/>
         <v275Converters:V275_OCMatchModeToString x:Key="matchModeToString"/>
 
         <converters:ObjectIsNull x:Key="objectIsNull"/>
-        <converters:EqualZeroOrNull x:Key="equalZeroOrNull"/>
+        <converters:NumberZeroOrNull x:Key="equalZeroOrNull"/>
 
         <Image x:Key="V275Icon" Source="/Assets/Images/V275WhiteIcon.ico" />
         <Image x:Key="V275Png" Source="/Assets/Images/V275WhiteIcon.png" />

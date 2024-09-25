@@ -20,7 +20,7 @@
 
             <Converters:ShortenUIDConverter x:Key="shortenUID"/>
             <Converters:ObjectIsNull x:Key="objectIsNull"/>
-            <Converters:DoubleToStringConverter x:Key="doubleToString"/>
+            <Converters:Double2String x:Key="double2String"/>
 
             <ContextMenu x:Key="cmImageModify">
                 <MenuItem Command="{Binding RedoFiducial}" Header="Registration Mark"/>

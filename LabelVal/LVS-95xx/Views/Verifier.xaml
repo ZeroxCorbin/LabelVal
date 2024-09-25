@@ -13,10 +13,6 @@
              d:DataContext="{d:DesignInstance Type=ViewModels:Verifier}"
              mc:Ignorable="d" >
 
-    <UserControl.Resources>
-        <Converters:BytesToImageConverter x:Key="bytesToImage"/>
-    </UserControl.Resources>
-
     <md:Card Margin="6" BorderThickness="1"
              BorderBrush="{DynamicResource MahApps.Brushes.Accent4}"
              Background="{DynamicResource MahApps.Brushes.ThemeBackground}"

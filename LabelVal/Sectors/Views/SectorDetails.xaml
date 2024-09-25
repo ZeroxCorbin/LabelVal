@@ -16,10 +16,9 @@
 
     <UserControl.Resources>
         <converters:ObjectIsNull x:Key="objectIsNull"/>
-        <converters:EqualZeroOrNull x:Key="equalZeroOrNull"/>
+        <converters:NumberZeroOrNull x:Key="equalZeroOrNull"/>
         <BooleanToVisibilityConverter x:Key="booltovis"/>
-        <converters:StringToUpperSpacedConverter x:Key="stringToUpper"/>
-        <converters:FloatStringTrimConverter x:Key="floatTrim"/>
+        <converters:StringCamelUnspaced2StringPascalSpaced x:Key="stringToUpper"/>
         <V275Converters:V275_OCMatchModeToString x:Key="MatchModeToString"/>
         <V275Converters:V275_GS1FormattedOutput x:Key="gs1FormattedOutput"/>
 
