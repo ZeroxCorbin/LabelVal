@@ -89,11 +89,6 @@ namespace LabelVal.ImageViewer3D.Mesh
             meshGeometry.Indices = new IntCollection(indices);
             meshGeometry.Normals = meshGeometry.CalculateNormals();
 
-            // Reverse the normals
-            //for (int i = 0; i < meshGeometry.Normals.Count; i++)
-            //{
-            //    meshGeometry.Normals[i] = -meshGeometry.Normals[i];
-            //}
             return meshGeometry;
         }
 

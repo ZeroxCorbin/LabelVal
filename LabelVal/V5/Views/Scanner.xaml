@@ -14,10 +14,8 @@
              mc:Ignorable="d" >
 
     <UserControl.Resources>
-        <converters:BytesToImageConverter x:Key="bytesToImage"/>
-        <converters:ObjectIsNull x:Key="ObjectIsNull"/>
-        <converters:IsEnumerationNullOrEmpty x:Key="IsEnumerationNullOrEmpty"/>
-        <converters:GreaterThanZero x:Key="GreaterThanZero"/>
+        <converters:Bytes2BitmapImage x:Key="bytesToImage"/>
+        <converters:NumberGreaterThenZero x:Key="greaterThanZero"/>
         <converters:IPAddressSplitConverter x:Key="ipAddressSplitConverter"/>
     </UserControl.Resources>
 
@@ -436,7 +434,7 @@
                                             <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}"/>
                                         </DataTrigger>-->
 
-                                        <DataTrigger Value="True" Binding="{Binding JobSlots.Count, Converter={StaticResource GreaterThanZero}}">
+                                        <DataTrigger Value="True" Binding="{Binding JobSlots.Count, Converter={StaticResource greaterThanZero}}">
                                             <Setter Property="Visibility" Value="Visible"/>
                                         </DataTrigger>
 

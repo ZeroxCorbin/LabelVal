@@ -1,20 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using LabelVal.Extensions;
+using System;
+using System.Numerics;
 using System.Windows.Data;
 
 namespace LabelVal.Converters;
-internal class EqualZeroOrNull : IValueConverter
+
+[ValueConversion(typeof(INumber<>), typeof(bool))]
+internal class NumberGreaterThenZero : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
     {
-        return (value == null || (int)value == 0);
+        return value == null ? false : value.IsNumber() ? value.ToDouble() > 0 : (object)false;
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
     {
         throw new NotImplementedException();
     }
+
 }

@@ -17,7 +17,7 @@
 
     <UserControl.Resources>
         <converters:ObjectIsNull x:Key="objectIsNull"/>
-        <converters:StringToUpperSpacedConverter x:Key="stringToUpper"/>
+        <converters:StringCamelUnspaced2StringPascalSpaced x:Key="stringToUpper"/>
         <v275Converters:V275_OCMatchModeToString x:Key="matchModeToString"/>
 
         <sectorConverter:ShortenString x:Key="shortenString"/>

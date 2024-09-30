@@ -22,15 +22,8 @@
                 <ResourceDictionary Source="ImageDetailsTemplate.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
-            <BooleanToVisibilityConverter x:Key="booltovis"/>
-            <Converters:BytesToImageConverter x:Key="bytesToImage"/>
-            <Converters:ShortenUIDConverter x:Key="shortenUID"/>
-            <Converters:StringToUpperSpacedConverter x:Key="stringToUpper"/>
-            <Converters:FloatStringTrimConverter x:Key="floatTrim"/>
-            <V275Converters:V275_OCMatchModeToString x:Key="matchModeToString"/>
-
             <Converters:ObjectIsNull x:Key="objectIsNull"/>
-            <Converters:EqualZeroOrNull x:Key="equalZeroOrNull"/>
+            <Converters:NumberZeroOrNull x:Key="equalZeroOrNull"/>
             
         </ResourceDictionary>
     </UserControl.Resources>

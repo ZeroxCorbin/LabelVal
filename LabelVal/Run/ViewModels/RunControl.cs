@@ -10,7 +10,7 @@ using System.Collections.ObjectModel;
 namespace LabelVal.Run.ViewModels;
 public partial class RunControl : ObservableObject
 {
-    public Controller RunController { get; } = new();
+    public Controller.Controller RunController { get; } = new();
 
     public ObservableCollection<ImageResultEntry> ImageResultsList { get; private set; }
 

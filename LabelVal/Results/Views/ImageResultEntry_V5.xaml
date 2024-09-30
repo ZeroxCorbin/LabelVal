@@ -23,8 +23,8 @@
 
             <converters:ShortenUIDConverter x:Key="shortenUID"/>
             <converters:ObjectIsNull x:Key="objectIsNull"/>
-            <converters:DoubleToStringConverter x:Key="doubleToString"/>
-            <converters:EqualZeroOrNull x:Key="equalZeroOrNull"/>
+            <converters:Double2String x:Key="double2String"/>
+            <converters:NumberZeroOrNull x:Key="equalZeroOrNull"/>
         </ResourceDictionary>
     </UserControl.Resources>
 

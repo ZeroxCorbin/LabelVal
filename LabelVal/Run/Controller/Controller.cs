@@ -9,7 +9,7 @@ using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace LabelVal.Run;
+namespace LabelVal.Run.Controller;
 
 public partial class Controller : ObservableObject
 {
@@ -18,7 +18,7 @@ public partial class Controller : ObservableObject
     [ObservableProperty] private bool updateUI = true;
     public ObservableCollection<Results.ViewModels.ImageResultEntry> ImageResultEntries { get; private set; }
 
-    private RunDatabase RunDatabase { get; set; }
+    private ResultsDatabase RunDatabase { get; set; }
     public RunEntry RunEntry { get; private set; }
     private string RunUID => RunEntry.UID;
 
@@ -65,7 +65,7 @@ public partial class Controller : ObservableObject
 
         LoopCount = loopCount;
 
-        RunEntry = new RunEntry(RunDatabase, ImageRollEntry, LoopCount);
+        RunEntry = new RunEntry();
 
         if (!OpenDatabase() || !UpdateRunEntry())
             return false;
@@ -75,7 +75,7 @@ public partial class Controller : ObservableObject
         return true;
     }
 
-    private bool OpenDatabase() => (RunDatabase = new RunDatabase().Open($"{App.RunsRoot}\\RunResults.sqlite")) != null;
+    private bool OpenDatabase() => (RunDatabase = new ResultsDatabase().Open($"{App.RunsRoot}\\RunResults.sqlite")) != null;
     private bool UpdateRunEntry() => RunDatabase.InsertOrReplace(RunEntry) > 0;
     private bool RemoveRunEntry() => RunDatabase.DeleteLedgerEntry(RunEntry.UID) > 0;
     private bool ExistRunEntry() => RunDatabase.ExistsLedgerEntry(RunEntry.UID);
@@ -150,8 +150,8 @@ public partial class Controller : ObservableObject
                     if ((v5Res = await ProcessV5(ire)) == null)
                         return State;
 
-                Results.Databases.StoredImageResultGroup stored = ire.GetStoredImageResultGroup(RunUID);
-                Results.Databases.CurrentImageResultGroup current = ire.GetCurrentImageResultGroup(RunUID);
+                Run.Databases.ResultEntry stored = new();
+                Run.Databases.ResultEntry current = new();
 
                 if (stored == null || current == null)
                 {
@@ -162,12 +162,12 @@ public partial class Controller : ObservableObject
                 current.V5Result = v5Res;
 
                 stored.Order = CurrentLabelCount;
-                stored.Loop = CurrentLoopCount;
-                stored.LoopCount = LoopCount;
+                stored.TotalLoops = CurrentLoopCount;
+                stored.CompletedLoops = LoopCount;
 
                 current.Order = CurrentLabelCount;
-                current.Loop = CurrentLoopCount;
-                current.LoopCount = LoopCount;
+                current.TotalLoops = CurrentLoopCount;
+                current.CompletedLoops = LoopCount;
 
                 RunDatabase.InsertOrReplace(stored);
                 RunDatabase.InsertOrReplace(current);

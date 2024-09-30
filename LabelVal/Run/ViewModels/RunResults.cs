@@ -24,16 +24,16 @@ public partial class RunResults : ObservableRecipient, IRecipient<PropertyChange
         if (value == null) return;
         if (SelectedRunEntry == null) return;
         //var vals = SelectedRunEntry.RunDatabase.SelectAllStoredImageResultGroups(value.UID);
-        foreach (var stored in SelectedRunEntry.RunDatabase.SelectAllStoredImageResultGroups(value.UID))
+        foreach (var stored in SelectedRunEntry.RunDatabase.SelectAllImageResultGroups(value.UID))
         {
-            LogDebug($"Loading StoredImageResultGroup {stored.RunUID} {stored.SourceImageUID}");
+            //LogDebug($"Loading StoredImageResultGroup {stored.RunUID} {stored.SourceImageUID}");
 
-            var current = SelectedRunEntry.RunDatabase.SelectCurrentImageResultGroup(stored.RunUID, stored.SourceImageUID, stored.Order);
+            //var current = SelectedRunEntry.RunDatabase.SelectCurrentImageResultGroup(stored.RunUID, stored.SourceImageUID, stored.Order);
 
-            if (current != null)
-                RunResultsList.Add(new RunResult(current, stored, value));
-            else
-                LogError($"CurrentImageResultGroup not found for {stored.RunUID} and {stored.SourceImageUID}");
+            //if (current != null)
+            //    RunResultsList.Add(new RunResult(current, stored, value));
+            //else
+            //    LogError($"CurrentImageResultGroup not found for {stored.RunUID} and {stored.SourceImageUID}");
         }
 
     }

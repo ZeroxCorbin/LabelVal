@@ -18,7 +18,7 @@
                     PreviewKeyDown="CustomDialog_PreviewKeyDown"
                     Style="{StaticResource {x:Type Dialog:BaseMetroDialog}}" Loaded="CustomDialog_Loaded">
     <Dialog:CustomDialog.Resources>
-        <converters:DoubleToStringConverter x:Key="doubleToString"/>
+        <converters:Double2String x:Key="double2String"/>
     </Dialog:CustomDialog.Resources>
 
     <Dialog:CustomDialog.DialogTop>
@@ -57,12 +57,12 @@
 
                         <DockPanel Margin="6,0">
 
-                            <TextBox Text="{Binding Image.DpiX, StringFormat=N, Converter={StaticResource doubleToString}, Mode=OneWay}"
+                            <TextBox Text="{Binding Image.DpiX, StringFormat=N, Converter={StaticResource double2String}, Mode=OneWay}"
                                  md:TextFieldAssist.SuffixText="DPI" 
                                  Margin="5,0"
                                  IsHitTestVisible="False" BorderThickness="0"/>
 
-                            <TextBox Text="{Binding Image.DpiY, StringFormat=N, Converter={StaticResource doubleToString}, Mode=OneWay}"
+                            <TextBox Text="{Binding Image.DpiY, StringFormat=N, Converter={StaticResource double2String}, Mode=OneWay}"
                                  md:TextFieldAssist.SuffixText="DPI" 
                                  Margin="5,0"
                                  IsHitTestVisible="False" BorderThickness="0"/>
