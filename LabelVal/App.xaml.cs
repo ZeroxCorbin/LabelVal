@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using ControlzEx.Theming;
 using GS1.Encoders;
-using LabelVal.Messages;
+using LabelVal.Logging.Messages;
 using LabelVal.Utilities;
 using LibImageUtilities.ImageTypes.Png;
 using LibSimpleDatabase;

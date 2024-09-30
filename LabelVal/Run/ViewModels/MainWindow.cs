@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using LabelVal.Messages;
+using LabelVal.Logging.Messages;
 using RingBuffer;
 using System.Collections.Generic;
 using System.Globalization;

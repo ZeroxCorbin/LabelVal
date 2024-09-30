@@ -1,4 +1,4 @@
-﻿using LabelVal.Messages;
+﻿using LabelVal.Logging.Messages;
 using RingBuffer;
 using System.ComponentModel;
 using System.Windows.Controls;

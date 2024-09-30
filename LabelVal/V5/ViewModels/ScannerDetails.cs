@@ -1,9 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
-using Google.Protobuf.WellKnownTypes;
-using LabelVal.ImageRolls.ViewModels;
-using LabelVal.Messages;
 
 namespace LabelVal.V5.ViewModels;
 

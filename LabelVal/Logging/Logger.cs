@@ -1,6 +1,7 @@
 ﻿using NLog;
 using System;
 using CommunityToolkit.Mvvm.Messaging;
+using LabelVal.Logging.Messages;
 
 namespace LabelVal.Logging;
 
@@ -13,41 +14,41 @@ public class Logger : ILogger
     {
         var logger = GetLogger(sourceType);
         logger.Info(message);
-        _ = Messenger.Send(new Messages.SystemMessages.StatusMessage(message, Messages.SystemMessages.StatusMessageType.Info));
+        _ = Messenger.Send(new SystemMessages.StatusMessage(message, SystemMessages.StatusMessageType.Info));
     }
 
     public void LogDebug(Type sourceType, string message)
     {
         var logger = GetLogger(sourceType);
         logger.Debug(message);
-        _ = Messenger.Send(new Messages.SystemMessages.StatusMessage(message, Messages.SystemMessages.StatusMessageType.Debug));
+        _ = Messenger.Send(new SystemMessages.StatusMessage(message, SystemMessages.StatusMessageType.Debug));
     }
 
     public void LogWarning(Type sourceType, string message)
     {
         var logger = GetLogger(sourceType);
         logger.Warn(message);
-        _ = Messenger.Send(new Messages.SystemMessages.StatusMessage(message, Messages.SystemMessages.StatusMessageType.Warning));
+        _ = Messenger.Send(new SystemMessages.StatusMessage(message, SystemMessages.StatusMessageType.Warning));
     }
 
     public void LogError(Type sourceType, string message)
     {
         var logger = GetLogger(sourceType);
         logger.Error(message);
-        _ = Messenger.Send(new Messages.SystemMessages.StatusMessage(message, Messages.SystemMessages.StatusMessageType.Error));
+        _ = Messenger.Send(new SystemMessages.StatusMessage(message, SystemMessages.StatusMessageType.Error));
     }
 
     public void LogError(Type sourceType, Exception ex)
     {
         var logger = GetLogger(sourceType);
         logger.Error(ex);
-        _ = Messenger.Send(new Messages.SystemMessages.StatusMessage(ex));
+        _ = Messenger.Send(new SystemMessages.StatusMessage(ex));
     }
 
     public void LogError(Type sourceType, string message, Exception ex)
     {
         var logger = GetLogger(sourceType);
         logger.Error(ex, message);
-        _ = Messenger.Send(new Messages.SystemMessages.StatusMessage(message, ex));
+        _ = Messenger.Send(new SystemMessages.StatusMessage(message, ex));
     }
 }

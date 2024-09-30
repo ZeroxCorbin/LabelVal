@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Messaging.Messages;
 using System;
 
-namespace LabelVal.Messages;
+namespace LabelVal.Logging.Messages;
 public class SystemMessages
 {
     public enum StatusMessageType
@@ -34,6 +34,6 @@ public class SystemMessages
     public class ControlMessage : ValueChangedMessage<string>
     {
         public object Sender { get; private set; }
-        public ControlMessage(object sender, string message) : base(message) => this.Sender = sender;
+        public ControlMessage(object sender, string message) : base(message) => Sender = sender;
     }
 }

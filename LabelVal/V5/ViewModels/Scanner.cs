@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
-using LabelVal.Messages;
+using LabelVal.Logging.Messages;
 using LabelVal.Utilities;
 using LibImageUtilities.ImageTypes.Png;
 using Newtonsoft.Json;

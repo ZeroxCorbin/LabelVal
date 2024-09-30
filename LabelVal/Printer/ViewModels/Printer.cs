@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
-using LabelVal.Messages;
 using System.Collections.ObjectModel;
 using System.Drawing.Printing;
 using System.Linq;
