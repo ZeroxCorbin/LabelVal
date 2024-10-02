@@ -1,15 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
-using ControlzEx.Theming;
 using GS1.Encoders;
 using LabelVal.Logging.Messages;
-using LabelVal.Utilities;
-using LibImageUtilities.ImageTypes.Png;
 using LibSimpleDatabase;
+using MaterialDesignThemes.Wpf;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
-using Org.BouncyCastle.Crypto.Prng;
-using SQLitePCL;
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -17,7 +13,6 @@ using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Automation;
 using System.Windows.Input;
 
 namespace LabelVal;
@@ -138,11 +133,13 @@ public partial class App : Application
         LogManager.GetCurrentClassLogger().Info($"Starting: Getting color theme.");
         string res = Settings.GetValue("App.Theme", "Dark.Steel", true);
         if (res.Contains("#"))
-            ThemeManager.Current.SyncTheme(ThemeSyncMode.SyncAll);
+            ControlzEx.Theming.ThemeManager.Current.SyncTheme(ControlzEx.Theming.ThemeSyncMode.SyncAll);
         else
-            _ = ThemeManager.Current.ChangeTheme(this, res);
+            _ = ControlzEx.Theming.ThemeManager.Current.ChangeTheme(this, res);
 
-        ThemeManager.Current.ThemeChanged += Current_ThemeChanged;
+        UpdateMaterialDesignTheme();
+
+        ControlzEx.Theming.ThemeManager.Current.ThemeChanged += Current_ThemeChanged;
 
         LogManager.GetCurrentClassLogger().Info($"Starting: Complete");
     }
@@ -153,7 +150,11 @@ public partial class App : Application
         Settings?.Dispose();
     }
 
-    private void Current_ThemeChanged(object sender, ThemeChangedEventArgs e) => Settings.SetValue("App.Theme", e.NewTheme.Name);
+    private void Current_ThemeChanged(object sender, ControlzEx.Theming.ThemeChangedEventArgs e)
+    {
+        Settings.SetValue("App.Theme", e.NewTheme.Name);
+        UpdateMaterialDesignTheme();
+    }
     public static void ChangeColorBlindTheme(bool isColorBlind)
     {
         Settings.SetValue("App.IsColorBlind", isColorBlind);
@@ -161,6 +162,19 @@ public partial class App : Application
         Current.Resources["CB_Green"] = isColorBlind
             ? Current.Resources["ColorBlindBrush1"]
             : Current.Resources["ISO_GradeA_Brush"];
+    }
+    private void UpdateMaterialDesignTheme()
+    {
+        var hel = new MaterialDesignThemes.Wpf.PaletteHelper();
+        var theme = new MaterialDesignThemes.Wpf.Theme();
+        var the = ControlzEx.Theming.ThemeManager.Current.DetectTheme();
+
+        theme.SetPrimaryColor(the.PrimaryAccentColor);
+        if (the.BaseColorScheme == ControlzEx.Theming.ThemeManager.BaseColorDark)
+            theme.SetBaseTheme(BaseTheme.Dark);
+        else
+            theme.SetBaseTheme(BaseTheme.Light);
+        hel.SetTheme(theme);
     }
 
     private void SetupExceptionHandling()
@@ -244,17 +258,17 @@ public partial class App : Application
                 foreach (string file in Directory.EnumerateFiles($"{dir}\\600"))
                 {
                     var newFileName = $"{imgDir.FullName}\\{Path.GetFileName(file)}";
-                    if(Path.GetExtension(file) is ".bmp" or ".png")
+                    if (Path.GetExtension(file) is ".bmp" or ".png")
                         File.WriteAllBytes(newFileName, LibImageUtilities.ImageTypes.Png.Utilities.GetPng(File.ReadAllBytes(file), PixelFormat.Format8bppIndexed));
                     else
                         File.Copy(file, newFileName);
                 }
             }
-                
+
             if (Directory.Exists($"{dir}\\300"))
             {
-                imgDir = Directory.CreateDirectory($"{outDir.FullName}\\{dirName}\\300"); 
-                
+                imgDir = Directory.CreateDirectory($"{outDir.FullName}\\{dirName}\\300");
+
                 foreach (string file in Directory.EnumerateFiles($"{dir}\\300"))
                 {
                     var newFileName = $"{imgDir.FullName}\\{Path.GetFileName(file)}";
