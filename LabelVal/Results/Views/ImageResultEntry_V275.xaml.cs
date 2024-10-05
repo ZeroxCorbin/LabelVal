@@ -8,7 +8,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using static V5_REST_Lib.Cameras.CameraDetails;
 
 namespace LabelVal.Results.Views;
 /// <summary>
