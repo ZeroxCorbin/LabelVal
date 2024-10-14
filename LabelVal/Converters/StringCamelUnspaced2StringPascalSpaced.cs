@@ -13,6 +13,10 @@ namespace LabelVal.Converters
                 return value;
 
             string tmp = Regex.Replace(Regex.Replace(value.ToString(), @"(\P{Ll})(\P{Ll}\p{Ll})", "$1 $2"), @"(\p{Ll})(\P{Ll})", "$1 $2");
+
+            if (string.IsNullOrEmpty(tmp))
+                return value;
+
             return $"{char.ToUpper(tmp[0])}{tmp.Substring(1)}";
         }
 
