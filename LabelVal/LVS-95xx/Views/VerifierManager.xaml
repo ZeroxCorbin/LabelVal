@@ -46,6 +46,8 @@
                             
                         </DockPanel>
 
+                        <TextBlock Text="{Binding TodaysPassword}"/>
+                        
                         <Button Click="btnCollapseContent" Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" 
                                 HorizontalAlignment="Right" Padding="8,0"

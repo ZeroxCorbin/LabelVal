@@ -12,6 +12,8 @@ public partial class VerifierManager : ObservableRecipient
     [ObservableProperty][NotifyPropertyChangedRecipients] public Verifier selectedDevice;
     partial void OnSelectedDeviceChanged(Verifier value) => App.Settings.SetValue($"L95xx_{nameof(SelectedDevice)}", SelectedDevice);
 
+    public string TodaysPassword => L95xx_Lib.Controllers.Controller.GetTodaysPassword();
+
     public VerifierManager()
     {
         Verifier sel = App.Settings.GetValue<Verifier>($"L95xx_{nameof(SelectedDevice)}");

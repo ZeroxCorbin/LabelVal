@@ -203,7 +203,21 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
                 if (Path.GetExtension(path).Contains("png", StringComparison.InvariantCultureIgnoreCase))
                     File.WriteAllBytes(path, LibImageUtilities.ImageTypes.Png.Utilities.GetPng(bmp));
                 else
-                    File.WriteAllBytes(path, LibImageUtilities.ImageTypes.Bmp.Utilities.GetBmp(bmp));
+                {
+                    var dpi = LibImageUtilities.ImageTypes.ImageUtilities.GetImageDPI(bmp);
+                    var format = new LibImageUtilities.ImageTypes.Bmp.Bmp(LibImageUtilities.ImageTypes.Bmp.Utilities.GetBmp(bmp));
+                    L95xx_Lib.Controllers.Controller.ApplyWatermark(format.ImageData);
+
+                    var img = format.RawData;
+
+
+                        LibImageUtilities.ImageTypes.ImageUtilities.SetImageDPI(img, dpi);
+                        //LibImageUtilities.ImageTypes.Bmp.Utilities.SetDPI(format.RawData, newDPI);
+
+                    
+                    File.WriteAllBytes(path, img);
+                }
+
 
                 Clipboard.SetText(path);
             }

@@ -4,11 +4,8 @@ using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.Extensions;
 using LabelVal.Sectors.Interfaces;
-using LabelVal.Utilities;
 using LibImageUtilities.ImageTypes.Png;
-using Microsoft.Extensions.FileSystemGlobbing.Internal.PathSegments;
 using Newtonsoft.Json;
-using SharpDX.Direct2D1;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,7 +13,6 @@ using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Shapes;
 
 namespace LabelVal.ImageRolls.ViewModels;
 
@@ -28,7 +24,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
         get
         {
             List<StandardsTypes> lst = Enum.GetValues(typeof(StandardsTypes)).Cast<StandardsTypes>().ToList();
-            lst.Remove(Sectors.Interfaces.StandardsTypes.Unsupported);
+            _ = lst.Remove(Sectors.Interfaces.StandardsTypes.Unsupported);
 
             List<string> names = [];
             foreach (StandardsTypes name in lst)
@@ -42,8 +38,8 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
         get
         {
             List<GS1TableNames> lst = Enum.GetValues(typeof(GS1TableNames)).Cast<GS1TableNames>().ToList();
-            lst.Remove(Sectors.Interfaces.GS1TableNames.Unsupported);
-            lst.Remove(Sectors.Interfaces.GS1TableNames.None);
+            _ = lst.Remove(Sectors.Interfaces.GS1TableNames.Unsupported);
+            _ = lst.Remove(Sectors.Interfaces.GS1TableNames.None);
 
             List<string> names = [];
             foreach (GS1TableNames name in lst)
@@ -116,7 +112,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
 
     private void RecieveAll()
     {
-        var ret1 = WeakReferenceMessenger.Default.Send(new RequestMessage<PrinterSettings>());
+        RequestMessage<PrinterSettings> ret1 = WeakReferenceMessenger.Default.Send(new RequestMessage<PrinterSettings>());
         if (ret1.HasReceivedResponse)
             SelectedPrinter = ret1.Response;
     }
@@ -201,7 +197,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
         try
         {
             Png pngImage = new(path);
-            if(!pngImage.Chunks.ContainsKey(ChunkTypes.pHYs))
+            if (!pngImage.Chunks.ContainsKey(ChunkTypes.pHYs))
                 pngImage.Chunks.Add(ChunkTypes.pHYs, new PHYS_Chunk());
 
             ImageEntry image = new(UID, pngImage.RawData, TargetDPI, TargetDPI)
@@ -284,9 +280,9 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     }
 
     public void AddImage(ImageEntry image)
-    { 
+    {
         if (image == null)
-                return;
+            return;
 
         if (!App.Current.Dispatcher.CheckAccess())
         {
@@ -309,7 +305,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     }
 
     public void AddImages(List<ImageEntry> images)
-    {  
+    {
         if (images == null || images.Count == 0)
             return;
 
@@ -319,7 +315,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
             return;
         }
 
-        foreach (var image in images)
+        foreach (ImageEntry image in images)
         {
             //Add new/update ImageEntry in database if not Rooted
             SaveImage(image);
@@ -332,14 +328,14 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
             catch (Exception ex)
             {
                 LogError($"Failed to load image: {Path}", ex);
-            }            
+            }
         }
     }
 
     public void DeleteImage(ImageEntry imageEntry)
     {
-        if(ImageRollsDatabase.DeleteImage(imageEntry.UID))
-            Images.Remove(imageEntry);
+        if (ImageRollsDatabase.DeleteImage(imageEntry.UID))
+            _ = Images.Remove(imageEntry);
         ImageCount = Images.Count;
     }
 
@@ -364,11 +360,11 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
 
     #region Logging
     private readonly Logging.Logger logger = new();
-    public void LogInfo(string message) => logger.LogInfo(this.GetType(), message);
-    public void LogDebug(string message) => logger.LogDebug(this.GetType(), message);
-    public void LogWarning(string message) => logger.LogInfo(this.GetType(), message);
-    public void LogError(string message) => logger.LogError(this.GetType(), message);
-    public void LogError(Exception ex) => logger.LogError(this.GetType(), ex);
-    public void LogError(string message, Exception ex) => logger.LogError(this.GetType(), message, ex);
+    public void LogInfo(string message) => logger.LogInfo(GetType(), message);
+    public void LogDebug(string message) => logger.LogDebug(GetType(), message);
+    public void LogWarning(string message) => logger.LogInfo(GetType(), message);
+    public void LogError(string message) => logger.LogError(GetType(), message);
+    public void LogError(Exception ex) => logger.LogError(GetType(), ex);
+    public void LogError(string message, Exception ex) => logger.LogError(GetType(), message, ex);
     #endregion
 }
