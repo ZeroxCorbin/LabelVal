@@ -2,7 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
-using L95xx_Lib.Models;
+using Lvs95xx.lib.Core.Models;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Results.Databases;
 using LabelVal.Utilities;
@@ -206,7 +206,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
                 {
                     var dpi = LibImageUtilities.ImageTypes.ImageUtilities.GetImageDPI(bmp);
                     var format = new LibImageUtilities.ImageTypes.Bmp.Bmp(LibImageUtilities.ImageTypes.Bmp.Utilities.GetBmp(bmp));
-                    L95xx_Lib.Controllers.Controller.ApplyWatermark(format.ImageData);
+                    Lvs95xx.lib.Core.Controllers.Controller.ApplyWatermark(format.ImageData);
 
                     var img = format.RawData;
 

@@ -33,5 +33,5 @@ public class V5Result : ImageResult
 
 public class L95xxResult : ImageResult 
 {
-     [SQLite.Ignore][JsonIgnore] public List<L95xx_Lib.Models.FullReport> _Report => !string.IsNullOrEmpty(Report) ? JsonConvert.DeserializeObject<List<L95xx_Lib.Models.FullReport>>(Report) : null;
+     [SQLite.Ignore][JsonIgnore] public List<Lvs95xx.lib.Core.Models.FullReport> _Report => !string.IsNullOrEmpty(Report) ? JsonConvert.DeserializeObject<List<Lvs95xx.lib.Core.Models.FullReport>>(Report) : null;
 }

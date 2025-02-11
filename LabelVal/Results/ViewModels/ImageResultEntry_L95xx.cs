@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
-using L95xx_Lib.Models;
+using Lvs95xx.lib.Core.Models;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.LVS_95xx.Sectors;
 using LabelVal.Sectors.Interfaces;

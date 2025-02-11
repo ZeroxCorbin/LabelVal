@@ -1,4 +1,4 @@
-﻿using L95xx_Lib.Models;
+﻿using Lvs95xx.lib.Core.Models;
 using LabelVal.Sectors.Interfaces;
 using System;
 using System.Collections.Generic;

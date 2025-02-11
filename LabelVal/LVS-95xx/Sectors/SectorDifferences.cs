@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using L95xx_Lib.Models;
+using Lvs95xx.lib.Core.Models;
 using LabelVal.Sectors.Interfaces;
 using Org.BouncyCastle.Crypto.Prng;
 using System;

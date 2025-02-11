@@ -26,6 +26,9 @@ public partial class ImageResultsDatabases : ObservableRecipient
 
     public ImageResultsDatabases()
     {
+        if(!Directory.Exists(FileRoot.Path))
+            FileRoot = new FileFolderEntry(App.ImageResultsDatabaseRoot);
+
         UpdateFileFolderEvents(FileRoot);
 
         UpdateImageResultsDatabasesList();

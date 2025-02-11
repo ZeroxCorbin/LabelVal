@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using L95xx_Lib.Controllers;
+using Lvs95xx.lib.Core.Controllers;
 using Newtonsoft.Json;
 using System;
 using System.Collections.ObjectModel;

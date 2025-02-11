@@ -2,7 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
-using L95xx_Lib.Models;
+using Lvs95xx.lib.Core.Models;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Logging;
 using LabelVal.LVS_95xx.ViewModels;
@@ -32,7 +32,7 @@ public partial class ImageResults : ObservableRecipient,
     IRecipient<PropertyChangedMessage<Scanner>>,
     IRecipient<PropertyChangedMessage<Verifier>>,
     IRecipient<PropertyChangedMessage<PrinterSettings>>,
-    IRecipient<PropertyChangedMessage<L95xx_Lib.Models.FullReport>>
+    IRecipient<PropertyChangedMessage<Lvs95xx.lib.Core.Models.FullReport>>
 {
     private class V275Repeat
     {
@@ -164,7 +164,7 @@ public partial class ImageResults : ObservableRecipient,
         if (img.NewData is V5_REST_Lib.Controller.FullReport v5)
             tmp.V5ProcessResults(v5);
 
-        else if (img.NewData is L95xx_Lib.Models.FullReport l95)
+        else if (img.NewData is Lvs95xx.lib.Core.Models.FullReport l95)
             tmp.L95xxProcessResults(l95);
 
         ImageResultsList.Add(tmp);
@@ -256,7 +256,7 @@ public partial class ImageResults : ObservableRecipient,
         return res;
     }
 
-    private void L95xxProcess(L95xx_Lib.Models.FullReport message)
+    private void L95xxProcess(Lvs95xx.lib.Core.Models.FullReport message)
     {
         if (message == null || message.Report == null)
             return;
@@ -518,7 +518,7 @@ public partial class ImageResults : ObservableRecipient,
         }
     }
     public void Receive(PropertyChangedMessage<Verifier> message) => SelectedVerifier = message.NewValue;
-    public void Receive(PropertyChangedMessage<L95xx_Lib.Models.FullReport> message)
+    public void Receive(PropertyChangedMessage<Lvs95xx.lib.Core.Models.FullReport> message)
     {
         if (IsL95xxSelected)
             App.Current.Dispatcher.BeginInvoke(() => L95xxProcess(message.NewValue));

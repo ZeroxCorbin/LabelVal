@@ -45,6 +45,9 @@ public partial class ImageRolls : ObservableRecipient
             message.Reply(SelectedImageRoll ?? SelectedUserImageRoll);
         });
 
+        if (!Directory.Exists(FileRoot.Path))
+            FileRoot = new FileFolderEntry(App.UserImageRollsRoot);
+
         LoadFixedImageRollsList();
 
         UpdateFileFolderEvents(FileRoot);
