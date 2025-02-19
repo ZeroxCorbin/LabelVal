@@ -112,9 +112,8 @@ public partial class App : Application
         //    return;
         //}
 
-        Settings = new SimpleDatabase().Open(Path.Combine(UserDataDirectory, SettingsDatabaseName));
-
-        if (Settings == null)
+        Settings = new SimpleDatabase();
+        if (!Settings.Open(Path.Combine(UserDataDirectory, SettingsDatabaseName)))
         {
             LogManager.GetCurrentClassLogger().Error("The ApplicationSettings database is null. Shutdown!");
             Shutdown();

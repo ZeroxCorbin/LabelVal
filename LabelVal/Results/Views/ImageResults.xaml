@@ -1,26 +1,30 @@
-﻿<UserControl x:Class="LabelVal.Results.Views.ImageResults"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:LabelVal.Results.Views"
-                xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-                xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
-             xmlns:system="clr-namespace:System;assembly=mscorlib"
-             xmlns:viewModels="clr-namespace:LabelVal.Results.ViewModels"
-                xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-             xmlns:sectors="clr-namespace:LabelVal.Sectors.Interfaces"
-                xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
-                xmlns:imageRollConverters="clr-namespace:LabelVal.ImageRolls.Converters"
-             d:DataContext="{d:DesignInstance Type=viewModels:ImageResults}"
-             mc:Ignorable="d" >
+﻿<UserControl
+    x:Class="LabelVal.Results.Views.ImageResults"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:imageRollConverters="clr-namespace:LabelVal.ImageRolls.Converters"
+    xmlns:local="clr-namespace:LabelVal.Results.Views"
+    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:sectors="clr-namespace:LabelVal.Sectors.Interfaces"
+    xmlns:system="clr-namespace:System;assembly=mscorlib"
+    xmlns:viewModels="clr-namespace:LabelVal.Results.ViewModels"
+    d:DataContext="{d:DesignInstance Type=viewModels:ImageResults}"
+    mc:Ignorable="d">
 
     <UserControl.Resources>
-        <imageRollConverters:GS1TableNamesConverter x:Key="GS1TableNamesConverter"/>
+        <imageRollConverters:GS1TableNamesConverter x:Key="GS1TableNamesConverter" />
 
-        <CollectionViewSource x:Key="cvsImageResultsList" Source="{Binding ImageResultsList}" IsLiveSortingRequested="True">
+        <CollectionViewSource
+            x:Key="cvsImageResultsList"
+            IsLiveSortingRequested="True"
+            Source="{Binding ImageResultsList}">
             <CollectionViewSource.SortDescriptions>
-                <componentmodel:SortDescription PropertyName="SourceImage.Order" Direction="Ascending" />
+                <componentmodel:SortDescription Direction="Ascending" PropertyName="SourceImage.Order" />
             </CollectionViewSource.SortDescriptions>
         </CollectionViewSource>
 
@@ -28,39 +32,53 @@
 
     <DockPanel VerticalAlignment="Top">
 
-        <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Left" Margin="3,3,0,0">
+        <DockPanel
+            Margin="3,3,0,0"
+            HorizontalAlignment="Left"
+            DockPanel.Dock="Top">
 
-            <md:Card DockPanel.Dock="Top" Height="68" Margin="3,3,0,0"
-                 Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
-                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+            <md:Card
+                Height="68"
+                Margin="3,3,0,0"
+                Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                DockPanel.Dock="Top"
+                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
                 <DockPanel>
 
-                    <DockPanel Width="48" Height="48" Margin="0,0,2,0">
-                        <iconPacks:PackIconMaterial Width="36" Height="36" Kind="ImageMultiple" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <DockPanel
+                        Width="48"
+                        Height="48"
+                        Margin="0,0,2,0">
+                        <iconPacks:PackIconMaterial
+                            Width="36"
+                            Height="36"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Kind="ImageMultiple" />
                     </DockPanel>
 
                     <Border Style="{StaticResource imageBar}" />
 
                     <DockPanel>
 
-                        <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Left">
+                        <DockPanel HorizontalAlignment="Left" DockPanel.Dock="Top">
 
-                            <DockPanel DockPanel.Dock="Top" Margin="6,0,6,3">
+                            <DockPanel Margin="6,0,6,3" DockPanel.Dock="Top">
                                 <DockPanel.Background>
                                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                        <GradientStop Color="{DynamicResource MahApps.Colors.Accent3}" Offset="0"/>
-                                        <GradientStop Color="{DynamicResource MahApps.Colors.HamburgerMenu}" Offset="1"/>
+                                        <GradientStop Offset="0" Color="{DynamicResource MahApps.Colors.Accent3}" />
+                                        <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
                                     </LinearGradientBrush>
                                 </DockPanel.Background>
 
                                 <TextBlock Text="{Binding SelectedImageRoll.Name}">
                                     <TextBlock.Style>
-                                        <Style TargetType="TextBlock" BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}">
-                                            <Setter Property="Visibility" Value="Visible"/>
+                                        <Style BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}" TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Visible" />
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding SelectedImageRoll.Name}" Value="">
-                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                    <Setter Property="Visibility" Value="Collapsed" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -69,61 +87,74 @@
 
                                 <TextBlock Text="{Binding SelectedImageRoll.SelectedGS1Table, Converter={StaticResource GS1TableNamesConverter}, StringFormat={}Table {0}}">
                                     <TextBlock.Style>
-                                        <Style TargetType="TextBlock" BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}" TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Collapsed" />
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding SelectedImageRoll.SelectedStandard}" Value="{x:Static sectors:StandardsTypes.GS1}">
-                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                    <Setter Property="Visibility" Value="Visible" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </TextBlock.Style>
                                 </TextBlock>
 
-                                <TextBlock Text="{Binding SelectedImageRoll.TargetDPI, StringFormat={} : {0} dpi}" Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"/>
+                                <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}" Text="{Binding SelectedImageRoll.TargetDPI, StringFormat={} : {0} dpi}" />
 
                             </DockPanel>
 
-                            <Border Style="{StaticResource imageBarHor}"/>
+                            <Border Style="{StaticResource imageBarHor}" />
                         </DockPanel>
 
                         <DockPanel HorizontalAlignment="Left">
 
-                            <Button Command="{Binding AddImageTopCommand}" Width="48"
-                                    ToolTip="Add Image(s)"
-                                    Content="{iconPacks:Material Kind=Image, Width=24, Height=24}"
-                                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+                            <Button
+                                Width="48"
+                                Command="{Binding AddImageTopCommand}"
+                                Content="{iconPacks:Material Kind=Image,
+                                                             Width=24,
+                                                             Height=24}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                ToolTip="Add Image(s)">
                                 <Button.Style>
-                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
+                                        <Setter Property="Visibility" Value="Collapsed" />
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding SelectedImageRoll.IsLocked}" Value="False">
-                                                <Setter Property="Visibility" Value="Visible"/>
+                                                <Setter Property="Visibility" Value="Visible" />
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
                                 </Button.Style>
                             </Button>
 
-                            <Button Command="{Binding AddV5ImageCommand}" Width="48" Height="42"
-                                    Background="{DynamicResource V5_Brush}" BorderBrush="{DynamicResource V5_Brush}"
-                                    ToolTipService.ShowOnDisabled="True"
-                                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+                            <Button
+                                Width="48"
+                                Height="42"
+                                Background="{DynamicResource V5_Brush}"
+                                BorderBrush="{DynamicResource V5_Brush}"
+                                Command="{Binding AddV5ImageCommand}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                ToolTipService.ShowOnDisabled="True">
 
-                                <Image Width="24" Height="24" Source="/Assets/Images/v5-white-outline.ico" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                  
+                                <Image
+                                    Width="24"
+                                    Height="24"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Source="/Assets/Images/v5-white-outline.ico" />
+
                                 <Button.Style>
-                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.MetroSquare}">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style BasedOn="{StaticResource MahApps.Styles.Button.MetroSquare}" TargetType="{x:Type Button}">
+                                        <Setter Property="Visibility" Value="Collapsed" />
                                         <Style.Triggers>
                                             <MultiDataTrigger>
                                                 <MultiDataTrigger.Conditions>
-                                                    <Condition Binding="{Binding SelectedScanner.Controller.IsConnected}" Value="True"/>
-                                                    <Condition Binding="{Binding SelectedScanner.Controller.IsSimulator}" Value="False"/>
-                                                    <Condition Binding="{Binding SelectedImageRoll.IsLocked}" Value="False"/>
+                                                    <Condition Binding="{Binding SelectedScanner.Controller.IsConnected}" Value="True" />
+                                                    <Condition Binding="{Binding SelectedScanner.Controller.IsSimulator}" Value="False" />
+                                                    <Condition Binding="{Binding SelectedImageRoll.IsLocked}" Value="False" />
                                                 </MultiDataTrigger.Conditions>
 
-                                                <Setter Property="Visibility" Value="Visible"/>
+                                                <Setter Property="Visibility" Value="Visible" />
                                             </MultiDataTrigger>
                                         </Style.Triggers>
                                     </Style>
@@ -132,20 +163,23 @@
 
                         </DockPanel>
 
-                        <ToggleButton IsChecked="{Binding IsL95xxSelected}" Width="48" BorderBrush="{DynamicResource L95xx_Brush}"
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+                        <ToggleButton
+                            Width="48"
+                            BorderBrush="{DynamicResource L95xx_Brush}"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                            IsChecked="{Binding IsL95xxSelected}">
                             <ToggleButton.Style>
-                                <Style TargetType="ToggleButton" BasedOn="{StaticResource MahApps.Styles.ToggleButton}">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                    <Setter Property="ToolTip" Value=""/>
-                                    <Setter Property="Background" Value="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"/>
+                                <Style BasedOn="{StaticResource MahApps.Styles.ToggleButton}" TargetType="ToggleButton">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Setter Property="ToolTip" Value="" />
+                                    <Setter Property="Background" Value="{DynamicResource MahApps.HamburgerMenu.Pane.Background}" />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding IsL95xxSelected}" Value="True">
-                                            <Setter Property="ToolTip" Value="L95xx Data is redirected here."/>
-                                            <Setter Property="Background" Value="{DynamicResource L95xx_Brush}"/>
+                                            <Setter Property="ToolTip" Value="L95xx Data is redirected here." />
+                                            <Setter Property="Background" Value="{DynamicResource L95xx_Brush}" />
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding SelectedVerifier.Controller.SerialPort.IsListening}" Value="True">
-                                            <Setter Property="Visibility" Value="Visible"/>
+                                            <Setter Property="Visibility" Value="Visible" />
                                         </DataTrigger>
                                     </Style.Triggers>
 
@@ -154,7 +188,7 @@
 
                             <md:ToggleButtonAssist.OnContent>
                                 <Grid Background="{DynamicResource L95xx_Brush}">
-                                    <Image Source="/Assets/Images/l95xx-white-outline.ico"/>
+                                    <Image Source="/Assets/Images/l95xx-white-outline.ico" />
                                 </Grid>
                             </md:ToggleButtonAssist.OnContent>
 
@@ -164,50 +198,62 @@
 
                         </ToggleButton>
 
-                        <Border Style="{StaticResource imageBar}" Margin="0,0,9,0"/>
+                        <Border Margin="0,0,9,0" Style="{StaticResource imageBar}" />
 
                         <DockPanel Margin="0,0,9,0" HorizontalAlignment="Right">
 
-                            <md:SmartHint DockPanel.Dock="Top" Margin="3,0,3,0" HorizontalAlignment="Center">
+                            <md:SmartHint
+                                Margin="3,0,3,0"
+                                HorizontalAlignment="Center"
+                                DockPanel.Dock="Top">
                                 <md:SmartHint.Style>
                                     <Style TargetType="md:SmartHint">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="400">
-                                                <Setter Property="Hint" Value="Ex. Large"/>
+                                                <Setter Property="Hint" Value="Ex. Large" />
                                             </DataTrigger>
 
                                             <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="300">
-                                                <Setter Property="Hint" Value="Large"/>
+                                                <Setter Property="Hint" Value="Large" />
                                             </DataTrigger>
 
                                             <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="200">
-                                                <Setter Property="Hint" Value="Regular"/>
+                                                <Setter Property="Hint" Value="Regular" />
                                             </DataTrigger>
 
                                             <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="100">
-                                                <Setter Property="Hint" Value="Small"/>
+                                                <Setter Property="Hint" Value="Small" />
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
                                 </md:SmartHint.Style>
                             </md:SmartHint>
 
-                            <Slider Value="{Binding ImagesMaxHeight}" Width="48" Height="24"
-                                    Minimum="100" Maximum="400" TickPlacement="BottomRight" TickFrequency="100"
-                                    mah:SliderHelper.ChangeValueBy="LargeChange" IsSnapToTickEnabled="True"
-                                    Style="{StaticResource MahApps.Styles.Slider.Flat}"/>
+                            <Slider
+                                Width="48"
+                                Height="24"
+                                mah:SliderHelper.ChangeValueBy="LargeChange"
+                                IsSnapToTickEnabled="True"
+                                Maximum="400"
+                                Minimum="100"
+                                Style="{StaticResource MahApps.Styles.Slider.Flat}"
+                                TickFrequency="100"
+                                TickPlacement="BottomRight"
+                                Value="{Binding ImagesMaxHeight}" />
 
                         </DockPanel>
 
-                        <ToggleButton IsChecked="{Binding HideErrorsWarnings}" Width="48" 
-                                      Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                      Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}">
+                        <ToggleButton
+                            Width="48"
+                            Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                            IsChecked="{Binding HideErrorsWarnings}">
                             <ToggleButton.Style>
-                                <Style TargetType="ToggleButton" BasedOn="{StaticResource MaterialDesignActionToggleButton}">
-                                    <Setter Property="ToolTip" Value="Alarms are being displayed."/>
+                                <Style BasedOn="{StaticResource MaterialDesignActionToggleButton}" TargetType="ToggleButton">
+                                    <Setter Property="ToolTip" Value="Alarms are being displayed." />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding HideErrorsWarnings}" Value="True">
-                                            <Setter Property="ToolTip" Value="Alarms are hidden."/>
+                                            <Setter Property="ToolTip" Value="Alarms are hidden." />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -215,45 +261,72 @@
 
                             <md:ToggleButtonAssist.OnContent>
 
-                                <iconPacks:PackIconFontAwesome Kind="BellSlashSolid" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <iconPacks:PackIconFontAwesome
+                                    Width="24"
+                                    Height="24"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Kind="BellSlashSolid" />
 
                             </md:ToggleButtonAssist.OnContent>
 
-                            <iconPacks:PackIconFontAwesome Kind="BellSolid" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <iconPacks:PackIconFontAwesome
+                                Width="24"
+                                Height="24"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Kind="BellSolid" />
 
                         </ToggleButton>
-                        
-                        <ToggleButton IsChecked="{Binding DualSectorColumns}" Width="48" 
-                                    md:ToggleButtonAssist.OnContent="{iconPacks:Modern Kind=ColumnTwo, Width=24, Height=24}"
-                                      Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                      Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}">
+
+                        <ToggleButton
+                            Width="48"
+                            md:ToggleButtonAssist.OnContent="{iconPacks:Modern Kind=ColumnTwo,
+                                                                               Width=24,
+                                                                               Height=24}"
+                            Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                            IsChecked="{Binding DualSectorColumns}">
                             <ToggleButton.Style>
-                                <Style TargetType="ToggleButton" BasedOn="{StaticResource MaterialDesignActionToggleButton}">
-                                    <Setter Property="ToolTip" Value="Columns based on image size."/>
+                                <Style BasedOn="{StaticResource MaterialDesignActionToggleButton}" TargetType="ToggleButton">
+                                    <Setter Property="ToolTip" Value="Columns based on image size." />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding DualSectorColumns}" Value="True">
-                                            <Setter Property="ToolTip" Value="Dual columns."/>
+                                            <Setter Property="ToolTip" Value="Dual columns." />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
                             </ToggleButton.Style>
 
                             <Grid>
-                                <iconPacks:PackIconModern Kind="ColumnTwo" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                <iconPacks:PackIconMaterial Kind="AlphaA" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Center"
-                                                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"/>
+                                <iconPacks:PackIconModern
+                                    Width="24"
+                                    Height="24"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Kind="ColumnTwo" />
+                                <iconPacks:PackIconMaterial
+                                    Width="18"
+                                    Height="18"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                                    Kind="AlphaA" />
                             </Grid>
                         </ToggleButton>
 
-                        <ToggleButton IsChecked="{Binding ShowExtendedData}" Width="48" HorizontalAlignment="Left"
-                                      Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                      Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}">
+                        <ToggleButton
+                            Width="48"
+                            HorizontalAlignment="Left"
+                            Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                            IsChecked="{Binding ShowExtendedData}">
                             <ToggleButton.Style>
-                                <Style TargetType="ToggleButton" BasedOn="{StaticResource MaterialDesignActionToggleButton}">
-                                    <Setter Property="ToolTip" Value="Hiding 2D grid data."/>
+                                <Style BasedOn="{StaticResource MaterialDesignActionToggleButton}" TargetType="ToggleButton">
+                                    <Setter Property="ToolTip" Value="Hiding 2D grid data." />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding ShowExtendedData}" Value="True">
-                                            <Setter Property="ToolTip" Value="Displaying 2D grid data."/>
+                                            <Setter Property="ToolTip" Value="Displaying 2D grid data." />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -261,12 +334,27 @@
 
                             <md:ToggleButtonAssist.OnContent>
                                 <Grid>
-                                    <iconPacks:PackIconModern Kind="Grid" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                    <iconPacks:PackIconJamIcons Kind="QrCode" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                    <iconPacks:PackIconModern
+                                        Width="24"
+                                        Height="24"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Kind="Grid" />
+                                    <iconPacks:PackIconJamIcons
+                                        Width="24"
+                                        Height="24"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Kind="QrCode" />
                                 </Grid>
                             </md:ToggleButtonAssist.OnContent>
                             <Grid>
-                                <iconPacks:PackIconJamIcons Kind="QrCode" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <iconPacks:PackIconJamIcons
+                                    Width="24"
+                                    Height="24"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Kind="QrCode" />
                             </Grid>
                         </ToggleButton>
 
@@ -276,9 +364,9 @@
 
         </DockPanel>
 
-        <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top">
+        <DockPanel VerticalAlignment="Top" DockPanel.Dock="Top">
             <Border Style="{StaticResource groupLeft}" />
-            <Border Style="{StaticResource groupBottom}"/>
+            <Border Style="{StaticResource groupBottom}" />
 
             <ScrollViewer Margin="0" Style="{StaticResource MahApps.Styles.ScrollViewer}">
 

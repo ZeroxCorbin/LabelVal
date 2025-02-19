@@ -137,7 +137,7 @@
                 </Button>
 
                 <!--V5 Process Source Image-->
-                <Button Command="{Binding V5ProcessCommand}" Width="48" Height="48" IsHitTestVisible="{Binding }"
+                <Button Command="{Binding V5ProcessCommand}" Width="48" Height="48"
                         Background="{DynamicResource V5_Brush}">
 
                     <Grid>
