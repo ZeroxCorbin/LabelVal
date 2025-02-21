@@ -1431,6 +1431,7 @@
 		<ProjectReference Include="..\..\LibImageUtilities\LibImageUtilities.csproj" />
 		<ProjectReference Include="..\..\LibStaticUtilities\LibStaticUtilities\LibStaticUtilities.csproj" />
 		<ProjectReference Include="..\..\Lvs95xx.lib.Core\Lvs95xx.lib.Core.csproj" />
+		<ProjectReference Include="..\..\RingBuffer.lib\RingBuffer.lib.csproj" />
 		<ProjectReference Include="..\..\RingBuffer\RingBuffer\RingBuffer.csproj" />
 		<ProjectReference Include="..\..\V275_REST_Lib\V275_REST_Lib.csproj" />
 		<ProjectReference Include="..\..\V5_REST_Lib\V5_REST_Lib.csproj" />

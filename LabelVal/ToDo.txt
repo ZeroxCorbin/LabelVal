@@ -32,3 +32,5 @@ Click on the (I)nfo button and see a timedate stamp of when the current.
 Popups need to be flyouts.
 
 V5 color of the bounding box.
+
+Show software version somewhere in the results.

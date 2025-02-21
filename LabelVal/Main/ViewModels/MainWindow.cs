@@ -2,7 +2,7 @@
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.Logging.Messages;
-using RingBuffer;
+using RingBuffer.lib;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;

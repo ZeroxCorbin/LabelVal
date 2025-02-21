@@ -1,5 +1,5 @@
 ﻿using LabelVal.Logging.Messages;
-using RingBuffer;
+using RingBuffer.lib;
 using System.ComponentModel;
 using System.Windows.Controls;
 using System.Windows.Data;

@@ -1,89 +1,109 @@
-﻿<mah:MetroWindow x:Class="LabelVal.Main.Views.MainWindow"
-                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-
-                 
-                    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-                    xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
-                    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"  
-                 
-                    xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
-                    Dialog:DialogParticipation.Register="{Binding}"    
-                 
-                    xmlns:local="clr-namespace:LabelVal.Main.Views"
-                    xmlns:imageRolls="clr-namespace:LabelVal.ImageRolls.Views"
-                    xmlns:printer="clr-namespace:LabelVal.Printer.Views"
-
-                    xmlns:results="clr-namespace:LabelVal.Results.Views"
-                    xmlns:run="clr-namespace:LabelVal.Run.Views"
-
-                    xmlns:viewModels="clr-namespace:LabelVal.Main.ViewModels"  
-                 
-                    xmlns:converters="clr-namespace:LabelVal.Converters"
-                    xmlns:printerConverters="clr-namespace:LabelVal.Printer.Converters"
-                    d:DataContext="{d:DesignInstance Type=viewModels:MainWindow}"
-                    mc:Ignorable="d" SaveWindowPosition="True" Width="auto" Height="auto" Closing="MetroWindow_Closing" >
+﻿<mah:MetroWindow
+    x:Class="LabelVal.Main.Views.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+    xmlns:converters="clr-namespace:LabelVal.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:imageRolls="clr-namespace:LabelVal.ImageRolls.Views"
+    xmlns:local="clr-namespace:LabelVal.Main.Views"
+    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:printer="clr-namespace:LabelVal.Printer.Views"
+    xmlns:printerConverters="clr-namespace:LabelVal.Printer.Converters"
+    xmlns:results="clr-namespace:LabelVal.Results.Views"
+    xmlns:run="clr-namespace:LabelVal.Run.Views"
+    xmlns:viewModels="clr-namespace:LabelVal.Main.ViewModels"
+    Width="auto"
+    Height="auto"
+    Dialog:DialogParticipation.Register="{Binding}"
+    d:DataContext="{d:DesignInstance Type=viewModels:MainWindow}"
+    Closing="MetroWindow_Closing"
+    SaveWindowPosition="True"
+    mc:Ignorable="d">
 
     <mah:MetroWindow.Title>
         <MultiBinding StringFormat="Label Validator : {0}">
-            <Binding Path="Version"/>
+            <Binding Path="Version" />
         </MultiBinding>
     </mah:MetroWindow.Title>
 
     <mah:MetroWindow.DataContext>
-        <viewModels:MainWindow/>
+        <viewModels:MainWindow />
     </mah:MetroWindow.DataContext>
 
     <mah:MetroWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="HamburgerMenu.xaml"/>
+                <ResourceDictionary Source="HamburgerMenu.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <converters:ObjectIsNull x:Key="objectIsNull"/>
+            <converters:ObjectIsNull x:Key="objectIsNull" />
 
-            <printerConverters:PrinterSettingThousandthsToInches x:Key="printerSettingThousandthsToInches"/>
+            <printerConverters:PrinterSettingThousandthsToInches x:Key="printerSettingThousandthsToInches" />
 
         </ResourceDictionary>
     </mah:MetroWindow.Resources>
 
     <mah:MetroWindow.RightWindowCommands>
-        <mah:WindowCommands>>
-
-            <Button BorderThickness="0" 
-                        x:Name="btnColorBlind"
-                        Click="btnColorBlind_Click">
-                <iconPacks:PackIconModern Width="20" Height="20" Kind="Eye"/>
+        <mah:WindowCommands>
+            >
+            <Button
+                x:Name="btnColorBlind"
+                BorderThickness="0"
+                Click="btnColorBlind_Click">
+                <iconPacks:PackIconModern
+                    Width="20"
+                    Height="20"
+                    Kind="Eye" />
             </Button>
 
-            <Button BorderThickness="0" 
-                        x:Name="btnLightTheme"
-                        Click="btnLightTheme_Click">
-                <iconPacks:PackIconModern Width="20" Height="20" Kind="WeatherSun"/>
+            <Button
+                x:Name="btnLightTheme"
+                BorderThickness="0"
+                Click="btnLightTheme_Click">
+                <iconPacks:PackIconModern
+                    Width="20"
+                    Height="20"
+                    Kind="WeatherSun" />
             </Button>
 
-            <Button BorderThickness="0" 
-                        x:Name="btnDarkTheme"
-                        Click="btnDarkTheme_Click">
-                <iconPacks:PackIconModern Width="20" Height="20" Kind="MoonWaningCrescent"/>
+            <Button
+                x:Name="btnDarkTheme"
+                BorderThickness="0"
+                Click="btnDarkTheme_Click">
+                <iconPacks:PackIconModern
+                    Width="20"
+                    Height="20"
+                    Kind="MoonWaningCrescent" />
             </Button>
 
-            <Button BorderThickness="0" 
-                        x:Name="btnSyncOSTheme"
-                        Click="btnSyncOSTheme_Click">
-                <iconPacks:PackIconModern Width="20" Height="20" Kind="OsWindows"/>
+            <Button
+                x:Name="btnSyncOSTheme"
+                BorderThickness="0"
+                Click="btnSyncOSTheme_Click">
+                <iconPacks:PackIconModern
+                    Width="20"
+                    Height="20"
+                    Kind="OsWindows" />
             </Button>
 
-            <ComboBox ItemsSource="{Binding Languages}" SelectedValue="{Binding SelectedLanguage}" BorderThickness="0"/>
+            <ComboBox
+                BorderThickness="0"
+                ItemsSource="{Binding Languages}"
+                SelectedValue="{Binding SelectedLanguage}" />
         </mah:WindowCommands>
     </mah:MetroWindow.RightWindowCommands>
 
     <mah:MetroWindow.LeftWindowCommands>
         <mah:WindowCommands>
             <Button Name="btnShowSettings" Click="btnShowSettings_Click">
-                <iconPacks:PackIconModern Width="20" Height="20" Kind="Cog"/>
+                <iconPacks:PackIconModern
+                    Width="20"
+                    Height="20"
+                    Kind="Cog" />
             </Button>
         </mah:WindowCommands>
     </mah:MetroWindow.LeftWindowCommands>
@@ -93,19 +113,25 @@
             <mah:Flyout x:Name="ApplicationSettings" Position="Left">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
                     </Grid.RowDefinitions>
 
                     <StackPanel>
-                        <Label Content="Application Settings" FontSize="18" HorizontalAlignment="Right"/>
-                        <local:AppSettingsControlView/>
+                        <Label
+                            HorizontalAlignment="Right"
+                            Content="Application Settings"
+                            FontSize="18" />
+                        <local:AppSettingsControlView />
                     </StackPanel>
 
                     <StackPanel Grid.Row="1">
-                        <Label/>
-                        <Label Content="Compare Settings" FontSize="18" HorizontalAlignment="Right"/>
-                        <run:CompareSettingsView/>
+                        <Label />
+                        <Label
+                            HorizontalAlignment="Right"
+                            Content="Compare Settings"
+                            FontSize="18" />
+                        <run:CompareSettingsView />
                     </StackPanel>
 
                 </Grid>
@@ -117,61 +143,80 @@
 
     <DockPanel>
 
-        <md:DrawerHost x:Name="NodeDetails" VerticalAlignment="Stretch" OpenMode="Standard">
-            <md:DrawerHost x:Name="PrinterDetails" VerticalAlignment="Stretch" OpenMode="Standard">
-                <md:DrawerHost x:Name="ScannerDetails" VerticalAlignment="Stretch" OpenMode="Standard">
+        <md:DrawerHost
+            x:Name="NodeDetails"
+            VerticalAlignment="Stretch"
+            OpenMode="Standard">
+            <md:DrawerHost
+                x:Name="PrinterDetails"
+                VerticalAlignment="Stretch"
+                OpenMode="Standard">
+                <md:DrawerHost
+                    x:Name="ScannerDetails"
+                    VerticalAlignment="Stretch"
+                    OpenMode="Standard">
                     <DockPanel>
 
                         <DockPanel DockPanel.Dock="Bottom">
                             <StatusBar>
                                 <StatusBarItem>
                                     <Button x:Name="btnShowInfo" Click="btnShowInfo_Click">
-                                        <iconPacks:PackIconMaterial Kind="ThumbUp"/>
+                                        <iconPacks:PackIconMaterial Kind="ThumbUp" />
                                     </Button>
                                 </StatusBarItem>
-                                <Popup x:Name="popupInfo" PlacementTarget="{Binding ElementName=btnShowInfo}" Placement="Top" StaysOpen="False">
-                                    <local:StatusMessageViewer DataContext="{Binding SystemMessages_InfoDebug}"/>
+                                <Popup
+                                    x:Name="popupInfo"
+                                    Placement="Top"
+                                    PlacementTarget="{Binding ElementName=btnShowInfo}"
+                                    StaysOpen="False">
+                                    <local:StatusMessageViewer DataContext="{Binding SystemMessages_InfoDebug}" />
                                 </Popup>
                                 <StatusBarItem>
                                     <Button x:Name="btnShowError" Click="btnShowError_Click">
-                                        <iconPacks:PackIconMaterial Kind="Exclamation"/>
+                                        <iconPacks:PackIconMaterial Kind="Exclamation" />
                                     </Button>
                                 </StatusBarItem>
-                                <Popup x:Name="popupError" PlacementTarget="{Binding ElementName=btnShowError}" Placement="Top" StaysOpen="False">
-                                    <local:StatusMessageViewer DataContext="{Binding SystemMessages_ErrorWarning}"/>
+                                <Popup
+                                    x:Name="popupError"
+                                    Placement="Top"
+                                    PlacementTarget="{Binding ElementName=btnShowError}"
+                                    StaysOpen="False">
+                                    <local:StatusMessageViewer DataContext="{Binding SystemMessages_ErrorWarning}" />
                                 </Popup>
                                 <StatusBarItem>
-                                    <TextBlock Text="{Binding SystemMessages_RecentError.Message}"/>
+                                    <TextBlock Text="{Binding SystemMessages_RecentError.Message}" />
                                 </StatusBarItem>
                             </StatusBar>
                         </DockPanel>
 
-                        <mah:HamburgerMenu x:Name="hamMenu" CanResizeOpenPane="False" 
-                                           DisplayMode="Inline" HamburgerVisibility="Collapsed"
-                                            ItemsSource="{Binding MenuItems}"
-                                            SelectedItem="{Binding SelectedMenuItem}"
-                                            ItemTemplateSelector="{StaticResource menuItemTemplateSelector}"
-                                            LayoutUpdated="hamMenu_LayoutUpdated"
-                                            ItemClick="hamMenu_ItemClick">
+                        <mah:HamburgerMenu
+                            x:Name="hamMenu"
+                            CanResizeOpenPane="False"
+                            DisplayMode="Inline"
+                            HamburgerVisibility="Collapsed"
+                            ItemClick="hamMenu_ItemClick"
+                            ItemTemplateSelector="{StaticResource menuItemTemplateSelector}"
+                            ItemsSource="{Binding MenuItems}"
+                            LayoutUpdated="hamMenu_LayoutUpdated"
+                            SelectedItem="{Binding SelectedMenuItem}">
 
                             <mah:HamburgerMenu.ContentTemplate>
                                 <DataTemplate>
-                                    <ContentControl Content="{Binding DataContext.SelectedMenuItem.Content, RelativeSource={RelativeSource AncestorType=mah:HamburgerMenu}}" 
-                                                    ContentTemplateSelector="{StaticResource contentItemTemplateSelector}"/>
+                                    <ContentControl Content="{Binding DataContext.SelectedMenuItem.Content, RelativeSource={RelativeSource AncestorType=mah:HamburgerMenu}}" ContentTemplateSelector="{StaticResource contentItemTemplateSelector}" />
                                 </DataTemplate>
                             </mah:HamburgerMenu.ContentTemplate>
                         </mah:HamburgerMenu>
 
-                        <DockPanel >
+                        <DockPanel>
 
-                            <imageRolls:ImageRolls DataContext="{Binding ImageRolls}"/>
+                            <imageRolls:ImageRolls DataContext="{Binding ImageRolls}" />
 
                             <results:ImageResults DataContext="{Binding ImageResults}">
                                 <results:ImageResults.Style>
                                     <Style TargetType="results:ImageResults">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding SelectedImageRoll, Converter={StaticResource objectIsNull}}" Value="True">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Setter Property="Visibility" Value="Collapsed" />
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>

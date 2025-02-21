@@ -8,14 +8,11 @@
     xmlns:local="clr-namespace:LabelVal.Main.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:LabelVal.Main.ViewModels"
-    d:DataContext="{d:DesignInstance viewModels:SystemMessagesDataContext}"
     mc:Ignorable="d">
 
     <UserControl.Resources />
 
     <DockPanel>
-        <!--<ScrollViewer VerticalScrollBarVisibility="Auto">-->
-
 
         <DataGrid
             x:Name="dataGrid"
@@ -43,6 +40,5 @@
                     HeaderStyle="{StaticResource MahApps.Styles.DataGridColumnHeader.Azure}" />
             </DataGrid.Columns>
         </DataGrid>
-        <!--</ScrollViewer>-->
     </DockPanel>
 </UserControl>
