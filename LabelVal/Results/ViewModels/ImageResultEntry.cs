@@ -311,6 +311,49 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
 
             L95xxGetStored();
         }
+        else if (device == "L95xx-All")
+        {
+
+            if (L95xxCurrentSectors.Count == 0)
+            {
+                LogWarning("There are no sectors to store.");
+                return;
+            }
+            //Does the selected sector exist in the Stored sectors list?
+            //If so, prompt to overwrite or cancel.
+
+            //Sectors.Interfaces.ISector old = L95xxStoredSectors.FirstOrDefault(x => x.Template.Name == L95xxCurrentSectorSelected.Template.Name);
+            //if (old != null)
+            //{
+            //    if (await OkCancelDialog("Overwrite Stored Sector", $"The sector already exists.\r\nAre you sure you want to overwrite the stored sector?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
+            //        return;
+            //}
+
+            //Save the list to the database.
+            List<FullReport> temp = [];
+            if (L95xxResultRow != null)
+                temp = L95xxResultRow._Report;
+
+            foreach (var sector in L95xxCurrentSectors)
+            {
+                temp.Add(((LVS_95xx.Sectors.Sector)sector).L95xxFullReport);
+
+                _ = SelectedDatabase.InsertOrReplace_L95xxResult(new Databases.L95xxResult
+                {
+                    ImageRollUID = ImageRollUID,
+                    SourceImageUID = SourceImageUID,
+
+                    SourceImage = JsonConvert.SerializeObject(SourceImage),
+                    StoredImage = JsonConvert.SerializeObject(L95xxCurrentImage),
+
+                    Report = JsonConvert.SerializeObject(temp),
+                });
+            }
+
+            ClearRead(device);
+
+            L95xxGetStored();
+        }
     }
     [RelayCommand]
     private async Task ClearStored(string device)
@@ -370,6 +413,14 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
                 L95xxCurrentImage = null;
                 L95xxCurrentImageOverlay = null;
             }
+        }
+        else if (device == "L95xx-All")
+        {
+            L95xxCurrentReport = null;
+
+            L95xxCurrentSectors.Clear();
+            L95xxCurrentImage = null;
+            L95xxCurrentImageOverlay = null;
         }
     }
 

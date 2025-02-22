@@ -359,6 +359,10 @@
                         </ToggleButton>
 
                     </DockPanel>
+
+                    <DockPanel>
+                        <Button Command="{Binding StoreAllCurrentResultsCommand}" />
+                    </DockPanel>
                 </DockPanel>
             </md:Card>
 

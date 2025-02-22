@@ -51,6 +51,11 @@ public partial class ImageEntry : ObservableObject
         }
     }
 
+    public byte[] BitmapBytes
+    {
+        get => LibImageUtilities.ImageTypes.Bmp.Utilities.GetBmp(OriginalImage, (int)Image.DpiX);
+    }
+
     [ObservableProperty][property: JsonProperty] private int targetDpiWidth;
     [ObservableProperty][property: JsonProperty] private int targetDpiHeight;
 

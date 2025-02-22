@@ -2,12 +2,9 @@
 using CommunityToolkit.Mvvm.Input;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Results.Databases;
-using LabelVal.Utilities;
-using LibImageUtilities.ImageTypes.Png;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace LabelVal.Results.ViewModels;
@@ -45,14 +42,14 @@ public partial class ImageResultEntry
     [RelayCommand]
     public void V5Process(string imageType)
     {
-        var simAddSec = ImageResults.SelectedScanner.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && !string.IsNullOrEmpty(V5ResultRow?.Template);
-        var simDetSec = ImageResults.SelectedScanner.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && string.IsNullOrEmpty(V5ResultRow?.Template);
-        var camAddSec = !ImageResults.SelectedScanner.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && !string.IsNullOrEmpty(V5ResultRow?.Template);
-        var camDetSec = !ImageResults.SelectedScanner.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && string.IsNullOrEmpty(V5ResultRow?.Template);
+        bool simAddSec = ImageResults.SelectedScanner.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && !string.IsNullOrEmpty(V5ResultRow?.Template);
+        bool simDetSec = ImageResults.SelectedScanner.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && string.IsNullOrEmpty(V5ResultRow?.Template);
+        bool camAddSec = !ImageResults.SelectedScanner.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && !string.IsNullOrEmpty(V5ResultRow?.Template);
+        bool camDetSec = !ImageResults.SelectedScanner.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && string.IsNullOrEmpty(V5ResultRow?.Template);
 
         BringIntoView?.Invoke();
 
-        var lab = new V5_REST_Lib.Controller.Label
+        V5_REST_Lib.Controller.Label lab = new()
         {
             DetectSectors = simDetSec || camDetSec,
             Config = simAddSec || camAddSec ? V5ResultRow._Config : null,
@@ -60,10 +57,10 @@ public partial class ImageResultEntry
         };
 
         if (imageType == "source")
-                lab.Image = SourceImage.ImageBytes;
-            else if (imageType == "v5Stored")
-                lab.Image = V5ResultRow.Stored.ImageBytes;
-
+            lab.Image = SourceImage.ImageBytes;
+        else if (imageType == "v5Stored")
+            lab.Image = V5ResultRow.Stored.ImageBytes;
+            
         IsV5Working = true;
         IsV5Faulted = false;
 
@@ -93,7 +90,7 @@ public partial class ImageResultEntry
 
         List<Sectors.Interfaces.ISector> tempSectors = [];
         foreach (V5_REST_Lib.Models.ResultsAlt.Decodedata rSec in V5CurrentReport._event.data.decodeData)
-            tempSectors.Add(new V5.Sectors.Sector(rSec, V5CurrentTemplate.response.data.job.toolList[rSec.toolSlot - 1], $"DecodeTool{rSec.toolSlot.ToString()}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
+            tempSectors.Add(new V5.Sectors.Sector(rSec, V5CurrentTemplate.response.data.job.toolList[rSec.toolSlot - 1], $"DecodeTool{rSec.toolSlot}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
 
         if (tempSectors.Count > 0)
         {
@@ -141,10 +138,10 @@ public partial class ImageResultEntry
         {
             if (V5ResultRow._Report._event.data.decodeData != null)
                 foreach (V5_REST_Lib.Models.ResultsAlt.Decodedata rSec in V5ResultRow._Report._event.data.decodeData)
-                    tempSectors.Add(new V5.Sectors.Sector(rSec, V5ResultRow._Config.response.data.job.toolList[rSec.toolSlot - 1], $"DecodeTool{rSec.toolSlot.ToString()}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
+                    tempSectors.Add(new V5.Sectors.Sector(rSec, V5ResultRow._Config.response.data.job.toolList[rSec.toolSlot - 1], $"DecodeTool{rSec.toolSlot}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
             else
-                foreach (var rSec in V5ResultRow._ReportOld._event.data.cycleConfig.qualifiedResults)
-                    tempSectors.Add(new V5.Sectors.Sector(JsonConvert.DeserializeObject<V5_REST_Lib.Models.ResultsAlt.Decodedata>(JsonConvert.SerializeObject(rSec)), V5ResultRow._Config.response.data.job.toolList[rSec.toolSlot - 1], $"DecodeTool{rSec.toolSlot.ToString()}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
+                foreach (V5_REST_Lib.Models.Results.Results_QualifiedResult rSec in V5ResultRow._ReportOld._event.data.cycleConfig.qualifiedResults)
+                    tempSectors.Add(new V5.Sectors.Sector(JsonConvert.DeserializeObject<V5_REST_Lib.Models.ResultsAlt.Decodedata>(JsonConvert.SerializeObject(rSec)), V5ResultRow._Config.response.data.job.toolList[rSec.toolSlot - 1], $"DecodeTool{rSec.toolSlot}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
         }
 
         if (tempSectors.Count > 0)

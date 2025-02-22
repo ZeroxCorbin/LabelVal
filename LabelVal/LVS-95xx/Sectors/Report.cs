@@ -1,5 +1,5 @@
-﻿using Lvs95xx.lib.Core.Models;
-using LabelVal.Sectors.Interfaces;
+﻿using LabelVal.Sectors.Interfaces;
+using Lvs95xx.lib.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -56,7 +56,11 @@ public class Report : IReport
         AngleDeg = 0;
 
         string sym = GetParameter("Symbology", report.ReportData);
+        if (sym == null)
+            return;
+
         SymbolType = GetSymbolType(sym);
+
         XDimension = Type == "verify2D"
             ? (double)ParseFloat(GetParameter("Cell size", report.ReportData))
             : sym != "PDF417" ? (double)ParseFloat(GetParameter("Xdim", report.ReportData)) : (double)ParseFloat(GetParameter("XDim", report.ReportData));
@@ -72,12 +76,12 @@ public class Report : IReport
         Standard = GetStandard(GetParameter("Application standard", report.ReportData));
         GS1Table = GetGS1Table(GetParameter("GS1 Table", report.ReportData));
 
-        var res = GetParameter("GS1 Data", report.ReportData, true);
+        string res = GetParameter("GS1 Data", report.ReportData, true);
         if (res != null)
         {
-            var err = GetParameter("GS1 Data Structure", report.ReportData);
+            string err = GetParameter("GS1 Data Structure", report.ReportData);
 
-            List<string> list = new();
+            List<string> list = [];
             string[] spl = res.Split('(', StringSplitOptions.RemoveEmptyEntries);
             foreach (string str in spl)
                 list.Add($"({str}");
@@ -139,7 +143,7 @@ public class Report : IReport
     }
     private static Report_InspectSector_Common.Grade GetGrade(string data)
     {
-       data = data.Replace("DPM", "");
+        data = data.Replace("DPM", "");
         float tmp = ParseFloat(data);
 
         return new Report_InspectSector_Common.Grade()

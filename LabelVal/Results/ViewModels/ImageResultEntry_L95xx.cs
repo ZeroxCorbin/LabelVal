@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Media;
+using CommunityToolkit.Mvvm.Input;
 
 namespace LabelVal.Results.ViewModels;
 public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullReport>>
@@ -56,6 +57,38 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
     {
         if (IsL95xxSelected)
             App.Current.Dispatcher.BeginInvoke(() => L95xxProcessResults(message.NewValue));
+    }
+
+    [RelayCommand]
+    private void L95xxProcess(string imageType)
+    {
+        var lab = new Lvs95xx.lib.Core.Controllers.Label
+        {
+            Config = new Lvs95xx.lib.Core.Controllers.Config()
+            {
+                ApplicationStandard = GetL95xxStandard(ImageResults.SelectedImageRoll.SelectedStandard),
+                Table = GetL95xxTable(ImageResults.SelectedImageRoll.SelectedGS1Table),
+            },
+            RepeatAvailable = L95xxProcessResults,
+        };
+
+        if (imageType == "source")
+            lab.Image = SourceImage.BitmapBytes;
+        else if (imageType == "95xxStored")
+            lab.Image = L95xxResultRow.Stored.BitmapBytes;
+
+        _ = ImageResults.SelectedVerifier.Controller.Process(lab);
+    }
+
+    private string GetL95xxStandard(StandardsTypes type)
+    {
+        return Lvs95xx.lib.Core.Controllers.Config.ApplicationStandards.FirstOrDefault(x => x.Key.Contains(type.ToString())).Key;
+
+    }
+
+    private string GetL95xxTable(GS1TableNames table)
+    {
+        return Lvs95xx.lib.Core.Controllers.Config.Tables.FirstOrDefault(x => x.Key.Contains(table.ToString().Trim('_'))).Key;
     }
 
     public static void SortObservableCollectionByList(List<ISector> list, ObservableCollection<ISector> observableCollection)

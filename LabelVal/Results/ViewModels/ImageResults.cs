@@ -243,6 +243,20 @@ public partial class ImageResults : ObservableRecipient,
                 InsertImageAtOrder(newImages, ImageResultsList.Count + 1);
     }
 
+    [RelayCommand]
+    private void StoreAllCurrentResults()
+    {
+        foreach (ImageResultEntry img in ImageResultsList)
+        {
+            if (img.L95xxCurrentSectors.Count != 0)
+                img.StoreCommand.Execute("L95xx-All");
+                    
+                
+
+
+        }
+    }
+
     private async Task<V5_REST_Lib.Controller.FullReport> ProcessV5()
     {
         var res = await SelectedScanner.Controller.Trigger_Wait_Return(true);
