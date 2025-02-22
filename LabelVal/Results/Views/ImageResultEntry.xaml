@@ -60,8 +60,8 @@
 
                 <!--  Only Print Source Image  -->
                 <Button
-                    d:Visibility="Visible"
                     Width="48"
+                    d:Visibility="Visible"
                     Command="{Binding V275ProcessCommand}"
                     CommandParameter="print"
                     Style="{StaticResource MahApps.Styles.Button.Hamburger}"
@@ -85,11 +85,11 @@
 
                 <!--  V275  -->
                 <Button
-                    d:Visibility="Visible"
                     Width="48"
                     Height="48"
                     Margin="0"
                     Padding="0"
+                    d:Visibility="Visible"
                     Background="{DynamicResource V275_Brush}"
                     Command="{Binding V275ProcessCommand}">
 
@@ -193,9 +193,9 @@
 
                 <!--  V5 Process Source Image  -->
                 <Button
-                    d:Visibility="Visible"
                     Width="48"
                     Height="48"
+                    d:Visibility="Visible"
                     Background="{DynamicResource V5_Brush}"
                     Command="{Binding V5ProcessCommand}">
 
@@ -261,8 +261,8 @@
 
                 <!--  L95xx Select  -->
                 <ToggleButton
-                    d:Visibility="Visible"
                     Width="48"
+                    d:Visibility="Visible"
                     BorderBrush="{DynamicResource L95xx_Brush}"
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                     IsChecked="{Binding IsL95xxSelected}">
@@ -295,18 +295,19 @@
 
                 <!--  L95xx Process Image  -->
                 <Button
-                    d:Visibility="Visible"
                     Width="48"
                     Height="48"
+                    d:Visibility="Visible"
                     Background="{DynamicResource L95xx_Brush}"
-                    Command="{Binding L95xxProcessCommand}">
+                    Command="{Binding L95xxProcessCommand}"
+                    IsEnabled="{Binding IsL95xxWorking, Converter={StaticResource InvertBool}}">
 
                     <Grid>
                         <mah:ProgressRing
                             Width="28"
                             Height="28"
                             Foreground="White"
-                            IsActive="{Binding IsV5Working}" />
+                            IsActive="{Binding IsL95xxWorking}" />
                         <Image
                             Width="24"
                             Height="24"
@@ -358,7 +359,7 @@
                         </Style>
                     </Button.Style>
                 </Button>
-                
+
             </DockPanel>
         </md:Card>
 
@@ -373,9 +374,9 @@
             <DockPanel>
 
                 <Button
-                    d:Visibility="Visible"
                     x:Name="btnMove"
                     Height="48"
+                    d:Visibility="Visible"
                     Click="btnMove_Click"
                     Content="{iconPacks:Material Kind=ArrowUpDownBold,
                                                  Width=24,
@@ -405,9 +406,9 @@
                         <StackPanel>
 
                             <Button
-                                d:Visibility="Visible"
                                 Margin="0,3"
                                 VerticalAlignment="Top"
+                                d:Visibility="Visible"
                                 BorderThickness="0"
                                 Click="btnMoveImage_Click"
                                 Content="{iconPacks:Material Kind=ArrowCollapseUp}"
@@ -429,9 +430,9 @@
                             </Button>
 
                             <Button
-                                d:Visibility="Visible"
                                 Margin="0,3"
                                 VerticalAlignment="Top"
+                                d:Visibility="Visible"
                                 BorderThickness="0"
                                 Click="btnMoveImage_Click"
                                 Content="{iconPacks:Material Kind=ArrowUp}"
@@ -455,9 +456,9 @@
                             <Separator />
 
                             <Button
-                                d:Visibility="Visible"
                                 Margin="0,3"
                                 VerticalAlignment="Top"
+                                d:Visibility="Visible"
                                 BorderThickness="0"
                                 Click="btnMoveImage_Click"
                                 Content="{iconPacks:Material Kind=ArrowDown}"
@@ -475,9 +476,9 @@
                             </Button>
 
                             <Button
-                                d:Visibility="Visible"
                                 Margin="0,3"
                                 VerticalAlignment="Top"
+                                d:Visibility="Visible"
                                 BorderThickness="0"
                                 Click="btnMoveImage_Click"
                                 Content="{iconPacks:Material Kind=ArrowCollapseDown}"
@@ -500,8 +501,8 @@
                 </Popup>
 
                 <Button
-                    d:Visibility="Visible"
                     Height="48"
+                    d:Visibility="Visible"
                     Click="btnShowDetailsToggle"
                     DockPanel.Dock="Top"
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
@@ -523,9 +524,9 @@
                 </Button>
 
                 <Button
-                    d:Visibility="Visible"
                     Height="48"
                     VerticalAlignment="Bottom"
+                    d:Visibility="Visible"
                     Command="{Binding ImageResults.DeleteImageCommand}"
                     CommandParameter="{Binding}"
                     Content="{iconPacks:Material Kind=Delete,

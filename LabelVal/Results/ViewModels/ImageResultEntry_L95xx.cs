@@ -77,6 +77,9 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
         else if (imageType == "95xxStored")
             lab.Image = L95xxResultRow.Stored.BitmapBytes;
 
+        IsL95xxWorking = true;
+        IsL95xxFaulted = false;
+
         _ = ImageResults.SelectedVerifier.Controller.Process(lab);
     }
 
@@ -138,11 +141,11 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
 
     public void L95xxProcessResults(FullReport message)
     {
-        if (message == null || message.Report == null)
+        if (message == null || message.Report == null || message.Report.OverallGrade.StartsWith("Bar"))
+        {
+            IsL95xxFaulted = true;
             return;
-
-        if (message.Report.OverallGrade.StartsWith("Bar"))
-            return;
+        }
 
         var center = new System.Drawing.Point(message.Report.X1 + (message.Report.SizeX / 2), message.Report.Y1 + (message.Report.SizeY / 2));
 
@@ -174,7 +177,9 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
 
 
         L95xxCurrentImage = new ImageEntry(ImageRollUID, LibImageUtilities.ImageTypes.Png.Utilities.GetPng(message.Report.Thumbnail), 600);
-        UpdateL95xxCurrentImageOverlay();
+        UpdateL95xxCurrentImageOverlay();  
+        
+        IsL95xxWorking = false;
     }
     public void UpdateL95xxStoredImageOverlay() => L95xxStoredImageOverlay = CreateSectorsImageOverlay(L95xxStoredImage, L95xxStoredSectors);
     public void UpdateL95xxCurrentImageOverlay() => L95xxCurrentImageOverlay = CreateSectorsImageOverlay(L95xxCurrentImage, L95xxCurrentSectors);
