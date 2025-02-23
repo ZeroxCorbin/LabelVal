@@ -2,6 +2,7 @@
 using GS1.Encoders;
 using LabelVal.Logging.Messages;
 using LibSimpleDatabase;
+using Lvs95xx.Producer.Watchers;
 using MaterialDesignThemes.Wpf;
 using NLog;
 using NLog.Config;
@@ -26,6 +27,8 @@ public partial class App : Application
     public static SimpleDatabase Settings { get; private set; }
 
     public static GS1Encoder GS1Encoder = new GS1Encoder();
+
+    public static ActiveWatchers Watchers { get; } = new ActiveWatchers();
 
 #if DEBUG
     public static string WorkingDir => Directory.GetCurrentDirectory();

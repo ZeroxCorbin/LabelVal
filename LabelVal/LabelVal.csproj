@@ -1,19 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  
 	<PropertyGroup>
-		<TargetFramework>net8.0-windows7.0</TargetFramework>
-		<OutputType>WinExe</OutputType>
+    <OutputType>WinExe</OutputType>
+		<TargetFramework>net8.0-windows10.0.17763.0</TargetFramework>
+		
 		<UseWPF>true</UseWPF>
-		<PublishUrl>publish\</PublishUrl>
-
-	</PropertyGroup>
-	<PropertyGroup>
 		<ApplicationIcon>favicon.ico</ApplicationIcon>
-		<SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
 		<Title>Label Validator</Title>
+    
 		<AssemblyVersion>4.3.5</AssemblyVersion>
 		<FileVersion>4.3.5</FileVersion>
-		<ApplicationManifest>Properties\app.manifest</ApplicationManifest>
 	</PropertyGroup>
+  
 	<ItemGroup>
 	  <Compile Remove="Assets\Image Rolls\VALIDATION\**" />
 	  <EmbeddedResource Remove="Assets\Image Rolls\VALIDATION\**" />
@@ -1431,10 +1429,12 @@
 		<ProjectReference Include="..\..\LibImageUtilities\LibImageUtilities.csproj" />
 		<ProjectReference Include="..\..\LibStaticUtilities\LibStaticUtilities\LibStaticUtilities.csproj" />
 		<ProjectReference Include="..\..\Lvs95xx.lib.Core\Lvs95xx.lib.Core.csproj" />
+		<ProjectReference Include="..\..\Lvs95xx.lib.Shared\Lvs95xx.lib.Shared.csproj" />
 		<ProjectReference Include="..\..\RingBuffer.lib\RingBuffer.lib.csproj" />
-		<ProjectReference Include="..\..\RingBuffer\RingBuffer\RingBuffer.csproj" />
 		<ProjectReference Include="..\..\V275_REST_Lib\V275_REST_Lib.csproj" />
 		<ProjectReference Include="..\..\V5_REST_Lib\V5_REST_Lib.csproj" />
+		<ProjectReference Include="..\..\Watchers.lib\Watchers.lib.csproj" />
+		<ProjectReference Include="..\..\WinAPI.lib\WinAPI.lib.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />

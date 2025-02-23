@@ -144,18 +144,12 @@
                                     md:HintAssist.FloatingHintHorizontalAlignment="Left"
                                     md:HintAssist.Hint="LVS95xx Database"
                                     md:HintAssist.IsFloating="True"
-                                    md:TextFieldAssist.HasClearButton="True"
-                                    Text="{Binding DatabasePath, UpdateSourceTrigger=PropertyChanged}"
+                                    IsHitTestVisible="false"
+                                    Text="{Binding DatabasePath}"
                                     TextWrapping="Wrap">
                                     <TextBox.Style>
                                         <Style BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}" TargetType="{x:Type TextBox}">
-                                            <Setter Property="IsEnabled" Value="True" />
                                             <Setter Property="md:HintAssist.FloatingOffset" Value="0,-20" />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Controller.SerialPort.IsListening}" Value="True">
-                                                    <Setter Property="IsEnabled" Value="False" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
                                         </Style>
                                     </TextBox.Style>
                                 </TextBox>
@@ -213,7 +207,7 @@
                         <TextBox
                             Margin="6,3"
                             d:Text="State"
-                            md:HintAssist.Hint="State"
+                            md:HintAssist.Hint="Connection"
                             BorderThickness="0"
                             IsHitTestVisible="False">
 
@@ -224,13 +218,22 @@
 
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Controller.SerialPort.IsListening}" Value="True">
-                                            <Setter Property="Text" Value="Run" />
+                                            <Setter Property="Text" Value="Online" />
                                         </DataTrigger>
 
                                     </Style.Triggers>
                                 </Style>
                             </TextBox.Style>
                         </TextBox>
+
+                        <TextBox
+                            Margin="6,3"
+                            d:Text="Exited"
+                            md:HintAssist.Hint="Process"
+                            BorderThickness="0"
+                            IsHitTestVisible="False"
+                            Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                            Text="{Binding Path=ProcessState, Mode=OneWay}" />
 
                     </DockPanel>
                 </DockPanel>
