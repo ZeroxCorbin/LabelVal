@@ -359,12 +359,16 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     public ImageRollEntry CopyLite() => JsonConvert.DeserializeObject<ImageRollEntry>(JsonConvert.SerializeObject(this));
 
     #region Logging
-    private readonly Logging.Logger logger = new();
-    public void LogInfo(string message) => logger.LogInfo(GetType(), message);
-    public void LogDebug(string message) => logger.LogDebug(GetType(), message);
-    public void LogWarning(string message) => logger.LogInfo(GetType(), message);
-    public void LogError(string message) => logger.LogError(GetType(), message);
-    public void LogError(Exception ex) => logger.LogError(GetType(), ex);
-    public void LogError(string message, Exception ex) => logger.LogError(GetType(), message, ex);
+    private void LogInfo(string message) => Logging.lib.Logger.LogInfo(GetType(), message);
+#if DEBUG
+    private void LogDebug(string message) => Logging.lib.Logger.LogDebug(GetType(), message);
+#else
+    private void LogDebug(string message) { }
+#endif
+    private void LogWarning(string message) => Logging.lib.Logger.LogInfo(GetType(), message);
+    private void LogError(string message) => Logging.lib.Logger.LogError(GetType(), message);
+    private void LogError(Exception ex) => Logging.lib.Logger.LogError(GetType(), ex);
+    private void LogError(string message, Exception ex) => Logging.lib.Logger.LogError(GetType(), ex, message);
+
     #endregion
 }

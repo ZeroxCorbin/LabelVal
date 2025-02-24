@@ -5,7 +5,7 @@
     xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
     xmlns:controlz="urn:controlzex"
     xmlns:converters="clr-namespace:LabelVal.Converters"
-    xmlns:custom="clr-namespace:LabelVal.Main.CustomControl"
+    xmlns:custom="clr-namespace:LabelVal.Main.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:imageRollConverters="clr-namespace:LabelVal.ImageRolls.Converters"

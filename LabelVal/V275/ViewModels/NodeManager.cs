@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
-using LabelVal.Logging;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using Newtonsoft.Json;
@@ -87,7 +86,7 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
     {
         Host ??= "127.0.0.1";
 
-        if(SystemPort == 0)
+        if (SystemPort == 0)
             SystemPort = GetPortNumber();
 
         UserName ??= "admin";
@@ -105,7 +104,7 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
 
         if ((await system.Controller.Commands.GetDevices()).Object is Devices dev)
         {
-            List<Node> lst = new();
+            List<Node> lst = [];
             foreach (Devices.Node node in dev.nodes)
             {
                 if (lst.Any(n => n.Controller.Node.cameraMAC == node.cameraMAC))
@@ -132,7 +131,7 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
 
             foreach (Node node in srt)
                 Nodes.Add(node);
-                
+
         }
         else
         {
@@ -142,7 +141,7 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
         Node sel = App.Settings.GetValue<Node>($"V275_{nameof(Manager.SelectedDevice)}");
         foreach (Node node in Nodes)
         {
-            if (sel != null && (node.Controller.Host == sel.Controller.Host && node.Controller.SystemPort == sel.Controller.SystemPort && node.Controller.NodeNumber == sel.Controller.NodeNumber))
+            if (sel != null && node.Controller.Host == sel.Controller.Host && node.Controller.SystemPort == sel.Controller.SystemPort && node.Controller.NodeNumber == sel.Controller.NodeNumber)
                 Manager.SelectedDevice = node;
         }
     }
@@ -175,12 +174,16 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
     #endregion
 
     #region Logging
-    private readonly Logger logger = new();
-    public void LogInfo(string message) => logger.LogInfo(this.GetType(), message);
-    public void LogDebug(string message) => logger.LogDebug(this.GetType(), message);
-    public void LogWarning(string message) => logger.LogInfo(this.GetType(), message);
-    public void LogError(string message) => logger.LogError(this.GetType(), message);
-    public void LogError(Exception ex) => logger.LogError(this.GetType(), ex);
-    public void LogError(string message, Exception ex) => logger.LogError(this.GetType(), message, ex);
+    private void LogInfo(string message) => Logging.lib.Logger.LogInfo(GetType(), message);
+#if DEBUG
+    private void LogDebug(string message) => Logging.lib.Logger.LogDebug(GetType(), message);
+#else
+    private void LogDebug(string message) { }
+#endif
+    private void LogWarning(string message) => Logging.lib.Logger.LogInfo(GetType(), message);
+    private void LogError(string message) => Logging.lib.Logger.LogError(GetType(), message);
+    private void LogError(Exception ex) => Logging.lib.Logger.LogError(GetType(), ex);
+    private void LogError(string message, Exception ex) => Logging.lib.Logger.LogError(GetType(), ex, message);
+
     #endregion
 }

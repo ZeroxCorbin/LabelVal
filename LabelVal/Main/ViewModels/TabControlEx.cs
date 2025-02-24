@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 
-namespace LabelVal.Main.CustomControl;
+namespace LabelVal.Main.ViewModels;
 
 [TemplatePart(Name = "PART_ItemsHolder", Type = typeof(Panel))]
 public class TabControlEx : TabControl
@@ -23,9 +23,9 @@ public class TabControlEx : TabControl
     /// <param name="e"></param>
     private void ItemContainerGenerator_StatusChanged(object sender, EventArgs e)
     {
-        if (this.ItemContainerGenerator.Status == GeneratorStatus.ContainersGenerated)
+        if (ItemContainerGenerator.Status == GeneratorStatus.ContainersGenerated)
         {
-            this.ItemContainerGenerator.StatusChanged -= ItemContainerGenerator_StatusChanged;
+            ItemContainerGenerator.StatusChanged -= ItemContainerGenerator_StatusChanged;
             UpdateSelectedItem();
         }
     }
@@ -60,14 +60,12 @@ public class TabControlEx : TabControl
             case NotifyCollectionChangedAction.Add:
             case NotifyCollectionChangedAction.Remove:
                 if (e.OldItems != null)
-                {
                     foreach (object item in e.OldItems)
                     {
                         ContentPresenter cp = FindChildContentPresenter(item);
                         if (cp != null)
                             ItemsHolderPanel.Children.Remove(cp);
                     }
-                }
 
                 // Don't do anything with new items because we don't want to
                 // create visuals that aren't being shown
@@ -76,11 +74,11 @@ public class TabControlEx : TabControl
                 break;
 
             case NotifyCollectionChangedAction.Replace:
-                throw new NotImplementedException("Replace not implemented yet");   
-                
+                throw new NotImplementedException("Replace not implemented yet");
 
-        }              
-        
+
+        }
+
         UpdateSelectedItem();
     }
 
@@ -118,12 +116,12 @@ public class TabControlEx : TabControl
         // the actual child to be added.  cp.Tag is a reference to the TabItem
         cp = new ContentPresenter
         {
-            Content = (item is TabItem) ? (item as TabItem).Content : item,
-            ContentTemplate = this.SelectedContentTemplate,
-            ContentTemplateSelector = this.SelectedContentTemplateSelector,
-            ContentStringFormat = this.SelectedContentStringFormat,
+            Content = item is TabItem ? (item as TabItem).Content : item,
+            ContentTemplate = SelectedContentTemplate,
+            ContentTemplateSelector = SelectedContentTemplateSelector,
+            ContentStringFormat = SelectedContentStringFormat,
             Visibility = Visibility.Collapsed,
-            Tag = (item is TabItem) ? item : this.ItemContainerGenerator.ContainerFromItem(item)
+            Tag = item is TabItem ? item : ItemContainerGenerator.ContainerFromItem(item)
         };
         ItemsHolderPanel.Children.Add(cp);
         return cp;
@@ -141,22 +139,20 @@ public class TabControlEx : TabControl
             return null;
 
         foreach (ContentPresenter cp in ItemsHolderPanel.Children)
-        {
             if (cp.Content == data)
                 return cp;
-        }
 
         return null;
     }
 
     protected TabItem GetSelectedTabItem()
     {
-        object selectedItem = base.SelectedItem;
+        object selectedItem = SelectedItem;
         if (selectedItem == null)
             return null;
 
         TabItem item = selectedItem as TabItem;
-        item ??= base.ItemContainerGenerator.ContainerFromIndex(base.SelectedIndex) as TabItem;
+        item ??= (ItemContainerGenerator.ContainerFromIndex(SelectedIndex) as TabItem);
 
         return item;
     }

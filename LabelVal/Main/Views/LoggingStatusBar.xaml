@@ -1,0 +1,85 @@
+﻿<UserControl
+    x:Class="LabelVal.Main.Views.LoggingStatusBar"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:local="clr-namespace:LabelVal.Main.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:LabelVal.Main.ViewModels"
+    d:DataContext="{d:DesignInstance Type=vm:LoggingStatusBarVm,
+                                     IsDesignTimeCreatable=False}"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <CollectionViewSource x:Key="LoggerMessages" Source="{Binding LoggerMessages}">
+            <CollectionViewSource.SortDescriptions>
+                <componentmodel:SortDescription Direction="Descending" PropertyName="TimeStamp" />
+            </CollectionViewSource.SortDescriptions>
+
+            <CollectionViewSource.GroupDescriptions>
+                <PropertyGroupDescription PropertyName="Group" />
+            </CollectionViewSource.GroupDescriptions>
+        </CollectionViewSource>
+    </UserControl.Resources>
+
+
+    <StatusBar>
+        
+        <StatusBarItem>
+            <Button x:Name="btnShowViewer" Click="btnShowViewer_Click">
+                <iconPacks:PackIconMaterial Kind="Exclamation" />
+            </Button>
+        </StatusBarItem>
+
+        <StatusBarItem>
+            <Button Command="{Binding ClearCommand}" Content="{iconPacks:Material Kind=Delete}" />
+        </StatusBarItem>
+
+        <StatusBarItem>
+            <TextBlock>
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding LatestDebug, Converter={StaticResource IsNullOrEmpty}}" Value="False">
+                                <Setter Property="Text" Value="{Binding LatestDebug.Message}" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding LatestInfo, Converter={StaticResource IsNullOrEmpty}}" Value="False">
+                                <Setter Property="Text" Value="{Binding LatestInfo.Message}" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding LatestWarning, Converter={StaticResource IsNullOrEmpty}}" Value="False">
+                                <Setter Property="Text" Value="{Binding LatestWarning.Message}" />
+                            </DataTrigger>
+
+                            <DataTrigger Binding="{Binding LatestError, Converter={StaticResource IsNullOrEmpty}}" Value="False">
+                                <Setter Property="Text" Value="{Binding LatestError.Message}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </StatusBarItem>
+        
+        <Popup
+            x:Name="popupViewer"
+            Placement="Top"
+            PlacementTarget="{Binding ElementName=btnShowViewer}"
+            StaysOpen="False">
+            <DataGrid
+                x:Name="dataGrid"
+                MaxHeight="400"
+                AutoGenerateColumns="False"
+                CanUserSortColumns="False"
+                ItemsSource="{Binding Source={StaticResource LoggerMessages}}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding TimeStamp, Mode=OneTime}" Header="Timestamp" />
+                    <DataGridTextColumn Binding="{Binding Message, Mode=OneTime}" Header="Message" />
+                    <DataGridTextColumn Binding="{Binding Value, Mode=OneTime}" Header="Type" />
+                    <DataGridCheckBoxColumn Binding="{Binding HasException, Mode=OneTime}" Header="Has Exception" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Popup>
+
+    </StatusBar>
+</UserControl>

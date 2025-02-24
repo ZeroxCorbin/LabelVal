@@ -158,35 +158,7 @@
                     <DockPanel>
 
                         <DockPanel DockPanel.Dock="Bottom">
-                            <StatusBar>
-                                <StatusBarItem>
-                                    <Button x:Name="btnShowInfo" Click="btnShowInfo_Click">
-                                        <iconPacks:PackIconMaterial Kind="ThumbUp" />
-                                    </Button>
-                                </StatusBarItem>
-                                <Popup
-                                    x:Name="popupInfo"
-                                    Placement="Top"
-                                    PlacementTarget="{Binding ElementName=btnShowInfo}"
-                                    StaysOpen="False">
-                                    <local:StatusMessageViewer DataContext="{Binding SystemMessages_InfoDebug}" />
-                                </Popup>
-                                <StatusBarItem>
-                                    <Button x:Name="btnShowError" Click="btnShowError_Click">
-                                        <iconPacks:PackIconMaterial Kind="Exclamation" />
-                                    </Button>
-                                </StatusBarItem>
-                                <Popup
-                                    x:Name="popupError"
-                                    Placement="Top"
-                                    PlacementTarget="{Binding ElementName=btnShowError}"
-                                    StaysOpen="False">
-                                    <local:StatusMessageViewer DataContext="{Binding SystemMessages_ErrorWarning}" />
-                                </Popup>
-                                <StatusBarItem>
-                                    <TextBlock Text="{Binding SystemMessages_RecentError.Message}" />
-                                </StatusBarItem>
-                            </StatusBar>
+                            <local:LoggingStatusBar DataContext="{Binding LoggingStatusBarVm}" />
                         </DockPanel>
 
                         <mah:HamburgerMenu

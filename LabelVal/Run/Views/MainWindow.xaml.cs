@@ -19,9 +19,6 @@ public partial class MainWindow : MetroWindow
     private void btnColorBlind_Click(object sender, RoutedEventArgs e) => App.ChangeColorBlindTheme(!App.Settings.GetValue("App.IsColorBlind", false));
 
 
-    private void btnShowInfo_Click(object sender, RoutedEventArgs e) => popupInfo.IsOpen = true;
-    private void btnShowError_Click(object sender, RoutedEventArgs e) => popupError.IsOpen = true;
-
     private void MetroWindow_Closed(object sender, System.EventArgs e) => DialogParticipation.SetRegister(this, null);
 
 }

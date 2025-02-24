@@ -2,27 +2,20 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
-using Lvs95xx.lib.Core.Models;
 using LabelVal.ImageRolls.ViewModels;
-using LabelVal.Logging;
 using LabelVal.LVS_95xx.ViewModels;
 using LabelVal.Utilities;
 using LabelVal.V275.ViewModels;
 using LabelVal.V5.ViewModels;
 using MahApps.Metro.Controls.Dialogs;
-using Newtonsoft.Json;
 using NHibernate.Util;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing.Printing;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using V275_REST_Lib;
-using V275_REST_Lib.Enumerations;
-using V275_REST_Lib.Models;
 
 namespace LabelVal.Results.ViewModels;
 public partial class ImageResults : ObservableRecipient,
@@ -39,7 +32,6 @@ public partial class ImageResults : ObservableRecipient,
         public ImageResultEntry ImageResult { get; set; }
         public int RepeatNumber { get; set; } = -1;
     }
-
 
     [ObservableProperty] private int imagesMaxHeight = App.Settings.GetValue(nameof(ImagesMaxHeight), 200, true);
     partial void OnImagesMaxHeightChanged(int value) => App.Settings.SetValue(nameof(ImagesMaxHeight), value);
@@ -77,7 +69,7 @@ public partial class ImageResults : ObservableRecipient,
             Application.Current.Dispatcher.Invoke(() => ImageResultsList.Clear());
     }
 
-    [ObservableProperty] bool isL95xxSelected;
+    [ObservableProperty] private bool isL95xxSelected;
     partial void OnIsL95xxSelectedChanging(bool value) => ResetL95xxSelected();
 
     private bool reseting;
@@ -104,23 +96,23 @@ public partial class ImageResults : ObservableRecipient,
         //if(ret1.HasReceivedResponse)
         //    SelectedNode = ret1.Response;
 
-        var ret2 = WeakReferenceMessenger.Default.Send(new RequestMessage<PrinterSettings>());
+        RequestMessage<PrinterSettings> ret2 = WeakReferenceMessenger.Default.Send(new RequestMessage<PrinterSettings>());
         if (ret2.HasReceivedResponse)
             SelectedPrinter = ret2.Response;
 
-        var ret3 = WeakReferenceMessenger.Default.Send(new RequestMessage<ImageRollEntry>());
+        RequestMessage<ImageRollEntry> ret3 = WeakReferenceMessenger.Default.Send(new RequestMessage<ImageRollEntry>());
         if (ret3.HasReceivedResponse)
             SelectedImageRoll = ret3.Response;
 
-        var ret4 = WeakReferenceMessenger.Default.Send(new RequestMessage<Databases.ImageResultsDatabase>());
+        RequestMessage<Databases.ImageResultsDatabase> ret4 = WeakReferenceMessenger.Default.Send(new RequestMessage<Databases.ImageResultsDatabase>());
         if (ret4.HasReceivedResponse)
             SelectedDatabase = ret4.Response;
 
-        var ret5 = WeakReferenceMessenger.Default.Send(new RequestMessage<Scanner>());
+        RequestMessage<Scanner> ret5 = WeakReferenceMessenger.Default.Send(new RequestMessage<Scanner>());
         if (ret5.HasReceivedResponse)
             SelectedScanner = ret5.Response;
 
-        var ret6 = WeakReferenceMessenger.Default.Send(new RequestMessage<Verifier>());
+        RequestMessage<Verifier> ret6 = WeakReferenceMessenger.Default.Send(new RequestMessage<Verifier>());
         if (ret6.HasReceivedResponse)
             SelectedVerifier = ret6.Response;
     }
@@ -130,16 +122,16 @@ public partial class ImageResults : ObservableRecipient,
         if (SelectedImageRoll == null)
             return;
 
-        var clrTsk = Application.Current.Dispatcher.BeginInvoke(() => ImageResultsList.Clear());
+        System.Windows.Threading.DispatcherOperation clrTsk = Application.Current.Dispatcher.BeginInvoke(() => ImageResultsList.Clear());
 
         if (SelectedImageRoll.Images.Count == 0)
             await SelectedImageRoll.LoadImages();
 
-        clrTsk.Wait();
+        _ = clrTsk.Wait();
 
         foreach (ImageEntry img in SelectedImageRoll.Images)
             AddImageResultEntry(img);
-        
+
         SelectedImageRoll.Images.CollectionChanged += SelectedImageRoll_Images_CollectionChanged;
 
     }
@@ -147,12 +139,12 @@ public partial class ImageResults : ObservableRecipient,
     {
         if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
         {
-            foreach (var itm in e.NewItems.Cast<ImageEntry>())
+            foreach (ImageEntry itm in e.NewItems.Cast<ImageEntry>())
                 AddImageResultEntry(itm);
         }
         else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
         {
-            foreach (var itm in e.OldItems.Cast<ImageEntry>())
+            foreach (ImageEntry itm in e.OldItems.Cast<ImageEntry>())
                 RemoveImageResultEntry(itm);
         }
     }
@@ -174,8 +166,8 @@ public partial class ImageResults : ObservableRecipient,
         ImageResultEntry itm = ImageResultsList.FirstOrDefault(ir => ir.SourceImage == img);
         if (itm != null)
         {
-            ImageResultsList.Remove(itm);
-            SelectedImageRoll.ImageRollsDatabase.DeleteImage(img.UID);
+            _ = ImageResultsList.Remove(itm);
+            _ = SelectedImageRoll.ImageRollsDatabase.DeleteImage(img.UID);
         }
 
         // Reorder the remaining items in the list
@@ -200,7 +192,7 @@ public partial class ImageResults : ObservableRecipient,
     [RelayCommand]
     private async Task AddV5Image()
     {
-        var res = await ProcessV5();
+        V5_REST_Lib.Controller.FullReport res = await ProcessV5();
 
         if (res == null)
             return;
@@ -239,8 +231,8 @@ public partial class ImageResults : ObservableRecipient,
     private void AddImageBottom()
     {
         List<ImageResultEntry> newImages = PromptForNewImages(); // Prompt the user to select multiple images
-            if (newImages != null && newImages.Count != 0)
-                InsertImageAtOrder(newImages, ImageResultsList.Count + 1);
+        if (newImages != null && newImages.Count != 0)
+            InsertImageAtOrder(newImages, ImageResultsList.Count + 1);
     }
 
     [RelayCommand]
@@ -250,8 +242,7 @@ public partial class ImageResults : ObservableRecipient,
         {
             if (img.L95xxCurrentSectors.Count != 0)
                 img.StoreCommand.Execute("L95xx-All");
-                    
-                
+
 
 
         }
@@ -259,7 +250,7 @@ public partial class ImageResults : ObservableRecipient,
 
     private async Task<V5_REST_Lib.Controller.FullReport> ProcessV5()
     {
-        var res = await SelectedScanner.Controller.Trigger_Wait_Return(true);
+        V5_REST_Lib.Controller.FullReport res = await SelectedScanner.Controller.Trigger_Wait_Return(true);
 
         if (!res.OK)
         {
@@ -290,7 +281,6 @@ public partial class ImageResults : ObservableRecipient,
         //List<ISector> secs = L95xxCurrentSectors.ToList();
         //SortList(secs);
         //SortObservableCollectionByList(secs, L95xxCurrentSectors);
-
 
         //L95xxCurrentImage = new ImageEntry(ImageRollUID, message.Report.Thumbnail, 600);
         //UpdateL95xxCurrentImageOverlay();
@@ -351,7 +341,7 @@ public partial class ImageResults : ObservableRecipient,
 
         if (Utilities.FileUtilities.LoadFileDialog(settings))
         {
-            List<ImageResultEntry> newImages = new();
+            List<ImageResultEntry> newImages = [];
             foreach (string filePath in settings.SelectedFiles) // Iterate over selected files
             {
                 ImageEntry newImage = SelectedImageRoll.GetNewImageEntry(filePath, 0); // Order will be set in InsertImageAtOrder
@@ -535,7 +525,7 @@ public partial class ImageResults : ObservableRecipient,
     public void Receive(PropertyChangedMessage<Lvs95xx.lib.Core.Models.FullReport> message)
     {
         if (IsL95xxSelected)
-            App.Current.Dispatcher.BeginInvoke(() => L95xxProcess(message.NewValue));
+            _ = App.Current.Dispatcher.BeginInvoke(() => L95xxProcess(message.NewValue));
     }
     #endregion
 
@@ -545,13 +535,17 @@ public partial class ImageResults : ObservableRecipient,
     #endregion
 
     #region Logging
-    private readonly Logger logger = new();
-    public void LogInfo(string message) => logger.LogInfo(this.GetType(), message);
-    public void LogDebug(string message) => logger.LogDebug(this.GetType(), message);
-    public void LogWarning(string message) => logger.LogInfo(this.GetType(), message);
-    public void LogError(string message) => logger.LogError(this.GetType(), message);
-    public void LogError(Exception ex) => logger.LogError(this.GetType(), ex);
-    public void LogError(string message, Exception ex) => logger.LogError(this.GetType(), message, ex);
+    private void LogInfo(string message) => Logging.lib.Logger.LogInfo(GetType(), message);
+#if DEBUG
+    private void LogDebug(string message) => Logging.lib.Logger.LogDebug(GetType(), message);
+#else
+    private void LogDebug(string message) { }
+#endif
+    private void LogWarning(string message) => Logging.lib.Logger.LogInfo(GetType(), message);
+    private void LogError(string message) => Logging.lib.Logger.LogError(GetType(), message);
+    private void LogError(Exception ex) => Logging.lib.Logger.LogError(GetType(), ex);
+    private void LogError(string message, Exception ex) => Logging.lib.Logger.LogError(GetType(), ex, message);
+
     #endregion
 
 }

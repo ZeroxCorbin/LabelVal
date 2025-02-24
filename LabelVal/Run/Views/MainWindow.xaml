@@ -57,27 +57,7 @@
     <DockPanel>
 
         <DockPanel DockPanel.Dock="Bottom">
-            <StatusBar> 
-                <StatusBarItem>
-                    <Button x:Name="btnShowInfo" Click="btnShowInfo_Click">
-                        <iconPacks:PackIconMaterial Kind="ThumbUp"/>
-                    </Button>
-                </StatusBarItem>
-                <Popup x:Name="popupInfo" PlacementTarget="{Binding ElementName=btnShowInfo}" Placement="Top" StaysOpen="False">
-                    <main:StatusMessageViewer DataContext="{Binding SystemMessages_InfoDebug}"/>
-                </Popup>
-                <StatusBarItem>
-                    <Button x:Name="btnShowError" Click="btnShowError_Click">
-                        <iconPacks:PackIconMaterial Kind="Exclamation"/>
-                    </Button>
-                </StatusBarItem>
-                <Popup x:Name="popupError" PlacementTarget="{Binding ElementName=btnShowError}" Placement="Top" StaysOpen="False">
-                    <main:StatusMessageViewer DataContext="{Binding SystemMessages_ErrorWarning}"/>
-                </Popup>
-                <StatusBarItem>
-                    <TextBlock Text="{Binding SystemMessages_RecentError.Message}"/>
-                </StatusBarItem>
-            </StatusBar>
+            <main:LoggingStatusBar DataContext="{Binding LoggingStatusBarVm}" />
         </DockPanel>
         
         <local:RunDatabases DataContext="{Binding RunDatabases}"/>

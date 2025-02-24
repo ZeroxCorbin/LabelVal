@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using GS1.Encoders;
-using LabelVal.Logging.Messages;
 using LibSimpleDatabase;
 using Lvs95xx.Producer.Watchers;
 using MaterialDesignThemes.Wpf;
@@ -26,7 +25,7 @@ public partial class App : Application
     private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
     public static SimpleDatabase Settings { get; private set; }
 
-    public static GS1Encoder GS1Encoder = new GS1Encoder();
+    public static GS1Encoder GS1Encoder = new();
 
     public static ActiveWatchers Watchers { get; } = new ActiveWatchers();
 
@@ -57,9 +56,7 @@ public partial class App : Application
     public static string RunsRoot => $"{UserDataDirectory}\\Runs";
     public static string RunLedgerDatabaseName => $"RunLedger{DatabaseExtension}";
 
-    public static string RunResultsDatabaseName(long timeDate) => $"Run_{timeDate.ToString()}{DatabaseExtension}";
-
-    public static void SendMessage(Exception ex) => _ = WeakReferenceMessenger.Default.Send(new SystemMessages.StatusMessage(ex));
+    public static string RunResultsDatabaseName(long timeDate) => $"Run_{timeDate}{DatabaseExtension}";
 
     public App()
     {
@@ -167,9 +164,9 @@ public partial class App : Application
     }
     private void UpdateMaterialDesignTheme()
     {
-        var hel = new MaterialDesignThemes.Wpf.PaletteHelper();
-        var theme = new MaterialDesignThemes.Wpf.Theme();
-        var the = ControlzEx.Theming.ThemeManager.Current.DetectTheme();
+        PaletteHelper hel = new();
+        Theme theme = new();
+        ControlzEx.Theming.Theme the = ControlzEx.Theming.ThemeManager.Current.DetectTheme();
 
         theme.SetPrimaryColor(the.PrimaryAccentColor);
         if (the.BaseColorScheme == ControlzEx.Theming.ThemeManager.BaseColorDark)
@@ -201,7 +198,7 @@ public partial class App : Application
         string message = $"Unhandled exception ({source})";
         try
         {
-            MessageBox.Show($"{exception.Message}\r\n{exception.InnerException.Message}");
+            _ = MessageBox.Show($"{exception.Message}\r\n{exception.InnerException.Message}");
             Logger.Error(exception, message);
 
             AssemblyName assemblyName = Assembly.GetExecutingAssembly().GetName();
@@ -221,8 +218,6 @@ public partial class App : Application
             _ = MessageBox.Show($"{message}\r\n{exception.Message}", "Unhandled Exception!", MessageBoxButton.OK);
             Current.Dispatcher.Invoke(Shutdown);
         }
-        else
-            SendMessage(exception);
     }
 
     public static void RecursiveDelete(DirectoryInfo baseDir)
@@ -248,10 +243,10 @@ public partial class App : Application
 
     private void ConvertToIndexedPNG()
     {
-        var outDir = Directory.CreateDirectory($"{UserDataDirectory}\\IndexedPNG");
+        DirectoryInfo outDir = Directory.CreateDirectory($"{UserDataDirectory}\\IndexedPNG");
         foreach (string dir in Directory.EnumerateDirectories(AssetsImageRollsRoot))
         {
-            var dirName = Path.GetFileName(dir);
+            string dirName = Path.GetFileName(dir);
             DirectoryInfo imgDir;
 
             if (Directory.Exists($"{dir}\\600"))
@@ -259,7 +254,7 @@ public partial class App : Application
                 imgDir = Directory.CreateDirectory($"{outDir.FullName}\\{dirName}\\600");
                 foreach (string file in Directory.EnumerateFiles($"{dir}\\600"))
                 {
-                    var newFileName = $"{imgDir.FullName}\\{Path.GetFileName(file)}";
+                    string newFileName = $"{imgDir.FullName}\\{Path.GetFileName(file)}";
                     if (Path.GetExtension(file) is ".bmp" or ".png")
                         File.WriteAllBytes(newFileName, LibImageUtilities.ImageTypes.Png.Utilities.GetPng(File.ReadAllBytes(file), PixelFormat.Format8bppIndexed));
                     else
@@ -273,16 +268,14 @@ public partial class App : Application
 
                 foreach (string file in Directory.EnumerateFiles($"{dir}\\300"))
                 {
-                    var newFileName = $"{imgDir.FullName}\\{Path.GetFileName(file)}";
+                    string newFileName = $"{imgDir.FullName}\\{Path.GetFileName(file)}";
                     if (Path.GetExtension(file) is ".bmp" or ".png")
                         File.WriteAllBytes(newFileName, LibImageUtilities.ImageTypes.Png.Utilities.GetPng(File.ReadAllBytes(file), PixelFormat.Format8bppIndexed));
                     else
                         File.Copy(file, newFileName);
                 }
             }
-
         }
-
     }
 
     private void ConvertDatabases()

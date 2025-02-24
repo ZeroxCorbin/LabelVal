@@ -4,9 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
-using LabelVal.Logging.Messages;
 using LabelVal.Utilities;
-using LibImageUtilities.ImageTypes.Png;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -118,7 +116,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
     private bool IsWaitingForFullImage;
 
-    public ObservableCollection<JobSlots.Datum> JobSlots { get; } = new();
+    public ObservableCollection<JobSlots.Datum> JobSlots { get; } = [];
     [ObservableProperty] private JobSlots.Datum selectedJobSlot;
     partial void OnSelectedJobSlotChanged(JobSlots.Datum value)
     {
@@ -134,7 +132,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             return;
         }
 
-        App.Current.Dispatcher.BeginInvoke(() => ChangeJob(value));
+        _ = App.Current.Dispatcher.BeginInvoke(() => ChangeJob(value));
     }
 
     private bool userChange;
@@ -169,7 +167,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
     private async void SwitchAquisitionType(bool file)
     {
-        if(!await Controller.SwitchAquisitionType(file, SelectedDirectory ?? Directories.First()))
+        if (!await Controller.SwitchAquisitionType(file, SelectedDirectory ?? Directories.First()))
             LogError("Could not switch acquisition type.");
     }
     private async void ChangeDirectory(string directory)
@@ -206,7 +204,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             ScannerController_ImageUpdate(Controller.Image);
         else if (e.PropertyName == "Report")
             ScannerController_ReportUpdate(Controller.Report);
-        else if(e.PropertyName == "JobSlots")
+        else if (e.PropertyName == "JobSlots")
             ScannerController_JobSlotsUpdate();
 
     }
@@ -365,12 +363,12 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         if (Controller.IsJobSlotsValid)
         {
             foreach (JobSlots.Datum job in Controller.JobSlots.response.data)
-                if(!JobSlots.Any((e) => e.jobName == job.jobName && e.slotIndex == job.slotIndex))
+                if (!JobSlots.Any((e) => e.jobName == job.jobName && e.slotIndex == job.slotIndex))
                     JobSlots.Add(job);
 
             foreach (JobSlots.Datum job in JobSlots.ToArray())
                 if (!Controller.JobSlots.response.data.Any((e) => e.jobName == job.jobName && e.slotIndex == job.slotIndex))
-                    JobSlots.Remove(job);
+                    _ = JobSlots.Remove(job);
         }
         else
             JobSlots.Clear();
@@ -553,9 +551,8 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     }
     public static GlyphRun CreateGlyphRun(string text, Typeface typeface, double emSize, Point baselineOrigin)
     {
-        GlyphTypeface glyphTypeface;
 
-        if (!typeface.TryGetGlyphTypeface(out glyphTypeface))
+        if (!typeface.TryGetGlyphTypeface(out GlyphTypeface glyphTypeface))
         {
             throw new ArgumentException(string.Format(
                 "{0}: no GlyphTypeface found", typeface.FontFamily));
@@ -618,7 +615,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         JobName = "";
     }
 
-    CancellationTokenSource _tokenSrc;
+    private CancellationTokenSource _tokenSrc;
     private bool running;
     private bool stop;
     [RelayCommand]
@@ -635,7 +632,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         if (RepeatTrigger)
         {
             _tokenSrc = new CancellationTokenSource();
-            var cnlToken = _tokenSrc.Token;
+            CancellationToken cnlToken = _tokenSrc.Token;
             return App.Current.Dispatcher.Invoke(async () =>
             {
                 try
@@ -658,22 +655,20 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             _ = Controller.Commands.Trigger();
 
         return Task.CompletedTask;
-        
+
     }
 
     [RelayCommand]
     private async Task QuickSetFocus()
     {
         Clear();
-
-        bool res = await Controller.QuickSet_Focus_Wait(QuickSet_Focus);
+        _ = await Controller.QuickSet_Focus_Wait(QuickSet_Focus);
     }
     [RelayCommand]
     private async Task QuickSetPhotometry()
     {
         Clear();
-
-        bool res = await Controller.QuickSet_Photometry_Wait(QuickSet_Photometry);
+        _ = await Controller.QuickSet_Photometry_Wait(QuickSet_Photometry);
     }
     [RelayCommand]
     private async Task SysInfo()
@@ -747,15 +742,17 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         Capture = null;
     }
 
-    private void SendControlMessage(string message) => _ = Messenger.Send(new SystemMessages.ControlMessage(this, message));
-
     #region Logging
-    private readonly Logging.Logger logger = new();
-    public void LogInfo(string message) => logger.LogInfo(this.GetType(), message);
-    public void LogDebug(string message) => logger.LogDebug(this.GetType(), message);
-    public void LogWarning(string message) => logger.LogInfo(this.GetType(), message);
-    public void LogError(string message) => logger.LogError(this.GetType(), message);
-    public void LogError(Exception ex) => logger.LogError(this.GetType(), ex);
-    public void LogError(string message, Exception ex) => logger.LogError(this.GetType(), message, ex);
+    private void LogInfo(string message) => Logging.lib.Logger.LogInfo(GetType(), message);
+#if DEBUG
+    private void LogDebug(string message) => Logging.lib.Logger.LogDebug(GetType(), message);
+#else
+    private void LogDebug(string message) { }
+#endif
+    private void LogWarning(string message) => Logging.lib.Logger.LogInfo(GetType(), message);
+    private void LogError(string message) => Logging.lib.Logger.LogError(GetType(), message);
+    private void LogError(Exception ex) => Logging.lib.Logger.LogError(GetType(), ex);
+    private void LogError(string message, Exception ex) => Logging.lib.Logger.LogError(GetType(), ex, message);
+
     #endregion
 }

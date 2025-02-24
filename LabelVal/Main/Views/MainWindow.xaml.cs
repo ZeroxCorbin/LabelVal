@@ -58,8 +58,6 @@ public partial class MainWindow : MetroWindow
 
     private void btnShowSettings_Click(object sender, RoutedEventArgs e) => ApplicationSettings.IsOpen = true;
 
-    private void btnShowInfo_Click(object sender, RoutedEventArgs e) => popupInfo.IsOpen = true;
-    private void btnShowError_Click(object sender, RoutedEventArgs e) => popupError.IsOpen = true;
 
     private void hamMenu_ItemClick(object sender, ItemClickEventArgs args)
     {
