@@ -439,6 +439,9 @@ public partial class SectorDifferences : ObservableObject, ISectorDifferences
 
     private Grade GetGrade(string name, string data)
     {
+        if(data == null)
+            return new Grade(name, 0.0f, "F");
+
         var tmp = ParseFloat(data);
         return new Grade(name, tmp, GetLetter(tmp));
     }
