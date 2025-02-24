@@ -1,9 +1,9 @@
-﻿using LabelVal.Extensions;
-using LabelVal.Sectors.Interfaces;
+﻿using LabelVal.Sectors.Interfaces;
 using System;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
+using Wpf.lib.Extentions;
 
 namespace LabelVal.ImageRolls.Converters;
 

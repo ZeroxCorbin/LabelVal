@@ -8,10 +8,11 @@
     xmlns:local="clr-namespace:LabelVal.Main.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:LabelVal.Main.ViewModels"
-    d:DataContext="{d:DesignInstance Type=vm:LoggingViewerVm, IsDesignTimeCreatable=False}"
+    d:DataContext="{d:DesignInstance Type=vm:LoggingViewerVm,
+                                     IsDesignTimeCreatable=False}"
     mc:Ignorable="d">
 
-    <UserControl.Resources >
+    <UserControl.Resources>
         <CollectionViewSource x:Key="LoggerMessages" Source="{Binding LoggerMessages}">
             <CollectionViewSource.SortDescriptions>
                 <componentmodel:SortDescription Direction="Descending" PropertyName="TimeStamp" />
@@ -31,18 +32,10 @@
             CanUserSortColumns="False"
             ItemsSource="{Binding Source={StaticResource LoggerMessages}}">
             <DataGrid.Columns>
-                <DataGridTextColumn
-                    Binding="{Binding TimeStamp, Mode=OneTime}"
-                    Header="Timestamp"/>
-                <DataGridTextColumn
-                    Binding="{Binding Message, Mode=OneTime}"
-                    Header="Message"/>
-                <DataGridTextColumn
-                    Binding="{Binding Value, Mode=OneTime}"
-                    Header="Type" />
-                <DataGridCheckBoxColumn
-                    Binding="{Binding HasException, Mode=OneTime}"
-                    Header="Has Exception" />
+                <DataGridTextColumn Binding="{Binding TimeStamp, Mode=OneTime}" Header="Timestamp" />
+                <DataGridTextColumn Binding="{Binding Message, Mode=OneTime}" Header="Message" />
+                <DataGridTextColumn Binding="{Binding Value, Mode=OneTime}" Header="Type" />
+                <DataGridCheckBoxColumn Binding="{Binding HasException, Mode=OneTime}" Header="Has Exception" />
             </DataGrid.Columns>
         </DataGrid>
     </DockPanel>

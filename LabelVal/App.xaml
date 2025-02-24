@@ -2,7 +2,7 @@
     x:Class="LabelVal.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:converters="clr-namespace:LabelVal.Converters"
+    xmlns:converters="clr-namespace:Wpf.lib.Converters;assembly=Wpf.lib"
     xmlns:local="clr-namespace:LabelVal"
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
@@ -25,7 +25,17 @@
 
             </ResourceDictionary.MergedDictionaries>
 
-            <md:InvertBooleanConverter x:Key="InvertBool" />
+            <converters:IsNullOrEmpty x:Key="IsNullOrEmpty" />
+            <converters:IsNotNull x:Key="IsNotNull" />
+            <converters:IsNullOrEmptyVisibility x:Key="IsNullOrEmptyVisibility" />
+            <converters:IsNotNullVisibility x:Key="IsNotNullVisibility" />
+            <converters:AreStringsEqual x:Key="AreStringsEqual" />
+            <converters:EnumValueToDescription x:Key="EnumValueToDescription" />
+            <converters:DoesStringContain x:Key="DoesStringContain" />
+            <converters:InvertBool x:Key="InvertBool" />
+            <converters:EnumToInt x:Key="EnumToInt" />
+            <converters:NumberGreaterThanZero x:Key="NumberGreaterThanZero" />
+            <converters:NumberZeroOrNull x:Key="NumberZeroOrNull" />
 
             <sys:Boolean x:Key="FalseValue">False</sys:Boolean>
             <sys:Boolean x:Key="TrueValue">True</sys:Boolean>

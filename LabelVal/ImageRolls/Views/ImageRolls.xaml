@@ -22,8 +22,6 @@
 
     <UserControl.Resources>
 
-
-        <converters:ObjectIsNull x:Key="objectIsNull" />
         <converters:ContentGeneratorConverter x:Key="ContentGeneratorConverter" />
 
         <services:SelectionService x:Key="sharedSelectionService" />
@@ -630,7 +628,7 @@
                                     <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
                                         <Setter Property="Visibility" Value="Collapsed" />
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding NewImageRoll, Converter={StaticResource objectIsNull}}" Value="True">
+                                            <DataTrigger Binding="{Binding NewImageRoll, Converter={StaticResource IsNullOrEmpty}}" Value="True">
                                                 <Setter Property="Visibility" Value="Visible" />
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -653,10 +651,10 @@
                                     <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
                                         <Setter Property="Visibility" Value="Visible" />
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding SelectedUserImageRoll, Converter={StaticResource objectIsNull}}" Value="True">
+                                            <DataTrigger Binding="{Binding SelectedUserImageRoll, Converter={StaticResource IsNullOrEmpty}}" Value="True">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                             </DataTrigger>
-                                            <DataTrigger Binding="{Binding NewImageRoll, Converter={StaticResource objectIsNull}}" Value="False">
+                                            <DataTrigger Binding="{Binding NewImageRoll, Converter={StaticResource IsNullOrEmpty}}" Value="False">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -678,7 +676,7 @@
                                     <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
                                         <Setter Property="Visibility" Value="Collapsed" />
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding NewImageRoll, Converter={StaticResource objectIsNull}}" Value="False">
+                                            <DataTrigger Binding="{Binding NewImageRoll, Converter={StaticResource IsNullOrEmpty}}" Value="False">
                                                 <Setter Property="Visibility" Value="Visible" />
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -700,7 +698,7 @@
                                     <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
                                         <Setter Property="Visibility" Value="Collapsed" />
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding NewImageRoll, Converter={StaticResource objectIsNull}}" Value="False">
+                                            <DataTrigger Binding="{Binding NewImageRoll, Converter={StaticResource IsNullOrEmpty}}" Value="False">
                                                 <Setter Property="Visibility" Value="Visible" />
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -722,7 +720,7 @@
                                     <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
                                         <Setter Property="Visibility" Value="Collapsed" />
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding NewImageRoll, Converter={StaticResource objectIsNull}}" Value="False">
+                                            <DataTrigger Binding="{Binding NewImageRoll, Converter={StaticResource IsNullOrEmpty}}" Value="False">
                                                 <Setter Property="Visibility" Value="Visible" />
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -765,7 +763,7 @@
                         <Style TargetType="md:DrawerHost">
                             <Setter Property="IsTopDrawerOpen" Value="False" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding NewImageRoll, Converter={StaticResource objectIsNull}}" Value="False">
+                                <DataTrigger Binding="{Binding NewImageRoll, Converter={StaticResource IsNullOrEmpty}}" Value="False">
                                     <Setter Property="IsTopDrawerOpen" Value="True" />
                                 </DataTrigger>
                             </Style.Triggers>

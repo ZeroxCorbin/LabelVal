@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
-using LabelVal.Extensions;
 using LabelVal.Sectors.Interfaces;
 using LibImageUtilities.ImageTypes.Png;
 using Newtonsoft.Json;
@@ -13,6 +12,7 @@ using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Wpf.lib.Extentions;
 
 namespace LabelVal.ImageRolls.ViewModels;
 

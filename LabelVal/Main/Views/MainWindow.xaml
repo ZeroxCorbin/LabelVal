@@ -40,8 +40,6 @@
                 <ResourceDictionary Source="HamburgerMenu.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <converters:ObjectIsNull x:Key="objectIsNull" />
-
             <printerConverters:PrinterSettingThousandthsToInches x:Key="printerSettingThousandthsToInches" />
 
         </ResourceDictionary>
@@ -187,7 +185,7 @@
                                 <results:ImageResults.Style>
                                     <Style TargetType="results:ImageResults">
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding SelectedImageRoll, Converter={StaticResource objectIsNull}}" Value="True">
+                                            <DataTrigger Binding="{Binding SelectedImageRoll, Converter={StaticResource IsNullOrEmpty}}" Value="True">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                             </DataTrigger>
                                         </Style.Triggers>

@@ -19,8 +19,6 @@
                 <ResourceDictionary Source="ImageDetailsTemplate.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <Converters:ShortenUIDConverter x:Key="shortenUID" />
-            <Converters:ObjectIsNull x:Key="objectIsNull" />
             <Converters:Double2String x:Key="double2String" />
 
             <ContextMenu x:Key="cmImageModify">

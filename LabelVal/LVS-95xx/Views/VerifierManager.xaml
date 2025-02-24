@@ -12,10 +12,6 @@
     d:DataContext="{d:DesignInstance Type=ViewModels:VerifierManager}"
     mc:Ignorable="d">
 
-    <UserControl.Resources>
-        <converters:ObjectIsNull x:Key="objectIsNull" />
-    </UserControl.Resources>
-
     <DockPanel Margin="3,3,0,0" VerticalAlignment="Top">
 
         <md:Card

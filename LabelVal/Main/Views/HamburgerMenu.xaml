@@ -22,7 +22,6 @@
     xmlns:v5Vm="clr-namespace:LabelVal.V5.ViewModels"
     xmlns:viewModels="clr-namespace:LabelVal.Main.ViewModels">
 
-    <converters:ObjectIsNull x:Key="objectIsNull" />
     <converters:LocalizeEnumValue x:Key="localizeEnumValue" />
     <converters:MACAddressSplitConverter x:Key="macAddressSplitConverter" />
 
@@ -136,7 +135,7 @@
                             <Style BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}" TargetType="TextBlock">
                                 <Setter Property="Text" Value="{Binding SelectedDatabase.File.Name}" />
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding SelectedDatabase, Converter={StaticResource objectIsNull}}" Value="True">
+                                    <DataTrigger Binding="{Binding SelectedDatabase, Converter={StaticResource IsNullOrEmpty}}" Value="True">
                                         <Setter Property="Text" Value="NO DATABASE SELECTED" />
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -293,7 +292,7 @@
                     <Style TargetType="DockPanel">
                         <Setter Property="Visibility" Value="Collapsed" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Content.SelectedDevice, Converter={StaticResource objectIsNull}}" Value="True">
+                            <DataTrigger Binding="{Binding Content.SelectedDevice, Converter={StaticResource IsNullOrEmpty}}" Value="True">
                                 <Setter Property="Visibility" Value="Visible" />
                             </DataTrigger>
                         </Style.Triggers>
@@ -311,7 +310,7 @@
                     <Style TargetType="DockPanel">
                         <Setter Property="Visibility" Value="Visible" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Content.SelectedDevice, Converter={StaticResource objectIsNull}}" Value="True">
+                            <DataTrigger Binding="{Binding Content.SelectedDevice, Converter={StaticResource IsNullOrEmpty}}" Value="True">
                                 <Setter Property="Visibility" Value="Collapsed" />
                             </DataTrigger>
                         </Style.Triggers>
@@ -351,7 +350,7 @@
                     <Style TargetType="DockPanel">
                         <Setter Property="Visibility" Value="Collapsed" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Content.SelectedDevice, Converter={StaticResource objectIsNull}}" Value="True">
+                            <DataTrigger Binding="{Binding Content.SelectedDevice, Converter={StaticResource IsNullOrEmpty}}" Value="True">
                                 <Setter Property="Visibility" Value="Visible" />
                             </DataTrigger>
                         </Style.Triggers>
@@ -369,7 +368,7 @@
                     <Style TargetType="DockPanel">
                         <Setter Property="Visibility" Value="Visible" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Content.SelectedDevice, Converter={StaticResource objectIsNull}}" Value="True">
+                            <DataTrigger Binding="{Binding Content.SelectedDevice, Converter={StaticResource IsNullOrEmpty}}" Value="True">
                                 <Setter Property="Visibility" Value="Collapsed" />
                             </DataTrigger>
                         </Style.Triggers>
@@ -405,7 +404,7 @@
                     <Style TargetType="DockPanel">
                         <Setter Property="Visibility" Value="Collapsed" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Content.SelectedDevice, Converter={StaticResource objectIsNull}}" Value="True">
+                            <DataTrigger Binding="{Binding Content.SelectedDevice, Converter={StaticResource IsNullOrEmpty}}" Value="True">
                                 <Setter Property="Visibility" Value="Visible" />
                             </DataTrigger>
                         </Style.Triggers>
@@ -424,7 +423,7 @@
                     <Style TargetType="DockPanel">
                         <Setter Property="Visibility" Value="Visible" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Content.SelectedDevice, Converter={StaticResource objectIsNull}}" Value="True">
+                            <DataTrigger Binding="{Binding Content.SelectedDevice, Converter={StaticResource IsNullOrEmpty}}" Value="True">
                                 <Setter Property="Visibility" Value="Collapsed" />
                             </DataTrigger>
                         </Style.Triggers>

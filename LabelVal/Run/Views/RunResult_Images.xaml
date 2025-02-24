@@ -1,47 +1,51 @@
-﻿<UserControl x:Class="LabelVal.Run.Views.RunResult_Images"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:LabelVal.Run.Views"
-             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-                xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-                xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
-                xmlns:converters="clr-namespace:LabelVal.Converters"
-                xmlns:viewModels="clr-namespace:LabelVal.Run.ViewModels"
-             
-                          d:DataContext="{d:DesignInstance Type=viewModels:RunResult}"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+﻿<UserControl
+    x:Class="LabelVal.Run.Views.RunResult_Images"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:LabelVal.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:local="clr-namespace:LabelVal.Run.Views"
+    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:viewModels="clr-namespace:LabelVal.Run.ViewModels"
+    d:DataContext="{d:DesignInstance Type=viewModels:RunResult}"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
 
     <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="booltovis"/>
-        <converters:ShortenUIDConverter x:Key="shortenUID"/>
-        <converters:ObjectIsNull x:Key="objectIsNull"/>
-        <converters:Double2String x:Key="double2String"/>
+        <BooleanToVisibilityConverter x:Key="booltovis" />
+        <converters:ShortenUIDConverter x:Key="shortenUID" />
+        <converters:Double2String x:Key="double2String" />
 
         <Image x:Key="V275Icon" Source="/Assets/Images/V275WhiteIcon.ico" />
         <Image x:Key="V275Png" Source="/Assets/Images/V275WhiteIcon.png" />
 
 
         <ContextMenu x:Key="cmImageModify">
-            <MenuItem Command="{Binding RedoFiducial}" Header="Registration Mark"/>
+            <MenuItem Command="{Binding RedoFiducial}" Header="Registration Mark" />
         </ContextMenu>
 
     </UserControl.Resources>
-    
+
     <DockPanel>
 
-        <!--V275 Source Image-->
-        <GroupBox Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top"
-                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                md:ColorZoneAssist.Mode="Custom">
-            <GroupBox.Style >
-                <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
-                    <Setter Property="Visibility" Value="Visible"/>
+        <!--  V275 Source Image  -->
+        <GroupBox
+            Margin="3"
+            Padding="3"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+            md:ColorZoneAssist.Mode="Custom">
+            <GroupBox.Style>
+                <Style BasedOn="{StaticResource MaterialDesignCardGroupBox}" TargetType="{x:Type GroupBox}">
+                    <Setter Property="Visibility" Value="Visible" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding IsPlaceholder}" Value="True">
-                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Setter Property="Visibility" Value="Collapsed" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -51,32 +55,49 @@
 
                 <DockPanel Margin="-5">
 
-                    <!--Save Image-->
-                    <Button Command="{Binding SaveCommand}" Style="{StaticResource GroupHeaderCirlceButton}" ToolTip="Save the source image.">
-                        <iconPacks:PackIconMaterial Kind="ContentSave" Height="14" Width="14" Margin="0,0,1,1"/>
+                    <!--  Save Image  -->
+                    <Button
+                        Command="{Binding SaveCommand}"
+                        Style="{StaticResource GroupHeaderCirlceButton}"
+                        ToolTip="Save the source image.">
+                        <iconPacks:PackIconMaterial
+                            Width="14"
+                            Height="14"
+                            Margin="0,0,1,1"
+                            Kind="ContentSave" />
                     </Button>
 
-                    <!--Title-->
-                    <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="4,1" Margin="6,0">
-                        <TextBlock Text="Source Image" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"/>
+                    <!--  Title  -->
+                    <md:Card
+                        Margin="6,0"
+                        Padding="4,1"
+                        HorizontalAlignment="Left"
+                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                        <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Source Image" />
                     </md:Card>
 
                     <DockPanel HorizontalAlignment="Right">
 
-                        <TextBlock VerticalAlignment="Center" Text="{Binding SourceImage.UID, Converter={StaticResource shortenUID}}" 
-                                   ToolTip="{Binding SourceImage.UID}"/>
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            Text="{Binding SourceImage.UID, Converter={StaticResource shortenUID}}"
+                            ToolTip="{Binding SourceImage.UID}" />
 
                         <Button Click="btnShowDetailsToggle">
 
-                            <iconPacks:PackIconMaterial Kind="InformationVariant" Margin="0,0,1,0" Height="16" Width="16"/>
+                            <iconPacks:PackIconMaterial
+                                Width="16"
+                                Height="16"
+                                Margin="0,0,1,0"
+                                Kind="InformationVariant" />
 
                             <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
-                                    <Setter Property="ToolTip" Value="Show printer area overlay."/>
+                                <Style BasedOn="{StaticResource GroupHeaderCirlceButton}" TargetType="{x:Type Button}">
+                                    <Setter Property="ToolTip" Value="Show printer area overlay." />
 
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding ShowPrinterAreaOverSource}" Value="True">
-                                            <Setter Property="ToolTip" Value="Hide printer area overlay."/>
+                                            <Setter Property="ToolTip" Value="Hide printer area overlay." />
                                         </DataTrigger>
 
                                     </Style.Triggers>
@@ -92,32 +113,49 @@
 
             <DockPanel Background="Black">
 
-                <Grid VerticalAlignment="Top" MaxHeight="400" Width="400" Margin="3" MouseDown="SourceImage_MouseDown">
+                <Grid
+                    Width="400"
+                    MaxHeight="400"
+                    Margin="3"
+                    VerticalAlignment="Top"
+                    MouseDown="SourceImage_MouseDown">
 
-                    <Image x:Name="SourceImage"
-                                Source="{Binding SourceImage.ImageLow, Mode=OneTime}"
-                                RenderOptions.BitmapScalingMode="NearestNeighbor"
-                                HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                    <Image
+                        x:Name="SourceImage"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        RenderOptions.BitmapScalingMode="NearestNeighbor"
+                        Source="{Binding SourceImage.ImageLow, Mode=OneTime}" />
 
-                    <Image Source="{Binding PrinterAreaOverlay, Mode=OneWay}" Stretch="None"
-                                RenderOptions.BitmapScalingMode="NearestNeighbor"
-                                HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                    
-                    <Label HorizontalAlignment="Right" VerticalAlignment="Top" Margin="3">
+                    <Image
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        RenderOptions.BitmapScalingMode="NearestNeighbor"
+                        Source="{Binding PrinterAreaOverlay, Mode=OneWay}"
+                        Stretch="None" />
+
+                    <Label
+                        Margin="3"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top">
                         <Label.Style>
                             <Style TargetType="{x:Type Label}">
                                 <Setter Property="Content">
                                     <Setter.Value>
                                         <Grid Background="White">
-                                            <iconPacks:PackIconMaterial Width="20" Height="20" Kind="Information" Foreground="Red"/>
+                                            <iconPacks:PackIconMaterial
+                                                Width="20"
+                                                Height="20"
+                                                Foreground="Red"
+                                                Kind="Information" />
                                         </Grid>
                                     </Setter.Value>
                                 </Setter>
-                                <Setter Property="ToolTip" Value="{Binding SourceImage.Comment}"/>
+                                <Setter Property="ToolTip" Value="{Binding SourceImage.Comment}" />
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding SourceImage.Comment}" Value="{x:Null}">
-                                        <Setter Property="Content" Value=""/>
-                                        <Setter Property="ToolTip" Value="{x:Null}"/>
+                                        <Setter Property="Content" Value="" />
+                                        <Setter Property="ToolTip" Value="{x:Null}" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -126,103 +164,188 @@
                     </Label>
                 </Grid>
 
-                <!--Details-->
+                <!--  Details  -->
                 <DockPanel>
                     <DockPanel.Style>
                         <Style TargetType="{x:Type DockPanel}">
-                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Setter Property="Visibility" Value="Collapsed" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding ShowDetails}" Value="True">
-                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </DockPanel.Style>
 
-                    <!--Image Details-->
-                    <GroupBox DockPanel.Dock="Top" Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top" 
-                            Background="{DynamicResource MahApps.Brushes.ThemeBackground}" 
-                            Style="{StaticResource MaterialDesignCardGroupBox}"
-                            md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                            md:ColorZoneAssist.Mode="Custom">
+                    <!--  Image Details  -->
+                    <GroupBox
+                        Margin="3"
+                        Padding="3"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                        md:ColorZoneAssist.Mode="Custom"
+                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                        DockPanel.Dock="Top"
+                        Style="{StaticResource MaterialDesignCardGroupBox}">
                         <GroupBox.Header>
                             <DockPanel Margin="-5">
 
-                                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="1">
-                                    <TextBlock Text="Image Details" FontSize="{DynamicResource MahApps.Font.Size.Tooltip}"/>
+                                <md:Card
+                                    Padding="1"
+                                    HorizontalAlignment="Left"
+                                    Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                                    <TextBlock FontSize="{DynamicResource MahApps.Font.Size.Tooltip}" Text="Image Details" />
                                 </md:Card>
                             </DockPanel>
                         </GroupBox.Header>
 
                         <DockPanel Margin="0,6,0,0">
 
-                            <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,3">
-                                <TextBox Text="{Binding SourceImage.ImageTotalPixels, Mode=OneTime}"
-                                     BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="Total Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
+                            <DockPanel
+                                Margin="0,3"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Top"
+                                DockPanel.Dock="Top">
+                                <TextBox
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                                    md:HintAssist.Hint="Total Pixels"
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding SourceImage.ImageTotalPixels, Mode=OneTime}" />
                             </DockPanel>
 
-                            <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" Margin="0,3">
-                                <TextBox Text="{Binding SourceImage.Image.PixelWidth, Mode=OneTime}"
-                                     Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
-                                <TextBox Margin="0" BorderThickness="0" Text="X" IsHitTestVisible="False"/>
-                                <TextBox Text="{Binding SourceImage.Image.PixelHeight, Mode=OneTime}"
-                                     Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="" md:HintAssist.IsFloating="True" IsHitTestVisible="False"/>
+                            <DockPanel
+                                Margin="0,3"
+                                VerticalAlignment="Top"
+                                DockPanel.Dock="Top">
+                                <TextBox
+                                    Width="40"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                                    md:HintAssist.Hint="Pixels"
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding SourceImage.Image.PixelWidth, Mode=OneTime}" />
+                                <TextBox
+                                    Margin="0"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="X" />
+                                <TextBox
+                                    Width="40"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.Hint=""
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding SourceImage.Image.PixelHeight, Mode=OneTime}" />
                             </DockPanel>
 
-                            <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" Margin="0,3">
-                                <TextBox Text="{Binding SourceImage.Image.DpiX, Mode=OneTime, StringFormat=N, Converter={StaticResource double2String}}"
-                                     Width="40" BorderThickness="0" HorizontalContentAlignment="Center" 
-                                     md:HintAssist.Hint="DPI" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
-                                <TextBox Margin="0" BorderThickness="0" Text="X" IsHitTestVisible="False"/>
-                                <TextBox Text="{Binding SourceImage.Image.DpiY, Mode=OneTime, StringFormat=N, Converter={StaticResource double2String}}"
-                                      Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="" md:HintAssist.IsFloating="True" IsHitTestVisible="False"/>
+                            <DockPanel
+                                Margin="0,3"
+                                VerticalAlignment="Top"
+                                DockPanel.Dock="Top">
+                                <TextBox
+                                    Width="40"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                                    md:HintAssist.Hint="DPI"
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding SourceImage.Image.DpiX, Mode=OneTime, StringFormat=N, Converter={StaticResource double2String}}" />
+                                <TextBox
+                                    Margin="0"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="X" />
+                                <TextBox
+                                    Width="40"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.Hint=""
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding SourceImage.Image.DpiY, Mode=OneTime, StringFormat=N, Converter={StaticResource double2String}}" />
                             </DockPanel>
 
-                            <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" Margin="0,3">
-                                <TextBox Text="{Binding SourceImage.ImageWidth, Mode=OneTime, StringFormat=N2}"
-                                     Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="Inches" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
-                                <TextBox Margin="0" BorderThickness="0" Text="X" IsHitTestVisible="False"/>
-                                <TextBox Text="{Binding SourceImage.ImageHeight, Mode=OneTime, StringFormat=N2}"
-                                      Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="" md:HintAssist.IsFloating="True" IsHitTestVisible="False"/>
+                            <DockPanel
+                                Margin="0,3"
+                                VerticalAlignment="Top"
+                                DockPanel.Dock="Top">
+                                <TextBox
+                                    Width="40"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                                    md:HintAssist.Hint="Inches"
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding SourceImage.ImageWidth, Mode=OneTime, StringFormat=N2}" />
+                                <TextBox
+                                    Margin="0"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="X" />
+                                <TextBox
+                                    Width="40"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.Hint=""
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding SourceImage.ImageHeight, Mode=OneTime, StringFormat=N2}" />
                             </DockPanel>
 
                         </DockPanel>
                     </GroupBox>
 
-                    <!--Printer-->
-                    <GroupBox DockPanel.Dock="Top" VerticalAlignment="Top" Margin="3" Padding="3"
-                            Background="{DynamicResource MahApps.Brushes.ThemeBackground}" 
-                            Style="{StaticResource MaterialDesignCardGroupBox}"
-                            md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                            md:ColorZoneAssist.Mode="Custom">
+                    <!--  Printer  -->
+                    <GroupBox
+                        Margin="3"
+                        Padding="3"
+                        VerticalAlignment="Top"
+                        md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                        md:ColorZoneAssist.Mode="Custom"
+                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                        DockPanel.Dock="Top"
+                        Style="{StaticResource MaterialDesignCardGroupBox}">
 
                         <GroupBox.Header>
                             <DockPanel Margin="-5">
-                                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="2,1">
-                                    <TextBlock Text="Printer" FontSize="{DynamicResource MahApps.Font.Size.Tooltip}"/>
+                                <md:Card
+                                    Padding="2,1"
+                                    HorizontalAlignment="Left"
+                                    Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                                    <TextBlock FontSize="{DynamicResource MahApps.Font.Size.Tooltip}" Text="Printer" />
                                 </md:Card>
 
                                 <Button Click="btnShowPrinterAreaOverSourceToggle">
 
                                     <Grid>
-                                        <iconPacks:PackIconMaterial Kind="BorderAllVariant" Foreground="Red" Height="14" Width="14"/>
-                                        <iconPacks:PackIconMaterial Kind="Printer" Height="14" Width="14"/>
+                                        <iconPacks:PackIconMaterial
+                                            Width="14"
+                                            Height="14"
+                                            Foreground="Red"
+                                            Kind="BorderAllVariant" />
+                                        <iconPacks:PackIconMaterial
+                                            Width="14"
+                                            Height="14"
+                                            Kind="Printer" />
 
                                     </Grid>
 
                                     <Button.Style>
-                                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
-                                            <Setter Property="ToolTip" Value="Show printer area overlay."/>
+                                        <Style BasedOn="{StaticResource GroupHeaderCirlceButton}" TargetType="{x:Type Button}">
+                                            <Setter Property="ToolTip" Value="Show printer area overlay." />
 
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding ShowPrinterAreaOverSource}" Value="True">
-                                                    <Setter Property="ToolTip" Value="Hide printer area overlay."/>
+                                                    <Setter Property="ToolTip" Value="Hide printer area overlay." />
                                                 </DataTrigger>
 
                                             </Style.Triggers>
@@ -234,45 +357,84 @@
 
                         <DockPanel Margin="0,6,0,0">
 
-                            <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,3">
-                                <TextBox Text="{Binding SourceImage.Printer2ImageTotalPixelDeviation, Mode=OneWay}"
-                                         BorderThickness="0" HorizontalContentAlignment="Center"
-                                         md:HintAssist.Hint="Total Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
+                            <DockPanel
+                                Margin="0,3"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Top"
+                                DockPanel.Dock="Top">
+                                <TextBox
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                                    md:HintAssist.Hint="Total Pixels"
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding SourceImage.Printer2ImageTotalPixelDeviation, Mode=OneWay}" />
                             </DockPanel>
 
-                            <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" Margin="0,3">
-                                <TextBox Text="{Binding SourceImage.DeviationWidth, Mode=OneWay}"
-                                         Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                         md:HintAssist.Hint="Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
-                                <TextBox Margin="0" BorderThickness="0" Text="X" IsHitTestVisible="False"/>
-                                <TextBox Text="{Binding SourceImage.DeviationHeight, Mode=OneWay}"
-                                          Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                         md:HintAssist.Hint="" md:HintAssist.IsFloating="True" IsHitTestVisible="False"/>
+                            <DockPanel
+                                Margin="0,3"
+                                VerticalAlignment="Top"
+                                DockPanel.Dock="Top">
+                                <TextBox
+                                    Width="40"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                                    md:HintAssist.Hint="Pixels"
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding SourceImage.DeviationWidth, Mode=OneWay}" />
+                                <TextBox
+                                    Margin="0"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="X" />
+                                <TextBox
+                                    Width="40"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.Hint=""
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding SourceImage.DeviationHeight, Mode=OneWay}" />
                             </DockPanel>
 
                         </DockPanel>
 
                     </GroupBox>
 
-                    <!--V5-->
-                    <GroupBox  Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top" 
-                               Background="{DynamicResource MahApps.Brushes.ThemeBackground}" 
-                              Style="{StaticResource MaterialDesignCardGroupBox}"
-                            md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                            md:ColorZoneAssist.Mode="Custom">
+                    <!--  V5  -->
+                    <GroupBox
+                        Margin="3"
+                        Padding="3"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                        md:ColorZoneAssist.Mode="Custom"
+                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                        Style="{StaticResource MaterialDesignCardGroupBox}">
 
                         <GroupBox.Header>
                             <DockPanel Margin="-5">
-                                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="2,1">
-                                    <TextBlock Text="V5" FontSize="{DynamicResource MahApps.Font.Size.Tooltip}"/>
+                                <md:Card
+                                    Padding="2,1"
+                                    HorizontalAlignment="Left"
+                                    Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                                    <TextBlock FontSize="{DynamicResource MahApps.Font.Size.Tooltip}" Text="V5" />
                                 </md:Card>
                             </DockPanel>
                         </GroupBox.Header>
 
                         <DockPanel Margin="0,6,0,0">
-                            <TextBox Text="{Binding SourceImage.V52ImageTotalPixelDeviation, Mode=OneTime}"
-                                         BorderThickness="0" HorizontalContentAlignment="Center"
-                                         md:HintAssist.Hint="Total Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
+                            <TextBox
+                                HorizontalContentAlignment="Center"
+                                md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                                md:HintAssist.Hint="Total Pixels"
+                                md:HintAssist.IsFloating="True"
+                                BorderThickness="0"
+                                IsHitTestVisible="False"
+                                Text="{Binding SourceImage.V52ImageTotalPixelDeviation, Mode=OneTime}" />
                         </DockPanel>
 
                     </GroupBox>
@@ -281,16 +443,21 @@
             </DockPanel>
         </GroupBox>
 
-        <!--V275 Stored Image-->
-        <GroupBox d:Visibility="Visible" Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top" 
-                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                md:ColorZoneAssist.Mode="Custom">
+        <!--  V275 Stored Image  -->
+        <GroupBox
+            Margin="3"
+            Padding="3"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            d:Visibility="Visible"
+            md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+            md:ColorZoneAssist.Mode="Custom">
             <GroupBox.Style>
-                <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
-                    <Setter Property="Visibility" Value="Collapsed"/>
+                <Style BasedOn="{StaticResource MaterialDesignCardGroupBox}" TargetType="{x:Type GroupBox}">
+                    <Setter Property="Visibility" Value="Collapsed" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding V275StoredImage, Converter={StaticResource objectIsNull}}" Value="False">
-                            <Setter Property="Visibility" Value="Visible"/>
+                        <DataTrigger Binding="{Binding V275StoredImage, Converter={StaticResource IsNullOrEmpty}}" Value="False">
+                            <Setter Property="Visibility" Value="Visible" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -299,16 +466,19 @@
             <GroupBox.Header>
                 <DockPanel Margin="-5">
 
-                    <!--Save Image-->
+                    <!--  Save Image  -->
                     <Button Command="{Binding SaveCommand}">
 
-                        <iconPacks:PackIconMaterial Kind="ContentSave" Height="14" Width="14"/>
+                        <iconPacks:PackIconMaterial
+                            Width="14"
+                            Height="14"
+                            Kind="ContentSave" />
 
                         <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
-                                <Setter Property="CommandParameter" Value="v275Stored"/>
-                                <Setter Property="ToolTip" Value="Save the stored image."/>
-                                <Setter Property="Visibility" Value="Visible"/>
+                            <Style BasedOn="{StaticResource GroupHeaderCirlceButton}" TargetType="{x:Type Button}">
+                                <Setter Property="CommandParameter" Value="v275Stored" />
+                                <Setter Property="ToolTip" Value="Save the stored image." />
+                                <Setter Property="Visibility" Value="Visible" />
 
                                 <Style.Triggers>
                                     <!--<DataTrigger Binding="{Binding IsV275ImageStored}" Value="False">
@@ -316,20 +486,24 @@
                                         <Setter Property="ToolTip" Value="Save the current image."/>
                                     </DataTrigger>-->
 
-                                    <DataTrigger Binding="{Binding V275StoredImage, Converter={StaticResource objectIsNull}}" Value="True">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    <DataTrigger Binding="{Binding V275StoredImage, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                                        <Setter Property="Visibility" Value="Collapsed" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </Button.Style>
                     </Button>
 
-                    <!--Title-->
-                    <md:Card Background="{DynamicResource V275_Brush}" HorizontalAlignment="Left" Padding="4,1" Margin="6,0">
-                        <TextBlock Foreground="White" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}">
+                    <!--  Title  -->
+                    <md:Card
+                        Margin="6,0"
+                        Padding="4,1"
+                        HorizontalAlignment="Left"
+                        Background="{DynamicResource V275_Brush}">
+                        <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Foreground="White">
                             <TextBlock.Style>
-                                <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource MahApps.Styles.TextBlock}">
-                                    <Setter Property="Text" Value="Stored Image"/>
+                                <Style BasedOn="{StaticResource MahApps.Styles.TextBlock}" TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Text" Value="Stored Image" />
                                     <!--<Style.Triggers>
                                         <DataTrigger Binding="{Binding IsV275StoredImageStored}" Value="True">
                                             <Setter Property="Text" Value="Stored Image"/>
@@ -342,20 +516,25 @@
 
                     <DockPanel HorizontalAlignment="Right">
 
-                        <TextBlock VerticalAlignment="Center" Text="{Binding V275StoredImage.UID, Converter={StaticResource shortenUID}}" 
-                                   ToolTip="{Binding V275StoredImage.UID}"/>
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            Text="{Binding V275StoredImage.UID, Converter={StaticResource shortenUID}}"
+                            ToolTip="{Binding V275StoredImage.UID}" />
 
                         <Button Click="btnShowDetailsToggle">
 
-                            <iconPacks:PackIconMaterial Kind="InformationVariant" Height="14" Width="14"/>
+                            <iconPacks:PackIconMaterial
+                                Width="14"
+                                Height="14"
+                                Kind="InformationVariant" />
 
                             <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
-                                    <Setter Property="ToolTip" Value="Show printer area overlay."/>
+                                <Style BasedOn="{StaticResource GroupHeaderCirlceButton}" TargetType="{x:Type Button}">
+                                    <Setter Property="ToolTip" Value="Show printer area overlay." />
 
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding ShowPrinterAreaOverSource}" Value="True">
-                                            <Setter Property="ToolTip" Value="Hide printer area overlay."/>
+                                            <Setter Property="ToolTip" Value="Hide printer area overlay." />
                                         </DataTrigger>
 
                                     </Style.Triggers>
@@ -371,114 +550,229 @@
 
             <DockPanel Background="Black">
 
-                <Grid VerticalAlignment="Top" Margin="3" MouseDown="V275StoredImage_MouseDown">
-                    <Image Name="V275StoredImage" Source="{Binding V275StoredImage.ImageLow}" 
-                       Margin="0" MaxHeight="400" Width="400"
-                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+                <Grid
+                    Margin="3"
+                    VerticalAlignment="Top"
+                    MouseDown="V275StoredImage_MouseDown">
+                    <Image
+                        Name="V275StoredImage"
+                        Width="400"
+                        MaxHeight="400"
+                        Margin="0"
+                        RenderOptions.BitmapScalingMode="NearestNeighbor"
+                        Source="{Binding V275StoredImage.ImageLow}" />
 
-                    <Image Name="V275StoredImageOverlay" Source="{Binding V275StoredImageOverlay}" 
-                       Margin="0" MaxHeight="400" Width="400"
-                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+                    <Image
+                        Name="V275StoredImageOverlay"
+                        Width="400"
+                        MaxHeight="400"
+                        Margin="0"
+                        RenderOptions.BitmapScalingMode="NearestNeighbor"
+                        Source="{Binding V275StoredImageOverlay}" />
                 </Grid>
 
                 <DockPanel>
                     <DockPanel.Style>
                         <Style TargetType="{x:Type DockPanel}">
-                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Setter Property="Visibility" Value="Collapsed" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding ShowDetails}" Value="True">
-                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </DockPanel.Style>
 
-                    <!--Image Details-->
-                    <GroupBox DockPanel.Dock="Top" VerticalAlignment="Top" Margin="3" Padding="3"
-                            Background="{DynamicResource MahApps.Brushes.ThemeBackground}" 
-                            Style="{StaticResource MaterialDesignCardGroupBox}"
-                            md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                            md:ColorZoneAssist.Mode="Custom">
+                    <!--  Image Details  -->
+                    <GroupBox
+                        Margin="3"
+                        Padding="3"
+                        VerticalAlignment="Top"
+                        md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                        md:ColorZoneAssist.Mode="Custom"
+                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                        DockPanel.Dock="Top"
+                        Style="{StaticResource MaterialDesignCardGroupBox}">
                         <GroupBox.Header>
                             <DockPanel Margin="-5">
-                                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="1">
-                                    <TextBlock Text="Image Details" FontSize="{DynamicResource MahApps.Font.Size.Tooltip}"/>
+                                <md:Card
+                                    Padding="1"
+                                    HorizontalAlignment="Left"
+                                    Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                                    <TextBlock FontSize="{DynamicResource MahApps.Font.Size.Tooltip}" Text="Image Details" />
                                 </md:Card>
                             </DockPanel>
                         </GroupBox.Header>
 
                         <DockPanel Margin="0,6,0,0">
 
-                            <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,3">
-                                <TextBox Text="{Binding V275StoredImage.ImageTotalPixels, Mode=OneWay}"
-                                     BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="Total Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
+                            <DockPanel
+                                Margin="0,3"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Top"
+                                DockPanel.Dock="Top">
+                                <TextBox
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                                    md:HintAssist.Hint="Total Pixels"
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding V275StoredImage.ImageTotalPixels, Mode=OneWay}" />
                             </DockPanel>
 
-                            <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" Margin="0,3">
-                                <TextBox Text="{Binding V275StoredImage.Image.PixelWidth, Mode=OneWay}"
-                                     Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
-                                <TextBox Margin="0" BorderThickness="0" Text="X" IsHitTestVisible="False"/>
-                                <TextBox Text="{Binding V275StoredImage.Image.PixelHeight, Mode=OneWay}"
-                                     Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="" md:HintAssist.IsFloating="True" IsHitTestVisible="False"/>
+                            <DockPanel
+                                Margin="0,3"
+                                VerticalAlignment="Top"
+                                DockPanel.Dock="Top">
+                                <TextBox
+                                    Width="40"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                                    md:HintAssist.Hint="Pixels"
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding V275StoredImage.Image.PixelWidth, Mode=OneWay}" />
+                                <TextBox
+                                    Margin="0"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="X" />
+                                <TextBox
+                                    Width="40"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.Hint=""
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding V275StoredImage.Image.PixelHeight, Mode=OneWay}" />
                             </DockPanel>
 
-                            <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" Margin="0,3">
-                                <TextBox Text="{Binding V275StoredImage.Image.DpiX, Mode=OneWay, StringFormat=N, Converter={StaticResource double2String}}"
-                                     Width="40" BorderThickness="0" HorizontalContentAlignment="Center" 
-                                     md:HintAssist.Hint="DPI" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
-                                <TextBox Margin="0" BorderThickness="0" Text="X" IsHitTestVisible="False"/>
-                                <TextBox Text="{Binding V275StoredImage.Image.DpiY, Mode=OneWay, StringFormat=N, Converter={StaticResource double2String}}"
-                                      Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="" md:HintAssist.IsFloating="True" IsHitTestVisible="False"/>
+                            <DockPanel
+                                Margin="0,3"
+                                VerticalAlignment="Top"
+                                DockPanel.Dock="Top">
+                                <TextBox
+                                    Width="40"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                                    md:HintAssist.Hint="DPI"
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding V275StoredImage.Image.DpiX, Mode=OneWay, StringFormat=N, Converter={StaticResource double2String}}" />
+                                <TextBox
+                                    Margin="0"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="X" />
+                                <TextBox
+                                    Width="40"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.Hint=""
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding V275StoredImage.Image.DpiY, Mode=OneWay, StringFormat=N, Converter={StaticResource double2String}}" />
                             </DockPanel>
 
-                            <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" Margin="0,3">
-                                <TextBox Text="{Binding V275StoredImage.ImageWidth, Mode=OneWay, StringFormat=N2}"
-                                     Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="Inches" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
-                                <TextBox Margin="0" BorderThickness="0" Text="X" IsHitTestVisible="False"/>
-                                <TextBox Text="{Binding V275StoredImage.ImageHeight, Mode=OneWay, StringFormat=N2}"
-                                      Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="" md:HintAssist.IsFloating="True" IsHitTestVisible="False"/>
+                            <DockPanel
+                                Margin="0,3"
+                                VerticalAlignment="Top"
+                                DockPanel.Dock="Top">
+                                <TextBox
+                                    Width="40"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                                    md:HintAssist.Hint="Inches"
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding V275StoredImage.ImageWidth, Mode=OneWay, StringFormat=N2}" />
+                                <TextBox
+                                    Margin="0"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="X" />
+                                <TextBox
+                                    Width="40"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.Hint=""
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding V275StoredImage.ImageHeight, Mode=OneWay, StringFormat=N2}" />
                             </DockPanel>
 
                         </DockPanel>
                     </GroupBox>
 
-                    <!--Printer-->
-                    <GroupBox DockPanel.Dock="Top" VerticalAlignment="Top" Margin="3" Padding="3"
-                              Background="{DynamicResource MahApps.Brushes.ThemeBackground}" 
-                  Style="{StaticResource MaterialDesignCardGroupBox}"
-                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                md:ColorZoneAssist.Mode="Custom">
+                    <!--  Printer  -->
+                    <GroupBox
+                        Margin="3"
+                        Padding="3"
+                        VerticalAlignment="Top"
+                        md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                        md:ColorZoneAssist.Mode="Custom"
+                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                        DockPanel.Dock="Top"
+                        Style="{StaticResource MaterialDesignCardGroupBox}">
 
                         <GroupBox.Header>
                             <DockPanel Margin="-5">
-                                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="2,1">
-                                    <TextBlock Text="Printer" FontSize="{DynamicResource MahApps.Font.Size.Tooltip}"/>
+                                <md:Card
+                                    Padding="2,1"
+                                    HorizontalAlignment="Left"
+                                    Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                                    <TextBlock FontSize="{DynamicResource MahApps.Font.Size.Tooltip}" Text="Printer" />
                                 </md:Card>
                             </DockPanel>
                         </GroupBox.Header>
 
                         <DockPanel Margin="0,6,0,0">
 
-                            <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,3">
-                                <TextBox Text="{Binding V275StoredImage.Printer2ImageTotalPixelDeviation, Mode=OneWay}"
-                                         BorderThickness="0" HorizontalContentAlignment="Center"
-                                         md:HintAssist.Hint="Total Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
+                            <DockPanel
+                                Margin="0,3"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Top"
+                                DockPanel.Dock="Top">
+                                <TextBox
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                                    md:HintAssist.Hint="Total Pixels"
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding V275StoredImage.Printer2ImageTotalPixelDeviation, Mode=OneWay}" />
                             </DockPanel>
 
-                            <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" Margin="0,3">
-                                <TextBox Text="{Binding V275StoredImage.DeviationWidth, Mode=OneWay}"
-                                         Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                         md:HintAssist.Hint="Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
-                                <TextBox Margin="0" BorderThickness="0" Text="X" IsHitTestVisible="False"/>
-                                <TextBox Text="{Binding V275StoredImage.DeviationHeight, Mode=OneWay}"
-                                          Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                         md:HintAssist.Hint="" md:HintAssist.IsFloating="True" IsHitTestVisible="False"/>
+                            <DockPanel
+                                Margin="0,3"
+                                VerticalAlignment="Top"
+                                DockPanel.Dock="Top">
+                                <TextBox
+                                    Width="40"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                                    md:HintAssist.Hint="Pixels"
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding V275StoredImage.DeviationWidth, Mode=OneWay}" />
+                                <TextBox
+                                    Margin="0"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="X" />
+                                <TextBox
+                                    Width="40"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.Hint=""
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding V275StoredImage.DeviationHeight, Mode=OneWay}" />
                             </DockPanel>
 
 
@@ -486,25 +780,37 @@
                         </DockPanel>
                     </GroupBox>
 
-                    <!--V5-->
-                    <GroupBox DockPanel.Dock="Top" VerticalAlignment="Top" Margin="3" Padding="3"
-                              Background="{DynamicResource MahApps.Brushes.ThemeBackground}" 
-                  Style="{StaticResource MaterialDesignCardGroupBox}"
-                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                md:ColorZoneAssist.Mode="Custom">
+                    <!--  V5  -->
+                    <GroupBox
+                        Margin="3"
+                        Padding="3"
+                        VerticalAlignment="Top"
+                        md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                        md:ColorZoneAssist.Mode="Custom"
+                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                        DockPanel.Dock="Top"
+                        Style="{StaticResource MaterialDesignCardGroupBox}">
 
                         <GroupBox.Header>
                             <DockPanel Margin="-5">
-                                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="2,1">
-                                    <TextBlock Text="V5" FontSize="{DynamicResource MahApps.Font.Size.Tooltip}"/>
+                                <md:Card
+                                    Padding="2,1"
+                                    HorizontalAlignment="Left"
+                                    Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                                    <TextBlock FontSize="{DynamicResource MahApps.Font.Size.Tooltip}" Text="V5" />
                                 </md:Card>
                             </DockPanel>
                         </GroupBox.Header>
 
                         <DockPanel Margin="0,6,0,0">
-                            <TextBox Text="{Binding V275StoredImage.V52ImageTotalPixelDeviation, Mode=OneWay}"
-                                         BorderThickness="0" HorizontalContentAlignment="Center"
-                                         md:HintAssist.Hint="Total Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
+                            <TextBox
+                                HorizontalContentAlignment="Center"
+                                md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                                md:HintAssist.Hint="Total Pixels"
+                                md:HintAssist.IsFloating="True"
+                                BorderThickness="0"
+                                IsHitTestVisible="False"
+                                Text="{Binding V275StoredImage.V52ImageTotalPixelDeviation, Mode=OneWay}" />
                         </DockPanel>
 
                     </GroupBox>
@@ -514,16 +820,21 @@
             </DockPanel>
         </GroupBox>
 
-        <!--V275 Current Image-->
-        <GroupBox d:Visibility="Visible" Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top" 
-                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                md:ColorZoneAssist.Mode="Custom">
+        <!--  V275 Current Image  -->
+        <GroupBox
+            Margin="3"
+            Padding="3"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            d:Visibility="Visible"
+            md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+            md:ColorZoneAssist.Mode="Custom">
             <GroupBox.Style>
-                <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
-                    <Setter Property="Visibility" Value="Collapsed"/>
+                <Style BasedOn="{StaticResource MaterialDesignCardGroupBox}" TargetType="{x:Type GroupBox}">
+                    <Setter Property="Visibility" Value="Collapsed" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding V275CurrentImage, Converter={StaticResource objectIsNull}}" Value="False">
-                            <Setter Property="Visibility" Value="Visible"/>
+                        <DataTrigger Binding="{Binding V275CurrentImage, Converter={StaticResource IsNullOrEmpty}}" Value="False">
+                            <Setter Property="Visibility" Value="Visible" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -532,16 +843,19 @@
             <GroupBox.Header>
                 <DockPanel Margin="-5">
 
-                    <!--Save Image-->
+                    <!--  Save Image  -->
                     <Button Command="{Binding SaveCommand}">
 
-                        <iconPacks:PackIconMaterial Kind="ContentSave" Height="14" Width="14"/>
+                        <iconPacks:PackIconMaterial
+                            Width="14"
+                            Height="14"
+                            Kind="ContentSave" />
 
                         <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
-                                <Setter Property="CommandParameter" Value="v275Stored"/>
-                                <Setter Property="ToolTip" Value="Save the stored image."/>
-                                <Setter Property="Visibility" Value="Visible"/>
+                            <Style BasedOn="{StaticResource GroupHeaderCirlceButton}" TargetType="{x:Type Button}">
+                                <Setter Property="CommandParameter" Value="v275Stored" />
+                                <Setter Property="ToolTip" Value="Save the stored image." />
+                                <Setter Property="Visibility" Value="Visible" />
 
                                 <Style.Triggers>
                                     <!--<DataTrigger Binding="{Binding IsV275ImageStored}" Value="False">
@@ -549,20 +863,24 @@
                                         <Setter Property="ToolTip" Value="Save the current image."/>
                                     </DataTrigger>-->
 
-                                    <DataTrigger Binding="{Binding V275CurrentImage, Converter={StaticResource objectIsNull}}" Value="True">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    <DataTrigger Binding="{Binding V275CurrentImage, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                                        <Setter Property="Visibility" Value="Collapsed" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </Button.Style>
                     </Button>
 
-                    <!--Title-->
-                    <md:Card Background="{DynamicResource V275_Brush}" HorizontalAlignment="Left" Padding="4,1" Margin="6,0">
-                        <TextBlock Foreground="White" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}">
+                    <!--  Title  -->
+                    <md:Card
+                        Margin="6,0"
+                        Padding="4,1"
+                        HorizontalAlignment="Left"
+                        Background="{DynamicResource V275_Brush}">
+                        <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Foreground="White">
                             <TextBlock.Style>
-                                <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource MahApps.Styles.TextBlock}">
-                                    <Setter Property="Text" Value="Current Image"/>
+                                <Style BasedOn="{StaticResource MahApps.Styles.TextBlock}" TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Text" Value="Current Image" />
                                     <!--<Style.Triggers>
                                         <DataTrigger Binding="{Binding IsV275CurrentImageStored}" Value="True">
                                             <Setter Property="Text" Value="Stored Image"/>
@@ -575,20 +893,25 @@
 
                     <DockPanel HorizontalAlignment="Right">
 
-                        <TextBlock VerticalAlignment="Center" Text="{Binding V275CurrentImage.UID, Converter={StaticResource shortenUID}}" 
-                                   ToolTip="{Binding V275CurrentImage.UID}"/>
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            Text="{Binding V275CurrentImage.UID, Converter={StaticResource shortenUID}}"
+                            ToolTip="{Binding V275CurrentImage.UID}" />
 
                         <Button Click="btnShowDetailsToggle">
 
-                            <iconPacks:PackIconMaterial Kind="InformationVariant" Height="14" Width="14"/>
+                            <iconPacks:PackIconMaterial
+                                Width="14"
+                                Height="14"
+                                Kind="InformationVariant" />
 
                             <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
-                                    <Setter Property="ToolTip" Value="Show printer area overlay."/>
+                                <Style BasedOn="{StaticResource GroupHeaderCirlceButton}" TargetType="{x:Type Button}">
+                                    <Setter Property="ToolTip" Value="Show printer area overlay." />
 
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding ShowPrinterAreaOverSource}" Value="True">
-                                            <Setter Property="ToolTip" Value="Hide printer area overlay."/>
+                                            <Setter Property="ToolTip" Value="Hide printer area overlay." />
                                         </DataTrigger>
 
                                     </Style.Triggers>
@@ -604,114 +927,229 @@
 
             <DockPanel Background="Black">
 
-                <Grid VerticalAlignment="Top" Margin="3" MouseDown="V275CurrentImage_MouseDown">
-                    <Image Name="V275CurrentImage" Source="{Binding V275CurrentImage.ImageLow}" 
-                       Margin="0" MaxHeight="400" Width="400"
-                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+                <Grid
+                    Margin="3"
+                    VerticalAlignment="Top"
+                    MouseDown="V275CurrentImage_MouseDown">
+                    <Image
+                        Name="V275CurrentImage"
+                        Width="400"
+                        MaxHeight="400"
+                        Margin="0"
+                        RenderOptions.BitmapScalingMode="NearestNeighbor"
+                        Source="{Binding V275CurrentImage.ImageLow}" />
 
-                    <Image Name="V275CurrentImageOverlay" Source="{Binding V275CurrentImageOverlay}" 
-                       Margin="0" MaxHeight="400" Width="400"
-                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+                    <Image
+                        Name="V275CurrentImageOverlay"
+                        Width="400"
+                        MaxHeight="400"
+                        Margin="0"
+                        RenderOptions.BitmapScalingMode="NearestNeighbor"
+                        Source="{Binding V275CurrentImageOverlay}" />
                 </Grid>
 
                 <DockPanel>
                     <DockPanel.Style>
                         <Style TargetType="{x:Type DockPanel}">
-                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Setter Property="Visibility" Value="Collapsed" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding ShowDetails}" Value="True">
-                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </DockPanel.Style>
 
-                    <!--Image Details-->
-                    <GroupBox DockPanel.Dock="Top" VerticalAlignment="Top" Margin="3" Padding="3"
-                            Background="{DynamicResource MahApps.Brushes.ThemeBackground}" 
-                            Style="{StaticResource MaterialDesignCardGroupBox}"
-                            md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                            md:ColorZoneAssist.Mode="Custom">
+                    <!--  Image Details  -->
+                    <GroupBox
+                        Margin="3"
+                        Padding="3"
+                        VerticalAlignment="Top"
+                        md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                        md:ColorZoneAssist.Mode="Custom"
+                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                        DockPanel.Dock="Top"
+                        Style="{StaticResource MaterialDesignCardGroupBox}">
                         <GroupBox.Header>
                             <DockPanel Margin="-5">
-                                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="1">
-                                    <TextBlock Text="Image Details" FontSize="{DynamicResource MahApps.Font.Size.Tooltip}"/>
+                                <md:Card
+                                    Padding="1"
+                                    HorizontalAlignment="Left"
+                                    Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                                    <TextBlock FontSize="{DynamicResource MahApps.Font.Size.Tooltip}" Text="Image Details" />
                                 </md:Card>
                             </DockPanel>
                         </GroupBox.Header>
 
                         <DockPanel Margin="0,6,0,0">
 
-                            <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,3">
-                                <TextBox Text="{Binding V275CurrentImage.ImageTotalPixels, Mode=OneWay}"
-                                     BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="Total Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
+                            <DockPanel
+                                Margin="0,3"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Top"
+                                DockPanel.Dock="Top">
+                                <TextBox
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                                    md:HintAssist.Hint="Total Pixels"
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding V275CurrentImage.ImageTotalPixels, Mode=OneWay}" />
                             </DockPanel>
 
-                            <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" Margin="0,3">
-                                <TextBox Text="{Binding V275CurrentImage.Image.PixelWidth, Mode=OneWay}"
-                                     Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
-                                <TextBox Margin="0" BorderThickness="0" Text="X" IsHitTestVisible="False"/>
-                                <TextBox Text="{Binding V275CurrentImage.Image.PixelHeight, Mode=OneWay}"
-                                     Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="" md:HintAssist.IsFloating="True" IsHitTestVisible="False"/>
+                            <DockPanel
+                                Margin="0,3"
+                                VerticalAlignment="Top"
+                                DockPanel.Dock="Top">
+                                <TextBox
+                                    Width="40"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                                    md:HintAssist.Hint="Pixels"
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding V275CurrentImage.Image.PixelWidth, Mode=OneWay}" />
+                                <TextBox
+                                    Margin="0"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="X" />
+                                <TextBox
+                                    Width="40"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.Hint=""
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding V275CurrentImage.Image.PixelHeight, Mode=OneWay}" />
                             </DockPanel>
 
-                            <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" Margin="0,3">
-                                <TextBox Text="{Binding V275CurrentImage.Image.DpiX, Mode=OneWay, StringFormat=N, Converter={StaticResource double2String}}"
-                                     Width="40" BorderThickness="0" HorizontalContentAlignment="Center" 
-                                     md:HintAssist.Hint="DPI" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
-                                <TextBox Margin="0" BorderThickness="0" Text="X" IsHitTestVisible="False"/>
-                                <TextBox Text="{Binding V275CurrentImage.Image.DpiY, Mode=OneWay, StringFormat=N, Converter={StaticResource double2String}}"
-                                      Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="" md:HintAssist.IsFloating="True" IsHitTestVisible="False"/>
+                            <DockPanel
+                                Margin="0,3"
+                                VerticalAlignment="Top"
+                                DockPanel.Dock="Top">
+                                <TextBox
+                                    Width="40"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                                    md:HintAssist.Hint="DPI"
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding V275CurrentImage.Image.DpiX, Mode=OneWay, StringFormat=N, Converter={StaticResource double2String}}" />
+                                <TextBox
+                                    Margin="0"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="X" />
+                                <TextBox
+                                    Width="40"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.Hint=""
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding V275CurrentImage.Image.DpiY, Mode=OneWay, StringFormat=N, Converter={StaticResource double2String}}" />
                             </DockPanel>
 
-                            <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" Margin="0,3">
-                                <TextBox Text="{Binding V275CurrentImage.ImageWidth, Mode=OneWay, StringFormat=N2}"
-                                     Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="Inches" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
-                                <TextBox Margin="0" BorderThickness="0" Text="X" IsHitTestVisible="False"/>
-                                <TextBox Text="{Binding V275CurrentImage.ImageHeight, Mode=OneWay, StringFormat=N2}"
-                                      Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="" md:HintAssist.IsFloating="True" IsHitTestVisible="False"/>
+                            <DockPanel
+                                Margin="0,3"
+                                VerticalAlignment="Top"
+                                DockPanel.Dock="Top">
+                                <TextBox
+                                    Width="40"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                                    md:HintAssist.Hint="Inches"
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding V275CurrentImage.ImageWidth, Mode=OneWay, StringFormat=N2}" />
+                                <TextBox
+                                    Margin="0"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="X" />
+                                <TextBox
+                                    Width="40"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.Hint=""
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding V275CurrentImage.ImageHeight, Mode=OneWay, StringFormat=N2}" />
                             </DockPanel>
 
                         </DockPanel>
                     </GroupBox>
 
-                    <!--Printer-->
-                    <GroupBox DockPanel.Dock="Top" VerticalAlignment="Top" Margin="3" Padding="3"
-                              Background="{DynamicResource MahApps.Brushes.ThemeBackground}" 
-                              Style="{StaticResource MaterialDesignCardGroupBox}"
-                            md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                            md:ColorZoneAssist.Mode="Custom">
+                    <!--  Printer  -->
+                    <GroupBox
+                        Margin="3"
+                        Padding="3"
+                        VerticalAlignment="Top"
+                        md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                        md:ColorZoneAssist.Mode="Custom"
+                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                        DockPanel.Dock="Top"
+                        Style="{StaticResource MaterialDesignCardGroupBox}">
 
                         <GroupBox.Header>
                             <DockPanel Margin="-5">
-                                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="2,1">
-                                    <TextBlock Text="Printer" FontSize="{DynamicResource MahApps.Font.Size.Tooltip}"/>
+                                <md:Card
+                                    Padding="2,1"
+                                    HorizontalAlignment="Left"
+                                    Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                                    <TextBlock FontSize="{DynamicResource MahApps.Font.Size.Tooltip}" Text="Printer" />
                                 </md:Card>
                             </DockPanel>
                         </GroupBox.Header>
 
                         <DockPanel Margin="0,6,0,0">
 
-                            <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,3">
-                                <TextBox Text="{Binding V275CurrentImage.Printer2ImageTotalPixelDeviation, Mode=OneWay}"
-                                         BorderThickness="0" HorizontalContentAlignment="Center"
-                                         md:HintAssist.Hint="Total Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
+                            <DockPanel
+                                Margin="0,3"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Top"
+                                DockPanel.Dock="Top">
+                                <TextBox
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                                    md:HintAssist.Hint="Total Pixels"
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding V275CurrentImage.Printer2ImageTotalPixelDeviation, Mode=OneWay}" />
                             </DockPanel>
 
-                            <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" Margin="0,3">
-                                <TextBox Text="{Binding V275CurrentImage.DeviationWidth, Mode=OneWay}"
-                                         Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                         md:HintAssist.Hint="Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
-                                <TextBox Margin="0" BorderThickness="0" Text="X" IsHitTestVisible="False"/>
-                                <TextBox Text="{Binding V275CurrentImage.DeviationHeight, Mode=OneWay}"
-                                          Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                         md:HintAssist.Hint="" md:HintAssist.IsFloating="True" IsHitTestVisible="False"/>
+                            <DockPanel
+                                Margin="0,3"
+                                VerticalAlignment="Top"
+                                DockPanel.Dock="Top">
+                                <TextBox
+                                    Width="40"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                                    md:HintAssist.Hint="Pixels"
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding V275CurrentImage.DeviationWidth, Mode=OneWay}" />
+                                <TextBox
+                                    Margin="0"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="X" />
+                                <TextBox
+                                    Width="40"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.Hint=""
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding V275CurrentImage.DeviationHeight, Mode=OneWay}" />
                             </DockPanel>
 
 
@@ -719,25 +1157,37 @@
                         </DockPanel>
                     </GroupBox>
 
-                    <!--V5-->
-                    <GroupBox DockPanel.Dock="Top" VerticalAlignment="Top" Margin="3" Padding="3"
-                              Background="{DynamicResource MahApps.Brushes.ThemeBackground}" 
-                              Style="{StaticResource MaterialDesignCardGroupBox}"
-                            md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                            md:ColorZoneAssist.Mode="Custom">
+                    <!--  V5  -->
+                    <GroupBox
+                        Margin="3"
+                        Padding="3"
+                        VerticalAlignment="Top"
+                        md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                        md:ColorZoneAssist.Mode="Custom"
+                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                        DockPanel.Dock="Top"
+                        Style="{StaticResource MaterialDesignCardGroupBox}">
 
                         <GroupBox.Header>
                             <DockPanel Margin="-5">
-                                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="2,1">
-                                    <TextBlock Text="V5" FontSize="{DynamicResource MahApps.Font.Size.Tooltip}"/>
+                                <md:Card
+                                    Padding="2,1"
+                                    HorizontalAlignment="Left"
+                                    Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                                    <TextBlock FontSize="{DynamicResource MahApps.Font.Size.Tooltip}" Text="V5" />
                                 </md:Card>
                             </DockPanel>
                         </GroupBox.Header>
 
                         <DockPanel Margin="0,6,0,0">
-                            <TextBox Text="{Binding V275CurrentImage.V52ImageTotalPixelDeviation, Mode=OneWay}"
-                                         BorderThickness="0" HorizontalContentAlignment="Center"
-                                         md:HintAssist.Hint="Total Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
+                            <TextBox
+                                HorizontalContentAlignment="Center"
+                                md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                                md:HintAssist.Hint="Total Pixels"
+                                md:HintAssist.IsFloating="True"
+                                BorderThickness="0"
+                                IsHitTestVisible="False"
+                                Text="{Binding V275CurrentImage.V52ImageTotalPixelDeviation, Mode=OneWay}" />
                         </DockPanel>
 
                     </GroupBox>
@@ -747,17 +1197,22 @@
             </DockPanel>
         </GroupBox>
 
-        
-        <!--V5 Stored Image-->
-        <GroupBox d:Visibility="Visible" Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top" 
-                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                md:ColorZoneAssist.Mode="Custom">
+
+        <!--  V5 Stored Image  -->
+        <GroupBox
+            Margin="3"
+            Padding="3"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            d:Visibility="Visible"
+            md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+            md:ColorZoneAssist.Mode="Custom">
             <GroupBox.Style>
-                <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
-                    <Setter Property="Visibility" Value="Collapsed"/>
+                <Style BasedOn="{StaticResource MaterialDesignCardGroupBox}" TargetType="{x:Type GroupBox}">
+                    <Setter Property="Visibility" Value="Collapsed" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding V5StoredImage, Converter={StaticResource objectIsNull}}" Value="False">
-                            <Setter Property="Visibility" Value="Visible"/>
+                        <DataTrigger Binding="{Binding V5StoredImage, Converter={StaticResource IsNullOrEmpty}}" Value="False">
+                            <Setter Property="Visibility" Value="Visible" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -767,13 +1222,13 @@
 
                 <DockPanel Margin="-5">
 
-                    <!--Save Image-->
+                    <!--  Save Image  -->
                     <Button Command="{Binding SaveCommand}">
                         <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
-                                <Setter Property="CommandParameter" Value="v5Stored"/>
-                                <Setter Property="ToolTip" Value="Save the stored image."/>
-                                <Setter Property="Visibility" Value="Visible"/>
+                            <Style BasedOn="{StaticResource GroupHeaderCirlceButton}" TargetType="{x:Type Button}">
+                                <Setter Property="CommandParameter" Value="v5Stored" />
+                                <Setter Property="ToolTip" Value="Save the stored image." />
+                                <Setter Property="Visibility" Value="Visible" />
 
                                 <Style.Triggers>
                                     <!--<DataTrigger Binding="{Binding IsV5ImageStored}" Value="False">
@@ -781,22 +1236,29 @@
                                         <Setter Property="ToolTip" Value="Save the current image."/>
                                     </DataTrigger>-->
 
-                                    <DataTrigger Binding="{Binding V5StoredImage, Converter={StaticResource objectIsNull}}" Value="True">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    <DataTrigger Binding="{Binding V5StoredImage, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                                        <Setter Property="Visibility" Value="Collapsed" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </Button.Style>
 
-                        <iconPacks:PackIconMaterial Kind="ContentSave" Height="14" Width="14"/>
+                        <iconPacks:PackIconMaterial
+                            Width="14"
+                            Height="14"
+                            Kind="ContentSave" />
                     </Button>
 
-                    <!--Title-->
-                    <md:Card Background="{DynamicResource V5_Brush}" HorizontalAlignment="Left" Padding="4,1" Margin="6,0">
-                        <TextBlock Foreground="White" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}">
+                    <!--  Title  -->
+                    <md:Card
+                        Margin="6,0"
+                        Padding="4,1"
+                        HorizontalAlignment="Left"
+                        Background="{DynamicResource V5_Brush}">
+                        <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Foreground="White">
                             <TextBlock.Style>
-                                <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource MahApps.Styles.TextBlock}">
-                                    <Setter Property="Text" Value="Stored Image"/>
+                                <Style BasedOn="{StaticResource MahApps.Styles.TextBlock}" TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Text" Value="Stored Image" />
                                     <!--<Style.Triggers>
                                         <DataTrigger Binding="{Binding IsV5ImageStored}" Value="True">
                                             <Setter Property="Text" Value="Stored Image"/>
@@ -809,20 +1271,25 @@
 
                     <DockPanel HorizontalAlignment="Right">
 
-                        <TextBlock VerticalAlignment="Center" Text="{Binding V5StoredImage.UID, Converter={StaticResource shortenUID}}"
-                                   ToolTip="{Binding V5StoredImage.UID}"/>
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            Text="{Binding V5StoredImage.UID, Converter={StaticResource shortenUID}}"
+                            ToolTip="{Binding V5StoredImage.UID}" />
 
                         <Button Click="btnShowDetailsToggle">
 
-                            <iconPacks:PackIconMaterial Kind="InformationVariant" Height="14" Width="14"/>
+                            <iconPacks:PackIconMaterial
+                                Width="14"
+                                Height="14"
+                                Kind="InformationVariant" />
 
                             <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
-                                    <Setter Property="ToolTip" Value="Show printer area overlay."/>
+                                <Style BasedOn="{StaticResource GroupHeaderCirlceButton}" TargetType="{x:Type Button}">
+                                    <Setter Property="ToolTip" Value="Show printer area overlay." />
 
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding ShowPrinterAreaOverSource}" Value="True">
-                                            <Setter Property="ToolTip" Value="Hide printer area overlay."/>
+                                            <Setter Property="ToolTip" Value="Hide printer area overlay." />
                                         </DataTrigger>
 
                                     </Style.Triggers>
@@ -838,138 +1305,265 @@
 
             <DockPanel Background="Black">
 
-                <Grid VerticalAlignment="Top" Margin="3" MouseDown="V5StoredImage_MouseDown">
-                    <Image Name="V5StoredImage" Source="{Binding V5StoredImage.ImageLow, Mode=OneWay}" 
-                       Margin="0" MaxHeight="400" Width="400"
-                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+                <Grid
+                    Margin="3"
+                    VerticalAlignment="Top"
+                    MouseDown="V5StoredImage_MouseDown">
+                    <Image
+                        Name="V5StoredImage"
+                        Width="400"
+                        MaxHeight="400"
+                        Margin="0"
+                        RenderOptions.BitmapScalingMode="NearestNeighbor"
+                        Source="{Binding V5StoredImage.ImageLow, Mode=OneWay}" />
 
-                    <Image Name="V5StoredImageOverlay" Source="{Binding V5StoredImageOverlay}" 
-                       Margin="0" MaxHeight="400" Width="400"
-                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+                    <Image
+                        Name="V5StoredImageOverlay"
+                        Width="400"
+                        MaxHeight="400"
+                        Margin="0"
+                        RenderOptions.BitmapScalingMode="NearestNeighbor"
+                        Source="{Binding V5StoredImageOverlay}" />
                 </Grid>
 
                 <DockPanel>
                     <DockPanel.Style>
                         <Style TargetType="{x:Type DockPanel}">
-                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Setter Property="Visibility" Value="Collapsed" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding ShowDetails}" Value="True">
-                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </DockPanel.Style>
 
-                    <!--Image Details-->
-                    <GroupBox DockPanel.Dock="Top" VerticalAlignment="Top" Margin="3" Padding="3"
-                              Background="{DynamicResource MahApps.Brushes.ThemeBackground}" 
-                  Style="{StaticResource MaterialDesignCardGroupBox}"
-                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                md:ColorZoneAssist.Mode="Custom">
+                    <!--  Image Details  -->
+                    <GroupBox
+                        Margin="3"
+                        Padding="3"
+                        VerticalAlignment="Top"
+                        md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                        md:ColorZoneAssist.Mode="Custom"
+                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                        DockPanel.Dock="Top"
+                        Style="{StaticResource MaterialDesignCardGroupBox}">
                         <GroupBox.Header>
                             <DockPanel Margin="-5">
-                                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="1">
-                                    <TextBlock Text="Image Details" FontSize="{DynamicResource MahApps.Font.Size.Tooltip}"/>
+                                <md:Card
+                                    Padding="1"
+                                    HorizontalAlignment="Left"
+                                    Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                                    <TextBlock FontSize="{DynamicResource MahApps.Font.Size.Tooltip}" Text="Image Details" />
                                 </md:Card>
                             </DockPanel>
                         </GroupBox.Header>
 
                         <DockPanel Margin="0,6,0,0">
 
-                            <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,3">
-                                <TextBox Text="{Binding V5StoredImage.ImageTotalPixels, Mode=OneWay}"
-                                     BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="Total Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
+                            <DockPanel
+                                Margin="0,3"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Top"
+                                DockPanel.Dock="Top">
+                                <TextBox
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                                    md:HintAssist.Hint="Total Pixels"
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding V5StoredImage.ImageTotalPixels, Mode=OneWay}" />
                             </DockPanel>
 
-                            <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" Margin="0,3">
-                                <TextBox Text="{Binding V5StoredImage.Image.PixelWidth, Mode=OneWay}"
-                                     Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
-                                <TextBox Margin="0" BorderThickness="0" Text="X" IsHitTestVisible="False"/>
-                                <TextBox Text="{Binding V5StoredImage.Image.PixelHeight, Mode=OneWay}"
-                                     Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="" md:HintAssist.IsFloating="True" IsHitTestVisible="False"/>
+                            <DockPanel
+                                Margin="0,3"
+                                VerticalAlignment="Top"
+                                DockPanel.Dock="Top">
+                                <TextBox
+                                    Width="40"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                                    md:HintAssist.Hint="Pixels"
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding V5StoredImage.Image.PixelWidth, Mode=OneWay}" />
+                                <TextBox
+                                    Margin="0"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="X" />
+                                <TextBox
+                                    Width="40"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.Hint=""
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding V5StoredImage.Image.PixelHeight, Mode=OneWay}" />
                             </DockPanel>
 
-                            <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" Margin="0,3">
-                                <TextBox Text="{Binding V5StoredImage.Image.DpiX, Mode=OneWay, StringFormat=N, Converter={StaticResource double2String}}"
-                                     Width="40" BorderThickness="0" HorizontalContentAlignment="Center" 
-                                     md:HintAssist.Hint="DPI" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
-                                <TextBox Margin="0" BorderThickness="0" Text="X" IsHitTestVisible="False"/>
-                                <TextBox Text="{Binding V5StoredImage.Image.DpiY, Mode=OneWay, StringFormat=N, Converter={StaticResource double2String}}"
-                                      Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="" md:HintAssist.IsFloating="True" IsHitTestVisible="False"/>
+                            <DockPanel
+                                Margin="0,3"
+                                VerticalAlignment="Top"
+                                DockPanel.Dock="Top">
+                                <TextBox
+                                    Width="40"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                                    md:HintAssist.Hint="DPI"
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding V5StoredImage.Image.DpiX, Mode=OneWay, StringFormat=N, Converter={StaticResource double2String}}" />
+                                <TextBox
+                                    Margin="0"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="X" />
+                                <TextBox
+                                    Width="40"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.Hint=""
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding V5StoredImage.Image.DpiY, Mode=OneWay, StringFormat=N, Converter={StaticResource double2String}}" />
                             </DockPanel>
 
-                            <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" Margin="0,3">
-                                <TextBox Text="{Binding V5StoredImage.ImageWidth, Mode=OneWay, StringFormat=N2}"
-                                     Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="Inches" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
-                                <TextBox Margin="0" BorderThickness="0" Text="X" IsHitTestVisible="False"/>
-                                <TextBox Text="{Binding V5StoredImage.ImageHeight, Mode=OneWay, StringFormat=N2}"
-                                      Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="" md:HintAssist.IsFloating="True" IsHitTestVisible="False"/>
+                            <DockPanel
+                                Margin="0,3"
+                                VerticalAlignment="Top"
+                                DockPanel.Dock="Top">
+                                <TextBox
+                                    Width="40"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                                    md:HintAssist.Hint="Inches"
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding V5StoredImage.ImageWidth, Mode=OneWay, StringFormat=N2}" />
+                                <TextBox
+                                    Margin="0"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="X" />
+                                <TextBox
+                                    Width="40"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.Hint=""
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding V5StoredImage.ImageHeight, Mode=OneWay, StringFormat=N2}" />
                             </DockPanel>
 
                         </DockPanel>
                     </GroupBox>
 
-                    <!--Printer-->
-                    <GroupBox DockPanel.Dock="Top" VerticalAlignment="Top" Margin="3" Padding="3"
-                              Background="{DynamicResource MahApps.Brushes.ThemeBackground}" 
-                  Style="{StaticResource MaterialDesignCardGroupBox}"
-                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                md:ColorZoneAssist.Mode="Custom">
+                    <!--  Printer  -->
+                    <GroupBox
+                        Margin="3"
+                        Padding="3"
+                        VerticalAlignment="Top"
+                        md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                        md:ColorZoneAssist.Mode="Custom"
+                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                        DockPanel.Dock="Top"
+                        Style="{StaticResource MaterialDesignCardGroupBox}">
 
                         <GroupBox.Header>
                             <DockPanel Margin="-5">
-                                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="2,1">
-                                    <TextBlock Text="Printer" FontSize="{DynamicResource MahApps.Font.Size.Tooltip}"/>
+                                <md:Card
+                                    Padding="2,1"
+                                    HorizontalAlignment="Left"
+                                    Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                                    <TextBlock FontSize="{DynamicResource MahApps.Font.Size.Tooltip}" Text="Printer" />
                                 </md:Card>
                             </DockPanel>
                         </GroupBox.Header>
 
                         <DockPanel Margin="0,6,0,0">
 
-                            <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,3">
-                                <TextBox Text="{Binding V5StoredImage.Printer2ImageTotalPixelDeviation, Mode=OneWay}"
-                                         BorderThickness="0" HorizontalContentAlignment="Center"
-                                         md:HintAssist.Hint="Total Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
+                            <DockPanel
+                                Margin="0,3"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Top"
+                                DockPanel.Dock="Top">
+                                <TextBox
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                                    md:HintAssist.Hint="Total Pixels"
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding V5StoredImage.Printer2ImageTotalPixelDeviation, Mode=OneWay}" />
                             </DockPanel>
 
-                            <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" Margin="0,3">
-                                <TextBox Text="{Binding V5StoredImage.DeviationWidth, Mode=OneWay}"
-                                         Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                         md:HintAssist.Hint="Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
-                                <TextBox Margin="0" BorderThickness="0" Text="X" IsHitTestVisible="False"/>
-                                <TextBox Text="{Binding V5StoredImage.DeviationHeight, Mode=OneWay}"
-                                          Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                         md:HintAssist.Hint="" md:HintAssist.IsFloating="True" IsHitTestVisible="False"/>
+                            <DockPanel
+                                Margin="0,3"
+                                VerticalAlignment="Top"
+                                DockPanel.Dock="Top">
+                                <TextBox
+                                    Width="40"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                                    md:HintAssist.Hint="Pixels"
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding V5StoredImage.DeviationWidth, Mode=OneWay}" />
+                                <TextBox
+                                    Margin="0"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="X" />
+                                <TextBox
+                                    Width="40"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.Hint=""
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding V5StoredImage.DeviationHeight, Mode=OneWay}" />
                             </DockPanel>
 
                         </DockPanel>
                     </GroupBox>
 
-                    <!--V5-->
-                    <GroupBox DockPanel.Dock="Top" VerticalAlignment="Top" Margin="3" Padding="3" 
-                              Background="{DynamicResource MahApps.Brushes.ThemeBackground}" 
-                  Style="{StaticResource MaterialDesignCardGroupBox}"
-                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                md:ColorZoneAssist.Mode="Custom">
+                    <!--  V5  -->
+                    <GroupBox
+                        Margin="3"
+                        Padding="3"
+                        VerticalAlignment="Top"
+                        md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                        md:ColorZoneAssist.Mode="Custom"
+                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                        DockPanel.Dock="Top"
+                        Style="{StaticResource MaterialDesignCardGroupBox}">
 
                         <GroupBox.Header>
                             <DockPanel Margin="-5">
-                                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="2,1">
-                                    <TextBlock Text="V5" FontSize="{DynamicResource MahApps.Font.Size.Tooltip}"/>
+                                <md:Card
+                                    Padding="2,1"
+                                    HorizontalAlignment="Left"
+                                    Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                                    <TextBlock FontSize="{DynamicResource MahApps.Font.Size.Tooltip}" Text="V5" />
                                 </md:Card>
                             </DockPanel>
                         </GroupBox.Header>
 
                         <DockPanel Margin="0,6,0,0">
-                            <TextBox Text="{Binding V5StoredImage.V52ImageTotalPixelDeviation, Mode=OneWay}"
-                                         BorderThickness="0" HorizontalContentAlignment="Center"
-                                         md:HintAssist.Hint="Total Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
+                            <TextBox
+                                HorizontalContentAlignment="Center"
+                                md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                                md:HintAssist.Hint="Total Pixels"
+                                md:HintAssist.IsFloating="True"
+                                BorderThickness="0"
+                                IsHitTestVisible="False"
+                                Text="{Binding V5StoredImage.V52ImageTotalPixelDeviation, Mode=OneWay}" />
                         </DockPanel>
 
                     </GroupBox>
@@ -979,16 +1573,21 @@
 
         </GroupBox>
 
-        <!--V5 Current Image-->
-        <GroupBox d:Visibility="Visible" Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top" 
-                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                md:ColorZoneAssist.Mode="Custom">
+        <!--  V5 Current Image  -->
+        <GroupBox
+            Margin="3"
+            Padding="3"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            d:Visibility="Visible"
+            md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+            md:ColorZoneAssist.Mode="Custom">
             <GroupBox.Style>
-                <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource MaterialDesignCardGroupBox}">
-                    <Setter Property="Visibility" Value="Collapsed"/>
+                <Style BasedOn="{StaticResource MaterialDesignCardGroupBox}" TargetType="{x:Type GroupBox}">
+                    <Setter Property="Visibility" Value="Collapsed" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding V5CurrentImage, Converter={StaticResource objectIsNull}}" Value="False">
-                            <Setter Property="Visibility" Value="Visible"/>
+                        <DataTrigger Binding="{Binding V5CurrentImage, Converter={StaticResource IsNullOrEmpty}}" Value="False">
+                            <Setter Property="Visibility" Value="Visible" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -998,13 +1597,13 @@
 
                 <DockPanel Margin="-5">
 
-                    <!--Save Image-->
+                    <!--  Save Image  -->
                     <Button Command="{Binding SaveCommand}">
                         <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
-                                <Setter Property="CommandParameter" Value="v5Stored"/>
-                                <Setter Property="ToolTip" Value="Save the stored image."/>
-                                <Setter Property="Visibility" Value="Visible"/>
+                            <Style BasedOn="{StaticResource GroupHeaderCirlceButton}" TargetType="{x:Type Button}">
+                                <Setter Property="CommandParameter" Value="v5Stored" />
+                                <Setter Property="ToolTip" Value="Save the stored image." />
+                                <Setter Property="Visibility" Value="Visible" />
 
                                 <Style.Triggers>
                                     <!--<DataTrigger Binding="{Binding IsV5ImageStored}" Value="False">
@@ -1012,22 +1611,29 @@
                                         <Setter Property="ToolTip" Value="Save the current image."/>
                                     </DataTrigger>-->
 
-                                    <DataTrigger Binding="{Binding V5CurrentImage, Converter={StaticResource objectIsNull}}" Value="True">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    <DataTrigger Binding="{Binding V5CurrentImage, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                                        <Setter Property="Visibility" Value="Collapsed" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </Button.Style>
 
-                        <iconPacks:PackIconMaterial Kind="ContentSave" Height="14" Width="14"/>
+                        <iconPacks:PackIconMaterial
+                            Width="14"
+                            Height="14"
+                            Kind="ContentSave" />
                     </Button>
 
-                    <!--Title-->
-                    <md:Card Background="{DynamicResource V5_Brush}" HorizontalAlignment="Left" Padding="4,1" Margin="6,0">
-                        <TextBlock Foreground="White" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}">
+                    <!--  Title  -->
+                    <md:Card
+                        Margin="6,0"
+                        Padding="4,1"
+                        HorizontalAlignment="Left"
+                        Background="{DynamicResource V5_Brush}">
+                        <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Foreground="White">
                             <TextBlock.Style>
-                                <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource MahApps.Styles.TextBlock}">
-                                    <Setter Property="Text" Value="Current Image"/>
+                                <Style BasedOn="{StaticResource MahApps.Styles.TextBlock}" TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Text" Value="Current Image" />
                                     <!--<Style.Triggers>
                                         <DataTrigger Binding="{Binding IsV5ImageStored}" Value="True">
                                             <Setter Property="Text" Value="Stored Image"/>
@@ -1040,20 +1646,25 @@
 
                     <DockPanel HorizontalAlignment="Right">
 
-                        <TextBlock VerticalAlignment="Center" Text="{Binding V5CurrentImage.UID, Converter={StaticResource shortenUID}}"
-                                   ToolTip="{Binding V5CurrentImage.UID}"/>
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            Text="{Binding V5CurrentImage.UID, Converter={StaticResource shortenUID}}"
+                            ToolTip="{Binding V5CurrentImage.UID}" />
 
                         <Button Click="btnShowDetailsToggle">
 
-                            <iconPacks:PackIconMaterial Kind="InformationVariant" Height="14" Width="14"/>
+                            <iconPacks:PackIconMaterial
+                                Width="14"
+                                Height="14"
+                                Kind="InformationVariant" />
 
                             <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
-                                    <Setter Property="ToolTip" Value="Show printer area overlay."/>
+                                <Style BasedOn="{StaticResource GroupHeaderCirlceButton}" TargetType="{x:Type Button}">
+                                    <Setter Property="ToolTip" Value="Show printer area overlay." />
 
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding ShowPrinterAreaOverSource}" Value="True">
-                                            <Setter Property="ToolTip" Value="Hide printer area overlay."/>
+                                            <Setter Property="ToolTip" Value="Hide printer area overlay." />
                                         </DataTrigger>
 
                                     </Style.Triggers>
@@ -1069,138 +1680,265 @@
 
             <DockPanel Background="Black">
 
-                <Grid VerticalAlignment="Top" Margin="3" MouseDown="V5CurrentImage_MouseDown">
-                    <Image Name="V5CurrentImage" Source="{Binding V5CurrentImage.ImageLow, Mode=OneWay}" 
-                       Margin="0" MaxHeight="400" Width="400"
-                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+                <Grid
+                    Margin="3"
+                    VerticalAlignment="Top"
+                    MouseDown="V5CurrentImage_MouseDown">
+                    <Image
+                        Name="V5CurrentImage"
+                        Width="400"
+                        MaxHeight="400"
+                        Margin="0"
+                        RenderOptions.BitmapScalingMode="NearestNeighbor"
+                        Source="{Binding V5CurrentImage.ImageLow, Mode=OneWay}" />
 
-                    <Image Name="V5CurrentImageOverlay" Source="{Binding V5CurrentImageOverlay}" 
-                       Margin="0" MaxHeight="400" Width="400"
-                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+                    <Image
+                        Name="V5CurrentImageOverlay"
+                        Width="400"
+                        MaxHeight="400"
+                        Margin="0"
+                        RenderOptions.BitmapScalingMode="NearestNeighbor"
+                        Source="{Binding V5CurrentImageOverlay}" />
                 </Grid>
 
                 <DockPanel>
                     <DockPanel.Style>
                         <Style TargetType="{x:Type DockPanel}">
-                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Setter Property="Visibility" Value="Collapsed" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding ShowDetails}" Value="True">
-                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </DockPanel.Style>
 
-                    <!--Image Details-->
-                    <GroupBox DockPanel.Dock="Top" VerticalAlignment="Top" Margin="3" Padding="3"
-                              Background="{DynamicResource MahApps.Brushes.ThemeBackground}" 
-                              Style="{StaticResource MaterialDesignCardGroupBox}"
-                            md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                            md:ColorZoneAssist.Mode="Custom">
+                    <!--  Image Details  -->
+                    <GroupBox
+                        Margin="3"
+                        Padding="3"
+                        VerticalAlignment="Top"
+                        md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                        md:ColorZoneAssist.Mode="Custom"
+                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                        DockPanel.Dock="Top"
+                        Style="{StaticResource MaterialDesignCardGroupBox}">
                         <GroupBox.Header>
                             <DockPanel Margin="-5">
-                                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="1">
-                                    <TextBlock Text="Image Details" FontSize="{DynamicResource MahApps.Font.Size.Tooltip}"/>
+                                <md:Card
+                                    Padding="1"
+                                    HorizontalAlignment="Left"
+                                    Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                                    <TextBlock FontSize="{DynamicResource MahApps.Font.Size.Tooltip}" Text="Image Details" />
                                 </md:Card>
                             </DockPanel>
                         </GroupBox.Header>
 
                         <DockPanel Margin="0,6,0,0">
 
-                            <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,3">
-                                <TextBox Text="{Binding V5CurrentImage.ImageTotalPixels, Mode=OneWay}"
-                                     BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="Total Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
+                            <DockPanel
+                                Margin="0,3"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Top"
+                                DockPanel.Dock="Top">
+                                <TextBox
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                                    md:HintAssist.Hint="Total Pixels"
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding V5CurrentImage.ImageTotalPixels, Mode=OneWay}" />
                             </DockPanel>
 
-                            <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" Margin="0,3">
-                                <TextBox Text="{Binding V5CurrentImage.Image.PixelWidth, Mode=OneWay}"
-                                     Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
-                                <TextBox Margin="0" BorderThickness="0" Text="X" IsHitTestVisible="False"/>
-                                <TextBox Text="{Binding V5CurrentImage.Image.PixelHeight, Mode=OneWay}"
-                                     Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="" md:HintAssist.IsFloating="True" IsHitTestVisible="False"/>
+                            <DockPanel
+                                Margin="0,3"
+                                VerticalAlignment="Top"
+                                DockPanel.Dock="Top">
+                                <TextBox
+                                    Width="40"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                                    md:HintAssist.Hint="Pixels"
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding V5CurrentImage.Image.PixelWidth, Mode=OneWay}" />
+                                <TextBox
+                                    Margin="0"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="X" />
+                                <TextBox
+                                    Width="40"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.Hint=""
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding V5CurrentImage.Image.PixelHeight, Mode=OneWay}" />
                             </DockPanel>
 
-                            <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" Margin="0,3">
-                                <TextBox Text="{Binding V5CurrentImage.Image.DpiX, Mode=OneWay, StringFormat=N, Converter={StaticResource double2String}}"
-                                     Width="40" BorderThickness="0" HorizontalContentAlignment="Center" 
-                                     md:HintAssist.Hint="DPI" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
-                                <TextBox Margin="0" BorderThickness="0" Text="X" IsHitTestVisible="False"/>
-                                <TextBox Text="{Binding V5CurrentImage.Image.DpiY, Mode=OneWay, StringFormat=N, Converter={StaticResource double2String}}"
-                                      Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="" md:HintAssist.IsFloating="True" IsHitTestVisible="False"/>
+                            <DockPanel
+                                Margin="0,3"
+                                VerticalAlignment="Top"
+                                DockPanel.Dock="Top">
+                                <TextBox
+                                    Width="40"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                                    md:HintAssist.Hint="DPI"
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding V5CurrentImage.Image.DpiX, Mode=OneWay, StringFormat=N, Converter={StaticResource double2String}}" />
+                                <TextBox
+                                    Margin="0"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="X" />
+                                <TextBox
+                                    Width="40"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.Hint=""
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding V5CurrentImage.Image.DpiY, Mode=OneWay, StringFormat=N, Converter={StaticResource double2String}}" />
                             </DockPanel>
 
-                            <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" Margin="0,3">
-                                <TextBox Text="{Binding V5CurrentImage.ImageWidth, Mode=OneWay, StringFormat=N2}"
-                                     Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="Inches" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
-                                <TextBox Margin="0" BorderThickness="0" Text="X" IsHitTestVisible="False"/>
-                                <TextBox Text="{Binding V5CurrentImage.ImageHeight, Mode=OneWay, StringFormat=N2}"
-                                      Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                     md:HintAssist.Hint="" md:HintAssist.IsFloating="True" IsHitTestVisible="False"/>
+                            <DockPanel
+                                Margin="0,3"
+                                VerticalAlignment="Top"
+                                DockPanel.Dock="Top">
+                                <TextBox
+                                    Width="40"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                                    md:HintAssist.Hint="Inches"
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding V5CurrentImage.ImageWidth, Mode=OneWay, StringFormat=N2}" />
+                                <TextBox
+                                    Margin="0"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="X" />
+                                <TextBox
+                                    Width="40"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.Hint=""
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding V5CurrentImage.ImageHeight, Mode=OneWay, StringFormat=N2}" />
                             </DockPanel>
 
                         </DockPanel>
                     </GroupBox>
 
-                    <!--Printer-->
-                    <GroupBox DockPanel.Dock="Top" VerticalAlignment="Top" Margin="3" Padding="3"
-                              Background="{DynamicResource MahApps.Brushes.ThemeBackground}" 
-                  Style="{StaticResource MaterialDesignCardGroupBox}"
-                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                md:ColorZoneAssist.Mode="Custom">
+                    <!--  Printer  -->
+                    <GroupBox
+                        Margin="3"
+                        Padding="3"
+                        VerticalAlignment="Top"
+                        md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                        md:ColorZoneAssist.Mode="Custom"
+                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                        DockPanel.Dock="Top"
+                        Style="{StaticResource MaterialDesignCardGroupBox}">
 
                         <GroupBox.Header>
                             <DockPanel Margin="-5">
-                                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="2,1">
-                                    <TextBlock Text="Printer" FontSize="{DynamicResource MahApps.Font.Size.Tooltip}"/>
+                                <md:Card
+                                    Padding="2,1"
+                                    HorizontalAlignment="Left"
+                                    Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                                    <TextBlock FontSize="{DynamicResource MahApps.Font.Size.Tooltip}" Text="Printer" />
                                 </md:Card>
                             </DockPanel>
                         </GroupBox.Header>
 
                         <DockPanel Margin="0,6,0,0">
 
-                            <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,3">
-                                <TextBox Text="{Binding V5CurrentImage.Printer2ImageTotalPixelDeviation, Mode=OneWay}"
-                                         BorderThickness="0" HorizontalContentAlignment="Center"
-                                         md:HintAssist.Hint="Total Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
+                            <DockPanel
+                                Margin="0,3"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Top"
+                                DockPanel.Dock="Top">
+                                <TextBox
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                                    md:HintAssist.Hint="Total Pixels"
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding V5CurrentImage.Printer2ImageTotalPixelDeviation, Mode=OneWay}" />
                             </DockPanel>
 
-                            <DockPanel DockPanel.Dock="Top" VerticalAlignment="Top" Margin="0,3">
-                                <TextBox Text="{Binding V5CurrentImage.DeviationWidth, Mode=OneWay}"
-                                         Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                         md:HintAssist.Hint="Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
-                                <TextBox Margin="0" BorderThickness="0" Text="X" IsHitTestVisible="False"/>
-                                <TextBox Text="{Binding V5CurrentImage.DeviationHeight, Mode=OneWay}"
-                                          Width="40" BorderThickness="0" HorizontalContentAlignment="Center"
-                                         md:HintAssist.Hint="" md:HintAssist.IsFloating="True" IsHitTestVisible="False"/>
+                            <DockPanel
+                                Margin="0,3"
+                                VerticalAlignment="Top"
+                                DockPanel.Dock="Top">
+                                <TextBox
+                                    Width="40"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                                    md:HintAssist.Hint="Pixels"
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding V5CurrentImage.DeviationWidth, Mode=OneWay}" />
+                                <TextBox
+                                    Margin="0"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="X" />
+                                <TextBox
+                                    Width="40"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.Hint=""
+                                    md:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding V5CurrentImage.DeviationHeight, Mode=OneWay}" />
                             </DockPanel>
 
                         </DockPanel>
                     </GroupBox>
 
-                    <!--V5-->
-                    <GroupBox DockPanel.Dock="Top" VerticalAlignment="Top" Margin="3" Padding="3" 
-                              Background="{DynamicResource MahApps.Brushes.ThemeBackground}" 
-                  Style="{StaticResource MaterialDesignCardGroupBox}"
-                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                md:ColorZoneAssist.Mode="Custom">
+                    <!--  V5  -->
+                    <GroupBox
+                        Margin="3"
+                        Padding="3"
+                        VerticalAlignment="Top"
+                        md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+                        md:ColorZoneAssist.Mode="Custom"
+                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                        DockPanel.Dock="Top"
+                        Style="{StaticResource MaterialDesignCardGroupBox}">
 
                         <GroupBox.Header>
                             <DockPanel Margin="-5">
-                                <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Left" Padding="2,1">
-                                    <TextBlock Text="V5" FontSize="{DynamicResource MahApps.Font.Size.Tooltip}"/>
+                                <md:Card
+                                    Padding="2,1"
+                                    HorizontalAlignment="Left"
+                                    Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                                    <TextBlock FontSize="{DynamicResource MahApps.Font.Size.Tooltip}" Text="V5" />
                                 </md:Card>
                             </DockPanel>
                         </GroupBox.Header>
 
                         <DockPanel Margin="0,6,0,0">
-                            <TextBox Text="{Binding V5CurrentImage.V52ImageTotalPixelDeviation, Mode=OneWay}"
-                                         BorderThickness="0" HorizontalContentAlignment="Center"
-                                         md:HintAssist.Hint="Total Pixels" md:HintAssist.IsFloating="True" IsHitTestVisible="False" md:HintAssist.FloatingHintHorizontalAlignment="Left"/>
+                            <TextBox
+                                HorizontalContentAlignment="Center"
+                                md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                                md:HintAssist.Hint="Total Pixels"
+                                md:HintAssist.IsFloating="True"
+                                BorderThickness="0"
+                                IsHitTestVisible="False"
+                                Text="{Binding V5CurrentImage.V52ImageTotalPixelDeviation, Mode=OneWay}" />
                         </DockPanel>
 
                     </GroupBox>
@@ -1210,6 +1948,6 @@
 
         </GroupBox>
 
-        
+
     </DockPanel>
 </UserControl>

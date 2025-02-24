@@ -5,21 +5,13 @@ using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
 using MahApps.Metro.Controls.Dialogs;
 using Newtonsoft.Json;
-using Org.BouncyCastle.Bcpg.OpenPgp;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text.Json.Serialization;
-using System.Threading;
 using System.Threading.Tasks;
 using V275_REST_Lib;
 using V275_REST_Lib.Models;
-using V275_REST_Lib.Models;
 
 namespace LabelVal.V275.ViewModels;
-
-
 
 [JsonObject(MemberSerialization.OptIn)]
 public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessage<ImageRollEntry>>
@@ -39,7 +31,7 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
             return;
         }
 
-        App.Current.Dispatcher.BeginInvoke(() => Controller.ChangeJob(value.name));
+        _ = App.Current.Dispatcher.BeginInvoke(() => Controller.ChangeJob(value.name));
     }
 
     [ObservableProperty] private ImageRollEntry selectedImageRoll;
@@ -53,7 +45,7 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
 
         Controller = new Controller(host, systemPort, nodeNumber, userName, password, dir);
         Controller.PropertyChanged += Controller_PropertyChanged;
-        
+
         IsActive = true;
     }
 
@@ -68,7 +60,7 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
                 return;
             }
 
-            if(Controller.JobName != SelectedJob?.name)
+            if (Controller.JobName != SelectedJob?.name)
                 systemChangedJob = true;
 
             SelectedJob = Controller.Jobs.jobs.FirstOrDefault((e) => e.name == Controller.JobName);

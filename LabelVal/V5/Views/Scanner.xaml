@@ -16,7 +16,6 @@
 
     <UserControl.Resources>
         <converters:Bytes2BitmapImage x:Key="bytesToImage" />
-        <converters:NumberGreaterThenZero x:Key="greaterThanZero" />
         <converters:IPAddressSplitConverter x:Key="ipAddressSplitConverter" />
     </UserControl.Resources>
 
@@ -546,7 +545,7 @@
                                             <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}"/>
                                         </DataTrigger>-->
 
-                                        <DataTrigger Binding="{Binding JobSlots.Count, Converter={StaticResource greaterThanZero}}" Value="True">
+                                        <DataTrigger Binding="{Binding JobSlots.Count, Converter={StaticResource NumberGreaterThanZero}}" Value="True">
                                             <Setter Property="Visibility" Value="Visible" />
                                         </DataTrigger>
 

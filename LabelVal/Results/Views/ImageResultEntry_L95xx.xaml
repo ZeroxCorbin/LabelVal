@@ -22,9 +22,6 @@
                 <ResourceDictionary Source="ImageDetailsTemplate.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <Converters:ObjectIsNull x:Key="objectIsNull" />
-            <Converters:NumberZeroOrNull x:Key="equalZeroOrNull" />
-
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -33,11 +30,11 @@
             <Style TargetType="DockPanel">
                 <Setter Property="Visibility" Value="Collapsed" />
                 <Style.Triggers>
-                    <DataTrigger Binding="{Binding L95xxStoredSectors.Count, Converter={StaticResource equalZeroOrNull}}" Value="False">
+                    <DataTrigger Binding="{Binding L95xxStoredSectors.Count, Converter={StaticResource NumberZeroOrNull}}" Value="False">
                         <Setter Property="Visibility" Value="Visible" />
                     </DataTrigger>
 
-                    <DataTrigger Binding="{Binding L95xxCurrentSectors.Count, Converter={StaticResource equalZeroOrNull}}" Value="False">
+                    <DataTrigger Binding="{Binding L95xxCurrentSectors.Count, Converter={StaticResource NumberZeroOrNull}}" Value="False">
                         <Setter Property="Visibility" Value="Visible" />
                     </DataTrigger>
                 </Style.Triggers>
@@ -59,7 +56,7 @@
                     <Style TargetType="{x:Type DockPanel}">
                         <Setter Property="Visibility" Value="Collapsed" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding L95xxStoredImage, Converter={StaticResource objectIsNull}}" Value="False">
+                            <DataTrigger Binding="{Binding L95xxStoredImage, Converter={StaticResource IsNullOrEmpty}}" Value="False">
                                 <Setter Property="Visibility" Value="Visible" />
                             </DataTrigger>
                         </Style.Triggers>
@@ -128,7 +125,7 @@
                     <Style TargetType="{x:Type DockPanel}">
                         <Setter Property="Visibility" Value="Collapsed" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding L95xxStoredSectors.Count, Converter={StaticResource equalZeroOrNull}}" Value="False">
+                            <DataTrigger Binding="{Binding L95xxStoredSectors.Count, Converter={StaticResource NumberZeroOrNull}}" Value="False">
                                 <Setter Property="Visibility" Value="Visible" />
                             </DataTrigger>
                         </Style.Triggers>
@@ -203,7 +200,7 @@
                                 <Style BasedOn="{StaticResource MahApps.Styles.ListBox}" TargetType="ListBox">
                                     <Setter Property="Visibility" Value="Visible" />
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding L95xxFocusedStoredSector, Converter={StaticResource objectIsNull}}" Value="False">
+                                        <DataTrigger Binding="{Binding L95xxFocusedStoredSector, Converter={StaticResource IsNullOrEmpty}}" Value="False">
                                             <Setter Property="Visibility" Value="Collapsed" />
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -262,7 +259,7 @@
                                 <Style TargetType="DockPanel">
                                     <Setter Property="Visibility" Value="Visible" />
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding L95xxFocusedStoredSector, Converter={StaticResource objectIsNull}}" Value="True">
+                                        <DataTrigger Binding="{Binding L95xxFocusedStoredSector, Converter={StaticResource IsNullOrEmpty}}" Value="True">
                                             <Setter Property="Visibility" Value="Collapsed" />
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -347,7 +344,7 @@
                 <Style TargetType="{x:Type ContentControl}">
                     <Setter Property="Visibility" Value="Collapsed" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding L95xxStoredImage, Converter={StaticResource objectIsNull}}" Value="False">
+                        <DataTrigger Binding="{Binding L95xxStoredImage, Converter={StaticResource IsNullOrEmpty}}" Value="False">
                             <Setter Property="Visibility" Value="Visible" />
                         </DataTrigger>
                     </Style.Triggers>
@@ -364,7 +361,7 @@
                     <Style TargetType="{x:Type DockPanel}">
                         <Setter Property="Visibility" Value="Collapsed" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding L95xxCurrentImage, Mode=OneWay, Converter={StaticResource objectIsNull}}" Value="False">
+                            <DataTrigger Binding="{Binding L95xxCurrentImage, Mode=OneWay, Converter={StaticResource IsNullOrEmpty}}" Value="False">
                                 <Setter Property="Visibility" Value="Visible" />
                             </DataTrigger>
                         </Style.Triggers>
@@ -431,7 +428,7 @@
                     <Style TargetType="{x:Type DockPanel}">
                         <Setter Property="Visibility" Value="Collapsed" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding L95xxCurrentSectors.Count, Converter={StaticResource equalZeroOrNull}}" Value="False">
+                            <DataTrigger Binding="{Binding L95xxCurrentSectors.Count, Converter={StaticResource NumberZeroOrNull}}" Value="False">
                                 <Setter Property="Visibility" Value="Visible" />
                             </DataTrigger>
                         </Style.Triggers>
@@ -473,7 +470,7 @@
                                         <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
                                             <Setter Property="Visibility" Value="Collapsed" />
                                         </DataTrigger>
-                                        <DataTrigger Binding="{Binding L95xxCurrentSectorSelected, Converter={StaticResource objectIsNull}}" Value="True">
+                                        <DataTrigger Binding="{Binding L95xxCurrentSectorSelected, Converter={StaticResource IsNullOrEmpty}}" Value="True">
                                             <Setter Property="IsEnabled" Value="False" />
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -493,7 +490,7 @@
                                     <Setter Property="Visibility" Value="Visible" />
                                     <Setter Property="IsEnabled" Value="True" />
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding L95xxCurrentSectorSelected, Converter={StaticResource objectIsNull}}" Value="True">
+                                        <DataTrigger Binding="{Binding L95xxCurrentSectorSelected, Converter={StaticResource IsNullOrEmpty}}" Value="True">
                                             <Setter Property="IsEnabled" Value="False" />
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -530,7 +527,7 @@
                                 <Style BasedOn="{StaticResource MahApps.Styles.ListBox}" TargetType="ListBox">
                                     <Setter Property="Visibility" Value="Visible" />
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding L95xxFocusedCurrentSector, Converter={StaticResource objectIsNull}}" Value="False">
+                                        <DataTrigger Binding="{Binding L95xxFocusedCurrentSector, Converter={StaticResource IsNullOrEmpty}}" Value="False">
                                             <Setter Property="Visibility" Value="Collapsed" />
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -588,7 +585,7 @@
                                 <Style TargetType="DockPanel">
                                     <Setter Property="Visibility" Value="Visible" />
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding L95xxFocusedCurrentSector, Converter={StaticResource objectIsNull}}" Value="True">
+                                        <DataTrigger Binding="{Binding L95xxFocusedCurrentSector, Converter={StaticResource IsNullOrEmpty}}" Value="True">
                                             <Setter Property="Visibility" Value="Collapsed" />
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -671,7 +668,7 @@
                     <Style TargetType="{x:Type DockPanel}">
                         <Setter Property="Visibility" Value="Collapsed" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding L95xxDiffSectors.Count, Converter={StaticResource equalZeroOrNull}}" Value="False">
+                            <DataTrigger Binding="{Binding L95xxDiffSectors.Count, Converter={StaticResource NumberZeroOrNull}}" Value="False">
                                 <Setter Property="Visibility" Value="Visible" />
                             </DataTrigger>
                         </Style.Triggers>
@@ -739,7 +736,7 @@
                 <Style TargetType="{x:Type ContentControl}">
                     <Setter Property="Visibility" Value="Collapsed" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding L95xxCurrentImage, Converter={StaticResource objectIsNull}}" Value="False">
+                        <DataTrigger Binding="{Binding L95xxCurrentImage, Converter={StaticResource IsNullOrEmpty}}" Value="False">
                             <Setter Property="Visibility" Value="Visible" />
                         </DataTrigger>
                     </Style.Triggers>

@@ -1438,6 +1438,7 @@
 		<ProjectReference Include="..\..\V5_REST_Lib\V5_REST_Lib.csproj" />
 		<ProjectReference Include="..\..\Watchers.lib\Watchers.lib.csproj" />
 		<ProjectReference Include="..\..\WinAPI.lib\WinAPI.lib.csproj" />
+		<ProjectReference Include="..\..\Wpf.lib\Wpf.lib.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />

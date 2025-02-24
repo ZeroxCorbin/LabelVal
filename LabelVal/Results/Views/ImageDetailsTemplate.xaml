@@ -6,7 +6,6 @@
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes">
 
     <converters:ShortenUIDConverter x:Key="shortenUID" />
-    <converters:ObjectIsNull x:Key="objectIsNull" />
     <converters:Double2String x:Key="double2String" />
 
 
