@@ -67,12 +67,12 @@ public partial class ActiveWatchers : ObservableRecipient
                 message.Reply(new PasswordOfTheDayMessage(Lvs95xx.lib.Core.Controllers.Controller.GetTodaysPassword()));
             });
 
-        WeakReferenceMessenger.Default.Register<RequestMessage<Win32_ProcessWatcherMessage>>(
-            this,
-            (recipient, message) =>
-            {
-                message.Reply(new Win32_ProcessWatcherMessage(_processWatcher.AppName, _processWatcher.MainWindowTitle, _processWatcher.Process, _processWatcher.State));
-            });
+        //WeakReferenceMessenger.Default.Register<RequestMessage<Win32_ProcessWatcherMessage>>(
+        //    this,
+        //    (recipient, message) =>
+        //    {
+        //        message.Reply(new Win32_ProcessWatcherMessage(_processWatcher.AppName, _processWatcher.MainWindowTitle, _processWatcher.Process, _processWatcher.State));
+        //    });
 
         _registryWatcher.OnRegistryChanged += (value) =>
         {
@@ -80,11 +80,11 @@ public partial class ActiveWatchers : ObservableRecipient
         };
         _registryWatcher.Start(Microsoft.Win32.RegistryHive.LocalMachine, @"SOFTWARE\Microscan\LVS-95XX", "Database", updateOnStart: false);
 
-        _processWatcher.OnProcessChanged += (appName, mainWindowTitle, state, process) =>
-        {
-            _ = WeakReferenceMessenger.Default.Send(new Win32_ProcessWatcherMessage(appName, mainWindowTitle, process, state));
-        };
-        _processWatcher.Start("LVS-95XX.exe");
+        //_processWatcher.OnProcessChanged += (appName, mainWindowTitle, state, process) =>
+        //{
+        //    _ = WeakReferenceMessenger.Default.Send(new Win32_ProcessWatcherMessage(appName, mainWindowTitle, process, state));
+        //};
+        //_processWatcher.Start("LVS-95XX.exe");
 
 
         IsActive = true;

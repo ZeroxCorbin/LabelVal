@@ -80,7 +80,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
         IsL95xxWorking = true;
         IsL95xxFaulted = false;
 
-        _ = ImageResults.SelectedVerifier.Controller.Process(lab);
+        _ = ImageResults.SelectedVerifier.Controller.ProcessLabelAsync(lab);
     }
 
     private string GetL95xxStandard(StandardsTypes type)

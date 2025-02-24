@@ -154,7 +154,7 @@
                                     </TextBox.Style>
                                 </TextBox>
 
-                                <Button
+                                <!--<Button
                                     Margin="10,0"
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Bottom"
@@ -162,7 +162,7 @@
                                     CommandParameter="{Binding}"
                                     Content="{iconPacks:Material Kind=Delete}"
                                     Style="{StaticResource GroupHeaderCirlceButton}"
-                                    ToolTip="Delete this verifier?" />
+                                    ToolTip="Delete this verifier?" />-->
                             </DockPanel>
                         </DockPanel>
                     </md:Card>
@@ -173,7 +173,7 @@
                     <DockPanel DockPanel.Dock="Top">
 
                         <TextBox
-                            Margin="6,3"
+                            Margin="3,3"
                             d:Text="Camera"
                             md:HintAssist.Hint="Type"
                             BorderThickness="0"
@@ -182,7 +182,7 @@
                             Text="Camera" />
 
                         <TextBox
-                            Margin="6,3"
+                            Margin="3,3"
                             d:Text="LVS-95xx"
                             md:HintAssist.Hint="Model"
                             BorderThickness="0"
@@ -192,7 +192,7 @@
 
 
                         <TextBox
-                            Margin="6,3"
+                            Margin="3,3"
                             d:Text="192.168.188.2"
                             md:HintAssist.Hint="Port"
                             BorderThickness="0"
@@ -202,10 +202,10 @@
 
                     </DockPanel>
 
-                    <DockPanel>
+                    <DockPanel HorizontalAlignment="Left">
 
                         <TextBox
-                            Margin="6,3"
+                            Margin="3,3,-10,3"
                             d:Text="State"
                             md:HintAssist.Hint="Connection"
                             BorderThickness="0"
@@ -227,13 +227,22 @@
                         </TextBox>
 
                         <TextBox
-                            Margin="6,3"
+                            Margin="3,3"
                             d:Text="Exited"
                             md:HintAssist.Hint="Process"
                             BorderThickness="0"
                             IsHitTestVisible="False"
                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                             Text="{Binding Path=ProcessState, Mode=OneWay}" />
+
+                        <TextBox
+                            Margin="3,3"
+                            d:Text="Exited"
+                            md:HintAssist.Hint="Password"
+                            BorderThickness="0"
+                            IsHitTestVisible="False"
+                            Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                            Text="{Binding Path=PasswordOfTheDay, Mode=OneWay}" />
 
                     </DockPanel>
                 </DockPanel>
