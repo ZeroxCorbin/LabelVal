@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LabelVal.ImageRolls.ViewModels;
+using LabelVal.LVS_95xx.ViewModels;
 using LabelVal.Results.ViewModels;
 using LabelVal.V275.ViewModels;
 using LabelVal.V5.ViewModels;
@@ -16,6 +17,7 @@ public partial class RunControl : ObservableObject
 
     public Node V275 { get; private set; }
     public Scanner V5 { get; private set; }
+public Verifier L95 { get; private set; }
 
     public ImageRollEntry SelectedImageRoll { get; private set; }
 
@@ -26,16 +28,17 @@ public partial class RunControl : ObservableObject
     /// </summary>
     public RunControl() { }
 
-    public RunControl(int loopCount, ObservableCollection<ImageResultEntry> imageResults, ImageRollEntry imageRollEntry, Node v275, Scanner v5)
+    public RunControl(int loopCount, ObservableCollection<ImageResultEntry> imageResults, ImageRollEntry imageRollEntry, Node v275, Scanner v5, Verifier l95)
     {
         LoopCount = loopCount;
         ImageResultsList = imageResults;
         SelectedImageRoll = imageRollEntry;
         V275 = v275;
         V5 = v5;
+        L95 = l95;
     }
 
-    public void Update(int loopCount, ObservableCollection<ImageResultEntry> imageResults, ImageRollEntry imageRollEntry, Node v275, Scanner v5)
+    public void Update(int loopCount, ObservableCollection<ImageResultEntry> imageResults, ImageRollEntry imageRollEntry, Node v275, Scanner v5, Verifier l95)
     {
         if (RunController.State == RunStates.Running)
         {
@@ -48,6 +51,7 @@ public partial class RunControl : ObservableObject
         SelectedImageRoll = imageRollEntry;
         V275 = v275;
         V5 = v5;
+        L95 = l95;
     }
 
     [RelayCommand]
@@ -64,7 +68,7 @@ public partial class RunControl : ObservableObject
         else
         {
             LogInfo($"Starting Run: {SelectedImageRoll.Name}; {LoopCount.ToString()}");
-            RunController.StartAsync(ImageResultsList, SelectedImageRoll, V275, V5?.Controller, LoopCount);
+            RunController.StartAsync(ImageResultsList, SelectedImageRoll, V275, V5?.Controller, L95.Controller, LoopCount);
         }
     }
 

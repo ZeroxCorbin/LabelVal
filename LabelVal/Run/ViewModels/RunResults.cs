@@ -24,7 +24,7 @@ public partial class RunResults : ObservableRecipient, IRecipient<PropertyChange
         if (value == null) return;
         if (SelectedRunEntry == null) return;
         //var vals = SelectedRunEntry.RunDatabase.SelectAllStoredImageResultGroups(value.UID);
-        foreach (var stored in SelectedRunEntry.RunDatabase.SelectAllImageResultGroups(value.UID))
+        foreach (var stored in SelectedRunEntry.ResultsDatabase.SelectAllImageResultGroups(value.UID))
         {
             //LogDebug($"Loading StoredImageResultGroup {stored.RunUID} {stored.SourceImageUID}");
 

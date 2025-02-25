@@ -4,8 +4,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="clr-namespace:Wpf.lib.Converters;assembly=Wpf.lib"
     xmlns:local="clr-namespace:LabelVal"
+    xmlns:logging="clr-namespace:Logging.lib;assembly=Logging.lib"
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:system="clr-namespace:System;assembly=mscorlib"
     StartupUri="Main/Views/MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
@@ -39,6 +41,16 @@
 
             <sys:Boolean x:Key="FalseValue">False</sys:Boolean>
             <sys:Boolean x:Key="TrueValue">True</sys:Boolean>
+
+            <ObjectDataProvider
+                x:Key="LoggerMessageTypes"
+                MethodName="GetValues"
+                ObjectType="{x:Type system:Enum}">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="logging:LoggerMessageTypes" />
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+
 
             <Style BasedOn="{StaticResource MahApps.Styles.ScrollBar}" TargetType="ScrollBar">
                 <!--<Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Control.Background}"/>-->

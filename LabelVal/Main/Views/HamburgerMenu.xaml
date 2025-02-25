@@ -243,6 +243,9 @@
                                     <DataTrigger Binding="{Binding SelectedScanner.Controller.IsConnected}" Value="True">
                                         <Setter Property="IsEnabled" Value="True" />
                                     </DataTrigger>
+                                    <DataTrigger Binding="{Binding SelectedVerifier.Controller.IsConnected}" Value="True">
+                                        <Setter Property="IsEnabled" Value="True" />
+                                    </DataTrigger>
                                     <DataTrigger Binding="{Binding QuickRunController.RunController.State}" Value="Running">
                                         <Setter Property="Content" Value="{iconPacks:Material Kind=Stop, Width=24, Height=24}" />
                                     </DataTrigger>

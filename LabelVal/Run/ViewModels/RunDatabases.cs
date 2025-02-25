@@ -28,7 +28,7 @@ public partial class RunDatabases : ObservableRecipient
         foreach (ResultsDatabase runDatabase in RunDatabasesList)
             foreach (RunEntry runEntry in runDatabase.SelectAllRunEntries())
             {
-                runEntry.RunDatabase = runDatabase;
+                runEntry.ResultsDatabase = runDatabase;
                 RunEntriesList.Add(runEntry);
             }
     }

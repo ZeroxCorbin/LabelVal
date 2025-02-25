@@ -54,6 +54,7 @@
 
                             <DataTrigger Binding="{Binding LatestError, Converter={StaticResource IsNullOrEmpty}}" Value="False">
                                 <Setter Property="Text" Value="{Binding LatestError.Message}" />
+                                <Setter Property="Foreground" Value="Red" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -66,19 +67,7 @@
             Placement="Top"
             PlacementTarget="{Binding ElementName=btnShowViewer}"
             StaysOpen="False">
-            <DataGrid
-                x:Name="dataGrid"
-                MaxHeight="400"
-                AutoGenerateColumns="False"
-                CanUserSortColumns="False"
-                ItemsSource="{Binding Source={StaticResource LoggerMessages}}">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding TimeStamp, Mode=OneTime}" Header="Timestamp" />
-                    <DataGridTextColumn Binding="{Binding Message, Mode=OneTime}" Header="Message" />
-                    <DataGridTextColumn Binding="{Binding Value, Mode=OneTime}" Header="Type" />
-                    <DataGridCheckBoxColumn Binding="{Binding HasException, Mode=OneTime}" Header="Has Exception" />
-                </DataGrid.Columns>
-            </DataGrid>
+            <local:LoggingViewer DataContext="{Binding .}" />
         </Popup>
 
     </StatusBar>

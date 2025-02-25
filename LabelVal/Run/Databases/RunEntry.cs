@@ -17,7 +17,7 @@ public partial class RunEntry : ObservableObject
     #endregion
 
     [ObservableProperty][property: SQLite.Ignore] private RunStates state;
-    [SQLite.Ignore] public ResultsDatabase RunDatabase { get; set; }
+    [SQLite.Ignore] public ResultsDatabase ResultsDatabase { get; set; }
 
     //public string ProductPart { get; set; }
     //public string CameraMAC { get; set; }

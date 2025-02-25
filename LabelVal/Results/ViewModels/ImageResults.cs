@@ -273,6 +273,8 @@ public partial class ImageResults : ObservableRecipient,
 
         // byte[] bees = BitmapImageUtilities.ImageToBytes(BitmapImageUtilities.CreateRandomBitmapImage(50, 50));
         ImageEntry imagEntry = SelectedImageRoll.GetNewImageEntry(message.Report.Thumbnail);
+        if(imagEntry == null)
+            return;
         imagEntry.NewData = message;
 
         SelectedImageRoll.AddImage(imagEntry);

@@ -6,9 +6,10 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:local="clr-namespace:LabelVal.Main.Views"
+    xmlns:logging="clr-namespace:Logging.lib;assembly=Logging.lib"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:LabelVal.Main.ViewModels"
-    d:DataContext="{d:DesignInstance Type=vm:LoggingViewerVm,
+    d:DataContext="{d:DesignInstance Type=vm:LoggingStatusBarVm,
                                      IsDesignTimeCreatable=False}"
     mc:Ignorable="d">
 
@@ -17,10 +18,6 @@
             <CollectionViewSource.SortDescriptions>
                 <componentmodel:SortDescription Direction="Descending" PropertyName="TimeStamp" />
             </CollectionViewSource.SortDescriptions>
-
-            <CollectionViewSource.GroupDescriptions>
-                <PropertyGroupDescription PropertyName="Group" />
-            </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
     </UserControl.Resources>
 
@@ -30,13 +27,46 @@
             MaxHeight="400"
             AutoGenerateColumns="False"
             CanUserSortColumns="False"
-            ItemsSource="{Binding Source={StaticResource LoggerMessages}}">
+            ItemsSource="{Binding Source={StaticResource LoggerMessages}}"
+            PreviewMouseDoubleClick="dataGrid_PreviewMouseDoubleClick"
+            SelectionUnit="FullRow">
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding TimeStamp, Mode=OneTime}" Header="Timestamp" />
-                <DataGridTextColumn Binding="{Binding Message, Mode=OneTime}" Header="Message" />
-                <DataGridTextColumn Binding="{Binding Value, Mode=OneTime}" Header="Type" />
-                <DataGridCheckBoxColumn Binding="{Binding HasException, Mode=OneTime}" Header="Has Exception" />
+                <DataGridTextColumn
+                    Binding="{Binding TimeStamp, Mode=OneWay}"
+                    Header="Timestamp"
+                    IsReadOnly="True" />
+                <DataGridTextColumn
+                    Binding="{Binding Message, Mode=OneWay}"
+                    Header="Message"
+                    IsReadOnly="True" />
+                <DataGridTextColumn
+                    Binding="{Binding Type, Mode=OneWay}"
+                    Header="Type"
+                    IsReadOnly="True" />
+                <DataGridTextColumn
+                    Binding="{Binding SourceType, Mode=OneWay}"
+                    Header="Source"
+                    IsReadOnly="True" />
+                <DataGridCheckBoxColumn
+                    Binding="{Binding HasException, Mode=OneWay}"
+                    Header="Has Exception"
+                    IsReadOnly="True" />
             </DataGrid.Columns>
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding HasException}" Value="True">
+                            <Setter Property="Foreground" Value="Red" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Type}" Value="{x:Static logging:LoggerMessageTypes.Debug}">
+                            <Setter Property="Foreground" Value="Gray" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Type}" Value="{x:Static logging:LoggerMessageTypes.Warning}">
+                            <Setter Property="Foreground" Value="Yellow" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
         </DataGrid>
     </DockPanel>
 </UserControl>
