@@ -7,6 +7,7 @@ using LabelVal.LVS_95xx.ViewModels;
 using LabelVal.Utilities;
 using LabelVal.V275.ViewModels;
 using LabelVal.V5.ViewModels;
+using Lvs95xx.lib.Core.Controllers;
 using MahApps.Metro.Controls.Dialogs;
 using NHibernate.Util;
 using System;
@@ -25,7 +26,7 @@ public partial class ImageResults : ObservableRecipient,
     IRecipient<PropertyChangedMessage<Scanner>>,
     IRecipient<PropertyChangedMessage<Verifier>>,
     IRecipient<PropertyChangedMessage<PrinterSettings>>,
-    IRecipient<PropertyChangedMessage<Lvs95xx.lib.Core.Models.FullReport>>
+    IRecipient<PropertyChangedMessage<FullReport>>
 {
     private class V275Repeat
     {
@@ -153,10 +154,10 @@ public partial class ImageResults : ObservableRecipient,
     {
         ImageResultEntry tmp = new(img, this);
 
-        if (img.NewData is V5_REST_Lib.Controller.FullReport v5)
+        if (img.NewData is V5_REST_Lib.Controllers.FullReport v5)
             tmp.V5ProcessResults(v5);
 
-        else if (img.NewData is Lvs95xx.lib.Core.Models.FullReport l95)
+        else if (img.NewData is FullReport l95)
             tmp.L95xxProcessResults(l95);
 
         ImageResultsList.Add(tmp);
@@ -192,7 +193,7 @@ public partial class ImageResults : ObservableRecipient,
     [RelayCommand]
     private async Task AddV5Image()
     {
-        V5_REST_Lib.Controller.FullReport res = await ProcessV5();
+        V5_REST_Lib.Controllers.FullReport res = await ProcessV5();
 
         if (res == null)
             return;
@@ -248,9 +249,9 @@ public partial class ImageResults : ObservableRecipient,
         }
     }
 
-    private async Task<V5_REST_Lib.Controller.FullReport> ProcessV5()
+    private async Task<V5_REST_Lib.Controllers.FullReport> ProcessV5()
     {
-        V5_REST_Lib.Controller.FullReport res = await SelectedScanner.Controller.Trigger_Wait_Return(true);
+        V5_REST_Lib.Controllers.FullReport res = await SelectedScanner.Controller.Trigger_Wait_Return(true);
 
         if (!res.OK)
         {
@@ -261,7 +262,7 @@ public partial class ImageResults : ObservableRecipient,
         return res;
     }
 
-    private void L95xxProcess(Lvs95xx.lib.Core.Models.FullReport message)
+    private void L95xxProcess(FullReport message)
     {
         if (message == null || message.Report == null)
             return;
@@ -524,7 +525,7 @@ public partial class ImageResults : ObservableRecipient,
         }
     }
     public void Receive(PropertyChangedMessage<Verifier> message) => SelectedVerifier = message.NewValue;
-    public void Receive(PropertyChangedMessage<Lvs95xx.lib.Core.Models.FullReport> message)
+    public void Receive(PropertyChangedMessage<FullReport> message)
     {
         if (IsL95xxSelected)
             _ = App.Current.Dispatcher.BeginInvoke(() => L95xxProcess(message.NewValue));

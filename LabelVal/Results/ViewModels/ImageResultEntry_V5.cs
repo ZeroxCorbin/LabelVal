@@ -49,7 +49,7 @@ public partial class ImageResultEntry
 
         BringIntoView?.Invoke();
 
-        V5_REST_Lib.Controller.Label lab = new()
+        V5_REST_Lib.Controllers.Label lab = new()
         {
             DetectSectors = simDetSec || camDetSec,
             Config = simAddSec || camAddSec ? V5ResultRow._Config : null,
@@ -67,8 +67,8 @@ public partial class ImageResultEntry
         _ = ImageResults.SelectedScanner.Controller.ProcessLabel(lab);
     }
 
-    public void V5ProcessResults(V5_REST_Lib.Controller.Repeat repeat) => V5ProcessResults(repeat?.FullReport);
-    public void V5ProcessResults(V5_REST_Lib.Controller.FullReport report)
+    public void V5ProcessResults(V5_REST_Lib.Controllers.Repeat repeat) => V5ProcessResults(repeat?.FullReport);
+    public void V5ProcessResults(V5_REST_Lib.Controllers.FullReport report)
     {
         if (report == null)
         {

@@ -3,20 +3,18 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using Lvs95xx.lib.Core.Controllers;
-using Lvs95xx.lib.Shared.LvsDatabases.Messages;
 using Lvs95xx.lib.Shared.Watchers;
 using Newtonsoft.Json;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Documents;
 using Watchers.lib.Process;
 
 namespace LabelVal.LVS_95xx.ViewModels;
 
 [JsonObject(MemberSerialization.OptIn)]
 public partial class Verifier : ObservableRecipient, IRecipient<RegistryMessage>, IRecipient<Win32_ProcessWatcherMessage>
-{   
+{
     [JsonProperty] public long ID { get; set; } = DateTime.Now.Ticks;
 
     public VerifierManager Manager { get; set; }
@@ -61,49 +59,46 @@ public partial class Verifier : ObservableRecipient, IRecipient<RegistryMessage>
         }
     }
 
-    private string ExtractDatabasePath(string registry)=> !string.IsNullOrWhiteSpace(registry) ? registry[(registry.IndexOf("Data Source=") + "Data Source=".Length)..].Trim('\"') : DatabasePath;
+    private string ExtractDatabasePath(string registry) => !string.IsNullOrWhiteSpace(registry) ? registry[(registry.IndexOf("Data Source=") + "Data Source=".Length)..].Trim('\"') : DatabasePath;
 
     [RelayCommand]
     private void Connect()
     {
-        if(Controller.SerialPort.IsListening)
+        if (Controller.SerialPort.IsListening)
             Controller.Disconnect();
         else
-            Controller.Connect(SelectedComName, DatabasePath);
+            _ = Controller.Connect(SelectedComName, DatabasePath);
     }
 
     [RelayCommand]
     private void RefreshComList()
     {
-        var names = System.IO.Ports.SerialPort.GetPortNames();
-        foreach (var name in names)
+        string[] names = System.IO.Ports.SerialPort.GetPortNames();
+        foreach (string name in names)
         {
             if (!AvailablePorts.Contains(name))
                 AvailablePorts.Add(name);
         }
-        var toRemove = AvailablePorts.Where(name => !names.Contains(name)).ToList();
-        foreach (var name in toRemove)
+        System.Collections.Generic.List<string> toRemove = AvailablePorts.Where(name => !names.Contains(name)).ToList();
+        foreach (string name in toRemove)
             _ = AvailablePorts.Remove(name);
     }
 
     private void PostLogin()
     {
-        var cur = Controller.Database.ReadSetting("Report", "ReportImageReduction");
-        var table = Controller.Database.ReadSetting("GS1", "Table");
+        string cur = Controller.Database.ReadSetting("Report", "ReportImageReduction");
+        _ = Controller.Database.ReadSetting("GS1", "Table");
         //Update database setting to allow storing full resolution images to the report.
         if (cur != "1")
             Controller.Database.WriteSetting("Report", "ReportImageReduction", "1");
     }
 
-    public void Receive(RegistryMessage message)
-    {
-        DatabasePath = ExtractDatabasePath(message.RegistryValue);
-    }
+    public void Receive(RegistryMessage message) => DatabasePath = ExtractDatabasePath(message.RegistryValue);
 
     public void Receive(Win32_ProcessWatcherMessage message)
     {
-          if(message.AppName != "LVS-95XX.exe")
-                    return;
+        if (message.AppName != "LVS-95XX.exe")
+            return;
 
         Process = message.Process;
         ProcessState = message.State;

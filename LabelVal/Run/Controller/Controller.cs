@@ -33,8 +33,8 @@ public partial class Controller : ObservableObject
     [ObservableProperty] private bool hasV275;
     [ObservableProperty] private bool useV275;
 
-    [ObservableProperty] private V5_REST_Lib.Controller v5;
-    partial void OnV5Changed(V5_REST_Lib.Controller value)
+    [ObservableProperty] private V5_REST_Lib.Controllers.Controller v5;
+    partial void OnV5Changed(V5_REST_Lib.Controllers.Controller value)
     {
         HasV5 = value != null;
         UseV5 = false;
@@ -51,15 +51,14 @@ public partial class Controller : ObservableObject
     [ObservableProperty] private bool hasL95;
     [ObservableProperty] private bool useL95;
 
-
     public int LoopCount { get; private set; }
     public int CurrentLoopCount { get; private set; }
     public int CurrentLabelCount { get; private set; }
 
     public bool StartAsync(ObservableCollection<Results.ViewModels.ImageResultEntry> imageResultEntries, ImageRollEntry imageRollEntry,
         Node v275,
-        V5_REST_Lib.Controller v5,
-Lvs95xx.lib.Core.Controllers.Controller l95,
+        V5_REST_Lib.Controllers.Controller v5,
+        Lvs95xx.lib.Core.Controllers.Controller l95,
         int loopCount)
     {
         ImageResultEntries = imageResultEntries;
@@ -115,8 +114,8 @@ Lvs95xx.lib.Core.Controllers.Controller l95,
 
         RunEntry.CompletedLoops = CurrentLoopCount;
         RunEntry.State = State;
-        
-        if(State == RunStates.Complete)
+
+        if (State == RunStates.Complete)
             RunEntry.EndTime = DateTime.Now.Ticks;
 
         return ResultsDatabase.InsertOrReplace(RunEntry) > 0;
@@ -217,7 +216,7 @@ Lvs95xx.lib.Core.Controllers.Controller l95,
                     if ((l95Res = await ProcessL95(ire)) == null)
                         return State;
 
-                if(v275Res != null)
+                if (v275Res != null)
                 {
                     Run.Databases.ResultEntry current = new()
                     {
@@ -269,7 +268,7 @@ Lvs95xx.lib.Core.Controllers.Controller l95,
                     _ = ResultsDatabase.InsertOrReplace(current);
                 }
 
-                UpdateRunEntry();
+                _ = UpdateRunEntry();
             }
         }
 
@@ -339,33 +338,32 @@ Lvs95xx.lib.Core.Controllers.Controller l95,
             {
                 if (RequestedState != RunStates.Running)
                 {
-                    UpdateRunState(RequestedState);
+                    _ = UpdateRunState(RequestedState);
                 }
 
                 if (DateTime.Now - start > TimeSpan.FromMilliseconds(10000))
                 {
                     LogError("Run: Timeout waiting for results.");
-                    UpdateRunState(RunStates.Error);
+                    _ = UpdateRunState(RunStates.Error);
                 }
 
                 if (ire.IsV275Faulted)
                 {
                     LogError("Run: Error when interacting with V275.");
-                    UpdateRunState(RunStates.Error);
+                    _ = UpdateRunState(RunStates.Error);
                 }
 
                 Thread.Sleep(1);
             };
         });
 
-        if(State != RunStates.Running)
+        if (State != RunStates.Running)
             return null;
-
 
         if (ire.V275ResultRow == null)
         {
             LogError("Run: V275, No results returned.");
-            UpdateRunState(RunStates.Error);
+            _ = UpdateRunState(RunStates.Error);
             return null;
         }
 
@@ -386,7 +384,6 @@ Lvs95xx.lib.Core.Controllers.Controller l95,
         return State;
     }
     private async Task<RunStates> PreLoopV5(Results.ViewModels.ImageResultEntry ire) => State;
-
 
     private async Task<V5Result> ProcessV5(Results.ViewModels.ImageResultEntry ire)
     {
@@ -409,7 +406,7 @@ Lvs95xx.lib.Core.Controllers.Controller l95,
             }
         }
 
-        V5_REST_Lib.Controller.FullReport res = await V5.Trigger_Wait_Return(true);
+        V5_REST_Lib.Controllers.FullReport res = await V5.Trigger_Wait_Return(true);
 
         if (!res.OK)
         {
@@ -428,10 +425,7 @@ Lvs95xx.lib.Core.Controllers.Controller l95,
         return v5;
     }
 
-    private async Task<RunStates> PreRunL95()
-    {
-        return State;
-    }
+    private async Task<RunStates> PreRunL95() => State;
     private async Task<RunStates> PreLoopL95(Results.ViewModels.ImageResultEntry ire) => State;
 
     private async Task<L95xxResult> ProcessL95(Results.ViewModels.ImageResultEntry ire)
@@ -445,8 +439,6 @@ Lvs95xx.lib.Core.Controllers.Controller l95,
             SourceImage = ire.SourceImage?.Serialize,
         };
 
-
-
         //v5.Template = JsonConvert.SerializeObject(V5.Config);
         //v5.Report = res.ReportJSON;
         //v5.StoredImage = JsonConvert.SerializeObject(new ImageEntry(ire.ImageRollUID, res.FullImage, 0));
@@ -457,7 +449,7 @@ Lvs95xx.lib.Core.Controllers.Controller l95,
         return l95;
     }
 
-    //private async Task<V5_REST_Lib.Controller.TriggerResults> ProcessV5(Results.ViewModels.ImageResultEntry ire)
+    //private async Task<V5_REST_Lib.Controllers.TriggerResults> ProcessV5(Results.ViewModels.ImageResultEntry ire)
     //{
     //    if (V5.IsSimulator)
     //    {

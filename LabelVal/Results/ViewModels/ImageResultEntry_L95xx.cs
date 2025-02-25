@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
-using Lvs95xx.lib.Core.Models;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.LVS_95xx.Sectors;
 using LabelVal.Sectors.Interfaces;
@@ -13,6 +12,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.Input;
+using Lvs95xx.lib.Core.Controllers;
 
 namespace LabelVal.Results.ViewModels;
 public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullReport>>

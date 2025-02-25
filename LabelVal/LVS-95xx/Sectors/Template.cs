@@ -1,6 +1,6 @@
-﻿using Lvs95xx.lib.Core.Models;
-using LabelVal.Sectors.Interfaces;
+﻿using LabelVal.Sectors.Interfaces;
 using V5_REST_Lib.Models;
+using Lvs95xx.lib.Core.Controllers;
 
 namespace LabelVal.LVS_95xx.Sectors
 {

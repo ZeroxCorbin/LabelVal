@@ -26,7 +26,7 @@ namespace LabelVal.V5.ViewModels;
 public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMessage<ImageRollEntry>>
 {
     [JsonProperty] public long ID { get; set; } = DateTime.Now.Ticks;
-    [JsonProperty] public V5_REST_Lib.Controller Controller { get; } = new();
+    [JsonProperty] public V5_REST_Lib.Controllers.Controller Controller { get; } = new();
 
     [JsonProperty]
     public int RepeatedTriggerDelay

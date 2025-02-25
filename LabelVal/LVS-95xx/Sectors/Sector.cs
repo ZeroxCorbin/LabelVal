@@ -1,7 +1,7 @@
-﻿using Lvs95xx.lib.Core.Models;
-using LabelVal.Sectors.Interfaces;
+﻿using LabelVal.Sectors.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
+using Lvs95xx.lib.Core.Controllers;
 
 namespace LabelVal.LVS_95xx.Sectors;
 
