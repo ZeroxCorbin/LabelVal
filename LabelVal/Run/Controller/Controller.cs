@@ -2,10 +2,12 @@
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Results.Databases;
 using LabelVal.Run.Databases;
+using LabelVal.Sectors.Interfaces;
 using LabelVal.V275.ViewModels;
 using Newtonsoft.Json;
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -269,6 +271,8 @@ public partial class Controller : ObservableObject
                 }
 
                 _ = UpdateRunEntry();
+
+                Thread.Sleep(100);
             }
         }
 
@@ -286,7 +290,6 @@ public partial class Controller : ObservableObject
         }
         return State;
     }
-
     private async Task<RunStates> PreLoopV275(Results.ViewModels.ImageResultEntry ire)
     {
         //If running a non-GS1 label then this will reset the match to file and sequences.
@@ -311,7 +314,6 @@ public partial class Controller : ObservableObject
         }
         return State;
     }
-
     private async Task<V275Result> ProcessV275(Results.ViewModels.ImageResultEntry ire)
     {
         V275Result v275 = new()
@@ -384,7 +386,6 @@ public partial class Controller : ObservableObject
         return State;
     }
     private async Task<RunStates> PreLoopV5(Results.ViewModels.ImageResultEntry ire) => State;
-
     private async Task<V5Result> ProcessV5(Results.ViewModels.ImageResultEntry ire)
     {
         Results.Databases.V5Result v5 = new()
@@ -427,7 +428,6 @@ public partial class Controller : ObservableObject
 
     private async Task<RunStates> PreRunL95() => State;
     private async Task<RunStates> PreLoopL95(Results.ViewModels.ImageResultEntry ire) => State;
-
     private async Task<L95xxResult> ProcessL95(Results.ViewModels.ImageResultEntry ire)
     {
         Results.Databases.L95xxResult l95 = new()
@@ -439,37 +439,30 @@ public partial class Controller : ObservableObject
             SourceImage = ire.SourceImage?.Serialize,
         };
 
-        //v5.Template = JsonConvert.SerializeObject(V5.Config);
-        //v5.Report = res.ReportJSON;
-        //v5.StoredImage = JsonConvert.SerializeObject(new ImageEntry(ire.ImageRollUID, res.FullImage, 0));
+        Lvs95xx.lib.Core.Controllers.Label lab = new()
+        {
+            Config = new Lvs95xx.lib.Core.Controllers.Config()
+            {
+                ApplicationStandard = GetL95xxStandard(ire.ImageResults.SelectedImageRoll.SelectedStandard),
+                Table = GetL95xxTable(ire.ImageResults.SelectedImageRoll.SelectedGS1Table),
+            },
+            Image = ire.L95xxStoredImage.BitmapBytes
+        };
 
-        //if (UpdateUI)
-        //    _ = App.Current.Dispatcher.BeginInvoke(() => ire.L95xxProcessResults(res));
+        Lvs95xx.lib.Core.Controllers.FullReport res = await L95.ProcessLabelAsync(lab);
+
+        l95.Report = JsonConvert.SerializeObject(res.Report);
+        l95.StoredImage = JsonConvert.SerializeObject(new ImageEntry(ire.ImageRollUID, res.Report.Thumbnail, 0));
+
+        if (UpdateUI)
+            _ = App.Current.Dispatcher.BeginInvoke(() => ire.L95xxProcessResults(res, true));
 
         return l95;
     }
 
-    //private async Task<V5_REST_Lib.Controllers.TriggerResults> ProcessV5(Results.ViewModels.ImageResultEntry ire)
-    //{
-    //    if (V5.IsSimulator)
-    //    {
-    //        if (!await V5.ChangeImage(ire.V5ResultRow.Stored.ImageBytes, true))
-    //        {
-    //            LogError("Could not change the image.");
-    //            return null;
-    //        }
-    //    }
+    private string GetL95xxStandard(StandardsTypes type) => Lvs95xx.lib.Core.Controllers.Config.ApplicationStandards.FirstOrDefault(x => x.Key.Contains(type.ToString())).Key;
 
-    //    var res = await V5.Trigger_Wait_Return(true);
-
-    //    if (!res.OK)
-    //    {
-    //        LogError("Could not trigger the scanner.");
-    //        return null;
-    //    }
-
-    //    return res;
-    //}
+    private string GetL95xxTable(GS1TableNames table) => Lvs95xx.lib.Core.Controllers.Config.Tables.FirstOrDefault(x => x.Key.Contains(table.ToString().Trim('_'))).Key;
 
     private static bool HasSequencing(Results.ViewModels.ImageResultEntry label)
     {

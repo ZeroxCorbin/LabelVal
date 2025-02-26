@@ -158,7 +158,7 @@ public partial class ImageResults : ObservableRecipient,
             tmp.V5ProcessResults(v5);
 
         else if (img.NewData is FullReport l95)
-            tmp.L95xxProcessResults(l95);
+            tmp.L95xxProcessResults(l95, false);
 
         ImageResultsList.Add(tmp);
     }

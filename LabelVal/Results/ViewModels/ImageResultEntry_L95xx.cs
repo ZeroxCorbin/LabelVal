@@ -56,7 +56,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
     public void Receive(PropertyChangedMessage<FullReport> message)
     {
         if (IsL95xxSelected)
-            App.Current.Dispatcher.BeginInvoke(() => L95xxProcessResults(message.NewValue));
+            App.Current.Dispatcher.BeginInvoke(() => L95xxProcessResults(message.NewValue, false));
     }
 
     [RelayCommand]
@@ -139,7 +139,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
         UpdateL95xxStoredImageOverlay();
     }
 
-    public void L95xxProcessResults(FullReport message)
+    public void L95xxProcessResults(FullReport message, bool replaceSectors)
     {
         if (message == null || message.Report == null || message.Report.OverallGrade.StartsWith("Bar"))
         {
@@ -170,11 +170,13 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
 
         message.Name = name;
 
+        if(replaceSectors)
+            L95xxCurrentSectors.Clear();
+
         L95xxCurrentSectors.Add(new Sector(message, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
         List<ISector> secs = L95xxCurrentSectors.ToList();
         SortList(secs);
         SortObservableCollectionByList(secs, L95xxCurrentSectors);
-
 
         L95xxCurrentImage = new ImageEntry(ImageRollUID, LibImageUtilities.ImageTypes.Png.Utilities.GetPng(message.Report.Thumbnail), 600);
         UpdateL95xxCurrentImageOverlay();  
