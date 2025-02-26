@@ -20,15 +20,10 @@
     Height="auto"
     Dialog:DialogParticipation.Register="{Binding}"
     d:DataContext="{d:DesignInstance Type=viewModels:MainWindow}"
+    Title="{Binding ApplicationTitle}"
     Closing="MetroWindow_Closing"
     SaveWindowPosition="True"
     mc:Ignorable="d">
-
-    <mah:MetroWindow.Title>
-        <MultiBinding StringFormat="Label Validator : {0}">
-            <Binding Path="Version" />
-        </MultiBinding>
-    </mah:MetroWindow.Title>
 
     <mah:MetroWindow.DataContext>
         <viewModels:MainWindow />

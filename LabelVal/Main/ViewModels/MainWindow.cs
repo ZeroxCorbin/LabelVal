@@ -12,7 +12,8 @@ public class DPIChangedMessage : ValueChangedMessage<DpiScale> { public DPIChang
 
 public partial class MainWindow : ObservableRecipient
 {
-    public static string Version => App.Version;
+    [ObservableProperty]
+    private string _applicationTitle = $"Label Validator : {GetAssemblyVersion()} : CONFIDENTIAL B (Internal Use Only)";
 
     public LoggingStatusBarVm LoggingStatusBarVm { get; } = new LoggingStatusBarVm();
 
@@ -83,4 +84,6 @@ public partial class MainWindow : ObservableRecipient
 
         SelectedMenuItem = MenuItems[0];
     }
+    private static string GetAssemblyVersion() => System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString()
+        ?? string.Empty;
 }
