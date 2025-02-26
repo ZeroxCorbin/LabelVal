@@ -78,7 +78,7 @@ public partial class ImageResultEntry
 
         if (type == "print")
         {
-            LogInfo("No node selected. Just printing!");
+            Logger.LogInfo("No node selected. Just printing!");
             PrintImage(lab.Image, PrintCount, SelectedPrinter.PrinterName);
             return;
         }
@@ -90,13 +90,13 @@ public partial class ImageResultEntry
 
         if (ImageResults.SelectedNode.Controller.IsSimulator)
         {
-            LogInfo("Processing image with simulator.");
+            Logger.LogInfo("Processing image with simulator.");
             IsV275Working = await ImageResults.SelectedNode.Controller.ProcessLabel_Simulator(lab);
             IsV275Faulted = !IsV275Working;
         }
         else
         {
-            LogInfo("Processing image with printer.");
+            Logger.LogInfo("Processing image with printer.");
             IsV275Working = ImageResults.SelectedNode.Controller.ProcessLabel_Printer(lab, PrintCount, SelectedPrinter.PrinterName);
             IsV275Faulted = !IsV275Working;
         }
@@ -106,7 +106,7 @@ public partial class ImageResultEntry
     {
         if (repeat == null)
         {
-            LogError("Repeat is null.");
+            Logger.LogError("Repeat is null.");
             IsV275Working = false;
             IsV275Faulted = true;
             return;
@@ -116,7 +116,7 @@ public partial class ImageResultEntry
         {
             IsV275Working = false;
             IsV275Faulted = true;
-            LogError("Fullreport is null.");
+            Logger.LogError("Fullreport is null.");
             return;
         }
 
@@ -267,7 +267,7 @@ public partial class ImageResultEntry
         V275_REST_Lib.FullReport report;
         if ((report = await ImageResults.SelectedNode.Controller.GetFullReport(repeat, true)) == null)
         {
-            LogError("Unable to read the repeat report from the node.");
+            Logger.LogError("Unable to read the repeat report from the node.");
             ClearRead("V275");
             return false;
         }

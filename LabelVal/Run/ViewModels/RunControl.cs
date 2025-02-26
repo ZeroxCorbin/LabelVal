@@ -42,7 +42,7 @@ public Verifier L95 { get; private set; }
     {
         if (RunController.State == RunStates.Running)
         {
-            LogDebug("Cannot update RunControl while running");
+            Logger.LogDebug("Cannot update RunControl while running");
             return;
         }
 
@@ -62,12 +62,12 @@ public Verifier L95 { get; private set; }
 
         if (RunController.State == RunStates.Running)
         {
-            LogInfo($"Stopping Run: {SelectedImageRoll.Name}; {LoopCount.ToString()}");
+            Logger.LogInfo($"Stopping Run: {SelectedImageRoll.Name}; {LoopCount.ToString()}");
             RunController.Stop();
         }
         else
         {
-            LogInfo($"Starting Run: {SelectedImageRoll.Name}; {LoopCount.ToString()}");
+            Logger.LogInfo($"Starting Run: {SelectedImageRoll.Name}; {LoopCount.ToString()}");
             RunController.StartAsync(ImageResultsList, SelectedImageRoll, V275, V5?.Controller, L95.Controller, LoopCount);
         }
     }
@@ -81,17 +81,4 @@ public Verifier L95 { get; private set; }
         RunController.Reset();
     }
 
-    #region Logging
-    private void LogInfo(string message) => Logging.lib.Logger.LogInfo(GetType(), message);
-#if DEBUG
-    private void LogDebug(string message) => Logging.lib.Logger.LogDebug(GetType(), message);
-#else
-    private void LogDebug(string message) { }
-#endif
-    private void LogWarning(string message) => Logging.lib.Logger.LogInfo(GetType(), message);
-    private void LogError(string message) => Logging.lib.Logger.LogError(GetType(), message);
-    private void LogError(Exception ex) => Logging.lib.Logger.LogError(GetType(), ex);
-    private void LogError(string message, Exception ex) => Logging.lib.Logger.LogError(GetType(), ex, message);
-
-    #endregion
 }

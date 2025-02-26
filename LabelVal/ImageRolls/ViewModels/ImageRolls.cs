@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.Results.ViewModels;
+using Logging.lib;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -148,7 +149,7 @@ public partial class ImageRolls : ObservableRecipient
 
     private void UpdateImageRollsDatabasesList()
     {
-        LogInfo($"Loading Image Rolls databases from file system. {App.UserImageRollsRoot}");
+        Logger.LogInfo($"Loading Image Rolls databases from file system. {App.UserImageRollsRoot}");
 
         if (!File.Exists(App.UserImageRollDefaultFile))
         {
@@ -218,13 +219,13 @@ public partial class ImageRolls : ObservableRecipient
             if (!db.File.IsSelected)
                 continue;
 
-            LogInfo($"Loading user image rolls from database. {db.File.Name}");
+            Logger.LogInfo($"Loading user image rolls from database. {db.File.Name}");
 
             try
             {
                 foreach (var roll in db.SelectAllImageRolls())
                 {
-                    LogDebug($"Found: {roll.Name}");
+                    Logger.LogDebug($"Found: {roll.Name}");
                     roll.ImageRollsDatabase = db;
 
                     if (!currentRolls.Contains(roll.UID))
@@ -235,7 +236,7 @@ public partial class ImageRolls : ObservableRecipient
             }
             catch (Exception ex)
             {
-                LogError($"Error when accessing {db.File.Path}", ex);
+                Logger.LogError(ex, $"Error when accessing {db.File.Path}");
             }
         }
 
@@ -244,20 +245,20 @@ public partial class ImageRolls : ObservableRecipient
             if (!newRolls.Any(newRoll => newRoll.UID == UserImageRolls[i].UID))
                 UserImageRolls.RemoveAt(i);
 
-        LogInfo($"Processed {UserImageRolls.Count} user image rolls.");
+        Logger.LogInfo($"Processed {UserImageRolls.Count} user image rolls.");
     }
 
 
     private void LoadFixedImageRollsList()
     {
-        LogInfo($"Loading image rolls from file system. {App.AssetsImageRollsRoot}");
+        Logger.LogInfo($"Loading image rolls from file system. {App.AssetsImageRollsRoot}");
 
         FixedImageRolls.Clear();
 
         foreach (var dir in Directory.EnumerateDirectories(App.AssetsImageRollsRoot).ToList().OrderBy((e) => Regex.Replace(e, "[0-9]+", match => match.Value.PadLeft(10, '0'))))
         {
             var fnd = dir[(dir.LastIndexOf('\\') + 1)..];
-            LogDebug($"Found: {fnd}");
+            Logger.LogDebug($"Found: {fnd}");
 
             foreach (var subdir in Directory.EnumerateDirectories(dir))
             {
@@ -273,19 +274,19 @@ public partial class ImageRolls : ObservableRecipient
                 }
                 catch (Exception ex)
                 {
-                    LogError($"Failed to load image roll from {files.First()}", ex);
+                    Logger.LogError(ex, $"Failed to load image roll from {files.First()}");
                     continue;
                 }
             }
         }
 
-        LogInfo($"Processed {FixedImageRolls.Count} fixed image rolls.");
+        Logger.LogInfo($"Processed {FixedImageRolls.Count} fixed image rolls.");
     }
 
     [RelayCommand]
     private void Add()
     {
-        LogInfo("Adding image roll.");
+        Logger.LogInfo("Adding image roll.");
 
         NewImageRoll = new ImageRollEntry() { ImageRollsDatabase = DefaultDatabase };
     }
@@ -293,7 +294,7 @@ public partial class ImageRolls : ObservableRecipient
     [RelayCommand]
     private void Edit()
     {
-        LogInfo("Editing image roll.");
+        Logger.LogInfo("Editing image roll.");
 
         NewImageRoll = SelectedUserImageRoll.CopyLite();
     }
@@ -313,7 +314,7 @@ public partial class ImageRolls : ObservableRecipient
 
         if (DefaultDatabase.InsertOrReplaceImageRoll(NewImageRoll) > 0)
         {
-            LogInfo($"Saved image roll: {NewImageRoll.Name}");
+            Logger.LogInfo($"Saved image roll: {NewImageRoll.Name}");
 
             var remove = UserImageRolls.FirstOrDefault((e) => e.UID == NewImageRoll.UID);
             if (remove != null)
@@ -326,7 +327,7 @@ public partial class ImageRolls : ObservableRecipient
                 file.IsSelected = true;
         }
         else
-            LogError($"Failed to save image roll: {NewImageRoll.Name}");
+            Logger.LogError($"Failed to save image roll: {NewImageRoll.Name}");
 
         NewImageRoll = null;
     }
@@ -340,21 +341,21 @@ public partial class ImageRolls : ObservableRecipient
         foreach (var img in SelectedUserImageRoll.Images)
         {
             if (SelectedUserImageRoll.ImageRollsDatabase.DeleteImage(img.UID))
-                LogInfo($"Deleted image: {img.UID}");
+                Logger.LogInfo($"Deleted image: {img.UID}");
             else
-                LogError($"Failed to delete image: {img.UID}");
+                Logger.LogError($"Failed to delete image: {img.UID}");
         }
 
         if (SelectedUserImageRoll.ImageRollsDatabase.DeleteImageRoll(NewImageRoll.UID))
         {
-            LogInfo($"Deleted image roll: {NewImageRoll.UID}");
+            Logger.LogInfo($"Deleted image roll: {NewImageRoll.UID}");
 
             LoadUserImageRollsList();
             NewImageRoll = null;
             SelectedUserImageRoll = null;
         }
         else
-            LogError($"Failed to delete image roll: {NewImageRoll.UID}");
+            Logger.LogError($"Failed to delete image roll: {NewImageRoll.UID}");
     }
 
     [RelayCommand]
@@ -366,17 +367,4 @@ public partial class ImageRolls : ObservableRecipient
         Clipboard.SetText(Guid.NewGuid().ToString());
     }
 
-    #region Logging
-    private void LogInfo(string message) => Logging.lib.Logger.LogInfo(GetType(), message);
-#if DEBUG
-    private void LogDebug(string message) => Logging.lib.Logger.LogDebug(GetType(), message);
-#else
-    private void LogDebug(string message) { }
-#endif
-    private void LogWarning(string message) => Logging.lib.Logger.LogInfo(GetType(), message);
-    private void LogError(string message) => Logging.lib.Logger.LogError(GetType(), message);
-    private void LogError(Exception ex) => Logging.lib.Logger.LogError(GetType(), ex);
-    private void LogError(string message, Exception ex) => Logging.lib.Logger.LogError(GetType(), ex, message);
-
-    #endregion
 }

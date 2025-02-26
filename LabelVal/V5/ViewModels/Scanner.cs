@@ -168,13 +168,13 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     private async void SwitchAquisitionType(bool file)
     {
         if (!await Controller.SwitchAquisitionType(file, SelectedDirectory ?? Directories.First()))
-            LogError("Could not switch acquisition type.");
+            Logger.LogError("Could not switch acquisition type.");
     }
     private async void ChangeDirectory(string directory)
     {
         if (!Controller.IsConfigValid)
         {
-            LogError("Could not get scanner configuration.");
+            Logger.LogError("Could not get scanner configuration.");
             return;
         }
 
@@ -250,16 +250,16 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             JobName = Controller.Config.response.data.job.name;
         }
         else
-            LogError("V5 Config update but Config is invalid.");
+            Logger.LogError("V5 Config update but Config is invalid.");
 
         if (Controller.IsSysInfoValid)
         {
             SelectedCamera = AvailableCameras.FirstOrDefault((e) => Controller.SysInfo.response.data.hwal.lens.lensName.StartsWith(e.FocalLength.ToString()) && Controller.SysInfo.response.data.hwal.sensor.description.StartsWith(e.Sensor.PixelCount.ToString()));
             if (SelectedCamera == null)
-                LogError("Could not find a camera matching the current lens and sensor.");
+                Logger.LogError("Could not find a camera matching the current lens and sensor.");
         }
         else
-            LogError("V5 Config update but SysInfo is invalid.");
+            Logger.LogError("V5 Config update but SysInfo is invalid.");
     }
     private void ScannerController_SysInfoUpdate()
     {
@@ -267,10 +267,10 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         {
             SelectedCamera = AvailableCameras.FirstOrDefault((e) => Controller.SysInfo.response.data.hwal.lens.lensName.StartsWith(e.FocalLength.ToString()) && Controller.SysInfo.response.data.hwal.sensor.description.StartsWith(e.Sensor.PixelCount.ToString()));
             if (SelectedCamera == null)
-                LogError("Could not find a camera matching the current lens and sensor.");
+                Logger.LogError("Could not find a camera matching the current lens and sensor.");
         }
         else
-            LogError("V5 Config update but SysInfo is invalid.");
+            Logger.LogError("V5 Config update but SysInfo is invalid.");
     }
     private void ScannerController_ReportUpdate(JObject json)
     {
@@ -323,7 +323,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
                     });
                 }
             }
-            catch (Exception ex) { LogError(ex); }
+            catch (Exception ex) { Logger.LogError(ex); }
         }
     }
     private async void ScannerController_ImageUpdate(JObject json)
@@ -704,25 +704,25 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     {
         if (SelectedImageRoll == null)
         {
-            LogWarning("No image roll selected.");
+            Logger.LogWarning("No image roll selected.");
             return;
         }
 
         if (SelectedImageRoll.IsRooted)
         {
-            LogWarning("Cannot add to a rooted image roll.");
+            Logger.LogWarning("Cannot add to a rooted image roll.");
             return;
         }
 
         if (SelectedImageRoll.IsLocked)
         {
-            LogWarning("Cannot add to a locked image roll.");
+            Logger.LogWarning("Cannot add to a locked image roll.");
             return;
         }
 
         if (RawImage == null)
         {
-            LogWarning("No image to add.");
+            Logger.LogWarning("No image to add.");
             return;
         }
         ImageEntry imagEntry = SelectedImageRoll.GetNewImageEntry(RawImage);
@@ -742,17 +742,4 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         Capture = null;
     }
 
-    #region Logging
-    private void LogInfo(string message) => Logging.lib.Logger.LogInfo(GetType(), message);
-#if DEBUG
-    private void LogDebug(string message) => Logging.lib.Logger.LogDebug(GetType(), message);
-#else
-    private void LogDebug(string message) { }
-#endif
-    private void LogWarning(string message) => Logging.lib.Logger.LogInfo(GetType(), message);
-    private void LogError(string message) => Logging.lib.Logger.LogError(GetType(), message);
-    private void LogError(Exception ex) => Logging.lib.Logger.LogError(GetType(), ex);
-    private void LogError(string message, Exception ex) => Logging.lib.Logger.LogError(GetType(), ex, message);
-
-    #endregion
 }

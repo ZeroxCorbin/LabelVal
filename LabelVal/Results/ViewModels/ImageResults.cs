@@ -7,6 +7,7 @@ using LabelVal.LVS_95xx.ViewModels;
 using LabelVal.Utilities;
 using LabelVal.V275.ViewModels;
 using LabelVal.V5.ViewModels;
+using Logging.lib;
 using Lvs95xx.lib.Core.Controllers;
 using MahApps.Metro.Controls.Dialogs;
 using NHibernate.Util;
@@ -255,7 +256,7 @@ public partial class ImageResults : ObservableRecipient,
 
         if (!res.OK)
         {
-            LogError("Could not trigger the scanner.");
+            Logger.LogError("Could not trigger the scanner.");
             return null;
         }
 
@@ -535,20 +536,6 @@ public partial class ImageResults : ObservableRecipient,
     #region Dialogs
     public static IDialogCoordinator DialogCoordinator => MahApps.Metro.Controls.Dialogs.DialogCoordinator.Instance;
     public async Task<MessageDialogResult> OkCancelDialog(string title, string message) => await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative);
-    #endregion
-
-    #region Logging
-    private void LogInfo(string message) => Logging.lib.Logger.LogInfo(GetType(), message);
-#if DEBUG
-    private void LogDebug(string message) => Logging.lib.Logger.LogDebug(GetType(), message);
-#else
-    private void LogDebug(string message) { }
-#endif
-    private void LogWarning(string message) => Logging.lib.Logger.LogInfo(GetType(), message);
-    private void LogError(string message) => Logging.lib.Logger.LogError(GetType(), message);
-    private void LogError(Exception ex) => Logging.lib.Logger.LogError(GetType(), ex);
-    private void LogError(string message, Exception ex) => Logging.lib.Logger.LogError(GetType(), ex, message);
-
     #endregion
 
 }

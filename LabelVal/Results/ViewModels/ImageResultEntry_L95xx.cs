@@ -55,7 +55,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
 
     public void Receive(PropertyChangedMessage<FullReport> message)
     {
-        if (IsL95xxSelected)
+        if (IsL95xxSelected || IsL95xxWorking)
             App.Current.Dispatcher.BeginInvoke(() => L95xxProcessResults(message.NewValue, false));
     }
 
@@ -144,6 +144,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
         if (message == null || message.Report == null || message.Report.OverallGrade.StartsWith("Bar"))
         {
             IsL95xxFaulted = true;
+            IsL95xxWorking = false;
             return;
         }
 

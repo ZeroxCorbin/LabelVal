@@ -251,17 +251,4 @@ public partial class RunResult : ObservableRecipient, IImageResultEntry, IRecipi
     public async Task<MessageDialogResult> OkCancelDialog(string title, string message) => await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative);
     #endregion
 
-    #region Logging
-    private void LogInfo(string message) => Logging.lib.Logger.LogInfo(GetType(), message);
-#if DEBUG
-    private void LogDebug(string message) => Logging.lib.Logger.LogDebug(GetType(), message);
-#else
-    private void LogDebug(string message) { }
-#endif
-    private void LogWarning(string message) => Logging.lib.Logger.LogInfo(GetType(), message);
-    private void LogError(string message) => Logging.lib.Logger.LogError(GetType(), message);
-    private void LogError(Exception ex) => Logging.lib.Logger.LogError(GetType(), ex);
-    private void LogError(string message, Exception ex) => Logging.lib.Logger.LogError(GetType(), ex, message);
-
-    #endregion
 }

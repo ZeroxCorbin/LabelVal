@@ -26,14 +26,14 @@ public partial class RunResults : ObservableRecipient, IRecipient<PropertyChange
         //var vals = SelectedRunEntry.RunDatabase.SelectAllStoredImageResultGroups(value.UID);
         foreach (var stored in SelectedRunEntry.ResultsDatabase.SelectAllImageResultGroups(value.UID))
         {
-            //LogDebug($"Loading StoredImageResultGroup {stored.RunUID} {stored.SourceImageUID}");
+            //Logger.LogDebug($"Loading StoredImageResultGroup {stored.RunUID} {stored.SourceImageUID}");
 
             //var current = SelectedRunEntry.RunDatabase.SelectCurrentImageResultGroup(stored.RunUID, stored.SourceImageUID, stored.Order);
 
             //if (current != null)
             //    RunResultsList.Add(new RunResult(current, stored, value));
             //else
-            //    LogError($"CurrentImageResultGroup not found for {stored.RunUID} and {stored.SourceImageUID}");
+            //    Logger.LogError($"CurrentImageResultGroup not found for {stored.RunUID} and {stored.SourceImageUID}");
         }
 
     }
@@ -42,17 +42,4 @@ public partial class RunResults : ObservableRecipient, IRecipient<PropertyChange
     public void Receive(PropertyChangedMessage<RunEntry> message) => SelectedRunEntry = message.NewValue;
     #endregion
 
-    #region Logging
-    private void LogInfo(string message) => Logging.lib.Logger.LogInfo(GetType(), message);
-#if DEBUG
-    private void LogDebug(string message) => Logging.lib.Logger.LogDebug(GetType(), message);
-#else
-    private void LogDebug(string message) { }
-#endif
-    private void LogWarning(string message) => Logging.lib.Logger.LogInfo(GetType(), message);
-    private void LogError(string message) => Logging.lib.Logger.LogError(GetType(), message);
-    private void LogError(Exception ex) => Logging.lib.Logger.LogError(GetType(), ex);
-    private void LogError(string message, Exception ex) => Logging.lib.Logger.LogError(GetType(), ex, message);
-
-    #endregion
 }

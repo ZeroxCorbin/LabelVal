@@ -98,7 +98,7 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
     [RelayCommand]
     private async Task GetDevices()
     {
-        LogInfo("Loading V275 devices.");
+        Logger.LogInfo("Loading V275 devices.");
 
         Node system = new(Host, SystemPort, 0, UserName, Password, SimulatorImageDirectory, SelectedImageRoll);
 
@@ -109,11 +109,11 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
             {
                 if (lst.Any(n => n.Controller.Node.cameraMAC == node.cameraMAC))
                 {
-                    LogWarning($"Duplicate device MAC: {node.cameraMAC}");
+                    Logger.LogWarning($"Duplicate device MAC: {node.cameraMAC}");
                     continue;
                 }
 
-                LogDebug($"Adding Device MAC: {node.cameraMAC}");
+                Logger.LogDebug($"Adding Device MAC: {node.cameraMAC}");
 
                 Node newNode = new(Host, SystemPort, (uint)node.enumeration, UserName, Password, SimulatorImageDirectory, SelectedImageRoll) { Manager = this };
                 newNode.Controller.Initialize();
@@ -125,7 +125,7 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
             Nodes.Clear();
             if (srt.Count == 0)
             {
-                LogWarning("No devices found.");
+                Logger.LogWarning("No devices found.");
                 return;
             }
 
@@ -173,17 +173,4 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
     public async Task OkDialog(string title, string message) => _ = await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.Affirmative);
     #endregion
 
-    #region Logging
-    private void LogInfo(string message) => Logging.lib.Logger.LogInfo(GetType(), message);
-#if DEBUG
-    private void LogDebug(string message) => Logging.lib.Logger.LogDebug(GetType(), message);
-#else
-    private void LogDebug(string message) { }
-#endif
-    private void LogWarning(string message) => Logging.lib.Logger.LogInfo(GetType(), message);
-    private void LogError(string message) => Logging.lib.Logger.LogError(GetType(), message);
-    private void LogError(Exception ex) => Logging.lib.Logger.LogError(GetType(), ex);
-    private void LogError(string message, Exception ex) => Logging.lib.Logger.LogError(GetType(), ex, message);
-
-    #endregion
 }

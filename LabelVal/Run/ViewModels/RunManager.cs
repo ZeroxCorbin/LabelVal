@@ -65,12 +65,12 @@ public partial class RunManager : ObservableRecipient, IRecipient<PropertyChange
 
         if (QuickRunController.RunController.State == RunStates.Running)
         {
-            LogInfo($"Stopping Run: {SelectedImageRoll.Name}; {LoopCount}");
+            Logger.LogInfo($"Stopping Run: {SelectedImageRoll.Name}; {LoopCount}");
             QuickRunController.RunController.Stop();
         }
         else
         {
-            LogInfo($"Starting Run: {SelectedImageRoll.Name}; {LoopCount}");
+            Logger.LogInfo($"Starting Run: {SelectedImageRoll.Name}; {LoopCount}");
             QuickRunController.Update(LoopCount, ImageResults.ImageResultsList, SelectedImageRoll, SelectedNode, SelectedScanner, SelectedVerifier);
             QuickRunController.StartStopCommand.Execute(null);
         }
@@ -92,19 +92,5 @@ public partial class RunManager : ObservableRecipient, IRecipient<PropertyChange
     public void Receive(PropertyChangedMessage<Verifier> message) => SelectedVerifier = message.NewValue;
     #endregion
 
-
-    #region Logging
-    private void LogInfo(string message) => Logging.lib.Logger.LogInfo(GetType(), message);
-#if DEBUG
-    private void LogDebug(string message) => Logging.lib.Logger.LogDebug(GetType(), message);
-#else
-    private void LogDebug(string message) { }
-#endif
-    private void LogWarning(string message) => Logging.lib.Logger.LogInfo(GetType(), message);
-    private void LogError(string message) => Logging.lib.Logger.LogError(GetType(), message);
-    private void LogError(Exception ex) => Logging.lib.Logger.LogError(GetType(), ex);
-    private void LogError(string message, Exception ex) => Logging.lib.Logger.LogError(GetType(), ex, message);
-
-    #endregion
 }
 

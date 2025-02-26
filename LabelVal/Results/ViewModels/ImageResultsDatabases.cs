@@ -3,11 +3,8 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using MahApps.Metro.Controls.Dialogs;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace LabelVal.Results.ViewModels;
@@ -26,7 +23,7 @@ public partial class ImageResultsDatabases : ObservableRecipient
 
     public ImageResultsDatabases()
     {
-        if(!Directory.Exists(FileRoot.Path))
+        if (!Directory.Exists(FileRoot.Path))
             FileRoot = new FileFolderEntry(App.ImageResultsDatabaseRoot);
 
         UpdateFileFolderEvents(FileRoot);
@@ -104,7 +101,7 @@ public partial class ImageResultsDatabases : ObservableRecipient
     }
     private List<FileFolderEntry> CollectSelectedFiles(FileFolderEntry root)
     {
-        List<FileFolderEntry> selectedFiles = new();
+        List<FileFolderEntry> selectedFiles = [];
 
         foreach (FileFolderEntry child in root.Children)
         {
@@ -123,7 +120,7 @@ public partial class ImageResultsDatabases : ObservableRecipient
 
     private void UpdateImageResultsDatabasesList()
     {
-        LogInfo($"Loading Image Results databases from file system. {App.ImageResultsDatabaseRoot}");
+        Logger.LogInfo($"Loading Image Results databases from file system. {App.ImageResultsDatabaseRoot}");
 
         FileRoot = EnumerateFolders(FileRoot);
         UpdateDatabases(FileRoot);
@@ -251,19 +248,4 @@ public partial class ImageResultsDatabases : ObservableRecipient
     public async Task<string> GetStringDialog(string title, string message) => await DialogCoordinator.ShowInputAsync(this, title, message);
     public async Task<MessageDialogResult> OkCancelDialog(string title, string message) => await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative);
     #endregion
-
-    #region Logging
-    private void LogInfo(string message) => Logging.lib.Logger.LogInfo(GetType(), message);
-#if DEBUG
-    private void LogDebug(string message) => Logging.lib.Logger.LogDebug(GetType(), message);
-#else
-    private void LogDebug(string message) { }
-#endif
-    private void LogWarning(string message) => Logging.lib.Logger.LogInfo(GetType(), message);
-    private void LogError(string message) => Logging.lib.Logger.LogError(GetType(), message);
-    private void LogError(Exception ex) => Logging.lib.Logger.LogError(GetType(), ex);
-    private void LogError(string message, Exception ex) => Logging.lib.Logger.LogError(GetType(), ex, message);
-
-    #endregion
-
 }

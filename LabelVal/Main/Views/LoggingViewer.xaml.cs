@@ -14,7 +14,7 @@ public partial class LoggingViewer : UserControl
         {
             if(dataGrid.SelectedItem is not LoggerMessage msg)
                 return;
-            string row = $"{msg.TimeStamp}, {msg.Type}, {msg.Message}, {msg.SourceType}";
+            string row = $"{msg.TimeStamp}, {msg.Type}, {msg.Message}";
 
             System.Windows.Clipboard.SetText(row);
         }

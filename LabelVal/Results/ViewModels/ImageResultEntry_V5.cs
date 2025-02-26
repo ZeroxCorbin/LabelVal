@@ -72,7 +72,7 @@ public partial class ImageResultEntry
     {
         if (report == null)
         {
-            LogError("Can not proces null results.");
+            Logger.LogError("Can not proces null results.");
 
             ClearRead("V5");
 
@@ -123,13 +123,13 @@ public partial class ImageResultEntry
 
         if (V5ResultRow == null)
         {
-            LogDebug("No V5 result found.");
+            Logger.LogDebug("No V5 result found.");
             return;
         }
 
         if (V5ResultRow.Report == null || V5ResultRow.Template == null)
         {
-            LogDebug("V5 result is missing data.");
+            Logger.LogDebug("V5 result is missing data.");
             return;
         }
 

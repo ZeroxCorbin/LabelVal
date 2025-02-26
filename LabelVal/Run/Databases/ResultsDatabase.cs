@@ -14,7 +14,7 @@ public partial class ResultsDatabase : IDisposable
     public ResultsDatabase(string dbFilePath) => Open(dbFilePath);
     public ResultsDatabase Open(string dbFilePath)
     {
-        LogInfo($"Opening Database: {dbFilePath}");
+        Logger.LogInfo($"Opening Database: {dbFilePath}");
 
         if (string.IsNullOrEmpty(dbFilePath))
             return null;
@@ -29,7 +29,7 @@ public partial class ResultsDatabase : IDisposable
         }
         catch (Exception e)
         {
-            LogError(e);
+            Logger.LogError(e);
             return null;
         }
     }
@@ -77,17 +77,4 @@ public partial class ResultsDatabase : IDisposable
         GC.SuppressFinalize(this);
     }
 
-    #region Logging
-    private void LogInfo(string message) => Logging.lib.Logger.LogInfo(GetType(), message);
-#if DEBUG
-    private void LogDebug(string message) => Logging.lib.Logger.LogDebug(GetType(), message);
-#else
-    private void LogDebug(string message) { }
-#endif
-    private void LogWarning(string message) => Logging.lib.Logger.LogInfo(GetType(), message);
-    private void LogError(string message) => Logging.lib.Logger.LogError(GetType(), message);
-    private void LogError(Exception ex) => Logging.lib.Logger.LogError(GetType(), ex);
-    private void LogError(string message, Exception ex) => Logging.lib.Logger.LogError(GetType(), ex, message);
-
-    #endregion
 }

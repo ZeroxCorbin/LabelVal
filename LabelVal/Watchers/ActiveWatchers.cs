@@ -94,7 +94,7 @@ public partial class ActiveWatchers : ObservableRecipient
     //{
     //    foreach (string hub in _hubs)
     //    {
-    //        LogDebug($"Starting watcher for hub: {hub}");
+    //        Logger.LogDebug($"Starting watcher for hub: {hub}");
 
     //        Win32_PnPEntityWatcher watcher = new();
     //        watcher.Start("DeviceID", hub, HubChangeCallback);
@@ -103,14 +103,14 @@ public partial class ActiveWatchers : ObservableRecipient
 
     //    foreach (string device in _devices)
     //    {
-    //        LogDebug($"Starting watcher for device: {device}");
+    //        Logger.LogDebug($"Starting watcher for device: {device}");
 
     //        Win32_PnPEntityWatcher watcher = new();
     //        watcher.Start("DeviceID", device, DeviceChangeCallback);
     //        _pnPEntityWatchers.Add(watcher);
     //    }
 
-    //    //LogDebug("Starting watcher for all devices");
+    //    //Logger.LogDebug("Starting watcher for all devices");
 
     //    //Win32_PnPEntityWatcher all = new();
     //    //all.Start("DeviceID", "VID_", AllDeviceChangeCallback, false);
@@ -161,7 +161,7 @@ public partial class ActiveWatchers : ObservableRecipient
     //        _ = RootDevices.Remove(dev);
     //        _ = WeakReferenceMessenger.Default.Send(new UsbDeviceMessage(dev, false));
 
-    //        LogDebug($"Removed device: {dev.DeviceID}");
+    //        Logger.LogDebug($"Removed device: {dev.DeviceID}");
 
     //        dev.Dispose();
     //    }
@@ -172,7 +172,7 @@ public partial class ActiveWatchers : ObservableRecipient
     //        RootDevices.Add(root);
     //        _ = WeakReferenceMessenger.Default.Send(new UsbDeviceMessage(root, true));
 
-    //        LogDebug($"Added device: {root.DeviceID}");
+    //        Logger.LogDebug($"Added device: {root.DeviceID}");
     //    }
     //}
 
@@ -185,7 +185,7 @@ public partial class ActiveWatchers : ObservableRecipient
     //        _ = RootDevices.Remove(dev);
     //        _ = WeakReferenceMessenger.Default.Send(new UsbDeviceMessage(dev, false));
 
-    //        LogDebug($"Removed device: {dev.DeviceID}");
+    //        Logger.LogDebug($"Removed device: {dev.DeviceID}");
 
     //        dev.Dispose();
     //    }
@@ -195,7 +195,7 @@ public partial class ActiveWatchers : ObservableRecipient
     //        RootDevices.Add(deviceRoot);
     //        _ = WeakReferenceMessenger.Default.Send(new UsbDeviceMessage(deviceRoot, true));
 
-    //        LogDebug($"Added device: {deviceRoot.DeviceID}");
+    //        Logger.LogDebug($"Added device: {deviceRoot.DeviceID}");
     //    }
     //}
 
@@ -208,7 +208,7 @@ public partial class ActiveWatchers : ObservableRecipient
     //            _ = WeakReferenceMessenger.Default.Send(new VolumeMessage(true, volume));
     //            Volumes.Add(volume);
 
-    //            LogDebug($"Added volume: {volume}");
+    //            Logger.LogDebug($"Added volume: {volume}");
     //        }
     //    }
     //    else
@@ -218,7 +218,7 @@ public partial class ActiveWatchers : ObservableRecipient
     //            _ = WeakReferenceMessenger.Default.Send(new VolumeMessage(false, volume));
     //            _ = Volumes.RemoveAll((v) => v == volume);
 
-    //            LogDebug($"Removed volume: {volume}");
+    //            Logger.LogDebug($"Removed volume: {volume}");
     //        }
     //    }
     //}
@@ -242,7 +242,7 @@ public partial class ActiveWatchers : ObservableRecipient
     //            DeviceRoot? dev = RootDevices.FirstOrDefault(x => x.DeviceID == res.DeviceID);
     //            dev?.RefreshChildren();
 
-    //            LogDebug($"Refreshed hub: {dev?.DeviceID}");
+    //            Logger.LogDebug($"Refreshed hub: {dev?.DeviceID}");
     //        }
     //    }
     //    else
@@ -270,19 +270,5 @@ public partial class ActiveWatchers : ObservableRecipient
 
     //    return deviceNode;
     //}
-
-    #region Logging
-    private void LogInfo(string message) => Logging.lib.Logger.LogInfo(GetType(), message);
-#if DEBUG
-    private void LogDebug(string message) => Logging.lib.Logger.LogDebug(GetType(), message);
-#else
-    private void LogDebug(string message) { }
-#endif
-    private void LogWarning(string message) => Logging.lib.Logger.LogInfo(GetType(), message);
-    private void LogError(string message) => Logging.lib.Logger.LogError(GetType(), message);
-    private void LogError(Exception ex) => Logging.lib.Logger.LogError(GetType(), ex);
-    private void LogError(Exception ex, string message) => Logging.lib.Logger.LogError(GetType(), ex, message);
-
-    #endregion
 
 }

@@ -6,20 +6,17 @@ using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Results.Databases;
 using LabelVal.Utilities;
 using LibImageUtilities.ImageTypes;
+using Lvs95xx.lib.Core.Controllers;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Drawing.Printing;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using Lvs95xx.lib.Core.Controllers;
 
 namespace LabelVal.Results.ViewModels;
 
@@ -110,11 +107,11 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
     private void RecieveAll()
     {
         RequestMessage<PrinterSettings> mes2 = new();
-        WeakReferenceMessenger.Default.Send(mes2);
+        _ = WeakReferenceMessenger.Default.Send(mes2);
         SelectedPrinter = mes2.Response;
 
         RequestMessage<ImageResultsDatabase> mes4 = new();
-        WeakReferenceMessenger.Default.Send(mes4);
+        _ = WeakReferenceMessenger.Default.Send(mes4);
         SelectedDatabase = mes4.Response;
     }
 
@@ -204,20 +201,18 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
                     File.WriteAllBytes(path, LibImageUtilities.ImageTypes.Png.Utilities.GetPng(bmp));
                 else
                 {
-                    var dpi = LibImageUtilities.ImageTypes.ImageUtilities.GetImageDPI(bmp);
-                    var format = new LibImageUtilities.ImageTypes.Bmp.Bmp(LibImageUtilities.ImageTypes.Bmp.Utilities.GetBmp(bmp));
+                    ImageUtilities.DPI dpi = LibImageUtilities.ImageTypes.ImageUtilities.GetImageDPI(bmp);
+                    LibImageUtilities.ImageTypes.Bmp.Bmp format = new(LibImageUtilities.ImageTypes.Bmp.Utilities.GetBmp(bmp));
                     Lvs95xx.lib.Core.Controllers.Controller.ApplyWatermark(format.ImageData);
 
-                    var img = format.RawData;
+                    byte[] img = format.RawData;
+
+                    _ = LibImageUtilities.ImageTypes.ImageUtilities.SetImageDPI(img, dpi);
+                    //LibImageUtilities.ImageTypes.Bmp.Utilities.SetDPI(format.RawData, newDPI);
 
 
-                        LibImageUtilities.ImageTypes.ImageUtilities.SetImageDPI(img, dpi);
-                        //LibImageUtilities.ImageTypes.Bmp.Utilities.SetDPI(format.RawData, newDPI);
-
-                    
                     File.WriteAllBytes(path, img);
                 }
-
 
                 Clipboard.SetText(path);
             }
@@ -276,7 +271,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
 
             if (L95xxCurrentSectorSelected == null)
             {
-                LogError("No sector selected to store.");
+                Logger.LogError("No sector selected to store.");
                 return;
             }
             //Does the selected sector exist in the Stored sectors list?
@@ -316,7 +311,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
 
             if (L95xxCurrentSectors.Count == 0)
             {
-                LogWarning("There are no sectors to store.");
+                Logger.LogWarning("There are no sectors to store.");
                 return;
             }
             //Does the selected sector exist in the Stored sectors list?
@@ -334,7 +329,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             if (L95xxResultRow != null)
                 temp = L95xxResultRow._Report;
 
-            foreach (var sector in L95xxCurrentSectors)
+            foreach (Sectors.Interfaces.ISector sector in L95xxCurrentSectors)
             {
                 temp.Add(((LVS_95xx.Sectors.Sector)sector).L95xxFullReport);
 
@@ -405,7 +400,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             //No CurrentReport for L95xx
             //No template used for L95xx
 
-            L95xxCurrentSectors.Remove(L95xxCurrentSectorSelected);
+            _ = L95xxCurrentSectors.Remove(L95xxCurrentSectorSelected);
             //Diff sectors not used for L95xx, yet
 
             if (L95xxCurrentSectors.Count == 0)
@@ -503,7 +498,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
 
         DrawingGroup drwGroup = new();
         // Define the clipping rectangle based on the image bounds
-        Rect imageBounds = new Rect(0.5, 0.5, image.Image.PixelWidth - 1, image.Image.PixelHeight - 1);
+        Rect imageBounds = new(0.5, 0.5, image.Image.PixelWidth - 1, image.Image.PixelHeight - 1);
         drwGroup.ClipGeometry = new RectangleGeometry(imageBounds);
 
         //Draw the image outline the same size as the stored image
@@ -600,9 +595,8 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         if (text == null)
             return null;
 
-        GlyphTypeface glyphTypeface;
 
-        if (!typeface.TryGetGlyphTypeface(out glyphTypeface))
+        if (!typeface.TryGetGlyphTypeface(out GlyphTypeface glyphTypeface))
         {
             throw new ArgumentException(string.Format(
                 "{0}: no GlyphTypeface found", typeface.FontFamily));
@@ -861,17 +855,4 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
     public async Task<MessageDialogResult> OkCancelDialog(string title, string message) => await DialogCoordinator.ShowMessageAsync(this, title, message, MessageDialogStyle.AffirmativeAndNegative);
     #endregion
 
-    #region Logging
-    private void LogInfo(string message) => Logging.lib.Logger.LogInfo(GetType(), message);
-#if DEBUG
-    private void LogDebug(string message) => Logging.lib.Logger.LogDebug(GetType(), message);
-#else
-    private void LogDebug(string message) { }
-#endif
-    private void LogWarning(string message) => Logging.lib.Logger.LogInfo(GetType(), message);
-    private void LogError(string message) => Logging.lib.Logger.LogError(GetType(), message);
-    private void LogError(Exception ex) => Logging.lib.Logger.LogError(GetType(), ex);
-    private void LogError(string message, Exception ex) => Logging.lib.Logger.LogError(GetType(), ex, message);
-
-    #endregion
 }

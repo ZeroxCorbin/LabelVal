@@ -86,7 +86,7 @@ public partial class Scanner : UserControl
             {
                 System.IO.File.WriteAllBytes(path, ((ViewModels.Scanner)DataContext).RawImage);
             }
-            catch (Exception ex) { LogError(ex); }
+            catch (Exception ex) { Logger.LogError(ex); }
         }
     }
 
@@ -118,20 +118,6 @@ public partial class Scanner : UserControl
     //    CodeType = ((Scanner)DataContext).Results[0]["type"].ToString();
     //    ExpectedOutDataUTF8 = ((Scanner)DataContext).Results[0]["dataUTF8"].ToString();
     //}
-
-    #region Logging
-    private void LogInfo(string message) => Logging.lib.Logger.LogInfo(GetType(), message);
-#if DEBUG
-    private void LogDebug(string message) => Logging.lib.Logger.LogDebug(GetType(), message);
-#else
-    private void LogDebug(string message) { }
-#endif
-    private void LogWarning(string message) => Logging.lib.Logger.LogInfo(GetType(), message);
-    private void LogError(string message) => Logging.lib.Logger.LogError(GetType(), message);
-    private void LogError(Exception ex) => Logging.lib.Logger.LogError(GetType(), ex);
-    private void LogError(string message, Exception ex) => Logging.lib.Logger.LogError(GetType(), ex, message);
-
-    #endregion
 
     private void btnUnselect(object sender, RoutedEventArgs e)=>
         ((ViewModels.Scanner)this.DataContext).Manager.SelectedDevice = null;

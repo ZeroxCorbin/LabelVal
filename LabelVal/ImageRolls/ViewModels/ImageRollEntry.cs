@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.Sectors.Interfaces;
 using LibImageUtilities.ImageTypes.Png;
+using Logging.lib;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -125,7 +126,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
         if (Images.Count > 0)
             return;
 
-        LogInfo($"Loading label images from standards directory: {App.AssetsImageRollsRoot}\\{Name}\\");
+        Logger.LogInfo($"Loading label images from standards directory: {App.AssetsImageRollsRoot}\\{Name}\\");
 
         List<string> images = [];
         foreach (string f in Directory.EnumerateFiles(Path))
@@ -152,14 +153,14 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     {
         if (ImageRollsDatabase == null)
         {
-            LogError("ImageRollsDatabase is null.");
+            Logger.LogError("ImageRollsDatabase is null.");
             return;
         }
 
         if (Images.Count > 0)
             return;
 
-        LogInfo($"Loading label images from database: {Name}");
+        Logger.LogInfo($"Loading label images from database: {Name}");
 
         List<ImageEntry> images = ImageRollsDatabase.SelectAllImages(UID);
         List<Task> taskList = [];
@@ -207,7 +208,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
 
             if (Images.Any(e => e.UID == image.UID))
             {
-                LogWarning($"Image already exists in roll: {Path}");
+                Logger.LogWarning($"Image already exists in roll: {Path}");
                 return null;
             }
 
@@ -215,7 +216,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
         }
         catch (Exception ex)
         {
-            LogError($"Failed to load image: {Path}", ex);
+            Logger.LogError(ex, $"Failed to load image: {Path}");
         }
 
         return null;
@@ -231,7 +232,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
 
             if (Images.Any(e => e.UID == image.UID))
             {
-                LogWarning($"Image already exists in roll: {Path}");
+                Logger.LogWarning($"Image already exists in roll: {Path}");
                 return null;
             }
 
@@ -239,7 +240,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
         }
         catch (Exception ex)
         {
-            LogError($"Failed to load image: {Path}", ex);
+            Logger.LogError(ex, $"Failed to load image: {Path}");
         }
 
         return null;
@@ -300,7 +301,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
         }
         catch (Exception ex)
         {
-            LogError($"Failed to load image: {Path}", ex);
+            Logger.LogError(ex, $"Failed to load image: {Path}");
         }
     }
 
@@ -327,7 +328,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
             }
             catch (Exception ex)
             {
-                LogError($"Failed to load image: {Path}", ex);
+                Logger.LogError(ex, $"Failed to load image: {Path}");
             }
         }
     }
@@ -358,17 +359,4 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
 
     public ImageRollEntry CopyLite() => JsonConvert.DeserializeObject<ImageRollEntry>(JsonConvert.SerializeObject(this));
 
-    #region Logging
-    private void LogInfo(string message) => Logging.lib.Logger.LogInfo(GetType(), message);
-#if DEBUG
-    private void LogDebug(string message) => Logging.lib.Logger.LogDebug(GetType(), message);
-#else
-    private void LogDebug(string message) { }
-#endif
-    private void LogWarning(string message) => Logging.lib.Logger.LogInfo(GetType(), message);
-    private void LogError(string message) => Logging.lib.Logger.LogError(GetType(), message);
-    private void LogError(Exception ex) => Logging.lib.Logger.LogError(GetType(), ex);
-    private void LogError(string message, Exception ex) => Logging.lib.Logger.LogError(GetType(), ex, message);
-
-    #endregion
 }
