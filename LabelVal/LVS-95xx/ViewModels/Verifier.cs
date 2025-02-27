@@ -64,10 +64,10 @@ public partial class Verifier : ObservableRecipient, IRecipient<RegistryMessage>
     [RelayCommand]
     private void Connect()
     {
-        if (Controller.SerialPort.IsListening)
+        if (Controller.IsConnected)
             Controller.Disconnect();
         else
-            _ = Controller.Connect(SelectedComName, DatabasePath);
+            _ = Controller.Connect(DatabasePath);
     }
 
     [RelayCommand]

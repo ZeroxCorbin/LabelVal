@@ -13,6 +13,7 @@ using System.Linq;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.Input;
 using Lvs95xx.lib.Core.Controllers;
+using System.Threading.Tasks;
 
 namespace LabelVal.Results.ViewModels;
 public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullReport>>
@@ -80,7 +81,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
         IsL95xxWorking = true;
         IsL95xxFaulted = false;
 
-        _ = ImageResults.SelectedVerifier.Controller.ProcessLabelAsync(lab);
+        Task.Run(() => ImageResults.SelectedVerifier.Controller.ProcessLabelAsync(lab));
     }
 
     private string GetL95xxStandard(StandardsTypes type)
@@ -139,8 +140,14 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
         UpdateL95xxStoredImageOverlay();
     }
 
-    public void L95xxProcessResults(FullReport message, bool replaceSectors)
+    public void L95xxProcessResults(FullReport? message, bool replaceSectors)
     {
+        if(!App.Current.Dispatcher.CheckAccess())
+        {
+            App.Current.Dispatcher.BeginInvoke(() => L95xxProcessResults(message, replaceSectors));
+            return;
+        }
+
         if (message == null || message.Report == null || message.Report.OverallGrade.StartsWith("Bar"))
         {
             IsL95xxFaulted = true;
