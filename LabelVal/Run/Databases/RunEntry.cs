@@ -19,11 +19,14 @@ public partial class RunEntry : ObservableObject
     [ObservableProperty][property: SQLite.Ignore] private RunStates state;
     [SQLite.Ignore] public ResultsDatabase ResultsDatabase { get; set; }
 
-    //public string ProductPart { get; set; }
-    //public string CameraMAC { get; set; }
-    //public string PrinterName { get; set; }
+    public string ProductPart { get; set; }
+    public string CameraMAC { get; set; }
+    public string PrinterName { get; set; }
 
-    //public string ImageRollName { get; set; }
+    public string ImageRollName { get; set; }
+    public string ImageRollUID { get; set; }
+
+
     public StandardsTypes GradingStandard { get; set; }
     public GS1TableNames Gs1TableName { get; set; }
     //public double TargetDPI { get; set; }

@@ -185,6 +185,8 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
         SortList(secs);
         SortObservableCollectionByList(secs, L95xxCurrentSectors);
 
+        L95xxGetSectorDiff();
+
         L95xxCurrentImage = new ImageEntry(ImageRollUID, LibImageUtilities.ImageTypes.Png.Utilities.GetPng(message.Report.Thumbnail), 600);
         UpdateL95xxCurrentImageOverlay();  
         

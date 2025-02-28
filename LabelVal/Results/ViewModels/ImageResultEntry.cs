@@ -427,7 +427,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             //No template used for L95xx
 
             _ = L95xxCurrentSectors.Remove(L95xxCurrentSectorSelected);
-            //Diff sectors not used for L95xx, yet
+            L95xxDiffSectors.Clear();
 
             if (L95xxCurrentSectors.Count == 0)
             {
@@ -440,6 +440,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             L95xxCurrentReport = null;
 
             L95xxCurrentSectors.Clear();
+            L95xxDiffSectors.Clear();
             L95xxCurrentImage = null;
             L95xxCurrentImageOverlay = null;
         }

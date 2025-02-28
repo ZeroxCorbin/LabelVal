@@ -1,7 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using HelixToolkit.Wpf.SharpDX;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Results.Databases;
+using LabelVal.Utilities;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
@@ -56,15 +58,35 @@ public partial class ImageResultEntry
             RepeatAvailable = V5ProcessResults
         };
 
+
+
         if (imageType == ImageResultEntryImageTypes.Source)
-            lab.Image = SourceImage.ImageBytes;
+            lab.Image = PrepareImage(SourceImage);
         else if (imageType == ImageResultEntryImageTypes.V5Stored)
-            lab.Image = V5ResultRow.Stored.ImageBytes;
+            lab.Image = PrepareImage(V5ResultRow.Stored);
 
         IsV5Working = true;
         IsV5Faulted = false;
 
         Task.Run(() => ImageResults.SelectedScanner.Controller.ProcessLabel(lab));
+    }
+
+    private byte[] PrepareImage(ImageEntry img)
+    {
+        if (img == null)
+            return null;
+
+        //If the image is greater than 5 mega pixels, resize it from the edges inward to 5 mega pixels.
+        if (img.ImageTotalPixels > 5000000)
+        {
+            double ratio = Math.Sqrt(5000000.0 / img.ImageTotalPixels);
+            int newWidth = (int)(img.Image.PixelWidth * ratio);
+            int newHeight = (int)(img.Image.PixelHeight * ratio);
+            var newimg =  BitmapImageUtilities.ResizeImage(img.Image, newWidth, newHeight);
+            return BitmapImageUtilities.ImageToBytes(newimg, false);
+        }
+
+        return img.ImageBytes;
     }
 
     public void V5ProcessResults(V5_REST_Lib.Controllers.Repeat repeat) => V5ProcessResults(repeat?.FullReport);
@@ -76,7 +98,7 @@ public partial class ImageResultEntry
             return;
         }
 
-        if (report == null)
+        if (report == null || report.FullImage == null)
         {
             Logger.LogError("Can not proces null results.");
 

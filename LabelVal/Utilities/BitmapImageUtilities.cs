@@ -86,6 +86,26 @@ public static class BitmapImageUtilities
         return CreateBitmapImage(image);
     }
 
+    public static System.Windows.Media.Imaging.BitmapImage ResizeImage(System.Windows.Media.Imaging.BitmapImage image, int width, int height)
+    {
+        var widthx = (double)image.PixelHeight / height;
+        var resized = new System.Windows.Media.Imaging.TransformedBitmap(image, new System.Windows.Media.ScaleTransform((double)width / image.PixelWidth, (double)height / image.PixelHeight));
+        var bitmapImage = new System.Windows.Media.Imaging.BitmapImage();
+        using (var stream = new System.IO.MemoryStream())
+        {
+            var encoder = new System.Windows.Media.Imaging.PngBitmapEncoder();
+            encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(resized));
+            encoder.Save(stream);
+            stream.Seek(0, System.IO.SeekOrigin.Begin);
+            bitmapImage.BeginInit();
+            bitmapImage.StreamSource = stream;
+            bitmapImage.CacheOption = System.Windows.Media.Imaging.BitmapCacheOption.OnLoad;
+            bitmapImage.EndInit();
+            bitmapImage.Freeze();
+        }
+        return bitmapImage;
+    }
+
     public static System.Windows.Media.Imaging.BitmapImage CreateRandomBitmapImage(int width, int height)
     {
         var randomBitmap = new System.Drawing.Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);

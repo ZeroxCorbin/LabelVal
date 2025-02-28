@@ -98,7 +98,10 @@ public partial class Controller : ObservableObject
         LoopCount = loopCount;
         CurrentLoopCount = 0;
 
-        RunEntry = new RunEntry();
+        RunEntry = new RunEntry()
+        {
+            
+        };
 
         if (!OpenDatabase() || !UpdateRunEntry())
             return false;

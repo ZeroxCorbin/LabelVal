@@ -180,5 +180,5 @@ public interface ISectorDifferences
             : (compare.Value <= source.Value + Settings.ValueResult_ValueTolerance) && (compare.Value >= source.Value - Settings.ValueResult_ValueTolerance);
     }
     public static bool CompareValue(Value_ source, Value_ compare) => (compare.Value <= source.Value + Settings.Value_ValueTolerance) && (compare.Value >= source.Value - Settings.Value_ValueTolerance);
-    public static bool CompareAlarm(Alarm source, Alarm compare) => source.Category == compare.Category && source.Data.SubAlarm == compare.Data.SubAlarm;
+    public static bool CompareAlarm(Alarm source, Alarm compare) => source.Category == compare.Category && source.Data?.SubAlarm == compare.Data?.SubAlarm;
 }
