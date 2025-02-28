@@ -20,6 +20,24 @@ using System.Windows.Media;
 
 namespace LabelVal.Results.ViewModels;
 
+public enum ImageResultEntryDevices
+{
+    V275,
+    V5,
+    L95xx,
+    L95xxAll
+}
+
+public enum ImageResultEntryImageTypes
+{
+    V275Stored,
+    V275Current,
+    V5Stored,
+    V5Current,
+    L95xxStored,
+    L95xxCurrent
+}
+
 public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, IRecipient<PropertyChangedMessage<Databases.ImageResultsDatabase>>, IRecipient<PropertyChangedMessage<PrinterSettings>>
 {
     public delegate void BringIntoViewDelegate();
@@ -174,7 +192,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
     }
 
     [RelayCommand]
-    private void Save(string type)
+    private void Save(ImageResultEntryImageTypes type)
     {
         string path = GetSaveFilePath();
 
@@ -182,19 +200,18 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
 
         try
         {
-            byte[] bmp = type == "v275Stored"
+            byte[] bmp = type == ImageResultEntryImageTypes.V275Stored
                     ? V275StoredImage.ImageBytes
-                    : type == "v275Current"
+                    : type == ImageResultEntryImageTypes.V275Current
                     ? V275CurrentImage.ImageBytes
-                    : type == "v5Stored"
+                    : type == ImageResultEntryImageTypes.V5Stored
                     ? V5StoredImage.ImageBytes
-                    : type == "v5Current"
+                    : type == ImageResultEntryImageTypes.V5Current
                     ? V5CurrentImage.ImageBytes
-                    : type == "l95xxStored"
+                    : type == ImageResultEntryImageTypes.L95xxStored
                     ? L95xxStoredImage.ImageBytes
-                    : type == "l95xxCurrent"
-                    ? L95xxCurrentImage.ImageBytes
-                    : SourceImage.ImageBytes;
+                    : L95xxCurrentImage.ImageBytes;
+
             if (bmp != null)
             {
                 if (Path.GetExtension(path).Contains("png", StringComparison.InvariantCultureIgnoreCase))
@@ -220,9 +237,9 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         catch { }
     }
     [RelayCommand]
-    private async Task Store(string device)
+    private async Task Store(ImageResultEntryDevices device)
     {
-        if (device == "V275")
+        if (device == ImageResultEntryDevices.V275)
         {
             if (V275StoredSectors.Count > 0)
                 if (await OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for this image?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
@@ -244,7 +261,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
 
             V275GetStored();
         }
-        else if (device == "V5")
+        else if (device == ImageResultEntryDevices.V5)
         {
             if (V5StoredSectors.Count > 0)
                 if (await OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for this image?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
@@ -266,7 +283,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
 
             V5GetStored();
         }
-        else if (device == "L95xx")
+        else if (device == ImageResultEntryDevices.L95xx)
         {
 
             if (L95xxCurrentSectorSelected == null)
@@ -306,7 +323,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
 
             L95xxGetStored();
         }
-        else if (device == "L95xx-All")
+        else if (device == ImageResultEntryDevices.L95xxAll)
         {
 
             if (L95xxCurrentSectors.Count == 0)
@@ -351,21 +368,21 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         }
     }
     [RelayCommand]
-    private async Task ClearStored(string device)
+    private async Task ClearStored(ImageResultEntryDevices device)
     {
         if (await OkCancelDialog("Clear Stored Sectors", $"Are you sure you want to clear the stored sectors for this image?\r\nThis can not be undone!") == MessageDialogResult.Affirmative)
         {
-            if (device == "V275")
+            if (device is ImageResultEntryDevices.V275)
             {
                 _ = SelectedDatabase.Delete_V275Result(ImageRollUID, SourceImageUID);
                 V275GetStored();
             }
-            else if (device == "V5")
+            else if (device is ImageResultEntryDevices.V5)
             {
                 _ = SelectedDatabase.Delete_V5Result(ImageRollUID, SourceImageUID);
                 V5GetStored();
             }
-            else if (device == "L95xx")
+            else if (device is ImageResultEntryDevices.L95xx or ImageResultEntryDevices.L95xxAll)
             {
                 _ = SelectedDatabase.Delete_L95xxResult(ImageRollUID, SourceImageUID);
                 L95xxGetStored();
@@ -373,7 +390,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         }
     }
     [RelayCommand]
-    private void ClearRead(string device)
+    private void ClearRead(ImageResultEntryDevices device)
     {
         if(!App.Current.Dispatcher.CheckAccess())
         {
@@ -381,7 +398,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             return;
         }
 
-        if (device == "V275")
+        if (device == ImageResultEntryDevices.V275)
         {
             V275CurrentReport = null;
             V275CurrentTemplate = null;
@@ -391,7 +408,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             V275CurrentImage = null;
             V275CurrentImageOverlay = null;
         }
-        else if (device == "V5")
+        else if (device == ImageResultEntryDevices.V5)
         {
             V5CurrentReport = null;
             V5CurrentTemplate = null;
@@ -401,7 +418,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             V5CurrentImage = null;
             V5CurrentImageOverlay = null;
         }
-        else if (device == "L95xx")
+        else if (device == ImageResultEntryDevices.L95xx)
         {
             //No CurrentReport for L95xx
             //No template used for L95xx
@@ -415,7 +432,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
                 L95xxCurrentImageOverlay = null;
             }
         }
-        else if (device == "L95xx-All")
+        else if (device == ImageResultEntryDevices.L95xxAll)
         {
             L95xxCurrentReport = null;
 

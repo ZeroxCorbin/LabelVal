@@ -268,7 +268,7 @@ public partial class ImageResultEntry
         if ((report = await ImageResults.SelectedNode.Controller.GetFullReport(repeat, true)) == null)
         {
             Logger.LogError("Unable to read the repeat report from the node.");
-            ClearRead("V275");
+            ClearRead(ImageResultEntryDevices.V275);
             return false;
         }
 

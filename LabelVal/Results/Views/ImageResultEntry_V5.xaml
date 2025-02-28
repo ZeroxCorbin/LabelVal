@@ -12,7 +12,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:sectors="clr-namespace:LabelVal.Sectors.Views"
-    d:DataContext="{d:DesignInstance Type=ViewModels:ImageResultEntry}"
+    d:DataContext="{d:DesignInstance Type=ViewModels:ImageResultEntry, IsDesignTimeCreatable=False}"
     mc:Ignorable="d">
 
     <UserControl.Resources>
@@ -86,7 +86,7 @@
                         <Button
                             Width="28"
                             Command="{Binding SaveCommand}"
-                            CommandParameter="v5Stored"
+                            CommandParameter="{x:Static ViewModels:ImageResultEntryImageTypes.V5Stored}"
                             Content="{iconPacks:Material Kind=ContentSave}"
                             Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                             Style="{StaticResource MahApps.Styles.Button.Hamburger}"
@@ -159,7 +159,7 @@
                         <Button
                             Width="28"
                             Command="{Binding ClearStoredCommand}"
-                            CommandParameter="V5"
+                            CommandParameter="{x:Static ViewModels:ImageResultEntryDevices.V5}"
                             Content="{iconPacks:Modern Kind=Delete}"
                             Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                             ToolTip="Remove the stored sectors from the database, permanently.&#x0a;(CAUTION) This can not be undone!">
@@ -402,7 +402,7 @@
                         <Button
                             Width="28"
                             Command="{Binding StoreCommand}"
-                            CommandParameter="V5"
+                            CommandParameter="{x:Static ViewModels:ImageResultEntryDevices.V5}"
                             Content="{iconPacks:Material Kind=StorePlusOutline}"
                             Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                             ToolTip="Store the current sectors and images to the database.">
@@ -422,7 +422,7 @@
                         <Button
                             Width="28"
                             Command="{Binding ClearReadCommand}"
-                            CommandParameter="V5"
+                            CommandParameter="{x:Static ViewModels:ImageResultEntryDevices.V5}"
                             Content="{iconPacks:MaterialDesign Kind=Clear}"
                             Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                             Style="{StaticResource MahApps.Styles.Button.Hamburger}"
@@ -434,7 +434,7 @@
                         <Button
                             Width="28"
                             Command="{Binding SaveCommand}"
-                            CommandParameter="v5Current"
+                            CommandParameter="{x:Static ViewModels:ImageResultEntryImageTypes.V5Current}"
                             Content="{iconPacks:Material Kind=ContentSave}"
                             Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                             Style="{StaticResource MahApps.Styles.Button.Hamburger}"
@@ -501,7 +501,7 @@
                         <Button
                             Width="28"
                             Command="{Binding StoreCommand}"
-                            CommandParameter="V5"
+                            CommandParameter="{x:Static ViewModels:ImageResultEntryDevices.V5}"
                             Content="{iconPacks:Material Kind=StorePlusOutline}"
                             Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                             ToolTip="Store the current sectors and images to the database.">
@@ -521,7 +521,7 @@
                         <Button
                             Width="28"
                             Command="{Binding ClearReadCommand}"
-                            CommandParameter="V5"
+                            CommandParameter="{x:Static ViewModels:ImageResultEntryDevices.V5}"
                             Content="{iconPacks:MaterialDesign Kind=Clear}"
                             Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                             Style="{StaticResource MahApps.Styles.Button.Hamburger}"

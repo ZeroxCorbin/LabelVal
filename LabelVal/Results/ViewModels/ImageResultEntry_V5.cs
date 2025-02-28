@@ -74,7 +74,7 @@ public partial class ImageResultEntry
         {
             Logger.LogError("Can not proces null results.");
 
-            ClearRead("V5");
+            ClearRead(ImageResultEntryDevices.V5);
 
             IsV5Faulted = true;
             IsV5Working = false;

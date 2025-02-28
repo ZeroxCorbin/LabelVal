@@ -12,7 +12,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
     Dialog:DialogParticipation.Register="{Binding}"
-    d:DataContext="{d:DesignInstance Type=ViewModels:ImageResultEntry}"
+    d:DataContext="{d:DesignInstance Type=ViewModels:ImageResultEntry, IsDesignTimeCreatable=False}"
     Loaded="UserControl_Loaded"
     Unloaded="UserControl_Unloaded"
     mc:Ignorable="d">
