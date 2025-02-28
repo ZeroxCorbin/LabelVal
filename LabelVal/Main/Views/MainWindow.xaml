@@ -16,11 +16,11 @@
     xmlns:results="clr-namespace:LabelVal.Results.Views"
     xmlns:run="clr-namespace:LabelVal.Run.Views"
     xmlns:viewModels="clr-namespace:LabelVal.Main.ViewModels"
+    Title="{Binding ApplicationTitle}"
     Width="auto"
     Height="auto"
     Dialog:DialogParticipation.Register="{Binding}"
     d:DataContext="{d:DesignInstance Type=viewModels:MainWindow}"
-    Title="{Binding ApplicationTitle}"
     Closing="MetroWindow_Closing"
     SaveWindowPosition="True"
     mc:Ignorable="d">

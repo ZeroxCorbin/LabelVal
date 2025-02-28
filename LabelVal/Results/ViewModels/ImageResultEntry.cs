@@ -375,6 +375,12 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
     [RelayCommand]
     private void ClearRead(string device)
     {
+        if(!App.Current.Dispatcher.CheckAccess())
+        {
+            App.Current.Dispatcher.BeginInvoke(() => ClearRead(device));
+            return;
+        }
+
         if (device == "V275")
         {
             V275CurrentReport = null;

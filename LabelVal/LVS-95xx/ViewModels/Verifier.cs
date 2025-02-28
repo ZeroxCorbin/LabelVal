@@ -97,8 +97,8 @@ public partial class Verifier : ObservableRecipient, IRecipient<RegistryMessage>
 
     public void Receive(Win32_ProcessWatcherMessage message)
     {
-        if (message.AppName != "LVS-95XX.exe")
-            return;
+        //if (message.AppName != "LVS-95XX.exe")
+        //    return;
 
         Process = message.Process;
         ProcessState = message.State;

@@ -89,7 +89,6 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
         return Lvs95xx.lib.Core.Controllers.Config.ApplicationStandards.FirstOrDefault(x => x.Key.Contains(type.ToString())).Key;
 
     }
-
     private string GetL95xxTable(GS1TableNames table)
     {
         return Lvs95xx.lib.Core.Controllers.Config.Tables.FirstOrDefault(x => x.Key.Contains(table.ToString().Trim('_'))).Key;

@@ -103,6 +103,7 @@ public partial class Controller : ObservableObject
         if (!OpenDatabase() || !UpdateRunEntry())
             return false;
 
+        
         _ = Task.Run(Start);
 
         return true;
@@ -161,6 +162,22 @@ public partial class Controller : ObservableObject
         int wasLoop = 0;
         for (int i = 0; i < LoopCount; i++)
         {
+
+            if (UpdateUI)
+            {
+                if (HasV275)
+                    foreach (var ire in ImageResultEntries)
+                        ire.ClearReadCommand.Execute("V275");
+
+                if (HasV5)
+                    foreach (var ire in ImageResultEntries)
+                        ire.ClearReadCommand.Execute("V5");
+
+                if (HasL95)
+                    foreach (var ire in ImageResultEntries)
+                        ire.ClearReadCommand.Execute("L95xx-All");
+            }
+
             foreach (Results.ViewModels.ImageResultEntry ire in ImageResultEntries)
             {
                 UseV275 = HasV275 && ire.V275StoredSectors.Count > 0;
@@ -207,17 +224,17 @@ public partial class Controller : ObservableObject
                 V275Result v275Res = null;
                 if (UseV275)
                     if ((v275Res = await ProcessV275(ire)) == null)
-                        return State;
+                        return UpdateRunState(RunStates.Error); ;
 
                 V5Result v5Res = null;
                 if (UseV5)
                     if ((v5Res = await ProcessV5(ire)) == null)
-                        return State;
+                        return UpdateRunState(RunStates.Error);
 
                 L95xxResult l95Res = null;
                 if (UseL95)
                     if ((l95Res = await ProcessL95(ire)) == null)
-                        return State;
+                        return UpdateRunState(RunStates.Error);
 
                 if (v275Res != null)
                 {
@@ -451,6 +468,12 @@ public partial class Controller : ObservableObject
         };
 
         Lvs95xx.lib.Core.Controllers.FullReport res = await L95.ProcessLabelAsync(lab);
+        if(res == null)
+        {
+            Logger.LogError("Run: Lvs95xx, No results returned.");
+            _ = UpdateRunState(RunStates.Error);
+            return null;
+        }
 
         l95.Report = JsonConvert.SerializeObject(res.Report);
         l95.StoredImage = JsonConvert.SerializeObject(new ImageEntry(ire.ImageRollUID, res.Report.Thumbnail, 0));

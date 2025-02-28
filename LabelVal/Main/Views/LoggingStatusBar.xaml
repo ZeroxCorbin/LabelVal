@@ -35,8 +35,11 @@
 
         <StatusBarItem>
             <Button Command="{Binding ClearCommand}" Content="{iconPacks:Material Kind=Delete}" />
-        </StatusBarItem>
 
+        </StatusBarItem>
+        <!--<StatusBarItem>
+            <local:KeyEventQueue />
+        </StatusBarItem>-->
         <StatusBarItem>
             <TextBlock>
                 <TextBlock.Style>
