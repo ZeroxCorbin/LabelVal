@@ -1,59 +1,89 @@
-﻿<UserControl x:Class="LabelVal.Results.Views.ImageResultsDatabases"
-                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-                xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-                xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
-             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-                xmlns:sys="clr-namespace:System;assembly=mscorlib"
-                xmlns:local="clr-namespace:LabelVal.Results.Views"
-                xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"  
-                xmlns:ViewModels="clr-namespace:LabelVal.Results.ViewModels"  
+﻿<UserControl
+    x:Class="LabelVal.Results.Views.ImageResultsDatabases"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+    xmlns:ViewModels="clr-namespace:LabelVal.Results.ViewModels"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:local="clr-namespace:LabelVal.Results.Views"
+    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    Dialog:DialogParticipation.Register="{Binding}"
+    d:DataContext="{d:DesignInstance Type=ViewModels:ImageResultsDatabases}"
+    mc:Ignorable="d">
 
-                xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
-                Dialog:DialogParticipation.Register="{Binding}"
-             
-                d:DataContext="{d:DesignInstance Type=ViewModels:ImageResultsDatabases}"
-                mc:Ignorable="d">
+    <DockPanel
+        MinWidth="200"
+        MaxWidth="280"
+        Margin="3,3,0,0"
+        VerticalAlignment="Top">
 
-    <DockPanel VerticalAlignment="Top" Margin="3,3,0,0" MinWidth="200" MaxWidth="280">
-
-        <md:Card DockPanel.Dock="Top" Height="68" Margin="3,3,0,0" 
-                 Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
-                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+        <md:Card
+            Height="68"
+            Margin="3,3,0,0"
+            Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+            DockPanel.Dock="Top"
+            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
             <DockPanel>
                 <DockPanel>
-                    <Button DockPanel.Dock="Top" HorizontalAlignment="Center" Width="48"
-                            Click="btnOpenImageResultLocation"
-                            Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
-                        <StackPanel Height="36" Width="36" VerticalAlignment="Top" Margin="0,2">
+                    <Button
+                        Width="48"
+                        HorizontalAlignment="Center"
+                        Click="btnOpenImageResultLocation"
+                        DockPanel.Dock="Top"
+                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                        Style="{StaticResource MahApps.Styles.Button.Hamburger}">
+                        <StackPanel
+                            Width="36"
+                            Height="36"
+                            Margin="0,2"
+                            VerticalAlignment="Top">
                             <DockPanel>
-                                <iconPacks:PackIconMaterial Height="14" Kind="ImageMultiple" HorizontalAlignment="Center"/>
-                                <iconPacks:PackIconMaterial Height="14" Kind="ListBoxOutline" HorizontalAlignment="Center"/>
+                                <iconPacks:PackIconMaterial
+                                    Height="14"
+                                    HorizontalAlignment="Center"
+                                    Kind="ImageMultiple" />
+                                <iconPacks:PackIconMaterial
+                                    Height="14"
+                                    HorizontalAlignment="Center"
+                                    Kind="ListBoxOutline" />
                             </DockPanel>
-                            <iconPacks:PackIconMaterial Margin="0,0,0,1" Height="6" Kind="ChevronDown" HorizontalAlignment="Center"/>
-                            <iconPacks:PackIconMaterial Height="14" Width="36" Kind="Database" HorizontalAlignment="Center"/>
+                            <iconPacks:PackIconMaterial
+                                Height="6"
+                                Margin="0,0,0,1"
+                                HorizontalAlignment="Center"
+                                Kind="ChevronDown" />
+                            <iconPacks:PackIconMaterial
+                                Width="36"
+                                Height="14"
+                                HorizontalAlignment="Center"
+                                Kind="Database" />
                         </StackPanel>
                     </Button>
 
-                    <Border DockPanel.Dock="Top" Style="{StaticResource imageBarHor}"/>
+                    <Border DockPanel.Dock="Top" Style="{StaticResource imageBarHor}" />
 
-                    <mah:DropDownButton ItemsSource="{Binding FileRoot.Children}" BorderThickness="0" Width="36"
-                                        ButtonStyle="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+                    <mah:DropDownButton
+                        Width="36"
+                        BorderThickness="0"
+                        ButtonStyle="{StaticResource MahApps.Styles.Button.Hamburger}"
+                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                        ItemsSource="{Binding FileRoot.Children}">
                         <mah:DropDownButton.ItemTemplate>
                             <HierarchicalDataTemplate ItemsSource="{Binding Children}">
                                 <DockPanel>
-                                    <CheckBox IsChecked="{Binding IsSelected}"/>
-                                    <TextBlock Text="{Binding Name}"/>
+                                    <CheckBox IsChecked="{Binding IsSelected}" />
+                                    <TextBlock Text="{Binding Name}" />
                                 </DockPanel>
                             </HierarchicalDataTemplate>
                         </mah:DropDownButton.ItemTemplate>
 
                         <mah:DropDownButton.Icon>
-                            <iconPacks:PackIconMaterial Kind="Database"/>
+                            <iconPacks:PackIconMaterial Kind="Database" />
                         </mah:DropDownButton.Icon>
 
                     </mah:DropDownButton>
@@ -67,36 +97,53 @@
                         <DockPanel HorizontalAlignment="Left">
                             <DockPanel.Background>
                                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                    <GradientStop Color="{DynamicResource MahApps.Colors.Accent3}" Offset="0"/>
-                                    <GradientStop Color="{DynamicResource MahApps.Colors.HamburgerMenu}" Offset="1"/>
+                                    <GradientStop Offset="0" Color="{DynamicResource MahApps.Colors.Accent3}" />
+                                    <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
                                 </LinearGradientBrush>
                             </DockPanel.Background>
 
-                            <TextBlock DockPanel.Dock="Top" Margin="6,0,0,3" Text="Results Database" Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"/>
+                            <TextBlock
+                                Margin="6,0,0,3"
+                                DockPanel.Dock="Top"
+                                Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"
+                                Text="Results Database" />
 
-                            <Border Style="{StaticResource imageBarHor}"/>
+                            <Border Style="{StaticResource imageBarHor}" />
 
                         </DockPanel>
 
-                        <Button Click="btnCollapseContent" Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" 
-                                HorizontalAlignment="Right" Padding="8,0"
-                                Content="{iconPacks:Material Kind=ArrowCollapseLeft}"/>
+                        <Button
+                            Padding="8,0"
+                            HorizontalAlignment="Right"
+                            Click="btnCollapseContent"
+                            Content="{iconPacks:Material Kind=ArrowCollapseLeft}"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                            Style="{StaticResource MahApps.Styles.Button.Hamburger}" />
 
                     </DockPanel>
 
-                    <Button ToolTip="New Database" Command="{Binding CreateImageResultsDatabaseCommand}" Width="48" HorizontalAlignment="Left"
-                            Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
-                        <iconPacks:PackIconMaterial Kind="Plus" Width="24" Height="24"/>
+                    <Button
+                        Width="48"
+                        HorizontalAlignment="Left"
+                        Command="{Binding CreateImageResultsDatabaseCommand}"
+                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                        ToolTip="New Database">
+                        <iconPacks:PackIconMaterial
+                            Width="24"
+                            Height="24"
+                            Kind="Plus" />
                     </Button>
 
-                    <ToggleButton  Margin="6,0" HorizontalAlignment="Right" VerticalAlignment="Center"
-                                   IsChecked="{Binding RightAlignOverflow}"
-                                   Content="{iconPacks:Modern Kind=AlignLeft}"
-                                   md:ToggleButtonAssist.OnContent="{iconPacks:Modern Kind=AlignRight}">
+                    <ToggleButton
+                        Margin="6,0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        md:ToggleButtonAssist.OnContent="{iconPacks:Modern Kind=AlignRight}"
+                        Content="{iconPacks:Modern Kind=AlignLeft}"
+                        IsChecked="{Binding RightAlignOverflow}">
                         <ToggleButton.LayoutTransform>
-                            <ScaleTransform ScaleX="0.8" ScaleY="0.8"/>
+                            <ScaleTransform ScaleX="0.8" ScaleY="0.8" />
                         </ToggleButton.LayoutTransform>
                     </ToggleButton>
                 </DockPanel>
@@ -105,60 +152,80 @@
 
         <DockPanel DockPanel.Dock="Top">
             <Border Style="{StaticResource groupLeft}" />
-            <Border Style="{StaticResource groupBottom}"/>
+            <Border Style="{StaticResource groupBottom}" />
 
-            <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="3,3,0,0" 
-                      Style="{StaticResource MahApps.Styles.ListBox}" ItemsSource="{Binding Databases}" SelectedItem="{Binding SelectedDatabase}">
+            <ListView
+                Margin="3,3,0,0"
+                ItemsSource="{Binding Databases}"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                SelectedItem="{Binding SelectedDatabase}"
+                Style="{StaticResource MahApps.Styles.ListBox}">
 
                 <ListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}"/>
+                    <Style BasedOn="{StaticResource MahApps.Styles.ListViewItem}" TargetType="ListViewItem" />
                 </ListView.ItemContainerStyle>
 
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <DockPanel>
-                            <DockPanel Margin="3" MaxWidth="240" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                            <DockPanel
+                                MaxWidth="240"
+                                Margin="3"
+                                Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
                                 <DockPanel.Style>
                                     <Style TargetType="DockPanel">
-                                        <Setter Property="TextElement.Foreground" Value="{DynamicResource MahApps.Brushes.ThemeForeground}"/>
+                                        <Setter Property="TextElement.Foreground" Value="{DynamicResource MahApps.Brushes.ThemeForeground}" />
                                     </Style>
                                 </DockPanel.Style>
 
-                                <Border Style="{StaticResource groupLeft}" Margin="0,0,6,0" Background="{DynamicResource MahApps.Brushes.Accent2}"/>
-                                <Border Style="{StaticResource groupBottom}" Margin="-6,3,0,0" Background="{DynamicResource MahApps.Brushes.Accent2}"/>
+                                <Border
+                                    Margin="0,0,6,0"
+                                    Background="{DynamicResource MahApps.Brushes.Accent2}"
+                                    Style="{StaticResource groupLeft}" />
+                                <Border
+                                    Margin="-6,3,0,0"
+                                    Background="{DynamicResource MahApps.Brushes.Accent2}"
+                                    Style="{StaticResource groupBottom}" />
 
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
 
-                                    <iconPacks:PackIconMaterial Kind="Database" VerticalAlignment="Center" Margin="0,3,6,0"/>
+                                    <iconPacks:PackIconMaterial
+                                        Margin="0,3,6,0"
+                                        VerticalAlignment="Center"
+                                        Kind="Database" />
 
                                     <Grid Grid.Column="1">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="auto"/>
+                                            <ColumnDefinition Width="auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="auto" />
                                         </Grid.ColumnDefinitions>
 
-                                        <md:SmartHint Margin="3,0" Grid.Column="0" Hint="..." FontSize="18">
+                                        <md:SmartHint
+                                            Grid.Column="0"
+                                            Margin="3,0"
+                                            FontSize="18"
+                                            Hint="...">
 
                                             <md:SmartHint.Style>
                                                 <Style TargetType="md:SmartHint">
-                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                    <Setter Property="Visibility" Value="Collapsed" />
                                                     <Style.Triggers>
                                                         <MultiDataTrigger>
                                                             <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding DataContext.RightAlignOverflow, RelativeSource={RelativeSource AncestorType=ListView}}" Value="True"/>
-                                                                <Condition Binding="{Binding ComputedHorizontalScrollBarVisibility, ElementName=scrName}" Value="Visible"/>
+                                                                <Condition Binding="{Binding DataContext.RightAlignOverflow, RelativeSource={RelativeSource AncestorType=ListView}}" Value="True" />
+                                                                <Condition Binding="{Binding ComputedHorizontalScrollBarVisibility, ElementName=scrName}" Value="Visible" />
                                                             </MultiDataTrigger.Conditions>
                                                             <MultiDataTrigger.Setters>
-                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                                <Setter Property="Visibility" Value="Visible" />
                                                             </MultiDataTrigger.Setters>
                                                         </MultiDataTrigger>
 
@@ -167,35 +234,37 @@
                                             </md:SmartHint.Style>
                                         </md:SmartHint>
 
-                                        <ScrollViewer Grid.Column="1" x:Name="scrName"
-                                                      md:ScrollViewerAssist.BubbleVerticalScroll="True" 
-                                                      VerticalScrollBarVisibility="Disabled" 
-                                                      HorizontalScrollBarVisibility="Auto"
-                                                      md:ScrollViewerAssist.IsAutoHideEnabled="True">
+                                        <ScrollViewer
+                                            x:Name="scrName"
+                                            Grid.Column="1"
+                                            md:ScrollViewerAssist.BubbleVerticalScroll="True"
+                                            md:ScrollViewerAssist.IsAutoHideEnabled="True"
+                                            HorizontalScrollBarVisibility="Auto"
+                                            VerticalScrollBarVisibility="Disabled">
 
                                             <ScrollViewer.Resources>
-                                                <Style TargetType="ScrollBar"/>
+                                                <Style TargetType="ScrollBar" />
                                                 <sys:Double x:Key="{x:Static SystemParameters.HorizontalScrollBarHeightKey}">8</sys:Double>
                                             </ScrollViewer.Resources>
 
                                             <ScrollViewer.Style>
-                                                <Style TargetType="ScrollViewer" BasedOn="{StaticResource MaterialDesignScrollViewer}">
-                                                    <Setter Property="FlowDirection" Value="LeftToRight"/>
+                                                <Style BasedOn="{StaticResource MaterialDesignScrollViewer}" TargetType="ScrollViewer">
+                                                    <Setter Property="FlowDirection" Value="LeftToRight" />
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding DataContext.RightAlignOverflow, RelativeSource={RelativeSource AncestorType=ListView}}" Value="True">
-                                                            <Setter Property="FlowDirection" Value="RightToLeft"/>
+                                                            <Setter Property="FlowDirection" Value="RightToLeft" />
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
                                             </ScrollViewer.Style>
 
-                                            <TextBlock Text="{Binding File.Name}" Margin="3,3">
+                                            <TextBlock Margin="3,3" Text="{Binding File.Name}">
                                                 <TextBlock.Style>
-                                                    <Style TargetType="TextBlock" BasedOn="{StaticResource MaterialDesignBodyMediumTextBlock}">
-                                                        <Setter Property="FlowDirection" Value="LeftToRight"/>
+                                                    <Style BasedOn="{StaticResource MaterialDesignBodyMediumTextBlock}" TargetType="TextBlock">
+                                                        <Setter Property="FlowDirection" Value="LeftToRight" />
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding DataContext.RightAlignOverflow, RelativeSource={RelativeSource AncestorType=ListView}}" Value="True">
-                                                                <Setter Property="FlowDirection" Value="LeftToRight"/>
+                                                                <Setter Property="FlowDirection" Value="LeftToRight" />
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
@@ -203,18 +272,22 @@
                                             </TextBlock>
                                         </ScrollViewer>
 
-                                        <md:SmartHint Margin="3,0" Grid.Column="2" Hint="..." FontSize="18">
+                                        <md:SmartHint
+                                            Grid.Column="2"
+                                            Margin="3,0"
+                                            FontSize="18"
+                                            Hint="...">
                                             <md:SmartHint.Style>
                                                 <Style TargetType="md:SmartHint">
-                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                    <Setter Property="Visibility" Value="Collapsed" />
                                                     <Style.Triggers>
                                                         <MultiDataTrigger>
                                                             <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding DataContext.RightAlignOverflow, RelativeSource={RelativeSource AncestorType=ListView}}" Value="False"/>
-                                                                <Condition Binding="{Binding ComputedHorizontalScrollBarVisibility, ElementName=scrName}" Value="Visible"/>
+                                                                <Condition Binding="{Binding DataContext.RightAlignOverflow, RelativeSource={RelativeSource AncestorType=ListView}}" Value="False" />
+                                                                <Condition Binding="{Binding ComputedHorizontalScrollBarVisibility, ElementName=scrName}" Value="Visible" />
                                                             </MultiDataTrigger.Conditions>
                                                             <MultiDataTrigger.Setters>
-                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                                <Setter Property="Visibility" Value="Visible" />
                                                             </MultiDataTrigger.Setters>
                                                         </MultiDataTrigger>
                                                     </Style.Triggers>
@@ -223,49 +296,55 @@
                                         </md:SmartHint>
                                     </Grid>
 
-                                    <DockPanel Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left">
+                                    <DockPanel
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        HorizontalAlignment="Left">
 
-                                        <Button Click="btnLockImageResultsDatabase_Click" Margin="3">
+                                        <Button Margin="3" Click="btnLockImageResultsDatabase_Click">
                                             <Button.Style>
-                                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}">
+                                                <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
                                                     <Setter Property="Content">
                                                         <Setter.Value>
-                                                            <iconPacks:PackIconMaterial Kind="LockOpenVariant"/>
+                                                            <iconPacks:PackIconMaterial Kind="LockOpenVariant" />
                                                         </Setter.Value>
                                                     </Setter>
 
-                                                    <Setter Property="ToolTip" Value="Database is unlocked. Click to lock."/>
+                                                    <Setter Property="ToolTip" Value="Database is unlocked. Click to lock." />
 
                                                     <Style.Triggers>
 
                                                         <DataTrigger Binding="{Binding IsLocked}" Value="True">
                                                             <Setter Property="Content">
                                                                 <Setter.Value>
-                                                                    <iconPacks:PackIconMaterial Kind="Lock"/>
+                                                                    <iconPacks:PackIconMaterial Kind="Lock" />
                                                                 </Setter.Value>
                                                             </Setter>
-                                                            <Setter Property="ToolTip" Value="Database is locked. Click to unlock."/>
+                                                            <Setter Property="ToolTip" Value="Database is locked. Click to unlock." />
                                                         </DataTrigger>
 
                                                         <DataTrigger Binding="{Binding IsPermLocked}" Value="True">
                                                             <Setter Property="Content">
                                                                 <Setter.Value>
-                                                                    <iconPacks:PackIconMaterial Kind="DatabaseLock"/>
+                                                                    <iconPacks:PackIconMaterial Kind="DatabaseLock" />
                                                                 </Setter.Value>
                                                             </Setter>
-                                                            <Setter Property="ToolTip" Value="Database is premanently locked."/>
+                                                            <Setter Property="ToolTip" Value="Database is premanently locked." />
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
                                             </Button.Style>
                                         </Button>
 
-                                        <Button Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=ListView}}" CommandParameter="{Binding }" Margin="3"
-                                        Content="{iconPacks:Material Kind=Delete}"
-                                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"/>
+                                        <Button
+                                            Margin="3"
+                                            Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                            CommandParameter="{Binding}"
+                                            Content="{iconPacks:Material Kind=Delete}"
+                                            Style="{StaticResource MahApps.Styles.Button.Hamburger}" />
 
                                     </DockPanel>
-                                    
+
                                 </Grid>
                             </DockPanel>
                         </DockPanel>

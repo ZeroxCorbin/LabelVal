@@ -47,7 +47,7 @@ public partial class ImageResultEntry
     public bool IsNotV275Faulted => !IsV275Faulted;
 
     [RelayCommand]
-    private async Task V275Process(string type)
+    private async Task V275Process(ImageResultEntryImageTypes type)
     {        
         var simAddSec = ImageResults.SelectedNode.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && V275ResultRow?._Job?.sectors != null;
         var simDetSec = ImageResults.SelectedNode.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && V275ResultRow?._Job?.sectors == null;
@@ -61,14 +61,14 @@ public partial class ImageResultEntry
             Table = (V275_REST_Lib.Enumerations.GS1TableNames)ImageResults.SelectedImageRoll.SelectedGS1Table,
         };
 
-        if (type == "source" || type == "print")
+        if (type == ImageResultEntryImageTypes.Source || type == ImageResultEntryImageTypes.V275Print)
         {
             lab.Image = SourceImage.ImageBytes;
             lab.Dpi = (int)Math.Round(SourceImage.Image.DpiX, 0);
             lab.Sectors = simDetSec || camDetSec ? [] : camAddSec ? [.. V275ResultRow._Job.sectors] : null;
             lab.Table = (V275_REST_Lib.Enumerations.GS1TableNames)ImageResults.SelectedImageRoll.SelectedGS1Table;
         }
-        else if (type == "v275Stored")
+        else if (type == ImageResultEntryImageTypes.V275Stored)
         {
             lab.Image = V275ResultRow.Stored.ImageBytes;
             lab.Dpi = (int)Math.Round(V275ResultRow.Stored.Image.DpiX, 0);
@@ -76,7 +76,7 @@ public partial class ImageResultEntry
             lab.Table = (V275_REST_Lib.Enumerations.GS1TableNames)ImageResults.SelectedImageRoll.SelectedGS1Table;
         }
 
-        if (type == "print")
+        if (type == ImageResultEntryImageTypes.V275Print)
         {
             Logger.LogInfo("No node selected. Just printing!");
             PrintImage(lab.Image, PrintCount, SelectedPrinter.PrinterName);

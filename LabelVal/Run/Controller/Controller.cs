@@ -167,15 +167,15 @@ public partial class Controller : ObservableObject
             {
                 if (HasV275)
                     foreach (var ire in ImageResultEntries)
-                        ire.ClearReadCommand.Execute("V275");
+                        ire.ClearReadCommand.Execute(Results.ViewModels.ImageResultEntryDevices.V275);
 
                 if (HasV5)
                     foreach (var ire in ImageResultEntries)
-                        ire.ClearReadCommand.Execute("V5");
+                        ire.ClearReadCommand.Execute(Results.ViewModels.ImageResultEntryDevices.V5);
 
                 if (HasL95)
                     foreach (var ire in ImageResultEntries)
-                        ire.ClearReadCommand.Execute("L95xx-All");
+                        ire.ClearReadCommand.Execute(Results.ViewModels.ImageResultEntryDevices.L95xxAll);
             }
 
             foreach (Results.ViewModels.ImageResultEntry ire in ImageResultEntries)
@@ -345,9 +345,9 @@ public partial class Controller : ObservableObject
 
         //Start the V275 processing the image.
         if (V275.Controller.IsSimulator)
-            ire.V275ProcessCommand.Execute("v275Stored");
+            ire.V275ProcessCommand.Execute(Results.ViewModels.ImageResultEntryImageTypes.V275Stored);
         else
-            ire.V275ProcessCommand.Execute("source");
+            ire.V275ProcessCommand.Execute(Results.ViewModels.ImageResultEntryImageTypes.Source);
 
         //Wait for the V275 to finish processing the image or fault.
 

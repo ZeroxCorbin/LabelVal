@@ -30,10 +30,13 @@ public enum ImageResultEntryDevices
 
 public enum ImageResultEntryImageTypes
 {
+    Source,
     V275Stored,
     V275Current,
+    V275Print,
     V5Stored,
     V5Current,
+    V5Sensor,
     L95xxStored,
     L95xxCurrent
 }

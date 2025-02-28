@@ -12,7 +12,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
     Dialog:DialogParticipation.Register="{Binding}"
-    d:DataContext="{d:DesignInstance Type=ViewModels:ImageResultEntry, IsDesignTimeCreatable=False}"
+    d:DataContext="{d:DesignInstance Type=ViewModels:ImageResultEntry,
+                                     IsDesignTimeCreatable=False}"
     Loaded="UserControl_Loaded"
     Unloaded="UserControl_Unloaded"
     mc:Ignorable="d">
@@ -59,7 +60,7 @@
                     Width="48"
                     d:Visibility="Visible"
                     Command="{Binding V275ProcessCommand}"
-                    CommandParameter="print"
+                    CommandParameter="{x:Static ViewModels:ImageResultEntryImageTypes.V275Print}"
                     Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                     ToolTip="Print the source image.">
 
@@ -143,7 +144,7 @@
                                     </MultiDataTrigger.Conditions>
 
                                     <Setter Property="Visibility" Value="Visible" />
-                                    <Setter Property="CommandParameter" Value="source" />
+                                    <Setter Property="CommandParameter" Value="{x:Static ViewModels:ImageResultEntryImageTypes.Source}" />
                                     <Setter Property="ToolTip" Value="Print the source image and read the results." />
                                 </MultiDataTrigger>
 
@@ -161,7 +162,7 @@
 
                                     <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}" />
                                     <Setter Property="Visibility" Value="Visible" />
-                                    <Setter Property="CommandParameter" Value="source" />
+                                    <Setter Property="CommandParameter" Value="{x:Static ViewModels:ImageResultEntryImageTypes.Source}" />
                                     <Setter Property="ToolTip" Value="V275: Process the source image with the simulator." />
                                 </MultiDataTrigger>
 
@@ -178,7 +179,7 @@
 
                                     <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}" />
                                     <Setter Property="Visibility" Value="Visible" />
-                                    <Setter Property="CommandParameter" Value="v275Stored" />
+                                    <Setter Property="CommandParameter" Value="{x:Static ViewModels:ImageResultEntryImageTypes.V275Stored}" />
                                     <Setter Property="ToolTip" Value="V275: Process the stored image with the simulator." />
                                 </MultiDataTrigger>
 
@@ -222,7 +223,7 @@
                                     </MultiDataTrigger.Conditions>
 
                                     <Setter Property="Visibility" Value="Visible" />
-                                    <Setter Property="CommandParameter" Value="source" />
+                                    <Setter Property="CommandParameter" Value="{x:Static ViewModels:ImageResultEntryImageTypes.Source}" />
                                     <Setter Property="ToolTip" Value="V5: Process the source image with the simulator." />
                                     <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}" />
                                 </MultiDataTrigger>
@@ -235,7 +236,7 @@
                                     </MultiDataTrigger.Conditions>
 
                                     <Setter Property="Visibility" Value="Visible" />
-                                    <Setter Property="CommandParameter" Value="v5Stored" />
+                                    <Setter Property="CommandParameter" Value="{x:Static ViewModels:ImageResultEntryImageTypes.V5Stored}" />
                                     <Setter Property="ToolTip" Value="V5: Process the stored image with the simulator." />
                                     <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}" />
                                 </MultiDataTrigger>
@@ -247,7 +248,7 @@
                                     </MultiDataTrigger.Conditions>
 
                                     <Setter Property="Visibility" Value="Visible" />
-                                    <Setter Property="CommandParameter" Value="sensor" />
+                                    <Setter Property="CommandParameter" Value="{x:Static ViewModels:ImageResultEntryImageTypes.V5Sensor}" />
                                     <Setter Property="ToolTip" Value="V5: Process the sensor image." />
                                 </MultiDataTrigger>
                             </Style.Triggers>
@@ -325,7 +326,7 @@
                                     </MultiDataTrigger.Conditions>
 
                                     <Setter Property="Visibility" Value="Visible" />
-                                    <Setter Property="CommandParameter" Value="source" />
+                                    <Setter Property="CommandParameter" Value="{x:Static ViewModels:ImageResultEntryImageTypes.Source}" />
                                     <Setter Property="ToolTip" Value="95xx: Process the source image with the simulator." />
                                     <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}" />
                                 </MultiDataTrigger>
@@ -337,7 +338,7 @@
                                     </MultiDataTrigger.Conditions>
 
                                     <Setter Property="Visibility" Value="Visible" />
-                                    <Setter Property="CommandParameter" Value="95xxStored" />
+                                    <Setter Property="CommandParameter" Value="{x:Static ViewModels:ImageResultEntryImageTypes.L95xxStored}" />
                                     <Setter Property="ToolTip" Value="L95xx: Process the stored image with the simulator." />
                                     <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}" />
                                 </MultiDataTrigger>

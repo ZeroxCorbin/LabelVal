@@ -3,8 +3,8 @@ using CommunityToolkit.Mvvm.Input;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Results.Databases;
 using Newtonsoft.Json;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace LabelVal.Results.ViewModels;
@@ -40,7 +40,7 @@ public partial class ImageResultEntry
     public bool IsNotV5Faulted => !IsV5Faulted;
 
     [RelayCommand]
-    public void V5Process(string imageType)
+    public void V5Process(ImageResultEntryImageTypes imageType)
     {
         bool simAddSec = ImageResults.SelectedScanner.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && !string.IsNullOrEmpty(V5ResultRow?.Template);
         bool simDetSec = ImageResults.SelectedScanner.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && string.IsNullOrEmpty(V5ResultRow?.Template);
@@ -56,20 +56,26 @@ public partial class ImageResultEntry
             RepeatAvailable = V5ProcessResults
         };
 
-        if (imageType == "source")
+        if (imageType == ImageResultEntryImageTypes.Source)
             lab.Image = SourceImage.ImageBytes;
-        else if (imageType == "v5Stored")
+        else if (imageType == ImageResultEntryImageTypes.V5Stored)
             lab.Image = V5ResultRow.Stored.ImageBytes;
-            
+
         IsV5Working = true;
         IsV5Faulted = false;
 
-        _ = ImageResults.SelectedScanner.Controller.ProcessLabel(lab);
+        Task.Run(() => ImageResults.SelectedScanner.Controller.ProcessLabel(lab));
     }
 
     public void V5ProcessResults(V5_REST_Lib.Controllers.Repeat repeat) => V5ProcessResults(repeat?.FullReport);
     public void V5ProcessResults(V5_REST_Lib.Controllers.FullReport report)
     {
+        if (!App.Current.Dispatcher.CheckAccess())
+        {
+            App.Current.Dispatcher.BeginInvoke(() => V5ProcessResults(report)); 
+            return;
+        }
+
         if (report == null)
         {
             Logger.LogError("Can not proces null results.");

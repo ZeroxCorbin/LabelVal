@@ -15,7 +15,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:sectors="clr-namespace:LabelVal.Sectors.Views"
-    d:DataContext="{d:DesignInstance Type=ViewModels:ImageResultEntry, IsDesignTimeCreatable=False}"
+    d:DataContext="{d:DesignInstance Type=ViewModels:ImageResultEntry,
+                                     IsDesignTimeCreatable=False}"
     mc:Ignorable="d">
 
     <UserControl.Resources>

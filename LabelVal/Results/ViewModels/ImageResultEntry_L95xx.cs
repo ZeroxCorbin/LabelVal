@@ -61,7 +61,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
     }
 
     [RelayCommand]
-    private void L95xxProcess(string imageType)
+    private void L95xxProcess(ImageResultEntryImageTypes imageType)
     {
         var lab = new Lvs95xx.lib.Core.Controllers.Label
         {
@@ -73,9 +73,9 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
             RepeatAvailable = L95xxProcessResults,
         };
 
-        if (imageType == "source")
+        if (imageType == ImageResultEntryImageTypes.L95xxCurrent)
             lab.Image = SourceImage.BitmapBytes;
-        else if (imageType == "95xxStored")
+        else if (imageType == ImageResultEntryImageTypes.L95xxStored)
             lab.Image = L95xxResultRow.Stored.BitmapBytes;
 
         IsL95xxWorking = true;

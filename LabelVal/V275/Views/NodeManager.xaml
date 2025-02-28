@@ -1,53 +1,62 @@
-﻿<UserControl x:Class="LabelVal.V275.Views.NodeManager"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:LabelVal.V275.Views"
-             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
-             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-             xmlns:loc="clr-namespace:LabelVal.Localization"
-             xmlns:ViewModels="clr-namespace:LabelVal.V275.ViewModels"  
-             xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
-             d:DataContext="{d:DesignInstance Type=ViewModels:NodeManager}"
-             mc:Ignorable="d">
+﻿<UserControl
+    x:Class="LabelVal.V275.Views.NodeManager"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ViewModels="clr-namespace:LabelVal.V275.ViewModels"
+    xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:loc="clr-namespace:LabelVal.Localization"
+    xmlns:local="clr-namespace:LabelVal.V275.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+    d:DataContext="{d:DesignInstance Type=ViewModels:NodeManager}"
+    mc:Ignorable="d">
 
-    <DockPanel VerticalAlignment="Top" Margin="3,3,0,0">
+    <DockPanel Margin="3,3,0,0" VerticalAlignment="Top">
 
-        <md:Card DockPanel.Dock="Top" Height="68" Margin="3,3,0,0" 
-                 Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
-                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+        <md:Card
+            Height="68"
+            Margin="3,3,0,0"
+            Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+            DockPanel.Dock="Top"
+            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
             <DockPanel>
 
                 <DockPanel Width="48" Background="{DynamicResource V275_Brush}">
-                    <Image Width="36" Height="36" Source="/Assets/Images/v275-white-outline.ico" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <Image
+                        Width="36"
+                        Height="36"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Source="/Assets/Images/v275-white-outline.ico" />
                 </DockPanel>
 
-                <Border Style="{StaticResource imageBar}"/>
+                <Border Style="{StaticResource imageBar}" />
 
                 <DockPanel>
 
                     <DockPanel DockPanel.Dock="Top">
-                        
+
                         <DockPanel HorizontalAlignment="Left">
                             <DockPanel.Background>
                                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                    <GradientStop Color="{DynamicResource MahApps.Colors.Accent3}" Offset="0"/>
-                                    <GradientStop Color="{DynamicResource MahApps.Colors.HamburgerMenu}" Offset="1"/>
+                                    <GradientStop Offset="0" Color="{DynamicResource MahApps.Colors.Accent3}" />
+                                    <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
                                 </LinearGradientBrush>
                             </DockPanel.Background>
 
-                            <TextBlock DockPanel.Dock="Top" Margin="6,0,0,3">
+                            <TextBlock Margin="6,0,0,3" DockPanel.Dock="Top">
                                 <TextBlock.Style>
-                                    <Style TargetType="TextBlock" BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}">
+                                    <Style BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}" TargetType="TextBlock">
                                         <Setter Property="Text">
                                             <Setter.Value>
                                                 <MultiBinding StringFormat="{}{0}:{1}">
-                                                    <Binding Path="Host"/>
-                                                    <Binding Path="SystemPort"/>
+                                                    <Binding Path="Host" />
+                                                    <Binding Path="SystemPort" />
                                                 </MultiBinding>
-                                                
+
                                             </Setter.Value>
                                         </Setter>
 
@@ -55,7 +64,7 @@
                                 </TextBlock.Style>
                             </TextBlock>
 
-                            <Border Style="{StaticResource imageBarHor}"/>
+                            <Border Style="{StaticResource imageBarHor}" />
 
                         </DockPanel>
 
@@ -66,26 +75,46 @@
 
                     </DockPanel>
 
-                    <Button Click="btnShowSettings_Click" Style="{StaticResource MahApps.Styles.Button.Hamburger}" Width="48"
-                            ToolTip="{loc:Loc Settings}"
-                            Content="{iconPacks:Material Kind=Cog, Width=24, Height=24}"
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
+                    <Button
+                        Width="48"
+                        Click="btnShowSettings_Click"
+                        Content="{iconPacks:Material Kind=Cog,
+                                                     Width=24,
+                                                     Height=24}"
+                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                        ToolTip="{loc:Loc Settings}" />
 
-                    <Button Command="{Binding GetDevicesCommand}" Style="{StaticResource MahApps.Styles.Button.Hamburger}" Width="48"
-                            ToolTip="{loc:Loc Refresh}"
-                            Content="{iconPacks:Modern Kind=Refresh, Width=24, Height=24}"
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
+                    <Button
+                        Width="48"
+                        Command="{Binding GetDevicesCommand}"
+                        Content="{iconPacks:Modern Kind=Refresh,
+                                                   Width=24,
+                                                   Height=24}"
+                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                        ToolTip="{loc:Loc Refresh}" />
 
-                    <Button Click="btnOpenInBrowser_Click" Style="{StaticResource MahApps.Styles.Button.Hamburger}" Width="48" 
-                            HorizontalAlignment="Left"
-                            Content="{iconPacks:Modern Kind=Browser, Width=24, Height=24}"
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
+                    <Button
+                        Width="48"
+                        HorizontalAlignment="Left"
+                        Click="btnOpenInBrowser_Click"
+                        Content="{iconPacks:Modern Kind=Browser,
+                                                   Width=24,
+                                                   Height=24}"
+                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                        Style="{StaticResource MahApps.Styles.Button.Hamburger}" />
 
-                    <Button Click="btnShowDetails_Click" Style="{StaticResource MahApps.Styles.Button.Hamburger}" Width="48"
-                            HorizontalAlignment="Right"
-                            ToolTip="{loc:Loc Details}"
-                            Content="{iconPacks:Material Kind=CodeJson, Width=24, Height=24}"
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"/>
+                    <Button
+                        Width="48"
+                        HorizontalAlignment="Right"
+                        Click="btnShowDetails_Click"
+                        Content="{iconPacks:Material Kind=CodeJson,
+                                                     Width=24,
+                                                     Height=24}"
+                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                        ToolTip="{loc:Loc Details}" />
 
                 </DockPanel>
             </DockPanel>
@@ -93,80 +122,109 @@
 
         <DockPanel DockPanel.Dock="Top">
             <Border Style="{StaticResource groupLeft}" />
-            <Border Style="{StaticResource groupBottom}"/>
+            <Border Style="{StaticResource groupBottom}" />
 
             <md:DrawerHost x:Name="drwSettings" DrawerClosing="drwSettings_DrawerClosing">
 
                 <md:DrawerHost.TopDrawerContent>
 
-                    <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" Margin="3" Padding="2" HorizontalAlignment="Center">
+                    <md:Card
+                        Margin="3"
+                        Padding="2"
+                        HorizontalAlignment="Center"
+                        Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
                         <md:Card.Style>
                             <Style TargetType="{x:Type md:Card}">
-                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Setter Property="Visibility" Value="Collapsed" />
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding Path=IsTopDrawerOpen, ElementName=drwSettings}" Value="True">
-                                        <Setter Property="Visibility" Value="Visible"/>
+                                        <Setter Property="Visibility" Value="Visible" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </md:Card.Style>
 
                         <DockPanel>
-                            <DockPanel DockPanel.Dock="Top" Margin="3">
+                            <DockPanel Margin="3" DockPanel.Dock="Top">
 
-                                <TextBox Text="{Binding Host}" MinWidth="50" Margin="3,0" HorizontalAlignment="Center"
-                                         md:HintAssist.Hint="IP Address" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left"
-                                     md:TextFieldAssist.HasClearButton="True">
+                                <TextBox
+                                    MinWidth="50"
+                                    Margin="3,0"
+                                    HorizontalAlignment="Center"
+                                    md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                                    md:HintAssist.Hint="IP Address"
+                                    md:HintAssist.IsFloating="True"
+                                    md:TextFieldAssist.HasClearButton="True"
+                                    Text="{Binding Host}">
 
                                     <TextBox.Style>
-                                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                                            <Setter Property="IsEnabled" Value="True"/>
+                                        <Style BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}" TargetType="{x:Type TextBox}">
+                                            <Setter Property="IsEnabled" Value="True" />
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding Manager.SelectedDevice.Controller.IsLoggedIn}" Value="True">
-                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                    <Setter Property="IsEnabled" Value="False" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </TextBox.Style>
                                 </TextBox>
 
-                                <TextBox Text="{Binding SystemPort}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center"
-                                         md:HintAssist.Hint="Port" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left"
-                                     md:TextFieldAssist.HasClearButton="True">
+                                <TextBox
+                                    MinWidth="50"
+                                    Margin="3,0"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                                    md:HintAssist.Hint="Port"
+                                    md:HintAssist.IsFloating="True"
+                                    md:TextFieldAssist.HasClearButton="True"
+                                    Text="{Binding SystemPort}">
                                     <TextBox.Style>
-                                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                                            <Setter Property="IsEnabled" Value="True"/>
+                                        <Style BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}" TargetType="{x:Type TextBox}">
+                                            <Setter Property="IsEnabled" Value="True" />
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding Manager.SelectedDevice.Controller.IsLoggedIn}" Value="True">
-                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                    <Setter Property="IsEnabled" Value="False" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </TextBox.Style>
                                 </TextBox>
 
-                                <TextBox Text="{Binding UserName}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center"
-                                 md:HintAssist.Hint="User name" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
+                                <TextBox
+                                    MinWidth="50"
+                                    Margin="3,0"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                                    md:HintAssist.Hint="User name"
+                                    md:HintAssist.IsFloating="True"
+                                    Text="{Binding UserName}">
                                     <TextBox.Style>
-                                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                                            <Setter Property="IsEnabled" Value="True"/>
+                                        <Style BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}" TargetType="{x:Type TextBox}">
+                                            <Setter Property="IsEnabled" Value="True" />
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding Manager.SelectedDevice.Controller.IsLoggedIn}" Value="True">
-                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                    <Setter Property="IsEnabled" Value="False" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </TextBox.Style>
                                 </TextBox>
 
-                                <TextBox Text="{Binding Password}" MinWidth="50" Margin="3,0" HorizontalContentAlignment="Center" HorizontalAlignment="Left"
-                                 md:HintAssist.Hint="Password" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left">
+                                <TextBox
+                                    MinWidth="50"
+                                    Margin="3,0"
+                                    HorizontalAlignment="Left"
+                                    HorizontalContentAlignment="Center"
+                                    md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                                    md:HintAssist.Hint="Password"
+                                    md:HintAssist.IsFloating="True"
+                                    Text="{Binding Password}">
                                     <TextBox.Style>
-                                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                                            <Setter Property="IsEnabled" Value="True"/>
+                                        <Style BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}" TargetType="{x:Type TextBox}">
+                                            <Setter Property="IsEnabled" Value="True" />
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding Manager.SelectedDevice.Controller.IsLoggedIn}" Value="True">
-                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                    <Setter Property="IsEnabled" Value="False" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -176,27 +234,40 @@
                             </DockPanel>
 
                             <DockPanel Margin="3">
-                                
-                                <TextBox Text="{Binding SimulatorImageDirectory, UpdateSourceTrigger=PropertyChanged}" Height="48" MaxWidth="220" Margin="3,0" HorizontalContentAlignment="Left" HorizontalAlignment="Left"
-                                        md:HintAssist.Hint="Simulator Image Directory" md:HintAssist.IsFloating="True" md:HintAssist.FloatingHintHorizontalAlignment="Left" 
-                                     md:TextFieldAssist.HasClearButton="True" TextWrapping="Wrap">
+
+                                <TextBox
+                                    Height="48"
+                                    MaxWidth="220"
+                                    Margin="3,0"
+                                    HorizontalAlignment="Left"
+                                    HorizontalContentAlignment="Left"
+                                    md:HintAssist.FloatingHintHorizontalAlignment="Left"
+                                    md:HintAssist.Hint="Simulator Image Directory"
+                                    md:HintAssist.IsFloating="True"
+                                    md:TextFieldAssist.HasClearButton="True"
+                                    Text="{Binding SimulatorImageDirectory, UpdateSourceTrigger=PropertyChanged}"
+                                    TextWrapping="Wrap">
                                     <TextBox.Style>
-                                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
-                                            <Setter Property="IsEnabled" Value="True"/>
-                                            <Setter Property="md:HintAssist.FloatingOffset" Value="0,-20"/>
+                                        <Style BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}" TargetType="{x:Type TextBox}">
+                                            <Setter Property="IsEnabled" Value="True" />
+                                            <Setter Property="md:HintAssist.FloatingOffset" Value="0,-20" />
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding Manager.SelectedDevice.Controller.IsLoggedIn}" Value="True">
-                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                    <Setter Property="IsEnabled" Value="False" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </TextBox.Style>
                                 </TextBox>
 
-                                <Button Command="{Binding Manager.DeleteCommand}" CommandParameter="{Binding }"
-                                        Style="{StaticResource GroupHeaderCirlceButton}" HorizontalAlignment="Right" VerticalAlignment="Bottom"
-                                        Content="{iconPacks:Material Kind=Delete}"
-                                        ToolTip="Delete this device?"/>
+                                <Button
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Bottom"
+                                    Command="{Binding Manager.DeleteCommand}"
+                                    CommandParameter="{Binding}"
+                                    Content="{iconPacks:Material Kind=Delete}"
+                                    Style="{StaticResource GroupHeaderCirlceButton}"
+                                    ToolTip="Delete this device?" />
 
                             </DockPanel>
                         </DockPanel>
@@ -204,16 +275,19 @@
 
                 </md:DrawerHost.TopDrawerContent>
 
-                <ListView Margin="3,3,0,0" Style="{StaticResource MahApps.Styles.ListView}"
-                          ItemsSource="{Binding Nodes}" SelectedItem="{Binding Manager.SelectedDevice}">
+                <ListView
+                    Margin="3,3,0,0"
+                    ItemsSource="{Binding Nodes}"
+                    SelectedItem="{Binding Manager.SelectedDevice}"
+                    Style="{StaticResource MahApps.Styles.ListView}">
 
                     <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem" BasedOn="{StaticResource MahApps.Styles.ListViewItem}"/>
+                        <Style BasedOn="{StaticResource MahApps.Styles.ListViewItem}" TargetType="ListViewItem" />
                     </ListView.ItemContainerStyle>
 
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <local:NodeItem/>
+                            <local:NodeItem />
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>

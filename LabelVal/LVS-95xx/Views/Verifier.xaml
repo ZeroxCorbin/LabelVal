@@ -105,7 +105,7 @@
 
                         <DockPanel>
 
-                            <DockPanel DockPanel.Dock="Top">
+                            <!--<DockPanel DockPanel.Dock="Top">
                                 <ComboBox
                                     Margin="3"
                                     md:HintAssist.Hint="COM Port"
@@ -131,7 +131,7 @@
                                     Style="{StaticResource GroupHeaderCirlceButton}"
                                     ToolTip="Refresh" />
 
-                            </DockPanel>
+                            </DockPanel>-->
 
                             <DockPanel>
 
@@ -191,14 +191,14 @@
                             Text="LVS-95xx" />
 
 
-                        <TextBox
+                        <!--<TextBox
                             Margin="3,3"
                             d:Text="192.168.188.2"
                             md:HintAssist.Hint="Port"
                             BorderThickness="0"
                             IsHitTestVisible="False"
                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                            Text="{Binding Path=SelectedComName, Mode=OneWay}" />
+                            Text="{Binding Path=SelectedComName, Mode=OneWay}" />-->
 
                     </DockPanel>
 
@@ -248,7 +248,7 @@
                 </DockPanel>
             </md:DrawerHost>
 
-            <Expander
+            <!--<Expander
                 MaxHeight="450"
                 VerticalAlignment="Top"
                 md:ExpanderAssist.HorizontalHeaderPadding="3"
@@ -280,7 +280,7 @@
                     </ScrollViewer>
                 </md:Card>
 
-            </Expander>
+            </Expander>-->
 
             <Button
                 Padding="8,6"
