@@ -86,8 +86,8 @@ public partial class Verifier : ObservableRecipient, IRecipient<RegistryMessage>
 
     private void PostLogin()
     {
-        string cur = Controller.Database.ReadSetting("Report", "ReportImageReduction");
-        _ = Controller.Database.ReadSetting("GS1", "Table");
+        string cur = Controller.Database.GetSetting("Report", "ReportImageReduction");
+        _ = Controller.Database.GetSetting("GS1", "Table");
         //Update database setting to allow storing full resolution images to the report.
         if (cur != "1")
             Controller.Database.WriteSetting("Report", "ReportImageReduction", "1");

@@ -42,9 +42,9 @@
             </Style>
         </DockPanel.Style>
 
-        <Border Style="{StaticResource groupLeft}" />
+        <Border Style="{StaticResource groupLeft}" Background="{DynamicResource L95xx_Brush}"/>
 
-        <Border Style="{StaticResource groupBottom}" />
+        <Border Style="{StaticResource groupBottom}" Background="{DynamicResource L95xx_Brush}"/>
 
 
 

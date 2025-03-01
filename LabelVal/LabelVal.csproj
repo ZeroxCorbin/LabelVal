@@ -17,9 +17,9 @@
   <ItemGroup>
     <Using Include="Logging.lib" />
 
-    <Using Include="System"/>
-    <Using Include="System.Collections.Generic"/>
-    <Using Include="System.Linq"/>
+    <Using Include="System" />
+    <Using Include="System.Collections.Generic" />
+    <Using Include="System.Linq" />
 
   </ItemGroup>
   

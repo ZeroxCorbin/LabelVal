@@ -133,26 +133,16 @@
 
                             </DockPanel>-->
 
-                            <DockPanel>
-
+                            <StackPanel>
+                                <TextBlock Text="Database Path"/>
                                 <TextBox
-                                    Height="48"
                                     MaxWidth="220"
                                     Margin="3"
                                     HorizontalAlignment="Left"
                                     HorizontalContentAlignment="Left"
-                                    md:HintAssist.FloatingHintHorizontalAlignment="Left"
-                                    md:HintAssist.Hint="LVS95xx Database"
-                                    md:HintAssist.IsFloating="True"
                                     IsHitTestVisible="false"
                                     Text="{Binding DatabasePath}"
-                                    TextWrapping="Wrap">
-                                    <TextBox.Style>
-                                        <Style BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}" TargetType="{x:Type TextBox}">
-                                            <Setter Property="md:HintAssist.FloatingOffset" Value="0,-20" />
-                                        </Style>
-                                    </TextBox.Style>
-                                </TextBox>
+                                    TextWrapping="Wrap" />
 
                                 <!--<Button
                                     Margin="10,0"
@@ -163,7 +153,7 @@
                                     Content="{iconPacks:Material Kind=Delete}"
                                     Style="{StaticResource GroupHeaderCirlceButton}"
                                     ToolTip="Delete this verifier?" />-->
-                            </DockPanel>
+                            </StackPanel>
                         </DockPanel>
                     </md:Card>
                 </md:DrawerHost.TopDrawerContent>

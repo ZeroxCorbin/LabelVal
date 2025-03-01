@@ -73,7 +73,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
             RepeatAvailable = L95xxProcessResults,
         };
 
-        if (imageType == ImageResultEntryImageTypes.L95xxCurrent)
+        if (imageType == ImageResultEntryImageTypes.Source)
             lab.Image = SourceImage.BitmapBytes;
         else if (imageType == ImageResultEntryImageTypes.L95xxStored)
             lab.Image = L95xxResultRow.Stored.BitmapBytes;
@@ -118,6 +118,13 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
 
         if (L95xxResultRow == null)
         {
+            Logger.LogDebug("L95xx Result Row is null");
+            return;
+        }
+
+        if(L95xxResultRow.Report == null)
+        {
+            Logger.LogDebug("L95xx Report is null");
             return;
         }
 
@@ -187,7 +194,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
 
         L95xxGetSectorDiff();
 
-        L95xxCurrentImage = new ImageEntry(ImageRollUID, LibImageUtilities.ImageTypes.Png.Utilities.GetPng(message.Report.Thumbnail), 600);
+        L95xxCurrentImage = new ImageEntry(ImageRollUID, LibImageUtilities.ImageTypes.Png.Utilities.GetPng(message.Image), 600);
         UpdateL95xxCurrentImageOverlay();  
         
         IsL95xxWorking = false;

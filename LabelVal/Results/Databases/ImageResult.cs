@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using LabelVal.ImageRolls.ViewModels;
-using Lvs95xx.lib.Core.Controllers;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
@@ -14,7 +13,15 @@ public partial class ImageResult : ObservableObject
     [ObservableProperty] private string sourceImage;
     [ObservableProperty] private string storedImage;
 
+    /// <summary>
+    /// This is the serialized version of the Config/Job/Settings collected from the specific device.
+    /// <see cref="Template"/>
+    /// </summary>
     [ObservableProperty] private string template;
+    /// <summary>
+    /// This is the serialized version of the Report collected from the specific device.
+    /// <see cref="Report"/>
+    /// </summary>
     [ObservableProperty] private string report;
 
     [SQLite.Ignore] public ImageEntry Source => !string.IsNullOrEmpty(SourceImage) ? JsonConvert.DeserializeObject<ImageEntry>(SourceImage) : null;
@@ -34,5 +41,6 @@ public class V5Result : ImageResult
 
 public class L95xxResult : ImageResult 
 {
-     [SQLite.Ignore][JsonIgnore] public List<FullReport> _Report => !string.IsNullOrEmpty(Report) ? JsonConvert.DeserializeObject<List<FullReport>>(Report) : null;
+    [SQLite.Ignore][JsonIgnore] public Dictionary<string, object> _Settings => !string.IsNullOrEmpty(Template) ? JsonConvert.DeserializeObject<Dictionary<string, object>>(Template) : null;
+    [SQLite.Ignore][JsonIgnore] public List<Lvs95xx.lib.Core.Controllers.FullReport> _Report => !string.IsNullOrEmpty(Report) ? JsonConvert.DeserializeObject<List<Lvs95xx.lib.Core.Controllers.FullReport>>(Report) : null;
 }

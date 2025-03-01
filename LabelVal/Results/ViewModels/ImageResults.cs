@@ -274,7 +274,7 @@ public partial class ImageResults : ObservableRecipient,
         message.Name = "Verify_1";
 
         // byte[] bees = BitmapImageUtilities.ImageToBytes(BitmapImageUtilities.CreateRandomBitmapImage(50, 50));
-        ImageEntry imagEntry = SelectedImageRoll.GetNewImageEntry(message.Report.Thumbnail);
+        ImageEntry imagEntry = SelectedImageRoll.GetNewImageEntry(message.Image);
         if(imagEntry == null)
             return;
         imagEntry.NewData = message;

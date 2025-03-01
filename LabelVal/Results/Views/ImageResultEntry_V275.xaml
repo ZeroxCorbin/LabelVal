@@ -33,9 +33,9 @@
 
     <DockPanel MaxHeight="800">
 
-        <Border>
+        <Border Background="{DynamicResource V275_Brush}">
             <Border.Style>
-                <Style BasedOn="{StaticResource groupLeft}" TargetType="{x:Type Border}">
+                <Style BasedOn="{StaticResource groupLeft}" TargetType="{x:Type Border}" >
                     <Setter Property="Visibility" Value="Collapsed" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding V275StoredImage, Converter={StaticResource IsNullOrEmpty}}" Value="False">
@@ -50,7 +50,7 @@
             </Border.Style>
         </Border>
 
-        <Border Style="{StaticResource groupBottom}" />
+        <Border Style="{StaticResource groupBottom}"  Background="{DynamicResource V275_Brush}"/>
 
         <DockPanel>
 
@@ -85,6 +85,7 @@
                                 Padding="4,1"
                                 HorizontalAlignment="Left"
                                 Background="{DynamicResource V275_Brush}">
+                                
                                 <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Stored Image" />
                             </md:Card>
 
@@ -845,8 +846,6 @@
             </ContentControl>
 
         </DockPanel>
-
-
 
     </DockPanel>
 </UserControl>

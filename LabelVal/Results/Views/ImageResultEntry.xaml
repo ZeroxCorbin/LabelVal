@@ -18,7 +18,7 @@
     Unloaded="UserControl_Unloaded"
     mc:Ignorable="d">
 
-    <DockPanel>
+    <DockPanel HorizontalAlignment="Left">
 
         <md:Card
             Height="48"
@@ -322,7 +322,7 @@
                                     <MultiDataTrigger.Conditions>
                                         <Condition Binding="{Binding ImageResults.SelectedVerifier.Controller.IsConnected}" Value="True" />
                                         <Condition Binding="{Binding L95xxResultRow, Converter={StaticResource IsNullOrEmpty}}" Value="True" />
-                                        <!--<Condition Binding="{Binding ImageResults.SelectedVerifier.Controller.Process, Converter={StaticResource IsNullOrEmpty}}" Value="False" />-->
+                                        <Condition Binding="{Binding ImageResults.SelectedVerifier.Controller.Process, Converter={StaticResource IsNullOrEmpty}}" Value="False" />
                                     </MultiDataTrigger.Conditions>
 
                                     <Setter Property="Visibility" Value="Visible" />
@@ -335,6 +335,7 @@
                                     <MultiDataTrigger.Conditions>
                                         <Condition Binding="{Binding ImageResults.SelectedVerifier.Controller.IsConnected}" Value="True" />
                                         <Condition Binding="{Binding L95xxResultRow, Converter={StaticResource IsNullOrEmpty}}" Value="False" />
+                                        <Condition Binding="{Binding ImageResults.SelectedVerifier.Controller.Process, Converter={StaticResource IsNullOrEmpty}}" Value="False" />
                                     </MultiDataTrigger.Conditions>
 
                                     <Setter Property="Visibility" Value="Visible" />
