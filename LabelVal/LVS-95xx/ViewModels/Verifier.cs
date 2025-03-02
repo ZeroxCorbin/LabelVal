@@ -93,7 +93,11 @@ public partial class Verifier : ObservableRecipient, IRecipient<RegistryMessage>
             Controller.Database.WriteSetting("Report", "ReportImageReduction", "1");
     }
 
-    public void Receive(RegistryMessage message) => DatabasePath = ExtractDatabasePath(message.RegistryValue);
+    public void Receive(RegistryMessage message)
+    {
+        Controller.Disconnect();
+        DatabasePath = ExtractDatabasePath(message.RegistryValue);
+    }
 
     public void Receive(Win32_ProcessWatcherMessage message)
     {
