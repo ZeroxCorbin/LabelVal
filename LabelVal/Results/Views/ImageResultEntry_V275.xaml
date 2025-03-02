@@ -35,7 +35,7 @@
 
         <Border Background="{DynamicResource V275_Brush}">
             <Border.Style>
-                <Style BasedOn="{StaticResource groupLeft}" TargetType="{x:Type Border}" >
+                <Style BasedOn="{StaticResource groupLeft}" TargetType="{x:Type Border}">
                     <Setter Property="Visibility" Value="Collapsed" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding V275StoredImage, Converter={StaticResource IsNullOrEmpty}}" Value="False">
@@ -50,7 +50,7 @@
             </Border.Style>
         </Border>
 
-        <Border Style="{StaticResource groupBottom}"  Background="{DynamicResource V275_Brush}"/>
+        <Border Background="{DynamicResource V275_Brush}" Style="{StaticResource groupBottom}" />
 
         <DockPanel>
 
@@ -85,7 +85,7 @@
                                 Padding="4,1"
                                 HorizontalAlignment="Left"
                                 Background="{DynamicResource V275_Brush}">
-                                
+
                                 <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Stored Image" />
                             </md:Card>
 
@@ -330,10 +330,18 @@
                                         <Button
                                             Width="28"
                                             Click="btnCopyImage_Click"
-                                            Content="{iconPacks:MaterialDesign Kind=ContentCopy}"
+                                            Content="{iconPacks:MaterialDesign Kind=Image}"
                                             Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                                             Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                                             ToolTip="Copy image to clipboard as PNG." />
+
+                                        <Button
+                                        Width="28"
+                                        Command="{Binding V275FocusedStoredSector.CopyToClipBoardCommand}"
+                                        Content="{iconPacks:Material Kind=ContentCopy}"
+                                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                        ToolTip="Copy sector to CSV." />
 
                                         <Button
                                             Width="28"

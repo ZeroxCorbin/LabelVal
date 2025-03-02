@@ -356,7 +356,7 @@
                         <Style TargetType="{x:Type DockPanel}">
                             <Setter Property="Visibility" Value="Visible" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding SectorDifferences.GradeValues.Count, Mode=OneTime}" Value="0">
+                                <DataTrigger Binding="{Binding SectorDetails.GradeValues.Count, Mode=OneTime}" Value="0">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -365,7 +365,7 @@
 
                     <Separator DockPanel.Dock="Top" />
 
-                    <ItemsControl ItemsSource="{Binding SectorDifferences.GradeValues, Mode=OneTime}">
+                    <ItemsControl ItemsSource="{Binding SectorDetails.GradeValues, Mode=OneTime}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
@@ -386,7 +386,7 @@
                                         Grid.Column="1"
                                         Margin="3,0"
                                         VerticalAlignment="Center"
-                                        Text="{Binding Path=Value, Mode=OneTime, StringFormat={}({0})}" />
+                                        Text="{Binding Path=Value, Mode=OneTime, StringFormat={}({0:N1})}" />
 
                                     <TextBlock
                                         Grid.Column="2"
@@ -440,7 +440,7 @@
                         <Style TargetType="{x:Type DockPanel}">
                             <Setter Property="Visibility" Value="Visible" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding SectorDifferences.Values.Count, Mode=OneTime}" Value="0">
+                                <DataTrigger Binding="{Binding SectorDetails.Values.Count, Mode=OneTime}" Value="0">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -449,7 +449,7 @@
 
                     <Separator DockPanel.Dock="Top" />
 
-                    <ItemsControl ItemsSource="{Binding SectorDifferences.Values, Mode=OneTime}">
+                    <ItemsControl ItemsSource="{Binding SectorDetails.Values, Mode=OneTime}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
@@ -475,7 +475,7 @@
                         <Style TargetType="{x:Type DockPanel}">
                             <Setter Property="Visibility" Value="Visible" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding SectorDifferences.ValueResults.Count, Mode=OneTime}" Value="0">
+                                <DataTrigger Binding="{Binding SectorDetails.ValueResults.Count, Mode=OneTime}" Value="0">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -484,7 +484,7 @@
 
                     <Separator DockPanel.Dock="Top" />
 
-                    <ItemsControl ItemsSource="{Binding SectorDifferences.ValueResults, Mode=OneTime}">
+                    <ItemsControl ItemsSource="{Binding SectorDetails.ValueResults, Mode=OneTime}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
@@ -548,7 +548,7 @@
                             <Style.Triggers>
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding SectorDifferences.Gs1ValueResults.Count, Converter={StaticResource NumberZeroOrNull}, Mode=OneTime}" Value="False" />
+                                        <Condition Binding="{Binding SectorDetails.Gs1ValueResults.Count, Converter={StaticResource NumberZeroOrNull}, Mode=OneTime}" Value="False" />
                                         <Condition Binding="{Binding Report.Standard}" Value="GS1" />
                                     </MultiDataTrigger.Conditions>
                                     <MultiDataTrigger.Setters>
@@ -564,7 +564,7 @@
 
                     <Separator DockPanel.Dock="Top" />
 
-                    <ItemsControl ItemsSource="{Binding SectorDifferences.Gs1ValueResults, Mode=OneTime}">
+                    <ItemsControl ItemsSource="{Binding SectorDetails.Gs1ValueResults, Mode=OneTime}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
@@ -637,7 +637,7 @@
                         <Style TargetType="{x:Type DockPanel}">
                             <Setter Property="Visibility" Value="Visible" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding SectorDifferences.Gs1Grades.Count, Mode=OneTime}" Value="0">
+                                <DataTrigger Binding="{Binding SectorDetails.Gs1Grades.Count, Mode=OneTime}" Value="0">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Report.SymbolType, Mode=OneTime}" Value="aztec">
@@ -649,7 +649,7 @@
 
                     <Separator DockPanel.Dock="Top" />
 
-                    <ItemsControl ItemsSource="{Binding SectorDifferences.Gs1Grades, Mode=OneTime}">
+                    <ItemsControl ItemsSource="{Binding SectorDetails.Gs1Grades, Mode=OneTime}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
@@ -714,7 +714,7 @@
                         <Style TargetType="{x:Type DockPanel}">
                             <Setter Property="Visibility" Value="Visible" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding SectorDifferences.Alarms.Count, Mode=OneTime}" Value="0">
+                                <DataTrigger Binding="{Binding SectorDetails.Alarms.Count, Mode=OneTime}" Value="0">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -723,7 +723,7 @@
 
                     <Separator DockPanel.Dock="Top" />
 
-                    <ItemsControl ItemsSource="{Binding SectorDifferences.Alarms, Mode=OneTime}">
+                    <ItemsControl ItemsSource="{Binding SectorDetails.Alarms, Mode=OneTime}">
                         <ItemsControl.ItemTemplate>
 
                             <DataTemplate>

@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using SectorDifferences = LabelVal.Sectors.Views.SectorDifferences;
 
 namespace LabelVal.Results.Views;
 /// <summary>
@@ -217,7 +218,7 @@ public partial class ImageResultEntry_L95xx : UserControl
         System.Collections.ObjectModel.Collection<Sector> sectors = Utilities.VisualTreeHelp.GetVisualChildren<Sector>(this);
         foreach (Sector s in sectors)
         {
-            if (s.SectorName == ((Sectors.Interfaces.ISectorDifferences)sndr.DataContext).UserName)
+            if (s.SectorName == ((Sectors.Interfaces.SectorDifferences)sndr.DataContext).UserName)
                 s.ShowSectorDetails();
         }
     }

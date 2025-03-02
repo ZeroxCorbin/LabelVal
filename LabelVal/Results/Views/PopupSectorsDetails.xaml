@@ -1,45 +1,61 @@
-﻿<UserControl x:Class="LabelVal.Results.Views.PopupSectorsDetails"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:LabelVal.Results.Views"
-             xmlns:sectors="clr-namespace:LabelVal.Sectors.Views"
-             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
-                xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
-             mc:Ignorable="d">
+﻿<UserControl
+    x:Class="LabelVal.Results.Views.PopupSectorsDetails"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:local="clr-namespace:LabelVal.Results.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:sectors="clr-namespace:LabelVal.Sectors.Views"
+    mc:Ignorable="d">
 
     <UserControl.Resources>
-        <CollectionViewSource x:Key="cvsStoredSectors" Source="{Binding }">
+        <CollectionViewSource x:Key="cvsStoredSectors" Source="{Binding}">
             <CollectionViewSource.SortDescriptions>
-                <componentmodel:SortDescription PropertyName="Template.CenterPoint.X" Direction="Ascending"/>
+                <componentmodel:SortDescription Direction="Ascending" PropertyName="Template.CenterPoint.X" />
                 <!--<componentmodel:SortDescription PropertyName="Template.Top" Direction="Ascending"/>-->
             </CollectionViewSource.SortDescriptions>
         </CollectionViewSource>
     </UserControl.Resources>
-    
+
     <Popup x:Name="Popup" StaysOpen="False">
         <Popup.Style>
-            <Style TargetType="{x:Type Popup}"/>
+            <Style TargetType="{x:Type Popup}" />
         </Popup.Style>
 
-        <GroupBox Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Top" 
-                  Style="{StaticResource MaterialDesignCardGroupBox}"
-                md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                md:ColorZoneAssist.Mode="Custom">
+        <GroupBox
+            Margin="3"
+            Padding="3"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
+            md:ColorZoneAssist.Mode="Custom"
+            Style="{StaticResource MaterialDesignCardGroupBox}">
 
             <GroupBox.Header>
                 <DockPanel Margin="-5">
 
-                    <Button Margin="6,0,3,0" Click="btnSaveImage_Click" Style="{StaticResource GroupHeaderCirlceButton}"
-                            ToolTip="Save as image.">
-                        <iconPacks:PackIconMaterial Kind="ContentSave" Height="14" Width="14"/>
+                    <Button
+                        Margin="6,0,3,0"
+                        Click="btnSaveImage_Click"
+                        Style="{StaticResource GroupHeaderCirlceButton}"
+                        ToolTip="Save as image.">
+                        <iconPacks:PackIconMaterial
+                            Width="14"
+                            Height="14"
+                            Kind="ContentSave" />
                     </Button>
 
-                    <Button Click="btnCopyImage_Click" Style="{StaticResource GroupHeaderCirlceButton}"
-                            ToolTip="Copy image to clipboard as PNG.">
-                        <iconPacks:PackIconMaterial Kind="ContentCopy" Height="14" Width="14"/>
+                    <Button
+                        Click="btnCopyImage_Click"
+                        Style="{StaticResource GroupHeaderCirlceButton}"
+                        ToolTip="Copy image to clipboard as PNG.">
+                        <iconPacks:PackIconMaterial
+                            Width="14"
+                            Height="14"
+                            Kind="ContentCopy" />
                     </Button>
 
                 </DockPanel>
@@ -48,13 +64,12 @@
 
             <DockPanel>
 
-                <ScrollViewer HorizontalScrollBarVisibility="Auto" 
-                              Style="{StaticResource MahApps.Styles.ScrollViewer}">
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" Style="{StaticResource MahApps.Styles.ScrollViewer}">
 
                     <ItemsControl x:Name="itemsControl" ItemsSource="{Binding Source={StaticResource ResourceKey=cvsStoredSectors}}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <WrapPanel IsItemsHost="True" MaxWidth="1400"/>
+                                <WrapPanel MaxWidth="1400" IsItemsHost="True" />
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
 

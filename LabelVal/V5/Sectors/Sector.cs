@@ -1,16 +1,18 @@
-﻿using LabelVal.Sectors.Interfaces;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using LabelVal.Sectors.Interfaces;
 using V5_REST_Lib.Models;
 
 namespace LabelVal.V5.Sectors;
 
-public class Sector : ISector
+public partial class Sector : ObservableObject, ISector
 {
     public ResultsAlt.Decodedata V5Sector { get; }
 
     public ITemplate Template { get; }
     public IReport Report { get; }
 
-    public ISectorDifferences SectorDifferences { get; }
+    public ISectorDetails SectorDetails { get; }
     public bool IsWarning { get; }
     public bool IsError { get; }
 
@@ -82,7 +84,7 @@ public class Sector : ISector
         Report = new Report(decodeData);
         Template = new Template(decodeData, toollist, name);
 
-        SectorDifferences = new SectorDifferences(decodeData, Template.Username);
+        SectorDetails = new SectorDetails(decodeData, Template.Username);
 
         DesiredStandard = standard;
         DesiredGS1Table = table;
@@ -91,7 +93,7 @@ public class Sector : ISector
         Report.GS1Table = GS1TableNames.None; //GS1 is not supported in V5, yet
 
         int highCat = 0;
-        foreach (Alarm alm in SectorDifferences.Alarms)
+        foreach (Alarm alm in SectorDetails.Alarms)
             if (highCat < alm.Category)
                 highCat = alm.Category;
 
@@ -108,4 +110,7 @@ public class Sector : ISector
             "iso29158" => StandardsTypes.ISO29158,
             _ => StandardsTypes.Unsupported,
         } : StandardsTypes.None;
+
+    [RelayCommand]
+    private void CopyToClipBoard() => ISector.CopyCSVToClipboard(this);
 }

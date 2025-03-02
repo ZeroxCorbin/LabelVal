@@ -23,7 +23,7 @@ public partial class RunResult : ObservableRecipient, IImageResultEntry, IRecipi
 {
     [ObservableProperty] private ObservableCollection<Sectors.Interfaces.ISector> v275CurrentSectors = [];
     [ObservableProperty] private ObservableCollection<Sectors.Interfaces.ISector> v275StoredSectors = [];
-    [ObservableProperty] private ObservableCollection<Sectors.Interfaces.ISectorDifferences> v275DiffSectors = [];
+    [ObservableProperty] private ObservableCollection<Sectors.Interfaces.SectorDifferences> v275DiffSectors = [];
     [ObservableProperty] private Sectors.Interfaces.ISector v275FocusedStoredSector = null;
     [ObservableProperty] private Sectors.Interfaces.ISector v275FocusedCurrentSector = null;
 
@@ -36,7 +36,7 @@ public partial class RunResult : ObservableRecipient, IImageResultEntry, IRecipi
 
     [ObservableProperty] private ObservableCollection<Sectors.Interfaces.ISector> v5CurrentSectors = [];
     [ObservableProperty] private ObservableCollection<Sectors.Interfaces.ISector> v5StoredSectors = [];
-    [ObservableProperty] private ObservableCollection<Sectors.Interfaces.ISectorDifferences> v5DiffSectors = [];
+    [ObservableProperty] private ObservableCollection<Sectors.Interfaces.SectorDifferences> v5DiffSectors = [];
     [ObservableProperty] private Sectors.Interfaces.ISector v5FocusedStoredSector = null;
     [ObservableProperty] private Sectors.Interfaces.ISector v5FocusedCurrentSector = null;
 
@@ -49,7 +49,7 @@ public partial class RunResult : ObservableRecipient, IImageResultEntry, IRecipi
 
     [ObservableProperty] private ObservableCollection<Sectors.Interfaces.ISector> l95xxCurrentSectors = [];
     [ObservableProperty] private ObservableCollection<Sectors.Interfaces.ISector> l95xxStoredSectors = [];
-    [ObservableProperty] private ObservableCollection<Sectors.Interfaces.ISectorDifferences> l95xxDiffSectors = [];
+    [ObservableProperty] private ObservableCollection<Sectors.Interfaces.SectorDifferences> l95xxDiffSectors = [];
     [ObservableProperty] private Sectors.Interfaces.ISector l95xxFocusedStoredSector = null;
     [ObservableProperty] private Sectors.Interfaces.ISector l95xxFocusedCurrentSector = null;
 

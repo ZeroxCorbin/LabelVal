@@ -1,15 +1,17 @@
-﻿using LabelVal.Sectors.Interfaces;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using LabelVal.Sectors.Interfaces;
 
 namespace LabelVal.V275.Sectors;
 
-public class Sector : ISector
+public partial class Sector : ObservableObject, ISector
 {
     public V275_REST_Lib.Models.Job.Sector V275Sector { get; }
 
     public ITemplate Template { get; }
     public IReport Report { get; }
 
-    public ISectorDifferences SectorDifferences { get; }
+    public ISectorDetails SectorDetails { get; }
     public bool IsWarning { get; }
     public bool IsError { get; }
 
@@ -81,7 +83,7 @@ public class Sector : ISector
         Report = new Report(report);
         Template = new Template(sector);
 
-        SectorDifferences = new SectorDifferences(report, Template.Username);
+        SectorDetails = new SectorDetails(report, Template.Username);
 
         DesiredStandard = standard;
         DesiredGS1Table = table;
@@ -93,7 +95,7 @@ public class Sector : ISector
             Report.GS1Table = GetGS1Table(sector.gradingStandard.tableId);
 
         int highCat = 0;
-        foreach (Alarm alm in SectorDifferences.Alarms)
+        foreach (Alarm alm in SectorDetails.Alarms)
             if (highCat < alm.Category)
                 highCat = alm.Category;
 
@@ -125,5 +127,8 @@ public class Sector : ISector
         "12.3" => GS1TableNames._12_3,
         _ => GS1TableNames.Unsupported,
     };
+
+    [RelayCommand]
+    private void CopyToClipBoard() => ISector.CopyCSVToClipboard(this);
 
 }

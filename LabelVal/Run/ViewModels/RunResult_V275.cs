@@ -128,7 +128,7 @@ public partial class RunResult
     {
         V275DiffSectors.Clear();
 
-        List<Sectors.Interfaces.ISectorDifferences> diff = [];
+        List<Sectors.Interfaces.SectorDifferences> diff = [];
 
         //Compare; Do not check for missing her. To keep found at top of list.
         foreach (Sectors.Interfaces.ISector sec in V275StoredSectors)
@@ -138,12 +138,12 @@ public partial class RunResult
                 {
                     if (sec.Template.SymbologyType == cSec.Template.SymbologyType)
                     {
-                        diff.Add(sec.SectorDifferences.Compare(cSec.SectorDifferences));
+                        diff.Add(sec.SectorDetails.Compare(cSec.SectorDetails));
                         continue;
                     }
                     else
                     {
-                        V275.Sectors.SectorDifferences dat = new()
+                        Sectors.Interfaces.SectorDifferences dat = new()
                         {
                             UserName = $"{sec.Template.Username} (SYMBOLOGY MISMATCH)",
                             IsSectorMissing = true,
@@ -167,7 +167,7 @@ public partial class RunResult
 
             if (!found)
             {
-                V275.Sectors.SectorDifferences dat = new()
+                Sectors.Interfaces.SectorDifferences dat = new()
                 {
                     UserName = $"{sec.Template.Username} (MISSING)",
                     IsSectorMissing = true,
@@ -191,7 +191,7 @@ public partial class RunResult
 
                 if (!found)
                 {
-                    V275.Sectors.SectorDifferences dat = new()
+                    Sectors.Interfaces.SectorDifferences dat = new()
                     {
                         UserName = $"{sec.Template.Username} (MISSING)",
                         IsSectorMissing = true,
@@ -202,8 +202,7 @@ public partial class RunResult
             }
 
         //ToDo: Sort the diff list
-        foreach (Sectors.Interfaces.ISectorDifferences d in diff)
-            if (d.IsNotEmpty)
+        foreach (var d in diff)
                 V275DiffSectors.Add(d);
 
     }

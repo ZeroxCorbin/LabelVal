@@ -131,44 +131,47 @@
 
                 <DockPanel DockPanel.Dock="Top">
 
-                    <TextBox
-                        Margin="6,3"
-                        d:Text="camera"
-                        md:HintAssist.Hint="{loc:Loc Type}"
-                        BorderThickness="0"
-                        IsHitTestVisible="False">
-                        <TextBox.Style>
-                            <Style BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}" TargetType="{x:Type TextBox}">
-                                <Setter Property="Text" Value="{loc:Loc Unknown}" />
-                                <Style.Triggers>
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding Controller.Inspection.device}" Value="camera" />
-                                            <Condition Binding="{Binding Controller.Is600Dpi}" Value="False" />
-                                        </MultiDataTrigger.Conditions>
+                    <Grid ToolTip="{Binding Controller.Dpi, StringFormat={}DPI {0}}">
+                        <Rectangle Fill="Transparent" />
+                        <TextBox
+                            Margin="6,3"
+                            d:Text="camera"
+                            md:HintAssist.Hint="{loc:Loc Type}"
+                            BorderThickness="0"
+                            IsHitTestVisible="False">
+                            <TextBox.Style>
+                                <Style BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}" TargetType="{x:Type TextBox}">
+                                    <Setter Property="Text" Value="{loc:Loc Unknown}" />
+                                    <Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding Controller.Inspection.device}" Value="camera" />
+                                                <Condition Binding="{Binding Controller.Is600Dpi}" Value="False" />
+                                            </MultiDataTrigger.Conditions>
 
-                                        <Setter Property="Foreground" Value="Red" />
-                                    </MultiDataTrigger>
+                                            <Setter Property="Foreground" Value="Red" />
+                                        </MultiDataTrigger>
 
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding Controller.Inspection.device}" Value="simulator" />
-                                            <Condition Binding="{Binding Controller.Is600Dpi}" Value="False" />
-                                        </MultiDataTrigger.Conditions>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding Controller.Inspection.device}" Value="simulator" />
+                                                <Condition Binding="{Binding Controller.Is600Dpi}" Value="False" />
+                                            </MultiDataTrigger.Conditions>
 
-                                        <Setter Property="Foreground" Value="Yellow" />
-                                    </MultiDataTrigger>
+                                            <Setter Property="Foreground" Value="Yellow" />
+                                        </MultiDataTrigger>
 
-                                    <DataTrigger Binding="{Binding Controller.Inspection.device}" Value="camera">
-                                        <Setter Property="Text" Value="{loc:Loc Camera}" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding Controller.Inspection.device}" Value="simulator">
-                                        <Setter Property="Text" Value="{loc:Loc Simulator}" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBox.Style>
-                    </TextBox>
+                                        <DataTrigger Binding="{Binding Controller.Inspection.device}" Value="camera">
+                                            <Setter Property="Text" Value="{loc:Loc Camera}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Controller.Inspection.device}" Value="simulator">
+                                            <Setter Property="Text" Value="{loc:Loc Simulator}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBox.Style>
+                        </TextBox>
+                    </Grid>
 
                     <TextBox
                         Margin="6,3"

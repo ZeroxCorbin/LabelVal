@@ -1,18 +1,22 @@
-﻿using LabelVal.Sectors.Interfaces;
-using System.Collections.Generic;
-using System.Linq;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using CsvHelper;
+using LabelVal.Sectors.Interfaces;
 using Lvs95xx.lib.Core.Controllers;
+using System.Globalization;
+using System.IO;
+using System.Windows;
 
 namespace LabelVal.LVS_95xx.Sectors;
 
-public class Sector : ISector
+public partial class Sector : ObservableObject, ISector
 {
     public FullReport L95xxFullReport { get; }
 
     public ITemplate Template { get; }
     public IReport Report { get; }
 
-    public ISectorDifferences SectorDifferences { get; }
+    public ISectorDetails SectorDetails { get; }
     public bool IsWarning { get; }
     public bool IsError { get; }
 
@@ -84,7 +88,7 @@ public class Sector : ISector
         Report = new Report(report);
         Template = new Template(report);
 
-        SectorDifferences = new SectorDifferences(report, Report.SymbolType == "pdf417", Report.Standard);
+        SectorDetails = new SectorDetails(report, Report.SymbolType == "pdf417", Report.Standard);
 
         DesiredStandard = standard;
         DesiredGS1Table = table;
@@ -92,7 +96,7 @@ public class Sector : ISector
         //Standard and GS1Table are set in the Report constructor.
 
         int highCat = 0;
-        foreach (Alarm alm in SectorDifferences.Alarms)
+        foreach (Alarm alm in SectorDetails.Alarms)
             if (highCat < alm.Category)
                 highCat = alm.Category;
 
@@ -101,7 +105,6 @@ public class Sector : ISector
         else if (highCat == 2)
             IsError = true;
     }
-
 
     private List<string[]> GetMultipleKeyValuePairs(string key, List<string> report)
     {
@@ -120,4 +123,8 @@ public class Sector : ISector
         }
         return res;
     }
+
+    [RelayCommand]
+    private void CopyToClipBoard() => ISector.CopyCSVToClipboard(this);
+
 }

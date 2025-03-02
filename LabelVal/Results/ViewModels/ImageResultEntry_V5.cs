@@ -28,7 +28,7 @@ public partial class ImageResultEntry
 
     public ObservableCollection<Sectors.Interfaces.ISector> V5CurrentSectors { get; } = [];
     public ObservableCollection<Sectors.Interfaces.ISector> V5StoredSectors { get; } = [];
-    public ObservableCollection<Sectors.Interfaces.ISectorDifferences> V5DiffSectors { get; } = [];
+    public ObservableCollection<Sectors.Interfaces.SectorDifferences> V5DiffSectors { get; } = [];
 
     [ObservableProperty] private Sectors.Interfaces.ISector v5FocusedStoredSector = null;
     [ObservableProperty] private Sectors.Interfaces.ISector v5FocusedCurrentSector = null;
@@ -186,7 +186,7 @@ public partial class ImageResultEntry
     {
         V5DiffSectors.Clear();
 
-        List<Sectors.Interfaces.ISectorDifferences> diff = [];
+        List<Sectors.Interfaces.SectorDifferences> diff = [];
 
         //Compare; Do not check for missing here. To keep found at top of list.
         foreach (Sectors.Interfaces.ISector sec in V5StoredSectors)
@@ -196,12 +196,12 @@ public partial class ImageResultEntry
                 {
                     if (sec.Template.SymbologyType == cSec.Template.SymbologyType)
                     {
-                        diff.Add(sec.SectorDifferences.Compare(cSec.SectorDifferences));
+                        diff.Add(sec.SectorDetails.Compare(cSec.SectorDetails));
                         continue;
                     }
                     else
                     {
-                        V5.Sectors.SectorDifferences dat = new()
+                        Sectors.Interfaces.SectorDifferences dat = new()
                         {
                             UserName = $"{sec.Template.Username} (SYMBOLOGY MISMATCH)",
                             IsSectorMissing = true,
@@ -225,7 +225,7 @@ public partial class ImageResultEntry
 
             if (!found)
             {
-                V5.Sectors.SectorDifferences dat = new()
+                Sectors.Interfaces.SectorDifferences dat = new()
                 {
                     UserName = $"{sec.Template.Username} (MISSING)",
                     IsSectorMissing = true,
@@ -249,7 +249,7 @@ public partial class ImageResultEntry
 
                 if (!found)
                 {
-                    V5.Sectors.SectorDifferences dat = new()
+                    Sectors.Interfaces.SectorDifferences dat = new()
                     {
                         UserName = $"{sec.Template.Username} (MISSING)",
                         IsSectorMissing = true,
@@ -259,8 +259,8 @@ public partial class ImageResultEntry
                 }
             }
 
-        foreach (Sectors.Interfaces.ISectorDifferences d in diff)
-            if (d.IsNotEmpty || d.IsSectorMissing)
+        foreach (var d in diff)
+            if (d.IsSectorMissing)
                 V5DiffSectors.Add(d);
     }
     public int V5LoadTask() => 1;

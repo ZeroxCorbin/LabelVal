@@ -33,7 +33,7 @@ public partial class ImageResultEntry
 
     public ObservableCollection<Sectors.Interfaces.ISector> V275CurrentSectors { get; } = [];
     public ObservableCollection<Sectors.Interfaces.ISector> V275StoredSectors { get; } = [];
-    public ObservableCollection<Sectors.Interfaces.ISectorDifferences> V275DiffSectors { get; } = [];
+    public ObservableCollection<Sectors.Interfaces.SectorDifferences> V275DiffSectors { get; } = [];
 
     [ObservableProperty] private Sectors.Interfaces.ISector v275FocusedStoredSector = null;
     [ObservableProperty] private Sectors.Interfaces.ISector v275FocusedCurrentSector = null;
@@ -180,7 +180,7 @@ public partial class ImageResultEntry
     {
         V275DiffSectors.Clear();
 
-        List<Sectors.Interfaces.ISectorDifferences> diff = [];
+        List<Sectors.Interfaces.SectorDifferences> diff = [];
 
         //Compare; Do not check for missing her. To keep found at top of list.
         foreach (Sectors.Interfaces.ISector sec in V275StoredSectors)
@@ -190,12 +190,12 @@ public partial class ImageResultEntry
                 {
                     if (sec.Template.SymbologyType == cSec.Template.SymbologyType)
                     {
-                        diff.Add(sec.SectorDifferences.Compare(cSec.SectorDifferences));
+                        diff.Add(sec.SectorDetails.Compare(cSec.SectorDetails));
                         continue;
                     }
                     else
                     {
-                        V275.Sectors.SectorDifferences dat = new()
+                        Sectors.Interfaces.SectorDifferences dat = new()
                         {
                             UserName = $"{sec.Template.Username} (SYMBOLOGY MISMATCH)",
                             IsSectorMissing = true,
@@ -219,7 +219,7 @@ public partial class ImageResultEntry
 
             if (!found)
             {
-                V275.Sectors.SectorDifferences dat = new()
+                Sectors.Interfaces.SectorDifferences dat = new()
                 {
                     UserName = $"{sec.Template.Username} (MISSING)",
                     IsSectorMissing = true,
@@ -243,7 +243,7 @@ public partial class ImageResultEntry
 
                 if (!found)
                 {
-                    V275.Sectors.SectorDifferences dat = new()
+                    Sectors.Interfaces.SectorDifferences dat = new()
                     {
                         UserName = $"{sec.Template.Username} (MISSING)",
                         IsSectorMissing = true,
@@ -254,8 +254,8 @@ public partial class ImageResultEntry
             }
 
         //ToDo: Sort the diff list
-        foreach (Sectors.Interfaces.ISectorDifferences d in diff)
-            if (d.IsNotEmpty || d.IsSectorMissing)
+        foreach (var d in diff)
+            if (d.IsSectorMissing)
                 V275DiffSectors.Add(d);
 
     }

@@ -22,7 +22,7 @@ public interface IImageResultEntry
     ObservableCollection<ISector> V275StoredSectors { get; }
     ISector V275FocusedStoredSector { get; set; }
 
-    ObservableCollection<ISectorDifferences> V275DiffSectors { get; }
+    ObservableCollection<SectorDifferences> V275DiffSectors { get; }
 
     //V5
     ImageEntry V5CurrentImage { get; }
@@ -35,7 +35,7 @@ public interface IImageResultEntry
     ObservableCollection<ISector> V5StoredSectors { get; }
     ISector V5FocusedStoredSector { get; set; }
 
-    ObservableCollection<ISectorDifferences> V5DiffSectors { get; }
+    ObservableCollection<SectorDifferences> V5DiffSectors { get; }
 
     //L95xx
     ObservableCollection<ISector> L95xxCurrentSectors { get; }
@@ -44,5 +44,5 @@ public interface IImageResultEntry
     ObservableCollection<ISector> L95xxStoredSectors { get; }
     ISector L95xxFocusedStoredSector { get; set; }
 
-    ObservableCollection<ISectorDifferences> L95xxDiffSectors { get; }
+    ObservableCollection<SectorDifferences> L95xxDiffSectors { get; }
 }
