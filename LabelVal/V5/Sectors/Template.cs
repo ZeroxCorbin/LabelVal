@@ -1,4 +1,5 @@
-﻿using LabelVal.Sectors.Interfaces;
+﻿using LabelVal.Sectors.Classes;
+using LabelVal.Sectors.Interfaces;
 using System;
 using System.Windows;
 using System.Windows.Media;

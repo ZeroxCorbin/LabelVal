@@ -379,7 +379,10 @@
                                         Text="{Binding Path=Name, Converter={StaticResource stringToUpper}, Mode=OneTime}"
                                         TextWrapping="Wrap" />
 
-                                    <DockPanel Grid.Column="1"  HorizontalAlignment="Right" VerticalAlignment="Center">
+                                    <DockPanel
+                                        Grid.Column="1"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center">
                                         <TextBlock Margin="3,0" Text="{Binding Path=Value, Mode=OneTime, StringFormat={}({0:N1})}" />
 
                                         <TextBlock Margin="3,0" Text="{Binding Path=Grade.Value, StringFormat=N1, Mode=OneTime}" />
@@ -449,12 +452,12 @@
                                     </Grid.ColumnDefinitions>
 
                                     <TextBlock Grid.Column="0" Text="{Binding Path=Name, Converter={StaticResource stringToUpper}, Mode=OneTime}" />
-                                    
+
                                     <TextBlock
-                                        Margin="6,0"
                                         Grid.Column="1"
-                                        VerticalAlignment="Center"
+                                        Margin="6,0"
                                         HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
                                         Text="{Binding Path=Value, Mode=OneTime, StringFormat={}{0}}" />
                                 </Grid>
                             </DataTemplate>

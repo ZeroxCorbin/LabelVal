@@ -1,4 +1,5 @@
-﻿using LabelVal.Sectors.Interfaces;
+﻿using LabelVal.Sectors.Classes;
+using LabelVal.Sectors.Interfaces;
 
 namespace LabelVal.V275.Sectors;
 

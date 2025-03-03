@@ -1,20 +1,7 @@
-﻿using System.Drawing;
-using V5_REST_Lib.Models;
+﻿using LabelVal.Sectors.Classes;
+using System.Drawing;
 
 namespace LabelVal.Sectors.Interfaces;
-
-public class TemplateMatchMode
-{
-    public int MatchMode { get; set; }
-    public int UserDefinedDataTrueSize { get; set; }
-    public string FixedText { get; set; }
-}
-
-public class BlemishMaskLayers
-{
-    public V275_REST_Lib.Models.Job.Layer[] Layers { get; set; }
-}
-
 public interface ITemplate
 {
     string Name { get; set; }
@@ -35,5 +22,4 @@ public interface ITemplate
     TemplateMatchMode MatchSettings { get; set; }
     BlemishMaskLayers BlemishMask { get; set; }
 }
-
 

@@ -545,17 +545,17 @@
                             <HierarchicalDataTemplate>
                                 <StackPanel>
                                     <DockPanel>
-                                            <DockPanel.Style>
-                                                <Style TargetType="{x:Type DockPanel}">
-                                                    <Setter Property="Visibility" Value="Visible" />
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding Current.Name, Mode=OneWay, Converter={StaticResource IsNullOrEmpty}}" Value="True">
-                                                            <Setter Property="Visibility" Value="Collapsed" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </DockPanel.Style>
-                                        
+                                        <DockPanel.Style>
+                                            <Style TargetType="{x:Type DockPanel}">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Current.Name, Mode=OneWay, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </DockPanel.Style>
+
                                         <DockPanel Margin="3,0" DockPanel.Dock="Top">
 
                                             <Border
