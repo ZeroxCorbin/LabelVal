@@ -1,5 +1,5 @@
 ﻿using CsvHelper;
-using LabelVal.LVS_95xx.Sectors;
+using LabelVal.Sectors.Classes;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
@@ -7,70 +7,6 @@ using System.Text;
 using System.Windows;
 
 namespace LabelVal.Sectors.Interfaces;
-
-public enum StandardsTypes
-{
-    [Description("None")]
-    None,
-    [Description("Unsupported")]
-    Unsupported, //Unsupported table
-    [Description("ISO/IEC 15415 & 15416")]
-    ISO15415_15416,
-    [Description("ISO/IEC 15415 (2D)")]
-    ISO15415,
-    [Description("ISO/IEC 15416 (1D)")]
-    ISO15416,
-    [Description("GS1")]
-    GS1,
-    [Description("OCR/OCV")]
-    OCR_OCV,
-    [Description("ISO/IEC 29158 (DPM)")]
-    ISO29158,
-}
-
-public enum GS1TableNames
-{
-    [Description("None")]
-    None,
-    [Description("Unsupported")]
-    Unsupported, //Unsupported table
-    [Description("1")]
-    _1, //Trade items scanned in General Retail POS and NOT General Distribution.
-    [Description("1.8200")]
-    _1_8200, //AI (8200)
-    [Description("2")]
-    _2, //Trade items scanned in General Distribution.
-    [Description("3")]
-    _3, //Trade items scanned in General Retail POS and General Distribution.
-    [Description("4")]
-    _4,
-    [Description("5")]
-    _5,
-    [Description("6")]
-    _6,
-    [Description("7.1")]
-    _7_1,
-    [Description("7.2")]
-    _7_2,
-    [Description("7.3")]
-    _7_3,
-    [Description("7.4")]
-    _7_4,
-    [Description("8")]
-    _8,
-    [Description("9")]
-    _9,
-    [Description("10")]
-    _10,
-    [Description("11")]
-    _11,
-    [Description("12.1")]
-    _12_1,
-    [Description("12.2")]
-    _12_2,
-    [Description("12.3")]
-    _12_3
-}
 
 public partial interface ISector
 {
@@ -82,7 +18,7 @@ public partial interface ISector
     bool IsError { get; }
 
     StandardsTypes DesiredStandard { get; }
-    GS1TableNames DesiredGS1Table { get; }
+    Gs1TableNames DesiredGS1Table { get; }
     bool IsWrongStandard { get; }
 
     bool IsFocused { get; set; }
@@ -196,13 +132,17 @@ public partial interface ISector
             return camelCase;
 
         StringBuilder sb = new();
-        sb.Append(char.ToUpper(camelCase[0]));
+        _ = sb.Append(char.ToUpper(camelCase[0]));
         for (int i = 1; i < camelCase.Length; i++)
         {
             if (char.IsUpper(camelCase[i]))
-                sb.Append(' ');
-            sb.Append(camelCase[i]);
+                _ = sb.Append(' ');
+            _ = sb.Append(camelCase[i]);
         }
         return sb.ToString();
     }
 }
+
+
+
+

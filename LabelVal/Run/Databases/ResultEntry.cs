@@ -40,7 +40,7 @@ public class ResultEntry
 
     //public string ImageRollName { get; set; }
     //public StandardsTypes GradingStandard { get; set; }
-    //public GS1TableNames Gs1TableName { get; set; }
+    //public Gs1TableNames Gs1TableName { get; set; }
     //public double TargetDPI { get; set; }
 
     public int TotalLoops { get; set; }

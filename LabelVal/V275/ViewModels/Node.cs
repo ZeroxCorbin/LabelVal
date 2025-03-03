@@ -85,7 +85,7 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
             return;
         }
 
-        if (SelectedImageRoll.SelectedStandard != LabelVal.Sectors.Interfaces.StandardsTypes.GS1)
+        if (SelectedImageRoll.SelectedStandard != LabelVal.Sectors.Classes.StandardsTypes.GS1)
         {
             if (Controller.JobName.ToLower().Equals(SelectedImageRoll.Name.ToLower()))
                 return;

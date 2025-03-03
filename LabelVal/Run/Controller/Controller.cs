@@ -2,13 +2,10 @@
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Results.Databases;
 using LabelVal.Run.Databases;
-using LabelVal.Sectors.Interfaces;
+using LabelVal.Sectors.Classes;
 using LabelVal.V275.ViewModels;
-using Logging.lib;
 using Newtonsoft.Json;
-using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -89,7 +86,7 @@ public partial class Controller : ObservableObject
             return false;
         }
 
-        if ((HasL95 && !L95.IsConnected))
+        if (HasL95 && !L95.IsConnected)
         {
             Logger.LogError("Run: Lvs95xx, Not connected.");
             return false;
@@ -100,13 +97,12 @@ public partial class Controller : ObservableObject
 
         RunEntry = new RunEntry()
         {
-            
+
         };
 
         if (!OpenDatabase() || !UpdateRunEntry())
             return false;
 
-        
         _ = Task.Run(Start);
 
         return true;
@@ -169,15 +165,15 @@ public partial class Controller : ObservableObject
             if (UpdateUI)
             {
                 if (HasV275)
-                    foreach (var ire in ImageResultEntries)
+                    foreach (Results.ViewModels.ImageResultEntry ire in ImageResultEntries)
                         ire.ClearReadCommand.Execute(Results.ViewModels.ImageResultEntryDevices.V275);
 
                 if (HasV5)
-                    foreach (var ire in ImageResultEntries)
+                    foreach (Results.ViewModels.ImageResultEntry ire in ImageResultEntries)
                         ire.ClearReadCommand.Execute(Results.ViewModels.ImageResultEntryDevices.V5);
 
                 if (HasL95)
-                    foreach (var ire in ImageResultEntries)
+                    foreach (Results.ViewModels.ImageResultEntry ire in ImageResultEntries)
                         ire.ClearReadCommand.Execute(Results.ViewModels.ImageResultEntryDevices.L95xxAll);
             }
 
@@ -377,7 +373,8 @@ public partial class Controller : ObservableObject
                 }
 
                 Thread.Sleep(1);
-            };
+            }
+            ;
         });
 
         if (State != RunStates.Running)
@@ -471,7 +468,7 @@ public partial class Controller : ObservableObject
         };
 
         Lvs95xx.lib.Core.Controllers.FullReport res = await L95.ProcessLabelAsync(lab);
-        if(res == null)
+        if (res == null)
         {
             Logger.LogError("Run: Lvs95xx, No results returned.");
             _ = UpdateRunState(RunStates.Error);
@@ -489,7 +486,7 @@ public partial class Controller : ObservableObject
 
     private string GetL95xxStandard(StandardsTypes type) => Lvs95xx.lib.Core.Controllers.Config.ApplicationStandards.FirstOrDefault(x => x.Key.Contains(type.ToString())).Key;
 
-    private string GetL95xxTable(GS1TableNames table) => Lvs95xx.lib.Core.Controllers.Config.Tables.FirstOrDefault(x => x.Key.Contains(table.ToString().Trim('_'))).Key;
+    private string GetL95xxTable(Gs1TableNames table) => Lvs95xx.lib.Core.Controllers.Config.Tables.FirstOrDefault(x => x.Key.Contains(table.ToString().Trim('_'))).Key;
 
     private static bool HasSequencing(Results.ViewModels.ImageResultEntry label)
     {
@@ -527,5 +524,4 @@ public partial class Controller : ObservableObject
         State = state;
         return state;
     }
-
 }

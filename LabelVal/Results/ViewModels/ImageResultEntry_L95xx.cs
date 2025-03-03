@@ -14,6 +14,7 @@ using System.Windows.Media;
 using CommunityToolkit.Mvvm.Input;
 using Lvs95xx.lib.Core.Controllers;
 using System.Threading.Tasks;
+using LabelVal.Sectors.Classes;
 
 namespace LabelVal.Results.ViewModels;
 public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullReport>>
@@ -32,7 +33,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
 
     public ObservableCollection<Sectors.Interfaces.ISector> L95xxCurrentSectors { get; } = [];
     public ObservableCollection<Sectors.Interfaces.ISector> L95xxStoredSectors { get; } = [];
-    public ObservableCollection<Sectors.Interfaces.SectorDifferences> L95xxDiffSectors { get; } = [];
+    public ObservableCollection<SectorDifferences> L95xxDiffSectors { get; } = [];
 
     [ObservableProperty] private Sectors.Interfaces.ISector l95xxFocusedStoredSector = null;
     [ObservableProperty] private Sectors.Interfaces.ISector l95xxFocusedCurrentSector = null;
@@ -89,7 +90,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
         return Lvs95xx.lib.Core.Controllers.Config.ApplicationStandards.FirstOrDefault(x => x.Key.Contains(type.ToString())).Key;
 
     }
-    private string GetL95xxTable(GS1TableNames table)
+    private string GetL95xxTable(Gs1TableNames table)
     {
         return Lvs95xx.lib.Core.Controllers.Config.Tables.FirstOrDefault(x => x.Key.Contains(table.ToString().Trim('_'))).Key;
     }
@@ -206,7 +207,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
     {
         L95xxDiffSectors.Clear();
 
-        List<Sectors.Interfaces.SectorDifferences> diff = [];
+        List<SectorDifferences> diff = [];
 
         //Compare; Do not check for missing her. To keep found at top of list.
         foreach (Sector sec in L95xxStoredSectors)
@@ -221,7 +222,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
                     }
                     else
                     {
-                        Sectors.Interfaces.SectorDifferences dat = new()
+                        SectorDifferences dat = new()
                         {
                             UserName = $"{sec.Template.Username} (SYMBOLOGY MISMATCH)",
                             IsSectorMissing = true,
@@ -245,7 +246,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
 
             if (!found)
             {
-                Sectors.Interfaces.SectorDifferences dat = new()
+                SectorDifferences dat = new()
                 {
                     UserName = $"{sec.Template.Username} (MISSING)",
                     IsSectorMissing = true,
@@ -269,7 +270,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
 
                 if (!found)
                 {
-                    Sectors.Interfaces.SectorDifferences dat = new()
+                    SectorDifferences dat = new()
                     {
                         UserName = $"{sec.Template.Username} (MISSING)",
                         IsSectorMissing = true,
@@ -279,7 +280,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
                 }
             }
 
-        foreach (Sectors.Interfaces.SectorDifferences d in diff)
+        foreach (SectorDifferences d in diff)
 
                 L95xxDiffSectors.Add(d);
     }

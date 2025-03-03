@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using HelixToolkit.Wpf.SharpDX;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Results.Databases;
+using LabelVal.Sectors.Classes;
 using LabelVal.Utilities;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
@@ -28,7 +29,7 @@ public partial class ImageResultEntry
 
     public ObservableCollection<Sectors.Interfaces.ISector> V5CurrentSectors { get; } = [];
     public ObservableCollection<Sectors.Interfaces.ISector> V5StoredSectors { get; } = [];
-    public ObservableCollection<Sectors.Interfaces.SectorDifferences> V5DiffSectors { get; } = [];
+    public ObservableCollection<SectorDifferences> V5DiffSectors { get; } = [];
 
     [ObservableProperty] private Sectors.Interfaces.ISector v5FocusedStoredSector = null;
     [ObservableProperty] private Sectors.Interfaces.ISector v5FocusedCurrentSector = null;
@@ -186,7 +187,7 @@ public partial class ImageResultEntry
     {
         V5DiffSectors.Clear();
 
-        List<Sectors.Interfaces.SectorDifferences> diff = [];
+        List<SectorDifferences> diff = [];
 
         //Compare; Do not check for missing here. To keep found at top of list.
         foreach (Sectors.Interfaces.ISector sec in V5StoredSectors)
@@ -201,7 +202,7 @@ public partial class ImageResultEntry
                     }
                     else
                     {
-                        Sectors.Interfaces.SectorDifferences dat = new()
+                        SectorDifferences dat = new()
                         {
                             UserName = $"{sec.Template.Username} (SYMBOLOGY MISMATCH)",
                             IsSectorMissing = true,
@@ -225,7 +226,7 @@ public partial class ImageResultEntry
 
             if (!found)
             {
-                Sectors.Interfaces.SectorDifferences dat = new()
+                SectorDifferences dat = new()
                 {
                     UserName = $"{sec.Template.Username} (MISSING)",
                     IsSectorMissing = true,
@@ -249,7 +250,7 @@ public partial class ImageResultEntry
 
                 if (!found)
                 {
-                    Sectors.Interfaces.SectorDifferences dat = new()
+                    SectorDifferences dat = new()
                     {
                         UserName = $"{sec.Template.Username} (MISSING)",
                         IsSectorMissing = true,

@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using V275_REST_Lib.Models;
 using Lvs95xx.lib.Core.Controllers;
+using LabelVal.Sectors.Classes;
 
 namespace LabelVal.LVS_95xx.Sectors;
 

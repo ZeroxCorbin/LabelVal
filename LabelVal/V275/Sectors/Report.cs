@@ -1,9 +1,7 @@
-﻿using LabelVal.Sectors.Interfaces;
+﻿using LabelVal.Sectors.Classes;
+using LabelVal.Sectors.Interfaces;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Documents;
 using V275_REST_Lib.Models;
 
 namespace LabelVal.V275.Sectors;
@@ -31,10 +29,10 @@ public class Report : IReport
     public string OverallGradeLetter { get; set; }
 
     public StandardsTypes Standard { get; set; }
-    public GS1TableNames GS1Table { get; set; }
+    public Gs1TableNames GS1Table { get; set; }
 
     //GS1
-    public Gs1results GS1Results { get; set; }
+    public Gs1Results GS1Results { get; set; }
 
     //OCR
     public string Text { get; set; }
@@ -74,11 +72,11 @@ public class Report : IReport
 
                 if (v1D.data.gs1Results != null)
                 {
-                    var fld = new List<string>();
+                    List<string> fld = new();
                     foreach (JProperty f in v1D.data.gs1Results.fields)
                         fld.Add($"({f.Name}) {f.Value.ToString().Trim('{', '}', ' ')}");
 
-                    GS1Results = new Gs1results
+                    GS1Results = new Gs1Results
                     {
                         Validated = v1D.data.gs1Results.validated,
                         Input = v1D.data.gs1Results.input,
@@ -113,11 +111,11 @@ public class Report : IReport
 
                 if (v2D.data.gs1Results != null)
                 {
-                    var fld = new List<string>();
+                    List<string> fld = new();
                     foreach (JProperty f in v2D.data.gs1Results.fields)
                         fld.Add($"({f.Name}) {f.Value.ToString().Trim('{', '}', ' ')}");
-                    
-                    GS1Results = new Gs1results
+
+                    GS1Results = new Gs1Results
                     {
                         Validated = v2D.data.gs1Results.validated,
                         Input = "^" + v2D.data.gs1Results.input.Replace("\u001d", "^"),

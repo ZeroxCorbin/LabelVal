@@ -1,9 +1,7 @@
-﻿using LabelVal.Sectors.Interfaces;
+﻿using LabelVal.Sectors.Classes;
+using LabelVal.Sectors.Interfaces;
 using Lvs95xx.lib.Core.Controllers;
 using Lvs95xx.lib.Core.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using V275_REST_Lib.Models;
 
 namespace LabelVal.LVS_95xx.Sectors;
@@ -31,10 +29,10 @@ public class Report : IReport
     public string OverallGradeLetter { get; set; }
 
     public StandardsTypes Standard { get; set; }
-    public GS1TableNames GS1Table { get; set; }
+    public Gs1TableNames GS1Table { get; set; }
 
     //GS1
-    public Gs1results GS1Results { get; set; }
+    public Gs1Results GS1Results { get; set; }
 
     //OCR
     public string Text { get; set; }
@@ -87,7 +85,7 @@ public class Report : IReport
             foreach (string str in spl)
                 list.Add($"({str}");
 
-            GS1Results = new Gs1results()
+            GS1Results = new Gs1Results()
             {
                 Validated = true,
                 Input = report.Report.DecodedText.Replace("#", "^"),
@@ -104,7 +102,7 @@ public class Report : IReport
         string item = report.Find((e) => e.StartsWith(key));
 
         //if it was not found or the item does not contain a comma.
-        return item?.Contains(',') != true ? null : ([item[..item.IndexOf(',')], item[(item.IndexOf(',') + 1)..]]);
+        return item?.Contains(',') != true ? null : [item[..item.IndexOf(',')], item[(item.IndexOf(',') + 1)..]];
     }
     private List<string[]> GetMultipleKeyValuePairs(string key, List<string> report)
     {
@@ -162,27 +160,27 @@ public class Report : IReport
         : value.Contains("29158")
         ? StandardsTypes.ISO29158
         : StandardsTypes.Unsupported;
-    private static GS1TableNames GetGS1Table(string value) =>
-        string.IsNullOrEmpty(value) ? GS1TableNames.Unsupported :
-        value.StartsWith("Table 1") ? GS1TableNames._1 :
-        value.StartsWith("Table 1.1") ? GS1TableNames._1_8200 :
-        value.StartsWith("Table 2") ? GS1TableNames._2 :
-        value.StartsWith("Table 3") ? GS1TableNames._3 :
-        value.StartsWith("Table 4") ? GS1TableNames._4 :
-        value.StartsWith("Table 5") ? GS1TableNames._5 :
-        value.StartsWith("Table 6") ? GS1TableNames._6 :
-        value.StartsWith("Table 7.1") ? GS1TableNames._7_1 :
-        value.StartsWith("Table 7.2") ? GS1TableNames._7_2 :
-        value.StartsWith("Table 7.3") ? GS1TableNames._7_3 :
-        value.StartsWith("Table 7.4") ? GS1TableNames._7_4 :
-        value.StartsWith("Table 8") ? GS1TableNames._8 :
-        value.StartsWith("Table 9") ? GS1TableNames._9 :
-        value.StartsWith("Table 10") ? GS1TableNames._10 :
-        value.StartsWith("Table 11") ? GS1TableNames._11 :
-        value.StartsWith("Table 12") ? GS1TableNames._12_1 :
-        value.StartsWith("Table 12.2") ? GS1TableNames._12_2 :
-        value.StartsWith("Table 12.3") ? GS1TableNames._12_3
-        : GS1TableNames.Unsupported;
+    private static Gs1TableNames GetGS1Table(string value) =>
+        string.IsNullOrEmpty(value) ? Gs1TableNames.Unsupported :
+        value.StartsWith("Table 1") ? Gs1TableNames._1 :
+        value.StartsWith("Table 1.1") ? Gs1TableNames._1_8200 :
+        value.StartsWith("Table 2") ? Gs1TableNames._2 :
+        value.StartsWith("Table 3") ? Gs1TableNames._3 :
+        value.StartsWith("Table 4") ? Gs1TableNames._4 :
+        value.StartsWith("Table 5") ? Gs1TableNames._5 :
+        value.StartsWith("Table 6") ? Gs1TableNames._6 :
+        value.StartsWith("Table 7.1") ? Gs1TableNames._7_1 :
+        value.StartsWith("Table 7.2") ? Gs1TableNames._7_2 :
+        value.StartsWith("Table 7.3") ? Gs1TableNames._7_3 :
+        value.StartsWith("Table 7.4") ? Gs1TableNames._7_4 :
+        value.StartsWith("Table 8") ? Gs1TableNames._8 :
+        value.StartsWith("Table 9") ? Gs1TableNames._9 :
+        value.StartsWith("Table 10") ? Gs1TableNames._10 :
+        value.StartsWith("Table 11") ? Gs1TableNames._11 :
+        value.StartsWith("Table 12") ? Gs1TableNames._12_1 :
+        value.StartsWith("Table 12.2") ? Gs1TableNames._12_2 :
+        value.StartsWith("Table 12.3") ? Gs1TableNames._12_3
+        : Gs1TableNames.Unsupported;
     private static string GetSymbolType(string value) =>
         value.Contains("Code 128")
         ? "code128"

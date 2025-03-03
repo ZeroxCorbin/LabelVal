@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Interfaces;
 using System;
 using System.Collections.ObjectModel;

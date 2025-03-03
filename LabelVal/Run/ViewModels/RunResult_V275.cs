@@ -1,4 +1,5 @@
 ﻿using LabelVal.ImageRolls.ViewModels;
+using LabelVal.Sectors.Classes;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
@@ -128,7 +129,7 @@ public partial class RunResult
     {
         V275DiffSectors.Clear();
 
-        List<Sectors.Interfaces.SectorDifferences> diff = [];
+        List<SectorDifferences> diff = [];
 
         //Compare; Do not check for missing her. To keep found at top of list.
         foreach (Sectors.Interfaces.ISector sec in V275StoredSectors)
@@ -143,7 +144,7 @@ public partial class RunResult
                     }
                     else
                     {
-                        Sectors.Interfaces.SectorDifferences dat = new()
+                        SectorDifferences dat = new()
                         {
                             UserName = $"{sec.Template.Username} (SYMBOLOGY MISMATCH)",
                             IsSectorMissing = true,
@@ -167,7 +168,7 @@ public partial class RunResult
 
             if (!found)
             {
-                Sectors.Interfaces.SectorDifferences dat = new()
+                SectorDifferences dat = new()
                 {
                     UserName = $"{sec.Template.Username} (MISSING)",
                     IsSectorMissing = true,
@@ -191,7 +192,7 @@ public partial class RunResult
 
                 if (!found)
                 {
-                    Sectors.Interfaces.SectorDifferences dat = new()
+                    SectorDifferences dat = new()
                     {
                         UserName = $"{sec.Template.Username} (MISSING)",
                         IsSectorMissing = true,

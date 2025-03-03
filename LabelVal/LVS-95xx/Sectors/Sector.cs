@@ -1,11 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CsvHelper;
+using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Interfaces;
 using Lvs95xx.lib.Core.Controllers;
-using System.Globalization;
-using System.IO;
-using System.Windows;
 
 namespace LabelVal.LVS_95xx.Sectors;
 
@@ -21,7 +18,7 @@ public partial class Sector : ObservableObject, ISector
     public bool IsError { get; }
 
     public StandardsTypes DesiredStandard { get; }
-    public GS1TableNames DesiredGS1Table { get; }
+    public Gs1TableNames DesiredGS1Table { get; }
     public bool IsWrongStandard
     {
         get
@@ -68,7 +65,7 @@ public partial class Sector : ObservableObject, ISector
                     {
                         return Report.Standard switch
                         {
-                            StandardsTypes.GS1 => Report.GS1Table != DesiredGS1Table && Report.GS1Table != GS1TableNames.Unsupported,
+                            StandardsTypes.GS1 => Report.GS1Table != DesiredGS1Table && Report.GS1Table != Gs1TableNames.Unsupported,
                             _ => true,
                         };
                     }
@@ -81,7 +78,7 @@ public partial class Sector : ObservableObject, ISector
     public bool IsFocused { get; set; }
     public bool IsMouseOver { get; set; }
 
-    public Sector(FullReport report, StandardsTypes standard, GS1TableNames table)
+    public Sector(FullReport report, StandardsTypes standard, Gs1TableNames table)
     {
         L95xxFullReport = report;
 

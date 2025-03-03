@@ -10,13 +10,13 @@
     xmlns:local="clr-namespace:LabelVal.ImageRolls.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
-    xmlns:sectors="clr-namespace:LabelVal.Sectors.Interfaces"
+    xmlns:sectors="clr-namespace:LabelVal.Sectors.Classes"
     xmlns:viewModels="clr-namespace:LabelVal.ImageRolls.ViewModels"
     d:DataContext="{d:DesignInstance Type=viewModels:ImageRollEntry}"
     mc:Ignorable="d">
 
     <UserControl.Resources>
-        <converters:GS1TableNamesConverter x:Key="GS1TableNamesConverter" />
+        <converters:Gs1TableNamesConverter x:Key="Gs1TableNamesConverter" />
         <converters:StandardsTypesConverter x:Key="StandardsTypesConverter" />
     </UserControl.Resources>
 
@@ -85,8 +85,8 @@
                     Margin="3"
                     md:HintAssist.Hint="GS1 Table"
                     md:HintAssist.IsFloating="True"
-                    ItemsSource="{Binding GS1TableNames}"
-                    SelectedItem="{Binding SelectedGS1Table, Converter={StaticResource GS1TableNamesConverter}}">
+                    ItemsSource="{Binding Gs1TableNames}"
+                    SelectedItem="{Binding SelectedGS1Table, Converter={StaticResource Gs1TableNamesConverter}}">
                     <ComboBox.Style>
                         <Style BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}" TargetType="ComboBox">
                             <Setter Property="Visibility" Value="Collapsed" />

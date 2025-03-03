@@ -1,7 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using LabelVal.ImageRolls.ViewModels;
-using LabelVal.Sectors.Interfaces;
-using System;
+using LabelVal.Sectors.Classes;
 
 namespace LabelVal.Run.Databases;
 
@@ -26,9 +24,8 @@ public partial class RunEntry : ObservableObject
     public string ImageRollName { get; set; }
     public string ImageRollUID { get; set; }
 
-
     public StandardsTypes GradingStandard { get; set; }
-    public GS1TableNames Gs1TableName { get; set; }
+    public Gs1TableNames Gs1TableName { get; set; }
     //public double TargetDPI { get; set; }
 
     public int DesiredLoops { get; set; }

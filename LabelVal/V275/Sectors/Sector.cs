@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Interfaces;
 
 namespace LabelVal.V275.Sectors;
@@ -16,7 +17,7 @@ public partial class Sector : ObservableObject, ISector
     public bool IsError { get; }
 
     public StandardsTypes DesiredStandard { get; }
-    public GS1TableNames DesiredGS1Table { get; }
+    public Gs1TableNames DesiredGS1Table { get; }
     public bool IsWrongStandard
     {
         get
@@ -76,7 +77,7 @@ public partial class Sector : ObservableObject, ISector
     public bool IsFocused { get; set; }
     public bool IsMouseOver { get; set; }
 
-    public Sector(V275_REST_Lib.Models.Job.Sector sector, object report, StandardsTypes standard, GS1TableNames table)
+    public Sector(V275_REST_Lib.Models.Job.Sector sector, object report, StandardsTypes standard, Gs1TableNames table)
     {
         V275Sector = sector;
 
@@ -105,27 +106,27 @@ public partial class Sector : ObservableObject, ISector
             IsError = true;
     }
 
-    private GS1TableNames GetGS1Table(string tableId)
+    private Gs1TableNames GetGS1Table(string tableId)
     => tableId switch
     {
-        "1" => GS1TableNames._1,
-        "2" => GS1TableNames._2,
-        "3" => GS1TableNames._3,
-        "4" => GS1TableNames._4,
-        "5" => GS1TableNames._5,
-        "6" => GS1TableNames._6,
-        "7.1" => GS1TableNames._7_1,
-        "7.2" => GS1TableNames._7_2,
-        "7.3" => GS1TableNames._7_3,
-        "7.4" => GS1TableNames._7_4,
-        "8" => GS1TableNames._8,
-        "9" => GS1TableNames._9,
-        "10" => GS1TableNames._10,
-        "11" => GS1TableNames._11,
-        "12.1" => GS1TableNames._12_1,
-        "12.2" => GS1TableNames._12_2,
-        "12.3" => GS1TableNames._12_3,
-        _ => GS1TableNames.Unsupported,
+        "1" => Gs1TableNames._1,
+        "2" => Gs1TableNames._2,
+        "3" => Gs1TableNames._3,
+        "4" => Gs1TableNames._4,
+        "5" => Gs1TableNames._5,
+        "6" => Gs1TableNames._6,
+        "7.1" => Gs1TableNames._7_1,
+        "7.2" => Gs1TableNames._7_2,
+        "7.3" => Gs1TableNames._7_3,
+        "7.4" => Gs1TableNames._7_4,
+        "8" => Gs1TableNames._8,
+        "9" => Gs1TableNames._9,
+        "10" => Gs1TableNames._10,
+        "11" => Gs1TableNames._11,
+        "12.1" => Gs1TableNames._12_1,
+        "12.2" => Gs1TableNames._12_2,
+        "12.3" => Gs1TableNames._12_3,
+        _ => Gs1TableNames.Unsupported,
     };
 
     [RelayCommand]

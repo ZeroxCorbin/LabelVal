@@ -1,4 +1,5 @@
 ﻿using LabelVal.ImageRolls.ViewModels;
+using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Interfaces;
 using System.Collections.ObjectModel;
 using System.Windows.Media;

@@ -10,14 +10,14 @@
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
-    xmlns:sectors="clr-namespace:LabelVal.Sectors.Interfaces"
+    xmlns:sectors="clr-namespace:LabelVal.Sectors.Classes"
     xmlns:system="clr-namespace:System;assembly=mscorlib"
     xmlns:viewModels="clr-namespace:LabelVal.Results.ViewModels"
     d:DataContext="{d:DesignInstance Type=viewModels:ImageResults}"
     mc:Ignorable="d">
 
     <UserControl.Resources>
-        <imageRollConverters:GS1TableNamesConverter x:Key="GS1TableNamesConverter" />
+        <imageRollConverters:Gs1TableNamesConverter x:Key="Gs1TableNamesConverter" />
 
         <CollectionViewSource
             x:Key="cvsImageResultsList"
@@ -85,7 +85,7 @@
                                     </TextBlock.Style>
                                 </TextBlock>
 
-                                <TextBlock Text="{Binding SelectedImageRoll.SelectedGS1Table, Converter={StaticResource GS1TableNamesConverter}, StringFormat={}Table {0}}">
+                                <TextBlock Text="{Binding SelectedImageRoll.SelectedGS1Table, Converter={StaticResource Gs1TableNamesConverter}, StringFormat={}Table {0}}">
                                     <TextBlock.Style>
                                         <Style BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}" TargetType="TextBlock">
                                             <Setter Property="Visibility" Value="Collapsed" />

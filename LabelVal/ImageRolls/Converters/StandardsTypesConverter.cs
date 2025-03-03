@@ -1,7 +1,5 @@
-﻿using LabelVal.Sectors.Interfaces;
-using System;
+﻿using LabelVal.Sectors.Classes;
 using System.Globalization;
-using System.Linq;
 using System.Windows.Data;
 using Wpf.lib.Extentions;
 

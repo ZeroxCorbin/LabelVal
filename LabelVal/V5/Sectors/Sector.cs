@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Interfaces;
 using V5_REST_Lib.Models;
 
@@ -17,7 +18,7 @@ public partial class Sector : ObservableObject, ISector
     public bool IsError { get; }
 
     public StandardsTypes DesiredStandard { get; set; }
-    public GS1TableNames DesiredGS1Table { get; set; }
+    public Gs1TableNames DesiredGS1Table { get; set; }
     public bool IsWrongStandard
     {
         get
@@ -77,7 +78,7 @@ public partial class Sector : ObservableObject, ISector
     public bool IsFocused { get; set; }
     public bool IsMouseOver { get; set; }
 
-    public Sector(ResultsAlt.Decodedata decodeData, Config.Toollist toollist, string name, StandardsTypes standard, GS1TableNames table)
+    public Sector(ResultsAlt.Decodedata decodeData, Config.Toollist toollist, string name, StandardsTypes standard, Gs1TableNames table)
     {
         V5Sector = decodeData;
 
@@ -90,7 +91,7 @@ public partial class Sector : ObservableObject, ISector
         DesiredGS1Table = table;
 
         Report.Standard = decodeData.grading != null ? V5GetStandard(decodeData.grading) : StandardsTypes.None;
-        Report.GS1Table = GS1TableNames.None; //GS1 is not supported in V5, yet
+        Report.GS1Table = Gs1TableNames.None; //GS1 is not supported in V5, yet
 
         int highCat = 0;
         foreach (Alarm alm in SectorDetails.Alarms)

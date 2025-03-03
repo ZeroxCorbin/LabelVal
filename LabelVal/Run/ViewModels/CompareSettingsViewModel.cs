@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using LabelVal.Sectors.Interfaces;
+using LabelVal.Sectors.Classes;
 
 namespace LabelVal.Run.ViewModels;
 

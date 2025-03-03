@@ -1,7 +1,6 @@
 ﻿using LabelVal.Dialogs;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.ImageViewer3D.Views;
-using LabelVal.Sectors.Interfaces;
 using LabelVal.Sectors.Views;
 using MahApps.Metro.Controls.Dialogs;
 using System.Windows;
@@ -218,7 +217,7 @@ public partial class ImageResultEntry_L95xx : UserControl
         System.Collections.ObjectModel.Collection<Sector> sectors = Utilities.VisualTreeHelp.GetVisualChildren<Sector>(this);
         foreach (Sector s in sectors)
         {
-            if (s.SectorName == ((Sectors.Interfaces.SectorDifferences)sndr.DataContext).UserName)
+            if (s.SectorName == ((Sectors.Classes.SectorDifferences)sndr.DataContext).UserName)
                 s.ShowSectorDetails();
         }
     }

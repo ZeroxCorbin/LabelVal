@@ -1,4 +1,5 @@
-﻿using LabelVal.Sectors.Interfaces;
+﻿using LabelVal.Sectors.Classes;
+using LabelVal.Sectors.Interfaces;
 using System;
 using System.Linq;
 
@@ -27,10 +28,10 @@ public class Report : IReport
     public string OverallGradeLetter { get; set; }
 
     public StandardsTypes Standard { get; set; }
-    public GS1TableNames GS1Table { get; set; }
+    public Gs1TableNames GS1Table { get; set; }
 
     //GS1
-    public Gs1results GS1Results { get; set; }
+    public Gs1Results GS1Results { get; set; }
 
     //OCR
     public string Text { get; set; }

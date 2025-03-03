@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
+using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Interfaces;
 using LibImageUtilities.ImageTypes.Png;
 using Logging.lib;
@@ -25,7 +26,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
         get
         {
             List<StandardsTypes> lst = Enum.GetValues(typeof(StandardsTypes)).Cast<StandardsTypes>().ToList();
-            _ = lst.Remove(Sectors.Interfaces.StandardsTypes.Unsupported);
+            _ = lst.Remove(Sectors.Classes.StandardsTypes.Unsupported);
 
             List<string> names = [];
             foreach (StandardsTypes name in lst)
@@ -34,16 +35,16 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
             return names.ToArray();
         }
     }
-    public Array GS1TableNames
+    public Array Gs1TableNames
     {
         get
         {
-            List<GS1TableNames> lst = Enum.GetValues(typeof(GS1TableNames)).Cast<GS1TableNames>().ToList();
-            _ = lst.Remove(Sectors.Interfaces.GS1TableNames.Unsupported);
-            _ = lst.Remove(Sectors.Interfaces.GS1TableNames.None);
+            List<Gs1TableNames> lst = Enum.GetValues(typeof(Gs1TableNames)).Cast<Gs1TableNames>().ToList();
+            _ = lst.Remove(Sectors.Classes.Gs1TableNames.Unsupported);
+            _ = lst.Remove(Sectors.Classes.Gs1TableNames.None);
 
             List<string> names = [];
-            foreach (GS1TableNames name in lst)
+            foreach (Gs1TableNames name in lst)
                 names.Add(name.GetDescription());
 
             return names.ToArray();
@@ -57,12 +58,12 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     [ObservableProperty][property: JsonProperty] private string name;
     [ObservableProperty][property: JsonProperty] private int imageCount;
     [ObservableProperty][property: JsonProperty("Standard")][property: SQLite.Column("Standard")] private StandardsTypes selectedStandard;
-    partial void OnSelectedStandardChanged(StandardsTypes value) { if (value != Sectors.Interfaces.StandardsTypes.GS1) SelectedGS1Table = Sectors.Interfaces.GS1TableNames.None; OnPropertyChanged(nameof(StandardDescription)); }
+    partial void OnSelectedStandardChanged(StandardsTypes value) { if (value != Sectors.Classes.StandardsTypes.GS1) SelectedGS1Table = Sectors.Classes.Gs1TableNames.None; OnPropertyChanged(nameof(StandardDescription)); }
     public string StandardDescription => SelectedStandard.GetDescription();
 
-    [ObservableProperty][property: JsonProperty("GS1Table")][property: SQLite.Column("GS1Table")] private GS1TableNames selectedGS1Table;
-    partial void OnSelectedGS1TableChanged(GS1TableNames value) => OnPropertyChanged(nameof(GS1TableNumber));
-    public double GS1TableNumber => SelectedGS1Table is Sectors.Interfaces.GS1TableNames.None or Sectors.Interfaces.GS1TableNames.Unsupported
+    [ObservableProperty][property: JsonProperty("GS1Table")][property: SQLite.Column("GS1Table")] private Gs1TableNames selectedGS1Table;
+    partial void OnSelectedGS1TableChanged(Gs1TableNames value) => OnPropertyChanged(nameof(GS1TableNumber));
+    public double GS1TableNumber => SelectedGS1Table is Sectors.Classes.Gs1TableNames.None or Sectors.Classes.Gs1TableNames.Unsupported
                 ? 0
                 : double.Parse(SelectedGS1Table.GetDescription());
 

@@ -1,3 +1,0 @@
-﻿namespace LabelVal.Sectors.Interfaces;
-
-

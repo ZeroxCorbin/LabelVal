@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LabelVal.ImageRolls.ViewModels;
+using LabelVal.Sectors.Classes;
 using LabelVal.Utilities;
 using LibImageUtilities.ImageTypes.Png;
 using Newtonsoft.Json;
@@ -33,7 +34,7 @@ public partial class ImageResultEntry
 
     public ObservableCollection<Sectors.Interfaces.ISector> V275CurrentSectors { get; } = [];
     public ObservableCollection<Sectors.Interfaces.ISector> V275StoredSectors { get; } = [];
-    public ObservableCollection<Sectors.Interfaces.SectorDifferences> V275DiffSectors { get; } = [];
+    public ObservableCollection<SectorDifferences> V275DiffSectors { get; } = [];
 
     [ObservableProperty] private Sectors.Interfaces.ISector v275FocusedStoredSector = null;
     [ObservableProperty] private Sectors.Interfaces.ISector v275FocusedCurrentSector = null;
@@ -58,7 +59,7 @@ public partial class ImageResultEntry
 
         var lab = new V275_REST_Lib.Label
         {
-            Table = (V275_REST_Lib.Enumerations.GS1TableNames)ImageResults.SelectedImageRoll.SelectedGS1Table,
+            Table = (V275_REST_Lib.Enumerations.Gs1TableNames)ImageResults.SelectedImageRoll.SelectedGS1Table,
         };
 
         if (type == ImageResultEntryImageTypes.Source || type == ImageResultEntryImageTypes.V275Print)
@@ -66,14 +67,14 @@ public partial class ImageResultEntry
             lab.Image = SourceImage.ImageBytes;
             lab.Dpi = (int)Math.Round(SourceImage.Image.DpiX, 0);
             lab.Sectors = simDetSec || camDetSec ? [] : camAddSec ? [.. V275ResultRow._Job.sectors] : null;
-            lab.Table = (V275_REST_Lib.Enumerations.GS1TableNames)ImageResults.SelectedImageRoll.SelectedGS1Table;
+            lab.Table = (V275_REST_Lib.Enumerations.Gs1TableNames)ImageResults.SelectedImageRoll.SelectedGS1Table;
         }
         else if (type == ImageResultEntryImageTypes.V275Stored)
         {
             lab.Image = V275ResultRow.Stored.ImageBytes;
             lab.Dpi = (int)Math.Round(V275ResultRow.Stored.Image.DpiX, 0);
             lab.Sectors = simAddSec || camAddSec ? [.. V275ResultRow._Job.sectors] : null;
-            lab.Table = (V275_REST_Lib.Enumerations.GS1TableNames)ImageResults.SelectedImageRoll.SelectedGS1Table;
+            lab.Table = (V275_REST_Lib.Enumerations.Gs1TableNames)ImageResults.SelectedImageRoll.SelectedGS1Table;
         }
 
         if (type == ImageResultEntryImageTypes.V275Print)
@@ -149,7 +150,7 @@ public partial class ImageResultEntry
                 if (jSec.name == rSec["name"].ToString())
                 {
 
-                    object fSec = V275DeserializeSector(rSec, ImageResults.SelectedImageRoll.SelectedStandard != Sectors.Interfaces.StandardsTypes.GS1 && ImageResults.SelectedNode.Controller.IsOldISO);
+                    object fSec = V275DeserializeSector(rSec, ImageResults.SelectedImageRoll.SelectedStandard != Sectors.Classes.StandardsTypes.GS1 && ImageResults.SelectedNode.Controller.IsOldISO);
 
                     if (fSec == null)
                         break; //Not yet supported sector type
@@ -180,7 +181,7 @@ public partial class ImageResultEntry
     {
         V275DiffSectors.Clear();
 
-        List<Sectors.Interfaces.SectorDifferences> diff = [];
+        List<SectorDifferences> diff = [];
 
         //Compare; Do not check for missing her. To keep found at top of list.
         foreach (Sectors.Interfaces.ISector sec in V275StoredSectors)
@@ -195,7 +196,7 @@ public partial class ImageResultEntry
                     }
                     else
                     {
-                        Sectors.Interfaces.SectorDifferences dat = new()
+                        SectorDifferences dat = new()
                         {
                             UserName = $"{sec.Template.Username} (SYMBOLOGY MISMATCH)",
                             IsSectorMissing = true,
@@ -219,7 +220,7 @@ public partial class ImageResultEntry
 
             if (!found)
             {
-                Sectors.Interfaces.SectorDifferences dat = new()
+                SectorDifferences dat = new()
                 {
                     UserName = $"{sec.Template.Username} (MISSING)",
                     IsSectorMissing = true,
@@ -243,7 +244,7 @@ public partial class ImageResultEntry
 
                 if (!found)
                 {
-                    Sectors.Interfaces.SectorDifferences dat = new()
+                    SectorDifferences dat = new()
                     {
                         UserName = $"{sec.Template.Username} (MISSING)",
                         IsSectorMissing = true,
