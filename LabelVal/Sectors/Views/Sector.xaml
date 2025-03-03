@@ -46,7 +46,10 @@
                         Visibility="{Binding IsWrongStandard, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneTime}" />
 
                     <TextBlock Text="{Binding Template.Username, Mode=OneTime}" />
-                    <TextBlock Margin="3,0" Text="{Binding Template.Version, StringFormat={}{0}}" Foreground="{DynamicResource ColorBlindBrush2}"/>
+                    <TextBlock
+                        Margin="3,0"
+                        Foreground="{DynamicResource ColorBlindBrush2}"
+                        Text="{Binding Template.Version, StringFormat={}{0}}" />
 
                     <TextBlock HorizontalAlignment="Right" Text="{Binding Report.OverallGradeString}" />
                 </DockPanel>

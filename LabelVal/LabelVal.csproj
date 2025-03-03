@@ -1435,7 +1435,7 @@
 		</BootstrapperPackage>
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\..\gs1-syntax-engine\src\dotnet-lib\gs1encoders-dotnet-lib.csproj" />
+		<ProjectReference Include="..\..\BarcodeVerification.lib\BarcodeVerification.lib.GS1\BarcodeVerification.lib.GS1.csproj" />
 		<ProjectReference Include="..\..\JSONViewer_WPF\JSONViewer_WPF.csproj" />
 		<ProjectReference Include="..\..\Logging.lib\Logging.lib.csproj" />
 		<ProjectReference Include="..\..\Lvs95xx.lib.Core\Lvs95xx.lib.Core.csproj" />

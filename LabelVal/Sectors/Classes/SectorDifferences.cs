@@ -25,8 +25,11 @@ public class SectorDifferences
             Units = current.Units,
         };
 
-        differences.Others.Add(new SectorElement(current.Name, new Value_("Aperture", previous.Sector.Report.Aperture), new Value_("Aperture", current.Sector.Report.Aperture)));
-        differences.Others.Add(new SectorElement(current.Name, new Value_("X Dimension", previous.Sector.Report.XDimension), new Value_("X Dimension", current.Sector.Report.XDimension)));
+        if(new SectorElement(current.Name, new Value_("Aperture", previous.Sector.Report.Aperture), new Value_("Aperture", current.Sector.Report.Aperture)).Difference != null)
+            differences.Others.Add(new SectorElement(current.Name, new Value_("Aperture", previous.Sector.Report.Aperture), new Value_("Aperture", current.Sector.Report.Aperture)));
+
+        if (new SectorElement(current.Name, new Value_("X Dimension", previous.Sector.Report.XDimension), new Value_("X Dimension", current.Sector.Report.XDimension)).Difference != null)
+            differences.Others.Add(new SectorElement(current.Name, new Value_("X Dimension", previous.Sector.Report.XDimension), new Value_("X Dimension", current.Sector.Report.XDimension)));
 
         Compare(differences.GradeValues, previous.GradeValues, current.GradeValues);
         Compare(differences.ValueResults, previous.ValueResults, current.ValueResults);

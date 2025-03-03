@@ -1,7 +1,5 @@
-﻿using GS1.Encoders;
-using System;
+﻿using BarcodeVerification.lib.GS1.Encoders;
 using System.Globalization;
-using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Data;
 
@@ -22,13 +20,13 @@ internal class V275_GS1FormattedOutput : IValueConverter
             }
             catch (Exception E)
             {
-                if (!(E is GS1EncoderParameterException) && !(E is GS1EncoderScanDataException))
+                if (E is not GS1EncoderParameterException and not GS1EncoderScanDataException)
                     throw;
 
                 string markup = App.GS1Encoder.ErrMarkup;
                 if (!markup.Equals(""))
                 {
-                    var regex = new Regex(Regex.Escape("|"));
+                    Regex regex = new(Regex.Escape("|"));
                     markup = regex.Replace(markup, "⧚", 1);
                     markup = regex.Replace(markup, "⧛", 1);
                     return "AI content validation failed:\n" + markup;
@@ -37,14 +35,14 @@ internal class V275_GS1FormattedOutput : IValueConverter
                 return E.Message;
             }
 
-            var sb = new System.Text.StringBuilder();
+            System.Text.StringBuilder sb = new();
             int i = 0;
             foreach (string s in App.GS1Encoder.HRI)
             {
                 if (i++ != 0)
-                    sb.Append("\n");
+                    _ = sb.Append("\n");
 
-                sb.Append(s);
+                _ = sb.Append(s);
             }
 
             return sb.ToString();

@@ -82,6 +82,7 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
             Values.Add(new Value_("maximumReflectance", ParseInt(GetParameter("Rmax", report.ReportData))));
             Values.Add(new Value_("xPrintGrowthX", ParseInt(GetParameter("X print", report.ReportData))));
             Values.Add(new Value_("xPrintGrowthY", ParseInt(GetParameter("Y print", report.ReportData))));
+            Values.Add(new Value_("contrastUniformity", ParseInt(GetParameter("Contrast un", report.ReportData))));
 
             if (isGS1)
             {
@@ -141,6 +142,8 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
             var sz2 = sz.Split('x');
             Values.Add(new Value_("symbolWidth", (int)(cellSizeX * ParseInt(sz2[0]))));
             Values.Add(new Value_("symbolHeight", (int)(cellSizeY * ParseInt(sz2[1]))));
+            
+            //Values.Add(new Value_("contrastUniformity", ParseInt(GetParameter("Contrast un", report.ReportData))));
 
             var al = alarms.Find((e) => e.Name.Contains("minimum Xdim"));
             Values.Add(new Value_("cellHeight", (int)cellSizeX));

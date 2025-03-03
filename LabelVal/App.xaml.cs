@@ -1,12 +1,10 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
-using GS1.Encoders;
+﻿using BarcodeVerification.lib.GS1.Encoders;
 using LibSimpleDatabase;
 using Lvs95xx.Producer.Watchers;
 using MaterialDesignThemes.Wpf;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
-using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
