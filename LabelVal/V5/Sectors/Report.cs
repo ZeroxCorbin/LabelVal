@@ -1,7 +1,7 @@
-﻿using LabelVal.Sectors.Classes;
+﻿using BarcodeVerification.lib.Common;
+using BarcodeVerification.lib.GS1;
+using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Interfaces;
-using System;
-using System.Linq;
 
 namespace LabelVal.V5.Sectors;
 
@@ -28,8 +28,8 @@ public class Report : IReport
     public double OverallGradeValue { get; set; }
     public string OverallGradeLetter { get; set; }
 
-    public StandardsTypes Standard { get; set; }
-    public Gs1TableNames GS1Table { get; set; }
+    public AvailableStandards? Standard { get; set; }
+    public AvailableTables? GS1Table { get; set; }
 
     //GS1
     public Gs1Results GS1Results { get; set; }
@@ -104,7 +104,6 @@ public class Report : IReport
                         OverallGradeValue = v5.grading.iso15415.overall.grade;
                         OverallGradeLetter = V5GetLetter(v5.grading.iso15415.overall.letter);
                     }
-
                 }
             }
             else if (v5.grading.standard == "iso29158")

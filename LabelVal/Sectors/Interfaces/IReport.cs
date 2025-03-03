@@ -1,4 +1,6 @@
-﻿using LabelVal.Sectors.Classes;
+﻿using BarcodeVerification.lib.Common;
+using LabelVal.Sectors.Classes;
+using BarcodeVerification.lib.GS1;
 
 namespace LabelVal.Sectors.Interfaces;
 
@@ -24,8 +26,8 @@ public interface IReport
 
     string DecodeText { get; set; }
 
-    StandardsTypes Standard { get; set; }
-    Gs1TableNames GS1Table { get; set; }
+    AvailableStandards? Standard { get; set; }
+    AvailableTables? GS1Table { get; set; }
 
     //GS1
     Gs1Results GS1Results { get; set; }

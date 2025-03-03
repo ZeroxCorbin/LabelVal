@@ -2,6 +2,8 @@
     x:Class="LabelVal.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:bar_common="clr-namespace:BarcodeVerification.lib.Common;assembly=BarcodeVerification.lib"
+    xmlns:bar_gs1="clr-namespace:BarcodeVerification.lib.GS1;assembly=BarcodeVerification.lib"
     xmlns:converters="clr-namespace:Wpf.lib.Converters;assembly=Wpf.lib"
     xmlns:local="clr-namespace:LabelVal"
     xmlns:logging="clr-namespace:Logging.lib;assembly=Logging.lib"
@@ -50,6 +52,26 @@
                     <x:Type TypeName="logging:LoggerMessageTypes" />
                 </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
+
+            <ObjectDataProvider
+                x:Key="AvailableStandards"
+                MethodName="GetValues"
+                ObjectType="{x:Type system:Enum}">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="bar_common:AvailableStandards" />
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+
+
+            <ObjectDataProvider
+                x:Key="AvailableTables"
+                MethodName="GetValues"
+                ObjectType="{x:Type system:Enum}">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="bar_gs1:AvailableTables" />
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+
 
 
             <Style BasedOn="{StaticResource MahApps.Styles.ScrollBar}" TargetType="ScrollBar">

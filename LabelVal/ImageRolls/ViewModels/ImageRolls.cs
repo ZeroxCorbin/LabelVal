@@ -1,4 +1,6 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using BarcodeVerification.lib.Common;
+using BarcodeVerification.lib.GS1;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
@@ -308,8 +310,7 @@ public partial class ImageRolls : ObservableRecipient
         if (string.IsNullOrEmpty(NewImageRoll.Name))
             return;
 
-        if (NewImageRoll.SelectedStandard is Sectors.Classes.StandardsTypes.GS1 &&
-            NewImageRoll.SelectedGS1Table is Sectors.Classes.Gs1TableNames.None or Sectors.Classes.Gs1TableNames.Unsupported)
+        if (NewImageRoll.SelectedStandard is AvailableStandards.GS1 && NewImageRoll.SelectedGS1Table is null)
             return;
 
         if (DefaultDatabase.InsertOrReplaceImageRoll(NewImageRoll) > 0)

@@ -1,4 +1,6 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using BarcodeVerification.lib.Common;
+using BarcodeVerification.lib.GS1;
+using CommunityToolkit.Mvvm.ComponentModel;
 using LabelVal.Sectors.Classes;
 
 namespace LabelVal.Run.Databases;
@@ -24,8 +26,8 @@ public partial class RunEntry : ObservableObject
     public string ImageRollName { get; set; }
     public string ImageRollUID { get; set; }
 
-    public StandardsTypes GradingStandard { get; set; }
-    public Gs1TableNames Gs1TableName { get; set; }
+    public AvailableStandards? GradingStandard { get; set; }
+    public AvailableTables? Gs1TableName { get; set; }
     //public double TargetDPI { get; set; }
 
     public int DesiredLoops { get; set; }

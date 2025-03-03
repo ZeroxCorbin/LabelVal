@@ -83,8 +83,8 @@ public partial class ImageResultEntry
             double ratio = Math.Sqrt(5000000.0 / img.ImageTotalPixels);
             int newWidth = (int)(img.Image.PixelWidth * ratio);
             int newHeight = (int)(img.Image.PixelHeight * ratio);
-            var newimg =  BitmapImageUtilities.ResizeImage(img.Image, newWidth, newHeight);
-            return BitmapImageUtilities.ImageToBytes(newimg, false);
+            var newimg =  LibImageUtilities.BitmapImage.ResizeImage(img.Image, newWidth, newHeight);
+            return LibImageUtilities.BitmapImage.ImageToBytes(newimg, false);
         }
 
         return img.ImageBytes;

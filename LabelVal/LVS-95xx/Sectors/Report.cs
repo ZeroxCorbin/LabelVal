@@ -1,4 +1,6 @@
-﻿using LabelVal.Sectors.Classes;
+﻿using BarcodeVerification.lib.Common;
+using BarcodeVerification.lib.GS1;
+using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Interfaces;
 using Lvs95xx.lib.Core.Controllers;
 using Lvs95xx.lib.Core.Models;
@@ -29,8 +31,8 @@ public class Report : IReport
     public double OverallGradeValue { get; set; }
     public string OverallGradeLetter { get; set; }
 
-    public StandardsTypes Standard { get; set; }
-    public Gs1TableNames GS1Table { get; set; }
+    public AvailableStandards? Standard { get; set; }
+    public AvailableTables? GS1Table { get; set; }
 
     //GS1
     public Gs1Results GS1Results { get; set; }
@@ -75,8 +77,8 @@ public class Report : IReport
         OverallGradeString = report.Report.OverallGrade.Replace("DPM", "");
         OverallGradeLetter = GetGrade(GetParameter("Overall", report.ReportData)).letter;
 
-        Standard = GetStandard(GetParameter("Application standard", report.ReportData));
-        GS1Table = GetGS1Table(GetParameter("GS1 Table", report.ReportData));
+        Standard = Standards.GetL95xxStandardEnum(GetParameter("Application standard", report.ReportData));
+        GS1Table = Tables.GetL95xxTableEnum(GetParameter("GS1 Table", report.ReportData));
 
         string res = GetParameter("GS1 Data", report.ReportData, true);
         if (res != null)
@@ -155,35 +157,17 @@ public class Report : IReport
         };
     }
 
-    private static StandardsTypes GetStandard(string value) =>
+    private static AvailableStandards? GetStandard(string value) =>
         value.StartsWith("GS1")
-        ? StandardsTypes.GS1
+        ? AvailableStandards.GS1
         : value.StartsWith("ISO")
-        ? StandardsTypes.ISO15415_15416
+        ? AvailableStandards.ISO15415_15416
         : value.Contains("29158")
-        ? StandardsTypes.ISO29158
-        : StandardsTypes.Unsupported;
-    private static Gs1TableNames GetGS1Table(string value) =>
-        string.IsNullOrEmpty(value) ? Gs1TableNames.Unsupported :
-        value.StartsWith("Table 1") ? Gs1TableNames._1 :
-        value.StartsWith("Table 1.1") ? Gs1TableNames._1_8200 :
-        value.StartsWith("Table 2") ? Gs1TableNames._2 :
-        value.StartsWith("Table 3") ? Gs1TableNames._3 :
-        value.StartsWith("Table 4") ? Gs1TableNames._4 :
-        value.StartsWith("Table 5") ? Gs1TableNames._5 :
-        value.StartsWith("Table 6") ? Gs1TableNames._6 :
-        value.StartsWith("Table 7.1") ? Gs1TableNames._7_1 :
-        value.StartsWith("Table 7.2") ? Gs1TableNames._7_2 :
-        value.StartsWith("Table 7.3") ? Gs1TableNames._7_3 :
-        value.StartsWith("Table 7.4") ? Gs1TableNames._7_4 :
-        value.StartsWith("Table 8") ? Gs1TableNames._8 :
-        value.StartsWith("Table 9") ? Gs1TableNames._9 :
-        value.StartsWith("Table 10") ? Gs1TableNames._10 :
-        value.StartsWith("Table 11") ? Gs1TableNames._11 :
-        value.StartsWith("Table 12") ? Gs1TableNames._12_1 :
-        value.StartsWith("Table 12.2") ? Gs1TableNames._12_2 :
-        value.StartsWith("Table 12.3") ? Gs1TableNames._12_3
-        : Gs1TableNames.Unsupported;
+        ? AvailableStandards.ISO29158
+        : null;
+
+
+
     private static string GetSymbolType(string value) =>
         value.Contains("Code 128")
         ? "code128"

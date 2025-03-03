@@ -93,7 +93,7 @@ namespace LabelVal.ImageViewer3D.ViewModels
             OriginalImageArray = LibImageUtilities.ImageTypes.Png.Utilities.GetPng(image, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
             // Convert the image to a BitmapImage for display
-            Image = Utilities.BitmapImageUtilities.CreateBitmapImage(image);
+            Image = LibImageUtilities.BitmapImage.CreateBitmapImage(image);
 
             EffectsManager = new DefaultEffectsManager();
 

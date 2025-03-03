@@ -1,4 +1,6 @@
-﻿using LabelVal.Sectors.Classes;
+﻿using BarcodeVerification.lib.Common;
+using BarcodeVerification.lib.GS1;
+using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Interfaces;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -30,8 +32,8 @@ public class Report : IReport
     public double OverallGradeValue { get; set; }
     public string OverallGradeLetter { get; set; }
 
-    public StandardsTypes Standard { get; set; }
-    public Gs1TableNames GS1Table { get; set; }
+    public AvailableStandards? Standard { get; set; }
+    public AvailableTables? GS1Table { get; set; }
 
     //GS1
     public Gs1Results GS1Results { get; set; }

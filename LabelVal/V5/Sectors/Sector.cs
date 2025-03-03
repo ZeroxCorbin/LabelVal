@@ -1,6 +1,7 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using BarcodeVerification.lib.Common;
+using BarcodeVerification.lib.GS1;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Interfaces;
 using V5_REST_Lib.Models;
 
@@ -17,55 +18,53 @@ public partial class Sector : ObservableObject, ISector
     public bool IsWarning { get; }
     public bool IsError { get; }
 
-    public StandardsTypes DesiredStandard { get; set; }
-    public Gs1TableNames DesiredGS1Table { get; set; }
+    public AvailableStandards? DesiredStandard { get; set; }
+    public AvailableTables? DesiredGS1Table { get; set; }
     public bool IsWrongStandard
     {
         get
         {
             switch (DesiredStandard)
             {
-                case StandardsTypes.None:
-                    return false;
-                case StandardsTypes.Unsupported:
+                case null:
                     return true;
-                case StandardsTypes.ISO29158:
+                case AvailableStandards.ISO29158:
                     {
                         return Report.Standard switch
                         {
-                            StandardsTypes.ISO29158 => false,
+                            AvailableStandards.ISO29158 => false,
                             _ => true,
                         };
                     }
-                case StandardsTypes.ISO15415_15416:
+                case AvailableStandards.ISO15415_15416:
                     {
                         return Report.Standard switch
                         {
-                            StandardsTypes.ISO15415_15416 or StandardsTypes.ISO15415 or StandardsTypes.ISO15416 or StandardsTypes.Unsupported => false,
+                            AvailableStandards.ISO15415_15416 or AvailableStandards.ISO15415 or AvailableStandards.ISO15416 or null => false,
                             _ => true,
                         };
                     }
-                case StandardsTypes.ISO15415:
+                case AvailableStandards.ISO15415:
                     {
                         return Report.Standard switch
                         {
-                            StandardsTypes.ISO15415_15416 or StandardsTypes.ISO15415 => false,
+                            AvailableStandards.ISO15415_15416 or AvailableStandards.ISO15415 => false,
                             _ => true,
                         };
                     }
-                case StandardsTypes.ISO15416:
+                case AvailableStandards.ISO15416:
                     {
                         return Report.Standard switch
                         {
-                            StandardsTypes.ISO15415_15416 or StandardsTypes.ISO15416 => false,
+                            AvailableStandards.ISO15415_15416 or AvailableStandards.ISO15416 => false,
                             _ => true,
                         };
                     }
-                case StandardsTypes.GS1:
+                case AvailableStandards.GS1:
                     {
                         return Report.Standard switch
                         {
-                            StandardsTypes.GS1 => Report.GS1Table != DesiredGS1Table,
+                            AvailableStandards.GS1 => Report.GS1Table != DesiredGS1Table,
                             _ => true,
                         };
                     }
@@ -78,7 +77,7 @@ public partial class Sector : ObservableObject, ISector
     public bool IsFocused { get; set; }
     public bool IsMouseOver { get; set; }
 
-    public Sector(ResultsAlt.Decodedata decodeData, Config.Toollist toollist, string name, StandardsTypes standard, Gs1TableNames table)
+    public Sector(ResultsAlt.Decodedata decodeData, Config.Toollist toollist, string name, AvailableStandards? standard, AvailableTables? table)
     {
         V5Sector = decodeData;
 
@@ -88,8 +87,8 @@ public partial class Sector : ObservableObject, ISector
         DesiredStandard = standard;
         DesiredGS1Table = table;
 
-        Report.Standard = decodeData.grading != null ? V5GetStandard(decodeData.grading) : StandardsTypes.None;
-        Report.GS1Table = Gs1TableNames.None; //GS1 is not supported in V5, yet
+        Report.Standard = decodeData.grading != null ? Standards.GetV5StandardEnum(decodeData.grading.standard) : null;
+        Report.GS1Table = null; //GS1 is not supported in V5, yet
 
         SectorDetails = new SectorDetails(this, Template.Username);
 
@@ -103,14 +102,6 @@ public partial class Sector : ObservableObject, ISector
         else if (highCat == 2)
             IsError = true;
     }
-    private StandardsTypes V5GetStandard(ResultsAlt.Grading results)
-        => results.standard != null ? results.standard switch
-        {
-            "iso15416" => StandardsTypes.ISO15416,
-            "iso15415" => StandardsTypes.ISO15415,
-            "iso29158" => StandardsTypes.ISO29158,
-            _ => StandardsTypes.Unsupported,
-        } : StandardsTypes.None;
 
     [RelayCommand]
     private void CopyToClipBoard() => ISector.CopyCSVToClipboard(this);

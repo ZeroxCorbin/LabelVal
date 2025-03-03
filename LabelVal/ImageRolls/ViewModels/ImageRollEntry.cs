@@ -1,18 +1,14 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using BarcodeVerification.lib.Common;
+using BarcodeVerification.lib.GS1;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
-using LabelVal.Sectors.Classes;
-using LabelVal.Sectors.Interfaces;
 using LibImageUtilities.ImageTypes.Png;
-using Logging.lib;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing.Printing;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Wpf.lib.Extentions;
 
@@ -21,51 +17,19 @@ namespace LabelVal.ImageRolls.ViewModels;
 [JsonObject(MemberSerialization.OptIn)]
 public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyChangedMessage<PrinterSettings>>
 {
-    public Array StandardsTypes
-    {
-        get
-        {
-            List<StandardsTypes> lst = Enum.GetValues(typeof(StandardsTypes)).Cast<StandardsTypes>().ToList();
-            _ = lst.Remove(Sectors.Classes.StandardsTypes.Unsupported);
-
-            List<string> names = [];
-            foreach (StandardsTypes name in lst)
-                names.Add(name.GetDescription());
-
-            return names.ToArray();
-        }
-    }
-    public Array Gs1TableNames
-    {
-        get
-        {
-            List<Gs1TableNames> lst = Enum.GetValues(typeof(Gs1TableNames)).Cast<Gs1TableNames>().ToList();
-            _ = lst.Remove(Sectors.Classes.Gs1TableNames.Unsupported);
-            _ = lst.Remove(Sectors.Classes.Gs1TableNames.None);
-
-            List<string> names = [];
-            foreach (Gs1TableNames name in lst)
-                names.Add(name.GetDescription());
-
-            return names.ToArray();
-        }
-    }
-
     [JsonProperty][SQLite.PrimaryKey] public string UID { get; set; } = Guid.NewGuid().ToString();
     public string Path { get; set; }
     [SQLite.Ignore] public bool IsRooted => !string.IsNullOrEmpty(Path);
 
     [ObservableProperty][property: JsonProperty] private string name;
     [ObservableProperty][property: JsonProperty] private int imageCount;
-    [ObservableProperty][property: JsonProperty("Standard")][property: SQLite.Column("Standard")] private StandardsTypes selectedStandard;
-    partial void OnSelectedStandardChanged(StandardsTypes value) { if (value != Sectors.Classes.StandardsTypes.GS1) SelectedGS1Table = Sectors.Classes.Gs1TableNames.None; OnPropertyChanged(nameof(StandardDescription)); }
+    [ObservableProperty][property: JsonProperty("Standard")][property: SQLite.Column("Standard")] private AvailableStandards? selectedStandard;
+    partial void OnSelectedStandardChanged(AvailableStandards? value) { if (value != AvailableStandards.GS1) SelectedGS1Table = null; OnPropertyChanged(nameof(StandardDescription)); }
     public string StandardDescription => SelectedStandard.GetDescription();
 
-    [ObservableProperty][property: JsonProperty("GS1Table")][property: SQLite.Column("GS1Table")] private Gs1TableNames selectedGS1Table;
-    partial void OnSelectedGS1TableChanged(Gs1TableNames value) => OnPropertyChanged(nameof(GS1TableNumber));
-    public double GS1TableNumber => SelectedGS1Table is Sectors.Classes.Gs1TableNames.None or Sectors.Classes.Gs1TableNames.Unsupported
-                ? 0
-                : double.Parse(SelectedGS1Table.GetDescription());
+    [ObservableProperty][property: JsonProperty("GS1Table")][property: SQLite.Column("GS1Table")] private AvailableTables? selectedGS1Table;
+    partial void OnSelectedGS1TableChanged(AvailableTables? value) => OnPropertyChanged(nameof(GS1TableNumber));
+    public double GS1TableNumber => SelectedGS1Table is null ? 0 : double.Parse(SelectedGS1Table.GetDescription());
 
     //If writeSectorsBeforeProcess is true the system will write the templates sectors before processing an image.
     //Normally the template is left untouched. I.e. When using a sequential OCR tool.

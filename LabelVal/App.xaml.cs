@@ -1,4 +1,4 @@
-﻿using BarcodeVerification.lib.GS1.Encoders;
+﻿using BarcodeVerification.lib.GS1;
 using LibSimpleDatabase;
 using Lvs95xx.Producer.Watchers;
 using MaterialDesignThemes.Wpf;

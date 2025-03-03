@@ -1,4 +1,6 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using BarcodeVerification.lib.Common;
+using BarcodeVerification.lib.GS1;
+using CommunityToolkit.Mvvm.ComponentModel;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Results.Databases;
 using LabelVal.Run.Databases;
@@ -461,8 +463,8 @@ public partial class Controller : ObservableObject
         {
             Config = new Lvs95xx.lib.Core.Controllers.Config()
             {
-                ApplicationStandard = GetL95xxStandard(ire.ImageResults.SelectedImageRoll.SelectedStandard),
-                Table = GetL95xxTable(ire.ImageResults.SelectedImageRoll.SelectedGS1Table),
+                ApplicationStandard = Standards.GetL95xxStandardString(ire.ImageResults.SelectedImageRoll.SelectedStandard),
+                Table = Tables.GetL95xxTableString(ire.ImageResults.SelectedImageRoll.SelectedGS1Table),
             },
             Image = ire.L95xxStoredImage.BitmapBytes
         };
@@ -483,10 +485,6 @@ public partial class Controller : ObservableObject
 
         return l95;
     }
-
-    private string GetL95xxStandard(StandardsTypes type) => Lvs95xx.lib.Core.Controllers.Config.ApplicationStandards.FirstOrDefault(x => x.Key.Contains(type.ToString())).Key;
-
-    private string GetL95xxTable(Gs1TableNames table) => Lvs95xx.lib.Core.Controllers.Config.Tables.FirstOrDefault(x => x.Key.Contains(table.ToString().Trim('_'))).Key;
 
     private static bool HasSequencing(Results.ViewModels.ImageResultEntry label)
     {

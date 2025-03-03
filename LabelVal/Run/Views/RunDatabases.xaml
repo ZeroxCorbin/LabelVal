@@ -2,12 +2,12 @@
     x:Class="LabelVal.Run.Views.RunDatabases"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:bar_common="clr-namespace:BarcodeVerification.lib.Common;assembly=BarcodeVerification.lib"
     xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
     xmlns:converters="clr-namespace:LabelVal.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:databases="clr-namespace:LabelVal.Run.Databases"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-    xmlns:imageRollConverters="clr-namespace:LabelVal.ImageRolls.Converters"
     xmlns:local="clr-namespace:LabelVal.Run.Views"
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -18,7 +18,6 @@
     mc:Ignorable="d">
     <UserControl.Resources>
         <converters:ContentGeneratorConverter x:Key="ContentGeneratorConverter" />
-        <imageRollConverters:Gs1TableNamesConverter x:Key="Gs1TableNamesConverter" />
 
         <CollectionViewSource x:Key="cvsRunEntriesList" Source="{Binding RunEntriesList}">
             <CollectionViewSource.SortDescriptions>
@@ -167,12 +166,12 @@
                                             </TextBlock.Style>
                                         </TextBlock>
 
-                                        <TextBlock Margin="10,3" Text="{Binding Gs1TableName, Converter={StaticResource Gs1TableNamesConverter}, StringFormat={}Table {0}}">
+                                        <TextBlock Margin="10,3" Text="{Binding Gs1TableName, Converter={StaticResource EnumValueToDescription}, StringFormat={}Table {0}}">
                                             <TextBlock.Style>
                                                 <Style BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}" TargetType="TextBlock">
                                                     <Setter Property="Visibility" Value="Collapsed" />
                                                     <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding GradingStandard}" Value="{x:Static sectors:StandardsTypes.GS1}">
+                                                        <DataTrigger Binding="{Binding GradingStandard}" Value="{x:Static bar_common:AvailableStandards.GS1}">
                                                             <Setter Property="Visibility" Value="Visible" />
                                                         </DataTrigger>
                                                     </Style.Triggers>
@@ -242,22 +241,22 @@
                     <Image.Style>
                         <Style TargetType="Image">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.GS1}">
+                                <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:AvailableStandards.GS1}">
                                     <Setter Property="Source" Value="/Assets/Images/GS1.png" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15415_15416}">
+                                <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:AvailableStandards.ISO15415_15416}">
                                     <Setter Property="Source" Value="/Assets/Images/all-codes.png" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15416}">
+                                <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:AvailableStandards.ISO15416}">
                                     <Setter Property="Source" Value="/Assets/Images/barcode-2d.png" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15415}">
+                                <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:AvailableStandards.ISO15415}">
                                     <Setter Property="Source" Value="/Assets/Images/barcode-1d1.png" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.OCR_OCV}">
+                                <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:AvailableStandards.OCR_OCV}">
                                     <Setter Property="Source" Value="/Assets/Images/OCR.png" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.None}">
+                                <DataTrigger Binding="{Binding Name}" Value="{x:Null}">
                                     <Setter Property="Source" Value="/Assets/Images/all-codes.png" />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -280,26 +279,26 @@
             <Setter Property="Margin" Value="0" />
 
             <Style.Triggers>
-                <!--<DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=TabItem}}" Value="{x:Static sectors:StandardsTypes.GS1}">
+                <!--<DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=TabItem}}" Value="{x:Static bar_common:AvailableStandards.GS1}">
                     <Setter Property="Background" Value="{DynamicResource MahApps.Colors.Accent3}"/>
                 </DataTrigger>-->
 
-                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.GS1}">
+                <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:AvailableStandards.GS1}">
                     <Setter Property="ToolTip" Value="GS1" />
                 </DataTrigger>
-                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15415_15416}">
+                <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:AvailableStandards.ISO15415_15416}">
                     <Setter Property="ToolTip" Value="ISO/IEC 15416-15415" />
                 </DataTrigger>
-                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15416}">
+                <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:AvailableStandards.ISO15416}">
                     <Setter Property="ToolTip" Value="ISO/IEC 15416" />
                 </DataTrigger>
-                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.ISO15415}">
+                <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:AvailableStandards.ISO15415}">
                     <Setter Property="ToolTip" Value="ISO/IEC 15415" />
                 </DataTrigger>
-                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.OCR_OCV}">
+                <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:AvailableStandards.OCR_OCV}">
                     <Setter Property="ToolTip" Value="OCR/OCV" />
                 </DataTrigger>
-                <DataTrigger Binding="{Binding Name}" Value="{x:Static sectors:StandardsTypes.None}">
+                <DataTrigger Binding="{Binding Name}" Value="{x:Null}">
                     <Setter Property="ToolTip" Value="None" />
                 </DataTrigger>
             </Style.Triggers>

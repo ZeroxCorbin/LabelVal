@@ -2,8 +2,6 @@
 using LabelVal.Utilities;
 using LibImageUtilities.ImageTypes;
 using Newtonsoft.Json;
-using SharpVectors.Dom;
-using System;
 using System.Drawing.Printing;
 using System.IO;
 using System.Windows.Media.Imaging;
@@ -46,15 +44,12 @@ public partial class ImageEntry : ObservableObject
         {
             OriginalImage = value;
 
-            Image = BitmapImageUtilities.CreateBitmapImage(OriginalImage);
-            ImageLow = BitmapImageUtilities.CreateBitmapImage(OriginalImage, 400);
+            Image = LibImageUtilities.BitmapImage.CreateBitmapImage(OriginalImage);
+            ImageLow = LibImageUtilities.BitmapImage.CreateBitmapImage(OriginalImage, 400);
         }
     }
 
-    public byte[] BitmapBytes
-    {
-        get => LibImageUtilities.ImageTypes.Bmp.Utilities.GetBmp(OriginalImage, (int)Image.DpiX);
-    }
+    public byte[] BitmapBytes => LibImageUtilities.ImageTypes.Bmp.Utilities.GetBmp(OriginalImage, (int)Image.DpiX);
 
     [ObservableProperty][property: JsonProperty] private int targetDpiWidth;
     [ObservableProperty][property: JsonProperty] private int targetDpiHeight;
@@ -63,7 +58,6 @@ public partial class ImageEntry : ObservableObject
     [JsonProperty] public double ImageHeight { get; set; }
     [JsonProperty] public long ImageTotalPixels { get; set; }
     public int ImageBitDepth => Image.Format.BitsPerPixel;
-
 
     [ObservableProperty][property: SQLite.Ignore] private double v52ImageTotalPixelDeviation;
 

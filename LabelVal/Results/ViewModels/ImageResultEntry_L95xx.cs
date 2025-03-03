@@ -15,6 +15,8 @@ using CommunityToolkit.Mvvm.Input;
 using Lvs95xx.lib.Core.Controllers;
 using System.Threading.Tasks;
 using LabelVal.Sectors.Classes;
+using BarcodeVerification.lib.GS1;
+using BarcodeVerification.lib.Common;
 
 namespace LabelVal.Results.ViewModels;
 public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullReport>>
@@ -68,8 +70,8 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
         {
             Config = new Lvs95xx.lib.Core.Controllers.Config()
             {
-                ApplicationStandard = GetL95xxStandard(ImageResults.SelectedImageRoll.SelectedStandard),
-                Table = GetL95xxTable(ImageResults.SelectedImageRoll.SelectedGS1Table),
+                ApplicationStandard = Standards.GetL95xxStandardString(ImageResults.SelectedImageRoll.SelectedStandard),
+                Table = Tables.GetL95xxTableString(ImageResults.SelectedImageRoll.SelectedGS1Table),
             },
             RepeatAvailable = L95xxProcessResults,
         };
@@ -83,16 +85,6 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
         IsL95xxFaulted = false;
 
         Task.Run(() => ImageResults.SelectedVerifier.Controller.ProcessLabelAsync(lab));
-    }
-
-    private string GetL95xxStandard(StandardsTypes type)
-    {
-        return Lvs95xx.lib.Core.Controllers.Config.ApplicationStandards.FirstOrDefault(x => x.Key.Contains(type.ToString())).Key;
-
-    }
-    private string GetL95xxTable(Gs1TableNames table)
-    {
-        return Lvs95xx.lib.Core.Controllers.Config.Tables.FirstOrDefault(x => x.Key.Contains(table.ToString().Trim('_'))).Key;
     }
 
     public static void SortObservableCollectionByList(List<ISector> list, ObservableCollection<ISector> observableCollection)

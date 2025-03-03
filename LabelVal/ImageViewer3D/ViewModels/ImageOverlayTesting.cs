@@ -67,7 +67,7 @@ public partial class ImageOverlayTesting : BaseViewModel
         //this.PlaneMaterial.ReflectiveColor = Color.Black;
         this.PlaneTransform = new Media3D.TranslateTransform3D(0, 0, 0);
 
-        SetImages(LabelVal.Utilities.BitmapImageUtilities.CreateBitmapImage(image));
+        SetImages(LibImageUtilities.BitmapImage.CreateBitmapImage(image));
     }
 
     private void SetImages(BitmapSource img)

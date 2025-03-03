@@ -1,6 +1,6 @@
-﻿using CsvHelper;
-using LabelVal.Sectors.Classes;
-using System.ComponentModel;
+﻿using BarcodeVerification.lib.Common;
+using BarcodeVerification.lib.GS1;
+using CsvHelper;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -17,8 +17,8 @@ public partial interface ISector
     bool IsWarning { get; }
     bool IsError { get; }
 
-    StandardsTypes DesiredStandard { get; }
-    Gs1TableNames DesiredGS1Table { get; }
+    AvailableStandards? DesiredStandard { get; }
+    AvailableTables? DesiredGS1Table { get; }
     bool IsWrongStandard { get; }
 
     bool IsFocused { get; set; }
@@ -142,7 +142,4 @@ public partial interface ISector
         return sb.ToString();
     }
 }
-
-
-
 

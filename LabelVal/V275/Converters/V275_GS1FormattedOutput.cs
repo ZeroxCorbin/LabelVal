@@ -1,4 +1,4 @@
-﻿using BarcodeVerification.lib.GS1.Encoders;
+﻿using BarcodeVerification.lib.GS1;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Windows.Data;

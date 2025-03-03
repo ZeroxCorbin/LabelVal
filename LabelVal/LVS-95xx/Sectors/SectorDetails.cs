@@ -9,6 +9,7 @@ using System.Linq;
 using V275_REST_Lib.Models;
 using Lvs95xx.lib.Core.Controllers;
 using LabelVal.Sectors.Classes;
+using BarcodeVerification.lib.Common;
 
 namespace LabelVal.LVS_95xx.Sectors;
 
@@ -60,7 +61,7 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
         var isGS1 = GetParameter("GS1 Data", report.ReportData) != null;
         var is2D = GetParameter("Cell size", report.ReportData) != null;
 
-        if (is2D && Sector.Report.Standard != StandardsTypes.ISO29158)
+        if (is2D && Sector.Report.Standard != AvailableStandards.ISO29158)
         {
             IsNotEmpty = true;
 
@@ -113,7 +114,7 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
                 Alarms.Add(a);
 
         }
-        else if(is2D && Sector.Report.Standard == StandardsTypes.ISO29158)
+        else if(is2D && Sector.Report.Standard == AvailableStandards.ISO29158)
         {
             IsNotEmpty = true;
 

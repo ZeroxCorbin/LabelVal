@@ -1,12 +1,11 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using BarcodeVerification.lib.Common;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
 using MahApps.Metro.Controls.Dialogs;
 using Newtonsoft.Json;
-using System;
-using System.Linq;
 using System.Threading.Tasks;
 using V275_REST_Lib;
 using V275_REST_Lib.Models;
@@ -85,7 +84,7 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
             return;
         }
 
-        if (SelectedImageRoll.SelectedStandard != LabelVal.Sectors.Classes.StandardsTypes.GS1)
+        if (SelectedImageRoll.SelectedStandard != AvailableStandards.GS1)
         {
             if (Controller.JobName.ToLower().Equals(SelectedImageRoll.Name.ToLower()))
                 return;
