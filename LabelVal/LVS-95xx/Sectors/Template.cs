@@ -10,6 +10,8 @@ namespace LabelVal.LVS_95xx.Sectors
         public string Name { get; set; }
         public string Username { get; set; }
 
+        public string Version { get; set; }
+
         public double Top { get; set; }
         public double Left { get; set; }
         public double Width { get; set; }
@@ -26,11 +28,13 @@ namespace LabelVal.LVS_95xx.Sectors
         public BlemishMaskLayers BlemishMask { get; set; }
 
         public Template() { }
-        public Template(ITemplate template)
+        public Template(ITemplate template, string version)
         {
             if(template == null)
                 return;
             
+            Version = version;
+
             Name = template.Name;
             Username = template.Username;
 
@@ -50,10 +54,12 @@ namespace LabelVal.LVS_95xx.Sectors
             BlemishMask = template.BlemishMask;
         }
 
-        public Template(FullReport report)
+        public Template(FullReport report, string version)
         {
             if (report == null)
                 return;
+
+            Version = version;
 
             Name = report.Name;
             Username = report.Name;
@@ -65,6 +71,7 @@ namespace LabelVal.LVS_95xx.Sectors
             //AngleDeg = report.Report.Angle;
 
             CenterPoint = new System.Drawing.Point(report.Report.X1 + (report.Report.SizeX / 2), report.Report.Y1 + (report.Report.SizeY / 2));
+            Version = version;
 
             //Orientation = template.Orientation;
 

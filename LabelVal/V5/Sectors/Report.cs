@@ -7,6 +7,7 @@ namespace LabelVal.V5.Sectors;
 
 public class Report : IReport
 {
+    public object Original { get; set; }
     public string Type { get; set; }
 
     public double Top { get; set; }
@@ -45,6 +46,8 @@ public class Report : IReport
 
     public Report(V5_REST_Lib.Models.ResultsAlt.Decodedata v5)
     {
+        Original = v5;
+
         Type = V5GetType(v5);
         SymbolType = V5GetSymbology(v5.type);
         DecodeText = v5.dataUTF8;

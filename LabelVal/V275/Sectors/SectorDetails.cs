@@ -11,6 +11,8 @@ namespace LabelVal.V275.Sectors;
 
 public partial class SectorDetails : ObservableObject, ISectorDetails
 {
+    public ISector Sector { get; set; }
+
     [ObservableProperty] private string name;
     [ObservableProperty] private string userName;
     [ObservableProperty] private string symbolType;
@@ -30,18 +32,30 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
     public ObservableCollection<Blemish> Blemishes { get; } = [];
 
     public SectorDetails() { }
-    public SectorDetails(object verify, string userName) => Process(verify, userName);
+    public SectorDetails(ISector sector) => Process(sector);
     public SectorDifferences Compare(ISectorDetails compare) => SectorDifferences.Compare(this, compare);
 
-    public void Process(object verify, string userName)
+    public void Process(ISector sector)
     {
-        UserName = userName;
+        if (sector is not V275.Sectors.Sector sec)
+            return;
+        
+        Sector = sector;
+        object verify = sec.Report.Original;
+
         IsNotEmpty = false;
+
+        UserName = sec.Template.Username;
 
         foreach (var prop in verify.GetType().GetProperties())
         {
+            //Skipping: left, top, width, height, supportMatching, matchSettings, symbology
+
             if (prop.Name == "type")
                 SymbolType = prop.GetValue(verify).ToString();
+
+            if(prop.Name == "name")
+                Name = (string)prop.GetValue(verify);
 
             if (prop.Name == "data")
                 foreach (var prop1 in prop.GetValue(verify).GetType().GetProperties())

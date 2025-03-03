@@ -8,6 +8,8 @@ namespace LabelVal.V275.Sectors;
 
 public class Report : IReport
 {
+    public object Original { get; set; }
+
     public string Type { get; set; }
 
     public double Top { get; set; }
@@ -46,6 +48,8 @@ public class Report : IReport
 
     public Report(object report)
     {
+        Original = report;
+
         switch (report)
         {
             case Report_InspectSector_Verify1D:

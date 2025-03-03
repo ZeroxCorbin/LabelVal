@@ -8,6 +8,7 @@ namespace LabelVal.LVS_95xx.Sectors;
 
 public class Report : IReport
 {
+    public object Original { get; set; }
     public string Type { get; set; }
 
     public double Top { get; set; }
@@ -46,6 +47,8 @@ public class Report : IReport
 
     public Report(FullReport report)
     {
+        Original = report;
+
         Type = GetParameter("Cell size", report.ReportData) == null ? "verify1D" : "verify2D";
 
         Top = report.Report.Y1;

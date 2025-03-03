@@ -83,15 +83,15 @@ public partial class Sector : ObservableObject, ISector
         V5Sector = decodeData;
 
         Report = new Report(decodeData);
-        Template = new Template(decodeData, toollist, name);
-
-        SectorDetails = new SectorDetails(decodeData, Template.Username);
+        Template = new Template(decodeData, toollist, name, "");
 
         DesiredStandard = standard;
         DesiredGS1Table = table;
 
         Report.Standard = decodeData.grading != null ? V5GetStandard(decodeData.grading) : StandardsTypes.None;
         Report.GS1Table = Gs1TableNames.None; //GS1 is not supported in V5, yet
+
+        SectorDetails = new SectorDetails(this, Template.Username);
 
         int highCat = 0;
         foreach (Alarm alm in SectorDetails.Alarms)

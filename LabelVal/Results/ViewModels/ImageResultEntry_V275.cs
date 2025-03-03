@@ -155,7 +155,7 @@ public partial class ImageResultEntry
                     if (fSec == null)
                         break; //Not yet supported sector type
 
-                    tempSectors.Add(new V275.Sectors.Sector(jSec, fSec, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
+                    tempSectors.Add(new V275.Sectors.Sector(jSec, fSec, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, repeat.FullReport.Job.jobVersion));
 
                     break;
                 }
@@ -273,7 +273,7 @@ public partial class ImageResultEntry
             return false;
         }
 
-        V275ProcessRepeat(new V275_REST_Lib.Repeat(0, null) { FullReport = report });
+        V275ProcessRepeat(new V275_REST_Lib.Repeat(0, null, ImageResults.SelectedNode.Controller.Product.part) { FullReport = report });
         return true;
     }
 
@@ -339,7 +339,7 @@ public partial class ImageResultEntry
                         if (fSec == null)
                             break;
 
-                        tempSectors.Add(new V275.Sectors.Sector(jSec, fSec, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
+                        tempSectors.Add(new V275.Sectors.Sector(jSec, fSec, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, V275ResultRow._Job.jobVersion));
 
                         break;
                     }

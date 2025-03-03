@@ -83,14 +83,13 @@ public partial class Sector : ObservableObject, ISector
         L95xxFullReport = report;
 
         Report = new Report(report);
-        Template = new Template(report);
+        Template = new Template(report, (string)report.GetSetting("Version"));
 
-        SectorDetails = new SectorDetails(report, Report.SymbolType == "pdf417", Report.Standard);
-
+        //Standard and GS1Table are set in the Report constructor.
         DesiredStandard = standard;
         DesiredGS1Table = table;
 
-        //Standard and GS1Table are set in the Report constructor.
+        SectorDetails = new SectorDetails(this, Report.SymbolType == "pdf417");
 
         int highCat = 0;
         foreach (Alarm alm in SectorDetails.Alarms)

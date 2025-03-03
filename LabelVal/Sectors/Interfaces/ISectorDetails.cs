@@ -5,6 +5,7 @@ namespace LabelVal.Sectors.Interfaces;
 
 public interface ISectorDetails
 {
+    ISector Sector { get; set; }
     string Name { get; set; }
     string UserName { get; set; }
 

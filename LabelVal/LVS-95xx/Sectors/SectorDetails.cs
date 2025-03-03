@@ -14,6 +14,8 @@ namespace LabelVal.LVS_95xx.Sectors;
 
 public partial class SectorDetails : ObservableObject, ISectorDetails
 {
+    public ISector Sector { get; set; }
+
     [ObservableProperty] private string name;
     [ObservableProperty] private string userName;
 
@@ -40,9 +42,16 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
     public SectorDifferences Compare(ISectorDetails compare) => SectorDifferences.Compare(this, compare);
 
     public SectorDetails() { }
-    public SectorDetails(FullReport report, bool isPDF417, StandardsTypes standard) => Process(report, isPDF417, standard);
-    public void Process(FullReport report, bool isPDF417, StandardsTypes standard)
+    public SectorDetails(ISector sector, bool isPDF417) => Process(sector, isPDF417);
+    public void Process(ISector sector, bool isPDF417)
     {
+        if(sector is not LVS_95xx.Sectors.Sector sec)
+            return;
+
+        Sector = sector;
+        var report = sec.L95xxFullReport;
+
+        Name = report.Name;
         UserName = report.Name;
         IsNotEmpty = false;
 
@@ -51,7 +60,7 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
         var isGS1 = GetParameter("GS1 Data", report.ReportData) != null;
         var is2D = GetParameter("Cell size", report.ReportData) != null;
 
-        if (is2D && standard != StandardsTypes.ISO29158)
+        if (is2D && Sector.Report.Standard != StandardsTypes.ISO29158)
         {
             IsNotEmpty = true;
 
@@ -103,7 +112,7 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
                 Alarms.Add(a);
 
         }
-        else if(is2D && standard == StandardsTypes.ISO29158)
+        else if(is2D && Sector.Report.Standard == StandardsTypes.ISO29158)
         {
             IsNotEmpty = true;
 

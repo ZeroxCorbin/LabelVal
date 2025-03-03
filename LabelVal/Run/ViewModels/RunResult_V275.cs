@@ -37,7 +37,7 @@ public partial class RunResult
                         if (fSec == null)
                             break;
 
-                        tempSectors.Add(new V275.Sectors.Sector(jSec, fSec, RunEntry.GradingStandard, RunEntry.Gs1TableName));
+                        tempSectors.Add(new V275.Sectors.Sector(jSec, fSec, RunEntry.GradingStandard, RunEntry.Gs1TableName, StoredImageResultGroup.V275Result._Job.jobVersion));
 
                         break;
                     }
@@ -79,7 +79,7 @@ public partial class RunResult
                         if (fSec == null)
                             break;
 
-                        tempSectors.Add(new V275.Sectors.Sector(jSec, fSec, RunEntry.GradingStandard, RunEntry.Gs1TableName));
+                        tempSectors.Add(new V275.Sectors.Sector(jSec, fSec, RunEntry.GradingStandard, RunEntry.Gs1TableName, CurrentImageResultGroup.V275Result._Job.jobVersion));
 
                         break;
                     }

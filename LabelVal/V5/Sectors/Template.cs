@@ -14,6 +14,8 @@ public class Template : ITemplate
     public string Name { get; set; }
     public string Username { get; set; }
 
+    public string Version { get; set; }
+
     public double Top { get; set; }
     public double Left { get; set; }
     public double Width { get; set; }
@@ -28,15 +30,17 @@ public class Template : ITemplate
     public TemplateMatchMode MatchSettings { get; set; }
     public BlemishMaskLayers BlemishMask { get; set; }
 
-    public Template(ResultsAlt.Decodedata report, Config.Toollist toolList, string name)
+    public Template(ResultsAlt.Decodedata report, Config.Toollist toolList, string name, string version)
     {
+        Version = version;
+
         ToolList = toolList;
 
         Name = name;
         Username = name;
 
         // Update the properties
-        if(toolList.SymbologyTool.regionList.Length > 0 && toolList.SymbologyTool.regionList[0].Region.shape.type == "RectShape")
+        if (toolList.SymbologyTool.regionList.Length > 0 && toolList.SymbologyTool.regionList[0].Region.shape.type == "RectShape")
         {
             Left = toolList.SymbologyTool.regionList[0].Region.shape.RectShape.x;
             Top = toolList.SymbologyTool.regionList[0].Region.shape.RectShape.y;
@@ -60,6 +64,7 @@ public class Template : ITemplate
 
         Orientation = 0;
         SymbologyType = GetV5Symbology(report);
+        Version = version;
     }
 
     public Template() { }

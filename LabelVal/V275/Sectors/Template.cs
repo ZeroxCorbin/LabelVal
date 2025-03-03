@@ -10,6 +10,8 @@ public class Template : ITemplate
     public string Name { get; set; }
     public string Username { get; set; }
 
+    public string Version { get; set; }
+
     public double Top { get; set; }
     public double Left { get; set; }
     public double Width { get; set; }
@@ -24,8 +26,10 @@ public class Template : ITemplate
     public TemplateMatchMode MatchSettings { get; set; }
     public BlemishMaskLayers BlemishMask { get; set; }
 
-    public Template(V275_REST_Lib.Models.Job.Sector sectorTemplate)
+    public Template(V275_REST_Lib.Models.Job.Sector sectorTemplate, string version)
     {
+        Version = version;
+
         V275Sector = sectorTemplate;
 
         Name = sectorTemplate.name;
@@ -55,5 +59,6 @@ public class Template : ITemplate
         {
             Layers = sectorTemplate.blemishMask?.layers
         };
+        Version = version;
     }
 }

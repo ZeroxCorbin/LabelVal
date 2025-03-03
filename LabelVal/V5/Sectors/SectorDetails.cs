@@ -10,6 +10,8 @@ namespace LabelVal.V5.Sectors;
 
 public partial class SectorDetails : ObservableObject, ISectorDetails
 {
+    public ISector Sector { get; set; }
+
     [ObservableProperty] private string name;
     [ObservableProperty] private string userName;
     [ObservableProperty] private string symbolType;
@@ -31,9 +33,15 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
     public SectorDifferences Compare(ISectorDetails compare) => SectorDifferences.Compare(this, compare);
 
     public SectorDetails() { }
-    public SectorDetails(ResultsAlt.Decodedata results, string userName) => Process(results, userName);
-    public void Process(ResultsAlt.Decodedata results, string userName)
+    public SectorDetails( ISector sector, string userName) => Process(sector, userName);
+    public void Process(ISector sector, string userName)
     {
+        if (sector is not V5.Sectors.Sector sec)
+            return;
+
+        Sector = sector;
+        ResultsAlt.Decodedata results = sec.V5Sector;
+
         UserName = userName;
         IsNotEmpty = false;
 

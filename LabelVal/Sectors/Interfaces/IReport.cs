@@ -4,6 +4,8 @@ namespace LabelVal.Sectors.Interfaces;
 
 public interface IReport
 {
+    object Original { get; set; }
+
     string Type { get; set; }
     string SymbolType { get; set; }
     double XDimension { get; set; }

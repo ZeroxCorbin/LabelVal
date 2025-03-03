@@ -46,6 +46,7 @@
                         Visibility="{Binding IsWrongStandard, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneTime}" />
 
                     <TextBlock Text="{Binding Template.Username, Mode=OneTime}" />
+                    <TextBlock Margin="3,0" Text="{Binding Template.Version, StringFormat={}{0}}" Foreground="{DynamicResource ColorBlindBrush2}"/>
 
                     <TextBlock HorizontalAlignment="Right" Text="{Binding Report.OverallGradeString}" />
                 </DockPanel>
@@ -376,7 +377,7 @@
                     <Style TargetType="{x:Type Border}">
                         <Setter Property="Visibility" Value="Visible" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding SectorDifferences.Alarms.Count, Mode=OneTime}" Value="0">
+                            <DataTrigger Binding="{Binding SectorDetails.Alarms.Count, Mode=OneTime}" Value="0">
                                 <Setter Property="Visibility" Value="Collapsed" />
                             </DataTrigger>
                             <DataTrigger Binding="{Binding HideErrorsWarnings, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
@@ -392,7 +393,7 @@
                     </Style>
                 </Border.Style>
 
-                <ItemsControl ItemsSource="{Binding SectorDifferences.Alarms, Mode=OneTime}">
+                <ItemsControl ItemsSource="{Binding SectorDetails.Alarms, Mode=OneTime}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <DockPanel>

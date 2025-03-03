@@ -65,9 +65,9 @@ public class ValueResult : ISectorValue
 public class Value_ : ISectorValue
 {
     public string Name { get; set; }
-    public int Value { get; set; }
+    public double Value { get; set; }
 
-    public Value_(string name, int value)
+    public Value_(string name, double value)
     {
         Value = value;
         Name = name;

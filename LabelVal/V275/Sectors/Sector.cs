@@ -77,14 +77,12 @@ public partial class Sector : ObservableObject, ISector
     public bool IsFocused { get; set; }
     public bool IsMouseOver { get; set; }
 
-    public Sector(V275_REST_Lib.Models.Job.Sector sector, object report, StandardsTypes standard, Gs1TableNames table)
+    public Sector(V275_REST_Lib.Models.Job.Sector sector, object report, StandardsTypes standard, Gs1TableNames table, string version)
     {
         V275Sector = sector;
 
         Report = new Report(report);
-        Template = new Template(sector);
-
-        SectorDetails = new SectorDetails(report, Template.Username);
+        Template = new Template(sector, version);
 
         DesiredStandard = standard;
         DesiredGS1Table = table;
@@ -94,6 +92,8 @@ public partial class Sector : ObservableObject, ISector
 
         if (Report.Standard == StandardsTypes.GS1)
             Report.GS1Table = GetGS1Table(sector.gradingStandard.tableId);
+
+        SectorDetails = new SectorDetails(this);
 
         int highCat = 0;
         foreach (Alarm alm in SectorDetails.Alarms)

@@ -7,6 +7,8 @@ public interface ITemplate
     string Name { get; set; }
     string Username { get; set; }
 
+    string Version { get; set; }
+
     double Top { get; set; }
     double Left { get; set; }
     double Width { get; set; }
