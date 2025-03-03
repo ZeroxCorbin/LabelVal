@@ -313,7 +313,7 @@
                                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                                         Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                                         ToolTip="Copy sector to CSV." />
-                                    
+
                                     <Button
                                         Width="28"
                                         Click="btnCloseDetails_Click"

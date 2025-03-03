@@ -31,7 +31,13 @@ public interface ISectorDetails
     SectorDifferences Compare(ISectorDetails compare);
 }
 
-public class GradeValue
+
+public interface ISectorValue
+{
+    string Name { get; set; }
+}
+
+public class GradeValue: ISectorValue
 {
     public string Name { get; set; }
     public double Value { get; set; }
@@ -54,7 +60,7 @@ public class GradeValue
         Name = name;
     }
 }
-public class Grade
+public class Grade: ISectorValue
 {
     public string Name { get; set; }
     public double Value { get; set; }
@@ -77,7 +83,7 @@ public class Grade
         Name = name;
     }
 }
-public class ValueResult
+public class ValueResult: ISectorValue
 {
     public string Name { get; set; }
     public double Value { get; set; }
@@ -90,7 +96,7 @@ public class ValueResult
         Name = name;
     }
 }
-public class Value_
+public class Value_: ISectorValue
 {
     public string Name { get; set; }
     public int Value { get; set; }
@@ -101,8 +107,10 @@ public class Value_
         Name = name;
     }
 }
-public class Blemish
+public class Blemish: ISectorValue
 {
+    public string Name { get; set; }
+
     public int Top { get; set; }
     public int Left { get; set; }
     public int Height { get; set; }
@@ -121,9 +129,9 @@ public class Blemish
     }
 }
 
-public class Alarm
+public class Alarm : ISectorValue
 {
-    public string Name { get; set; }
+    public string Name { get; set; } = null;
     public int Category { get; set; }
     public SubAlarm_ Data { get; set; }
     public Useraction UserAction { get; set; }

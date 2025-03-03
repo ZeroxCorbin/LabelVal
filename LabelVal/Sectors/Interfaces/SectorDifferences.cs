@@ -4,10 +4,6 @@ public class SectorDifferences
 {
     public static SectorDifferencesSettings Settings { get; } = new SectorDifferencesSettings();
 
-    //Name = Name,
-    //        UserName = UserName,
-    //        SymbolType = SymbolType
-    //        Units = Units
     public string Name { get; set; }
     public string UserName { get; set; }
     public string SymbolType { get; set; }
@@ -27,73 +23,49 @@ public class SectorDifferences
             Units = current.Units,
         };
 
-        foreach (var gradeValue in previous.GradeValues)
-        {
-            if (current.GradeValues.FirstOrDefault(x => x.Name == gradeValue.Name) is GradeValue currentGradeValue)
-            {
-                if(new SectorElements(gradeValue, currentGradeValue).Difference != null)
-                    differences.GradeValues.Add(new SectorElements(gradeValue, currentGradeValue));
-            }
-        }
-
-        foreach (var valueResult in previous.ValueResults)
-        {
-            if (current.ValueResults.FirstOrDefault(x => x.Name == valueResult.Name) is ValueResult currentValueResult)
-            {
-                if (new SectorElements(valueResult, currentValueResult).Difference != null)
-                    differences.ValueResults.Add(new SectorElements(valueResult, currentValueResult));
-            }
-        }
-
-        foreach (var gs1ValueResult in previous.Gs1ValueResults)
-        {
-            if (current.Gs1ValueResults.FirstOrDefault(x => x.Name == gs1ValueResult.Name) is ValueResult currentGs1ValueResult)
-            {
-                if (new SectorElements(gs1ValueResult, currentGs1ValueResult).Difference != null)
-                    differences.Gs1ValueResults.Add(new SectorElements(gs1ValueResult, currentGs1ValueResult));
-            }
-        }
-
-        foreach (var gs1Grade in previous.Gs1Grades)
-        {
-            if (current.Gs1Grades.FirstOrDefault(x => x.Name == gs1Grade.Name) is Grade currentGs1Grade)
-            {
-                if (new SectorElements(gs1Grade, currentGs1Grade).Difference != null)
-                    differences.Gs1Grades.Add(new SectorElements(gs1Grade, currentGs1Grade));
-            }
-        }
-
-        foreach (var value in previous.Values)
-        {
-            if (current.Values.FirstOrDefault(x => x.Name == value.Name) is Value_ currentValue)
-            {
-                if (new SectorElements(value, currentValue).Difference != null)
-                    differences.Values.Add(new SectorElements(value, currentValue));
-            }
-        }
-
-        foreach (var alarm in previous.Alarms)
-        {
-            if (current.Alarms.FirstOrDefault(x => x.Name == alarm.Name) is Alarm currentAlarm)
-            {
-                if (new SectorElements(alarm, currentAlarm).Difference != null)
-                    differences.Alarms.Add(new SectorElements(alarm, currentAlarm));
-            }
-        }
-
-        //foreach (var blemish in previous.Blemishes)
-        //{
-        //    if (current.Blemishes.FirstOrDefault(x => x. == blemish.Name) is Blemish currentBlemish)
-        //    {
-        //        if (new SectorElements(blemish, currentBlemish).Difference != null)
-        //            differences.Blemishes.Add(new SectorElements(blemish, currentBlemish));
-        //    }
-        //}
+        Compare(differences.GradeValues, previous.GradeValues, current.GradeValues);
+        Compare(differences.ValueResults, previous.ValueResults, current.ValueResults);
+        Compare(differences.Gs1ValueResults, previous.Gs1ValueResults, current.Gs1ValueResults);
+        Compare(differences.Gs1Grades, previous.Gs1Grades, current.Gs1Grades);
+        Compare(differences.Values, previous.Values, current.Values);
+        Compare(differences.Alarms, previous.Alarms, current.Alarms);
+        Compare(differences.Blemishes, previous.Blemishes, current.Blemishes);
 
         return differences;
 
     }
 
+    private static void Compare(List<SectorElements> differences, IEnumerable<ISectorValue> previous, IEnumerable<ISectorValue> current)
+    {
+        foreach (var pre in previous)
+        {
+            var cur = current.FirstOrDefault(x => x.Name == pre.Name);
+            if (cur != null)
+            {
+                if (new SectorElements(pre.Name, pre, cur).Difference != null)
+                    differences.Add(new SectorElements(pre.Name, pre, cur));
+            }
+            else
+                differences.Add(new SectorElements(pre.Name, pre, null));
+
+        }
+        foreach (var cur in current)
+        {
+            var pre = previous.FirstOrDefault(x => x.Name == cur.Name);
+            if (pre != null)
+            {
+                if (differences.Any(x => x.Name == pre.Name))
+                    continue;
+                if (new SectorElements(cur.Name, pre, cur).Difference != null)
+                    differences.Add(new SectorElements(cur.Name, pre, cur));
+            }
+            else
+                differences.Add(new SectorElements(cur.Name, null, cur));
+        }
+    }
+
+
+    public List<SectorElements> Others { get; } = [];
     public List<SectorElements> GradeValues { get; } = [];
     public List<SectorElements> ValueResults { get; } = [];
     public List<SectorElements> Gs1ValueResults { get; } = [];
@@ -101,7 +73,6 @@ public class SectorDifferences
     public List<SectorElements> Values { get; } = [];
     public List<SectorElements> Alarms { get; } = [];
     public List<SectorElements> Blemishes { get; } = [];
-
 
     public static bool CompareGrade(Grade source, Grade compare) => Settings.Grade_UseGradeLetter
             ? source.Letter == compare.Letter
@@ -124,19 +95,19 @@ public class SectorDifference
     public string Name { get; set; }
     public object Previous { get; set; }
     public object Current { get; set; }
-
 }
 
-public class SectorElements(object previous, object current)
+public class SectorElements(string name, object previous, object current)
 {
-    public object Previous { get; set; } = previous;
-    public object Current { get; set; } = current;
+    public string Name { get; } = name;
+    public object Previous { get; } = previous;
+    public object Current { get; } = current;
 
     public List<SectorDifference> Difference
     {
         get
         {
-            List<SectorDifference> differences = new();
+            List<SectorDifference> differences = [];
 
             if (Previous is GradeValue previous && Current is GradeValue current)
             {
@@ -166,13 +137,25 @@ public class SectorElements(object previous, object current)
                 }
             }
 
+            if (Previous is Value_ previousValue && Current is Value_ currentValue)
+            {
+                if (!SectorDifferences.CompareValue(previousValue, currentValue))
+                {
+                    differences.Add(new SectorDifference { Name = currentValue.Name, Previous = previousValue, Current = currentValue });
+                }
+            }
+
+            if (Previous is Alarm previousAlarm && Current is Alarm currentAlarm)
+            {
+                if (!SectorDifferences.CompareAlarm(previousAlarm, currentAlarm))
+                {
+                    differences.Add(new SectorDifference { Name = currentAlarm.Name, Previous = previousAlarm, Current = currentAlarm });
+                }
+            }
+
             return differences.Count > 0 ? differences : null;
         }
-
     }
-
-
-
 }
 
 public class SectorDifferencesSettings

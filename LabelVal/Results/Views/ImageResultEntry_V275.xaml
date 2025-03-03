@@ -336,12 +336,12 @@
                                             ToolTip="Copy image to clipboard as PNG." />
 
                                         <Button
-                                        Width="28"
-                                        Command="{Binding V275FocusedStoredSector.CopyToClipBoardCommand}"
-                                        Content="{iconPacks:Material Kind=ContentCopy}"
-                                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                        ToolTip="Copy sector to CSV." />
+                                            Width="28"
+                                            Command="{Binding V275FocusedStoredSector.CopyToClipBoardCommand}"
+                                            Content="{iconPacks:Material Kind=ContentCopy}"
+                                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                            Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                            ToolTip="Copy sector to CSV." />
 
                                         <Button
                                             Width="28"
