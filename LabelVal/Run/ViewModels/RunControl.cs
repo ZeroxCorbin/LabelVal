@@ -68,7 +68,7 @@ public Verifier L95 { get; private set; }
         else
         {
             Logger.LogInfo($"Starting Run: {SelectedImageRoll.Name}; {LoopCount.ToString()}");
-            RunController.StartAsync(ImageResultsList, SelectedImageRoll, V275, V5?.Controller, L95.Controller, LoopCount);
+            RunController.StartAsync(ImageResultsList, SelectedImageRoll, V275, V5?.Controller, L95?.Controller, LoopCount);
         }
     }
 

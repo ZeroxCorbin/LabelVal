@@ -98,6 +98,12 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
     [RelayCommand]
     private async Task GetDevices()
     {
+        if(!App.Current.Dispatcher.CheckAccess())
+        {
+            _ = App.Current.Dispatcher.BeginInvoke(() => GetDevices());
+            return;
+        }
+
         Logger.LogInfo("Loading V275 devices.");
 
         Node system = new(Host, SystemPort, 0, UserName, Password, SimulatorImageDirectory, SelectedImageRoll);

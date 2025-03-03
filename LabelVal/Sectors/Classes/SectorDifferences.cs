@@ -39,19 +39,22 @@ public class SectorDifferences
 
     private static void Compare(List<SectorElement> differences, IEnumerable<ISectorValue> previous, IEnumerable<ISectorValue> current)
     {
-        foreach (var pre in previous)
+        foreach (ISectorValue pre in previous)
         {
-            var cur = current.FirstOrDefault(x => x.Name == pre.Name);
+            ISectorValue cur = current.FirstOrDefault(x => x.Name == pre.Name);
             if (cur != null)
+            {
                 if (new SectorElement(pre.Name, pre, cur).Difference != null)
                     differences.Add(new SectorElement(pre.Name, pre, cur));
+            }
+
             else
                 differences.Add(new SectorElement(pre.Name, pre, null));
 
         }
-        foreach (var cur in current)
+        foreach (ISectorValue cur in current)
         {
-            var pre = previous.FirstOrDefault(x => x.Name == cur.Name);
+            ISectorValue pre = previous.FirstOrDefault(x => x.Name == cur.Name);
             if (pre != null)
             {
                 if (differences.Any(x => x.Name == pre.Name))
@@ -63,7 +66,6 @@ public class SectorDifferences
                 differences.Add(new SectorElement(cur.Name, null, cur));
         }
     }
-
 
     public List<SectorElement> Others { get; } = [];
     public List<SectorElement> GradeValues { get; } = [];
@@ -89,9 +91,4 @@ public class SectorDifferences
     public static bool CompareAlarm(Alarm source, Alarm compare) => source.Category == compare.Category && source.Data?.SubAlarm == compare.Data?.SubAlarm;
 
 }
-
-
-
-
-
 

@@ -222,7 +222,7 @@ public partial class Controller : ObservableObject
 
                 V275Result v275Res = null;
                 if (UseV275)
-                    if ((v275Res = await ProcessV275(ire)) == null)
+                    if ((v275Res = await App.Current.Dispatcher.Invoke(()=> ProcessV275(ire))) == null)
                         return UpdateRunState(RunStates.Error); ;
 
                 V5Result v5Res = null;

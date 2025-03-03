@@ -42,7 +42,7 @@ public partial class LoggingStatusBarVm : ObservableRecipient, IRecipient<Loggin
 
         if (App.Current != null && !App.Current.Dispatcher.CheckAccess())
         {
-            App.Current.Dispatcher.Invoke(() => AddMessage(message));
+            App.Current.Dispatcher.BeginInvoke(() => AddMessage(message));
             return;
         }
         LoggerMessages.Add(message);
