@@ -1,10 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using HelixToolkit.Wpf.SharpDX;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Results.Databases;
 using LabelVal.Sectors.Classes;
-using LabelVal.Utilities;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
@@ -59,8 +57,6 @@ public partial class ImageResultEntry
             RepeatAvailable = V5ProcessResults
         };
 
-
-
         if (imageType == ImageResultEntryImageTypes.Source)
             lab.Image = PrepareImage(SourceImage);
         else if (imageType == ImageResultEntryImageTypes.V5Stored)
@@ -69,7 +65,7 @@ public partial class ImageResultEntry
         IsV5Working = true;
         IsV5Faulted = false;
 
-        Task.Run(() => ImageResults.SelectedScanner.Controller.ProcessLabel(lab));
+        _ = Task.Run(() => ImageResults.SelectedScanner.Controller.ProcessLabel(lab));
     }
 
     private byte[] PrepareImage(ImageEntry img)
@@ -83,7 +79,7 @@ public partial class ImageResultEntry
             double ratio = Math.Sqrt(5000000.0 / img.ImageTotalPixels);
             int newWidth = (int)(img.Image.PixelWidth * ratio);
             int newHeight = (int)(img.Image.PixelHeight * ratio);
-            var newimg =  LibImageUtilities.BitmapImage.ResizeImage(img.Image, newWidth, newHeight);
+            System.Windows.Media.Imaging.BitmapImage newimg = LibImageUtilities.BitmapImage.ResizeImage(img.Image, newWidth, newHeight);
             return LibImageUtilities.BitmapImage.ImageToBytes(newimg, false);
         }
 
@@ -95,7 +91,7 @@ public partial class ImageResultEntry
     {
         if (!App.Current.Dispatcher.CheckAccess())
         {
-            App.Current.Dispatcher.BeginInvoke(() => V5ProcessResults(report)); 
+            _ = App.Current.Dispatcher.BeginInvoke(() => V5ProcessResults(report));
             return;
         }
 
@@ -143,46 +139,63 @@ public partial class ImageResultEntry
 
     private void V5GetStored()
     {
-        if (SelectedDatabase == null)
+        if (!App.Current.Dispatcher.CheckAccess())
+        {
+            _ = App.Current.Dispatcher.BeginInvoke(() => V275GetStored());
             return;
+        }
+
+        if (SelectedDatabase == null)
+        {
+            Logger.LogError("No image results database selected.");
+            return;
+        }
 
         V5StoredSectors.Clear();
 
-        V5ResultRow = SelectedDatabase.Select_V5Result(ImageRollUID, SourceImageUID);
-
-        if (V5ResultRow == null)
+        try
         {
-            Logger.LogDebug("V5 Result Row is null");
-            return;
-        }
+            V5Result row = SelectedDatabase.Select_V5Result(ImageRollUID, SourceImageUID);
 
-        if (V5ResultRow.Report == null || V5ResultRow.Template == null)
+            if (row == null)
+                return;
+
+            if (row.Report == null || row.Template == null)
+            {
+                Logger.LogDebug("V5 result is missing data.");
+                return;
+            }
+
+            List<Sectors.Interfaces.ISector> tempSectors = [];
+            if (!string.IsNullOrEmpty(row.Report))
+            {
+                if (row._Report._event.data.decodeData != null)
+                    foreach (V5_REST_Lib.Models.ResultsAlt.Decodedata rSec in row._Report._event.data.decodeData)
+                        tempSectors.Add(new V5.Sectors.Sector(rSec, row._Config.response.data.job.toolList[rSec.toolSlot - 1], $"DecodeTool{rSec.toolSlot}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, ""));
+                else
+                    foreach (V5_REST_Lib.Models.Results.Results_QualifiedResult rSec in row._ReportOld._event.data.cycleConfig.qualifiedResults)
+                        tempSectors.Add(new V5.Sectors.Sector(JsonConvert.DeserializeObject<V5_REST_Lib.Models.ResultsAlt.Decodedata>(JsonConvert.SerializeObject(rSec)), row._Config.response.data.job.toolList[rSec.toolSlot - 1], $"DecodeTool{rSec.toolSlot}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, ""));
+            }
+
+            if (tempSectors.Count > 0)
+            {
+                SortList(tempSectors);
+
+                foreach (Sectors.Interfaces.ISector sec in tempSectors)
+                    V5StoredSectors.Add(sec);
+            }
+
+            V5ResultRow = row;
+            UpdateV5StoredImageOverlay();
+
+        }
+        catch (System.Exception ex)
         {
-            Logger.LogDebug("V5 result is missing data.");
-            return;
+            Logger.LogError(ex);
+            Logger.LogError($"Error while loading stored results from: {SelectedDatabase.File.Name}");
         }
-
-        List<Sectors.Interfaces.ISector> tempSectors = [];
-        if (!string.IsNullOrEmpty(V5ResultRow.Report))
-        {
-            if (V5ResultRow._Report._event.data.decodeData != null)
-                foreach (V5_REST_Lib.Models.ResultsAlt.Decodedata rSec in V5ResultRow._Report._event.data.decodeData)
-                    tempSectors.Add(new V5.Sectors.Sector(rSec, V5ResultRow._Config.response.data.job.toolList[rSec.toolSlot - 1], $"DecodeTool{rSec.toolSlot}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, ""));
-            else
-                foreach (V5_REST_Lib.Models.Results.Results_QualifiedResult rSec in V5ResultRow._ReportOld._event.data.cycleConfig.qualifiedResults)
-                    tempSectors.Add(new V5.Sectors.Sector(JsonConvert.DeserializeObject<V5_REST_Lib.Models.ResultsAlt.Decodedata>(JsonConvert.SerializeObject(rSec)), V5ResultRow._Config.response.data.job.toolList[rSec.toolSlot - 1], $"DecodeTool{rSec.toolSlot}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, ""));
-        }
-
-        if (tempSectors.Count > 0)
-        {
-            SortList(tempSectors);
-
-            foreach (Sectors.Interfaces.ISector sec in tempSectors)
-                V5StoredSectors.Add(sec);
-        }
-
-        UpdateV5StoredImageOverlay();
     }
+
     private void V5GetSectorDiff()
     {
         V5DiffSectors.Clear();
@@ -197,7 +210,7 @@ public partial class ImageResultEntry
                 {
                     if (sec.Template.SymbologyType == cSec.Template.SymbologyType)
                     {
-                        var dat = SectorDifferences.Compare(sec.SectorDetails, cSec.SectorDetails);
+                        SectorDifferences dat = SectorDifferences.Compare(sec.SectorDetails, cSec.SectorDetails);
                         if (dat != null)
                             diff.Add(dat);
                     }
@@ -261,7 +274,7 @@ public partial class ImageResultEntry
                 }
             }
 
-        foreach (var d in diff)
+        foreach (SectorDifferences d in diff)
             if (d.IsSectorMissing)
                 V5DiffSectors.Add(d);
     }

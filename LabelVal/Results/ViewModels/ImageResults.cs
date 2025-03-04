@@ -7,15 +7,11 @@ using LabelVal.LVS_95xx.ViewModels;
 using LabelVal.Utilities;
 using LabelVal.V275.ViewModels;
 using LabelVal.V5.ViewModels;
-using Logging.lib;
 using Lvs95xx.lib.Core.Controllers;
 using MahApps.Metro.Controls.Dialogs;
 using NHibernate.Util;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing.Printing;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -242,11 +238,25 @@ public partial class ImageResults : ObservableRecipient,
     {
         foreach (ImageResultEntry img in ImageResultsList)
         {
+            if (img.V275StoredSectors.Count != 0)
+                img.StoreCommand.Execute(ImageResultEntryDevices.V275);
+            else
+           if (img.V5StoredSectors.Count != 0)
+                img.StoreCommand.Execute(ImageResultEntryDevices.V5);
+            else
             if (img.L95xxCurrentSectors.Count != 0)
-                img.StoreCommand.Execute("L95xx-All");
+                img.StoreCommand.Execute(ImageResultEntryDevices.L95xxAll);
+        }
+    }
 
-
-
+    [RelayCommand]
+    private void ClearAllCurrentResults()
+    {
+        foreach (ImageResultEntry img in ImageResultsList)
+        {
+            img.ClearReadCommand.Execute(ImageResultEntryDevices.V275);
+            img.ClearReadCommand.Execute(ImageResultEntryDevices.V5);
+            img.ClearReadCommand.Execute(ImageResultEntryDevices.L95xxAll);
         }
     }
 
@@ -275,7 +285,7 @@ public partial class ImageResults : ObservableRecipient,
 
         // byte[] bees = BitmapImageUtilities.ImageToBytes(BitmapImageUtilities.CreateRandomBitmapImage(50, 50));
         ImageEntry imagEntry = SelectedImageRoll.GetNewImageEntry(message.Image);
-        if(imagEntry == null)
+        if (imagEntry == null)
             return;
         imagEntry.NewData = message;
 

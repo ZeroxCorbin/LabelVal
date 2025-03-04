@@ -44,12 +44,20 @@
                     Header="Type"
                     IsReadOnly="True" />
                 <DataGridTextColumn
-                    Binding="{Binding SourceType, Mode=OneWay}"
-                    Header="Source"
+                    Binding="{Binding MemberName, Mode=OneWay}"
+                    Header="Member Name"
+                    IsReadOnly="True" />
+                <DataGridTextColumn
+                    Binding="{Binding LineNumber, Mode=OneWay}"
+                    Header="Line #"
                     IsReadOnly="True" />
                 <DataGridCheckBoxColumn
                     Binding="{Binding HasException, Mode=OneWay}"
                     Header="Has Exception"
+                    IsReadOnly="True" />
+                <DataGridTextColumn
+                    Binding="{Binding SourceFilePath, Mode=OneWay}"
+                    Header="File"
                     IsReadOnly="True" />
             </DataGrid.Columns>
             <DataGrid.RowStyle>

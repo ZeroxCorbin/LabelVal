@@ -357,10 +357,50 @@
                             </Grid>
                         </ToggleButton>
 
-                    </DockPanel>
+                        <Border Margin="0,0,0,0" Style="{StaticResource imageBar}" />
+                       
+                        <Button
+                            Width="48"
+                            Command="{Binding StoreAllCurrentResultsCommand}"
+                            Content="{iconPacks:Material Kind=StorePlusOutline,
+                                                         Width=24,
+                                                         Height=24}"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                            ToolTip="Store the current sectors and images to the database.">
 
-                    <DockPanel>
-                        <Button Command="{Binding StoreAllCurrentResultsCommand}" />
+                            <Button.Style>
+                                <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+
+                        <Button
+                            Width="48"
+                            Command="{Binding ClearAllCurrentResultsCommand}"
+                            Content="{iconPacks:MaterialDesign Kind=ClearAll,
+                                                         Width=24,
+                                                         Height=24}"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                            ToolTip="Clear the current sectors and image.">
+
+                            <Button.Style>
+                                <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                    <!--<Style.Triggers>
+                                        <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                    </Style.Triggers>-->
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                        
                     </DockPanel>
                 </DockPanel>
             </md:Card>

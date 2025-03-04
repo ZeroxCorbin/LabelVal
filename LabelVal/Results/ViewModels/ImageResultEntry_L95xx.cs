@@ -102,41 +102,48 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
 
     private void L95xxGetStored()
     {
+        if (!App.Current.Dispatcher.CheckAccess())
+        {
+            _ = App.Current.Dispatcher.BeginInvoke(() => V275GetStored());
+            return;
+        }
+
         if (SelectedDatabase == null)
+        {
+            Logger.LogError("No image results database selected.");
             return;
+        }
 
         L95xxStoredSectors.Clear();
 
-        L95xxResultRow = SelectedDatabase.Select_L95xxResult(ImageRollUID, SourceImageUID);
-
-        if (L95xxResultRow == null)
+        try
         {
-            Logger.LogDebug("L95xx Result Row is null");
-            return;
-        }
+            var row = SelectedDatabase.Select_L95xxResult(ImageRollUID, SourceImageUID);
 
-        if(L95xxResultRow.Report == null)
+            if (row == null)
+                return;
+
+            List<Sectors.Interfaces.ISector> tempSectors = [];
+            foreach (var rSec in row._Report)
+                tempSectors.Add(new Sector(rSec, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
+
+            if (tempSectors.Count > 0)
+            {
+                SortList(tempSectors);
+
+                foreach (var sec in tempSectors)
+                    L95xxStoredSectors.Add(sec);
+            }
+
+            L95xxResultRow = row;
+            UpdateL95xxStoredImageOverlay();
+
+        }
+        catch (Exception ex)
         {
-            Logger.LogDebug("L95xx Report is null");
-            return;
+            Logger.LogError(ex);
+            Logger.LogError($"Error while loading stored results from: {SelectedDatabase.File.Name}");
         }
-
-        List<FullReport> report = L95xxResultRow._Report;
-
-        L95xxStoredSectors.Clear();
-        List<Sectors.Interfaces.ISector> tempSectors = [];
-        foreach (var rSec in report)
-            tempSectors.Add(new Sector(rSec, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
-
-        if (tempSectors.Count > 0)
-        {
-            SortList(tempSectors);
-
-            foreach (Sector sec in tempSectors)
-                L95xxStoredSectors.Add(sec);
-        }
-
-        UpdateL95xxStoredImageOverlay();
     }
 
     public void L95xxProcessResults(FullReport? message, bool replaceSectors)

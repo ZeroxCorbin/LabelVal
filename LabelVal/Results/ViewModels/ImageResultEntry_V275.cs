@@ -309,49 +309,68 @@ public partial class ImageResultEntry
 
     private void V275GetStored()
     {
-        if (SelectedDatabase == null)
+        if(!App.Current.Dispatcher.CheckAccess())
+        {
+            _ = App.Current.Dispatcher.BeginInvoke(() => V275GetStored());
             return;
+        }
+
+        if (SelectedDatabase == null)
+        {
+            Logger.LogError("No image results database selected.");
+            return;
+        }
 
         V275StoredSectors.Clear();
 
-        V275ResultRow = SelectedDatabase.Select_V275Result(ImageRollUID, SourceImageUID);
-
-        if (V275ResultRow == null)
-            return;
-
-        List<Sectors.Interfaces.ISector> tempSectors = [];
-        if (!string.IsNullOrEmpty(V275ResultRow.Report) && !string.IsNullOrEmpty(V275ResultRow.Template))
+        try
         {
-            foreach (V275_REST_Lib.Models.Job.Sector jSec in V275ResultRow._Job.sectors)
+            var row = SelectedDatabase.Select_V275Result(ImageRollUID, SourceImageUID);
+
+            if (row == null )
+                return;
+
+            List<Sectors.Interfaces.ISector> tempSectors = [];
+
+            if (!string.IsNullOrEmpty(row.Report) && !string.IsNullOrEmpty(row.Template))
             {
-                foreach (JObject rSec in V275ResultRow._Report.inspectLabel.inspectSector)
+                foreach (V275_REST_Lib.Models.Job.Sector jSec in row._Job.sectors)
                 {
-                    if (jSec.name == rSec["name"].ToString())
+                    foreach (JObject rSec in row._Report.inspectLabel.inspectSector)
                     {
+                        if (jSec.name == rSec["name"].ToString())
+                        {
 
-                        object fSec = V275DeserializeSector(rSec, false);
+                            object fSec = V275DeserializeSector(rSec, false);
 
-                        if (fSec == null)
+                            if (fSec == null)
+                                break;
+
+                            tempSectors.Add(new V275.Sectors.Sector(jSec, fSec, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, row._Job.jobVersion));
+
                             break;
-
-                        tempSectors.Add(new V275.Sectors.Sector(jSec, fSec, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, V275ResultRow._Job.jobVersion));
-
-                        break;
+                        }
                     }
                 }
             }
-        }
 
-        if (tempSectors.Count > 0)
+            if (tempSectors.Count > 0)
+            {
+                SortList(tempSectors);
+                foreach (var sec in tempSectors)
+                    V275StoredSectors.Add(sec);
+            }
+
+            V275ResultRow = row;
+            UpdateV275StoredImageOverlay();
+
+        }
+        catch (System.Exception ex)
         {
-            SortList(tempSectors);
-
-            foreach (Sectors.Interfaces.ISector sec in tempSectors)
-                V275StoredSectors.Add(sec);
-
+            Logger.LogError(ex);
+            Logger.LogError($"Error while loading stored results from: {SelectedDatabase.File.Name}");
         }
 
-        UpdateV275StoredImageOverlay();
     }
     private static object V275DeserializeSector(JObject reportSec, bool removeGS1Data)
     {

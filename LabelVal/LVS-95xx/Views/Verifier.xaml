@@ -134,7 +134,7 @@
                             </DockPanel>-->
 
                             <StackPanel>
-                                <TextBlock Text="Database Path"/>
+                                <TextBlock Text="Database Path" />
                                 <TextBox
                                     MaxWidth="220"
                                     Margin="3"

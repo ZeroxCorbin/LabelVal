@@ -244,6 +244,12 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
     {
         if (device == ImageResultEntryDevices.V275)
         {
+            if(V275CurrentSectors.Count == 0)
+            {
+                Logger.LogDebug($"There are no sectors to store for: {device}");
+                return;
+            }
+
             if (V275StoredSectors.Count > 0)
                 if (await OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for this image?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
                     return;
@@ -266,6 +272,12 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         }
         else if (device == ImageResultEntryDevices.V5)
         {
+            if (V5CurrentSectors.Count == 0)
+            {
+                Logger.LogDebug($"There are no sectors to store for: {device}");
+                return;
+            }
+
             if (V5StoredSectors.Count > 0)
                 if (await OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for this image?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
                     return;
@@ -331,7 +343,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
 
             if (L95xxCurrentSectors.Count == 0)
             {
-                Logger.LogWarning("There are no sectors to store.");
+                Logger.LogDebug($"There are no sectors to store for: {device}");
                 return;
             }
             //Does the selected sector exist in the Stored sectors list?
@@ -397,7 +409,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
     {
         if(!App.Current.Dispatcher.CheckAccess())
         {
-            App.Current.Dispatcher.BeginInvoke(() => ClearRead(device));
+            _= App.Current.Dispatcher.BeginInvoke(() => ClearRead(device));
             return;
         }
 
