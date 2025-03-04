@@ -1,15 +1,10 @@
 ﻿using BarcodeVerification.lib.Common;
-using BarcodeVerification.lib.GS1;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Sectors.Classes;
-using LabelVal.Utilities;
-using LibImageUtilities.ImageTypes.Png;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -51,32 +46,32 @@ public partial class ImageResultEntry
 
     [RelayCommand]
     private async Task V275Process(ImageResultEntryImageTypes type)
-    {        
-        var simAddSec = ImageResults.SelectedNode.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && V275ResultRow?._Job?.sectors != null;
-        var simDetSec = ImageResults.SelectedNode.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && V275ResultRow?._Job?.sectors == null;
-        var camAddSec = !ImageResults.SelectedNode.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && V275ResultRow?._Job?.sectors != null;
-        var camDetSec = !ImageResults.SelectedNode.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && V275ResultRow?._Job?.sectors == null;
+    {
+        bool simAddSec = ImageResults.SelectedNode.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && V275ResultRow?._Job?.sectors != null;
+        bool simDetSec = ImageResults.SelectedNode.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && V275ResultRow?._Job?.sectors == null;
+        bool camAddSec = !ImageResults.SelectedNode.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && V275ResultRow?._Job?.sectors != null;
+        bool camDetSec = !ImageResults.SelectedNode.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && V275ResultRow?._Job?.sectors == null;
 
         BringIntoView?.Invoke();
 
-        var lab = new V275_REST_Lib.Label
+        V275_REST_Lib.Label lab = new()
         {
-            Table = (AvailableTables)ImageResults.SelectedImageRoll.SelectedGS1Table,
+            Table = ImageResults.SelectedImageRoll.SelectedGS1Table,
         };
 
-        if (type == ImageResultEntryImageTypes.Source || type == ImageResultEntryImageTypes.V275Print)
+        if (type is ImageResultEntryImageTypes.Source or ImageResultEntryImageTypes.V275Print)
         {
             lab.Image = SourceImage.ImageBytes;
             lab.Dpi = (int)Math.Round(SourceImage.Image.DpiX, 0);
             lab.Sectors = simDetSec || camDetSec ? [] : camAddSec ? [.. V275ResultRow._Job.sectors] : null;
-            lab.Table = (AvailableTables)ImageResults.SelectedImageRoll.SelectedGS1Table;
+            lab.Table = ImageResults.SelectedImageRoll.SelectedGS1Table;
         }
         else if (type == ImageResultEntryImageTypes.V275Stored)
         {
             lab.Image = V275ResultRow.Stored.ImageBytes;
             lab.Dpi = (int)Math.Round(V275ResultRow.Stored.Image.DpiX, 0);
             lab.Sectors = simAddSec || camAddSec ? [.. V275ResultRow._Job.sectors] : null;
-            lab.Table = (AvailableTables)ImageResults.SelectedImageRoll.SelectedGS1Table;
+            lab.Table = ImageResults.SelectedImageRoll.SelectedGS1Table;
         }
 
         if (type == ImageResultEntryImageTypes.V275Print)
@@ -103,7 +98,6 @@ public partial class ImageResultEntry
             IsV275Working = ImageResults.SelectedNode.Controller.ProcessLabel_Printer(lab, PrintCount, SelectedPrinter.PrinterName);
             IsV275Faulted = !IsV275Working;
         }
-
     }
     private void V275ProcessRepeat(V275_REST_Lib.Repeat repeat)
     {
@@ -125,7 +119,7 @@ public partial class ImageResultEntry
 
         if (!App.Current.Dispatcher.CheckAccess())
         {
-            App.Current.Dispatcher.BeginInvoke(() => V275ProcessRepeat(repeat));
+            _ = App.Current.Dispatcher.BeginInvoke(() => V275ProcessRepeat(repeat));
             return;
         }
 
@@ -257,7 +251,7 @@ public partial class ImageResultEntry
             }
 
         //ToDo: Sort the diff list
-        foreach (var d in diff)
+        foreach (SectorDifferences d in diff)
             if (d.IsSectorMissing)
                 V275DiffSectors.Add(d);
 
@@ -287,10 +281,7 @@ public partial class ImageResultEntry
 
         if (V275StoredSectors.Count == 0)
         {
-            if (!await ImageResults.SelectedNode.Controller.DetectSectors())
-                return -1;
-
-            return 2;
+            return !await ImageResults.SelectedNode.Controller.DetectSectors() ? -1 : 2;
         }
 
         foreach (V275.Sectors.Sector sec in V275StoredSectors)
@@ -388,6 +379,5 @@ public partial class ImageResultEntry
         }
     }
     public void UpdateV275StoredImageOverlay() => V275StoredImageOverlay = CreateSectorsImageOverlay(V275StoredImage, V275StoredSectors);
-
 
 }

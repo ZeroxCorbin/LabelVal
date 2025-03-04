@@ -2,7 +2,7 @@
   "UID": "a07011de-9bbd-4b7d-8011-c433a4815f21",
   "Name": "OCR/OCV",
   "Standard": "OCR_OCV",
-  "GS1Table": "None",
+  "GS1Table": "",
   "WriteSectorsBeforeProcess": false,
   "TargetDPI": 600,
   "IsLocked": true,
