@@ -116,7 +116,7 @@ public partial class Controller : ObservableObject
         RunEntry.ImageRollName = ImageRollEntry.Name;
         RunEntry.ImageRollUID = ImageRollEntry.UID;
         RunEntry.HasV275 = HasV275;
-        RunEntry.V275Version = V275?.Controller?.ProductVersion;
+        RunEntry.V275Version = V275?.Controller?.Version;
         RunEntry.HasV5 = HasV5;
         RunEntry.V5Version = V5?.Version;
         RunEntry.HasL95 = HasL95;

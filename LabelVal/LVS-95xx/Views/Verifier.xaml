@@ -181,14 +181,14 @@
                             Text="LVS-95xx" />
 
 
-                        <!--<TextBox
+                        <TextBox
                             Margin="3,3"
-                            d:Text="192.168.188.2"
-                            md:HintAssist.Hint="Port"
+                            d:Text="1.0.0.1000"
+                            md:HintAssist.Hint="Version"
                             BorderThickness="0"
                             IsHitTestVisible="False"
                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                            Text="{Binding Path=SelectedComName, Mode=OneWay}" />-->
+                            Text="{Binding Path=Controller.Version, Mode=OneWay}" />
 
                     </DockPanel>
 

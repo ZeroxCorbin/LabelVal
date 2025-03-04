@@ -45,6 +45,18 @@ public partial interface ISector
 
         List<CSVResults> compiled = [];
 
+        compiled.Add(new CSVResults
+        {
+            Name = "Version",
+            Value = sector.Template.Version
+        });
+
+        compiled.Add(new CSVResults
+        {
+            Name = "Units",
+            Value = sector.Report.Units
+        });
+
         // Add the main report
         compiled.Add(new CSVResults
         {
@@ -52,12 +64,6 @@ public partial interface ISector
             Value = sector.Report.DecodeText,
             Grade = sector.Report.OverallGradeLetter,
             GradeValue = sector.Report.OverallGradeString
-        });
-
-        compiled.Add(new CSVResults
-        {
-            Name = "Units",
-            Value = sector.Report.Units
         });
 
         //Add the the details
@@ -105,7 +111,6 @@ public partial interface ISector
             compiled.Add(new CSVResults
             {
                 Name = CamelCaseToWords(grade.Name),
-                Value = grade.Value.ToString(),
                 GradeValue = grade.Value.ToString(),
                 Grade = grade.Letter
             });
