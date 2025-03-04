@@ -36,10 +36,10 @@ public partial class ResultsDatabase : IDisposable
     public void Close() => Connection?.Dispose();
 
     public int InsertOrReplace(RunEntry entry) => Connection.InsertOrReplace(entry);
-    public bool ExistsLedgerEntry(string uid) => Connection.Table<RunEntry>().Where(v => v.StartTime.ToString() == uid).Count() > 0;
-    public RunEntry SelectLedgerEntry(string uid) => Connection.Table<RunEntry>().Where(v => v.StartTime.ToString() == uid).FirstOrDefault();
+    public bool ExistsLedgerEntry(string uid) => Connection.Table<RunEntry>().Where(v => v.UID == uid).Count() > 0;
+    public RunEntry SelectLedgerEntry(string uid) => Connection.Table<RunEntry>().Where(v => v.UID == uid).FirstOrDefault();
     public List<RunEntry> SelectAllRunEntries() => Connection.CreateCommand("select * from RunEntry").ExecuteQuery<RunEntry>();
-    public int DeleteLedgerEntry(string uid) => Connection.Table<RunEntry>().Delete(v => v.StartTime.ToString() == uid);
+    public int DeleteLedgerEntry(string uid) => Connection.Table<RunEntry>().Delete(v => v.UID == uid);
 
     public int InsertOrReplace(ResultEntry irg) => Connection.InsertOrReplace(irg);
     public int Insert(ResultEntry irg) => Connection.Insert(irg);

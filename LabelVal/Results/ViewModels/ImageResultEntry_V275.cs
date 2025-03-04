@@ -187,8 +187,10 @@ public partial class ImageResultEntry
                 {
                     if (sec.Template.SymbologyType == cSec.Template.SymbologyType)
                     {
-                        diff.Add(sec.SectorDetails.Compare(cSec.SectorDetails));
-                        continue;
+                        var res = sec.SectorDetails.Compare(cSec.SectorDetails);
+                        if (res != null)
+                            diff.Add(res);
+                        
                     }
                     else
                     {

@@ -135,166 +135,177 @@ public partial class Controller : ObservableObject
 
     private async Task<RunStates> Start()
     {
-        CurrentLabelCount = 0;
-
-        RequestedState = UpdateRunState(RunStates.Running);
-
-        if (HasV275)
-        {
-            Logger.LogInfo("Run: V275, Pre-Run");
-
-            if (await PreRunV275() != RunStates.Running)
-                return State;
-        }
-
-        if (HasV5)
-        {
-            Logger.LogInfo("Run: V5, Pre-Run");
-
-            if (await PreRunV5() != RunStates.Running)
-                return State;
-        }
-
-        if (HasL95)
-        {
-            Logger.LogInfo("Run: Lvs95xx, Pre-Run");
-
-            if (await PreRunL95() != RunStates.Running)
-                return State;
-        }
-
-        Logger.LogInfo($"Run: Loop Count {LoopCount}");
-
-        int wasLoop = 0;
-        for (int i = 0; i < LoopCount; i++)
+        try
         {
 
-            if (UpdateUI)
+
+            CurrentLabelCount = 0;
+
+            RequestedState = UpdateRunState(RunStates.Running);
+
+            if (HasV275)
             {
-                if (HasV275)
-                    foreach (Results.ViewModels.ImageResultEntry ire in ImageResultEntries)
-                        ire.ClearReadCommand.Execute(Results.ViewModels.ImageResultEntryDevices.V275);
+                Logger.LogInfo("Run: V275, Pre-Run");
 
-                if (HasV5)
-                    foreach (Results.ViewModels.ImageResultEntry ire in ImageResultEntries)
-                        ire.ClearReadCommand.Execute(Results.ViewModels.ImageResultEntryDevices.V5);
-
-                if (HasL95)
-                    foreach (Results.ViewModels.ImageResultEntry ire in ImageResultEntries)
-                        ire.ClearReadCommand.Execute(Results.ViewModels.ImageResultEntryDevices.L95xxAll);
+                if (await PreRunV275() != RunStates.Running)
+                    return State;
             }
 
-            foreach (Results.ViewModels.ImageResultEntry ire in ImageResultEntries)
+            if (HasV5)
             {
-                UseV275 = HasV275 && ire.V275StoredSectors.Count > 0;
-                if (HasV275 && ire.V275StoredSectors.Count == 0)
-                    Logger.LogInfo("Run: V275, No sectors to process.");
+                Logger.LogInfo("Run: V5, Pre-Run");
 
-                UseV5 = HasV5 && ire.V5StoredSectors.Count > 0;
-                if (HasV5 && ire.V5StoredSectors.Count == 0)
-                    Logger.LogInfo("Run: V5, No sectors to process.");
+                if (await PreRunV5() != RunStates.Running)
+                    return State;
+            }
 
-                UseL95 = HasL95 && ire.L95xxStoredSectors.Count > 0;
-                if (HasL95 && ire.L95xxStoredSectors.Count == 0)
-                    Logger.LogInfo("Run: Lvs95xx, No sectors to process.");
+            if (HasL95)
+            {
+                Logger.LogInfo("Run: Lvs95xx, Pre-Run");
 
-                if (!UseV275 && !UseV5 && !UseL95)
-                    continue;
+                if (await PreRunL95() != RunStates.Running)
+                    return State;
+            }
 
-                //The loop count is controlled inside the image entry loop so the PreLoop calls can use the ImageResultEntry.
-                CurrentLoopCount = i + 1;
-                if (CurrentLoopCount != wasLoop)
+            Logger.LogInfo($"Run: Loop Count {LoopCount}");
+
+            int wasLoop = 0;
+            for (int i = 0; i < LoopCount; i++)
+            {
+
+                if (UpdateUI)
                 {
+                    if (HasV275)
+                        foreach (Results.ViewModels.ImageResultEntry ire in ImageResultEntries)
+                            ire.ClearReadCommand.Execute(Results.ViewModels.ImageResultEntryDevices.V275);
+
+                    if (HasV5)
+                        foreach (Results.ViewModels.ImageResultEntry ire in ImageResultEntries)
+                            ire.ClearReadCommand.Execute(Results.ViewModels.ImageResultEntryDevices.V5);
+
+                    if (HasL95)
+                        foreach (Results.ViewModels.ImageResultEntry ire in ImageResultEntries)
+                            ire.ClearReadCommand.Execute(Results.ViewModels.ImageResultEntryDevices.L95xxAll);
+                }
+
+                foreach (Results.ViewModels.ImageResultEntry ire in ImageResultEntries)
+                {
+                    UseV275 = HasV275 && ire.V275StoredSectors.Count > 0;
+                    if (HasV275 && ire.V275StoredSectors.Count == 0)
+                        Logger.LogInfo("Run: V275, No sectors to process.");
+
+                    UseV5 = HasV5 && ire.V5StoredSectors.Count > 0;
+                    if (HasV5 && ire.V5StoredSectors.Count == 0)
+                        Logger.LogInfo("Run: V5, No sectors to process.");
+
+                    UseL95 = HasL95 && ire.L95xxStoredSectors.Count > 0;
+                    if (HasL95 && ire.L95xxStoredSectors.Count == 0)
+                        Logger.LogInfo("Run: Lvs95xx, No sectors to process.");
+
+                    if (!UseV275 && !UseV5 && !UseL95)
+                        continue;
+
+                    //The loop count is controlled inside the image entry loop so the PreLoop calls can use the ImageResultEntry.
+                    CurrentLoopCount = i + 1;
+                    if (CurrentLoopCount != wasLoop)
+                    {
+                        if (UseV275)
+                            if (await PreLoopV275(ire) != RunStates.Running)
+                                return State;
+
+                        if (UseV5)
+                            if (await PreLoopV5(ire) != RunStates.Running)
+                                return State;
+
+                        if (UseL95)
+                            if (await PreLoopL95(ire) != RunStates.Running)
+                                return State;
+
+                        wasLoop = CurrentLoopCount;
+                        Logger.LogInfo($"Run: Starting Loop {CurrentLoopCount}");
+                    }
+
+                    if (RequestedState != RunStates.Running)
+                        return UpdateRunState(RequestedState);
+
+                    //This must occur before the print so it is added to the V275 image
+                    CurrentLabelCount++;
+
+                    V275Result v275Res = null;
                     if (UseV275)
-                        if (await PreLoopV275(ire) != RunStates.Running)
-                            return State;
+                        if ((v275Res = await App.Current.Dispatcher.Invoke(() => ProcessV275(ire))) == null)
+                            return UpdateRunState(RunStates.Error); ;
 
+                    V5Result v5Res = null;
                     if (UseV5)
-                        if (await PreLoopV5(ire) != RunStates.Running)
-                            return State;
+                        if ((v5Res = await ProcessV5(ire)) == null)
+                            return UpdateRunState(RunStates.Error);
 
+                    L95xxResult l95Res = null;
                     if (UseL95)
-                        if (await PreLoopL95(ire) != RunStates.Running)
-                            return State;
+                        if ((l95Res = await ProcessL95(ire)) == null)
+                            return UpdateRunState(RunStates.Error);
 
-                    wasLoop = CurrentLoopCount;
-                    Logger.LogInfo($"Run: Starting Loop {CurrentLoopCount}");
-                }
-
-                if (RequestedState != RunStates.Running)
-                    return UpdateRunState(RequestedState);
-
-                //This must occur before the print so it is added to the V275 image
-                CurrentLabelCount++;
-
-                V275Result v275Res = null;
-                if (UseV275)
-                    if ((v275Res = await App.Current.Dispatcher.Invoke(()=> ProcessV275(ire))) == null)
-                        return UpdateRunState(RunStates.Error); ;
-
-                V5Result v5Res = null;
-                if (UseV5)
-                    if ((v5Res = await ProcessV5(ire)) == null)
-                        return UpdateRunState(RunStates.Error);
-
-                L95xxResult l95Res = null;
-                if (UseL95)
-                    if ((l95Res = await ProcessL95(ire)) == null)
-                        return UpdateRunState(RunStates.Error);
-
-                if (v275Res != null)
-                {
-                    Run.Databases.ResultEntry current = new(v275Res, ImageResultTypes.Current)
+                    if (v275Res != null)
                     {
-                        RunUID = RunUID,
-                        SourceImageUID = ire.SourceImageUID,
-                        ImageRollUID = ire.ImageRollUID,
-                        Order = CurrentLabelCount,
-                        TotalLoops = LoopCount,
-                        CompletedLoops = CurrentLoopCount
-                    };
+                        Run.Databases.ResultEntry current = new(v275Res, ImageResultTypes.Current)
+                        {
+                            RunUID = RunUID,
+                            SourceImageUID = ire.SourceImageUID,
+                            ImageRollUID = ire.ImageRollUID,
+                            Order = CurrentLabelCount,
+                            TotalLoops = LoopCount,
+                            CompletedLoops = CurrentLoopCount
+                        };
 
-                    _ = ResultsDatabase.Insert(current);
-                }
+                        _ = ResultsDatabase.Insert(current);
+                    }
 
-                if (v5Res != null)
-                {
-                    Run.Databases.ResultEntry current = new(v5Res, ImageResultTypes.Current)
+                    if (v5Res != null)
                     {
-                        RunUID = RunUID,
-                        SourceImageUID = ire.SourceImageUID,
-                        ImageRollUID = ire.ImageRollUID,
-                        Order = CurrentLabelCount,
-                        TotalLoops = LoopCount,
-                        CompletedLoops = CurrentLoopCount
-                    };
-                    _ = ResultsDatabase.InsertOrReplace(current);
-                }
+                        Run.Databases.ResultEntry current = new(v5Res, ImageResultTypes.Current)
+                        {
+                            RunUID = RunUID,
+                            SourceImageUID = ire.SourceImageUID,
+                            ImageRollUID = ire.ImageRollUID,
+                            Order = CurrentLabelCount,
+                            TotalLoops = LoopCount,
+                            CompletedLoops = CurrentLoopCount
+                        };
+                        _ = ResultsDatabase.Insert(current);
+                    }
 
-                if (l95Res != null)
-                {
-                    Run.Databases.ResultEntry current = new(l95Res, ImageResultTypes.Current)
+                    if (l95Res != null)
                     {
-                        RunUID = RunUID,
-                        SourceImageUID = ire.SourceImageUID,
-                        ImageRollUID = ire.ImageRollUID,
-                        Order = CurrentLabelCount,
-                        TotalLoops = LoopCount,
-                        CompletedLoops = CurrentLoopCount
-                    };
-                    _ = ResultsDatabase.InsertOrReplace(current);
+                        Run.Databases.ResultEntry current = new(l95Res, ImageResultTypes.Current)
+                        {
+                            RunUID = RunUID,
+                            SourceImageUID = ire.SourceImageUID,
+                            ImageRollUID = ire.ImageRollUID,
+                            Order = CurrentLabelCount,
+                            TotalLoops = LoopCount,
+                            CompletedLoops = CurrentLoopCount
+                        };
+                        _ = ResultsDatabase.Insert(current);
+                    }
+
+                    _ = UpdateRunEntry();
+
+                    Thread.Sleep(100);
                 }
-
-                _ = UpdateRunEntry();
-
-                Thread.Sleep(100);
             }
+
+            RunEntry.EndTime = DateTime.Now.Ticks;
+
+            return UpdateRunState(RunStates.Complete);
         }
-
-        RunEntry.EndTime = DateTime.Now.Ticks;
-
-        return UpdateRunState(RunStates.Complete);
-    }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex.Message);
+            State = RunStates.Error;
+            return State;
+        }
+}
 
     private async Task<RunStates> PreRunV275()
     {

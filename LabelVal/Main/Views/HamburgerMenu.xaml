@@ -249,6 +249,9 @@
                                     <DataTrigger Binding="{Binding QuickRunController.RunController.State}" Value="Running">
                                         <Setter Property="Content" Value="{iconPacks:Material Kind=Stop, Width=24, Height=24}" />
                                     </DataTrigger>
+                                    <DataTrigger Binding="{Binding QuickRunController.RunController.State}" Value="Error">
+                                        <Setter Property="Content" Value="{iconPacks:Material Kind=Eraser, Width=24, Height=24}" />
+                                    </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </Button.Style>

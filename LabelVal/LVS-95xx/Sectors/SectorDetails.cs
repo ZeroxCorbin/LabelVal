@@ -1,15 +1,10 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using Lvs95xx.lib.Core.Models;
-using LabelVal.Sectors.Interfaces;
-using Org.BouncyCastle.Crypto.Prng;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using V275_REST_Lib.Models;
-using Lvs95xx.lib.Core.Controllers;
+﻿using BarcodeVerification.lib.Common;
+using CommunityToolkit.Mvvm.ComponentModel;
 using LabelVal.Sectors.Classes;
-using BarcodeVerification.lib.Common;
+using LabelVal.Sectors.Interfaces;
+using Lvs95xx.lib.Core.Controllers;
+using Lvs95xx.lib.Core.Models;
+using System.Collections.ObjectModel;
 
 namespace LabelVal.LVS_95xx.Sectors;
 
@@ -40,32 +35,32 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
     public ObservableCollection<Alarm> Alarms { get; } = [];
     public ObservableCollection<Blemish> Blemishes { get; } = [];
 
-    public SectorDifferences Compare(ISectorDetails compare) => SectorDifferences.Compare(this, compare);
+    public SectorDifferences? Compare(ISectorDetails compare) => SectorDifferences.Compare(this, compare);
 
     public SectorDetails() { }
     public SectorDetails(ISector sector, bool isPDF417) => Process(sector, isPDF417);
     public void Process(ISector sector, bool isPDF417)
     {
-        if(sector is not LVS_95xx.Sectors.Sector sec)
+        if (sector is not LVS_95xx.Sectors.Sector sec)
             return;
 
         Sector = sector;
-        var report = sec.L95xxFullReport;
+        FullReport report = sec.L95xxFullReport;
 
         Name = report.Name;
         UserName = report.Name;
         IsNotEmpty = false;
 
-        var alarms = new List<Alarm>();
+        List<Alarm> alarms = new();
 
-        var isGS1 = GetParameter("GS1 Data", report.ReportData) != null;
-        var is2D = GetParameter("Cell size", report.ReportData) != null;
+        bool isGS1 = GetParameter("GS1 Data", report.ReportData) != null;
+        bool is2D = GetParameter("Cell size", report.ReportData) != null;
 
         if (is2D && Sector.Report.Standard != AvailableStandards.ISO29158)
         {
             IsNotEmpty = true;
 
-            foreach (var war in GetParameters("Warning", report.ReportData))
+            foreach (string war in GetParameters("Warning", report.ReportData))
                 alarms.Add(new Alarm() { Name = war, Category = 1 });
 
             GradeValues.Add(new GradeValue("decode", -1, GetParameter("Decode", report.ReportData, true).StartsWith("PASS") ? new Grade("", 4.0f, "A") : new Grade("Decode", 0.0f, "F")));
@@ -76,7 +71,7 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
             GradeValues.Add(GetGradeValue("gridNonUniformity", GetParameter("Grid nonuniformity", report.ReportData)));
             GradeValues.Add(GetGradeValue("unusedErrorCorrection", GetParameter("Unused EC", report.ReportData)));
 
-            var fx = GetParameter("Fixed pattern damage", report.ReportData);
+            string fx = GetParameter("Fixed pattern damage", report.ReportData);
             GradeValues.Add(new GradeValue("fixedPatternDamage", -1, new Grade("", ParseFloat(fx), GetLetter(ParseFloat(fx)))));
 
             Values.Add(new Value_("minimumReflectance", ParseInt(GetParameter("Rmin", report.ReportData))));
@@ -87,18 +82,18 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
 
             if (isGS1)
             {
-                var ch = GetParameter("Cell width", report.ReportData);
+                string ch = GetParameter("Cell width", report.ReportData);
                 float cellSizeX = ParseFloat(ch);
 
                 ch = GetParameter("Cell height", report.ReportData);
                 float cellSizeY = ParseFloat(ch);
 
-                var sz = GetParameter("Size", report.ReportData);
-                var sz2 = sz.Split('x');
+                string sz = GetParameter("Size", report.ReportData);
+                string[] sz2 = sz.Split('x');
                 Gs1ValueResults.Add(new ValueResult("symbolWidth", cellSizeX * ParseInt(sz2[0]), "PASS"));
                 Gs1ValueResults.Add(new ValueResult("symbolHeight", cellSizeY * ParseInt(sz2[1]), "PASS"));
 
-                var al = alarms.Find((e) => e.Name.Contains("minimum Xdim"));
+                Alarm al = alarms.Find((e) => e.Name.Contains("minimum Xdim"));
                 Gs1ValueResults.Add(new ValueResult("cellHeight", cellSizeX, al == null ? "PASS" : "FAIL"));
                 Gs1ValueResults.Add(new ValueResult("cellWidth", cellSizeY, al == null ? "PASS" : "FAIL"));
 
@@ -110,15 +105,15 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
 
             }
 
-            foreach (var a in alarms)
+            foreach (Alarm a in alarms)
                 Alarms.Add(a);
 
         }
-        else if(is2D && Sector.Report.Standard == AvailableStandards.ISO29158)
+        else if (is2D && Sector.Report.Standard == AvailableStandards.ISO29158)
         {
             IsNotEmpty = true;
 
-            foreach (var war in GetParameters("Warning", report.ReportData))
+            foreach (string war in GetParameters("Warning", report.ReportData))
                 alarms.Add(new Alarm() { Name = war, Category = 1 });
 
             GradeValues.Add(new GradeValue("decode", -1, GetParameter("Decode", report.ReportData, true).StartsWith("PASS") ? new Grade("", 4.0f, "A") : new Grade("Decode", 0.0f, "F")));
@@ -129,28 +124,27 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
             GradeValues.Add(GetGradeValue("gridNonUniformity", GetParameter("Grid nonuniformity", report.ReportData)));
             GradeValues.Add(GetGradeValue("unusedErrorCorrection", GetParameter("Unused EC", report.ReportData)));
 
-            var fx = GetParameter("Fixed pattern damage", report.ReportData);
+            string fx = GetParameter("Fixed pattern damage", report.ReportData);
             GradeValues.Add(new GradeValue("fixedPatternDamage", -1, new Grade("", ParseFloat(fx), GetLetter(ParseFloat(fx)))));
 
-
-            var ch = GetParameter("Cell width", report.ReportData);
+            string ch = GetParameter("Cell width", report.ReportData);
             float cellSizeX = ParseFloat(ch);
 
             ch = GetParameter("Cell height", report.ReportData);
             float cellSizeY = ParseFloat(ch);
 
-            var sz = GetParameter("Size", report.ReportData);
-            var sz2 = sz.Split('x');
+            string sz = GetParameter("Size", report.ReportData);
+            string[] sz2 = sz.Split('x');
             Values.Add(new Value_("symbolWidth", (int)(cellSizeX * ParseInt(sz2[0]))));
             Values.Add(new Value_("symbolHeight", (int)(cellSizeY * ParseInt(sz2[1]))));
-            
+
             //Values.Add(new Value_("contrastUniformity", ParseInt(GetParameter("Contrast un", report.ReportData))));
 
-            var al = alarms.Find((e) => e.Name.Contains("minimum Xdim"));
+            Alarm al = alarms.Find((e) => e.Name.Contains("minimum Xdim"));
             Values.Add(new Value_("cellHeight", (int)cellSizeX));
             Values.Add(new Value_("cellWidth", (int)cellSizeY));
 
-            foreach (var a in alarms)
+            foreach (Alarm a in alarms)
                 Alarms.Add(a);
 
         }
@@ -163,7 +157,7 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
 
             Values.Add(new Value_("minimumReflectance", (int)Math.Ceiling(ParseFloat(GetParameter("Rmin", report.ReportData)))));
 
-            var spl = GetParameter("Codeword Yield", report.ReportData).Split(' ');
+            string[] spl = GetParameter("Codeword Yield", report.ReportData).Split(' ');
             if (spl.Count() == 2)
                 GradeValues.Add(new GradeValue("CodewordYield", ParseInt(spl[1]), GetGrade("", spl[0])));
             else
@@ -175,7 +169,7 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
         {
             IsNotEmpty = true;
 
-            foreach (var war in GetParameters("Warning", report.ReportData))
+            foreach (string war in GetParameters("Warning", report.ReportData))
                 alarms.Add(new Alarm() { Name = war, Category = 1 });
 
             GradeValues.Add(new GradeValue("decode", -1, GetParameter("Decode", report.ReportData, true).StartsWith("PASS") ? new Grade("", 4.0f, "A") : new Grade("Decode", 0.0f, "F")));
@@ -189,8 +183,8 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
             {
                 //GradeValues.Add(GetGradeValue("unusedErrorCorrection", GetParameter("Unused ", report.ReportData)));
 
-                var kv1 = GetParameter("Xdim", report.ReportData);
-                var item = alarms.Find((e) => e.Name.Contains("minimum Xdim"));
+                string kv1 = GetParameter("Xdim", report.ReportData);
+                Alarm item = alarms.Find((e) => e.Name.Contains("minimum Xdim"));
                 Gs1ValueResults.Add(new ValueResult("symbolXDim", ParseFloat(kv1), item == null ? "PASS" : "FAIL"));
 
                 kv1 = GetParameter("Bar height", report.ReportData);
@@ -202,17 +196,17 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
 
             ValueResults.Add(new ValueResult("edgeDetermination", 100, GetParameter("Edge", report.ReportData)));
 
-            var kv = GetParameter("Quiet", report.ReportData);
+            string kv = GetParameter("Quiet", report.ReportData);
             if (kv != null && kv.Contains("ERR"))
             {
-                var spl2 = kv.Split(' ');
+                string[] spl2 = kv.Split(' ');
                 if (spl2.Count() == 2)
                     ValueResults.Add(new ValueResult("quietZone", ParseInt(spl2[0]), spl2[1]));
             }
             else
                 ValueResults.Add(new ValueResult("quietZone", 100, kv));
 
-            foreach (var item in alarms)
+            foreach (Alarm item in alarms)
                 Alarms.Add(item);
         }
     }
@@ -225,7 +219,7 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
         string item = report.Find((e) => e.StartsWith(key));
 
         //if it was not found or the item does not contain a comma.
-        return item?.Contains(',') != true ? null : ([item[..item.IndexOf(',')], item[(item.IndexOf(',') + 1)..]]);
+        return item?.Contains(',') != true ? null : [item[..item.IndexOf(',')], item[(item.IndexOf(',') + 1)..]];
     }
     private List<string[]> GetMultipleKeyValuePairs(string key, List<string> report)
     {
@@ -247,71 +241,63 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
 
     private string[] GetValues(string name, List<string> splitPacket)
     {
-        var warn = splitPacket.FindAll((e) => e.StartsWith(name));
+        List<string> warn = splitPacket.FindAll((e) => e.StartsWith(name));
 
-        var ret = new List<string>();
-        foreach (var line in warn)
+        List<string> ret = new();
+        foreach (string line in warn)
         {
             //string[] spl1 = new string[2];
             //spl1[0] = line.Substring(0, line.IndexOf(','));
-            ret.Add(line.Substring(line.IndexOf(',') + 1));
+            ret.Add(line[(line.IndexOf(',') + 1)..]);
         }
         return ret.ToArray();
     }
     private float ParseFloat(string value)
     {
-        var digits = new string(value.Trim().TakeWhile(c =>
-                                ("0123456789.").Contains(c)
+        string digits = new(value.Trim().TakeWhile("0123456789.".Contains
                                 ).ToArray());
 
-        if (float.TryParse(digits, out var val))
-            return val;
-        else
-            return 0;
+        return float.TryParse(digits, out float val) ? val : 0;
 
     }
 
     private static int ParseInt(string value)
     {
-        var digits = new string(value.Trim().TakeWhile(c =>
-                                ("0123456789").Contains(c)
+        string digits = new(value.Trim().TakeWhile("0123456789".Contains
                                 ).ToArray());
 
-        return int.TryParse(digits, out var val) ? val : 0;
+        return int.TryParse(digits, out int val) ? val : 0;
     }
 
     private GradeValue GetGradeValue(string name, string data)
     {
-        var spl2 = data.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+        string[] spl2 = data.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
         if (spl2.Count() != 2)
             return null;
 
-        var tmp = ParseFloat(spl2[0]);
+        float tmp = ParseFloat(spl2[0]);
 
         return new GradeValue(name, ParseFloat(spl2[1]), new Grade(name, tmp, GetLetter(tmp)));
     }
 
     private Grade GetGrade(string name, string data)
     {
-        if(data == null)
+        if (data == null)
             return new Grade(name, 0.0f, "F");
 
-        var tmp = ParseFloat(data);
+        float tmp = ParseFloat(data);
         return new Grade(name, tmp, GetLetter(tmp));
     }
 
-    private static string GetLetter(float value)
+    private static string GetLetter(float value) => value switch
     {
-        return value switch
-        {
-            4.0f => "A",
-            <= 3.9f and >= 3.0f => "B",
-            <= 2.9f and >= 2.0f => "C",
-            <= 1.9f and >= 1.0f => "D",
-            <= 0.9f and >= 0.0f => "F",
-            _ => "F"
-        };
-    }
+        4.0f => "A",
+        <= 3.9f and >= 3.0f => "B",
+        <= 2.9f and >= 2.0f => "C",
+        <= 1.9f and >= 1.0f => "D",
+        <= 0.9f and >= 0.0f => "F",
+        _ => "F"
+    };
 
 }

@@ -209,7 +209,10 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
                 {
                     if (sec.Template.SymbologyType == cSec.Template.SymbologyType)
                     {
-                        diff.Add(sec.SectorDetails.Compare(cSec.SectorDetails));
+                        var res = sec.SectorDetails.Compare(cSec.SectorDetails);
+                        if(res == null)
+                            continue;
+                        diff.Add(res);
                         continue;
                     }
                     else

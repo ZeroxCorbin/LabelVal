@@ -14,7 +14,9 @@ public class SectorDifferences
     public bool IsSectorMissing { get; set; }
     public string SectorMissingText { get; set; }
 
-    public static SectorDifferences Compare(ISectorDetails previous, ISectorDetails current)
+    public bool HasDifferences { get; set; }
+
+    public static SectorDifferences? Compare(ISectorDetails previous, ISectorDetails current)
     {
 
         SectorDifferences differences = new()
@@ -39,7 +41,9 @@ public class SectorDifferences
         Compare(differences.Alarms, previous.Alarms, current.Alarms);
         Compare(differences.Blemishes, previous.Blemishes, current.Blemishes);
 
-        return differences;
+        differences.HasDifferences = differences.Others.Count > 0 || differences.GradeValues.Count > 0 || differences.ValueResults.Count > 0 || differences.Gs1ValueResults.Count > 0 || differences.Gs1Grades.Count > 0 || differences.Values.Count > 0 || differences.Alarms.Count > 0 || differences.Blemishes.Count > 0;
+
+        return differences.HasDifferences ? differences : null;
 
     }
 

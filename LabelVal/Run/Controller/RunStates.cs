@@ -1,4 +1,7 @@
-﻿namespace LabelVal.Run;
+﻿using SQLite;
+
+namespace LabelVal.Run;
+[StoreAsText]
 public enum RunStates
 {
     Idle,

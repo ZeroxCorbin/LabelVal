@@ -7,16 +7,17 @@ namespace LabelVal.Run.Databases;
 
 public partial class RunEntry : ObservableObject
 {
-    public RunEntry() { }
+    public RunEntry() 
+    { 
+        var start = DateTime.Now.Ticks;
+        StartTime = start;
+        UID = start.ToString();
+    }
 
-    [SQLite.PrimaryKey] public long StartTime { get; set; } = DateTime.Now.Ticks;
+    public long StartTime { get; set; }
+    [SQLite.PrimaryKey] public string UID { get; set; }
 
-    #region Cant be used for DB quries.
-    public string UID => StartTime.ToString() ?? "";
-    public DateTime StartDateTime => new(StartTime);
-    #endregion
-
-    [ObservableProperty][property: SQLite.Ignore] private RunStates state;
+    [ObservableProperty] private RunStates state;
     [SQLite.Ignore] public ResultsDatabase ResultsDatabase { get; set; }
 
     public bool HasV275 { get; set; }
