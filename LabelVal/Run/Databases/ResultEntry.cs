@@ -1,5 +1,5 @@
-﻿using LabelVal.Results.Databases;
-using LabelVal.Sectors.Interfaces;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using LabelVal.Results.Databases;
 using Newtonsoft.Json;
 using SQLite;
 
@@ -21,13 +21,18 @@ public enum ImageResultTypes
     Source
 }
 
-public class ResultEntry
+public partial class ResultEntry : ObservableObject
 {
-    [Ignore] public V275Result V275Result { get; set; }
-    [Ignore] public V5Result V5Result { get; set; }
-    [Ignore] public L95xxResult L95xxResult { get; set; }
-
     [PrimaryKey, AutoIncrement] public int ID { get; set; }
+
+    [ObservableProperty][property: Ignore] private V275Result v275Result;
+    partial void OnV275ResultChanged(V275Result value) { _results = JsonConvert.SerializeObject(value); DeviceType = DeviceTypes.V275; }
+
+    [ObservableProperty][property: Ignore] private V5Result v5Result;
+    partial void OnV5ResultChanged(V5Result value) { _results = JsonConvert.SerializeObject(value); DeviceType = DeviceTypes.V5; }
+
+    [ObservableProperty][property: Ignore] private L95xxResult l95xxResult;
+    partial void OnL95xxResultChanged(L95xxResult value) { _results = JsonConvert.SerializeObject(value); DeviceType = DeviceTypes.L95xx; }
 
     public DeviceTypes DeviceType { get; set; }
     public ImageResultTypes ResultType { get; set; }
@@ -37,12 +42,6 @@ public class ResultEntry
     public string SourceImageUID { get; set; }
 
     public int Order { get; set; }
-
-    //public string ImageRollName { get; set; }
-    //public StandardsTypes GradingStandard { get; set; }
-    //public AvailableTables Gs1TableName { get; set; }
-    //public double TargetDPI { get; set; }
-
     public int TotalLoops { get; set; }
     public int CompletedLoops { get; set; }
 
@@ -61,4 +60,20 @@ public class ResultEntry
             };
         }
     }
+
+    public ResultEntry(object results, ImageResultTypes type) 
+    {
+        ResultType = type;
+
+        if (results is V275Result v275Result)
+            V275Result = v275Result;
+        
+        else if (results is V5Result v5Result)
+            V5Result = v5Result;
+        
+        else if (results is L95xxResult l95xxResult)
+            L95xxResult = l95xxResult;
+        
+    }
+    public ResultEntry() { }
 }

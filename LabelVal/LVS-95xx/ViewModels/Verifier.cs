@@ -30,6 +30,8 @@ public partial class Verifier : ObservableRecipient, IRecipient<RegistryMessage>
     [ObservableProperty] private System.Diagnostics.Process process;
     [ObservableProperty] private Win32_ProcessWatcherProcessState processState;
 
+
+
     partial void OnDatabasePathChanged(string value)
     {
         //if(string.IsNullOrEmpty(value))

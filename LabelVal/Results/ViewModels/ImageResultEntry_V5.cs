@@ -119,7 +119,7 @@ public partial class ImageResultEntry
 
         List<Sectors.Interfaces.ISector> tempSectors = [];
         foreach (V5_REST_Lib.Models.ResultsAlt.Decodedata rSec in V5CurrentReport._event.data.decodeData)
-            tempSectors.Add(new V5.Sectors.Sector(rSec, V5CurrentTemplate.response.data.job.toolList[rSec.toolSlot - 1], $"DecodeTool{rSec.toolSlot}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
+            tempSectors.Add(new V5.Sectors.Sector(rSec, V5CurrentTemplate.response.data.job.toolList[rSec.toolSlot - 1], $"DecodeTool{rSec.toolSlot}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, ImageResults.SelectedScanner.Controller.Version));
 
         if (tempSectors.Count > 0)
         {
@@ -167,10 +167,10 @@ public partial class ImageResultEntry
         {
             if (V5ResultRow._Report._event.data.decodeData != null)
                 foreach (V5_REST_Lib.Models.ResultsAlt.Decodedata rSec in V5ResultRow._Report._event.data.decodeData)
-                    tempSectors.Add(new V5.Sectors.Sector(rSec, V5ResultRow._Config.response.data.job.toolList[rSec.toolSlot - 1], $"DecodeTool{rSec.toolSlot}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
+                    tempSectors.Add(new V5.Sectors.Sector(rSec, V5ResultRow._Config.response.data.job.toolList[rSec.toolSlot - 1], $"DecodeTool{rSec.toolSlot}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, ""));
             else
                 foreach (V5_REST_Lib.Models.Results.Results_QualifiedResult rSec in V5ResultRow._ReportOld._event.data.cycleConfig.qualifiedResults)
-                    tempSectors.Add(new V5.Sectors.Sector(JsonConvert.DeserializeObject<V5_REST_Lib.Models.ResultsAlt.Decodedata>(JsonConvert.SerializeObject(rSec)), V5ResultRow._Config.response.data.job.toolList[rSec.toolSlot - 1], $"DecodeTool{rSec.toolSlot}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
+                    tempSectors.Add(new V5.Sectors.Sector(JsonConvert.DeserializeObject<V5_REST_Lib.Models.ResultsAlt.Decodedata>(JsonConvert.SerializeObject(rSec)), V5ResultRow._Config.response.data.job.toolList[rSec.toolSlot - 1], $"DecodeTool{rSec.toolSlot}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, ""));
         }
 
         if (tempSectors.Count > 0)

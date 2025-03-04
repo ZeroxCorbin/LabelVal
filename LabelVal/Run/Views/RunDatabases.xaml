@@ -39,7 +39,7 @@
                 <componentmodel:SortDescription Direction="Ascending" PropertyName="GradingStandard" />
                 <componentmodel:SortDescription Direction="Ascending" PropertyName="CameraMAC" />
                 <componentmodel:SortDescription Direction="Ascending" PropertyName="ProductPart" />
-                <componentmodel:SortDescription Direction="Descending" PropertyName="StartDateTime" />
+                <componentmodel:SortDescription Direction="Descending" PropertyName="StartTime" />
                 <!--<componentmodel:SortDescription PropertyName="Template.Top" Direction="Ascending"/>-->
             </CollectionViewSource.SortDescriptions>
             <CollectionViewSource.GroupDescriptions>
@@ -134,7 +134,7 @@
                                 </iconPacks:PackIconMaterial>
 
                                 <DockPanel Grid.Row="2">
-                                    <TextBlock Text="{Binding Loops}" />
+                                    <TextBlock Text="{Binding DesiredLoops}" />
                                     <TextBlock Text="/" />
                                     <TextBlock Text="{Binding CompletedLoops}" />
                                 </DockPanel>
@@ -182,7 +182,7 @@
 
                                 </md:Card>
 
-                                <DockPanel
+                                <!--<DockPanel
                                     Grid.Row="2"
                                     Grid.Column="1"
                                     HorizontalAlignment="Left">
@@ -207,7 +207,8 @@
                                         </TextBlock.Style>
                                     </TextBlock>
 
-                                    <!--<iconPacks:PackIconMaterial Margin="3" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                -->
+                                <!--<iconPacks:PackIconMaterial Margin="3" HorizontalAlignment="Left" VerticalAlignment="Center">
                                         <iconPacks:PackIconMaterial.Style>
                                             <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
                                                 <Setter Property="Kind" Value="FormatListNumbered"/>
@@ -222,8 +223,9 @@
                                             </Style>
                                         </iconPacks:PackIconMaterial.Style>
                                     </iconPacks:PackIconMaterial>-->
+                                <!--
 
-                                </DockPanel>
+                                </DockPanel>-->
                             </Grid>
                         </DockPanel>
                     </DataTemplate>
@@ -277,32 +279,7 @@
             <Setter Property="Background" Value="{DynamicResource MahApps.HamburgerMenu.Pane.Background}" />
             <Setter Property="BorderThickness" Value="1,1,1,0" />
             <Setter Property="Margin" Value="0" />
-
-            <Style.Triggers>
-                <!--<DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=TabItem}}" Value="{x:Static bar_common:AvailableStandards.GS1}">
-                    <Setter Property="Background" Value="{DynamicResource MahApps.Colors.Accent3}"/>
-                </DataTrigger>-->
-
-                <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:AvailableStandards.GS1}">
-                    <Setter Property="ToolTip" Value="GS1" />
-                </DataTrigger>
-                <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:AvailableStandards.ISO15415_15416}">
-                    <Setter Property="ToolTip" Value="ISO/IEC 15416-15415" />
-                </DataTrigger>
-                <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:AvailableStandards.ISO15416}">
-                    <Setter Property="ToolTip" Value="ISO/IEC 15416" />
-                </DataTrigger>
-                <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:AvailableStandards.ISO15415}">
-                    <Setter Property="ToolTip" Value="ISO/IEC 15415" />
-                </DataTrigger>
-                <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:AvailableStandards.OCR_OCV}">
-                    <Setter Property="ToolTip" Value="OCR/OCV" />
-                </DataTrigger>
-                <DataTrigger Binding="{Binding Name}" Value="{x:Null}">
-                    <Setter Property="ToolTip" Value="None" />
-                </DataTrigger>
-            </Style.Triggers>
-
+            <Setter Property="ToolTip" Value="{Binding Name, Converter={StaticResource EnumValueToDescription}}" />
         </Style>
 
     </UserControl.Resources>
@@ -313,4 +290,5 @@
         ItemsSource="{Binding Groups, Source={StaticResource ResourceKey=cvsRunEntriesList}}"
         Style="{StaticResource MahApps.Styles.TabControl}"
         TabStripPlacement="Left" />
+
 </UserControl>

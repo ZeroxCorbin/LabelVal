@@ -97,10 +97,7 @@ public partial class Controller : ObservableObject
         LoopCount = loopCount;
         CurrentLoopCount = 0;
 
-        RunEntry = new RunEntry()
-        {
-
-        };
+        RunEntry = new RunEntry();
 
         if (!OpenDatabase() || !UpdateRunEntry())
             return false;
@@ -116,6 +113,14 @@ public partial class Controller : ObservableObject
         RunEntry.GradingStandard = ImageRollEntry.SelectedStandard;
         RunEntry.Gs1TableName = ImageRollEntry.SelectedGS1Table;
         RunEntry.DesiredLoops = LoopCount;
+        RunEntry.ImageRollName = ImageRollEntry.Name;
+        RunEntry.ImageRollUID = ImageRollEntry.UID;
+        RunEntry.HasV275 = HasV275;
+        RunEntry.V275Version = V275?.Controller?.ProductVersion;
+        RunEntry.HasV5 = HasV5;
+        RunEntry.V5Version = V5?.Version;
+        RunEntry.HasL95 = HasL95;
+        RunEntry.L95Version = L95?.Version;
 
         RunEntry.CompletedLoops = CurrentLoopCount;
         RunEntry.State = State;
@@ -239,52 +244,43 @@ public partial class Controller : ObservableObject
 
                 if (v275Res != null)
                 {
-                    Run.Databases.ResultEntry current = new()
+                    Run.Databases.ResultEntry current = new(v275Res, ImageResultTypes.Current)
                     {
                         RunUID = RunUID,
                         SourceImageUID = ire.SourceImageUID,
                         ImageRollUID = ire.ImageRollUID,
                         Order = CurrentLabelCount,
                         TotalLoops = LoopCount,
-                        CompletedLoops = CurrentLoopCount,
-                        ResultType = ImageResultTypes.Current,
-                        DeviceType = DeviceTypes.V275,
-                        V275Result = v275Res,
+                        CompletedLoops = CurrentLoopCount
                     };
 
-                    _ = ResultsDatabase.InsertOrReplace(current);
+                    _ = ResultsDatabase.Insert(current);
                 }
 
                 if (v5Res != null)
                 {
-                    Run.Databases.ResultEntry current = new()
+                    Run.Databases.ResultEntry current = new(v5Res, ImageResultTypes.Current)
                     {
                         RunUID = RunUID,
                         SourceImageUID = ire.SourceImageUID,
                         ImageRollUID = ire.ImageRollUID,
                         Order = CurrentLabelCount,
                         TotalLoops = LoopCount,
-                        CompletedLoops = CurrentLoopCount,
-                        ResultType = ImageResultTypes.Current,
-                        DeviceType = DeviceTypes.V5,
-                        V5Result = v5Res,
+                        CompletedLoops = CurrentLoopCount
                     };
                     _ = ResultsDatabase.InsertOrReplace(current);
                 }
 
                 if (l95Res != null)
                 {
-                    Run.Databases.ResultEntry current = new()
+                    Run.Databases.ResultEntry current = new(l95Res, ImageResultTypes.Current)
                     {
                         RunUID = RunUID,
                         SourceImageUID = ire.SourceImageUID,
                         ImageRollUID = ire.ImageRollUID,
                         Order = CurrentLabelCount,
                         TotalLoops = LoopCount,
-                        CompletedLoops = CurrentLoopCount,
-                        ResultType = ImageResultTypes.Current,
-                        DeviceType = DeviceTypes.L95xx,
-                        L95xxResult = l95Res,
+                        CompletedLoops = CurrentLoopCount
                     };
                     _ = ResultsDatabase.InsertOrReplace(current);
                 }
@@ -307,6 +303,7 @@ public partial class Controller : ObservableObject
             Logger.LogError("Run: V275, Failed to switch to edit mode.");
             return UpdateRunState(RunStates.Error);
         }
+
         return State;
     }
     private async Task<RunStates> PreLoopV275(Results.ViewModels.ImageResultEntry ire)

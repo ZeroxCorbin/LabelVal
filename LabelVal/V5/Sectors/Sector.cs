@@ -77,12 +77,12 @@ public partial class Sector : ObservableObject, ISector
     public bool IsFocused { get; set; }
     public bool IsMouseOver { get; set; }
 
-    public Sector(ResultsAlt.Decodedata decodeData, Config.Toollist toollist, string name, AvailableStandards? standard, AvailableTables? table)
+    public Sector(ResultsAlt.Decodedata decodeData, Config.Toollist toollist, string name, AvailableStandards? standard, AvailableTables? table, string version)
     {
         V5Sector = decodeData;
 
         Report = new Report(decodeData);
-        Template = new Template(decodeData, toollist, name, "");
+        Template = new Template(decodeData, toollist, name, version);
 
         DesiredStandard = standard;
         DesiredGS1Table = table;

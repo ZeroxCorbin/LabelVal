@@ -42,6 +42,8 @@ public partial class ResultsDatabase : IDisposable
     public int DeleteLedgerEntry(string uid) => Connection.Table<RunEntry>().Delete(v => v.StartTime.ToString() == uid);
 
     public int InsertOrReplace(ResultEntry irg) => Connection.InsertOrReplace(irg);
+    public int Insert(ResultEntry irg) => Connection.Insert(irg);
+
     public bool ExistsImageResultGroup(string runUID) => Connection.Table<ResultEntry>().Where(v => v.RunUID == runUID).Count() > 0;
     public ResultEntry SelectImageResultGroup(string runUID, string imageUID, int order) => Connection.Table<ResultEntry>().Where(v => v.RunUID == runUID && v.SourceImageUID == imageUID && v.Order == order ).FirstOrDefault();
     public List<ResultEntry> SelectAllImageResultGroups(string runUID) => [.. Connection.Table<ResultEntry>().Where(v => v.RunUID == runUID)];
