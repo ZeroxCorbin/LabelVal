@@ -214,7 +214,8 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
                     ? V5CurrentImage.ImageBytes
                     : type == ImageResultEntryImageTypes.L95xxStored
                     ? L95xxStoredImage.ImageBytes
-                    : L95xxCurrentImage.ImageBytes;
+                    : type == ImageResultEntryImageTypes.Source
+                    ? SourceImage.ImageBytes : null;
 
             if (bmp != null)
             {

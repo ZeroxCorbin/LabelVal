@@ -412,12 +412,12 @@
             <Border Style="{StaticResource groupBottom}" />
 
             <ScrollViewer
-                Margin="0"
+                Margin="0"                
                 HorizontalScrollBarVisibility="Disabled"
                 Style="{StaticResource MahApps.Styles.ScrollViewer}">
 
                 <ItemsControl ItemsSource="{Binding Source={StaticResource cvsImageResultsList}}">
-                    <ItemsControl.Style>
+                    <!--<ItemsControl.Style>
                         <Style TargetType="ItemsControl">
                             <Setter Property="ItemsPanel">
                                 <Setter.Value>
@@ -427,7 +427,7 @@
                                 </Setter.Value>
                             </Setter>
                         </Style>
-                    </ItemsControl.Style>
+                    </ItemsControl.Style>-->
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <local:ImageResultEntry />

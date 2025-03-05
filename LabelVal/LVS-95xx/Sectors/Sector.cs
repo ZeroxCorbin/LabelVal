@@ -89,7 +89,7 @@ public partial class Sector : ObservableObject, ISector
         DesiredStandard = standard;
         DesiredGS1Table = table;
 
-        SectorDetails = new SectorDetails(this, Report.SymbolType == AvailableSymbologies.PDF417);
+        SectorDetails = new SectorDetails(this);
 
         int highCat = 0;
         foreach (Alarm alm in SectorDetails.Alarms)

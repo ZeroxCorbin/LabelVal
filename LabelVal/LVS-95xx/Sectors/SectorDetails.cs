@@ -38,8 +38,8 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
     public SectorDifferences? Compare(ISectorDetails compare) => SectorDifferences.Compare(this, compare);
 
     public SectorDetails() { }
-    public SectorDetails(ISector sector, bool isPDF417) => Process(sector, isPDF417);
-    public void Process(ISector sector, bool isPDF417)
+    public SectorDetails(ISector sector) => Process(sector);
+    public void Process(ISector sector)
     {
         if (sector is not LVS_95xx.Sectors.Sector sec)
             return;
@@ -53,8 +53,9 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
 
         List<Alarm> alarms = new();
 
+
         bool isGS1 = GetParameter("GS1 Data", report.ReportData) != null;
-        bool is2D = GetParameter("Cell size", report.ReportData) != null;
+        bool is2D = sec.Report.SymbolType.GetRegionType(AvailableDevices.L95) == AvailableRegionTypes.Type2D;
 
         if (is2D && Sector.Report.Standard != AvailableStandards.ISO29158)
         {
@@ -76,9 +77,13 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
 
             Values.Add(new Value_("minimumReflectance", ParseInt(GetParameter("Rmin", report.ReportData))));
             Values.Add(new Value_("maximumReflectance", ParseInt(GetParameter("Rmax", report.ReportData))));
-            Values.Add(new Value_("xPrintGrowthX", ParseInt(GetParameter("X print", report.ReportData))));
-            Values.Add(new Value_("xPrintGrowthY", ParseInt(GetParameter("Y print", report.ReportData))));
-            Values.Add(new Value_("contrastUniformity", ParseInt(GetParameter("Contrast un", report.ReportData))));
+
+            if(Sector.Report.SymbolType is not AvailableSymbologies.Aztec)
+            {
+                Values.Add(new Value_("xPrintGrowthX", ParseInt(GetParameter("X print", report.ReportData))));
+                Values.Add(new Value_("xPrintGrowthY", ParseInt(GetParameter("Y print", report.ReportData))));    
+                Values.Add(new Value_("contrastUniformity", ParseInt(GetParameter("Contrast un", report.ReportData))));
+            }
 
             if (isGS1)
             {
@@ -109,6 +114,7 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
                 Alarms.Add(a);
 
         }
+        //DPM
         else if (is2D && Sector.Report.Standard == AvailableStandards.ISO29158)
         {
             IsNotEmpty = true;
@@ -148,25 +154,9 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
                 Alarms.Add(a);
 
         }
-        else if (isPDF417)
+        else if (Sector.Report.SymbolType is not AvailableSymbologies.PDF and not AvailableSymbologies.PDF417 and not AvailableSymbologies.MicroPDF417)
         {
-            IsNotEmpty = true;
 
-            GradeValues.Add(GetGradeValue("symbolContrast", GetParameter("Contrast", report.ReportData)));
-            ValueResults.Add(new ValueResult("symbolXDim", ParseFloat(GetParameter("XDim", report.ReportData)), "PASS"));
-
-            Values.Add(new Value_("minimumReflectance", (int)Math.Ceiling(ParseFloat(GetParameter("Rmin", report.ReportData)))));
-
-            string[] spl = GetParameter("Codeword Yield", report.ReportData).Split(' ');
-            if (spl.Count() == 2)
-                GradeValues.Add(new GradeValue("CodewordYield", ParseInt(spl[1]), GetGrade("", spl[0])));
-            else
-                GradeValues.Add(new GradeValue("CodewordYield", -1, new Grade("", 0.0f, "F")));
-
-            GradeValues.Add(new GradeValue("CodewordPQ", -1, GetGrade("", GetParameter("Codeword PQ", report.ReportData))));
-        }
-        else
-        {
             IsNotEmpty = true;
 
             foreach (string war in GetParameters("Warning", report.ReportData))
@@ -208,6 +198,23 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
 
             foreach (Alarm item in alarms)
                 Alarms.Add(item);
+        }
+        else
+        {
+            IsNotEmpty = true;
+
+            GradeValues.Add(GetGradeValue("symbolContrast", GetParameter("Contrast", report.ReportData)));
+            ValueResults.Add(new ValueResult("symbolXDim", ParseFloat(GetParameter("XDim", report.ReportData)), "PASS"));
+
+            Values.Add(new Value_("minimumReflectance", (int)Math.Ceiling(ParseFloat(GetParameter("Rmin", report.ReportData)))));
+
+            string[] spl = GetParameter("Codeword Yield", report.ReportData).Split(' ');
+            if (spl.Count() == 2)
+                GradeValues.Add(new GradeValue("CodewordYield", ParseInt(spl[1]), GetGrade("", spl[0])));
+            else
+                GradeValues.Add(new GradeValue("CodewordYield", -1, new Grade("", 0.0f, "F")));
+
+            GradeValues.Add(new GradeValue("CodewordPQ", -1, GetGrade("", GetParameter("Codeword PQ", report.ReportData))));
         }
     }
 

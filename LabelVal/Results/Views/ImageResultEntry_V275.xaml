@@ -233,12 +233,14 @@
                         Focusable="False"
                         ScrollChanged="ScrollV275StoredSectors_ScrollChanged"
                         VerticalScrollBarVisibility="Auto">
+                        
                         <Grid>
 
                             <ListBox
                                 Padding="0,1,0,0"
                                 ItemsSource="{Binding V275StoredSectors}"
                                 Tag="v275Stored">
+                                
                                 <ListBox.Style>
                                     <Style BasedOn="{StaticResource MahApps.Styles.ListBox}" TargetType="ListBox">
                                         <Setter Property="Visibility" Value="Visible" />
@@ -608,13 +610,12 @@
                     <ScrollViewer
                         x:Name="ScrollV275CurrentSectors"
                         Margin="3"
-                        HorizontalAlignment="Left"
-                        mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
+                        md:ScrollViewerAssist.BubbleVerticalScroll="True"
+                        Focusable="False"
                         ScrollChanged="ScrollV275CurrentSectors_ScrollChanged"
-                        Style="{StaticResource MahApps.Styles.ScrollViewer.Hamburger}"
                         VerticalScrollBarVisibility="Auto">
 
-                        <Grid>
+                        <DockPanel>
 
                             <ListBox
                                 Padding="0,1,0,0"
@@ -766,7 +767,7 @@
                             </DockPanel>
 
 
-                        </Grid>
+                        </DockPanel>
                     </ScrollViewer>
 
                 </DockPanel>

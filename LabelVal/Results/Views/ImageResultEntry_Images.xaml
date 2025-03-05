@@ -73,6 +73,7 @@
                     <Button
                         Width="28"
                         Command="{Binding SaveCommand}"
+                        CommandParameter="{x:Static ViewModels:ImageResultEntryImageTypes.Source}"
                         Content="{iconPacks:Material Kind=ContentSave}"
                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                         Style="{StaticResource MahApps.Styles.Button.Hamburger}"
