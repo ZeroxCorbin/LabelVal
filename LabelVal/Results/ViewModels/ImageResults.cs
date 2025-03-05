@@ -238,12 +238,12 @@ public partial class ImageResults : ObservableRecipient,
     {
         foreach (ImageResultEntry img in ImageResultsList)
         {
-            if (img.V275StoredSectors.Count != 0)
+            if (img.V275CurrentSectors.Count != 0)
                 img.StoreCommand.Execute(ImageResultEntryDevices.V275);
-            else
-           if (img.V5StoredSectors.Count != 0)
+
+           if (img.V5CurrentSectors.Count != 0)
                 img.StoreCommand.Execute(ImageResultEntryDevices.V5);
-            else
+
             if (img.L95xxCurrentSectors.Count != 0)
                 img.StoreCommand.Execute(ImageResultEntryDevices.L95xxAll);
         }

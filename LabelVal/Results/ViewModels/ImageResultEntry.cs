@@ -18,7 +18,6 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using V275_REST_Lib.Models;
 
 namespace LabelVal.Results.ViewModels;
 
@@ -232,7 +231,6 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
                     _ = LibImageUtilities.ImageTypes.ImageUtilities.SetImageDPI(img, dpi);
                     //LibImageUtilities.ImageTypes.Bmp.Utilities.SetDPI(format.RawData, newDPI);
 
-
                     File.WriteAllBytes(path, img);
                 }
 
@@ -246,7 +244,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
     {
         if (device == ImageResultEntryDevices.V275)
         {
-            if(V275CurrentSectors.Count == 0)
+            if (V275CurrentSectors.Count == 0)
             {
                 Logger.LogDebug($"There are no sectors to store for: {device}");
                 return;
@@ -409,14 +407,15 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
     [RelayCommand]
     private void ClearRead(ImageResultEntryDevices device)
     {
-        if(!App.Current.Dispatcher.CheckAccess())
+        if (!App.Current.Dispatcher.CheckAccess())
         {
-            _= App.Current.Dispatcher.BeginInvoke(() => ClearRead(device));
+            _ = App.Current.Dispatcher.BeginInvoke(() => ClearRead(device));
             return;
         }
 
         if (device == ImageResultEntryDevices.V275)
         {
+
             V275CurrentReport = null;
             V275CurrentTemplate = null;
 
@@ -635,7 +634,6 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
     {
         if (text == null)
             return null;
-
 
         if (!typeface.TryGetGlyphTypeface(out GlyphTypeface glyphTypeface))
         {

@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:ViewModels="clr-namespace:LabelVal.Sectors.Interfaces"
+    xmlns:bar_common="clr-namespace:BarcodeVerification.lib.Common;assembly=BarcodeVerification.lib"
     xmlns:converters="clr-namespace:LabelVal.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
@@ -10,7 +11,6 @@
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
-    xmlns:bar_common="clr-namespace:BarcodeVerification.lib.Common;assembly=BarcodeVerification.lib"
     xmlns:sectorConverter="clr-namespace:LabelVal.Sectors.Converters"
     xmlns:v275Converters="clr-namespace:LabelVal.V275.Converters"
     d:DataContext="{d:DesignInstance Type=ViewModels:ISector}"
@@ -47,8 +47,10 @@
                         Visibility="{Binding IsWrongStandard, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneTime}" />
 
                     <TextBlock Text="{Binding Template.Username, Mode=OneTime}" />
+
                     <TextBlock
                         Margin="3,0"
+                        HorizontalAlignment="Center"
                         Foreground="{DynamicResource ColorBlindBrush2}"
                         Text="{Binding Template.Version, StringFormat={}{0}}" />
 
@@ -200,10 +202,10 @@
 
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableSymbologyTypes.Type1D}">
-                                        <Setter Property="Text" Value="{Binding Report.SymbolType, Converter={StaticResource stringToUpper}, Mode=OneTime}" />
+                                        <Setter Property="Text" Value="{Binding Report.SymbolType, Converter={StaticResource EnumValueToDescription}, Mode=OneTime}" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableSymbologyTypes.Type2D}">
-                                        <Setter Property="Text" Value="{Binding Report.SymbolType, Converter={StaticResource stringToUpper}, Mode=OneTime}" />
+                                        <Setter Property="Text" Value="{Binding Report.SymbolType, Converter={StaticResource EnumValueToDescription}, Mode=OneTime}" />
                                     </DataTrigger>
 
                                     <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableSymbologyTypes.OCR}">

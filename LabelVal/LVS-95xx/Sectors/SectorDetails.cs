@@ -254,6 +254,8 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
     }
     private float ParseFloat(string value)
     {
+        if(value == null)
+            return -1;
         string digits = new(value.Trim().TakeWhile("0123456789.".Contains
                                 ).ToArray());
 
