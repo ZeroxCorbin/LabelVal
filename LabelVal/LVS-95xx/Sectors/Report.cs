@@ -11,7 +11,7 @@ namespace LabelVal.LVS_95xx.Sectors;
 public class Report : IReport
 {
     public object Original { get; set; }
-    public AvailableSymbologyTypes Type { get; set; }
+    public AvailableRegionTypes Type { get; set; }
 
     public double Top { get; set; }
     public double Left { get; set; }
@@ -50,7 +50,7 @@ public class Report : IReport
     {
         Original = report;
 
-        Type = GetParameter("Cell size", report.ReportData) == null ? AvailableSymbologyTypes.Type1D : AvailableSymbologyTypes.Type2D;
+        Type = GetParameter("Cell size", report.ReportData) == null ? AvailableRegionTypes.Type1D : AvailableRegionTypes.Type2D;
 
         Top = report.Report.Y1;
         Left = report.Report.X1;
@@ -62,9 +62,19 @@ public class Report : IReport
         if (sym == null)
             return;
 
+        if (sym.Contains("DataBar"))
+        {
+           var type = GetParameter("DataBar type", report.ReportData);
+            if (type != null)
+                sym = $"DataBar {type}";
+        }
+
         SymbolType = sym.GetSymbology(AvailableDevices.L95);
 
-        XDimension = Type == AvailableSymbologyTypes.Type2D
+        if(SymbolType == AvailableSymbologies.Unknown)
+            return;
+
+        XDimension = Type == AvailableRegionTypes.Type2D
             ? (double)ParseFloat(GetParameter("Cell size", report.ReportData))
             : SymbolType != AvailableSymbologies.PDF417 ? (double)ParseFloat(GetParameter("Xdim", report.ReportData)) : (double)ParseFloat(GetParameter("XDim", report.ReportData));
         Aperture = ParseFloat(GetParameter("Overall", report.ReportData).Split('/')[1]);

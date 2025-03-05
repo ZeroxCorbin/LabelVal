@@ -8,7 +8,7 @@ public interface IReport
 {
     object Original { get; set; }
 
-    AvailableSymbologyTypes Type { get; set; }
+    AvailableRegionTypes Type { get; set; }
     AvailableSymbologies SymbolType { get; set; }
     double XDimension { get; set; }
     double Aperture { get; set; }

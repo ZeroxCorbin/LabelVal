@@ -158,7 +158,10 @@ public partial class ImageResultEntry
             V5Result row = SelectedDatabase.Select_V5Result(ImageRollUID, SourceImageUID);
 
             if (row == null)
+            {
+                V5ResultRow = null;
                 return;
+            }
 
             if (row.Report == null || row.Template == null)
             {

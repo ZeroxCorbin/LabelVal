@@ -8,7 +8,7 @@ namespace LabelVal.V5.Sectors;
 public class Report : IReport
 {
     public object Original { get; set; }
-    public AvailableSymbologyTypes Type { get; set; }
+    public AvailableRegionTypes Type { get; set; }
 
     public double Top { get; set; }
     public double Left { get; set; }
@@ -177,12 +177,12 @@ public class Report : IReport
         return (minY, minX, width, height);
     }
     private static string V5GetSymbology(string type) => type == "Datamatrix" ? "DataMatrix" : type;
-    private static AvailableSymbologyTypes V5GetType(V5_REST_Lib.Models.ResultsAlt.Decodedata Report) =>
+    private static AvailableRegionTypes V5GetType(V5_REST_Lib.Models.ResultsAlt.Decodedata Report) =>
         Report.Code128 != null
-        ? AvailableSymbologyTypes.Type1D
+        ? AvailableRegionTypes.Type1D
         : Report.Datamatrix != null
-        ? AvailableSymbologyTypes.Type2D
-        : Report.QR != null ? AvailableSymbologyTypes.Type2D : Report.PDF417 != null ? AvailableSymbologyTypes.Type1D : Report.UPC != null ? AvailableSymbologyTypes.Type1D : AvailableSymbologyTypes.Type1D;
+        ? AvailableRegionTypes.Type2D
+        : Report.QR != null ? AvailableRegionTypes.Type2D : Report.PDF417 != null ? AvailableRegionTypes.Type1D : Report.UPC != null ? AvailableRegionTypes.Type1D : AvailableRegionTypes.Type1D;
 
     private static string V5GetLetter(int grade) =>
         grade switch

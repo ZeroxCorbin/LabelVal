@@ -12,7 +12,7 @@ public class Report : IReport
 {
     public object Original { get; set; }
 
-    public AvailableSymbologyTypes Type { get; set; }
+    public AvailableRegionTypes Type { get; set; }
 
     public double Top { get; set; }
     public double Left { get; set; }
@@ -56,8 +56,8 @@ public class Report : IReport
             case Report_InspectSector_Verify1D:
                 Report_InspectSector_Verify1D v1D = (Report_InspectSector_Verify1D)report;
 
-                Type = v1D.type.GetSymbologyType(AvailableDevices.V275);
                 SymbolType = v1D.data.symbolType.GetSymbology(AvailableDevices.V275);
+                Type = SymbolType.GetRegionType(AvailableDevices.V275);
 
                 Top = v1D.top;
                 Left = v1D.left;
@@ -96,8 +96,8 @@ public class Report : IReport
             case Report_InspectSector_Verify2D:
                 Report_InspectSector_Verify2D v2D = (Report_InspectSector_Verify2D)report;
 
-                Type = v2D.type.GetSymbologyType(AvailableDevices.V275);
                 SymbolType = v2D.data.symbolType.GetSymbology(AvailableDevices.V275);
+                Type = SymbolType.GetRegionType(AvailableDevices.V275);
 
                 Top = v2D.top;
                 Left = v2D.left;
@@ -139,8 +139,8 @@ public class Report : IReport
             case Report_InspectSector_OCR:
                 Report_InspectSector_OCR ocr = (Report_InspectSector_OCR)report;
 
-                Type = AvailableSymbologyTypes.OCR;
                 SymbolType = AvailableSymbologies.OCR;
+                Type = SymbolType.GetRegionType(AvailableDevices.V275);
 
                 Top = ocr.top;
                 Left = ocr.left;
@@ -155,8 +155,8 @@ public class Report : IReport
             case Report_InspectSector_OCV:
                 Report_InspectSector_OCV ocv = (Report_InspectSector_OCV)report;
 
-                Type = AvailableSymbologyTypes.OCV;
                 SymbolType = AvailableSymbologies.OCV;
+                Type = SymbolType.GetRegionType(AvailableDevices.V275);
 
                 Top = ocv.top;
                 Left = ocv.left;
@@ -171,8 +171,8 @@ public class Report : IReport
             case Report_InspectSector_Blemish:
                 Report_InspectSector_Blemish blem = (Report_InspectSector_Blemish)report;
 
-                Type = AvailableSymbologyTypes.Blemish;
                 SymbolType = AvailableSymbologies.Blemish;
+                Type = SymbolType.GetRegionType(AvailableDevices.V275);
 
                 Top = blem.top;
                 Left = blem.left;

@@ -327,8 +327,11 @@ public partial class ImageResultEntry
         {
             var row = SelectedDatabase.Select_V275Result(ImageRollUID, SourceImageUID);
 
-            if (row == null )
+            if (row == null)
+            {
+                V275ResultRow = null;
                 return;
+            }
 
             List<Sectors.Interfaces.ISector> tempSectors = [];
 

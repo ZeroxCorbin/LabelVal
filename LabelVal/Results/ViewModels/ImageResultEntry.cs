@@ -562,7 +562,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         GeometryGroup secCenter = new();
         foreach (Sectors.Interfaces.ISector newSec in sectors)
         {
-            if (newSec.Report.Type is AvailableSymbologyTypes.OCR or AvailableSymbologyTypes.OCV or AvailableSymbologyTypes.Blemish)
+            if (newSec.Report.Type is AvailableRegionTypes.OCR or AvailableRegionTypes.OCV or AvailableRegionTypes.Blemish)
                 continue;
 
             bool hasReportSec = newSec.Report.Width > 0;

@@ -121,8 +121,11 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
             var row = SelectedDatabase.Select_L95xxResult(ImageRollUID, SourceImageUID);
 
             if (row == null)
+            {
+                L95xxResultRow = null;
                 return;
-
+            }
+        
             List<Sectors.Interfaces.ISector> tempSectors = [];
             foreach (var rSec in row._Report)
                 tempSectors.Add(new Sector(rSec, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
