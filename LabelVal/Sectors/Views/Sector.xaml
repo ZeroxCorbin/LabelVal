@@ -10,6 +10,7 @@
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:bar_common="clr-namespace:BarcodeVerification.lib.Common;assembly=BarcodeVerification.lib"
     xmlns:sectorConverter="clr-namespace:LabelVal.Sectors.Converters"
     xmlns:v275Converters="clr-namespace:LabelVal.V275.Converters"
     d:DataContext="{d:DesignInstance Type=ViewModels:ISector}"
@@ -62,7 +63,7 @@
 
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding Report.Type, Mode=OneTime}" Value="ocr" />
+                                        <Condition Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableSymbologyTypes.OCR}" />
                                     </MultiDataTrigger.Conditions>
                                     <Setter Property="Text">
                                         <Setter.Value>
@@ -80,7 +81,7 @@
 
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding Report.Type, Mode=OneTime}" Value="ocr" />
+                                        <Condition Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableSymbologyTypes.OCR}" />
                                         <Condition Binding="{Binding Template.MatchSettings.UserDefinedDataTrueSize, Mode=OneTime}" Value="0" />
                                     </MultiDataTrigger.Conditions>
                                     <Setter Property="Text">
@@ -98,7 +99,7 @@
 
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding Report.Type, Mode=OneTime}" Value="ocv" />
+                                        <Condition Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableSymbologyTypes.OCV}" />
                                     </MultiDataTrigger.Conditions>
                                     <Setter Property="Text">
                                         <Setter.Value>
@@ -116,7 +117,7 @@
 
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding Report.Type, Mode=OneTime}" Value="ocv" />
+                                        <Condition Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableSymbologyTypes.OCR}" />
                                         <Condition Binding="{Binding Template.MatchSettings.UserDefinedDataTrueSize, Mode=OneTime}" Value="0" />
                                     </MultiDataTrigger.Conditions>
                                     <Setter Property="Text">
@@ -172,20 +173,17 @@
                             <Style TargetType="{x:Type Image}">
                                 <Setter Property="Source" Value="/Assets/Images/barcode-1d.png" />
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="verify2D">
+                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableSymbologyTypes.Type2D}">
                                         <Setter Property="Source" Value="/Assets/Images/barcode-2d.png" />
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="ocr">
+                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableSymbologyTypes.OCR}">
                                         <Setter Property="Source" Value="/Assets/Images/ocr.png" />
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="ocv">
+                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableSymbologyTypes.OCV}">
                                         <Setter Property="Source" Value="/Assets/Images/ocv.png" />
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="blemish">
+                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableSymbologyTypes.Blemish}">
                                         <Setter Property="Source" Value="/Assets/Images/FlawTool.png" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="unknown">
-                                        <Setter Property="Source" Value="/Assets/Images/all-codes.png" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -201,25 +199,22 @@
                             <Style TargetType="{x:Type TextBlock}">
 
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="verify1D">
+                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableSymbologyTypes.Type1D}">
                                         <Setter Property="Text" Value="{Binding Report.SymbolType, Converter={StaticResource stringToUpper}, Mode=OneTime}" />
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="verify2D">
+                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableSymbologyTypes.Type2D}">
                                         <Setter Property="Text" Value="{Binding Report.SymbolType, Converter={StaticResource stringToUpper}, Mode=OneTime}" />
                                     </DataTrigger>
 
-                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="ocr">
+                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableSymbologyTypes.OCR}">
                                         <Setter Property="Text" Value="{Binding Template.MatchSettings.FixedText, Mode=OneTime}" />
                                         <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Text}" />
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="ocv">
+                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableSymbologyTypes.OCV}">
                                         <Setter Property="Text" Value="{Binding Template.MatchSettings.FixedText, Mode=OneTime}" />
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="blemish">
+                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableSymbologyTypes.Blemish}">
                                         <Setter Property="Text" Value="" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="unknown">
-                                        <Setter Property="Text" Value="{Binding Report.SymbolType, Converter={StaticResource stringToUpper}, Mode=OneTime}" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -233,34 +228,29 @@
 
                                 <Style.Triggers>
 
-                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="verify1D">
+                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableSymbologyTypes.Type1D}">
                                         <Setter Property="Text" Value="{Binding Report.DecodeText, Converter={StaticResource shortenString}, Mode=OneTime}" />
                                         <Setter Property="ToolTip" Value="{Binding Report.DecodeText, Mode=OneTime}" />
                                     </DataTrigger>
 
-                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="verify2D">
+                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableSymbologyTypes.Type2D}">
                                         <Setter Property="Text" Value="{Binding Report.DecodeText, Converter={StaticResource shortenString}, Mode=OneTime}" />
                                         <Setter Property="ToolTip" Value="{Binding Report.DecodeText, Mode=OneTime}" />
                                     </DataTrigger>
 
-                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="ocr">
+                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableSymbologyTypes.OCR}">
                                         <Setter Property="Text" Value="{Binding Report.Text, Converter={StaticResource shortenString}, Mode=OneTime}" />
                                         <Setter Property="ToolTip" Value="{Binding Report.Text, Mode=OneTime}" />
                                     </DataTrigger>
 
-                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="ocv">
+                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableSymbologyTypes.OCV}">
                                         <Setter Property="Text" Value="{Binding Report.Text, Converter={StaticResource shortenString}, Mode=OneTime}" />
                                         <Setter Property="ToolTip" Value="{Binding Report.Text, Mode=OneTime}" />
                                     </DataTrigger>
 
-                                    <DataTrigger Binding="{Binding Report.Type, Converter={StaticResource shortenString}, Mode=OneTime}" Value="blemish">
+                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableSymbologyTypes.Blemish}">
                                         <Setter Property="Text" Value="" />
                                         <Setter Property="ToolTip" Value="" />
-                                    </DataTrigger>
-
-                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="unknown">
-                                        <Setter Property="Text" Value="{Binding Report.DecodeText, Converter={StaticResource shortenString}, Mode=OneTime}" />
-                                        <Setter Property="ToolTip" Value="{Binding Report.DecodeText, Mode=OneTime}" />
                                     </DataTrigger>
 
                                 </Style.Triggers>
@@ -314,10 +304,10 @@
                                     <Setter Property="BorderThickness" Value="3" />
                                 </DataTrigger>
 
-                                <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="ocr">
+                                <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableSymbologyTypes.OCR}">
                                     <Setter Property="IsHitTestVisible" Value="False" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="ocv">
+                                <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableSymbologyTypes.OCV}">
                                     <Setter Property="IsHitTestVisible" Value="False" />
                                 </DataTrigger>
 
@@ -342,23 +332,20 @@
                                 <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
 
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="verify1D">
+                                        <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableSymbologyTypes.Type1D}">
                                             <Setter Property="Text" Value="{Binding Report.OverallGradeValue, StringFormat=N1, Mode=OneTime}" />
                                         </DataTrigger>
-                                        <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="verify2D">
+                                        <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableSymbologyTypes.Type2D}">
                                             <Setter Property="Text" Value="{Binding Report.OverallGradeValue, StringFormat=N1, Mode=OneTime}" />
                                         </DataTrigger>
-                                        <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="ocr">
+                                        <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableSymbologyTypes.OCR}">
                                             <Setter Property="Text" Value="{Binding Report.Score, Mode=OneTime}" />
                                         </DataTrigger>
-                                        <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="ocv">
+                                        <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableSymbologyTypes.OCV}">
                                             <Setter Property="Text" Value="{Binding Report.Score, Mode=OneTime}" />
                                         </DataTrigger>
-                                        <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="blemish">
+                                        <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableSymbologyTypes.Blemish}">
                                             <Setter Property="Text" Value="{Binding Report.BlemishCount, Mode=OneTime}" />
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="unknown">
-                                            <Setter Property="Text" Value="{Binding Report.OverallGradeValue, StringFormat=N1, Mode=OneTime}" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>

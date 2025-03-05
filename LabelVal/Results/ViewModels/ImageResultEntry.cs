@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using BarcodeVerification.lib.Common;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
@@ -17,6 +18,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using V275_REST_Lib.Models;
 
 namespace LabelVal.Results.ViewModels;
 
@@ -561,7 +563,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         GeometryGroup secCenter = new();
         foreach (Sectors.Interfaces.ISector newSec in sectors)
         {
-            if (newSec.Report.SymbolType is "blemish" or "ocr" or "ocv")
+            if (newSec.Report.Type is AvailableSymbologyTypes.OCR or AvailableSymbologyTypes.OCV or AvailableSymbologyTypes.Blemish)
                 continue;
 
             bool hasReportSec = newSec.Report.Width > 0;
@@ -677,7 +679,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             if (sect == null)
                 continue;
 
-            if (sect.Report.SymbolType is "qrCode" or "dataMatrix")
+            if (sect.Report.SymbolType is AvailableSymbologies.QRCode or AvailableSymbologies.DataMatrix)
             {
                 Sectors.Interfaces.IReport res = sect.Report;
 
@@ -690,11 +692,11 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
                 GeometryGroup moduleGrid = new();
                 DrawingGroup textGrp = new();
 
-                double qzX = (sect.Report.SymbolType == "dataMatrix") ? 0 : res.ExtendedData.QuietZone;
+                double qzX = (sect.Report.SymbolType == AvailableSymbologies.DataMatrix) ? 0 : res.ExtendedData.QuietZone;
                 double qzY = res.ExtendedData.QuietZone;
 
-                double dX = (sect.Report.SymbolType == "dataMatrix") ? 0 : (res.ExtendedData.DeltaX / 2);
-                double dY = (sect.Report.SymbolType == "dataMatrix") ? (res.ExtendedData.DeltaY * res.ExtendedData.NumRows) : (res.ExtendedData.DeltaY / 2);
+                double dX = (sect.Report.SymbolType == AvailableSymbologies.DataMatrix) ? 0 : (res.ExtendedData.DeltaX / 2);
+                double dY = (sect.Report.SymbolType == AvailableSymbologies.DataMatrix) ? (res.ExtendedData.DeltaY * res.ExtendedData.NumRows) : (res.ExtendedData.DeltaY / 2);
 
                 double startX = -0.5;// sec.left + res.ExtendedData.Xnw - dX + 1 - (qzX * res.ExtendedData.DeltaX);
                 double startY = -0.5;// sec.top + res.ExtendedData.Ynw - dY + 1 - (qzY * res.ExtendedData.DeltaY);
@@ -820,7 +822,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
 
                 if (sect.Template.Orientation == 90)
                 {
-                    double x = sect.Report.SymbolType == "dataMatrix"
+                    double x = sect.Report.SymbolType == AvailableSymbologies.DataMatrix
                         ? sect.Report.Width - res.ExtendedData.Ynw - (qzY * res.ExtendedData.DeltaY) - 1
                         : sect.Report.Width - res.ExtendedData.Ynw - dY - ((res.ExtendedData.NumColumns + qzY) * res.ExtendedData.DeltaY);
                     transGroup.Children.Add(new TranslateTransform(

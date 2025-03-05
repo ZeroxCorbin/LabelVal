@@ -12,7 +12,7 @@ public class Report : IReport
 {
     public object Original { get; set; }
 
-    public string Type { get; set; }
+    public AvailableSymbologyTypes Type { get; set; }
 
     public double Top { get; set; }
     public double Left { get; set; }
@@ -20,8 +20,7 @@ public class Report : IReport
     public double Height { get; set; }
     public double AngleDeg { get; set; }
 
-    //Verify1D, Verify2D
-    public string SymbolType { get; set; }
+    public AvailableSymbologies SymbolType { get; set; }
     public double XDimension { get; set; }
     public double Aperture { get; set; }
     public string Units { get; set; }
@@ -57,7 +56,8 @@ public class Report : IReport
             case Report_InspectSector_Verify1D:
                 Report_InspectSector_Verify1D v1D = (Report_InspectSector_Verify1D)report;
 
-                Type = v1D.type;
+                Type = v1D.type.GetSymbologyType(AvailableDevices.V275);
+                SymbolType = v1D.data.symbolType.GetSymbology(AvailableDevices.V275);
 
                 Top = v1D.top;
                 Left = v1D.left;
@@ -65,7 +65,6 @@ public class Report : IReport
                 Height = v1D.height;
                 AngleDeg = 0;
 
-                SymbolType = v1D.data.symbolType;
                 XDimension = v1D.data.xDimension;
                 Aperture = v1D.data.aperture;
                 Units = v1D.data.lengthUnit;
@@ -78,7 +77,7 @@ public class Report : IReport
 
                 if (v1D.data.gs1Results != null)
                 {
-                    List<string> fld = new();
+                    List<string> fld = [];
                     foreach (JProperty f in v1D.data.gs1Results.fields)
                         fld.Add($"({f.Name}) {f.Value.ToString().Trim('{', '}', ' ')}");
 
@@ -96,7 +95,9 @@ public class Report : IReport
 
             case Report_InspectSector_Verify2D:
                 Report_InspectSector_Verify2D v2D = (Report_InspectSector_Verify2D)report;
-                Type = v2D.type;
+
+                Type = v2D.type.GetSymbologyType(AvailableDevices.V275);
+                SymbolType = v2D.data.symbolType.GetSymbology(AvailableDevices.V275);
 
                 Top = v2D.top;
                 Left = v2D.left;
@@ -104,7 +105,6 @@ public class Report : IReport
                 Height = v2D.height;
                 AngleDeg = 0;
 
-                SymbolType = v2D.data.symbolType;
                 XDimension = v2D.data.xDimension;
                 Aperture = v2D.data.aperture;
                 Units = v2D.data.lengthUnit;
@@ -117,7 +117,7 @@ public class Report : IReport
 
                 if (v2D.data.gs1Results != null)
                 {
-                    List<string> fld = new();
+                    List<string> fld = [];
                     foreach (JProperty f in v2D.data.gs1Results.fields)
                         fld.Add($"({f.Name}) {f.Value.ToString().Trim('{', '}', ' ')}");
 
@@ -139,7 +139,8 @@ public class Report : IReport
             case Report_InspectSector_OCR:
                 Report_InspectSector_OCR ocr = (Report_InspectSector_OCR)report;
 
-                Type = ocr.type;
+                Type = AvailableSymbologyTypes.OCR;
+                SymbolType = AvailableSymbologies.OCR;
 
                 Top = ocr.top;
                 Left = ocr.left;
@@ -154,7 +155,8 @@ public class Report : IReport
             case Report_InspectSector_OCV:
                 Report_InspectSector_OCV ocv = (Report_InspectSector_OCV)report;
 
-                Type = ocv.type;
+                Type = AvailableSymbologyTypes.OCV;
+                SymbolType = AvailableSymbologies.OCV;
 
                 Top = ocv.top;
                 Left = ocv.left;
@@ -169,7 +171,8 @@ public class Report : IReport
             case Report_InspectSector_Blemish:
                 Report_InspectSector_Blemish blem = (Report_InspectSector_Blemish)report;
 
-                Type = blem.type;
+                Type = AvailableSymbologyTypes.Blemish;
+                SymbolType = AvailableSymbologies.Blemish;
 
                 Top = blem.top;
                 Left = blem.left;

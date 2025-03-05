@@ -8,7 +8,7 @@ namespace LabelVal.V5.Sectors;
 public class Report : IReport
 {
     public object Original { get; set; }
-    public string Type { get; set; }
+    public AvailableSymbologyTypes Type { get; set; }
 
     public double Top { get; set; }
     public double Left { get; set; }
@@ -16,8 +16,7 @@ public class Report : IReport
     public double Height { get; set; }
     public double AngleDeg { get; set; }
 
-    //Verify1D, Verify2D
-    public string SymbolType { get; set; }
+    public AvailableSymbologies SymbolType { get; set; }
     public double XDimension { get; set; }
     public double Aperture { get; set; }
     public string Units { get; set; }
@@ -49,7 +48,7 @@ public class Report : IReport
         Original = v5;
 
         Type = V5GetType(v5);
-        SymbolType = V5GetSymbology(v5.type);
+        SymbolType = v5.type.GetSymbology(AvailableDevices.V5);
         DecodeText = v5.dataUTF8;
 
         if (v5.boundingBox != null)
@@ -178,12 +177,12 @@ public class Report : IReport
         return (minY, minX, width, height);
     }
     private static string V5GetSymbology(string type) => type == "Datamatrix" ? "DataMatrix" : type;
-    private static string V5GetType(V5_REST_Lib.Models.ResultsAlt.Decodedata Report) =>
+    private static AvailableSymbologyTypes V5GetType(V5_REST_Lib.Models.ResultsAlt.Decodedata Report) =>
         Report.Code128 != null
-        ? "verify1D"
+        ? AvailableSymbologyTypes.Type1D
         : Report.Datamatrix != null
-        ? "verify2D"
-        : Report.QR != null ? "verify2D" : Report.PDF417 != null ? "verify1D" : Report.UPC != null ? "verify1D" : "unknown";
+        ? AvailableSymbologyTypes.Type2D
+        : Report.QR != null ? AvailableSymbologyTypes.Type2D : Report.PDF417 != null ? AvailableSymbologyTypes.Type1D : Report.UPC != null ? AvailableSymbologyTypes.Type1D : AvailableSymbologyTypes.Type1D;
 
     private static string V5GetLetter(int grade) =>
         grade switch

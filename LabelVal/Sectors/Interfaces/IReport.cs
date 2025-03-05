@@ -8,8 +8,8 @@ public interface IReport
 {
     object Original { get; set; }
 
-    string Type { get; set; }
-    string SymbolType { get; set; }
+    AvailableSymbologyTypes Type { get; set; }
+    AvailableSymbologies SymbolType { get; set; }
     double XDimension { get; set; }
     double Aperture { get; set; }
     string Units { get; set; }

@@ -60,7 +60,7 @@ public partial interface ISector
         // Add the main report
         compiled.Add(new CSVResults
         {
-            Name = CamelCaseToWords(sector.Report.SymbolType),
+            Name = sector.Report.SymbolType.ToString(),
             Value = sector.Report.DecodeText,
             Grade = sector.Report.OverallGradeLetter,
             GradeValue = sector.Report.OverallGradeString

@@ -358,7 +358,7 @@
                         </ToggleButton>
 
                         <Border Margin="0,0,0,0" Style="{StaticResource imageBar}" />
-                       
+
                         <Button
                             Width="48"
                             Command="{Binding StoreAllCurrentResultsCommand}"
@@ -384,8 +384,8 @@
                             Width="48"
                             Command="{Binding ClearAllCurrentResultsCommand}"
                             Content="{iconPacks:MaterialDesign Kind=ClearAll,
-                                                         Width=24,
-                                                         Height=24}"
+                                                               Width=24,
+                                                               Height=24}"
                             Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                             ToolTip="Clear the current sectors and image.">
 
@@ -400,7 +400,7 @@
                                 </Style>
                             </Button.Style>
                         </Button>
-                        
+
                     </DockPanel>
                 </DockPanel>
             </md:Card>

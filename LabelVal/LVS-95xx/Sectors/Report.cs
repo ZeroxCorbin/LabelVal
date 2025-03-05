@@ -11,7 +11,7 @@ namespace LabelVal.LVS_95xx.Sectors;
 public class Report : IReport
 {
     public object Original { get; set; }
-    public string Type { get; set; }
+    public AvailableSymbologyTypes Type { get; set; }
 
     public double Top { get; set; }
     public double Left { get; set; }
@@ -19,8 +19,7 @@ public class Report : IReport
     public double Height { get; set; }
     public double AngleDeg { get; set; }
 
-    //Verify1D, Verify2D
-    public string SymbolType { get; set; }
+    public AvailableSymbologies SymbolType { get; set; }
     public double XDimension { get; set; }
     public double Aperture { get; set; }
     public string Units { get; set; }
@@ -51,7 +50,7 @@ public class Report : IReport
     {
         Original = report;
 
-        Type = GetParameter("Cell size", report.ReportData) == null ? "verify1D" : "verify2D";
+        Type = GetParameter("Cell size", report.ReportData) == null ? AvailableSymbologyTypes.Type1D : AvailableSymbologyTypes.Type2D;
 
         Top = report.Report.Y1;
         Left = report.Report.X1;
@@ -63,11 +62,11 @@ public class Report : IReport
         if (sym == null)
             return;
 
-        SymbolType = GetSymbolType(sym);
+        SymbolType = sym.GetSymbology(AvailableDevices.L95);
 
-        XDimension = Type == "verify2D"
+        XDimension = Type == AvailableSymbologyTypes.Type2D
             ? (double)ParseFloat(GetParameter("Cell size", report.ReportData))
-            : sym != "PDF417" ? (double)ParseFloat(GetParameter("Xdim", report.ReportData)) : (double)ParseFloat(GetParameter("XDim", report.ReportData));
+            : SymbolType != AvailableSymbologies.PDF417 ? (double)ParseFloat(GetParameter("Xdim", report.ReportData)) : (double)ParseFloat(GetParameter("XDim", report.ReportData));
         Aperture = ParseFloat(GetParameter("Overall", report.ReportData).Split('/')[1]);
         Units = "mil";
 
