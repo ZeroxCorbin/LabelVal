@@ -203,11 +203,11 @@
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.Type1D}">
                                         <Setter Property="Text" Value="{Binding Report.SymbolType, Converter={StaticResource EnumValueToDescription}, Mode=OneTime}" />
-                                        <Setter Property="TextWrapping" Value="Wrap"/>
+                                        <Setter Property="TextWrapping" Value="Wrap" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.Type2D}">
                                         <Setter Property="Text" Value="{Binding Report.SymbolType, Converter={StaticResource EnumValueToDescription}, Mode=OneTime}" />
-                                        <Setter Property="TextWrapping" Value="Wrap"/>
+                                        <Setter Property="TextWrapping" Value="Wrap" />
                                     </DataTrigger>
 
                                     <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCR}">
@@ -216,7 +216,7 @@
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCV}">
                                         <Setter Property="Text" Value="{Binding Template.MatchSettings.FixedText, Mode=OneTime}" />
-                                        <Setter Property="TextWrapping" Value="Wrap"/>
+                                        <Setter Property="TextWrapping" Value="Wrap" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.Blemish}">
                                         <Setter Property="Text" Value="" />
