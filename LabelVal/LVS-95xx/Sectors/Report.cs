@@ -86,8 +86,8 @@ public class Report : IReport
         OverallGradeString = report.Report.OverallGrade.Replace("DPM", "");
         OverallGradeLetter = GetGrade(GetParameter("Overall", report.ReportData)).letter;
 
-        Standard = Standards.GetL95xxStandardEnum(GetParameter("Application standard", report.ReportData));
-        GS1Table = Tables.GetL95xxTableEnum(GetParameter("GS1 Table", report.ReportData));
+        Standard = GetParameter("Application standard", report.ReportData).GetStandard(AvailableDevices.L95);
+        GS1Table = GetParameter("GS1 Table", report.ReportData).GetTable(AvailableDevices.L95);
 
         string res = GetParameter("GS1 Data", report.ReportData, true);
         if (res != null)
@@ -110,31 +110,6 @@ public class Report : IReport
         }
     }
     private string GetParameter(string key, List<ReportData> report, bool equal = false) => report.Find((e) => equal ? e.ParameterName.Equals(key) : e.ParameterName.StartsWith(key))?.ParameterValue;
-
-    private string[] GetKeyValuePair(string key, List<string> report)
-    {
-        string item = report.Find((e) => e.StartsWith(key));
-
-        //if it was not found or the item does not contain a comma.
-        return item?.Contains(',') != true ? null : [item[..item.IndexOf(',')], item[(item.IndexOf(',') + 1)..]];
-    }
-    private List<string[]> GetMultipleKeyValuePairs(string key, List<string> report)
-    {
-        List<string> items = report.FindAll((e) => e.StartsWith(key));
-
-        if (items == null || items.Count == 0)
-            return null;
-
-        List<string[]> res = [];
-        foreach (string item in items)
-        {
-            if (!item.Contains(','))
-                continue;
-
-            res.Add([item[..item.IndexOf(',')], item[(item.IndexOf(',') + 1)..]]);
-        }
-        return res;
-    }
 
     private static string GetLetter(float value) =>
         value == 4.0f
@@ -166,47 +141,4 @@ public class Report : IReport
         };
     }
 
-    private static AvailableStandards? GetStandard(string value) =>
-        value.StartsWith("GS1")
-        ? AvailableStandards.GS1
-        : value.StartsWith("ISO")
-        ? AvailableStandards.ISO15415_15416
-        : value.Contains("29158")
-        ? AvailableStandards.ISO29158
-        : null;
-
-
-
-    private static string GetSymbolType(string value) =>
-        value.Contains("Code 128")
-        ? "code128"
-        : value.Contains("UPC-A")
-        ? "upcA"
-        : value.Contains("UPC-B")
-        ? "upcB"
-        : value.Contains("EAN-13")
-        ? "ean13"
-        : value.Contains("EAN-8")
-        ? "ean8"
-        : value.Contains("DataBar")
-        ? "dataBar"
-        : value.Contains("Code 39")
-        ? "code39"
-        : value.Contains("Code 93")
-        ? "code93"
-        : value.Contains("QR")
-        ? "qrCode"
-        : value.StartsWith("Micro")
-        ? "microQrCode"
-        : value.Contains("Data Matrix")
-        ? "dataMatrix"
-        : value.Contains("Aztec")
-        ? "aztec"
-        : value.Contains("Codabar")
-        ? "codaBar"
-        : value.Contains("ITF")
-        ? "i2of5"
-        : value.Contains("PDF417")
-        ? "pdf417"
-        : "";
 }

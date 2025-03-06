@@ -240,7 +240,7 @@
                                 <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:AvailableStandards.GS1}">
                                     <Setter Property="Source" Value="/Assets/Images/GS1.png" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:AvailableStandards.ISO15415_15416}">
+                                <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:AvailableStandards.ISO}">
                                     <Setter Property="Source" Value="/Assets/Images/all-codes.png" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:AvailableStandards.ISO15416}">
@@ -249,7 +249,7 @@
                                 <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:AvailableStandards.ISO15415}">
                                     <Setter Property="Source" Value="/Assets/Images/barcode-1d1.png" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:AvailableStandards.OCR_OCV}">
+                                <DataTrigger Binding="{Binding Name}" Value="{x:Static bar_common:AvailableStandards.OCR}">
                                     <Setter Property="Source" Value="/Assets/Images/OCR.png" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Name}" Value="{x:Null}">

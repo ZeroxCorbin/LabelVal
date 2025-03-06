@@ -1,7 +1,7 @@
 {
   "UID": "a07011de-9bbd-4b7d-8011-c433a4815f26",
   "Name": "Symbologies A (New)",
-  "Standard": "ISO15415_15416",
+  "Standard": "ISO",
   "GS1Table": "",
   "WriteSectorsBeforeProcess": false,
   "TargetDPI": 300,

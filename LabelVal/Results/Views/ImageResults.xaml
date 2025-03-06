@@ -412,7 +412,7 @@
             <Border Style="{StaticResource groupBottom}" />
 
             <ScrollViewer
-                Margin="0"                
+                Margin="0"
                 HorizontalScrollBarVisibility="Disabled"
                 Style="{StaticResource MahApps.Styles.ScrollViewer}">
 

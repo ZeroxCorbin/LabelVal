@@ -471,8 +471,8 @@ public partial class Controller : ObservableObject
         {
             Config = new Lvs95xx.lib.Core.Controllers.Config()
             {
-                ApplicationStandard = Standards.GetL95xxStandardString(ire.ImageResults.SelectedImageRoll.SelectedStandard),
-                Table = Tables.GetL95xxTableString(ire.ImageResults.SelectedImageRoll.SelectedGS1Table),
+                ApplicationStandard = ire.ImageResults.SelectedImageRoll.SelectedStandard.GetSymbologyDescription(),
+                Table = ire.ImageResults.SelectedImageRoll.SelectedGS1Table.GetTableName(),
             },
             Image = ire.L95xxStoredImage.BitmapBytes
         };

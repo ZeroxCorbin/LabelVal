@@ -28,19 +28,19 @@ public partial class Sector : ObservableObject, ISector
                 case null:
                     return false;
 
-                case AvailableStandards.ISO29158:
+                case AvailableStandards.DPM:
                     {
                         return Report.Standard switch
                         {
-                            AvailableStandards.ISO29158 => false,
+                            AvailableStandards.DPM => false,
                             _ => true,
                         };
                     }
-                case AvailableStandards.ISO15415_15416:
+                case AvailableStandards.ISO:
                     {
                         return Report.Standard switch
                         {
-                            AvailableStandards.ISO15415_15416 or AvailableStandards.ISO15415 or AvailableStandards.ISO15416 or null => false,
+                            AvailableStandards.ISO or AvailableStandards.ISO15415 or AvailableStandards.ISO15416 or null => false,
                             _ => true,
                         };
                     }
@@ -48,7 +48,7 @@ public partial class Sector : ObservableObject, ISector
                     {
                         return Report.Standard switch
                         {
-                            AvailableStandards.ISO15415_15416 or AvailableStandards.ISO15415 => false,
+                            AvailableStandards.ISO or AvailableStandards.ISO15415 => false,
                             _ => true,
                         };
                     }
@@ -56,7 +56,7 @@ public partial class Sector : ObservableObject, ISector
                     {
                         return Report.Standard switch
                         {
-                            AvailableStandards.ISO15415_15416 or AvailableStandards.ISO15416 => false,
+                            AvailableStandards.ISO or AvailableStandards.ISO15416 => false,
                             _ => true,
                         };
                     }
@@ -88,10 +88,10 @@ public partial class Sector : ObservableObject, ISector
         DesiredGS1Table = table;
 
         if (sector.type is "verify1D" or "verify2D" && sector.gradingStandard != null)
-            Report.Standard = sector.gradingStandard.enabled ? AvailableStandards.GS1 : AvailableStandards.ISO15415_15416;
+            Report.Standard = sector.gradingStandard.enabled ? AvailableStandards.GS1 : AvailableStandards.ISO;
 
         if (Report.Standard == AvailableStandards.GS1)
-            Report.GS1Table = Tables.GetV275TableEnum(sector.gradingStandard.tableId);
+            Report.GS1Table = sector.gradingStandard.tableId.GetTable(AvailableDevices.V275);
 
         SectorDetails = new SectorDetails(this);
 

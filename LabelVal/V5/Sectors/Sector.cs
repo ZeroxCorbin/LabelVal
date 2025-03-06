@@ -28,19 +28,19 @@ public partial class Sector : ObservableObject, ISector
             {
                 case null:
                     return true;
-                case AvailableStandards.ISO29158:
+                case AvailableStandards.DPM:
                     {
                         return Report.Standard switch
                         {
-                            AvailableStandards.ISO29158 => false,
+                            AvailableStandards.DPM => false,
                             _ => true,
                         };
                     }
-                case AvailableStandards.ISO15415_15416:
+                case AvailableStandards.ISO:
                     {
                         return Report.Standard switch
                         {
-                            AvailableStandards.ISO15415_15416 or AvailableStandards.ISO15415 or AvailableStandards.ISO15416 or null => false,
+                            AvailableStandards.ISO or AvailableStandards.ISO15415 or AvailableStandards.ISO15416 or null => false,
                             _ => true,
                         };
                     }
@@ -48,7 +48,7 @@ public partial class Sector : ObservableObject, ISector
                     {
                         return Report.Standard switch
                         {
-                            AvailableStandards.ISO15415_15416 or AvailableStandards.ISO15415 => false,
+                            AvailableStandards.ISO or AvailableStandards.ISO15415 => false,
                             _ => true,
                         };
                     }
@@ -56,7 +56,7 @@ public partial class Sector : ObservableObject, ISector
                     {
                         return Report.Standard switch
                         {
-                            AvailableStandards.ISO15415_15416 or AvailableStandards.ISO15416 => false,
+                            AvailableStandards.ISO or AvailableStandards.ISO15416 => false,
                             _ => true,
                         };
                     }

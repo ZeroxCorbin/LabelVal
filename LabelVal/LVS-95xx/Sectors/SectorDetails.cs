@@ -57,7 +57,7 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
         bool isGS1 = GetParameter("GS1 Data", report.ReportData) != null;
         bool is2D = sec.Report.SymbolType.GetRegionType(AvailableDevices.L95) == AvailableRegionTypes.Type2D;
 
-        if (is2D && Sector.Report.Standard != AvailableStandards.ISO29158)
+        if (is2D && Sector.Report.Standard != AvailableStandards.DPM)
         {
             IsNotEmpty = true;
 
@@ -115,7 +115,7 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
 
         }
         //DPM
-        else if (is2D && Sector.Report.Standard == AvailableStandards.ISO29158)
+        else if (is2D && Sector.Report.Standard == AvailableStandards.DPM   )
         {
             IsNotEmpty = true;
 

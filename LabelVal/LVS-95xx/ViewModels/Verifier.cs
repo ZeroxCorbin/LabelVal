@@ -92,7 +92,7 @@ public partial class Verifier : ObservableRecipient, IRecipient<RegistryMessage>
         _ = Controller.Database.GetSetting("GS1", "Table");
         //Update database setting to allow storing full resolution images to the report.
         if (cur != "1")
-            Controller.Database.WriteSetting("Report", "ReportImageReduction", "1");
+            Controller.Database.SetSetting("Report", "ReportImageReduction", "1");
     }
 
     public void Receive(RegistryMessage message)

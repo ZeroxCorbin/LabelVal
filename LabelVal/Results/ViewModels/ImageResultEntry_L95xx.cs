@@ -70,8 +70,8 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
         {
             Config = new Lvs95xx.lib.Core.Controllers.Config()
             {
-                ApplicationStandard = Standards.GetL95xxStandardString(ImageResults.SelectedImageRoll.SelectedStandard),
-                Table = Tables.GetL95xxTableString(ImageResults.SelectedImageRoll.SelectedGS1Table),
+                ApplicationStandard = ImageResults.SelectedImageRoll.SelectedStandard.GetSymbologyDescription(),
+                Table = ImageResults.SelectedImageRoll.SelectedGS1Table.GetTableName(),
             },
             RepeatAvailable = L95xxProcessResults,
         };
