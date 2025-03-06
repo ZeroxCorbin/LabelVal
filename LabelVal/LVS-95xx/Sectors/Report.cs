@@ -86,8 +86,12 @@ public class Report : IReport
         OverallGradeString = report.Report.OverallGrade.Replace("DPM", "");
         OverallGradeLetter = GetGrade(GetParameter("Overall", report.ReportData)).letter;
 
-        Standard = GetParameter("Application standard", report.ReportData).GetStandard(AvailableDevices.L95);
-        GS1Table = GetParameter("GS1 Table", report.ReportData).GetTable(AvailableDevices.L95);
+        var stdString = GetParameter("Application standard", report.ReportData);
+        var tblString = GetParameter("GS1 Table", report.ReportData);
+
+        Standard = stdString.GetStandard(AvailableDevices.L95);
+        if(Standard is AvailableStandards.GS1 or AvailableStandards.GS1_1D_Report or AvailableStandards.GS1_2D_Report or AvailableStandards.GS1NTIN)
+            GS1Table = tblString.GetTable(AvailableDevices.L95);
 
         string res = GetParameter("GS1 Data", report.ReportData, true);
         if (res != null)

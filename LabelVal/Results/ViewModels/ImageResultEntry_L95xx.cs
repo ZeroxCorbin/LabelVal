@@ -71,10 +71,12 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
             Config = new Lvs95xx.lib.Core.Controllers.Config()
             {
                 ApplicationStandard = ImageResults.SelectedImageRoll.SelectedStandard.GetSymbologyDescription(),
-                Table = ImageResults.SelectedImageRoll.SelectedGS1Table.GetTableName(),
             },
             RepeatAvailable = L95xxProcessResults,
         };
+
+        if (ImageResults.SelectedImageRoll.SelectedStandard == AvailableStandards.GS1)
+            lab.Config.Table = ImageResults.SelectedImageRoll.SelectedGS1Table?.GetTableName();
 
         if (imageType == ImageResultEntryImageTypes.Source)
             lab.Image = SourceImage.BitmapBytes;

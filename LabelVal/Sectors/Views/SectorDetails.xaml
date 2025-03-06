@@ -347,7 +347,7 @@
                             md:TextFieldAssist.SuffixText="{Binding Report.Units}"
                             BorderThickness="0"
                             IsHitTestVisible="False"
-                            Text="{Binding Report.Aperture}" />
+                            Text="{Binding Report.Aperture, StringFormat=N1}" />
                         <TextBox
                             Margin="3,0"
                             HorizontalAlignment="Left"

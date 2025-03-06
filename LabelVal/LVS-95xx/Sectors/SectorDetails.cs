@@ -51,8 +51,7 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
         UserName = report.Name;
         IsNotEmpty = false;
 
-        List<Alarm> alarms = new();
-
+        List<Alarm> alarms = [];
 
         bool isGS1 = GetParameter("GS1 Data", report.ReportData) != null;
         bool is2D = sec.Report.SymbolType.GetRegionType(AvailableDevices.L95) == AvailableRegionTypes.Type2D;
@@ -78,10 +77,10 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
             Values.Add(new Value_("minimumReflectance", ParseInt(GetParameter("Rmin", report.ReportData))));
             Values.Add(new Value_("maximumReflectance", ParseInt(GetParameter("Rmax", report.ReportData))));
 
-            if(Sector.Report.SymbolType is not AvailableSymbologies.Aztec)
+            if (Sector.Report.SymbolType is not AvailableSymbologies.Aztec)
             {
                 Values.Add(new Value_("xPrintGrowthX", ParseInt(GetParameter("X print", report.ReportData))));
-                Values.Add(new Value_("xPrintGrowthY", ParseInt(GetParameter("Y print", report.ReportData))));    
+                Values.Add(new Value_("xPrintGrowthY", ParseInt(GetParameter("Y print", report.ReportData))));
                 Values.Add(new Value_("contrastUniformity", ParseInt(GetParameter("Contrast un", report.ReportData))));
             }
 
@@ -115,7 +114,7 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
 
         }
         //DPM
-        else if (is2D && Sector.Report.Standard == AvailableStandards.DPM   )
+        else if (is2D && Sector.Report.Standard == AvailableStandards.DPM)
         {
             IsNotEmpty = true;
 
@@ -250,7 +249,7 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
     {
         List<string> warn = splitPacket.FindAll((e) => e.StartsWith(name));
 
-        List<string> ret = new();
+        List<string> ret = [];
         foreach (string line in warn)
         {
             //string[] spl1 = new string[2];
@@ -261,7 +260,7 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
     }
     private float ParseFloat(string value)
     {
-        if(value == null)
+        if (value == null)
             return -1;
         string digits = new(value.Trim().TakeWhile("0123456789.".Contains
                                 ).ToArray());
