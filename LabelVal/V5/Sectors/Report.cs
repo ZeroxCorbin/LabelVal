@@ -179,10 +179,10 @@ public class Report : IReport
     private static string V5GetSymbology(string type) => type == "Datamatrix" ? "DataMatrix" : type;
     private static AvailableRegionTypes V5GetType(V5_REST_Lib.Models.ResultsAlt.Decodedata Report) =>
         Report.Code128 != null
-        ? AvailableRegionTypes.Type1D
+        ? AvailableRegionTypes._1D
         : Report.Datamatrix != null
-        ? AvailableRegionTypes.Type2D
-        : Report.QR != null ? AvailableRegionTypes.Type2D : Report.PDF417 != null ? AvailableRegionTypes.Type1D : Report.UPC != null ? AvailableRegionTypes.Type1D : AvailableRegionTypes.Type1D;
+        ? AvailableRegionTypes._2D
+        : Report.QR != null ? AvailableRegionTypes._2D : Report.PDF417 != null ? AvailableRegionTypes._1D : Report.UPC != null ? AvailableRegionTypes._1D : AvailableRegionTypes._1D;
 
     private static string V5GetLetter(int grade) =>
         grade switch

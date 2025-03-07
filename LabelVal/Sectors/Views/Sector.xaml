@@ -175,7 +175,7 @@
                             <Style TargetType="{x:Type Image}">
                                 <Setter Property="Source" Value="/Assets/Images/barcode-1d.png" />
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.Type2D}">
+                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes._2D}">
                                         <Setter Property="Source" Value="/Assets/Images/barcode-2d.png" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCR}">
@@ -201,11 +201,11 @@
                             <Style TargetType="{x:Type TextBlock}">
 
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.Type1D}">
+                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes._1D}">
                                         <Setter Property="Text" Value="{Binding Report.SymbolType, Converter={StaticResource EnumValueToDescription}, Mode=OneTime}" />
                                         <Setter Property="TextWrapping" Value="Wrap" />
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.Type2D}">
+                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes._2D}">
                                         <Setter Property="Text" Value="{Binding Report.SymbolType, Converter={StaticResource EnumValueToDescription}, Mode=OneTime}" />
                                         <Setter Property="TextWrapping" Value="Wrap" />
                                     </DataTrigger>
@@ -233,12 +233,12 @@
 
                                 <Style.Triggers>
 
-                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.Type1D}">
+                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes._1D}">
                                         <Setter Property="Text" Value="{Binding Report.DecodeText, Converter={StaticResource shortenString}, Mode=OneTime}" />
                                         <Setter Property="ToolTip" Value="{Binding Report.DecodeText, Mode=OneTime}" />
                                     </DataTrigger>
 
-                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.Type2D}">
+                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes._2D}">
                                         <Setter Property="Text" Value="{Binding Report.DecodeText, Converter={StaticResource shortenString}, Mode=OneTime}" />
                                         <Setter Property="ToolTip" Value="{Binding Report.DecodeText, Mode=OneTime}" />
                                     </DataTrigger>
@@ -337,10 +337,10 @@
                                 <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
 
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.Type1D}">
+                                        <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes._1D}">
                                             <Setter Property="Text" Value="{Binding Report.OverallGradeValue, StringFormat=N1, Mode=OneTime}" />
                                         </DataTrigger>
-                                        <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.Type2D}">
+                                        <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes._2D}">
                                             <Setter Property="Text" Value="{Binding Report.OverallGradeValue, StringFormat=N1, Mode=OneTime}" />
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCR}">

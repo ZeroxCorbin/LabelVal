@@ -1,12 +1,16 @@
-﻿using BarcodeVerification.lib.GS1;
+﻿using BarcodeVerification.lib.Common;
+using BarcodeVerification.lib.GS1;
+using BarcodeVerification.lib.ISO;
 using LibSimpleDatabase;
 using Lvs95xx.Producer.Watchers;
 using MaterialDesignThemes.Wpf;
+using Newtonsoft.Json;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -56,9 +60,80 @@ public partial class App : Application
 
     public static string RunResultsDatabaseName(long timeDate) => $"Run_{timeDate}{DatabaseExtension}";
 
+    //Load the parameters.csv file.
+    //Trying to create a Dictionary<AvailableRegionType, List<AvailableParameters>> from the contents.
+    //The first row is the header. the columns should match the AvailableRegionType enum by element name.
+    //The remaining rows are the AvailableParameters that match the AvailableRegionType key.
+
+    public class Regions
+    {
+        public static string LoadParameters()
+        {
+            using CsvHelper.CsvReader csv = new(new StreamReader("parameters.csv"), CultureInfo.InvariantCulture);
+            _ = csv.Read();
+            if (!csv.ReadHeader())
+            {
+                return "";
+            }
+
+            IEnumerable<dynamic> records = csv.GetRecords<dynamic>();
+
+            Dictionary<AvailableRegionTypes, List<AvailableParameters>> results = [];
+
+            foreach (dynamic record in records)
+            {
+                foreach (dynamic item in record)
+                {
+                    if (!Enum.TryParse<AvailableRegionTypes>(item.Key, out AvailableRegionTypes type))
+                        continue;
+
+                    if(string.IsNullOrWhiteSpace(item.Value))
+                        continue;
+
+                    string val = ConvertToCamelCase(item.Value);
+
+
+                    if (!Enum.TryParse<AvailableParameters>(val, out AvailableParameters param))
+                        continue;
+
+                    if (!results.ContainsKey(type))
+                        results[type] = [];
+
+                    results[type].Add(param);
+
+                    //var region = Enum.Parse<AvailableRegionTypes>(item.Key);
+                    //var parameters = item.Value.Split(',').Select(v => Enum.Parse<AvailableParameters>(v)).ToList();
+                    //RegionParameters.Add(region, parameters);
+                }
+            }
+
+            foreach (var key in results.Keys)
+            {
+                results[key] = results[key].Distinct().ToList();
+            }
+
+            return JsonConvert.SerializeObject(results);
+
+        }
+
+        //I would like to convert " a string with spaces " to "AStringWithSpaces"
+        private static string ConvertToCamelCase(string value)
+        {
+            string[] parts = value.Split(' ');
+            for (int i = 0; i < parts.Length; i++)
+            {
+                parts[i] = parts[i].Substring(0, 1).ToUpper() + parts[i].Substring(1);
+            }
+            return string.Join("", parts);  
+
+
+        }
+    }
+
     public App()
     {
         //SetupExceptionHandling();
+      // File.WriteAllText("parametergroups.json", Regions.LoadParameters());
 
         Version version = Assembly.GetExecutingAssembly().GetName().Version;
         if (version != null)

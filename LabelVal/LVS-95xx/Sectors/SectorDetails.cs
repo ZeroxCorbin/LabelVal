@@ -54,7 +54,7 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
         List<Alarm> alarms = [];
 
         bool isGS1 = GetParameter("GS1 Data", report.ReportData) != null;
-        bool is2D = sec.Report.SymbolType.GetRegionType(AvailableDevices.L95) == AvailableRegionTypes.Type2D;
+        bool is2D = sec.Report.SymbolType.GetRegionType(AvailableDevices.L95) == AvailableRegionTypes._2D;
 
         if (is2D && Sector.Report.Standard != AvailableStandards.DPM)
         {

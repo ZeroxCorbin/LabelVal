@@ -50,7 +50,7 @@ public class Report : IReport
     {
         Original = report;
 
-        Type = GetParameter("Cell size", report.ReportData) == null ? AvailableRegionTypes.Type1D : AvailableRegionTypes.Type2D;
+        Type = GetParameter("Cell size", report.ReportData) == null ? AvailableRegionTypes._1D : AvailableRegionTypes._2D;
 
         Top = report.Report.Y1;
         Left = report.Report.X1;
@@ -74,7 +74,7 @@ public class Report : IReport
         if(SymbolType == AvailableSymbologies.Unknown)
             return;
 
-        XDimension = Type == AvailableRegionTypes.Type2D
+        XDimension = Type == AvailableRegionTypes._2D
             ? (double)ParseFloat(GetParameter("Cell size", report.ReportData))
             : SymbolType != AvailableSymbologies.PDF417 ? (double)ParseFloat(GetParameter("Xdim", report.ReportData)) : (double)ParseFloat(GetParameter("XDim", report.ReportData));
         Aperture = ParseFloat(GetParameter("Overall", report.ReportData).Split('/')[1]);
