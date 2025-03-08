@@ -107,6 +107,56 @@ public partial class App : Application
                 }
             }
 
+            
+            var commonAll = new List<AvailableParameters>();
+            var common1d = new List<AvailableParameters>();
+            var common2d = new List<AvailableParameters>();
+            foreach (var key  in results.Keys)
+            {
+                results[key] = results[key].Distinct().ToList();
+
+                //Check All common
+                foreach (var param in results[key])
+                {
+                    if (results.Values.All(v => v.Contains(param)))
+                    {
+                        if (!commonAll.Contains(param))
+                            commonAll.Add(param);
+                    }
+                }
+
+                //Check 1D common
+                foreach (var param in results[key])
+                    {
+                        if (results[AvailableRegionTypes._1D].Contains(param)
+                            && results[AvailableRegionTypes._1D1].Contains(param)
+                            && results[AvailableRegionTypes._1D2].Contains(param)
+                            && results[AvailableRegionTypes._1D3].Contains(param)
+                            && results[AvailableRegionTypes._1D4].Contains(param)
+                            && results[AvailableRegionTypes._1D5].Contains(param))
+                        {
+                            if (!common1d.Contains(param))
+                                common1d.Add(param);
+                        }
+                    }
+
+                //Check 2D common
+                foreach (var param in results[key])
+                {
+                    if (results[AvailableRegionTypes.DataMatrix].Contains(param)
+                        && results[AvailableRegionTypes.QR1].Contains(param)
+                        && results[AvailableRegionTypes.QR2].Contains(param)
+                        && results[AvailableRegionTypes.MaxiCode].Contains(param))
+                    {
+                        if (!common2d.Contains(param))
+                            common2d.Add(param);
+                    }
+                }
+
+
+            }
+
+
             foreach (var key in results.Keys)
             {
                 results[key] = results[key].Distinct().ToList();
@@ -132,8 +182,7 @@ public partial class App : Application
 
     public App()
     {
-        //SetupExceptionHandling();
-      // File.WriteAllText("parametergroups.json", Regions.LoadParameters());
+        SetupExceptionHandling();
 
         Version version = Assembly.GetExecutingAssembly().GetName().Version;
         if (version != null)
