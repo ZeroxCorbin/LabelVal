@@ -386,7 +386,7 @@
 
                                     <TextBlock
                                         Grid.Column="0"
-                                        Text="{Binding Path=Name, Converter={StaticResource stringToUpper}, Mode=OneTime}"
+                                        Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription}, Mode=OneTime}"
                                         TextWrapping="Wrap" />
 
                                     <DockPanel
@@ -443,7 +443,7 @@
                         <Style TargetType="{x:Type DockPanel}">
                             <Setter Property="Visibility" Value="Visible" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding SectorDetails.Values.Count, Mode=OneTime}" Value="0">
+                                <DataTrigger Binding="{Binding SectorDetails.ValueDoubles.Count, Mode=OneTime}" Value="0">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -452,7 +452,7 @@
 
                     <Separator DockPanel.Dock="Top" />
 
-                    <ItemsControl ItemsSource="{Binding SectorDetails.Values, Mode=OneTime}">
+                    <ItemsControl ItemsSource="{Binding SectorDetails.ValueDoubles, Mode=OneTime}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
@@ -461,14 +461,14 @@
                                         <ColumnDefinition Width="auto" />
                                     </Grid.ColumnDefinitions>
 
-                                    <TextBlock Grid.Column="0" Text="{Binding Path=Name, Converter={StaticResource stringToUpper}, Mode=OneTime}" />
+                                    <TextBlock Grid.Column="0" Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription}, Mode=OneTime}" />
 
                                     <TextBlock
                                         Grid.Column="1"
                                         Margin="6,0"
                                         HorizontalAlignment="Right"
                                         VerticalAlignment="Center"
-                                        Text="{Binding Path=Value, Mode=OneTime, StringFormat={}{0}}" />
+                                        Text="{Binding Path=Value, Mode=OneTime, StringFormat={}{0:N1}}" />
                                 </Grid>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
@@ -481,7 +481,7 @@
                         <Style TargetType="{x:Type DockPanel}">
                             <Setter Property="Visibility" Value="Visible" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding SectorDetails.ValueResults.Count, Mode=OneTime}" Value="0">
+                                <DataTrigger Binding="{Binding SectorDetails.ValueDoubles.Count, Mode=OneTime}" Value="0">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -490,7 +490,7 @@
 
                     <Separator DockPanel.Dock="Top" />
 
-                    <ItemsControl ItemsSource="{Binding SectorDetails.ValueResults, Mode=OneTime}">
+                    <ItemsControl ItemsSource="{Binding SectorDetails.ValueDoubles, Mode=OneTime}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
@@ -503,7 +503,7 @@
 
                                     <TextBlock
                                         Grid.Column="0"
-                                        Text="{Binding Path=Name, Converter={StaticResource stringToUpper}, Mode=OneTime}"
+                                        Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription}, Mode=OneTime}"
                                         TextWrapping="Wrap" />
 
                                     <TextBlock
@@ -546,7 +546,7 @@
                     </ItemsControl>
                 </DockPanel>
 
-                <!--  GS1 Value Results  -->
+                <!--  Value Results  -->
                 <DockPanel>
                     <DockPanel.Style>
                         <Style TargetType="{x:Type DockPanel}">
@@ -554,7 +554,7 @@
                             <Style.Triggers>
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding SectorDetails.Gs1ValueResults.Count, Converter={StaticResource NumberZeroOrNull}, Mode=OneTime}" Value="False" />
+                                        <Condition Binding="{Binding SectorDetails.ValueStrings.Count, Converter={StaticResource NumberZeroOrNull}, Mode=OneTime}" Value="False" />
                                         <Condition Binding="{Binding Report.Standard}" Value="{x:Static bar_common:AvailableStandards.GS1}" />
                                     </MultiDataTrigger.Conditions>
                                     <MultiDataTrigger.Setters>
@@ -570,7 +570,7 @@
 
                     <Separator DockPanel.Dock="Top" />
 
-                    <ItemsControl ItemsSource="{Binding SectorDetails.Gs1ValueResults, Mode=OneTime}">
+                    <ItemsControl ItemsSource="{Binding SectorDetails.ValueStrings, Mode=OneTime}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
@@ -643,7 +643,7 @@
                         <Style TargetType="{x:Type DockPanel}">
                             <Setter Property="Visibility" Value="Visible" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding SectorDetails.Gs1Grades.Count, Mode=OneTime}" Value="0">
+                                <DataTrigger Binding="{Binding SectorDetails.Grades.Count, Mode=OneTime}" Value="0">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Report.SymbolType, Mode=OneTime}" Value="{x:Static bar_common:AvailableSymbologies.Aztec}">
@@ -655,7 +655,7 @@
 
                     <Separator DockPanel.Dock="Top" />
 
-                    <ItemsControl ItemsSource="{Binding SectorDetails.Gs1Grades, Mode=OneTime}">
+                    <ItemsControl ItemsSource="{Binding SectorDetails.Grades, Mode=OneTime}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
@@ -666,7 +666,7 @@
                                         <ColumnDefinition Width="auto" />
                                     </Grid.ColumnDefinitions>
 
-                                    <TextBlock Grid.Column="0" Text="{Binding Path=Name, Converter={StaticResource stringToUpper}, Mode=OneTime}" />
+                                    <TextBlock Grid.Column="0" Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription}, Mode=OneTime}" />
                                     <TextBlock
                                         Grid.Column="1"
                                         Margin="3,0"

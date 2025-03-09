@@ -5,74 +5,74 @@ public interface ISectorValue
     string Name { get; set; }
 }
 
-public class GradeValue : ISectorValue
-{
-    public string Name { get; set; }
-    public double Value { get; set; }
-    public Grade Grade { get; set; }
+//public class GradeValue : ISectorValue
+//{
+//    public string Name { get; set; }
+//    public double Value { get; set; }
+//    public Grade Grade { get; set; }
 
-    public GradeValue(string name, double value, Grade grade)
-    {
-        Value = value;
-        Grade = grade;
-        Name = name;
-    }
-    public GradeValue(string name, GradeValue gradeValue)
-    {
-        if (gradeValue != null)
-        {
-            Value = gradeValue.Value;
-            Grade = gradeValue.Grade;
-        }
-        Name = name;
-    }
-}
-public class Grade : ISectorValue
-{
-    public string Name { get; set; }
-    public double Value { get; set; }
-    public string Letter { get; set; }
+//    public GradeValue(string name, double value, Grade grade)
+//    {
+//        Value = value;
+//        Grade = grade;
+//        Name = name;
+//    }
+//    public GradeValue(string name, GradeValue gradeValue)
+//    {
+//        if (gradeValue != null)
+//        {
+//            Value = gradeValue.Value;
+//            Grade = gradeValue.Grade;
+//        }
+//        Name = name;
+//    }
+//}
+//public class Grade : ISectorValue
+//{
+//    public string Name { get; set; }
+//    public double Value { get; set; }
+//    public string Letter { get; set; }
 
-    public Grade(string name, double value, string letter)
-    {
-        Value = value;
-        Letter = letter;
-        Name = name;
-    }
-    public Grade(string name, Grade grade)
-    {
-        if (grade != null)
-        {
-            Value = grade.Value;
-            Letter = grade.Letter;
-        }
-        Name = name;
-    }
-}
-public class ValueResult : ISectorValue
-{
-    public string Name { get; set; }
-    public double Value { get; set; }
-    public string Result { get; set; }
+//    public Grade(string name, double value, string letter)
+//    {
+//        Value = value;
+//        Letter = letter;
+//        Name = name;
+//    }
+//    public Grade(string name, Grade grade)
+//    {
+//        if (grade != null)
+//        {
+//            Value = grade.Value;
+//            Letter = grade.Letter;
+//        }
+//        Name = name;
+//    }
+//}
+//public class ValueResult : ISectorValue
+//{
+//    public string Name { get; set; }
+//    public double Value { get; set; }
+//    public string Result { get; set; }
 
-    public ValueResult(string name, double value, string result)
-    {
-        Value = value;
-        Result = result;
-        Name = name;
-    }
-}
-public class Value_ : ISectorValue
-{
-    public string Name { get; set; }
-    public double Value { get; set; }
+//    public ValueResult(string name, double value, string result)
+//    {
+//        Value = value;
+//        Result = result;
+//        Name = name;
+//    }
+//}
+//public class Value_ : ISectorValue
+//{
+//    public string Name { get; set; }
+//    public double Value { get; set; }
 
-    public Value_(string name, double value)
-    {
-        Value = value;
-        Name = name;
-    }
-}
+//    public Value_(string name, double value)
+//    {
+//        Value = value;
+//        Name = name;
+//    }
+//}
 public class Blemish : ISectorValue
 {
     public string Name { get; set; }

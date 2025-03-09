@@ -85,36 +85,36 @@ public partial interface ISector
             Value = sector.Report.AngleDeg.ToString()
         });
 
-        foreach (GradeValue grade in sector.SectorDetails.GradeValues)
-        {
-            compiled.Add(new CSVResults
-            {
-                Name = CamelCaseToWords(grade.Name),
-                Value = grade.Value.ToString(),
-                Grade = grade.Grade.Letter,
-                GradeValue = grade.Grade.Value.ToString()
-            });
-        }
+        //foreach (GradeValue grade in sector.SectorDetails.GradeValues)
+        //{
+        //    compiled.Add(new CSVResults
+        //    {
+        //        Name = CamelCaseToWords(grade.Name),
+        //        Value = grade.Value.ToString(),
+        //        Grade = grade.Grade.Letter,
+        //        GradeValue = grade.Grade.Value.ToString()
+        //    });
+        //}
 
-        foreach (Value_ grade in sector.SectorDetails.Values)
-        {
-            compiled.Add(new CSVResults
-            {
-                Name = CamelCaseToWords(grade.Name),
-                Value = grade.Value.ToString(),
+        //foreach (Value_ grade in sector.SectorDetails.Values)
+        //{
+        //    compiled.Add(new CSVResults
+        //    {
+        //        Name = CamelCaseToWords(grade.Name),
+        //        Value = grade.Value.ToString(),
 
-            });
-        }
+        //    });
+        //}
 
-        foreach (Grade grade in sector.SectorDetails.Gs1Grades)
-        {
-            compiled.Add(new CSVResults
-            {
-                Name = CamelCaseToWords(grade.Name),
-                GradeValue = grade.Value.ToString(),
-                Grade = grade.Letter
-            });
-        }
+        //foreach (Grade grade in sector.SectorDetails.Grades)
+        //{
+        //    compiled.Add(new CSVResults
+        //    {
+        //        Name = CamelCaseToWords(grade.Name),
+        //        GradeValue = grade.Value.ToString(),
+        //        Grade = grade.Letter
+        //    });
+        //}
 
         using StringWriter writer = new();
         using CsvWriter csv = new(writer, CultureInfo.InvariantCulture);

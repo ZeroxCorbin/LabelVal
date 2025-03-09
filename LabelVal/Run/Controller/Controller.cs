@@ -6,6 +6,7 @@ using LabelVal.Results.Databases;
 using LabelVal.Run.Databases;
 using LabelVal.Sectors.Classes;
 using LabelVal.V275.ViewModels;
+using Lvs95xx.lib.Core.Controllers;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.Threading;
@@ -471,11 +472,13 @@ public partial class Controller : ObservableObject
         {
             Config = new Lvs95xx.lib.Core.Controllers.Config()
             {
-                ApplicationStandard = ire.ImageResults.SelectedImageRoll.SelectedStandard.GetSymbologyDescription(),
-                Table = ire.ImageResults.SelectedImageRoll.SelectedGS1Table.GetTableName(),
+                ApplicationStandard = ire.ImageResults.SelectedImageRoll.SelectedStandard.GetDescription(),
             },
+
             Image = ire.L95xxStoredImage.BitmapBytes
         };
+        if (ire.ImageResults.SelectedImageRoll.SelectedGS1Table != null)
+            lab.Config.Table = ((AvailableTables)ire.ImageResults.SelectedImageRoll.SelectedGS1Table).GetTableName();
 
         Lvs95xx.lib.Core.Controllers.FullReport res = await L95.ProcessLabelAsync(lab);
         if (res == null)

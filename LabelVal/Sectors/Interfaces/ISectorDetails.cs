@@ -1,4 +1,5 @@
-﻿using LabelVal.Sectors.Classes;
+﻿using BarcodeVerification.lib.ISO;
+using LabelVal.Sectors.Classes;
 using System.Collections.ObjectModel;
 
 namespace LabelVal.Sectors.Interfaces;
@@ -22,10 +23,11 @@ public interface ISectorDetails
     bool IsNotEmpty { get; set; }
 
     ObservableCollection<GradeValue> GradeValues { get; }
-    ObservableCollection<ValueResult> ValueResults { get; }
-    ObservableCollection<ValueResult> Gs1ValueResults { get; }
-    ObservableCollection<Grade> Gs1Grades { get; }
-    ObservableCollection<Value_> Values { get; }
+    ObservableCollection<ValueDouble> ValueDoubles { get; }
+    ObservableCollection<ValueString> ValueStrings { get; }
+    ObservableCollection<Grade> Grades { get; }
+    ObservableCollection<PassFail> PassFails { get; }
+
     ObservableCollection<Alarm> Alarms { get; }
     ObservableCollection<Blemish> Blemishes { get; }
 

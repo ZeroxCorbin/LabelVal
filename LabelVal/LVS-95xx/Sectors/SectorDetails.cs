@@ -29,194 +29,18 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
     [ObservableProperty] private bool isNotEmpty = false;
 
     public ObservableCollection<GradeValue> GradeValues { get; } = [];
-    public ObservableCollection<ValueResult> ValueResults { get; } = [];
-    public ObservableCollection<ValueResult> Gs1ValueResults { get; } = [];
-    public ObservableCollection<Grade> Gs1Grades { get; } = [];
-    public ObservableCollection<Value_> Values { get; } = [];
+    public ObservableCollection<ValueDouble> ValueDoubles { get; } = [];
+    public ObservableCollection<ValueString> ValueStrings { get; } = [];
+    public ObservableCollection<Grade> Grades { get; } = [];
+    public ObservableCollection<PassFail> PassFails { get; } = [];
+
     public ObservableCollection<Alarm> Alarms { get; } = [];
     public ObservableCollection<Blemish> Blemishes { get; } = [];
 
     public SectorDifferences? Compare(ISectorDetails compare) => SectorDifferences.Compare(this, compare);
 
     public SectorDetails() { }
-    public SectorDetails(ISector sector) => Process(sector);
-    public void Process(ISector sector)
-    {
-        if (sector is not LVS_95xx.Sectors.Sector sec)
-            return;
-
-        Sector = sector;
-        FullReport report = sec.L95xxFullReport;
-
-        Name = report.Name;
-        UserName = report.Name;
-        IsNotEmpty = false;
-
-        List<Alarm> alarms = [];
-
-        bool isGS1 = GetParameter("GS1 Data", report.ReportData) != null;
-        bool is2D = sec.Report.SymbolType.GetRegionType(AvailableDevices.L95) is AvailableRegionTypes._2D or AvailableRegionTypes.DataMatrix ;
-
-        if (is2D && Sector.Report.Standard != AvailableStandards.DPM)
-        {
-            IsNotEmpty = true;
-
-            foreach (string war in GetParameters("Warning", report.ReportData))
-                alarms.Add(new Alarm() { Name = war, Category = 1 });
-
-            GradeValues.Add(new GradeValue("decode", -1, GetParameter("Decode", report.ReportData, true).StartsWith("PASS") ? new Grade("", 4.0f, "A") : new Grade("Decode", 0.0f, "F")));
-            GradeValues.Add(GetGradeValue("symbolContrast", GetParameter("Contrast", report.ReportData)));
-            GradeValues.Add(new GradeValue("modulation", -1, GetGrade("", GetParameter("Modulation", report.ReportData))));
-            GradeValues.Add(new GradeValue("reflectanceMargin", -1, GetGrade("", GetParameter("Reflectance margin", report.ReportData))));
-            GradeValues.Add(GetGradeValue("axialNonUniformity", GetParameter("Axial nonuniformity", report.ReportData)));
-            GradeValues.Add(GetGradeValue("gridNonUniformity", GetParameter("Grid nonuniformity", report.ReportData)));
-            GradeValues.Add(GetGradeValue("unusedErrorCorrection", GetParameter("Unused EC", report.ReportData)));
-
-            string fx = GetParameter("Fixed pattern damage", report.ReportData);
-            GradeValues.Add(new GradeValue("fixedPatternDamage", -1, new Grade("", ParseFloat(fx), GetLetter(ParseFloat(fx)))));
-
-            Values.Add(new Value_("minimumReflectance", ParseInt(GetParameter("Rmin", report.ReportData))));
-            Values.Add(new Value_("maximumReflectance", ParseInt(GetParameter("Rmax", report.ReportData))));
-
-            if (Sector.Report.SymbolType is not AvailableSymbologies.Aztec)
-            {
-                Values.Add(new Value_("xPrintGrowthX", ParseInt(GetParameter("X print", report.ReportData))));
-                Values.Add(new Value_("xPrintGrowthY", ParseInt(GetParameter("Y print", report.ReportData))));
-                Values.Add(new Value_("contrastUniformity", ParseInt(GetParameter("Contrast un", report.ReportData))));
-            }
-
-            if (isGS1)
-            {
-                string ch = GetParameter("Cell width", report.ReportData);
-                float cellSizeX = ParseFloat(ch);
-
-                ch = GetParameter("Cell height", report.ReportData);
-                float cellSizeY = ParseFloat(ch);
-
-                string sz = GetParameter("Size", report.ReportData);
-                string[] sz2 = sz.Split('x');
-                Gs1ValueResults.Add(new ValueResult("symbolWidth", cellSizeX * ParseInt(sz2[0]), "PASS"));
-                Gs1ValueResults.Add(new ValueResult("symbolHeight", cellSizeY * ParseInt(sz2[1]), "PASS"));
-
-                Alarm al = alarms.Find((e) => e.Name.Contains("minimum Xdim"));
-                Gs1ValueResults.Add(new ValueResult("cellHeight", cellSizeX, al == null ? "PASS" : "FAIL"));
-                Gs1ValueResults.Add(new ValueResult("cellWidth", cellSizeY, al == null ? "PASS" : "FAIL"));
-
-                Gs1Grades.Add(GetGrade("L1", GetParameter("L1 (", report.ReportData)));
-                Gs1Grades.Add(GetGrade("L2", GetParameter("L2 (", report.ReportData)));
-                Gs1Grades.Add(GetGrade("QZL1", GetParameter("QZL1", report.ReportData)));
-                Gs1Grades.Add(GetGrade("QZL2", GetParameter("QZL2", report.ReportData)));
-                Gs1Grades.Add(GetGrade("OCTASA", GetParameter("OCTASA", report.ReportData)));
-
-            }
-
-            foreach (Alarm a in alarms)
-                Alarms.Add(a);
-
-        }
-        //DPM
-        else if (is2D && Sector.Report.Standard == AvailableStandards.DPM)
-        {
-            IsNotEmpty = true;
-
-            foreach (string war in GetParameters("Warning", report.ReportData))
-                alarms.Add(new Alarm() { Name = war, Category = 1 });
-
-            GradeValues.Add(new GradeValue("decode", -1, GetParameter("Decode", report.ReportData, true).StartsWith("PASS") ? new Grade("", 4.0f, "A") : new Grade("Decode", 0.0f, "F")));
-            GradeValues.Add(GetGradeValue("cellContrast", GetParameter("Cell con", report.ReportData)));
-            GradeValues.Add(GetGradeValue("minimumReflectance", GetParameter("Minimum refle", report.ReportData)));
-            GradeValues.Add(new GradeValue("cellModulation", -1, GetGrade("", GetParameter("Cell modu", report.ReportData))));
-            GradeValues.Add(GetGradeValue("axialNonUniformity", GetParameter("Axial nonuniformity", report.ReportData)));
-            GradeValues.Add(GetGradeValue("gridNonUniformity", GetParameter("Grid nonuniformity", report.ReportData)));
-            GradeValues.Add(GetGradeValue("unusedErrorCorrection", GetParameter("Unused EC", report.ReportData)));
-
-            string fx = GetParameter("Fixed pattern damage", report.ReportData);
-            GradeValues.Add(new GradeValue("fixedPatternDamage", -1, new Grade("", ParseFloat(fx), GetLetter(ParseFloat(fx)))));
-
-            string ch = GetParameter("Cell width", report.ReportData);
-            float cellSizeX = ParseFloat(ch);
-
-            ch = GetParameter("Cell height", report.ReportData);
-            float cellSizeY = ParseFloat(ch);
-
-            string sz = GetParameter("Size", report.ReportData);
-            string[] sz2 = sz.Split('x');
-            Values.Add(new Value_("symbolWidth", (int)(cellSizeX * ParseInt(sz2[0]))));
-            Values.Add(new Value_("symbolHeight", (int)(cellSizeY * ParseInt(sz2[1]))));
-
-            //Values.Add(new Value_("contrastUniformity", ParseInt(GetParameter("Contrast un", report.ReportData))));
-
-            Alarm al = alarms.Find((e) => e.Name.Contains("minimum Xdim"));
-            Values.Add(new Value_("cellHeight", (int)cellSizeX));
-            Values.Add(new Value_("cellWidth", (int)cellSizeY));
-
-            foreach (Alarm a in alarms)
-                Alarms.Add(a);
-
-        }
-        else if (Sector.Report.SymbolType is not AvailableSymbologies.PDF and not AvailableSymbologies.PDF417 and not AvailableSymbologies.MicroPDF417)
-        {
-
-            IsNotEmpty = true;
-
-            foreach (string war in GetParameters("Warning", report.ReportData))
-                alarms.Add(new Alarm() { Name = war, Category = 1 });
-
-            GradeValues.Add(new GradeValue("decode", -1, GetParameter("Decode", report.ReportData, true).StartsWith("PASS") ? new Grade("", 4.0f, "A") : new Grade("Decode", 0.0f, "F")));
-            GradeValues.Add(GetGradeValue("symbolContrast", GetParameter("Contrast", report.ReportData)));
-            GradeValues.Add(GetGradeValue("modulation", GetParameter("Modulation", report.ReportData)));
-            GradeValues.Add(GetGradeValue("defects", GetParameter("Defects", report.ReportData)));
-            GradeValues.Add(GetGradeValue("decodability", GetParameter("Decodability", report.ReportData)));
-            GradeValues.Add(new GradeValue("minimumReflectance", (int)Math.Ceiling(ParseFloat(GetParameter("Rmin", report.ReportData))), GetParameter("Min Ref", report.ReportData).StartsWith("PASS") ? new Grade("Min Ref", 4.0f, "A") : new Grade("Min Ref", 0.0f, "F")));
-
-            if (isGS1)
-            {
-                //GradeValues.Add(GetGradeValue("unusedErrorCorrection", GetParameter("Unused ", report.ReportData)));
-
-                string kv1 = GetParameter("Xdim", report.ReportData);
-                Alarm item = alarms.Find((e) => e.Name.Contains("minimum Xdim"));
-                Gs1ValueResults.Add(new ValueResult("symbolXDim", ParseFloat(kv1), item == null ? "PASS" : "FAIL"));
-
-                kv1 = GetParameter("Bar height", report.ReportData);
-                item = alarms.Find((e) => e.Name.Contains("minimum height"));
-                Gs1ValueResults.Add(new ValueResult("symbolBarHeight", ParseFloat(kv1), item == null ? "PASS" : "FAIL"));
-            }
-
-            Values.Add(new Value_("maximumReflectance", ParseInt(GetParameter("Rmax", report.ReportData))));
-
-            ValueResults.Add(new ValueResult("edgeDetermination", 100, GetParameter("Edge", report.ReportData)));
-
-            string kv = GetParameter("Quiet", report.ReportData);
-            if (kv != null && kv.Contains("ERR"))
-            {
-                string[] spl2 = kv.Split(' ');
-                if (spl2.Count() == 2)
-                    ValueResults.Add(new ValueResult("quietZone", ParseInt(spl2[0]), spl2[1]));
-            }
-            else
-                ValueResults.Add(new ValueResult("quietZone", 100, kv));
-
-            foreach (Alarm item in alarms)
-                Alarms.Add(item);
-        }
-        else
-        {
-            IsNotEmpty = true;
-
-            GradeValues.Add(GetGradeValue("symbolContrast", GetParameter("Contrast", report.ReportData)));
-            ValueResults.Add(new ValueResult("symbolXDim", ParseFloat(GetParameter("XDim", report.ReportData)), "PASS"));
-
-            Values.Add(new Value_("minimumReflectance", (int)Math.Ceiling(ParseFloat(GetParameter("Rmin", report.ReportData)))));
-
-            string[] spl = GetParameter("Codeword Yield", report.ReportData).Split(' ');
-            if (spl.Count() == 2)
-                GradeValues.Add(new GradeValue("CodewordYield", ParseInt(spl[1]), GetGrade("", spl[0])));
-            else
-                GradeValues.Add(new GradeValue("CodewordYield", -1, new Grade("", 0.0f, "F")));
-
-            GradeValues.Add(new GradeValue("CodewordPQ", -1, GetGrade("", GetParameter("Codeword PQ", report.ReportData))));
-        }
-    }
+    public SectorDetails(ISector sector) => ProcessNew(sector);
 
     public void ProcessNew(ISector sector)
     {
@@ -230,178 +54,57 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
         UserName = report.Name;
         IsNotEmpty = false;
 
-        List<Alarm> alarms = [];
+        //Get thew symbology enum
+        AvailableSymbologies theSymbology = Sector.Report.SymbolType;
 
-        var theSymbology = Sector.Report.SymbolType;
-        var theRegionType = theSymbology.GetRegionType(AvailableDevices.L95);
-        var theParamters = Params.ParameterGroups[theRegionType][AvailableDevices.L95];
+        //Get the region type for the symbology
+        AvailableRegionTypes theRegionType = theSymbology.GetSymbologyRegionType(AvailableDevices.L95);
 
-        foreach(var parameter in theParamters)
+        //Get the parameters list based on the region type.
+        List<AvailableParameters> theParamters = Params.ParameterGroups[theRegionType][AvailableDevices.L95];
+
+        //Interate through the parameters
+        foreach (AvailableParameters parameter in theParamters)
         {
+            string data = GetParameter(parameter.GetParameterPath(AvailableDevices.L95), report.ReportData, true);
 
-        }
+            if (string.IsNullOrWhiteSpace(data))
+                continue;
 
-        if (is2D && Sector.Report.Standard != AvailableStandards.DPM)
-        {
-            IsNotEmpty = true;
-
-            foreach (string war in GetParameters("Warning", report.ReportData))
-                alarms.Add(new Alarm() { Name = war, Category = 1 });
-
-            GradeValues.Add(new GradeValue("decode", -1, GetParameter("Decode", report.ReportData, true).StartsWith("PASS") ? new Grade("", 4.0f, "A") : new Grade("Decode", 0.0f, "F")));
-            GradeValues.Add(GetGradeValue("symbolContrast", GetParameter("Contrast", report.ReportData)));
-            GradeValues.Add(new GradeValue("modulation", -1, GetGrade("", GetParameter("Modulation", report.ReportData))));
-            GradeValues.Add(new GradeValue("reflectanceMargin", -1, GetGrade("", GetParameter("Reflectance margin", report.ReportData))));
-            GradeValues.Add(GetGradeValue("axialNonUniformity", GetParameter("Axial nonuniformity", report.ReportData)));
-            GradeValues.Add(GetGradeValue("gridNonUniformity", GetParameter("Grid nonuniformity", report.ReportData)));
-            GradeValues.Add(GetGradeValue("unusedErrorCorrection", GetParameter("Unused EC", report.ReportData)));
-
-            string fx = GetParameter("Fixed pattern damage", report.ReportData);
-            GradeValues.Add(new GradeValue("fixedPatternDamage", -1, new Grade("", ParseFloat(fx), GetLetter(ParseFloat(fx)))));
-
-            Values.Add(new Value_("minimumReflectance", ParseInt(GetParameter("Rmin", report.ReportData))));
-            Values.Add(new Value_("maximumReflectance", ParseInt(GetParameter("Rmax", report.ReportData))));
-
-            if (Sector.Report.SymbolType is not AvailableSymbologies.Aztec)
+            if (parameter.GetParameterDataType(AvailableDevices.L95) == typeof(BarcodeVerification.lib.ISO.GradeValue))
             {
-                Values.Add(new Value_("xPrintGrowthX", ParseInt(GetParameter("X print", report.ReportData))));
-                Values.Add(new Value_("xPrintGrowthY", ParseInt(GetParameter("Y print", report.ReportData))));
-                Values.Add(new Value_("contrastUniformity", ParseInt(GetParameter("Contrast un", report.ReportData))));
-            }
+                GradeValue gradeValue = GetGradeValue(parameter, GetParameter(parameter.GetParameterPath(AvailableDevices.L95), report.ReportData, true));
 
-            if (isGS1)
+                if (gradeValue != null)
+                    GradeValues.Add(gradeValue);
+            }
+            else if (parameter.GetParameterDataType(AvailableDevices.L95) == typeof(BarcodeVerification.lib.ISO.Grade))
             {
-                string ch = GetParameter("Cell width", report.ReportData);
-                float cellSizeX = ParseFloat(ch);
+                Grade grade = GetGrade(parameter, GetParameter(parameter.GetParameterPath(AvailableDevices.L95), report.ReportData, true));
 
-                ch = GetParameter("Cell height", report.ReportData);
-                float cellSizeY = ParseFloat(ch);
-
-                string sz = GetParameter("Size", report.ReportData);
-                string[] sz2 = sz.Split('x');
-                Gs1ValueResults.Add(new ValueResult("symbolWidth", cellSizeX * ParseInt(sz2[0]), "PASS"));
-                Gs1ValueResults.Add(new ValueResult("symbolHeight", cellSizeY * ParseInt(sz2[1]), "PASS"));
-
-                Alarm al = alarms.Find((e) => e.Name.Contains("minimum Xdim"));
-                Gs1ValueResults.Add(new ValueResult("cellHeight", cellSizeX, al == null ? "PASS" : "FAIL"));
-                Gs1ValueResults.Add(new ValueResult("cellWidth", cellSizeY, al == null ? "PASS" : "FAIL"));
-
-                Gs1Grades.Add(GetGrade("L1", GetParameter("L1 (", report.ReportData)));
-                Gs1Grades.Add(GetGrade("L2", GetParameter("L2 (", report.ReportData)));
-                Gs1Grades.Add(GetGrade("QZL1", GetParameter("QZL1", report.ReportData)));
-                Gs1Grades.Add(GetGrade("QZL2", GetParameter("QZL2", report.ReportData)));
-                Gs1Grades.Add(GetGrade("OCTASA", GetParameter("OCTASA", report.ReportData)));
-
+                if (grade != null)
+                    Grades.Add(grade);
             }
-
-            foreach (Alarm a in alarms)
-                Alarms.Add(a);
-
-        }
-        //DPM
-        else if (is2D && Sector.Report.Standard == AvailableStandards.DPM)
-        {
-            IsNotEmpty = true;
-
-            foreach (string war in GetParameters("Warning", report.ReportData))
-                alarms.Add(new Alarm() { Name = war, Category = 1 });
-
-            GradeValues.Add(new GradeValue("decode", -1, GetParameter("Decode", report.ReportData, true).StartsWith("PASS") ? new Grade("", 4.0f, "A") : new Grade("Decode", 0.0f, "F")));
-            GradeValues.Add(GetGradeValue("cellContrast", GetParameter("Cell con", report.ReportData)));
-            GradeValues.Add(GetGradeValue("minimumReflectance", GetParameter("Minimum refle", report.ReportData)));
-            GradeValues.Add(new GradeValue("cellModulation", -1, GetGrade("", GetParameter("Cell modu", report.ReportData))));
-            GradeValues.Add(GetGradeValue("axialNonUniformity", GetParameter("Axial nonuniformity", report.ReportData)));
-            GradeValues.Add(GetGradeValue("gridNonUniformity", GetParameter("Grid nonuniformity", report.ReportData)));
-            GradeValues.Add(GetGradeValue("unusedErrorCorrection", GetParameter("Unused EC", report.ReportData)));
-
-            string fx = GetParameter("Fixed pattern damage", report.ReportData);
-            GradeValues.Add(new GradeValue("fixedPatternDamage", -1, new Grade("", ParseFloat(fx), GetLetter(ParseFloat(fx)))));
-
-            string ch = GetParameter("Cell width", report.ReportData);
-            float cellSizeX = ParseFloat(ch);
-
-            ch = GetParameter("Cell height", report.ReportData);
-            float cellSizeY = ParseFloat(ch);
-
-            string sz = GetParameter("Size", report.ReportData);
-            string[] sz2 = sz.Split('x');
-            Values.Add(new Value_("symbolWidth", (int)(cellSizeX * ParseInt(sz2[0]))));
-            Values.Add(new Value_("symbolHeight", (int)(cellSizeY * ParseInt(sz2[1]))));
-
-            //Values.Add(new Value_("contrastUniformity", ParseInt(GetParameter("Contrast un", report.ReportData))));
-
-            Alarm al = alarms.Find((e) => e.Name.Contains("minimum Xdim"));
-            Values.Add(new Value_("cellHeight", (int)cellSizeX));
-            Values.Add(new Value_("cellWidth", (int)cellSizeY));
-
-            foreach (Alarm a in alarms)
-                Alarms.Add(a);
-
-        }
-        else if (Sector.Report.SymbolType is not AvailableSymbologies.PDF and not AvailableSymbologies.PDF417 and not AvailableSymbologies.MicroPDF417)
-        {
-
-            IsNotEmpty = true;
-
-            foreach (string war in GetParameters("Warning", report.ReportData))
-                alarms.Add(new Alarm() { Name = war, Category = 1 });
-
-            GradeValues.Add(new GradeValue("decode", -1, GetParameter("Decode", report.ReportData, true).StartsWith("PASS") ? new Grade("", 4.0f, "A") : new Grade("Decode", 0.0f, "F")));
-            GradeValues.Add(GetGradeValue("symbolContrast", GetParameter("Contrast", report.ReportData)));
-            GradeValues.Add(GetGradeValue("modulation", GetParameter("Modulation", report.ReportData)));
-            GradeValues.Add(GetGradeValue("defects", GetParameter("Defects", report.ReportData)));
-            GradeValues.Add(GetGradeValue("decodability", GetParameter("Decodability", report.ReportData)));
-            GradeValues.Add(new GradeValue("minimumReflectance", (int)Math.Ceiling(ParseFloat(GetParameter("Rmin", report.ReportData))), GetParameter("Min Ref", report.ReportData).StartsWith("PASS") ? new Grade("Min Ref", 4.0f, "A") : new Grade("Min Ref", 0.0f, "F")));
-
-            if (isGS1)
+            else if (parameter.GetParameterDataType(AvailableDevices.L95) == typeof(BarcodeVerification.lib.ISO.ValueDouble))
             {
-                //GradeValues.Add(GetGradeValue("unusedErrorCorrection", GetParameter("Unused ", report.ReportData)));
-
-                string kv1 = GetParameter("Xdim", report.ReportData);
-                Alarm item = alarms.Find((e) => e.Name.Contains("minimum Xdim"));
-                Gs1ValueResults.Add(new ValueResult("symbolXDim", ParseFloat(kv1), item == null ? "PASS" : "FAIL"));
-
-                kv1 = GetParameter("Bar height", report.ReportData);
-                item = alarms.Find((e) => e.Name.Contains("minimum height"));
-                Gs1ValueResults.Add(new ValueResult("symbolBarHeight", ParseFloat(kv1), item == null ? "PASS" : "FAIL"));
+                ValueDouble valueDouble = GetValueDouble(parameter, GetParameter(parameter.GetParameterPath(AvailableDevices.L95), report.ReportData, true));
+                if (valueDouble != null)
+                    ValueDoubles.Add(valueDouble);
             }
-
-            Values.Add(new Value_("maximumReflectance", ParseInt(GetParameter("Rmax", report.ReportData))));
-
-            ValueResults.Add(new ValueResult("edgeDetermination", 100, GetParameter("Edge", report.ReportData)));
-
-            string kv = GetParameter("Quiet", report.ReportData);
-            if (kv != null && kv.Contains("ERR"))
+            else if (parameter.GetParameterDataType(AvailableDevices.L95) == typeof(BarcodeVerification.lib.ISO.ValueString))
             {
-                string[] spl2 = kv.Split(' ');
-                if (spl2.Count() == 2)
-                    ValueResults.Add(new ValueResult("quietZone", ParseInt(spl2[0]), spl2[1]));
+                ValueString valueString = GetValueString(parameter, GetParameter(parameter.GetParameterPath(AvailableDevices.L95), report.ReportData, true));
+                if (valueString != null)
+                    ValueStrings.Add(valueString);
             }
-            else
-                ValueResults.Add(new ValueResult("quietZone", 100, kv));
-
-            foreach (Alarm item in alarms)
-                Alarms.Add(item);
-        }
-        else
-        {
-            IsNotEmpty = true;
-
-            GradeValues.Add(GetGradeValue("symbolContrast", GetParameter("Contrast", report.ReportData)));
-            ValueResults.Add(new ValueResult("symbolXDim", ParseFloat(GetParameter("XDim", report.ReportData)), "PASS"));
-
-            Values.Add(new Value_("minimumReflectance", (int)Math.Ceiling(ParseFloat(GetParameter("Rmin", report.ReportData)))));
-
-            string[] spl = GetParameter("Codeword Yield", report.ReportData).Split(' ');
-            if (spl.Count() == 2)
-                GradeValues.Add(new GradeValue("CodewordYield", ParseInt(spl[1]), GetGrade("", spl[0])));
-            else
-                GradeValues.Add(new GradeValue("CodewordYield", -1, new Grade("", 0.0f, "F")));
-
-            GradeValues.Add(new GradeValue("CodewordPQ", -1, GetGrade("", GetParameter("Codeword PQ", report.ReportData))));
+            else if (parameter.GetParameterDataType(AvailableDevices.L95) == typeof(BarcodeVerification.lib.ISO.PassFail))
+            {
+                PassFail passFail = GetPassFail(parameter, GetParameter(parameter.GetParameterPath(AvailableDevices.L95), report.ReportData, true));
+                if (passFail != null)
+                    PassFails.Add(passFail);
+            }
         }
     }
-
 
     private string GetParameter(string key, List<ReportData> report, bool equal = false) => report.Find((e) => equal ? e.ParameterName.Equals(key) : e.ParameterName.StartsWith(key))?.ParameterValue;
     private List<string> GetParameters(string key, List<ReportData> report) => report.FindAll((e) => e.ParameterName.StartsWith(key)).Select((e) => e.ParameterValue).ToList();
@@ -444,57 +147,28 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
         }
         return ret.ToArray();
     }
-    private float ParseFloat(string value)
+
+
+
+    private BarcodeVerification.lib.ISO.GradeValue GetGradeValue(AvailableParameters parameter, string data)
     {
-        if (value == null)
-            return -1;
-        string digits = new(value.Trim().TakeWhile("0123456789.".Contains
-                                ).ToArray());
-
-        return float.TryParse(digits, out float val) ? val : 0;
-
-    }
-
-    private static int ParseInt(string value)
-    {
-        string digits = new(value.Trim().TakeWhile("0123456789".Contains
-                                ).ToArray());
-
-        return int.TryParse(digits, out int val) ? val : 0;
-    }
-
-    private GradeValue GetGradeValue(string name, string data)
-    {
-        if(string.IsNullOrWhiteSpace(data))
-            return new GradeValue(name, 0.0f, null);
+        if (string.IsNullOrWhiteSpace(data))
+            return null;
 
         string[] spl2 = data.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-        if (spl2.Count() != 2)
-            return null;
-
-        float tmp = ParseFloat(spl2[0]);
-
-        return new GradeValue(name, ParseFloat(spl2[1]), new Grade(name, tmp, GetLetter(tmp)));
+        if (spl2.Length != 2)
+            return spl2.Length == 1 ? new BarcodeVerification.lib.ISO.GradeValue(parameter, spl2[0], string.Empty) : null;
+        else
+            return new BarcodeVerification.lib.ISO.GradeValue(parameter, spl2[0], spl2[1]);//  new GradeValue(name, ParseFloat(spl2[1]), new Grade(name, tmp, GetLetter(tmp)));
     }
 
-    private Grade GetGrade(string name, string data)
-    {
-        if (data == null)
-            return new Grade(name, 0.0f, "F");
+    private BarcodeVerification.lib.ISO.Grade GetGrade(AvailableParameters parameter, string data) => string.IsNullOrWhiteSpace(data) ? null : new BarcodeVerification.lib.ISO.Grade(parameter, data);
 
-        float tmp = ParseFloat(data);
-        return new Grade(name, tmp, GetLetter(tmp));
-    }
+    private BarcodeVerification.lib.ISO.ValueDouble GetValueDouble(AvailableParameters parameter, string data) => string.IsNullOrWhiteSpace(data) ? null : new BarcodeVerification.lib.ISO.ValueDouble(parameter, data);
 
-    private static string GetLetter(float value) => value switch
-    {
-        4.0f => "A",
-        <= 3.9f and >= 3.0f => "B",
-        <= 2.9f and >= 2.0f => "C",
-        <= 1.9f and >= 1.0f => "D",
-        <= 0.9f and >= 0.0f => "F",
-        _ => "F"
-    };
+    private BarcodeVerification.lib.ISO.ValueString GetValueString(AvailableParameters parameter, string data) => string.IsNullOrWhiteSpace(data) ? null : new BarcodeVerification.lib.ISO.ValueString(parameter, data);
+
+    private BarcodeVerification.lib.ISO.PassFail GetPassFail(AvailableParameters parameter, string data) => string.IsNullOrWhiteSpace(data) ? null : new BarcodeVerification.lib.ISO.PassFail(parameter, data);
 
 }

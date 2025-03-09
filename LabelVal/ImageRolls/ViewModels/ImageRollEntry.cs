@@ -10,7 +10,6 @@ using System.Collections.ObjectModel;
 using System.Drawing.Printing;
 using System.IO;
 using System.Threading.Tasks;
-using Wpf.lib.Extentions;
 
 namespace LabelVal.ImageRolls.ViewModels;
 

@@ -70,7 +70,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
         {
             Config = new Lvs95xx.lib.Core.Controllers.Config()
             {
-                ApplicationStandard = ImageResults.SelectedImageRoll.SelectedStandard.GetSymbologyDescription(),
+                ApplicationStandard = ImageResults.SelectedImageRoll.SelectedStandard.GetDescription(),
             },
             RepeatAvailable = L95xxProcessResults,
         };

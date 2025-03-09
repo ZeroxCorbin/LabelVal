@@ -57,7 +57,7 @@ public class Report : IReport
                 Report_InspectSector_Verify1D v1D = (Report_InspectSector_Verify1D)report;
 
                 SymbolType = v1D.data.symbolType.GetSymbology(AvailableDevices.V275);
-                Type = SymbolType.GetRegionType(AvailableDevices.V275);
+                Type = SymbolType.GetSymbologyRegionType(AvailableDevices.V275);
 
                 Top = v1D.top;
                 Left = v1D.left;
@@ -97,7 +97,7 @@ public class Report : IReport
                 Report_InspectSector_Verify2D v2D = (Report_InspectSector_Verify2D)report;
 
                 SymbolType = v2D.data.symbolType.GetSymbology(AvailableDevices.V275);
-                Type = SymbolType.GetRegionType(AvailableDevices.V275);
+                Type = SymbolType.GetSymbologyRegionType(AvailableDevices.V275);
 
                 Top = v2D.top;
                 Left = v2D.left;
@@ -140,7 +140,7 @@ public class Report : IReport
                 Report_InspectSector_OCR ocr = (Report_InspectSector_OCR)report;
 
                 SymbolType = AvailableSymbologies.OCR;
-                Type = SymbolType.GetRegionType(AvailableDevices.V275);
+                Type = SymbolType.GetSymbologyRegionType(AvailableDevices.V275);
 
                 Top = ocr.top;
                 Left = ocr.left;
@@ -156,7 +156,7 @@ public class Report : IReport
                 Report_InspectSector_OCV ocv = (Report_InspectSector_OCV)report;
 
                 SymbolType = AvailableSymbologies.OCV;
-                Type = SymbolType.GetRegionType(AvailableDevices.V275);
+                Type = SymbolType.GetSymbologyRegionType(AvailableDevices.V275);
 
                 Top = ocv.top;
                 Left = ocv.left;
@@ -172,7 +172,7 @@ public class Report : IReport
                 Report_InspectSector_Blemish blem = (Report_InspectSector_Blemish)report;
 
                 SymbolType = AvailableSymbologies.Blemish;
-                Type = SymbolType.GetRegionType(AvailableDevices.V275);
+                Type = SymbolType.GetSymbologyRegionType(AvailableDevices.V275);
 
                 Top = blem.top;
                 Left = blem.left;

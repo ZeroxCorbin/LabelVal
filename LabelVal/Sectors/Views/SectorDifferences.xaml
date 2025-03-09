@@ -194,14 +194,14 @@
                         <Style TargetType="{x:Type DockPanel}">
                             <Setter Property="Visibility" Value="Visible" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding ValueResults.Count, Mode=OneWay}" Value="0">
+                                <DataTrigger Binding="{Binding ValueDoubles.Count, Mode=OneWay}" Value="0">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </DockPanel.Style>
                     <Separator DockPanel.Dock="Top" />
-                    <ItemsControl ItemsSource="{Binding ValueResults}">
+                    <ItemsControl ItemsSource="{Binding ValueDoubles}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
@@ -292,14 +292,14 @@
                         <Style TargetType="{x:Type DockPanel}">
                             <Setter Property="Visibility" Value="Visible" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Gs1ValueResults.Count, Mode=OneWay}" Value="0">
+                                <DataTrigger Binding="{Binding ValueStrings.Count, Mode=OneWay}" Value="0">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </DockPanel.Style>
                     <Separator DockPanel.Dock="Top" />
-                    <ItemsControl ItemsSource="{Binding Gs1ValueResults}">
+                    <ItemsControl ItemsSource="{Binding ValueStrings}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
@@ -389,14 +389,14 @@
                         <Style TargetType="{x:Type DockPanel}">
                             <Setter Property="Visibility" Value="Visible" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Gs1Grades.Count, Mode=OneWay}" Value="0">
+                                <DataTrigger Binding="{Binding Grades.Count, Mode=OneWay}" Value="0">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </DockPanel.Style>
                     <Separator DockPanel.Dock="Top" />
-                    <ItemsControl ItemsSource="{Binding Gs1Grades}">
+                    <ItemsControl ItemsSource="{Binding Grades}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
