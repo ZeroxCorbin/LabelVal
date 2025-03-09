@@ -54,11 +54,11 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
         }
     }
 
-    [ObservableProperty][property: JsonProperty] private string userName;// App.Settings.GetValue($"{NodeManager.ClassName}{nameof(NodeManager.UserName)}", "admin", true);
-    partial void OnUserNameChanged(string value)
+    [ObservableProperty][property: JsonProperty] private string username;// App.Settings.GetValue($"{NodeManager.ClassName}{nameof(NodeManager.Username)}", "admin", true);
+    partial void OnUsernameChanged(string value)
     {
         foreach (var nd in Nodes)
-            nd.Controller.UserName = value;
+            nd.Controller.Username = value;
     }
 
     [ObservableProperty][property: JsonProperty] private string password; // App.Settings.GetValue($"{NodeManager.ClassName}{nameof(Password)}", "admin", true);
@@ -89,7 +89,7 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
         if (SystemPort == 0)
             SystemPort = GetPortNumber();
 
-        UserName ??= "admin";
+        Username ??= "admin";
         Password ??= "admin";
 
         SimulatorImageDirectory ??= GetSimulationDirectory();
@@ -106,7 +106,7 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
 
         Logger.LogInfo("Loading V275 devices.");
 
-        Node system = new(Host, SystemPort, 0, UserName, Password, SimulatorImageDirectory, SelectedImageRoll);
+        Node system = new(Host, SystemPort, 0, Username, Password, SimulatorImageDirectory, SelectedImageRoll);
 
         if ((await system.Controller.Commands.GetDevices()).Object is Devices dev)
         {
@@ -121,7 +121,7 @@ public partial class NodeManager : ObservableRecipient, IRecipient<PropertyChang
 
                 Logger.LogDebug($"Adding Device MAC: {node.cameraMAC}");
 
-                Node newNode = new(Host, SystemPort, (uint)node.enumeration, UserName, Password, SimulatorImageDirectory, SelectedImageRoll) { Manager = this };
+                Node newNode = new(Host, SystemPort, (uint)node.enumeration, Username, Password, SimulatorImageDirectory, SelectedImageRoll) { Manager = this };
                 newNode.Controller.Initialize();
                 lst.Add(newNode);
             }

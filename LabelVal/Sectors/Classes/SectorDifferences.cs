@@ -7,7 +7,7 @@ public class SectorDifferences
     public static SectorDifferencesSettings Settings { get; } = new SectorDifferencesSettings();
 
     public string Name { get; set; }
-    public string UserName { get; set; }
+    public string Username { get; set; }
     public string SymbolType { get; set; }
     public string Units { get; set; }
 
@@ -16,13 +16,13 @@ public class SectorDifferences
 
     public bool HasDifferences { get; set; }
 
-    public static SectorDifferences? Compare(ISectorDetails previous, ISectorDetails current)
+    public static SectorDifferences Compare(ISectorDetails previous, ISectorDetails current)
     {
 
         SectorDifferences differences = new()
         {
-            Name = current.Name,
-            UserName = current.UserName,
+            Name = current.Sector.Template.Name,
+            Username = current.Sector.Template.Username,
             //SymbolType = current.SymbolType,
             Units = current.Units,
         };

@@ -38,11 +38,11 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
 
     [ObservableProperty] private bool isWrongTemplateName = false;
 
-    public Node(string host, uint systemPort, uint nodeNumber, string userName, string password, string dir, ImageRollEntry imageRollEntry)
+    public Node(string host, uint systemPort, uint nodeNumber, string username, string password, string dir, ImageRollEntry imageRollEntry)
     {
         SelectedImageRoll = imageRollEntry;
 
-        Controller = new Controller(host, systemPort, nodeNumber, userName, password, dir);
+        Controller = new Controller(host, systemPort, nodeNumber, username, password, dir);
         Controller.PropertyChanged += Controller_PropertyChanged;
 
         IsActive = true;

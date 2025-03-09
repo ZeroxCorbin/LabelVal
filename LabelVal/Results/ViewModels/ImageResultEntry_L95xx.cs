@@ -231,7 +231,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
                     {
                         SectorDifferences dat = new()
                         {
-                            UserName = $"{sec.Template.Username} (SYMBOLOGY MISMATCH)",
+                            Username = $"{sec.Template.Username} (SYMBOLOGY MISMATCH)",
                             IsSectorMissing = true,
                             SectorMissingText = $"Stored Sector {sec.Template.SymbologyType} : Current Sector {cSec.Template.SymbologyType}"
                         };
@@ -255,7 +255,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
             {
                 SectorDifferences dat = new()
                 {
-                    UserName = $"{sec.Template.Username} (MISSING)",
+                    Username = $"{sec.Template.Username} (MISSING)",
                     IsSectorMissing = true,
                     SectorMissingText = "Not found in current Sectors"
                 };
@@ -279,7 +279,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
                 {
                     SectorDifferences dat = new()
                     {
-                        UserName = $"{sec.Template.Username} (MISSING)",
+                        Username = $"{sec.Template.Username} (MISSING)",
                         IsSectorMissing = true,
                         SectorMissingText = "Not found in Stored Sectors"
                     };

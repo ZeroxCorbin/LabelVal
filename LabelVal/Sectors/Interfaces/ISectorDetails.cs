@@ -7,8 +7,6 @@ namespace LabelVal.Sectors.Interfaces;
 public interface ISectorDetails
 {
     ISector Sector { get; set; }
-    string Name { get; set; }
-    string UserName { get; set; }
 
     string Units { get; set; }
 
@@ -22,6 +20,7 @@ public interface ISectorDetails
 
     ObservableCollection<GradeValue> GradeValues { get; }
     ObservableCollection<ValueDouble> ValueDoubles { get; }
+    ObservableCollection<ValuePassFail> ValuePassFails { get; }
     ObservableCollection<ValueString> ValueStrings { get; }
     ObservableCollection<Grade> Grades { get; }
     ObservableCollection<PassFail> PassFails { get; }

@@ -197,7 +197,7 @@
                                     md:HintAssist.FloatingHintHorizontalAlignment="Left"
                                     md:HintAssist.Hint="User name"
                                     md:HintAssist.IsFloating="True"
-                                    Text="{Binding UserName}">
+                                    Text="{Binding Username}">
                                     <TextBox.Style>
                                         <Style BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}" TargetType="{x:Type TextBox}">
                                             <Setter Property="IsEnabled" Value="True" />

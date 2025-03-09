@@ -13,9 +13,6 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
 {
     public ISector Sector { get; set; }
 
-    [ObservableProperty] private string name;
-    [ObservableProperty] private string userName;
-
     [ObservableProperty] private string units;
 
     [ObservableProperty] private bool isNotOCVMatch = false;
@@ -29,6 +26,7 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
     public ObservableCollection<GradeValue> GradeValues { get; } = [];
     public ObservableCollection<Grade> Grades { get; } = []; 
     public ObservableCollection<PassFail> PassFails { get; } = [];
+    public ObservableCollection<ValuePassFail> ValuePassFails { get; } = [];
     public ObservableCollection<ValueDouble> ValueDoubles { get; } = [];
     public ObservableCollection<ValueString> ValueStrings { get; } = [];
 
@@ -50,8 +48,6 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
         Sector = sector;
         FullReport report = sec.L95xxFullReport;
 
-        Name = Sector.Template.Name;
-        UserName = Sector.Template.Username;
         IsNotEmpty = false;
 
         //Get thew symbology enum

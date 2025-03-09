@@ -30,7 +30,7 @@
 
             <StackPanel>
 
-                <TextBlock Margin="3,0,3,3" Text="{Binding UserName, Mode=OneWay}" />
+                <TextBlock Margin="3,0,3,3" Text="{Binding Username, Mode=OneWay}" />
 
                 <DockPanel>
                     <DockPanel.Style>

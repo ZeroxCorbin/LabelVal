@@ -13,8 +13,6 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
 {
     public ISector Sector { get; set; }
 
-    [ObservableProperty] private string name;
-    [ObservableProperty] private string userName;
     [ObservableProperty] private string units;
     [ObservableProperty] private bool isNotOCVMatch = false;
     [ObservableProperty] private string oCVMatchText;
@@ -24,6 +22,7 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
 
     public ObservableCollection<GradeValue> GradeValues { get; }
     public ObservableCollection<ValueDouble> ValueDoubles { get; }
+    public ObservableCollection<ValuePassFail> ValuePassFails { get; } = [];
     public ObservableCollection<ValueString> ValueStrings { get; }
     public ObservableCollection<Grade> Grades { get; }
     public ObservableCollection<PassFail> PassFails { get; }
@@ -36,8 +35,8 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
     public SectorDifferences Compare(ISectorDetails compare) => SectorDifferences.Compare(this, compare);
 
     public SectorDetails() { }
-    public SectorDetails( ISector sector, string userName) => Process(sector, userName);
-    public void Process(ISector sector, string userName)
+    public SectorDetails( ISector sector, string username) => Process(sector, username);
+    public void Process(ISector sector, string username)
     {
         if (sector is not V5.Sectors.Sector sec)
             return;
@@ -45,7 +44,6 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
         Sector = sector;
         ResultsAlt.Decodedata results = sec.V5Sector;
 
-        UserName = userName;
         IsNotEmpty = false;
 
        // SymbolType = V5GetSymbolType(results);

@@ -218,7 +218,7 @@ public partial class ImageResultEntry_V275 : UserControl
         System.Collections.ObjectModel.Collection<Sector> sectors = Utilities.VisualTreeHelp.GetVisualChildren<Sector>(this);
         foreach (Sector s in sectors)
         {
-            if (s.SectorName == ((Sectors.Interfaces.ISectorDetails)sndr.DataContext).UserName)
+            if (s.SectorName == ((Sectors.Interfaces.ISectorDetails)sndr.DataContext).Sector.Template.Username)
                 s.ShowSectorDetails();
         }
 
