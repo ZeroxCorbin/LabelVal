@@ -26,7 +26,7 @@ public partial class ImageResultEntry
 
     public V275_REST_Lib.Models.Job V275CurrentTemplate { get; set; }
     public string V275SerializeTemplate => JsonConvert.SerializeObject(V275CurrentTemplate);
-    public V275_REST_Lib.Models.Report V275CurrentReport { get; private set; }
+    public JObject V275CurrentReport { get; private set; }
     public string V275SerializeReport => JsonConvert.SerializeObject(V275CurrentReport);
 
     public ObservableCollection<Sectors.Interfaces.ISector> V275CurrentSectors { get; } = [];
@@ -141,17 +141,17 @@ public partial class ImageResultEntry
         List<Sectors.Interfaces.ISector> tempSectors = [];
         foreach (V275_REST_Lib.Models.Job.Sector jSec in V275CurrentTemplate.sectors)
         {
-            foreach (JObject rSec in V275CurrentReport.inspectLabel.inspectSector)
+            foreach (JObject rSec in V275CurrentReport["inspectLabel"]["inspectSector"])
             {
                 if (jSec.name == rSec["name"].ToString())
                 {
 
-                    object fSec = V275DeserializeSector(rSec, ImageResults.SelectedImageRoll.SelectedStandard != AvailableStandards.GS1 && ImageResults.SelectedNode.Controller.IsOldISO);
+                    //object fSec = V275DeserializeSector(rSec, ImageResults.SelectedImageRoll.SelectedStandard != AvailableStandards.GS1 && ImageResults.SelectedNode.Controller.IsOldISO);
 
-                    if (fSec == null)
-                        break; //Not yet supported sector type
+                    //if (fSec == null)
+                    //    break; //Not yet supported sector type
 
-                    tempSectors.Add(new V275.Sectors.Sector(jSec, fSec, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, repeat.FullReport.Job.jobVersion));
+                    tempSectors.Add(new V275.Sectors.Sector(jSec, rSec, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, repeat.FullReport.Job.jobVersion));
 
                     break;
                 }
@@ -344,12 +344,7 @@ public partial class ImageResultEntry
                         if (jSec.name == rSec["name"].ToString())
                         {
 
-                            object fSec = V275DeserializeSector(rSec, false);
-
-                            if (fSec == null)
-                                break;
-
-                            tempSectors.Add(new V275.Sectors.Sector(jSec, fSec, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, row._Job.jobVersion));
+                            tempSectors.Add(new V275.Sectors.Sector(jSec, rSec, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, row._Job.jobVersion));
 
                             break;
                         }

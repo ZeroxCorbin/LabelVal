@@ -10,8 +10,6 @@ public interface ISectorDetails
     string Name { get; set; }
     string UserName { get; set; }
 
-    string SymbolType { get; set; }
-
     string Units { get; set; }
 
     string OCVMatchText { get; set; }
@@ -30,6 +28,8 @@ public interface ISectorDetails
 
     ObservableCollection<Alarm> Alarms { get; }
     ObservableCollection<Blemish> Blemishes { get; }
+
+    ObservableCollection<AvailableParameters> MissingParameters { get; }
 
     SectorDifferences Compare(ISectorDetails compare);
 }

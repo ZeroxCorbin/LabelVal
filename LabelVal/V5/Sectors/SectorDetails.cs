@@ -15,7 +15,6 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
 
     [ObservableProperty] private string name;
     [ObservableProperty] private string userName;
-    [ObservableProperty] private string symbolType;
     [ObservableProperty] private string units;
     [ObservableProperty] private bool isNotOCVMatch = false;
     [ObservableProperty] private string oCVMatchText;
@@ -32,6 +31,8 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
     public ObservableCollection<Alarm> Alarms { get; } = [];
     public ObservableCollection<Blemish> Blemishes { get; } = [];
 
+    public ObservableCollection<AvailableParameters> MissingParameters { get; }
+
     public SectorDifferences Compare(ISectorDetails compare) => SectorDifferences.Compare(this, compare);
 
     public SectorDetails() { }
@@ -47,7 +48,7 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
         UserName = userName;
         IsNotEmpty = false;
 
-        SymbolType = V5GetSymbolType(results);
+       // SymbolType = V5GetSymbolType(results);
         Units = "mil";
 
         OCVMatchText = null;

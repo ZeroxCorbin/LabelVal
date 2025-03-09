@@ -16,8 +16,6 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
     [ObservableProperty] private string name;
     [ObservableProperty] private string userName;
 
-    [ObservableProperty] private string symbolType;
-
     [ObservableProperty] private string units;
 
     [ObservableProperty] private bool isNotOCVMatch = false;
@@ -29,13 +27,15 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
     [ObservableProperty] private bool isNotEmpty = false;
 
     public ObservableCollection<GradeValue> GradeValues { get; } = [];
+    public ObservableCollection<Grade> Grades { get; } = []; 
+    public ObservableCollection<PassFail> PassFails { get; } = [];
     public ObservableCollection<ValueDouble> ValueDoubles { get; } = [];
     public ObservableCollection<ValueString> ValueStrings { get; } = [];
-    public ObservableCollection<Grade> Grades { get; } = [];
-    public ObservableCollection<PassFail> PassFails { get; } = [];
 
     public ObservableCollection<Alarm> Alarms { get; } = [];
     public ObservableCollection<Blemish> Blemishes { get; } = [];
+
+    public ObservableCollection<AvailableParameters> MissingParameters { get; } = [];
 
     public SectorDifferences? Compare(ISectorDetails compare) => SectorDifferences.Compare(this, compare);
 
@@ -50,8 +50,8 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
         Sector = sector;
         FullReport report = sec.L95xxFullReport;
 
-        Name = report.Name;
-        UserName = report.Name;
+        Name = Sector.Template.Name;
+        UserName = Sector.Template.Username;
         IsNotEmpty = false;
 
         //Get thew symbology enum
@@ -69,7 +69,10 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
             string data = GetParameter(parameter.GetParameterPath(AvailableDevices.L95), report.ReportData, true);
 
             if (string.IsNullOrWhiteSpace(data))
+            {
+                MissingParameters.Add(parameter);
                 continue;
+            }
 
             if (parameter.GetParameterDataType(AvailableDevices.L95) == typeof(BarcodeVerification.lib.ISO.GradeValue))
             {
@@ -158,14 +161,14 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
         string[] spl2 = data.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
         if (spl2.Length != 2)
-            return spl2.Length == 1 ? new BarcodeVerification.lib.ISO.GradeValue(parameter, spl2[0], string.Empty) : null;
+            return spl2.Length == 1 ? new BarcodeVerification.lib.ISO.GradeValue(parameter, spl2[0], string.Empty, AvailableDevices.L95) : null;
         else
-            return new BarcodeVerification.lib.ISO.GradeValue(parameter, spl2[0], spl2[1]);//  new GradeValue(name, ParseFloat(spl2[1]), new Grade(name, tmp, GetLetter(tmp)));
+            return new BarcodeVerification.lib.ISO.GradeValue(parameter, spl2[0], spl2[1], AvailableDevices.L95);//  new GradeValue(name, ParseFloat(spl2[1]), new Grade(name, tmp, GetLetter(tmp)));
     }
 
     private BarcodeVerification.lib.ISO.Grade GetGrade(AvailableParameters parameter, string data) => string.IsNullOrWhiteSpace(data) ? null : new BarcodeVerification.lib.ISO.Grade(parameter, data);
 
-    private BarcodeVerification.lib.ISO.ValueDouble GetValueDouble(AvailableParameters parameter, string data) => string.IsNullOrWhiteSpace(data) ? null : new BarcodeVerification.lib.ISO.ValueDouble(parameter, data);
+    private BarcodeVerification.lib.ISO.ValueDouble GetValueDouble(AvailableParameters parameter, string data ) => string.IsNullOrWhiteSpace(data) ? null : new BarcodeVerification.lib.ISO.ValueDouble(parameter, data, AvailableDevices.L95);
 
     private BarcodeVerification.lib.ISO.ValueString GetValueString(AvailableParameters parameter, string data) => string.IsNullOrWhiteSpace(data) ? null : new BarcodeVerification.lib.ISO.ValueString(parameter, data);
 

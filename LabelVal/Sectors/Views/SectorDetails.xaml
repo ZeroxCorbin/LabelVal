@@ -122,14 +122,8 @@
                         <TextBlock Margin="3,0" DockPanel.Dock="Top">
                             <TextBlock.Style>
                                 <Style TargetType="{x:Type TextBlock}">
-
+                                    <Setter Property="Text" Value="{Binding Report.SymbolType, Converter={StaticResource EnumValueToDescription}, Mode=OneTime}" />
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes._1D}">
-                                            <Setter Property="Text" Value="{Binding Report.SymbolType, Converter={StaticResource EnumValueToDescription}, Mode=OneTime}" />
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes._2D}">
-                                            <Setter Property="Text" Value="{Binding Report.SymbolType, Converter={StaticResource EnumValueToDescription}, Mode=OneTime}" />
-                                        </DataTrigger>
 
                                         <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCR}">
                                             <Setter Property="Text" Value="{Binding Template.MatchSettings.FixedText, Mode=OneTime}" />
@@ -167,17 +161,9 @@
                                     TextWrapping="Wrap">
                                     <TextBlock.Style>
                                         <Style TargetType="{x:Type TextBlock}">
+                                            <Setter Property="Text" Value="{Binding Report.DecodeText, Mode=OneTime}" />
+                                            <Setter Property="ToolTip" Value="{Binding Report.DecodeText, Mode=OneTime}" />
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes._1D}">
-                                                    <Setter Property="Text" Value="{Binding Report.DecodeText, Mode=OneTime}" />
-                                                    <Setter Property="ToolTip" Value="{Binding Report.DecodeText, Mode=OneTime}" />
-                                                </DataTrigger>
-
-                                                <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes._2D}">
-                                                    <Setter Property="Text" Value="{Binding Report.DecodeText, Mode=OneTime}" />
-                                                    <Setter Property="ToolTip" Value="{Binding Report.DecodeText, Mode=OneTime}" />
-                                                </DataTrigger>
-
                                                 <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCR}">
                                                     <Setter Property="Text" Value="{Binding Report.Text, Mode=OneTime}" />
                                                     <Setter Property="ToolTip" Value="{Binding Report.Text, Mode=OneTime}" />
@@ -219,16 +205,8 @@
                                         <Style TargetType="{x:Type TextBlock}">
 
                                             <Setter Property="Visibility" Value="Collapsed" />
-
+                                            <Setter Property="Text" Value="{Binding Report.GS1Results.Input, Converter={StaticResource gs1FormattedOutput}}" />
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes._1D}">
-                                                    <Setter Property="Text" Value="{Binding Report.GS1Results.Input, Converter={StaticResource gs1FormattedOutput}}" />
-                                                </DataTrigger>
-
-                                                <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes._2D}">
-                                                    <Setter Property="Text" Value="{Binding Report.GS1Results.Input, Converter={StaticResource gs1FormattedOutput}}" />
-                                                </DataTrigger>
-
                                                 <DataTrigger Binding="{Binding Report.GS1Results, Converter={StaticResource IsNullOrEmpty}}" Value="False">
                                                     <Setter Property="Visibility" Value="Visible" />
                                                 </DataTrigger>
@@ -289,14 +267,8 @@
                             <TextBlock>
                                 <TextBlock.Style>
                                     <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
-
+                                        <Setter Property="Text" Value="{Binding Report.OverallGradeValue, StringFormat=N1, Mode=OneTime}" />
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes._1D}">
-                                                <Setter Property="Text" Value="{Binding Report.OverallGradeValue, StringFormat=N1, Mode=OneTime}" />
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes._2D}">
-                                                <Setter Property="Text" Value="{Binding Report.OverallGradeValue, StringFormat=N1, Mode=OneTime}" />
-                                            </DataTrigger>
                                             <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCR}">
                                                 <Setter Property="Text" Value="{Binding Report.Score, Mode=OneTime}" />
                                             </DataTrigger>
@@ -393,7 +365,16 @@
                                         Grid.Column="1"
                                         HorizontalAlignment="Right"
                                         VerticalAlignment="Center">
-                                        <TextBlock Margin="3,0" Text="{Binding Path=Value, Mode=OneTime, StringFormat={}({0:N1})}" />
+
+                                        <TextBlock Margin="3,0">
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="{}{0:N1} {1}">
+                                                    <Binding Mode="OneTime" Path="Value" />
+                                                    <Binding Mode="OneTime" Path="Suffix" />
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+
+                                        </TextBlock>
 
                                         <TextBlock Margin="3,0" Text="{Binding Path=Grade.Value, StringFormat=N1, Mode=OneTime}" />
 
@@ -437,207 +418,7 @@
                     </ItemsControl>
                 </DockPanel>
 
-                <!--  Values  -->
-                <DockPanel>
-                    <DockPanel.Style>
-                        <Style TargetType="{x:Type DockPanel}">
-                            <Setter Property="Visibility" Value="Visible" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding SectorDetails.ValueDoubles.Count, Mode=OneTime}" Value="0">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DockPanel.Style>
-
-                    <Separator DockPanel.Dock="Top" />
-
-                    <ItemsControl ItemsSource="{Binding SectorDetails.ValueDoubles, Mode=OneTime}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="auto" />
-                                    </Grid.ColumnDefinitions>
-
-                                    <TextBlock Grid.Column="0" Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription}, Mode=OneTime}" />
-
-                                    <TextBlock
-                                        Grid.Column="1"
-                                        Margin="6,0"
-                                        HorizontalAlignment="Right"
-                                        VerticalAlignment="Center"
-                                        Text="{Binding Path=Value, Mode=OneTime, StringFormat={}{0:N1}}" />
-                                </Grid>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </DockPanel>
-
-                <!--  Value Results  -->
-                <DockPanel>
-                    <DockPanel.Style>
-                        <Style TargetType="{x:Type DockPanel}">
-                            <Setter Property="Visibility" Value="Visible" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding SectorDetails.ValueDoubles.Count, Mode=OneTime}" Value="0">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DockPanel.Style>
-
-                    <Separator DockPanel.Dock="Top" />
-
-                    <ItemsControl ItemsSource="{Binding SectorDetails.ValueDoubles, Mode=OneTime}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="auto" />
-                                        <ColumnDefinition Width="auto" />
-                                        <ColumnDefinition Width="auto" />
-                                    </Grid.ColumnDefinitions>
-
-                                    <TextBlock
-                                        Grid.Column="0"
-                                        Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription}, Mode=OneTime}"
-                                        TextWrapping="Wrap" />
-
-                                    <TextBlock
-                                        Grid.Column="1"
-                                        Margin="3,0"
-                                        VerticalAlignment="Center"
-                                        Text="{Binding Path=Value, StringFormat={}(0), Mode=OneTime}" />
-
-                                    <Border
-                                        Grid.Column="2"
-                                        Width="10"
-                                        Height="10"
-                                        BorderThickness="0"
-                                        CornerRadius="5">
-                                        <Border.Style>
-                                            <Style TargetType="{x:Type Border}">
-                                                <Setter Property="Background" Value="{DynamicResource CB_Green}" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Path=Result, Mode=OneTime}" Value="FAIL">
-                                                        <Setter Property="Background" Value="{DynamicResource SectorError_Brush}" />
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Path=Result, Mode=OneTime}" Value="ERROR">
-                                                        <Setter Property="Background" Value="{DynamicResource SectorError_Brush}" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Border.Style>
-                                    </Border>
-
-                                    <TextBlock
-                                        Grid.Column="3"
-                                        MinWidth="26"
-                                        Margin="3,0"
-                                        VerticalAlignment="Center"
-                                        Text="{Binding Path=Result, Mode=OneTime}" />
-                                </Grid>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-
-                    </ItemsControl>
-                </DockPanel>
-
-                <!--  Value Results  -->
-                <DockPanel>
-                    <DockPanel.Style>
-                        <Style TargetType="{x:Type DockPanel}">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                            <Style.Triggers>
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding SectorDetails.ValueStrings.Count, Converter={StaticResource NumberZeroOrNull}, Mode=OneTime}" Value="False" />
-                                        <Condition Binding="{Binding Report.Standard}" Value="{x:Static bar_common:AvailableStandards.GS1}" />
-                                    </MultiDataTrigger.Conditions>
-                                    <MultiDataTrigger.Setters>
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </MultiDataTrigger.Setters>
-                                </MultiDataTrigger>
-                                <DataTrigger Binding="{Binding Report.SymbolType, Mode=OneTime}" Value="{x:Static bar_common:AvailableSymbologies.Aztec}">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DockPanel.Style>
-
-                    <Separator DockPanel.Dock="Top" />
-
-                    <ItemsControl ItemsSource="{Binding SectorDetails.ValueStrings, Mode=OneTime}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="auto" />
-                                        <ColumnDefinition Width="auto" />
-                                        <ColumnDefinition Width="auto" />
-                                    </Grid.ColumnDefinitions>
-
-                                    <TextBlock
-                                        Grid.Column="0"
-                                        Text="{Binding Path=Name, Converter={StaticResource stringToUpper}, Mode=OneTime}"
-                                        TextWrapping="Wrap" />
-
-                                    <TextBox
-                                        Grid.Column="1"
-                                        Margin="3,-3"
-                                        VerticalAlignment="Center"
-                                        md:TextFieldAssist.SuffixText="{Binding DataContext.Report.Units, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                        BorderThickness="0"
-                                        IsHitTestVisible="False">
-                                        <TextBox.Style>
-                                            <Style BasedOn="{StaticResource MaterialDesignTextBox}" TargetType="TextBox">
-                                                <Setter Property="Text" Value="{Binding Path=Value, StringFormat=N1, Mode=OneTime}" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding DataContext.Report.Units, RelativeSource={RelativeSource AncestorType=ItemsControl}}" Value="mm">
-                                                        <Setter Property="Text" Value="{Binding Path=Value, StringFormat=N3, Mode=OneTime}" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBox.Style>
-                                    </TextBox>
-
-                                    <Border
-                                        Grid.Column="2"
-                                        Width="10"
-                                        Height="10"
-                                        BorderThickness="0"
-                                        CornerRadius="5">
-                                        <Border.Style>
-                                            <Style TargetType="{x:Type Border}">
-                                                <Setter Property="Background" Value="{DynamicResource CB_Green}" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Path=Result, Mode=OneTime}" Value="FAIL">
-                                                        <Setter Property="Background" Value="{DynamicResource SectorError_Brush}" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Border.Style>
-                                    </Border>
-
-                                    <TextBlock
-                                        Grid.Column="3"
-                                        MinWidth="26"
-                                        Margin="3,0"
-                                        VerticalAlignment="Center"
-                                        Text="{Binding Path=Result, Mode=OneTime}" />
-                                </Grid>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-
-                    </ItemsControl>
-
-                </DockPanel>
-
-                <!--  GS1 Grades  -->
+                <!--  Grades  -->
                 <DockPanel>
                     <DockPanel.Style>
                         <Style TargetType="{x:Type DockPanel}">
@@ -667,6 +448,7 @@
                                     </Grid.ColumnDefinitions>
 
                                     <TextBlock Grid.Column="0" Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription}, Mode=OneTime}" />
+
                                     <TextBlock
                                         Grid.Column="1"
                                         Margin="3,0"
@@ -713,6 +495,225 @@
                     </ItemsControl>
 
                 </DockPanel>
+
+                <!--  Pass Fail  -->
+                <DockPanel>
+                    <DockPanel.Style>
+                        <Style TargetType="{x:Type DockPanel}">
+                            <Setter Property="Visibility" Value="Visible" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SectorDetails.PassFails.Count, Mode=OneTime}" Value="0">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DockPanel.Style>
+
+                    <Separator DockPanel.Dock="Top" />
+
+                    <ItemsControl ItemsSource="{Binding SectorDetails.PassFails, Mode=OneTime}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="auto" />
+                                        <ColumnDefinition Width="auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock
+                                        Grid.Column="0"
+                                        Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription}, Mode=OneTime}"
+                                        TextWrapping="Wrap" />
+
+                                    <Border
+                                        Grid.Column="1"
+                                        Width="10"
+                                        Height="10"
+                                        BorderThickness="0"
+                                        CornerRadius="5">
+                                        <Border.Style>
+                                            <Style TargetType="{x:Type Border}">
+                                                <Setter Property="Background" Value="{DynamicResource CB_Green}" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Path=Value, Mode=OneTime}" Value="False">
+                                                        <Setter Property="Background" Value="{DynamicResource SectorError_Brush}" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                    </Border>
+
+                                    <TextBlock
+                                        Grid.Column="2"
+                                        Margin="3,0"
+                                        VerticalAlignment="Center">
+                                        <TextBlock.Style>
+                                            <Style TargetType="{x:Type TextBlock}">
+                                                <Setter Property="Text" Value="PASS" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Path=Value, Mode=OneTime}" Value="False">
+                                                        <Setter Property="Text" Value="FAIL" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+
+                    </ItemsControl>
+                </DockPanel>
+
+                <!--  Value Doubles  -->
+                <DockPanel>
+                    <DockPanel.Style>
+                        <Style TargetType="{x:Type DockPanel}">
+                            <Setter Property="Visibility" Value="Visible" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SectorDetails.ValueDoubles.Count, Mode=OneTime}" Value="0">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DockPanel.Style>
+
+                    <Separator DockPanel.Dock="Top" />
+
+                    <ItemsControl ItemsSource="{Binding SectorDetails.ValueDoubles, Mode=OneTime}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Grid.Column="0" Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription}, Mode=OneTime}" />
+
+
+                                    <TextBlock
+                                        Grid.Column="1"
+                                        Margin="6,0"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center">
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="{}{0:N1} {1}">
+                                                <Binding Mode="OneTime" Path="Value" />
+                                                <Binding Mode="OneTime" Path="Suffix" />
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+
+                                    </TextBlock>
+
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </DockPanel>
+
+
+                <!--  Value Strings  -->
+                <DockPanel>
+                    <DockPanel.Style>
+                        <Style TargetType="{x:Type DockPanel}">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding SectorDetails.ValueStrings.Count, Converter={StaticResource NumberZeroOrNull}, Mode=OneTime}" Value="False" />
+                                        <Condition Binding="{Binding Report.Standard}" Value="{x:Static bar_common:AvailableStandards.GS1}" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                                <DataTrigger Binding="{Binding Report.SymbolType, Mode=OneTime}" Value="{x:Static bar_common:AvailableSymbologies.Aztec}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DockPanel.Style>
+
+                    <Separator DockPanel.Dock="Top" />
+
+                    <ItemsControl ItemsSource="{Binding SectorDetails.ValueStrings, Mode=OneTime}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock
+                                        Grid.Column="0"
+                                        Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription}, Mode=OneTime}"
+                                        TextWrapping="Wrap" />
+
+                                    <TextBlock
+                                        Grid.Column="1"
+                                        MinWidth="26"
+                                        Margin="3,0"
+                                        VerticalAlignment="Center"
+                                        Text="{Binding Path=Value, Mode=OneTime}"
+                                        TextWrapping="Wrap" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+
+                    </ItemsControl>
+
+                </DockPanel>
+
+                <!--  Missing Parameters  -->
+                <DockPanel>
+                    <DockPanel.Style>
+                        <Style TargetType="{x:Type DockPanel}">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding SectorDetails.MissingParameters.Count, Converter={StaticResource NumberZeroOrNull}, Mode=OneTime}" Value="False" />
+                                        <Condition Binding="{Binding Report.Standard}" Value="{x:Static bar_common:AvailableStandards.GS1}" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                                <DataTrigger Binding="{Binding Report.SymbolType, Mode=OneTime}" Value="{x:Static bar_common:AvailableSymbologies.Aztec}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DockPanel.Style>
+
+                    <Separator DockPanel.Dock="Top" />
+
+                    <ItemsControl ItemsSource="{Binding SectorDetails.MissingParameters, Mode=OneTime}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock
+                                        Grid.Column="0"
+                                        Text="{Binding ., Converter={StaticResource EnumValueToDescription}, Mode=OneTime}"
+                                        TextWrapping="Wrap" />
+
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+
+                    </ItemsControl>
+
+                </DockPanel>
+
 
                 <!--  Alarms  -->
                 <DockPanel>

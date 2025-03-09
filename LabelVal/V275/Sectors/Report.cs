@@ -13,6 +13,7 @@ public class Report : IReport
     public object Original { get; set; }
 
     public AvailableRegionTypes Type { get; set; }
+    public AvailableSymbologies SymbolType { get; set; }
 
     public double Top { get; set; }
     public double Left { get; set; }
@@ -20,7 +21,7 @@ public class Report : IReport
     public double Height { get; set; }
     public double AngleDeg { get; set; }
 
-    public AvailableSymbologies SymbolType { get; set; }
+
     public double XDimension { get; set; }
     public double Aperture { get; set; }
     public string Units { get; set; }
@@ -47,141 +48,95 @@ public class Report : IReport
     //V275 2D module data
     public ModuleData ExtendedData { get; set; }
 
-    public Report(object report)
+    public Report(JObject report)
     {
         Original = report;
 
-        switch (report)
+        SymbolType = report["data"]["symbolType"].ToString().GetSymbology(AvailableDevices.V275);
+        Type = SymbolType.GetSymbologyRegionType(AvailableDevices.V275);
+
+        Top = report["top"].ToObject<double>();
+        Left = report["left"].ToObject<double>();
+        Width = report["width"].ToObject<double>();
+        Height = report["height"].ToObject<double>();
+        AngleDeg = 0;
+
+        XDimension = report["data"]["xDimension"].ToObject<double>();
+        Aperture = report["data"]["aperture"].ToObject<double>();
+        Units = report["data"]["lengthUnit"].ToString();
+
+        DecodeText = report["data"]["decodeText"].ToString();
+
+        OverallGradeString = report["data"]["overallGrade"]["string"].ToString();
+        OverallGradeValue = report["data"]["overallGrade"]["grade"]["value"].ToObject<double>();
+        OverallGradeLetter = report["data"]["overallGrade"]["grade"]["letter"].ToString();
+
+        if (report["data"]["gs1Results"] != null)
         {
-            case Report_InspectSector_Verify1D:
-                Report_InspectSector_Verify1D v1D = (Report_InspectSector_Verify1D)report;
-
-                SymbolType = v1D.data.symbolType.GetSymbology(AvailableDevices.V275);
-                Type = SymbolType.GetSymbologyRegionType(AvailableDevices.V275);
-
-                Top = v1D.top;
-                Left = v1D.left;
-                Width = v1D.width;
-                Height = v1D.height;
-                AngleDeg = 0;
-
-                XDimension = v1D.data.xDimension;
-                Aperture = v1D.data.aperture;
-                Units = v1D.data.lengthUnit;
-
-                DecodeText = v1D.data.decodeText;
-
-                OverallGradeString = v1D.data.overallGrade._string;
-                OverallGradeValue = v1D.data.overallGrade.grade.value;
-                OverallGradeLetter = v1D.data.overallGrade.grade.letter;
-
-                if (v1D.data.gs1Results != null)
-                {
-                    List<string> fld = [];
-                    foreach (JProperty f in v1D.data.gs1Results.fields)
-                        fld.Add($"({f.Name}) {f.Value.ToString().Trim('{', '}', ' ')}");
-
-                    GS1Results = new Gs1Results
-                    {
-                        Validated = v1D.data.gs1Results.validated,
-                        Input = v1D.data.gs1Results.input,
-                        FormattedOut = v1D.data.gs1Results.formattedOut,
-                        Fields = fld,
-                        Error = v1D.data.gs1Results.error
-                    };
-                }
-
-                break;
-
-            case Report_InspectSector_Verify2D:
-                Report_InspectSector_Verify2D v2D = (Report_InspectSector_Verify2D)report;
-
-                SymbolType = v2D.data.symbolType.GetSymbology(AvailableDevices.V275);
-                Type = SymbolType.GetSymbologyRegionType(AvailableDevices.V275);
-
-                Top = v2D.top;
-                Left = v2D.left;
-                Width = v2D.width;
-                Height = v2D.height;
-                AngleDeg = 0;
-
-                XDimension = v2D.data.xDimension;
-                Aperture = v2D.data.aperture;
-                Units = v2D.data.lengthUnit;
-
-                DecodeText = v2D.data.decodeText;
-
-                OverallGradeString = v2D.data.overallGrade._string;
-                OverallGradeValue = v2D.data.overallGrade.grade.value;
-                OverallGradeLetter = v2D.data.overallGrade.grade.letter;
-
-                if (v2D.data.gs1Results != null)
-                {
-                    List<string> fld = [];
-                    foreach (JProperty f in v2D.data.gs1Results.fields)
-                        fld.Add($"({f.Name}) {f.Value.ToString().Trim('{', '}', ' ')}");
-
-                    GS1Results = new Gs1Results
-                    {
-                        Validated = v2D.data.gs1Results.validated,
-                        Input = "^" + v2D.data.gs1Results.input.Replace("\u001d", "^"),
-                        FormattedOut = v2D.data.gs1Results.formattedOut,
-                        Fields = fld,
-                        Error = v2D.data.gs1Results.error
-                    };
-                }
-
-                if (v2D.data.extendedData != null)
-                    ExtendedData = JsonConvert.DeserializeObject<ModuleData>(JsonConvert.SerializeObject(v2D.data.extendedData));
-
-                break;
-
-            case Report_InspectSector_OCR:
-                Report_InspectSector_OCR ocr = (Report_InspectSector_OCR)report;
-
-                SymbolType = AvailableSymbologies.OCR;
-                Type = SymbolType.GetSymbologyRegionType(AvailableDevices.V275);
-
-                Top = ocr.top;
-                Left = ocr.left;
-                Width = ocr.width;
-                Height = ocr.height;
-                AngleDeg = 0;
-
-                Text = ocr.data.text;
-                Score = ocr.data.score;
-                break;
-
-            case Report_InspectSector_OCV:
-                Report_InspectSector_OCV ocv = (Report_InspectSector_OCV)report;
-
-                SymbolType = AvailableSymbologies.OCV;
-                Type = SymbolType.GetSymbologyRegionType(AvailableDevices.V275);
-
-                Top = ocv.top;
-                Left = ocv.left;
-                Width = ocv.width;
-                Height = ocv.height;
-                AngleDeg = 0;
-
-                Text = ocv.data.text;
-                Score = ocv.data.score;
-                break;
-
-            case Report_InspectSector_Blemish:
-                Report_InspectSector_Blemish blem = (Report_InspectSector_Blemish)report;
-
-                SymbolType = AvailableSymbologies.Blemish;
-                Type = SymbolType.GetSymbologyRegionType(AvailableDevices.V275);
-
-                Top = blem.top;
-                Left = blem.left;
-                Width = blem.width;
-                Height = blem.height;
-                AngleDeg = 0;
-
-                BlemishCount = blem.data.blemishCount;
-                break;
+            List<string> fld = [];
+            foreach (JProperty f in report["data"]["gs1Results"]["fields"])
+                fld.Add($"({f.Name}) {f.Value.ToString().Trim('{', '}', ' ')}");
+            GS1Results = new Gs1Results
+            {
+                Validated = report["data"]["gs1Results"]["validated"].ToObject<bool>(),
+                Input = report["data"]["gs1Results"]["input"].ToString(),
+                FormattedOut = report["data"]["gs1Results"]["formattedOut"].ToString(),
+                Fields = fld,
+                Error = report["data"]["gs1Results"]["error"].ToString()
+            };
         }
+
+        if (report["data"]["extendedData"] != null)
+            ExtendedData = JsonConvert.DeserializeObject<ModuleData>(JsonConvert.SerializeObject(report["data"]["extendedData"]));
+
+        //switch (report)
+        //{
+        //    case Report_InspectSector_OCR:
+        //        Report_InspectSector_OCR ocr = (Report_InspectSector_OCR)report;
+
+        //        SymbolType = AvailableSymbologies.OCR;
+        //        Type = SymbolType.GetSymbologyRegionType(AvailableDevices.V275);
+
+        //        Top = ocr.top;
+        //        Left = ocr.left;
+        //        Width = ocr.width;
+        //        Height = ocr.height;
+        //        AngleDeg = 0;
+
+        //        Text = ocr.data.text;
+        //        Score = ocr.data.score;
+        //        break;
+
+        //    case Report_InspectSector_OCV:
+        //        Report_InspectSector_OCV ocv = (Report_InspectSector_OCV)report;
+
+        //        SymbolType = AvailableSymbologies.OCV;
+        //        Type = SymbolType.GetSymbologyRegionType(AvailableDevices.V275);
+
+        //        Top = ocv.top;
+        //        Left = ocv.left;
+        //        Width = ocv.width;
+        //        Height = ocv.height;
+        //        AngleDeg = 0;
+
+        //        Text = ocv.data.text;
+        //        Score = ocv.data.score;
+        //        break;
+
+        //    case Report_InspectSector_Blemish:
+        //        Report_InspectSector_Blemish blem = (Report_InspectSector_Blemish)report;
+
+        //        SymbolType = AvailableSymbologies.Blemish;
+        //        Type = SymbolType.GetSymbologyRegionType(AvailableDevices.V275);
+
+        //        Top = blem.top;
+        //        Left = blem.left;
+        //        Width = blem.width;
+        //        Height = blem.height;
+        //        AngleDeg = 0;
+
+        //        BlemishCount = blem.data.blemishCount;
+        //        break;
+        //}
     }
 }

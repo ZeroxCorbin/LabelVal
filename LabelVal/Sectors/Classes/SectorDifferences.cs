@@ -23,7 +23,7 @@ public class SectorDifferences
         {
             Name = current.Name,
             UserName = current.UserName,
-            SymbolType = current.SymbolType,
+            //SymbolType = current.SymbolType,
             Units = current.Units,
         };
 

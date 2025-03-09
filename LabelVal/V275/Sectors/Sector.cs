@@ -3,6 +3,7 @@ using BarcodeVerification.lib.GS1;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LabelVal.Sectors.Interfaces;
+using Newtonsoft.Json.Linq;
 
 namespace LabelVal.V275.Sectors;
 
@@ -77,7 +78,7 @@ public partial class Sector : ObservableObject, ISector
     public bool IsFocused { get; set; }
     public bool IsMouseOver { get; set; }
 
-    public Sector(V275_REST_Lib.Models.Job.Sector sector, object report, AvailableStandards? standard, AvailableTables? table, string version)
+    public Sector(V275_REST_Lib.Models.Job.Sector sector, JObject report, AvailableStandards? standard, AvailableTables? table, string version)
     {
         V275Sector = sector;
 

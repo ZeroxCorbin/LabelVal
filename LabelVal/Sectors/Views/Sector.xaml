@@ -199,24 +199,15 @@
                     <TextBlock Margin="3,0" DockPanel.Dock="Top">
                         <TextBlock.Style>
                             <Style TargetType="{x:Type TextBlock}">
-
+                                <Setter Property="Text" Value="{Binding Report.SymbolType, Converter={StaticResource EnumValueToDescription}, Mode=OneTime}" />
+                                <Setter Property="TextWrapping" Value="Wrap" />
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes._1D}">
-                                        <Setter Property="Text" Value="{Binding Report.SymbolType, Converter={StaticResource EnumValueToDescription}, Mode=OneTime}" />
-                                        <Setter Property="TextWrapping" Value="Wrap" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes._2D}">
-                                        <Setter Property="Text" Value="{Binding Report.SymbolType, Converter={StaticResource EnumValueToDescription}, Mode=OneTime}" />
-                                        <Setter Property="TextWrapping" Value="Wrap" />
-                                    </DataTrigger>
-
                                     <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCR}">
                                         <Setter Property="Text" Value="{Binding Template.MatchSettings.FixedText, Mode=OneTime}" />
                                         <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Text}" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCV}">
                                         <Setter Property="Text" Value="{Binding Template.MatchSettings.FixedText, Mode=OneTime}" />
-                                        <Setter Property="TextWrapping" Value="Wrap" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.Blemish}">
                                         <Setter Property="Text" Value="" />
@@ -230,18 +221,9 @@
                     <TextBlock Name="txtDecodeText" Margin="3,0">
                         <TextBlock.Style>
                             <Style TargetType="{x:Type TextBlock}">
-
+                                <Setter Property="Text" Value="{Binding Report.DecodeText, Converter={StaticResource shortenString}, Mode=OneTime}" />
+                                <Setter Property="ToolTip" Value="{Binding Report.DecodeText, Mode=OneTime}" />
                                 <Style.Triggers>
-
-                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes._1D}">
-                                        <Setter Property="Text" Value="{Binding Report.DecodeText, Converter={StaticResource shortenString}, Mode=OneTime}" />
-                                        <Setter Property="ToolTip" Value="{Binding Report.DecodeText, Mode=OneTime}" />
-                                    </DataTrigger>
-
-                                    <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes._2D}">
-                                        <Setter Property="Text" Value="{Binding Report.DecodeText, Converter={StaticResource shortenString}, Mode=OneTime}" />
-                                        <Setter Property="ToolTip" Value="{Binding Report.DecodeText, Mode=OneTime}" />
-                                    </DataTrigger>
 
                                     <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCR}">
                                         <Setter Property="Text" Value="{Binding Report.Text, Converter={StaticResource shortenString}, Mode=OneTime}" />
@@ -335,14 +317,9 @@
                         <TextBlock>
                             <TextBlock.Style>
                                 <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
-
+                                    <Setter Property="Text" Value="{Binding Report.OverallGradeValue, StringFormat=N1, Mode=OneTime}" />
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes._1D}">
-                                            <Setter Property="Text" Value="{Binding Report.OverallGradeValue, StringFormat=N1, Mode=OneTime}" />
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes._2D}">
-                                            <Setter Property="Text" Value="{Binding Report.OverallGradeValue, StringFormat=N1, Mode=OneTime}" />
-                                        </DataTrigger>
+
                                         <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCR}">
                                             <Setter Property="Text" Value="{Binding Report.Score, Mode=OneTime}" />
                                         </DataTrigger>

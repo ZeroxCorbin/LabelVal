@@ -144,8 +144,8 @@ public partial class App : Application
                 foreach (var param in results[key])
                 {
                     if (results[AvailableRegionTypes.DataMatrix].Contains(param)
-                        && results[AvailableRegionTypes.QR1].Contains(param)
-                        && results[AvailableRegionTypes.QR2].Contains(param)
+                        && results[AvailableRegionTypes.QR].Contains(param)
+                        && results[AvailableRegionTypes.QRMicro].Contains(param)
                         && results[AvailableRegionTypes.MaxiCode].Contains(param))
                     {
                         if (!common2d.Contains(param))

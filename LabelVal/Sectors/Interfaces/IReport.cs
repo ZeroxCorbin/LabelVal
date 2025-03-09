@@ -1,6 +1,7 @@
 ﻿using BarcodeVerification.lib.Common;
 using LabelVal.Sectors.Classes;
 using BarcodeVerification.lib.GS1;
+using Newtonsoft.Json.Linq;
 
 namespace LabelVal.Sectors.Interfaces;
 
