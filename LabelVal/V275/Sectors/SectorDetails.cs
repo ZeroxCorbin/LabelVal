@@ -20,16 +20,9 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
     [ObservableProperty] private string sectorMissingText;
     [ObservableProperty] private bool isNotEmpty = false;
 
-    public ObservableCollection<IParameterValue> Grades { get; } = [];
-    public ObservableCollection<IParameterValue> PassFails { get; } = [];
-
-    public ObservableCollection<ValueDouble> ValueDoubles { get; } = [];
-    public ObservableCollection<ValueString> ValueStrings { get; } = [];
-
+    public ObservableCollection<IParameterValue> Parameters { get; } = [];
     public ObservableCollection<Alarm> Alarms { get; } = [];
     public ObservableCollection<Blemish> Blemishes { get; } = [];
-
-    public ObservableCollection<AvailableParameters> MissingParameters { get; } = [];
 
     public SectorDetails() { }
     public SectorDetails(ISector sector) => Process(sector);
@@ -75,13 +68,15 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
         //Get the parameters list based on the region type.
         List<AvailableParameters> theParamters = Params.ParameterGroups[theRegionType][AvailableDevices.V275];
 
+        var report = (JObject)Sector.Report.Original;
+
         foreach (AvailableParameters parameter in theParamters)
         {
-            string data = GetParameter(parameter.GetParameterPath(AvailableDevices.V275), (JObject)Sector.Report.Original);
+            string data = GetParameter(parameter.GetParameterPath(AvailableDevices.V275), report);
 
             if (string.IsNullOrWhiteSpace(data))
             {
-                MissingParameters.Add(parameter);
+                Parameters.Add(new Missing(parameter));
                 continue;
             }
 
@@ -91,51 +86,60 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
 
             if (type == typeof( BarcodeVerification.lib.ISO.GradeValue))
             {
-                GradeValue gradeValue = GetGradeValue(parameter, GetParameter(parameter.GetParameterPath(AvailableDevices.V275), (JObject)Sector.Report.Original));
+                GradeValue gradeValue = GetGradeValue(parameter, GetParameter(parameter.GetParameterPath(AvailableDevices.V275), report));
 
                 if (gradeValue != null)
                 {
-                    Grades.Add(gradeValue);
+                    Parameters.Add(gradeValue);
                     found = true;
                 }
             }
             else if (type == typeof(BarcodeVerification.lib.ISO.Grade))
             {
-                Grade grade = GetGrade(parameter, GetParameter(parameter.GetParameterPath(AvailableDevices.V275), (JObject)Sector.Report.Original));
+                Grade grade = GetGrade(parameter, GetParameter(parameter.GetParameterPath(AvailableDevices.V275), report));
 
                 if (grade != null)
                 {
-                    Grades.Add(grade);
+                    Parameters.Add(grade);
                     found = true;
                 }
             }
             else if (type == typeof(BarcodeVerification.lib.ISO.ValueDouble))
             {
-                ValueDouble valueDouble = GetValueDouble(parameter, GetParameter(parameter.GetParameterPath(AvailableDevices.V275), (JObject)Sector.Report.Original));
+                ValueDouble valueDouble = GetValueDouble(parameter, GetParameter(parameter.GetParameterPath(AvailableDevices.V275), report));
                 if (valueDouble != null)
                 {
-                    ValueDoubles.Add(valueDouble);
+                    Parameters.Add(valueDouble);
                     found = true;
                 }
             }
             else if (type == typeof(BarcodeVerification.lib.ISO.ValueString))
             {
-                ValueString valueString = GetValueString(parameter, GetParameter(parameter.GetParameterPath(AvailableDevices.V275), (JObject)Sector.Report.Original));
-                if (valueString != null) { ValueStrings.Add(valueString); found = true; }
+                ValueString valueString = GetValueString(parameter, GetParameter(parameter.GetParameterPath(AvailableDevices.V275), report));
+                if (valueString != null) { Parameters.Add(valueString); found = true; }
             }
             else if (type == typeof(BarcodeVerification.lib.ISO.PassFail))
             {
-                PassFail passFail = GetPassFail(parameter, GetParameter(parameter.GetParameterPath(AvailableDevices.V275), (JObject)Sector.Report.Original));
-                if (passFail != null) { PassFails.Add(passFail); found = true; }
+                PassFail passFail = GetPassFail(parameter, GetParameter(parameter.GetParameterPath(AvailableDevices.V275), report));
+                if (passFail != null) { Parameters.Add(passFail); found = true; }
             }
             else if (type == typeof(BarcodeVerification.lib.ISO.ValuePassFail))
             {
-                ValuePassFail valuePassFail = GetValuePassFail(parameter, GetParameter(parameter.GetParameterPath(AvailableDevices.V275), (JObject)Sector.Report.Original));
-                if (valuePassFail != null) { PassFails.Add(valuePassFail); found = true; }
+                ValuePassFail valuePassFail = GetValuePassFail(parameter, GetParameter(parameter.GetParameterPath(AvailableDevices.V275), report));
+                if (valuePassFail != null) { Parameters.Add(valuePassFail); found = true; }
             }
 
             if (!found)
                 Logger.LogWarning($"Paramter: '{parameter}' @ Path: '{parameter.GetParameterPath(AvailableDevices.V275)}' parse issue.");
+        }
+
+        //Check for alarms
+        if (report["data"]?["alarms"] != null)
+        {
+            foreach (JObject alarm in report["data"]?["alarms"])
+            {
+                Alarms.Add(new Alarm(alarm["category"].Value<int>() == 1 ? AvaailableAlarmCategories.Warning : AvaailableAlarmCategories.Error, alarm["name"].ToString()));
+            }
         }
     }
 

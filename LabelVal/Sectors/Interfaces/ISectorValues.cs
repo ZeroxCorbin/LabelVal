@@ -95,23 +95,23 @@ public class Blemish : ISectorValue
     }
 }
 
-public class Alarm : ISectorValue
-{
-    public string Name { get; set; } = null;
-    public int Category { get; set; }
-    public SubAlarm_ Data { get; set; }
-    public Useraction UserAction { get; set; }
-}
-public class SubAlarm_
-{
-    public string Text { get; set; }
-    public int Index { get; set; }
-    public string SubAlarm { get; set; }
-    public string Expected { get; set; }
-}
-public class Useraction
-{
-    public string Action { get; set; }
-    public string User { get; set; }
-    public string Note { get; set; }
-}
+//public class Alarm : ISectorValue
+//{
+//    public string Name { get; set; } = null;
+//    public int Category { get; set; }
+//    public SubAlarm_ Data { get; set; }
+//    public Useraction UserAction { get; set; }
+//}
+//public class SubAlarm_
+//{
+//    public string Text { get; set; }
+//    public int Index { get; set; }
+//    public string SubAlarm { get; set; }
+//    public string Expected { get; set; }
+//}
+//public class Useraction
+//{
+//    public string Action { get; set; }
+//    public string User { get; set; }
+//    public string Note { get; set; }
+//}

@@ -1,7 +1,6 @@
 ﻿using BarcodeVerification.lib.Common;
 using BarcodeVerification.lib.ISO;
 using CommunityToolkit.Mvvm.ComponentModel;
-using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Interfaces;
 using Lvs95xx.lib.Core.Controllers;
 using Lvs95xx.lib.Core.Models;
@@ -23,18 +22,12 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
 
     [ObservableProperty] private bool isNotEmpty = false;
 
-    public ObservableCollection<IParameterValue> Grades { get; } = [];
-    public ObservableCollection<IParameterValue> PassFails { get; } = [];
-
-    public ObservableCollection<ValueDouble> ValueDoubles { get; } = [];
-    public ObservableCollection<ValueString> ValueStrings { get; } = [];
+    public ObservableCollection<IParameterValue> Parameters { get; } = [];
 
     public ObservableCollection<Alarm> Alarms { get; } = [];
     public ObservableCollection<Blemish> Blemishes { get; } = [];
 
-    public ObservableCollection<AvailableParameters> MissingParameters { get; } = [];
-
-    public SectorDifferences? Compare(ISectorDetails compare) => SectorDifferences.Compare(this, compare);
+    public LabelVal.Sectors.Classes.SectorDifferences? Compare(ISectorDetails compare) => LabelVal.Sectors.Classes.SectorDifferences.Compare(this, compare);
 
     public SectorDetails() { }
     public SectorDetails(ISector sector) => ProcessNew(sector);
@@ -65,43 +58,53 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
 
             if (string.IsNullOrWhiteSpace(data))
             {
-                MissingParameters.Add(parameter);
+                Parameters.Add(new Missing(parameter));
                 continue;
             }
 
-            var type = parameter.GetParameterDataType(AvailableDevices.L95, theSymbology);
+            Type type = parameter.GetParameterDataType(AvailableDevices.L95, theSymbology);
 
             if (type == typeof(BarcodeVerification.lib.ISO.GradeValue))
             {
                 GradeValue gradeValue = GetGradeValue(parameter, GetParameter(parameter.GetParameterPath(AvailableDevices.L95), report.ReportData, true));
 
                 if (gradeValue != null)
-                    Grades.Add(gradeValue);
+                    Parameters.Add(gradeValue);
             }
             else if (type == typeof(BarcodeVerification.lib.ISO.Grade))
             {
                 Grade grade = GetGrade(parameter, GetParameter(parameter.GetParameterPath(AvailableDevices.L95), report.ReportData, true));
 
                 if (grade != null)
-                    Grades.Add(grade);
+                    Parameters.Add(grade);
             }
             else if (type == typeof(BarcodeVerification.lib.ISO.ValueDouble))
             {
                 ValueDouble valueDouble = GetValueDouble(parameter, GetParameter(parameter.GetParameterPath(AvailableDevices.L95), report.ReportData, true));
                 if (valueDouble != null)
-                    ValueDoubles.Add(valueDouble);
+                    Parameters.Add(valueDouble);
             }
             else if (type == typeof(BarcodeVerification.lib.ISO.ValueString))
             {
                 ValueString valueString = GetValueString(parameter, GetParameter(parameter.GetParameterPath(AvailableDevices.L95), report.ReportData, true));
                 if (valueString != null)
-                    ValueStrings.Add(valueString);
+                    Parameters.Add(valueString);
             }
             else if (type == typeof(BarcodeVerification.lib.ISO.PassFail))
             {
                 PassFail passFail = GetPassFail(parameter, GetParameter(parameter.GetParameterPath(AvailableDevices.L95), report.ReportData, true));
                 if (passFail != null)
-                    PassFails.Add(passFail);
+                    Parameters.Add(passFail);
+            }
+        }
+
+        //Check for alarms
+        List<string> alarms = GetParameters("Warning", report.ReportData);
+        if (alarms.Count > 0)
+        {
+            foreach (string alarm in alarms)
+            {
+                Alarms.Add(new Alarm(AvaailableAlarmCategories.Warning, alarm));
             }
         }
     }
@@ -148,8 +151,6 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
         return ret.ToArray();
     }
 
-
-
     private BarcodeVerification.lib.ISO.GradeValue GetGradeValue(AvailableParameters parameter, string data)
     {
         if (string.IsNullOrWhiteSpace(data))
@@ -165,7 +166,7 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
 
     private BarcodeVerification.lib.ISO.Grade GetGrade(AvailableParameters parameter, string data) => string.IsNullOrWhiteSpace(data) ? null : new BarcodeVerification.lib.ISO.Grade(parameter, data);
 
-    private BarcodeVerification.lib.ISO.ValueDouble GetValueDouble(AvailableParameters parameter, string data ) => string.IsNullOrWhiteSpace(data) ? null : new BarcodeVerification.lib.ISO.ValueDouble(parameter, data, AvailableDevices.L95);
+    private BarcodeVerification.lib.ISO.ValueDouble GetValueDouble(AvailableParameters parameter, string data) => string.IsNullOrWhiteSpace(data) ? null : new BarcodeVerification.lib.ISO.ValueDouble(parameter, data, AvailableDevices.L95);
 
     private BarcodeVerification.lib.ISO.ValueString GetValueString(AvailableParameters parameter, string data) => string.IsNullOrWhiteSpace(data) ? null : new BarcodeVerification.lib.ISO.ValueString(parameter, data);
 

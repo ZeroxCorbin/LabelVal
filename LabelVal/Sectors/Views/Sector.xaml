@@ -369,17 +369,7 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <DockPanel>
-                                <TextBlock TextWrapping="Wrap">
-                                    <TextBlock.Text>
-                                        <MultiBinding StringFormat="{}{0} {1}">
-                                            <Binding Mode="OneTime" Path="Name" />
-                                            <Binding
-                                                FallbackValue=""
-                                                Mode="OneTime"
-                                                Path="Data.SubAlarm" />
-                                        </MultiBinding>
-                                    </TextBlock.Text>
-                                </TextBlock>
+                                <TextBlock Text="{Binding Value}" TextWrapping="Wrap" />
                             </DockPanel>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>

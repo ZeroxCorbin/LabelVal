@@ -91,15 +91,14 @@ public partial class Sector : ObservableObject, ISector
 
         SectorDetails = new SectorDetails(this);
 
-        int highCat = 0;
         foreach (Alarm alm in SectorDetails.Alarms)
-            if (highCat < alm.Category)
-                highCat = alm.Category;
+        {
+            if (alm.Category == AvaailableAlarmCategories.Warning)
+                IsWarning = true;
 
-        if (highCat == 1)
-            IsWarning = true;
-        else if (highCat == 2)
-            IsError = true;
+            if (alm.Category == AvaailableAlarmCategories.Error)
+                IsError = true;
+        }
     }
 
     private List<string[]> GetMultipleKeyValuePairs(string key, List<string> report)

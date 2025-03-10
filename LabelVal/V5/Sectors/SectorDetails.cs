@@ -1,4 +1,5 @@
-﻿using BarcodeVerification.lib.ISO;
+﻿using BarcodeVerification.lib.Common;
+using BarcodeVerification.lib.ISO;
 using CommunityToolkit.Mvvm.ComponentModel;
 using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Interfaces;
@@ -20,17 +21,9 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
     [ObservableProperty] private string sectorMissingText;
     [ObservableProperty] private bool isNotEmpty = false;
 
-    public ObservableCollection<IParameterValue> Grades { get; } 
-    public ObservableCollection<IParameterValue> PassFails { get; }
-    
-    public ObservableCollection<ValueDouble> ValueDoubles { get; }
-    public ObservableCollection<ValueString> ValueStrings { get; }
-
-
+    public ObservableCollection<IParameterValue> Parameters { get; } 
     public ObservableCollection<Alarm> Alarms { get; } = [];
     public ObservableCollection<Blemish> Blemishes { get; } = [];
-
-    public ObservableCollection<AvailableParameters> MissingParameters { get; }
 
     public SectorDifferences Compare(ISectorDetails compare) => SectorDifferences.Compare(this, compare);
 

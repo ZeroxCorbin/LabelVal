@@ -1,4 +1,5 @@
-﻿using LabelVal.Sectors.Interfaces;
+﻿using BarcodeVerification.lib.Common;
+using LabelVal.Sectors.Interfaces;
 
 namespace LabelVal.Sectors.Classes;
 
@@ -38,7 +39,7 @@ public class SectorDifferences
         //Compare(differences.Gs1ValueResults, previous.Gs1ValueResults, current.Gs1ValueResults);
         //Compare(differences.Gs1Grades, previous.Gs1Grades, current.Gs1Grades);
         //Compare(differences.Values, previous.Values, current.Values);
-        Compare(differences.Alarms, previous.Alarms, current.Alarms);
+        //Compare(differences.Alarms, previous.Alarms, current.Alarms);
         Compare(differences.Blemishes, previous.Blemishes, current.Blemishes);
 
         differences.HasDifferences = differences.Others.Count > 0 || differences.GradeValues.Count > 0 || differences.ValueResults.Count > 0 || differences.Gs1ValueResults.Count > 0 || differences.Gs1Grades.Count > 0 || differences.Values.Count > 0 || differences.Alarms.Count > 0 || differences.Blemishes.Count > 0;
@@ -98,7 +99,7 @@ public class SectorDifferences
     //        ? source.Result == compare.Result
     //        : compare.Value <= source.Value + Settings.ValueResult_ValueTolerance && compare.Value >= source.Value - Settings.ValueResult_ValueTolerance;
     //public static bool CompareValue(Value_ source, Value_ compare) => compare.Value <= source.Value + Settings.Value_ValueTolerance && compare.Value >= source.Value - Settings.Value_ValueTolerance;
-    public static bool CompareAlarm(Alarm source, Alarm compare) => source.Category == compare.Category && source.Data?.SubAlarm == compare.Data?.SubAlarm;
+    public static bool CompareAlarm(Alarm source, Alarm compare) => source.Category == compare.Category && source.Value == compare.Value;
 
 }
 

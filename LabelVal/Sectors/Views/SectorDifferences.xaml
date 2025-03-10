@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Converters="clr-namespace:LabelVal.Converters"
     xmlns:ViewModels="clr-namespace:LabelVal.Sectors.Interfaces"
+    xmlns:bar_common="clr-namespace:BarcodeVerification.lib.Common;assembly=BarcodeVerification.lib"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:local="clr-namespace:LabelVal.Sectors.Views"
@@ -545,16 +546,6 @@
                             <HierarchicalDataTemplate>
                                 <StackPanel>
                                     <DockPanel>
-                                        <DockPanel.Style>
-                                            <Style TargetType="{x:Type DockPanel}">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Current.Name, Mode=OneWay, Converter={StaticResource IsNullOrEmpty}}" Value="True">
-                                                        <Setter Property="Visibility" Value="Collapsed" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </DockPanel.Style>
 
                                         <DockPanel Margin="3,0" DockPanel.Dock="Top">
 
@@ -568,10 +559,10 @@
                                                     <Style TargetType="{x:Type Border}">
                                                         <Setter Property="Background" Value="{DynamicResource CB_Green}" />
                                                         <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding Current.Category, Mode=OneTime}" Value="2">
+                                                            <DataTrigger Binding="{Binding Current.Category, Mode=OneTime}" Value="{x:Static bar_common:AvaailableAlarmCategories.Error}">
                                                                 <Setter Property="Background" Value="{DynamicResource SectorError_Brush}" />
                                                             </DataTrigger>
-                                                            <DataTrigger Binding="{Binding Current.Category, Mode=OneTime}" Value="1">
+                                                            <DataTrigger Binding="{Binding Current.Category, Mode=OneTime}" Value="{x:Static bar_common:AvaailableAlarmCategories.Warning}">
                                                                 <Setter Property="Background" Value="{DynamicResource SectorWarning_Brush}" />
                                                             </DataTrigger>
                                                         </Style.Triggers>
@@ -581,33 +572,9 @@
 
                                             <TextBlock
                                                 Margin="3,0"
-                                                Text="{Binding Current.Name, Converter={StaticResource stringToUpper}, Mode=OneTime}"
+                                                Text="{Binding Current.Value, Converter={StaticResource stringToUpper}, Mode=OneTime}"
                                                 TextWrapping="Wrap" />
-                                            <TextBlock
-                                                Margin="3,0"
-                                                Text="{Binding Current.Data.SubAlarm, Converter={StaticResource stringToUpper}, Mode=OneTime}"
-                                                TextWrapping="Wrap" />
-                                        </DockPanel>
 
-                                        <DockPanel>
-                                            <DockPanel.Style>
-                                                <Style TargetType="DockPanel">
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding Current.Data.Text}" Value="{x:Null}">
-                                                            <Setter Property="Visibility" Value="Collapsed" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </DockPanel.Style>
-
-                                            <TextBlock
-                                                Margin="3,0"
-                                                Text="{Binding Current.Data.Text, Mode=OneTime}"
-                                                TextWrapping="Wrap" />
-                                            <TextBlock
-                                                Margin="3,0"
-                                                Text="{Binding Current.Data.Expected, Mode=OneTime}"
-                                                TextWrapping="Wrap" />
                                         </DockPanel>
 
                                     </DockPanel>
@@ -635,10 +602,10 @@
                                                     <Style TargetType="{x:Type Border}">
                                                         <Setter Property="Background" Value="{DynamicResource CB_Green}" />
                                                         <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding Previous.Category, Mode=OneTime}" Value="2">
+                                                            <DataTrigger Binding="{Binding Previous.Category, Mode=OneTime}" Value="{x:Static bar_common:AvaailableAlarmCategories.Error}">
                                                                 <Setter Property="Background" Value="{DynamicResource SectorError_Brush}" />
                                                             </DataTrigger>
-                                                            <DataTrigger Binding="{Binding Previous.Category, Mode=OneTime}" Value="1">
+                                                            <DataTrigger Binding="{Binding Previous.Category, Mode=OneTime}" Value="{x:Static bar_common:AvaailableAlarmCategories.Warning}">
                                                                 <Setter Property="Background" Value="{DynamicResource SectorWarning_Brush}" />
                                                             </DataTrigger>
                                                         </Style.Triggers>
@@ -648,33 +615,9 @@
 
                                             <TextBlock
                                                 Margin="3,0"
-                                                Text="{Binding Previous.Name, Converter={StaticResource stringToUpper}, Mode=OneTime}"
+                                                Text="{Binding Previous.Value, Converter={StaticResource stringToUpper}, Mode=OneTime}"
                                                 TextWrapping="Wrap" />
-                                            <TextBlock
-                                                Margin="3,0"
-                                                Text="{Binding Previous.Data.SubAlarm, Converter={StaticResource stringToUpper}, Mode=OneTime}"
-                                                TextWrapping="Wrap" />
-                                        </DockPanel>
 
-                                        <DockPanel>
-                                            <DockPanel.Style>
-                                                <Style TargetType="DockPanel">
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding Previous.Data.Text}" Value="{x:Null}">
-                                                            <Setter Property="Visibility" Value="Collapsed" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </DockPanel.Style>
-
-                                            <TextBlock
-                                                Margin="3,0"
-                                                Text="{Binding Previous.Data.Text, Mode=OneTime}"
-                                                TextWrapping="Wrap" />
-                                            <TextBlock
-                                                Margin="3,0"
-                                                Text="{Binding Previous.Data.Expected, Mode=OneTime}"
-                                                TextWrapping="Wrap" />
                                         </DockPanel>
 
                                     </DockPanel>

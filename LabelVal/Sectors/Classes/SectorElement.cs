@@ -1,4 +1,5 @@
-﻿using LabelVal.Sectors.Interfaces;
+﻿using BarcodeVerification.lib.Common;
+using LabelVal.Sectors.Interfaces;
 
 namespace LabelVal.Sectors.Classes;
 
@@ -36,7 +37,7 @@ public class SectorElement(string name, object previous, object current)
 
             if (Previous is Alarm previousAlarm && Current is Alarm currentAlarm)
                 if (!SectorDifferences.CompareAlarm(previousAlarm, currentAlarm))
-                    differences.Add(new SectorDifference { Name = currentAlarm.Name, Previous = previousAlarm, Current = currentAlarm });
+                    differences.Add(new SectorDifference { Name = currentAlarm.Value, Previous = previousAlarm, Current = currentAlarm });
 
             return differences.Count > 0 ? differences : null;
         }
