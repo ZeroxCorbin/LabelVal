@@ -8,6 +8,7 @@ using LabelVal.Results.Databases;
 using LabelVal.Utilities;
 using LibImageUtilities.ImageTypes;
 using Lvs95xx.lib.Core.Controllers;
+using Lvs95xx.lib.Core.Models;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using Newtonsoft.Json;
@@ -257,14 +258,13 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
 
             _ = SelectedDatabase.InsertOrReplace_V275Result(new Databases.V275Result
             {
-                SourceImageUID = SourceImageUID,
                 ImageRollUID = ImageRollUID,
 
-                SourceImage = JsonConvert.SerializeObject(SourceImage),
-                StoredImage = JsonConvert.SerializeObject(V275CurrentImage),
+                Source = SourceImage,
+                Stored = V275CurrentImage,
 
-                Template = JsonConvert.SerializeObject(V275CurrentTemplate),
-                Report = JsonConvert.SerializeObject(V275CurrentReport),
+                _Job = V275CurrentTemplate,
+                _Report = V275CurrentReport,
             });
 
             ClearRead(device);
@@ -285,14 +285,13 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
 
             _ = SelectedDatabase.InsertOrReplace_V5Result(new Databases.V5Result
             {
-                SourceImageUID = SourceImageUID,
                 ImageRollUID = ImageRollUID,
 
-                SourceImage = JsonConvert.SerializeObject(SourceImage),
-                StoredImage = JsonConvert.SerializeObject(V5CurrentImage),
+                Source = SourceImage,
+                Stored= V5CurrentImage,
 
-                Template = JsonConvert.SerializeObject(V5CurrentTemplate),
-                Report = JsonConvert.SerializeObject(V5CurrentReport),
+                _Config = V5CurrentTemplate,
+                _Report = V5CurrentReport,
             });
 
             ClearRead(device);
@@ -327,12 +326,12 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             _ = SelectedDatabase.InsertOrReplace_L95xxResult(new Databases.L95xxResult
             {
                 ImageRollUID = ImageRollUID,
-                SourceImageUID = SourceImageUID,
 
-                SourceImage = JsonConvert.SerializeObject(SourceImage),
-                StoredImage = JsonConvert.SerializeObject(L95xxCurrentImage),
+                Source = SourceImage,
+                Stored = L95xxCurrentImage,
 
-                Report = JsonConvert.SerializeObject(temp),
+                _Settings = ((LVS_95xx.Sectors.Sector)L95xxCurrentSectorSelected).L95xxFullReport.Settings,
+                _Report = temp,
             });
 
             ClearRead(device);
@@ -362,21 +361,23 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             if (L95xxResultRow != null)
                 temp = L95xxResultRow._Report;
 
+            List<Setting> tempSettings = [];
             foreach (Sectors.Interfaces.ISector sector in L95xxCurrentSectors)
             {
                 temp.Add(((LVS_95xx.Sectors.Sector)sector).L95xxFullReport);
-
-                _ = SelectedDatabase.InsertOrReplace_L95xxResult(new Databases.L95xxResult
-                {
-                    ImageRollUID = ImageRollUID,
-                    SourceImageUID = SourceImageUID,
-
-                    SourceImage = JsonConvert.SerializeObject(SourceImage),
-                    StoredImage = JsonConvert.SerializeObject(L95xxCurrentImage),
-
-                    Report = JsonConvert.SerializeObject(temp),
-                });
+                tempSettings = ((LVS_95xx.Sectors.Sector)sector).L95xxFullReport.Settings;
             }
+
+            _ = SelectedDatabase.InsertOrReplace_L95xxResult(new Databases.L95xxResult
+            {
+                ImageRollUID = ImageRollUID,
+
+                Source = SourceImage,
+                Stored = L95xxCurrentImage,
+
+                _Settings = tempSettings,
+                _Report = temp,
+            });
 
             ClearRead(device);
 

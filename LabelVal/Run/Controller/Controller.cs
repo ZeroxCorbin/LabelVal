@@ -347,10 +347,9 @@ public partial class Controller : ObservableObject
         V275Result v275 = new()
         {
             RunUID = RunUID,
-            SourceImageUID = ire.SourceImageUID,
             ImageRollUID = ire.ImageRollUID,
 
-            SourceImage = ire.SourceImage?.Serialize,
+            Source = ire.SourceImage,
         };
 
         //Start the V275 processing the image.
@@ -420,10 +419,9 @@ public partial class Controller : ObservableObject
         Results.Databases.V5Result v5 = new()
         {
             RunUID = RunUID,
-            SourceImageUID = ire.SourceImageUID,
             ImageRollUID = ire.ImageRollUID,
 
-            SourceImage = ire.SourceImage?.Serialize,
+            Source = ire.SourceImage,
         };
 
         if (V5.IsSimulator)
@@ -462,10 +460,9 @@ public partial class Controller : ObservableObject
         Results.Databases.L95xxResult l95 = new()
         {
             RunUID = RunUID,
-            SourceImageUID = ire.SourceImageUID,
             ImageRollUID = ire.ImageRollUID,
 
-            SourceImage = ire.SourceImage?.Serialize,
+            Source = ire.SourceImage,
         };
 
         Lvs95xx.lib.Core.Controllers.Label lab = new()

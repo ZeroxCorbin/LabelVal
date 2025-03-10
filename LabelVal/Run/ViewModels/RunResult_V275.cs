@@ -19,15 +19,15 @@ public partial class RunResult
         if (StoredImageResultGroup == null)
             return;
 
-        SourceImage = JsonConvert.DeserializeObject<ImageEntry>(StoredImageResultGroup.V275Result.SourceImage);
-        V275StoredImage = JsonConvert.DeserializeObject<ImageEntry>(StoredImageResultGroup.V275Result.StoredImage);
+        SourceImage = StoredImageResultGroup.V275Result.Source;
+        V275StoredImage = StoredImageResultGroup.V275Result.Stored;
 
         List<Sectors.Interfaces.ISector> tempSectors = [];
         if (!string.IsNullOrEmpty(StoredImageResultGroup.V275Result.Report) && !string.IsNullOrEmpty(StoredImageResultGroup.V275Result.Template))
         {
             foreach (V275_REST_Lib.Models.Job.Sector jSec in StoredImageResultGroup.V275Result._Job.sectors)
             {
-                foreach (JObject rSec in StoredImageResultGroup.V275Result._Report.inspectLabel.inspectSector)
+                foreach (JObject rSec in StoredImageResultGroup.V275Result._Report["inspectLabel"]["inspectSector"])
                 {
                     if (jSec.name == rSec["name"].ToString())
                     {
@@ -57,14 +57,14 @@ public partial class RunResult
         if (CurrentImageResultGroup == null)
             return;
 
-        V275CurrentImage = JsonConvert.DeserializeObject<ImageEntry>(CurrentImageResultGroup.V275Result.StoredImage);
+        V275CurrentImage = CurrentImageResultGroup.V275Result.Stored;
 
         List<Sectors.Interfaces.ISector> tempSectors = [];
         if (!string.IsNullOrEmpty(CurrentImageResultGroup.V275Result.Report) && !string.IsNullOrEmpty(CurrentImageResultGroup.V275Result.Template))
         {
             foreach (V275_REST_Lib.Models.Job.Sector jSec in CurrentImageResultGroup.V275Result._Job.sectors)
             {
-                foreach (JObject rSec in CurrentImageResultGroup.V275Result._Report.inspectLabel.inspectSector)
+                foreach (JObject rSec in CurrentImageResultGroup.V275Result._Report["inspectLabel"]["inspectSector"])
                 {
                     if (jSec.name == rSec["name"].ToString())
                     {
@@ -198,7 +198,7 @@ public partial class RunResult
 
     }
 
-    private DrawingImage V275CreateSectorsImageOverlay(V275_REST_Lib.Models.Job template, bool isDetailed, V275_REST_Lib.Models.Report report, ImageRolls.ViewModels.ImageEntry image, ObservableCollection<Sectors.Interfaces.ISector> sectors)
+    private DrawingImage V275CreateSectorsImageOverlay(V275_REST_Lib.Models.Job template, bool isDetailed, JObject report, ImageRolls.ViewModels.ImageEntry image, ObservableCollection<Sectors.Interfaces.ISector> sectors)
     {
         DrawingGroup drwGroup = new();
 
@@ -214,7 +214,7 @@ public partial class RunResult
 
         foreach (V275_REST_Lib.Models.Job.Sector jSec in template.sectors)
         {
-            foreach (JObject rSec in report.inspectLabel.inspectSector.Cast<JObject>())
+            foreach (JObject rSec in report["inspectLabel"]["inspectSector"])
             {
                 if (jSec.name == rSec["name"].ToString())
                 {

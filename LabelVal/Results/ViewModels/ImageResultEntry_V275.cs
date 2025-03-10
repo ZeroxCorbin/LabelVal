@@ -339,7 +339,7 @@ public partial class ImageResultEntry
             {
                 foreach (V275_REST_Lib.Models.Job.Sector jSec in row._Job.sectors)
                 {
-                    foreach (JObject rSec in row._Report.inspectLabel.inspectSector)
+                    foreach (JObject rSec in row._Report["inspectLabel"]["inspectSector"])
                     {
                         if (jSec.name == rSec["name"].ToString())
                         {
