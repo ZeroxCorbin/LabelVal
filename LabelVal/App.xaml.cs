@@ -5,6 +5,7 @@ using LibSimpleDatabase;
 using Lvs95xx.Producer.Watchers;
 using MaterialDesignThemes.Wpf;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
@@ -67,6 +68,25 @@ public partial class App : Application
 
     public class Regions
     {
+        public static string GetUniqueList()
+        {
+            string filePath = "DeviceParameters.json";
+            string jsonContent = File.ReadAllText(filePath);
+            var jsonObject = JObject.Parse(jsonContent);
+
+            foreach (var category in jsonObject.Properties())
+            {
+                var v275List = category.Value["V275"].ToObject<List<string>>();
+                var l95List = category.Value["L95"].ToObject<List<string>>();
+
+                var combinedList = v275List.Union(l95List).ToList();
+
+                category.Value["V275"] = JArray.FromObject(combinedList);
+                category.Value["L95"] = JArray.FromObject(combinedList);
+            }
+            var ret = jsonObject.ToString();
+            return ret;
+        }
         public static string LoadParameters()
         {
             using CsvHelper.CsvReader csv = new(new StreamReader("parameters.csv"), CultureInfo.InvariantCulture);
