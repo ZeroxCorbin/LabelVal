@@ -18,12 +18,11 @@ public interface ISectorDetails
 
     bool IsNotEmpty { get; set; }
 
-    ObservableCollection<GradeValue> GradeValues { get; }
+    ObservableCollection<IParameterValue> Grades { get; } 
+    ObservableCollection<IParameterValue> PassFails { get; }
+
     ObservableCollection<ValueDouble> ValueDoubles { get; }
-    ObservableCollection<ValuePassFail> ValuePassFails { get; }
     ObservableCollection<ValueString> ValueStrings { get; }
-    ObservableCollection<Grade> Grades { get; }
-    ObservableCollection<PassFail> PassFails { get; }
 
     ObservableCollection<Alarm> Alarms { get; }
     ObservableCollection<Blemish> Blemishes { get; }

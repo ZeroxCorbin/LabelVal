@@ -2,6 +2,7 @@
 using LabelVal.Utilities;
 using LibImageUtilities.ImageTypes;
 using Newtonsoft.Json;
+using SQLite;
 using System.Drawing.Printing;
 using System.IO;
 using System.Windows.Media.Imaging;
@@ -12,6 +13,14 @@ namespace LabelVal.ImageRolls.ViewModels;
 public partial class ImageEntry : ObservableObject
 {
     public string Serialize => JsonConvert.SerializeObject(this);
+
+    [JsonProperty]
+    [Indexed(Name = "CompositeKey", Order = 1, Unique = true)] 
+    public string UID { get; set; }
+
+    [JsonProperty] 
+    [Indexed(Name = "CompositeKey", Order = 2, Unique = true)]
+    public string RollUID { get; set; }
 
     [JsonProperty]
     public string Name
@@ -32,9 +41,6 @@ public partial class ImageEntry : ObservableObject
 
     [property: SQLite.Ignore] public BitmapImage Image { get; private set; }
     [property: SQLite.Ignore] public BitmapImage ImageLow { get; private set; }
-
-    [JsonProperty][SQLite.PrimaryKey] public string UID { get; set; }
-    [JsonProperty] public string RollUID { get; set; }
 
     [JsonProperty]
     public byte[] ImageBytes

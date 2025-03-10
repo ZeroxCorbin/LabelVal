@@ -20,12 +20,12 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
     [ObservableProperty] private string sectorMissingText;
     [ObservableProperty] private bool isNotEmpty = false;
 
-    public ObservableCollection<GradeValue> GradeValues { get; }
+    public ObservableCollection<IParameterValue> Grades { get; } 
+    public ObservableCollection<IParameterValue> PassFails { get; }
+    
     public ObservableCollection<ValueDouble> ValueDoubles { get; }
-    public ObservableCollection<ValuePassFail> ValuePassFails { get; } = [];
     public ObservableCollection<ValueString> ValueStrings { get; }
-    public ObservableCollection<Grade> Grades { get; }
-    public ObservableCollection<PassFail> PassFails { get; }
+
 
     public ObservableCollection<Alarm> Alarms { get; } = [];
     public ObservableCollection<Blemish> Blemishes { get; } = [];

@@ -23,10 +23,9 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
 
     [ObservableProperty] private bool isNotEmpty = false;
 
-    public ObservableCollection<GradeValue> GradeValues { get; } = [];
-    public ObservableCollection<Grade> Grades { get; } = []; 
-    public ObservableCollection<PassFail> PassFails { get; } = [];
-    public ObservableCollection<ValuePassFail> ValuePassFails { get; } = [];
+    public ObservableCollection<IParameterValue> Grades { get; } = [];
+    public ObservableCollection<IParameterValue> PassFails { get; } = [];
+
     public ObservableCollection<ValueDouble> ValueDoubles { get; } = [];
     public ObservableCollection<ValueString> ValueStrings { get; } = [];
 
@@ -70,33 +69,35 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
                 continue;
             }
 
-            if (parameter.GetParameterDataType(AvailableDevices.L95) == typeof(BarcodeVerification.lib.ISO.GradeValue))
+            var type = parameter.GetParameterDataType(AvailableDevices.L95, theSymbology);
+
+            if (type == typeof(BarcodeVerification.lib.ISO.GradeValue))
             {
                 GradeValue gradeValue = GetGradeValue(parameter, GetParameter(parameter.GetParameterPath(AvailableDevices.L95), report.ReportData, true));
 
                 if (gradeValue != null)
-                    GradeValues.Add(gradeValue);
+                    Grades.Add(gradeValue);
             }
-            else if (parameter.GetParameterDataType(AvailableDevices.L95) == typeof(BarcodeVerification.lib.ISO.Grade))
+            else if (type == typeof(BarcodeVerification.lib.ISO.Grade))
             {
                 Grade grade = GetGrade(parameter, GetParameter(parameter.GetParameterPath(AvailableDevices.L95), report.ReportData, true));
 
                 if (grade != null)
                     Grades.Add(grade);
             }
-            else if (parameter.GetParameterDataType(AvailableDevices.L95) == typeof(BarcodeVerification.lib.ISO.ValueDouble))
+            else if (type == typeof(BarcodeVerification.lib.ISO.ValueDouble))
             {
                 ValueDouble valueDouble = GetValueDouble(parameter, GetParameter(parameter.GetParameterPath(AvailableDevices.L95), report.ReportData, true));
                 if (valueDouble != null)
                     ValueDoubles.Add(valueDouble);
             }
-            else if (parameter.GetParameterDataType(AvailableDevices.L95) == typeof(BarcodeVerification.lib.ISO.ValueString))
+            else if (type == typeof(BarcodeVerification.lib.ISO.ValueString))
             {
                 ValueString valueString = GetValueString(parameter, GetParameter(parameter.GetParameterPath(AvailableDevices.L95), report.ReportData, true));
                 if (valueString != null)
                     ValueStrings.Add(valueString);
             }
-            else if (parameter.GetParameterDataType(AvailableDevices.L95) == typeof(BarcodeVerification.lib.ISO.PassFail))
+            else if (type == typeof(BarcodeVerification.lib.ISO.PassFail))
             {
                 PassFail passFail = GetPassFail(parameter, GetParameter(parameter.GetParameterPath(AvailableDevices.L95), report.ReportData, true));
                 if (passFail != null)

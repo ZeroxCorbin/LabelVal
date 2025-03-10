@@ -470,7 +470,7 @@ public partial class ImageResults : ObservableRecipient,
         {
             // Set the order of the new item
             newImageResult.SourceImage.Order = targetOrder++;
-            SelectedImageRoll.AddImage(newImageResult.SourceImage);
+            SelectedImageRoll.AddImage(newImageResult.SourceImage.Clone());
         }
     }
     private void AdjustOrdersBeforeInsert(int targetOrder)

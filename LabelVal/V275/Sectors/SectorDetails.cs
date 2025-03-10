@@ -20,11 +20,10 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
     [ObservableProperty] private string sectorMissingText;
     [ObservableProperty] private bool isNotEmpty = false;
 
-    public ObservableCollection<GradeValue> GradeValues { get; } = [];
-    public ObservableCollection<Grade> Grades { get; } = [];
-    public ObservableCollection<PassFail> PassFails { get; } = [];
+    public ObservableCollection<IParameterValue> Grades { get; } = [];
+    public ObservableCollection<IParameterValue> PassFails { get; } = [];
+
     public ObservableCollection<ValueDouble> ValueDoubles { get; } = [];
-    public ObservableCollection<ValuePassFail> ValuePassFails { get; } = [];
     public ObservableCollection<ValueString> ValueStrings { get; } = [];
 
     public ObservableCollection<Alarm> Alarms { get; } = [];
@@ -86,46 +85,57 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
                 continue;
             }
 
-            if (parameter.GetParameterDataType(AvailableDevices.V275) == typeof(BarcodeVerification.lib.ISO.GradeValue))
+            bool found = false;
+
+            var type = parameter.GetParameterDataType(AvailableDevices.V275, theSymbology);
+
+            if (type == typeof( BarcodeVerification.lib.ISO.GradeValue))
             {
                 GradeValue gradeValue = GetGradeValue(parameter, GetParameter(parameter.GetParameterPath(AvailableDevices.V275), (JObject)Sector.Report.Original));
 
                 if (gradeValue != null)
-                    GradeValues.Add(gradeValue);
-                else
-                    GradeValues.Add(new GradeValue(parameter, new Grade(parameter, double.NaN), double.NaN, AvailableDevices.V275));
+                {
+                    Grades.Add(gradeValue);
+                    found = true;
+                }
             }
-            else if (parameter.GetParameterDataType(AvailableDevices.V275) == typeof(BarcodeVerification.lib.ISO.Grade))
+            else if (type == typeof(BarcodeVerification.lib.ISO.Grade))
             {
                 Grade grade = GetGrade(parameter, GetParameter(parameter.GetParameterPath(AvailableDevices.V275), (JObject)Sector.Report.Original));
 
                 if (grade != null)
+                {
                     Grades.Add(grade);
-                else
-                    Grades.Add(new Grade(parameter, double.NaN));
+                    found = true;
+                }
             }
-            else if (parameter.GetParameterDataType(AvailableDevices.V275) == typeof(BarcodeVerification.lib.ISO.ValueDouble))
+            else if (type == typeof(BarcodeVerification.lib.ISO.ValueDouble))
             {
                 ValueDouble valueDouble = GetValueDouble(parameter, GetParameter(parameter.GetParameterPath(AvailableDevices.V275), (JObject)Sector.Report.Original));
                 if (valueDouble != null)
+                {
                     ValueDoubles.Add(valueDouble);
-                else
-                    ValueDoubles.Add(new ValueDouble(parameter, double.NaN, AvailableDevices.V275));
+                    found = true;
+                }
             }
-            else if (parameter.GetParameterDataType(AvailableDevices.V275) == typeof(BarcodeVerification.lib.ISO.ValueString))
+            else if (type == typeof(BarcodeVerification.lib.ISO.ValueString))
             {
                 ValueString valueString = GetValueString(parameter, GetParameter(parameter.GetParameterPath(AvailableDevices.V275), (JObject)Sector.Report.Original));
-                if (valueString != null)
-                    ValueStrings.Add(valueString);
-                else
-                    ValueStrings.Add(new ValueString(parameter, "N/A"));
+                if (valueString != null) { ValueStrings.Add(valueString); found = true; }
             }
-            else if (parameter.GetParameterDataType(AvailableDevices.V275) == typeof(BarcodeVerification.lib.ISO.PassFail))
+            else if (type == typeof(BarcodeVerification.lib.ISO.PassFail))
             {
                 PassFail passFail = GetPassFail(parameter, GetParameter(parameter.GetParameterPath(AvailableDevices.V275), (JObject)Sector.Report.Original));
-                if (passFail != null)
-                    PassFails.Add(passFail);
+                if (passFail != null) { PassFails.Add(passFail); found = true; }
             }
+            else if (type == typeof(BarcodeVerification.lib.ISO.ValuePassFail))
+            {
+                ValuePassFail valuePassFail = GetValuePassFail(parameter, GetParameter(parameter.GetParameterPath(AvailableDevices.V275), (JObject)Sector.Report.Original));
+                if (valuePassFail != null) { PassFails.Add(valuePassFail); found = true; }
+            }
+
+            if (!found)
+                Logger.LogWarning($"Paramter: '{parameter}' @ Path: '{parameter.GetParameterPath(AvailableDevices.V275)}' parse issue.");
         }
     }
 
@@ -158,21 +168,26 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
         return new Grade(parameter, value, letter);
     }
 
-    private ValueDouble GetValueDouble(AvailableParameters parameter, string value)
-    {
-        if (string.IsNullOrWhiteSpace(value))
-            return null;
-
-        return string.IsNullOrWhiteSpace(value) ? null : new ValueDouble(parameter, value, AvailableDevices.V275);
-    }
+    private ValueDouble GetValueDouble(AvailableParameters parameter, string value) => string.IsNullOrWhiteSpace(value)
+            ? null
+            : string.IsNullOrWhiteSpace(value) ? null : new ValueDouble(parameter, value, AvailableDevices.V275);
 
     private ValueString GetValueString(AvailableParameters parameter, string value) => string.IsNullOrWhiteSpace(value) ? null : new ValueString(parameter, value);
 
-    private PassFail GetPassFail(AvailableParameters parameter, string value)
+    private PassFail GetPassFail(AvailableParameters parameter, string value) => string.IsNullOrWhiteSpace(value) ? null : new PassFail(parameter, value);
+
+    public ValuePassFail GetValuePassFail(AvailableParameters parameter, string value)
     {
         if (string.IsNullOrWhiteSpace(value))
             return null;
 
-        return new PassFail(parameter, value);
+        JObject valuePassFail = JObject.Parse(value);
+
+        if (valuePassFail is null)
+            return null;
+
+        string passFail = valuePassFail["result"].ToString();
+        string val = valuePassFail["value"].ToString();
+        return new ValuePassFail(parameter, val, passFail, AvailableDevices.V275);
     }
 }

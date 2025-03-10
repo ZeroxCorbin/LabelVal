@@ -1,13 +1,18 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using LabelVal.ImageRolls.ViewModels;
 using Newtonsoft.Json;
+using SQLite;
 using System.Collections.Generic;
 
 namespace LabelVal.Results.Databases;
 public partial class ImageResult : ObservableObject
 {
-    [SQLite.PrimaryKey] public string SourceImageUID {get; set;}
+    [Indexed(Name = "CompositeKey", Order = 1, Unique = true)]
+    public string SourceImageUID {get; set;}
+
+    [Indexed(Name = "CompositeKey", Order = 2, Unique = true)]
     public string ImageRollUID { get; set;}
+
     public string RunUID { get; set; }
 
     [ObservableProperty] private string sourceImage;
