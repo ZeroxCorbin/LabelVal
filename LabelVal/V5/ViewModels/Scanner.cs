@@ -708,7 +708,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             return;
         }
 
-        if (SelectedImageRoll.IsRooted)
+        if (SelectedImageRoll.IsFixedImageRoll)
         {
             Logger.LogWarning("Cannot add to a rooted image roll.");
             return;

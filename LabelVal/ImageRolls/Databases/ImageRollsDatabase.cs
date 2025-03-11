@@ -57,6 +57,6 @@ public class ImageRollsDatabase
         return new List<ImageEntry>();
     }
     public List<ImageEntry> SelectAllImages() => Connection.Query<ImageEntry>("select * from ImageEntry");
-    public bool DeleteImage(string imageUID) => Connection.Delete<ImageEntry>(imageUID) > 0;
+    public bool DeleteImage(string rollUID, string imageUID) => Connection.Execute("DELETE FROM ImageEntry WHERE UID = ? AND RollUID = ?", imageUID, rollUID) > 0;
 
 }

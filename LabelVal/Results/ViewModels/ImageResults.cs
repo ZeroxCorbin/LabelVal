@@ -164,8 +164,14 @@ public partial class ImageResults : ObservableRecipient,
         ImageResultEntry itm = ImageResultsList.FirstOrDefault(ir => ir.SourceImage == img);
         if (itm != null)
         {
+            if( !SelectedImageRoll.ImageRollsDatabase.DeleteImage(SelectedImageRoll.UID, img.UID))
+            {
+                Logger.LogError("Could not delete image from database.");
+                return;
+            }
             _ = ImageResultsList.Remove(itm);
-            _ = SelectedImageRoll.ImageRollsDatabase.DeleteImage(img.UID);
+            
+                
         }
 
         // Reorder the remaining items in the list
@@ -470,7 +476,7 @@ public partial class ImageResults : ObservableRecipient,
         {
             // Set the order of the new item
             newImageResult.SourceImage.Order = targetOrder++;
-            SelectedImageRoll.AddImage(newImageResult.SourceImage.Clone());
+            SelectedImageRoll.AddImage(newImageResult.SourceImage); 
         }
     }
     private void AdjustOrdersBeforeInsert(int targetOrder)

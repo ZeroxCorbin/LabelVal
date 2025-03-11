@@ -6,9 +6,6 @@ using Lvs95xx.Producer.Watchers;
 using MaterialDesignThemes.Wpf;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using NLog;
-using NLog.Config;
-using NLog.Targets;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
@@ -25,7 +22,6 @@ namespace LabelVal;
 /// </summary>
 public partial class App : Application
 {
-    private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
     public static SimpleDatabase Settings { get; private set; }
 
     public static GS1Encoder GS1Encoder = new();
@@ -220,21 +216,21 @@ public partial class App : Application
         if (!Directory.Exists(RunsRoot))
             _ = Directory.CreateDirectory(RunsRoot);
 
-        LoggingConfiguration config = new();
+        NLog.Config.LoggingConfiguration config = new();
         // Targets where to log to: File and Console
-        FileTarget logfile = new("logfile")
+        NLog.Targets.FileTarget logfile = new("logfile")
         {
             FileName = Path.Combine(UserDataDirectory, "log.txt"),
             ArchiveFileName = Path.Combine(UserDataDirectory, "log.${shortdate}.txt"),
             ArchiveAboveSize = 5242880,
-            ArchiveEvery = FileArchivePeriod.Day,
-            ArchiveNumbering = ArchiveNumberingMode.Rolling,
+            ArchiveEvery = NLog.Targets.FileArchivePeriod.Day,
+            ArchiveNumbering = NLog.Targets.ArchiveNumberingMode.Rolling,
             MaxArchiveFiles = 3
         };
         config.AddRuleForAllLevels(logfile);
-        LogManager.Configuration = config;
+        NLog.LogManager.Configuration = config;
 
-        LogManager.GetCurrentClassLogger().Info($"Starting: {Version}");
+        NLog.LogManager.GetCurrentClassLogger().Info($"Starting: {Version}");
 
         if (Keyboard.IsKeyDown(Key.LeftCtrl))
         {
@@ -257,7 +253,7 @@ public partial class App : Application
         Settings = new SimpleDatabase();
         if (!Settings.Open(Path.Combine(UserDataDirectory, SettingsDatabaseName)))
         {
-            LogManager.GetCurrentClassLogger().Error("The ApplicationSettings database is null. Shutdown!");
+            Logger.LogError("The ApplicationSettings database is null. Shutdown!");
             Shutdown();
         }
     }
@@ -268,10 +264,10 @@ public partial class App : Application
 
         //ConvertToIndexedPNG();
 
-        LogManager.GetCurrentClassLogger().Info($"Starting: Getting colorblind setting.");
+        Logger.LogInfo($"Starting: Getting colorblind setting.");
         ChangeColorBlindTheme(Settings.GetValue("App.IsColorBlind", false));
 
-        LogManager.GetCurrentClassLogger().Info($"Starting: Getting color theme.");
+        Logger.LogInfo($"Starting: Getting color theme.");
         string res = Settings.GetValue("App.Theme", "Dark.Steel", true);
         if (res.Contains("#"))
             ControlzEx.Theming.ThemeManager.Current.SyncTheme(ControlzEx.Theming.ThemeSyncMode.SyncAll);
@@ -282,7 +278,7 @@ public partial class App : Application
 
         ControlzEx.Theming.ThemeManager.Current.ThemeChanged += Current_ThemeChanged;
 
-        LogManager.GetCurrentClassLogger().Info($"Starting: Complete");
+        Logger.LogInfo($"Starting: Complete");
     }
     protected override void OnExit(ExitEventArgs e)
     {
@@ -337,30 +333,22 @@ public partial class App : Application
     }
     private void LogUnhandledException(Exception exception, string source, bool shutdown)
     {
-        string message = $"Unhandled exception ({source})";
         try
         {
-            _ = MessageBox.Show($"{exception.Message}\r\n{exception.InnerException.Message}");
-            Logger.Error(exception, message);
-
-            AssemblyName assemblyName = Assembly.GetExecutingAssembly().GetName();
-            message = string.Format("Unhandled exception in {0} v{1}", assemblyName.Name, assemblyName.Version);
+            Logger.LogError(exception, source);
         }
         catch (Exception ex)
         {
-            Logger.Error(ex, "Exception in LogUnhandledException");
-        }
-        finally
-        {
-            Logger.Error(exception, message);
+            Logger.LogError(ex, "Nested Exception in LogUnhandledException");
         }
 
         if (shutdown)
         {
-            _ = MessageBox.Show($"{message}\r\n{exception.Message}", "Unhandled Exception!", MessageBoxButton.OK);
+            _ = MessageBox.Show($"{exception.Message}", source, MessageBoxButton.OK);
             Current.Dispatcher.Invoke(Shutdown);
         }
     }
+
 
     public static void RecursiveDelete(DirectoryInfo baseDir)
     {

@@ -292,9 +292,9 @@
                                     <Setter Property="ToolTip" Value="Images are stored." />
 
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsRooted}" Value="True">
+                                        <DataTrigger Binding="{Binding IsFixedImageRoll}" Value="True">
                                             <Setter Property="Kind" Value="Folder" />
-                                            <Setter Property="ToolTip" Value="Images are rooted." />
+                                            <Setter Property="ToolTip" Value="Images are fixed." />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>

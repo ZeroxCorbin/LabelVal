@@ -161,9 +161,7 @@
                             Grid.Column="1"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center">
-                            <TextBlock
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center">
+                            <TextBlock HorizontalAlignment="Right" VerticalAlignment="Center">
                                 <TextBlock.Text>
                                     <MultiBinding StringFormat="{}{0:N1} {1}">
                                         <Binding Mode="OneTime" Path="Value" />
@@ -175,8 +173,8 @@
                             <TextBlock
                                 Width="25"
                                 Margin="3,0"
-                                Text="{Binding PassFail.Value, Converter={StaticResource BoolToPassFailString}}" />     
-                            
+                                Text="{Binding PassFail.Value, Converter={StaticResource BoolToPassFailString}}" />
+
                             <Border
                                 Width="10"
                                 Height="10"
@@ -280,10 +278,10 @@
 
                             </TextBlock>
 
-                            <TextBlock Text="{Binding Grade.Value, StringFormat=N1}" Margin="3,0"/>
+                            <TextBlock Margin="3,0" Text="{Binding Grade.Value, StringFormat=N1}" />
 
 
-                            <TextBlock Text="{Binding Path=Grade.Letter, Mode=OneWay}" Margin="3,0"/>
+                            <TextBlock Margin="3,0" Text="{Binding Path=Grade.Letter, Mode=OneWay}" />
 
                             <Border
                                 Width="10"
@@ -649,38 +647,38 @@
                             <DataTemplate>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" MaxWidth="172"/>
+                                        <ColumnDefinition Width="*" MaxWidth="172" />
                                         <ColumnDefinition Width="auto" />
                                     </Grid.ColumnDefinitions>
-                  
 
-                                        <TextBlock
-                                            Grid.Column="0"
-                                            Margin="3,0"
-                                            Text="{Binding Value, Converter={StaticResource stringToUpper}, Mode=OneTime}"
-                                            TextWrapping="Wrap" /> 
-                                        
-                                        <Border
-                                            Grid.Column="1"
-                                            Width="10"
-                                            Height="10"
-                                            BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
-                                            BorderThickness="1"
-                                            CornerRadius="3">
-                                            <Border.Style>
-                                                <Style TargetType="{x:Type Border}">
-                                                    <Setter Property="Background" Value="{DynamicResource CB_Green}" />
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding Category, Mode=OneTime}" Value="{x:Static bar_common:AvaailableAlarmCategories.Error}">
-                                                            <Setter Property="Background" Value="{DynamicResource SectorError_Brush}" />
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Category, Mode=OneTime}" Value="{x:Static bar_common:AvaailableAlarmCategories.Warning}">
-                                                            <Setter Property="Background" Value="{DynamicResource SectorWarning_Brush}" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Border.Style>
-                                        </Border>
+
+                                    <TextBlock
+                                        Grid.Column="0"
+                                        Margin="3,0"
+                                        Text="{Binding Value, Converter={StaticResource stringToUpper}, Mode=OneTime}"
+                                        TextWrapping="Wrap" />
+
+                                    <Border
+                                        Grid.Column="1"
+                                        Width="10"
+                                        Height="10"
+                                        BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
+                                        BorderThickness="1"
+                                        CornerRadius="3">
+                                        <Border.Style>
+                                            <Style TargetType="{x:Type Border}">
+                                                <Setter Property="Background" Value="{DynamicResource CB_Green}" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Category, Mode=OneTime}" Value="{x:Static bar_common:AvaailableAlarmCategories.Error}">
+                                                        <Setter Property="Background" Value="{DynamicResource SectorError_Brush}" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Category, Mode=OneTime}" Value="{x:Static bar_common:AvaailableAlarmCategories.Warning}">
+                                                        <Setter Property="Background" Value="{DynamicResource SectorWarning_Brush}" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                    </Border>
                                 </Grid>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>

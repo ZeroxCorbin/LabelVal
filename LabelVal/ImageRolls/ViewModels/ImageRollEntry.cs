@@ -16,9 +16,19 @@ namespace LabelVal.ImageRolls.ViewModels;
 [JsonObject(MemberSerialization.OptIn)]
 public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyChangedMessage<PrinterSettings>>
 {
+    /// <summary>
+    /// The unique identifier for the ImageRollEntry. This is also called the RollID.
+    /// </summary>
     [JsonProperty][SQLite.PrimaryKey] public string UID { get; set; } = Guid.NewGuid().ToString();
+
+    /// <summary>
+    /// If this is a fixed image roll then this is the path to the directory where the images are stored.
+    /// </summary>
     public string Path { get; set; }
-    [SQLite.Ignore] public bool IsRooted => !string.IsNullOrEmpty(Path);
+    /// <summary>
+    /// Indictaes if this is a fixed image roll. True if the <see cref="Path"/> is not null or empty."/>
+    /// </summary>
+    [SQLite.Ignore] public bool IsFixedImageRoll => !string.IsNullOrEmpty(Path);
 
     [ObservableProperty][property: JsonProperty] private string name;
     [ObservableProperty][property: JsonProperty] private int imageCount;
@@ -83,7 +93,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     }
     public void Receive(PropertyChangedMessage<PrinterSettings> message) => SelectedPrinter = message.NewValue;
 
-    public Task LoadImages() => IsRooted ? LoadImagesFromDirectory() : LoadImagesFromDatabase();
+    public Task LoadImages() => IsFixedImageRoll ? LoadImagesFromDirectory() : LoadImagesFromDatabase();
 
     public async Task LoadImagesFromDirectory()
     {
@@ -299,7 +309,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
 
     public void DeleteImage(ImageEntry imageEntry)
     {
-        if (ImageRollsDatabase.DeleteImage(imageEntry.UID))
+        if (ImageRollsDatabase.DeleteImage(UID, imageEntry.UID))
             _ = Images.Remove(imageEntry);
         ImageCount = Images.Count;
     }
@@ -307,7 +317,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     [RelayCommand]
     private void SaveRoll()
     {
-        if (IsRooted)
+        if (IsFixedImageRoll)
             return;
 
         _ = ImageRollsDatabase.InsertOrReplaceImageRoll(this);
@@ -315,7 +325,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     [RelayCommand]
     public void SaveImage(ImageEntry image)
     {
-        if (IsRooted)
+        if (IsFixedImageRoll)
             return;
 
         _ = ImageRollsDatabase.InsertOrReplaceImage(image);

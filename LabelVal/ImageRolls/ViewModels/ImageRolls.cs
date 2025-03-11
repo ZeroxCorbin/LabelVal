@@ -18,22 +18,62 @@ using System.Windows;
 namespace LabelVal.ImageRolls.ViewModels;
 public partial class ImageRolls : ObservableRecipient
 {
+
     [ObservableProperty] private FileFolderEntry fileRoot = App.Settings.GetValue("UserImageRollsDatabases_FileRoot", new FileFolderEntry(App.UserImageRollsRoot), true);
     partial void OnFileRootChanged(FileFolderEntry value) => App.Settings.SetValue("UserImageRollsDatabases_FileRoot", value);
 
-    [ObservableProperty][NotifyPropertyChangedRecipients] private Databases.ImageRollsDatabase defaultDatabase;
-    private ObservableCollection<Databases.ImageRollsDatabase> UserDatabases { get; } = [];
-    public ObservableCollection<ImageRollEntry> UserImageRolls { get; } = [];
 
+    /// <summary>
+    /// User databases are loaded from the <see cref="FileRoot"/>/>
+    /// </summary>
+    private ObservableCollection<Databases.ImageRollsDatabase> UserDatabases { get; } = [];
+    /// <summary>
+    /// The currently selected User Image Rolls database.
+    /// <see cref="SelectedUserDatabase"/>/>"
+    /// </summary>
+    [ObservableProperty][NotifyPropertyChangedRecipients] private Databases.ImageRollsDatabase selectedUserDatabase;
+
+    /// <summary>
+    /// A temporary image roll used for adding or editing.
+    /// <see cref="NewImageRoll"/>"/>
+    /// </summary>
     [ObservableProperty] private ImageRollEntry newImageRoll = null;
 
+    /// <summary>
+    /// Fixed image rolls are loaded from the Assets folder.
+    /// </summary>
     public ObservableCollection<ImageRollEntry> FixedImageRolls { get; } = [];
+    /// <summary>
+    /// The currently selected fixed image roll.
+    /// <see cref="SelectedFixedImageRoll"/>"/>
+    /// </summary>
+    [ObservableProperty] [NotifyPropertyChangedRecipients]  private ImageRollEntry selectedFixedImageRoll;
+    partial void OnSelectedFixedImageRollChanged(ImageRollEntry value) 
+    { 
+        App.Settings.SetValue(nameof(SelectedFixedImageRoll), value);
+        if (value != null)
+            SelectedUserImageRoll = null;
+    }
 
-    [ObservableProperty][NotifyPropertyChangedRecipients] private ImageRollEntry selectedImageRoll;// = App.Settings.GetValue<ImageRollEntry>(nameof(SelectedImageRoll), null);
-    partial void OnSelectedImageRollChanged(ImageRollEntry value) { App.Settings.SetValue(nameof(SelectedImageRoll), value); if (value != null) SelectedUserImageRoll = null; }
+    /// <summary>
+    /// User image rolls are loaded from the <see cref="SelectedUserDatabase"/>/>
+    /// </summary>
+    public ObservableCollection<ImageRollEntry> UserImageRolls { get; } = [];
+    /// <summary>
+    /// The currently selected user image roll.
+    /// <see cref="SelectedUserImageRoll"/>/>
+    /// </summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedRecipients] 
+    private ImageRollEntry selectedUserImageRoll;
+    partial void OnSelectedUserImageRollChanged(ImageRollEntry value) 
+    { 
+        if (value != null)
+            App.Settings.SetValue(nameof(SelectedUserImageRoll), value); 
 
-    [ObservableProperty][NotifyPropertyChangedRecipients] private ImageRollEntry selectedUserImageRoll;// = App.Settings.GetValue<ImageRollEntry>(nameof(SelectedUserImageRoll), null);
-    partial void OnSelectedUserImageRollChanged(ImageRollEntry value) { if (value != null) App.Settings.SetValue(nameof(SelectedUserImageRoll), value); if (value != null) SelectedImageRoll = null; }
+        if (value != null)
+            SelectedFixedImageRoll = null;
+    }
 
 
     [ObservableProperty] private bool rightAlignOverflow = App.Settings.GetValue(nameof(RightAlignOverflow), false);
@@ -45,7 +85,7 @@ public partial class ImageRolls : ObservableRecipient
         this,
         (recipient, message) =>
         {
-            message.Reply(SelectedImageRoll ?? SelectedUserImageRoll);
+            message.Reply(SelectedFixedImageRoll ?? SelectedUserImageRoll);
         });
 
         if (!Directory.Exists(FileRoot.Path))
@@ -188,26 +228,26 @@ public partial class ImageRolls : ObservableRecipient
             }
         }
 
-        SetDefaultDatabase();
+        SetSelectedUserDatabase();
     }
 
-    private void SetDefaultDatabase()
+    private void SetSelectedUserDatabase()
     {
         var def = UserDatabases.FirstOrDefault((e) => e.File.Path == App.UserImageRollDefaultFile);
 
         if (def == null)
         {
-            if (DefaultDatabase != null)
-                DefaultDatabase.Close();
-            DefaultDatabase = new Databases.ImageRollsDatabase(new FileFolderEntry(App.UserImageRollDefaultFile));
+            if (SelectedUserDatabase != null)
+                SelectedUserDatabase.Close();
+            SelectedUserDatabase = new Databases.ImageRollsDatabase(new FileFolderEntry(App.UserImageRollDefaultFile));
         }
         else
         {
-            if (DefaultDatabase != def)
+            if (SelectedUserDatabase != def)
             {
-                if (DefaultDatabase != null)
-                    DefaultDatabase.Close();
-                DefaultDatabase = def;
+                if (SelectedUserDatabase != null)
+                    SelectedUserDatabase.Close();
+                SelectedUserDatabase = def;
             }
         }
     }
@@ -290,7 +330,7 @@ public partial class ImageRolls : ObservableRecipient
     {
         Logger.LogInfo("Adding image roll.");
 
-        NewImageRoll = new ImageRollEntry() { ImageRollsDatabase = DefaultDatabase };
+        NewImageRoll = new ImageRollEntry() { ImageRollsDatabase = SelectedUserDatabase };
     }
 
     [RelayCommand]
@@ -313,7 +353,7 @@ public partial class ImageRolls : ObservableRecipient
         if (NewImageRoll.SelectedStandard is AvailableStandards.GS1 && NewImageRoll.SelectedGS1Table is null)
             return;
 
-        if (DefaultDatabase.InsertOrReplaceImageRoll(NewImageRoll) > 0)
+        if (SelectedUserDatabase.InsertOrReplaceImageRoll(NewImageRoll) > 0)
         {
             Logger.LogInfo($"Saved image roll: {NewImageRoll.Name}");
 
@@ -341,7 +381,7 @@ public partial class ImageRolls : ObservableRecipient
 
         foreach (var img in SelectedUserImageRoll.Images)
         {
-            if (SelectedUserImageRoll.ImageRollsDatabase.DeleteImage(img.UID))
+            if (SelectedUserImageRoll.ImageRollsDatabase.DeleteImage(SelectedUserImageRoll.UID, img.UID))
                 Logger.LogInfo($"Deleted image: {img.UID}");
             else
                 Logger.LogError($"Failed to delete image: {img.UID}");
@@ -367,5 +407,6 @@ public partial class ImageRolls : ObservableRecipient
     {
         Clipboard.SetText(Guid.NewGuid().ToString());
     }
+
 
 }
