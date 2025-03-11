@@ -11,6 +11,7 @@ using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -68,19 +69,19 @@ public partial class App : Application
         {
             string filePath = "DeviceParameters.json";
             string jsonContent = File.ReadAllText(filePath);
-            var jsonObject = JObject.Parse(jsonContent);
+            JObject jsonObject = JObject.Parse(jsonContent);
 
-            foreach (var category in jsonObject.Properties())
+            foreach (JProperty category in jsonObject.Properties())
             {
-                var v275List = category.Value["V275"].ToObject<List<string>>();
-                var l95List = category.Value["L95"].ToObject<List<string>>();
+                List<string> v275List = category.Value["V275"].ToObject<List<string>>();
+                List<string> l95List = category.Value["L95"].ToObject<List<string>>();
 
-                var combinedList = v275List.Union(l95List).ToList();
+                List<string> combinedList = v275List.Union(l95List).ToList();
 
                 category.Value["V275"] = JArray.FromObject(combinedList);
                 category.Value["L95"] = JArray.FromObject(combinedList);
             }
-            var ret = jsonObject.ToString();
+            string ret = jsonObject.ToString();
             return ret;
         }
         public static string LoadParameters()
@@ -103,11 +104,10 @@ public partial class App : Application
                     if (!Enum.TryParse<AvailableRegionTypes>(item.Key, out AvailableRegionTypes type))
                         continue;
 
-                    if(string.IsNullOrWhiteSpace(item.Value))
+                    if (string.IsNullOrWhiteSpace(item.Value))
                         continue;
 
                     string val = ConvertToCamelCase(item.Value);
-
 
                     if (!Enum.TryParse<AvailableParameters>(val, out AvailableParameters param))
                         continue;
@@ -123,16 +123,15 @@ public partial class App : Application
                 }
             }
 
-            
-            var commonAll = new List<AvailableParameters>();
-            var common1d = new List<AvailableParameters>();
-            var common2d = new List<AvailableParameters>();
-            foreach (var key  in results.Keys)
+            List<AvailableParameters> commonAll = new();
+            List<AvailableParameters> common1d = new();
+            List<AvailableParameters> common2d = new();
+            foreach (AvailableRegionTypes key in results.Keys)
             {
                 results[key] = results[key].Distinct().ToList();
 
                 //Check All common
-                foreach (var param in results[key])
+                foreach (AvailableParameters param in results[key])
                 {
                     if (results.Values.All(v => v.Contains(param)))
                     {
@@ -142,22 +141,22 @@ public partial class App : Application
                 }
 
                 //Check 1D common
-                foreach (var param in results[key])
+                foreach (AvailableParameters param in results[key])
+                {
+                    if (results[AvailableRegionTypes._1D].Contains(param)
+                        && results[AvailableRegionTypes._1D1].Contains(param)
+                        && results[AvailableRegionTypes._1D2].Contains(param)
+                        && results[AvailableRegionTypes._1D3].Contains(param)
+                        && results[AvailableRegionTypes._1D4].Contains(param)
+                        && results[AvailableRegionTypes._1D5].Contains(param))
                     {
-                        if (results[AvailableRegionTypes._1D].Contains(param)
-                            && results[AvailableRegionTypes._1D1].Contains(param)
-                            && results[AvailableRegionTypes._1D2].Contains(param)
-                            && results[AvailableRegionTypes._1D3].Contains(param)
-                            && results[AvailableRegionTypes._1D4].Contains(param)
-                            && results[AvailableRegionTypes._1D5].Contains(param))
-                        {
-                            if (!common1d.Contains(param))
-                                common1d.Add(param);
-                        }
+                        if (!common1d.Contains(param))
+                            common1d.Add(param);
                     }
+                }
 
                 //Check 2D common
-                foreach (var param in results[key])
+                foreach (AvailableParameters param in results[key])
                 {
                     if (results[AvailableRegionTypes.DataMatrix].Contains(param)
                         && results[AvailableRegionTypes.QR].Contains(param)
@@ -168,12 +167,9 @@ public partial class App : Application
                             common2d.Add(param);
                     }
                 }
-
-
             }
 
-
-            foreach (var key in results.Keys)
+            foreach (AvailableRegionTypes key in results.Keys)
             {
                 results[key] = results[key].Distinct().ToList();
             }
@@ -188,13 +184,72 @@ public partial class App : Application
             string[] parts = value.Split(' ');
             for (int i = 0; i < parts.Length; i++)
             {
-                parts[i] = parts[i].Substring(0, 1).ToUpper() + parts[i].Substring(1);
+                parts[i] = parts[i][..1].ToUpper() + parts[i][1..];
             }
-            return string.Join("", parts);  
-
+            return string.Join("", parts);
 
         }
+        //Symbology	Here is a list of supported symbologies: Code 39, ITF (I 2 of 5), Code 128, Codabar, GS1-128, UPC-A, UPC-E, EAN/JAN-8, EAN/JAN-13, DataBar-14 (linear), DataBar-stacked, DataBar-limited, DataBar-CCA, CCB, CCC, Pharmacode, PDF-417, Data Matrix ECC-200 (104x104 max), Data Matrix ECC-200 rectangular, PDF417, Micro-PDF417, QRCode, Aztec Code.
+        //Xdim The nominal size of the narrow element(1x) in the symbol.
+
+        public static void GetComments()
+        {
+            //open the file Descriptions.txt and for (each line) split the line into a key and a value seperated by a tab
+            //There can be multiple values for a key, so the value should be a list of strings
+            Dictionary<string, List<string>> comments = [];
+            using StreamReader sr = new("Descriptions.txt");
+            string line;
+
+            while ((line = sr.ReadLine()) != null)
+            {
+                string[] parts = line.Split('\t');
+                if (parts.Length != 2)
+                    continue;
+
+                if (!comments.ContainsKey(parts[0]))
+                {
+
+                    comments[parts[0]] = [];
+                    comments[parts[0]].Add(parts[1]);
+                    continue;
+                }
+
+                bool found = false;
+
+                var str2 = parts[1].Trim();
+                foreach (string comment in comments[parts[0]].ToArray())
+                {
+                   var str1 = comment.Trim();
+                    
+                    // Compare the strings
+                    bool areEqual = str1.Equals(str2, StringComparison.Ordinal);
+                    if (areEqual)
+                    {
+                        found = true;
+                        break;
+                    }
+
+                }
+
+                if (!found)
+                    comments[parts[0]].Add(parts[1]);
+            }
+
+            StringBuilder sb = new();
+            foreach (string key in comments.Keys)
+            {
+                foreach (string value in comments[key])
+                {
+                    sb.AppendLine($"{key}\t{value}");
+                }
+            }
+            File.WriteAllText("Comments.txt", sb.ToString());
+        }
     }
+
+
+
+
 
     public App()
     {
@@ -348,7 +403,6 @@ public partial class App : Application
             Current.Dispatcher.Invoke(Shutdown);
         }
     }
-
 
     public static void RecursiveDelete(DirectoryInfo baseDir)
     {

@@ -217,6 +217,7 @@
 		<None Remove="Assets\Images\v5-white-outline.ico" />
 		<None Remove="Assets\Images\v5-white-outline.xcf" />
 		<None Remove="Assets\Images\v5_1.png" />
+		<None Remove="Descriptions.txt" />
 		<None Remove="gs1encoders.dll" />
 		<None Remove="parameters.csv" />
 	</ItemGroup>
@@ -708,6 +709,9 @@
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Assets\Images\v5-white-outline.ico">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Descriptions.txt">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 		<Content Include="gs1encoders.dll">
