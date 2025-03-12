@@ -1,21 +1,23 @@
-﻿<UserControl x:Class="LabelVal.ImageViewer3D.Views.ImageViewer3D"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:hx="http://helix-toolkit.org/wpf/SharpDX"
-             xmlns:local="clr-namespace:LabelVal.ImageViewer3D.Views"
-             xmlns:converters="clr-namespace:LabelVal.Converters"
-             xmlns:vm="clr-namespace:LabelVal.ImageViewer3D.ViewModels"
-                xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-             d:DataContext="{d:DesignInstance Type=vm:ImageViewer3D_SingleMesh}"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+﻿<UserControl
+    x:Class="LabelVal.ImageViewer3D.Views.ImageViewer3D"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:LabelVal.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:hx="http://helix-toolkit.org/wpf/SharpDX"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:local="clr-namespace:LabelVal.ImageViewer3D.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:LabelVal.ImageViewer3D.ViewModels"
+    d:DataContext="{d:DesignInstance Type=vm:ImageViewer3D_SingleMesh}"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
 
     <DockPanel>
 
-        <local:CustomViewport3DX x:Name="ViewPort"
-                        
+        <local:CustomViewport3DX
+            x:Name="ViewPort"
             Background="Black"
             BackgroundColor="Gray"
             Camera="{Binding Camera}"
@@ -24,9 +26,9 @@
             EnableCursorPosition="True"
             MSAA="Disable"
             RotateAroundMouseDownPoint="True"
+            ShowCoordinateSystem="True"
             SubTitle="{Binding SubTitle}"
             TextBrush="Black"
-            ShowCoordinateSystem="True"
             UseDefaultGestures="False">
             <local:CustomViewport3DX.InputBindings>
                 <KeyBinding Key="B" Command="hx:ViewportCommands.BackView" />
@@ -36,14 +38,14 @@
                 <KeyBinding Key="L" Command="hx:ViewportCommands.LeftView" />
                 <KeyBinding Key="R" Command="hx:ViewportCommands.RightView" />
                 <KeyBinding Command="hx:ViewportCommands.ZoomExtents" Gesture="Control+E" />
-                <MouseBinding Gesture="Shift+LeftClick" Command="hx:ViewportCommands.SetTarget"/>
+                <MouseBinding Command="hx:ViewportCommands.SetTarget" Gesture="Shift+LeftClick" />
                 <MouseBinding Command="hx:ViewportCommands.Pan" Gesture="LeftClick" />
                 <MouseBinding Command="hx:ViewportCommands.Zoom" Gesture="MiddleClick" />
                 <MouseBinding Command="hx:ViewportCommands.Rotate" Gesture="RightClick" />
             </local:CustomViewport3DX.InputBindings>
-            <hx:AmbientLight3D Color="{Binding AmbientLightColor}"/>
+            <hx:AmbientLight3D Color="{Binding AmbientLightColor}" />
 
-            <!-- Directional lights for all quadrants -->
+            <!--  Directional lights for all quadrants  -->
             <hx:DirectionalLight3D Direction="{Binding Camera.LookDirection}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />
             <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[1]}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />
             <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[2]}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />
@@ -52,63 +54,67 @@
             <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[5]}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />
             <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[6]}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />
             <hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[7]}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />
-            
-            <!--Directional lights from the center of each face of the cube-->
+
+            <!--  Directional lights from the center of each face of the cube  -->
             <!--<hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[8]}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />-->
-            <!--Right face-->
+            <!--  Right face  -->
             <!--<hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[9]}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />-->
-            <!--Left face-->
+            <!--  Left face  -->
             <!--<hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[10]}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />-->
-            <!--Top face-->
+            <!--  Top face  -->
             <!--<hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[11]}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />-->
-            <!--Bottom face-->
+            <!--  Bottom face  -->
             <!--<hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[12]}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />-->
-            <!--Front face-->
+            <!--  Front face  -->
             <!--<hx:DirectionalLight3D Direction="{Binding DirectionalLightDirections[13]}" Color="{Binding DirectionalLightColor, Mode=OneWay}" />-->
-            <!--Back face-->
+            <!--  Back face  -->
 
             <hx:CrossSectionMeshGeometryModel3D
-                IsHitTestVisible="False"
                 CuttingOperation="{Binding CuttingOperation}"
                 EnablePlane1="{Binding EnablePlaneXy}"
                 EnablePlane2="{Binding EnablePlaneYz}"
                 EnablePlane3="{Binding EnablePlaneZx}"
                 Geometry="{Binding MeshGeometry}"
+                IsHitTestVisible="False"
                 Material="{Binding MeshMaterial}"
                 Plane1="{Binding PlaneXy}"
                 Plane2="{Binding PlaneYz}"
                 Plane3="{Binding PlaneZx}"
-                Transform="{Binding MeshTransform}"/>
+                Transform="{Binding MeshTransform}" />
 
             <local:CrossSectionPlaneManipulator3D
-                CutPlane="{Binding PlaneXy, Mode=TwoWay}"            
-                IsRendering="{Binding EnablePlaneXy}"
                 ConstrainAxis="{Binding ConstraintPlaneXy_AxisZ, Mode=OneWay}"
                 ConstrainDimensions="{Binding ConstrainDimension, Mode=OneWay}"
-                EdgeMaterial="{Binding PlaneMaterialXy}"
                 CornerMaterial="{Binding PlaneMaterialXy}"
-                IsEnabled="{Binding EnablePlaneXy}"/>
+                CutPlane="{Binding PlaneXy, Mode=TwoWay}"
+                EdgeMaterial="{Binding PlaneMaterialXy}"
+                IsEnabled="{Binding EnablePlaneXy}"
+                IsRendering="{Binding EnablePlaneXy}" />
 
             <local:CrossSectionPlaneManipulator3D
-                CutPlane="{Binding PlaneYz, Mode=TwoWay}"
-                IsRendering="{Binding EnablePlaneYz}"
                 ConstrainAxis="{Binding ConstraintPlaneYz_AxisX, Mode=OneWay}"
-                ConstrainDimensions="{Binding ConstrainDimension, Mode=OneWay}" 
-                EdgeMaterial="{Binding PlaneMaterialYz}"
+                ConstrainDimensions="{Binding ConstrainDimension, Mode=OneWay}"
                 CornerMaterial="{Binding PlaneMaterialYz}"
-                IsEnabled="{Binding EnablePlaneYz}"/>
+                CutPlane="{Binding PlaneYz, Mode=TwoWay}"
+                EdgeMaterial="{Binding PlaneMaterialYz}"
+                IsEnabled="{Binding EnablePlaneYz}"
+                IsRendering="{Binding EnablePlaneYz}" />
 
             <local:CrossSectionPlaneManipulator3D
-                CutPlane="{Binding PlaneZx, Mode=TwoWay}"
-                IsRendering="{Binding EnablePlaneZx}"
                 ConstrainAxis="{Binding ConstraintPlaneZx_AxisY, Mode=OneWay}"
                 ConstrainDimensions="{Binding ConstrainDimension, Mode=OneWay}"
-                EdgeMaterial="{Binding PlaneMaterialZx}"
                 CornerMaterial="{Binding PlaneMaterialZx}"
-                IsEnabled="{Binding EnablePlaneZx}"/>
-            
+                CutPlane="{Binding PlaneZx, Mode=TwoWay}"
+                EdgeMaterial="{Binding PlaneMaterialZx}"
+                IsEnabled="{Binding EnablePlaneZx}"
+                IsRendering="{Binding EnablePlaneZx}" />
+
             <!--<hx:MeshGeometryModel3D RenderWireframe="{Binding ShowWireframe}" WireframeColor="Black" Geometry="{Binding MeshGeometry}" Material="{Binding MeshMaterial}" Transform="{Binding MeshTransform}"/>-->
-            <hx:LineGeometryModel3D Visibility="{Binding ShowNormals, Converter={StaticResource BooleanToVisibilityConverter}}" Geometry="{Binding NormalLines}" Color="Yellow" Thickness="1.0"/>
+            <hx:LineGeometryModel3D
+                Geometry="{Binding NormalLines}"
+                Thickness="1.0"
+                Visibility="{Binding ShowNormals, Converter={StaticResource BooleanToVisibilityConverter}}"
+                Color="Yellow" />
             <!--<hx:PostEffectMeshBorderHighlight />-->
         </local:CustomViewport3DX>
     </DockPanel>

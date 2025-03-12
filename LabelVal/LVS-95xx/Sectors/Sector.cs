@@ -11,23 +11,23 @@ public partial class Sector : ObservableObject, ISector
 {
     public FullReport L95xxFullReport { get; }
 
-    public ITemplate Template { get; }
-    public IReport Report { get; }
+    public ISectorTemplate Template { get; }
+    public ISectorReport Report { get; }
 
-    public ISectorDetails SectorDetails { get; }
+    public ISectorParameters SectorDetails { get; }
     public bool IsWarning { get; }
     public bool IsError { get; }
 
-    public AvailableStandards? DesiredStandard { get; }
-    public AvailableTables? DesiredGS1Table { get; }
+    public AvailableStandards DesiredStandard { get; }
+    public AvailableTables DesiredGS1Table { get; }
     public bool IsWrongStandard
     {
         get
         {
             switch (DesiredStandard)
             {
-                case null:
-                    return true;
+                case AvailableStandards.Unknown:
+                    return false;
 
                 case AvailableStandards.DPM:
                     {
@@ -41,7 +41,7 @@ public partial class Sector : ObservableObject, ISector
                     {
                         return Report.Standard switch
                         {
-                            AvailableStandards.ISO or AvailableStandards.ISO15415 or AvailableStandards.ISO15416 or null => false,
+                            AvailableStandards.ISO or AvailableStandards.ISO15415 or AvailableStandards.ISO15416 => false,
                             _ => true,
                         };
                     }
@@ -78,18 +78,17 @@ public partial class Sector : ObservableObject, ISector
     public bool IsFocused { get; set; }
     public bool IsMouseOver { get; set; }
 
-    public Sector(FullReport report, AvailableStandards? standard, AvailableTables? table)
+    public Sector(FullReport report, AvailableStandards standard, AvailableTables table)
     {
         L95xxFullReport = report;
-
-        Report = new Report(report);
-        Template = new Template(report, (string)report.GetSetting("Version"));
-
         //Standard and GS1Table are set in the Report constructor.
         DesiredStandard = standard;
         DesiredGS1Table = table;
 
-        SectorDetails = new SectorDetails(this);
+        Template = new SectorTemplate(report, (string)report.GetSetting("Version"));
+        Report = new SectorReport(report);
+
+        SectorDetails = new SectorParameters(this);
 
         foreach (Alarm alm in SectorDetails.Alarms)
         {

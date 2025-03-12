@@ -7,7 +7,7 @@ using V5_REST_Lib.Models;
 
 namespace LabelVal.V5.Sectors;
 
-public class Template : ITemplate
+public class SectorTemplate : ISectorTemplate
 {
     public Config.Toollist ToolList { get; }
 
@@ -30,7 +30,7 @@ public class Template : ITemplate
     public TemplateMatchMode MatchSettings { get; set; }
     public BlemishMaskLayers BlemishMask { get; set; }
 
-    public Template(ResultsAlt.Decodedata report, Config.Toollist toolList, string name, string version)
+    public SectorTemplate(ResultsAlt.Decodedata report, Config.Toollist toolList, string name, string version)
     {
         Version = version;
 
@@ -67,7 +67,7 @@ public class Template : ITemplate
         Version = version;
     }
 
-    public Template() { }
+    public SectorTemplate() { }
 
     private string GetV5Symbology(ResultsAlt.Decodedata report)
     {

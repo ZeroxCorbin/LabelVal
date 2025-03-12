@@ -22,6 +22,7 @@
         <V275Converters:V275_OCMatchModeToString x:Key="MatchModeToString" />
         <V275Converters:V275_GS1FormattedOutput x:Key="gs1FormattedOutput" />
 
+        <local_converters:EnumValueToDescription_ShortenString x:Key="EnumValueToDescription_ShortenString" />
         <local_converters:BoolToPassFailString x:Key="BoolToPassFailString" />
         <local_converters:ParameterEnumToParameterDescription x:Key="ParameterEnumToParameterDescription" />
         <!--#endregion-->
@@ -48,7 +49,7 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock
                             Grid.Column="0"
-                            Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription}, Mode=OneTime}"
+                            Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription_ShortenString}, ConverterParameter=13, Mode=OneTime}"
                             TextWrapping="Wrap" />
                         <TextBlock
                             Grid.Column="1"
@@ -68,8 +69,7 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock
                             Grid.Column="0"
-                            Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription}, Mode=OneTime}"
-                            TextWrapping="Wrap"
+                            Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription_ShortenString}, ConverterParameter=13, Mode=OneTime}"
                             ToolTip="{Binding Path=Parameter, Converter={StaticResource ParameterEnumToParameterDescription}, Mode=OneTime}" />
                         <DockPanel
                             Grid.Column="1"
@@ -94,7 +94,7 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock
                             Grid.Column="0"
-                            Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription}, Mode=OneTime}"
+                            Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription_ShortenString}, ConverterParameter=13, Mode=OneTime}"
                             TextWrapping="Wrap"
                             ToolTip="{Binding Path=Parameter, Converter={StaticResource ParameterEnumToParameterDescription}, Mode=OneTime}" />
                         <TextBlock
@@ -117,7 +117,7 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock
                             Grid.Column="0"
-                            Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription}, Mode=OneTime}"
+                            Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription_ShortenString}, ConverterParameter=13, Mode=OneTime}"
                             TextWrapping="Wrap"
                             ToolTip="{Binding Path=Parameter, Converter={StaticResource ParameterEnumToParameterDescription}, Mode=OneTime}" />
                         <DockPanel
@@ -160,7 +160,7 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock
                             Grid.Column="0"
-                            Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription}, Mode=OneTime}"
+                            Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription_ShortenString}, ConverterParameter=13, Mode=OneTime}"
                             TextWrapping="Wrap"
                             ToolTip="{Binding Path=Parameter, Converter={StaticResource ParameterEnumToParameterDescription}, Mode=OneTime}" />
                         <DockPanel
@@ -212,7 +212,7 @@
 
                         <TextBlock
                             Grid.Column="0"
-                            Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription}, Mode=OneTime}"
+                            Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription_ShortenString}, ConverterParameter=13, Mode=OneTime}"
                             TextWrapping="Wrap"
                             ToolTip="{Binding Path=Parameter, Converter={StaticResource ParameterEnumToParameterDescription}, Mode=OneTime}" />
 
@@ -225,7 +225,7 @@
 
 
 
-                            <TextBlock Margin="3,0" Text="{Binding Path=Letter, Mode=OneWay}" />
+                            <TextBlock Margin="3,0" Text="{Binding Path=Letter, Mode=OneTime}" />
                             <Border
                                 Width="10"
                                 Height="10"
@@ -267,7 +267,7 @@
 
                         <TextBlock
                             Grid.Column="0"
-                            Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription}, Mode=OneTime}"
+                            Text="{Binding Path=Parameter, Converter={StaticResource EnumValueToDescription_ShortenString}, ConverterParameter=13, Mode=OneTime}"
                             TextWrapping="Wrap"
                             ToolTip="{Binding Path=Parameter, Converter={StaticResource ParameterEnumToParameterDescription}, Mode=OneTime}" />
 
@@ -289,7 +289,7 @@
                             <TextBlock Margin="3,0" Text="{Binding Grade.Value, StringFormat=N1}" />
 
 
-                            <TextBlock Margin="3,0" Text="{Binding Path=Grade.Letter, Mode=OneWay}" />
+                            <TextBlock Margin="3,0" Text="{Binding Path=Grade.Letter, Mode=OneTime}" />
 
                             <Border
                                 Width="10"
@@ -334,6 +334,7 @@
         </DockPanel.Background>
 
         <md:Card
+            MaxWidth="200"
             Margin="3"
             Padding="0"
             Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
@@ -415,7 +416,7 @@
                         <TextBlock Margin="3,0" DockPanel.Dock="Top">
                             <TextBlock.Style>
                                 <Style TargetType="{x:Type TextBlock}">
-                                    <Setter Property="Text" Value="{Binding Report.SymbolType, Converter={StaticResource EnumValueToDescription}, Mode=OneTime}" />
+                                    <Setter Property="Text" Value="{Binding Report.SymbolType, Converter={StaticResource EnumValueToDescription_ShortenString}, ConverterParameter=13, Mode=OneTime}" />
                                     <Style.Triggers>
 
                                         <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCR}">
@@ -450,6 +451,7 @@
                                 <!--  Decode Text & OCR  -->
                                 <TextBlock
                                     Margin="3,0"
+                                    MaxWidth="172"
                                     DockPanel.Dock="Top"
                                     TextWrapping="Wrap">
                                     <TextBlock.Style>
@@ -612,7 +614,7 @@
                             md:TextFieldAssist.SuffixText="{Binding Report.Units}"
                             BorderThickness="0"
                             IsHitTestVisible="False"
-                            Text="{Binding Report.Aperture, StringFormat=N1}" />
+                            Text="{Binding Report.Aperture, StringFormat=N1, Mode=OneTime}" />
                         <TextBox
                             Margin="3,0"
                             HorizontalAlignment="Left"
@@ -620,7 +622,7 @@
                             md:TextFieldAssist.SuffixText="{Binding Report.Units}"
                             BorderThickness="0"
                             IsHitTestVisible="False"
-                            Text="{Binding Report.XDimension, StringFormat=N1}" />
+                            Text="{Binding Report.XDimension, StringFormat=N1, Mode=OneTime}" />
                     </UniformGrid>
 
                 </DockPanel>

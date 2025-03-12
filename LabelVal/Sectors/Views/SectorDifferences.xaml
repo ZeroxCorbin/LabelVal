@@ -21,7 +21,7 @@
         <Converters:FloatStringTrimConverter x:Key="floatTrim" />
         <BooleanToVisibilityConverter x:Key="booltovis" />
         <Converters:StringCamelUnspaced2StringPascalSpaced x:Key="stringToUpper" />
-        
+
         <local_converters:BoolToPassFailString x:Key="BoolToPassFailString" />
         <local_converters:ParameterEnumToParameterDescription x:Key="ParameterEnumToParameterDescription" />
 

@@ -276,7 +276,7 @@ public partial class RunResult
                 if (sec.symbology is "qr" or "dataMatrix")
                 {
 
-                    Sectors.Interfaces.IReport res = sect.Report;
+                    Sectors.Interfaces.ISectorReport res = sect.Report;
 
                     if (res.ExtendedData != null)
                     {

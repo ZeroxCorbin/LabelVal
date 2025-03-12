@@ -1,5 +1,6 @@
 ﻿using BarcodeVerification.lib.Common;
 using BarcodeVerification.lib.ISO;
+using BarcodeVerification.lib.ISO.ParameterTypes;
 
 namespace LabelVal.Sectors.Classes;
 

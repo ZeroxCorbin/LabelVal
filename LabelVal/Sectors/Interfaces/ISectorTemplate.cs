@@ -2,7 +2,7 @@
 using System.Drawing;
 
 namespace LabelVal.Sectors.Interfaces;
-public interface ITemplate
+public interface ISectorTemplate
 {
     string Name { get; set; }
     string Username { get; set; }

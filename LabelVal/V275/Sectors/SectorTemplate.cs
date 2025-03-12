@@ -3,7 +3,7 @@ using LabelVal.Sectors.Interfaces;
 
 namespace LabelVal.V275.Sectors;
 
-public class Template : ITemplate
+public class SectorTemplate : ISectorTemplate
 {
     public V275_REST_Lib.Models.Job.Sector V275Sector { get; }
 
@@ -26,7 +26,7 @@ public class Template : ITemplate
     public TemplateMatchMode MatchSettings { get; set; }
     public BlemishMaskLayers BlemishMask { get; set; }
 
-    public Template(V275_REST_Lib.Models.Job.Sector sectorTemplate, string version)
+    public SectorTemplate(V275_REST_Lib.Models.Job.Sector sectorTemplate, string version)
     {
         Version = version;
 

@@ -1,4 +1,4 @@
-﻿using BarcodeVerification.lib.ISO;
+﻿using BarcodeVerification.lib.ISO.ParameterTypes;
 using System.Windows;
 using System.Windows.Controls;
 

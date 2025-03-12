@@ -350,7 +350,7 @@ public partial class ImageRolls : ObservableRecipient
         if (string.IsNullOrEmpty(NewImageRoll.Name))
             return;
 
-        if (NewImageRoll.SelectedStandard is AvailableStandards.GS1 && NewImageRoll.SelectedGS1Table is null)
+        if (NewImageRoll.SelectedStandard is AvailableStandards.GS1 && NewImageRoll.SelectedGS1Table is AvailableTables.Unknown)
             return;
 
         if (SelectedUserDatabase.InsertOrReplaceImageRoll(NewImageRoll) > 0)

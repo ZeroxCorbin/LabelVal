@@ -76,7 +76,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
         };
 
         if (ImageResults.SelectedImageRoll.SelectedStandard == AvailableStandards.GS1)
-            lab.Config.Table = ImageResults.SelectedImageRoll.SelectedGS1Table?.GetTableName();
+            lab.Config.Table = ImageResults.SelectedImageRoll.SelectedGS1Table.GetTableName();
 
         if (imageType == ImageResultEntryImageTypes.Source)
             lab.Image = SourceImage.BitmapBytes;

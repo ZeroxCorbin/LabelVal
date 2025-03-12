@@ -564,7 +564,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         GeometryGroup secCenter = new();
         foreach (Sectors.Interfaces.ISector newSec in sectors)
         {
-            if (newSec.Report.Type is AvailableRegionTypes.OCR or AvailableRegionTypes.OCV or AvailableRegionTypes.Blemish)
+            if (newSec.Report.RegionType is AvailableRegionTypes.OCR or AvailableRegionTypes.OCV or AvailableRegionTypes.Blemish)
                 continue;
 
             bool hasReportSec = newSec.Report.Width > 0;
@@ -576,7 +576,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
                     newSec.Template.Top + renderingEmSizeHalf,
                     Math.Clamp(newSec.Template.Width - renderingEmSize, 0, double.MaxValue),
                     Math.Clamp(newSec.Template.Height - renderingEmSize, 0, double.MaxValue))),
-                Pen = new Pen(GetGradeBrush(newSec.Report.OverallGradeLetter, (byte)(newSec.IsFocused || newSec.IsMouseOver ? 0xFF : 0x28)), renderingEmSize),
+                Pen = new Pen(GetGradeBrush(newSec.Report.OverallGrade.Grade.Letter, (byte)(newSec.IsFocused || newSec.IsMouseOver ? 0xFF : 0x28)), renderingEmSize),
             };
             drwGroup.Children.Add(sectorT);
 
@@ -681,7 +681,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
 
             if (sect.Report.SymbolType is AvailableSymbologies.QRCode or AvailableSymbologies.DataMatrix)
             {
-                Sectors.Interfaces.IReport res = sect.Report;
+                Sectors.Interfaces.ISectorReport res = sect.Report;
 
                 if (res.ExtendedData == null)
                     continue;

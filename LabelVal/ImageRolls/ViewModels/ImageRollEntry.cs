@@ -32,13 +32,13 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
 
     [ObservableProperty][property: JsonProperty] private string name;
     [ObservableProperty][property: JsonProperty] private int imageCount;
-    [ObservableProperty][property: JsonProperty("Standard")][property: SQLite.Column("Standard")] private AvailableStandards? selectedStandard;
-    partial void OnSelectedStandardChanged(AvailableStandards? value) { if (value != AvailableStandards.GS1) SelectedGS1Table = null; OnPropertyChanged(nameof(StandardDescription)); }
+    [ObservableProperty][property: JsonProperty("Standard")][property: SQLite.Column("Standard")] private AvailableStandards selectedStandard;
+    partial void OnSelectedStandardChanged(AvailableStandards value) { if (value != AvailableStandards.GS1) SelectedGS1Table = AvailableTables.Unknown; OnPropertyChanged(nameof(StandardDescription)); }
     public string StandardDescription => SelectedStandard.GetDescription();
 
-    [ObservableProperty][property: JsonProperty("GS1Table")][property: SQLite.Column("GS1Table")] private AvailableTables? selectedGS1Table;
-    partial void OnSelectedGS1TableChanged(AvailableTables? value) => OnPropertyChanged(nameof(GS1TableNumber));
-    public double GS1TableNumber => SelectedGS1Table is null ? 0 : double.Parse(SelectedGS1Table.GetDescription());
+    [ObservableProperty][property: JsonProperty("GS1Table")][property: SQLite.Column("GS1Table")] private AvailableTables selectedGS1Table;
+    partial void OnSelectedGS1TableChanged(AvailableTables value) => OnPropertyChanged(nameof(GS1TableNumber));
+    public double GS1TableNumber => SelectedGS1Table is AvailableTables.Unknown ? 0 : double.Parse(SelectedGS1Table.GetDescription());
 
     //If writeSectorsBeforeProcess is true the system will write the templates sectors before processing an image.
     //Normally the template is left untouched. I.e. When using a sequential OCR tool.

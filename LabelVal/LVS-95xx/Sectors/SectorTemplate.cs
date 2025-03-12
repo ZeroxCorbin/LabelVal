@@ -5,7 +5,7 @@ using LabelVal.Sectors.Classes;
 
 namespace LabelVal.LVS_95xx.Sectors
 {
-    public class Template : ITemplate
+    public class SectorTemplate : ISectorTemplate
     {
         public string Name { get; set; }
         public string Username { get; set; }
@@ -27,8 +27,8 @@ namespace LabelVal.LVS_95xx.Sectors
         public TemplateMatchMode MatchSettings { get; set; }
         public BlemishMaskLayers BlemishMask { get; set; }
 
-        public Template() { }
-        public Template(ITemplate template, string version)
+        public SectorTemplate() { }
+        public SectorTemplate(ISectorTemplate template, string version)
         {
             if(template == null)
                 return;
@@ -54,7 +54,7 @@ namespace LabelVal.LVS_95xx.Sectors
             BlemishMask = template.BlemishMask;
         }
 
-        public Template(FullReport report, string version)
+        public SectorTemplate(FullReport report, string version)
         {
             if (report == null)
                 return;

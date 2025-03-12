@@ -1,10 +1,10 @@
 ﻿using BarcodeVerification.lib.Common;
-using BarcodeVerification.lib.ISO;
+using BarcodeVerification.lib.ISO.ParameterTypes;
 using System.Collections.ObjectModel;
 
 namespace LabelVal.Sectors.Interfaces;
 
-public interface ISectorDetails
+public interface ISectorParameters
 {
     ISector Sector { get; set; }
 
@@ -23,6 +23,6 @@ public interface ISectorDetails
     ObservableCollection<Alarm> Alarms { get; }
     ObservableCollection<Blemish> Blemishes { get; }
 
-    Classes.SectorDifferences Compare(ISectorDetails compare);
+    Classes.SectorDifferences Compare(ISectorParameters compare);
 }
 

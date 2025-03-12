@@ -1,5 +1,5 @@
 ﻿using BarcodeVerification.lib.Common;
-using BarcodeVerification.lib.ISO;
+using BarcodeVerification.lib.ISO.ParameterTypes;
 using LabelVal.Sectors.Interfaces;
 
 namespace LabelVal.Sectors.Classes;
@@ -19,7 +19,7 @@ public class SectorDifferences
 
     public List<SectorElement> Parameters { get; } = [];
 
-    public static SectorDifferences Compare(ISectorDetails previous, ISectorDetails current)
+    public static SectorDifferences Compare(ISectorParameters previous, ISectorParameters current)
     {
 
         SectorDifferences differences = new()

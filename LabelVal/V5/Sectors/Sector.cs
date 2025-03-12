@@ -11,23 +11,23 @@ public partial class Sector : ObservableObject, ISector
 {
     public ResultsAlt.Decodedata V5Sector { get; }
 
-    public ITemplate Template { get; }
-    public IReport Report { get; }
+    public ISectorTemplate Template { get; }
+    public ISectorReport Report { get; }
 
-    public ISectorDetails SectorDetails { get; }
+    public ISectorParameters SectorDetails { get; }
     public bool IsWarning { get; }
     public bool IsError { get; }
 
-    public AvailableStandards? DesiredStandard { get; set; }
-    public AvailableTables? DesiredGS1Table { get; set; }
+    public AvailableStandards DesiredStandard { get; set; }
+    public AvailableTables DesiredGS1Table { get; set; }
     public bool IsWrongStandard
     {
         get
         {
             switch (DesiredStandard)
             {
-                case null:
-                    return true;
+                case AvailableStandards.Unknown:
+                    return false;
                 case AvailableStandards.DPM:
                     {
                         return Report.Standard switch
@@ -40,7 +40,7 @@ public partial class Sector : ObservableObject, ISector
                     {
                         return Report.Standard switch
                         {
-                            AvailableStandards.ISO or AvailableStandards.ISO15415 or AvailableStandards.ISO15416 or null => false,
+                            AvailableStandards.ISO or AvailableStandards.ISO15415 or AvailableStandards.ISO15416 => false,
                             _ => true,
                         };
                     }
@@ -77,18 +77,18 @@ public partial class Sector : ObservableObject, ISector
     public bool IsFocused { get; set; }
     public bool IsMouseOver { get; set; }
 
-    public Sector(ResultsAlt.Decodedata decodeData, Config.Toollist toollist, string name, AvailableStandards? standard, AvailableTables? table, string version)
+    public Sector(ResultsAlt.Decodedata decodeData, Config.Toollist toollist, string name, AvailableStandards standard, AvailableTables table, string version)
     {
         V5Sector = decodeData;
 
-        Report = new Report(decodeData);
-        Template = new Template(decodeData, toollist, name, version);
+        Report = new SectorReport(decodeData);
+        Template = new SectorTemplate(decodeData, toollist, name, version);
 
         DesiredStandard = standard;
         DesiredGS1Table = table;
 
-        Report.Standard = decodeData.grading != null ? Standards.GetV5StandardEnum(decodeData.grading.standard) : null;
-        Report.GS1Table = null; //GS1 is not supported in V5, yet
+        //Report.Standard = decodeData.grading != null ? Standards.GetV5StandardEnum(decodeData.grading.standard) : null;
+        //Report.GS1Table = null; //GS1 is not supported in V5, yet
 
         SectorDetails = new SectorDetails(this, Template.Username);
 

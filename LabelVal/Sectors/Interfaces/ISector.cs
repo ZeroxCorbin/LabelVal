@@ -10,15 +10,15 @@ namespace LabelVal.Sectors.Interfaces;
 
 public partial interface ISector
 {
-    ITemplate Template { get; }
-    IReport Report { get; }
+    ISectorTemplate Template { get; }
+    ISectorReport Report { get; }
 
-    ISectorDetails SectorDetails { get; }
+    ISectorParameters SectorDetails { get; }
     bool IsWarning { get; }
     bool IsError { get; }
 
-    AvailableStandards? DesiredStandard { get; }
-    AvailableTables? DesiredGS1Table { get; }
+    AvailableStandards DesiredStandard { get; }
+    AvailableTables DesiredGS1Table { get; }
     bool IsWrongStandard { get; }
 
     bool IsFocused { get; set; }
@@ -54,7 +54,7 @@ public partial interface ISector
         compiled.Add(new CSVResults
         {
             Name = "Units",
-            Value = sector.Report.Units
+            Value = sector.Report.Units.ToString()
         });
 
         // Add the main report
@@ -62,8 +62,8 @@ public partial interface ISector
         {
             Name = sector.Report.SymbolType.ToString(),
             Value = sector.Report.DecodeText,
-            Grade = sector.Report.OverallGradeLetter,
-            GradeValue = sector.Report.OverallGradeString
+            Grade = sector.Report.OverallGrade.Grade.Letter,
+            GradeValue = sector.Report.OverallGrade.Value
         });
 
         //Add the the details

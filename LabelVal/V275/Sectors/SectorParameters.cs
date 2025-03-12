@@ -1,5 +1,6 @@
 ﻿using BarcodeVerification.lib.Common;
 using BarcodeVerification.lib.ISO;
+using BarcodeVerification.lib.ISO.ParameterTypes;
 using CommunityToolkit.Mvvm.ComponentModel;
 using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Interfaces;
@@ -8,7 +9,7 @@ using System.Collections.ObjectModel;
 
 namespace LabelVal.V275.Sectors;
 
-public partial class SectorDetails : ObservableObject, ISectorDetails
+public partial class SectorDetails : ObservableObject, ISectorParameters
 {
     public ISector Sector { get; set; }
 
@@ -26,7 +27,7 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
 
     public SectorDetails() { }
     public SectorDetails(ISector sector) => Process(sector);
-    public SectorDifferences Compare(ISectorDetails compare) => SectorDifferences.Compare(this, compare);
+    public SectorDifferences Compare(ISectorParameters compare) => SectorDifferences.Compare(this, compare);
 
     private string GetParameter(string path, JObject report)
     {
@@ -63,16 +64,16 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
         AvailableSymbologies theSymbology = Sector.Report.SymbolType;
 
         //Get the region type for the symbology
-        AvailableRegionTypes theRegionType = theSymbology.GetSymbologyRegionType(AvailableDevices.V275);
+        AvailableRegionTypes theRegionType = theSymbology.GetSymbologyRegionType(Sector.Report.Device);
 
         //Get the parameters list based on the region type.
-        List<AvailableParameters> theParamters = Params.ParameterGroups[theRegionType][AvailableDevices.V275];
+        List<AvailableParameters> theParamters = Params.ParameterGroups[theRegionType][Sector.Report.Device];
 
         var report = (JObject)Sector.Report.Original;
 
         foreach (AvailableParameters parameter in theParamters)
         {
-            string data = GetParameter(parameter.GetParameterPath(AvailableDevices.V275), report);
+            string data = GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType), report);
 
             if (string.IsNullOrWhiteSpace(data))
             {
@@ -82,11 +83,11 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
 
             bool found = false;
 
-            var type = parameter.GetParameterDataType(AvailableDevices.V275, theSymbology);
+            var type = parameter.GetParameterDataType(Sector.Report.Device, theSymbology);
 
-            if (type == typeof( BarcodeVerification.lib.ISO.GradeValue))
+            if (type == typeof(GradeValue))
             {
-                GradeValue gradeValue = GetGradeValue(parameter, GetParameter(parameter.GetParameterPath(AvailableDevices.V275), report));
+                GradeValue gradeValue = GetGradeValue(parameter, GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType), report));
 
                 if (gradeValue != null)
                 {
@@ -94,9 +95,9 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
                     found = true;
                 }
             }
-            else if (type == typeof(BarcodeVerification.lib.ISO.Grade))
+            else if (type == typeof(Grade))
             {
-                Grade grade = GetGrade(parameter, GetParameter(parameter.GetParameterPath(AvailableDevices.V275), report));
+                Grade grade = GetGrade(parameter, GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType), report));
 
                 if (grade != null)
                 {
@@ -104,33 +105,33 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
                     found = true;
                 }
             }
-            else if (type == typeof(BarcodeVerification.lib.ISO.ValueDouble))
+            else if (type == typeof(ValueDouble))
             {
-                ValueDouble valueDouble = GetValueDouble(parameter, GetParameter(parameter.GetParameterPath(AvailableDevices.V275), report));
+                ValueDouble valueDouble = GetValueDouble(parameter, GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType), report));
                 if (valueDouble != null)
                 {
                     Parameters.Add(valueDouble);
                     found = true;
                 }
             }
-            else if (type == typeof(BarcodeVerification.lib.ISO.ValueString))
+            else if (type == typeof(ValueString))
             {
-                ValueString valueString = GetValueString(parameter, GetParameter(parameter.GetParameterPath(AvailableDevices.V275), report));
+                ValueString valueString = GetValueString(parameter, GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType), report));
                 if (valueString != null) { Parameters.Add(valueString); found = true; }
             }
-            else if (type == typeof(BarcodeVerification.lib.ISO.PassFail))
+            else if (type == typeof(PassFail))
             {
-                PassFail passFail = GetPassFail(parameter, GetParameter(parameter.GetParameterPath(AvailableDevices.V275), report));
+                PassFail passFail = GetPassFail(parameter, GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType), report));
                 if (passFail != null) { Parameters.Add(passFail); found = true; }
             }
-            else if (type == typeof(BarcodeVerification.lib.ISO.ValuePassFail))
+            else if (type == typeof(ValuePassFail))
             {
-                ValuePassFail valuePassFail = GetValuePassFail(parameter, GetParameter(parameter.GetParameterPath(AvailableDevices.V275), report));
+                ValuePassFail valuePassFail = GetValuePassFail(parameter, GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType), report));
                 if (valuePassFail != null) { Parameters.Add(valuePassFail); found = true; }
             }
 
             if (!found)
-                Logger.LogWarning($"Paramter: '{parameter}' @ Path: '{parameter.GetParameterPath(AvailableDevices.V275)}' parse issue.");
+                Logger.LogWarning($"Paramter: '{parameter}' @ Path: '{parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)}' parse issue.");
         }
 
         //Check for alarms
@@ -155,7 +156,7 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
 
         Grade grade = GetGrade(parameter, gradeValue["grade"].ToString());
         string value = gradeValue["value"].ToString();
-        return new GradeValue(parameter, AvailableDevices.V275, grade, value);
+        return new GradeValue(parameter, Sector.Report.Device, Sector.Report.SymbolType, grade, value);
     }
 
     private Grade GetGrade(AvailableParameters parameter, string gradeString)
@@ -169,16 +170,16 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
             return null;
         string value = gradeValue["value"].ToString();
         string letter = gradeValue["letter"].ToString();
-        return new Grade(parameter, AvailableDevices.V275, value);
+        return new Grade(parameter, Sector.Report.Device, value);
     }
 
     private ValueDouble GetValueDouble(AvailableParameters parameter, string value) => string.IsNullOrWhiteSpace(value)
             ? null
-            : string.IsNullOrWhiteSpace(value) ? null : new ValueDouble(parameter, AvailableDevices.V275, value);
+            : string.IsNullOrWhiteSpace(value) ? null : new ValueDouble(parameter, Sector.Report.Device, Sector.Report.SymbolType, value);
 
-    private ValueString GetValueString(AvailableParameters parameter, string value) => string.IsNullOrWhiteSpace(value) ? null : new ValueString(parameter, AvailableDevices.V275, value);
+    private ValueString GetValueString(AvailableParameters parameter, string value) => string.IsNullOrWhiteSpace(value) ? null : new ValueString(parameter, Sector.Report.Device, value);
 
-    private PassFail GetPassFail(AvailableParameters parameter, string value) => string.IsNullOrWhiteSpace(value) ? null : new PassFail(parameter, AvailableDevices.V275, value);
+    private PassFail GetPassFail(AvailableParameters parameter, string value) => string.IsNullOrWhiteSpace(value) ? null : new PassFail(parameter, Sector.Report.Device, value);
 
     public ValuePassFail GetValuePassFail(AvailableParameters parameter, string value)
     {
@@ -192,6 +193,6 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
 
         string passFail = valuePassFail["result"].ToString();
         string val = valuePassFail["value"].ToString();
-        return new ValuePassFail(parameter, AvailableDevices.V275, val, passFail);
+        return new ValuePassFail(parameter, Sector.Report.Device, Sector.Report.SymbolType, val, passFail);
     }
 }

@@ -1,5 +1,5 @@
 ﻿using BarcodeVerification.lib.Common;
-using BarcodeVerification.lib.ISO;
+using BarcodeVerification.lib.ISO.ParameterTypes;
 using CommunityToolkit.Mvvm.ComponentModel;
 using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Interfaces;
@@ -10,7 +10,7 @@ using V5_REST_Lib.Models;
 
 namespace LabelVal.V5.Sectors;
 
-public partial class SectorDetails : ObservableObject, ISectorDetails
+public partial class SectorDetails : ObservableObject, ISectorParameters
 {
     public ISector Sector { get; set; }
 
@@ -25,7 +25,7 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
     public ObservableCollection<Alarm> Alarms { get; } = [];
     public ObservableCollection<Blemish> Blemishes { get; } = [];
 
-    public SectorDifferences Compare(ISectorDetails compare) => SectorDifferences.Compare(this, compare);
+    public SectorDifferences Compare(ISectorParameters compare) => SectorDifferences.Compare(this, compare);
 
     public SectorDetails() { }
     public SectorDetails( ISector sector, string username) => Process(sector, username);

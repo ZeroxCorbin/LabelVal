@@ -139,20 +139,13 @@ public partial class ImageResultEntry
         V275CurrentSectors.Clear();
 
         List<Sectors.Interfaces.ISector> tempSectors = [];
-        foreach (V275_REST_Lib.Models.Job.Sector jSec in V275CurrentTemplate.sectors)
+        foreach (V275_REST_Lib.Models.Job.Sector templateSec in V275CurrentTemplate.sectors)
         {
-            foreach (JObject rSec in V275CurrentReport["inspectLabel"]["inspectSector"])
+            foreach (var currentSect in V275CurrentReport["inspectLabel"]["inspectSector"])
             {
-                if (jSec.name == rSec["name"].ToString())
+                if (templateSec.name == currentSect["name"].ToString())
                 {
-
-                    //object fSec = V275DeserializeSector(rSec, ImageResults.SelectedImageRoll.SelectedStandard != AvailableStandards.GS1 && ImageResults.SelectedNode.Controller.IsOldISO);
-
-                    //if (fSec == null)
-                    //    break; //Not yet supported sector type
-
-                    tempSectors.Add(new V275.Sectors.Sector(jSec, rSec, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, repeat.FullReport.Job.jobVersion));
-
+                    tempSectors.Add(new V275.Sectors.Sector(templateSec, (JObject)currentSect, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, repeat.FullReport.Job.jobVersion));
                     break;
                 }
             }

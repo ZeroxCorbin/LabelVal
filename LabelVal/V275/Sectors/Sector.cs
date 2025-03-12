@@ -11,22 +11,22 @@ public partial class Sector : ObservableObject, ISector
 {
     public V275_REST_Lib.Models.Job.Sector V275Sector { get; }
 
-    public ITemplate Template { get; }
-    public IReport Report { get; }
+    public ISectorTemplate Template { get; }
+    public ISectorReport Report { get; }
 
-    public ISectorDetails SectorDetails { get; }
+    public ISectorParameters SectorDetails { get; }
     public bool IsWarning { get; }
     public bool IsError { get; }
 
-    public AvailableStandards? DesiredStandard { get; }
-    public AvailableTables? DesiredGS1Table { get; }
+    public AvailableStandards DesiredStandard { get; }
+    public AvailableTables DesiredGS1Table { get; }
     public bool IsWrongStandard
     {
         get
         {
             switch (DesiredStandard)
             {
-                case null:
+                case AvailableStandards.Unknown:
                     return false;
 
                 case AvailableStandards.DPM:
@@ -41,7 +41,7 @@ public partial class Sector : ObservableObject, ISector
                     {
                         return Report.Standard switch
                         {
-                            AvailableStandards.ISO or AvailableStandards.ISO15415 or AvailableStandards.ISO15416 or null => false,
+                            AvailableStandards.ISO or AvailableStandards.ISO15415 or AvailableStandards.ISO15416 => false,
                             _ => true,
                         };
                     }
@@ -78,21 +78,15 @@ public partial class Sector : ObservableObject, ISector
     public bool IsFocused { get; set; }
     public bool IsMouseOver { get; set; }
 
-    public Sector(V275_REST_Lib.Models.Job.Sector sector, JObject report, AvailableStandards? standard, AvailableTables? table, string version)
+    public Sector(V275_REST_Lib.Models.Job.Sector sector, JObject report, AvailableStandards standard, AvailableTables table, string version)
     {
         V275Sector = sector;
 
-        Report = new Report(report);
-        Template = new Template(sector, version);
+        Report = new SectorReport(report);
+        Template = new SectorTemplate(sector, version);
 
         DesiredStandard = standard;
         DesiredGS1Table = table;
-
-        if (sector.type is "verify1D" or "verify2D" && sector.gradingStandard != null)
-            Report.Standard = sector.gradingStandard.enabled ? AvailableStandards.GS1 : AvailableStandards.ISO;
-
-        if (Report.Standard == AvailableStandards.GS1)
-            Report.GS1Table = sector.gradingStandard.tableId.GetTable(AvailableDevices.V275);
 
         SectorDetails = new SectorDetails(this);
 

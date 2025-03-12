@@ -1,31 +1,42 @@
-﻿<UserControl x:Class="LabelVal.Run.Views.RunResult"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:LabelVal.Run.Views"
-                xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
-                
-                xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-                xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-             xmlns:viewModels="clr-namespace:LabelVal.Run.ViewModels"
-              d:DataContext="{d:DesignInstance Type=viewModels:RunResult}"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+﻿<UserControl
+    x:Class="LabelVal.Run.Views.RunResult"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:local="clr-namespace:LabelVal.Run.Views"
+    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:viewModels="clr-namespace:LabelVal.Run.ViewModels"
+    d:DataContext="{d:DesignInstance Type=viewModels:RunResult}"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
     <DockPanel>
 
         <DockPanel>
-            <GroupBox Margin="3" Padding="3" HorizontalAlignment="Left" VerticalAlignment="Stretch" 
-                  Style="{StaticResource MaterialDesignCardGroupBox}"
+            <GroupBox
+                Margin="3"
+                Padding="3"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Stretch"
                 md:ColorZoneAssist.Background="{DynamicResource MahApps.Brushes.Accent4}"
-                md:ColorZoneAssist.Mode="Custom">
+                md:ColorZoneAssist.Mode="Custom"
+                Style="{StaticResource MaterialDesignCardGroupBox}">
 
                 <GroupBox.Header>
                     <DockPanel Margin="-5">
-                        <!--Title-->
-                        <md:Card Background="{DynamicResource MahApps.Brushes.ThemeBackground}" HorizontalAlignment="Stretch" Padding="4,1">
-                            <TextBlock Text="{Binding Order}" MinWidth="26" FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
-                                       HorizontalAlignment="Center"/>
+                        <!--  Title  -->
+                        <md:Card
+                            Padding="4,1"
+                            HorizontalAlignment="Stretch"
+                            Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+                            <TextBlock
+                                MinWidth="26"
+                                HorizontalAlignment="Center"
+                                FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}"
+                                Text="{Binding Order}" />
                         </md:Card>
                     </DockPanel>
                 </GroupBox.Header>
@@ -34,18 +45,21 @@
             </GroupBox>
         </DockPanel>
 
-        <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto" 
-                      mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
-                      Style="{StaticResource MahApps.Styles.ScrollViewer}">
+        <ScrollViewer
+            mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
+            DockPanel.Dock="Top"
+            HorizontalScrollBarVisibility="Auto"
+            Style="{StaticResource MahApps.Styles.ScrollViewer}"
+            VerticalScrollBarVisibility="Disabled">
             <DockPanel>
 
-                <local:RunResult_Images DataContext="{Binding }" DockPanel.Dock="Top"/>
+                <local:RunResult_Images DataContext="{Binding}" DockPanel.Dock="Top" />
 
-                <local:RunResult_V275 DataContext="{Binding }"/>
+                <local:RunResult_V275 DataContext="{Binding}" />
 
-                <local:RunResult_V5 DataContext="{Binding }"/>
+                <local:RunResult_V5 DataContext="{Binding}" />
 
-                <local:RunResult_L95xx DataContext="{Binding }"/>
+                <local:RunResult_L95xx DataContext="{Binding}" />
             </DockPanel>
         </ScrollViewer>
     </DockPanel>

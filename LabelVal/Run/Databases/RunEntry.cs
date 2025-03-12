@@ -30,8 +30,8 @@ public partial class RunEntry : ObservableObject
     public string ImageRollName { get; set; }
     public string ImageRollUID { get; set; }
 
-    public AvailableStandards? GradingStandard { get; set; }
-    public AvailableTables? Gs1TableName { get; set; }
+    public AvailableStandards GradingStandard { get; set; }
+    public AvailableTables Gs1TableName { get; set; }
     //public double TargetDPI { get; set; }
 
     public int DesiredLoops { get; set; }
