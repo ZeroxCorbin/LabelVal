@@ -112,45 +112,6 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
     private string GetParameter(string key, List<ReportData> report, bool equal = false) => report.Find((e) => equal ? e.ParameterName.Equals(key) : e.ParameterName.StartsWith(key))?.ParameterValue;
     private List<string> GetParameters(string key, List<ReportData> report) => report.FindAll((e) => e.ParameterName.StartsWith(key)).Select((e) => e.ParameterValue).ToList();
 
-    private string[] GetKeyValuePair(string key, List<string> report)
-    {
-        string item = report.Find((e) => e.StartsWith(key));
-
-        //if it was not found or the item does not contain a comma.
-        return item?.Contains(',') != true ? null : [item[..item.IndexOf(',')], item[(item.IndexOf(',') + 1)..]];
-    }
-    private List<string[]> GetMultipleKeyValuePairs(string key, List<string> report)
-    {
-        List<string> items = report.FindAll((e) => e.StartsWith(key));
-
-        if (items == null || items.Count == 0)
-            return null;
-
-        List<string[]> res = [];
-        foreach (string item in items)
-        {
-            if (!item.Contains(','))
-                continue;
-
-            res.Add([item[..item.IndexOf(',')], item[(item.IndexOf(',') + 1)..]]);
-        }
-        return res;
-    }
-
-    private string[] GetValues(string name, List<string> splitPacket)
-    {
-        List<string> warn = splitPacket.FindAll((e) => e.StartsWith(name));
-
-        List<string> ret = [];
-        foreach (string line in warn)
-        {
-            //string[] spl1 = new string[2];
-            //spl1[0] = line.Substring(0, line.IndexOf(','));
-            ret.Add(line[(line.IndexOf(',') + 1)..]);
-        }
-        return ret.ToArray();
-    }
-
     private BarcodeVerification.lib.ISO.GradeValue GetGradeValue(AvailableParameters parameter, string data)
     {
         if (string.IsNullOrWhiteSpace(data))
@@ -159,17 +120,13 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
         string[] spl2 = data.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
         if (spl2.Length != 2)
-            return spl2.Length == 1 ? new BarcodeVerification.lib.ISO.GradeValue(parameter, spl2[0], string.Empty, AvailableDevices.L95) : null;
+            return spl2.Length == 1 ? new BarcodeVerification.lib.ISO.GradeValue(parameter, AvailableDevices.L95, spl2[0], string.Empty) : null;
         else
-            return new BarcodeVerification.lib.ISO.GradeValue(parameter, spl2[0], spl2[1], AvailableDevices.L95);//  new GradeValue(name, ParseFloat(spl2[1]), new Grade(name, tmp, GetLetter(tmp)));
+            return new BarcodeVerification.lib.ISO.GradeValue(parameter, AvailableDevices.L95, spl2[0], spl2[1]);//  new GradeValue(name, ParseFloat(spl2[1]), new Grade(name, tmp, GetLetter(tmp)));
     }
-
-    private BarcodeVerification.lib.ISO.Grade GetGrade(AvailableParameters parameter, string data) => string.IsNullOrWhiteSpace(data) ? null : new BarcodeVerification.lib.ISO.Grade(parameter, data);
-
-    private BarcodeVerification.lib.ISO.ValueDouble GetValueDouble(AvailableParameters parameter, string data) => string.IsNullOrWhiteSpace(data) ? null : new BarcodeVerification.lib.ISO.ValueDouble(parameter, data, AvailableDevices.L95);
-
-    private BarcodeVerification.lib.ISO.ValueString GetValueString(AvailableParameters parameter, string data) => string.IsNullOrWhiteSpace(data) ? null : new BarcodeVerification.lib.ISO.ValueString(parameter, data);
-
-    private BarcodeVerification.lib.ISO.PassFail GetPassFail(AvailableParameters parameter, string data) => string.IsNullOrWhiteSpace(data) ? null : new BarcodeVerification.lib.ISO.PassFail(parameter, data);
+    private BarcodeVerification.lib.ISO.Grade GetGrade(AvailableParameters parameter, string data) => string.IsNullOrWhiteSpace(data) ? null : new BarcodeVerification.lib.ISO.Grade(parameter, AvailableDevices.L95, data);
+    private BarcodeVerification.lib.ISO.ValueDouble GetValueDouble(AvailableParameters parameter, string data) => string.IsNullOrWhiteSpace(data) ? null : new BarcodeVerification.lib.ISO.ValueDouble(parameter, AvailableDevices.L95, data );
+    private BarcodeVerification.lib.ISO.ValueString GetValueString(AvailableParameters parameter, string data) => string.IsNullOrWhiteSpace(data) ? null : new BarcodeVerification.lib.ISO.ValueString(parameter, AvailableDevices.L95, data);
+    private BarcodeVerification.lib.ISO.PassFail GetPassFail(AvailableParameters parameter, string data) => string.IsNullOrWhiteSpace(data) ? null : new BarcodeVerification.lib.ISO.PassFail(parameter, AvailableDevices.L95, data);
 
 }

@@ -155,7 +155,7 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
 
         Grade grade = GetGrade(parameter, gradeValue["grade"].ToString());
         string value = gradeValue["value"].ToString();
-        return new GradeValue(parameter, grade, value, AvailableDevices.V275);
+        return new GradeValue(parameter, AvailableDevices.V275, grade, value);
     }
 
     private Grade GetGrade(AvailableParameters parameter, string gradeString)
@@ -169,16 +169,16 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
             return null;
         string value = gradeValue["value"].ToString();
         string letter = gradeValue["letter"].ToString();
-        return new Grade(parameter, value, letter);
+        return new Grade(parameter, AvailableDevices.V275, value);
     }
 
     private ValueDouble GetValueDouble(AvailableParameters parameter, string value) => string.IsNullOrWhiteSpace(value)
             ? null
-            : string.IsNullOrWhiteSpace(value) ? null : new ValueDouble(parameter, value, AvailableDevices.V275);
+            : string.IsNullOrWhiteSpace(value) ? null : new ValueDouble(parameter, AvailableDevices.V275, value);
 
-    private ValueString GetValueString(AvailableParameters parameter, string value) => string.IsNullOrWhiteSpace(value) ? null : new ValueString(parameter, value);
+    private ValueString GetValueString(AvailableParameters parameter, string value) => string.IsNullOrWhiteSpace(value) ? null : new ValueString(parameter, AvailableDevices.V275, value);
 
-    private PassFail GetPassFail(AvailableParameters parameter, string value) => string.IsNullOrWhiteSpace(value) ? null : new PassFail(parameter, value);
+    private PassFail GetPassFail(AvailableParameters parameter, string value) => string.IsNullOrWhiteSpace(value) ? null : new PassFail(parameter, AvailableDevices.V275, value);
 
     public ValuePassFail GetValuePassFail(AvailableParameters parameter, string value)
     {
@@ -192,6 +192,6 @@ public partial class SectorDetails : ObservableObject, ISectorDetails
 
         string passFail = valuePassFail["result"].ToString();
         string val = valuePassFail["value"].ToString();
-        return new ValuePassFail(parameter, val, passFail, AvailableDevices.V275);
+        return new ValuePassFail(parameter, AvailableDevices.V275, val, passFail);
     }
 }
