@@ -25,6 +25,8 @@
         <local_converters:EnumValueToDescription_ShortenString x:Key="EnumValueToDescription_ShortenString" />
         <local_converters:BoolToPassFailString x:Key="BoolToPassFailString" />
         <local_converters:ParameterEnumToParameterDescription x:Key="ParameterEnumToParameterDescription" />
+        <local_converters:ParameterSuffixToUnitsMultiConverter x:Key="ParameterSuffixToUnitsMultiConverter"/>
+
         <!--#endregion-->
 
         <Border
@@ -76,10 +78,14 @@
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center">
                             <TextBlock Text="{Binding Value, StringFormat={}{0:N1}}" />
-                            <TextBlock
-                                MinWidth="10"
-                                Margin="3,0"
-                                Text="{Binding Suffix}" />
+                            <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" VerticalAlignment="Bottom" Margin="0,0,0,1">
+                                <TextBlock.Text>
+                                    <MultiBinding Converter="{StaticResource ParameterSuffixToUnitsMultiConverter}">
+                                        <Binding Path="Suffix" Mode="OneTime" />
+                                        <Binding Path="DataContext.Report.Units" RelativeSource="{RelativeSource AncestorType=UserControl}" Mode="OneTime" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
                         </DockPanel>
                     </Grid>
                 </DataTemplate>
@@ -102,6 +108,7 @@
                             MinWidth="26"
                             Margin="3,0"
                             VerticalAlignment="Center"
+                            HorizontalAlignment="Left"
                             Text="{Binding Path=Value, Mode=OneTime}"
                             TextWrapping="Wrap" />
                     </Grid>
@@ -167,15 +174,17 @@
                             Grid.Column="1"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center">
-                            <TextBlock HorizontalAlignment="Right" VerticalAlignment="Center">
+
+                            <TextBlock Text="{Binding Path=Value, StringFormat={}{0:N1}, Mode=OneTime}" HorizontalAlignment="Right"/>
+                            <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" VerticalAlignment="Bottom" HorizontalAlignment="Right">
                                 <TextBlock.Text>
-                                    <MultiBinding StringFormat="{}{0:N1} {1}">
-                                        <Binding Mode="OneTime" Path="Value" />
-                                        <Binding Mode="OneTime" Path="Suffix" />
+                                    <MultiBinding Converter="{StaticResource ParameterSuffixToUnitsMultiConverter}">
+                                        <Binding Path="Suffix" Mode="OneTime" />
+                                        <Binding Path="DataContext.Report.Units" RelativeSource="{RelativeSource AncestorType=UserControl}" Mode="OneTime" />
                                     </MultiBinding>
                                 </TextBlock.Text>
                             </TextBlock>
-
+                            
                             <TextBlock
                                 Width="25"
                                 Margin="3,0"
@@ -275,15 +284,14 @@
                             Grid.Column="1"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center">
-
-                            <TextBlock Margin="3,0">
+                            <TextBlock Text="{Binding Path=Value, StringFormat={}{0:N1}, Mode=OneTime}" HorizontalAlignment="Right"/>
+                            <TextBlock  Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" VerticalAlignment="Bottom" HorizontalAlignment="Right">
                                 <TextBlock.Text>
-                                    <MultiBinding StringFormat="{}{0:N1} {1}">
-                                        <Binding Mode="OneTime" Path="Value" />
-                                        <Binding Mode="OneTime" Path="Suffix" />
+                                    <MultiBinding Converter="{StaticResource ParameterSuffixToUnitsMultiConverter}">
+                                        <Binding Path="Suffix" Mode="OneTime" />
+                                        <Binding Path="DataContext.Report.Units" RelativeSource="{RelativeSource AncestorType=UserControl}" Mode="OneTime" />
                                     </MultiBinding>
                                 </TextBlock.Text>
-
                             </TextBlock>
 
                             <TextBlock Margin="3,0" Text="{Binding Grade.Value, StringFormat=N1}" />
@@ -392,16 +400,16 @@
                                 <Style TargetType="{x:Type Image}">
                                     <Setter Property="Source" Value="/Assets/Images/barcode-1d.png" />
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes._2D}">
+                                        <DataTrigger Binding="{Binding Report.RegionType, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes._2D}">
                                             <Setter Property="Source" Value="/Assets/Images/barcode-2d.png" />
                                         </DataTrigger>
-                                        <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCR}">
+                                        <DataTrigger Binding="{Binding Report.RegionType, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCR}">
                                             <Setter Property="Source" Value="/Assets/Images/ocr.png" />
                                         </DataTrigger>
-                                        <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCV}">
+                                        <DataTrigger Binding="{Binding Report.RegionType, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCV}">
                                             <Setter Property="Source" Value="/Assets/Images/ocv.png" />
                                         </DataTrigger>
-                                        <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.Blemish}">
+                                        <DataTrigger Binding="{Binding Report.RegionType, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.Blemish}">
                                             <Setter Property="Source" Value="/Assets/Images/FlawTool.png" />
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -419,14 +427,14 @@
                                     <Setter Property="Text" Value="{Binding Report.SymbolType, Converter={StaticResource EnumValueToDescription_ShortenString}, ConverterParameter=13, Mode=OneTime}" />
                                     <Style.Triggers>
 
-                                        <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCR}">
+                                        <DataTrigger Binding="{Binding Report.RegionType, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCR}">
                                             <Setter Property="Text" Value="{Binding Template.MatchSettings.FixedText, Mode=OneTime}" />
                                             <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Text}" />
                                         </DataTrigger>
-                                        <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCV}">
+                                        <DataTrigger Binding="{Binding Report.RegionType, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCV}">
                                             <Setter Property="Text" Value="{Binding Template.MatchSettings.FixedText, Mode=OneTime}" />
                                         </DataTrigger>
-                                        <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.Blemish}">
+                                        <DataTrigger Binding="{Binding Report.RegionType, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.Blemish}">
                                             <Setter Property="Text" Value="" />
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -459,17 +467,17 @@
                                             <Setter Property="Text" Value="{Binding Report.DecodeText, Mode=OneTime}" />
                                             <Setter Property="ToolTip" Value="{Binding Report.DecodeText, Mode=OneTime}" />
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCR}">
+                                                <DataTrigger Binding="{Binding Report.RegionType, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCR}">
                                                     <Setter Property="Text" Value="{Binding Report.Text, Mode=OneTime}" />
                                                     <Setter Property="ToolTip" Value="{Binding Report.Text, Mode=OneTime}" />
                                                 </DataTrigger>
 
-                                                <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCV}">
+                                                <DataTrigger Binding="{Binding Report.RegionType, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCV}">
                                                     <Setter Property="Text" Value="{Binding Report.Text, Mode=OneTime}" />
                                                     <Setter Property="ToolTip" Value="{Binding Report.Text, Mode=OneTime}" />
                                                 </DataTrigger>
 
-                                                <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.Blemish}">
+                                                <DataTrigger Binding="{Binding Report.RegionType, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.Blemish}">
                                                     <Setter Property="Text" Value="" />
                                                     <Setter Property="ToolTip" Value="" />
                                                 </DataTrigger>
@@ -512,10 +520,6 @@
                                 </TextBlock>
                             </DockPanel>
                         </Expander>
-
-
-
-
 
                     </DockPanel>
 
@@ -564,13 +568,13 @@
                                     <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="{x:Type TextBlock}">
                                         <Setter Property="Text" Value="{Binding Report.OverallGrade.Grade.Value, StringFormat=N1, Mode=OneTime}" />
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCR}">
+                                            <DataTrigger Binding="{Binding Report.RegionType, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCR}">
                                                 <Setter Property="Text" Value="{Binding Report.Score, Mode=OneTime}" />
                                             </DataTrigger>
-                                            <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCV}">
+                                            <DataTrigger Binding="{Binding Report.RegionType, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCV}">
                                                 <Setter Property="Text" Value="{Binding Report.Score, Mode=OneTime}" />
                                             </DataTrigger>
-                                            <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.Blemish}">
+                                            <DataTrigger Binding="{Binding Report.RegionType, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.Blemish}">
                                                 <Setter Property="Text" Value="{Binding Report.BlemishCount, Mode=OneTime}" />
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -590,13 +594,13 @@
                         <Style TargetType="{x:Type DockPanel}">
                             <Setter Property="Visibility" Value="Visible" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCR}">
+                                <DataTrigger Binding="{Binding Report.RegionType, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCR}">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCV}">
+                                <DataTrigger Binding="{Binding Report.RegionType, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.OCV}">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Report.Type, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.Blemish}">
+                                <DataTrigger Binding="{Binding Report.RegionType, Mode=OneTime}" Value="{x:Static bar_common:AvailableRegionTypes.Blemish}">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Report, Mode=OneTime}" Value="{x:Null}">
@@ -611,18 +615,18 @@
                             Margin="3,0"
                             HorizontalAlignment="Center"
                             md:TextFieldAssist.PrefixText="Aperture"
-                            md:TextFieldAssist.SuffixText="{Binding Report.Units}"
+                            md:TextFieldAssist.SuffixText="{Binding Report.Units, Converter={StaticResource EnumValueToDescription}}"
                             BorderThickness="0"
                             IsHitTestVisible="False"
                             Text="{Binding Report.Aperture, StringFormat=N1, Mode=OneTime}" />
-                        <TextBox
+                        <!--<TextBox
                             Margin="3,0"
                             HorizontalAlignment="Left"
-                            md:TextFieldAssist.PrefixText="X-Dim"
-                            md:TextFieldAssist.SuffixText="{Binding Report.Units}"
+                            md:TextFieldAssist.PrefixText="xDim"
+                            md:TextFieldAssist.SuffixText="{Binding Report.Units, Converter={StaticResource EnumValueToDescription}}"
                             BorderThickness="0"
                             IsHitTestVisible="False"
-                            Text="{Binding Report.XDimension, StringFormat=N1, Mode=OneTime}" />
+                            Text="{Binding Report.XDimension, StringFormat=N1, Mode=OneTime}" />-->
                     </UniformGrid>
 
                 </DockPanel>
