@@ -19,6 +19,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using V5_REST_Lib.Cameras;
 using V5_REST_Lib.Models;
+using V5_REST_Lib.Controllers;
 
 namespace LabelVal.V5.ViewModels;
 
@@ -178,12 +179,31 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             return;
         }
 
-        Config.Source src = Controller.Config.response.data.job.channelMap.acquisition.AcquisitionChannel.source;
+        //Change the directory in the FileAcquisitionSource
 
-        if (src.FileAcquisitionSource.directory != directory)
+        JObject source = Controller.Config.GetParameter<JObject>("job.channelMap.acquisition.AcquisitionChannel.source");
+        //Config.Source src = Controller.Config.response.data.job.channelMap.acquisition.AcquisitionChannel.source;
+
+        if (source == null)
         {
-            src.FileAcquisitionSource.directory = directory;
-            _ = await Controller.SetConfig(Controller.Config.response.data);
+            Logger.LogError("Could not get the source object from the configuration.");
+            return;
+        }
+
+        if(source.GetParameter<string>("FileAcquisitionSource.directory") != directory)
+        {
+            source.SetParameter("FileAcquisitionSource.directory", directory);
+
+            JObject? send = Controller.Config.GetParameter<JObject>("response.data");
+            if (send == null)
+            {
+                Logger.LogError("Could not get the data object from the configuration.");
+                return;
+            }
+
+
+            await Controller.SetConfig(send);
+            
         }
     }
 
@@ -239,7 +259,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             if (Controller.IsSimulator)
             {
                 SelectedAcquisitionType = "File";
-                SelectedDirectory = Controller.Config.response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource.directory;
+                SelectedDirectory = Controller.Config.GetParameter<string>("response.data.job.channelMap.acquisition.AcquisitionChannel.source.FileAcquisitionSource.directory");
             }
             else
             {
@@ -247,7 +267,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             }
 
             JobName = "";
-            JobName = Controller.Config.response.data.job.name;
+            JobName = Controller.Config.GetParameter<string>("response.data.job.name");
         }
         else
             Logger.LogError("V5 Config update but Config is invalid.");

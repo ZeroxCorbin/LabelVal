@@ -41,9 +41,8 @@ public class V275Result : ImageResult
 }
 public class V5Result : ImageResult
 {
-    [SQLite.Ignore][JsonIgnore] public V5_REST_Lib.Models.Config _Config {get=>!string.IsNullOrEmpty(Template) ? JsonConvert.DeserializeObject<V5_REST_Lib.Models.Config>(Template) : null; set => Template = JsonConvert.SerializeObject(value); }
-    [SQLite.Ignore][JsonIgnore] public V5_REST_Lib.Models.ResultsAlt _Report {get=> !string.IsNullOrEmpty(Report) ? JsonConvert.DeserializeObject<V5_REST_Lib.Models.ResultsAlt>(Report) : null; set => Report = JsonConvert.SerializeObject(value); }
-    [SQLite.Ignore][JsonIgnore] public V5_REST_Lib.Models.Results _ReportOld { get => !string.IsNullOrEmpty(Report) ? JsonConvert.DeserializeObject<V5_REST_Lib.Models.Results>(Report) : null; set => Report = JsonConvert.SerializeObject(value); }
+    [SQLite.Ignore][JsonIgnore] public JObject _Config {get=>!string.IsNullOrEmpty(Template) ? JsonConvert.DeserializeObject<JObject>(Template) : null; set => Template = JsonConvert.SerializeObject(value); }
+    [SQLite.Ignore][JsonIgnore] public JObject _Report {get=> !string.IsNullOrEmpty(Report) ? JsonConvert.DeserializeObject<JObject>(Report) : null; set => Report = JsonConvert.SerializeObject(value); }
 }
 
 public class L95xxResult : ImageResult

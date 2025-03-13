@@ -3,6 +3,7 @@ using BarcodeVerification.lib.ISO.ParameterTypes;
 using CommunityToolkit.Mvvm.ComponentModel;
 using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Interfaces;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -35,7 +36,7 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
             return;
 
         Sector = sector;
-        ResultsAlt.Decodedata results = sec.V5Sector;
+        JObject results = sec.V5Sector;
 
         IsNotEmpty = false;
 

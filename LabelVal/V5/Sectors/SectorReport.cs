@@ -3,6 +3,7 @@ using BarcodeVerification.lib.GS1;
 using BarcodeVerification.lib.ISO.ParameterTypes;
 using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Interfaces;
+using Newtonsoft.Json.Linq;
 
 namespace LabelVal.V5.Sectors;
 
@@ -43,7 +44,7 @@ public class SectorReport : ISectorReport
     //V275 2D module data
     public ModuleData ExtendedData { get; set; }
 
-    public SectorReport(V5_REST_Lib.Models.ResultsAlt.Decodedata v5)
+    public SectorReport(JObject decodeData)
     {
         //Original = v5;
 

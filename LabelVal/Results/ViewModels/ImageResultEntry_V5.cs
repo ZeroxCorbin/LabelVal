@@ -4,9 +4,11 @@ using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Results.Databases;
 using LabelVal.Sectors.Classes;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using V5_REST_Lib.Controllers;
 
 namespace LabelVal.Results.ViewModels;
 public partial class ImageResultEntry
@@ -20,9 +22,10 @@ public partial class ImageResultEntry
     [ObservableProperty] private ImageEntry v5CurrentImage;
     [ObservableProperty] private DrawingImage v5CurrentImageOverlay;
 
-    public V5_REST_Lib.Models.Config V5CurrentTemplate { get; set; }
+    public JObject V5CurrentTemplate { get; set; }
     public string V5SerializeTemplate => JsonConvert.SerializeObject(V5CurrentTemplate);
-    public V5_REST_Lib.Models.ResultsAlt V5CurrentReport { get; private set; }
+
+    public JObject V5CurrentReport { get; private set; }
     public string V5SerializeReport => JsonConvert.SerializeObject(V5CurrentReport);
 
     public ObservableCollection<Sectors.Interfaces.ISector> V5CurrentSectors { get; } = [];
@@ -109,13 +112,13 @@ public partial class ImageResultEntry
         V5CurrentImage = new ImageEntry(ImageRollUID, LibImageUtilities.ImageTypes.Png.Utilities.GetPng(report.FullImage), 96);
 
         V5CurrentTemplate = ImageResults.SelectedScanner.Controller.Config;
-        V5CurrentReport = JsonConvert.DeserializeObject<V5_REST_Lib.Models.ResultsAlt>(report.ReportJSON);
+        V5CurrentReport = report.Report;
 
         V5CurrentSectors.Clear();
 
         List<Sectors.Interfaces.ISector> tempSectors = [];
-        foreach (V5_REST_Lib.Models.ResultsAlt.Decodedata rSec in V5CurrentReport._event.data.decodeData)
-            tempSectors.Add(new V5.Sectors.Sector(rSec, V5CurrentTemplate.response.data.job.toolList[rSec.toolSlot - 1], $"DecodeTool{rSec.toolSlot}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, ImageResults.SelectedScanner.Controller.Version));
+        foreach (var rSec in V5CurrentReport.GetParameter<JArray>("event.data.decodeData"))
+            tempSectors.Add(new V5.Sectors.Sector((JObject)rSec, (JObject)V5CurrentTemplate.GetParameter<JArray>("response.data.job.toolList")[((JObject)rSec).GetParameter<int>("toolSlot") - 1], $"DecodeTool{((JObject)rSec).GetParameter<int>("toolSlot")}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, ImageResults.SelectedScanner.Controller.Version));
 
         if (tempSectors.Count > 0)
         {
@@ -172,12 +175,9 @@ public partial class ImageResultEntry
             List<Sectors.Interfaces.ISector> tempSectors = [];
             if (!string.IsNullOrEmpty(row.Report))
             {
-                if (row._Report._event.data.decodeData != null)
-                    foreach (V5_REST_Lib.Models.ResultsAlt.Decodedata rSec in row._Report._event.data.decodeData)
-                        tempSectors.Add(new V5.Sectors.Sector(rSec, row._Config.response.data.job.toolList[rSec.toolSlot - 1], $"DecodeTool{rSec.toolSlot}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, ""));
-                else
-                    foreach (V5_REST_Lib.Models.Results.Results_QualifiedResult rSec in row._ReportOld._event.data.cycleConfig.qualifiedResults)
-                        tempSectors.Add(new V5.Sectors.Sector(JsonConvert.DeserializeObject<V5_REST_Lib.Models.ResultsAlt.Decodedata>(JsonConvert.SerializeObject(rSec)), row._Config.response.data.job.toolList[rSec.toolSlot - 1], $"DecodeTool{rSec.toolSlot}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, ""));
+                foreach (var rSec in row._Report.GetParameter<JArray>("event.data.decodeData"))
+                    tempSectors.Add(new V5.Sectors.Sector((JObject)rSec, (JObject)V5CurrentTemplate.GetParameter<JArray>("response.data.job.toolList")[((JObject)rSec).GetParameter<int>("toolSlot") - 1], $"DecodeTool{((JObject)rSec).GetParameter<int>("toolSlot")}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, ""));
+
             }
 
             if (tempSectors.Count > 0)

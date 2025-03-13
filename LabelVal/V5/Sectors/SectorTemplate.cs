@@ -1,15 +1,13 @@
 ﻿using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Interfaces;
-using System;
-using System.Windows;
-using System.Windows.Media;
-using V5_REST_Lib.Models;
+using Newtonsoft.Json.Linq;
+using V5_REST_Lib.Controllers;
 
 namespace LabelVal.V5.Sectors;
 
 public class SectorTemplate : ISectorTemplate
 {
-    public Config.Toollist ToolList { get; }
+    public JObject ToolList { get; }
 
     public string Name { get; set; }
     public string Username { get; set; }
@@ -30,7 +28,7 @@ public class SectorTemplate : ISectorTemplate
     public TemplateMatchMode MatchSettings { get; set; }
     public BlemishMaskLayers BlemishMask { get; set; }
 
-    public SectorTemplate(ResultsAlt.Decodedata report, Config.Toollist toolList, string name, string version)
+    public SectorTemplate(JObject decodeData, JObject toolList, string name, string version)
     {
         Version = version;
 
@@ -40,45 +38,43 @@ public class SectorTemplate : ISectorTemplate
         Username = name;
 
         // Update the properties
-        if (toolList.SymbologyTool.regionList.Length > 0 && toolList.SymbologyTool.regionList[0].Region.shape.type == "RectShape")
+        if (toolList.GetParameter<int>("SymbologyTool.regionList.Length") > 0 && toolList.GetParameter<string>("SymbologyTool.regionList[0].Region.shape.type") == "RectShape")
         {
-            Left = toolList.SymbologyTool.regionList[0].Region.shape.RectShape.x;
-            Top = toolList.SymbologyTool.regionList[0].Region.shape.RectShape.y;
-            Width = toolList.SymbologyTool.regionList[0].Region.shape.RectShape.width;
-            Height = toolList.SymbologyTool.regionList[0].Region.shape.RectShape.height;
+            Left = toolList.GetParameter<double>("SymbologyTool.regionList[0].Region.shape.RectShape.x");
+            Top = toolList.GetParameter<double>("SymbologyTool.regionList[0].Region.shape.RectShape.y");
+            Width = toolList.GetParameter<double>("SymbologyTool.regionList[0].Region.shape.RectShape.width");
+            Height = toolList.GetParameter<double>("SymbologyTool.regionList[0].Region.shape.RectShape.height");
         }
         else
         {
-            if (report.region != null)
+            if (decodeData.GetParameter<JObject>("region") != null)
             {
-                Left = report.region.xOffset;
-                Top = report.region.yOffset;
-                Width = report.region.width;
-                Height = report.region.height;
+                Left = decodeData.GetParameter<double>("region.xOffset");
+                Top = decodeData.GetParameter<double>("region.yOffset");
+                Width = decodeData.GetParameter<double>("region.width");
+                Height = decodeData.GetParameter<double>("region.height");
             }
         }
 
         AngleDeg = 0;
 
-        CenterPoint = new System.Drawing.Point(report.x, report.y);
+        CenterPoint = new System.Drawing.Point(decodeData.GetParameter<int>("x"), decodeData.GetParameter<int>("y"));
 
         Orientation = 0;
-        SymbologyType = GetV5Symbology(report);
+        SymbologyType = GetV5Symbology(decodeData);
         Version = version;
     }
 
     public SectorTemplate() { }
 
-    private string GetV5Symbology(ResultsAlt.Decodedata report)
+    private string GetV5Symbology(JObject report)
     {
-        if (report.Code128 != null)
+        if (report.GetParameter<JObject>("Code128") != null)
             return "Code128";
-        else if (report.Datamatrix != null)
+        else if (report.GetParameter<JObject>("Datamatrix") != null)
             return "DataMatrix";
-        else if (report.QR != null)
+        else if (report.GetParameter<JObject>("QR") != null)
             return "QR";
-        else if (report.PDF417 != null)
-            return "PDF417";
-        else return report.UPC != null ? "UPC" : "Unknown";
+        else return report.GetParameter<JObject>("PDF417") != null ? "PDF417" : report.GetParameter<JObject>("UPC") != null ? "UPC" : "Unknown";
     }
 }

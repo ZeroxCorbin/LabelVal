@@ -3,13 +3,14 @@ using BarcodeVerification.lib.GS1;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LabelVal.Sectors.Interfaces;
+using Newtonsoft.Json.Linq;
 using V5_REST_Lib.Models;
 
 namespace LabelVal.V5.Sectors;
 
 public partial class Sector : ObservableObject, ISector
 {
-    public ResultsAlt.Decodedata V5Sector { get; }
+    public JObject V5Sector { get; }
 
     public ISectorTemplate Template { get; }
     public ISectorReport Report { get; }
@@ -77,7 +78,7 @@ public partial class Sector : ObservableObject, ISector
     public bool IsFocused { get; set; }
     public bool IsMouseOver { get; set; }
 
-    public Sector(ResultsAlt.Decodedata decodeData, Config.Toollist toollist, string name, AvailableStandards standard, AvailableTables table, string version)
+    public Sector(JObject decodeData, JObject toollist, string name, AvailableStandards standard, AvailableTables table, string version)
     {
         V5Sector = decodeData;
 
@@ -86,9 +87,6 @@ public partial class Sector : ObservableObject, ISector
 
         DesiredStandard = standard;
         DesiredGS1Table = table;
-
-        //Report.Standard = decodeData.grading != null ? Standards.GetV5StandardEnum(decodeData.grading.standard) : null;
-        //Report.GS1Table = null; //GS1 is not supported in V5, yet
 
         SectorDetails = new SectorDetails(this, Template.Username);
 

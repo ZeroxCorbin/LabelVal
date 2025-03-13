@@ -25,7 +25,7 @@
         <local_converters:EnumValueToDescription_ShortenString x:Key="EnumValueToDescription_ShortenString" />
         <local_converters:BoolToPassFailString x:Key="BoolToPassFailString" />
         <local_converters:ParameterEnumToParameterDescription x:Key="ParameterEnumToParameterDescription" />
-        <local_converters:ParameterSuffixToUnitsMultiConverter x:Key="ParameterSuffixToUnitsMultiConverter"/>
+        <local_converters:ParameterSuffixToUnitsMultiConverter x:Key="ParameterSuffixToUnitsMultiConverter" />
 
         <!--#endregion-->
 
@@ -78,11 +78,14 @@
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center">
                             <TextBlock Text="{Binding Value, StringFormat={}{0:N1}}" />
-                            <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" VerticalAlignment="Bottom" Margin="0,0,0,1">
+                            <TextBlock VerticalAlignment="Bottom" Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}">
                                 <TextBlock.Text>
                                     <MultiBinding Converter="{StaticResource ParameterSuffixToUnitsMultiConverter}">
-                                        <Binding Path="Suffix" Mode="OneTime" />
-                                        <Binding Path="DataContext.Report.Units" RelativeSource="{RelativeSource AncestorType=UserControl}" Mode="OneTime" />
+                                        <Binding Mode="OneTime" Path="Suffix" />
+                                        <Binding
+                                            Mode="OneTime"
+                                            Path="DataContext.Report.Units"
+                                            RelativeSource="{RelativeSource AncestorType=UserControl}" />
                                     </MultiBinding>
                                 </TextBlock.Text>
                             </TextBlock>
@@ -107,8 +110,8 @@
                             Grid.Column="1"
                             MinWidth="26"
                             Margin="3,0"
-                            VerticalAlignment="Center"
                             HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
                             Text="{Binding Path=Value, Mode=OneTime}"
                             TextWrapping="Wrap" />
                     </Grid>
@@ -175,16 +178,22 @@
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center">
 
-                            <TextBlock Text="{Binding Path=Value, StringFormat={}{0:N1}, Mode=OneTime}" HorizontalAlignment="Right"/>
-                            <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                            <TextBlock HorizontalAlignment="Right" Text="{Binding Path=Value, StringFormat={}{0:N1}, Mode=OneTime}" />
+                            <TextBlock
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}">
                                 <TextBlock.Text>
                                     <MultiBinding Converter="{StaticResource ParameterSuffixToUnitsMultiConverter}">
-                                        <Binding Path="Suffix" Mode="OneTime" />
-                                        <Binding Path="DataContext.Report.Units" RelativeSource="{RelativeSource AncestorType=UserControl}" Mode="OneTime" />
+                                        <Binding Mode="OneTime" Path="Suffix" />
+                                        <Binding
+                                            Mode="OneTime"
+                                            Path="DataContext.Report.Units"
+                                            RelativeSource="{RelativeSource AncestorType=UserControl}" />
                                     </MultiBinding>
                                 </TextBlock.Text>
                             </TextBlock>
-                            
+
                             <TextBlock
                                 Width="25"
                                 Margin="3,0"
@@ -284,12 +293,18 @@
                             Grid.Column="1"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center">
-                            <TextBlock Text="{Binding Path=Value, StringFormat={}{0:N1}, Mode=OneTime}" HorizontalAlignment="Right"/>
-                            <TextBlock  Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                            <TextBlock HorizontalAlignment="Right" Text="{Binding Path=Value, StringFormat={}{0:N1}, Mode=OneTime}" />
+                            <TextBlock
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}">
                                 <TextBlock.Text>
                                     <MultiBinding Converter="{StaticResource ParameterSuffixToUnitsMultiConverter}">
-                                        <Binding Path="Suffix" Mode="OneTime" />
-                                        <Binding Path="DataContext.Report.Units" RelativeSource="{RelativeSource AncestorType=UserControl}" Mode="OneTime" />
+                                        <Binding Mode="OneTime" Path="Suffix" />
+                                        <Binding
+                                            Mode="OneTime"
+                                            Path="DataContext.Report.Units"
+                                            RelativeSource="{RelativeSource AncestorType=UserControl}" />
                                     </MultiBinding>
                                 </TextBlock.Text>
                             </TextBlock>
@@ -458,8 +473,8 @@
                             <Expander.Header>
                                 <!--  Decode Text & OCR  -->
                                 <TextBlock
-                                    Margin="3,0"
                                     MaxWidth="172"
+                                    Margin="3,0"
                                     DockPanel.Dock="Top"
                                     TextWrapping="Wrap">
                                     <TextBlock.Style>
