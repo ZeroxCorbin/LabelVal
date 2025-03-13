@@ -1,5 +1,4 @@
-﻿using BarcodeVerification.lib.Common;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Sectors.Classes;
@@ -24,7 +23,7 @@ public partial class ImageResultEntry
     [ObservableProperty] private ImageEntry v275CurrentImage;
     [ObservableProperty] private DrawingImage v275CurrentImageOverlay;
 
-    public V275_REST_Lib.Models.Job V275CurrentTemplate { get; set; }
+    public JObject V275CurrentTemplate { get; set; }
     public string V275SerializeTemplate => JsonConvert.SerializeObject(V275CurrentTemplate);
     public JObject V275CurrentReport { get; private set; }
     public string V275SerializeReport => JsonConvert.SerializeObject(V275CurrentReport);
@@ -47,10 +46,10 @@ public partial class ImageResultEntry
     [RelayCommand]
     private async Task V275Process(ImageResultEntryImageTypes type)
     {
-        bool simAddSec = ImageResults.SelectedNode.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && V275ResultRow?._Job?.sectors != null;
-        bool simDetSec = ImageResults.SelectedNode.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && V275ResultRow?._Job?.sectors == null;
-        bool camAddSec = !ImageResults.SelectedNode.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && V275ResultRow?._Job?.sectors != null;
-        bool camDetSec = !ImageResults.SelectedNode.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && V275ResultRow?._Job?.sectors == null;
+        bool simAddSec = ImageResults.SelectedNode.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && V275ResultRow?._Job["sectors"] != null;
+        bool simDetSec = ImageResults.SelectedNode.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && V275ResultRow?._Job["sectors"] == null;
+        bool camAddSec = !ImageResults.SelectedNode.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && V275ResultRow?._Job["sectors"] != null;
+        bool camDetSec = !ImageResults.SelectedNode.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && V275ResultRow?._Job["sectors"] == null;
 
         BringIntoView?.Invoke();
 
@@ -63,14 +62,14 @@ public partial class ImageResultEntry
         {
             lab.Image = SourceImage.ImageBytes;
             lab.Dpi = (int)Math.Round(SourceImage.Image.DpiX, 0);
-            lab.Sectors = simDetSec || camDetSec ? [] : camAddSec ? [.. V275ResultRow._Job.sectors] : null;
+            lab.Sectors = simDetSec || camDetSec ? [] : camAddSec ? [.. V275ResultRow._Job["sectors"]] : null;
             lab.Table = ImageResults.SelectedImageRoll.SelectedGS1Table;
         }
         else if (type == ImageResultEntryImageTypes.V275Stored)
         {
             lab.Image = V275ResultRow.Stored.ImageBytes;
             lab.Dpi = (int)Math.Round(V275ResultRow.Stored.Image.DpiX, 0);
-            lab.Sectors = simAddSec || camAddSec ? [.. V275ResultRow._Job.sectors] : null;
+            lab.Sectors = simAddSec || camAddSec ? [.. V275ResultRow._Job["sectors"]] : null;
             lab.Table = ImageResults.SelectedImageRoll.SelectedGS1Table;
         }
 
@@ -139,13 +138,13 @@ public partial class ImageResultEntry
         V275CurrentSectors.Clear();
 
         List<Sectors.Interfaces.ISector> tempSectors = [];
-        foreach (V275_REST_Lib.Models.Job.Sector templateSec in V275CurrentTemplate.sectors)
+        foreach (JToken templateSec in V275CurrentTemplate["sectors"])
         {
-            foreach (var currentSect in V275CurrentReport["inspectLabel"]["inspectSector"])
+            foreach (JToken currentSect in V275CurrentReport["inspectLabel"]["inspectSector"])
             {
-                if (templateSec.name == currentSect["name"].ToString())
+                if (templateSec["name"].ToString() == currentSect["name"].ToString())
                 {
-                    tempSectors.Add(new V275.Sectors.Sector(templateSec, (JObject)currentSect, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, repeat.FullReport.Job.jobVersion));
+                    tempSectors.Add(new V275.Sectors.Sector((JObject)templateSec, (JObject)currentSect, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, repeat.FullReport.Report["jobVersion"].ToString()));
                     break;
                 }
             }
@@ -180,10 +179,10 @@ public partial class ImageResultEntry
                 {
                     if (sec.Template.SymbologyType == cSec.Template.SymbologyType)
                     {
-                        var res = sec.SectorDetails.Compare(cSec.SectorDetails);
+                        SectorDifferences res = sec.SectorDetails.Compare(cSec.SectorDetails);
                         if (res != null)
                             diff.Add(res);
-                        
+
                     }
                     else
                     {
@@ -279,9 +278,9 @@ public partial class ImageResultEntry
             return !await ImageResults.SelectedNode.Controller.DetectSectors() ? -1 : 2;
         }
 
-        foreach (V275.Sectors.Sector sec in V275StoredSectors)
+        foreach (Sectors.Interfaces.ISector sec in V275StoredSectors)
         {
-            if (!await ImageResults.SelectedNode.Controller.AddSector(sec.Template.Name, JsonConvert.SerializeObject(sec.V275Sector)))
+            if (!await ImageResults.SelectedNode.Controller.AddSector(sec.Template.Name, JsonConvert.SerializeObject(((V275.Sectors.SectorTemplate)sec.Template).V275Sector)))
                 return -1;
 
             if (sec.Template.BlemishMask.Layers != null)
@@ -302,7 +301,7 @@ public partial class ImageResultEntry
 
     private void V275GetStored()
     {
-        if(!App.Current.Dispatcher.CheckAccess())
+        if (!App.Current.Dispatcher.CheckAccess())
         {
             _ = App.Current.Dispatcher.BeginInvoke(() => V275GetStored());
             return;
@@ -318,7 +317,7 @@ public partial class ImageResultEntry
 
         try
         {
-            var row = SelectedDatabase.Select_V275Result(ImageRollUID, SourceImageUID);
+            Databases.V275Result row = SelectedDatabase.Select_V275Result(ImageRollUID, SourceImageUID);
 
             if (row == null)
             {
@@ -330,14 +329,14 @@ public partial class ImageResultEntry
 
             if (!string.IsNullOrEmpty(row.Report) && !string.IsNullOrEmpty(row.Template))
             {
-                foreach (V275_REST_Lib.Models.Job.Sector jSec in row._Job.sectors)
+                foreach (JToken jSec in row._Job["sectors"])
                 {
                     foreach (JObject rSec in row._Report["inspectLabel"]["inspectSector"])
                     {
-                        if (jSec.name == rSec["name"].ToString())
+                        if (jSec["name"].ToString() == rSec["name"].ToString())
                         {
 
-                            tempSectors.Add(new V275.Sectors.Sector(jSec, rSec, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, row._Job.jobVersion));
+                            tempSectors.Add(new V275.Sectors.Sector((JObject)jSec, rSec, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, row._Job["jobVersion"].ToString()));
 
                             break;
                         }
@@ -348,7 +347,7 @@ public partial class ImageResultEntry
             if (tempSectors.Count > 0)
             {
                 SortList(tempSectors);
-                foreach (var sec in tempSectors)
+                foreach (Sectors.Interfaces.ISector sec in tempSectors)
                     V275StoredSectors.Add(sec);
             }
 
@@ -361,7 +360,6 @@ public partial class ImageResultEntry
             Logger.LogError(ex);
             Logger.LogError($"Error while loading stored results from: {SelectedDatabase.File.Name}");
         }
-
     }
     private static object V275DeserializeSector(JObject reportSec, bool removeGS1Data)
     {

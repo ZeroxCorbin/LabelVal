@@ -49,7 +49,7 @@ public class SectorReport : ISectorReport
     //V275 2D module data
     public ModuleData ExtendedData { get; private set; }
 
-    public SectorReport(JObject report)
+    public SectorReport(JObject report, JObject template)
     {
         Original = report;
 
@@ -59,7 +59,11 @@ public class SectorReport : ISectorReport
 
         DecodeText = GetParameter(AvailableParameters.DecodeText, report);
 
-        if (!SetStandardAndTable(report))
+        if (!SetStandardAndTable(template))
+            return;
+
+        //Set GS1 Data
+        if (!SetGS1Data(report))
             return;
 
         //Set XDimension
@@ -192,26 +196,27 @@ public class SectorReport : ISectorReport
         return true;
     }
 
-    private bool SetStandardAndTable(JObject report)
+    private bool SetStandardAndTable(JObject template)
     {
-        string stdString = GetParameter(AvailableParameters.Standard, report);
-        string tblString = GetParameter(AvailableParameters.GS1Table, report);
+        string stdString = GetParameter(AvailableParameters.Standard, template);
+        string tblString = GetParameter(AvailableParameters.GS1Table, template);
 
-        if (stdString == null)
+        if (stdString == null || stdString.Equals("False"))
         {
-            Logger.LogError($"Could not find: '{AvailableParameters.Standard.GetParameterPath(Device, SymbolType)}' in ReportData. {Device}");
-            return false;
+            Standard = AvailableStandards.ISO;
+            GS1Table = AvailableTables.Unknown;
         }
-        Standard = stdString.GetStandard(Device);
-
-        if (Standard == AvailableStandards.Unknown)
+        else
         {
-            Logger.LogError($"Could not determine standard from: '{stdString}' {Device}");
-            return false;
+            Standard = AvailableStandards.GS1;
+            GS1Table = tblString.GetTable(Device);
         }
 
-        GS1Table = tblString.GetTable(Device);
+        return true;
+    }
 
+    private bool SetGS1Data(JObject report)
+    {
         //If a table is not defined, it is not a GS1 symbol Exit
         if (GS1Table == AvailableTables.Unknown)
             return true;
@@ -234,53 +239,46 @@ public class SectorReport : ISectorReport
 
     private bool SetXdimAndUnits(JObject report)
     {
-        string xdim = GetParameter(AvailableParameters.CellSize, report);
-        xdim ??= GetParameter(AvailableParameters.Xdim, report);
+        var xdim = GetParameter(AvailableParameters.Xdim, report);
+        var json = xdim != null;
+        xdim ??= GetParameter(AvailableParameters.XDimension, report);
         if (xdim == null)
         {
-            Logger.LogError($"Could not find: '{AvailableParameters.CellSize.GetParameterPath(Device, SymbolType)}' or '{AvailableParameters.Xdim.GetParameterPath(Device, SymbolType)}' in ReportData. {Device}");
+            Logger.LogError($"Could not find: '{AvailableParameters.Xdim.GetParameterPath(Device, SymbolType)}' or '{AvailableParameters.XDimension.GetParameterPath(Device, SymbolType)}' in ReportData. {Device}");
             return false;
         }
-        string[] split = xdim.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-        if (split.Length != 2)
-        {
-            Logger.LogError($"Could not parse: '{xdim}' to get XDimension. {Device}");
-            return false;
-        }
-        XDimension = split[0].ParseDouble();
-        if (split[1].Equals("mils"))
-            Units = AvailableUnits.Mils;
-        else if (split[1].Equals("mm"))
-            Units = AvailableUnits.Millimeters;
+
+        if(json)
+           XDimension = JObject.Parse(xdim)["value"].ToObject<double>();
         else
+            XDimension = xdim.ParseDouble();
+        
+        var unit = GetParameter(AvailableParameters.Units, report);
+        if (unit == null)
         {
-            Logger.LogError($"Could not determine units from: '{xdim}' {Device}");
+            Logger.LogError($"Could not find: '{AvailableParameters.Units.GetParameterPath(Device, SymbolType)}' in ReportData. {Device}");
             return false;
         }
+
+        Units = unit.Equals("mil") ? AvailableUnits.Mils : AvailableUnits.MM;
+
         return true;
     }
 
     private bool SetApeture(JObject report)
     {
         string aperture = GetParameter(AvailableParameters.Aperture, report);
-        if (aperture != null)
-        {
-            //GetParameter returns: Reference number 12 (12 mil)
-            string[] split = aperture.Split('(', StringSplitOptions.RemoveEmptyEntries);
-            if (split.Length != 2)
-            {
-                Logger.LogError($"Could not parse: '{aperture}' to get Aperture. {Device}");
-                return false;
-            }
-            Aperture = split[1].ParseDouble();
-        }
-        else
+        if (aperture == null)
         {
             Logger.LogError($"Could not find: '{AvailableParameters.Aperture.GetParameterPath(Device, SymbolType)}' in ReportData. {Device}");
             return false;
         }
+
+        Aperture = aperture.ParseDouble();
+
         return true;
     }
+
     private string GetParameter(AvailableParameters parameter, JObject report)
     {
         string path = parameter.GetParameterPath(Device, SymbolType);
@@ -300,10 +298,11 @@ public class SectorReport : ISectorReport
 
     private OverallGrade GetOverallGrade(string original)
     {
-        string data = original.Replace("DPM", "");
-        string[] spl = data.Split('/', StringSplitOptions.RemoveEmptyEntries);
+        var json = JObject.Parse(original);
 
-        Grade grade = new(AvailableParameters.OverallGrade, Device, spl[0]);
-        return new OverallGrade(Device, grade, original, spl[1], spl[2]);
+        string[] spl = json["string"].ToString().Split('/', StringSplitOptions.RemoveEmptyEntries);
+
+        Grade grade = new(AvailableParameters.OverallGrade, Device, json["grade"]["value"].Value<double>());
+        return new OverallGrade(Device, grade, json["string"].ToString(), spl[1], spl[2]);
     }
 }

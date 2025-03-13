@@ -1,11 +1,12 @@
 ﻿using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Interfaces;
+using Newtonsoft.Json.Linq;
 
 namespace LabelVal.V275.Sectors;
 
 public class SectorTemplate : ISectorTemplate
 {
-    public V275_REST_Lib.Models.Job.Sector V275Sector { get; }
+    public JObject V275Sector { get; }
 
     public string Name { get; set; }
     public string Username { get; set; }
@@ -26,39 +27,44 @@ public class SectorTemplate : ISectorTemplate
     public TemplateMatchMode MatchSettings { get; set; }
     public BlemishMaskLayers BlemishMask { get; set; }
 
-    public SectorTemplate(V275_REST_Lib.Models.Job.Sector sectorTemplate, string version)
+    public SectorTemplate(JObject sectorTemplate, string version)
     {
         Version = version;
 
         V275Sector = sectorTemplate;
 
-        Name = sectorTemplate.name;
-        Username = sectorTemplate.username;
+        Name = sectorTemplate["name"]?.ToString();
+        Username = sectorTemplate["username"]?.ToString();
 
-        Top = sectorTemplate.top;
-        Left = sectorTemplate.left;
-        Width = sectorTemplate.width;
-        Height = sectorTemplate.height;
-        AngleDeg = sectorTemplate.angle;
+        Top = sectorTemplate["top"]?.Value<double>() ?? 0;
+        Left = sectorTemplate["left"]?.Value<double>() ?? 0;
+        Width = sectorTemplate["width"]?.Value<double>() ?? 0;
+        Height = sectorTemplate["height"]?.Value<double>() ?? 0;
+        AngleDeg = sectorTemplate["angle"]?.Value<double>() ?? 0;
 
-        CenterPoint = new System.Drawing.Point(sectorTemplate.left + sectorTemplate.width / 2, sectorTemplate.top + sectorTemplate.height / 2);
+        CenterPoint = new System.Drawing.Point(
+            (int)(sectorTemplate["left"]?.Value<double>() ?? 0 + sectorTemplate["width"]?.Value<double>() ?? 0 / 2),
+            (int)(sectorTemplate["top"]?.Value<double>() ?? 0 + sectorTemplate["height"]?.Value<double>() ?? 0 / 2)
+        );
 
-        Orientation = sectorTemplate.orientation;
+        Orientation = sectorTemplate["orientation"]?.Value<double>() ?? 0;
 
-        SymbologyType = sectorTemplate.symbology;
+        SymbologyType = sectorTemplate["symbology"]?.ToString();
 
-        if (sectorTemplate.matchSettings != null)
+        if (sectorTemplate["matchSettings"] != null)
+        {
             MatchSettings = new TemplateMatchMode
             {
-                MatchMode = sectorTemplate.matchSettings.matchMode,
-                UserDefinedDataTrueSize = sectorTemplate.matchSettings.userDefinedDataTrueSize,
-                FixedText = sectorTemplate.matchSettings.fixedText
+                MatchMode = sectorTemplate["matchSettings"]["matchMode"].Value<int>(),
+                UserDefinedDataTrueSize = sectorTemplate["matchSettings"]["userDefinedDataTrueSize"].Value<int>(),
+                FixedText = sectorTemplate["matchSettings"]["fixedText"].ToString()
             };
+        }
 
-        BlemishMask = new BlemishMaskLayers
-        {
-            Layers = sectorTemplate.blemishMask?.layers
-        };
-        Version = version;
+        //BlemishMask = new BlemishMaskLayers
+        //{
+        //    Layers = sectorTemplate["blemishMask"]?["layers"].ToObject<List<string>>()
+        //};
     }
+
 }

@@ -9,8 +9,6 @@ namespace LabelVal.V275.Sectors;
 
 public partial class Sector : ObservableObject, ISector
 {
-    public V275_REST_Lib.Models.Job.Sector V275Sector { get; }
-
     public ISectorTemplate Template { get; }
     public ISectorReport Report { get; }
 
@@ -78,12 +76,10 @@ public partial class Sector : ObservableObject, ISector
     public bool IsFocused { get; set; }
     public bool IsMouseOver { get; set; }
 
-    public Sector(V275_REST_Lib.Models.Job.Sector sector, JObject report, AvailableStandards standard, AvailableTables table, string version)
+    public Sector(JObject template, JObject report, AvailableStandards standard, AvailableTables table, string version)
     {
-        V275Sector = sector;
-
-        Report = new SectorReport(report);
-        Template = new SectorTemplate(sector, version);
+        Report = new SectorReport(report, template);
+        Template = new SectorTemplate(template, version);
 
         DesiredStandard = standard;
         DesiredGS1Table = table;

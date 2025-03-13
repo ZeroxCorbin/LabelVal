@@ -1,10 +1,7 @@
-﻿using LabelVal.ImageRolls.ViewModels;
-using LabelVal.Sectors.Classes;
+﻿using LabelVal.Sectors.Classes;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using V275_REST_Lib.Models;
@@ -25,14 +22,14 @@ public partial class RunResult
         List<Sectors.Interfaces.ISector> tempSectors = [];
         if (!string.IsNullOrEmpty(StoredImageResultGroup.V275Result.Report) && !string.IsNullOrEmpty(StoredImageResultGroup.V275Result.Template))
         {
-            foreach (V275_REST_Lib.Models.Job.Sector jSec in StoredImageResultGroup.V275Result._Job.sectors)
+            foreach (JToken jSec in StoredImageResultGroup.V275Result._Job["sectors"])
             {
-                foreach (JObject rSec in StoredImageResultGroup.V275Result._Report["inspectLabel"]["inspectSector"])
+                foreach (JToken rSec in StoredImageResultGroup.V275Result._Report["inspectLabel"]["inspectSector"])
                 {
-                    if (jSec.name == rSec["name"].ToString())
+                    if (jSec["name"].ToString() == rSec["name"].ToString())
                     {
 
-                        tempSectors.Add(new V275.Sectors.Sector(jSec, rSec, RunEntry.GradingStandard, RunEntry.Gs1TableName, StoredImageResultGroup.V275Result._Job.jobVersion));
+                        tempSectors.Add(new V275.Sectors.Sector((JObject)jSec, (JObject)rSec, RunEntry.GradingStandard, RunEntry.Gs1TableName, StoredImageResultGroup.V275Result._Job["jobVersion"].ToString()));
 
                         break;
                     }
@@ -62,15 +59,13 @@ public partial class RunResult
         List<Sectors.Interfaces.ISector> tempSectors = [];
         if (!string.IsNullOrEmpty(CurrentImageResultGroup.V275Result.Report) && !string.IsNullOrEmpty(CurrentImageResultGroup.V275Result.Template))
         {
-            foreach (V275_REST_Lib.Models.Job.Sector jSec in CurrentImageResultGroup.V275Result._Job.sectors)
+            foreach (JToken jSec in CurrentImageResultGroup.V275Result._Job["sectors"])
             {
-                foreach (JObject rSec in CurrentImageResultGroup.V275Result._Report["inspectLabel"]["inspectSector"])
+                foreach (JToken rSec in CurrentImageResultGroup.V275Result._Report["inspectLabel"]["inspectSector"])
                 {
-                    if (jSec.name == rSec["name"].ToString())
+                    if (jSec["name"].ToString() == rSec["name"].ToString())
                     {
-
-                        tempSectors.Add(new V275.Sectors.Sector(jSec, rSec, RunEntry.GradingStandard, RunEntry.Gs1TableName, CurrentImageResultGroup.V275Result._Job.jobVersion));
-
+                        tempSectors.Add(new V275.Sectors.Sector((JObject)jSec, (JObject)rSec, RunEntry.GradingStandard, RunEntry.Gs1TableName, CurrentImageResultGroup.V275Result._Job["jobVersion"].ToString()));
                         break;
                     }
                 }
@@ -193,12 +188,12 @@ public partial class RunResult
             }
 
         //ToDo: Sort the diff list
-        foreach (var d in diff)
-                V275DiffSectors.Add(d);
+        foreach (SectorDifferences d in diff)
+            V275DiffSectors.Add(d);
 
     }
 
-    private DrawingImage V275CreateSectorsImageOverlay(V275_REST_Lib.Models.Job template, bool isDetailed, JObject report, ImageRolls.ViewModels.ImageEntry image, ObservableCollection<Sectors.Interfaces.ISector> sectors)
+    private DrawingImage V275CreateSectorsImageOverlay(JObject template, bool isDetailed, JObject report, ImageRolls.ViewModels.ImageEntry image, ObservableCollection<Sectors.Interfaces.ISector> sectors)
     {
         DrawingGroup drwGroup = new();
 
@@ -212,11 +207,11 @@ public partial class RunResult
 
         GeometryGroup secCenter = new();
 
-        foreach (V275_REST_Lib.Models.Job.Sector jSec in template.sectors)
+        foreach (JToken jSec in template["sectors"])
         {
             foreach (JObject rSec in report["inspectLabel"]["inspectSector"])
             {
-                if (jSec.name == rSec["name"].ToString())
+                if (jSec["name"].ToString() == rSec["name"].ToString())
                 {
                     if (rSec["type"].ToString() is "blemish" or "ocr" or "ocv")
                         continue;
@@ -231,7 +226,7 @@ public partial class RunResult
                     };
                     drwGroup.Children.Add(sector);
 
-                    drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun(jSec.username, new Typeface("Arial"), 30.0, new Point(jSec.left - 8, jSec.top - 8))));
+                    drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun(jSec["username"].ToString(), new Typeface("Arial"), 30.0, new Point(jSec["left"].Value<int>() - 8, jSec["top"].Value<int>() - 8))));
 
                     double y = rSec["top"].Value<double>() + (rSec["height"].Value<double>() / 2);
                     double x = rSec["left"].Value<double>() + (rSec["width"].Value<double>() / 2);
@@ -251,31 +246,28 @@ public partial class RunResult
         drwGroup.Children.Add(sectorCenters);
 
         if (isDetailed)
-            drwGroup.Children.Add(V275GetModuleGrid(template.sectors, sectors));
+            drwGroup.Children.Add(V275GetModuleGrid(template, sectors));
 
         DrawingImage geometryImage = new(drwGroup);
         geometryImage.Freeze();
 
         return geometryImage;
     }
-    private static DrawingGroup V275GetModuleGrid(Job.Sector[] sectors, ObservableCollection<Sectors.Interfaces.ISector> parsedSectors)
+    private static DrawingGroup V275GetModuleGrid(JObject template, ObservableCollection<Sectors.Interfaces.ISector> parsedSectors)
     {
         DrawingGroup drwGroup = new();
-        //GeometryGroup moduleGrid = new GeometryGroup();
 
-        foreach (Job.Sector sec in sectors)
+        foreach (JToken sec in template["sectors"])
         {
-            Sectors.Interfaces.ISector sect = parsedSectors.FirstOrDefault((e) => e.Template.Name.Equals(sec.name));
+            Sectors.Interfaces.ISector sect = parsedSectors.FirstOrDefault(e => e.Template.Name.Equals(sec["name"].ToString()));
 
             if (sect != null)
             {
                 GeometryGroup secArea = new();
+                secArea.Children.Add(new RectangleGeometry(new Rect(sec["left"].Value<double>(), sec["top"].Value<double>(), sec["width"].Value<double>(), sec["height"].Value<double>())));
 
-                secArea.Children.Add(new RectangleGeometry(new Rect(sec.left, sec.top, sec.width, sec.height)));
-
-                if (sec.symbology is "qr" or "dataMatrix")
+                if (sec["symbology"].ToString() is "qr" or "dataMatrix")
                 {
-
                     Sectors.Interfaces.ISectorReport res = sect.Report;
 
                     if (res.ExtendedData != null)
@@ -285,14 +277,14 @@ public partial class RunResult
                             GeometryGroup moduleGrid = new();
                             DrawingGroup textGrp = new();
 
-                            int qzX = (sec.symbology == "dataMatrix") ? 1 : res.ExtendedData.QuietZone;
+                            int qzX = (sec["symbology"].ToString() == "dataMatrix") ? 1 : res.ExtendedData.QuietZone;
                             int qzY = res.ExtendedData.QuietZone;
 
-                            double dX = (sec.symbology == "dataMatrix") ? 0 : (res.ExtendedData.DeltaX / 2);
-                            double dY = (sec.symbology == "dataMatrix") ? (res.ExtendedData.DeltaY * res.ExtendedData.NumRows) : (res.ExtendedData.DeltaY / 2);
+                            double dX = (sec["symbology"].ToString() == "dataMatrix") ? 0 : (res.ExtendedData.DeltaX / 2);
+                            double dY = (sec["symbology"].ToString() == "dataMatrix") ? (res.ExtendedData.DeltaY * res.ExtendedData.NumRows) : (res.ExtendedData.DeltaY / 2);
 
-                            int startX = 0;// sec.left + res.ExtendedData.Xnw - dX + 1 - (qzX * res.ExtendedData.DeltaX);
-                            int startY = 0;// sec.top + res.ExtendedData.Ynw - dY + 1 - (qzY * res.ExtendedData.DeltaY);
+                            int startX = 0;
+                            int startY = 0;
 
                             int cnt = 0;
 
@@ -359,54 +351,34 @@ public partial class RunResult
                                         GlyphRunDrawing grd = new(Brushes.Blue, gr);
                                         textGrp.Children.Add(grd);
                                     }
-
-                                    //FormattedText formattedText = new FormattedText(
-                                    //    res.ExtendedData.ModuleReflectance[row + col].ToString(),
-                                    //    CultureInfo.GetCultureInfo("en-us"),
-                                    //    FlowDirection.LeftToRight,
-                                    //    new Typeface("Arial"),
-                                    //    4,
-                                    //    System.Windows.Media.Brushes.Black // This brush does not matter since we use the geometry of the text.
-                                    //);
-
-                                    //// Build the geometry object that represents the text.
-                                    //Geometry textGeometry = formattedText.BuildGeometry(new System.Windows.Point(startX + (res.ExtendedData.DeltaX * row), startY + (res.ExtendedData.DeltaY * col)));
-                                    //moduleGrid.Children.Add(textGeometry);
                                 }
                             }
 
                             TransformGroup transGroup = new();
 
                             transGroup.Children.Add(new RotateTransform(
-                                sec.orientation,
+                                sec["orientation"].Value<double>(),
                                 res.ExtendedData.DeltaX * (res.ExtendedData.NumColumns + (qzX * 2)) / 2,
                                 res.ExtendedData.DeltaY * (res.ExtendedData.NumRows + (qzY * 2)) / 2));
 
-                            transGroup.Children.Add(new TranslateTransform(sec.left, sec.top));
+                            transGroup.Children.Add(new TranslateTransform(sec["left"].Value<double>(), sec["top"].Value<double>()));
 
-                            //transGroup.Children.Add(new TranslateTransform (res.ExtendedData.Xnw - dX + 1 - (qzX * res.ExtendedData.DeltaX), res.ExtendedData.Ynw - dY + 1 - (qzY * res.ExtendedData.DeltaY)));
-                            if (sec.orientation == 0)
+                            if (sec["orientation"].Value<double>() == 0)
                                 transGroup.Children.Add(new TranslateTransform(
                                     res.ExtendedData.Xnw - (qzX * res.ExtendedData.DeltaX) - dX + 1,
                                     res.ExtendedData.Ynw - (qzY * res.ExtendedData.DeltaY) - dY + 1));
 
-                            //works for dataMatrix
-                            //if (sec.orientation == 90)
-                            //    transGroup.Children.Add(new TranslateTransform(
-                            //         sec.width - res.ExtendedData.Ynw - (qzY * res.ExtendedData.DeltaY) - 1, 
-                            //         res.ExtendedData.Xnw - (qzX * res.ExtendedData.DeltaX) - dX + 1));
-
-                            if (sec.orientation == 90)
+                            if (sec["orientation"].Value<double>() == 90)
                             {
-                                double x = sec.symbology == "dataMatrix"
-                                    ? sec.width - res.ExtendedData.Ynw - (qzY * res.ExtendedData.DeltaY) - 1
-                                    : sec.width - res.ExtendedData.Ynw - dY - ((res.ExtendedData.NumColumns + qzY) * res.ExtendedData.DeltaY);
+                                double x = sec["symbology"].ToString() == "dataMatrix"
+                                    ? sec["width"].Value<double>() - res.ExtendedData.Ynw - (qzY * res.ExtendedData.DeltaY) - 1
+                                    : sec["width"].Value<double>() - res.ExtendedData.Ynw - dY - ((res.ExtendedData.NumColumns + qzY) * res.ExtendedData.DeltaY);
                                 transGroup.Children.Add(new TranslateTransform(
                                      x,
                                      res.ExtendedData.Xnw - (qzX * res.ExtendedData.DeltaX) - dX + 1));
                             }
 
-                            if (sec.orientation == 180)
+                            if (sec["orientation"].Value<double>() == 180)
                             {
                                 transGroup.Children.Add(new TranslateTransform(
                                     res.ExtendedData.Xnw - (qzX * res.ExtendedData.DeltaX) - dX + 1,
@@ -429,14 +401,6 @@ public partial class RunResult
                 }
             }
         }
-
-        //GeometryDrawing mGrid = new GeometryDrawing
-        //{
-        //    Geometry = moduleGrid,
-        //    Pen = new Pen(Brushes.Yellow, 0.25)
-        //};
-
-        //drwGroup.Children.Add(mGrid);
 
         return drwGroup;
     }

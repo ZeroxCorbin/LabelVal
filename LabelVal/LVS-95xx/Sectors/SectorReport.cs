@@ -144,11 +144,14 @@ public class SectorReport : ISectorReport
             return false;
         }
 
-        GS1Table = tblString.GetTable(AvailableDevices.L95);
-
-        //If a table is not defined, it is not a GS1 symbol Exit
-        if (GS1Table == AvailableTables.Unknown)
+        if (tblString != null)
+            GS1Table = tblString.GetTable(AvailableDevices.L95);
+        else
+        {
+            GS1Table = AvailableTables.Unknown;
             return true;
+
+        }
 
         string data = GetParameter(AvailableParameters.GS1Data, report);
         string pass = GetParameter(AvailableParameters.GS1DataStructure, report);
@@ -172,11 +175,11 @@ public class SectorReport : ISectorReport
         xdim ??= GetParameter(AvailableParameters.Xdim, report);
         if (xdim == null)
         {
-            Logger.LogError($"Could not find: '{AvailableParameters.CellSize.GetParameterPath(AvailableDevices.L95, SymbolType)}' or '{AvailableParameters.Xdim.GetParameterPath(AvailableDevices.L95, SymbolType)}' in ReportData. {Device}");
-            return false;
+            Logger.LogWarning($"Could not find: '{AvailableParameters.CellSize.GetParameterPath(AvailableDevices.L95, SymbolType)}' or '{AvailableParameters.Xdim.GetParameterPath(AvailableDevices.L95, SymbolType)}' in ReportData. {Device}");
+            return true;
         }
         string[] split = xdim.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-        if (split.Length != 2)
+        if (split.Length < 2)
         {
             Logger.LogError($"Could not parse: '{xdim}' to get XDimension. {Device}");
             return false;
@@ -185,7 +188,7 @@ public class SectorReport : ISectorReport
         if (split[1].Equals("mils"))
             Units = AvailableUnits.Mils;
         else if (split[1].Equals("mm"))
-            Units = AvailableUnits.Millimeters;
+            Units = AvailableUnits.MM;
         else
         {
             Logger.LogError($"Could not determine units from: '{xdim}' {Device}");

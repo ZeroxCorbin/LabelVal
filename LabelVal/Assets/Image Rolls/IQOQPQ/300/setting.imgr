@@ -2,7 +2,7 @@
   "UID": "a07011de-9bbd-4b7d-8011-c423a4812f15",
   "Name": "Validation (IQ,OQ,PQ)",
   "Standard": "ISO",
-  "GS1Table": "",
+  "GS1Table": "Unknown",
   "WriteSectorsBeforeProcess": false,
   "TargetDPI": 300,
   "IsLocked": true,
