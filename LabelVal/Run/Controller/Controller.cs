@@ -1,4 +1,4 @@
-﻿using BarcodeVerification.lib.Common;
+﻿using BarcodeVerification.lib.Extensions;
 using BarcodeVerification.lib.GS1;
 using CommunityToolkit.Mvvm.ComponentModel;
 using LabelVal.ImageRolls.ViewModels;

@@ -1,4 +1,5 @@
 ﻿using BarcodeVerification.lib.Common;
+using BarcodeVerification.lib.Extensions;
 using System.Windows.Data;
 
 namespace LabelVal.Sectors.Converters;

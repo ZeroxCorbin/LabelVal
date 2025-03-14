@@ -1,4 +1,5 @@
 ﻿using BarcodeVerification.lib.Common;
+using BarcodeVerification.lib.Extensions;
 using BarcodeVerification.lib.ISO;
 using BarcodeVerification.lib.ISO.ParameterTypes;
 using CommunityToolkit.Mvvm.ComponentModel;

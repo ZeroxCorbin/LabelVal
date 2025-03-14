@@ -15,8 +15,8 @@ using CommunityToolkit.Mvvm.Input;
 using Lvs95xx.lib.Core.Controllers;
 using System.Threading.Tasks;
 using LabelVal.Sectors.Classes;
-using BarcodeVerification.lib.GS1;
 using BarcodeVerification.lib.Common;
+using BarcodeVerification.lib.Extensions;
 
 namespace LabelVal.Results.ViewModels;
 public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullReport>>

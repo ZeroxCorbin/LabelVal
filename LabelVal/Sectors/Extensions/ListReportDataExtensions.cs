@@ -1,4 +1,5 @@
 ﻿using BarcodeVerification.lib.Common;
+using BarcodeVerification.lib.Extensions;
 using BarcodeVerification.lib.ISO;
 using Lvs95xx.lib.Core.Models;
 using Newtonsoft.Json.Linq;
