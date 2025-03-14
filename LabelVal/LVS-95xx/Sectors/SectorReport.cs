@@ -3,9 +3,11 @@ using BarcodeVerification.lib.GS1;
 using BarcodeVerification.lib.ISO;
 using BarcodeVerification.lib.ISO.ParameterTypes;
 using LabelVal.Sectors.Classes;
+using LabelVal.Sectors.Extensions;
 using LabelVal.Sectors.Interfaces;
 using Lvs95xx.lib.Core.Controllers;
 using Lvs95xx.lib.Core.Models;
+using System.Collections.ObjectModel;
 
 namespace LabelVal.LVS_95xx.Sectors;
 
@@ -67,7 +69,7 @@ public class SectorReport : ISectorReport
         if (!SetSymbologyAndRegionType(report.ReportData))
             return;
 
-        DecodeText = GetParameter(AvailableParameters.DecodeText, report.ReportData);
+        DecodeText = report.ReportData.GetParameter(AvailableParameters.DecodeText, Device, SymbolType);
 
         if (!SetStandardAndTable(report.ReportData))
             return;
@@ -88,14 +90,14 @@ public class SectorReport : ISectorReport
 
     private bool SetSymbologyAndRegionType(List<ReportData> report)
     {
-        string sym = GetParameter(AvailableParameters.Symbology, report);
+        string sym = report.GetParameter(AvailableParameters.Symbology, Device, SymbolType);
         if (sym == null)
         {
             Logger.LogError($"Could not find: '{AvailableParameters.Symbology.GetParameterPath(AvailableDevices.L95, AvailableSymbologies.Unknown)}' in ReportData. {Device}");
             return false;
         }
 
-        string dataBarType = GetParameter(AvailableParameters.DataBarType, report);
+        string dataBarType = report.GetParameter(AvailableParameters.DataBarType, Device, SymbolType);
         if (dataBarType != null)
             sym = $"DataBar {dataBarType}";
 
@@ -115,7 +117,7 @@ public class SectorReport : ISectorReport
 
     private bool SetOverallGrade(List<ReportData> report)
     {
-        string overall = GetParameter(AvailableParameters.OverallGrade, report);
+        string overall = report.GetParameter(AvailableParameters.OverallGrade, Device, SymbolType);
         if (overall != null)
             OverallGrade = GetOverallGrade(overall);
         else
@@ -128,8 +130,8 @@ public class SectorReport : ISectorReport
 
     private bool SetStandardAndTable(List<ReportData> report)
     {
-        string stdString = GetParameter(AvailableParameters.Standard, report);
-        string tblString = GetParameter(AvailableParameters.GS1Table, report);
+        string stdString = report.GetParameter(AvailableParameters.Standard, Device, SymbolType);
+        string tblString = report.GetParameter(AvailableParameters.GS1Table, Device, SymbolType);
 
         if (stdString == null)
         {
@@ -153,8 +155,8 @@ public class SectorReport : ISectorReport
 
         }
 
-        string data = GetParameter(AvailableParameters.GS1Data, report);
-        string pass = GetParameter(AvailableParameters.GS1DataStructure, report);
+        string data = report.GetParameter(AvailableParameters.GS1Data, Device, SymbolType);
+        string pass = report.GetParameter(AvailableParameters.GS1DataStructure, Device, SymbolType);
 
         if (data != null)
         {
@@ -171,8 +173,8 @@ public class SectorReport : ISectorReport
 
     private bool SetXdimAndUnits(List<ReportData> report)
     {
-        string xdim = GetParameter(AvailableParameters.CellSize, report);
-        xdim ??= GetParameter(AvailableParameters.Xdim, report);
+        string xdim = report.GetParameter(AvailableParameters.CellSize, Device, SymbolType);
+        xdim ??= report.GetParameter(AvailableParameters.Xdim, Device, SymbolType);
         if (xdim == null)
         {
             Logger.LogWarning($"Could not find: '{AvailableParameters.CellSize.GetParameterPath(AvailableDevices.L95, SymbolType)}' or '{AvailableParameters.Xdim.GetParameterPath(AvailableDevices.L95, SymbolType)}' in ReportData. {Device}");
@@ -199,7 +201,7 @@ public class SectorReport : ISectorReport
 
     private bool SetApeture(List<ReportData> report)
     {
-        string aperture = GetParameter(AvailableParameters.Aperture, report);
+        string aperture = report.GetParameter(AvailableParameters.Aperture, Device, SymbolType);
         if (aperture != null)
         {
             //GetParameter returns: Reference number 12 (12 mil)
@@ -217,13 +219,6 @@ public class SectorReport : ISectorReport
             return false;
         }
         return true;
-    }
-
-    private string GetParameter(AvailableParameters parameter, List<ReportData> report)
-    {
-        string key = parameter.GetParameterPath(Device, SymbolType);
-        return report.Find((e) => e.ParameterName.Equals(key))?.ParameterValue;
-
     }
 
     private OverallGrade GetOverallGrade(string original)

@@ -144,7 +144,7 @@ public partial class ImageResultEntry
             {
                 if (templateSec["name"].ToString() == currentSect["name"].ToString())
                 {
-                    tempSectors.Add(new V275.Sectors.Sector((JObject)templateSec, (JObject)currentSect, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, repeat.FullReport.Report["jobVersion"].ToString()));
+                    tempSectors.Add(new V275.Sectors.Sector((JObject)templateSec, (JObject)currentSect, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, repeat.FullReport.Job["jobVersion"].ToString()));
                     break;
                 }
             }

@@ -117,8 +117,22 @@ public partial class ImageResultEntry
         V5CurrentSectors.Clear();
 
         List<Sectors.Interfaces.ISector> tempSectors = [];
-        foreach (var rSec in V5CurrentReport.GetParameter<JArray>("event.data.decodeData"))
-            tempSectors.Add(new V5.Sectors.Sector((JObject)rSec, (JObject)V5CurrentTemplate.GetParameter<JArray>("response.data.job.toolList")[((JObject)rSec).GetParameter<int>("toolSlot") - 1], $"DecodeTool{((JObject)rSec).GetParameter<int>("toolSlot")}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, ImageResults.SelectedScanner.Controller.Version));
+        //Tray and match a toolResult to a toolList
+        foreach (JToken toolResult in V5CurrentReport.GetParameter<JArray>("event.data.toolResults"))
+        {
+            //foreach (JToken toolList in V5CurrentTemplate.GetParameter<JArray>("response.data.job.toolList"))
+            //{
+            //    if (((JObject)toolList).GetParameter<string>("uid") == ((JObject)toolResult).GetParameter<string>("toolUid"))
+            //    {
+            foreach (JToken result in ((JObject)toolResult).GetParameter<JArray>("results"))
+            {
+                if (!((JObject)result).GetParameter<bool>("read"))
+                    continue;
+                tempSectors.Add(new V5.Sectors.Sector((JObject)result, (JObject)V5CurrentTemplate, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, $"DecodeTool{((JObject)result).GetParameter<int>("toolSlot")}", ImageResults.SelectedScanner.Controller.Version));
+            }
+            //    }
+            //}
+        }
 
         if (tempSectors.Count > 0)
         {
@@ -175,9 +189,20 @@ public partial class ImageResultEntry
             List<Sectors.Interfaces.ISector> tempSectors = [];
             if (!string.IsNullOrEmpty(row.Report))
             {
-                foreach (var rSec in row._Report.GetParameter<JArray>("event.data.decodeData"))
-                    tempSectors.Add(new V5.Sectors.Sector((JObject)rSec, (JObject)V5CurrentTemplate.GetParameter<JArray>("response.data.job.toolList")[((JObject)rSec).GetParameter<int>("toolSlot") - 1], $"DecodeTool{((JObject)rSec).GetParameter<int>("toolSlot")}", ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, ""));
+                foreach (JToken toolResult in row._Report.GetParameter<JArray>("event.data.toolResults"))
+                {
+                    foreach (JToken toolList in V5CurrentTemplate.GetParameter<JArray>("response.data.job.toolList"))
+                    {
+                        if (((JObject)toolList).GetParameter<int>("toolUid") == ((JObject)toolResult).GetParameter<int>("toolUid"))
+                        {
+                            foreach (JToken result in ((JObject)toolResult).GetParameter<JArray>("results"))
+                            {
 
+                                tempSectors.Add(new V5.Sectors.Sector((JObject)result, (JObject)toolList, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, $"DecodeTool{((JObject)result).GetParameter<int>("toolSlot")}", ImageResults.SelectedScanner.Controller.Version));
+                            }
+                        }
+                    }
+                }
             }
 
             if (tempSectors.Count > 0)

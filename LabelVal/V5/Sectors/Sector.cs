@@ -10,8 +10,6 @@ namespace LabelVal.V5.Sectors;
 
 public partial class Sector : ObservableObject, ISector
 {
-    public JObject V5Sector { get; }
-
     public ISectorTemplate Template { get; }
     public ISectorReport Report { get; }
 
@@ -78,17 +76,15 @@ public partial class Sector : ObservableObject, ISector
     public bool IsFocused { get; set; }
     public bool IsMouseOver { get; set; }
 
-    public Sector(JObject decodeData, JObject toollist, string name, AvailableStandards standard, AvailableTables table, string version)
+    public Sector(JObject report, JObject template, AvailableStandards standard, AvailableTables table, string name, string version)
     {
-        V5Sector = decodeData;
-
-        Report = new SectorReport(decodeData);
-        Template = new SectorTemplate(decodeData, toollist, name, version);
+        Report = new SectorReport(report, template);
+        Template = new SectorTemplate(report, template, name, version);
 
         DesiredStandard = standard;
         DesiredGS1Table = table;
 
-        SectorDetails = new SectorDetails(this, Template.Username);
+        SectorDetails = new SectorDetails(this);
 
         foreach (Alarm alm in SectorDetails.Alarms)
         {

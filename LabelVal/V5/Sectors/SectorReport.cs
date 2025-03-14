@@ -1,51 +1,75 @@
 ﻿using BarcodeVerification.lib.Common;
 using BarcodeVerification.lib.GS1;
+using BarcodeVerification.lib.ISO;
 using BarcodeVerification.lib.ISO.ParameterTypes;
 using LabelVal.Sectors.Classes;
+using LabelVal.Sectors.Extensions;
 using LabelVal.Sectors.Interfaces;
+using MahApps.Metro.Controls;
 using Newtonsoft.Json.Linq;
+using NHibernate.SqlCommand;
 
 namespace LabelVal.V5.Sectors;
 
 public class SectorReport : ISectorReport
 {
-    public object Original { get; set; }
+    public object Original { get; private set; }
 
-    public AvailableDevices Device { get; set; }
-    public AvailableRegionTypes RegionType { get; set; }
-    public AvailableSymbologies SymbolType { get; set; }
+    public AvailableDevices Device => AvailableDevices.V5;
+    public AvailableRegionTypes RegionType { get; private set; }
+    public AvailableSymbologies SymbolType { get; private set; }
 
-    public AvailableStandards Standard { get; }
-    public AvailableTables GS1Table { get; }
+    public AvailableStandards Standard { get; private set;}
+    public AvailableTables GS1Table { get;private set; }
 
-    public double Top { get; set; }
-    public double Left { get; set; }
-    public double Width { get; set; }
-    public double Height { get; set; }
-    public double AngleDeg { get; set; }
+    public double Top { get; private set; }
+    public double Left { get; private set; }
+    public double Width { get; private set; }
+    public double Height { get; private set; }
+    public double AngleDeg { get; private set; }
 
-    public OverallGrade OverallGrade { get; set; }
-    public double XDimension { get; set; }
-    public double Aperture { get; set; }
-    public AvailableUnits Units { get; set; }
+    public OverallGrade OverallGrade { get; private set; }
 
-    public string DecodeText { get; set; }
+    public double XDimension { get; private set; }
+    public double Aperture { get; private set; }
+    public AvailableUnits Units { get; private set; }
+
+    public string DecodeText { get; private set; }
 
     //GS1
-    public GS1Decode GS1Results { get; set; }
+    public GS1Decode GS1Results { get; private set; }
 
     //OCR
-    public string Text { get; set; }
-    public double Score { get; set; }
+    public string Text { get; private set; }
+    public double Score { get; private set; }
 
     //Blemish
-    public int BlemishCount { get; set; }
+    public int BlemishCount { get; private set; }
 
     //V275 2D module data
-    public ModuleData ExtendedData { get; set; }
+    public ModuleData ExtendedData { get; private set; }
 
-    public SectorReport(JObject decodeData)
+    public double Ppi { get; private set; }
+
+    public SectorReport(JObject report, JObject template)
     {
+        Original = report;
+
+        //Set Symbology
+        SetSymbologyAndRegionType(report);
+
+        DecodeText = report.GetParameter(AvailableParameters.DecodeText, Device, SymbolType);
+
+        SetStandardAndTable(report);
+        //Set GS1 Data
+        SetGS1Data(report);
+        //Set XDimension
+        SetXdimAndUnits(report, template);
+        //Set Aperture
+        SetApeture(report);
+
+        SetOverallGrade(report);
+
         //Original = v5;
 
         //RegionType = V5GetType(v5);
@@ -208,5 +232,135 @@ public class SectorReport : ISectorReport
     : value is <= 0.9f and >= 0.0f
     ? "F"
     : "F";
+
+    private bool SetSymbologyAndRegionType(JObject report)
+    {
+        string sym = report.GetParameter(AvailableParameters.Symbology, Device, SymbolType);
+        if (sym == null)
+        {
+            Logger.LogError($"Could not find: '{AvailableParameters.Symbology.GetParameterPath(Device, AvailableSymbologies.Unknown)}' in ReportData. {Device}");
+            return false;
+        }
+
+        //string dataBarType = GetParameter(AvailableParameters.DataBarType, report);
+        //if (dataBarType != null)
+        //    sym = $"DataBar {dataBarType}";
+
+        SymbolType = sym.GetSymbology(Device);
+
+        //Set RegionType
+        RegionType = SymbolType.GetSymbologyRegionType(Device);
+
+        if (SymbolType == AvailableSymbologies.Unknown)
+        {
+            Logger.LogError($"Could not determine symbology from: '{sym}' {Device}");
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool SetOverallGrade(JObject report)
+    {
+        string overall = report.GetParameter(AvailableParameters.OverallGrade, Device, SymbolType);
+        if (!string.IsNullOrEmpty(overall))
+            OverallGrade = GetOverallGrade(overall);
+        else
+        {
+            Logger.LogError($"Could not find: '{AvailableParameters.OverallGrade.GetParameterPath(Device, SymbolType)}' in ReportData. {Device}");
+            return false;
+        }
+        return true;
+    }
+
+    private bool SetStandardAndTable(JObject template)
+    {
+        string stdString = template.GetParameter(AvailableParameters.Standard, Device, SymbolType);
+        string tblString = "1";
+
+        if (stdString == null || stdString.Equals("False"))
+        {
+            Standard = AvailableStandards.ISO;
+            GS1Table = AvailableTables.Unknown;
+        }
+        else
+        {
+            Standard = AvailableStandards.GS1;
+            GS1Table = tblString.GetTable(Device);
+        }
+
+        return true;
+    }
+
+    private bool SetGS1Data(JObject report)
+    {
+        //If a table is not defined, it is not a GS1 symbol Exit
+        if (GS1Table == AvailableTables.Unknown)
+            return true;
+
+        string data = report.GetParameter(AvailableParameters.GS1Data, Device, SymbolType);
+        string pass = report.GetParameter(AvailableParameters.GS1DataStructure, Device, SymbolType);
+
+        if (data != null)
+        {
+            List<string> list = [];
+            string[] spl = data.Split('(', StringSplitOptions.RemoveEmptyEntries);
+            foreach (string str in spl)
+                list.Add($"({str}");
+
+            GS1Results = new GS1Decode(AvailableParameters.GS1Data, Device, SymbolType, pass, DecodeText, data, list, "");
+        }
+
+        return true;
+    }
+
+    private bool SetXdimAndUnits(JObject report, JObject template)
+    {
+        Units = AvailableUnits.Mils;
+
+        var ppi = template.GetParameter(AvailableParameters.PPI, Device, SymbolType);
+
+        if (ppi == null)
+        {
+            Ppi = 0;
+            Logger.LogInfo($"Could not find: '{AvailableParameters.PPI.GetParameterPath(Device, SymbolType)}' in the Job. {Device}");
+            return true;
+        }
+
+        Ppi = ppi.ParseDouble();
+
+        var ppe = report.GetParameter(AvailableParameters.PPE, Device, SymbolType);
+        if (ppe == null)
+        {
+            Logger.LogError($"Could not find: '{AvailableParameters.PPE.GetParameterPath(Device, SymbolType)}' in ReportData. {Device}");
+            return false;
+        }
+
+        XDimension = (ppe.ParseDouble() * 1000) / Ppi;
+
+        return true;
+    }
+
+    private bool SetApeture(JObject report)
+    {
+        string aperture = report.GetParameter(AvailableParameters.Aperture, Device, SymbolType);
+        if (aperture == null)
+        {
+            Logger.LogError($"Could not find: '{AvailableParameters.Aperture.GetParameterPath(Device, SymbolType)}' in ReportData. {Device}");
+            return false;
+        }
+
+        Aperture = aperture.ParseDouble();
+
+        return true;
+    }
+
+    private OverallGrade GetOverallGrade(string original)
+    {
+        string[] spl = original.Split('/', StringSplitOptions.RemoveEmptyEntries);
+
+        Grade grade = new(AvailableParameters.OverallGrade, Device, spl[0].ParseDouble());
+        return new OverallGrade(Device, grade, original, spl[1], spl[2]);
+    }
 
 }

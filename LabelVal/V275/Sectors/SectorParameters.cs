@@ -3,6 +3,7 @@ using BarcodeVerification.lib.ISO;
 using BarcodeVerification.lib.ISO.ParameterTypes;
 using CommunityToolkit.Mvvm.ComponentModel;
 using LabelVal.Sectors.Classes;
+using LabelVal.Sectors.Extensions;
 using LabelVal.Sectors.Interfaces;
 using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
@@ -29,22 +30,7 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
     public SectorDetails(ISector sector) => Process(sector);
     public SectorDifferences Compare(ISectorParameters compare) => SectorDifferences.Compare(this, compare);
 
-    private string GetParameter(string path, JObject report)
-    {
-        string[] parts = path.Split('.');
-        JObject current = report;
-        for (int i = 0; i < parts.Length; i++)
-        {
-            if (current[parts[i]] is null)
-                return null;
-            if (i == parts.Length - 1)
-                return current[parts[i]].ToString();
-            current = (JObject)current[parts[i]];
-        }
-        return null;
-    }
-
-    public void Process(ISector sector)
+ public void Process(ISector sector)
     {
         if (sector is not V275.Sectors.Sector sec)
             return;
@@ -73,9 +59,9 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
 
         foreach (AvailableParameters parameter in theParamters)
         {
-            string data = GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType), report);
+            string path = report.GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType));
 
-            if (string.IsNullOrWhiteSpace(data))
+            if (string.IsNullOrWhiteSpace(path))
             {
                 Parameters.Add(new Missing(parameter));
                 continue;
@@ -87,7 +73,7 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
 
             if (type == typeof(GradeValue))
             {
-                GradeValue gradeValue = GetGradeValue(parameter, GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType), report));
+                GradeValue gradeValue = GetGradeValue(parameter, report.GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
 
                 if (gradeValue != null)
                 {
@@ -97,7 +83,7 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
             }
             else if (type == typeof(Grade))
             {
-                Grade grade = GetGrade(parameter, GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType), report));
+                Grade grade = GetGrade(parameter, report.GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
 
                 if (grade != null)
                 {
@@ -107,7 +93,7 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
             }
             else if (type == typeof(ValueDouble))
             {
-                ValueDouble valueDouble = GetValueDouble(parameter, GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType), report));
+                ValueDouble valueDouble = GetValueDouble(parameter, report.GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
                 if (valueDouble != null)
                 {
                     Parameters.Add(valueDouble);
@@ -116,17 +102,17 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
             }
             else if (type == typeof(ValueString))
             {
-                ValueString valueString = GetValueString(parameter, GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType), report));
+                ValueString valueString = GetValueString(parameter, report.GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
                 if (valueString != null) { Parameters.Add(valueString); found = true; }
             }
             else if (type == typeof(PassFail))
             {
-                PassFail passFail = GetPassFail(parameter, GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType), report));
+                PassFail passFail = GetPassFail(parameter, report.GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
                 if (passFail != null) { Parameters.Add(passFail); found = true; }
             }
             else if (type == typeof(ValuePassFail))
             {
-                ValuePassFail valuePassFail = GetValuePassFail(parameter, GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType), report));
+                ValuePassFail valuePassFail = GetValuePassFail(parameter, report.GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
                 if (valuePassFail != null) { Parameters.Add(valuePassFail); found = true; }
             }
 

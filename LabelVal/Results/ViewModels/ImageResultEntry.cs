@@ -576,7 +576,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
                     newSec.Template.Top + renderingEmSizeHalf,
                     Math.Clamp(newSec.Template.Width - renderingEmSize, 0, double.MaxValue),
                     Math.Clamp(newSec.Template.Height - renderingEmSize, 0, double.MaxValue))),
-                Pen = new Pen(GetGradeBrush(newSec.Report.OverallGrade.Grade.Letter, (byte)(newSec.IsFocused || newSec.IsMouseOver ? 0xFF : 0x28)), renderingEmSize),
+                Pen = new Pen(GetGradeBrush(newSec.Report.OverallGrade != null ? newSec.Report.OverallGrade.Grade.Letter : "F", (byte)(newSec.IsFocused || newSec.IsMouseOver ? 0xFF : 0x28)), renderingEmSize),
             };
             drwGroup.Children.Add(sectorT);
 

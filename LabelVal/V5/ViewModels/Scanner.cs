@@ -181,7 +181,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
         //Change the directory in the FileAcquisitionSource
 
-        JObject source = Controller.Config.GetParameter<JObject>("job.channelMap.acquisition.AcquisitionChannel.source");
+        JObject source = Controller.Config.GetParameter<JObject>("response.data.job.channelMap.acquisition.AcquisitionChannel.source");
         //Config.Source src = Controller.Config.response.data.job.channelMap.acquisition.AcquisitionChannel.source;
 
         if (source == null)

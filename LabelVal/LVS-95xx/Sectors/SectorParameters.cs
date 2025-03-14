@@ -2,6 +2,7 @@
 using BarcodeVerification.lib.ISO;
 using BarcodeVerification.lib.ISO.ParameterTypes;
 using CommunityToolkit.Mvvm.ComponentModel;
+using LabelVal.Sectors.Extensions;
 using LabelVal.Sectors.Interfaces;
 using Lvs95xx.lib.Core.Controllers;
 using Lvs95xx.lib.Core.Models;
@@ -55,7 +56,7 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
         //Interate through the parameters
         foreach (AvailableParameters parameter in theParamters)
         {
-            string data = GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType), report.ReportData);
+            string data = report.ReportData.GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType));
 
             if (string.IsNullOrWhiteSpace(data))
             {
@@ -67,40 +68,40 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
 
             if (type == typeof(GradeValue))
             {
-                GradeValue gradeValue = GetGradeValue(parameter, GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType), report.ReportData));
+                GradeValue gradeValue = GetGradeValue(parameter, report.ReportData.GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
 
                 if (gradeValue != null)
                     Parameters.Add(gradeValue);
             }
             else if (type == typeof(Grade))
             {
-                Grade grade = GetGrade(parameter, GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType), report.ReportData));
+                Grade grade = GetGrade(parameter, report.ReportData.GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
 
                 if (grade != null)
                     Parameters.Add(grade);
             }
             else if (type == typeof(ValueDouble))
             {
-                ValueDouble valueDouble = GetValueDouble(parameter, GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType), report.ReportData));
+                ValueDouble valueDouble = GetValueDouble(parameter, report.ReportData.GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
                 if (valueDouble != null)
                     Parameters.Add(valueDouble);
             }
             else if (type == typeof(ValueString))
             {
-                ValueString valueString = GetValueString(parameter, GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType), report.ReportData));
+                ValueString valueString = GetValueString(parameter, report.ReportData.GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
                 if (valueString != null)
                     Parameters.Add(valueString);
             }
             else if (type == typeof(PassFail))
             {
-                PassFail passFail = GetPassFail(parameter, GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType), report.ReportData));
+                PassFail passFail = GetPassFail(parameter, report.ReportData.GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
                 if (passFail != null)
                     Parameters.Add(passFail);
             }
         }
 
         //Check for alarms
-        List<string> alarms = GetParameters("Warning", report.ReportData);
+        List<string> alarms = report.ReportData.GetParameters("Warning");
         if (alarms.Count > 0)
         {
             foreach (string alarm in alarms)
@@ -110,8 +111,6 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
         }
     }
 
-    private string GetParameter(string key, List<ReportData> report) => report.Find((e) => e.ParameterName.Equals(key))?.ParameterValue;
-    private List<string> GetParameters(string key, List<ReportData> report) => report.FindAll((e) => e.ParameterName.StartsWith(key)).Select((e) => e.ParameterValue).ToList();
 
     private GradeValue GetGradeValue(AvailableParameters parameter, string data)
     {
