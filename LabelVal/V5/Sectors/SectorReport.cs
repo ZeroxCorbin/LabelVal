@@ -59,7 +59,7 @@ public class SectorReport : ISectorReport
         //Set Symbology
         SetSymbologyAndRegionType(report);
 
-        DecodeText = report.GetParameter(AvailableParameters.DecodeText, Device, SymbolType);
+        DecodeText = report.GetParameter<string>(AvailableParameters.DecodeText, Device, SymbolType);
 
         SetStandardAndTable(report);
         //Set GS1 Data
@@ -236,7 +236,7 @@ public class SectorReport : ISectorReport
 
     private bool SetSymbologyAndRegionType(JObject report)
     {
-        string sym = report.GetParameter(AvailableParameters.Symbology, Device, SymbolType);
+        string sym = report.GetParameter<string>(AvailableParameters.Symbology, Device, SymbolType);
         if (sym == null)
         {
             Logger.LogError($"Could not find: '{AvailableParameters.Symbology.GetParameterPath(Device, AvailableSymbologies.Unknown)}' in ReportData. {Device}");
@@ -263,7 +263,7 @@ public class SectorReport : ISectorReport
 
     private bool SetOverallGrade(JObject report)
     {
-        string overall = report.GetParameter(AvailableParameters.OverallGrade, Device, SymbolType);
+        string overall = report.GetParameter<string>(AvailableParameters.OverallGrade, Device, SymbolType);
         if (!string.IsNullOrEmpty(overall))
             OverallGrade = GetOverallGrade(overall);
         else
@@ -276,7 +276,7 @@ public class SectorReport : ISectorReport
 
     private bool SetStandardAndTable(JObject template)
     {
-        string stdString = template.GetParameter(AvailableParameters.Standard, Device, SymbolType);
+        string stdString = template.GetParameter<string>(AvailableParameters.Standard, Device, SymbolType);
         string tblString = "1";
 
         if (stdString == null || stdString.Equals("False"))
@@ -299,8 +299,8 @@ public class SectorReport : ISectorReport
         if (GS1Table == AvailableTables.Unknown)
             return true;
 
-        string data = report.GetParameter(AvailableParameters.GS1Data, Device, SymbolType);
-        string pass = report.GetParameter(AvailableParameters.GS1DataStructure, Device, SymbolType);
+        string data = report.GetParameter<string>(AvailableParameters.GS1Data, Device, SymbolType);
+        string pass = report.GetParameter<string>(AvailableParameters.GS1DataStructure, Device, SymbolType);
 
         if (data != null)
         {
@@ -319,7 +319,7 @@ public class SectorReport : ISectorReport
     {
         Units = AvailableUnits.Mils;
 
-        var ppi = template.GetParameter(AvailableParameters.PPI, Device, SymbolType);
+        var ppi = template.GetParameter<string>(AvailableParameters.PPI, Device, SymbolType);
 
         if (ppi == null)
         {
@@ -330,7 +330,7 @@ public class SectorReport : ISectorReport
 
         Ppi = ppi.ParseDouble();
 
-        var ppe = report.GetParameter(AvailableParameters.PPE, Device, SymbolType);
+        var ppe = report.GetParameter<string>(AvailableParameters.PPE, Device, SymbolType);
         if (ppe == null)
         {
             Logger.LogError($"Could not find: '{AvailableParameters.PPE.GetParameterPath(Device, SymbolType)}' in ReportData. {Device}");
@@ -344,7 +344,7 @@ public class SectorReport : ISectorReport
 
     private bool SetApeture(JObject report)
     {
-        string aperture = report.GetParameter(AvailableParameters.Aperture, Device, SymbolType);
+        string aperture = report.GetParameter<string>(AvailableParameters.Aperture, Device, SymbolType);
         if (aperture == null)
         {
             Logger.LogError($"Could not find: '{AvailableParameters.Aperture.GetParameterPath(Device, SymbolType)}' in ReportData. {Device}");

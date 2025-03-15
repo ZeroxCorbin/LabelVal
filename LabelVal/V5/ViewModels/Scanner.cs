@@ -7,19 +7,17 @@ using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using V5_REST_Lib.Cameras;
-using V5_REST_Lib.Models;
 using V5_REST_Lib.Controllers;
+using V5_REST_Lib.Models;
+using BarcodeVerification.lib.Extensions;
 
 namespace LabelVal.V5.ViewModels;
 
@@ -74,7 +72,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             ImageFocusRegionOverlay = CreateFocusRegionOverlay();
     });
 
-    private QuickSet_Photometry QuickSet_Photometry
+    private JObject QuickSet_Photometry
     {
         get
         {
@@ -87,10 +85,10 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             double x = (SelectedCamera.Sensor.PixelColumns - width) / 2;
             double y = (SelectedCamera.Sensor.PixelRows - height) / 2;
 
-            return new QuickSet_Photometry((float)x, (float)y, (float)width, (float)height);
+            return JObject.FromObject(new QuickSet_Photometry((float)x, (float)y, (float)width, (float)height));
         }
     }
-    private QuickSet_Focus QuickSet_Focus
+    private JObject QuickSet_Focus
     {
         get
         {
@@ -102,7 +100,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             double x = (SelectedCamera.Sensor.PixelColumns - width) / 2;
             double y = (SelectedCamera.Sensor.PixelRows - height) / 2;
 
-            return new QuickSet_Focus((float)x, (float)y, (float)width, (float)height);
+            return JObject.FromObject( new QuickSet_Focus((float)x, (float)y, (float)width, (float)height));
         }
     }
 
@@ -117,9 +115,9 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
     private bool IsWaitingForFullImage;
 
-    public ObservableCollection<JobSlots.Datum> JobSlots { get; } = [];
-    [ObservableProperty] private JobSlots.Datum selectedJobSlot;
-    partial void OnSelectedJobSlotChanged(JobSlots.Datum value)
+    public ObservableCollection<JObject> JobSlots { get; } = [];
+    [ObservableProperty] private JObject selectedJobSlot;
+    partial void OnSelectedJobSlotChanged(JObject value)
     {
         if (value == null)
         {
@@ -146,7 +144,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             return;
         }
 
-        var jb = JobSlots.FirstOrDefault((e) => e.jobName == JobName);
+        var jb = JobSlots.FirstOrDefault((e) => e["jobName"].ToString() == JobName);
 
         if (jb != null)
         {
@@ -190,7 +188,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             return;
         }
 
-        if(source.GetParameter<string>("FileAcquisitionSource.directory") != directory)
+        if (source.GetParameter<string>("FileAcquisitionSource.directory") != directory)
         {
             source.SetParameter("FileAcquisitionSource.directory", directory);
 
@@ -203,7 +201,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
 
             await Controller.SetConfig(send);
-            
+
         }
     }
 
@@ -237,21 +235,21 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             V5_REST_Lib.Results meta = await Controller.Commands.GetMeta();
             if (meta.OK)
             {
-                Meta metaConfig = (Meta)meta.Object;
+                var metaConfig = (JObject)meta.Object;
 
                 // Assuming metaConfig.response.data.FileAcquisitionSource.directory.sources is an array of strings
-                string[] sources = metaConfig.response.data.FileAcquisitionSource.directory.sources;
+                var sources = metaConfig.GetParameter<JArray>("response.data.FileAcquisitionSource.directory.sources");
 
                 await App.Current.Dispatcher.BeginInvoke(() =>
                 {
                     // Add new directories from sources to Directories if they're not already present
-                    foreach (string source in sources)
-                        if (!Directories.Contains(source))
-                            Directories.Add(source);
+                    foreach (var source in sources)
+                        if (!Directories.Contains(source.ToString()))
+                            Directories.Add(source.ToString());
 
                     // Remove directories from Directories if they're not present in sources
                     for (int i = Directories.Count - 1; i >= 0; i--)
-                        if (!sources.Contains(Directories[i]))
+                        if (!sources.Values().Contains(Directories[i]))
                             Directories.RemoveAt(i);
                 });
             }
@@ -274,7 +272,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
         if (Controller.IsSysInfoValid)
         {
-            SelectedCamera = AvailableCameras.FirstOrDefault((e) => Controller.SysInfo.response.data.hwal.lens.lensName.StartsWith(e.FocalLength.ToString()) && Controller.SysInfo.response.data.hwal.sensor.description.StartsWith(e.Sensor.PixelCount.ToString()));
+            SelectedCamera = AvailableCameras.FirstOrDefault((e) => Controller.SysInfo.GetParameter<string>("response.data.hwal.lens.lensName").StartsWith(e.FocalLength.ToString()) && Controller.SysInfo.GetParameter<string>("response.data.hwal.sensor.description").StartsWith(e.Sensor.PixelCount.ToString()));
             if (SelectedCamera == null)
                 Logger.LogError("Could not find a camera matching the current lens and sensor.");
         }
@@ -285,7 +283,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
     {
         if (Controller.IsSysInfoValid)
         {
-            SelectedCamera = AvailableCameras.FirstOrDefault((e) => Controller.SysInfo.response.data.hwal.lens.lensName.StartsWith(e.FocalLength.ToString()) && Controller.SysInfo.response.data.hwal.sensor.description.StartsWith(e.Sensor.PixelCount.ToString()));
+            SelectedCamera = AvailableCameras.FirstOrDefault((e) => Controller.SysInfo.GetParameter<string>("response.data.hwal.lens.lensName").StartsWith(e.FocalLength.ToString()) && Controller.SysInfo.GetParameter<string>("response.data.hwal.sensor.description").StartsWith(e.Sensor.PixelCount.ToString()));
             if (SelectedCamera == null)
                 Logger.LogError("Could not find a camera matching the current lens and sensor.");
         }
@@ -382,12 +380,12 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
         if (Controller.IsJobSlotsValid)
         {
-            foreach (JobSlots.Datum job in Controller.JobSlots.response.data)
-                if (!JobSlots.Any((e) => e.jobName == job.jobName && e.slotIndex == job.slotIndex))
+            foreach (JObject job in Controller.JobSlots.GetParameter<JArray>("response.data"))
+                if (!JobSlots.Any((e) => e.GetParameter<string>("jobName") == job.GetParameter<string>("jobName") && e.GetParameter<string>("slotIndex") == job.GetParameter<string>("slotIndex")))
                     JobSlots.Add(job);
 
-            foreach (JobSlots.Datum job in JobSlots.ToArray())
-                if (!Controller.JobSlots.response.data.Any((e) => e.jobName == job.jobName && e.slotIndex == job.slotIndex))
+            foreach (JObject job in JobSlots.ToArray())
+                if (!Controller.JobSlots.GetParameter<JArray>("response.data").Any((e) => e["jobName"].ToString() == job["jobName"].ToString() && e["jobName"].ToString() == job["jobName"].ToString()))
                     _ = JobSlots.Remove(job);
         }
         else
@@ -435,8 +433,8 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
         secAreas.Children.Add(new RectangleGeometry(
             new Rect(
-                new Point(QuickSet_Photometry.photometry.roi[0] / div, QuickSet_Photometry.photometry.roi[1] / div),
-                new Point(QuickSet_Photometry.photometry.roi[0] + (QuickSet_Photometry.photometry.roi[2] / div), QuickSet_Photometry.photometry.roi[1] + (QuickSet_Photometry.photometry.roi[3] / div))
+                new Point(QuickSet_Photometry.GetParameter<double>("photometry.roi[0]") / div, QuickSet_Photometry.GetParameter<double>("photometry.roi[1]") / div),
+                new Point(QuickSet_Photometry.GetParameter<double>("photometry.roi[0]") + (QuickSet_Photometry.GetParameter<double>("photometry.roi[2]") / div), QuickSet_Photometry.GetParameter<double>("photometry.roi[1]") + (QuickSet_Photometry.GetParameter<double>("photometry.roi[3]") / div))
                 )));
 
         GeometryDrawing sectors = new()
@@ -712,7 +710,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         }
     }
 
-    private async Task ChangeJob(JobSlots.Datum job) => await Controller.ChangeJobSlot(job);
+    private async Task ChangeJob(JObject job) => await Controller.ChangeJobSlot(job);
 
     [RelayCommand]
     private async Task SwitchRun() => await Controller.Commands.ModeRun();

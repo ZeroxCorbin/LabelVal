@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using BarcodeVerification.lib.Extensions;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Results.Databases;
@@ -8,7 +9,6 @@ using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Media;
-using V5_REST_Lib.Controllers;
 
 namespace LabelVal.Results.ViewModels;
 public partial class ImageResultEntry

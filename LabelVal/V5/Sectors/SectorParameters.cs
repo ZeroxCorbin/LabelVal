@@ -64,65 +64,55 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
 
         foreach (AvailableParameters parameter in theParamters)
         {
-            string path = report.GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType));
-
-            if (string.IsNullOrWhiteSpace(path))
-            {
-                Parameters.Add(new Missing(parameter));
-                continue;
-            }
-
-            bool found = false;
-
             var type = parameter.GetParameterDataType(Sector.Report.Device, theSymbology);
 
             if (type == typeof(GradeValue))
             {
-                GradeValue gradeValue = GetGradeValue(parameter, report.GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
+                GradeValue gradeValue = GetGradeValue(parameter, report.GetParameter<JObject>(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
 
                 if (gradeValue != null)
                 {
                     Parameters.Add(gradeValue);
-                    found = true;
+                    continue;
                 }
             }
             else if (type == typeof(Grade))
             {
-                Grade grade = GetGrade(parameter, report.GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
+                Grade grade = GetGrade(parameter, report.GetParameter<JObject>(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
 
                 if (grade != null)
                 {
                     Parameters.Add(grade);
-                    found = true;
+                    continue;
                 }
             }
             else if (type == typeof(ValueDouble))
             {
-                ValueDouble valueDouble = GetValueDouble(parameter, report.GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
+                ValueDouble valueDouble = GetValueDouble(parameter, report.GetParameter<string>(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
                 if (valueDouble != null)
                 {
                     Parameters.Add(valueDouble);
-                    found = true;
+                    continue;
                 }
             }
             else if (type == typeof(ValueString))
             {
-                ValueString valueString = GetValueString(parameter, report.GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
-                if (valueString != null) { Parameters.Add(valueString); found = true; }
+                ValueString valueString = GetValueString(parameter, report.GetParameter<string>(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
+                if (valueString != null) { Parameters.Add(valueString); continue; }
             }
             else if (type == typeof(PassFail))
             {
-                PassFail passFail = GetPassFail(parameter, report.GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
-                if (passFail != null) { Parameters.Add(passFail); found = true; }
+                PassFail passFail = GetPassFail(parameter, report.GetParameter<string>(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
+                if (passFail != null) { Parameters.Add(passFail); continue; }
             }
             else if (type == typeof(ValuePassFail))
             {
-                ValuePassFail valuePassFail = GetValuePassFail(parameter, report.GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
-                if (valuePassFail != null) { Parameters.Add(valuePassFail); found = true; }
+                ValuePassFail valuePassFail = GetValuePassFail(parameter, report.GetParameter<JObject>(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
+                if (valuePassFail != null) { Parameters.Add(valuePassFail); continue; }
             }
 
-            if (!found)
-                Logger.LogWarning($"Paramter: '{parameter}' @ Path: '{parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)}' parse issue.");
+            Parameters.Add(new Missing(parameter));
+            Logger.LogWarning($"Paramter: '{parameter}' @ Path: '{parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)}' parse issue.");
 
         }
             //GradeValues.Clear();
@@ -236,13 +226,8 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
             //}
         }
 
-    private GradeValue GetGradeValue(AvailableParameters parameter, string gradestring)
+    private GradeValue GetGradeValue(AvailableParameters parameter, JObject gradeValue)
     {
-        if (string.IsNullOrWhiteSpace(gradestring))
-            return null;
-
-        JObject gradeValue = JObject.Parse(gradestring);
-
         if (gradeValue is null)
             return null;
 
@@ -251,17 +236,12 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
         return new GradeValue(parameter, Sector.Report.Device, Sector.Report.SymbolType, grade, value);
     }
 
-    private Grade GetGrade(AvailableParameters parameter, string gradeString)
+    private Grade GetGrade(AvailableParameters parameter, JObject grade)
     {
-        if (string.IsNullOrWhiteSpace(gradeString))
+        if (grade is null)
             return null;
-
-        JObject gradeValue = JObject.Parse(gradeString);
-
-        if (gradeValue is null)
-            return null;
-        string value = gradeValue["value"].ToString();
-        string letter = gradeValue["letter"].ToString();
+        string value = grade["value"].ToString();
+        string letter = grade["letter"].ToString();
         return new Grade(parameter, Sector.Report.Device, value);
     }
 
@@ -273,14 +253,9 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
 
     private PassFail GetPassFail(AvailableParameters parameter, string value) => string.IsNullOrWhiteSpace(value) ? null : new PassFail(parameter, Sector.Report.Device, value);
 
-    public ValuePassFail GetValuePassFail(AvailableParameters parameter, string value)
+    public ValuePassFail GetValuePassFail(AvailableParameters parameter, JObject valuePassFail)
     {
-        if (string.IsNullOrWhiteSpace(value))
-            return null;
-
-        JObject valuePassFail = JObject.Parse(value);
-
-        if (valuePassFail is null)
+       if (valuePassFail is null)
             return null;
 
         string passFail = valuePassFail["result"].ToString();
