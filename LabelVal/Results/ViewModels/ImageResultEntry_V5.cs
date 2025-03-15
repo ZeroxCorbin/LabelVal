@@ -191,17 +191,17 @@ public partial class ImageResultEntry
             {
                 foreach (JToken toolResult in row._Report.GetParameter<JArray>("event.data.toolResults"))
                 {
-                    foreach (JToken toolList in V5CurrentTemplate.GetParameter<JArray>("response.data.job.toolList"))
-                    {
-                        if (((JObject)toolList).GetParameter<int>("toolUid") == ((JObject)toolResult).GetParameter<int>("toolUid"))
-                        {
+                    //foreach (JToken toolList in V5CurrentTemplate.GetParameter<JArray>("response.data.job.toolList"))
+                    //{
+                    //    if (((JObject)toolList).GetParameter<int>("toolUid") == ((JObject)toolResult).GetParameter<int>("toolUid"))
+                    //    {
                             foreach (JToken result in ((JObject)toolResult).GetParameter<JArray>("results"))
                             {
 
-                                tempSectors.Add(new V5.Sectors.Sector((JObject)result, (JObject)toolList, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, $"DecodeTool{((JObject)result).GetParameter<int>("toolSlot")}", ImageResults.SelectedScanner.Controller.Version));
+                                tempSectors.Add(new V5.Sectors.Sector((JObject)result, (JObject)row._Config, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, $"DecodeTool{((JObject)result).GetParameter<int>("toolSlot")}", ImageResults.SelectedScanner.Controller.Version));
                             }
-                        }
-                    }
+                    //    }
+                    //}
                 }
             }
 

@@ -57,14 +57,6 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
         //Interate through the parameters
         foreach (AvailableParameters parameter in theParamters)
         {
-            string data = report.ReportData.GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType));
-
-            if (string.IsNullOrWhiteSpace(data))
-            {
-                Parameters.Add(new Missing(parameter));
-                continue;
-            }
-
             Type type = parameter.GetParameterDataType(Sector.Report.Device, theSymbology);
 
             if (type == typeof(GradeValue))
@@ -72,33 +64,45 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
                 GradeValue gradeValue = GetGradeValue(parameter, report.ReportData.GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
 
                 if (gradeValue != null)
+                {
                     Parameters.Add(gradeValue);
+                    continue;
+                }
             }
             else if (type == typeof(Grade))
             {
                 Grade grade = GetGrade(parameter, report.ReportData.GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
 
                 if (grade != null)
+                {
                     Parameters.Add(grade);
+                    continue;
+                }
             }
             else if (type == typeof(ValueDouble))
             {
                 ValueDouble valueDouble = GetValueDouble(parameter, report.ReportData.GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
                 if (valueDouble != null)
+                {
                     Parameters.Add(valueDouble);
+                    continue;
+                }
             }
             else if (type == typeof(ValueString))
             {
                 ValueString valueString = GetValueString(parameter, report.ReportData.GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
                 if (valueString != null)
-                    Parameters.Add(valueString);
+                {
+                    Parameters.Add(valueString); continue;
+                }
             }
             else if (type == typeof(PassFail))
             {
                 PassFail passFail = GetPassFail(parameter, report.ReportData.GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
-                if (passFail != null)
-                    Parameters.Add(passFail);
+                if (passFail != null) { Parameters.Add(passFail); continue; }
             }
+
+            Parameters.Add(new Missing(parameter));
         }
 
         //Check for alarms

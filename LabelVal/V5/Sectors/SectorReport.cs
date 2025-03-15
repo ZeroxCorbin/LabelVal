@@ -56,6 +56,8 @@ public class SectorReport : ISectorReport
     {
         Original = report;
 
+        SetBoudingBox(report);
+
         //Set Symbology
         SetSymbologyAndRegionType(report);
 
@@ -70,169 +72,48 @@ public class SectorReport : ISectorReport
         SetApeture(report);
 
         SetOverallGrade(report);
-
-        //Original = v5;
-
-        //RegionType = V5GetType(v5);
-        //SymbolType = v5.type.GetSymbology(AvailableDevices.V5);
-        //DecodeText = v5.dataUTF8;
-
-        //if (v5.boundingBox != null)
-        //    (Top, Left, Width, Height) = ConvertBoundingBox(v5.boundingBox);
-
-        //if (v5.grading != null)
-        //{
-        //    if (v5.grading.standard == "iso15416")
-        //    {
-        //        if (v5.grading.iso15416 == null || v5.grading.iso15416.overall == null)
-        //        {
-        //            OverallGradeString = "No Grade";
-        //            if (v5.read)
-        //            {
-        //                OverallGradeValue = 0;
-        //                OverallGradeLetter = "A";
-        //            }
-        //            else
-        //            {
-        //                OverallGradeValue = 0;
-        //                OverallGradeLetter = "F";
-        //            }
-        //        }
-        //        else
-        //        {
-        //            OverallGradeString = $"{v5.grading.iso15416.overall.grade:f1}/00/600";
-        //            OverallGradeValue = v5.grading.iso15416.overall.grade;
-        //            OverallGradeLetter = V5GetLetter(v5.grading.iso15416.overall.letter);
-        //        }
-        //    }
-        //    else if (v5.grading.standard == "iso15415")
-        //    {
-        //        if (v5.grading.iso15415 == null)
-        //        {
-        //            OverallGradeString = "No Grade";
-        //            if (v5.read)
-        //            {
-        //                OverallGradeValue = 0;
-        //                OverallGradeLetter = "A";
-        //            }
-        //            else
-        //            {
-        //                OverallGradeValue = 0;
-        //                OverallGradeLetter = "F";
-        //            }
-        //        }
-        //        else
-        //        {
-        //            if (v5.grading.iso15415.overall != null)
-        //            {
-        //                OverallGradeString = $"{v5.grading.iso15415.overall.grade:f1}/00/600";
-        //                OverallGradeValue = v5.grading.iso15415.overall.grade;
-        //                OverallGradeLetter = V5GetLetter(v5.grading.iso15415.overall.letter);
-        //            }
-        //        }
-        //    }
-        //    else if (v5.grading.standard == "iso29158")
-        //    {
-        //        if (v5.grading.format == "grade")
-        //        {
-
-        //            OverallGradeString = "";
-        //            OverallGradeValue = double.Parse(v5.grading.grade);
-        //            OverallGradeLetter = GetLetter(float.Parse(v5.grading.grade));
-        //        }
-        //        else
-        //        {
-        //            OverallGradeString = "No Grade";
-        //            if (v5.read)
-        //            {
-        //                OverallGradeValue = 0;
-        //                OverallGradeLetter = "A";
-        //            }
-        //            else
-        //            {
-        //                OverallGradeValue = 0;
-        //                OverallGradeLetter = "F";
-        //            }
-        //        }
-        //    }
-        //    else
-        //    {
-        //        OverallGradeString = "Unkown";
-        //        if (v5.read)
-        //        {
-        //            OverallGradeValue = 0;
-        //            OverallGradeLetter = "A";
-        //        }
-        //        else
-        //        {
-        //            OverallGradeValue = 0;
-        //            OverallGradeLetter = "F";
-        //        }
-        //    }
-        //}
-        //else
-        //{
-        //    OverallGradeString = "Grade Disabled";
-        //    if (v5.read)
-        //    {
-        //        OverallGradeValue = 0;
-        //        OverallGradeLetter = "A";
-        //    }
-        //    else
-        //    {
-        //        OverallGradeValue = 0;
-        //        OverallGradeLetter = "F";
-        //    }
-        //}
     }
-    public static (double Top, double Left, double Width, double Height) ConvertBoundingBox(V5_REST_Lib.Models.ResultsAlt.Boundingbox[] corners)
+
+    private bool SetBoudingBox(JObject report)
     {
-        if (corners.Length != 4)
+        var bb = ConvertBoundingBox(report.GetParameter<JArray>("boundingBox"));
+        if (bb == (0, 0, 0, 0))
+        {
+            Logger.LogError("Could not find the bounding box.");
+            return false;
+        }
+
+        Top = bb.Top;
+        Left = bb.Left;
+        Width = bb.Width;
+        Height = bb.Height;
+        AngleDeg = report.GetParameter<double>("angleDeg");
+  
+        return true;
+    }
+    public static (double Top, double Left, double Width, double Height) ConvertBoundingBox(JArray corners)
+    {
+        if (corners == null)
+        {
+            Logger.LogError("Could not find the bounding box.");
+            return (0, 0, 0, 0);
+        }
+
+        if (corners.Count != 4)
         {
             throw new ArgumentException("Bounding box must have exactly 4 corners.");
         }
 
-        double minX = corners.Min(point => point.x);
-        double minY = corners.Min(point => point.y);
-        double maxX = corners.Max(point => point.x);
-        double maxY = corners.Max(point => point.y);
+        double minX = corners.Min(point => point["x"].Value<double>());
+        double minY = corners.Min(point => point["y"].Value<double>());
+        double maxX = corners.Max(point => point["x"].Value<double>());
+        double maxY = corners.Max(point => point["y"].Value<double>());
 
         double width = maxX - minX;
         double height = maxY - minY;
 
         return (minY, minX, width, height);
     }
-    private static string V5GetSymbology(string type) => type == "Datamatrix" ? "DataMatrix" : type;
-    private static AvailableRegionTypes V5GetType(V5_REST_Lib.Models.ResultsAlt.Decodedata Report) =>
-        Report.Code128 != null
-        ? AvailableRegionTypes._1D
-        : Report.Datamatrix != null
-        ? AvailableRegionTypes._2D
-        : Report.QR != null ? AvailableRegionTypes._2D : Report.PDF417 != null ? AvailableRegionTypes._1D : Report.UPC != null ? AvailableRegionTypes._1D : AvailableRegionTypes._1D;
-
-    private static string V5GetLetter(int grade) =>
-        grade switch
-        {
-            65 => "A",
-            66 => "B",
-            67 => "C",
-            68 => "D",
-            70 => "F",
-            _ => throw new NotImplementedException(),
-        };
-
-    private static string GetLetter(float value) =>
-    value == 4.0f
-    ? "A"
-    : value is <= 3.9f and >= 3.0f
-    ? "B"
-    : value is <= 2.9f and >= 2.0f
-    ? "C"
-    : value is <= 1.9f and >= 1.0f
-    ? "D"
-    : value is <= 0.9f and >= 0.0f
-    ? "F"
-    : "F";
 
     private bool SetSymbologyAndRegionType(JObject report)
     {
@@ -242,6 +123,11 @@ public class SectorReport : ISectorReport
             Logger.LogError($"Could not find: '{AvailableParameters.Symbology.GetParameterPath(Device, AvailableSymbologies.Unknown)}' in ReportData. {Device}");
             return false;
         }
+
+
+        var version = report.GetParameter<string>($"{sym}.version");
+        if (version != null)
+            sym = version;
 
         //string dataBarType = GetParameter(AvailableParameters.DataBarType, report);
         //if (dataBarType != null)
@@ -268,9 +154,17 @@ public class SectorReport : ISectorReport
             OverallGrade = GetOverallGrade(overall);
         else
         {
-            Logger.LogError($"Could not find: '{AvailableParameters.OverallGrade.GetParameterPath(Device, SymbolType)}' in ReportData. {Device}");
-            return false;
+            Logger.LogWarning($"Could not find: '{AvailableParameters.OverallGrade.GetParameterPath(Device, SymbolType)}' in ReportData. {Device}");
+
+            bool qualityEnabled = report.GetParameter<bool>(AvailableParameters.QuailityEnabled, Device, SymbolType);
+            bool goodquality = report.GetParameter<bool>(AvailableParameters.GoodQuality, Device, SymbolType);
+
+            var ppe = report.GetParameter<double>(AvailableParameters.PPE, Device, SymbolType);
+
+            OverallGrade = new OverallGrade(Device, new Grade(AvailableParameters.OverallGrade, Device, (qualityEnabled && goodquality) ? 4.0 : !qualityEnabled ? double.NaN : 0), $"0/{ppe * 2}/623", $"{ppe * 2}", "600");
+            return true;
         }
+
         return true;
     }
 

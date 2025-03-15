@@ -6,6 +6,7 @@ using BarcodeVerification.lib.ISO.ParameterTypes;
 using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Interfaces;
 using Lvs95xx.lib.Core.Models;
+using Mysqlx.Sql;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using V275_REST_Lib.Models;
@@ -54,29 +55,24 @@ public class SectorReport : ISectorReport
     {
         Original = report;
 
-        //Set Symbology
-        if (!SetSymbologyAndRegionType(report))
-            return;
+        //Set Symbolog
+        SetSymbologyAndRegionType(report);
+
 
         DecodeText = GetParameter(AvailableParameters.DecodeText, report);
 
-        if (!SetStandardAndTable(template))
-            return;
+        SetStandardAndTable(template);
 
         //Set GS1 Data
-        if (!SetGS1Data(report))
-            return;
+        SetGS1Data(report);
 
-        //Set XDimension
-        if (!SetXdimAndUnits(report))
-            return;
+        SetXdimAndUnits(report);
 
         //Set Aperture
-        if (!SetApeture(report))
-            return;
+        SetApeture(report);
 
-        if (!SetOverallGrade(report))
-            return;
+        SetOverallGrade(report);
+ 
 
         //if (sector.type is "verify1D" or "verify2D" && sector.gradingStandard != null)
         //    Standard = sector.gradingStandard.enabled ? AvailableStandards.GS1 : AvailableStandards.ISO;
