@@ -169,7 +169,7 @@
                                         <Setter Property="FlowDirection" Value="LeftToRight" />
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding RightAlignOverflow}" Value="True">
-                                                <Setter Property="FlowDirection" Value="LeftToRight" />
+                                                <Setter Property="FlowDirection" Value="RightToLeft" />
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
