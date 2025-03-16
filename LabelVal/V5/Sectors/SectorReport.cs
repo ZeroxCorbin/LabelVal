@@ -4,11 +4,8 @@ using BarcodeVerification.lib.GS1;
 using BarcodeVerification.lib.ISO;
 using BarcodeVerification.lib.ISO.ParameterTypes;
 using LabelVal.Sectors.Classes;
-using LabelVal.Sectors.Extensions;
 using LabelVal.Sectors.Interfaces;
-using MahApps.Metro.Controls;
 using Newtonsoft.Json.Linq;
-using NHibernate.SqlCommand;
 
 namespace LabelVal.V5.Sectors;
 
@@ -20,8 +17,8 @@ public class SectorReport : ISectorReport
     public AvailableRegionTypes RegionType { get; private set; }
     public AvailableSymbologies SymbolType { get; private set; }
 
-    public AvailableStandards Standard { get; private set;}
-    public AvailableTables GS1Table { get;private set; }
+    public AvailableStandards Standard { get; private set; }
+    public AvailableTables GS1Table { get; private set; }
 
     public double Top { get; private set; }
     public double Left { get; private set; }
@@ -33,6 +30,7 @@ public class SectorReport : ISectorReport
 
     public double XDimension { get; private set; }
     public double Aperture { get; private set; }
+
     public AvailableUnits Units { get; private set; }
 
     public string DecodeText { get; private set; }
@@ -50,33 +48,36 @@ public class SectorReport : ISectorReport
     //V275 2D module data
     public ModuleData ExtendedData { get; private set; }
 
+    //Custom to V5
+    public double AperturePercentage { get; private set; }
+    public double ApertureMils { get; private set; }
     public double Ppi { get; private set; }
 
     public SectorReport(JObject report, JObject template)
     {
         Original = report;
 
-        SetBoudingBox(report);
+        _ = SetBoudingBox(report);
 
         //Set Symbology
-        SetSymbologyAndRegionType(report);
+        _ = SetSymbologyAndRegionType(report);
 
         DecodeText = report.GetParameter<string>(AvailableParameters.DecodeText, Device, SymbolType);
 
-        SetStandardAndTable(report);
+        SetStandardAndTable(report, template);
         //Set GS1 Data
-        SetGS1Data(report);
+        _ = SetGS1Data(report);
         //Set XDimension
-        SetXdimAndUnits(report, template);
+        _ = SetXdimAndUnits(report, template);
+        _ = SetOverallGrade(report, template);
         //Set Aperture
-        SetApeture(report);
+        _ = SetApeture(report, template);
 
-        SetOverallGrade(report);
     }
 
     private bool SetBoudingBox(JObject report)
     {
-        var bb = ConvertBoundingBox(report.GetParameter<JArray>("boundingBox"));
+        (double Top, double Left, double Width, double Height) bb = ConvertBoundingBox(report.GetParameter<JArray>("boundingBox"));
         if (bb == (0, 0, 0, 0))
         {
             Logger.LogError("Could not find the bounding box.");
@@ -88,7 +89,7 @@ public class SectorReport : ISectorReport
         Width = bb.Width;
         Height = bb.Height;
         AngleDeg = report.GetParameter<double>("angleDeg");
-  
+
         return true;
     }
     public static (double Top, double Left, double Width, double Height) ConvertBoundingBox(JArray corners)
@@ -124,8 +125,7 @@ public class SectorReport : ISectorReport
             return false;
         }
 
-
-        var version = report.GetParameter<string>($"{sym}.version");
+        string version = report.GetParameter<string>($"{sym}.version");
         if (version != null)
             sym = version;
 
@@ -147,7 +147,7 @@ public class SectorReport : ISectorReport
         return true;
     }
 
-    private bool SetOverallGrade(JObject report)
+    private bool SetOverallGrade(JObject report, JObject template)
     {
         string overall = report.GetParameter<string>(AvailableParameters.OverallGrade, Device, SymbolType);
         if (!string.IsNullOrEmpty(overall))
@@ -156,32 +156,60 @@ public class SectorReport : ISectorReport
         {
             Logger.LogWarning($"Could not find: '{AvailableParameters.OverallGrade.GetParameterPath(Device, SymbolType)}' in ReportData. {Device}");
 
-            bool qualityEnabled = report.GetParameter<bool>(AvailableParameters.QuailityEnabled, Device, SymbolType);
-            bool goodquality = report.GetParameter<bool>(AvailableParameters.GoodQuality, Device, SymbolType);
+            //bool qualityEnabled = report.GetParameter<bool>(AvailableParameters.QuailityEnabled, Device, SymbolType);
+            //bool goodquality = report.GetParameter<bool>(AvailableParameters.GoodQuality, Device, SymbolType);
+            string apertureS = "00";
+            double aperture = double.NaN;
+            if (AperturePercentage != double.NaN)
+            {
+                double ppe = report.GetParameter<double>(AvailableParameters.PPE, Device, SymbolType);
+                aperture = ppe * AperturePercentage / 100;
+                apertureS = ppe >= 10 ? $"{aperture:N0}" : $"0{aperture:N0}";
+            }
 
-            var ppe = report.GetParameter<double>(AvailableParameters.PPE, Device, SymbolType);
-
-            OverallGrade = new OverallGrade(Device, new Grade(AvailableParameters.OverallGrade, Device, (qualityEnabled && goodquality) ? 4.0 : !qualityEnabled ? double.NaN : 0), $"0/{ppe * 2}/623", $"{ppe * 2}", "600");
+            OverallGrade = new OverallGrade(Device, new Grade(AvailableParameters.OverallGrade, Device, double.NaN), $"NaN/{apertureS}/623", $"{aperture:N0}", "600");
             return true;
         }
 
         return true;
     }
 
-    private bool SetStandardAndTable(JObject template)
+    private bool SetStandardAndTable(JObject report, JObject template)
     {
-        string stdString = template.GetParameter<string>(AvailableParameters.Standard, Device, SymbolType);
-        string tblString = "1";
+        int toolSlot = report.GetParameter<int>("toolSlot") - 1;
 
-        if (stdString == null || stdString.Equals("False"))
+        AperturePercentage = double.NaN;
+        ApertureMils = double.NaN;
+
+        if (template.GetParameter<bool>($"response.data.job.toolList[{toolSlot}].SymbologyTool.settings.SymbologySettings.iso15415.enabled"))
         {
-            Standard = AvailableStandards.ISO;
+            Standard = AvailableStandards.ISO15415;
             GS1Table = AvailableTables.Unknown;
+            AperturePercentage = template.GetParameter<double>($"response.data.job.toolList[{toolSlot}].SymbologyTool.settings.SymbologySettings.iso15415.aperture");
+            ApertureMils = template.GetParameter<double>($"response.data.job.toolList[{toolSlot}].SymbologyTool.settings.SymbologySettings.iso15415.aperture_mil");
         }
         else
+        if (template.GetParameter<bool>($"response.data.job.toolList[{toolSlot}].SymbologyTool.settings.SymbologySettings.iso15416.enabled"))
+        {
+            Standard = AvailableStandards.ISO15416;
+            GS1Table = AvailableTables.Unknown;
+            AperturePercentage = template.GetParameter<double>($"response.data.job.toolList[{toolSlot}].SymbologyTool.settings.SymbologySettings.iso15416.aperture");
+            ApertureMils = template.GetParameter<double>($"response.data.job.toolList[{toolSlot}].SymbologyTool.settings.SymbologySettings.iso15416.aperture_mil");
+        }
+        else
+        if (template.GetParameter<bool>($"response.data.job.toolList[{toolSlot}].SymbologyTool.settings.SymbologySettings.iso29158.enabled"))
+        {
+            Standard = AvailableStandards.DPM;
+            GS1Table = AvailableTables.Unknown;
+            AperturePercentage = template.GetParameter<double>($"response.data.job.toolList[{toolSlot}].SymbologyTool.settings.SymbologySettings.iso29158.aperture");
+            ApertureMils = template.GetParameter<double>($"response.data.job.toolList[{toolSlot}].SymbologyTool.settings.SymbologySettings.iso29158.aperture_mil");
+        }
+
+        //Set GS1 last
+        if (template.GetParameter<bool>($"response.data.job.toolList[{toolSlot}].SymbologyTool.settings.SymbologySettings.grading.gs1CheckEnabled"))
         {
             Standard = AvailableStandards.GS1;
-            GS1Table = tblString.GetTable(Device);
+            GS1Table = AvailableTables._1;
         }
 
         return true;
@@ -211,9 +239,9 @@ public class SectorReport : ISectorReport
 
     private bool SetXdimAndUnits(JObject report, JObject template)
     {
-        Units = AvailableUnits.Mils;
+        Units = AvailableUnits.Pixels;
 
-        var ppi = template.GetParameter<string>(AvailableParameters.PPI, Device, SymbolType);
+        string ppi = template.GetParameter<string>(AvailableParameters.PPI, Device, SymbolType);
 
         if (ppi == null)
         {
@@ -224,28 +252,42 @@ public class SectorReport : ISectorReport
 
         Ppi = ppi.ParseDouble();
 
-        var ppe = report.GetParameter<string>(AvailableParameters.PPE, Device, SymbolType);
+        string ppe = report.GetParameter<string>(AvailableParameters.PPE, Device, SymbolType);
         if (ppe == null)
         {
             Logger.LogError($"Could not find: '{AvailableParameters.PPE.GetParameterPath(Device, SymbolType)}' in ReportData. {Device}");
             return false;
         }
 
-        XDimension = (ppe.ParseDouble() * 1000) / Ppi;
+        XDimension = ppe.ParseDouble() * 1000 / Ppi;
 
         return true;
     }
 
-    private bool SetApeture(JObject report)
+    private bool SetApeture(JObject report, JObject template)
     {
-        string aperture = report.GetParameter<string>(AvailableParameters.Aperture, Device, SymbolType);
-        if (aperture == null)
+        if (OverallGrade == null)
         {
-            Logger.LogError($"Could not find: '{AvailableParameters.Aperture.GetParameterPath(Device, SymbolType)}' in ReportData. {Device}");
+            Logger.LogError("OverallGrade is null. Cannot calculate Aperture.");
             return false;
         }
 
-        Aperture = aperture.ParseDouble();
+        if (string.IsNullOrEmpty(OverallGrade.Value))
+        {
+            //Would have to calculate the aperture based on the ppe and the target aperture percentage.
+            Aperture = double.NaN;
+            return true;
+        }
+
+        string[] spl = OverallGrade.Value.Split('/', StringSplitOptions.RemoveEmptyEntries);
+
+        if (spl.Length < 2)
+        {
+            Logger.LogError($"Could not parse: '{OverallGrade.Value}' to get Aperture. {Device}");
+            return false;
+        }
+
+        Aperture = spl[1].TrimStart('0').ParseDouble();
 
         return true;
     }
@@ -257,5 +299,4 @@ public class SectorReport : ISectorReport
         Grade grade = new(AvailableParameters.OverallGrade, Device, spl[0].ParseDouble());
         return new OverallGrade(Device, grade, original, spl[1], spl[2]);
     }
-
 }

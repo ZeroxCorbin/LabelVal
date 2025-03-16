@@ -110,7 +110,7 @@ public partial class ImageResultEntry
         }
 
         V5CurrentImage = new ImageEntry(ImageRollUID, LibImageUtilities.ImageTypes.Png.Utilities.GetPng(report.FullImage), 96);
-
+        
         V5CurrentTemplate = ImageResults.SelectedScanner.Controller.Config;
         V5CurrentReport = report.Report;
 
@@ -128,7 +128,7 @@ public partial class ImageResultEntry
             {
                 if (!((JObject)result).GetParameter<bool>("read"))
                     continue;
-                tempSectors.Add(new V5.Sectors.Sector((JObject)result, (JObject)V5CurrentTemplate, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, $"DecodeTool{((JObject)result).GetParameter<int>("toolSlot")}", ImageResults.SelectedScanner.Controller.Version));
+                tempSectors.Add(new V5.Sectors.Sector((JObject)result, (JObject)V5CurrentTemplate, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, $"SymbologyTool_{((JObject)result).GetParameter<int>("toolSlot")}", ImageResults.SelectedScanner.Controller.Version));
             }
             //    }
             //}
@@ -170,58 +170,56 @@ public partial class ImageResultEntry
 
         V5StoredSectors.Clear();
 
-        try
+        V5Result row = SelectedDatabase.Select_V5Result(ImageRollUID, SourceImageUID);
+
+        if (row == null)
         {
-            V5Result row = SelectedDatabase.Select_V5Result(ImageRollUID, SourceImageUID);
+            V5ResultRow = null;
+            return;
+        }
 
-            if (row == null)
-            {
-                V5ResultRow = null;
-                return;
-            }
+        if (row.Report == null || row.Template == null)
+        {
+            Logger.LogDebug("V5 result is missing data.");
+            return;
+        }
 
-            if (row.Report == null || row.Template == null)
-            {
-                Logger.LogDebug("V5 result is missing data.");
-                return;
-            }
 
-            List<Sectors.Interfaces.ISector> tempSectors = [];
-            if (!string.IsNullOrEmpty(row.Report))
+        List<Sectors.Interfaces.ISector> tempSectors = [];
+        if (!string.IsNullOrEmpty(row.Report))
+        {
+            foreach (JToken toolResult in row._Report.GetParameter<JArray>("event.data.toolResults"))
             {
-                foreach (JToken toolResult in row._Report.GetParameter<JArray>("event.data.toolResults"))
+
+                try
                 {
-                    //foreach (JToken toolList in V5CurrentTemplate.GetParameter<JArray>("response.data.job.toolList"))
-                    //{
-                    //    if (((JObject)toolList).GetParameter<int>("toolUid") == ((JObject)toolResult).GetParameter<int>("toolUid"))
-                    //    {
-                            foreach (JToken result in ((JObject)toolResult).GetParameter<JArray>("results"))
-                            {
+                    foreach (JToken result in ((JObject)toolResult).GetParameter<JArray>("results"))
+                    {
 
-                                tempSectors.Add(new V5.Sectors.Sector((JObject)result, (JObject)row._Config, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, $"DecodeTool{((JObject)result).GetParameter<int>("toolSlot")}", ImageResults.SelectedScanner.Controller.Version));
-                            }
-                    //    }
-                    //}
+                        tempSectors.Add(new V5.Sectors.Sector((JObject)result, (JObject)row._Config, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, $"SymbologyTool_{((JObject)result).GetParameter<int>("toolSlot")}", ImageResults.SelectedScanner.Controller.Version));
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    Logger.LogError(ex, ex.StackTrace);
+                    Logger.LogWarning($"Error while loading stored results from: {SelectedDatabase.File.Name}");
+                    continue;
                 }
             }
-
-            if (tempSectors.Count > 0)
-            {
-                SortList(tempSectors);
-
-                foreach (Sectors.Interfaces.ISector sec in tempSectors)
-                    V5StoredSectors.Add(sec);
-            }
-
-            V5ResultRow = row;
-            UpdateV5StoredImageOverlay();
-
         }
-        catch (System.Exception ex)
+
+
+        if (tempSectors.Count > 0)
         {
-            Logger.LogError(ex);
-            Logger.LogError($"Error while loading stored results from: {SelectedDatabase.File.Name}");
+            SortList(tempSectors);
+
+            foreach (Sectors.Interfaces.ISector sec in tempSectors)
+                V5StoredSectors.Add(sec);
         }
+
+        V5ResultRow = row;
+        UpdateV5StoredImageOverlay();
+
     }
 
     private void V5GetSectorDiff()

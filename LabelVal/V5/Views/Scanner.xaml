@@ -523,6 +523,28 @@
                                 </Button.Style>
                             </Button>
 
+                            <TextBox
+                                Margin="3,3"
+                                d:Text="1.0.0.1000"
+                                md:HintAssist.Hint="Version"
+                                BorderThickness="0"
+                                IsHitTestVisible="False"
+                                Text="{Binding Path=Controller.Version, Mode=OneWay}">
+                                <TextBox.Style>
+                                    <Style BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}" TargetType="{x:Type TextBox}">
+
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style.Triggers>
+
+                                            <DataTrigger Binding="{Binding Controller.IsConnected}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBox.Style>
+                            </TextBox>
+
                         </DockPanel>
 
 

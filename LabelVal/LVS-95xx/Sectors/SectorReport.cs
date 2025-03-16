@@ -66,25 +66,14 @@ public class SectorReport : ISectorReport
         Height = report.Report.SizeY;
         AngleDeg = 0;
 
-        //Set Symbology
-        if (!SetSymbologyAndRegionType(report.ReportData))
-            return;
+        SetSymbologyAndRegionType(report.ReportData);
 
         DecodeText = report.ReportData.GetParameter(AvailableParameters.DecodeText, Device, SymbolType);
 
-        if (!SetStandardAndTable(report.ReportData))
-            return;
-
-        //Set XDimension
-        if (!SetXdimAndUnits(report.ReportData))
-            return;
-
-        //Set Aperture
-        if (!SetApeture(report.ReportData))
-            return;
-
-        if (!SetOverallGrade(report.ReportData))
-            return;
+        SetStandardAndTable(report.ReportData);
+        SetXdimAndUnits(report.ReportData);
+        SetApeture(report.ReportData);
+        SetOverallGrade(report.ReportData);
 
 
     }
