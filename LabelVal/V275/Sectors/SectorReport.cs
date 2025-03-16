@@ -5,11 +5,9 @@ using BarcodeVerification.lib.ISO;
 using BarcodeVerification.lib.ISO.ParameterTypes;
 using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Interfaces;
-using Lvs95xx.lib.Core.Models;
-using Mysqlx.Sql;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using V275_REST_Lib.Models;
+using System.Drawing;
 
 namespace LabelVal.V275.Sectors;
 
@@ -51,28 +49,35 @@ public class SectorReport : ISectorReport
     //V275 2D module data
     public ModuleData ExtendedData { get; private set; }
 
+    public Point CenterPoint { get; private set; }
+
     public SectorReport(JObject report, JObject template)
     {
         Original = report;
 
+        Top = report.GetParameter<double>("top");
+        Left = report.GetParameter<double>("left");
+        Width = report.GetParameter<double>("width");
+        Height = report.GetParameter<double>("height");
+
+        CenterPoint = new System.Drawing.Point((int)(Left + (Width / 2)), (int)(Top + (Height / 2)));
+
         //Set Symbolog
-        SetSymbologyAndRegionType(report);
+        _ = SetSymbologyAndRegionType(report);
 
+        DecodeText = report.GetParameter<string>(AvailableParameters.DecodeText, Device, SymbolType);
 
-        DecodeText = GetParameter(AvailableParameters.DecodeText, report);
-
-        SetStandardAndTable(template);
+        _ = SetStandardAndTable(template);
 
         //Set GS1 Data
-        SetGS1Data(report);
+        _ = SetGS1Data(report);
 
-        SetXdimAndUnits(report);
+        _ = SetXdimAndUnits(report);
 
         //Set Aperture
-        SetApeture(report);
+        _ = SetApeture(report);
 
-        SetOverallGrade(report);
- 
+        _ = SetOverallGrade(report);
 
         //if (sector.type is "verify1D" or "verify2D" && sector.gradingStandard != null)
         //    Standard = sector.gradingStandard.enabled ? AvailableStandards.GS1 : AvailableStandards.ISO;
@@ -155,7 +160,7 @@ public class SectorReport : ISectorReport
 
     private bool SetSymbologyAndRegionType(JObject report)
     {
-        string sym = GetParameter(AvailableParameters.Symbology, report);
+        string sym = report.GetParameter<string>(AvailableParameters.Symbology, Device, AvailableSymbologies.Unknown);
         if (sym == null)
         {
             Logger.LogError($"Could not find: '{AvailableParameters.Symbology.GetParameterPath(Device, AvailableSymbologies.Unknown)}' in ReportData. {Device}");
@@ -182,7 +187,7 @@ public class SectorReport : ISectorReport
 
     private bool SetOverallGrade(JObject report)
     {
-        string overall = GetParameter(AvailableParameters.OverallGrade, report);
+        JObject overall = report.GetParameter<JObject>(AvailableParameters.OverallGrade, Device, SymbolType);
         if (overall != null)
             OverallGrade = GetOverallGrade(overall);
         else
@@ -195,10 +200,9 @@ public class SectorReport : ISectorReport
 
     private bool SetStandardAndTable(JObject template)
     {
-        string stdString = GetParameter(AvailableParameters.Standard, template);
-        string tblString = GetParameter(AvailableParameters.GS1Table, template);
+        bool isGs1 = template.GetParameter<bool>(AvailableParameters.Standard, Device, SymbolType);
 
-        if (stdString == null || stdString.Equals("False"))
+        if (!isGs1)
         {
             Standard = AvailableStandards.ISO;
             GS1Table = AvailableTables.Unknown;
@@ -206,7 +210,7 @@ public class SectorReport : ISectorReport
         else
         {
             Standard = AvailableStandards.GS1;
-            GS1Table = tblString.GetTable(Device);
+            GS1Table = template.GetParameter<string>(AvailableParameters.GS1Table, Device, SymbolType).GetTable(Device);
         }
 
         return true;
@@ -214,43 +218,34 @@ public class SectorReport : ISectorReport
 
     private bool SetGS1Data(JObject report)
     {
-        //If a table is not defined, it is not a GS1 symbol Exit
-        if (GS1Table == AvailableTables.Unknown)
-            return true;
-
-        string data = GetParameter(AvailableParameters.GS1Data, report);
-        string pass = GetParameter(AvailableParameters.GS1DataStructure, report);
-
-        if (data != null)
+        if (Standard != AvailableStandards.GS1)
         {
-            List<string> list = [];
+            Logger.LogInfo("GS1 is not enabled. Skipping GS1 Data.");
+            return true;
+        }
+
+        string data = report.GetParameter<string>(AvailableParameters.GS1Data, Device, SymbolType);
+        bool pass = report.GetParameter<bool>(AvailableParameters.GS1DataStructure, Device, SymbolType);
+
+        List<string> list = [];
+        if (!string.IsNullOrEmpty(data))
+        {
             string[] spl = data.Split('(', StringSplitOptions.RemoveEmptyEntries);
             foreach (string str in spl)
                 list.Add($"({str}");
-
-            GS1Results = new GS1Decode(AvailableParameters.GS1Data, Device, SymbolType, pass, DecodeText, data, list, "");
         }
-
+        GS1Results = new GS1Decode(AvailableParameters.GS1Data, Device, SymbolType, pass ? "PASS" : "FAIL", DecodeText, data, pass ? list : null, "");
         return true;
     }
 
     private bool SetXdimAndUnits(JObject report)
     {
-        var xdim = GetParameter(AvailableParameters.Xdim, report);
-        var json = xdim != null;
-        xdim ??= GetParameter(AvailableParameters.XDimension, report);
-        if (xdim == null)
-        {
-            Logger.LogError($"Could not find: '{AvailableParameters.Xdim.GetParameterPath(Device, SymbolType)}' or '{AvailableParameters.XDimension.GetParameterPath(Device, SymbolType)}' in ReportData. {Device}");
-            return false;
-        }
+        JObject xdim = report.GetParameter<JObject>(AvailableParameters.Xdim, Device, SymbolType);
+        XDimension = xdim != null
+            ? xdim.GetParameter<double>("value")
+            : report.GetParameter<double>(AvailableParameters.XDimension, Device, SymbolType);
 
-        if(json)
-           XDimension = JObject.Parse(xdim)["value"].ToObject<double>();
-        else
-            XDimension = xdim.ParseDouble();
-        
-        var unit = GetParameter(AvailableParameters.Units, report);
+        string unit = report.GetParameter<string>(AvailableParameters.Units, Device, SymbolType);
         if (unit == null)
         {
             Logger.LogError($"Could not find: '{AvailableParameters.Units.GetParameterPath(Device, SymbolType)}' in ReportData. {Device}");
@@ -264,38 +259,13 @@ public class SectorReport : ISectorReport
 
     private bool SetApeture(JObject report)
     {
-        string aperture = GetParameter(AvailableParameters.Aperture, report);
-        if (aperture == null)
-        {
-            Logger.LogError($"Could not find: '{AvailableParameters.Aperture.GetParameterPath(Device, SymbolType)}' in ReportData. {Device}");
-            return false;
-        }
-
-        Aperture = aperture.ParseDouble();
+        Aperture = report.GetParameter<double>(AvailableParameters.Aperture, Device, SymbolType);
 
         return true;
     }
 
-    private string GetParameter(AvailableParameters parameter, JObject report)
+    private OverallGrade GetOverallGrade(JObject json)
     {
-        string path = parameter.GetParameterPath(Device, SymbolType);
-        string[] parts = path.Split('.');
-        JObject current = report;
-        for (int i = 0; i < parts.Length; i++)
-        {
-            if (current[parts[i]] is null)
-                return null;
-            if (i == parts.Length - 1)
-                return current[parts[i]].ToString();
-            current = (JObject)current[parts[i]];
-        }
-        return null;
-    }
-
-
-    private OverallGrade GetOverallGrade(string original)
-    {
-        var json = JObject.Parse(original);
 
         string[] spl = json["string"].ToString().Split('/', StringSplitOptions.RemoveEmptyEntries);
 

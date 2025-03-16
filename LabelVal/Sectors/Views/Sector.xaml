@@ -48,14 +48,22 @@
                         <ColumnDefinition Width="auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                    <TextBlock
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="2"
                         HorizontalAlignment="Center"
                         Background="{DynamicResource SectorError_Brush}"
                         DockPanel.Dock="Top"
                         Text="WRONG STANDARD"
                         Visibility="{Binding IsWrongStandard, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneTime}" />
 
-                    <TextBlock Grid.Column="1" Grid.Row="1" HorizontalAlignment="Right" Text="{Binding Template.Username, Mode=OneTime}" Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"/>
+                    <TextBlock
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                        Text="{Binding Template.Username, Mode=OneTime}" />
 
                     <!--<TextBlock
                         Margin="3,0"
@@ -63,7 +71,11 @@
                         Foreground="{DynamicResource ColorBlindBrush2}"
                         Text="{Binding Template.Version, StringFormat={}{0}}" />-->
 
-                    <TextBlock Grid.Column="0" Grid.Row="1" HorizontalAlignment="Left" Text="{Binding Report.OverallGrade.Value}" />
+                    <TextBlock
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        HorizontalAlignment="Left"
+                        Text="{Binding Report.OverallGrade.Value}" />
                 </Grid>
 
                 <TextBlock Margin="5,0,0,0" HorizontalAlignment="Left">

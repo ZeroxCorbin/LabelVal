@@ -53,12 +53,7 @@ public partial class ImageResultEntry
 
         BringIntoView?.Invoke();
 
-        V5_REST_Lib.Controllers.Label lab = new()
-        {
-            DetectSectors = simDetSec || camDetSec,
-            Config = simAddSec || camAddSec ? V5ResultRow._Config : null,
-            RepeatAvailable = V5ProcessResults
-        };
+        V5_REST_Lib.Controllers.Label lab = new(V5ProcessResults, simAddSec || camAddSec ? V5ResultRow._Config : null, simDetSec || camDetSec, ImageResults.SelectedImageRoll.SelectedGS1Table);
 
         if (imageType == ImageResultEntryImageTypes.Source)
             lab.Image = PrepareImage(SourceImage);
@@ -120,18 +115,21 @@ public partial class ImageResultEntry
         //Tray and match a toolResult to a toolList
         foreach (JToken toolResult in V5CurrentReport.GetParameter<JArray>("event.data.toolResults"))
         {
-            //foreach (JToken toolList in V5CurrentTemplate.GetParameter<JArray>("response.data.job.toolList"))
-            //{
-            //    if (((JObject)toolList).GetParameter<string>("uid") == ((JObject)toolResult).GetParameter<string>("toolUid"))
-            //    {
+
             foreach (JToken result in ((JObject)toolResult).GetParameter<JArray>("results"))
             {
-                if (!((JObject)result).GetParameter<bool>("read"))
+                try
+                {
+                    tempSectors.Add(new V5.Sectors.Sector((JObject)result, (JObject)V5CurrentTemplate, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, $"Symbology_{((JObject)result).GetParameter<int>("toolSlot")}", ImageResults.SelectedScanner.Controller.Version));
+                }
+                catch (System.Exception ex)
+                {
+                    Logger.LogError(ex, ex.StackTrace);
+                    Logger.LogWarning("Error while processing results.");
                     continue;
-                tempSectors.Add(new V5.Sectors.Sector((JObject)result, (JObject)V5CurrentTemplate, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, $"SymbologyTool_{((JObject)result).GetParameter<int>("toolSlot")}", ImageResults.SelectedScanner.Controller.Version));
+                }
             }
-            //    }
-            //}
+
         }
 
         if (tempSectors.Count > 0)
@@ -195,8 +193,7 @@ public partial class ImageResultEntry
                 {
                     foreach (JToken result in ((JObject)toolResult).GetParameter<JArray>("results"))
                     {
-
-                        tempSectors.Add(new V5.Sectors.Sector((JObject)result, (JObject)row._Config, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, $"SymbologyTool_{((JObject)result).GetParameter<int>("toolSlot")}", ImageResults.SelectedScanner.Controller.Version));
+                        tempSectors.Add(new V5.Sectors.Sector((JObject)result, (JObject)row._Config, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, $"Symbology_{((JObject)result).GetParameter<int>("toolSlot")}", ImageResults.SelectedScanner.Controller.Version));
                     }
                 }
                 catch (System.Exception ex)

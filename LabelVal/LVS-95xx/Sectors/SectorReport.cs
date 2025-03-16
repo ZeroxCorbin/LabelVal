@@ -8,7 +8,7 @@ using LabelVal.Sectors.Extensions;
 using LabelVal.Sectors.Interfaces;
 using Lvs95xx.lib.Core.Controllers;
 using Lvs95xx.lib.Core.Models;
-using System.Collections.ObjectModel;
+using System.Drawing;
 
 namespace LabelVal.LVS_95xx.Sectors;
 
@@ -50,6 +50,8 @@ public class SectorReport : ISectorReport
     //V275 2D module data
     public ModuleData ExtendedData { get; private set; }
 
+    public Point CenterPoint { get; private set; }
+
     public SectorReport(FullReport report)
     {
         Original = report;
@@ -66,15 +68,16 @@ public class SectorReport : ISectorReport
         Height = report.Report.SizeY;
         AngleDeg = 0;
 
-        SetSymbologyAndRegionType(report.ReportData);
+        CenterPoint = new Point((int)(Left + (Width / 2)), (int)(Top + (Height / 2)));
+
+        _ = SetSymbologyAndRegionType(report.ReportData);
 
         DecodeText = report.ReportData.GetParameter(AvailableParameters.DecodeText, Device, SymbolType);
 
-        SetStandardAndTable(report.ReportData);
-        SetXdimAndUnits(report.ReportData);
-        SetApeture(report.ReportData);
-        SetOverallGrade(report.ReportData);
-
+        _ = SetStandardAndTable(report.ReportData);
+        _ = SetXdimAndUnits(report.ReportData);
+        _ = SetApeture(report.ReportData);
+        _ = SetOverallGrade(report.ReportData);
 
     }
 
@@ -142,22 +145,19 @@ public class SectorReport : ISectorReport
         {
             GS1Table = AvailableTables.Unknown;
             return true;
-
         }
 
         string data = report.GetParameter(AvailableParameters.GS1Data, Device, SymbolType);
         string pass = report.GetParameter(AvailableParameters.GS1DataStructure, Device, SymbolType);
 
-        if (data != null)
+        List<string> list = [];
+        if (!string.IsNullOrEmpty(data))
         {
-            List<string> list = [];
             string[] spl = data.Split('(', StringSplitOptions.RemoveEmptyEntries);
             foreach (string str in spl)
                 list.Add($"({str}");
-
-            GS1Results = new GS1Decode(AvailableParameters.GS1Data, Device, SymbolType, pass, DecodeText, data, list, "");
         }
-
+        GS1Results = new GS1Decode(AvailableParameters.GS1Data, Device, SymbolType, pass, DecodeText, data, pass.Equals("PASS") ? list : null, "");
         return true;
     }
 

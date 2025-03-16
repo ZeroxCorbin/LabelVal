@@ -26,6 +26,8 @@ public class SectorReport : ISectorReport
     public double Height { get; private set; }
     public double AngleDeg { get; private set; }
 
+    public System.Drawing.Point CenterPoint { get; set; }
+
     public OverallGrade OverallGrade { get; private set; }
 
     public double XDimension { get; private set; }
@@ -53,9 +55,10 @@ public class SectorReport : ISectorReport
     public double ApertureMils { get; private set; }
     public double Ppi { get; private set; }
 
-    public SectorReport(JObject report, JObject template)
+    public SectorReport(JObject report, JObject template, AvailableTables desiredTable)
     {
         Original = report;
+        GS1Table = desiredTable;
 
         _ = SetBoudingBox(report);
 
@@ -64,7 +67,7 @@ public class SectorReport : ISectorReport
 
         DecodeText = report.GetParameter<string>(AvailableParameters.DecodeText, Device, SymbolType);
 
-        SetStandardAndTable(report, template);
+        _ = SetStandardAndTable(report, template);
         //Set GS1 Data
         _ = SetGS1Data(report);
         //Set XDimension
@@ -89,6 +92,8 @@ public class SectorReport : ISectorReport
         Width = bb.Width;
         Height = bb.Height;
         AngleDeg = report.GetParameter<double>("angleDeg");
+
+        CenterPoint = new System.Drawing.Point((int)Left, (int)Top);
 
         return true;
     }
@@ -184,7 +189,6 @@ public class SectorReport : ISectorReport
         if (template.GetParameter<bool>($"response.data.job.toolList[{toolSlot}].SymbologyTool.settings.SymbologySettings.iso15415.enabled"))
         {
             Standard = AvailableStandards.ISO15415;
-            GS1Table = AvailableTables.Unknown;
             AperturePercentage = template.GetParameter<double>($"response.data.job.toolList[{toolSlot}].SymbologyTool.settings.SymbologySettings.iso15415.aperture");
             ApertureMils = template.GetParameter<double>($"response.data.job.toolList[{toolSlot}].SymbologyTool.settings.SymbologySettings.iso15415.aperture_mil");
         }
@@ -192,7 +196,6 @@ public class SectorReport : ISectorReport
         if (template.GetParameter<bool>($"response.data.job.toolList[{toolSlot}].SymbologyTool.settings.SymbologySettings.iso15416.enabled"))
         {
             Standard = AvailableStandards.ISO15416;
-            GS1Table = AvailableTables.Unknown;
             AperturePercentage = template.GetParameter<double>($"response.data.job.toolList[{toolSlot}].SymbologyTool.settings.SymbologySettings.iso15416.aperture");
             ApertureMils = template.GetParameter<double>($"response.data.job.toolList[{toolSlot}].SymbologyTool.settings.SymbologySettings.iso15416.aperture_mil");
         }
@@ -200,16 +203,14 @@ public class SectorReport : ISectorReport
         if (template.GetParameter<bool>($"response.data.job.toolList[{toolSlot}].SymbologyTool.settings.SymbologySettings.iso29158.enabled"))
         {
             Standard = AvailableStandards.DPM;
-            GS1Table = AvailableTables.Unknown;
             AperturePercentage = template.GetParameter<double>($"response.data.job.toolList[{toolSlot}].SymbologyTool.settings.SymbologySettings.iso29158.aperture");
             ApertureMils = template.GetParameter<double>($"response.data.job.toolList[{toolSlot}].SymbologyTool.settings.SymbologySettings.iso29158.aperture_mil");
         }
 
         //Set GS1 last
-        if (template.GetParameter<bool>($"response.data.job.toolList[{toolSlot}].SymbologyTool.settings.SymbologySettings.grading.gs1CheckEnabled"))
+        if (report.GetParameter<bool>($"gs1Enabled"))
         {
             Standard = AvailableStandards.GS1;
-            GS1Table = AvailableTables._1;
         }
 
         return true;
@@ -217,22 +218,24 @@ public class SectorReport : ISectorReport
 
     private bool SetGS1Data(JObject report)
     {
-        //If a table is not defined, it is not a GS1 symbol Exit
-        if (GS1Table == AvailableTables.Unknown)
+        if (Standard != AvailableStandards.GS1)
+        {
+            Logger.LogInfo("GS1 is not enabled. Skipping GS1 Data.");
             return true;
+        }
 
         string data = report.GetParameter<string>(AvailableParameters.GS1Data, Device, SymbolType);
-        string pass = report.GetParameter<string>(AvailableParameters.GS1DataStructure, Device, SymbolType);
+        bool pass = report.GetParameter<bool>(AvailableParameters.GS1DataStructure, Device, SymbolType);
 
-        if (data != null)
+        List<string> list = [];
+        if (!string.IsNullOrEmpty(data))
         {
-            List<string> list = [];
+
             string[] spl = data.Split('(', StringSplitOptions.RemoveEmptyEntries);
             foreach (string str in spl)
                 list.Add($"({str}");
-
-            GS1Results = new GS1Decode(AvailableParameters.GS1Data, Device, SymbolType, pass, DecodeText, data, list, "");
         }
+        GS1Results = new GS1Decode(AvailableParameters.GS1Data, Device, SymbolType, pass ? "PASS" : "FAIL", DecodeText, data, pass ? list : null, "");
 
         return true;
     }

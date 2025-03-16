@@ -78,7 +78,7 @@ public partial class Sector : ObservableObject, ISector
 
     public Sector(JObject report, JObject template, AvailableStandards standard, AvailableTables table, string name, string version)
     {
-        Report = new SectorReport(report, template);
+        Report = new SectorReport(report, template, table);
         Template = new SectorTemplate(report, template, name, version);
 
         DesiredStandard = standard;

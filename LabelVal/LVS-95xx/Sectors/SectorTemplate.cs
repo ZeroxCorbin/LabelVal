@@ -18,8 +18,6 @@ namespace LabelVal.LVS_95xx.Sectors
         public double Height { get; set; }
         public double AngleDeg { get; set; }
 
-        public System.Drawing.Point CenterPoint { get; set; }
-
         public double Orientation { get; set; }
 
         public string SymbologyType { get; set; }
@@ -43,8 +41,6 @@ namespace LabelVal.LVS_95xx.Sectors
             Width = template.Width;
             Height = template.Height;
             AngleDeg = template.AngleDeg;
-
-            CenterPoint = template.CenterPoint;
 
             Orientation = template.Orientation;
 
@@ -70,7 +66,6 @@ namespace LabelVal.LVS_95xx.Sectors
             Height = report.Report.SizeY;
             //AngleDeg = report.Report.Angle;
 
-            CenterPoint = new System.Drawing.Point(report.Report.X1 + (report.Report.SizeX / 2), report.Report.Y1 + (report.Report.SizeY / 2));
             Version = version;
 
             //Orientation = template.Orientation;

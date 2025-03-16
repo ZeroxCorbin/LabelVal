@@ -20,8 +20,6 @@ public class SectorTemplate : ISectorTemplate
     public double Height { get; set; }
     public double AngleDeg { get; set; }
 
-    public System.Drawing.Point CenterPoint { get; set; }
-
     public string SymbologyType { get; set; }
 
     public double Orientation { get; set; }
@@ -39,26 +37,25 @@ public class SectorTemplate : ISectorTemplate
 
         // Update the properties
         if (toolList.GetParameter<int>("SymbologyTool.regionList.Length") > 0 && toolList.GetParameter<string>("SymbologyTool.regionList[0].Region.shape.type") == "RectShape")
-        {
-            Left = toolList.GetParameter<double>("SymbologyTool.regionList[0].Region.shape.RectShape.x");
-            Top = toolList.GetParameter<double>("SymbologyTool.regionList[0].Region.shape.RectShape.y");
+        {   
             Width = toolList.GetParameter<double>("SymbologyTool.regionList[0].Region.shape.RectShape.width");
             Height = toolList.GetParameter<double>("SymbologyTool.regionList[0].Region.shape.RectShape.height");
+            Left = toolList.GetParameter<double>("SymbologyTool.regionList[0].Region.shape.RectShape.x");
+            Top = toolList.GetParameter<double>("SymbologyTool.regionList[0].Region.shape.RectShape.y") + Width / 2;
+
         }
         else
         {
             if (decodeData.GetParameter<JObject>("region") != null)
             {
                 Left = decodeData.GetParameter<double>("region.xOffset");
-                Top = decodeData.GetParameter<double>("region.yOffset");
+                Top = decodeData.GetParameter<double>("region.yOffset") + Width / 2;
                 Width = decodeData.GetParameter<double>("region.width");
                 Height = decodeData.GetParameter<double>("region.height");
             }
         }
 
         AngleDeg = 0;
-
-        CenterPoint = new System.Drawing.Point(decodeData.GetParameter<int>("x"), decodeData.GetParameter<int>("y"));
 
         Orientation = 0;
         SymbologyType = GetV5Symbology(decodeData);

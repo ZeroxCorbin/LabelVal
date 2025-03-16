@@ -24,7 +24,7 @@ public partial class Sector : UserControl
 
     private ISector ThisSector { get; set; }
     public string SectorName => ThisSector.Template.Username;
-    public System.Drawing.Point SectorCenterPoint => ThisSector.Template.CenterPoint;
+    public System.Drawing.Point SectorCenterPoint => ThisSector.Report.CenterPoint;
     public string GroupName { get; private set; }
 
 
@@ -106,7 +106,7 @@ public partial class Sector : UserControl
             {
                 var vm = (ISector)s.DataContext;
 
-                if (ISector.FallsWithin(ThisSector, vm.Template.CenterPoint))
+                if (ISector.FallsWithin(ThisSector, vm.Report.CenterPoint))
                     s.ShowSectorDetails();
             }
         }

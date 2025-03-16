@@ -17,8 +17,6 @@ public interface ISectorTemplate
 
     double Orientation { get; set; }
 
-    Point CenterPoint { get; set; }
-
     string SymbologyType { get; set; }
 
     TemplateMatchMode MatchSettings { get; set; }

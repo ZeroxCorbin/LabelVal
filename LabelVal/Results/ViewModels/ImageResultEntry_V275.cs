@@ -125,6 +125,8 @@ public partial class ImageResultEntry
         V275CurrentTemplate = repeat.FullReport.Job;
         V275CurrentReport = repeat.FullReport.Report;
 
+        var jobString = JsonConvert.SerializeObject(repeat.FullReport.Report);
+
         if (!ImageResults.SelectedNode.Controller.IsSimulator)
         {
             int dpi = 600;

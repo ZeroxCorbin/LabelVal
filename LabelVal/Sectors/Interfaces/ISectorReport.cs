@@ -28,6 +28,8 @@ public interface ISectorReport
     double Height { get; }
     double AngleDeg { get; }
 
+    System.Drawing.Point CenterPoint { get; }
+
     string DecodeText { get; }
 
     //GS1
