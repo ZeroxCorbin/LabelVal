@@ -26,39 +26,41 @@ public class SectorTemplate : ISectorTemplate
     public TemplateMatchMode MatchSettings { get; set; }
     public BlemishMaskLayers BlemishMask { get; set; }
 
-    public SectorTemplate(JObject decodeData, JObject toolList, string name, string version)
+    public SectorTemplate(JObject report, JObject template, string name, string version)
     {
         Version = version;
 
-        ToolList = toolList;
+        ToolList = template;
 
         Name = name;
         Username = name;
 
+        int toolSlot = report.GetParameter<int>("toolSlot") - 1;
+
         // Update the properties
-        if (toolList.GetParameter<int>("SymbologyTool.regionList.Length") > 0 && toolList.GetParameter<string>("SymbologyTool.regionList[0].Region.shape.type") == "RectShape")
+        if (template.GetParameter<JArray>($"response.data.job.toolList[{toolSlot}].SymbologyTool.regionList").Count > 0 && template.GetParameter<string>($"response.data.job.toolList[{toolSlot}].SymbologyTool.regionList[0].Region.shape.type") == "RectShape")
         {   
-            Width = toolList.GetParameter<double>("SymbologyTool.regionList[0].Region.shape.RectShape.width");
-            Height = toolList.GetParameter<double>("SymbologyTool.regionList[0].Region.shape.RectShape.height");
-            Left = toolList.GetParameter<double>("SymbologyTool.regionList[0].Region.shape.RectShape.x");
-            Top = toolList.GetParameter<double>("SymbologyTool.regionList[0].Region.shape.RectShape.y") + Width / 2;
+            Width = template.GetParameter<double>($"response.data.job.toolList[{toolSlot}].SymbologyTool.regionList[0].Region.shape.RectShape.width");
+            Height = template.GetParameter<double>($"response.data.job.toolList[{toolSlot}].SymbologyTool.regionList[0].Region.shape.RectShape.height");
+            Left = template.GetParameter<double>($"response.data.job.toolList[{toolSlot}].SymbologyTool.regionList[0].Region.shape.RectShape.x");
+            Top = template.GetParameter<double>($"response.data.job.toolList[{toolSlot}].SymbologyTool.regionList[0].Region.shape.RectShape.y");
 
         }
         else
         {
-            if (decodeData.GetParameter<JObject>("region") != null)
+            if (report.GetParameter<JObject>("region") != null)
             {
-                Left = decodeData.GetParameter<double>("region.xOffset");
-                Top = decodeData.GetParameter<double>("region.yOffset") + Width / 2;
-                Width = decodeData.GetParameter<double>("region.width");
-                Height = decodeData.GetParameter<double>("region.height");
+                Left = report.GetParameter<double>("region.xOffset");
+                Top = report.GetParameter<double>("region.yOffset");
+                Width = report.GetParameter<double>("region.width");
+                Height = report.GetParameter<double>("region.height");
             }
         }
 
         AngleDeg = 0;
 
         Orientation = 0;
-        SymbologyType = GetV5Symbology(decodeData);
+        SymbologyType = GetV5Symbology(report);
         Version = version;
     }
 

@@ -607,8 +607,9 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
                 //sector.Geometry.Transform = new RotateTransform(newSec.Report.AngleDeg, newSec.Report.Left + (newSec.Report.Width / 2), newSec.Report.Top + (newSec.Report.Height / 2));
                 drwGroup.Children.Add(sector);
 
-                double y = newSec.Report.Top + (newSec.Report.Height / 2);
+
                 double x = newSec.Report.Left + (newSec.Report.Width / 2);
+                double y = newSec.Report.Top + (newSec.Report.Height / 2);
                 secCenter.Children.Add(new LineGeometry(new Point(x + 10, y), new Point(x + -10, y)));
                 secCenter.Children.Add(new LineGeometry(new Point(x, y + 10), new Point(x, y + -10)));
             }

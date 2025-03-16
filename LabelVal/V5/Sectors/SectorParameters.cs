@@ -18,12 +18,10 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
 {
     public ISector Sector { get; set; }
 
-    [ObservableProperty] private string units;
     [ObservableProperty] private bool isNotOCVMatch = false;
     [ObservableProperty] private string oCVMatchText;
     [ObservableProperty] private bool isSectorMissing;
     [ObservableProperty] private string sectorMissingText;
-    [ObservableProperty] private bool isNotEmpty = false;
 
     public ObservableCollection<IParameterValue> Parameters { get; } = [];
     public ObservableCollection<Alarm> Alarms { get; } = [];
@@ -33,7 +31,6 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
 
     public SectorDetails() { }
 
-
     public SectorDetails( ISector sector) => Process(sector);
     public void Process(ISector sector)
     {
@@ -42,8 +39,6 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
 
         Sector = sector;
         _ = sec.Report.Original;
-
-        IsNotEmpty = false;
 
         if (Sector.Report.SymbolType == AvailableSymbologies.Unknown)
         {
@@ -116,7 +111,13 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
 
         }
 
+if(sec.Report.GS1Results is null)
+            return;
 
+        if (!sec.Report.GS1Results.Valid.Value)
+        {
+            Alarms.Add(new Alarm(AvaailableAlarmCategories.Error, sec.Report.GS1Results.FormattedOut));
+        }
         //if (SymbolType == "verify2D")
         //{
         //    if (results.Datamatrix != null)

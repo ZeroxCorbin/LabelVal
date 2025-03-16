@@ -15,15 +15,12 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
 {
     public ISector Sector { get; set; }
 
-    [ObservableProperty] private string units;
-
     [ObservableProperty] private bool isNotOCVMatch = false;
     [ObservableProperty] private string oCVMatchText;
 
     [ObservableProperty] private bool isSectorMissing;
     [ObservableProperty] private string sectorMissingText;
 
-    [ObservableProperty] private bool isNotEmpty = false;
 
     public ObservableCollection<IParameterValue> Parameters { get; } = [];
 
@@ -42,8 +39,6 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
 
         Sector = sector;
         FullReport report = sec.L95xxFullReport;
-
-        IsNotEmpty = false;
 
         //Get thew symbology enum
         AvailableSymbologies theSymbology = Sector.Report.SymbolType;
@@ -111,7 +106,7 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
         {
             foreach (string alarm in alarms)
             {
-                Alarms.Add(new Alarm(AvaailableAlarmCategories.Warning, alarm));
+                Alarms.Add(new Alarm(AvaailableAlarmCategories.Error, alarm));
             }
         }
     }

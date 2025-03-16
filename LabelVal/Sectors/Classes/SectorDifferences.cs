@@ -10,8 +10,6 @@ public class SectorDifferences
 
     public string Name { get; set; }
     public string Username { get; set; }
-    public string Units { get; set; }
-
     public bool IsSectorMissing { get; set; }
     public string SectorMissingText { get; set; }
 
@@ -26,7 +24,6 @@ public class SectorDifferences
         {
             Name = current.Sector.Template.Name,
             Username = current.Sector.Template.Username,
-            Units = current.Units,
         };
 
 

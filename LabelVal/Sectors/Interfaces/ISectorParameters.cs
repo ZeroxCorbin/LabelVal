@@ -8,15 +8,11 @@ public interface ISectorParameters
 {
     ISector Sector { get; set; }
 
-    string Units { get; set; }
-
     string OCVMatchText { get; set; }
     bool IsNotOCVMatch { get; set; }
 
     bool IsSectorMissing { get; set; }
     string SectorMissingText { get; set; }
-
-    bool IsNotEmpty { get; set; }
 
     ObservableCollection<IParameterValue> Parameters { get; } 
 

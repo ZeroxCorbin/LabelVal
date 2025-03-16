@@ -15,13 +15,10 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
 {
     public ISector Sector { get; set; }
 
-    [ObservableProperty] private string symbolType;
-    [ObservableProperty] private string units;
     [ObservableProperty] private bool isNotOCVMatch = false;
     [ObservableProperty] private string oCVMatchText;
     [ObservableProperty] private bool isSectorMissing;
     [ObservableProperty] private string sectorMissingText;
-    [ObservableProperty] private bool isNotEmpty = false;
 
     public ObservableCollection<IParameterValue> Parameters { get; } = [];
     public ObservableCollection<Alarm> Alarms { get; } = [];
@@ -38,8 +35,6 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
 
         Sector = sector;
         _ = sec.Report.Original;
-
-        IsNotEmpty = false;
 
         if (Sector.Report.SymbolType == AvailableSymbologies.Unknown)
         {
@@ -108,7 +103,7 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
             }
 
             Parameters.Add(new Missing(parameter));
-            Logger.LogWarning($"Paramter: '{parameter}' @ Path: '{parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)}' missing or parse issue.");
+            Logger.LogDebug($"Paramter: '{parameter}' @ Path: '{parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)}' missing or parse issue.");
         }
 
         //Check for alarms
