@@ -2,6 +2,7 @@
 using BarcodeVerification.lib.GS1;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using LabelVal.Sectors.Extensions;
 using LabelVal.Sectors.Interfaces;
 using Lvs95xx.lib.Core.Controllers;
 
@@ -119,6 +120,6 @@ public partial class Sector : ObservableObject, ISector
     }
 
     [RelayCommand]
-    private void CopyToClipBoard() => ISector.CopyCSVToClipboard(this);
+    private void CopyToClipBoard() => this.GetSectorCsv( true);
 
 }

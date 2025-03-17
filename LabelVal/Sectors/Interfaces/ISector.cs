@@ -1,10 +1,9 @@
 ﻿using BarcodeVerification.lib.Common;
 using BarcodeVerification.lib.GS1;
-using CsvHelper;
-using System.Globalization;
-using System.IO;
+using BarcodeVerification.lib.ISO;
 using System.Text;
 using System.Windows;
+using Wpf.lib.Extentions;
 
 namespace LabelVal.Sectors.Interfaces;
 
@@ -24,8 +23,6 @@ public partial interface ISector
     bool IsFocused { get; set; }
     bool IsMouseOver { get; set; }
 
-
-
     class CSVResults
     {
         public string Name { get; set; }
@@ -34,94 +31,7 @@ public partial interface ISector
         public string GradeValue { get; set; }
     }
 
-    static void CopyCSVToClipboard(ISector sector)
-    {
-        if (sector == null)
-            return;
 
-        List<CSVResults> compiled = [];
-
-        compiled.Add(new CSVResults
-        {
-            Name = "Version",
-            Value = sector.Template.Version
-        });
-
-        compiled.Add(new CSVResults
-        {
-            Name = "Units",
-            Value = sector.Report.Units.ToString()
-        });
-
-        // Add the main report
-        compiled.Add(new CSVResults
-        {
-            Name = sector.Report.SymbolType.ToString(),
-            Value = sector.Report.DecodeText,
-            Grade = sector.Report.OverallGrade.Grade.Letter,
-            GradeValue = sector.Report.OverallGrade.Value
-        });
-
-        //Add the the details
-        compiled.Add(new CSVResults
-        {
-            Name = "X Dimension",
-            Value = sector.Report.XDimension.ToString()
-        });
-
-        compiled.Add(new CSVResults
-        {
-            Name = "Aperture",
-            Value = sector.Report.Aperture.ToString()
-        });
-
-        compiled.Add(new CSVResults
-        {
-            Name = "Angle",
-            Value = sector.Report.AngleDeg.ToString()
-        });
-
-        //foreach (GradeValue grade in sector.SectorDetails.GradeValues)
-        //{
-        //    compiled.Add(new CSVResults
-        //    {
-        //        Name = CamelCaseToWords(grade.Name),
-        //        Value = grade.Value.ToString(),
-        //        Grade = grade.Grade.Letter,
-        //        GradeValue = grade.Grade.Value.ToString()
-        //    });
-        //}
-
-        //foreach (Value_ grade in sector.SectorDetails.Values)
-        //{
-        //    compiled.Add(new CSVResults
-        //    {
-        //        Name = CamelCaseToWords(grade.Name),
-        //        Value = grade.Value.ToString(),
-
-        //    });
-        //}
-
-        //foreach (Grade grade in sector.SectorDetails.Grades)
-        //{
-        //    compiled.Add(new CSVResults
-        //    {
-        //        Name = CamelCaseToWords(grade.Name),
-        //        GradeValue = grade.Value.ToString(),
-        //        Grade = grade.Letter
-        //    });
-        //}
-
-        using StringWriter writer = new();
-        using CsvWriter csv = new(writer, CultureInfo.InvariantCulture);
-        csv.WriteHeader(typeof(CSVResults));
-        csv.NextRecord();
-        csv.WriteRecords(compiled);
-        csv.NextRecord();
-
-        Clipboard.SetText(writer.ToString());
-
-    }
 
     private static string CamelCaseToWords(string camelCase)
     {

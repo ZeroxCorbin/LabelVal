@@ -1,6 +1,7 @@
 ﻿using LabelVal.Dialogs;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.ImageViewer3D.Views;
+using LabelVal.Sectors.Extensions;
 using LabelVal.Sectors.Views;
 using MahApps.Metro.Controls.Dialogs;
 using System.Windows;
@@ -302,5 +303,13 @@ public partial class ImageResultEntry_V5 : UserControl
         img.Dispose();
         _ = DialogCoordinator.Instance.ShowMetroDialogAsync(yourParentWindow.DataContext, tmp);
 
+    }
+
+    private void btnCopySectorsCsvToClipboard_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button btn && btn.Tag is System.Collections.ObjectModel.ObservableCollection<Sectors.Interfaces.ISector> sectors)
+        {
+            sectors.GetSectorsCSV(true);
+        }
     }
 }

@@ -223,6 +223,15 @@
                                 Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                                 ToolTip="The all seeing eye! Click it...&#x0a;Hold Shift and click for more." />
 
+                            <Button
+                                Width="28"
+                                Click="btnCopySectorsCsvToClipboard_Click"
+                                Tag="{Binding V275StoredSectors}"
+                                Content="{iconPacks:Modern Kind=PageCopy}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                ToolTip="Copy all sectors to clipboard, as CSV." />
+
                         </DockPanel>
                     </md:Card>
 
@@ -482,10 +491,14 @@
                                 Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                                 ToolTip="Save the image." />
 
-                            <!--<Border Style="{StaticResource imageBar}" Margin="3,0"/>
-
-                            <TextBlock VerticalAlignment="Center" Text="{Binding V275CurrentImage.UID, Converter={StaticResource shortenUID}}"
-                                ToolTip="{Binding V275CurrentImage.UID}" Margin="3,0"/>-->
+                            <Button
+                                Width="28"
+                                Click="btnCopySectorsCsvToClipboard_Click"
+                                Tag="{Binding V275CurrentSectors}"
+                                Content="{iconPacks:Modern Kind=PageCopy}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                ToolTip="Copy all sectors to clipboard, as CSV." />
 
                         </DockPanel>
                     </md:Card>

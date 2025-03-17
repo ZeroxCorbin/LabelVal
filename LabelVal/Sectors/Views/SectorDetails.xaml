@@ -366,22 +366,45 @@
             <StackPanel Margin="3">
 
                 <!--  Name, Wrong Standard, Overall Grade String  -->
-                <DockPanel Margin="3" DockPanel.Dock="Top">
+                <!--  Name, Wrong Standard, Overall Grade String  -->
+                <Grid Margin="3" DockPanel.Dock="Top">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
                     <TextBlock
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="2"
                         HorizontalAlignment="Center"
                         Background="{DynamicResource SectorError_Brush}"
                         DockPanel.Dock="Top"
                         Text="WRONG STANDARD"
                         Visibility="{Binding IsWrongStandard, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneTime}" />
 
-                    <TextBlock Text="{Binding Template.Username, Mode=OneTime}" />
                     <TextBlock
-                        Margin="3,0"
-                        Foreground="{DynamicResource ColorBlindBrush2}"
-                        Text="{Binding Template.Version, StringFormat={}{0}}" />
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                        Text="{Binding Template.Username, Mode=OneTime}" />
 
-                    <TextBlock HorizontalAlignment="Right" Text="{Binding Report.OverallGrade.Value}" />
-                </DockPanel>
+                    <!--<TextBlock
+                        Margin="3,0"
+                        HorizontalAlignment="Center"
+                        Foreground="{DynamicResource ColorBlindBrush2}"
+                        Text="{Binding Template.Version, StringFormat={}{0}}" />-->
+
+                    <TextBlock
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        HorizontalAlignment="Left"
+                        Text="{Binding Report.OverallGrade.Value}" />
+                </Grid>
 
                 <!--  Icon, Symbology, Decode Text  -->
                 <Grid>
