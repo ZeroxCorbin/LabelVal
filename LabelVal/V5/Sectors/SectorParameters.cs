@@ -4,12 +4,9 @@ using BarcodeVerification.lib.ISO;
 using BarcodeVerification.lib.ISO.ParameterTypes;
 using CommunityToolkit.Mvvm.ComponentModel;
 using LabelVal.Sectors.Classes;
-using LabelVal.Sectors.Extensions;
 using LabelVal.Sectors.Interfaces;
 using Newtonsoft.Json.Linq;
-using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 using V5_REST_Lib.Models;
 
 namespace LabelVal.V5.Sectors;
@@ -31,7 +28,7 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
 
     public SectorDetails() { }
 
-    public SectorDetails( ISector sector) => Process(sector);
+    public SectorDetails(ISector sector) => Process(sector);
     public void Process(ISector sector)
     {
         if (sector is not V5.Sectors.Sector sec)
@@ -55,11 +52,11 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
         //Get the parameters list based on the region type.
         List<AvailableParameters> theParamters = Params.ParameterGroups[theRegionType][Sector.Report.Device];
 
-        var report = (JObject)Sector.Report.Original;
+        JObject report = (JObject)Sector.Report.Original;
 
         foreach (AvailableParameters parameter in theParamters)
         {
-            var type = parameter.GetParameterDataType(Sector.Report.Device, theSymbology);
+            Type type = parameter.GetParameterDataType(Sector.Report.Device, theSymbology);
 
             if (type == typeof(GradeValue))
             {
@@ -105,13 +102,45 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
                 ValuePassFail valuePassFail = GetValuePassFail(parameter, report.GetParameter<JObject>(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
                 if (valuePassFail != null) { Parameters.Add(valuePassFail); continue; }
             }
+            else if (type == typeof(Custom))
+            {
+                if (parameter is AvailableParameters.CellSize or AvailableParameters.CellWidth or AvailableParameters.CellHeight)
+                {
+                    ValueDouble valueDouble = new(parameter, Sector.Report.Device, Sector.Report.SymbolType, sec.Report.XDimension);
+                    if (valueDouble != null)
+                    {
+                        Parameters.Add(valueDouble);
+                        continue;
+                    }
+                }
+
+                //if (parameter is AvailableParameters.UnusedEC)
+                //{
+                //    ValueDouble valueDouble = new(parameter, Sector.Report.Device, Sector.Report.SymbolType, report.GetParameter<double>("Datamatrix.uec"));
+                //    if (valueDouble != null)
+                //    {
+                //        Parameters.Add(valueDouble);
+                //        continue;
+                //    }
+                //}
+
+                //if (parameter is AvailableParameters.MinimumEC)
+                //{
+                //    ValueDouble valueDouble = new(parameter, Sector.Report.Device, Sector.Report.SymbolType, report.GetParameter<double>("Datamatrix.ecc"));
+                //    if (valueDouble != null)
+                //    {
+                //        Parameters.Add(valueDouble);
+                //        continue;
+                //    }
+                //}
+            }
 
             Parameters.Add(new Missing(parameter));
             Logger.LogDebug($"Paramter: '{parameter}' @ Path: '{parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)}' missing or parse issue.");
 
         }
 
-if(sec.Report.GS1Results is null)
+        if (sec.Report.GS1Results is null)
             return;
 
         if (!sec.Report.GS1Results.Valid.Value)
@@ -162,7 +191,7 @@ if(sec.Report.GS1Results is null)
         if (gradeValue is null)
             return null;
 
-        Grade grade = new Grade(parameter, Sector.Report.Device, gradeValue["grade"].ToString());
+        Grade grade = new(parameter, Sector.Report.Device, gradeValue["grade"].ToString());
         string value = gradeValue["value"].ToString();
         return new GradeValue(parameter, Sector.Report.Device, Sector.Report.SymbolType, grade, value);
     }
@@ -172,7 +201,7 @@ if(sec.Report.GS1Results is null)
         if (grade is null)
             return null;
         string value = grade["value"].ToString();
-        string letter = grade["letter"].ToString();
+        _ = grade["letter"].ToString();
         return new Grade(parameter, Sector.Report.Device, value);
     }
 
@@ -186,7 +215,7 @@ if(sec.Report.GS1Results is null)
 
     public ValuePassFail GetValuePassFail(AvailableParameters parameter, JObject valuePassFail)
     {
-       if (valuePassFail is null)
+        if (valuePassFail is null)
             return null;
 
         string passFail = valuePassFail["result"].ToString();
@@ -204,16 +233,13 @@ if(sec.Report.GS1Results is null)
         _ => throw new System.NotImplementedException(),
     };
 
-
     private static string V5GetSymbolType(ResultsAlt.Decodedata results)
     {
         if (results.Code128 != null)
             return "verify1D";
-        else if (results.Datamatrix != null)
-            return "verify2D";
-        else if (results.QR != null)
-            return "verify2D";
-        else return results.PDF417 != null ? "verify1D" : results.UPC != null ? "verify1D" : "Unknown";
+        else return results.Datamatrix != null
+            ? "verify2D"
+            : results.QR != null ? "verify2D" : results.PDF417 != null ? "verify1D" : results.UPC != null ? "verify1D" : "Unknown";
     }
 
     private static string GetLetter(double value) =>

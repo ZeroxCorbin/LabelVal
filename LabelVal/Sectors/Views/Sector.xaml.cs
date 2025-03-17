@@ -1,5 +1,6 @@
 ﻿using LabelVal.Results.Views;
 using LabelVal.Sectors.Interfaces;
+using LabelVal.Sectors.Extensions;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -106,7 +107,7 @@ public partial class Sector : UserControl
             {
                 var vm = (ISector)s.DataContext;
 
-                if (ISector.FallsWithin(ThisSector, vm.Report.CenterPoint))
+                if (vm.Report.CenterPoint.FallsWithin(ThisSector))
                     s.ShowSectorDetails();
             }
         }

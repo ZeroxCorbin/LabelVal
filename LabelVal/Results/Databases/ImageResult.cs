@@ -7,6 +7,7 @@ using SQLite;
 namespace LabelVal.Results.Databases;
 public partial class ImageResult : ObservableObject
 {
+
     //[Indexed(Name = "CompositeKey", Order = 1, Unique = true)]
     [PrimaryKey] public string SourceImageUID { get; set; }
 
@@ -30,6 +31,8 @@ public partial class ImageResult : ObservableObject
     /// <see cref="Report"/>
     /// </summary>
     [ObservableProperty] private string report;
+
+    [ObservableProperty] private string version;
 
     [SQLite.Ignore] public ImageEntry Source { get => !string.IsNullOrEmpty(SourceImage) ? JsonConvert.DeserializeObject<ImageEntry>(SourceImage) : null; set { SourceImage = JsonConvert.SerializeObject(value); SourceImageUID = value.UID; }  }
     [SQLite.Ignore] public ImageEntry Stored { get => !string.IsNullOrEmpty(StoredImage) ? JsonConvert.DeserializeObject<ImageEntry>(StoredImage) : null; set { StoredImage = JsonConvert.SerializeObject(value); } }

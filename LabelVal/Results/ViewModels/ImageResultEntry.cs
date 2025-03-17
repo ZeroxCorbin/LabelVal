@@ -887,6 +887,27 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         return distanceComparison;
     });
 
+    //Sort the list by row and column, given x,y coordinates
+    public static void SortList2(List<Sectors.Interfaces.ISector> list) => list.Sort((item1, item2) =>
+    {
+        int row1 = (int)Math.Floor(item1.Report.CenterPoint.Y / item1.Report.Height);
+        int row2 = (int)Math.Floor(item2.Report.CenterPoint.Y / item2.Report.Height);
+        int rowComparison = row1.CompareTo(row2);
+        if (rowComparison == 0)
+        {
+            // If distances are equal, sort by X coordinate, then by Y if necessary
+            int col1 = (int)Math.Floor(item1.Report.CenterPoint.X / item1.Report.Width);
+            int col2 = (int)Math.Floor(item2.Report.CenterPoint.X / item2.Report.Width);
+            int colComparison = col1.CompareTo(col2);
+            if (colComparison == 0)
+            {
+                // If X coordinates are equal, sort by Y coordinate
+                return item1.Report.CenterPoint.Y.CompareTo(item2.Report.CenterPoint.Y);
+            }
+            return colComparison;
+        }
+        return rowComparison;
+    });
     #region Recieve Messages
     public void Receive(PropertyChangedMessage<Databases.ImageResultsDatabase> message) => SelectedDatabase = message.NewValue;
     public void Receive(PropertyChangedMessage<PrinterSettings> message) => SelectedPrinter = message.NewValue;

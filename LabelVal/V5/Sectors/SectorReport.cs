@@ -248,12 +248,11 @@ public class SectorReport : ISectorReport
 
         if (ppi == null)
         {
-            Ppi = 0;
+            Ppi = double.NaN;
             Logger.LogInfo($"Could not find: '{AvailableParameters.PPI.GetParameterPath(Device, SymbolType)}' in the Job. {Device}");
-            return true;
         }
-
-        Ppi = ppi.ParseDouble();
+        else
+            Ppi = ppi.ParseDouble();
 
         string ppe = report.GetParameter<string>(AvailableParameters.PPE, Device, SymbolType);
         if (ppe == null)
@@ -262,7 +261,7 @@ public class SectorReport : ISectorReport
             return false;
         }
 
-        XDimension = ppe.ParseDouble() * 1000 / Ppi;
+        XDimension = double.IsNaN(Ppi) ? ppe.ParseDouble() : ppe.ParseDouble() * 1000 / Ppi;
 
         return true;
     }

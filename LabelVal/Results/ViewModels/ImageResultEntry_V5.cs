@@ -120,7 +120,7 @@ public partial class ImageResultEntry
             {
                 try
                 {
-                    tempSectors.Add(new V5.Sectors.Sector((JObject)result, (JObject)V5CurrentTemplate, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, $"Symbology_{((JObject)result).GetParameter<int>("toolSlot")}", ImageResults.SelectedScanner.Controller.Version));
+                    tempSectors.Add(new V5.Sectors.Sector((JObject)result, (JObject)V5CurrentTemplate, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, $"Symbology_{((JObject)result).GetParameter<int>("toolSlot")}", V5CurrentTemplate.GetParameter<string>("response.message")));
                 }
                 catch (System.Exception ex)
                 {
@@ -134,7 +134,7 @@ public partial class ImageResultEntry
 
         if (tempSectors.Count > 0)
         {
-            SortList(tempSectors);
+            SortList2(tempSectors);
 
             foreach (Sectors.Interfaces.ISector sec in tempSectors)
                 V5CurrentSectors.Add(sec);
@@ -193,7 +193,7 @@ public partial class ImageResultEntry
                 {
                     foreach (JToken result in ((JObject)toolResult).GetParameter<JArray>("results"))
                     {
-                        tempSectors.Add(new V5.Sectors.Sector((JObject)result, (JObject)row._Config, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, $"Symbology_{((JObject)result).GetParameter<int>("toolSlot")}", ImageResults.SelectedScanner.Controller.Version));
+                        tempSectors.Add(new V5.Sectors.Sector((JObject)result, (JObject)row._Config, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, $"Symbology_{((JObject)result).GetParameter<int>("toolSlot")}", row._Config.GetParameter<string>("response.message")));
                     }
                 }
                 catch (System.Exception ex)
@@ -208,7 +208,7 @@ public partial class ImageResultEntry
 
         if (tempSectors.Count > 0)
         {
-            SortList(tempSectors);
+            SortList2(tempSectors);
 
             foreach (Sectors.Interfaces.ISector sec in tempSectors)
                 V5StoredSectors.Add(sec);

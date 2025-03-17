@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using BarcodeVerification.lib.Extensions;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Sectors.Classes;
@@ -125,7 +126,7 @@ public partial class ImageResultEntry
         V275CurrentTemplate = repeat.FullReport.Job;
         V275CurrentReport = repeat.FullReport.Report;
 
-        var jobString = JsonConvert.SerializeObject(repeat.FullReport.Report);
+        string jobString = JsonConvert.SerializeObject(repeat.FullReport.Report);
 
         if (!ImageResults.SelectedNode.Controller.IsSimulator)
         {
@@ -142,19 +143,28 @@ public partial class ImageResultEntry
         List<Sectors.Interfaces.ISector> tempSectors = [];
         foreach (JToken templateSec in V275CurrentTemplate["sectors"])
         {
-            foreach (JToken currentSect in V275CurrentReport["inspectLabel"]["inspectSector"])
+            try
             {
-                if (templateSec["name"].ToString() == currentSect["name"].ToString())
+                foreach (JToken currentSect in V275CurrentReport["inspectLabel"]["inspectSector"])
                 {
-                    tempSectors.Add(new V275.Sectors.Sector((JObject)templateSec, (JObject)currentSect, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, repeat.FullReport.Job["jobVersion"].ToString()));
-                    break;
+                    if (templateSec["name"].ToString() == currentSect["name"].ToString())
+                    {
+                        tempSectors.Add(new V275.Sectors.Sector((JObject)templateSec, (JObject)currentSect, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, repeat.FullReport.Job["jobVersion"].ToString()));
+                        break;
+                    }
                 }
             }
+            catch (System.Exception ex)
+            {
+                Logger.LogError(ex);
+                Logger.LogError("Error while processing the repeat report.");
+            }
+
         }
 
         if (tempSectors.Count > 0)
         {
-            SortList(tempSectors);
+            SortList2(tempSectors);
 
             foreach (Sectors.Interfaces.ISector sec in tempSectors)
                 V275CurrentSectors.Add(sec);
@@ -287,6 +297,7 @@ public partial class ImageResultEntry
 
             if (sec.Template.BlemishMask.Layers != null)
             {
+
                 foreach (V275_REST_Lib.Models.Job.Layer layer in sec.Template.BlemishMask.Layers)
                 {
                     if (!await ImageResults.SelectedNode.Controller.AddMask(sec.Template.Name, JsonConvert.SerializeObject(layer)))
@@ -333,22 +344,31 @@ public partial class ImageResultEntry
             {
                 foreach (JToken jSec in row._Job["sectors"])
                 {
-                    foreach (JObject rSec in row._Report["inspectLabel"]["inspectSector"])
+                    try
                     {
-                        if (jSec["name"].ToString() == rSec["name"].ToString())
+                        foreach (JObject rSec in row._Report.GetParameter<JArray>("inspectLabel.inspectSector"))
                         {
 
-                            tempSectors.Add(new V275.Sectors.Sector((JObject)jSec, rSec, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, row._Job["jobVersion"].ToString()));
+                            if (jSec["name"].ToString() == rSec["name"].ToString())
+                            {
 
-                            break;
+                                tempSectors.Add(new V275.Sectors.Sector((JObject)jSec, rSec, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, row._Job["jobVersion"].ToString()));
+
+                                break;
+                            }
                         }
+                    }
+                    catch (System.Exception ex)
+                    {
+                        Logger.LogError(ex);
+                        Logger.LogError($"Error while loading stored results from: {SelectedDatabase.File.Name}");
                     }
                 }
             }
 
             if (tempSectors.Count > 0)
             {
-                SortList(tempSectors);
+                SortList2(tempSectors);
                 foreach (Sectors.Interfaces.ISector sec in tempSectors)
                     V275StoredSectors.Add(sec);
             }

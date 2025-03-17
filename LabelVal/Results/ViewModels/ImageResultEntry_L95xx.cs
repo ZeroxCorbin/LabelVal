@@ -15,6 +15,7 @@ using CommunityToolkit.Mvvm.Input;
 using Lvs95xx.lib.Core.Controllers;
 using System.Threading.Tasks;
 using LabelVal.Sectors.Classes;
+using LabelVal.Sectors.Extensions;
 using BarcodeVerification.lib.Common;
 using BarcodeVerification.lib.Extensions;
 
@@ -134,7 +135,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
 
             if (tempSectors.Count > 0)
             {
-                SortList(tempSectors);
+                SortList2(tempSectors);
 
                 foreach (var sec in tempSectors)
                     L95xxStoredSectors.Add(sec);
@@ -151,7 +152,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
         }
     }
 
-    public void L95xxProcessResults(FullReport? message, bool replaceSectors)
+    public void L95xxProcessResults(FullReport message, bool replaceSectors)
     {
         if(!App.Current.Dispatcher.CheckAccess())
         {
@@ -171,21 +172,20 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
         string name = null;
 
         foreach (var sec in L95xxStoredSectors)
-            if (ISector.FallsWithin(sec, center))
+            if (center.FallsWithin(sec))
                 name = sec.Template.Username;
 
         if (name == null)
             foreach (var sec in V275StoredSectors)
-                if (ISector.FallsWithin(sec, center))
+                if (center.FallsWithin(sec))
                     name = sec.Template.Username;
 
         if (name == null)
             foreach (var sec in V5StoredSectors)
-                if (ISector.FallsWithin(sec, center))
+                if (center.FallsWithin(sec))
                     name = sec.Template.Username;
 
-        if (name == null)
-            name = $"Verify_{L95xxCurrentSectors.Count + 1}";
+        name ??= $"Verify_{L95xxCurrentSectors.Count + 1}";
 
         message.Name = name;
 
@@ -194,7 +194,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
 
         L95xxCurrentSectors.Add(new Sector(message, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
         List<ISector> secs = L95xxCurrentSectors.ToList();
-        SortList(secs);
+        SortList2(secs);
         SortObservableCollectionByList(secs, L95xxCurrentSectors);
 
         L95xxGetSectorDiff();

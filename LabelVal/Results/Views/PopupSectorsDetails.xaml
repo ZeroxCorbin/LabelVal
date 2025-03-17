@@ -14,7 +14,7 @@
     <UserControl.Resources>
         <CollectionViewSource x:Key="cvsStoredSectors" Source="{Binding}">
             <CollectionViewSource.SortDescriptions>
-                <componentmodel:SortDescription Direction="Ascending" PropertyName="Template.CenterPoint.X" />
+                <componentmodel:SortDescription Direction="Ascending" PropertyName="Report.CenterPoint.X" />
                 <!--<componentmodel:SortDescription PropertyName="Template.Top" Direction="Ascending"/>-->
             </CollectionViewSource.SortDescriptions>
         </CollectionViewSource>
