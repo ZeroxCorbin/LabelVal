@@ -123,8 +123,8 @@ public class ImageResultsDatabase : ObservableObject, IDisposable
     public bool IsNotPermLocked => !IsPermLocked;
 
     private void Lock(bool isPerminent) => Connection.InsertOrReplace(new Lock { IsPerminent = isPerminent });
-    private bool HasLock() => HasPerminentLock() || Connection?.Table<Lock>().Count() > 0;
-    private bool HasPerminentLock() => Connection?.Table<Lock>().Where(v => v.IsPerminent).Count() > 0;
+    private bool HasLock() => Connection?.Table<Lock>().Count() > 0 ? HasPerminentLock() : false;
+    private bool HasPerminentLock() => Connection?.Table<Lock>().Count() > 0 ? Connection?.Table<Lock>().Where(v => v.IsPerminent).Count() > 0 : false;
     private void Unlock() => _ = Connection.DeleteAll<Lock>();
 
     public void Dispose()

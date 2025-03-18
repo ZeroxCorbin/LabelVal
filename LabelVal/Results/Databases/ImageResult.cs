@@ -7,11 +7,10 @@ using SQLite;
 namespace LabelVal.Results.Databases;
 public partial class ImageResult : ObservableObject
 {
+    [Indexed(Name = "CompositeKey", Order = 1, Unique = true)]
+    public string SourceImageUID { get; set; }
 
-    //[Indexed(Name = "CompositeKey", Order = 1, Unique = true)]
-    [PrimaryKey] public string SourceImageUID { get; set; }
-
-    //[Indexed(Name = "CompositeKey", Order = 2, Unique = true)]
+    [Indexed(Name = "CompositeKey", Order = 2, Unique = true)]
     public string ImageRollUID { get; set; }
 
     public string RunUID { get; set; }
