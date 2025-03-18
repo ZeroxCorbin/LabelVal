@@ -1,11 +1,11 @@
 ﻿using BarcodeVerification.lib.Common;
+using BarcodeVerification.lib.Extensions;
 using BarcodeVerification.lib.GS1;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LabelVal.Sectors.Extensions;
 using LabelVal.Sectors.Interfaces;
 using Newtonsoft.Json.Linq;
-using V5_REST_Lib.Models;
 
 namespace LabelVal.V5.Sectors;
 
@@ -77,10 +77,16 @@ public partial class Sector : ObservableObject, ISector
     public bool IsFocused { get; set; }
     public bool IsMouseOver { get; set; }
 
-    public Sector(JObject report, JObject template, AvailableStandards standard, AvailableTables table, string name, string version)
+    public Sector(JObject report, JObject template, AvailableStandards standard, AvailableTables table, string version)
     {
         Report = new SectorReport(report, template, table);
-        Template = new SectorTemplate(report, template, name, version);
+
+        string toolUid = report.GetParameter<string>("toolUid");
+        if (string.IsNullOrWhiteSpace(toolUid))
+        {
+            toolUid = $"SymbologyTool_{report.GetParameter<int>("toolSlot")}";
+        }
+        Template = new SectorTemplate(report, template, toolUid, version);
 
         DesiredStandard = standard;
         DesiredGS1Table = table;

@@ -35,10 +35,15 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
             return;
 
         Sector = sector;
-        _ = sec.Report.Original;
+        JObject report = (JObject)Sector.Report.Original;
 
         if (Sector.Report.SymbolType == AvailableSymbologies.Unknown)
         {
+            if (!report.GetParameter<bool>("read"))
+            {
+                Alarms.Add(new Alarm(AvaailableAlarmCategories.Error, "Read failed"));
+            }
+
             IsSectorMissing = true;
             SectorMissingText = "Sector is missing";
             return;
@@ -52,7 +57,7 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
         //Get the parameters list based on the region type.
         List<AvailableParameters> theParamters = Params.ParameterGroups[theRegionType][Sector.Report.Device];
 
-        JObject report = (JObject)Sector.Report.Original;
+
 
         foreach (AvailableParameters parameter in theParamters)
         {
@@ -140,6 +145,8 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
 
         }
 
+
+
         if (sec.Report.GS1Results is null)
             return;
 
@@ -147,6 +154,8 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
         {
             Alarms.Add(new Alarm(AvaailableAlarmCategories.Error, sec.Report.GS1Results.FormattedOut));
         }
+
+
         //if (SymbolType == "verify2D")
         //{
         //    if (results.Datamatrix != null)

@@ -72,9 +72,9 @@ public class SectorReport : ISectorReport
         _ = SetGS1Data(report);
         //Set XDimension
         _ = SetXdimAndUnits(report, template);
-        _ = SetOverallGrade(report, template);
+        _ = SetOverallGrade(report);
         //Set Aperture
-        _ = SetApeture(report, template);
+        _ = SetApeture();
 
     }
 
@@ -152,7 +152,7 @@ public class SectorReport : ISectorReport
         return true;
     }
 
-    private bool SetOverallGrade(JObject report, JObject template)
+    private bool SetOverallGrade(JObject report)
     {
         string overall = report.GetParameter<string>(AvailableParameters.OverallGrade, Device, SymbolType);
         if (!string.IsNullOrEmpty(overall))
@@ -172,7 +172,7 @@ public class SectorReport : ISectorReport
                 apertureS = ppe >= 10 ? $"{aperture:N0}" : $"0{aperture:N0}";
             }
 
-            OverallGrade = new OverallGrade(Device, new Grade(AvailableParameters.OverallGrade, Device, double.NaN), $"NaN/{apertureS}/623", $"{aperture:N0}", "600");
+            OverallGrade = new OverallGrade(Device, new Grade(AvailableParameters.OverallGrade, Device, double.NaN, report.GetParameter<bool>("passed") ? "" : "F"), $"NaN/{apertureS}/623", $"{aperture:N0}", "600");
             return true;
         }
 
@@ -266,7 +266,7 @@ public class SectorReport : ISectorReport
         return true;
     }
 
-    private bool SetApeture(JObject report, JObject template)
+    private bool SetApeture()
     {
         if (OverallGrade == null)
         {

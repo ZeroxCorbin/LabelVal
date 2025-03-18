@@ -34,6 +34,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wpf.lib", "..\Wpf.lib\Wpf.l
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BarcodeVerification.lib", "..\BarcodeVerification.lib\BarcodeVerification.lib.csproj", "{A3F67A86-7C71-1C28-AFC9-8446EA39A5BD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cameras_Lib", "..\Cameras_Lib\Cameras_Lib.csproj", "{185C6CB6-5821-6D19-4898-8F4571BCCE20}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -294,6 +296,22 @@ Global
 		{A3F67A86-7C71-1C28-AFC9-8446EA39A5BD}.Release|x64.Build.0 = Release|Any CPU
 		{A3F67A86-7C71-1C28-AFC9-8446EA39A5BD}.Release|x86.ActiveCfg = Release|Any CPU
 		{A3F67A86-7C71-1C28-AFC9-8446EA39A5BD}.Release|x86.Build.0 = Release|Any CPU
+		{185C6CB6-5821-6D19-4898-8F4571BCCE20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{185C6CB6-5821-6D19-4898-8F4571BCCE20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{185C6CB6-5821-6D19-4898-8F4571BCCE20}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{185C6CB6-5821-6D19-4898-8F4571BCCE20}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{185C6CB6-5821-6D19-4898-8F4571BCCE20}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{185C6CB6-5821-6D19-4898-8F4571BCCE20}.Debug|x64.Build.0 = Debug|Any CPU
+		{185C6CB6-5821-6D19-4898-8F4571BCCE20}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{185C6CB6-5821-6D19-4898-8F4571BCCE20}.Debug|x86.Build.0 = Debug|Any CPU
+		{185C6CB6-5821-6D19-4898-8F4571BCCE20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{185C6CB6-5821-6D19-4898-8F4571BCCE20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{185C6CB6-5821-6D19-4898-8F4571BCCE20}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{185C6CB6-5821-6D19-4898-8F4571BCCE20}.Release|ARM64.Build.0 = Release|Any CPU
+		{185C6CB6-5821-6D19-4898-8F4571BCCE20}.Release|x64.ActiveCfg = Release|Any CPU
+		{185C6CB6-5821-6D19-4898-8F4571BCCE20}.Release|x64.Build.0 = Release|Any CPU
+		{185C6CB6-5821-6D19-4898-8F4571BCCE20}.Release|x86.ActiveCfg = Release|Any CPU
+		{185C6CB6-5821-6D19-4898-8F4571BCCE20}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

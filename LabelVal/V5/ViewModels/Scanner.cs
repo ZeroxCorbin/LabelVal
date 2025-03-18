@@ -1,4 +1,5 @@
-﻿using Cameras_Lib;
+﻿using BarcodeVerification.lib.Extensions;
+using Cameras_Lib;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -17,7 +18,6 @@ using System.Windows.Media.Imaging;
 using V5_REST_Lib.Cameras;
 using V5_REST_Lib.Controllers;
 using V5_REST_Lib.Models;
-using BarcodeVerification.lib.Extensions;
 
 namespace LabelVal.V5.ViewModels;
 
@@ -100,7 +100,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             double x = (SelectedCamera.Sensor.PixelColumns - width) / 2;
             double y = (SelectedCamera.Sensor.PixelRows - height) / 2;
 
-            return JObject.FromObject( new QuickSet_Focus((float)x, (float)y, (float)width, (float)height));
+            return JObject.FromObject(new QuickSet_Focus((float)x, (float)y, (float)width, (float)height));
         }
     }
 
@@ -190,7 +190,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
 
         if (source.GetParameter<string>("FileAcquisitionSource.directory") != directory)
         {
-            source.SetParameter("FileAcquisitionSource.directory", directory);
+            _ = source.SetParameter("FileAcquisitionSource.directory", directory);
 
             JObject? send = Controller.Config.GetParameter<JObject>("response.data");
             if (send == null)
@@ -199,8 +199,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
                 return;
             }
 
-
-            await Controller.SetConfig(send);
+            _ = await Controller.SetConfig(send);
 
         }
     }
@@ -235,15 +234,15 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             V5_REST_Lib.Results meta = await Controller.Commands.GetMeta();
             if (meta.OK)
             {
-                var metaConfig = (JObject)meta.Object;
+                JObject metaConfig = (JObject)meta.Object;
 
                 // Assuming metaConfig.response.data.FileAcquisitionSource.directory.sources is an array of strings
-                var sources = metaConfig.GetParameter<JArray>("response.data.FileAcquisitionSource.directory.sources");
+                JArray sources = metaConfig.GetParameter<JArray>("response.data.FileAcquisitionSource.directory.sources");
 
                 await App.Current.Dispatcher.BeginInvoke(() =>
                 {
                     // Add new directories from sources to Directories if they're not already present
-                    foreach (var source in sources)
+                    foreach (JToken source in sources)
                         if (!Directories.Contains(source.ToString()))
                             Directories.Add(source.ToString());
 
@@ -759,5 +758,4 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         ExplicitMessages = null;
         Capture = null;
     }
-
 }

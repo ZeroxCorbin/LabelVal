@@ -120,7 +120,7 @@ public partial class ImageResultEntry
             {
                 try
                 {
-                    tempSectors.Add(new V5.Sectors.Sector((JObject)result, (JObject)V5CurrentTemplate, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, $"Symbology_{((JObject)result).GetParameter<int>("toolSlot")}", V5CurrentTemplate.GetParameter<string>("response.message")));
+                    tempSectors.Add(new V5.Sectors.Sector((JObject)result, (JObject)V5CurrentTemplate, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, V5CurrentTemplate.GetParameter<string>("response.message")));
                 }
                 catch (System.Exception ex)
                 {
@@ -193,7 +193,7 @@ public partial class ImageResultEntry
                 {
                     foreach (JToken result in ((JObject)toolResult).GetParameter<JArray>("results"))
                     {
-                        tempSectors.Add(new V5.Sectors.Sector((JObject)result, (JObject)row._Config, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, $"Symbology_{((JObject)result).GetParameter<int>("toolSlot")}", row._Config.GetParameter<string>("response.message")));
+                        tempSectors.Add(new V5.Sectors.Sector((JObject)result, (JObject)row._Config, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, row._Config.GetParameter<string>("response.message")));
                     }
                 }
                 catch (System.Exception ex)
