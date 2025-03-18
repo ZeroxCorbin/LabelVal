@@ -226,10 +226,10 @@
                             <Button
                                 Width="28"
                                 Click="btnCopySectorsCsvToClipboard_Click"
-                                Tag="{Binding V275StoredSectors}"
                                 Content="{iconPacks:Modern Kind=PageCopy}"
                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                                 Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                Tag="{Binding V275StoredSectors}"
                                 ToolTip="Copy all sectors to clipboard, as CSV." />
 
                         </DockPanel>
@@ -494,10 +494,10 @@
                             <Button
                                 Width="28"
                                 Click="btnCopySectorsCsvToClipboard_Click"
-                                Tag="{Binding V275CurrentSectors}"
                                 Content="{iconPacks:Modern Kind=PageCopy}"
                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                                 Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                Tag="{Binding V275CurrentSectors}"
                                 ToolTip="Copy all sectors to clipboard, as CSV." />
 
                         </DockPanel>

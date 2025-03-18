@@ -195,14 +195,14 @@
                         </Button>
 
                         <Button
-                                Width="28"
-                                Click="btnCopySectorsCsvToClipboard_Click"
-                                Tag="{Binding V5StoredSectors}"
-                                Content="{iconPacks:Modern Kind=PageCopy}"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                ToolTip="Copy all sectors to clipboard, as CSV." />
-                        
+                            Width="28"
+                            Click="btnCopySectorsCsvToClipboard_Click"
+                            Content="{iconPacks:Modern Kind=PageCopy}"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                            Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                            Tag="{Binding V5StoredSectors}"
+                            ToolTip="Copy all sectors to clipboard, as CSV." />
+
                     </DockPanel>
                 </md:Card>
 
@@ -565,14 +565,14 @@
                         </Button>
 
                         <Button
-                                Width="28"
-                                Click="btnCopySectorsCsvToClipboard_Click"
-                                Tag="{Binding V5CurrentSectors}"
-                                Content="{iconPacks:Modern Kind=PageCopy}"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                ToolTip="Copy all sectors to clipboard, as CSV." />
-                        
+                            Width="28"
+                            Click="btnCopySectorsCsvToClipboard_Click"
+                            Content="{iconPacks:Modern Kind=PageCopy}"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                            Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                            Tag="{Binding V5CurrentSectors}"
+                            ToolTip="Copy all sectors to clipboard, as CSV." />
+
                     </DockPanel>
                 </md:Card>
 
