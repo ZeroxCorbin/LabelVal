@@ -51,7 +51,7 @@ public class SectorReport : ISectorReport
 
     public Point CenterPoint { get; private set; }
 
-    public SectorReport(JObject report, JObject template)
+    public SectorReport(JObject report, ISectorTemplate secTemplate)
     {
         Original = report;
 
@@ -67,7 +67,7 @@ public class SectorReport : ISectorReport
 
         DecodeText = report.GetParameter<string>(AvailableParameters.DecodeText, Device, SymbolType);
 
-        _ = SetStandardAndTable(template);
+        _ = SetStandardAndTable((JObject)secTemplate.Original);
 
         //Set GS1 Data
         _ = SetGS1Data(report);

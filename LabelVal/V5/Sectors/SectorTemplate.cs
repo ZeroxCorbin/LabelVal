@@ -7,7 +7,7 @@ namespace LabelVal.V5.Sectors;
 
 public class SectorTemplate : ISectorTemplate
 {
-    public JObject ToolList { get; }
+    public object Original { get; set; }
 
     public string Name { get; set; }
     public string Username { get; set; }
@@ -20,18 +20,18 @@ public class SectorTemplate : ISectorTemplate
     public double Height { get; set; }
     public double AngleDeg { get; set; }
 
-    public string SymbologyType { get; set; }
-
     public double Orientation { get; set; }
+
     public TemplateMatchMode MatchSettings { get; set; }
     public BlemishMaskLayers BlemishMask { get; set; }
 
     public SectorTemplate(JObject report, JObject template, string name, string version)
     {
+        if (report == null || template == null)
+            return;
+
+        Original = template;
         Version = version;
-
-        ToolList = template;
-
         Name = name;
         Username = name;
 
@@ -58,22 +58,9 @@ public class SectorTemplate : ISectorTemplate
         }
 
         AngleDeg = 0;
-
         Orientation = 0;
-        SymbologyType = GetV5Symbology(report);
-        Version = version;
+
     }
 
     public SectorTemplate() { }
-
-    private string GetV5Symbology(JObject report)
-    {
-        if (report.GetParameter<JObject>("Code128") != null)
-            return "Code128";
-        else if (report.GetParameter<JObject>("Datamatrix") != null)
-            return "DataMatrix";
-        else if (report.GetParameter<JObject>("QR") != null)
-            return "QR";
-        else return report.GetParameter<JObject>("PDF417") != null ? "PDF417" : report.GetParameter<JObject>("UPC") != null ? "UPC" : "Unknown";
-    }
 }

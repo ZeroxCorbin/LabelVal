@@ -78,9 +78,10 @@ public partial class Sector : ObservableObject, ISector
     public bool IsMouseOver { get; set; }
 
     public Sector(JObject template, JObject report, AvailableStandards standard, AvailableTables table, string version)
-    {
-        Report = new SectorReport(report, template);
+    {  
         Template = new SectorTemplate(template, version);
+        Report = new SectorReport(report, Template);
+
 
         DesiredStandard = standard;
         DesiredGS1Table = table;

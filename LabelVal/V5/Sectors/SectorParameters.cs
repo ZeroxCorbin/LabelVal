@@ -57,8 +57,6 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
         //Get the parameters list based on the region type.
         List<AvailableParameters> theParamters = Params.ParameterGroups[theRegionType][Sector.Report.Device];
 
-
-
         foreach (AvailableParameters parameter in theParamters)
         {
             Type type = parameter.GetParameterDataType(Sector.Report.Device, theSymbology);

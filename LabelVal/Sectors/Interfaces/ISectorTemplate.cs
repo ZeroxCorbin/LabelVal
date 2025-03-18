@@ -4,6 +4,7 @@ using System.Drawing;
 namespace LabelVal.Sectors.Interfaces;
 public interface ISectorTemplate
 {
+    object Original { get; set; }
     string Name { get; set; }
     string Username { get; set; }
 
@@ -16,8 +17,6 @@ public interface ISectorTemplate
     double AngleDeg { get; set; }
 
     double Orientation { get; set; }
-
-    string SymbologyType { get; set; }
 
     TemplateMatchMode MatchSettings { get; set; }
     BlemishMaskLayers BlemishMask { get; set; }

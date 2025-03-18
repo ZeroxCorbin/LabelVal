@@ -168,7 +168,7 @@ public partial class ImageResultEntry
 
         V5StoredSectors.Clear();
 
-        V5Result row = SelectedDatabase.Select_V5Result(ImageRollUID, SourceImageUID);
+        V5Result row = SelectedDatabase.Select_V5Result(ImageRollUID, SourceImageUID, ImageRollUID);
 
         if (row == null)
         {
@@ -231,7 +231,7 @@ public partial class ImageResultEntry
             foreach (Sectors.Interfaces.ISector cSec in V5CurrentSectors)
                 if (sec.Template.Name == cSec.Template.Name)
                 {
-                    if (sec.Template.SymbologyType == cSec.Template.SymbologyType)
+                    if (sec.Report.SymbolType == cSec.Report.SymbolType)
                     {
                         SectorDifferences dat = SectorDifferences.Compare(sec.SectorDetails, cSec.SectorDetails);
                         if (dat != null)
@@ -243,7 +243,7 @@ public partial class ImageResultEntry
                         {
                             Username = $"{sec.Template.Username} (SYMBOLOGY MISMATCH)",
                             IsSectorMissing = true,
-                            SectorMissingText = $"Stored Sector {sec.Template.SymbologyType} : Current Sector {cSec.Template.SymbologyType}"
+                            SectorMissingText = $"Stored Sector {sec.Report.SymbolType.GetDescription()}  : Current Sector  {cSec.Report.SymbolType.GetDescription()}"
                         };
                         diff.Add(dat);
                     }

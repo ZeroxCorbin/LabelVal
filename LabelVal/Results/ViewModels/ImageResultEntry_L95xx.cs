@@ -121,7 +121,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
 
         try
         {
-            var row = SelectedDatabase.Select_L95xxResult(ImageRollUID, SourceImageUID);
+            var row = SelectedDatabase.Select_L95xxResult(ImageRollUID, SourceImageUID, ImageRollUID);
 
             if (row == null)
             {
@@ -219,7 +219,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
             foreach (Sector cSec in L95xxCurrentSectors)
                 if (sec.Template.Name == cSec.Template.Name)
                 {
-                    if (sec.Template.SymbologyType == cSec.Template.SymbologyType)
+                    if (sec.Report.SymbolType == cSec.Report.SymbolType)
                     {
                         var res = sec.SectorDetails.Compare(cSec.SectorDetails);
                         if(res == null)
@@ -233,7 +233,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
                         {
                             Username = $"{sec.Template.Username} (SYMBOLOGY MISMATCH)",
                             IsSectorMissing = true,
-                            SectorMissingText = $"Stored Sector {sec.Template.SymbologyType} : Current Sector {cSec.Template.SymbologyType}"
+                            SectorMissingText = $"Stored Sector {sec.Report.SymbolType.GetDescription()} : Current Sector {cSec.Report.SymbolType.GetDescription()}"
                         };
                         diff.Add(dat);
                     }

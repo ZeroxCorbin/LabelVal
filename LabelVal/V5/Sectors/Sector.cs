@@ -78,18 +78,18 @@ public partial class Sector : ObservableObject, ISector
     public bool IsMouseOver { get; set; }
 
     public Sector(JObject report, JObject template, AvailableStandards standard, AvailableTables table, string version)
-    {
-        Report = new SectorReport(report, template, table);
-
+    {  
+        DesiredStandard = standard;
+        DesiredGS1Table = table;
+        
         string toolUid = report.GetParameter<string>("toolUid");
         if (string.IsNullOrWhiteSpace(toolUid))
         {
             toolUid = $"SymbologyTool_{report.GetParameter<int>("toolSlot")}";
         }
-        Template = new SectorTemplate(report, template, toolUid, version);
 
-        DesiredStandard = standard;
-        DesiredGS1Table = table;
+        Template = new SectorTemplate(report, template, toolUid, version);
+        Report = new SectorReport(report, template, table);
 
         SectorDetails = new SectorDetails(this);
 

@@ -12,7 +12,7 @@ public partial class ImageResult : ObservableObject
 
     [Indexed(Name = "CompositeKey", Order = 2, Unique = true)]
     public string ImageRollUID { get; set; }
-
+    [Indexed(Name = "CompositeKey", Order = 3, Unique = true)]
     public string RunUID { get; set; }
 
     /// <see cref="SourceImage"/>

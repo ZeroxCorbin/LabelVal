@@ -7,6 +7,7 @@ namespace LabelVal.LVS_95xx.Sectors
 {
     public class SectorTemplate : ISectorTemplate
     {
+        public object Original { get; set; }
         public string Name { get; set; }
         public string Username { get; set; }
 
@@ -20,43 +21,19 @@ namespace LabelVal.LVS_95xx.Sectors
 
         public double Orientation { get; set; }
 
-        public string SymbologyType { get; set; }
-
         public TemplateMatchMode MatchSettings { get; set; }
         public BlemishMaskLayers BlemishMask { get; set; }
 
         public SectorTemplate() { }
-        public SectorTemplate(ISectorTemplate template, string version)
-        {
-            if(template == null)
-                return;
-            
-            Version = version;
-
-            Name = template.Name;
-            Username = template.Username;
-
-            Top = template.Top;
-            Left = template.Left;
-            Width = template.Width;
-            Height = template.Height;
-            AngleDeg = template.AngleDeg;
-
-            Orientation = template.Orientation;
-
-            SymbologyType = template.SymbologyType;
-
-            MatchSettings = template.MatchSettings;
-            BlemishMask = template.BlemishMask;
-        }
 
         public SectorTemplate(FullReport report, string version)
         {
             if (report == null)
                 return;
 
-            Version = version;
+            Original = report.Report;
 
+            Version = version;
             Name = report.Name;
             Username = report.Name;
 
@@ -64,29 +41,9 @@ namespace LabelVal.LVS_95xx.Sectors
             Left = report.Report.X1;
             Width = report.Report.SizeX;
             Height = report.Report.SizeY;
-            //AngleDeg = report.Report.Angle;
+            AngleDeg = 0;
 
-            Version = version;
-
-            //Orientation = template.Orientation;
-
-            //SymbologyType = report.Report.;
-
-            //MatchSettings = template.MatchSettings;
-            //BlemishMask = template.BlemishMask;
-        }
-
-        private string GetSymbology(ResultsAlt.Decodedata report)
-        {
-            if (report.Code128 != null)
-                return "Code128";
-            else if (report.Datamatrix != null)
-                return "DataMatrix";
-            else if (report.QR != null)
-                return "QR";
-            else if (report.PDF417 != null)
-                return "PDF417";
-            else return report.UPC != null ? "UPC" : "Unknown";
+            Orientation = 0;
         }
     }
 }

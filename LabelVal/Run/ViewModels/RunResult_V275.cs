@@ -1,4 +1,5 @@
 ﻿using LabelVal.Sectors.Classes;
+using Lvs95xx.lib.Hardware.Helpers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
@@ -122,7 +123,7 @@ public partial class RunResult
             foreach (Sectors.Interfaces.ISector cSec in V275CurrentSectors)
                 if (sec.Template.Name == cSec.Template.Name)
                 {
-                    if (sec.Template.SymbologyType == cSec.Template.SymbologyType)
+                    if (sec.Report.SymbolType == cSec.Report.SymbolType)
                     {
                         diff.Add(sec.SectorDetails.Compare(cSec.SectorDetails));
                         continue;
@@ -133,7 +134,7 @@ public partial class RunResult
                         {
                             Username = $"{sec.Template.Username} (SYMBOLOGY MISMATCH)",
                             IsSectorMissing = true,
-                            SectorMissingText = $"Stored Sector {sec.Template.SymbologyType} : Current Sector {cSec.Template.SymbologyType}"
+                            SectorMissingText = $"Stored Sector {sec.Report.SymbolType.GetDescription()} : Current Sector {cSec.Report.SymbolType.GetDescription()}"
                         };
                         diff.Add(dat);
                     }

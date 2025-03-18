@@ -259,7 +259,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             _ = SelectedDatabase.InsertOrReplace_V275Result(new Databases.V275Result
             {
                 ImageRollUID = ImageRollUID,
-
+                RunUID = ImageRollUID,
                 Source = SourceImage,
                 Stored = V275CurrentImage,
 
@@ -286,7 +286,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             _ = SelectedDatabase.InsertOrReplace_V5Result(new Databases.V5Result
             {
                 ImageRollUID = ImageRollUID,
-
+                RunUID = ImageRollUID,
                 Source = SourceImage,
                 Stored= V5CurrentImage,
 
@@ -326,7 +326,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             _ = SelectedDatabase.InsertOrReplace_L95xxResult(new Databases.L95xxResult
             {
                 ImageRollUID = ImageRollUID,
-
+                RunUID = ImageRollUID,
                 Source = SourceImage,
                 Stored = L95xxCurrentImage,
 
@@ -391,17 +391,17 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         {
             if (device is ImageResultEntryDevices.V275)
             {
-                _ = SelectedDatabase.Delete_V275Result(ImageRollUID, SourceImageUID);
+                _ = SelectedDatabase.Delete_V275Result(ImageRollUID, SourceImageUID, ImageRollUID);
                 V275GetStored();
             }
             else if (device is ImageResultEntryDevices.V5)
             {
-                _ = SelectedDatabase.Delete_V5Result(ImageRollUID, SourceImageUID);
+                _ = SelectedDatabase.Delete_V5Result(ImageRollUID, SourceImageUID, ImageRollUID);
                 V5GetStored();
             }
             else if (device is ImageResultEntryDevices.L95xx or ImageResultEntryDevices.L95xxAll)
             {
-                _ = SelectedDatabase.Delete_L95xxResult(ImageRollUID, SourceImageUID);
+                _ = SelectedDatabase.Delete_L95xxResult(ImageRollUID, SourceImageUID, ImageRollUID);
                 L95xxGetStored();
             }
         }

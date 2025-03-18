@@ -7,7 +7,7 @@ namespace LabelVal.V275.Sectors;
 
 public class SectorTemplate : ISectorTemplate
 {
-    public JObject V275Sector { get; }
+    public object Original { get; set; }
 
     public string Name { get; set; }
     public string Username { get; set; }
@@ -20,17 +20,16 @@ public class SectorTemplate : ISectorTemplate
     public double Height { get; set; }
     public double AngleDeg { get; set; }
 
-    public string SymbologyType { get; set; }
-
     public double Orientation { get; set; }
     public TemplateMatchMode MatchSettings { get; set; }
     public BlemishMaskLayers BlemishMask { get; set; }
 
     public SectorTemplate(JObject template, string version)
-    {
-        Version = version;
+    {  
+        
+        Original = template;
 
-        V275Sector = template;
+        Version = version;
 
         Name = template.GetParameter<string>("name");
         Username = template.GetParameter<string>("username");
@@ -42,8 +41,6 @@ public class SectorTemplate : ISectorTemplate
         AngleDeg = template.GetParameter<double>("angle");
 
         Orientation = template.GetParameter<double>("orientation");
-
-        SymbologyType = template.GetParameter<string>("symbology");
 
         if (template.GetParameter<JObject>("matchSettings") != null)
         {

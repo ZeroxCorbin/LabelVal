@@ -189,12 +189,11 @@ public partial class ImageResultEntry
             foreach (Sectors.Interfaces.ISector cSec in V275CurrentSectors)
                 if (sec.Template.Name == cSec.Template.Name)
                 {
-                    if (sec.Template.SymbologyType == cSec.Template.SymbologyType)
+                    if (sec.Report.SymbolType == cSec.Report.SymbolType)
                     {
                         SectorDifferences res = sec.SectorDetails.Compare(cSec.SectorDetails);
                         if (res != null)
                             diff.Add(res);
-
                     }
                     else
                     {
@@ -202,7 +201,7 @@ public partial class ImageResultEntry
                         {
                             Username = $"{sec.Template.Username} (SYMBOLOGY MISMATCH)",
                             IsSectorMissing = true,
-                            SectorMissingText = $"Stored Sector {sec.Template.SymbologyType} : Current Sector {cSec.Template.SymbologyType}"
+                            SectorMissingText = $"Stored Sector {sec.Report.SymbolType.GetDescription()}  : Current Sector  {cSec.Report.SymbolType.GetDescription()}"
                         };
                         diff.Add(dat);
                     }
@@ -292,7 +291,7 @@ public partial class ImageResultEntry
 
         foreach (Sectors.Interfaces.ISector sec in V275StoredSectors)
         {
-            if (!await ImageResults.SelectedNode.Controller.AddSector(sec.Template.Name, JsonConvert.SerializeObject(((V275.Sectors.SectorTemplate)sec.Template).V275Sector)))
+            if (!await ImageResults.SelectedNode.Controller.AddSector(sec.Template.Name, JsonConvert.SerializeObject(((V275.Sectors.SectorTemplate)sec.Template).Original)))
                 return -1;
 
             if (sec.Template.BlemishMask.Layers != null)
@@ -330,7 +329,7 @@ public partial class ImageResultEntry
 
         try
         {
-            Databases.V275Result row = SelectedDatabase.Select_V275Result(ImageRollUID, SourceImageUID);
+            Databases.V275Result row = SelectedDatabase.Select_V275Result(ImageRollUID, SourceImageUID, ImageRollUID);
 
             if (row == null)
             {
