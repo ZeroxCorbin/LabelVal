@@ -226,7 +226,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
                 {
                     ImageUtilities.DPI dpi = LibImageUtilities.ImageTypes.ImageUtilities.GetImageDPI(bmp);
                     LibImageUtilities.ImageTypes.Bmp.Bmp format = new(LibImageUtilities.ImageTypes.Bmp.Utilities.GetBmp(bmp));
-                    Lvs95xx.lib.Core.Controllers.Controller.ApplyWatermark(format.ImageData);
+                    //Lvs95xx.lib.Core.Controllers.Controller.ApplyWatermark(format.ImageData);
 
                     byte[] img = format.RawData;
 

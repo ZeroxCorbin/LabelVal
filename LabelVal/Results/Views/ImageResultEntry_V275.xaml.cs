@@ -1,17 +1,15 @@
-﻿using BarcodeVerification.lib.ISO;
-using LabelVal.Dialogs;
+﻿using LabelVal.Dialogs;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.ImageViewer3D.Views;
 using LabelVal.Sectors.Extensions;
-using LabelVal.Sectors.Interfaces;
 using LabelVal.Sectors.Views;
+using LibImageUtilities.ImageTypes;
 using MahApps.Metro.Controls.Dialogs;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Wpf.lib.Extentions;
 
 namespace LabelVal.Results.Views;
 /// <summary>
@@ -329,8 +327,52 @@ public partial class ImageResultEntry_V275 : UserControl
     {
         if (sender is Button btn && btn.Tag is System.Collections.ObjectModel.ObservableCollection<Sectors.Interfaces.ISector> sectors)
         {
-            sectors.GetSectorsCSV(true);
+            _ = sectors.GetSectorsCSV(true);
         }
+        else if (sender is Button btn2 && btn2.Tag is ImageEntry image)
+        {
+            ImageToClipboard(image.ImageBytes);
+        }
+    }
+
+    private void ImageToClipboard(byte[] imageBytes)
+    {
+        if (!(Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)))
+        {
+            Clipboard.SetImage(LibImageUtilities.BitmapImage.CreateBitmapImage(LibImageUtilities.ImageTypes.Png.Utilities.GetPng(imageBytes)));
+        }
+        else
+        {
+            ImageUtilities.DPI dpi = LibImageUtilities.ImageTypes.ImageUtilities.GetImageDPI(imageBytes);
+            LibImageUtilities.ImageTypes.Bmp.Bmp format = new(LibImageUtilities.ImageTypes.Bmp.Utilities.GetBmp(imageBytes));
+            //Lvs95xx.lib.Core.Controllers.Controller.ApplyWatermark(format.ImageData);
+            byte[] img = format.RawData;
+            _ = LibImageUtilities.ImageTypes.ImageUtilities.SetImageDPI(img, dpi);
+            Clipboard.SetImage(LibImageUtilities.BitmapImage.CreateBitmapImage(img));
+        }
+
+        //var data = new DataObject();
+        ////If the shift key is pressed, copy the image as Bitmap.
+        //if (!(Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)))
+        //{
+        //    using MemoryStream pngMemStream = new MemoryStream(LibImageUtilities.ImageTypes.Png.Utilities.GetPng(imageBytes));
+        //    data.SetData("PNG", pngMemStream, false);
+        //    Clipboard.SetDataObject(data, true);
+        //}
+
+        //else
+        //{
+        //    ImageUtilities.DPI dpi = LibImageUtilities.ImageTypes.ImageUtilities.GetImageDPI(imageBytes);
+        //    LibImageUtilities.ImageTypes.Bmp.Bmp format = new(LibImageUtilities.ImageTypes.Bmp.Utilities.GetBmp(imageBytes));
+        //    //Lvs95xx.lib.Core.Controllers.Controller.ApplyWatermark(format.ImageData);
+
+        //    var img = format.RawData;
+
+        //    _ = LibImageUtilities.ImageTypes.ImageUtilities.SetImageDPI(img, dpi);
+
+        //    data.SetData(DataFormats.Bitmap,img, false);
+        //    Clipboard.SetDataObject(data, true);
+        //}
 
     }
 }

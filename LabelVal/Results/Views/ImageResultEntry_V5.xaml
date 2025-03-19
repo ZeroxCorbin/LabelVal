@@ -65,7 +65,7 @@
                                 <DataTrigger Binding="{Binding ImageResults.SelectedScanner, Mode=OneWay}" Value="{x:Null}">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding ImageResults.SelectedNode.Controller.IsConnected}" Value="False">
+                                <DataTrigger Binding="{Binding ImageResults.SelectedScanner.Controller.IsConnected}" Value="False">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                                 <!--<DataTrigger Binding="{Binding ImageResults.SelectedNode.Controller.State}" Value="Running">
@@ -102,11 +102,11 @@
                     <Button.Style>
                         <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
                             <Setter Property="Tag" Value="{Binding V5StoredSectors}" />
-                            <Setter Property="ToolTip" Value="Copy the sectors as CSV." />
+                            <Setter Property="ToolTip" Value="Copy the sectors as DelimeterSV.&#x0a;Hold Shift for XLS." />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
                                     <Setter Property="Tag" Value="{Binding V5StoredImage}" />
-                                    <Setter Property="ToolTip" Value="Copy the image as a Bitmap." />
+                                    <Setter Property="ToolTip" Value="Copy the image to the clipboard and PNG.&#x0a;Hold Shift for BMP." />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -230,7 +230,7 @@
                                 <DataTrigger Binding="{Binding ImageResults.SelectedScanner, Mode=OneWay}" Value="{x:Null}">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding ImageResults.SelectedScanner.Controller.IsConnectedl}" Value="False">
+                                <DataTrigger Binding="{Binding ImageResults.SelectedScanner.Controller.IsConnected}" Value="False">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                                 <MultiDataTrigger>
@@ -270,12 +270,12 @@
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
                     <Button.Style>
                         <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
-                            <Setter Property="Tag" Value="{Binding V5CurrentSectors}" />
-                            <Setter Property="ToolTip" Value="Copy the sectors as CSV." />
+                            <Setter Property="Tag" Value="{Binding V5StoredSectors}" />
+                            <Setter Property="ToolTip" Value="Copy the sectors as DelimeterSV;Hold Shift for XLS." />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
-                                    <Setter Property="Tag" Value="{Binding V5CurrentImage}" />
-                                    <Setter Property="ToolTip" Value="Copy the image as a Bitmap." />
+                                    <Setter Property="Tag" Value="{Binding V5StoredImage}" />
+                                    <Setter Property="ToolTip" Value="Copy the image to the clipboard and PNG.&#x0a;Hold Shift for BMP." />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>

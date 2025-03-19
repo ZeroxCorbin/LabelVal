@@ -34,7 +34,7 @@
             <DockPanel x:Key="V275Stored_Toolbar" x:Shared="False">
 
                 <Border Margin="3,0" Style="{StaticResource imageBar}" />
-                
+
                 <!--  Image Only  -->
                 <DockPanel>
                     <DockPanel.Style>
@@ -58,7 +58,7 @@
                         ToolTip="Save the image." />
 
                 </DockPanel>
-                
+
                 <!--  Sectors Only  -->
                 <DockPanel>
                     <DockPanel.Style>
@@ -93,7 +93,7 @@
                         ToolTip="Overwrite the template sectors with the stored data." />
 
                     <Border Margin="3,0" Style="{StaticResource imageBar}" />
-                    
+
                 </DockPanel>
 
                 <!--  Both  -->
@@ -101,16 +101,15 @@
                     Width="28"
                     Click="btnCopySectorsCsvToClipboard_Click"
                     Content="{iconPacks:Modern Kind=PageCopy}"
-                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                    Tag="{Binding V275StoredSectors}">
+                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
                     <Button.Style>
                         <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
                             <Setter Property="Tag" Value="{Binding V275StoredSectors}" />
-                            <Setter Property="ToolTip" Value="Copy the sectors as CSV." />
+                            <Setter Property="ToolTip" Value="Copy the sectors as DelimeterSV.&#x0a;Hold Shift for XLS." />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
                                     <Setter Property="Tag" Value="{Binding V275StoredImage}" />
-                                    <Setter Property="ToolTip" Value="Copy the image as a Bitmap." />
+                                    <Setter Property="ToolTip" Value="Copy the image to the clipboard and PNG.&#x0a;Hold Shift for BMP." />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -165,7 +164,7 @@
 
             </DockPanel>
 
-            <!-- Current Toolbar  -->
+            <!--  Current Toolbar  -->
             <DockPanel x:Key="V275Current_Toolbar" x:Shared="False">
 
                 <Border Margin="3,0" Style="{StaticResource imageBar}" />
@@ -318,7 +317,7 @@
                     </DockPanel.Style>
 
                     <Border Margin="3,0" Style="{StaticResource imageBar}" />
-                    
+
                     <Button
                         Width="28"
                         Command="{Binding ClearReadCommand}"
@@ -327,7 +326,7 @@
                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                         Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                         ToolTip="Clear the current sectors and image." />
-                    
+
                 </DockPanel>
 
             </DockPanel>
