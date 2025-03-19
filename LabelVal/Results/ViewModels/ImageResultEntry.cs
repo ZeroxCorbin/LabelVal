@@ -371,7 +371,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             _ = SelectedDatabase.InsertOrReplace_L95xxResult(new Databases.L95xxResult
             {
                 ImageRollUID = ImageRollUID,
-
+                RunUID = ImageRollUID,
                 Source = SourceImage,
                 Stored = L95xxCurrentImage,
 

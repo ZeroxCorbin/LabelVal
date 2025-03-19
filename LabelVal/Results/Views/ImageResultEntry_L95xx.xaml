@@ -23,6 +23,138 @@
                 <ResourceDictionary Source="ImageDetailsTemplate.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
+
+            <DockPanel x:Key="L95Stored_Toolbar" x:Shared="False">
+                <Border Margin="3,0" Style="{StaticResource imageBar}" />
+
+                <!--  Save Image  -->
+                <Button
+                            Width="28"
+                            Command="{Binding SaveCommand}"
+                            CommandParameter="{x:Static ViewModels:ImageResultEntryImageTypes.L95xxStored}"
+                            Content="{iconPacks:Material Kind=ContentSave}"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                            Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                            ToolTip="Save the image." />
+
+                <Border Margin="3,0" Style="{StaticResource imageBar}" />
+
+                <Button
+                            Width="28"
+                            Command="{Binding ClearStoredCommand}"
+                            CommandParameter="{x:Static ViewModels:ImageResultEntryDevices.L95xx}"
+                            Content="{iconPacks:Modern Kind=Delete}"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                            ToolTip="Remove the stored sectors from the database, permanently.&#x0a;(CAUTION) This can not be undone!">
+
+                    <Button.Style>
+                        <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
+                            <Setter Property="Visibility" Value="Visible" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <Button
+                            Width="28"
+                            Click="L95xxStoredSectors_Click"
+                            Content="{iconPacks:Modern Kind=Eye}"
+                            Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                            ToolTip="The all seeing eye! Click it...&#x0a;Hold Shift and click for more." />
+
+                <Button
+                            Width="28"
+                            Click="btnCopySectorsCsvToClipboard_Click"
+                            Content="{iconPacks:Modern Kind=PageCopy}"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                            Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                            Tag="{Binding L95xxStoredSectors}"
+                            ToolTip="Copy all sectors to clipboard, as CSV." />
+
+            </DockPanel>
+
+
+            <DockPanel x:Key="L96Current_Toolbar" x:Shared="False">
+                <Border Margin="3,0" Style="{StaticResource imageBar}" />
+
+                <!--  Save Image  -->
+                <Button
+                            Width="28"
+                            Command="{Binding SaveCommand}"
+                            CommandParameter="{x:Static ViewModels:ImageResultEntryImageTypes.L95xxCurrent}"
+                            Content="{iconPacks:Material Kind=ContentSave}"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                            Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                            ToolTip="Save the image." />
+
+
+                <Border Margin="3,0" Style="{StaticResource imageBar}" />
+
+                <Button
+                            Width="28"
+                            Command="{Binding StoreCommand}"
+                            CommandParameter="{x:Static ViewModels:ImageResultEntryDevices.L95xx}"
+                            Content="{iconPacks:Material Kind=ChevronDoubleLeft}"
+                            ToolTip="Store the selected sector to the database.">
+
+                    <Button.Style>
+                        <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
+                            <Setter Property="Visibility" Value="Visible" />
+                            <Setter Property="IsEnabled" Value="True" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding L95xxCurrentSectorSelected, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                                    <Setter Property="IsEnabled" Value="False" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <Button
+                            Width="28"
+                            Command="{Binding ClearReadCommand}"
+                            CommandParameter="{x:Static ViewModels:ImageResultEntryDevices.L95xx}"
+                            Content="{iconPacks:Modern Kind=Delete}"
+                            ToolTip="Clear the selected sector.">
+
+                    <Button.Style>
+                        <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
+                            <Setter Property="Visibility" Value="Visible" />
+                            <Setter Property="IsEnabled" Value="True" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding L95xxCurrentSectorSelected, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                                    <Setter Property="IsEnabled" Value="False" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+
+                <Button
+                            Width="28"
+                            Click="L95xxCurrentSectorDetails_Click"
+                            Content="{iconPacks:Modern Kind=Eye}"
+                            Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                            ToolTip="The all seeing eye! Click it...&#x0a;Hold Shift and click for more." />
+
+                <Button
+                            Width="28"
+                            Click="btnCopySectorsCsvToClipboard_Click"
+                            Content="{iconPacks:Modern Kind=PageCopy}"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                            Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                            Tag="{Binding L95xxCurrentSectors}"
+                            ToolTip="Copy all sectors to clipboard, as CSV." />
+            </DockPanel>
+            
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -82,17 +214,7 @@
                             <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Stored Image" />
                         </md:Card>
 
-                        <Border Margin="3,0" Style="{StaticResource imageBar}" />
-
-                        <!--  Save Image  -->
-                        <Button
-                            Width="28"
-                            Command="{Binding SaveCommand}"
-                            CommandParameter="{x:Static ViewModels:ImageResultEntryImageTypes.L95xxStored}"
-                            Content="{iconPacks:Material Kind=ContentSave}"
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                            Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                            ToolTip="Save the image." />
+                        <ContentControl Content="{StaticResource L95Stored_Toolbar}" Tag="Image"/>
 
 
                     </DockPanel>
@@ -151,43 +273,7 @@
                             <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Stored Sectors" />
                         </md:Card>
 
-                        <Border Margin="3,0" Style="{StaticResource imageBar}" />
-
-                        <Button
-                            Width="28"
-                            Command="{Binding ClearStoredCommand}"
-                            CommandParameter="{x:Static ViewModels:ImageResultEntryDevices.L95xx}"
-                            Content="{iconPacks:Modern Kind=Delete}"
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                            ToolTip="Remove the stored sectors from the database, permanently.&#x0a;(CAUTION) This can not be undone!">
-
-                            <Button.Style>
-                                <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
-                                    <Setter Property="Visibility" Value="Visible" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
-                                            <Setter Property="Visibility" Value="Collapsed" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
-
-                        <Button
-                            Width="28"
-                            Click="L95xxStoredSectors_Click"
-                            Content="{iconPacks:Modern Kind=Eye}"
-                            Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                            ToolTip="The all seeing eye! Click it...&#x0a;Hold Shift and click for more." />
-
-                        <Button
-                            Width="28"
-                            Click="btnCopySectorsCsvToClipboard_Click"
-                            Content="{iconPacks:Modern Kind=PageCopy}"
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                            Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                            Tag="{Binding L95xxStoredSectors}"
-                            ToolTip="Copy all sectors to clipboard, as CSV." />
+                        <ContentControl Content="{StaticResource L95Stored_Toolbar}" Tag="Sectors"/>
 
                     </DockPanel>
                 </md:Card>
@@ -404,17 +490,7 @@
                             <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Current Image" />
                         </md:Card>
 
-                        <Border Margin="3,0" Style="{StaticResource imageBar}" />
-
-                        <!--  Save Image  -->
-                        <Button
-                            Width="28"
-                            Command="{Binding SaveCommand}"
-                            CommandParameter="{x:Static ViewModels:ImageResultEntryImageTypes.L95xxCurrent}"
-                            Content="{iconPacks:Material Kind=ContentSave}"
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                            Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                            ToolTip="Save the image." />
+                        <ContentControl Content="{StaticResource L96Current_Toolbar}" Tag="Image"/>
 
                     </DockPanel>
                 </md:Card>
@@ -471,68 +547,7 @@
                             <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Current Sectors" />
                         </md:Card>
 
-                        <Border Margin="3,0" Style="{StaticResource imageBar}" />
-
-                        <Button
-                            Width="28"
-                            Command="{Binding StoreCommand}"
-                            CommandParameter="{x:Static ViewModels:ImageResultEntryDevices.L95xx}"
-                            Content="{iconPacks:Material Kind=ChevronDoubleLeft}"
-                            ToolTip="Store the selected sector to the database.">
-
-                            <Button.Style>
-                                <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
-                                    <Setter Property="Visibility" Value="Visible" />
-                                    <Setter Property="IsEnabled" Value="True" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
-                                            <Setter Property="Visibility" Value="Collapsed" />
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding L95xxCurrentSectorSelected, Converter={StaticResource IsNullOrEmpty}}" Value="True">
-                                            <Setter Property="IsEnabled" Value="False" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
-
-                        <Button
-                            Width="28"
-                            Command="{Binding ClearReadCommand}"
-                            CommandParameter="{x:Static ViewModels:ImageResultEntryDevices.L95xx}"
-                            Content="{iconPacks:Modern Kind=Delete}"
-                            ToolTip="Clear the selected sector.">
-
-                            <Button.Style>
-                                <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
-                                    <Setter Property="Visibility" Value="Visible" />
-                                    <Setter Property="IsEnabled" Value="True" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding L95xxCurrentSectorSelected, Converter={StaticResource IsNullOrEmpty}}" Value="True">
-                                            <Setter Property="IsEnabled" Value="False" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
-
-
-                        <Button
-                            Width="28"
-                            Click="L95xxCurrentSectorDetails_Click"
-                            Content="{iconPacks:Modern Kind=Eye}"
-                            Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                            ToolTip="The all seeing eye! Click it...&#x0a;Hold Shift and click for more." />
-
-                        <Button
-                            Width="28"
-                            Click="btnCopySectorsCsvToClipboard_Click"
-                            Content="{iconPacks:Modern Kind=PageCopy}"
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                            Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                            Tag="{Binding L95xxCurrentSectors}"
-                            ToolTip="Copy all sectors to clipboard, as CSV." />
-
+                        <ContentControl Content="{StaticResource L96Current_Toolbar}" Tag="Sectors"/>
 
                     </DockPanel>
                 </md:Card>
