@@ -157,7 +157,7 @@
                     CommandParameter="{x:Static ViewModels:ImageResultEntryDevices.L95xxAll}"
                     Content="{iconPacks:Material Kind=StorePlusOutline}"
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                    ToolTip="Store the current sectors and image to the database.">
+                    ToolTip="Store the current sectors and images to the database.">
 
                     <Button.Style>
                         <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
@@ -514,8 +514,7 @@
                                 DockPanel.Dock="Top"
                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
-                                <ContentControl Content="{StaticResource L95Stored_Toolbar}" Tag="Sectors" />
-                                <!--<DockPanel>
+                                <DockPanel>
 
                                     <DockPanel Height="26.62" />
 
@@ -553,7 +552,7 @@
                                         Tag="l95xxStored"
                                         ToolTip="Close this." />
 
-                                </DockPanel>-->
+                                </DockPanel>
                             </md:Card>
 
                             <!--  Keep this Dockapnel. It is used for Saving and Coping the SectorDetails Visual.  -->
@@ -789,8 +788,7 @@
                                 DockPanel.Dock="Top"
                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
-                                <ContentControl Content="{StaticResource L96Current_Toolbar}" Tag="Sectors" />
-                                <!--<DockPanel>
+                                <DockPanel>
 
                                     <DockPanel Height="26.62" />
 
@@ -828,7 +826,7 @@
                                         Tag="l95xxCurrent"
                                         ToolTip="Close this." />
 
-                                </DockPanel>-->
+                                </DockPanel>
                             </md:Card>
 
                             <!--  Keep this Dockapnel. It is used for Saving and Coping the SectorDetails Visual.  -->

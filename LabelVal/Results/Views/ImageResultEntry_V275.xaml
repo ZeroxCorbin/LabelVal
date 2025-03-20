@@ -393,12 +393,10 @@
                                 <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Stored Image" />
                             </md:Card>
 
-                            <DockPanel>
-                                <ContentControl
-                                    Content="{StaticResource V275Stored_Toolbar}"
-                                    DataContext="{Binding .}"
-                                    Tag="Image" />
-                            </DockPanel>
+                            <ContentControl
+                                Content="{StaticResource V275Stored_Toolbar}"
+                                DataContext="{Binding .}"
+                                Tag="Image" />
 
                         </DockPanel>
                     </md:Card>
@@ -458,13 +456,10 @@
                                 <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Stored Sectors" />
                             </md:Card>
 
-                            <DockPanel>
-                                <ContentControl
-                                    Content="{StaticResource V275Stored_Toolbar}"
-                                    DataContext="{Binding .}"
-                                    Tag="Sectors" />
-                            </DockPanel>
-
+                            <ContentControl
+                                Content="{StaticResource V275Stored_Toolbar}"
+                                DataContext="{Binding .}"
+                                Tag="Sectors" />
                         </DockPanel>
                     </md:Card>
 
@@ -682,13 +677,10 @@
                                 <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Current Image" />
                             </md:Card>
 
-                            <DockPanel>
-                                <ContentControl
-                                    Content="{StaticResource V275Current_Toolbar}"
-                                    DataContext="{Binding .}"
-                                    Tag="Image" />
-                            </DockPanel>
-
+                            <ContentControl
+                                Content="{StaticResource V275Current_Toolbar}"
+                                DataContext="{Binding .}"
+                                Tag="Image" />
                         </DockPanel>
                     </md:Card>
 
@@ -744,12 +736,10 @@
                                 <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Current Sectors" />
                             </md:Card>
 
-                            <DockPanel>
-                                <ContentControl
-                                    Content="{StaticResource V275Current_Toolbar}"
-                                    DataContext="{Binding .}"
-                                    Tag="Sectors" />
-                            </DockPanel>
+                            <ContentControl
+                                Content="{StaticResource V275Current_Toolbar}"
+                                DataContext="{Binding .}"
+                                Tag="Sectors" />
 
                         </DockPanel>
                     </md:Card>
@@ -867,6 +857,15 @@
                                             Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                                             Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                                             ToolTip="Copy image to clipboard as PNG." />
+
+                                        <Button
+                                            Width="28"
+                                            Command="{Binding V275FocusedCurrentSector.CopyToClipBoardCommand}"
+                                            CommandParameter="{Binding SourceImage.Order}"
+                                            Content="{iconPacks:Material Kind=ContentCopy}"
+                                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                            Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                            ToolTip="Copy sector to CSV." />
 
                                         <Button
                                             Width="28"

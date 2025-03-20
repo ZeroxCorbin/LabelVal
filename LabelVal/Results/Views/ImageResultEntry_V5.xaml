@@ -560,6 +560,7 @@
                                     <Button
                                         Width="28"
                                         Command="{Binding V5FocusedStoredSector.CopyToClipBoardCommand}"
+                                        CommandParameter="{Binding SourceImage.Order}"
                                         Content="{iconPacks:Material Kind=ContentCopy}"
                                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                                         Style="{StaticResource MahApps.Styles.Button.Hamburger}"
@@ -830,6 +831,15 @@
                                         Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                                         ToolTip="Copy image to clipboard as PNG." />
 
+                                    <Button
+                                        Width="28"
+                                        Command="{Binding V5FocusedCurrentSector.CopyToClipBoardCommand}"
+                                        CommandParameter="{Binding SourceImage.Order}"
+                                        Content="{iconPacks:Material Kind=ContentCopy}"
+                                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                        ToolTip="Copy sector to CSV." />
+                                    
                                     <Button
                                         Width="28"
                                         Click="btnCloseDetails_Click"
