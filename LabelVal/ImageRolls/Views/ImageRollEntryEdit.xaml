@@ -31,32 +31,8 @@
                 Text="{Binding Name}" />
 
             <DockPanel DockPanel.Dock="Top">
-                <ToggleButton
-                    Width="24"
-                    Height="24"
-                    Margin="7"
-                    VerticalAlignment="Top"
-                    IsChecked="{Binding WriteSectorsBeforeProcess}">
-
-                    <ToggleButton.Content>
-                        <iconPacks:PackIconMaterial Kind="FormatListNumbered" />
-                    </ToggleButton.Content>
-
-                    <md:ToggleButtonAssist.OnContent>
-                        <iconPacks:PackIconMaterial Kind="PlaylistEdit" />
-                    </md:ToggleButtonAssist.OnContent>
-
-                    <ToggleButton.Style>
-                        <Style BasedOn="{StaticResource MaterialDesignActionToggleButton}" TargetType="ToggleButton">
-                            <Setter Property="ToolTip" Value="The template sectors are shared." />
-                            <Style.Triggers>
-                                <Trigger Property="IsChecked" Value="True">
-                                    <Setter Property="ToolTip" Value="The template sectors are independant." />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </ToggleButton.Style>
-                </ToggleButton>
+                <ListBox ItemsSource="{Binding Source={StaticResource ImageRollSectorTypes}}" SelectedItem="{Binding SectorType}"/>
+                <ListBox ItemsSource="{Binding Source={StaticResource ImageRollImageTypes}}" SelectedItem="{Binding ImageType}"/>
 
                 <TextBox
                     Margin="3"

@@ -3,7 +3,7 @@
   "Name": "Symbologies C",
   "Standard": "ISO",
   "GS1Table": "Unknown",
-  "WriteSectorsBeforeProcess": false,
+"SectorType": "Fixed",
   "TargetDPI": 600,
   "IsLocked": true,
   "ImageCount": 1

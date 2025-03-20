@@ -332,7 +332,7 @@ public partial class Controller : ObservableObject
             }
         }
 
-        if (!ImageRollEntry.WriteSectorsBeforeProcess)
+        if (ImageRollEntry.SectorType == ImageRollSectorTypes.Fixed)
         {
             if (!await V275.Controller.SwitchToRun())
             {
@@ -353,7 +353,7 @@ public partial class Controller : ObservableObject
         };
 
         //Start the V275 processing the image.
-        if (V275.Controller.IsSimulator)
+        if (ire.ImageResults.SelectedImageRoll.ImageType == ImageRollImageTypes.Stored)
             ire.V275ProcessCommand.Execute(Results.ViewModels.ImageResultEntryImageTypes.V275Stored);
         else
             ire.V275ProcessCommand.Execute(Results.ViewModels.ImageResultEntryImageTypes.Source);
@@ -426,11 +426,23 @@ public partial class Controller : ObservableObject
 
         if (V5.IsSimulator)
         {
-            if (!await V5.ChangeImage(ire.V5ResultRow.Stored.ImageBytes, false))
+           if( ire.ImageResults.SelectedImageRoll.ImageType == ImageRollImageTypes.Stored)
             {
-                Logger.LogError("Could not change the image.");
-                _ = UpdateRunState(RunStates.Error);
-                return null;
+                if (!await V5.ChangeImage(ire.V5ResultRow.Stored.ImageBytes, false))
+                {
+                    Logger.LogError("Could not change the image.");
+                    _ = UpdateRunState(RunStates.Error);
+                    return null;
+                }
+            }
+            else
+            {
+                if (!await V5.ChangeImage(ire.SourceImage.ImageBytes, false))
+                {
+                    Logger.LogError("Could not change the image.");
+                    _ = UpdateRunState(RunStates.Error);
+                    return null;
+                }
             }
         }
 
@@ -472,7 +484,7 @@ public partial class Controller : ObservableObject
                 ApplicationStandard = ire.ImageResults.SelectedImageRoll.SelectedStandard.GetDescription(),
             },
 
-            Image = ire.L95xxStoredImage.BitmapBytes
+            Image = ire.ImageResults.SelectedImageRoll.ImageType == ImageRollImageTypes.Stored ? ire.L95xxStoredImage.BitmapBytes : ire.L95xxCurrentImage.BitmapBytes
         };
         if (ire.ImageResults.SelectedImageRoll.SelectedGS1Table != null)
             lab.Config.Table = ((AvailableTables)ire.ImageResults.SelectedImageRoll.SelectedGS1Table).GetTableName();

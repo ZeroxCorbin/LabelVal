@@ -3,7 +3,7 @@
   "Name": "GS1",
   "Standard": "GS1",
   "GS1Table": "_3",
-  "WriteSectorsBeforeProcess": true,
+  "SectorType": "Dynamic",
   "TargetDPI": 600,
   "IsLocked": true,
   "ImageCount": 8

@@ -7,12 +7,37 @@ using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LibImageUtilities.ImageTypes.Png;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System.Collections.ObjectModel;
 using System.Drawing.Printing;
 using System.IO;
 using System.Threading.Tasks;
 
 namespace LabelVal.ImageRolls.ViewModels;
+
+[SQLite.StoreAsText]
+[JsonConverter(typeof(StringEnumConverter))]
+public enum ImageRollTypes
+{   
+    Database,
+    Directory,
+}
+
+[SQLite.StoreAsText]
+[JsonConverter(typeof(StringEnumConverter))]
+public enum ImageRollImageTypes
+{
+    Source,
+    Stored
+}
+
+[SQLite.StoreAsText]
+[JsonConverter(typeof(StringEnumConverter))]
+public enum ImageRollSectorTypes
+{
+    Fixed,
+    Dynamic
+}
 
 [JsonObject(MemberSerialization.OptIn)]
 public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyChangedMessage<PrinterSettings>>
@@ -29,7 +54,12 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     /// <summary>
     /// Indictaes if this is a fixed image roll. True if the <see cref="Path"/> is not null or empty."/>
     /// </summary>
-    [SQLite.Ignore] public bool IsFixedImageRoll => !string.IsNullOrEmpty(Path);
+    [SQLite.Ignore] public ImageRollTypes RollType => !string.IsNullOrEmpty(Path) ? ImageRollTypes.Directory : ImageRollTypes.Database;
+
+    [ObservableProperty][property: JsonProperty] private ImageRollImageTypes imageType = ImageRollImageTypes.Source;
+    //If SectorType is true the system will write the templates sectors before processing an image.
+    //Normally the template is left untouched. I.e. When using a sequential OCR tool.
+    [ObservableProperty][property: JsonProperty] private ImageRollSectorTypes sectorType = ImageRollSectorTypes.Dynamic;
 
     [ObservableProperty][property: JsonProperty] private string name;
     [ObservableProperty][property: JsonProperty] private int imageCount;
@@ -41,9 +71,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     partial void OnSelectedGS1TableChanged(AvailableTables value) => OnPropertyChanged(nameof(GS1TableNumber));
     public double GS1TableNumber => SelectedGS1Table is AvailableTables.Unknown ? 0 : double.Parse(SelectedGS1Table.GetDescription());
 
-    //If writeSectorsBeforeProcess is true the system will write the templates sectors before processing an image.
-    //Normally the template is left untouched. I.e. When using a sequential OCR tool.
-    [ObservableProperty][property: JsonProperty] private bool writeSectorsBeforeProcess = false;
+
     [ObservableProperty][property: JsonProperty] private int targetDPI;
 
     [ObservableProperty][property: JsonProperty] private bool isLocked = false;
@@ -94,7 +122,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     }
     public void Receive(PropertyChangedMessage<PrinterSettings> message) => SelectedPrinter = message.NewValue;
 
-    public Task LoadImages() => IsFixedImageRoll ? LoadImagesFromDirectory() : LoadImagesFromDatabase();
+    public Task LoadImages() => RollType == ImageRollTypes.Directory ? LoadImagesFromDirectory() : LoadImagesFromDatabase();
 
     public async Task LoadImagesFromDirectory()
     {
@@ -318,7 +346,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     [RelayCommand]
     private void SaveRoll()
     {
-        if (IsFixedImageRoll)
+        if (RollType == ImageRollTypes.Directory)
             return;
 
         _ = ImageRollsDatabase.InsertOrReplaceImageRoll(this);
@@ -326,7 +354,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     [RelayCommand]
     public void SaveImage(ImageEntry image)
     {
-        if (IsFixedImageRoll)
+        if (RollType == ImageRollTypes.Directory)
             return;
 
         _ = ImageRollsDatabase.InsertOrReplaceImage(image);

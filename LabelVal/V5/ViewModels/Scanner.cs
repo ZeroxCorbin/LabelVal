@@ -725,9 +725,9 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
             return;
         }
 
-        if (SelectedImageRoll.IsFixedImageRoll)
+        if (SelectedImageRoll.RollType == ImageRollTypes.Directory)
         {
-            Logger.LogWarning("Cannot add to a rooted image roll.");
+            Logger.LogWarning("Cannot add to a directory based image roll.");
             return;
         }
 

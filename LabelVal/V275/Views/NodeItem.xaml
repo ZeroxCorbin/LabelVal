@@ -8,6 +8,7 @@
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:loc="clr-namespace:LabelVal.Localization"
     xmlns:local="clr-namespace:LabelVal.V275.Views"
+        xmlns:imageRoll_enums="clr-namespace:LabelVal.ImageRolls.ViewModels"
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -221,7 +222,7 @@
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
                                             <Condition Binding="{Binding Controller.State}" Value="Editing" />
-                                            <Condition Binding="{Binding SelectedImageRoll.WriteSectorsBeforeProcess}" Value="True" />
+                                            <Condition Binding="{Binding SelectedImageRoll.SectorType}" Value="{x:Static imageRoll_enums:ImageRollSectorTypes.Dynamic}" />
                                         </MultiDataTrigger.Conditions>
                                         <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}" />
                                     </MultiDataTrigger>
@@ -229,7 +230,7 @@
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
                                             <Condition Binding="{Binding Controller.State}" Value="Running" />
-                                            <Condition Binding="{Binding SelectedImageRoll.WriteSectorsBeforeProcess}" Value="False" />
+                                            <Condition Binding="{Binding SelectedImageRoll.SectorType}" Value="{x:Static imageRoll_enums:ImageRollSectorTypes.Fixed}" />
                                         </MultiDataTrigger.Conditions>
                                         <Setter Property="BorderBrush" Value="{DynamicResource CB_Green}" />
                                     </MultiDataTrigger>

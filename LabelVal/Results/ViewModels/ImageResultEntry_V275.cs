@@ -47,10 +47,10 @@ public partial class ImageResultEntry
     [RelayCommand]
     private async Task V275Process(ImageResultEntryImageTypes type)
     {
-        bool simAddSec = ImageResults.SelectedNode.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && V275ResultRow?._Job["sectors"] != null;
-        bool simDetSec = ImageResults.SelectedNode.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && V275ResultRow?._Job["sectors"] == null;
-        bool camAddSec = !ImageResults.SelectedNode.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && V275ResultRow?._Job["sectors"] != null;
-        bool camDetSec = !ImageResults.SelectedNode.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && V275ResultRow?._Job["sectors"] == null;
+        bool simAddSec = ImageResults.SelectedNode.Controller.IsSimulator && ImageResults.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic && V275ResultRow?._Job["sectors"] != null;
+        bool simDetSec = ImageResults.SelectedNode.Controller.IsSimulator && ImageResults.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic && V275ResultRow?._Job["sectors"] == null;
+        bool camAddSec = !ImageResults.SelectedNode.Controller.IsSimulator && ImageResults.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic && V275ResultRow?._Job["sectors"] != null;
+        bool camDetSec = !ImageResults.SelectedNode.Controller.IsSimulator && ImageResults.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic && V275ResultRow?._Job["sectors"] == null;
 
         BringIntoView?.Invoke();
 
@@ -59,14 +59,14 @@ public partial class ImageResultEntry
             Table = ImageResults.SelectedImageRoll.SelectedGS1Table,
         };
 
-        if (type is ImageResultEntryImageTypes.Source or ImageResultEntryImageTypes.V275Print)
+        if (ImageResults.SelectedImageRoll.ImageType == ImageRollImageTypes.Source || type is ImageResultEntryImageTypes.V275Print)
         {
             lab.Image = SourceImage.ImageBytes;
             lab.Dpi = (int)Math.Round(SourceImage.Image.DpiX, 0);
             lab.Sectors = simDetSec || camDetSec ? [] : camAddSec ? [.. V275ResultRow._Job["sectors"]] : null;
             lab.Table = ImageResults.SelectedImageRoll.SelectedGS1Table;
         }
-        else if (type == ImageResultEntryImageTypes.V275Stored)
+        else if (ImageResults.SelectedImageRoll.ImageType == ImageRollImageTypes.Stored)
         {
             lab.Image = V275ResultRow.Stored.ImageBytes;
             lab.Dpi = (int)Math.Round(V275ResultRow.Stored.Image.DpiX, 0);

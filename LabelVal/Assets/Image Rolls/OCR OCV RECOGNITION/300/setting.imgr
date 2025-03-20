@@ -3,7 +3,7 @@
   "Name": "OCR/OCV",
   "Standard": "OCR",
   "GS1Table": "Unknown",
-  "WriteSectorsBeforeProcess": false,
+"SectorType": "Fixed",
   "TargetDPI": 300,
   "IsLocked": true,
   "ImageCount": 1

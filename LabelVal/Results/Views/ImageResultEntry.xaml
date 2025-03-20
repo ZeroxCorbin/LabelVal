@@ -70,6 +70,7 @@
                             Height="28"
                             Foreground="White"
                             IsActive="{Binding IsV275Working}" />
+                        
                         <iconPacks:PackIconMaterial
                             Width="24"
                             Height="24"
@@ -106,7 +107,7 @@
 
                                     <Setter Property="Visibility" Value="Collapsed" />
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess}" Value="True">
+                                        <DataTrigger Binding="{Binding ImageResults.SelectedImageRoll.SectorType}" Value="Dynamic">
                                             <Setter Property="Visibility" Value="Visible" />
                                         </DataTrigger>
                                     </Style.Triggers>

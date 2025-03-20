@@ -209,7 +209,7 @@
                                                 <Setter Property="ToolTip" Value="Images are stored."/>
 
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding WriteSectorsBeforeProcess}" Value="True">
+                                                    <DataTrigger Binding="{Binding SectorType}" Value="True">
                                                         <Setter Property="Kind" Value="PlaylistEdit"/>
                                                         <Setter Property="ToolTip" Value="Images are rooted."/>
                                                     </DataTrigger>

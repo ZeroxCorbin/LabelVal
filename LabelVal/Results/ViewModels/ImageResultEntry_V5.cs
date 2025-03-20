@@ -46,18 +46,18 @@ public partial class ImageResultEntry
     [RelayCommand]
     public void V5Process(ImageResultEntryImageTypes imageType)
     {
-        bool simAddSec = ImageResults.SelectedScanner.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && !string.IsNullOrEmpty(V5ResultRow?.Template);
-        bool simDetSec = ImageResults.SelectedScanner.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && string.IsNullOrEmpty(V5ResultRow?.Template);
-        bool camAddSec = !ImageResults.SelectedScanner.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && !string.IsNullOrEmpty(V5ResultRow?.Template);
-        bool camDetSec = !ImageResults.SelectedScanner.Controller.IsSimulator && ImageResults.SelectedImageRoll.WriteSectorsBeforeProcess && string.IsNullOrEmpty(V5ResultRow?.Template);
+        bool simAddSec = ImageResults.SelectedScanner.Controller.IsSimulator && ImageResults.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic && !string.IsNullOrEmpty(V5ResultRow?.Template);
+        bool simDetSec = ImageResults.SelectedScanner.Controller.IsSimulator && ImageResults.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic && string.IsNullOrEmpty(V5ResultRow?.Template);
+        bool camAddSec = !ImageResults.SelectedScanner.Controller.IsSimulator && ImageResults.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic && !string.IsNullOrEmpty(V5ResultRow?.Template);
+        bool camDetSec = !ImageResults.SelectedScanner.Controller.IsSimulator && ImageResults.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic && string.IsNullOrEmpty(V5ResultRow?.Template);
 
         BringIntoView?.Invoke();
 
         V5_REST_Lib.Controllers.Label lab = new(V5ProcessResults, simAddSec || camAddSec ? V5ResultRow._Config : null, simDetSec || camDetSec, ImageResults.SelectedImageRoll.SelectedGS1Table);
 
-        if (imageType == ImageResultEntryImageTypes.Source)
+        if (ImageResults.SelectedImageRoll.ImageType == ImageRollImageTypes.Source)
             lab.Image = PrepareImage(SourceImage);
-        else if (imageType == ImageResultEntryImageTypes.V5Stored)
+        else if (ImageResults.SelectedImageRoll.ImageType == ImageRollImageTypes.Stored)
             lab.Image = PrepareImage(V5ResultRow.Stored);
 
         IsV5Working = true;
@@ -120,7 +120,7 @@ public partial class ImageResultEntry
             {
                 try
                 {
-                    tempSectors.Add(new V5.Sectors.Sector(V5CurrentReport, V5CurrentTemplate, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, V5CurrentTemplate.GetParameter<string>("response.message")));
+                    tempSectors.Add(new V5.Sectors.Sector((JObject)result, V5CurrentTemplate, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, V5CurrentTemplate.GetParameter<string>("response.message")));
                 }
                 catch (System.Exception ex)
                 {

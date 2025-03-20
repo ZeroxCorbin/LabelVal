@@ -12,6 +12,7 @@
     xmlns:local="clr-namespace:LabelVal.ImageRolls.Views"
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:imageRoll_enums="clr-namespace:LabelVal.ImageRolls.ViewModels"
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:services="clr-namespace:LabelVal.ImageRolls.Services"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
@@ -253,7 +254,7 @@
                                     <Setter Property="ToolTip" Value="The template sectors are shared." />
 
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding WriteSectorsBeforeProcess}" Value="True">
+                                        <DataTrigger Binding="{Binding SectorType}" Value="{x:Static imageRoll_enums:ImageRollSectorTypes.Dynamic}">
                                             <Setter Property="Kind" Value="PlaylistEdit" />
                                             <Setter Property="ToolTip" Value="The template sectors are independant." />
                                         </DataTrigger>
@@ -289,19 +290,17 @@
                             <iconPacks:PackIconMaterial.Style>
                                 <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
                                     <Setter Property="Kind" Value="Database" />
-                                    <Setter Property="ToolTip" Value="Images are stored." />
+                                    <Setter Property="ToolTip" Value="Images are stored in a database." />
 
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsFixedImageRoll}" Value="True">
+                                        <DataTrigger Binding="{Binding RollType}" Value="Directory">
                                             <Setter Property="Kind" Value="Folder" />
-                                            <Setter Property="ToolTip" Value="Images are fixed." />
+                                            <Setter Property="ToolTip" Value="Images are loaded from a directory. Read Only!" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
                             </iconPacks:PackIconMaterial.Style>
                         </iconPacks:PackIconMaterial>
-
-
 
                     </DockPanel>
                 </Grid>

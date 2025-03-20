@@ -79,9 +79,9 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
         if (ImageResults.SelectedImageRoll.SelectedStandard == AvailableStandards.GS1)
             lab.Config.Table = ImageResults.SelectedImageRoll.SelectedGS1Table.GetTableName();
 
-        if (imageType == ImageResultEntryImageTypes.Source)
+        if (ImageResults.SelectedImageRoll.ImageType == ImageRollImageTypes.Source)
             lab.Image = SourceImage.BitmapBytes;
-        else if (imageType == ImageResultEntryImageTypes.L95xxStored)
+        else if (ImageResults.SelectedImageRoll.ImageType == ImageRollImageTypes.Stored)
             lab.Image = L95xxResultRow.Stored.BitmapBytes;
 
         IsL95xxWorking = true;

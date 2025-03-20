@@ -406,7 +406,9 @@
                         <Button
                             Width="48"
                             Command="{Binding CopyAllSectorsToClipboardCommand}"
-                            Content="{iconPacks:Modern Kind=PageCopy, Width=24 , Height=24}"
+                            Content="{iconPacks:Modern Kind=PageCopy,
+                                                       Width=24,
+                                                       Height=24}"
                             Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                             ToolTip="Copy all sector details to clipboard ">
 
