@@ -393,11 +393,11 @@
                         Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
                         Text="{Binding Template.Username, Mode=OneTime}" />
 
-                    <!--<TextBlock
+                    <TextBlock
                         Margin="3,0"
                         HorizontalAlignment="Center"
                         Foreground="{DynamicResource ColorBlindBrush2}"
-                        Text="{Binding Template.Version, StringFormat={}{0}}" />-->
+                        Text="{Binding Template.Version, StringFormat={}{0}}" />
 
                     <TextBlock
                         Grid.Row="1"
