@@ -401,6 +401,27 @@
                             </Button.Style>
                         </Button>
 
+                        <Border Margin="0,0,0,0" Style="{StaticResource imageBar}" />
+
+                        <Button
+                            Width="48"
+                            Command="{Binding CopyAllSectorsToClipboardCommand}"
+                            Content="{iconPacks:Modern Kind=PageCopy, Width=24 , Height=24}"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                            ToolTip="Copy all sector details to clipboard ">
+
+                            <Button.Style>
+                                <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                    <!--<Style.Triggers>
+                                        <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                    </Style.Triggers>-->
+                                </Style>
+                            </Button.Style>
+                        </Button>
+
                     </DockPanel>
                 </DockPanel>
             </md:Card>

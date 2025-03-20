@@ -16,7 +16,7 @@ public static class ListReportDataExtensions
         point.X >= sector.Report.Left && point.X <= sector.Report.Left + sector.Report.Width &&
                point.Y >= sector.Report.Top && point.Y <= sector.Report.Top + sector.Report.Height;
 
-    public static string GetSectorCsv(this ISector sector, bool toClipboard = false, bool noPArams = false)
+    public static string GetSectorReport(this ISector sector, string rollID, bool toClipboard = false, bool noPArams = false)
     {
         if (sector == null)
             return "";
@@ -24,11 +24,23 @@ public static class ListReportDataExtensions
         StringBuilder writer = new();
 
         _ = writer.AppendLine($"Name{delimiter}Value{delimiter}Suffix{delimiter}GradeValue{delimiter}Grade");
+        _ = writer.AppendLine($"Device{delimiter}{sector.Report.Device.GetDescription()}{GetDelimiter(3)}");
         _ = writer.AppendLine($"Version{delimiter}{sector.Template.Version}{delimiter}{sector.Report.Units.GetDescription()}{GetDelimiter(2)}");
+        _ = writer.AppendLine($"Roll ID{delimiter}{rollID}{GetDelimiter(3)}");
+        _ = writer.AppendLine($"Sector Name{delimiter}{sector.Template.Name}{GetDelimiter(3)}");
+        _ = writer.AppendLine($"Sector Username{delimiter}{sector.Template.Username}{GetDelimiter(3)}");
+        _ = writer.AppendLine($"Region Type{delimiter}{sector.Report.RegionType.GetDescription()}{GetDelimiter(3)}");
+        _ = writer.AppendLine($"Standard{delimiter}{sector.Report.Standard.GetDescription()}{GetDelimiter(3)}");
         _ = writer.AppendLine($"{sector.Report.SymbolType}{delimiter}{sector.Report.DecodeText}{GetDelimiter(2)}{sector.Report.OverallGrade.Grade.Value}{delimiter}{sector.Report.OverallGrade.Grade.Letter}");
         _ = writer.AppendLine(sector.Report.OverallGrade.ToDelimitedString(delimiter));
         _ = writer.AppendLine($"X Dimension{delimiter}{sector.Report.XDimension}{GetDelimiter(3)}");
         _ = writer.AppendLine($"Angle{delimiter}{sector.Report.AngleDeg}{GetDelimiter(3)}");
+
+        _ = writer.AppendLine($"GS1 Table{delimiter}{sector.Report.GS1Table.GetDescription()}{GetDelimiter(3)}");
+        _ = writer.AppendLine($"GS1 Results{delimiter}{sector.Report.GS1Results.FormattedOut}{GetDelimiter(3)}");
+
+        _ = writer.AppendLine($"Has Error{delimiter}{(sector.IsWarning || sector.IsError ? "1" : "0")}{GetDelimiter(3)}");
+           
 
         if (!noPArams)
             foreach (BarcodeVerification.lib.ISO.ParameterTypes.IParameterValue grade in sector.SectorDetails.Parameters)
@@ -45,7 +57,7 @@ public static class ListReportDataExtensions
     private static char delimiter => (char)SectorOutputSettings.CurrentDelimiter;
     private static string GetDelimiter(int count) => new(delimiter, count);
 
-    public static string GetSectorsCSV(this System.Collections.ObjectModel.ObservableCollection<ISector> sectors, bool toClipboard = false)
+    public static string GetSectorsReport(this System.Collections.ObjectModel.ObservableCollection<ISector> sectors, string rollID, bool toClipboard = false)
     {
         System.Text.StringBuilder sb = new();
 
@@ -103,7 +115,7 @@ public static class ListReportDataExtensions
             if (!sectorHeaderLines.ContainsKey(sector))
                 sectorHeaderLines.Add(sector, []);
 
-            string csv = ListReportDataExtensions.GetSectorCsv(sector, false, true);
+            string csv = ListReportDataExtensions.GetSectorReport(sector, rollID, false, true);
             string[] lines = csv.Split('\n', StringSplitOptions.RemoveEmptyEntries);
             foreach (string line in lines)
             {

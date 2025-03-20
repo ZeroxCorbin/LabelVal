@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
+using LabelVal.Sectors.Extensions;
 using LabelVal.LVS_95xx.ViewModels;
 using LabelVal.Utilities;
 using LabelVal.V275.ViewModels;
@@ -264,6 +265,30 @@ public partial class ImageResults : ObservableRecipient,
             img.ClearReadCommand.Execute(ImageResultEntryDevices.V5);
             img.ClearReadCommand.Execute(ImageResultEntryDevices.L95xxAll);
         }
+    }
+
+    [RelayCommand]
+    private void CopyAllSectorsToClipboard()
+    {
+        string data = "";
+        foreach (ImageResultEntry img in ImageResultsList)
+        {
+            if(img.V275StoredSectors.Count != 0)
+                data += img.V275StoredSectors.GetSectorsReport(img.SourceImage.Order.ToString()) + Environment.NewLine;
+            if (img.V275CurrentSectors.Count != 0)
+                data += img.V275CurrentSectors.GetSectorsReport(img.SourceImage.Order.ToString()) + Environment.NewLine;
+
+            if (img.V5StoredSectors.Count != 0)
+                data += img.V5StoredSectors.GetSectorsReport(img.SourceImage.Order.ToString()) + Environment.NewLine;
+            if (img.V5CurrentSectors.Count != 0)
+                data += img.V5CurrentSectors.GetSectorsReport(img.SourceImage.Order.ToString()) + Environment.NewLine;
+
+            if (img.L95xxStoredSectors.Count != 0)
+                data += img.L95xxStoredSectors.GetSectorsReport(img.SourceImage.Order.ToString()) + Environment.NewLine;
+            if (img.L95xxCurrentSectors.Count != 0)
+                data += img.L95xxCurrentSectors.GetSectorsReport(img.SourceImage.Order.ToString()) + Environment.NewLine;
+        }
+        Clipboard.SetText(data);
     }
 
     private async Task<V5_REST_Lib.Controllers.FullReport> ProcessV5()

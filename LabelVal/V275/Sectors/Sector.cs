@@ -99,6 +99,6 @@ public partial class Sector : ObservableObject, ISector
     }
 
     [RelayCommand]
-    private void CopyToClipBoard() => this.GetSectorCsv(true);
+    private void CopyToClipBoard(string rollID) => this.GetSectorReport(rollID, true);
 
 }

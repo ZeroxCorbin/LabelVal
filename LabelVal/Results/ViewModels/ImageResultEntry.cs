@@ -349,18 +349,12 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             //Does the selected sector exist in the Stored sectors list?
             //If so, prompt to overwrite or cancel.
 
-            //Sectors.Interfaces.ISector old = L95xxStoredSectors.FirstOrDefault(x => x.Template.Name == L95xxCurrentSectorSelected.Template.Name);
-            //if (old != null)
-            //{
-            //    if (await OkCancelDialog("Overwrite Stored Sector", $"The sector already exists.\r\nAre you sure you want to overwrite the stored sector?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
-            //        return;
-            //}
+            if (L95xxStoredSectors.Count > 0)
+                if (await OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for this image?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
+                    return;
 
             //Save the list to the database.
             List<FullReport> temp = [];
-            if (L95xxResultRow != null)
-                temp = L95xxResultRow._Report;
-
             List<Setting> tempSettings = [];
             foreach (Sectors.Interfaces.ISector sector in L95xxCurrentSectors)
             {

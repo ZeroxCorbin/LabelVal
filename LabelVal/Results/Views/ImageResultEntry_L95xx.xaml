@@ -154,6 +154,30 @@
                 <Button
                     Width="28"
                     Command="{Binding StoreCommand}"
+                    CommandParameter="{x:Static ViewModels:ImageResultEntryDevices.L95xxAll}"
+                    Content="{iconPacks:Material Kind=StorePlusOutline}"
+                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                    ToolTip="Store the current sectors and image to the database.">
+
+                    <Button.Style>
+                        <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
+                            <Setter Property="Visibility" Value="Visible" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <!--  Sectors Only  -->
+                <Button
+                    Width="28"
+                    Command="{Binding StoreCommand}"
                     CommandParameter="{x:Static ViewModels:ImageResultEntryDevices.L95xx}"
                     Content="{iconPacks:Material Kind=ChevronDoubleLeft}"
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
@@ -490,7 +514,8 @@
                                 DockPanel.Dock="Top"
                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
-                                <DockPanel>
+                                <ContentControl Content="{StaticResource L95Stored_Toolbar}" Tag="Sectors" />
+                                <!--<DockPanel>
 
                                     <DockPanel Height="26.62" />
 
@@ -513,6 +538,7 @@
                                     <Button
                                         Width="28"
                                         Command="{Binding L95xxFocusedStoredSector.CopyToClipBoardCommand}"
+                                        CommandParameter="{Binding SourceImage.Order}"
                                         Content="{iconPacks:Material Kind=ContentCopy}"
                                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                                         Style="{StaticResource MahApps.Styles.Button.Hamburger}"
@@ -527,7 +553,7 @@
                                         Tag="l95xxStored"
                                         ToolTip="Close this." />
 
-                                </DockPanel>
+                                </DockPanel>-->
                             </md:Card>
 
                             <!--  Keep this Dockapnel. It is used for Saving and Coping the SectorDetails Visual.  -->
@@ -763,7 +789,8 @@
                                 DockPanel.Dock="Top"
                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
-                                <DockPanel>
+                                <ContentControl Content="{StaticResource L96Current_Toolbar}" Tag="Sectors" />
+                                <!--<DockPanel>
 
                                     <DockPanel Height="26.62" />
 
@@ -785,7 +812,8 @@
 
                                     <Button
                                         Width="28"
-                                        Command="{Binding L95xxFocusedStoredSector.CopyToClipBoardCommand}"
+                                        Command="{Binding L95xxFocusedCurrentSector.CopyToClipBoardCommand}"
+                                        CommandParameter="{Binding SourceImage.Order}"
                                         Content="{iconPacks:Material Kind=ContentCopy}"
                                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                                         Style="{StaticResource MahApps.Styles.Button.Hamburger}"
@@ -800,7 +828,7 @@
                                         Tag="l95xxCurrent"
                                         ToolTip="Close this." />
 
-                                </DockPanel>
+                                </DockPanel>-->
                             </md:Card>
 
                             <!--  Keep this Dockapnel. It is used for Saving and Coping the SectorDetails Visual.  -->

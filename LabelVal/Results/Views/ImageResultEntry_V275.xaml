@@ -582,6 +582,7 @@
                                         <Button
                                             Width="28"
                                             Command="{Binding V275FocusedStoredSector.CopyToClipBoardCommand}"
+                                            CommandParameter="{Binding SourceImage.Order}"
                                             Content="{iconPacks:Material Kind=ContentCopy}"
                                             Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                                             Style="{StaticResource MahApps.Styles.Button.Hamburger}"

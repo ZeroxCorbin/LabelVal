@@ -253,7 +253,7 @@ public partial class App : Application
 
     public App()
     {
-        //SetupExceptionHandling();
+        SetupExceptionHandling();
 
         Version version = Assembly.GetExecutingAssembly().GetName().Version;
         if (version != null)
@@ -292,18 +292,6 @@ public partial class App : Application
             NLog.LogManager.GetCurrentClassLogger().Info($"CTRL Key pressed. Deleting contents of {WorkingDir}");
             RecursiveDelete(new DirectoryInfo(WorkingDir));
         }
-
-        //LogManager.GetCurrentClassLogger().Info($"Starting: Plugging in batteries.");
-        //try
-        //{
-        //    Batteries.Init();
-        //}
-        //catch (Exception ex)
-        //{
-        //    LogManager.GetCurrentClassLogger().Error(ex);
-        //    Shutdown();
-        //    return;
-        //}
 
         Settings = new SimpleDatabase();
         if (!Settings.Open(Path.Combine(UserDataDirectory, SettingsDatabaseName)))

@@ -319,7 +319,7 @@ public partial class ImageResultEntry_L95xx : UserControl
     {
         if (sender is Button btn && btn.Tag is System.Collections.ObjectModel.ObservableCollection<Sectors.Interfaces.ISector> sectors)
         {
-            _ = sectors.GetSectorsCSV(true);
+            _ = sectors.GetSectorsReport(((ViewModels.ImageResultEntry)DataContext).SourceImage.Order.ToString(), true);
         }
         else if (sender is Button btn2 && btn2.Tag is ImageEntry image)
         {
