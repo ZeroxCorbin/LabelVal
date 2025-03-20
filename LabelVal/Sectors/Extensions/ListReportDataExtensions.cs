@@ -42,7 +42,7 @@ public static class ListReportDataExtensions
         return writer.ToString();
 
     }
-    private static char delimiter = (char)SectorOutputSettings.CurrentDelimiter;
+    private static char delimiter => (char)SectorOutputSettings.CurrentDelimiter;
     private static string GetDelimiter(int count) => new(delimiter, count);
 
     public static string GetSectorsCSV(this System.Collections.ObjectModel.ObservableCollection<ISector> sectors, bool toClipboard = false)
@@ -127,7 +127,6 @@ public static class ListReportDataExtensions
             if (i < linecnt)
                 _ = sb.AppendLine();
         }
-                ;
 
         foreach (KeyValuePair<AvailableParameters, List<string>> keyValuePair in parameterCsvs)
         {

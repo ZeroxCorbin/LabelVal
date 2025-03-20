@@ -82,17 +82,17 @@ public class SectorReport : ISectorReport
         _ = SetApeture(report.ReportData);
         _ = SetOverallGrade(report.ReportData);
 
-        foreach (AvailableParameters parameter in Params.CommonParameters)
-        {
-            try
-            {
-                AddParameter(parameter, SymbolType, Parameters, report);
-            }
-            catch (System.Exception ex)
-            {
-                Logger.LogError(ex, $"Error processing parameter: {parameter}");
-            }
-        }
+        //foreach (AvailableParameters parameter in Params.CommonParameters)
+        //{
+        //    try
+        //    {
+        //        AddParameter(parameter, SymbolType, Parameters, report);
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //        Logger.LogError(ex, $"Error processing parameter: {parameter}");
+        //    }
+        //}
     }
     private bool SetSymbologyAndRegionType(List<ReportData> report)
     {

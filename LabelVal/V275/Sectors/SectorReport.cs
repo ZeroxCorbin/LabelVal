@@ -83,17 +83,17 @@ public class SectorReport : ISectorReport
 
         _ = SetOverallGrade(report);
 
-        foreach (AvailableParameters parameter in Params.CommonParameters)
-        {
-            try
-            {
-                AddParameter(parameter, SymbolType, Parameters, report, (JObject)secTemplate.Original);
-            }
-            catch (System.Exception ex)
-            {
-                Logger.LogError(ex, $"Error processing parameter: {parameter}");
-            }
-        }
+        //foreach (AvailableParameters parameter in Params.CommonParameters)
+        //{
+        //    try
+        //    {
+        //        AddParameter(parameter, SymbolType, Parameters, report, (JObject)secTemplate.Original);
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //        Logger.LogError(ex, $"Error processing parameter: {parameter}");
+        //    }
+        //}
 
         if (report["data"]["extendedData"] != null)
             ExtendedData = JsonConvert.DeserializeObject<ModuleData>(JsonConvert.SerializeObject(report["data"]["extendedData"]));

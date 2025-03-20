@@ -79,17 +79,17 @@ public class SectorReport : ISectorReport
         //Set Aperture
         _ = SetApeture();
 
-        foreach (AvailableParameters parameter in Params.CommonParameters)
-        {
-            try
-            {
-                AddParameter(parameter, SymbolType, Parameters, report, template);
-            }
-            catch (System.Exception ex)
-            {
-                Logger.LogError(ex, $"Error processing parameter: {parameter}");
-            }
-        }
+        //foreach (AvailableParameters parameter in Params.CommonParameters)
+        //{
+        //    try
+        //    {
+        //        AddParameter(parameter, SymbolType, Parameters, report, template);
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //        Logger.LogError(ex, $"Error processing parameter: {parameter}");
+        //    }
+        //}
 
     }
 
