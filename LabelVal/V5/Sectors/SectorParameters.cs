@@ -21,6 +21,8 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
     [ObservableProperty] private string sectorMissingText;
 
     public ObservableCollection<IParameterValue> Parameters { get; } = [];
+
+
     public ObservableCollection<Alarm> Alarms { get; } = [];
     public ObservableCollection<Blemish> Blemishes { get; } = [];
 
@@ -36,6 +38,7 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
 
         Sector = sector;
         JObject report = (JObject)Sector.Report.Original;
+        JObject template = (JObject)Sector.Template.Original;
 
         if (Sector.Report.SymbolType == AvailableSymbologies.Unknown)
         {
@@ -59,91 +62,15 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
 
         foreach (AvailableParameters parameter in theParamters)
         {
-            Type type = parameter.GetParameterDataType(Sector.Report.Device, theSymbology);
-
-            if (type == typeof(GradeValue))
+            try
             {
-                GradeValue gradeValue = GetGradeValue(parameter, report.GetParameter<JObject>(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
-
-                if (gradeValue != null)
-                {
-                    Parameters.Add(gradeValue);
-                    continue;
-                }
+                AddParameter(parameter, theSymbology, Parameters, report, template);
             }
-            else if (type == typeof(Grade))
+            catch (System.Exception ex)
             {
-                Grade grade = GetGrade(parameter, report.GetParameter<JObject>(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
-
-                if (grade != null)
-                {
-                    Parameters.Add(grade);
-                    continue;
-                }
+                Logger.LogError(ex, $"Error processing parameter: {parameter}");
             }
-            else if (type == typeof(ValueDouble))
-            {
-                ValueDouble valueDouble = GetValueDouble(parameter, report.GetParameter<string>(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
-                if (valueDouble != null)
-                {
-                    Parameters.Add(valueDouble);
-                    continue;
-                }
-            }
-            else if (type == typeof(ValueString))
-            {
-                ValueString valueString = GetValueString(parameter, report.GetParameter<string>(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
-                if (valueString != null) { Parameters.Add(valueString); continue; }
-            }
-            else if (type == typeof(PassFail))
-            {
-                PassFail passFail = GetPassFail(parameter, report.GetParameter<string>(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
-                if (passFail != null) { Parameters.Add(passFail); continue; }
-            }
-            else if (type == typeof(ValuePassFail))
-            {
-                ValuePassFail valuePassFail = GetValuePassFail(parameter, report.GetParameter<JObject>(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
-                if (valuePassFail != null) { Parameters.Add(valuePassFail); continue; }
-            }
-            else if (type == typeof(Custom))
-            {
-                if (parameter is AvailableParameters.CellSize or AvailableParameters.CellWidth or AvailableParameters.CellHeight)
-                {
-                    ValueDouble valueDouble = new(parameter, Sector.Report.Device, Sector.Report.SymbolType, sec.Report.XDimension);
-                    if (valueDouble != null)
-                    {
-                        Parameters.Add(valueDouble);
-                        continue;
-                    }
-                }
-
-                //if (parameter is AvailableParameters.UnusedEC)
-                //{
-                //    ValueDouble valueDouble = new(parameter, Sector.Report.Device, Sector.Report.SymbolType, report.GetParameter<double>("Datamatrix.uec"));
-                //    if (valueDouble != null)
-                //    {
-                //        Parameters.Add(valueDouble);
-                //        continue;
-                //    }
-                //}
-
-                //if (parameter is AvailableParameters.MinimumEC)
-                //{
-                //    ValueDouble valueDouble = new(parameter, Sector.Report.Device, Sector.Report.SymbolType, report.GetParameter<double>("Datamatrix.ecc"));
-                //    if (valueDouble != null)
-                //    {
-                //        Parameters.Add(valueDouble);
-                //        continue;
-                //    }
-                //}
-            }
-
-            Parameters.Add(new Missing(parameter));
-            Logger.LogDebug($"Paramter: '{parameter}' @ Path: '{parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)}' missing or parse issue.");
-
         }
-
-
 
         if (sec.Report.GS1Results is null)
             return;
@@ -152,7 +79,6 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
         {
             Alarms.Add(new Alarm(AvaailableAlarmCategories.Error, sec.Report.GS1Results.FormattedOut));
         }
-
 
         //if (SymbolType == "verify2D")
         //{
@@ -191,6 +117,96 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
         //        Values.Add(new Value_("supplemental", results.UPC.supplemental));
         //    }
         //}
+    }
+
+    private void AddParameter(AvailableParameters parameter, AvailableSymbologies theSymbology, ObservableCollection<IParameterValue> target, JObject report, JObject template)
+    {
+        Type type = parameter.GetParameterDataType(Sector.Report.Device, theSymbology);
+
+        if (type == typeof(GradeValue))
+        {
+            GradeValue gradeValue = GetGradeValue(parameter, report.GetParameter<JObject>(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
+
+            if (gradeValue != null)
+            {
+                target.Add(gradeValue);
+                return;
+            }
+        }
+        else if (type == typeof(Grade))
+        {
+            Grade grade = GetGrade(parameter, report.GetParameter<JObject>(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
+
+            if (grade != null)
+            {
+                target.Add(grade);
+                return;
+            }
+        }
+        else if (type == typeof(ValueDouble))
+        {
+            ValueDouble valueDouble = GetValueDouble(parameter, report.GetParameter<string>(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
+            if (valueDouble != null)
+            {
+                target.Add(valueDouble);
+                return;
+            }
+        }
+        else if (type == typeof(ValueString))
+        {
+            ValueString valueString = GetValueString(parameter, report.GetParameter<string>(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
+            if (valueString != null) { target.Add(valueString); return; }
+        }
+        else if (type == typeof(PassFail))
+        {
+            PassFail passFail = GetPassFail(parameter, report.GetParameter<string>(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
+            if (passFail != null) { target.Add(passFail); return; }
+        }
+        else if (type == typeof(ValuePassFail))
+        {
+            ValuePassFail valuePassFail = GetValuePassFail(parameter, report.GetParameter<JObject>(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
+            if (valuePassFail != null) { target.Add(valuePassFail); return; }
+        }
+        else if(type == typeof(OverallGrade))
+        {
+            target.Add(Sector.Report.OverallGrade);
+
+        }
+        else if (type == typeof(Custom))
+        {
+            if (parameter is AvailableParameters.CellSize or AvailableParameters.CellWidth or AvailableParameters.CellHeight)
+            {
+                ValueDouble valueDouble = new(parameter, Sector.Report.Device, Sector.Report.SymbolType, Sector.Report.XDimension);
+                if (valueDouble != null)
+                {
+                    target.Add(valueDouble);
+                    return;
+                }
+            }
+
+            //if (parameter is AvailableParameters.UnusedEC)
+            //{
+            //    ValueDouble valueDouble = new(parameter, Sector.Report.Device, Sector.Report.SymbolType, report.GetParameter<double>("Datamatrix.uec"));
+            //    if (valueDouble != null)
+            //    {
+            //        Parameters.Add(valueDouble);
+            //        continue;
+            //    }
+            //}
+
+            //if (parameter is AvailableParameters.MinimumEC)
+            //{
+            //    ValueDouble valueDouble = new(parameter, Sector.Report.Device, Sector.Report.SymbolType, report.GetParameter<double>("Datamatrix.ecc"));
+            //    if (valueDouble != null)
+            //    {
+            //        Parameters.Add(valueDouble);
+            //        continue;
+            //    }
+            //}
+        }
+
+        target.Add(new Missing(parameter));
+        Logger.LogDebug($"Paramter: '{parameter}' @ Path: '{parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)}' missing or parse issue.");
     }
 
     private GradeValue GetGradeValue(AvailableParameters parameter, JObject gradeValue)
@@ -240,14 +256,11 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
         _ => throw new System.NotImplementedException(),
     };
 
-    private static string V5GetSymbolType(ResultsAlt.Decodedata results)
-    {
-        if (results.Code128 != null)
-            return "verify1D";
-        else return results.Datamatrix != null
+    private static string V5GetSymbolType(ResultsAlt.Decodedata results) => results.Code128 != null
+            ? "verify1D"
+            : results.Datamatrix != null
             ? "verify2D"
             : results.QR != null ? "verify2D" : results.PDF417 != null ? "verify1D" : results.UPC != null ? "verify1D" : "Unknown";
-    }
 
     private static string GetLetter(double value) =>
 value == 4.0f

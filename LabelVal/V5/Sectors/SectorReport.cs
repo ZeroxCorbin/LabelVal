@@ -6,6 +6,7 @@ using BarcodeVerification.lib.ISO.ParameterTypes;
 using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Interfaces;
 using Newtonsoft.Json.Linq;
+using System.Collections.ObjectModel;
 
 namespace LabelVal.V5.Sectors;
 
@@ -55,6 +56,8 @@ public class SectorReport : ISectorReport
     public double ApertureMils { get; private set; }
     public double Ppi { get; private set; }
 
+    public ObservableCollection<IParameterValue> Parameters { get; } = [];
+
     public SectorReport(JObject report, JObject template, AvailableTables desiredTable)
     {
         Original = report;
@@ -75,6 +78,18 @@ public class SectorReport : ISectorReport
         _ = SetOverallGrade(report);
         //Set Aperture
         _ = SetApeture();
+
+        foreach (AvailableParameters parameter in Params.CommonParameters)
+        {
+            try
+            {
+                AddParameter(parameter, SymbolType, Parameters, report, template);
+            }
+            catch (System.Exception ex)
+            {
+                Logger.LogError(ex, $"Error processing parameter: {parameter}");
+            }
+        }
 
     }
 
@@ -300,5 +315,125 @@ public class SectorReport : ISectorReport
 
         Grade grade = new(AvailableParameters.OverallGrade, Device, spl[0].ParseDouble());
         return new OverallGrade(Device, grade, original, spl[1], spl[2]);
+    }
+
+
+    private void AddParameter(AvailableParameters parameter, AvailableSymbologies theSymbology, ObservableCollection<IParameterValue> target, JObject report, JObject template)
+    {
+        Type type = parameter.GetParameterDataType(Device, theSymbology);
+
+        if (type == typeof(GradeValue))
+        {
+            GradeValue gradeValue = GetGradeValue(parameter, report.GetParameter<JObject>(parameter.GetParameterPath(Device, SymbolType)));
+
+            if (gradeValue != null)
+            {
+                target.Add(gradeValue);
+                return;
+            }
+        }
+        else if (type == typeof(Grade))
+        {
+            Grade grade = GetGrade(parameter, report.GetParameter<JObject>(parameter.GetParameterPath(Device, SymbolType)));
+
+            if (grade != null)
+            {
+                target.Add(grade);
+                return;
+            }
+        }
+        else if (type == typeof(ValueDouble))
+        {
+            ValueDouble valueDouble = GetValueDouble(parameter, report.GetParameter<string>(parameter.GetParameterPath(Device, SymbolType)));
+            if (valueDouble != null)
+            {
+                target.Add(valueDouble);
+                return;
+            }
+        }
+        else if (type == typeof(ValueString))
+        {
+            ValueString valueString = GetValueString(parameter, report.GetParameter<string>(parameter.GetParameterPath(Device, SymbolType)));
+            if (valueString != null) { target.Add(valueString); return; }
+        }
+        else if (type == typeof(PassFail))
+        {
+            PassFail passFail = GetPassFail(parameter, report.GetParameter<string>(parameter.GetParameterPath(Device, SymbolType)));
+            if (passFail != null) { target.Add(passFail); return; }
+        }
+        else if (type == typeof(ValuePassFail))
+        {
+            ValuePassFail valuePassFail = GetValuePassFail(parameter, report.GetParameter<JObject>(parameter.GetParameterPath(Device, SymbolType)));
+            if (valuePassFail != null) { target.Add(valuePassFail); return; }
+        }
+        else if (type == typeof(OverallGrade))
+        {
+            target.Add(OverallGrade);
+            return;
+
+        }
+        else if (type == typeof(Custom))
+        {
+
+            //if (parameter is AvailableParameters.UnusedEC)
+            //{
+            //    ValueDouble valueDouble = new(parameter, Device, SymbolType, report.GetParameter<double>("Datamatrix.uec"));
+            //    if (valueDouble != null)
+            //    {
+            //        Parameters.Add(valueDouble);
+            //        continue;
+            //    }
+            //}
+
+            //if (parameter is AvailableParameters.MinimumEC)
+            //{
+            //    ValueDouble valueDouble = new(parameter, Device, SymbolType, report.GetParameter<double>("Datamatrix.ecc"));
+            //    if (valueDouble != null)
+            //    {
+            //        Parameters.Add(valueDouble);
+            //        continue;
+            //    }
+            //}
+        }
+
+        target.Add(new Missing(parameter));
+        Logger.LogDebug($"Paramter: '{parameter}' @ Path: '{parameter.GetParameterPath(Device, SymbolType)}' missing or parse issue.");
+    }
+
+    private GradeValue GetGradeValue(AvailableParameters parameter, JObject gradeValue)
+    {
+        if (gradeValue is null)
+            return null;
+
+        Grade grade = new(parameter, Device, gradeValue["grade"].ToString());
+        string value = gradeValue["value"].ToString();
+        return new GradeValue(parameter, Device, SymbolType, grade, value);
+    }
+
+    private Grade GetGrade(AvailableParameters parameter, JObject grade)
+    {
+        if (grade is null)
+            return null;
+        string value = grade["value"].ToString();
+        _ = grade["letter"].ToString();
+        return new Grade(parameter, Device, value);
+    }
+
+    private ValueDouble GetValueDouble(AvailableParameters parameter, string value) => string.IsNullOrWhiteSpace(value)
+            ? null
+            : string.IsNullOrWhiteSpace(value) ? null : new ValueDouble(parameter, Device, SymbolType, value);
+
+    private ValueString GetValueString(AvailableParameters parameter, string value) => string.IsNullOrWhiteSpace(value) ? null : new ValueString(parameter, Device, value);
+
+    private PassFail GetPassFail(AvailableParameters parameter, string value) => string.IsNullOrWhiteSpace(value) ? null : new PassFail(parameter, Device, value);
+
+    public ValuePassFail GetValuePassFail(AvailableParameters parameter, JObject valuePassFail)
+    {
+        if (valuePassFail is null)
+            return null;
+
+        string passFail = valuePassFail["result"].ToString();
+        string val = valuePassFail["value"].ToString();
+        return new ValuePassFail(parameter, Device, SymbolType, val, passFail);
     }
 }

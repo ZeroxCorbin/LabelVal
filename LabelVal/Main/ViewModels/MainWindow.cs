@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
+using LabelVal.Results.Controls.ViewModels;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -48,6 +49,8 @@ public partial class MainWindow : ObservableRecipient
         Localization.TranslationSource.Instance.CurrentCulture = CultureInfo.GetCultureInfo(Localization.Culture.GetCulture(value));
         App.Settings.SetValue(nameof(SelectedLanguage), value);
     }
+
+    public SectorOutputSettings SectorOutputSettings { get; } = new SectorOutputSettings();
 
     public MainWindow()
     {

@@ -120,7 +120,7 @@ public partial class ImageResultEntry
             {
                 try
                 {
-                    tempSectors.Add(new V5.Sectors.Sector((JObject)result, (JObject)V5CurrentTemplate, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, V5CurrentTemplate.GetParameter<string>("response.message")));
+                    tempSectors.Add(new V5.Sectors.Sector(V5CurrentReport, V5CurrentTemplate, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, V5CurrentTemplate.GetParameter<string>("response.message")));
                 }
                 catch (System.Exception ex)
                 {

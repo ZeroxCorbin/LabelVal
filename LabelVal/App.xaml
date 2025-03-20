@@ -8,6 +8,7 @@
     xmlns:local="clr-namespace:LabelVal"
     xmlns:logging="clr-namespace:Logging.lib;assembly=Logging.lib"
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:sectorOutput="clr-namespace:LabelVal.Results.Controls.ViewModels"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:system="clr-namespace:System;assembly=mscorlib"
     StartupUri="Main/Views/MainWindow.xaml">
@@ -53,6 +54,8 @@
                 </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
 
+            <!--  Barcode Enums  -->
+
             <ObjectDataProvider
                 x:Key="AvailableStandards"
                 MethodName="GetValues"
@@ -73,6 +76,43 @@
             </ObjectDataProvider>
 
 
+            <!--  Sector Output Enums  -->
+
+            <ObjectDataProvider
+                x:Key="SectorOutputType"
+                MethodName="GetValues"
+                ObjectType="{x:Type system:Enum}">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="sectorOutput:SectorOutputType" />
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+
+            <ObjectDataProvider
+                x:Key="SectorOutputDelimiter"
+                MethodName="GetValues"
+                ObjectType="{x:Type system:Enum}">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="sectorOutput:SectorOutputDelimiter" />
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+
+            <ObjectDataProvider
+                x:Key="SectorOutputStringQuote"
+                MethodName="GetValues"
+                ObjectType="{x:Type system:Enum}">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="sectorOutput:SectorOutputStringQuote" />
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+
+            <ObjectDataProvider
+                x:Key="SectorOutputIncludeParameters"
+                MethodName="GetValues"
+                ObjectType="{x:Type system:Enum}">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="sectorOutput:SectorOutputIncludeParameters" />
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
 
             <Style BasedOn="{StaticResource MahApps.Styles.ScrollBar}" TargetType="ScrollBar">
                 <!--<Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Control.Background}"/>-->

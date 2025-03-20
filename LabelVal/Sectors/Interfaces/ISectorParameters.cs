@@ -14,7 +14,7 @@ public interface ISectorParameters
     bool IsSectorMissing { get; set; }
     string SectorMissingText { get; set; }
 
-    ObservableCollection<IParameterValue> Parameters { get; } 
+    ObservableCollection<IParameterValue> Parameters { get; }
 
     ObservableCollection<Alarm> Alarms { get; }
     ObservableCollection<Blemish> Blemishes { get; }

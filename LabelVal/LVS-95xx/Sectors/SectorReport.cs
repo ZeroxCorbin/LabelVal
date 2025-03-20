@@ -8,6 +8,7 @@ using LabelVal.Sectors.Extensions;
 using LabelVal.Sectors.Interfaces;
 using Lvs95xx.lib.Core.Controllers;
 using Lvs95xx.lib.Core.Models;
+using System.Collections.ObjectModel;
 using System.Drawing;
 
 namespace LabelVal.LVS_95xx.Sectors;
@@ -52,6 +53,8 @@ public class SectorReport : ISectorReport
 
     public Point CenterPoint { get; private set; }
 
+    public ObservableCollection<IParameterValue> Parameters { get; } = [];
+
     public SectorReport(FullReport report)
     {
         Original = report;
@@ -79,18 +82,28 @@ public class SectorReport : ISectorReport
         _ = SetApeture(report.ReportData);
         _ = SetOverallGrade(report.ReportData);
 
+        foreach (AvailableParameters parameter in Params.CommonParameters)
+        {
+            try
+            {
+                AddParameter(parameter, SymbolType, Parameters, report);
+            }
+            catch (System.Exception ex)
+            {
+                Logger.LogError(ex, $"Error processing parameter: {parameter}");
+            }
+        }
     }
-
     private bool SetSymbologyAndRegionType(List<ReportData> report)
     {
-        string sym = report.GetParameter(AvailableParameters.Symbology, Device, SymbolType);
+        string sym = report.GetParameter(AvailableParameters.Symbology, Device, AvailableSymbologies.Unknown);
         if (sym == null)
         {
             Logger.LogError($"Could not find: '{AvailableParameters.Symbology.GetParameterPath(AvailableDevices.L95, AvailableSymbologies.Unknown)}' in ReportData. {Device}");
             return false;
         }
 
-        string dataBarType = report.GetParameter(AvailableParameters.DataBarType, Device, SymbolType);
+        string dataBarType = report.GetParameter(AvailableParameters.DataBarType, Device, AvailableSymbologies.Unknown);
         if (dataBarType != null)
             sym = $"DataBar {dataBarType}";
 
@@ -107,6 +120,65 @@ public class SectorReport : ISectorReport
 
         return true;
     }
+
+    private void AddParameter(AvailableParameters parameter, AvailableSymbologies theSymbology, ObservableCollection<IParameterValue> target, FullReport report)
+    {
+        Type type = parameter.GetParameterDataType(Device, theSymbology);
+
+        if (type == typeof(GradeValue))
+        {
+            GradeValue gradeValue = GetGradeValue(parameter, report.ReportData.GetParameter(parameter.GetParameterPath(Device, SymbolType)));
+
+            if (gradeValue != null)
+            {
+                target.Add(gradeValue);
+                return;
+            }
+        }
+        else if (type == typeof(Grade))
+        {
+            Grade grade = GetGrade(parameter, report.ReportData.GetParameter(parameter.GetParameterPath(Device, SymbolType)));
+
+            if (grade != null)
+            {
+                target.Add(grade);
+                return;
+            }
+        }
+        else if (type == typeof(ValueDouble))
+        {
+            ValueDouble valueDouble = GetValueDouble(parameter, report.ReportData.GetParameter(parameter.GetParameterPath(Device, SymbolType)));
+            if (valueDouble != null)
+            {
+                target.Add(valueDouble);
+                return;
+            }
+        }
+        else if (type == typeof(ValueString))
+        {
+            ValueString valueString = GetValueString(parameter, report.ReportData.GetParameter(parameter.GetParameterPath(Device, SymbolType)));
+            if (valueString != null)
+            {
+                target.Add(valueString); 
+                return;
+            }
+        }
+        else if (type == typeof(PassFail))
+        {
+            PassFail passFail = GetPassFail(parameter, report.ReportData.GetParameter(parameter.GetParameterPath(Device, SymbolType)));
+            if (passFail != null) { target.Add(passFail); return; }
+        }
+        else if (type == typeof(Custom))
+        {
+
+        }
+
+        target.Add(new Missing(parameter));
+        Logger.LogDebug($"Paramter: '{parameter}' @ Path: '{parameter.GetParameterPath(Device, SymbolType)}' missing or parse issue.");
+    }
+
+
+
 
     private bool SetOverallGrade(List<ReportData> report)
     {
@@ -219,4 +291,21 @@ public class SectorReport : ISectorReport
         Grade grade = new(AvailableParameters.OverallGrade, Device, spl[0]);
         return new OverallGrade(Device, grade, original, spl[1], spl[2]);
     }
+
+    private GradeValue GetGradeValue(AvailableParameters parameter, string data)
+    {
+        if (string.IsNullOrWhiteSpace(data))
+            return null;
+
+        string[] spl2 = data.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+        if (spl2.Length != 2)
+            return spl2.Length == 1 ? new GradeValue(parameter, Device, SymbolType, spl2[0], string.Empty) : null;
+        else
+            return new GradeValue(parameter, Device, SymbolType, spl2[0], spl2[1]);//  new GradeValue(name, ParseFloat(spl2[1]), new Grade(name, tmp, GetLetter(tmp)));
+    }
+    private Grade GetGrade(AvailableParameters parameter, string data) => string.IsNullOrWhiteSpace(data) ? null : new Grade(parameter, Device, data);
+    private ValueDouble GetValueDouble(AvailableParameters parameter, string data) => string.IsNullOrWhiteSpace(data) ? null : new ValueDouble(parameter, Device, SymbolType, data);
+    private ValueString GetValueString(AvailableParameters parameter, string data) => string.IsNullOrWhiteSpace(data) ? null : new ValueString(parameter, Device, data);
+    private PassFail GetPassFail(AvailableParameters parameter, string data) => string.IsNullOrWhiteSpace(data) ? null : new PassFail(parameter, Device, data);
 }

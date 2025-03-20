@@ -99,7 +99,7 @@
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <TextBlock
                             Grid.Column="0"
@@ -110,7 +110,7 @@
                             Grid.Column="1"
                             MinWidth="26"
                             Margin="3,0"
-                            HorizontalAlignment="Left"
+                            HorizontalAlignment="Right"
                             VerticalAlignment="Center"
                             Text="{Binding Path=Value, Mode=OneTime}"
                             TextWrapping="Wrap" />
@@ -668,7 +668,13 @@
                     </UniformGrid>
 
                 </DockPanel>
+                <DockPanel>
 
+                    <ItemsControl
+                        Margin="6,0"
+                        ItemTemplateSelector="{StaticResource ParameterTemplateSelector}"
+                        ItemsSource="{Binding Report.Parameters, Mode=OneTime}" />
+                </DockPanel>
                 <!--  Parameters  -->
                 <DockPanel>
 
@@ -677,6 +683,8 @@
                         ItemTemplateSelector="{StaticResource ParameterTemplateSelector}"
                         ItemsSource="{Binding SectorDetails.Parameters, Mode=OneTime}" />
                 </DockPanel>
+
+
 
                 <!--  Alarms  -->
                 <DockPanel>

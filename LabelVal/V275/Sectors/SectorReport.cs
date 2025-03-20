@@ -7,6 +7,8 @@ using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Interfaces;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NHibernate.SqlCommand;
+using System.Collections.ObjectModel;
 using System.Drawing;
 
 namespace LabelVal.V275.Sectors;
@@ -51,6 +53,8 @@ public class SectorReport : ISectorReport
 
     public Point CenterPoint { get; private set; }
 
+    public ObservableCollection<IParameterValue> Parameters { get; } = [];
+
     public SectorReport(JObject report, ISectorTemplate secTemplate)
     {
         Original = report;
@@ -79,83 +83,20 @@ public class SectorReport : ISectorReport
 
         _ = SetOverallGrade(report);
 
-        //if (sector.type is "verify1D" or "verify2D" && sector.gradingStandard != null)
-        //    Standard = sector.gradingStandard.enabled ? AvailableStandards.GS1 : AvailableStandards.ISO;
-
-        //if (Standard == AvailableStandards.GS1)
-        //    GS1Table = sector.gradingStandard.tableId.GetTable(AvailableDevices.V275);
-
-        //OverallGradeString = report["data"]["overallGrade"]["string"].ToString();
-        //OverallGradeValue = report["data"]["overallGrade"]["grade"]["value"].ToObject<double>();
-        //OverallGradeLetter = report["data"]["overallGrade"]["grade"]["letter"].ToString();
-
-        //if (report["data"]["gs1Results"] != null)
-        //{
-        //    List<string> fld = [];
-        //    foreach (JProperty f in report["data"]["gs1Results"]["fields"])
-        //        fld.Add($"({f.Name}) {f.Value.ToString().Trim('{', '}', ' ')}");
-        //    GS1Results = new Gs1Results
-        //    {
-        //        Validated = report["data"]["gs1Results"]["validated"].ToObject<bool>(),
-        //        Input = report["data"]["gs1Results"]["input"].ToString(),
-        //        FormattedOut = report["data"]["gs1Results"]["formattedOut"].ToString(),
-        //        Fields = fld,
-        //        Error = report["data"]["gs1Results"]["error"].ToString()
-        //    };
-        //}
+        foreach (AvailableParameters parameter in Params.CommonParameters)
+        {
+            try
+            {
+                AddParameter(parameter, SymbolType, Parameters, report, (JObject)secTemplate.Original);
+            }
+            catch (System.Exception ex)
+            {
+                Logger.LogError(ex, $"Error processing parameter: {parameter}");
+            }
+        }
 
         if (report["data"]["extendedData"] != null)
             ExtendedData = JsonConvert.DeserializeObject<ModuleData>(JsonConvert.SerializeObject(report["data"]["extendedData"]));
-
-        //switch (report)
-        //{
-        //    case Report_InspectSector_OCR:
-        //        Report_InspectSector_OCR ocr = (Report_InspectSector_OCR)report;
-
-        //        SymbolType = AvailableSymbologies.OCR;
-        //        Type = SymbolType.GetSymbologyRegionType(AvailableDevices.V275);
-
-        //        Top = ocr.top;
-        //        Left = ocr.left;
-        //        Width = ocr.width;
-        //        Height = ocr.height;
-        //        AngleDeg = 0;
-
-        //        Text = ocr.data.text;
-        //        Score = ocr.data.score;
-        //        break;
-
-        //    case Report_InspectSector_OCV:
-        //        Report_InspectSector_OCV ocv = (Report_InspectSector_OCV)report;
-
-        //        SymbolType = AvailableSymbologies.OCV;
-        //        Type = SymbolType.GetSymbologyRegionType(AvailableDevices.V275);
-
-        //        Top = ocv.top;
-        //        Left = ocv.left;
-        //        Width = ocv.width;
-        //        Height = ocv.height;
-        //        AngleDeg = 0;
-
-        //        Text = ocv.data.text;
-        //        Score = ocv.data.score;
-        //        break;
-
-        //    case Report_InspectSector_Blemish:
-        //        Report_InspectSector_Blemish blem = (Report_InspectSector_Blemish)report;
-
-        //        SymbolType = AvailableSymbologies.Blemish;
-        //        Type = SymbolType.GetSymbologyRegionType(AvailableDevices.V275);
-
-        //        Top = blem.top;
-        //        Left = blem.left;
-        //        Width = blem.width;
-        //        Height = blem.height;
-        //        AngleDeg = 0;
-
-        //        BlemishCount = blem.data.blemishCount;
-        //        break;
-        //}
     }
 
     private bool SetSymbologyAndRegionType(JObject report)
@@ -271,5 +212,108 @@ public class SectorReport : ISectorReport
 
         Grade grade = new(AvailableParameters.OverallGrade, Device, json["grade"]["value"].Value<double>());
         return new OverallGrade(Device, grade, json["string"].ToString(), spl[1], spl[2]);
+    }
+
+
+    private void AddParameter(AvailableParameters parameter, AvailableSymbologies theSymbology, ObservableCollection<IParameterValue> target, JObject report, JObject template)
+    {
+        Type type = parameter.GetParameterDataType(Device, theSymbology);
+
+        if (type == typeof(GradeValue))
+        {
+            GradeValue gradeValue = GetGradeValue(parameter, report.GetParameter<JObject>(parameter.GetParameterPath(Device, SymbolType)));
+
+            if (gradeValue != null)
+            {
+                target.Add(gradeValue);
+                return;
+            }
+        }
+        else if (type == typeof(Grade))
+        {
+            Grade grade = GetGrade(parameter, report.GetParameter<JObject>(parameter.GetParameterPath(Device, SymbolType)));
+
+            if (grade != null)
+            {
+                target.Add(grade);
+                return;
+            }
+        }
+        else if (type == typeof(ValueDouble))
+        {
+            ValueDouble valueDouble = GetValueDouble(parameter, report.GetParameter<string>(parameter.GetParameterPath(Device, SymbolType)));
+            if (valueDouble != null)
+            {
+                target.Add(valueDouble);
+                return;
+            }
+        }
+        else if (type == typeof(ValueString))
+        {
+            ValueString valueString = parameter is AvailableParameters.Standard or AvailableParameters.GS1Table
+                ? GetValueString(parameter, template.GetParameter<string>(parameter.GetParameterPath(Device, SymbolType)))
+                : GetValueString(parameter, report.GetParameter<string>(parameter.GetParameterPath(Device, SymbolType)));
+            if (valueString != null) { target.Add(valueString); return; }
+        }
+        else if (type == typeof(PassFail))
+        {
+            PassFail passFail = GetPassFail(parameter, report.GetParameter<string>(parameter.GetParameterPath(Device, SymbolType)));
+            if (passFail != null) { target.Add(passFail); return; }
+        }
+        else if (type == typeof(ValuePassFail))
+        {
+            ValuePassFail valuePassFail = GetValuePassFail(parameter, report.GetParameter<JObject>(parameter.GetParameterPath(Device, SymbolType)));
+            if (valuePassFail != null) { target.Add(valuePassFail); return; }
+        }
+        else if (type == typeof(OverallGrade))
+        {
+            target.Add(OverallGrade);
+
+        }
+        else if (type == typeof(Custom))
+        {
+
+        }
+
+        target.Add(new Missing(parameter));
+        Logger.LogDebug($"Paramter: '{parameter}' @ Path: '{parameter.GetParameterPath(Device, SymbolType)}' missing or parse issue.");
+    }
+
+
+    private GradeValue GetGradeValue(AvailableParameters parameter, JObject gradeValue)
+    {
+        if (gradeValue is null)
+            return null;
+
+        Grade grade = new(parameter, Device, gradeValue["grade"].ToString());
+        string value = gradeValue["value"].ToString();
+        return new GradeValue(parameter, Device, SymbolType, grade, value);
+    }
+
+    private Grade GetGrade(AvailableParameters parameter, JObject grade)
+    {
+        if (grade is null)
+            return null;
+        string value = grade["value"].ToString();
+        _ = grade["letter"].ToString();
+        return new Grade(parameter, Device, value);
+    }
+
+    private ValueDouble GetValueDouble(AvailableParameters parameter, string value) => string.IsNullOrWhiteSpace(value)
+            ? null
+            : string.IsNullOrWhiteSpace(value) ? null : new ValueDouble(parameter, Device, SymbolType, value);
+
+    private ValueString GetValueString(AvailableParameters parameter, string value) => string.IsNullOrWhiteSpace(value) ? null : new ValueString(parameter, Device, value);
+
+    private PassFail GetPassFail(AvailableParameters parameter, string value) => string.IsNullOrWhiteSpace(value) ? null : new PassFail(parameter, Device, value);
+
+    public ValuePassFail GetValuePassFail(AvailableParameters parameter, JObject valuePassFail)
+    {
+        if (valuePassFail is null)
+            return null;
+
+        string passFail = valuePassFail["result"].ToString();
+        string val = valuePassFail["value"].ToString();
+        return new ValuePassFail(parameter, Device, SymbolType, val, passFail);
     }
 }

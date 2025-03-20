@@ -2,6 +2,7 @@
 using BarcodeVerification.lib.GS1;
 using BarcodeVerification.lib.ISO.ParameterTypes;
 using LabelVal.Sectors.Classes;
+using System.Collections.ObjectModel;
 
 namespace LabelVal.Sectors.Interfaces;
 
@@ -15,6 +16,8 @@ public interface ISectorReport
 
     AvailableStandards Standard { get; }
     AvailableTables GS1Table { get; }
+
+    ObservableCollection<IParameterValue> Parameters { get; }
 
     OverallGrade OverallGrade { get; }
 
