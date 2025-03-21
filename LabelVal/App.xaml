@@ -5,11 +5,11 @@
     xmlns:bar_common="clr-namespace:BarcodeVerification.lib.Common;assembly=BarcodeVerification.lib"
     xmlns:bar_gs1="clr-namespace:BarcodeVerification.lib.GS1;assembly=BarcodeVerification.lib"
     xmlns:converters="clr-namespace:Wpf.lib.Converters;assembly=Wpf.lib"
+    xmlns:imageRoll_enums="clr-namespace:LabelVal.ImageRolls.ViewModels"
     xmlns:local="clr-namespace:LabelVal"
     xmlns:logging="clr-namespace:Logging.lib;assembly=Logging.lib"
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:sectorOutput="clr-namespace:LabelVal.Results.Controls.ViewModels"
-    xmlns:imageRoll_enums="clr-namespace:LabelVal.ImageRolls.ViewModels"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:system="clr-namespace:System;assembly=mscorlib"
     StartupUri="Main/Views/MainWindow.xaml">

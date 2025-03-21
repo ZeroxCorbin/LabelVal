@@ -6,8 +6,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using LabelVal.Sectors.Extensions;
 using LabelVal.Sectors.Interfaces;
 using Lvs95xx.lib.Core.Controllers;
-using Lvs95xx.lib.Core.Models;
-using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 
 namespace LabelVal.LVS_95xx.Sectors;
@@ -21,7 +19,6 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
 
     [ObservableProperty] private bool isSectorMissing;
     [ObservableProperty] private string sectorMissingText;
-
 
     public ObservableCollection<IParameterValue> Parameters { get; } = [];
 
@@ -78,23 +75,13 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
     {
         Type type = parameter.GetParameterDataType(Sector.Report.Device, theSymbology);
 
-        if (type == typeof(GradeValue))
+        if (type == typeof(GradeValue) || type == typeof(Grade))
         {
-            GradeValue gradeValue = GetGradeValue(parameter, report.ReportData.GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
+            IParameterValue gradeValue = GetGradeValueOrGrade(parameter, report.ReportData.GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
 
             if (gradeValue != null)
             {
                 target.Add(gradeValue);
-                return;
-            }
-        }
-        else if (type == typeof(Grade))
-        {
-            Grade grade = GetGrade(parameter, report.ReportData.GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
-
-            if (grade != null)
-            {
-                target.Add(grade);
                 return;
             }
         }
@@ -120,28 +107,27 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
             PassFail passFail = GetPassFail(parameter, report.ReportData.GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
             if (passFail != null) { target.Add(passFail); return; }
         }
-        else if(type == typeof(Custom))
+        else if (type == typeof(Custom))
         {
 
         }
 
-            target.Add(new Missing(parameter));
+        target.Add(new Missing(parameter));
         Logger.LogDebug($"Paramter: '{parameter}' @ Path: '{parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)}' missing or parse issue.");
     }
 
-    private GradeValue GetGradeValue(AvailableParameters parameter, string data)
+    private IParameterValue GetGradeValueOrGrade(AvailableParameters parameter, string data)
     {
         if (string.IsNullOrWhiteSpace(data))
             return null;
 
         string[] spl2 = data.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-        if (spl2.Length != 2)
-            return spl2.Length == 1 ? new GradeValue(parameter, Sector.Report.Device, Sector.Report.SymbolType, spl2[0], string.Empty) : null;
-        else
-            return new GradeValue(parameter, Sector.Report.Device, Sector.Report.SymbolType, spl2[0], spl2[1]);//  new GradeValue(name, ParseFloat(spl2[1]), new Grade(name, tmp, GetLetter(tmp)));
+        return spl2.Length == 2
+            ? new GradeValue(parameter, Sector.Report.Device, Sector.Report.SymbolType, spl2[0], spl2[1])
+            : spl2.Length == 1 ? new Grade(parameter, Sector.Report.Device, data) : (IParameterValue)null;
     }
-    private Grade GetGrade(AvailableParameters parameter, string data) => string.IsNullOrWhiteSpace(data) ? null : new Grade(parameter, Sector.Report.Device, data);
+
     private ValueDouble GetValueDouble(AvailableParameters parameter, string data) => string.IsNullOrWhiteSpace(data) ? null : new ValueDouble(parameter, Sector.Report.Device, Sector.Report.SymbolType, data);
     private ValueString GetValueString(AvailableParameters parameter, string data) => string.IsNullOrWhiteSpace(data) ? null : new ValueString(parameter, Sector.Report.Device, data);
     private PassFail GetPassFail(AvailableParameters parameter, string data) => string.IsNullOrWhiteSpace(data) ? null : new PassFail(parameter, Sector.Report.Device, data);

@@ -135,7 +135,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
 
             if (tempSectors.Count > 0)
             {
-                SortList2(tempSectors);
+                SortList3(tempSectors);
 
                 foreach (var sec in tempSectors)
                     L95xxStoredSectors.Add(sec);
@@ -194,7 +194,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
 
         L95xxCurrentSectors.Add(new Sector(message, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
         List<ISector> secs = L95xxCurrentSectors.ToList();
-        SortList2(secs);
+        SortList3(secs);
         SortObservableCollectionByList(secs, L95xxCurrentSectors);
 
         L95xxGetSectorDiff();

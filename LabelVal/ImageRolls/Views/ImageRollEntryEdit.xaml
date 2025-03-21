@@ -31,8 +31,8 @@
                 Text="{Binding Name}" />
 
             <DockPanel DockPanel.Dock="Top">
-                <ListBox ItemsSource="{Binding Source={StaticResource ImageRollSectorTypes}}" SelectedItem="{Binding SectorType}"/>
-                <ListBox ItemsSource="{Binding Source={StaticResource ImageRollImageTypes}}" SelectedItem="{Binding ImageType}"/>
+                <ListBox ItemsSource="{Binding Source={StaticResource ImageRollSectorTypes}}" SelectedItem="{Binding SectorType}" />
+                <ListBox ItemsSource="{Binding Source={StaticResource ImageRollImageTypes}}" SelectedItem="{Binding ImageType}" />
 
                 <TextBox
                     Margin="3"

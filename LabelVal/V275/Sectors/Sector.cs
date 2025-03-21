@@ -82,7 +82,6 @@ public partial class Sector : ObservableObject, ISector
         Template = new SectorTemplate(template, version);
         Report = new SectorReport(report, Template);
 
-
         DesiredStandard = standard;
         DesiredGS1Table = table;
 

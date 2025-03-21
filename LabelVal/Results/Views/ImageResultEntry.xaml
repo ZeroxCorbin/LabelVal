@@ -70,7 +70,7 @@
                             Height="28"
                             Foreground="White"
                             IsActive="{Binding IsV275Working}" />
-                        
+
                         <iconPacks:PackIconMaterial
                             Width="24"
                             Height="24"

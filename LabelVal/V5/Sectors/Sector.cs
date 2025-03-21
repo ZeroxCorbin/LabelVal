@@ -89,7 +89,7 @@ public partial class Sector : ObservableObject, ISector
         }
 
         Template = new SectorTemplate(report, template, toolUid, version);
-        Report = new SectorReport(report, template, table);
+        Report = new SectorReport(report, Template, table);
 
         SectorDetails = new SectorDetails(this);
 

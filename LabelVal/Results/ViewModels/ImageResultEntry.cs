@@ -11,6 +11,7 @@ using Lvs95xx.lib.Core.Controllers;
 using Lvs95xx.lib.Core.Models;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -902,6 +903,12 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         }
         return rowComparison;
     });
+
+    public void SortList3(List<Sectors.Interfaces.ISector> list)
+    {
+        //Sort the list from top to bottom, left to right given x,y coordinates
+        list = list.OrderBy(x => x.Report.Top).ThenBy(x => x.Report.Left).ToList();
+    }
     #region Recieve Messages
     public void Receive(PropertyChangedMessage<Databases.ImageResultsDatabase> message) => SelectedDatabase = message.NewValue;
     public void Receive(PropertyChangedMessage<PrinterSettings> message) => SelectedPrinter = message.NewValue;

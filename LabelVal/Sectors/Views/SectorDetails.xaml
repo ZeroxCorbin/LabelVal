@@ -293,7 +293,9 @@
                             Grid.Column="1"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center">
+                            
                             <TextBlock HorizontalAlignment="Right" Text="{Binding Path=Value, StringFormat={}{0:N1}, Mode=OneTime}" />
+                            
                             <TextBlock
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Bottom"

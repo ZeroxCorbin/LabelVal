@@ -484,7 +484,7 @@ public partial class Controller : ObservableObject
                 ApplicationStandard = ire.ImageResults.SelectedImageRoll.SelectedStandard.GetDescription(),
             },
 
-            Image = ire.ImageResults.SelectedImageRoll.ImageType == ImageRollImageTypes.Stored ? ire.L95xxStoredImage.BitmapBytes : ire.L95xxCurrentImage.BitmapBytes
+            Image = ire.ImageResults.SelectedImageRoll.ImageType == ImageRollImageTypes.Stored ? ire.SourceImage.BitmapBytes : ire.L95xxStoredImage.BitmapBytes
         };
         if (ire.ImageResults.SelectedImageRoll.SelectedGS1Table != null)
             lab.Config.Table = ((AvailableTables)ire.ImageResults.SelectedImageRoll.SelectedGS1Table).GetTableName();

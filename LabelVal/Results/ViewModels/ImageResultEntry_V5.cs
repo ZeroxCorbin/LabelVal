@@ -134,7 +134,7 @@ public partial class ImageResultEntry
 
         if (tempSectors.Count > 0)
         {
-            SortList2(tempSectors);
+            SortList3(tempSectors);
 
             foreach (Sectors.Interfaces.ISector sec in tempSectors)
                 V5CurrentSectors.Add(sec);
@@ -208,7 +208,7 @@ public partial class ImageResultEntry
 
         if (tempSectors.Count > 0)
         {
-            SortList2(tempSectors);
+            SortList3(tempSectors);
 
             foreach (Sectors.Interfaces.ISector sec in tempSectors)
                 V5StoredSectors.Add(sec);

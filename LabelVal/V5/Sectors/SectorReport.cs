@@ -58,23 +58,32 @@ public class SectorReport : ISectorReport
 
     public ObservableCollection<IParameterValue> Parameters { get; } = [];
 
-    public SectorReport(JObject report, JObject template, AvailableTables desiredTable)
+    public SectorReport(JObject report, ISectorTemplate template, AvailableTables desiredTable)
     {
         Original = report;
         GS1Table = desiredTable;
 
-        _ = SetBoudingBox(report);
+        if (!SetBoudingBox(report))
+        {
+            Top = template.Top;
+            Left = template.Left;
+            Width = template.Width;
+            Height = template.Height;
+            AngleDeg = template.AngleDeg;
+
+            CenterPoint = new System.Drawing.Point((int)(Left + (Width / 2)), (int)(Top + (Height / 2)));
+        }
 
         //Set Symbology
         _ = SetSymbologyAndRegionType(report);
 
         DecodeText = report.GetParameter<string>(AvailableParameters.DecodeText, Device, SymbolType);
 
-        _ = SetStandardAndTable(report, template);
+        _ = SetStandardAndTable(report,(JObject)template.Original);
         //Set GS1 Data
         _ = SetGS1Data(report);
         //Set XDimension
-        _ = SetXdimAndUnits(report, template);
+        _ = SetXdimAndUnits(report, (JObject)template.Original);
         _ = SetOverallGrade(report);
         //Set Aperture
         _ = SetApeture();
@@ -108,7 +117,7 @@ public class SectorReport : ISectorReport
         Height = bb.Height;
         AngleDeg = report.GetParameter<double>("angleDeg");
 
-        CenterPoint = new System.Drawing.Point((int)Left, (int)Top);
+        CenterPoint = new System.Drawing.Point((int)(Left + (Width / 2)), (int)(Top + (Height/2)));
 
         return true;
     }

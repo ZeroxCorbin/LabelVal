@@ -6,7 +6,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Interfaces;
 using Newtonsoft.Json.Linq;
-using NHibernate.SqlCommand;
 using System.Collections.ObjectModel;
 
 namespace LabelVal.V275.Sectors;
@@ -31,7 +30,7 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
 
     public void Process(ISector sector)
     {
-        if (sector is not V275.Sectors.Sector sec)
+        if (sector is not V275.Sectors.Sector)
             return;
 
         Sector = sector;
@@ -80,23 +79,13 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
     {
         Type type = parameter.GetParameterDataType(Sector.Report.Device, theSymbology);
 
-        if (type == typeof(GradeValue))
+        if (type == typeof(GradeValue) || type == typeof(Grade))
         {
-            GradeValue gradeValue = GetGradeValue(parameter, report.GetParameter<JObject>(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
+            IParameterValue gradeValue = GetGradeValueOrGrade(parameter, report.GetParameter<JObject>(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
 
             if (gradeValue != null)
             {
                 target.Add(gradeValue);
-                return;
-            }
-        }
-        else if (type == typeof(Grade))
-        {
-            Grade grade = GetGrade(parameter, report.GetParameter<JObject>(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
-
-            if (grade != null)
-            {
-                target.Add(grade);
                 return;
             }
         }
@@ -111,12 +100,9 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
         }
         else if (type == typeof(ValueString))
         {
-            ValueString valueString;
-            if (parameter is AvailableParameters.GS1Table)
-                valueString = GetValueString(parameter, template.GetParameter<string>(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
-            else
-                valueString = GetValueString(parameter, report.GetParameter<string>(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
-
+            ValueString valueString = parameter is AvailableParameters.GS1Table
+                ? GetValueString(parameter, template.GetParameter<string>(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)))
+                : GetValueString(parameter, report.GetParameter<string>(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
             if (valueString != null) { target.Add(valueString); return; }
         }
         else if (type == typeof(PassFail))
@@ -131,7 +117,6 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
         }
         else if (type == typeof(Custom))
         {
-
 
             //if (parameter is AvailableParameters.UnusedEC)
             //{
@@ -158,25 +143,19 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
         Logger.LogDebug($"Paramter: '{parameter}' @ Path: '{parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)}' missing or parse issue.");
     }
 
-    private GradeValue GetGradeValue(AvailableParameters parameter, JObject gradeValue)
+    private IParameterValue GetGradeValueOrGrade(AvailableParameters parameter, JObject gradeValue)
     {
         if (gradeValue is null)
             return null;
-
+        string value = gradeValue["value"].ToString();
         Grade grade = GetGrade(parameter, (JObject)gradeValue["grade"]);
-        string value = gradeValue["value"].ToString();
-        return new GradeValue(parameter, Sector.Report.Device, Sector.Report.SymbolType, grade, value);
+        return grade == null
+            ? new Grade(parameter, Sector.Report.Device, value)
+            : new GradeValue(parameter, Sector.Report.Device, Sector.Report.SymbolType, grade, value);
     }
-
-    private Grade GetGrade(AvailableParameters parameter, JObject gradeValue)
-    {
-        if (gradeValue is null)
-            return null;
-
-        string value = gradeValue["value"].ToString();
-        _ = gradeValue["letter"].ToString();
-        return new Grade(parameter, Sector.Report.Device, value);
-    }
+    private Grade GetGrade(AvailableParameters parameter, JObject gradeValue) => gradeValue is null
+            ? null
+            : new Grade(parameter, Sector.Report.Device, gradeValue["value"].ToString());
 
     private ValueDouble GetValueDouble(AvailableParameters parameter, string value) => string.IsNullOrWhiteSpace(value)
             ? null
@@ -186,13 +165,7 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
 
     private PassFail GetPassFail(AvailableParameters parameter, string value) => string.IsNullOrWhiteSpace(value) ? null : new PassFail(parameter, Sector.Report.Device, value);
 
-    public ValuePassFail GetValuePassFail(AvailableParameters parameter, JObject valuePassFail)
-    {
-        if (valuePassFail is null)
-            return null;
-
-        string passFail = valuePassFail["result"].ToString();
-        string val = valuePassFail["value"].ToString();
-        return new ValuePassFail(parameter, Sector.Report.Device, Sector.Report.SymbolType, val, passFail);
-    }
+    public ValuePassFail GetValuePassFail(AvailableParameters parameter, JObject valuePassFail) => valuePassFail is null
+            ? null
+            : new ValuePassFail(parameter, Sector.Report.Device, Sector.Report.SymbolType, valuePassFail["value"].ToString(), valuePassFail["result"].ToString());
 }

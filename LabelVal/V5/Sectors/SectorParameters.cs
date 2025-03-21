@@ -22,7 +22,6 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
 
     public ObservableCollection<IParameterValue> Parameters { get; } = [];
 
-
     public ObservableCollection<Alarm> Alarms { get; } = [];
     public ObservableCollection<Blemish> Blemishes { get; } = [];
 
@@ -123,23 +122,13 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
     {
         Type type = parameter.GetParameterDataType(Sector.Report.Device, theSymbology);
 
-        if (type == typeof(GradeValue))
+        if (type == typeof(GradeValue) || type == typeof(Grade))
         {
-            GradeValue gradeValue = GetGradeValue(parameter, report.GetParameter<JObject>(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
+            IParameterValue gradeValue = GetGradeValue(parameter, report.GetParameter<JObject>(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
 
             if (gradeValue != null)
             {
                 target.Add(gradeValue);
-                return;
-            }
-        }
-        else if (type == typeof(Grade))
-        {
-            Grade grade = GetGrade(parameter, report.GetParameter<JObject>(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
-
-            if (grade != null)
-            {
-                target.Add(grade);
                 return;
             }
         }
@@ -167,7 +156,7 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
             ValuePassFail valuePassFail = GetValuePassFail(parameter, report.GetParameter<JObject>(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
             if (valuePassFail != null) { target.Add(valuePassFail); return; }
         }
-        else if(type == typeof(OverallGrade))
+        else if (type == typeof(OverallGrade))
         {
             target.Add(Sector.Report.OverallGrade);
 
@@ -209,23 +198,16 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
         Logger.LogDebug($"Paramter: '{parameter}' @ Path: '{parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)}' missing or parse issue.");
     }
 
-    private GradeValue GetGradeValue(AvailableParameters parameter, JObject gradeValue)
+    private IParameterValue GetGradeValue(AvailableParameters parameter, JObject gradeValue)
     {
         if (gradeValue is null)
             return null;
 
-        Grade grade = new(parameter, Sector.Report.Device, gradeValue["grade"].ToString());
-        string value = gradeValue["value"].ToString();
-        return new GradeValue(parameter, Sector.Report.Device, Sector.Report.SymbolType, grade, value);
-    }
-
-    private Grade GetGrade(AvailableParameters parameter, JObject grade)
-    {
-        if (grade is null)
-            return null;
-        string value = grade["value"].ToString();
-        _ = grade["letter"].ToString();
-        return new Grade(parameter, Sector.Report.Device, value);
+        string value = gradeValue.GetParameter<string>("value");
+        Grade grade = new(parameter, Sector.Report.Device, gradeValue.GetParameter<string>("grade"), V5GetGradeLetter(gradeValue.GetParameter<int>("letter")));
+        return string.IsNullOrWhiteSpace(value)
+            ? grade
+            : new GradeValue(parameter, Sector.Report.Device, Sector.Report.SymbolType, grade, value.ParseDouble());
     }
 
     private ValueDouble GetValueDouble(AvailableParameters parameter, string value) => string.IsNullOrWhiteSpace(value)
@@ -253,7 +235,7 @@ public partial class SectorDetails : ObservableObject, ISectorParameters
         67 => "C",
         68 => "D",
         70 => "F",
-        _ => throw new System.NotImplementedException(),
+        _ => "U",
     };
 
     private static string V5GetSymbolType(ResultsAlt.Decodedata results) => results.Code128 != null
