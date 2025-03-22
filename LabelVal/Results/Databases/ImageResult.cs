@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using LabelVal.ImageRolls.ViewModels;
+using Lvs95xx.lib.Core.Controllers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SQLite;
@@ -49,6 +50,5 @@ public class V5Result : ImageResult
 
 public class L95xxResult : ImageResult
 {
-    [SQLite.Ignore][JsonIgnore] public List<Lvs95xx.lib.Core.Models.Setting> _Settings { get => !string.IsNullOrEmpty(Template) ? JsonConvert.DeserializeObject<List<Lvs95xx.lib.Core.Models.Setting>>(Template) : null; set => Template = JsonConvert.SerializeObject(value); }
-    [SQLite.Ignore][JsonIgnore] public List<Lvs95xx.lib.Core.Controllers.FullReport> _Report { get => !string.IsNullOrEmpty(Report) ? JsonConvert.DeserializeObject<List<Lvs95xx.lib.Core.Controllers.FullReport>>(Report) : null; set => Report = JsonConvert.SerializeObject(value); }
+    [SQLite.Ignore][JsonIgnore] public List<FullReport> _AllSectors { get => !string.IsNullOrEmpty(Report) ? JsonConvert.DeserializeObject<List<FullReport>>(Report) : null; set => Report = JsonConvert.SerializeObject(value); }
 }

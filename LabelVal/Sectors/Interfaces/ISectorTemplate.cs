@@ -1,10 +1,11 @@
 ﻿using LabelVal.Sectors.Classes;
+using Newtonsoft.Json.Linq;
 using System.Drawing;
 
 namespace LabelVal.Sectors.Interfaces;
 public interface ISectorTemplate
 {
-    object Original { get; set; }
+    JObject Original { get; set; }
     string Name { get; set; }
     string Username { get; set; }
 

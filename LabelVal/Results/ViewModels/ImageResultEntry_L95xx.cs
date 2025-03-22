@@ -1,23 +1,19 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using BarcodeVerification.lib.Common;
+using BarcodeVerification.lib.Extensions;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.LVS_95xx.Sectors;
-using LabelVal.Sectors.Interfaces;
-using LabelVal.Utilities;
-using LibImageUtilities.ImageTypes.Png;
-using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Windows.Media;
-using CommunityToolkit.Mvvm.Input;
-using Lvs95xx.lib.Core.Controllers;
-using System.Threading.Tasks;
 using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Extensions;
-using BarcodeVerification.lib.Common;
-using BarcodeVerification.lib.Extensions;
+using LabelVal.Sectors.Interfaces;
+using Lvs95xx.lib.Core.Controllers;
+using Newtonsoft.Json;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace LabelVal.Results.ViewModels;
 public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullReport>>
@@ -61,13 +57,13 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
     public void Receive(PropertyChangedMessage<FullReport> message)
     {
         if (IsL95xxSelected || IsL95xxWorking)
-            App.Current.Dispatcher.BeginInvoke(() => L95xxProcessResults(message.NewValue, false));
+            _ = App.Current.Dispatcher.BeginInvoke(() => L95xxProcessResults(message.NewValue, false));
     }
 
     [RelayCommand]
     private void L95xxProcess(ImageResultEntryImageTypes imageType)
     {
-        var lab = new Lvs95xx.lib.Core.Controllers.Label
+        Label lab = new()
         {
             Config = new Lvs95xx.lib.Core.Controllers.Config()
             {
@@ -87,7 +83,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
         IsL95xxWorking = true;
         IsL95xxFaulted = false;
 
-        Task.Run(() => ImageResults.SelectedVerifier.Controller.ProcessLabelAsync(lab));
+        _ = Task.Run(() => ImageResults.SelectedVerifier.Controller.ProcessLabelAsync(lab));
     }
 
     public static void SortObservableCollectionByList(List<ISector> list, ObservableCollection<ISector> observableCollection)
@@ -121,23 +117,23 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
 
         try
         {
-            var row = SelectedDatabase.Select_L95xxResult(ImageRollUID, SourceImageUID, ImageRollUID);
+            Databases.L95xxResult row = SelectedDatabase.Select_L95xxResult(ImageRollUID, SourceImageUID, ImageRollUID);
 
             if (row == null)
             {
                 L95xxResultRow = null;
                 return;
             }
-        
+
             List<Sectors.Interfaces.ISector> tempSectors = [];
-            foreach (var rSec in row._Report)
-                tempSectors.Add(new Sector(rSec, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
+            foreach (FullReport rSec in row._AllSectors)
+                tempSectors.Add(new Sector(rSec.Template, rSec.Report, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
 
             if (tempSectors.Count > 0)
             {
                 tempSectors = SortList3(tempSectors);
 
-                foreach (var sec in tempSectors)
+                foreach (ISector sec in tempSectors)
                     L95xxStoredSectors.Add(sec);
             }
 
@@ -154,58 +150,65 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
 
     public void L95xxProcessResults(FullReport message, bool replaceSectors)
     {
-        if(!App.Current.Dispatcher.CheckAccess())
+        if (!App.Current.Dispatcher.CheckAccess())
         {
-            App.Current.Dispatcher.BeginInvoke(() => L95xxProcessResults(message, replaceSectors));
+            _ = App.Current.Dispatcher.BeginInvoke(() => L95xxProcessResults(message, replaceSectors));
             return;
         }
 
-        if (message == null || message.Report == null || message.Report.OverallGrade.StartsWith("Bar"))
+        if (message == null || message.Report == null)// || message.Report.OverallGrade.StartsWith("Bar"))
         {
             IsL95xxFaulted = true;
             IsL95xxWorking = false;
             return;
         }
 
-        var center = new System.Drawing.Point(message.Report.X1 + (message.Report.SizeX / 2), message.Report.Y1 + (message.Report.SizeY / 2));
+        System.Drawing.Point center = new(message.Template.GetParameter<int>("Report.X1") + (message.Template.GetParameter<int>("Report.SizeX") / 2), message.Template.GetParameter<int>("Report.Y1") + (message.Template.GetParameter<int>("Report.SizeY") / 2));
 
         string name = null;
 
-        foreach (var sec in L95xxStoredSectors)
+        foreach (ISector sec in L95xxStoredSectors)
             if (center.FallsWithin(sec))
                 name = sec.Template.Username;
 
         if (name == null)
-            foreach (var sec in V275StoredSectors)
+            foreach (ISector sec in V275StoredSectors)
                 if (center.FallsWithin(sec))
                     name = sec.Template.Username;
 
         if (name == null)
-            foreach (var sec in V5StoredSectors)
+            foreach (ISector sec in V5StoredSectors)
                 if (center.FallsWithin(sec))
                     name = sec.Template.Username;
 
         name ??= $"Verify_{L95xxCurrentSectors.Count + 1}";
 
-        message.Name = name;
+        message.Template.SetParameter<string>("Name", name);
 
-        if(replaceSectors)
+        if (replaceSectors)
             L95xxCurrentSectors.Clear();
 
-        L95xxCurrentSectors.Add(new Sector(message, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
+        L95xxCurrentSectors.Add(new Sector(message.Template, message.Report, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
         List<ISector> secs = L95xxCurrentSectors.ToList();
         secs = SortList3(secs);
         SortObservableCollectionByList(secs, L95xxCurrentSectors);
 
         L95xxGetSectorDiff();
 
-        L95xxCurrentImage = new ImageEntry(ImageRollUID, LibImageUtilities.ImageTypes.Png.Utilities.GetPng(message.Image), 600);
-        UpdateL95xxCurrentImageOverlay();  
-        
+        L95xxCurrentImage = new ImageEntry(ImageRollUID, LibImageUtilities.ImageTypes.Png.Utilities.GetPng(message.Template.GetParameter<byte[]>("Report.Thumbnail")), 600);
+        UpdateL95xxCurrentImageOverlay();
+
         IsL95xxWorking = false;
     }
-    public void UpdateL95xxStoredImageOverlay() => L95xxStoredImageOverlay = CreateSectorsImageOverlay(L95xxStoredImage, L95xxStoredSectors);
-    public void UpdateL95xxCurrentImageOverlay() => L95xxCurrentImageOverlay = CreateSectorsImageOverlay(L95xxCurrentImage, L95xxCurrentSectors);
+    public void UpdateL95xxStoredImageOverlay()
+    {
+        L95xxStoredImageOverlay = CreateSectorsImageOverlay(L95xxStoredImage, L95xxStoredSectors);
+    }
+
+    public void UpdateL95xxCurrentImageOverlay()
+    {
+        L95xxCurrentImageOverlay = CreateSectorsImageOverlay(L95xxCurrentImage, L95xxCurrentSectors);
+    }
 
     private void L95xxGetSectorDiff()
     {
@@ -221,8 +224,8 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
                 {
                     if (sec.Report.SymbolType == cSec.Report.SymbolType)
                     {
-                        var res = sec.SectorDetails.Compare(cSec.SectorDetails);
-                        if(res == null)
+                        SectorDifferences res = sec.SectorDetails.Compare(cSec.SectorDetails);
+                        if (res == null)
                             continue;
                         diff.Add(res);
                         continue;
@@ -289,7 +292,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
 
         foreach (SectorDifferences d in diff)
 
-                L95xxDiffSectors.Add(d);
+            L95xxDiffSectors.Add(d);
     }
     //public int L95xxLoadTask()
     //{

@@ -8,6 +8,7 @@ using LabelVal.Sectors.Extensions;
 using LabelVal.Sectors.Interfaces;
 using Lvs95xx.lib.Core.Controllers;
 using Lvs95xx.lib.Core.Models;
+using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Drawing;
 
@@ -15,7 +16,7 @@ namespace LabelVal.LVS_95xx.Sectors;
 
 public class SectorReport : ISectorReport
 {
-    public object Original { get; private set; }
+    public JObject Original { get; private set; }
 
     public AvailableStandards Standard { get; private set; }
     public AvailableTables GS1Table { get; private set; }
@@ -55,32 +56,32 @@ public class SectorReport : ISectorReport
 
     public ObservableCollection<IParameterValue> Parameters { get; } = [];
 
-    public SectorReport(FullReport report)
+    public SectorReport(JObject report, ISectorTemplate template)
     {
         Original = report;
 
-        if (report.Report == null || report.ReportData == null)
+        if (report == null)
         {
             Logger.LogError($"Report or ReportData is null. {Device}");
             return;
         }
 
-        Top = report.Report.Y1;
-        Left = report.Report.X1;
-        Width = report.Report.SizeX;
-        Height = report.Report.SizeY;
-        AngleDeg = 0;
+        Top = template.Top;
+        Left = template.Left;
+        Width = template.Width;
+        Height = template.Height;
+        AngleDeg = template.AngleDeg;
 
         CenterPoint = new Point((int)(Left + (Width / 2)), (int)(Top + (Height / 2)));
 
-        _ = SetSymbologyAndRegionType(report.ReportData);
+        _ = SetSymbologyAndRegionType(report);
 
-        DecodeText = report.ReportData.GetParameter(AvailableParameters.DecodeText, Device, SymbolType);
+        DecodeText = report.GetParameter<string>(AvailableParameters.DecodeText, Device, SymbolType);
 
-        _ = SetStandardAndTable(report.ReportData);
-        _ = SetXdimAndUnits(report.ReportData);
-        _ = SetApeture(report.ReportData);
-        _ = SetOverallGrade(report.ReportData);
+        _ = SetStandardAndTable(report);
+        _ = SetXdimAndUnits(report);
+        _ = SetApeture(report);
+        _ = SetOverallGrade(report);
 
         //foreach (AvailableParameters parameter in Params.CommonParameters)
         //{
@@ -94,16 +95,16 @@ public class SectorReport : ISectorReport
         //    }
         //}
     }
-    private bool SetSymbologyAndRegionType(List<ReportData> report)
+    private bool SetSymbologyAndRegionType(JObject report)
     {
-        string sym = report.GetParameter(AvailableParameters.Symbology, Device, AvailableSymbologies.Unknown);
+        string sym = report.GetParameter<string>(AvailableParameters.Symbology, Device, AvailableSymbologies.Unknown);
         if (sym == null)
         {
             Logger.LogError($"Could not find: '{AvailableParameters.Symbology.GetParameterPath(AvailableDevices.L95, AvailableSymbologies.Unknown)}' in ReportData. {Device}");
             return false;
         }
 
-        string dataBarType = report.GetParameter(AvailableParameters.DataBarType, Device, AvailableSymbologies.Unknown);
+        string dataBarType = report.GetParameter<string>(AvailableParameters.DataBarType, Device, AvailableSymbologies.Unknown);
         if (dataBarType != null)
             sym = $"DataBar {dataBarType}";
 
@@ -121,13 +122,13 @@ public class SectorReport : ISectorReport
         return true;
     }
 
-    private void AddParameter(AvailableParameters parameter, AvailableSymbologies theSymbology, ObservableCollection<IParameterValue> target, FullReport report)
+    private void AddParameter(AvailableParameters parameter, AvailableSymbologies theSymbology, ObservableCollection<IParameterValue> target, JObject report)
     {
         Type type = parameter.GetParameterDataType(Device, theSymbology);
 
         if (type == typeof(GradeValue))
         {
-            GradeValue gradeValue = GetGradeValue(parameter, report.ReportData.GetParameter(parameter.GetParameterPath(Device, SymbolType)));
+            GradeValue gradeValue = GetGradeValue(parameter, report.GetParameter<string>(parameter.GetParameterPath(Device, SymbolType)));
 
             if (gradeValue != null)
             {
@@ -137,7 +138,7 @@ public class SectorReport : ISectorReport
         }
         else if (type == typeof(Grade))
         {
-            Grade grade = GetGrade(parameter, report.ReportData.GetParameter(parameter.GetParameterPath(Device, SymbolType)));
+            Grade grade = GetGrade(parameter, report.GetParameter<string>(parameter.GetParameterPath(Device, SymbolType)));
 
             if (grade != null)
             {
@@ -147,7 +148,7 @@ public class SectorReport : ISectorReport
         }
         else if (type == typeof(ValueDouble))
         {
-            ValueDouble valueDouble = GetValueDouble(parameter, report.ReportData.GetParameter(parameter.GetParameterPath(Device, SymbolType)));
+            ValueDouble valueDouble = GetValueDouble(parameter, report.GetParameter<string>(parameter.GetParameterPath(Device, SymbolType)));
             if (valueDouble != null)
             {
                 target.Add(valueDouble);
@@ -156,7 +157,7 @@ public class SectorReport : ISectorReport
         }
         else if (type == typeof(ValueString))
         {
-            ValueString valueString = GetValueString(parameter, report.ReportData.GetParameter(parameter.GetParameterPath(Device, SymbolType)));
+            ValueString valueString = GetValueString(parameter, report.GetParameter<string>(parameter.GetParameterPath(Device, SymbolType)));
             if (valueString != null)
             {
                 target.Add(valueString); 
@@ -165,7 +166,7 @@ public class SectorReport : ISectorReport
         }
         else if (type == typeof(PassFail))
         {
-            PassFail passFail = GetPassFail(parameter, report.ReportData.GetParameter(parameter.GetParameterPath(Device, SymbolType)));
+            PassFail passFail = GetPassFail(parameter, report.GetParameter<string>(parameter.GetParameterPath(Device, SymbolType)));
             if (passFail != null) { target.Add(passFail); return; }
         }
         else if (type == typeof(Custom))
@@ -180,9 +181,9 @@ public class SectorReport : ISectorReport
 
 
 
-    private bool SetOverallGrade(List<ReportData> report)
+    private bool SetOverallGrade(JObject report)
     {
-        string overall = report.GetParameter(AvailableParameters.OverallGrade, Device, SymbolType);
+        string overall = report.GetParameter<string>(AvailableParameters.OverallGrade, Device, SymbolType);
         if (overall != null)
             OverallGrade = GetOverallGrade(overall);
         else
@@ -193,10 +194,10 @@ public class SectorReport : ISectorReport
         return true;
     }
 
-    private bool SetStandardAndTable(List<ReportData> report)
+    private bool SetStandardAndTable(JObject report)
     {
-        string stdString = report.GetParameter(AvailableParameters.Standard, Device, SymbolType);
-        string tblString = report.GetParameter(AvailableParameters.GS1Table, Device, SymbolType);
+        string stdString = report.GetParameter<string>(AvailableParameters.Standard, Device, SymbolType);
+        string tblString = report.GetParameter<string>(AvailableParameters.GS1Table, Device, SymbolType);
 
         if (stdString == null)
         {
@@ -219,8 +220,8 @@ public class SectorReport : ISectorReport
             return true;
         }
 
-        string data = report.GetParameter(AvailableParameters.GS1Data, Device, SymbolType);
-        string pass = report.GetParameter(AvailableParameters.GS1DataStructure, Device, SymbolType);
+        string data = report.GetParameter<string>(AvailableParameters.GS1Data, Device, SymbolType);
+        string pass = report.GetParameter<string>(AvailableParameters.GS1DataStructure, Device, SymbolType);
 
         List<string> list = [];
         if (!string.IsNullOrEmpty(data))
@@ -233,10 +234,10 @@ public class SectorReport : ISectorReport
         return true;
     }
 
-    private bool SetXdimAndUnits(List<ReportData> report)
+    private bool SetXdimAndUnits(JObject report)
     {
-        string xdim = report.GetParameter(AvailableParameters.CellSize, Device, SymbolType);
-        xdim ??= report.GetParameter(AvailableParameters.Xdim, Device, SymbolType);
+        string xdim = report.GetParameter<string>(AvailableParameters.CellSize, Device, SymbolType);
+        xdim ??= report.GetParameter<string>(AvailableParameters.Xdim, Device, SymbolType);
         if (xdim == null)
         {
             Logger.LogWarning($"Could not find: '{AvailableParameters.CellSize.GetParameterPath(AvailableDevices.L95, SymbolType)}' or '{AvailableParameters.Xdim.GetParameterPath(AvailableDevices.L95, SymbolType)}' in ReportData. {Device}");
@@ -261,9 +262,9 @@ public class SectorReport : ISectorReport
         return true;
     }
 
-    private bool SetApeture(List<ReportData> report)
+    private bool SetApeture(JObject report)
     {
-        string aperture = report.GetParameter(AvailableParameters.Aperture, Device, SymbolType);
+        string aperture = report.GetParameter<string>(AvailableParameters.Aperture, Device, SymbolType);
         if (aperture != null)
         {
             //GetParameter returns: Reference number 12 (12 mil)

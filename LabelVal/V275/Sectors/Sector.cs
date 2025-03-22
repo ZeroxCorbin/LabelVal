@@ -83,12 +83,11 @@ public partial class Sector : ObservableObject, ISector
     public Sector(JObject template, JObject report, AvailableStandards standard, AvailableTables table, string version)
     {
         Version = version;
-        Template = new SectorTemplate(template, version);
-        Report = new SectorReport(report, Template);
-
         DesiredStandard = standard;
         DesiredGS1Table = table;
-
+       
+        Template = new SectorTemplate(template, version);
+        Report = new SectorReport(report, Template);
         SectorDetails = new SectorDetails(this);
 
         foreach (Alarm alm in SectorDetails.Alarms)

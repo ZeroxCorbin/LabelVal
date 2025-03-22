@@ -6,6 +6,7 @@ using LabelVal.Sectors.Extensions;
 using LabelVal.Sectors.Views;
 using LibImageUtilities.ImageTypes;
 using MahApps.Metro.Controls.Dialogs;
+using Newtonsoft.Json.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -20,6 +21,7 @@ namespace LabelVal.Results.Views;
 /// </summary>
 public partial class ImageResultEntry_L95xx : UserControl
 {
+    private ViewModels.ImageResultEntry _resultEntry => (ViewModels.ImageResultEntry)DataContext;
     public ImageResultEntry_L95xx() => InitializeComponent();
 
     private void btnCloseDetails_Click(object sender, RoutedEventArgs e)
@@ -99,14 +101,10 @@ public partial class ImageResultEntry_L95xx : UserControl
     {
         if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
         {
-            if (((ViewModels.ImageResultEntry)DataContext).L95xxResultRow != null)
+            if (_resultEntry.L95xxResultRow != null)
             {
-                //PopupJSONViewer pop = new();
-                //pop.Viewer1.JSON = ((ViewModels.ImageResultEntry)DataContext).L95xxResultRow.Report;
-                //pop.Viewer1.Title = "Report";
-
-                //pop.Popup.PlacementTarget = (Button)sender;
-                //pop.Popup.IsOpen = true;
+                _resultEntry.ImageResults.FocusedTemplate = JObject.FromObject(_resultEntry.L95xxResultRow.Template);
+                _resultEntry.ImageResults.FocusedReport = JObject.FromObject(_resultEntry.L95xxResultRow.Report);
             }
         }
         else
@@ -124,12 +122,10 @@ public partial class ImageResultEntry_L95xx : UserControl
     {
         if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
         {
-            //PopupJSONViewer pop = new();
-            //pop.Viewer1.JSON = ((ViewModels.ImageResultEntry)DataContext).L95xxResultRow.Report;
-            //pop.Viewer1.Title = "Report";
-
-            //pop.Popup.PlacementTarget = (Button)sender;
-            //pop.Popup.IsOpen = true;
+            if (_resultEntry.L95xxCurrentReport != null)
+            {
+                _resultEntry.ImageResults.FocusedTemplate = JObject.FromObject(_resultEntry.L95xxCurrentReport);
+            }
         }
         else
         {

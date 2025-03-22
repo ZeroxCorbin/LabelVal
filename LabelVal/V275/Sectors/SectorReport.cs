@@ -15,7 +15,7 @@ namespace LabelVal.V275.Sectors;
 
 public class SectorReport : ISectorReport
 {
-    public object Original { get; private set; }
+    public JObject Original { get; private set; }
 
     public AvailableDevices Device => AvailableDevices.V275;
     public AvailableRegionTypes RegionType { get; private set; }
@@ -63,6 +63,7 @@ public class SectorReport : ISectorReport
         Left = report.GetParameter<double>("left");
         Width = report.GetParameter<double>("width");
         Height = report.GetParameter<double>("height");
+        AngleDeg = report.GetParameter<double>("angle");
 
         CenterPoint = new System.Drawing.Point((int)(Left + (Width / 2)), (int)(Top + (Height / 2)));
 

@@ -15,6 +15,8 @@ using System.Collections.ObjectModel;
 using System.Drawing.Printing;
 using System.Threading.Tasks;
 using System.Windows;
+using Newtonsoft.Json.Linq;
+using BarcodeVerification.lib.Extensions;
 
 namespace LabelVal.Results.ViewModels;
 public partial class ImageResults : ObservableRecipient,
@@ -45,6 +47,10 @@ public partial class ImageResults : ObservableRecipient,
     partial void OnHideErrorsWarningsChanged(bool value) => App.Settings.SetValue(nameof(HideErrorsWarnings), value);
 
     public ObservableCollection<ImageResultEntry> ImageResultsList { get; } = [];
+
+
+    [ObservableProperty] private JObject focusedTemplate;
+    [ObservableProperty] private JObject focusedReport;
 
     [ObservableProperty] private Node selectedNode;
     [ObservableProperty] private ImageRollEntry selectedImageRoll;
@@ -170,9 +176,7 @@ public partial class ImageResults : ObservableRecipient,
                 Logger.LogError("Could not delete image from database.");
                 return;
             }
-            _ = ImageResultsList.Remove(itm);
-            
-                
+            _ = ImageResultsList.Remove(itm);   
         }
 
         // Reorder the remaining items in the list
@@ -309,13 +313,13 @@ public partial class ImageResults : ObservableRecipient,
         if (message == null || message.Report == null)
             return;
 
-        if (message.Report.OverallGrade.StartsWith("Bar"))
-            return;
+        //if (message.Report.OverallGrade.StartsWith("Bar"))
+        //    return;
 
-        message.Name = "Verify_1";
+        message.Template.SetParameter<string>("Name", "Verify_1");
 
         // byte[] bees = BitmapImageUtilities.ImageToBytes(BitmapImageUtilities.CreateRandomBitmapImage(50, 50));
-        ImageEntry imagEntry = SelectedImageRoll.GetNewImageEntry(message.Image);
+        ImageEntry imagEntry = SelectedImageRoll.GetNewImageEntry(message.Template.GetParameter<byte[]>("Report.Thumbnail"));
         if (imagEntry == null)
             return;
         imagEntry.NewData = message;

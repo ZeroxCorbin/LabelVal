@@ -7,7 +7,7 @@ namespace LabelVal.V275.Sectors;
 
 public class SectorTemplate : ISectorTemplate
 {
-    public object Original { get; set; }
+    public JObject Original { get; set; }
 
     public string Name { get; set; }
     public string Username { get; set; }
@@ -26,11 +26,12 @@ public class SectorTemplate : ISectorTemplate
 
     public SectorTemplate(JObject template, string version)
     {  
-        
+        Version = version;
         Original = template;
 
-        Version = version;
-
+        if(Original == null)
+            return;
+        
         Name = template.GetParameter<string>("name");
         Username = template.GetParameter<string>("username");
 

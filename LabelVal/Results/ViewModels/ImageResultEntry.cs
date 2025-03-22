@@ -13,6 +13,7 @@ using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Drawing.Printing;
@@ -320,9 +321,9 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             //Save the list to the database.
             List<FullReport> temp = [];
             if (L95xxResultRow != null)
-                temp = L95xxResultRow._Report;
+                temp = L95xxResultRow._AllSectors;
 
-            temp.Add(((LVS_95xx.Sectors.Sector)L95xxCurrentSectorSelected).L95xxFullReport);
+            temp.Add(new FullReport(((LVS_95xx.Sectors.Sector)L95xxCurrentSectorSelected).Template.Original, ((LVS_95xx.Sectors.Sector)L95xxCurrentSectorSelected).Report.Original));
 
             _ = SelectedDatabase.InsertOrReplace_L95xxResult(new Databases.L95xxResult
             {
@@ -331,8 +332,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
                 Source = SourceImage,
                 Stored = L95xxCurrentImage,
 
-                _Settings = ((LVS_95xx.Sectors.Sector)L95xxCurrentSectorSelected).L95xxFullReport.Settings,
-                _Report = temp,
+                _AllSectors = temp,
             });
 
             ClearRead(device);
@@ -356,12 +356,10 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
 
             //Save the list to the database.
             List<FullReport> temp = [];
-            List<Setting> tempSettings = [];
             foreach (Sectors.Interfaces.ISector sector in L95xxCurrentSectors)
-            {
-                temp.Add(((LVS_95xx.Sectors.Sector)sector).L95xxFullReport);
-                tempSettings = ((LVS_95xx.Sectors.Sector)sector).L95xxFullReport.Settings;
-            }
+            
+                temp.Add(new FullReport(((LVS_95xx.Sectors.Sector)sector).Template.Original, ((LVS_95xx.Sectors.Sector)sector).Report.Original));
+            
 
             _ = SelectedDatabase.InsertOrReplace_L95xxResult(new Databases.L95xxResult
             {
@@ -370,8 +368,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
                 Source = SourceImage,
                 Stored = L95xxCurrentImage,
 
-                _Settings = tempSettings,
-                _Report = temp,
+                _AllSectors = temp,
             });
 
             ClearRead(device);

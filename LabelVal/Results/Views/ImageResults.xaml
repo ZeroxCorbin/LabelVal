@@ -12,6 +12,7 @@
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:sectors="clr-namespace:LabelVal.Sectors.Classes"
     xmlns:system="clr-namespace:System;assembly=mscorlib"
+    xmlns:json="clr-namespace:JSONViewer_WPF;assembly=JSONViewer_WPF"
     xmlns:viewModels="clr-namespace:LabelVal.Results.ViewModels"
     d:DataContext="{d:DesignInstance Type=viewModels:ImageResults}"
     mc:Ignorable="d">
@@ -392,11 +393,6 @@
                             <Button.Style>
                                 <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
                                     <Setter Property="Visibility" Value="Visible" />
-                                    <!--<Style.Triggers>
-                                        <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
-                                            <Setter Property="Visibility" Value="Collapsed" />
-                                        </DataTrigger>
-                                    </Style.Triggers>-->
                                 </Style>
                             </Button.Style>
                         </Button>
@@ -415,11 +411,6 @@
                             <Button.Style>
                                 <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
                                     <Setter Property="Visibility" Value="Visible" />
-                                    <!--<Style.Triggers>
-                                        <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
-                                            <Setter Property="Visibility" Value="Collapsed" />
-                                        </DataTrigger>
-                                    </Style.Triggers>-->
                                 </Style>
                             </Button.Style>
                         </Button>
@@ -434,9 +425,53 @@
             <Border Style="{StaticResource groupLeft}" />
             <Border Style="{StaticResource groupBottom}" />
 
-            <md:DrawerHost>
-                <md:DrawerHost.RightDrawerContent>
-                    <local:PopupJSONViewer />
+            <md:DrawerHost OpenMode="Standard">
+                <md:DrawerHost.Style>
+                    <Style TargetType="md:DrawerHost">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding FocusedTemplate, Converter={StaticResource IsNullOrEmpty}}" Value="False">
+                                <Setter Property="IsRightDrawerOpen" Value="True" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding FocusedReport, Converter={StaticResource IsNullOrEmpty}}" Value="False">
+                                <Setter Property="IsRightDrawerOpen" Value="True" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </md:DrawerHost.Style>
+                <md:DrawerHost.RightDrawerContent >
+                    <DockPanel MinWidth="600">  
+                        
+                        <DockPanel>
+                            <DockPanel.Style>
+                                <Style TargetType="DockPanel">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding FocusedTemplate, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DockPanel.Style>
+
+                            <json:JsonViewer JSON="{Binding FocusedTemplate}" ShowSaveButton="True" MinWidth="300"/>
+
+                        </DockPanel>
+                        <DockPanel>
+                            <DockPanel.Style>
+                                <Style TargetType="DockPanel">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding FocusedReport, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DockPanel.Style>
+                            <json:JsonViewer JSON="{Binding FocusedReport}" ShowSaveButton="True" MinWidth="300"/>
+                        </DockPanel>
+
+
+                    </DockPanel>
                 </md:DrawerHost.RightDrawerContent>
                 <ScrollViewer
                     Margin="0"

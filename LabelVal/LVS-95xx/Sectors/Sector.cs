@@ -1,17 +1,17 @@
 ﻿using BarcodeVerification.lib.Common;
 using BarcodeVerification.lib.GS1;
+using BarcodeVerification.lib.Extensions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LabelVal.Sectors.Extensions;
 using LabelVal.Sectors.Interfaces;
-using Lvs95xx.lib.Core.Controllers;
+
+using Newtonsoft.Json.Linq;
 
 namespace LabelVal.LVS_95xx.Sectors;
 
 public partial class Sector : ObservableObject, ISector
 {
-    public FullReport L95xxFullReport { get; }
-
     public AvailableDevices Device { get; } = AvailableDevices.L95;
     public string Version { get; }
 
@@ -82,17 +82,15 @@ public partial class Sector : ObservableObject, ISector
     public bool IsFocused { get; set; }
     public bool IsMouseOver { get; set; }
 
-    public Sector(FullReport report, AvailableStandards standard, AvailableTables table)
+    public Sector(JObject template, JObject report, AvailableStandards standard, AvailableTables table)
     {
-        L95xxFullReport = report;
-
-        Version = (string)report.GetSetting("Version");
+        Version = template.GetParameter<string>("Settings[SettingName:Version]");
         //Standard and GS1Table are set in the Report constructor.
         DesiredStandard = standard;
         DesiredGS1Table = table;
 
-        Template = new SectorTemplate(report, Version);
-        Report = new SectorReport(report);
+        Template = new SectorTemplate(template, Version);
+        Report = new SectorReport(report, Template);
 
         SectorDetails = new SectorParameters(this);
 

@@ -1,45 +1,52 @@
-﻿<UserControl x:Class="LabelVal.Results.Views.PopupJSONViewer"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:LabelVal.Results.Views"
-             xmlns:md="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
-                xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-             xmlns:json="clr-namespace:JSONViewer_WPF;assembly=JSONViewer_WPF"
-             mc:Ignorable="d">
+﻿<UserControl
+    x:Class="LabelVal.Results.Views.PopupJSONViewer"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:json="clr-namespace:JSONViewer_WPF;assembly=JSONViewer_WPF"
+    xmlns:local="clr-namespace:LabelVal.Results.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:md="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
+    mc:Ignorable="d">
 
     <!--<Popup x:Name="Popup" StaysOpen="True" >-->
 
-        <DockPanel>
+    <DockPanel>
 
-            <!--<Button DockPanel.Dock="Top" Click="btnClose" ToolTip="Close" Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" 
+        <!--<Button DockPanel.Dock="Top" Click="btnClose" ToolTip="Close" Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                                 HorizontalAlignment="Right" Padding="8,0" Height="28"
                                 Content="{iconPacks:Material Kind=Close}"/>-->
 
+        <DockPanel>
+
+            <json:JsonViewer
+                x:Name="Viewer1"
+                MinWidth="300"
+                ShowSaveButton="True" />
+
             <DockPanel>
+                <DockPanel.Style>
+                    <Style TargetType="DockPanel">
+                        <Setter Property="Visibility" Value="Visible" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=Viewer2, Path=JSON}" Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DockPanel.Style>
 
-                <json:JsonViewer x:Name="Viewer1" ShowSaveButton="True" MinWidth="300"/>
-
-                <DockPanel>
-                    <DockPanel.Style>
-                        <Style TargetType="DockPanel">
-                            <Setter Property="Visibility" Value="Visible"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding ElementName=Viewer2, Path=JSON}" Value="{x:Null}">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DockPanel.Style>
-
-                    <json:JsonViewer x:Name="Viewer2" ShowSaveButton="True" MinWidth="300"/>
-                    
-                </DockPanel>
+                <json:JsonViewer
+                    x:Name="Viewer2"
+                    MinWidth="300"
+                    ShowSaveButton="True" />
 
             </DockPanel>
 
         </DockPanel>
+
+    </DockPanel>
     <!--</Popup>-->
 </UserControl>

@@ -17,7 +17,11 @@ namespace LabelVal.Results.Views;
 /// </summary>
 public partial class ImageResultEntry_V275 : UserControl
 {
-    public ImageResultEntry_V275() => InitializeComponent();
+    private ViewModels.ImageResultEntry _resultEntry => (ViewModels.ImageResultEntry)DataContext;
+    public ImageResultEntry_V275()
+    {
+        InitializeComponent();
+    }
 
     private void btnCloseDetails_Click(object sender, RoutedEventArgs e)
     {
@@ -98,14 +102,8 @@ public partial class ImageResultEntry_V275 : UserControl
         {
             if (((ViewModels.ImageResultEntry)DataContext).V275ResultRow != null)
             {
-                //PopupJSONViewer pop = new();
-                //pop.Viewer1.JSON = ((ViewModels.ImageResultEntry)DataContext).V275ResultRow.Template;
-                //pop.Viewer1.Title = "Template";
-                //pop.Viewer2.JSON = ((ViewModels.ImageResultEntry)DataContext).V275ResultRow.Report;
-                //pop.Viewer2.Title = "Report";
-
-                //pop.Popup.PlacementTarget = ScrollV275StoredSectors;
-                //pop.Popup.IsOpen = true;
+                _resultEntry.ImageResults.FocusedTemplate = _resultEntry.V275ResultRow._Job;
+                _resultEntry.ImageResults.FocusedReport = _resultEntry.V275ResultRow._Report;
             }
         }
         else
@@ -123,14 +121,8 @@ public partial class ImageResultEntry_V275 : UserControl
     {
         if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
         {
-            //PopupJSONViewer pop = new();
-            //pop.Viewer1.JSON = ((ViewModels.ImageResultEntry)DataContext).V275CurrentTemplate;
-            //pop.Viewer1.Title = "Template";
-            //pop.Viewer2.JSON = ((ViewModels.ImageResultEntry)DataContext).V275CurrentReport;
-            //pop.Viewer2.Title = "Report";
-
-            //pop.Popup.PlacementTarget = (Button)sender;
-            //pop.Popup.IsOpen = true;
+            _resultEntry.ImageResults.FocusedTemplate = _resultEntry.V275CurrentTemplate;
+            _resultEntry.ImageResults.FocusedReport = _resultEntry.V275CurrentReport;
         }
         else
         {

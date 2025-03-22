@@ -498,7 +498,7 @@ public partial class Controller : ObservableObject
         }
 
         l95.Report = JsonConvert.SerializeObject(res.Report);
-        l95.StoredImage = JsonConvert.SerializeObject(new ImageEntry(ire.ImageRollUID, res.Image, 0));
+        l95.StoredImage = JsonConvert.SerializeObject(new ImageEntry(ire.ImageRollUID, res.Template.GetParameter<byte[]>("Report.Thumbnail"), 0));
 
         if (UpdateUI)
             _ = App.Current.Dispatcher.BeginInvoke(() => ire.L95xxProcessResults(res, true));

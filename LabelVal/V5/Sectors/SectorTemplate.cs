@@ -7,7 +7,7 @@ namespace LabelVal.V5.Sectors;
 
 public class SectorTemplate : ISectorTemplate
 {
-    public object Original { get; set; }
+    public JObject Original { get; set; }
 
     public string Name { get; set; }
     public string Username { get; set; }

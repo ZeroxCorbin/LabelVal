@@ -1,13 +1,13 @@
 ﻿using LabelVal.Sectors.Interfaces;
-using V5_REST_Lib.Models;
-using Lvs95xx.lib.Core.Controllers;
+using BarcodeVerification.lib.Extensions;
 using LabelVal.Sectors.Classes;
+using Newtonsoft.Json.Linq;
 
 namespace LabelVal.LVS_95xx.Sectors
 {
     public class SectorTemplate : ISectorTemplate
     {
-        public object Original { get; set; }
+        public JObject Original { get; set; }
         public string Name { get; set; }
         public string Username { get; set; }
 
@@ -26,23 +26,22 @@ namespace LabelVal.LVS_95xx.Sectors
 
         public SectorTemplate() { }
 
-        public SectorTemplate(FullReport report, string version)
+        public SectorTemplate(JObject template, string version)
         {
-            if (report == null)
+            Version = version;
+            Original = template;
+
+            if (template == null)
                 return;
 
-            Original = report.Report;
+            Name = template.GetParameter<string>("Name");
+            Username = Name;
 
-            Version = version;
-            Name = report.Name;
-            Username = report.Name;
-
-            Top = report.Report.Y1;
-            Left = report.Report.X1;
-            Width = report.Report.SizeX;
-            Height = report.Report.SizeY;
+            Top = template.GetParameter<double>("Report.Y1");
+            Left = template.GetParameter<double>("Report.X1");
+            Width = template.GetParameter<double>("Report.SizeX");
+            Height = template.GetParameter<double>("Report.SizeY");
             AngleDeg = 0;
-
             Orientation = 0;
         }
     }

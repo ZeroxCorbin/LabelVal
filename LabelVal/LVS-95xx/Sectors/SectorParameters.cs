@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using LabelVal.Sectors.Extensions;
 using LabelVal.Sectors.Interfaces;
 using Lvs95xx.lib.Core.Controllers;
+using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 
 namespace LabelVal.LVS_95xx.Sectors;
@@ -36,7 +37,7 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
             return;
 
         Sector = sector;
-        FullReport report = sec.L95xxFullReport;
+
 
         //Get thew symbology enum
         AvailableSymbologies theSymbology = Sector.Report.SymbolType;
@@ -46,6 +47,9 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
 
         //Get the parameters list based on the region type.
         List<AvailableParameters> theParamters = Params.ParameterGroups[theRegionType][Sector.Report.Device];
+
+        JObject report = (JObject)Sector.Report.Original;
+        JObject template = (JObject)Sector.Template.Original;
 
         //Interate through the parameters
         foreach (AvailableParameters parameter in theParamters)
@@ -61,23 +65,23 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
         }
 
         //Check for alarms
-        List<string> alarms = report.ReportData.GetParameters("Warning");
+        var alarms = report.GetParameter<JArray>("Warning");
         if (alarms.Count > 0)
         {
-            foreach (string alarm in alarms)
+            foreach (var alarm in alarms)
             {
-                Alarms.Add(new Alarm(AvaailableAlarmCategories.Error, alarm));
+                Alarms.Add(new Alarm(AvaailableAlarmCategories.Error, alarm.ToString()));
             }
         }
     }
 
-    private void AddParameter(AvailableParameters parameter, AvailableSymbologies theSymbology, ObservableCollection<IParameterValue> target, FullReport report)
+    private void AddParameter(AvailableParameters parameter, AvailableSymbologies theSymbology, ObservableCollection<IParameterValue> target, JObject report)
     {
         Type type = parameter.GetParameterDataType(Sector.Report.Device, theSymbology);
 
         if (type == typeof(GradeValue) || type == typeof(Grade))
         {
-            IParameterValue gradeValue = GetGradeValueOrGrade(parameter, report.ReportData.GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
+            IParameterValue gradeValue = GetGradeValueOrGrade(parameter, report.GetParameter<string>(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
 
             if (gradeValue != null)
             {
@@ -87,7 +91,7 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
         }
         else if (type == typeof(ValueDouble))
         {
-            ValueDouble valueDouble = GetValueDouble(parameter, report.ReportData.GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
+            ValueDouble valueDouble = GetValueDouble(parameter, report.GetParameter<string>(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
             if (valueDouble != null)
             {
                 target.Add(valueDouble);
@@ -96,7 +100,7 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
         }
         else if (type == typeof(ValueString))
         {
-            ValueString valueString = GetValueString(parameter, report.ReportData.GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
+            ValueString valueString = GetValueString(parameter, report.GetParameter<string>(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
             if (valueString != null)
             {
                 target.Add(valueString); return;
@@ -104,7 +108,7 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
         }
         else if (type == typeof(PassFail))
         {
-            PassFail passFail = GetPassFail(parameter, report.ReportData.GetParameter(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
+            PassFail passFail = GetPassFail(parameter, report.GetParameter<string>(parameter.GetParameterPath(Sector.Report.Device, Sector.Report.SymbolType)));
             if (passFail != null) { target.Add(passFail); return; }
         }
         else if (type == typeof(Custom))

@@ -59,14 +59,7 @@ public partial class RunResult_V275 : UserControl
         {
             if (((ViewModels.RunResult)DataContext).StoredImageResultGroup.V275Result != null)
             {
-                PopupJSONViewer pop = new();
-                pop.Viewer1.JSON = ((ViewModels.RunResult)DataContext).StoredImageResultGroup.V275Result.Template;
-                pop.Viewer1.Title = "Template";
-                pop.Viewer2.JSON = ((ViewModels.RunResult)DataContext).StoredImageResultGroup.V275Result.Report;
-                pop.Viewer2.Title = "Report";
 
-                pop.Popup.PlacementTarget = (Button)sender;
-                pop.Popup.IsOpen = true;
             }
         }
         else
@@ -84,14 +77,14 @@ public partial class RunResult_V275 : UserControl
     {
         if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
         {
-            PopupJSONViewer pop = new();
-            pop.Viewer1.JSON = ((ViewModels.RunResult)DataContext).CurrentImageResultGroup.V275Result.Template;
-            pop.Viewer1.Title = "Template";
-            pop.Viewer2.JSON = ((ViewModels.RunResult)DataContext).CurrentImageResultGroup.V275Result.Report;
-            pop.Viewer2.Title = "Report";
+            //PopupJSONViewer pop = new();
+            //pop.Viewer1.JSON = ((ViewModels.RunResult)DataContext).CurrentImageResultGroup.V275Result.Template;
+            //pop.Viewer1.Title = "Template";
+            //pop.Viewer2.JSON = ((ViewModels.RunResult)DataContext).CurrentImageResultGroup.V275Result.Report;
+            //pop.Viewer2.Title = "Report";
 
-            pop.Popup.PlacementTarget = (Button)sender;
-            pop.Popup.IsOpen = true;
+            //pop.Popup.PlacementTarget = (Button)sender;
+            //pop.Popup.IsOpen = true;
         }
         else
         {

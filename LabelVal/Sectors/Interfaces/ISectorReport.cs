@@ -2,13 +2,14 @@
 using BarcodeVerification.lib.GS1;
 using BarcodeVerification.lib.ISO.ParameterTypes;
 using LabelVal.Sectors.Classes;
+using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 
 namespace LabelVal.Sectors.Interfaces;
 
 public interface ISectorReport
 {
-    object Original { get; }
+    JObject Original { get; }
 
     AvailableDevices Device { get; }
     AvailableRegionTypes RegionType { get; }

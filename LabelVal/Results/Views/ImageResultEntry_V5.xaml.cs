@@ -17,6 +17,7 @@ namespace LabelVal.Results.Views;
 /// </summary>
 public partial class ImageResultEntry_V5 : UserControl
 {
+    private ViewModels.ImageResultEntry _resultEntry => (ViewModels.ImageResultEntry)DataContext;
     public ImageResultEntry_V5() => InitializeComponent();
 
     private void btnCloseDetails_Click(object sender, RoutedEventArgs e)
@@ -98,15 +99,8 @@ public partial class ImageResultEntry_V5 : UserControl
         {
             if (((ViewModels.ImageResultEntry)DataContext).V5ResultRow != null)
             {
-                //PopupJSONViewer pop = new();
-                //pop.Viewer1.JSON = ((ViewModels.ImageResultEntry)DataContext).V5ResultRow.Template;
-                //pop.Viewer1.Title = "Config";
-                //pop.Viewer2.JSON = ((ViewModels.ImageResultEntry)DataContext).V5ResultRow.Report;
-                //pop.Viewer2.Title = "Results";
-
-                //pop.Popup.PlacementTarget = ScrollV5StoredSectors;
-                //pop.Popup.Placement = System.Windows.Controls.Primitives.PlacementMode.Center;
-                //pop.Popup.IsOpen = true;
+                _resultEntry.ImageResults.FocusedTemplate = _resultEntry.V5ResultRow._Config;
+                _resultEntry.ImageResults.FocusedReport = _resultEntry.V5ResultRow._Report;
             }
         }
         else
@@ -127,14 +121,8 @@ public partial class ImageResultEntry_V5 : UserControl
         {
             if (((ViewModels.ImageResultEntry)DataContext).V5CurrentReport != null)
             {
-                //PopupJSONViewer pop = new();
-                //pop.Viewer1.JSON = ((ViewModels.ImageResultEntry)DataContext).V5CurrentTemplate;
-                //pop.Viewer1.Title = "Config";
-                //pop.Viewer2.JSON = ((ViewModels.ImageResultEntry)DataContext).V5CurrentReport;
-                //pop.Viewer2.Title = "Results";
-
-                //pop.Popup.PlacementTarget = (Button)sender;
-                //pop.Popup.IsOpen = true;
+                _resultEntry.ImageResults.FocusedTemplate = _resultEntry.V5CurrentTemplate;
+                _resultEntry.ImageResults.FocusedReport = _resultEntry.V5CurrentReport;
             }
         }
         else

@@ -12,7 +12,7 @@ namespace LabelVal.V5.Sectors;
 
 public class SectorReport : ISectorReport
 {
-    public object Original { get; private set; }
+    public JObject Original { get; private set; }
 
     public AvailableDevices Device => AvailableDevices.V5;
     public AvailableRegionTypes RegionType { get; private set; }
