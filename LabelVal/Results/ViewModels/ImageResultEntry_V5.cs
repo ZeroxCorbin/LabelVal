@@ -134,7 +134,7 @@ public partial class ImageResultEntry
 
         if (tempSectors.Count > 0)
         {
-            SortList3(tempSectors);
+            tempSectors = SortList3(tempSectors);
 
             foreach (Sectors.Interfaces.ISector sec in tempSectors)
                 V5CurrentSectors.Add(sec);
@@ -150,7 +150,6 @@ public partial class ImageResultEntry
     public void UpdateV5StoredImageOverlay() => V5StoredImageOverlay = CreateSectorsImageOverlay(V5StoredImage, V5StoredSectors);
     public void UpdateV5CurrentImageOverlay() => V5CurrentImageOverlay = CreateSectorsImageOverlay(V5CurrentImage, V5CurrentSectors);
 
-    [RelayCommand] private void V5Load() => _ = V5LoadTask();
 
     private void V5GetStored()
     {
@@ -301,16 +300,69 @@ public partial class ImageResultEntry
             if (d.IsSectorMissing)
                 V5DiffSectors.Add(d);
     }
-    public int V5LoadTask() => 1;
-
-    private string V5GetLetter(double grade) => grade switch
+    [RelayCommand] private Task<bool> V5Read() => V5ReadTask();
+    public async Task<bool> V5ReadTask()
     {
-        double i when i == 4.0 => "A",
-        double i when i is < 4.0 and >= 3.0 => "B",
-        double i when i is < 3.0 and >= 2.0 => "C",
-        double i when i is < 2.0 and >= 1.0 => "D",
-        double i when i is < 1.0 and >= 0.0 => "F",
-        _ => throw new System.NotImplementedException(),
-    };
+        var result = await ImageResults.SelectedScanner.Controller.Trigger_Wait_Return(true);
+        V5ProcessResults(result);
+        //V275_REST_Lib.FullReport report;
+        //if ((report = await ImageResults.SelectedNode.Controller.GetFullReport(repeat, true)) == null)
+        //{
+        //    Logger.LogError("Unable to read the repeat report from the node.");
+        //    ClearRead(ImageResultEntryDevices.V275);
+        //    return false;
+        //}
+
+        //V275ProcessRepeat(new V275_REST_Lib.Repeat(0, null) { FullReport = report });
+        return true;
+    }
+
+    [RelayCommand] private Task<int> V5Load() => V5LoadTask();
+    public async Task<int> V5LoadTask()
+    {
+        if (V5ResultRow == null)
+        {
+            Logger.LogError("No V5 result row selected.");
+            return -1;
+        }
+
+        if(V5StoredSectors.Count == 0)
+        {
+            return 0;
+            //return await ImageResults.SelectedScanner.Controller.Learn();
+        }
+
+        if (await ImageResults.SelectedScanner.Controller.CopySectorsSetConfig(null, V5ResultRow._Config) == V5_REST_Lib.Controllers.RestoreSectorsResults.Failure)
+                return -1;
+
+        //if (!await ImageResults.SelectedNode.Controller.DeleteSectors())
+        //    return -1;
+
+        //if (V275StoredSectors.Count == 0)
+        //{
+        //    return !await ImageResults.SelectedNode.Controller.DetectSectors() ? -1 : 2;
+        //}
+
+        //foreach (Sectors.Interfaces.ISector sec in V275StoredSectors)
+        //{
+        //    if (!await ImageResults.SelectedNode.Controller.AddSector(sec.Template.Name, JsonConvert.SerializeObject(((V275.Sectors.SectorTemplate)sec.Template).Original)))
+        //        return -1;
+
+        //    if (sec.Template.BlemishMask.Layers != null)
+        //    {
+
+        //        foreach (V275_REST_Lib.Models.Job.Layer layer in sec.Template.BlemishMask.Layers)
+        //        {
+        //            if (!await ImageResults.SelectedNode.Controller.AddMask(sec.Template.Name, JsonConvert.SerializeObject(layer)))
+        //            {
+        //                if (layer.value != 0)
+        //                    return -1;
+        //            }
+        //        }
+        //    }
+        //}
+
+        return 1;
+    }
 
 }

@@ -9,6 +9,8 @@ namespace LabelVal.Sectors.Interfaces;
 
 public partial interface ISector
 {
+    AvailableDevices Device { get; }
+    string Version { get; }
     ISectorTemplate Template { get; }
     ISectorReport Report { get; }
 

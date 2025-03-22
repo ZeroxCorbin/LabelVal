@@ -9,14 +9,14 @@
              xmlns:json="clr-namespace:JSONViewer_WPF;assembly=JSONViewer_WPF"
              mc:Ignorable="d">
 
-    <Popup x:Name="Popup" StaysOpen="True" >
+    <!--<Popup x:Name="Popup" StaysOpen="True" >-->
 
         <DockPanel>
 
-            <Button DockPanel.Dock="Top" Click="btnClose" ToolTip="Close" Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+            <!--<Button DockPanel.Dock="Top" Click="btnClose" ToolTip="Close" Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" 
                                 HorizontalAlignment="Right" Padding="8,0" Height="28"
-                                Content="{iconPacks:Material Kind=Close}"/>
+                                Content="{iconPacks:Material Kind=Close}"/>-->
 
             <DockPanel>
 
@@ -41,5 +41,5 @@
             </DockPanel>
 
         </DockPanel>
-    </Popup>
+    <!--</Popup>-->
 </UserControl>

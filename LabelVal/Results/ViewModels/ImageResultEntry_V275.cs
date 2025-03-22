@@ -47,10 +47,10 @@ public partial class ImageResultEntry
     [RelayCommand]
     private async Task V275Process(ImageResultEntryImageTypes type)
     {
-        bool simAddSec = ImageResults.SelectedNode.Controller.IsSimulator && ImageResults.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic && V275ResultRow?._Job["sectors"] != null;
-        bool simDetSec = ImageResults.SelectedNode.Controller.IsSimulator && ImageResults.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic && V275ResultRow?._Job["sectors"] == null;
-        bool camAddSec = !ImageResults.SelectedNode.Controller.IsSimulator && ImageResults.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic && V275ResultRow?._Job["sectors"] != null;
-        bool camDetSec = !ImageResults.SelectedNode.Controller.IsSimulator && ImageResults.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic && V275ResultRow?._Job["sectors"] == null;
+        bool simulationReplaceSectors = ImageResults.SelectedNode.Controller.IsSimulator && ImageResults.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic && V275ResultRow?._Job["sectors"] != null;
+        bool simulationDetectSectors = ImageResults.SelectedNode.Controller.IsSimulator && ImageResults.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic && V275ResultRow?._Job["sectors"] == null;
+        bool cameraReplaceSec = !ImageResults.SelectedNode.Controller.IsSimulator && ImageResults.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic && V275ResultRow?._Job["sectors"] != null;
+        bool cameraDetectSec = !ImageResults.SelectedNode.Controller.IsSimulator && ImageResults.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic && V275ResultRow?._Job["sectors"] == null;
 
         BringIntoView?.Invoke();
 
@@ -59,18 +59,21 @@ public partial class ImageResultEntry
             Table = ImageResults.SelectedImageRoll.SelectedGS1Table,
         };
 
-        if (ImageResults.SelectedImageRoll.ImageType == ImageRollImageTypes.Source || type is ImageResultEntryImageTypes.V275Print)
+        byte[] img = ImageResults.SelectedImageRoll.ImageType == ImageRollImageTypes.Source ? SourceImage.ImageBytes : V275ResultRow.Stored.ImageBytes;
+        int dpi = ImageResults.SelectedImageRoll.ImageType == ImageRollImageTypes.Source ? (int)Math.Round(SourceImage.Image.DpiX, 0) : (int)Math.Round(V275ResultRow.Stored.Image.DpiX, 0);
+
+        if (type is ImageResultEntryImageTypes.Source || type is ImageResultEntryImageTypes.V275Print)
         {
-            lab.Image = SourceImage.ImageBytes;
-            lab.Dpi = (int)Math.Round(SourceImage.Image.DpiX, 0);
-            lab.Sectors = simDetSec || camDetSec ? [] : camAddSec ? [.. V275ResultRow._Job["sectors"]] : null;
+            lab.Image = img;
+            lab.Dpi = dpi;
+            lab.Sectors = simulationDetectSectors || cameraDetectSec ? [] : cameraReplaceSec ? [.. V275ResultRow._Job["sectors"]] : null;
             lab.Table = ImageResults.SelectedImageRoll.SelectedGS1Table;
         }
-        else if (ImageResults.SelectedImageRoll.ImageType == ImageRollImageTypes.Stored)
+        else if (type is ImageResultEntryImageTypes.V275Stored)
         {
-            lab.Image = V275ResultRow.Stored.ImageBytes;
-            lab.Dpi = (int)Math.Round(V275ResultRow.Stored.Image.DpiX, 0);
-            lab.Sectors = simAddSec || camAddSec ? [.. V275ResultRow._Job["sectors"]] : null;
+            lab.Image = img;
+            lab.Dpi = dpi;
+            lab.Sectors = simulationReplaceSectors || cameraReplaceSec ? [.. V275ResultRow._Job["sectors"]] : null;
             lab.Table = ImageResults.SelectedImageRoll.SelectedGS1Table;
         }
 
@@ -164,7 +167,7 @@ public partial class ImageResultEntry
 
         if (tempSectors.Count > 0)
         {
-            SortList3(tempSectors);
+            tempSectors = SortList3(tempSectors);
 
             foreach (Sectors.Interfaces.ISector sec in tempSectors)
                 V275CurrentSectors.Add(sec);
@@ -274,7 +277,7 @@ public partial class ImageResultEntry
             return false;
         }
 
-        V275ProcessRepeat(new V275_REST_Lib.Repeat(0, null, ImageResults.SelectedNode.Controller.Product.part) { FullReport = report });
+        V275ProcessRepeat(new V275_REST_Lib.Repeat(0, null) { FullReport = report });
         return true;
     }
 
@@ -367,7 +370,8 @@ public partial class ImageResultEntry
 
             if (tempSectors.Count > 0)
             {
-                SortList3(tempSectors);
+                tempSectors = SortList3(tempSectors);
+
                 foreach (Sectors.Interfaces.ISector sec in tempSectors)
                     V275StoredSectors.Add(sec);
             }

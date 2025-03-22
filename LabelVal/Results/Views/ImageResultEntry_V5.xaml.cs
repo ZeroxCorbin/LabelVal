@@ -98,13 +98,15 @@ public partial class ImageResultEntry_V5 : UserControl
         {
             if (((ViewModels.ImageResultEntry)DataContext).V5ResultRow != null)
             {
-                PopupJSONViewer pop = new();
-                pop.Viewer1.JSON = ((ViewModels.ImageResultEntry)DataContext).V5ResultRow.Report;
-                pop.Viewer1.Title = "Report";
+                //PopupJSONViewer pop = new();
+                //pop.Viewer1.JSON = ((ViewModels.ImageResultEntry)DataContext).V5ResultRow.Template;
+                //pop.Viewer1.Title = "Config";
+                //pop.Viewer2.JSON = ((ViewModels.ImageResultEntry)DataContext).V5ResultRow.Report;
+                //pop.Viewer2.Title = "Results";
 
-                pop.Popup.PlacementTarget = ScrollV5StoredSectors;
-                pop.Popup.Placement = System.Windows.Controls.Primitives.PlacementMode.Center;
-                pop.Popup.IsOpen = true;
+                //pop.Popup.PlacementTarget = ScrollV5StoredSectors;
+                //pop.Popup.Placement = System.Windows.Controls.Primitives.PlacementMode.Center;
+                //pop.Popup.IsOpen = true;
             }
         }
         else
@@ -125,12 +127,14 @@ public partial class ImageResultEntry_V5 : UserControl
         {
             if (((ViewModels.ImageResultEntry)DataContext).V5CurrentReport != null)
             {
-                PopupJSONViewer pop = new();
-                pop.Viewer1.JSON = ((ViewModels.ImageResultEntry)DataContext).V5CurrentReport;
-                pop.Viewer1.Title = "Report";
+                //PopupJSONViewer pop = new();
+                //pop.Viewer1.JSON = ((ViewModels.ImageResultEntry)DataContext).V5CurrentTemplate;
+                //pop.Viewer1.Title = "Config";
+                //pop.Viewer2.JSON = ((ViewModels.ImageResultEntry)DataContext).V5CurrentReport;
+                //pop.Viewer2.Title = "Results";
 
-                pop.Popup.PlacementTarget = (Button)sender;
-                pop.Popup.IsOpen = true;
+                //pop.Popup.PlacementTarget = (Button)sender;
+                //pop.Popup.IsOpen = true;
             }
         }
         else

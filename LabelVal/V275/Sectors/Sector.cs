@@ -10,6 +10,9 @@ namespace LabelVal.V275.Sectors;
 
 public partial class Sector : ObservableObject, ISector
 {
+    public AvailableDevices Device { get; } = AvailableDevices.V275;
+    public string Version { get; }
+
     public ISectorTemplate Template { get; }
     public ISectorReport Report { get; }
 
@@ -78,7 +81,8 @@ public partial class Sector : ObservableObject, ISector
     public bool IsMouseOver { get; set; }
 
     public Sector(JObject template, JObject report, AvailableStandards standard, AvailableTables table, string version)
-    {  
+    {
+        Version = version;
         Template = new SectorTemplate(template, version);
         Report = new SectorReport(report, Template);
 

@@ -904,10 +904,10 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         return rowComparison;
     });
 
-    public void SortList3(List<Sectors.Interfaces.ISector> list)
+    public List<Sectors.Interfaces.ISector> SortList3(List<Sectors.Interfaces.ISector> list)
     {
         //Sort the list from top to bottom, left to right given x,y coordinates
-        list = list.OrderBy(x => x.Report.Top).ThenBy(x => x.Report.Left).ToList();
+        return list.OrderBy(x => x.Report.Top).ThenBy(x => x.Report.Left).ToList();
     }
     #region Recieve Messages
     public void Receive(PropertyChangedMessage<Databases.ImageResultsDatabase> message) => SelectedDatabase = message.NewValue;

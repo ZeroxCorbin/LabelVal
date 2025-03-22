@@ -432,20 +432,29 @@
                     DockPanel.Dock="Top"
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
-                    <DockPanel>
+                    <StackPanel>
+                        <DockPanel>
 
-                        <!--  Title  -->
-                        <md:Card
-                            Margin="3"
-                            Padding="4,1"
+                            <!--  Title  -->
+                            <md:Card
+                                Margin="3"
+                                Padding="4,1"
+                                HorizontalAlignment="Left"
+                                Background="{DynamicResource V5_Brush}">
+                                <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Stored Sectors" />
+                            </md:Card>
+
+                            <ContentControl Content="{StaticResource V5Stored_Toolbar}" Tag="Sectors" />
+
+                        </DockPanel>
+
+                        <TextBlock
+                            Margin="10,0,0,0"
                             HorizontalAlignment="Left"
-                            Background="{DynamicResource V5_Brush}">
-                            <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Stored Sectors" />
-                        </md:Card>
+                            Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                            Text="{Binding V5StoredSectors[0].Version}" />
+                    </StackPanel>
 
-                        <ContentControl Content="{StaticResource V5Stored_Toolbar}" Tag="Sectors" />
-
-                    </DockPanel>
                 </md:Card>
 
                 <ScrollViewer
@@ -705,20 +714,28 @@
                     DockPanel.Dock="Top"
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
-                    <DockPanel>
+                    <StackPanel>
+                        <DockPanel>
 
-                        <!--  Title  -->
-                        <md:Card
-                            Margin="3"
-                            Padding="4,1"
+                            <!--  Title  -->
+                            <md:Card
+                                Margin="3"
+                                Padding="4,1"
+                                HorizontalAlignment="Left"
+                                Background="{DynamicResource V5_Brush}">
+                                <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Current Sectors" />
+                            </md:Card>
+
+                            <ContentControl Content="{StaticResource V5Current_Toolbar}" Tag="Sectors" />
+
+                        </DockPanel>
+
+                        <TextBlock
+                            Margin="10,0,0,0"
                             HorizontalAlignment="Left"
-                            Background="{DynamicResource V5_Brush}">
-                            <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Current Sectors" />
-                        </md:Card>
-
-                        <ContentControl Content="{StaticResource V5Current_Toolbar}" Tag="Sectors" />
-
-                    </DockPanel>
+                            Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                            Text="{Binding V5CurrentSectors[0].Version}" />
+                    </StackPanel>
                 </md:Card>
 
                 <ScrollViewer

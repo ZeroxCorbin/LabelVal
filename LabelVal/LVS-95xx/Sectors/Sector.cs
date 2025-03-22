@@ -12,6 +12,9 @@ public partial class Sector : ObservableObject, ISector
 {
     public FullReport L95xxFullReport { get; }
 
+    public AvailableDevices Device { get; } = AvailableDevices.L95;
+    public string Version { get; }
+
     public ISectorTemplate Template { get; }
     public ISectorReport Report { get; }
 
@@ -82,11 +85,13 @@ public partial class Sector : ObservableObject, ISector
     public Sector(FullReport report, AvailableStandards standard, AvailableTables table)
     {
         L95xxFullReport = report;
+
+        Version = (string)report.GetSetting("Version");
         //Standard and GS1Table are set in the Report constructor.
         DesiredStandard = standard;
         DesiredGS1Table = table;
 
-        Template = new SectorTemplate(report, (string)report.GetSetting("Version"));
+        Template = new SectorTemplate(report, Version);
         Report = new SectorReport(report);
 
         SectorDetails = new SectorParameters(this);

@@ -98,14 +98,14 @@ public partial class ImageResultEntry_V275 : UserControl
         {
             if (((ViewModels.ImageResultEntry)DataContext).V275ResultRow != null)
             {
-                PopupJSONViewer pop = new();
-                pop.Viewer1.JSON = ((ViewModels.ImageResultEntry)DataContext).V275ResultRow.Template;
-                pop.Viewer1.Title = "Template";
-                pop.Viewer2.JSON = ((ViewModels.ImageResultEntry)DataContext).V275ResultRow.Report;
-                pop.Viewer2.Title = "Report";
+                //PopupJSONViewer pop = new();
+                //pop.Viewer1.JSON = ((ViewModels.ImageResultEntry)DataContext).V275ResultRow.Template;
+                //pop.Viewer1.Title = "Template";
+                //pop.Viewer2.JSON = ((ViewModels.ImageResultEntry)DataContext).V275ResultRow.Report;
+                //pop.Viewer2.Title = "Report";
 
-                pop.Popup.PlacementTarget = ScrollV275StoredSectors;
-                pop.Popup.IsOpen = true;
+                //pop.Popup.PlacementTarget = ScrollV275StoredSectors;
+                //pop.Popup.IsOpen = true;
             }
         }
         else
@@ -123,14 +123,14 @@ public partial class ImageResultEntry_V275 : UserControl
     {
         if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
         {
-            PopupJSONViewer pop = new();
-            pop.Viewer1.JSON = ((ViewModels.ImageResultEntry)DataContext).V275CurrentTemplate;
-            pop.Viewer1.Title = "Template";
-            pop.Viewer2.JSON = ((ViewModels.ImageResultEntry)DataContext).V275CurrentReport;
-            pop.Viewer2.Title = "Report";
+            //PopupJSONViewer pop = new();
+            //pop.Viewer1.JSON = ((ViewModels.ImageResultEntry)DataContext).V275CurrentTemplate;
+            //pop.Viewer1.Title = "Template";
+            //pop.Viewer2.JSON = ((ViewModels.ImageResultEntry)DataContext).V275CurrentReport;
+            //pop.Viewer2.Title = "Report";
 
-            pop.Popup.PlacementTarget = (Button)sender;
-            pop.Popup.IsOpen = true;
+            //pop.Popup.PlacementTarget = (Button)sender;
+            //pop.Popup.IsOpen = true;
         }
         else
         {

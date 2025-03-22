@@ -445,22 +445,31 @@
                         DockPanel.Dock="Top"
                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
-                        <DockPanel>
+                        <StackPanel>
+                            <DockPanel>
 
-                            <!--  Title  -->
-                            <md:Card
-                                Margin="3"
-                                Padding="4,1"
+                                <!--  Title  -->
+                                <md:Card
+                                    Margin="3"
+                                    Padding="4,1"
+                                    HorizontalAlignment="Left"
+                                    Background="{DynamicResource V275_Brush}">
+                                    <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Stored Sectors" />
+                                </md:Card>
+
+                                <ContentControl
+                                    Content="{StaticResource V275Stored_Toolbar}"
+                                    DataContext="{Binding .}"
+                                    Tag="Sectors" />
+                            </DockPanel>
+
+                            <TextBlock
+                                Margin="10,0,0,0"
                                 HorizontalAlignment="Left"
-                                Background="{DynamicResource V275_Brush}">
-                                <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Stored Sectors" />
-                            </md:Card>
+                                Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                                Text="{Binding V275StoredSectors[0].Version}" />
+                        </StackPanel>
 
-                            <ContentControl
-                                Content="{StaticResource V275Stored_Toolbar}"
-                                DataContext="{Binding .}"
-                                Tag="Sectors" />
-                        </DockPanel>
                     </md:Card>
 
                     <ScrollViewer
@@ -593,6 +602,7 @@
                                             ToolTip="Close this." />
 
                                     </DockPanel>
+
                                 </md:Card>
 
                                 <!--  Keep this Dockapnel. It is used for Saving and Coping the SectorDetails Visual.  -->
@@ -682,6 +692,8 @@
                                 DataContext="{Binding .}"
                                 Tag="Image" />
                         </DockPanel>
+
+
                     </md:Card>
 
                     <DockPanel
@@ -725,23 +737,31 @@
                         DockPanel.Dock="Top"
                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
-                        <DockPanel>
+                        <StackPanel>
+                            <DockPanel>
 
-                            <!--  Title  -->
-                            <md:Card
-                                Margin="3"
-                                Padding="4,1"
+                                <!--  Title  -->
+                                <md:Card
+                                    Margin="3"
+                                    Padding="4,1"
+                                    HorizontalAlignment="Left"
+                                    Background="{DynamicResource V275_Brush}">
+                                    <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Current Sectors" />
+                                </md:Card>
+
+                                <ContentControl
+                                    Content="{StaticResource V275Current_Toolbar}"
+                                    DataContext="{Binding .}"
+                                    Tag="Sectors" />
+
+                            </DockPanel>
+
+                            <TextBlock
+                                Margin="10,0,0,0"
                                 HorizontalAlignment="Left"
-                                Background="{DynamicResource V275_Brush}">
-                                <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Current Sectors" />
-                            </md:Card>
-
-                            <ContentControl
-                                Content="{StaticResource V275Current_Toolbar}"
-                                DataContext="{Binding .}"
-                                Tag="Sectors" />
-
-                        </DockPanel>
+                                Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                                Text="{Binding V275CurrentSectors[0].Version}" />
+                        </StackPanel>
                     </md:Card>
 
                     <ScrollViewer
