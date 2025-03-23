@@ -104,81 +104,91 @@ public partial class ImageResultEntry
     }
     private void V275ProcessRepeat(V275_REST_Lib.Repeat repeat)
     {
-        if (repeat == null)
-        {
-            Logger.LogError("Repeat is null.");
-            IsV275Working = false;
-            IsV275Faulted = true;
-            return;
-        }
-
-        if (repeat.FullReport == null)
-        {
-            IsV275Working = false;
-            IsV275Faulted = true;
-            Logger.LogError("Fullreport is null.");
-            return;
-        }
-
         if (!App.Current.Dispatcher.CheckAccess())
         {
             _ = App.Current.Dispatcher.BeginInvoke(() => V275ProcessRepeat(repeat));
             return;
         }
 
-        V275CurrentTemplate = repeat.FullReport.Job;
-        V275CurrentReport = repeat.FullReport.Report;
-
-        string jobString = JsonConvert.SerializeObject(repeat.FullReport.Report);
-
-        if (!ImageResults.SelectedNode.Controller.IsSimulator)
+        try
         {
-            int dpi = 600;
-            V275CurrentImage = new ImageEntry(ImageRollUID, LibImageUtilities.ImageTypes.Png.Utilities.GetPng(repeat.FullReport.Image, dpi), dpi);
-        }
-        else
-        {
-            V275CurrentImage = new ImageEntry(ImageRollUID, LibImageUtilities.ImageTypes.Png.Utilities.GetPng(repeat.FullReport.Image, (int)Math.Round(SourceImage.Image.DpiX)), ImageResults.SelectedImageRoll.TargetDPI);
-        }
+            if (repeat == null)
+            {
+                Logger.LogError("Repeat is null.");
+                IsV275Faulted = true;
+                return;
+            }
 
-        V275CurrentSectors.Clear();
+            if (repeat.FullReport == null)
+            {
+                IsV275Faulted = true;
+                Logger.LogError("Fullreport is null.");
+                return;
+            }
 
-        List<Sectors.Interfaces.ISector> tempSectors = [];
-        foreach (JToken templateSec in V275CurrentTemplate["sectors"])
-        {
-            try
+            V275CurrentTemplate = repeat.FullReport.Job;
+            V275CurrentReport = repeat.FullReport.Report;
+
+            string jobString = JsonConvert.SerializeObject(repeat.FullReport.Report);
+
+            if (!ImageResults.SelectedNode.Controller.IsSimulator)
+            {
+                int dpi = 600;
+                V275CurrentImage = new ImageEntry(ImageRollUID, LibImageUtilities.ImageTypes.Png.Utilities.GetPng(repeat.FullReport.Image, dpi), dpi);
+            }
+            else
+            {
+                V275CurrentImage = new ImageEntry(ImageRollUID, LibImageUtilities.ImageTypes.Png.Utilities.GetPng(repeat.FullReport.Image, (int)Math.Round(SourceImage.Image.DpiX)), ImageResults.SelectedImageRoll.TargetDPI);
+            }
+
+            V275CurrentSectors.Clear();
+
+            List<Sectors.Interfaces.ISector> tempSectors = [];
+            foreach (JToken templateSec in V275CurrentTemplate["sectors"])
             {
                 foreach (JToken currentSect in V275CurrentReport["inspectLabel"]["inspectSector"])
                 {
-                    if (templateSec["name"].ToString() == currentSect["name"].ToString())
+                    try
                     {
-                        tempSectors.Add(new V275.Sectors.Sector((JObject)templateSec, (JObject)currentSect, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, repeat.FullReport.Job["jobVersion"].ToString()));
-                        break;
+                        if (templateSec["name"].ToString() == currentSect["name"].ToString())
+                        {
+                            tempSectors.Add(new V275.Sectors.Sector((JObject)templateSec, (JObject)currentSect, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, repeat.FullReport.Job["jobVersion"].ToString()));
+                            break;
+                        }
+                    }
+                    catch (System.Exception ex)
+                    {
+                        Logger.LogError(ex);
+                        Logger.LogError("Error while processing the repeat report.");
                     }
                 }
             }
-            catch (System.Exception ex)
+
+            if (tempSectors.Count > 0)
             {
-                Logger.LogError(ex);
-                Logger.LogError("Error while processing the repeat report.");
+                tempSectors = SortList3(tempSectors);
+
+                foreach (Sectors.Interfaces.ISector sec in tempSectors)
+                    V275CurrentSectors.Add(sec);
             }
 
-        }
+            V275GetSectorDiff();
 
-        if (tempSectors.Count > 0)
+            UpdateV275CurrentImageOverlay();
+
+            IsV275Faulted = false;
+        }
+        catch (System.Exception ex)
         {
-            tempSectors = SortList3(tempSectors);
+            Logger.LogError(ex);
+            Logger.LogError("Error while processing the repeat report.");
 
-            foreach (Sectors.Interfaces.ISector sec in tempSectors)
-                V275CurrentSectors.Add(sec);
+            IsV275Faulted = true;
         }
-
-        V275GetSectorDiff();
-
-        UpdateV275CurrentImageOverlay();
-
-        IsV275Working = false;
-        IsV275Faulted = false;
+        finally
+        {
+            IsV275Working = false;
+        }
     }
     private void V275GetSectorDiff()
     {
@@ -264,9 +274,17 @@ public partial class ImageResultEntry
                 V275DiffSectors.Add(d);
 
     }
-    public void UpdateV275CurrentImageOverlay() => V275CurrentImageOverlay = CreateSectorsImageOverlay(V275CurrentImage, V275CurrentSectors);
+    public void UpdateV275CurrentImageOverlay()
+    {
+        V275CurrentImageOverlay = CreateSectorsImageOverlay(V275CurrentImage, V275CurrentSectors);
+    }
 
-    [RelayCommand] private Task<bool> V275Read() => V275ReadTask(0);
+    [RelayCommand]
+    private Task<bool> V275Read()
+    {
+        return V275ReadTask(0);
+    }
+
     public async Task<bool> V275ReadTask(int repeat)
     {
         V275_REST_Lib.FullReport report;
@@ -281,7 +299,12 @@ public partial class ImageResultEntry
         return true;
     }
 
-    [RelayCommand] private Task<int> V275Load() => V275LoadTask();
+    [RelayCommand]
+    private Task<int> V275Load()
+    {
+        return V275LoadTask();
+    }
+
     public async Task<int> V275LoadTask()
     {
         if (!await ImageResults.SelectedNode.Controller.DeleteSectors())
@@ -413,6 +436,8 @@ public partial class ImageResultEntry
                                         : (object)null;
         }
     }
-    public void UpdateV275StoredImageOverlay() => V275StoredImageOverlay = CreateSectorsImageOverlay(V275StoredImage, V275StoredSectors);
-
+    public void UpdateV275StoredImageOverlay()
+    {
+        V275StoredImageOverlay = CreateSectorsImageOverlay(V275StoredImage, V275StoredSectors);
+    }
 }

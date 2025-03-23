@@ -93,58 +93,69 @@ public partial class ImageResultEntry
             return;
         }
 
-        if (report == null || report.FullImage == null)
-        {
-            Logger.LogError("Can not proces null results.");
-
-            ClearRead(ImageResultEntryDevices.V5);
-
-            IsV5Faulted = true;
-            IsV5Working = false;
-            return;
-        }
-
-        V5CurrentImage = new ImageEntry(ImageRollUID, LibImageUtilities.ImageTypes.Png.Utilities.GetPng(report.FullImage), 96);
-        
-        V5CurrentTemplate = ImageResults.SelectedScanner.Controller.Config;
-        V5CurrentReport = report.Report;
-
-        V5CurrentSectors.Clear();
-
-        List<Sectors.Interfaces.ISector> tempSectors = [];
-        //Tray and match a toolResult to a toolList
-        foreach (JToken toolResult in V5CurrentReport.GetParameter<JArray>("event.data.toolResults"))
+        try
         {
 
-            foreach (JToken result in ((JObject)toolResult).GetParameter<JArray>("results"))
+
+            if (report == null || report.FullImage == null)
             {
-                try
-                {
-                    tempSectors.Add(new V5.Sectors.Sector((JObject)result, V5CurrentTemplate, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, V5CurrentTemplate.GetParameter<string>("response.message")));
-                }
-                catch (System.Exception ex)
-                {
-                    Logger.LogError(ex, ex.StackTrace);
-                    Logger.LogWarning("Error while processing results.");
-                    continue;
-                }
+                Logger.LogError("Can not proces null results.");
+                IsV5Faulted = true;
+                return;
             }
 
-        }
+            V5CurrentImage = new ImageEntry(ImageRollUID, LibImageUtilities.ImageTypes.Png.Utilities.GetPng(report.FullImage), 96);
 
-        if (tempSectors.Count > 0)
+            V5CurrentTemplate = ImageResults.SelectedScanner.Controller.Config;
+            V5CurrentReport = report.Report;
+
+            V5CurrentSectors.Clear();
+
+            List<Sectors.Interfaces.ISector> tempSectors = [];
+            //Tray and match a toolResult to a toolList
+            foreach (JToken toolResult in V5CurrentReport.GetParameter<JArray>("event.data.toolResults"))
+            {
+
+                foreach (JToken result in ((JObject)toolResult).GetParameter<JArray>("results"))
+                {
+                    try
+                    {
+                        tempSectors.Add(new V5.Sectors.Sector((JObject)result, V5CurrentTemplate, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, V5CurrentTemplate.GetParameter<string>("response.message")));
+                    }
+                    catch (System.Exception ex)
+                    {
+                        Logger.LogError(ex, ex.StackTrace);
+                        Logger.LogWarning("Error while processing results.");
+                        continue;
+                    }
+                }
+
+            }
+
+            if (tempSectors.Count > 0)
+            {
+                tempSectors = SortList3(tempSectors);
+
+                foreach (Sectors.Interfaces.ISector sec in tempSectors)
+                    V5CurrentSectors.Add(sec);
+            }
+
+            V5GetSectorDiff();
+
+            UpdateV5CurrentImageOverlay();
+
+            IsV5Faulted = false;
+        }
+        catch (System.Exception ex)
         {
-            tempSectors = SortList3(tempSectors);
-
-            foreach (Sectors.Interfaces.ISector sec in tempSectors)
-                V5CurrentSectors.Add(sec);
+            Logger.LogError(ex, ex.StackTrace);
+            Logger.LogWarning("Error while processing results.");
+            IsV5Faulted = true;
         }
-
-        V5GetSectorDiff();
-
-        UpdateV5CurrentImageOverlay();
-
-        IsV5Working = false;
+        finally
+        {
+            IsV5Working = false;
+        }
     }
 
     public void UpdateV5StoredImageOverlay() => V5StoredImageOverlay = CreateSectorsImageOverlay(V5StoredImage, V5StoredSectors);
@@ -326,14 +337,14 @@ public partial class ImageResultEntry
             return -1;
         }
 
-        if(V5StoredSectors.Count == 0)
+        if (V5StoredSectors.Count == 0)
         {
             return 0;
             //return await ImageResults.SelectedScanner.Controller.Learn();
         }
 
         if (await ImageResults.SelectedScanner.Controller.CopySectorsSetConfig(null, V5ResultRow._Config) == V5_REST_Lib.Controllers.RestoreSectorsResults.Failure)
-                return -1;
+            return -1;
 
         //if (!await ImageResults.SelectedNode.Controller.DeleteSectors())
         //    return -1;

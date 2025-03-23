@@ -127,7 +127,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
 
             List<Sectors.Interfaces.ISector> tempSectors = [];
             foreach (FullReport rSec in row._AllSectors)
-                tempSectors.Add(new Sector(rSec.Template, rSec.Report, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
+                tempSectors.Add(new Sector(rSec.Template, rSec.Report, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, rSec.Template.GetParameter<string>("Settings[SettingName:Version].SettingValue")));
 
             if (tempSectors.Count > 0)
             {
@@ -156,49 +156,67 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
             return;
         }
 
-        if (message == null || message.Report == null)// || message.Report.OverallGrade.StartsWith("Bar"))
+        try
         {
-            IsL95xxFaulted = true;
-            IsL95xxWorking = false;
-            return;
+
+            if (message == null || message.Report == null)// || message.Report.OverallGrade.StartsWith("Bar"))
+            {
+                IsL95xxFaulted = true;
+                return;
+            }
+
+            System.Drawing.Point center = new(message.Template.GetParameter<int>("Report.X1") + (message.Template.GetParameter<int>("Report.SizeX") / 2), message.Template.GetParameter<int>("Report.Y1") + (message.Template.GetParameter<int>("Report.SizeY") / 2));
+
+            string name = null;
+
+            foreach (ISector sec in L95xxStoredSectors)
+                if (center.FallsWithin(sec))
+                    name = sec.Template.Username;
+
+            if (name == null)
+                foreach (ISector sec in V275StoredSectors)
+                    if (center.FallsWithin(sec))
+                        name = sec.Template.Username;
+
+            if (name == null)
+                foreach (ISector sec in V5StoredSectors)
+                    if (center.FallsWithin(sec))
+                        name = sec.Template.Username;
+
+            name ??= $"Verify_{L95xxCurrentSectors.Count + 1}";
+
+            _ = message.Template.SetParameter<string>("Name", name);
+
+            if (replaceSectors)
+                L95xxCurrentSectors.Clear();
+
+            L95xxCurrentSectors.Add(new Sector(message.Template, message.Report, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table, message.Template.GetParameter<string>("Settings[SettingName:Version].SettingValue")));
+
+            List<ISector> tempSectors = L95xxCurrentSectors.ToList();
+
+            if (tempSectors.Count > 0)
+            {
+                tempSectors = SortList3(tempSectors);
+                SortObservableCollectionByList(tempSectors, L95xxCurrentSectors);
+            }
+
+            L95xxGetSectorDiff();
+
+            L95xxCurrentImage = new ImageEntry(ImageRollUID, LibImageUtilities.ImageTypes.Png.Utilities.GetPng(message.Template.GetParameter<byte[]>("Report.Thumbnail")), 600);
+            UpdateL95xxCurrentImageOverlay();
+
+            IsL95xxFaulted = false;
         }
-
-        System.Drawing.Point center = new(message.Template.GetParameter<int>("Report.X1") + (message.Template.GetParameter<int>("Report.SizeX") / 2), message.Template.GetParameter<int>("Report.Y1") + (message.Template.GetParameter<int>("Report.SizeY") / 2));
-
-        string name = null;
-
-        foreach (ISector sec in L95xxStoredSectors)
-            if (center.FallsWithin(sec))
-                name = sec.Template.Username;
-
-        if (name == null)
-            foreach (ISector sec in V275StoredSectors)
-                if (center.FallsWithin(sec))
-                    name = sec.Template.Username;
-
-        if (name == null)
-            foreach (ISector sec in V5StoredSectors)
-                if (center.FallsWithin(sec))
-                    name = sec.Template.Username;
-
-        name ??= $"Verify_{L95xxCurrentSectors.Count + 1}";
-
-        message.Template.SetParameter<string>("Name", name);
-
-        if (replaceSectors)
-            L95xxCurrentSectors.Clear();
-
-        L95xxCurrentSectors.Add(new Sector(message.Template, message.Report, ImageResults.SelectedImageRoll.SelectedStandard, ImageResults.SelectedImageRoll.SelectedGS1Table));
-        List<ISector> secs = L95xxCurrentSectors.ToList();
-        secs = SortList3(secs);
-        SortObservableCollectionByList(secs, L95xxCurrentSectors);
-
-        L95xxGetSectorDiff();
-
-        L95xxCurrentImage = new ImageEntry(ImageRollUID, LibImageUtilities.ImageTypes.Png.Utilities.GetPng(message.Template.GetParameter<byte[]>("Report.Thumbnail")), 600);
-        UpdateL95xxCurrentImageOverlay();
-
-        IsL95xxWorking = false;
+        catch (Exception ex)
+        {
+            Logger.LogError(ex);
+            Logger.LogError($"Error while processing results from: {SelectedDatabase.File.Name}");
+            IsL95xxFaulted = true;
+        }
+        finally
+        {
+            IsL95xxWorking = false;
+        }
     }
     public void UpdateL95xxStoredImageOverlay()
     {

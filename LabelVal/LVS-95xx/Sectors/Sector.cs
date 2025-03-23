@@ -82,16 +82,14 @@ public partial class Sector : ObservableObject, ISector
     public bool IsFocused { get; set; }
     public bool IsMouseOver { get; set; }
 
-    public Sector(JObject template, JObject report, AvailableStandards standard, AvailableTables table)
+    public Sector(JObject template, JObject report, AvailableStandards standard, AvailableTables table, string version)
     {
-        Version = template.GetParameter<string>("Settings[SettingName:Version]");
-        //Standard and GS1Table are set in the Report constructor.
+        Version = version;
         DesiredStandard = standard;
         DesiredGS1Table = table;
 
         Template = new SectorTemplate(template, Version);
         Report = new SectorReport(report, Template);
-
         SectorDetails = new SectorParameters(this);
 
         foreach (Alarm alm in SectorDetails.Alarms)
@@ -102,24 +100,6 @@ public partial class Sector : ObservableObject, ISector
             if (alm.Category == AvaailableAlarmCategories.Error)
                 IsError = true;
         }
-    }
-
-    private List<string[]> GetMultipleKeyValuePairs(string key, List<string> report)
-    {
-        List<string> items = report.FindAll((e) => e.StartsWith(key));
-
-        if (items == null || items.Count == 0)
-            return null;
-
-        List<string[]> res = [];
-        foreach (string item in items)
-        {
-            if (!item.Contains(','))
-                continue;
-
-            res.Add([item[..item.IndexOf(',')], item[(item.IndexOf(',') + 1)..]]);
-        }
-        return res;
     }
 
     [RelayCommand]
