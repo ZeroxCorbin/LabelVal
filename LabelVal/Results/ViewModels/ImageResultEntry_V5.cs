@@ -9,6 +9,7 @@ using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using V5_REST_Lib.Controllers;
 
 namespace LabelVal.Results.ViewModels;
 public partial class ImageResultEntry
@@ -46,24 +47,48 @@ public partial class ImageResultEntry
     [RelayCommand]
     public void V5Process(ImageResultEntryImageTypes imageType)
     {
-        bool simAddSec = ImageResults.SelectedScanner.Controller.IsSimulator && ImageResults.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic && !string.IsNullOrEmpty(V5ResultRow?.Template);
-        bool simDetSec = ImageResults.SelectedScanner.Controller.IsSimulator && ImageResults.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic && string.IsNullOrEmpty(V5ResultRow?.Template);
-        bool camAddSec = !ImageResults.SelectedScanner.Controller.IsSimulator && ImageResults.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic && !string.IsNullOrEmpty(V5ResultRow?.Template);
-        bool camDetSec = !ImageResults.SelectedScanner.Controller.IsSimulator && ImageResults.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic && string.IsNullOrEmpty(V5ResultRow?.Template);
+        LabelHandlers type = LabelHandlers.CameraTrigger;
+        if (ImageResults.SelectedScanner.Controller.IsSimulator)
+        {
+            if (ImageResults.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic)
+            {
+                type = !string.IsNullOrEmpty(V5ResultRow?.Template)
+                    ? LabelHandlers.SimulatorRestore
+                    : LabelHandlers.SimulatorDetect;
+            }
+            else
+                type = LabelHandlers.SimulatorTrigger;
+        }
+        else
+        {
+            if (ImageResults.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic)
+            {
+                type = !string.IsNullOrEmpty(V5ResultRow?.Template)
+                    ? LabelHandlers.CameraRestore
+                    : LabelHandlers.CameraDetect;
+            }
+            else
+                type = LabelHandlers.CameraTrigger;
+        }
 
         BringIntoView?.Invoke();
 
-        V5_REST_Lib.Controllers.Label lab = new(V5ProcessResults, simAddSec || camAddSec ? V5ResultRow._Config : null, simDetSec || camDetSec, ImageResults.SelectedImageRoll.SelectedGS1Table);
+        V5_REST_Lib.Controllers.Label lab = new(V5ProcessResults, type == LabelHandlers.SimulatorRestore ? V5ResultRow._Config : null, type, ImageResults.SelectedImageRoll.SelectedGS1Table);
 
-        if (ImageResults.SelectedImageRoll.ImageType == ImageRollImageTypes.Source)
-            lab.Image = PrepareImage(SourceImage);
-        else if (ImageResults.SelectedImageRoll.ImageType == ImageRollImageTypes.Stored)
-            lab.Image = PrepareImage(V5ResultRow.Stored);
+        if(type is LabelHandlers.SimulatorRestore or LabelHandlers.SimulatorDetect)
+        {
+            if (ImageResults.SelectedImageRoll.ImageType == ImageRollImageTypes.Source)
+                lab.Image = PrepareImage(SourceImage);
+            else if (ImageResults.SelectedImageRoll.ImageType == ImageRollImageTypes.Stored)
+                lab.Image = PrepareImage(V5ResultRow.Stored);
+        }
+
+        _ = Task.Run(() => ImageResults.SelectedScanner.Controller.ProcessLabel(lab));
 
         IsV5Working = true;
         IsV5Faulted = false;
 
-        _ = Task.Run(() => ImageResults.SelectedScanner.Controller.ProcessLabel(lab));
+        
     }
 
     private byte[] PrepareImage(ImageEntry img)
@@ -84,7 +109,11 @@ public partial class ImageResultEntry
         return img.ImageBytes;
     }
 
-    public void V5ProcessResults(V5_REST_Lib.Controllers.Repeat repeat) => V5ProcessResults(repeat?.FullReport);
+    public void V5ProcessResults(V5_REST_Lib.Controllers.Repeat repeat)
+    {
+        V5ProcessResults(repeat?.FullReport);
+    }
+
     public void V5ProcessResults(V5_REST_Lib.Controllers.FullReport report)
     {
         if (!App.Current.Dispatcher.CheckAccess())
@@ -95,7 +124,6 @@ public partial class ImageResultEntry
 
         try
         {
-
 
             if (report == null || report.FullImage == null)
             {
@@ -129,7 +157,6 @@ public partial class ImageResultEntry
                         continue;
                     }
                 }
-
             }
 
             if (tempSectors.Count > 0)
@@ -158,9 +185,15 @@ public partial class ImageResultEntry
         }
     }
 
-    public void UpdateV5StoredImageOverlay() => V5StoredImageOverlay = CreateSectorsImageOverlay(V5StoredImage, V5StoredSectors);
-    public void UpdateV5CurrentImageOverlay() => V5CurrentImageOverlay = CreateSectorsImageOverlay(V5CurrentImage, V5CurrentSectors);
+    public void UpdateV5StoredImageOverlay()
+    {
+        V5StoredImageOverlay = CreateSectorsImageOverlay(V5StoredImage, V5StoredSectors);
+    }
 
+    public void UpdateV5CurrentImageOverlay()
+    {
+        V5CurrentImageOverlay = CreateSectorsImageOverlay(V5CurrentImage, V5CurrentSectors);
+    }
 
     private void V5GetStored()
     {
@@ -192,7 +225,6 @@ public partial class ImageResultEntry
             return;
         }
 
-
         List<Sectors.Interfaces.ISector> tempSectors = [];
         if (!string.IsNullOrEmpty(row.Report))
         {
@@ -215,10 +247,9 @@ public partial class ImageResultEntry
             }
         }
 
-
         if (tempSectors.Count > 0)
         {
-            SortList3(tempSectors);
+            _ = SortList3(tempSectors);
 
             foreach (Sectors.Interfaces.ISector sec in tempSectors)
                 V5StoredSectors.Add(sec);
@@ -311,10 +342,15 @@ public partial class ImageResultEntry
             if (d.IsSectorMissing)
                 V5DiffSectors.Add(d);
     }
-    [RelayCommand] private Task<bool> V5Read() => V5ReadTask();
+    [RelayCommand]
+    private Task<bool> V5Read()
+    {
+        return V5ReadTask();
+    }
+
     public async Task<bool> V5ReadTask()
     {
-        var result = await ImageResults.SelectedScanner.Controller.Trigger_Wait_Return(true);
+        V5_REST_Lib.Controllers.FullReport result = await ImageResults.SelectedScanner.Controller.Trigger_Wait_Return(true);
         V5ProcessResults(result);
         //V275_REST_Lib.FullReport report;
         //if ((report = await ImageResults.SelectedNode.Controller.GetFullReport(repeat, true)) == null)
@@ -328,7 +364,12 @@ public partial class ImageResultEntry
         return true;
     }
 
-    [RelayCommand] private Task<int> V5Load() => V5LoadTask();
+    [RelayCommand]
+    private Task<int> V5Load()
+    {
+        return V5LoadTask();
+    }
+
     public async Task<int> V5LoadTask()
     {
         if (V5ResultRow == null)
@@ -375,5 +416,4 @@ public partial class ImageResultEntry
 
         return 1;
     }
-
 }

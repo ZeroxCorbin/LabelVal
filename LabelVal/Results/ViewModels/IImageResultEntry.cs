@@ -6,6 +6,13 @@ using System.Windows.Media;
 
 namespace LabelVal.Results.ViewModels;
 
+//bool simAddSec = ImageResults.SelectedScanner.Controller.IsSimulator && ImageResults.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic && !string.IsNullOrEmpty(V5ResultRow?.Template);
+//bool simDetSec = ImageResults.SelectedScanner.Controller.IsSimulator && ImageResults.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic && string.IsNullOrEmpty(V5ResultRow?.Template);
+//bool camAddSec = !ImageResults.SelectedScanner.Controller.IsSimulator && ImageResults.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic && !string.IsNullOrEmpty(V5ResultRow?.Template);
+//bool camDetSec = !ImageResults.SelectedScanner.Controller.IsSimulator && ImageResults.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic && string.IsNullOrEmpty(V5ResultRow?.Template);
+
+
+
 public interface IImageResultEntry
 {
     static string Version { get; set; } = "1.0";

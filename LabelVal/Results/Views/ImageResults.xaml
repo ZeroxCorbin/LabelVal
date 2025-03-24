@@ -6,13 +6,13 @@
     xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:json="clr-namespace:JSONViewer_WPF;assembly=JSONViewer_WPF"
     xmlns:local="clr-namespace:LabelVal.Results.Views"
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:sectors="clr-namespace:LabelVal.Sectors.Classes"
     xmlns:system="clr-namespace:System;assembly=mscorlib"
-    xmlns:json="clr-namespace:JSONViewer_WPF;assembly=JSONViewer_WPF"
     xmlns:viewModels="clr-namespace:LabelVal.Results.ViewModels"
     d:DataContext="{d:DesignInstance Type=viewModels:ImageResults}"
     mc:Ignorable="d">
@@ -425,7 +425,7 @@
             <Border Style="{StaticResource groupLeft}" />
             <Border Style="{StaticResource groupBottom}" />
 
-            <md:DrawerHost OpenMode="Standard">
+            <md:DrawerHost x:Name="JsonDrawer" OpenMode="Standard" md:DrawerHost.DrawerOpened="JsonDrawer_DrawerOpened" >
                 <md:DrawerHost.Style>
                     <Style TargetType="md:DrawerHost">
                         <Style.Triggers>
@@ -438,9 +438,52 @@
                         </Style.Triggers>
                     </Style>
                 </md:DrawerHost.Style>
-                <md:DrawerHost.RightDrawerContent >
-                    <DockPanel MinWidth="600">  
+
+                <md:DrawerHost.RightDrawerContent>
+
+                    <TabControl>
                         
+                        <TabItem x:Name="tiTemplate" Header="Template">
+                            <TabItem.Style>
+                                <Style TargetType="TabItem" BasedOn="{StaticResource MaterialDesignTabItem}">
+                                    <Setter Property="IsEnabled" Value="True" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding FocusedTemplate, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                                            <Setter Property="IsEnabled" Value="False" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TabItem.Style>
+                            <json:JsonViewer
+                                ButtonStyle="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                MinWidth="300"
+                                JSON="{Binding FocusedTemplate}"
+                                ShowSaveButton="True" />
+                        </TabItem>
+                        
+                        <TabItem x:Name="tiReport" Header="Report">
+                            <TabItem.Style>
+                                <Style TargetType="TabItem" BasedOn="{StaticResource MaterialDesignTabItem}">
+                                    <Setter Property="IsEnabled" Value="True" />
+
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding FocusedReport, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                                            <Setter Property="IsEnabled" Value="False" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TabItem.Style>
+                            <json:JsonViewer
+                                ButtonStyle="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                MinWidth="300"
+                                Foreground="{DynamicResource MahApps.Brushes.Text}"
+                                JSON="{Binding FocusedReport}"
+                                ShowSaveButton="True" />
+                        </TabItem>
+                        
+                    </TabControl>
+                    <!--<DockPanel Width="auto">
+
                         <DockPanel>
                             <DockPanel.Style>
                                 <Style TargetType="DockPanel">
@@ -471,8 +514,10 @@
                         </DockPanel>
 
 
-                    </DockPanel>
+                    </DockPanel>-->
+
                 </md:DrawerHost.RightDrawerContent>
+
                 <ScrollViewer
                     Margin="0"
                     HorizontalScrollBarVisibility="Disabled"

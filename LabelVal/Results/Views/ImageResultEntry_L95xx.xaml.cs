@@ -1,11 +1,14 @@
-﻿using BarcodeVerification.lib.ISO;
+﻿using BarcodeVerification.lib.Extensions;
+using BarcodeVerification.lib.ISO;
 using LabelVal.Dialogs;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.ImageViewer3D.Views;
 using LabelVal.Sectors.Extensions;
 using LabelVal.Sectors.Views;
 using LibImageUtilities.ImageTypes;
+using Lvs95xx.lib.Core.Controllers;
 using MahApps.Metro.Controls.Dialogs;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -102,9 +105,17 @@ public partial class ImageResultEntry_L95xx : UserControl
         if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
         {
             if (_resultEntry.L95xxResultRow != null)
-            {
-                _resultEntry.ImageResults.FocusedTemplate = JObject.FromObject(_resultEntry.L95xxResultRow.Template);
-                _resultEntry.ImageResults.FocusedReport = JObject.FromObject(_resultEntry.L95xxResultRow.Report);
+            {     
+                JObject focusedTemplate = new JObject();
+                JArray sectorsArray = JArray.FromObject(_resultEntry.L95xxResultRow._AllSectors);
+                foreach(JObject sector in sectorsArray)
+                {
+                    focusedTemplate.Add(sector.GetParameter<string>("Template.Name"), sector);
+
+                }
+
+                _resultEntry.ImageResults.FocusedTemplate = null;
+                _resultEntry.ImageResults.FocusedReport = focusedTemplate;
             }
         }
         else

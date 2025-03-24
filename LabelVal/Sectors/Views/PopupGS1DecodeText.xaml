@@ -1,36 +1,45 @@
-﻿<UserControl x:Class="LabelVal.Sectors.Views.PopupGS1DecodeText"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:LabelVal.Sectors.Views"
-             xmlns:v275Converters="clr-namespace:LabelVal.V275.Converters"
-             mc:Ignorable="d">
-    
+﻿<UserControl
+    x:Class="LabelVal.Sectors.Views.PopupGS1DecodeText"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:LabelVal.Sectors.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:v275Converters="clr-namespace:LabelVal.V275.Converters"
+    mc:Ignorable="d">
+
     <UserControl.Resources>
-        <v275Converters:V275_GS1FormattedOutput x:Key="gs1FormattedOutput"/>
+        <v275Converters:V275_GS1FormattedOutput x:Key="gs1FormattedOutput" />
     </UserControl.Resources>
 
     <Popup x:Name="Popup" StaysOpen="False">
 
-        <Border Padding="3" BorderThickness="2"
-                BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
-                Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+        <Border
+            Padding="3"
+            Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+            BorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
+            BorderThickness="2">
 
             <DockPanel>
-                <ItemsControl Margin="3,0" DockPanel.Dock="Top" ItemsSource="{Binding Report.GS1Results.Fields, Mode=OneTime}">
+                <ItemsControl
+                    Margin="3,0"
+                    DockPanel.Dock="Top"
+                    ItemsSource="{Binding Report.GS1Results.Fields, Mode=OneTime}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding }" TextWrapping="Wrap"/>
+                            <TextBlock Text="{Binding}" TextWrapping="Wrap" />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
 
-                <TextBlock Margin="3,0" TextWrapping="Wrap" Background="{DynamicResource MahApps.Brushes.Accent3}"
-                           Text="{Binding Report.GS1Results.Input, Converter={StaticResource gs1FormattedOutput}}"/>
+                <TextBlock
+                    Margin="3,0"
+                    Background="{DynamicResource MahApps.Brushes.Accent3}"
+                    Text="{Binding Report.GS1Results.Input, Converter={StaticResource gs1FormattedOutput}}"
+                    TextWrapping="Wrap" />
             </DockPanel>
         </Border>
-        
+
     </Popup>
 
 </UserControl>
