@@ -351,8 +351,6 @@
 
     </UserControl.Resources>
 
-
-
     <DockPanel>
         <DockPanel.Background>
             <SolidColorBrush Opacity="0.5" Color="{DynamicResource MahApps.Colors.Accent}" />

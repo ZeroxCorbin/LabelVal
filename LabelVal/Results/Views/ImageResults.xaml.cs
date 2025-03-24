@@ -20,4 +20,9 @@ public partial class ImageResults : UserControl
             tiReport.IsSelected = true;
         }
     }
+
+    private void btnRightSideBar_Click(object sender, System.Windows.RoutedEventArgs e)
+    {
+        JsonDrawer.IsRightDrawerOpen = !JsonDrawer.IsRightDrawerOpen;
+    }
 }

@@ -457,6 +457,70 @@
 
                 </md:Card>
 
+                <DockPanel
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    DockPanel.Dock="Top">
+                    <DockPanel.Style>
+                        <Style TargetType="DockPanel">
+                            <Setter Property="Visibility" Value="Visible" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding V5FocusedStoredSector, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DockPanel.Style>
+
+                    <md:Card
+                        Margin="0,0,0,3"
+                        HorizontalAlignment="Right"
+                        Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                        DockPanel.Dock="Top"
+                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+
+                        <DockPanel>
+
+                            <DockPanel Height="26.62" />
+
+                            <Button
+                                Width="28"
+                                Click="btnSaveImage_Click"
+                                Content="{iconPacks:Material Kind=ContentSave}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                ToolTip="Save as image." />
+
+                            <Button
+                                Width="28"
+                                Click="btnCopyImage_Click"
+                                Content="{iconPacks:MaterialDesign Kind=Image}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                ToolTip="Copy image to clipboard as PNG." />
+
+                            <Button
+                                Width="28"
+                                Command="{Binding V5FocusedStoredSector.CopyToClipBoardCommand}"
+                                CommandParameter="{Binding SourceImage.Order}"
+                                Content="{iconPacks:Material Kind=ContentCopy}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                ToolTip="Copy sector to CSV." />
+
+                            <Button
+                                Width="28"
+                                Click="btnCloseDetails_Click"
+                                Content="{iconPacks:MaterialDesign Kind=Close}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                Tag="v5Stored"
+                                ToolTip="Close this." />
+
+                        </DockPanel>
+                    </md:Card>
+                </DockPanel>
+
                 <ScrollViewer
                     x:Name="ScrollV5StoredSectors"
                     Margin="3"
@@ -490,7 +554,7 @@
 
                             <ListBox.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <WrapPanel Orientation="Horizontal">
+                                    <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                         <WrapPanel.Style>
                                             <Style TargetType="WrapPanel">
                                                 <Setter Property="ItemWidth" Value="200" />
@@ -538,54 +602,6 @@
                                     </Style.Triggers>
                                 </Style>
                             </DockPanel.Style>
-
-                            <md:Card
-                                Margin="0,0,0,3"
-                                HorizontalAlignment="Right"
-                                Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
-                                DockPanel.Dock="Top"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
-
-                                <DockPanel>
-
-                                    <DockPanel Height="26.62" />
-
-                                    <Button
-                                        Width="28"
-                                        Click="btnSaveImage_Click"
-                                        Content="{iconPacks:Material Kind=ContentSave}"
-                                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                        ToolTip="Save as image." />
-
-                                    <Button
-                                        Width="28"
-                                        Click="btnCopyImage_Click"
-                                        Content="{iconPacks:MaterialDesign Kind=Image}"
-                                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                        ToolTip="Copy image to clipboard as PNG." />
-
-                                    <Button
-                                        Width="28"
-                                        Command="{Binding V5FocusedStoredSector.CopyToClipBoardCommand}"
-                                        CommandParameter="{Binding SourceImage.Order}"
-                                        Content="{iconPacks:Material Kind=ContentCopy}"
-                                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                        ToolTip="Copy sector to CSV." />
-
-                                    <Button
-                                        Width="28"
-                                        Click="btnCloseDetails_Click"
-                                        Content="{iconPacks:MaterialDesign Kind=Close}"
-                                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                        Tag="v5Stored"
-                                        ToolTip="Close this." />
-
-                                </DockPanel>
-                            </md:Card>
 
                             <!--  Keep this Dockapnel. It is used for Saving and Coping the SectorDetails Visual.  -->
                             <DockPanel>
@@ -738,6 +754,70 @@
                     </StackPanel>
                 </md:Card>
 
+                <DockPanel
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    DockPanel.Dock="Top">
+                    <DockPanel.Style>
+                        <Style TargetType="DockPanel">
+                            <Setter Property="Visibility" Value="Visible" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding V5FocusedCurrentSector, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DockPanel.Style>
+
+                    <md:Card
+                        Margin="0,0,0,3"
+                        HorizontalAlignment="Right"
+                        Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                        DockPanel.Dock="Top"
+                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+
+                        <DockPanel>
+
+                            <DockPanel Height="26.62" />
+
+                            <Button
+                                Width="28"
+                                Click="btnSaveImage_Click"
+                                Content="{iconPacks:Material Kind=ContentSave}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                ToolTip="Save as image." />
+
+                            <Button
+                                Width="28"
+                                Click="btnCopyImage_Click"
+                                Content="{iconPacks:MaterialDesign Kind=ContentCopy}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                ToolTip="Copy image to clipboard as PNG." />
+
+                            <Button
+                                Width="28"
+                                Command="{Binding V5FocusedCurrentSector.CopyToClipBoardCommand}"
+                                CommandParameter="{Binding SourceImage.Order}"
+                                Content="{iconPacks:Material Kind=ContentCopy}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                ToolTip="Copy sector to CSV." />
+
+                            <Button
+                                Width="28"
+                                Click="btnCloseDetails_Click"
+                                Content="{iconPacks:MaterialDesign Kind=Close}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                Tag="v5Current"
+                                ToolTip="Close this." />
+
+                        </DockPanel>
+                    </md:Card>
+                </DockPanel>
+
                 <ScrollViewer
                     x:Name="ScrollV5CurrentSectors"
                     Margin="3"
@@ -772,7 +852,7 @@
 
                             <ListBox.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <WrapPanel Orientation="Horizontal">
+                                    <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                         <WrapPanel.Style>
                                             <Style TargetType="WrapPanel">
                                                 <Setter Property="ItemWidth" Value="200" />
@@ -820,54 +900,6 @@
                                     </Style.Triggers>
                                 </Style>
                             </DockPanel.Style>
-
-                            <md:Card
-                                Margin="0,0,0,3"
-                                HorizontalAlignment="Right"
-                                Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
-                                DockPanel.Dock="Top"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
-
-                                <DockPanel>
-
-                                    <DockPanel Height="26.62" />
-
-                                    <Button
-                                        Width="28"
-                                        Click="btnSaveImage_Click"
-                                        Content="{iconPacks:Material Kind=ContentSave}"
-                                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                        ToolTip="Save as image." />
-
-                                    <Button
-                                        Width="28"
-                                        Click="btnCopyImage_Click"
-                                        Content="{iconPacks:MaterialDesign Kind=ContentCopy}"
-                                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                        ToolTip="Copy image to clipboard as PNG." />
-
-                                    <Button
-                                        Width="28"
-                                        Command="{Binding V5FocusedCurrentSector.CopyToClipBoardCommand}"
-                                        CommandParameter="{Binding SourceImage.Order}"
-                                        Content="{iconPacks:Material Kind=ContentCopy}"
-                                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                        ToolTip="Copy sector to CSV." />
-
-                                    <Button
-                                        Width="28"
-                                        Click="btnCloseDetails_Click"
-                                        Content="{iconPacks:MaterialDesign Kind=Close}"
-                                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                        Tag="v5Current"
-                                        ToolTip="Close this." />
-
-                                </DockPanel>
-                            </md:Card>
 
                             <DockPanel>
 

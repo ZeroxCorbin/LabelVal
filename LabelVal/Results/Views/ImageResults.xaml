@@ -32,16 +32,13 @@
 
     <DockPanel VerticalAlignment="Top">
 
-        <DockPanel
-            Margin="3,3,0,0"
-            HorizontalAlignment="Left"
-            DockPanel.Dock="Top">
+        <DockPanel Margin="3,3,0,0" DockPanel.Dock="Top">
 
             <md:Card
                 Height="68"
                 Margin="3,3,0,0"
+                HorizontalAlignment="Left"
                 Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
-                DockPanel.Dock="Top"
                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
 
                 <DockPanel>
@@ -419,13 +416,27 @@
                 </DockPanel>
             </md:Card>
 
+            <md:Card HorizontalAlignment="Right">
+                <Button
+                    x:Name="btnRightSideBar"
+                    Click="btnRightSideBar_Click"
+                    Margin="6,0"
+                    Width="48"
+                    Content="{iconPacks:Material Kind=ArrowCollapseLeft, Width=24, Height=24}"
+                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                    Style="{StaticResource MahApps.Styles.Button.Hamburger}" />
+            </md:Card>
+
         </DockPanel>
 
         <DockPanel VerticalAlignment="Top" DockPanel.Dock="Top">
             <Border Style="{StaticResource groupLeft}" />
             <Border Style="{StaticResource groupBottom}" />
 
-            <md:DrawerHost x:Name="JsonDrawer" OpenMode="Standard" md:DrawerHost.DrawerOpened="JsonDrawer_DrawerOpened" >
+            <md:DrawerHost
+                x:Name="JsonDrawer"
+                md:DrawerHost.DrawerOpened="JsonDrawer_DrawerOpened"
+                OpenMode="Standard">
                 <md:DrawerHost.Style>
                     <Style TargetType="md:DrawerHost">
                         <Style.Triggers>
@@ -442,10 +453,10 @@
                 <md:DrawerHost.RightDrawerContent>
 
                     <TabControl>
-                        
+
                         <TabItem x:Name="tiTemplate" Header="Template">
                             <TabItem.Style>
-                                <Style TargetType="TabItem" BasedOn="{StaticResource MaterialDesignTabItem}">
+                                <Style BasedOn="{StaticResource MaterialDesignTabItem}" TargetType="TabItem">
                                     <Setter Property="IsEnabled" Value="True" />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding FocusedTemplate, Converter={StaticResource IsNullOrEmpty}}" Value="True">
@@ -455,15 +466,15 @@
                                 </Style>
                             </TabItem.Style>
                             <json:JsonViewer
-                                ButtonStyle="{StaticResource MahApps.Styles.Button.Hamburger}"
                                 MinWidth="300"
+                                ButtonStyle="{StaticResource MahApps.Styles.Button.Hamburger}"
                                 JSON="{Binding FocusedTemplate}"
                                 ShowSaveButton="True" />
                         </TabItem>
-                        
+
                         <TabItem x:Name="tiReport" Header="Report">
                             <TabItem.Style>
-                                <Style TargetType="TabItem" BasedOn="{StaticResource MaterialDesignTabItem}">
+                                <Style BasedOn="{StaticResource MaterialDesignTabItem}" TargetType="TabItem">
                                     <Setter Property="IsEnabled" Value="True" />
 
                                     <Style.Triggers>
@@ -474,13 +485,13 @@
                                 </Style>
                             </TabItem.Style>
                             <json:JsonViewer
-                                ButtonStyle="{StaticResource MahApps.Styles.Button.Hamburger}"
                                 MinWidth="300"
+                                ButtonStyle="{StaticResource MahApps.Styles.Button.Hamburger}"
                                 Foreground="{DynamicResource MahApps.Brushes.Text}"
                                 JSON="{Binding FocusedReport}"
                                 ShowSaveButton="True" />
                         </TabItem>
-                        
+
                     </TabControl>
                     <!--<DockPanel Width="auto">
 
