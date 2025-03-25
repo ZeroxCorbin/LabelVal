@@ -12,7 +12,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Color = SharpDX.Color;
+using DotImaging;
 using ImageUtilities.lib.Wpf;
+using DotImaging;
+using System.Drawing.Imaging;
 
 namespace LabelVal.ImageViewer3D.ViewModels
 {
@@ -84,14 +87,13 @@ namespace LabelVal.ImageViewer3D.ViewModels
         {
             var format = image.GetImagePixelFormat();
             // Convert the image to a 8bpp indexed bmp, if needed. This will be used to generate the mesh
-            BitmapArray = format != System.Drawing.Imaging.PixelFormat.Format8bppIndexed
-                ? image.GetBmp(System.Drawing.Imaging.PixelFormat.Format8bppIndexed)
-                : image.GetBmp();
+            BitmapArray = image.GetBmp(PixelFormat.Format8bppIndexed);
+            // SobelImageArray = SobelEdgeDetection.CreateBitmapFromEdgeDetection1ByteColor(SobelEdgeDetection.ApplySobelEdgeDetection1ByteColor(BitmapArray, wd, ht), wd, ht);
 
-           // SobelImageArray = SobelEdgeDetection.CreateBitmapFromEdgeDetection1ByteColor(SobelEdgeDetection.ApplySobelEdgeDetection1ByteColor(BitmapArray, wd, ht), wd, ht);
+            var bmp = BitmapArray.GetBitmap();
 
             //The material needs a 32 Bpp image
-            OriginalImageArray = ImageUtilities.lib.Core.Png.Utilities.GetPng(image, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            OriginalImageArray = image.GetBmp(PixelFormat.Format32bppRgb);
 
             // Convert the image to a BitmapImage for display
             Image = BitmapImage.CreateBitmapImage(image);
