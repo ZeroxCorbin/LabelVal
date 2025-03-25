@@ -32,13 +32,13 @@ public partial class ImageViewer3D_IndividualMeshs : BaseViewModel
     }
     public bool LoadImage(byte[] image)
     {
-        OriginalImage = LibImageUtilities.ImageTypes.Bmp.Utilities.GetBmp(image);
+        OriginalImage = ImageUtilities.lib.Core.Bmp.Utilities.GetBmp(image);
 
-        var form = LibImageUtilities.ImageTypes.Bmp.Utilities.GetPixelFormat(OriginalImage);
+        var form = ImageUtilities.lib.Core.Bmp.Utilities.GetPixelFormat(OriginalImage);
         if (form != System.Drawing.Imaging.PixelFormat.Format8bppIndexed)
             return false;
 
-        IndexedColorPallet = LibImageUtilities.ImageTypes.Bmp.Utilities.GetIndexedColorPallet(OriginalImage);
+        IndexedColorPallet = ImageUtilities.lib.Core.Bmp.Utilities.GetIndexedColorPallet(OriginalImage);
         if (IndexedColorPallet.Length != 1024)
             return false;
 
@@ -46,7 +46,7 @@ public partial class ImageViewer3D_IndividualMeshs : BaseViewModel
         if (ColorPallet.Count != 256)
             return false;
 
-        Bytes = LibImageUtilities.ImageTypes.Bmp.Utilities.GetImageData(OriginalImage);
+        Bytes = ImageUtilities.lib.Core.Bmp.Utilities.GetImageData(OriginalImage);
 
         BuildVisuals(OriginalImage);
 

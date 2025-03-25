@@ -6,7 +6,7 @@ using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Results.Databases;
 using LabelVal.Utilities;
-using LibImageUtilities.ImageTypes;
+using ImageUtilities.lib.Core;
 using Lvs95xx.lib.Core.Controllers;
 using Lvs95xx.lib.Core.Models;
 using MahApps.Metro.Controls.Dialogs;
@@ -223,17 +223,17 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             if (bmp != null)
             {
                 if (Path.GetExtension(path).Contains("png", StringComparison.InvariantCultureIgnoreCase))
-                    File.WriteAllBytes(path, LibImageUtilities.ImageTypes.Png.Utilities.GetPng(bmp));
+                    File.WriteAllBytes(path, ImageUtilities.lib.Core.Png.Utilities.GetPng(bmp));
                 else
                 {
-                    var dpi = LibImageUtilities.ImageTypes.ImageUtilities.GetImageDPI(bmp);
-                    LibImageUtilities.ImageTypes.Bmp.Bmp format = new(LibImageUtilities.ImageTypes.Bmp.Utilities.GetBmp(bmp));
+                    var dpi = ImageUtilities.lib.Core.ImageUtilities.GetImageDPI(bmp);
+                    ImageUtilities.lib.Core.Bmp.Bmp format = new(ImageUtilities.lib.Core.Bmp.Utilities.GetBmp(bmp));
                     //Lvs95xx.lib.Core.Controllers.Controller.ApplyWatermark(format.ImageData);
 
                     byte[] img = format.RawData;
 
-                    _ = LibImageUtilities.ImageTypes.ImageUtilities.SetImageDPI(img, dpi);
-                    //LibImageUtilities.ImageTypes.Bmp.Utilities.SetDPI(format.RawData, newDPI);
+                    _ = ImageUtilities.lib.Core.ImageUtilities.SetImageDPI(img, dpi);
+                    //ImageUtilities.lib.Core.Bmp.Utilities.SetDPI(format.RawData, newDPI);
 
                     File.WriteAllBytes(path, img);
                 }
@@ -453,7 +453,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         }
     }
 
-    [RelayCommand] private void RedoFiducial() => LibImageUtilities.ImageTypes.ImageUtilities.RedrawFiducial(SourceImage.Path, false);
+    [RelayCommand] private void RedoFiducial() => ImageUtilities.lib.Core.ImageUtilities.RedrawFiducial(SourceImage.Path, false);
 
     [RelayCommand] private void Delete() => DeleteImage?.Invoke(this);
     //const UInt32 WM_KEYDOWN = 0x0100;

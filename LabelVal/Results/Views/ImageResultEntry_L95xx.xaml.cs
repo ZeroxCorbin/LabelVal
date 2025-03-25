@@ -1,21 +1,16 @@
 ﻿using BarcodeVerification.lib.Extensions;
-using BarcodeVerification.lib.ISO;
 using LabelVal.Dialogs;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.ImageViewer3D.Views;
 using LabelVal.Sectors.Extensions;
 using LabelVal.Sectors.Views;
-using LibImageUtilities.ImageTypes;
-using Lvs95xx.lib.Core.Controllers;
 using MahApps.Metro.Controls.Dialogs;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Wpf.lib.Extentions;
 using SectorDifferences = LabelVal.Sectors.Views.SectorDifferences;
 
 namespace LabelVal.Results.Views;
@@ -29,7 +24,7 @@ public partial class ImageResultEntry_L95xx : UserControl
 
     private void btnCloseDetails_Click(object sender, RoutedEventArgs e)
     {
-        ViewModels.ImageResultEntry ire = (ViewModels.ImageResultEntry)DataContext;
+        var ire = (ViewModels.ImageResultEntry)DataContext;
 
         if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
         {
@@ -105,10 +100,10 @@ public partial class ImageResultEntry_L95xx : UserControl
         if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
         {
             if (_resultEntry.L95xxResultRow != null)
-            {     
-                JObject focusedTemplate = new JObject();
-                JArray sectorsArray = JArray.FromObject(_resultEntry.L95xxResultRow._AllSectors);
-                foreach(JObject sector in sectorsArray)
+            {
+                JObject focusedTemplate = [];
+                var sectorsArray = JArray.FromObject(_resultEntry.L95xxResultRow._AllSectors);
+                foreach (JObject sector in sectorsArray)
                 {
                     focusedTemplate.Add(sector.GetParameter<string>("Template.Name"), sector);
 
@@ -213,13 +208,13 @@ public partial class ImageResultEntry_L95xx : UserControl
     {
         RenderTargetBitmap bitmap = new((int)visual.ActualWidth, (int)visual.ActualHeight, 96, 96, PixelFormats.Pbgra32);
         bitmap.Render(visual);
-        BitmapFrame frame = BitmapFrame.Create(bitmap);
+        var frame = BitmapFrame.Create(bitmap);
         encoder.Frames.Add(frame);
     }
 
     private void lstDissimilarSector_Click(object sender, MouseButtonEventArgs e)
     {
-        SectorDifferences sndr = (SectorDifferences)sender;
+        var sndr = (SectorDifferences)sender;
         System.Collections.ObjectModel.Collection<Sector> sectors = Utilities.VisualTreeHelp.GetVisualChildren<Sector>(this);
         foreach (Sector s in sectors)
         {
@@ -250,7 +245,7 @@ public partial class ImageResultEntry_L95xx : UserControl
         dc.LoadImage(image.Image, overlay);
         if (dc.Image == null) return false;
 
-        Main.Views.MainWindow yourParentWindow = (Main.Views.MainWindow)Window.GetWindow(this);
+        var yourParentWindow = (Main.Views.MainWindow)Window.GetWindow(this);
 
         dc.Width = yourParentWindow.ActualWidth - 100;
         dc.Height = yourParentWindow.ActualHeight - 100;
@@ -310,7 +305,7 @@ public partial class ImageResultEntry_L95xx : UserControl
     {
         ImageViewer3D.ViewModels.ImageViewer3D_SingleMesh img = new(image);
 
-        Main.Views.MainWindow yourParentWindow = (Main.Views.MainWindow)Window.GetWindow(this);
+        var yourParentWindow = (Main.Views.MainWindow)Window.GetWindow(this);
 
         img.Width = yourParentWindow.ActualWidth - 100;
         img.Height = yourParentWindow.ActualHeight - 100;
@@ -340,18 +335,18 @@ public partial class ImageResultEntry_L95xx : UserControl
         //If the shift key is pressed, copy the image as Bitmap.
         if (!(Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)))
 
-            img = LibImageUtilities.ImageTypes.Png.Utilities.GetPng(imageBytes);
+            img = ImageUtilities.lib.Core.Png.Utilities.GetPng(imageBytes);
         else
         {
-            LibImageUtilities.ImageTypes.ImageUtilities.DPI dpi = LibImageUtilities.ImageTypes.ImageUtilities.GetImageDPI(imageBytes);
-            LibImageUtilities.ImageTypes.Bmp.Bmp format = new(LibImageUtilities.ImageTypes.Bmp.Utilities.GetBmp(imageBytes));
+            ImageUtilities.lib.Core.ImageUtilities.DPI dpi = ImageUtilities.lib.Core.ImageUtilities.GetImageDPI(imageBytes);
+            ImageUtilities.lib.Core.Bmp.Bmp format = new(ImageUtilities.lib.Core.Bmp.Utilities.GetBmp(imageBytes));
             //Lvs95xx.lib.Core.Controllers.Controller.ApplyWatermark(format.ImageData);
 
             img = format.RawData;
 
-            _ = LibImageUtilities.ImageTypes.ImageUtilities.SetImageDPI(img, dpi);
+            _ = ImageUtilities.lib.Core.ImageUtilities.SetImageDPI(img, dpi);
         }
 
-        Clipboard.SetImage(LibImageUtilities.BitmapImage.CreateBitmapImage(img));
+        Clipboard.SetImage(ImageUtilities.lib.Wpf.BitmapImage.CreateBitmapImage(img));
     }
 }

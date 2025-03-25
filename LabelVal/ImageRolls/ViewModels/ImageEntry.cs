@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using LabelVal.Utilities;
-using LibImageUtilities.ImageTypes;
+
 using Newtonsoft.Json;
 using SQLite;
 using System.Drawing.Printing;
@@ -50,12 +49,12 @@ public partial class ImageEntry : ObservableObject
         {
             OriginalImage = value;
 
-            Image = LibImageUtilities.BitmapImage.CreateBitmapImage(OriginalImage);
-            ImageLow = LibImageUtilities.BitmapImage.CreateBitmapImage(OriginalImage, 400);
+            Image = ImageUtilities.lib.Wpf.BitmapImage.CreateBitmapImage(OriginalImage);
+            ImageLow = ImageUtilities.lib.Wpf.BitmapImage.CreateBitmapImage(OriginalImage, 400);
         }
     }
 
-    public byte[] BitmapBytes => LibImageUtilities.ImageTypes.Bmp.Utilities.GetBmp(OriginalImage, (int)Image.DpiX);
+    public byte[] BitmapBytes => ImageUtilities.lib.Core.Bmp.Utilities.GetBmp(OriginalImage, (int)Image.DpiX);
 
     [ObservableProperty][property: JsonProperty] private int targetDpiWidth;
     [ObservableProperty][property: JsonProperty] private int targetDpiHeight;
@@ -85,7 +84,7 @@ public partial class ImageEntry : ObservableObject
     public ImageEntry(string rollUID, string path, int targetDpiWidth, int targetDpiHeight)
     {
         ImageBytes = File.ReadAllBytes(path);
-        UID = LibImageUtilities.ImageTypes.ImageUtilities.GetImageUID(ImageBytes);
+        UID = ImageUtilities.lib.Core.ImageUtilities.GetImageDataUID(ImageBytes);
 
         RollUID = rollUID;
 
@@ -106,7 +105,7 @@ public partial class ImageEntry : ObservableObject
     public ImageEntry(string rollUID, byte[] image, int targetDpiWidth, int targetDpiHeight = 0, string comment = null)
     {
         ImageBytes = image;
-        UID = LibImageUtilities.ImageTypes.ImageUtilities.GetImageUID(ImageBytes);
+        UID = ImageUtilities.lib.Core.ImageUtilities.GetImageDataUID(ImageBytes);
 
         RollUID = rollUID;
 

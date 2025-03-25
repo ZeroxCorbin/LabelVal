@@ -327,36 +327,36 @@ public partial class ImageResultEntry_V275 : UserControl
     {
         if (!(Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)))
         {
-            Clipboard.SetImage(LibImageUtilities.BitmapImage.CreateBitmapImage(LibImageUtilities.ImageTypes.Png.Utilities.GetPng(imageBytes)));
+            Clipboard.SetImage(ImageUtilities.lib.Wpf.BitmapImage.CreateBitmapImage(ImageUtilities.lib.Core.Png.Utilities.GetPng(imageBytes)));
         }
         else
         {
-            LibImageUtilities.ImageTypes.ImageUtilities.DPI dpi = LibImageUtilities.ImageTypes.ImageUtilities.GetImageDPI(imageBytes);
-            LibImageUtilities.ImageTypes.Bmp.Bmp format = new(LibImageUtilities.ImageTypes.Bmp.Utilities.GetBmp(imageBytes));
+            ImageUtilities.lib.Core.ImageUtilities.DPI dpi = ImageUtilities.lib.Core.ImageUtilities.GetImageDPI(imageBytes);
+            ImageUtilities.lib.Core.Bmp.Bmp format = new(ImageUtilities.lib.Core.Bmp.Utilities.GetBmp(imageBytes));
             //Lvs95xx.lib.Core.Controllers.Controller.ApplyWatermark(format.ImageData);
             var img = format.RawData;
-            _ = LibImageUtilities.ImageTypes.ImageUtilities.SetImageDPI(img, dpi);
-            Clipboard.SetImage(LibImageUtilities.BitmapImage.CreateBitmapImage(img));
+            _ = ImageUtilities.lib.Core.ImageUtilities.SetImageDPI(img, dpi);
+            Clipboard.SetImage(ImageUtilities.lib.Wpf.BitmapImage.CreateBitmapImage(img));
         }
 
         //var data = new DataObject();
         ////If the shift key is pressed, copy the image as Bitmap.
         //if (!(Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)))
         //{
-        //    using MemoryStream pngMemStream = new MemoryStream(LibImageUtilities.ImageTypes.Png.Utilities.GetPng(imageBytes));
+        //    using MemoryStream pngMemStream = new MemoryStream(ImageUtilities.lib.Core.Png.Utilities.GetPng(imageBytes));
         //    data.SetData("PNG", pngMemStream, false);
         //    Clipboard.SetDataObject(data, true);
         //}
 
         //else
         //{
-        //    ImageUtilities.DPI dpi = LibImageUtilities.ImageTypes.ImageUtilities.GetImageDPI(imageBytes);
-        //    LibImageUtilities.ImageTypes.Bmp.Bmp format = new(LibImageUtilities.ImageTypes.Bmp.Utilities.GetBmp(imageBytes));
+        //    ImageUtilities.DPI dpi = ImageUtilities.lib.Core.ImageUtilities.GetImageDPI(imageBytes);
+        //    ImageUtilities.lib.Core.Bmp.Bmp format = new(ImageUtilities.lib.Core.Bmp.Utilities.GetBmp(imageBytes));
         //    //Lvs95xx.lib.Core.Controllers.Controller.ApplyWatermark(format.ImageData);
 
         //    var img = format.RawData;
 
-        //    _ = LibImageUtilities.ImageTypes.ImageUtilities.SetImageDPI(img, dpi);
+        //    _ = ImageUtilities.lib.Core.ImageUtilities.SetImageDPI(img, dpi);
 
         //    data.SetData(DataFormats.Bitmap,img, false);
         //    Clipboard.SetDataObject(data, true);

@@ -196,7 +196,7 @@ public partial class ImageResultEntry
                 return;
             }
 
-            V5CurrentImage = new ImageEntry(ImageRollUID, LibImageUtilities.ImageTypes.Png.Utilities.GetPng(report.FullImage), 96);
+            V5CurrentImage = new ImageEntry(ImageRollUID, ImageUtilities.lib.Core.Png.Utilities.GetPng(report.FullImage), 96);
 
             V5CurrentTemplate = ImageResults.SelectedScanner.Controller.Config;
             V5CurrentReport = report.Report;

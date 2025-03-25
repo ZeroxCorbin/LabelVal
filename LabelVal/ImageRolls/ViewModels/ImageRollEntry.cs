@@ -5,7 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
-using LibImageUtilities.ImageTypes.Png;
+using ImageUtilities.lib.Core.Png;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.Collections.ObjectModel;
@@ -228,7 +228,7 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     {
         try
         {
-            ImageEntry image = new(UID, LibImageUtilities.ImageTypes.Png.Utilities.GetPng(rawImage), TargetDPI, TargetDPI)
+            ImageEntry image = new(UID, ImageUtilities.lib.Core.Png.Utilities.GetPng(rawImage), TargetDPI, TargetDPI)
             {
                 Order = Images.Count > 0 ? Images.Max(img => img.Order) + 1 : 1
             };

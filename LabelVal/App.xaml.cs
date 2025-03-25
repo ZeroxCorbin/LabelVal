@@ -428,7 +428,7 @@ public partial class App : Application
                 {
                     string newFileName = $"{imgDir.FullName}\\{Path.GetFileName(file)}";
                     if (Path.GetExtension(file) is ".bmp" or ".png")
-                        File.WriteAllBytes(newFileName, LibImageUtilities.ImageTypes.Png.Utilities.GetPng(File.ReadAllBytes(file), PixelFormat.Format8bppIndexed));
+                        File.WriteAllBytes(newFileName, ImageUtilities.lib.Core.Png.Utilities.GetPng(File.ReadAllBytes(file), PixelFormat.Format8bppIndexed));
                     else
                         File.Copy(file, newFileName);
                 }
@@ -442,7 +442,7 @@ public partial class App : Application
                 {
                     string newFileName = $"{imgDir.FullName}\\{Path.GetFileName(file)}";
                     if (Path.GetExtension(file) is ".bmp" or ".png")
-                        File.WriteAllBytes(newFileName, LibImageUtilities.ImageTypes.Png.Utilities.GetPng(File.ReadAllBytes(file), PixelFormat.Format8bppIndexed));
+                        File.WriteAllBytes(newFileName, ImageUtilities.lib.Core.Png.Utilities.GetPng(File.ReadAllBytes(file), PixelFormat.Format8bppIndexed));
                     else
                         File.Copy(file, newFileName);
                 }

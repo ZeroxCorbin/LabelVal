@@ -3,7 +3,6 @@ using LabelVal.ImageRolls.ViewModels;
 using LabelVal.ImageViewer3D.Views;
 using LabelVal.Sectors.Extensions;
 using LabelVal.Sectors.Views;
-using LibImageUtilities.ImageTypes;
 using MahApps.Metro.Controls.Dialogs;
 using System.Windows;
 using System.Windows.Controls;
@@ -316,18 +315,18 @@ public partial class ImageResultEntry_V5 : UserControl
         //If the shift key is pressed, copy the image as Bitmap.
         if (!(Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)))
 
-            img = LibImageUtilities.ImageTypes.Png.Utilities.GetPng(imageBytes);
+            img = ImageUtilities.lib.Core.Png.Utilities.GetPng(imageBytes);
         else
         {
-            var dpi = LibImageUtilities.ImageTypes.ImageUtilities.GetImageDPI(imageBytes);
-            LibImageUtilities.ImageTypes.Bmp.Bmp format = new(LibImageUtilities.ImageTypes.Bmp.Utilities.GetBmp(imageBytes));
+            var dpi = ImageUtilities.lib.Core.ImageUtilities.GetImageDPI(imageBytes);
+            ImageUtilities.lib.Core.Bmp.Bmp format = new(ImageUtilities.lib.Core.Bmp.Utilities.GetBmp(imageBytes));
             //Lvs95xx.lib.Core.Controllers.Controller.ApplyWatermark(format.ImageData);
 
             img = format.RawData;
 
-            _ = LibImageUtilities.ImageTypes.ImageUtilities.SetImageDPI(img, dpi);
+            _ = ImageUtilities.lib.Core.ImageUtilities.SetImageDPI(img, dpi);
         }
 
-        Clipboard.SetImage(LibImageUtilities.BitmapImage.CreateBitmapImage(img));
+        Clipboard.SetImage(ImageUtilities.lib.Wpf.BitmapImage.CreateBitmapImage(img));
     }
 }

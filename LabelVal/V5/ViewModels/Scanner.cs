@@ -355,7 +355,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         {
             try
             {
-                RawImage = LibImageUtilities.ImageTypes.Png.Utilities.GetPng(await Controller.GetImageFullRes(json));
+                RawImage = ImageUtilities.lib.Core.Png.Utilities.GetPng(await Controller.GetImageFullRes(json));
             }
             catch { RawImage = null; }
         }
@@ -363,7 +363,7 @@ public partial class Scanner : ObservableRecipient, IRecipient<PropertyChangedMe
         {
             try
             {
-                RawImage = LibImageUtilities.ImageTypes.Png.Utilities.GetPng((byte[])json["msgData"]?["images"]?[0]?["imgData"]);
+                RawImage = ImageUtilities.lib.Core.Png.Utilities.GetPng((byte[])json["msgData"]?["images"]?[0]?["imgData"]);
             }
             catch { RawImage = null; }
         }

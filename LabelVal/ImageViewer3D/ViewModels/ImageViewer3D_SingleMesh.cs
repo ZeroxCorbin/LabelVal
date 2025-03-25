@@ -4,14 +4,15 @@ using HelixToolkit.Wpf.SharpDX;
 using LabelVal.ImageViewer3D.Mesh;
 using LabelVal.ImageViewer3D.Processing;
 using LabelVal.Utilities;
-using LibImageUtilities.ImageTypes;
-using LibImageUtilities.ImageTypes.Bmp;
-using LibImageUtilities.ImageTypes.Png;
+using ImageUtilities.lib.Core;
+using ImageUtilities.lib.Core.Bmp;
+using ImageUtilities.lib.Core.Png;
 using SharpDX;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using Color = SharpDX.Color;
+using ImageUtilities.lib.Wpf;
 
 namespace LabelVal.ImageViewer3D.ViewModels
 {
@@ -90,10 +91,10 @@ namespace LabelVal.ImageViewer3D.ViewModels
            // SobelImageArray = SobelEdgeDetection.CreateBitmapFromEdgeDetection1ByteColor(SobelEdgeDetection.ApplySobelEdgeDetection1ByteColor(BitmapArray, wd, ht), wd, ht);
 
             //The material needs a 32 Bpp image
-            OriginalImageArray = LibImageUtilities.ImageTypes.Png.Utilities.GetPng(image, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            OriginalImageArray = ImageUtilities.lib.Core.Png.Utilities.GetPng(image, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
             // Convert the image to a BitmapImage for display
-            Image = LibImageUtilities.BitmapImage.CreateBitmapImage(image);
+            Image = BitmapImage.CreateBitmapImage(image);
 
             EffectsManager = new DefaultEffectsManager();
 
