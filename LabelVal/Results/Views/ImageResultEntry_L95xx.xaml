@@ -201,7 +201,7 @@
                         </Style>
                     </Button.Style>
                 </Button>
-                
+
                 <Button
                     Width="28"
                     Command="{Binding ClearReadCommand}"
@@ -225,7 +225,7 @@
                         </Style>
                     </Button.Style>
                 </Button>
-                
+
 
                 <!--  Sectors Only  -->
                 <Button
@@ -271,7 +271,7 @@
                     <Border Margin="3,0" Style="{StaticResource imageBar}" />
 
                 </DockPanel>
-                
+
                 <!--  Both  -->
                 <Button
                     Width="28"
@@ -535,7 +535,7 @@
 
                             <ListBox.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                    <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                         <WrapPanel.Style>
                                             <Style TargetType="WrapPanel">
                                                 <Setter Property="ItemWidth" Value="200" />
@@ -836,7 +836,7 @@
 
                             <ListBox.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                    <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                         <WrapPanel.Style>
                                             <Style TargetType="WrapPanel">
                                                 <Setter Property="ItemWidth" Value="200" />

@@ -333,7 +333,7 @@
     </UserControl.Resources>
 
     <DockPanel MaxHeight="800">
-        <Border>
+        <Border Background="{DynamicResource V5_Brush}">
             <Border.Style>
                 <Style BasedOn="{StaticResource groupLeft}" TargetType="{x:Type Border}">
                     <Setter Property="Visibility" Value="Collapsed" />
@@ -349,7 +349,7 @@
                 </Style>
             </Border.Style>
         </Border>
-        <Border Style="{StaticResource groupBottom}" />
+        <Border Background="{DynamicResource V5_Brush}" Style="{StaticResource groupBottom}" />
 
         <!--  Images  -->
         <DockPanel>

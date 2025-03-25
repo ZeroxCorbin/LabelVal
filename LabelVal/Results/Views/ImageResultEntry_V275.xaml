@@ -572,7 +572,7 @@
 
                                 <ListBox.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                        <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                        <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                             <WrapPanel.Style>
                                                 <Style TargetType="WrapPanel">
                                                     <Setter Property="ItemWidth" Value="200" />
@@ -879,7 +879,7 @@
 
                                 <ListBox.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                        <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                        <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                             <WrapPanel.Style>
                                                 <Style TargetType="WrapPanel">
                                                     <Setter Property="ItemWidth" Value="200" />

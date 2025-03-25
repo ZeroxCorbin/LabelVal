@@ -419,10 +419,12 @@
             <md:Card HorizontalAlignment="Right">
                 <Button
                     x:Name="btnRightSideBar"
-                    Click="btnRightSideBar_Click"
-                    Margin="6,0"
                     Width="48"
-                    Content="{iconPacks:Material Kind=ArrowCollapseLeft, Width=24, Height=24}"
+                    Margin="6,0"
+                    Click="btnRightSideBar_Click"
+                    Content="{iconPacks:Material Kind=ArrowCollapseLeft,
+                                                 Width=24,
+                                                 Height=24}"
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                     Style="{StaticResource MahApps.Styles.Button.Hamburger}" />
             </md:Card>
