@@ -226,7 +226,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
                     File.WriteAllBytes(path, LibImageUtilities.ImageTypes.Png.Utilities.GetPng(bmp));
                 else
                 {
-                    ImageUtilities.DPI dpi = LibImageUtilities.ImageTypes.ImageUtilities.GetImageDPI(bmp);
+                    var dpi = LibImageUtilities.ImageTypes.ImageUtilities.GetImageDPI(bmp);
                     LibImageUtilities.ImageTypes.Bmp.Bmp format = new(LibImageUtilities.ImageTypes.Bmp.Utilities.GetBmp(bmp));
                     //Lvs95xx.lib.Core.Controllers.Controller.ApplyWatermark(format.ImageData);
 
@@ -453,7 +453,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         }
     }
 
-    [RelayCommand] private void RedoFiducial() => ImageUtilities.RedrawFiducial(SourceImage.Path, false);
+    [RelayCommand] private void RedoFiducial() => LibImageUtilities.ImageTypes.ImageUtilities.RedrawFiducial(SourceImage.Path, false);
 
     [RelayCommand] private void Delete() => DeleteImage?.Invoke(this);
     //const UInt32 WM_KEYDOWN = 0x0100;

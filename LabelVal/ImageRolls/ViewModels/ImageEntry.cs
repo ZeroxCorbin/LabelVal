@@ -85,7 +85,7 @@ public partial class ImageEntry : ObservableObject
     public ImageEntry(string rollUID, string path, int targetDpiWidth, int targetDpiHeight)
     {
         ImageBytes = File.ReadAllBytes(path);
-        UID = ImageUtilities.GetImageUID(ImageBytes);
+        UID = LibImageUtilities.ImageTypes.ImageUtilities.GetImageUID(ImageBytes);
 
         RollUID = rollUID;
 
@@ -106,7 +106,7 @@ public partial class ImageEntry : ObservableObject
     public ImageEntry(string rollUID, byte[] image, int targetDpiWidth, int targetDpiHeight = 0, string comment = null)
     {
         ImageBytes = image;
-        UID = ImageUtilities.GetImageUID(ImageBytes);
+        UID = LibImageUtilities.ImageTypes.ImageUtilities.GetImageUID(ImageBytes);
 
         RollUID = rollUID;
 

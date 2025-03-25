@@ -343,7 +343,7 @@ public partial class ImageResultEntry_L95xx : UserControl
             img = LibImageUtilities.ImageTypes.Png.Utilities.GetPng(imageBytes);
         else
         {
-            ImageUtilities.DPI dpi = LibImageUtilities.ImageTypes.ImageUtilities.GetImageDPI(imageBytes);
+            LibImageUtilities.ImageTypes.ImageUtilities.DPI dpi = LibImageUtilities.ImageTypes.ImageUtilities.GetImageDPI(imageBytes);
             LibImageUtilities.ImageTypes.Bmp.Bmp format = new(LibImageUtilities.ImageTypes.Bmp.Utilities.GetBmp(imageBytes));
             //Lvs95xx.lib.Core.Controllers.Controller.ApplyWatermark(format.ImageData);
 
