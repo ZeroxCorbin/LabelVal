@@ -73,7 +73,7 @@ public partial class ImageResultEntry
 
         BringIntoView?.Invoke();
 
-        V5_REST_Lib.Controllers.Label lab = new(V5ProcessResults, type == LabelHandlers.SimulatorRestore ? V5ResultRow._Config : null, type, ImageResults.SelectedImageRoll.SelectedGS1Table);
+        V5_REST_Lib.Controllers.Label lab = new(V5ProcessResults, type is LabelHandlers.SimulatorRestore or LabelHandlers.CameraRestore ? V5ResultRow._Config : null, type, ImageResults.SelectedImageRoll.SelectedGS1Table);
 
         if(type is LabelHandlers.SimulatorRestore or LabelHandlers.SimulatorDetect)
         {
