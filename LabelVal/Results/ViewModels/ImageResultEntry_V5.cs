@@ -87,23 +87,87 @@ public partial class ImageResultEntry
 
         IsV5Working = true;
         IsV5Faulted = false;
-
-        
     }
 
+    public const int PixelLimit = 4915200;
     private byte[] PrepareImage(ImageEntry img)
     {
         if (img == null)
             return null;
 
-        //If the image is greater than 5 mega pixels, resize it from the edges inward to 5 mega pixels.
-        if (img.ImageTotalPixels > 5000000)
+        // If the image is greater than 5 mega pixels, resize it from the edges inward to 5 mega pixels.
+        if (img.ImageTotalPixels > PixelLimit)
         {
-            double ratio = Math.Sqrt(5000000.0 / img.ImageTotalPixels);
-            int newWidth = (int)(img.Image.PixelWidth * ratio);
-            int newHeight = (int)(img.Image.PixelHeight * ratio);
-            System.Windows.Media.Imaging.BitmapImage newimg = LibImageUtilities.BitmapImage.ResizeImage(img.Image, newWidth, newHeight);
-            return LibImageUtilities.BitmapImage.ImageToBytes(newimg, false);
+            int targetPixels = PixelLimit;
+            int currentPixels = img.Image.PixelWidth * img.Image.PixelHeight;
+            int width = img.Image.PixelWidth;
+            int height = img.Image.PixelHeight;
+
+            // Load the image into a writable bitmap
+            var writableBitmap = new System.Windows.Media.Imaging.WriteableBitmap(img.Image);
+            var state = 0;
+            while (currentPixels > targetPixels)
+            {
+                if (currentPixels - width >= targetPixels && state == 0)
+                {
+                    // Remove bottom row
+                    height--;
+                    currentPixels -= width;
+
+                    state = 1;
+                }
+                else if (currentPixels - height >= targetPixels && state == 1)
+                {
+                    // Remove right column
+                    width--;
+                    currentPixels -= height;
+
+                    state = 2;
+                }
+                else if (currentPixels - width >= targetPixels && state == 2)
+                {
+                    // Remove top row
+                    height--;
+                    currentPixels -= width;
+
+                    state = 3;
+                }
+                else if (currentPixels - height >= targetPixels && state == 3)
+                {
+                    // Remove left column
+                    width--;
+                    currentPixels -= height;
+
+                    state = 0;
+                }
+                else
+                {
+                    if(state is 0 or 2)
+                    {
+                        // Remove right column
+                        height--;
+                        currentPixels -= width;
+                    }
+                    else
+                    {
+                        // Remove bottom row
+                        width--;
+                        currentPixels -= width;
+                    }
+                }
+            }
+
+            // Create a new cropped bitmap
+            var croppedBitmap = new System.Windows.Media.Imaging.CroppedBitmap(writableBitmap, new System.Windows.Int32Rect(0, 0, width, height));
+
+            // Convert the cropped bitmap to a byte array
+            using (var memoryStream = new System.IO.MemoryStream())
+            {
+                var encoder = new System.Windows.Media.Imaging.PngBitmapEncoder();
+                encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(croppedBitmap));
+                encoder.Save(memoryStream);
+                return memoryStream.ToArray();
+            }
         }
 
         return img.ImageBytes;
