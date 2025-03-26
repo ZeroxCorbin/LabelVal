@@ -6,14 +6,9 @@ using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Results.Databases;
 using LabelVal.Utilities;
-using ImageUtilities.lib.Core;
 using Lvs95xx.lib.Core.Controllers;
-using Lvs95xx.lib.Core.Models;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
-using Microsoft.WindowsAPICodePack.Dialogs;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Drawing.Printing;
@@ -201,13 +196,13 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
     [RelayCommand]
     private void Save(ImageResultEntryImageTypes type)
     {
-        string path = GetSaveFilePath();
+        var path = GetSaveFilePath();
 
         if (string.IsNullOrEmpty(path)) return;
 
         try
         {
-            byte[] bmp = type == ImageResultEntryImageTypes.V275Stored
+            var bmp = type == ImageResultEntryImageTypes.V275Stored
                     ? V275StoredImage.ImageBytes
                     : type == ImageResultEntryImageTypes.V275Current
                     ? V275CurrentImage.ImageBytes
@@ -221,22 +216,12 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
                     ? SourceImage.ImageBytes : null;
 
             if (bmp != null)
-            {
+            { 
+                using var img = new ImageMagick.MagickImage(bmp);
                 if (Path.GetExtension(path).Contains("png", StringComparison.InvariantCultureIgnoreCase))
-                    File.WriteAllBytes(path, ImageUtilities.lib.Core.Png.Utilities.GetPng(bmp));
+                    File.WriteAllBytes(path, img.ToByteArray(ImageMagick.MagickFormat.Png));
                 else
-                {
-                    var dpi = ImageUtilities.lib.Core.ImageUtilities.GetImageDPI(bmp);
-                    ImageUtilities.lib.Core.Bmp.Bmp format = new(ImageUtilities.lib.Core.Bmp.Utilities.GetBmp(bmp));
-                    //Lvs95xx.lib.Core.Controllers.Controller.ApplyWatermark(format.ImageData);
-
-                    byte[] img = format.RawData;
-
-                    _ = ImageUtilities.lib.Core.ImageUtilities.SetImageDPI(img, dpi);
-                    //ImageUtilities.lib.Core.Bmp.Utilities.SetDPI(format.RawData, newDPI);
-
-                    File.WriteAllBytes(path, img);
-                }
+                    File.WriteAllBytes(path, img.ToByteArray(ImageMagick.MagickFormat.Bmp3));
 
                 Clipboard.SetText(path);
             }
@@ -290,7 +275,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
                 ImageRollUID = ImageRollUID,
                 RunUID = ImageRollUID,
                 Source = SourceImage,
-                Stored= V5CurrentImage,
+                Stored = V5CurrentImage,
 
                 _Config = V5CurrentTemplate,
                 _Report = V5CurrentReport,
@@ -357,9 +342,9 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             //Save the list to the database.
             List<FullReport> temp = [];
             foreach (Sectors.Interfaces.ISector sector in L95xxCurrentSectors)
-            
+
                 temp.Add(new FullReport(((LVS_95xx.Sectors.Sector)sector).Template.Original, ((LVS_95xx.Sectors.Sector)sector).Report.Original));
-            
+
 
             _ = SelectedDatabase.InsertOrReplace_L95xxResult(new Databases.L95xxResult
             {
@@ -453,7 +438,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         }
     }
 
-    [RelayCommand] private void RedoFiducial() => ImageUtilities.lib.Core.ImageUtilities.RedrawFiducial(SourceImage.Path, false);
+    //[RelayCommand] private void RedoFiducial() => ImageUtilities.lib.Core.ImageUtilities.RedrawFiducial(SourceImage.Path, false);
 
     [RelayCommand] private void Delete() => DeleteImage?.Invoke(this);
     //const UInt32 WM_KEYDOWN = 0x0100;
@@ -481,10 +466,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         return "";
     }
 
-    private void PrintImage(byte[] image, int count, string printerName) => Task.Run(() =>
-    {
-        PrinterController.Print(image, count, printerName, "");
-    });
+    private void PrintImage(byte[] image, int count, string printerName) => Task.Run(() => PrinterController.Print(image, count, printerName, ""));
 
     public DrawingImage CreatePrinterAreaOverlay(bool useRatio)
     {
@@ -502,7 +484,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             yRatio = 1;
         }
 
-        double lineWidth = 10 * xRatio;
+        var lineWidth = 10 * xRatio;
 
         GeometryDrawing printer = new()
         {
@@ -544,14 +526,14 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         drwGroup.Children.Add(border);
 
         // Define a scaling factor (e.g., text height should be 5% of the image height)
-        double scalingFactor = 0.04;
+        var scalingFactor = 0.04;
 
         // Calculate the renderingEmSize based on the image height and scaling factor
-        double renderingEmSize = image.Image.PixelHeight * scalingFactor;
-        double renderingEmSizeHalf = renderingEmSize / 2;
+        var renderingEmSize = image.Image.PixelHeight * scalingFactor;
+        var renderingEmSizeHalf = renderingEmSize / 2;
 
-        double warnSecThickness = renderingEmSize / 5;
-        double warnSecThicknessHalf = warnSecThickness / 2;
+        var warnSecThickness = renderingEmSize / 5;
+        var warnSecThicknessHalf = warnSecThickness / 2;
 
         GeometryGroup secCenter = new();
         foreach (Sectors.Interfaces.ISector newSec in sectors)
@@ -559,7 +541,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
             if (newSec.Report.RegionType is AvailableRegionTypes.OCR or AvailableRegionTypes.OCV or AvailableRegionTypes.Blemish)
                 continue;
 
-            bool hasReportSec = newSec.Report.Width > 0;
+            var hasReportSec = newSec.Report.Width > 0;
 
             GeometryDrawing sectorT = new()
             {
@@ -599,9 +581,8 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
                 //sector.Geometry.Transform = new RotateTransform(newSec.Report.AngleDeg, newSec.Report.Left + (newSec.Report.Width / 2), newSec.Report.Top + (newSec.Report.Height / 2));
                 drwGroup.Children.Add(sector);
 
-
-                double x = newSec.Report.Left + (newSec.Report.Width / 2);
-                double y = newSec.Report.Top + (newSec.Report.Height / 2);
+                var x = newSec.Report.Left + (newSec.Report.Width / 2);
+                var y = newSec.Report.Top + (newSec.Report.Height / 2);
                 secCenter.Children.Add(new LineGeometry(new Point(x + 10, y), new Point(x + -10, y)));
                 secCenter.Children.Add(new LineGeometry(new Point(x, y + 10), new Point(x, y + -10)));
             }
@@ -636,12 +617,12 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
                 "{0}: no GlyphTypeface found", typeface.FontFamily));
         }
 
-        ushort[] glyphIndices = new ushort[text.Length];
-        double[] advanceWidths = new double[text.Length];
+        var glyphIndices = new ushort[text.Length];
+        var advanceWidths = new double[text.Length];
 
-        for (int i = 0; i < text.Length; i++)
+        for (var i = 0; i < text.Length; i++)
         {
-            ushort glyphIndex = glyphTypeface.CharacterToGlyphMap[text[i]];
+            var glyphIndex = glyphTypeface.CharacterToGlyphMap[text[i]];
             glyphIndices[i] = glyphIndex;
             advanceWidths[i] = glyphTypeface.AdvanceWidths[glyphIndex] * emSize;
         }
@@ -688,34 +669,34 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
                 double qzX = (sect.Report.SymbolType == AvailableSymbologies.DataMatrix) ? 0 : res.ExtendedData.QuietZone;
                 double qzY = res.ExtendedData.QuietZone;
 
-                double dX = (sect.Report.SymbolType == AvailableSymbologies.DataMatrix) ? 0 : (res.ExtendedData.DeltaX / 2);
-                double dY = (sect.Report.SymbolType == AvailableSymbologies.DataMatrix) ? (res.ExtendedData.DeltaY * res.ExtendedData.NumRows) : (res.ExtendedData.DeltaY / 2);
+                var dX = (sect.Report.SymbolType == AvailableSymbologies.DataMatrix) ? 0 : (res.ExtendedData.DeltaX / 2);
+                var dY = (sect.Report.SymbolType == AvailableSymbologies.DataMatrix) ? (res.ExtendedData.DeltaY * res.ExtendedData.NumRows) : (res.ExtendedData.DeltaY / 2);
 
-                double startX = -0.5;// sec.left + res.ExtendedData.Xnw - dX + 1 - (qzX * res.ExtendedData.DeltaX);
-                double startY = -0.5;// sec.top + res.ExtendedData.Ynw - dY + 1 - (qzY * res.ExtendedData.DeltaY);
+                var startX = -0.5;// sec.left + res.ExtendedData.Xnw - dX + 1 - (qzX * res.ExtendedData.DeltaX);
+                var startY = -0.5;// sec.top + res.ExtendedData.Ynw - dY + 1 - (qzY * res.ExtendedData.DeltaY);
 
-                int cnt = 0;
+                var cnt = 0;
 
-                for (double row = -qzX; row < res.ExtendedData.NumRows + qzX; row++)
-                    for (double col = -qzY; col < res.ExtendedData.NumColumns + qzY; col++)
+                for (var row = -qzX; row < res.ExtendedData.NumRows + qzX; row++)
+                    for (var col = -qzY; col < res.ExtendedData.NumColumns + qzY; col++)
                     {
                         RectangleGeometry area1 = new(new Rect(startX + (res.ExtendedData.DeltaX * (col + qzX)), startY + (res.ExtendedData.DeltaY * (row + qzY)), res.ExtendedData.DeltaX, res.ExtendedData.DeltaY));
                         moduleGrid.Children.Add(area1);
 
-                        string text = res.ExtendedData.ModuleModulation[cnt].ToString();
+                        var text = res.ExtendedData.ModuleModulation[cnt].ToString();
                         Typeface typeface = new("Arial");
                         if (typeface.TryGetGlyphTypeface(out GlyphTypeface _glyphTypeface))
                         {
-                            ushort[] _glyphIndexes = new ushort[text.Length];
-                            double[] _advanceWidths = new double[text.Length];
+                            var _glyphIndexes = new ushort[text.Length];
+                            var _advanceWidths = new double[text.Length];
 
                             double textWidth = 0;
-                            for (int ix = 0; ix < text.Length; ix++)
+                            for (var ix = 0; ix < text.Length; ix++)
                             {
-                                ushort glyphIndex = _glyphTypeface.CharacterToGlyphMap[text[ix]];
+                                var glyphIndex = _glyphTypeface.CharacterToGlyphMap[text[ix]];
                                 _glyphIndexes[ix] = glyphIndex;
 
-                                double width = _glyphTypeface.AdvanceWidths[glyphIndex] * 2;
+                                var width = _glyphTypeface.AdvanceWidths[glyphIndex] * 2;
                                 _advanceWidths[ix] = width;
 
                                 textWidth += width;
@@ -748,16 +729,16 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
                         Typeface typeface1 = new("Arial");
                         if (typeface1.TryGetGlyphTypeface(out GlyphTypeface _glyphTypeface1))
                         {
-                            ushort[] _glyphIndexes = new ushort[text.Length];
-                            double[] _advanceWidths = new double[text.Length];
+                            var _glyphIndexes = new ushort[text.Length];
+                            var _advanceWidths = new double[text.Length];
 
                             double textWidth = 0;
-                            for (int ix = 0; ix < text.Length; ix++)
+                            for (var ix = 0; ix < text.Length; ix++)
                             {
-                                ushort glyphIndex = _glyphTypeface1.CharacterToGlyphMap[text[ix]];
+                                var glyphIndex = _glyphTypeface1.CharacterToGlyphMap[text[ix]];
                                 _glyphIndexes[ix] = glyphIndex;
 
-                                double width = _glyphTypeface1.AdvanceWidths[glyphIndex] * 2;
+                                var width = _glyphTypeface1.AdvanceWidths[glyphIndex] * 2;
                                 _advanceWidths[ix] = width;
 
                                 textWidth += width;
@@ -815,7 +796,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
 
                 if (sect.Template.Orientation == 90)
                 {
-                    double x = sect.Report.SymbolType == AvailableSymbologies.DataMatrix
+                    var x = sect.Report.SymbolType == AvailableSymbologies.DataMatrix
                         ? sect.Report.Width - res.ExtendedData.Ynw - (qzY * res.ExtendedData.DeltaY) - 1
                         : sect.Report.Width - res.ExtendedData.Ynw - dY - ((res.ExtendedData.NumColumns + qzY) * res.ExtendedData.DeltaY);
                     transGroup.Children.Add(new TranslateTransform(
@@ -861,14 +842,14 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
 
     public static void SortList(List<Sectors.Interfaces.ISector> list) => list.Sort((item1, item2) =>
     {
-        double distance1 = Math.Sqrt(Math.Pow(item1.Report.CenterPoint.X, 2) + Math.Pow(item1.Report.CenterPoint.Y, 2));
-        double distance2 = Math.Sqrt(Math.Pow(item2.Report.CenterPoint.X, 2) + Math.Pow(item2.Report.CenterPoint.Y, 2));
-        int distanceComparison = distance1.CompareTo(distance2);
+        var distance1 = Math.Sqrt(Math.Pow(item1.Report.CenterPoint.X, 2) + Math.Pow(item1.Report.CenterPoint.Y, 2));
+        var distance2 = Math.Sqrt(Math.Pow(item2.Report.CenterPoint.X, 2) + Math.Pow(item2.Report.CenterPoint.Y, 2));
+        var distanceComparison = distance1.CompareTo(distance2);
 
         if (distanceComparison == 0)
         {
             // If distances are equal, sort by X coordinate, then by Y if necessary
-            int xComparison = item1.Report.CenterPoint.X.CompareTo(item2.Report.CenterPoint.X);
+            var xComparison = item1.Report.CenterPoint.X.CompareTo(item2.Report.CenterPoint.X);
             if (xComparison == 0)
             {
                 // If X coordinates are equal, sort by Y coordinate
@@ -882,15 +863,15 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
     //Sort the list by row and column, given x,y coordinates
     public static void SortList2(List<Sectors.Interfaces.ISector> list) => list.Sort((item1, item2) =>
     {
-        int row1 = (int)Math.Floor(item1.Report.CenterPoint.Y / item1.Report.Height);
-        int row2 = (int)Math.Floor(item2.Report.CenterPoint.Y / item2.Report.Height);
-        int rowComparison = row1.CompareTo(row2);
+        var row1 = (int)Math.Floor(item1.Report.CenterPoint.Y / item1.Report.Height);
+        var row2 = (int)Math.Floor(item2.Report.CenterPoint.Y / item2.Report.Height);
+        var rowComparison = row1.CompareTo(row2);
         if (rowComparison == 0)
         {
             // If distances are equal, sort by X coordinate, then by Y if necessary
-            int col1 = (int)Math.Floor(item1.Report.CenterPoint.X / item1.Report.Width);
-            int col2 = (int)Math.Floor(item2.Report.CenterPoint.X / item2.Report.Width);
-            int colComparison = col1.CompareTo(col2);
+            var col1 = (int)Math.Floor(item1.Report.CenterPoint.X / item1.Report.Width);
+            var col2 = (int)Math.Floor(item2.Report.CenterPoint.X / item2.Report.Width);
+            var colComparison = col1.CompareTo(col2);
             if (colComparison == 0)
             {
                 // If X coordinates are equal, sort by Y coordinate
@@ -901,11 +882,9 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         return rowComparison;
     });
 
-    public List<Sectors.Interfaces.ISector> SortList3(List<Sectors.Interfaces.ISector> list)
-    {
+    public List<Sectors.Interfaces.ISector> SortList3(List<Sectors.Interfaces.ISector> list) =>
         //Sort the list from top to bottom, left to right given x,y coordinates
-        return list.OrderBy(x => x.Report.Top).ThenBy(x => x.Report.Left).ToList();
-    }
+        list.OrderBy(x => x.Report.Top).ThenBy(x => x.Report.Left).ToList();
     #region Recieve Messages
     public void Receive(PropertyChangedMessage<Databases.ImageResultsDatabase> message) => SelectedDatabase = message.NewValue;
     public void Receive(PropertyChangedMessage<PrinterSettings> message) => SelectedPrinter = message.NewValue;

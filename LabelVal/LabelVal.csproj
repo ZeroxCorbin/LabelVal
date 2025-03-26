@@ -31,6 +31,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Remove="ImageRolls\Databases\StandardsDatabase.cs" />
+		<Compile Remove="ImageViewer3D\Processing\SobelEdgeDetection.cs" />
 		<Compile Remove="LVS-95xx\ViewModels\SerialPort.cs" />
 		<Compile Remove="LVS-95xx\Views\LVS95xx_SerialPortView.xaml.cs" />
 		<Compile Remove="Main\Views\StatusMessageViewer.xaml.cs" />
@@ -1430,6 +1431,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<Folder Include="Assets\Image Rolls\GS1 TABLE 1\300\" />
+		<Folder Include="ImageViewer3D\Processing\" />
 		<Folder Include="Sectors\Messages\" />
 	</ItemGroup>
 	<ItemGroup>
@@ -1447,7 +1449,6 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\BarcodeVerification.lib\BarcodeVerification.lib.csproj" />
 		<ProjectReference Include="..\..\Cameras_Lib\Cameras_Lib.csproj" />
-		<ProjectReference Include="..\..\ImageUtilities.lib\Core\ImageUtilities.lib.Core.csproj" />
 		<ProjectReference Include="..\..\ImageUtilities.lib\Wpf\ImageUtilities.lib.Wpf.csproj" />
 		<ProjectReference Include="..\..\JSONViewer_WPF\JSONViewer_WPF.csproj" />
 		<ProjectReference Include="..\..\Logging.lib\Logging.lib.csproj" />

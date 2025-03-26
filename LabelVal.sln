@@ -34,8 +34,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BarcodeVerification.lib", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cameras_Lib", "..\Cameras_Lib\Cameras_Lib.csproj", "{185C6CB6-5821-6D19-4898-8F4571BCCE20}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageUtilities.lib.Core", "..\ImageUtilities.lib\Core\ImageUtilities.lib.Core.csproj", "{93E92D35-C33D-085B-BFBD-6EAAC7CB310F}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageUtilities.lib.Wpf", "..\ImageUtilities.lib\Wpf\ImageUtilities.lib.Wpf.csproj", "{47440603-7AAB-1472-F039-57354F0B1A69}"
 EndProject
 Global
@@ -298,22 +296,6 @@ Global
 		{185C6CB6-5821-6D19-4898-8F4571BCCE20}.Release|x64.Build.0 = Release|Any CPU
 		{185C6CB6-5821-6D19-4898-8F4571BCCE20}.Release|x86.ActiveCfg = Release|Any CPU
 		{185C6CB6-5821-6D19-4898-8F4571BCCE20}.Release|x86.Build.0 = Release|Any CPU
-		{93E92D35-C33D-085B-BFBD-6EAAC7CB310F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{93E92D35-C33D-085B-BFBD-6EAAC7CB310F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{93E92D35-C33D-085B-BFBD-6EAAC7CB310F}.Debug|ARM64.ActiveCfg = Debug|Any CPU
-		{93E92D35-C33D-085B-BFBD-6EAAC7CB310F}.Debug|ARM64.Build.0 = Debug|Any CPU
-		{93E92D35-C33D-085B-BFBD-6EAAC7CB310F}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{93E92D35-C33D-085B-BFBD-6EAAC7CB310F}.Debug|x64.Build.0 = Debug|Any CPU
-		{93E92D35-C33D-085B-BFBD-6EAAC7CB310F}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{93E92D35-C33D-085B-BFBD-6EAAC7CB310F}.Debug|x86.Build.0 = Debug|Any CPU
-		{93E92D35-C33D-085B-BFBD-6EAAC7CB310F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{93E92D35-C33D-085B-BFBD-6EAAC7CB310F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{93E92D35-C33D-085B-BFBD-6EAAC7CB310F}.Release|ARM64.ActiveCfg = Release|Any CPU
-		{93E92D35-C33D-085B-BFBD-6EAAC7CB310F}.Release|ARM64.Build.0 = Release|Any CPU
-		{93E92D35-C33D-085B-BFBD-6EAAC7CB310F}.Release|x64.ActiveCfg = Release|Any CPU
-		{93E92D35-C33D-085B-BFBD-6EAAC7CB310F}.Release|x64.Build.0 = Release|Any CPU
-		{93E92D35-C33D-085B-BFBD-6EAAC7CB310F}.Release|x86.ActiveCfg = Release|Any CPU
-		{93E92D35-C33D-085B-BFBD-6EAAC7CB310F}.Release|x86.Build.0 = Release|Any CPU
 		{47440603-7AAB-1472-F039-57354F0B1A69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{47440603-7AAB-1472-F039-57354F0B1A69}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47440603-7AAB-1472-F039-57354F0B1A69}.Debug|ARM64.ActiveCfg = Debug|Any CPU

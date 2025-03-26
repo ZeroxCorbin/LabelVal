@@ -325,42 +325,11 @@ public partial class ImageResultEntry_V275 : UserControl
 
     private void ImageToClipboard(byte[] imageBytes)
     {
+        using var img = new ImageMagick.MagickImage(imageBytes);
+        //If the shift key is pressed, copy the image as Bitmap.
         if (!(Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)))
-        {
-            Clipboard.SetImage(ImageUtilities.lib.Wpf.BitmapImage.CreateBitmapImage(ImageUtilities.lib.Core.Png.Utilities.GetPng(imageBytes)));
-        }
+            Clipboard.SetImage(ImageUtilities.lib.Wpf.BitmapImage.CreateBitmapImage(img.ToByteArray(ImageMagick.MagickFormat.Bmp3)));
         else
-        {
-            ImageUtilities.lib.Core.ImageUtilities.DPI dpi = ImageUtilities.lib.Core.ImageUtilities.GetImageDPI(imageBytes);
-            ImageUtilities.lib.Core.Bmp.Bmp format = new(ImageUtilities.lib.Core.Bmp.Utilities.GetBmp(imageBytes));
-            //Lvs95xx.lib.Core.Controllers.Controller.ApplyWatermark(format.ImageData);
-            var img = format.RawData;
-            _ = ImageUtilities.lib.Core.ImageUtilities.SetImageDPI(img, dpi);
-            Clipboard.SetImage(ImageUtilities.lib.Wpf.BitmapImage.CreateBitmapImage(img));
-        }
-
-        //var data = new DataObject();
-        ////If the shift key is pressed, copy the image as Bitmap.
-        //if (!(Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)))
-        //{
-        //    using MemoryStream pngMemStream = new MemoryStream(ImageUtilities.lib.Core.Png.Utilities.GetPng(imageBytes));
-        //    data.SetData("PNG", pngMemStream, false);
-        //    Clipboard.SetDataObject(data, true);
-        //}
-
-        //else
-        //{
-        //    ImageUtilities.DPI dpi = ImageUtilities.lib.Core.ImageUtilities.GetImageDPI(imageBytes);
-        //    ImageUtilities.lib.Core.Bmp.Bmp format = new(ImageUtilities.lib.Core.Bmp.Utilities.GetBmp(imageBytes));
-        //    //Lvs95xx.lib.Core.Controllers.Controller.ApplyWatermark(format.ImageData);
-
-        //    var img = format.RawData;
-
-        //    _ = ImageUtilities.lib.Core.ImageUtilities.SetImageDPI(img, dpi);
-
-        //    data.SetData(DataFormats.Bitmap,img, false);
-        //    Clipboard.SetDataObject(data, true);
-        //}
-
+            Clipboard.SetImage(ImageUtilities.lib.Wpf.BitmapImage.CreateBitmapImage(img.ToByteArray(ImageMagick.MagickFormat.Png)));
     }
 }

@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using SQLite;
 using System.Drawing.Printing;
 using System.IO;
+using System.Security.Cryptography;
 using System.Windows.Media.Imaging;
 
 namespace LabelVal.ImageRolls.ViewModels;
@@ -14,10 +15,10 @@ public partial class ImageEntry : ObservableObject
     public string Serialize => JsonConvert.SerializeObject(this);
 
     [JsonProperty]
-    [Indexed(Name = "CompositeKey", Order = 1, Unique = true)] 
+    [Indexed(Name = "CompositeKey", Order = 1, Unique = true)]
     public string UID { get; set; }
 
-    [JsonProperty] 
+    [JsonProperty]
     [Indexed(Name = "CompositeKey", Order = 2, Unique = true)]
     public string RollUID { get; set; }
 
@@ -54,11 +55,17 @@ public partial class ImageEntry : ObservableObject
         }
     }
 
-    public byte[] BitmapBytes => ImageUtilities.lib.Core.Bmp.Utilities.GetBmp(OriginalImage, (int)Image.DpiX);
+    public byte[] BitmapBytes
+    {
+        get
+        {
+            using var img = new ImageMagick.MagickImage(OriginalImage);
+            return img.ToByteArray(ImageMagick.MagickFormat.Bmp3);
+        }
+    }
 
-    [ObservableProperty][property: JsonProperty] private int targetDpiWidth;
-    [ObservableProperty][property: JsonProperty] private int targetDpiHeight;
-
+    [ObservableProperty] double imageDpiX;
+    [ObservableProperty] double imageDpiY;
     [JsonProperty] public double ImageWidth { get; set; }
     [JsonProperty] public double ImageHeight { get; set; }
     [JsonProperty] public long ImageTotalPixels { get; set; }
@@ -81,19 +88,18 @@ public partial class ImageEntry : ObservableObject
     [ObservableProperty][property: SQLite.Ignore] private double printer2ImageTotalPixelDeviation;
 
     public ImageEntry() { }
-    public ImageEntry(string rollUID, string path, int targetDpiWidth, int targetDpiHeight)
+    public ImageEntry(string rollUID, string path)
     {
-        ImageBytes = File.ReadAllBytes(path);
-        UID = ImageUtilities.lib.Core.ImageUtilities.GetImageDataUID(ImageBytes);
+        Path = path;
+        using ImageMagick.MagickImage img = new(path);
+
+        ImageBytes = img.ToByteArray(ImageMagick.MagickFormat.Png);
+
+        UID = BitConverter.ToString(SHA256.HashData(img.GetPixels().ToArray())).Replace("-", string.Empty);
 
         RollUID = rollUID;
 
-        Path = path;
-
-        TargetDpiHeight = targetDpiHeight;
-        TargetDpiWidth = targetDpiWidth;
-
-        string cmt = Path.Replace(System.IO.Path.GetExtension(Path), ".txt");
+        var cmt = Path.Replace(System.IO.Path.GetExtension(Path), ".txt");
         if (File.Exists(cmt))
             Comment = File.ReadAllText(cmt);
 
@@ -102,24 +108,30 @@ public partial class ImageEntry : ObservableObject
         ImageTotalPixels = Image.PixelWidth * Image.PixelHeight;
     }
 
-    public ImageEntry(string rollUID, byte[] image, int targetDpiWidth, int targetDpiHeight = 0, string comment = null)
+    public ImageEntry(string rollUID, byte[] image, int imageDpi = 0, string comment = null)
     {
-        ImageBytes = image;
-        UID = ImageUtilities.lib.Core.ImageUtilities.GetImageDataUID(ImageBytes);
+        using ImageMagick.MagickImage img = new(image);
+        if (imageDpi > 0)
+        {
+            img.Density = new ImageMagick.Density(imageDpi, imageDpi);
+            imageDpiX = imageDpi;
+            imageDpiY = imageDpi;
+        }
+
+        ImageBytes = img.ToByteArray(ImageMagick.MagickFormat.Png);
+
+        UID = BitConverter.ToString(SHA256.HashData(img.GetPixels().ToArray())).Replace("-", string.Empty);
 
         RollUID = rollUID;
 
         Comment = comment;
-
-        TargetDpiWidth = targetDpiWidth;
-        TargetDpiHeight = targetDpiHeight != 0 ? targetDpiHeight : targetDpiWidth;
 
         ImageWidth = Math.Round(Image.PixelWidth / Image.DpiX, 2);
         ImageHeight = Math.Round(Image.PixelHeight / Image.DpiY, 2);
         ImageTotalPixels = Image.PixelWidth * Image.PixelHeight;
     }
 
-    public ImageEntry Clone() => new(RollUID, ImageBytes, TargetDpiWidth, TargetDpiHeight, Comment);
+    public ImageEntry Clone() => new(RollUID, ImageBytes, comment: Comment);
 
     public void InitPrinterVariables(PrinterSettings printer)
     {

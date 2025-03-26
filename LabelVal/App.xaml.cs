@@ -413,56 +413,6 @@ public partial class App : Application
         baseDir.Delete();
     }
 
-    private void ConvertToIndexedPNG()
-    {
-        DirectoryInfo outDir = Directory.CreateDirectory($"{UserDataDirectory}\\IndexedPNG");
-        foreach (string dir in Directory.EnumerateDirectories(AssetsImageRollsRoot))
-        {
-            string dirName = Path.GetFileName(dir);
-            DirectoryInfo imgDir;
-
-            if (Directory.Exists($"{dir}\\600"))
-            {
-                imgDir = Directory.CreateDirectory($"{outDir.FullName}\\{dirName}\\600");
-                foreach (string file in Directory.EnumerateFiles($"{dir}\\600"))
-                {
-                    string newFileName = $"{imgDir.FullName}\\{Path.GetFileName(file)}";
-                    if (Path.GetExtension(file) is ".bmp" or ".png")
-                        File.WriteAllBytes(newFileName, ImageUtilities.lib.Core.Png.Utilities.GetPng(File.ReadAllBytes(file), PixelFormat.Format8bppIndexed));
-                    else
-                        File.Copy(file, newFileName);
-                }
-            }
-
-            if (Directory.Exists($"{dir}\\300"))
-            {
-                imgDir = Directory.CreateDirectory($"{outDir.FullName}\\{dirName}\\300");
-
-                foreach (string file in Directory.EnumerateFiles($"{dir}\\300"))
-                {
-                    string newFileName = $"{imgDir.FullName}\\{Path.GetFileName(file)}";
-                    if (Path.GetExtension(file) is ".bmp" or ".png")
-                        File.WriteAllBytes(newFileName, ImageUtilities.lib.Core.Png.Utilities.GetPng(File.ReadAllBytes(file), PixelFormat.Format8bppIndexed));
-                    else
-                        File.Copy(file, newFileName);
-                }
-            }
-        }
-    }
-
-    private void ConvertDatabases()
-    {
-    }
-
-    private void FixFiducial()
-    {
-        foreach (string dir in Directory.EnumerateDirectories(AssetsImageRollsRoot))
-            if (Directory.Exists($"{dir}\\300"))
-                foreach (string imgFile in Directory.EnumerateFiles($"{dir}\\300"))
-                    if (Path.GetExtension(imgFile) == ".png")
-                        RedrawFiducial(imgFile);
-    }
-
     private void RedrawFiducial(string path)
     {
         // load your photo

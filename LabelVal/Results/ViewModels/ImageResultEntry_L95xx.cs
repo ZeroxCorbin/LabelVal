@@ -202,7 +202,7 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
 
             L95xxGetSectorDiff();
 
-            L95xxCurrentImage = new ImageEntry(ImageRollUID, ImageUtilities.lib.Core.Png.Utilities.GetPng(message.Template.GetParameter<byte[]>("Report.Thumbnail")), 600);
+            L95xxCurrentImage = new ImageEntry(ImageRollUID, message.Template.GetParameter<byte[]>("Report.Thumbnail"), 0);
             UpdateL95xxCurrentImageOverlay();
 
             IsL95xxFaulted = false;

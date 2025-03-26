@@ -78,9 +78,9 @@ public partial class ImageResultEntry
         if(type is LabelHandlers.SimulatorRestore or LabelHandlers.SimulatorDetect)
         {
             if (ImageResults.SelectedImageRoll.ImageType == ImageRollImageTypes.Source)
-                lab.Image = PrepareImage(SourceImage);
+                lab.Image = SourceImage.BitmapBytes;
             else if (ImageResults.SelectedImageRoll.ImageType == ImageRollImageTypes.Stored)
-                lab.Image = PrepareImage(V5ResultRow.Stored);
+                lab.Image = V5ResultRow.Stored.ImageBytes;
         }
 
         _ = Task.Run(() => ImageResults.SelectedScanner.Controller.ProcessLabel(lab));
@@ -89,89 +89,106 @@ public partial class ImageResultEntry
         IsV5Faulted = false;
     }
 
-    public const int PixelLimit = 4915200;
-    private byte[] PrepareImage(ImageEntry img)
-    {
-        if (img == null)
-            return null;
+    //public const int PixelLimit = 4915200;
+    //private byte[] PrepareImage(ImageEntry img)
+    //{
+    //    if (img == null)
+    //        return null;
 
-        // If the image is greater than 5 mega pixels, resize it from the edges inward to 5 mega pixels.
-        if (img.ImageTotalPixels > PixelLimit)
-        {
-            int targetPixels = PixelLimit;
-            int currentPixels = img.Image.PixelWidth * img.Image.PixelHeight;
-            int width = img.Image.PixelWidth;
-            int height = img.Image.PixelHeight;
+    //    // If the image is greater than 5 mega pixels, resize it from the edges inward to 5 mega pixels.
+    //    if (img.ImageTotalPixels > PixelLimit)
+    //    {
+    //        int targetPixels = PixelLimit;
+    //        int currentPixels = img.Image.PixelWidth * img.Image.PixelHeight;
+    //        int width = img.Image.PixelWidth;
+    //        int height = img.Image.PixelHeight;
 
-            // Load the image into a writable bitmap
-            var writableBitmap = new System.Windows.Media.Imaging.WriteableBitmap(img.Image);
-            var state = 0;
-            while (currentPixels > targetPixels)
-            {
-                if (currentPixels - width >= targetPixels && state == 0)
-                {
-                    // Remove bottom row
-                    height--;
-                    currentPixels -= width;
+    //        int offsetTop = 0, offsetLeft = 0;
 
-                    state = 1;
-                }
-                else if (currentPixels - height >= targetPixels && state == 1)
-                {
-                    // Remove right column
-                    width--;
-                    currentPixels -= height;
+    //        // Load the image into a writable bitmap
+    //        var writableBitmap = new System.Windows.Media.Imaging.WriteableBitmap(img.Image);
+    //        var state = 0;
+    //        while (currentPixels > targetPixels)
+    //        {
+    //            if (currentPixels - width >= targetPixels && state == 0)
+    //            {
+    //                // Remove bottom row
+    //                height--;
+    //                currentPixels -= width;
 
-                    state = 2;
-                }
-                else if (currentPixels - width >= targetPixels && state == 2)
-                {
-                    // Remove top row
-                    height--;
-                    currentPixels -= width;
+    //                state = 1;
+    //            }
+    //            else if (currentPixels - height >= targetPixels && state == 1)
+    //            {
+    //                // Remove right column
+    //                width--;
+    //                currentPixels -= height;
 
-                    state = 3;
-                }
-                else if (currentPixels - height >= targetPixels && state == 3)
-                {
-                    // Remove left column
-                    width--;
-                    currentPixels -= height;
+    //                state = 2;
+    //            }
+    //            else if (currentPixels - width >= targetPixels && state == 2)
+    //            {
+    //                // Remove top row
+    //                height--;
+    //                offsetTop++;
+    //                currentPixels -= width;
 
-                    state = 0;
-                }
-                else
-                {
-                    if(state is 0 or 2)
-                    {
-                        // Remove right column
-                        height--;
-                        currentPixels -= width;
-                    }
-                    else
-                    {
-                        // Remove bottom row
-                        width--;
-                        currentPixels -= width;
-                    }
-                }
-            }
+    //                state = 3;
+    //            }
+    //            else if (currentPixels - height >= targetPixels && state == 3)
+    //            {
+    //                // Remove left column
+    //                width--;
+    //                currentPixels -= height;
+    //                offsetLeft++;
+    //                state = 0;
+    //            }
+    //            else
+    //            {
+    //                if(state is 0)
+    //                {
+    //                    // Remove right column
+    //                    height--;
+    //                    currentPixels -= width;
+    //                }
+    //                else if(state == 1)
+    //                {
+    //                    // Remove top row
+    //                    width--;
+    //                    currentPixels -= height;
+    //                }
+    //                else if (state == 2)
+    //                {
+    //                    // Remove left column
+    //                    height--;
+    //                    offsetTop++;
+    //                    currentPixels -= width;
+    //                }
+    //                else if (state == 3)
+    //                {
+    //                    // Remove bottom row
+    //                    width--;
+    //                    offsetLeft++;
+    //                    currentPixels -= width;
+    //                }
+    //            }
+    //        }
 
-            // Create a new cropped bitmap
-            var croppedBitmap = new System.Windows.Media.Imaging.CroppedBitmap(writableBitmap, new System.Windows.Int32Rect(0, 0, width, height));
+    //        // Create a new cropped bitmap
+    //        var croppedBitmap = new System.Windows.Media.Imaging.CroppedBitmap(writableBitmap, new System.Windows.Int32Rect(offsetLeft, offsetTop, width, height));
 
-            // Convert the cropped bitmap to a byte array
-            using (var memoryStream = new System.IO.MemoryStream())
-            {
-                var encoder = new System.Windows.Media.Imaging.PngBitmapEncoder();
-                encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(croppedBitmap));
-                encoder.Save(memoryStream);
-                return memoryStream.ToArray();
-            }
-        }
+    //        // Convert the cropped bitmap to a byte array
+    //        using (var memoryStream = new System.IO.MemoryStream())
+    //        {
+    //            var encoder = new System.Windows.Media.Imaging.PngBitmapEncoder();
+    //            encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(croppedBitmap));
+    //            encoder.Save(memoryStream);
+    //            return memoryStream.ToArray();
+    //        }
+    //    }
 
-        return img.ImageBytes;
-    }
+    //    return img.ImageBytes;
+    //}
 
     public void V5ProcessResults(V5_REST_Lib.Controllers.Repeat repeat)
     {
@@ -196,7 +213,17 @@ public partial class ImageResultEntry
                 return;
             }
 
-            V5CurrentImage = new ImageEntry(ImageRollUID, ImageUtilities.lib.Core.Png.Utilities.GetPng(report.FullImage), 96);
+
+
+            if (!ImageResults.SelectedScanner.Controller.IsSimulator)
+            {
+                V5CurrentImage = new ImageEntry(ImageRollUID, report.FullImage, 600);
+            }
+            else
+            {
+                using var img = new ImageMagick.MagickImage(report.FullImage);
+                V5CurrentImage = new ImageEntry(ImageRollUID, report.FullImage, (int)Math.Round(SourceImage.Image.DpiX));
+            }
 
             V5CurrentTemplate = ImageResults.SelectedScanner.Controller.Config;
             V5CurrentReport = report.Report;

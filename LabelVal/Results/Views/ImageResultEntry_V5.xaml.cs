@@ -29,37 +29,37 @@ public partial class ImageResultEntry_V5 : UserControl
             {
                 ire.V275FocusedStoredSector.IsFocused = false;
                 ire.V275FocusedStoredSector = null;
-                App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV275StoredImageOverlay());
+                _ = App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV275StoredImageOverlay());
             }
             if (ire.V275FocusedCurrentSector != null)
             {
                 ire.V275FocusedCurrentSector.IsFocused = false;
                 ire.V275FocusedCurrentSector = null;
-                App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV275CurrentImageOverlay());
+                _ = App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV275CurrentImageOverlay());
             }
             if (ire.V5FocusedStoredSector != null)
             {
                 ire.V5FocusedStoredSector.IsFocused = false;
                 ire.V5FocusedStoredSector = null;
-                App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV5StoredImageOverlay());
+                _ = App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV5StoredImageOverlay());
             }
             if (ire.V5FocusedCurrentSector != null)
             {
                 ire.V5FocusedCurrentSector.IsFocused = false;
                 ire.V5FocusedCurrentSector = null;
-                App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV5CurrentImageOverlay());
+                _ = App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV5CurrentImageOverlay());
             }
             if (ire.L95xxFocusedStoredSector != null)
             {
                 ire.L95xxFocusedStoredSector.IsFocused = false;
                 ire.L95xxFocusedStoredSector = null;
-                App.Current.Dispatcher.BeginInvoke(() => ire.UpdateL95xxStoredImageOverlay());
+                _ = App.Current.Dispatcher.BeginInvoke(() => ire.UpdateL95xxStoredImageOverlay());
             }
             if (ire.L95xxFocusedCurrentSector != null)
             {
                 ire.L95xxFocusedCurrentSector.IsFocused = false;
                 ire.L95xxFocusedCurrentSector = null;
-                App.Current.Dispatcher.BeginInvoke(() => ire.UpdateL95xxCurrentImageOverlay());
+                _ = App.Current.Dispatcher.BeginInvoke(() => ire.UpdateL95xxCurrentImageOverlay());
             }
         }
         else
@@ -71,7 +71,7 @@ public partial class ImageResultEntry_V5 : UserControl
                     {
                         ire.V5FocusedStoredSector.IsFocused = false;
                         ire.V5FocusedStoredSector = null;
-                        App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV5StoredImageOverlay());
+                        _ = App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV5StoredImageOverlay());
                     }
                     break;
                 case "v5Current":
@@ -79,13 +79,13 @@ public partial class ImageResultEntry_V5 : UserControl
                     {
                         ire.V5FocusedStoredSector.IsFocused = false;
                         ire.V5FocusedStoredSector = null;
-                        App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV5StoredImageOverlay());
+                        _ = App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV5StoredImageOverlay());
                     }
                     if (ire.V5FocusedCurrentSector != null)
                     {
                         ire.V5FocusedCurrentSector.IsFocused = false;
                         ire.V5FocusedCurrentSector = null;
-                        App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV5CurrentImageOverlay());
+                        _ = App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV5CurrentImageOverlay());
                     }
                     break;
             }
@@ -148,8 +148,8 @@ public partial class ImageResultEntry_V5 : UserControl
 
     private void btnSaveImage_Click(object sender, RoutedEventArgs e)
     {
-        var parent = Utilities.VisualTreeHelp.GetVisualParent<DockPanel>((Button)sender, 2);
-        var sectorDetails = Utilities.VisualTreeHelp.GetVisualChild<Sectors.Views.SectorDetails>(parent);
+        DockPanel parent = Utilities.VisualTreeHelp.GetVisualParent<DockPanel>((Button)sender, 2);
+        SectorDetails sectorDetails = Utilities.VisualTreeHelp.GetVisualChild<Sectors.Views.SectorDetails>(parent);
 
         if (sectorDetails != null)
         {
@@ -166,8 +166,8 @@ public partial class ImageResultEntry_V5 : UserControl
     }
     private void btnCopyImage_Click(object sender, RoutedEventArgs e)
     {
-        var parent = Utilities.VisualTreeHelp.GetVisualParent<DockPanel>((Button)sender, 2);
-        var sectorDetails = Utilities.VisualTreeHelp.GetVisualChild<Sectors.Views.SectorDetails>(parent);
+        DockPanel parent = Utilities.VisualTreeHelp.GetVisualParent<DockPanel>((Button)sender, 2);
+        SectorDetails sectorDetails = Utilities.VisualTreeHelp.GetVisualChild<Sectors.Views.SectorDetails>(parent);
 
         if (sectorDetails != null)
             CopyToClipboard(sectorDetails);
@@ -187,7 +187,7 @@ public partial class ImageResultEntry_V5 : UserControl
 
         using System.IO.MemoryStream stream = new();
         encoder.Save(stream);
-        stream.Seek(0, System.IO.SeekOrigin.Begin);
+        _ = stream.Seek(0, System.IO.SeekOrigin.Begin);
         BitmapImage bitmapImage = new();
         bitmapImage.BeginInit();
         bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
@@ -199,7 +199,7 @@ public partial class ImageResultEntry_V5 : UserControl
     {
         RenderTargetBitmap bitmap = new((int)visual.ActualWidth, (int)visual.ActualHeight, 96, 96, PixelFormats.Pbgra32);
         bitmap.Render(visual);
-        BitmapFrame frame = BitmapFrame.Create(bitmap);
+        var frame = BitmapFrame.Create(bitmap);
         encoder.Frames.Add(frame);
     }
 
@@ -243,8 +243,8 @@ public partial class ImageResultEntry_V5 : UserControl
             if (sectorView.DataContext is Sectors.Interfaces.ISector sector)
                 sector.IsMouseOver = true;
 
-            if (this.DataContext is ViewModels.ImageResultEntry ire)
-                App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV5CurrentImageOverlay());
+            if (DataContext is ViewModels.ImageResultEntry ire)
+                _ = App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV5CurrentImageOverlay());
         }
     }
     private void currentSectorMouseLeave(object sender, MouseEventArgs e)
@@ -254,8 +254,8 @@ public partial class ImageResultEntry_V5 : UserControl
             if (sectorView.DataContext is Sectors.Interfaces.ISector sector)
                 sector.IsMouseOver = false;
 
-            if (this.DataContext is ViewModels.ImageResultEntry ire)
-                App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV5CurrentImageOverlay());
+            if (DataContext is ViewModels.ImageResultEntry ire)
+                _ = App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV5CurrentImageOverlay());
         }
     }
     private void storedSectorMouseEnter(object sender, MouseEventArgs e)
@@ -265,8 +265,8 @@ public partial class ImageResultEntry_V5 : UserControl
             if (sectorView.DataContext is Sectors.Interfaces.ISector sector)
                 sector.IsMouseOver = true;
 
-            if (this.DataContext is ViewModels.ImageResultEntry ire)
-                App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV5StoredImageOverlay());
+            if (DataContext is ViewModels.ImageResultEntry ire)
+                _ = App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV5StoredImageOverlay());
         }
     }
     private void storedSectorMouseLeave(object sender, MouseEventArgs e)
@@ -276,8 +276,8 @@ public partial class ImageResultEntry_V5 : UserControl
             if (sectorView.DataContext is Sectors.Interfaces.ISector sector)
                 sector.IsMouseOver = false;
 
-            if (this.DataContext is ViewModels.ImageResultEntry ire)
-                App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV5StoredImageOverlay());
+            if (DataContext is ViewModels.ImageResultEntry ire)
+                _ = App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV5StoredImageOverlay());
         }
     }
 
@@ -311,22 +311,11 @@ public partial class ImageResultEntry_V5 : UserControl
 
     private void ImageToClipboard(byte[] imageBytes)
     {
-        byte[] img;
+        using var img = new ImageMagick.MagickImage(imageBytes);
         //If the shift key is pressed, copy the image as Bitmap.
         if (!(Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)))
-
-            img = ImageUtilities.lib.Core.Png.Utilities.GetPng(imageBytes);
+            Clipboard.SetImage(ImageUtilities.lib.Wpf.BitmapImage.CreateBitmapImage(img.ToByteArray(ImageMagick.MagickFormat.Bmp3)));
         else
-        {
-            var dpi = ImageUtilities.lib.Core.ImageUtilities.GetImageDPI(imageBytes);
-            ImageUtilities.lib.Core.Bmp.Bmp format = new(ImageUtilities.lib.Core.Bmp.Utilities.GetBmp(imageBytes));
-            //Lvs95xx.lib.Core.Controllers.Controller.ApplyWatermark(format.ImageData);
-
-            img = format.RawData;
-
-            _ = ImageUtilities.lib.Core.ImageUtilities.SetImageDPI(img, dpi);
-        }
-
-        Clipboard.SetImage(ImageUtilities.lib.Wpf.BitmapImage.CreateBitmapImage(img));
+            Clipboard.SetImage(ImageUtilities.lib.Wpf.BitmapImage.CreateBitmapImage(img.ToByteArray(ImageMagick.MagickFormat.Png)));
     }
 }

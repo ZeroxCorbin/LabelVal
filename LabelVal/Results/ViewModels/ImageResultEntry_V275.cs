@@ -133,12 +133,12 @@ public partial class ImageResultEntry
 
             if (!ImageResults.SelectedNode.Controller.IsSimulator)
             {
-                int dpi = 600;
-                V275CurrentImage = new ImageEntry(ImageRollUID, ImageUtilities.lib.Core.Png.Utilities.GetPng(repeat.FullReport.Image, dpi), dpi);
+                V275CurrentImage = new ImageEntry(ImageRollUID, repeat.FullReport.Image, 600);
             }
             else
             {
-                V275CurrentImage = new ImageEntry(ImageRollUID, ImageUtilities.lib.Core.Png.Utilities.GetPng(repeat.FullReport.Image, (int)Math.Round(SourceImage.Image.DpiX)), ImageResults.SelectedImageRoll.TargetDPI);
+                using var img = new ImageMagick.MagickImage(repeat.FullReport.Image);
+                V275CurrentImage = new ImageEntry(ImageRollUID, repeat.FullReport.Image, (int)Math.Round(SourceImage.Image.DpiX));
             }
 
             V275CurrentSectors.Clear();

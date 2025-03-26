@@ -5,7 +5,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
-using ImageUtilities.lib.Core.Png;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.Collections.ObjectModel;
@@ -200,11 +199,10 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     {
         try
         {
-            Png pngImage = new(path);
-            if (!pngImage.Chunks.ContainsKey(ChunkTypes.pHYs))
-                pngImage.Chunks.Add(ChunkTypes.pHYs, new PHYS_Chunk());
+            var img = new ImageMagick.MagickImage(path);
+            var pngImage = img.ToByteArray(ImageMagick.MagickFormat.Png);
 
-            ImageEntry image = new(UID, pngImage.RawData, TargetDPI, TargetDPI)
+            ImageEntry image = new(UID, pngImage, TargetDPI)
             {
                 Order = order
             };
@@ -228,7 +226,9 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     {
         try
         {
-            ImageEntry image = new(UID, ImageUtilities.lib.Core.Png.Utilities.GetPng(rawImage), TargetDPI, TargetDPI)
+            using var img = new ImageMagick.MagickImage(rawImage);
+            var png = img.ToByteArray(ImageMagick.MagickFormat.Png);
+            ImageEntry image = new(UID, png, TargetDPI)
             {
                 Order = Images.Count > 0 ? Images.Max(img => img.Order) + 1 : 1
             };

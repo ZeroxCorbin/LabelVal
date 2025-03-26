@@ -165,23 +165,23 @@ namespace LabelVal.ImageViewer3D.ViewModels
 
         public bool LoadImage(byte[] image)
         {
-            OriginalImage = ImageUtilities.lib.Core.Bmp.Utilities.GetBmp(image);
+            //OriginalImage = ImageUtilities.lib.Core.Bmp.Utilities.GetBmp(image);
 
-            var form = ImageUtilities.lib.Core.Bmp.Utilities.GetPixelFormat(OriginalImage);
-            if (form != System.Drawing.Imaging.PixelFormat.Format8bppIndexed)
-                return false;
+            //var form = ImageUtilities.lib.Core.Bmp.Utilities.GetPixelFormat(OriginalImage);
+            //if (form != System.Drawing.Imaging.PixelFormat.Format8bppIndexed)
+            //    return false;
 
-            IndexedColorPallet = ImageUtilities.lib.Core.Bmp.Utilities.GetIndexedColorPallet(OriginalImage);
-            if (IndexedColorPallet.Length != 1024)
-                return false;
+            //IndexedColorPallet = ImageUtilities.lib.Core.Bmp.Utilities.GetIndexedColorPallet(OriginalImage);
+            //if (IndexedColorPallet.Length != 1024)
+            //    return false;
 
-            ColorPallet = GetColorPallet();
-            if (ColorPallet.Count != 256)
-                return false;
+            //ColorPallet = GetColorPallet();
+            //if (ColorPallet.Count != 256)
+            //    return false;
 
-            Bytes = ImageUtilities.lib.Core.Bmp.Utilities.GetImageData(OriginalImage);
+            //Bytes = ImageUtilities.lib.Core.Bmp.Utilities.GetImageData(OriginalImage);
 
-            BuildVisuals(OriginalImage);
+            //BuildVisuals(OriginalImage);
 
             return true;
         }

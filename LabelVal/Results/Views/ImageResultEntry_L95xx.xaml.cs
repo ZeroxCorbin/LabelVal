@@ -331,22 +331,11 @@ public partial class ImageResultEntry_L95xx : UserControl
 
     private void ImageToClipboard(byte[] imageBytes)
     {
-        byte[] img;
+        using var img = new ImageMagick.MagickImage(imageBytes);
         //If the shift key is pressed, copy the image as Bitmap.
         if (!(Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)))
-
-            img = ImageUtilities.lib.Core.Png.Utilities.GetPng(imageBytes);
+            Clipboard.SetImage(ImageUtilities.lib.Wpf.BitmapImage.CreateBitmapImage(img.ToByteArray(ImageMagick.MagickFormat.Bmp3)));
         else
-        {
-            ImageUtilities.lib.Core.ImageUtilities.DPI dpi = ImageUtilities.lib.Core.ImageUtilities.GetImageDPI(imageBytes);
-            ImageUtilities.lib.Core.Bmp.Bmp format = new(ImageUtilities.lib.Core.Bmp.Utilities.GetBmp(imageBytes));
-            //Lvs95xx.lib.Core.Controllers.Controller.ApplyWatermark(format.ImageData);
-
-            img = format.RawData;
-
-            _ = ImageUtilities.lib.Core.ImageUtilities.SetImageDPI(img, dpi);
-        }
-
-        Clipboard.SetImage(ImageUtilities.lib.Wpf.BitmapImage.CreateBitmapImage(img));
+            Clipboard.SetImage(ImageUtilities.lib.Wpf.BitmapImage.CreateBitmapImage(img.ToByteArray(ImageMagick.MagickFormat.Png)));
     }
 }
