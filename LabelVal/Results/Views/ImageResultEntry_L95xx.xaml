@@ -327,8 +327,6 @@
 
         <Border Background="{DynamicResource L95xx_Brush}" Style="{StaticResource groupBottom}" />
 
-
-
         <!--  L95xx Stored  -->
         <DockPanel>
 

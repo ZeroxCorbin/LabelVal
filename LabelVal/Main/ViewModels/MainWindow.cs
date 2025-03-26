@@ -24,6 +24,8 @@ public partial class MainWindow : ObservableRecipient
     public ObservableCollection<HamburgerMenuItem> MenuItems { get; }
     [ObservableProperty] private HamburgerMenuItem selectedMenuItem;
 
+    public void SetDeafultMenuItem() => SelectedMenuItem = MenuItems[0];
+
     public V275.ViewModels.V275Manager V275Manager { get; }
     public V275.ViewModels.NodeDetails NodeDetails { get; }
 
@@ -76,6 +78,7 @@ public partial class MainWindow : ObservableRecipient
 
         MenuItems =
         [
+            new HamburgerMenuItem { Label = "ImageRolls", Content = ImageRolls },
             new HamburgerMenuItem { Label = "Printer", Content = Printer, IsNotSelectable = true },
             new HamburgerMenuItem { Label = "Run", Content = RunManager },
             new HamburgerMenuItem { Label = "Results", Content = ImageResultsDatabases },

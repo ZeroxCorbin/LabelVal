@@ -20,7 +20,8 @@
     xmlns:v275Vm="clr-namespace:LabelVal.V275.ViewModels"
     xmlns:v5="clr-namespace:LabelVal.V5.Views"
     xmlns:v5Vm="clr-namespace:LabelVal.V5.ViewModels"
-    xmlns:viewModels="clr-namespace:LabelVal.Main.ViewModels">
+    xmlns:viewModels="clr-namespace:LabelVal.Main.ViewModels"
+    xmlns:imageRolls="clr-namespace:LabelVal.ImageRolls.Views">
 
     <converters:LocalizeEnumValue x:Key="localizeEnumValue" />
     <converters:MACAddressSplitConverter x:Key="macAddressSplitConverter" />
@@ -42,6 +43,10 @@
     </DataTemplate>
     <DataTemplate x:Key="l95xxContent">
         <L95xx:VerifierManager />
+    </DataTemplate>
+
+    <DataTemplate x:Key="imageRollsContent">
+        <imageRolls:ImageRolls />
     </DataTemplate>
 
     <!--  Printer Menu  -->
@@ -103,7 +108,7 @@
 
             <Border Style="{StaticResource imageBar}" />
 
-            <Grid>
+            <Grid Height="59">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
@@ -275,7 +280,7 @@
 
     <!--  V275  -->
     <DataTemplate x:Key="v275MenuItem">
-        <DockPanel>
+        <DockPanel  DataContext="{Binding Content}">
             <Border Style="{StaticResource hamMenuBottomBar}" />
 
             <DockPanel
@@ -298,7 +303,7 @@
                     <Style TargetType="DockPanel">
                         <Setter Property="Visibility" Value="Collapsed" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Content.SelectedDevice, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                            <DataTrigger Binding="{Binding SelectedDevice, Converter={StaticResource IsNullOrEmpty}}" Value="True">
                                 <Setter Property="Visibility" Value="Visible" />
                             </DataTrigger>
                         </Style.Triggers>
@@ -316,14 +321,14 @@
                     <Style TargetType="DockPanel">
                         <Setter Property="Visibility" Value="Visible" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Content.SelectedDevice, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                            <DataTrigger Binding="{Binding SelectedDevice, Converter={StaticResource IsNullOrEmpty}}" Value="True">
                                 <Setter Property="Visibility" Value="Collapsed" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </DockPanel.Style>
 
-                <v275:NodeItem DataContext="{Binding Content.SelectedDevice}" IsDocked="True" />
+                <v275:NodeItem DataContext="{Binding SelectedDevice}" IsDocked="True" />
 
             </DockPanel>
 
@@ -332,7 +337,7 @@
 
     <!--  V5  -->
     <DataTemplate x:Key="v5MenuItem">
-        <DockPanel>
+        <DockPanel  DataContext="{Binding Content}">
 
             <Border Style="{StaticResource hamMenuBottomBar}" />
 
@@ -356,7 +361,7 @@
                     <Style TargetType="DockPanel">
                         <Setter Property="Visibility" Value="Collapsed" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Content.SelectedDevice, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                            <DataTrigger Binding="{Binding SelectedDevice, Converter={StaticResource IsNullOrEmpty}}" Value="True">
                                 <Setter Property="Visibility" Value="Visible" />
                             </DataTrigger>
                         </Style.Triggers>
@@ -374,14 +379,14 @@
                     <Style TargetType="DockPanel">
                         <Setter Property="Visibility" Value="Visible" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Content.SelectedDevice, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                            <DataTrigger Binding="{Binding SelectedDevice, Converter={StaticResource IsNullOrEmpty}}" Value="True">
                                 <Setter Property="Visibility" Value="Collapsed" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </DockPanel.Style>
 
-                <v5:Scanner DataContext="{Binding Content.SelectedDevice}" IsDocked="True" />
+                <v5:Scanner DataContext="{Binding SelectedDevice}" IsDocked="True" />
 
             </DockPanel>
         </DockPanel>
@@ -389,7 +394,7 @@
 
     <!--  L95xx  -->
     <DataTemplate x:Key="l95xxMenuItem">
-        <DockPanel>
+        <DockPanel  DataContext="{Binding Content}">
 
             <DockPanel
                 Width="48"
@@ -410,7 +415,7 @@
                     <Style TargetType="DockPanel">
                         <Setter Property="Visibility" Value="Collapsed" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Content.SelectedDevice, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                            <DataTrigger Binding="{Binding SelectedDevice, Converter={StaticResource IsNullOrEmpty}}" Value="True">
                                 <Setter Property="Visibility" Value="Visible" />
                             </DataTrigger>
                         </Style.Triggers>
@@ -429,19 +434,38 @@
                     <Style TargetType="DockPanel">
                         <Setter Property="Visibility" Value="Visible" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Content.SelectedDevice, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                            <DataTrigger Binding="{Binding SelectedDevice, Converter={StaticResource IsNullOrEmpty}}" Value="True">
                                 <Setter Property="Visibility" Value="Collapsed" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </DockPanel.Style>
 
-                <L95xx:Verifier DataContext="{Binding Content.SelectedDevice}" IsDocked="True" />
+                <L95xx:Verifier DataContext="{Binding SelectedDevice}" IsDocked="True" />
 
             </DockPanel>
         </DockPanel>
     </DataTemplate>
 
+    <DataTemplate x:Key="imageRollMenuItem">
+        <DockPanel DataContext="{Binding Content}">
+
+            <DockPanel
+                Width="48"
+                MinHeight="48"
+                Background="Teal">
+                <Image
+                    Width="36"
+                    Height="36"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Source="/Assets/Images/l95xx-white-outline.ico" />
+            </DockPanel>
+
+            <Border Style="{StaticResource imageBar}" />
+
+        </DockPanel>
+    </DataTemplate>
 
     <viewModels:TemplateSelector
         x:Key="menuItemTemplateSelector"
@@ -450,7 +474,8 @@
         Printer="{StaticResource printerMenuItem}"
         Run="{StaticResource runMenuItem}"
         V275="{StaticResource v275MenuItem}"
-        V5="{StaticResource v5MenuItem}" />
+        V5="{StaticResource v5MenuItem}" 
+        ImageRolls="{StaticResource imageRollMenuItem}"/>
 
     <viewModels:TemplateSelector
         x:Key="contentItemTemplateSelector"
@@ -459,6 +484,7 @@
         Printer="{StaticResource printerContent}"
         Run="{StaticResource runContent}"
         V275="{StaticResource v275Content}"
-        V5="{StaticResource v5Content}" />
+        V5="{StaticResource v5Content}" 
+        ImageRolls="{StaticResource imageRollsContent}"/>
 
 </ResourceDictionary>

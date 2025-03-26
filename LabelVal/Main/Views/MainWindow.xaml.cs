@@ -46,7 +46,7 @@ public partial class MainWindow : MetroWindow
         });
     }
 
-    public void ClearSelectedMenuItem() => ((ViewModels.MainWindow)this.DataContext).SelectedMenuItem = null;
+    public void ClearSelectedMenuItem() => ((ViewModels.MainWindow)this.DataContext).SetDeafultMenuItem();
 
     private void MainWindow_DpiChanged(object sender, DpiChangedEventArgs e) => ((ViewModels.MainWindow)this.DataContext).DPIChangedMessage = new ViewModels.DPIChangedMessage(e.NewDpi);
     private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e) { }
@@ -68,6 +68,8 @@ public partial class MainWindow : MetroWindow
         }
     }
 
+    private bool wasOpen = false;
+    private bool openOneShot = false;
     private void hamMenu_LayoutUpdated(object sender, System.EventArgs e)
     {
         double maxWidth = 280;
@@ -75,9 +77,31 @@ public partial class MainWindow : MetroWindow
         if (res == null)
             return;
 
-        foreach (ListBoxItem item in res)
-            maxWidth = Math.Max(maxWidth, item.DesiredSize.Width);
+        if (hamMenu.IsPaneOpen && !wasOpen)
+        {
+            openOneShot = true;
+            wasOpen = true;
+        }
+        else if (!hamMenu.IsPaneOpen)
+            wasOpen = false;
 
-        hamMenu.OpenPaneLength = maxWidth + 1;
+        if (openOneShot)
+        {
+            hamMenu.Focus();
+            hamMenu.Items.Refresh();
+        }
+
+
+        foreach (ListBoxItem item in res)
+        {
+            maxWidth = Math.Max(maxWidth, item.DesiredSize.Width);
+        }
+
+        if (hamMenu.IsPaneOpen)
+            hamMenu.OpenPaneLength = maxWidth + 1;
+        else
+            hamMenu.OpenPaneLength = 0;
+
+        openOneShot = false;
     }
 }

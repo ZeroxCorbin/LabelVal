@@ -316,6 +316,7 @@
                 ItemsSource="{Binding Items}"
                 Loaded="ListView_Loaded"
                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                 SelectedItem="{Binding DataContext.SelectedFixedImageRoll, RelativeSource={RelativeSource AncestorType=UserControl}}"
                 SelectionChanged="ListView_SelectionChanged"
                 Style="{StaticResource MahApps.Styles.ListView}">
 
@@ -335,6 +336,7 @@
                 ItemTemplate="{StaticResource imageRollItemTemplate_ListView}"
                 ItemsSource="{Binding Items}"
                 Loaded="ListViewUser_Loaded"
+                SelectedItem="{Binding DataContext.SelectedUserImageRoll, RelativeSource={RelativeSource AncestorType=UserControl}}"
                 SelectionChanged="ListViewUser_SelectionChanged"
                 Style="{StaticResource MahApps.Styles.ListView}">
 

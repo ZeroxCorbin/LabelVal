@@ -1,22 +1,22 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using BarcodeVerification.lib.Extensions;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
-using LabelVal.Sectors.Extensions;
 using LabelVal.LVS_95xx.ViewModels;
+using LabelVal.Sectors.Extensions;
 using LabelVal.Utilities;
 using LabelVal.V275.ViewModels;
 using LabelVal.V5.ViewModels;
 using Lvs95xx.lib.Core.Controllers;
 using MahApps.Metro.Controls.Dialogs;
+using Newtonsoft.Json.Linq;
 using NHibernate.Util;
 using System.Collections.ObjectModel;
 using System.Drawing.Printing;
 using System.Threading.Tasks;
 using System.Windows;
-using Newtonsoft.Json.Linq;
-using BarcodeVerification.lib.Extensions;
 
 namespace LabelVal.Results.ViewModels;
 public partial class ImageResults : ObservableRecipient,
@@ -47,7 +47,6 @@ public partial class ImageResults : ObservableRecipient,
     partial void OnHideErrorsWarningsChanged(bool value) => App.Settings.SetValue(nameof(HideErrorsWarnings), value);
 
     public ObservableCollection<ImageResultEntry> ImageResultsList { get; } = [];
-
 
     [ObservableProperty] private JObject focusedTemplate;
     [ObservableProperty] private JObject focusedReport;
@@ -91,6 +90,10 @@ public partial class ImageResults : ObservableRecipient,
 
     public ImageResults()
     {
+        WeakReferenceMessenger.Default.Register<RequestMessage<ImageRollEntry>>(
+        this,
+        (recipient, message) => message.Reply(SelectedImageRoll));
+
         IsActive = true;
         RecieveAll();
     }
@@ -105,9 +108,9 @@ public partial class ImageResults : ObservableRecipient,
         if (ret2.HasReceivedResponse)
             SelectedPrinter = ret2.Response;
 
-        RequestMessage<ImageRollEntry> ret3 = WeakReferenceMessenger.Default.Send(new RequestMessage<ImageRollEntry>());
-        if (ret3.HasReceivedResponse)
-            SelectedImageRoll = ret3.Response;
+        //RequestMessage<ImageRollEntry> ret3 = WeakReferenceMessenger.Default.Send(new RequestMessage<ImageRollEntry>());
+        //if (ret3.HasReceivedResponse)
+        //    SelectedImageRoll = ret3.Response;
 
         RequestMessage<Databases.ImageResultsDatabase> ret4 = WeakReferenceMessenger.Default.Send(new RequestMessage<Databases.ImageResultsDatabase>());
         if (ret4.HasReceivedResponse)
@@ -120,6 +123,7 @@ public partial class ImageResults : ObservableRecipient,
         RequestMessage<Verifier> ret6 = WeakReferenceMessenger.Default.Send(new RequestMessage<Verifier>());
         if (ret6.HasReceivedResponse)
             SelectedVerifier = ret6.Response;
+
     }
 
     public async Task LoadImageResultsList()
@@ -171,16 +175,16 @@ public partial class ImageResults : ObservableRecipient,
         ImageResultEntry itm = ImageResultsList.FirstOrDefault(ir => ir.SourceImage == img);
         if (itm != null)
         {
-            if( !SelectedImageRoll.ImageRollsDatabase.DeleteImage(SelectedImageRoll.UID, img.UID))
+            if (!SelectedImageRoll.ImageRollsDatabase.DeleteImage(SelectedImageRoll.UID, img.UID))
             {
                 Logger.LogError("Could not delete image from database.");
                 return;
             }
-            _ = ImageResultsList.Remove(itm);   
+            _ = ImageResultsList.Remove(itm);
         }
 
         // Reorder the remaining items in the list
-        int order = 1;
+        var order = 1;
         foreach (ImageResultEntry item in ImageResultsList.OrderBy(item => item.SourceImage.Order))
         {
             item.SourceImage.Order = order++;
@@ -252,7 +256,7 @@ public partial class ImageResults : ObservableRecipient,
             if (img.V275CurrentSectors.Count != 0)
                 img.StoreCommand.Execute(ImageResultEntryDevices.V275);
 
-           if (img.V5CurrentSectors.Count != 0)
+            if (img.V5CurrentSectors.Count != 0)
                 img.StoreCommand.Execute(ImageResultEntryDevices.V5);
 
             if (img.L95xxCurrentSectors.Count != 0)
@@ -274,10 +278,10 @@ public partial class ImageResults : ObservableRecipient,
     [RelayCommand]
     private void CopyAllSectorsToClipboard()
     {
-        string data = "";
+        var data = "";
         foreach (ImageResultEntry img in ImageResultsList)
         {
-            if(img.V275StoredSectors.Count != 0)
+            if (img.V275StoredSectors.Count != 0)
                 data += img.V275StoredSectors.GetSectorsReport(img.SourceImage.Order.ToString()) + Environment.NewLine;
             if (img.V275CurrentSectors.Count != 0)
                 data += img.V275CurrentSectors.GetSectorsReport(img.SourceImage.Order.ToString()) + Environment.NewLine;
@@ -316,7 +320,7 @@ public partial class ImageResults : ObservableRecipient,
         //if (message.Report.OverallGrade.StartsWith("Bar"))
         //    return;
 
-        message.Template.SetParameter<string>("Name", "Verify_1");
+        _ = message.Template.SetParameter<string>("Name", "Verify_1");
 
         // byte[] bees = BitmapImageUtilities.ImageToBytes(BitmapImageUtilities.CreateRandomBitmapImage(50, 50));
         ImageEntry imagEntry = SelectedImageRoll.GetNewImageEntry(message.Template.GetParameter<byte[]>("Report.Thumbnail"));
@@ -391,7 +395,7 @@ public partial class ImageResults : ObservableRecipient,
         if (Utilities.FileUtilities.LoadFileDialog(settings))
         {
             List<ImageResultEntry> newImages = [];
-            foreach (string filePath in settings.SelectedFiles) // Iterate over selected files
+            foreach (var filePath in settings.SelectedFiles) // Iterate over selected files
             {
                 ImageEntry newImage = SelectedImageRoll.GetNewImageEntry(filePath, 0); // Order will be set in InsertImageAtOrder
                 if (newImage != null)
@@ -419,7 +423,7 @@ public partial class ImageResults : ObservableRecipient,
     }
     public void IncreaseOrder(ImageResultEntry itemToMove)
     {
-        int currentItemOrder = itemToMove.SourceImage.Order;
+        var currentItemOrder = itemToMove.SourceImage.Order;
         ImageResultEntry nextItem = ImageResultsList.FirstOrDefault(item => item.SourceImage.Order == currentItemOrder + 1);
         if (nextItem != null)
         {
@@ -433,7 +437,7 @@ public partial class ImageResults : ObservableRecipient,
     }
     public void DecreaseOrder(ImageResultEntry itemToMove)
     {
-        int currentItemOrder = itemToMove.SourceImage.Order;
+        var currentItemOrder = itemToMove.SourceImage.Order;
         ImageResultEntry previousItem = ImageResultsList.FirstOrDefault(item => item.SourceImage.Order == currentItemOrder - 1);
         if (previousItem != null)
         {
@@ -448,7 +452,7 @@ public partial class ImageResults : ObservableRecipient,
 
     public void ChangeOrderTo(ImageResultEntry itemToMove, int newOrder)
     {
-        int originalOrder = itemToMove.SourceImage.Order;
+        var originalOrder = itemToMove.SourceImage.Order;
 
         if (newOrder == originalOrder) return; // No change needed
 
@@ -495,7 +499,7 @@ public partial class ImageResults : ObservableRecipient,
         if (newImageResults == null || !newImageResults.Any()) return;
 
         // Sort the new images by their current order (if any) to maintain consistency in their addition
-        List<ImageResultEntry> sortedNewImages = newImageResults.OrderBy(img => img.SourceImage.Order).ToList();
+        var sortedNewImages = newImageResults.OrderBy(img => img.SourceImage.Order).ToList();
 
         // Adjust the orders of existing items to make space for the new items
         AdjustOrdersBeforeInsert(targetOrder, newImageResults.Count);
@@ -505,7 +509,7 @@ public partial class ImageResults : ObservableRecipient,
         {
             // Set the order of the new item
             newImageResult.SourceImage.Order = targetOrder++;
-            SelectedImageRoll.AddImage(newImageResult.SourceImage); 
+            SelectedImageRoll.AddImage(newImageResult.SourceImage);
         }
     }
     private void AdjustOrdersBeforeInsert(int targetOrder)

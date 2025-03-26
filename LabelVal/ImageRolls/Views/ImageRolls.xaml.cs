@@ -1,13 +1,37 @@
-﻿using System.Windows;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging.Messages;
+using LabelVal.ImageRolls.ViewModels;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace LabelVal.ImageRolls.Views;
-/// <summary>
-/// Interaction logic for ImageRolls.xaml
-/// </summary>
+
 public partial class ImageRolls : UserControl
 {
-    public ImageRolls() => InitializeComponent();
+
+    private ViewModels.ImageRolls _viewModel;
+
+    public ImageRolls()
+    {
+        InitializeComponent();
+
+        DataContextChanged += (s, e) =>
+            {
+                _viewModel = (ViewModels.ImageRolls)DataContext;
+                if (_viewModel == null)
+                    return;
+                //App.Settings.SetValue(nameof(SelectedImageRoll), value);
+                var ir = App.Settings.GetValue< ViewModels.ImageRollEntry>("SelectedImageRoll");
+
+                    _viewModel.SelectedUserImageRoll = null;
+                    _viewModel.SelectedFixedImageRoll = null;
+
+                    _viewModel.SelectedFixedImageRoll = ir != null ? _viewModel.FixedImageRolls.FirstOrDefault((e) => e.UID == ir.UID) : null;
+                    _viewModel.SelectedUserImageRoll = ir != null ? _viewModel.UserImageRolls.FirstOrDefault((e) => e.UID == ir.UID) : null;
+                
+            };
+
+    }
 
     private List<ListView> fixedLists = [];
     private List<ListView> userLists = [];
@@ -43,7 +67,7 @@ public partial class ImageRolls : UserControl
                     l.SelectedItem = null;
             }
 
-            ((ViewModels.ImageRolls)par.DataContext).SelectedFixedImageRoll = (ViewModels.ImageRollEntry)((ListView)sender).SelectedItem;
+            //((ViewModels.ImageRolls)par.DataContext).SelectedFixedImageRoll = (ViewModels.ImageRollEntry)((ListView)sender).SelectedItem;
 
     }
 
@@ -92,7 +116,8 @@ public partial class ImageRolls : UserControl
                     l.SelectedItem = null;
             }
 
-        ((ViewModels.ImageRolls)par.DataContext).SelectedUserImageRoll = (ViewModels.ImageRollEntry)((ListView)sender).SelectedItem;
+        //if ((ViewModels.ImageRollEntry)((ListView)sender).SelectedItem != null)
+        //    ((ViewModels.ImageRolls)par.DataContext).SelectedUserImageRoll = (ViewModels.ImageRollEntry)((ListView)sender).SelectedItem;
 
     }
 

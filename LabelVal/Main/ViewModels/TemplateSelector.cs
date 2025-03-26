@@ -16,7 +16,7 @@ namespace LabelVal.Main.ViewModels
         public DataTemplate V5 { get; set; }
         public DataTemplate L96XX { get; set; }
         public DataTemplate ImageResultsDatabases { get; set; }
-        public DataTemplate Empty { get; set; } = new DataTemplate();
+        public DataTemplate ImageRolls { get; set; }
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
             var hmi = item as HamburgerMenuItem;
@@ -51,13 +51,14 @@ namespace LabelVal.Main.ViewModels
                 {
                     return Run;
                 }
-                else
+                else if (hmi.Content is ImageRolls.ViewModels.ImageRolls)
                 {
-
+                    return ImageRolls;
                 }
 
+
             }
-            return Empty;
+            return null;
             //return base.SelectTemplate(item, container);
         }
     }

@@ -336,24 +336,22 @@
     </UserControl.Resources>
 
     <DockPanel MaxHeight="800">
+        <DockPanel.Style>
+            <Style TargetType="{x:Type DockPanel}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding V275StoredImage, Converter={StaticResource IsNullOrEmpty}}" Value="False">
+                        <Setter Property="Visibility" Value="Visible" />
+                    </DataTrigger>
 
-        <Border Background="{DynamicResource V275_Brush}">
-            <Border.Style>
-                <Style BasedOn="{StaticResource groupLeft}" TargetType="{x:Type Border}">
-                    <Setter Property="Visibility" Value="Collapsed" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding V275StoredImage, Converter={StaticResource IsNullOrEmpty}}" Value="False">
-                            <Setter Property="Visibility" Value="Visible" />
-                        </DataTrigger>
-
-                        <DataTrigger Binding="{Binding V275CurrentImage, Converter={StaticResource IsNullOrEmpty}}" Value="False">
-                            <Setter Property="Visibility" Value="Visible" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Border.Style>
-        </Border>
-
+                    <DataTrigger Binding="{Binding V275CurrentImage, Converter={StaticResource IsNullOrEmpty}}" Value="False">
+                        <Setter Property="Visibility" Value="Visible" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </DockPanel.Style>
+        
+        <Border Background="{DynamicResource V275_Brush}" Style="{StaticResource groupLeft}"/>
         <Border Background="{DynamicResource V275_Brush}" Style="{StaticResource groupBottom}" />
 
         <DockPanel>
