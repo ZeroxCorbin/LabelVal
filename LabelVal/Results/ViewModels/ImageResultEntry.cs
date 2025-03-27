@@ -838,6 +838,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         "F" => ChangeTransparency((SolidColorBrush)App.Current.Resources["ISO_GradeF_Brush"], trans),
         _ => ChangeTransparency((SolidColorBrush)App.Current.Resources["CB_Green"], trans),
     };
+
     private static SolidColorBrush ChangeTransparency(SolidColorBrush original, byte trans) => new(Color.FromArgb(trans, original.Color.R, original.Color.G, original.Color.B));
 
     public static void SortList(List<Sectors.Interfaces.ISector> list) => list.Sort((item1, item2) =>
