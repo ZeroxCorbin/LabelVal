@@ -1,8 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
-using LabelVal.Results.Controls.ViewModels;
-using System.Collections.Generic;
+using LabelVal.Sectors.Classes;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Windows;

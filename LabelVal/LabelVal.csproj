@@ -1432,6 +1432,8 @@
 	<ItemGroup>
 		<Folder Include="Assets\Image Rolls\GS1 TABLE 1\300\" />
 		<Folder Include="ImageViewer3D\Processing\" />
+		<Folder Include="Results\Controls\ViewModels\" />
+		<Folder Include="Results\Controls\Views\" />
 		<Folder Include="Sectors\Messages\" />
 	</ItemGroup>
 	<ItemGroup>

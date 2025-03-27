@@ -350,8 +350,8 @@
                 </Style.Triggers>
             </Style>
         </DockPanel.Style>
-        
-        <Border Background="{DynamicResource V275_Brush}" Style="{StaticResource groupLeft}"/>
+
+        <Border Background="{DynamicResource V275_Brush}" Style="{StaticResource groupLeft}" />
         <Border Background="{DynamicResource V275_Brush}" Style="{StaticResource groupBottom}" />
 
         <DockPanel>

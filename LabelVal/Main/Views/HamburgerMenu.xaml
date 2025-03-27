@@ -5,6 +5,7 @@
     xmlns:L95xxVm="clr-namespace:LabelVal.LVS_95xx.ViewModels"
     xmlns:converters="clr-namespace:LabelVal.Converters"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:imageRolls="clr-namespace:LabelVal.ImageRolls.Views"
     xmlns:loc="clr-namespace:LabelVal.Localization"
     xmlns:local="clr-namespace:LabelVal.Main.Views"
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
@@ -20,8 +21,7 @@
     xmlns:v275Vm="clr-namespace:LabelVal.V275.ViewModels"
     xmlns:v5="clr-namespace:LabelVal.V5.Views"
     xmlns:v5Vm="clr-namespace:LabelVal.V5.ViewModels"
-    xmlns:viewModels="clr-namespace:LabelVal.Main.ViewModels"
-    xmlns:imageRolls="clr-namespace:LabelVal.ImageRolls.Views">
+    xmlns:viewModels="clr-namespace:LabelVal.Main.ViewModels">
 
     <converters:LocalizeEnumValue x:Key="localizeEnumValue" />
     <converters:MACAddressSplitConverter x:Key="macAddressSplitConverter" />
@@ -280,7 +280,7 @@
 
     <!--  V275  -->
     <DataTemplate x:Key="v275MenuItem">
-        <DockPanel  DataContext="{Binding Content}">
+        <DockPanel DataContext="{Binding Content}">
             <Border Style="{StaticResource hamMenuBottomBar}" />
 
             <DockPanel
@@ -337,7 +337,7 @@
 
     <!--  V5  -->
     <DataTemplate x:Key="v5MenuItem">
-        <DockPanel  DataContext="{Binding Content}">
+        <DockPanel DataContext="{Binding Content}">
 
             <Border Style="{StaticResource hamMenuBottomBar}" />
 
@@ -394,7 +394,7 @@
 
     <!--  L95xx  -->
     <DataTemplate x:Key="l95xxMenuItem">
-        <DockPanel  DataContext="{Binding Content}">
+        <DockPanel DataContext="{Binding Content}">
 
             <DockPanel
                 Width="48"
@@ -470,21 +470,21 @@
     <viewModels:TemplateSelector
         x:Key="menuItemTemplateSelector"
         ImageResultsDatabases="{StaticResource imageRDMenuItem}"
+        ImageRolls="{StaticResource imageRollMenuItem}"
         L96XX="{StaticResource l95xxMenuItem}"
         Printer="{StaticResource printerMenuItem}"
         Run="{StaticResource runMenuItem}"
         V275="{StaticResource v275MenuItem}"
-        V5="{StaticResource v5MenuItem}" 
-        ImageRolls="{StaticResource imageRollMenuItem}"/>
+        V5="{StaticResource v5MenuItem}" />
 
     <viewModels:TemplateSelector
         x:Key="contentItemTemplateSelector"
         ImageResultsDatabases="{StaticResource imageRDContent}"
+        ImageRolls="{StaticResource imageRollsContent}"
         L96XX="{StaticResource l95xxContent}"
         Printer="{StaticResource printerContent}"
         Run="{StaticResource runContent}"
         V275="{StaticResource v275Content}"
-        V5="{StaticResource v5Content}" 
-        ImageRolls="{StaticResource imageRollsContent}"/>
+        V5="{StaticResource v5Content}" />
 
 </ResourceDictionary>

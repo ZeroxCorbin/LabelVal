@@ -1,11 +1,11 @@
 ﻿<UserControl
-    x:Class="LabelVal.Results.Controls.Views.SectorOutputSettings"
+    x:Class="LabelVal.Sectors.Views.SectorOutputSettings"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:LabelVal.Results.Controls.Views"
+    xmlns:local="clr-namespace:LabelVal.Sectors.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:sectorOutput="clr-namespace:LabelVal.Results.Controls.ViewModels"
+    xmlns:vm="clr-namespace:LabelVal.Sectors.Classes"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
@@ -30,7 +30,7 @@
                 <Style TargetType="StackPanel">
                     <Setter Property="IsEnabled" Value="False" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding OutputType}" Value="{x:Static sectorOutput:SectorOutputType.Delimited}">
+                        <DataTrigger Binding="{Binding OutputType}" Value="{x:Static vm:SectorOutputType.Delimited}">
                             <Setter Property="IsEnabled" Value="True" />
                         </DataTrigger>
                     </Style.Triggers>
@@ -46,7 +46,7 @@
                 <Style TargetType="StackPanel">
                     <Setter Property="IsEnabled" Value="False" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding OutputType}" Value="{x:Static sectorOutput:SectorOutputType.Delimited}">
+                        <DataTrigger Binding="{Binding OutputType}" Value="{x:Static vm:SectorOutputType.Delimited}">
                             <Setter Property="IsEnabled" Value="True" />
                         </DataTrigger>
                     </Style.Triggers>

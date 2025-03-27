@@ -1,7 +1,7 @@
 ﻿using BarcodeVerification.lib.Common;
 using BarcodeVerification.lib.Extensions;
 using BarcodeVerification.lib.ISO;
-using LabelVal.Results.Controls.ViewModels;
+using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Interfaces;
 using Lvs95xx.lib.Core.Models;
 using System.Text;

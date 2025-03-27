@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace LabelVal.Results.Controls.Views
+namespace LabelVal.Sectors.Views
 {
     /// <summary>
     /// Interaction logic for SectorOutputSettings.xaml
