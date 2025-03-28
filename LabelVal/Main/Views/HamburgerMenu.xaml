@@ -454,12 +454,34 @@
                 Width="48"
                 MinHeight="48"
                 Background="Teal">
-                <Image
-                    Width="36"
-                    Height="36"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Source="/Assets/Images/l95xx-white-outline.ico" />
+                <StackPanel
+                                Width="36"
+                                Height="36"
+                                Margin="0,2"
+                                VerticalAlignment="Center">
+
+                    <DockPanel>
+                        <iconPacks:PackIconMaterial
+                                        Height="14"
+                                        HorizontalAlignment="Center"
+                                        Kind="ImageMultiple" />
+                        <iconPacks:PackIconMaterial
+                                        Height="14"
+                                        HorizontalAlignment="Center"
+                                        Kind="ImageMultiple" />
+                    </DockPanel>
+
+                    <iconPacks:PackIconMaterial
+                                    Height="6"
+                                    Margin="0,0,0,1"
+                                    HorizontalAlignment="Center"
+                                    Kind="ChevronDown" />
+                    <iconPacks:PackIconMaterial
+                                    Width="36"
+                                    Height="14"
+                                    HorizontalAlignment="Center"
+                                    Kind="Database" />
+                </StackPanel>
             </DockPanel>
 
             <Border Style="{StaticResource imageBar}" />

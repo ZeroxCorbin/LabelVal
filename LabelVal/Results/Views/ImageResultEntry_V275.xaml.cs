@@ -315,7 +315,8 @@ public partial class ImageResultEntry_V275 : UserControl
     {
         if (sender is Button btn && btn.Tag is System.Collections.ObjectModel.ObservableCollection<Sectors.Interfaces.ISector> sectors)
         {
-            _ = sectors.GetSectorsReport(((ViewModels.ImageResultEntry)DataContext).SourceImage.Order.ToString(), true);
+            var img = (ViewModels.ImageResultEntry)DataContext;
+            _ = sectors.GetSectorsReport($"{img.ImageResults.SelectedImageRoll.Name}{(char)Sectors.Classes.SectorOutputSettings.CurrentDelimiter}{img.SourceImage.Order}", true);
         }
         else if (sender is Button btn2 && btn2.Tag is ImageEntry image)
         {

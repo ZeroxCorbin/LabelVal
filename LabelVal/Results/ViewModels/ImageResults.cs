@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.LVS_95xx.ViewModels;
+using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Extensions;
 using LabelVal.Utilities;
 using LabelVal.V275.ViewModels;
@@ -279,22 +280,23 @@ public partial class ImageResults : ObservableRecipient,
     private void CopyAllSectorsToClipboard()
     {
         var data = "";
-        foreach (ImageResultEntry img in ImageResultsList)
+        var sorted = ImageResultsList.OrderBy(i => i.SourceImage.Order);
+        foreach (ImageResultEntry img in sorted)
         {
             if (img.V275StoredSectors.Count != 0)
-                data += img.V275StoredSectors.GetSectorsReport(img.SourceImage.Order.ToString()) + Environment.NewLine;
+                data += img.V275StoredSectors.GetSectorsReport($"{img.ImageResults.SelectedImageRoll.Name}{(char)SectorOutputSettings.CurrentDelimiter}{img.SourceImage.Order}") + Environment.NewLine;
             if (img.V275CurrentSectors.Count != 0)
-                data += img.V275CurrentSectors.GetSectorsReport(img.SourceImage.Order.ToString()) + Environment.NewLine;
+                data += img.V275CurrentSectors.GetSectorsReport($"{img.ImageResults.SelectedImageRoll.Name}{(char)SectorOutputSettings.CurrentDelimiter}{img.SourceImage.Order}") + Environment.NewLine;
 
             if (img.V5StoredSectors.Count != 0)
-                data += img.V5StoredSectors.GetSectorsReport(img.SourceImage.Order.ToString()) + Environment.NewLine;
+                data += img.V5StoredSectors.GetSectorsReport($"{img.ImageResults.SelectedImageRoll.Name}{(char)SectorOutputSettings.CurrentDelimiter}{img.SourceImage.Order}") + Environment.NewLine;
             if (img.V5CurrentSectors.Count != 0)
-                data += img.V5CurrentSectors.GetSectorsReport(img.SourceImage.Order.ToString()) + Environment.NewLine;
+                data += img.V5CurrentSectors.GetSectorsReport($"{img.ImageResults.SelectedImageRoll.Name}{(char)SectorOutputSettings.CurrentDelimiter}{img.SourceImage.Order}") + Environment.NewLine;
 
             if (img.L95xxStoredSectors.Count != 0)
-                data += img.L95xxStoredSectors.GetSectorsReport(img.SourceImage.Order.ToString()) + Environment.NewLine;
+                data += img.L95xxStoredSectors.GetSectorsReport($"{img.ImageResults.SelectedImageRoll.Name}{(char)SectorOutputSettings.CurrentDelimiter}{img.SourceImage.Order}") + Environment.NewLine;
             if (img.L95xxCurrentSectors.Count != 0)
-                data += img.L95xxCurrentSectors.GetSectorsReport(img.SourceImage.Order.ToString()) + Environment.NewLine;
+                data += img.L95xxCurrentSectors.GetSectorsReport($"{img.ImageResults.SelectedImageRoll.Name}{(char)SectorOutputSettings.CurrentDelimiter}{img.SourceImage.Order}") + Environment.NewLine;
         }
         Clipboard.SetText(data);
     }

@@ -26,18 +26,19 @@ public static class ListReportDataExtensions
         _ = writer.AppendLine($"Name{delimiter}Value{delimiter}Suffix{delimiter}GradeValue{delimiter}Grade");
         _ = writer.AppendLine($"Device{delimiter}{sector.Report.Device.GetDescription()}{GetDelimiter(3)}");
         _ = writer.AppendLine($"Version{delimiter}{sector.Template.Version}{delimiter}{sector.Report.Units.GetDescription()}{GetDelimiter(2)}");
-        _ = writer.AppendLine($"Roll ID{delimiter}{rollID}{GetDelimiter(3)}");
+        //This will be a delimeted string with one delimeter.
+        _ = writer.AppendLine($"Roll ID{delimiter}{rollID}{GetDelimiter(2)}");
         _ = writer.AppendLine($"Sector Name{delimiter}{sector.Template.Name}{GetDelimiter(3)}");
         _ = writer.AppendLine($"Sector Username{delimiter}{sector.Template.Username}{GetDelimiter(3)}");
         _ = writer.AppendLine($"Region Type{delimiter}{sector.Report.RegionType.GetDescription()}{GetDelimiter(3)}");
         _ = writer.AppendLine($"Standard{delimiter}{sector.Report.Standard.GetDescription()}{GetDelimiter(3)}");
-        _ = writer.AppendLine($"{sector.Report.SymbolType}{delimiter}{sector.Report.DecodeText}{GetDelimiter(2)}{sector.Report.OverallGrade.Grade.Value}{delimiter}{sector.Report.OverallGrade.Grade.Letter}");
+        _ = writer.AppendLine($"{sector.Report.SymbolType}{delimiter}\"{sector.Report.DecodeText}\"{GetDelimiter(2)}{sector.Report.OverallGrade.Grade.Value}{delimiter}{sector.Report.OverallGrade.Grade.Letter}");
         _ = writer.AppendLine(sector.Report.OverallGrade.ToDelimitedString(delimiter));
         _ = writer.AppendLine($"X Dimension{delimiter}{sector.Report.XDimension}{GetDelimiter(3)}");
         _ = writer.AppendLine($"Angle{delimiter}{sector.Report.AngleDeg}{GetDelimiter(3)}");
 
         _ = writer.AppendLine($"GS1 Table{delimiter}{sector.Report.GS1Table.GetDescription()}{GetDelimiter(3)}");
-        _ = writer.AppendLine($"GS1 Results{delimiter}{sector.Report.GS1Results.FormattedOut}{GetDelimiter(3)}");
+        _ = writer.AppendLine($"GS1 Results{delimiter}\"{sector.Report.GS1Results.FormattedOut}\"{GetDelimiter(3)}");
 
         _ = writer.AppendLine($"Has Error{delimiter}{(sector.IsWarning || sector.IsError ? "1" : "0")}{GetDelimiter(3)}");
            
@@ -154,11 +155,11 @@ public static class ListReportDataExtensions
         return sb.ToString();
     }
 
-    public static string GetParameter(this List<ReportData> report, AvailableParameters parameter, AvailableDevices device, AvailableSymbologies symbology)
-    {
-        string path = parameter.GetParameterPath(device, symbology);
-        return report.GetParameter(path);
-    }
-    public static string GetParameter(this List<ReportData> report, string key) => report.Find((e) => e.ParameterName.Equals(key))?.ParameterValue;
-    public static List<string> GetParameters(this List<ReportData> report, string key) => report.FindAll((e) => e.ParameterName.StartsWith(key)).Select((e) => e.ParameterValue).ToList();
+    //public static string GetParameter(this List<ReportData> report, AvailableParameters parameter, AvailableDevices device, AvailableSymbologies symbology)
+    //{
+    //    string path = parameter.GetParameterPath(device, symbology);
+    //    return report.GetParameter(path);
+    //}
+    //public static string GetParameter(this List<ReportData> report, string key) => report.Find((e) => e.ParameterName.Equals(key))?.ParameterValue;
+    //public static List<string> GetParameters(this List<ReportData> report, string key) => report.FindAll((e) => e.ParameterName.StartsWith(key)).Select((e) => e.ParameterValue).ToList();
 }

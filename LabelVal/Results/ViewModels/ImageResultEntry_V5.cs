@@ -75,7 +75,7 @@ public partial class ImageResultEntry
 
         V5_REST_Lib.Controllers.Label lab = new(V5ProcessResults, type is LabelHandlers.SimulatorRestore or LabelHandlers.CameraRestore ? V5ResultRow._Config : null, type, ImageResults.SelectedImageRoll.SelectedGS1Table);
 
-        if(type is LabelHandlers.SimulatorRestore or LabelHandlers.SimulatorDetect)
+        if(type is LabelHandlers.SimulatorRestore or LabelHandlers.SimulatorDetect or LabelHandlers.SimulatorTrigger)
         {
             if (ImageResults.SelectedImageRoll.ImageType == ImageRollImageTypes.Source)
                 lab.Image = SourceImage.BitmapBytes;

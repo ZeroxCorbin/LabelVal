@@ -542,6 +542,7 @@
                             Click="btnOpenImageRollsLocation"
                             DockPanel.Dock="Top"
                             Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                            Background="Teal"
                             Style="{StaticResource MahApps.Styles.Button.Hamburger}">
                             <StackPanel
                                 Width="36"

@@ -4,6 +4,7 @@ using LabelVal.ImageRolls.ViewModels;
 using LabelVal.ImageViewer3D.Views;
 using LabelVal.Sectors.Extensions;
 using LabelVal.Sectors.Views;
+using Lvs95xx.lib.Core.Controllers;
 using MahApps.Metro.Controls.Dialogs;
 using Newtonsoft.Json.Linq;
 using System.Windows;
@@ -11,7 +12,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using SectorDifferences = LabelVal.Sectors.Views.SectorDifferences;
 
 namespace LabelVal.Results.Views;
 /// <summary>
@@ -128,9 +128,19 @@ public partial class ImageResultEntry_L95xx : UserControl
     {
         if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
         {
-            if (_resultEntry.L95xxCurrentReport != null)
+            if (_resultEntry.L95xxCurrentSectors != null && _resultEntry.L95xxCurrentSectors.Count > 0)
             {
-                _resultEntry.ImageResults.FocusedTemplate = JObject.FromObject(_resultEntry.L95xxCurrentReport);
+                JObject focusedTemplate = [];
+                foreach (var sector in _resultEntry.L95xxCurrentSectors)
+                {
+                    var full = new FullReport(sector.Template.Original, sector.Report.Original);
+
+                    focusedTemplate.Add(sector.Template.Name, JToken.FromObject(full));
+
+                }
+
+                _resultEntry.ImageResults.FocusedTemplate = null;
+                _resultEntry.ImageResults.FocusedReport = focusedTemplate;
             }
         }
         else
@@ -321,7 +331,8 @@ public partial class ImageResultEntry_L95xx : UserControl
     {
         if (sender is Button btn && btn.Tag is System.Collections.ObjectModel.ObservableCollection<Sectors.Interfaces.ISector> sectors)
         {
-            _ = sectors.GetSectorsReport(((ViewModels.ImageResultEntry)DataContext).SourceImage.Order.ToString(), true);
+            var img = (ViewModels.ImageResultEntry)DataContext;
+            _ = sectors.GetSectorsReport($"{img.ImageResults.SelectedImageRoll.Name}{(char)Sectors.Classes.SectorOutputSettings.CurrentDelimiter}{img.SourceImage.Order}", true);
         }
         else if (sender is Button btn2 && btn2.Tag is ImageEntry image)
         {

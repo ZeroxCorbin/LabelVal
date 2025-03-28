@@ -65,7 +65,7 @@ public partial class SectorParameters : ObservableObject, ISectorParameters
         }
 
         //Check for alarms
-        var alarms = report.GetParameter<JArray>("Warning");
+        var alarms = report.GetParameters<string>("Data[ParameterName:Warning].ParameterValue");
         if (alarms != null && alarms.Count > 0)
         {
             foreach (var alarm in alarms)

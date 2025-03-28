@@ -244,16 +244,26 @@ public class SectorReport : ISectorReport
             return true;
         }
         string[] split = xdim.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-        if (split.Length < 2)
+        if (split.Length == 1)
         {
-            Logger.LogError($"Could not parse: '{xdim}' to get XDimension. {Device}");
-            return false;
+            if (xdim.EndsWith("mm"))
+            {
+                XDimension = xdim.ParseDouble();
+                Units = AvailableUnits.MM;
+            }
+            else
+            {
+                Logger.LogError($"Could not determine units from: '{xdim}' {Device}");
+                return false;
+            }
+               
         }
-        XDimension = split[0].ParseDouble();
+        else if(split.Length == 2)
+        {
+            XDimension = split[0].ParseDouble();
         if (split[1].Equals("mils"))
             Units = AvailableUnits.Mils;
-        else if (split[1].Equals("mm"))
-            Units = AvailableUnits.MM;
+        }
         else
         {
             Logger.LogError($"Could not determine units from: '{xdim}' {Device}");

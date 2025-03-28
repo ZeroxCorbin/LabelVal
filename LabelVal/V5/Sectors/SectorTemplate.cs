@@ -36,9 +36,12 @@ public class SectorTemplate : ISectorTemplate
         Username = name;
 
         int toolSlot = report.GetParameter<int>("toolSlot") - 1;
+        var regionList = template.GetParameter<JArray>($"response.data.job.toolList[{toolSlot}].SymbologyTool.regionList");
+        if (regionList == null || regionList.Count == 0)
+            return;
 
         // Update the properties
-        if (template.GetParameter<JArray>($"response.data.job.toolList[{toolSlot}].SymbologyTool.regionList").Count > 0 && template.GetParameter<string>($"response.data.job.toolList[{toolSlot}].SymbologyTool.regionList[0].Region.shape.type") == "RectShape")
+        if (regionList.Count > 0 && ((JObject)regionList[0]).GetParameter<string>("Region.shape.type") == "RectShape")
         {   
             Width = template.GetParameter<double>($"response.data.job.toolList[{toolSlot}].SymbologyTool.regionList[0].Region.shape.RectShape.width");
             Height = template.GetParameter<double>($"response.data.job.toolList[{toolSlot}].SymbologyTool.regionList[0].Region.shape.RectShape.height");

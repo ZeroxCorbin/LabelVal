@@ -348,7 +348,7 @@
             </Style>
         </DockPanel.Style>
 
-        <Border Background="{DynamicResource V5_Brush}" />
+        <Border Background="{DynamicResource V5_Brush}" Style="{StaticResource groupLeft}" />
         <Border Background="{DynamicResource V5_Brush}" Style="{StaticResource groupBottom}" />
 
         <!--  Images  -->
