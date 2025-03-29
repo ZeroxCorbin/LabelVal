@@ -6,7 +6,7 @@ namespace LabelVal.Sectors.Classes;
 
 public class SectorDifferences
 {
-    public static SectorDifferencesSettings Settings { get; } = new SectorDifferencesSettings();
+    public static SectorDifferencesSettings Settings=> SectorDifferencesSettings.Instance;
 
     public string Name { get; set; }
     public string Username { get; set; }

@@ -7,8 +7,17 @@ namespace LabelVal.Results.Views;
 public partial class ImageResults : UserControl
 {
 
-    public ImageResults() => InitializeComponent();
+    public ImageResults()
+    {
+        InitializeComponent();
 
+        App.Settings.PropertyChanged += Settings_PropertyChanged;
+    }
+
+    private void Settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+
+    }
     private void JsonDrawer_DrawerOpened(object sender, MaterialDesignThemes.Wpf.DrawerOpenedEventArgs e)
     {
         if(tiReport.IsSelected && !tiReport.IsEnabled)

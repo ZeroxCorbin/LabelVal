@@ -3,6 +3,9 @@
 
 public class SectorDifferencesSettings
 {
+    private static SectorDifferencesSettings _instance = new();
+    public static SectorDifferencesSettings Instance => _instance;
+
     public bool GradeValue_UseGradeLetter { get => App.Settings.GetValue("Diff_GradeValue_UseGradeLetter", true); set => App.Settings.SetValue("Diff_GradeValue_UseGradeLetter", value); }
     public double GradeValue_GradeValueTolerance { get => App.Settings.GetValue("Diff_GradeValue_GradeValueTolerance", 0.01); set => App.Settings.SetValue("Diff_GradeValue_GradeValueTolerance", value); }
     public bool GradeValue_UseValue { get => App.Settings.GetValue("Diff_GradeValue_UseValue", false); set => App.Settings.SetValue("Diff_GradeValue_UseValue", value); }

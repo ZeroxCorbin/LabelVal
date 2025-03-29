@@ -106,7 +106,7 @@
                                 Margin="6,0,0,3"
                                 DockPanel.Dock="Top"
                                 Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}"
-                                Text="Results Database" />
+                                Text="Results Databases" />
 
                             <Border Style="{StaticResource imageBarHor}" />
 
@@ -140,6 +140,7 @@
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
                         md:ToggleButtonAssist.OnContent="{iconPacks:Modern Kind=AlignRight}"
+                        ToolTip="Toggle name aligned left or right."
                         Content="{iconPacks:Modern Kind=AlignLeft}"
                         IsChecked="{Binding RightAlignOverflow}">
                         <ToggleButton.LayoutTransform>

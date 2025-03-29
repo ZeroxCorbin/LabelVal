@@ -9,6 +9,7 @@ public partial class LoggingStatusBarVm : ObservableRecipient, IRecipient<Loggin
 {
     public RingBufferCollection<Logging.lib.LoggerMessage> LoggerMessages { get; } = new RingBufferCollection<Logging.lib.LoggerMessage>(30);
 
+    [ObservableProperty] private LoggerMessage? latest;
     [ObservableProperty] private LoggerMessage? latestError;
     [ObservableProperty] private LoggerMessage? latestWarning;
     [ObservableProperty] private LoggerMessage? latestInfo;
@@ -32,6 +33,7 @@ public partial class LoggingStatusBarVm : ObservableRecipient, IRecipient<Loggin
                 LatestError = message;
                 break;
         }
+        Latest = message;
         AddMessage(message);
     }
 
@@ -52,9 +54,12 @@ public partial class LoggingStatusBarVm : ObservableRecipient, IRecipient<Loggin
 
     public void Clear()
     {
+        Latest = null;
         LatestDebug = null;
         LatestInfo = null;
         LatestWarning = null;
         LatestError = null;
+
+        LoggerMessages.Clear();
     }
 }

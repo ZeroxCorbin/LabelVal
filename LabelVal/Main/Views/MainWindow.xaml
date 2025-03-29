@@ -124,7 +124,7 @@
                     </StackPanel>
 
                     <StackPanel Margin="3">
-                        <local:AppSettingsControlView />
+                        <local:AppSettingsControlView DataContext="{Binding AppSettings}"/>
                     </StackPanel>
                 </StackPanel>
 

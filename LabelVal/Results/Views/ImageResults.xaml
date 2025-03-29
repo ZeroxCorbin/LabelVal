@@ -6,6 +6,7 @@
     xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:imageRoll_enums="clr-namespace:LabelVal.ImageRolls.ViewModels"
     xmlns:json="clr-namespace:JSONViewer_WPF;assembly=JSONViewer_WPF"
     xmlns:local="clr-namespace:LabelVal.Results.Views"
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
@@ -35,7 +36,6 @@
         <DockPanel Margin="3,3,0,0" DockPanel.Dock="Top">
 
             <md:Card
-                Height="68"
                 Margin="3,3,0,0"
                 HorizontalAlignment="Left"
                 Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
@@ -69,22 +69,36 @@
                                     </LinearGradientBrush>
                                 </DockPanel.Background>
 
-                                <TextBlock Text="{Binding SelectedImageRoll.Name}">
-                                    <TextBlock.Style>
-                                        <Style BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}" TargetType="TextBlock">
-                                            <Setter Property="Visibility" Value="Visible" />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding SelectedImageRoll.Name}" Value="">
-                                                    <Setter Property="Visibility" Value="Collapsed" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
+                                <!--  Name  -->
+                                <StackPanel>
+                                    <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Name" />
+                                    <TextBlock Margin="3,0" Text="{Binding SelectedImageRoll.Name}">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding SelectedImageRoll.Name}" Value="">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </StackPanel>
 
-                                <TextBlock Text="{Binding SelectedImageRoll.SelectedGS1Table, Converter={StaticResource EnumValueToDescription}, StringFormat={}Table {0}}">
+
+
+
+                                <!--  Standard  -->
+                                <StackPanel Margin="6,0,0,0">
+                                    <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Standard" />
+                                    <TextBlock Margin="3,0" Text="{Binding SelectedImageRoll.SelectedStandard, Converter={StaticResource EnumValueToDescription}}" />
+                                </StackPanel>
+
+                                <!--  GS1 Table  -->
+                                <TextBlock VerticalAlignment="Bottom" Text="{Binding SelectedImageRoll.SelectedGS1Table, Converter={StaticResource EnumValueToDescription}, StringFormat={}: Table {0}}">
                                     <TextBlock.Style>
-                                        <Style BasedOn="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}" TargetType="TextBlock">
+                                        <Style TargetType="TextBlock">
                                             <Setter Property="Visibility" Value="Collapsed" />
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding SelectedImageRoll.SelectedStandard}" Value="{x:Static bar_common:AvailableStandards.GS1}">
@@ -95,7 +109,126 @@
                                     </TextBlock.Style>
                                 </TextBlock>
 
-                                <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.HamburgerMenuHeader}" Text="{Binding SelectedImageRoll.TargetDPI, StringFormat={} : {0} dpi}" />
+                                <!--  Iamge Type  -->
+                                <StackPanel Margin="6,0,0,0">
+                                    <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Image Type" />
+
+                                    <DockPanel>
+
+                                        <TextBlock Margin="6,0" Text="{Binding SelectedImageRoll.ImageType, Converter={StaticResource EnumValueToDescription}}" />
+
+                                        <iconPacks:PackIconMaterial HorizontalAlignment="Left" VerticalAlignment="Center">
+                                            <iconPacks:PackIconMaterial.Style>
+                                                <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
+                                                    <Setter Property="Kind" Value="OpenSourceInitiative" />
+                                                    <Setter Property="ToolTip" Value="The source image will be used." />
+
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding SelectedImageRoll.ImageType}" Value="{x:Static imageRoll_enums:ImageRollImageTypes.Stored}">
+                                                            <Setter Property="Kind" Value="Stocking" />
+                                                            <Setter Property="ToolTip" Value="The stored image will be used." />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </iconPacks:PackIconMaterial.Style>
+                                        </iconPacks:PackIconMaterial>
+                                    </DockPanel>
+
+                                </StackPanel>
+
+                                <!--  Sector Type  -->
+                                <StackPanel Margin="6,0,0,0">
+                                    <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Sector Type" />
+
+                                    <DockPanel>
+
+                                        <TextBlock Margin="6,0" Text="{Binding SelectedImageRoll.SectorType, Converter={StaticResource EnumValueToDescription}}" />
+
+                                        <iconPacks:PackIconMaterial HorizontalAlignment="Left" VerticalAlignment="Center">
+                                            <iconPacks:PackIconMaterial.Style>
+                                                <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
+                                                    <Setter Property="Kind" Value="FormatListNumbered" />
+                                                    <Setter Property="ToolTip" Value="The template sectors are shared." />
+
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding SelectedImageRoll.SectorType}" Value="{x:Static imageRoll_enums:ImageRollSectorTypes.Dynamic}">
+                                                            <Setter Property="Kind" Value="PlaylistEdit" />
+                                                            <Setter Property="ToolTip" Value="The template sectors are independant." />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </iconPacks:PackIconMaterial.Style>
+                                        </iconPacks:PackIconMaterial>
+                                    </DockPanel>
+
+                                </StackPanel>
+
+                                <StackPanel Margin="6,0,0,0">
+                                    <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Locked" />
+
+                                    <DockPanel>
+                                        <TextBlock Margin="6,0" Text="{Binding SelectedImageRoll.IsLocked, Converter={StaticResource EnumValueToDescription}}" />
+
+                                        <iconPacks:PackIconMaterial HorizontalAlignment="Left" VerticalAlignment="Center">
+                                            <iconPacks:PackIconMaterial.Style>
+                                                <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
+                                                    <Setter Property="Kind" Value="LockOpenVariant" />
+                                                    <Setter Property="ToolTip" Value="Image Roll is unlocked." />
+
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding SelectedImageRoll.IsLocked}" Value="True">
+                                                            <Setter Property="Kind" Value="Lock" />
+                                                            <Setter Property="ToolTip" Value="Image Roll is locked." />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </iconPacks:PackIconMaterial.Style>
+                                        </iconPacks:PackIconMaterial>
+                                    </DockPanel>
+
+                                </StackPanel>
+
+                                <StackPanel Margin="6,0,0,0">
+                                    <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Roll Type" />
+
+                                    <DockPanel>
+                                        <TextBlock Margin="6,0" Text="{Binding SelectedImageRoll.RollType, Converter={StaticResource EnumValueToDescription}}" />
+
+                                        <iconPacks:PackIconMaterial HorizontalAlignment="Left" VerticalAlignment="Center">
+                                            <iconPacks:PackIconMaterial.Style>
+                                                <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
+                                                    <Setter Property="Kind" Value="Database" />
+                                                    <Setter Property="ToolTip" Value="Images are stored in a database." />
+
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding SelectedImageRoll.RollType}" Value="Directory">
+                                                            <Setter Property="Kind" Value="Folder" />
+                                                            <Setter Property="ToolTip" Value="Images are loaded from a directory. Read Only!" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </iconPacks:PackIconMaterial.Style>
+                                        </iconPacks:PackIconMaterial>
+                                    </DockPanel>
+                                </StackPanel>
+
+                                <!--  Target DPI  -->
+                                <StackPanel Margin="6,0,0,0">
+                                    <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Target DPI" />
+
+                                    <TextBlock Margin="6,0" VerticalAlignment="Center">
+                                        <TextBlock.Style>
+                                            <Style BasedOn="{StaticResource MahApps.Styles.TextBlock}" TargetType="TextBlock">
+                                                <Setter Property="Text" Value="{Binding SelectedImageRoll.TargetDPI, StringFormat={}{0} DPI}" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding SelectedImageRoll.TargetDPI}" Value="0">
+                                                        <Setter Property="Text" Value="Any DPI" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </StackPanel>
 
                             </DockPanel>
 
@@ -240,103 +373,133 @@
 
                         </DockPanel>
 
-                        <ToggleButton
-                            Width="48"
-                            Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                            IsChecked="{Binding HideErrorsWarnings}">
-                            <ToggleButton.Style>
-                                <Style BasedOn="{StaticResource MaterialDesignActionToggleButton}" TargetType="ToggleButton">
-                                    <Setter Property="ToolTip" Value="Alarms are being displayed." />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding HideErrorsWarnings}" Value="True">
-                                            <Setter Property="ToolTip" Value="Alarms are hidden." />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </ToggleButton.Style>
+                        <StackPanel>
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                                Text="Alarms"
+                                Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                            <ToggleButton
+                                Width="48"
+                                Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                IsChecked="{Binding HideErrorsWarnings}">
+                                <ToggleButton.Style>
+                                    <Style BasedOn="{StaticResource MaterialDesignActionToggleButton}" TargetType="ToggleButton">
+                                        <Setter Property="ToolTip" Value="Alarms are being displayed." />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding HideErrorsWarnings}" Value="True">
+                                                <Setter Property="ToolTip" Value="Alarms are hidden." />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ToggleButton.Style>
 
-                            <md:ToggleButtonAssist.OnContent>
+                                <md:ToggleButtonAssist.OnContent>
+
+                                    <iconPacks:PackIconFontAwesome
+                                        Width="24"
+                                        Height="24"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Kind="BellSlashSolid" />
+
+                                </md:ToggleButtonAssist.OnContent>
 
                                 <iconPacks:PackIconFontAwesome
                                     Width="24"
                                     Height="24"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
-                                    Kind="BellSlashSolid" />
+                                    Kind="BellSolid" />
 
-                            </md:ToggleButtonAssist.OnContent>
+                            </ToggleButton>
+                        </StackPanel>
 
-                            <iconPacks:PackIconFontAwesome
-                                Width="24"
-                                Height="24"
+
+                        <StackPanel>
+                            <TextBlock
                                 HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Kind="BellSolid" />
+                                Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                                Text="Columns"
+                                Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                            <ToggleButton
+                                Width="48"
+                                md:ToggleButtonAssist.OnContent="{iconPacks:Modern Kind=ColumnTwo,
+                                                                                   Width=24,
+                                                                                   Height=24}"
+                                Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                IsChecked="{Binding DualSectorColumns}">
+                                <ToggleButton.Style>
+                                    <Style BasedOn="{StaticResource MaterialDesignActionToggleButton}" TargetType="ToggleButton">
+                                        <Setter Property="ToolTip" Value="Columns based on image size." />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding DualSectorColumns}" Value="True">
+                                                <Setter Property="ToolTip" Value="Dual columns." />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ToggleButton.Style>
 
-                        </ToggleButton>
-
-                        <ToggleButton
-                            Width="48"
-                            md:ToggleButtonAssist.OnContent="{iconPacks:Modern Kind=ColumnTwo,
-                                                                               Width=24,
-                                                                               Height=24}"
-                            Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                            IsChecked="{Binding DualSectorColumns}">
-                            <ToggleButton.Style>
-                                <Style BasedOn="{StaticResource MaterialDesignActionToggleButton}" TargetType="ToggleButton">
-                                    <Setter Property="ToolTip" Value="Columns based on image size." />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding DualSectorColumns}" Value="True">
-                                            <Setter Property="ToolTip" Value="Dual columns." />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </ToggleButton.Style>
-
-                            <Grid>
-                                <iconPacks:PackIconModern
-                                    Width="24"
-                                    Height="24"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Kind="ColumnTwo" />
-                                <iconPacks:PackIconMaterial
-                                    Width="18"
-                                    Height="18"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
-                                    Kind="AlphaA" />
-                            </Grid>
-                        </ToggleButton>
-
-                        <ToggleButton
-                            Width="48"
-                            HorizontalAlignment="Left"
-                            Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                            IsChecked="{Binding ShowExtendedData}">
-                            <ToggleButton.Style>
-                                <Style BasedOn="{StaticResource MaterialDesignActionToggleButton}" TargetType="ToggleButton">
-                                    <Setter Property="ToolTip" Value="Hiding 2D grid data." />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ShowExtendedData}" Value="True">
-                                            <Setter Property="ToolTip" Value="Displaying 2D grid data." />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </ToggleButton.Style>
-
-                            <md:ToggleButtonAssist.OnContent>
                                 <Grid>
                                     <iconPacks:PackIconModern
                                         Width="24"
                                         Height="24"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
-                                        Kind="Grid" />
+                                        Kind="ColumnTwo" />
+                                    <iconPacks:PackIconMaterial
+                                        Width="18"
+                                        Height="18"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                                        Kind="AlphaA" />
+                                </Grid>
+                            </ToggleButton>
+                        </StackPanel>
+
+                        <StackPanel>
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                                Text="2D Grids"
+                                Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                            <ToggleButton
+                                Width="48"
+                                HorizontalAlignment="Left"
+                                Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                IsChecked="{Binding ShowExtendedData}">
+                                <ToggleButton.Style>
+                                    <Style BasedOn="{StaticResource MaterialDesignActionToggleButton}" TargetType="ToggleButton">
+                                        <Setter Property="ToolTip" Value="Hiding 2D grid data." />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ShowExtendedData}" Value="True">
+                                                <Setter Property="ToolTip" Value="Displaying 2D grid data." />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ToggleButton.Style>
+
+                                <md:ToggleButtonAssist.OnContent>
+                                    <Grid>
+                                        <iconPacks:PackIconModern
+                                            Width="24"
+                                            Height="24"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Kind="Grid" />
+                                        <iconPacks:PackIconJamIcons
+                                            Width="24"
+                                            Height="24"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Kind="QrCode" />
+                                    </Grid>
+                                </md:ToggleButtonAssist.OnContent>
+                                <Grid>
                                     <iconPacks:PackIconJamIcons
                                         Width="24"
                                         Height="24"
@@ -344,25 +507,16 @@
                                         VerticalAlignment="Center"
                                         Kind="QrCode" />
                                 </Grid>
-                            </md:ToggleButtonAssist.OnContent>
-                            <Grid>
-                                <iconPacks:PackIconJamIcons
-                                    Width="24"
-                                    Height="24"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Kind="QrCode" />
-                            </Grid>
-                        </ToggleButton>
+                            </ToggleButton>
+                        </StackPanel>
 
                         <Border Margin="0,0,0,0" Style="{StaticResource imageBar}" />
 
+
                         <Button
                             Width="48"
+                            VerticalAlignment="Stretch"
                             Command="{Binding StoreAllCurrentResultsCommand}"
-                            Content="{iconPacks:Material Kind=StorePlusOutline,
-                                                         Width=24,
-                                                         Height=24}"
                             Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                             ToolTip="Store the current sectors and images to the database.">
 
@@ -376,7 +530,26 @@
                                     </Style.Triggers>
                                 </Style>
                             </Button.Style>
+                            <DockPanel>
+                                <TextBlock
+                                    Margin="0,0,0,5"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Top"
+                                    DockPanel.Dock="Top"
+                                    Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                                    Text="Store All"
+                                    Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                <iconPacks:PackIconMaterial
+                                    Width="24"
+                                    Height="24"
+                                    Margin="0,0,0,3"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Bottom"
+                                    DockPanel.Dock="Bottom"
+                                    Kind="StorePlusOutline" />
+                            </DockPanel>
                         </Button>
+
 
                         <Button
                             Width="48"
@@ -398,6 +571,7 @@
 
                         <Button
                             Width="48"
+                            HorizontalAlignment="Left"
                             Command="{Binding CopyAllSectorsToClipboardCommand}"
                             Content="{iconPacks:Modern Kind=PageCopy,
                                                        Width=24,

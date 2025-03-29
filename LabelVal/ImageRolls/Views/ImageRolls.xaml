@@ -527,7 +527,6 @@
         <DockPanel DockPanel.Dock="Top">
 
             <md:Card
-                Height="68"
                 Margin="3,3,0,0"
                 Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
                 DockPanel.Dock="Top"
@@ -539,10 +538,10 @@
                         <Button
                             Width="48"
                             HorizontalAlignment="Center"
+                            Background="Teal"
                             Click="btnOpenImageRollsLocation"
                             DockPanel.Dock="Top"
                             Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                            Background="Teal"
                             Style="{StaticResource MahApps.Styles.Button.Hamburger}">
                             <StackPanel
                                 Width="36"
@@ -621,7 +620,7 @@
                             <Button
                                 Width="48"
                                 Command="{Binding AddCommand}"
-                                ToolTip="Add a new Image Roll to the default database.">
+                                ToolTip="Add a new Image Roll to the current database.">
 
                                 <Button.Style>
                                     <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
@@ -634,11 +633,18 @@
                                     </Style>
                                 </Button.Style>
 
-                                <iconPacks:PackIconMaterial
-                                    Width="24"
-                                    Height="24"
-                                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                    Kind="Plus" />
+                                <StackPanel>
+                                    <TextBlock
+                                        Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                                        Text="New"
+                                        Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                                    <iconPacks:PackIconMaterial
+                                        Width="24"
+                                        Height="24"
+                                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                        Kind="Plus" />
+                                </StackPanel>
                             </Button>
 
                             <Button
@@ -660,11 +666,19 @@
                                     </Style>
                                 </Button.Style>
 
-                                <iconPacks:PackIconMaterial
-                                    Width="24"
-                                    Height="24"
-                                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                    Kind="SquareEditOutline" />
+                                <StackPanel>
+                                    <TextBlock
+                                        Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                                        Text="Edit"
+                                        Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                                    <iconPacks:PackIconMaterial
+                                        Width="24"
+                                        Height="24"
+                                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                        Kind="SquareEditOutline" />
+                                </StackPanel>
+
                             </Button>
 
                             <Button
@@ -740,7 +754,8 @@
                             VerticalAlignment="Bottom"
                             md:ToggleButtonAssist.OnContent="{iconPacks:Modern Kind=AlignRight}"
                             Content="{iconPacks:Modern Kind=AlignLeft}"
-                            IsChecked="{Binding RightAlignOverflow}">
+                            IsChecked="{Binding RightAlignOverflow}"
+                            ToolTip="Toggle name aligned left or right.">
                             <ToggleButton.LayoutTransform>
                                 <ScaleTransform ScaleX="0.8" ScaleY="0.8" />
                             </ToggleButton.LayoutTransform>

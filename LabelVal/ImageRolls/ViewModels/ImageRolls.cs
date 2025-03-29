@@ -2,6 +2,7 @@
 using BarcodeVerification.lib.GS1;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using LabelVal.Main.ViewModels;
 using LabelVal.Results.ViewModels;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
@@ -12,6 +13,7 @@ using System.Windows;
 namespace LabelVal.ImageRolls.ViewModels;
 public partial class ImageRolls : ObservableRecipient
 {
+    public GlobalAppSettings AppSettings => GlobalAppSettings.Instance;
 
     [ObservableProperty] private FileFolderEntry fileRoot = App.Settings.GetValue("UserImageRollsDatabases_FileRoot", new FileFolderEntry(App.UserImageRollsRoot), true);
     partial void OnFileRootChanged(FileFolderEntry value) => App.Settings.SetValue("UserImageRollsDatabases_FileRoot", value);
@@ -339,20 +341,34 @@ public partial class ImageRolls : ObservableRecipient
             return;
 
         if (string.IsNullOrEmpty(NewImageRoll.Name))
+        {
+            Logger.LogWarning("Name is required for image rolls.");
             return;
+        }
 
         if (NewImageRoll.SelectedStandard is AvailableStandards.GS1 && NewImageRoll.SelectedGS1Table is AvailableTables.Unknown)
+        {
+            Logger.LogWarning("GS1 Table is required for GS1 image rolls.");
             return;
+        }
 
         if (SelectedUserDatabase.InsertOrReplaceImageRoll(NewImageRoll) > 0)
         {
             Logger.LogInfo($"Saved image roll: {NewImageRoll.Name}");
 
-            ImageRollEntry remove = UserImageRolls.FirstOrDefault((e) => e.UID == NewImageRoll.UID);
-            if (remove != null)
-                _ = UserImageRolls.Remove(remove);
-
-            LoadUserImageRollsList();
+            ImageRollEntry update = UserImageRolls.FirstOrDefault((e) => e.UID == NewImageRoll.UID);
+            if (update != null)
+            {
+                SelectedImageRoll.SelectedGS1Table = NewImageRoll.SelectedGS1Table;
+                SelectedImageRoll.SelectedStandard = NewImageRoll.SelectedStandard;
+                SelectedImageRoll.Name = NewImageRoll.Name;
+                SelectedImageRoll.SectorType = NewImageRoll.SectorType;
+                SelectedImageRoll.ImageType = NewImageRoll.ImageType;
+            }
+            else
+            {
+                LoadUserImageRollsList();
+            }
 
             FileFolderEntry file = GetFileFolderEntry(App.UserImageRollDefaultFile);
             if (file != null)

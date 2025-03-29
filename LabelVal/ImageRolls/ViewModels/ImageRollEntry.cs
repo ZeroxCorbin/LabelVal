@@ -5,9 +5,11 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
+using LabelVal.Main.ViewModels;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Drawing.Printing;
 using System.IO;
 using System.Threading.Tasks;
@@ -17,8 +19,10 @@ namespace LabelVal.ImageRolls.ViewModels;
 [SQLite.StoreAsText]
 [JsonConverter(typeof(StringEnumConverter))]
 public enum ImageRollTypes
-{   
+{
+    [Description("Database")]
     Database,
+    [Description("Directory")]
     Directory,
 }
 
@@ -26,7 +30,9 @@ public enum ImageRollTypes
 [JsonConverter(typeof(StringEnumConverter))]
 public enum ImageRollImageTypes
 {
+    [Description("Source")]
     Source,
+    [Description("Stored")]
     Stored
 }
 
@@ -34,17 +40,23 @@ public enum ImageRollImageTypes
 [JsonConverter(typeof(StringEnumConverter))]
 public enum ImageRollSectorTypes
 {
+    [Description("Fixed")]
     Fixed,
+    [Description("Dynamic")]
     Dynamic
 }
 
 [JsonObject(MemberSerialization.OptIn)]
 public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyChangedMessage<PrinterSettings>>
 {
+    public GlobalAppSettings AppSettings => GlobalAppSettings.Instance;
+
     /// <summary>
     /// The unique identifier for the ImageRollEntry. This is also called the RollID.
     /// </summary>
     [JsonProperty][SQLite.PrimaryKey] public string UID { get; set; } = Guid.NewGuid().ToString();
+
+    [SQLite.Ignore] public Databases.ImageRollsDatabase ImageRollsDatabase { get; set; }
 
     /// <summary>
     /// If this is a fixed image roll then this is the path to the directory where the images are stored.
@@ -70,15 +82,23 @@ public partial class ImageRollEntry : ObservableRecipient, IRecipient<PropertyCh
     partial void OnSelectedGS1TableChanged(AvailableTables value) => OnPropertyChanged(nameof(GS1TableNumber));
     public double GS1TableNumber => SelectedGS1Table is AvailableTables.Unknown ? 0 : double.Parse(SelectedGS1Table.GetDescription());
 
-
+    /// <summary>
+    /// <see cref="TargetDPI"/>
+    /// </summary>
     [ObservableProperty][property: JsonProperty] private int targetDPI;
 
+    /// <summary>
+    /// The list of images in the roll.
+    /// </summary>
+    [SQLite.Ignore] public ObservableCollection<ImageEntry> Images { get; set; } = [];
+
+    /// <summary>
+    /// If the roll is locked, the images cannot be modified.
+    /// <see cref="IsLocked"/>"/>
+    /// </summary>
     [ObservableProperty][property: JsonProperty] private bool isLocked = false;
 
     [ObservableProperty][property: SQLite.Ignore] private PrinterSettings selectedPrinter;
-
-    [SQLite.Ignore] public ObservableCollection<ImageEntry> Images { get; set; } = [];
-    [SQLite.Ignore] public Databases.ImageRollsDatabase ImageRollsDatabase { get; set; }
 
     [ObservableProperty] private bool rightAlignOverflow = App.Settings.GetValue(nameof(RightAlignOverflow), false);
 

@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.LVS_95xx.ViewModels;
+using LabelVal.Main.ViewModels;
 using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Extensions;
 using LabelVal.Utilities;
@@ -29,6 +30,9 @@ public partial class ImageResults : ObservableRecipient,
     IRecipient<PropertyChangedMessage<PrinterSettings>>,
     IRecipient<PropertyChangedMessage<FullReport>>
 {
+
+    public GlobalAppSettings AppSettings => GlobalAppSettings.Instance;
+
     private class V275Repeat
     {
         public ImageResultEntry ImageResult { get; set; }

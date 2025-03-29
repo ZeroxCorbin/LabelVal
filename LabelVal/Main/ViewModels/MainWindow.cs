@@ -12,6 +12,8 @@ public class DPIChangedMessage : ValueChangedMessage<DpiScale> { public DPIChang
 
 public partial class MainWindow : ObservableRecipient
 {
+    public GlobalAppSettings AppSettings => GlobalAppSettings.Instance;
+
     [ObservableProperty]
     private string _applicationTitle = $"Label Validator : {GetAssemblyVersion()} : CONFIDENTIAL B (Internal Use Only)";
 
