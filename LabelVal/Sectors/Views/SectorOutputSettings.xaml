@@ -13,19 +13,14 @@
     <UserControl.Resources />
 
 
-    <UniformGrid >
+    <UniformGrid Rows="1">
 
-        <StackPanel>
+        <StackPanel Margin="6,0">
             <TextBlock Style="{StaticResource MaterialDesignTitleMediumTextBlock}" Text="Format" />
             <ListBox ItemsSource="{Binding Source={StaticResource SectorOutputType}}" SelectedItem="{Binding OutputType}" />
         </StackPanel>
 
-        <StackPanel>
-            <TextBlock Style="{StaticResource MaterialDesignTitleMediumTextBlock}" Text="Parameters" />
-            <ListBox ItemsSource="{Binding Source={StaticResource SectorOutputIncludeParameters}}" SelectedItem="{Binding IncludeParameters}" />
-        </StackPanel>
-
-        <StackPanel>
+        <StackPanel Margin="6,0">
             <StackPanel.Style>
                 <Style TargetType="StackPanel">
                     <Setter Property="IsEnabled" Value="False" />
@@ -41,7 +36,14 @@
             <ListBox ItemsSource="{Binding Source={StaticResource SectorOutputDelimiter}}" SelectedItem="{Binding Delimiter}" />
         </StackPanel>
 
-        <StackPanel>
+        <StackPanel Margin="6,0">
+            <TextBlock Style="{StaticResource MaterialDesignTitleMediumTextBlock}" Text="Parameters" />
+            <ListBox ItemsSource="{Binding Source={StaticResource SectorOutputIncludeParameters}}" SelectedItem="{Binding IncludeParameters}" />
+        </StackPanel>
+
+
+
+        <!--<StackPanel>
             <StackPanel.Style>
                 <Style TargetType="StackPanel">
                     <Setter Property="IsEnabled" Value="False" />
@@ -55,7 +57,7 @@
 
             <TextBlock Style="{StaticResource MaterialDesignTitleMediumTextBlock}" Text="Add Quotes" />
             <ListBox ItemsSource="{Binding Source={StaticResource SectorOutputStringQuote}}" SelectedItem="{Binding StringQuote}" />
-        </StackPanel>
+        </StackPanel>-->
 
     </UniformGrid>
 </UserControl>

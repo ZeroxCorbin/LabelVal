@@ -59,15 +59,17 @@
 
                     <DockPanel>
 
-                        <DockPanel HorizontalAlignment="Left" DockPanel.Dock="Top">
+                        <!--  Image Roll Header  -->
+                        <DockPanel DockPanel.Dock="Top">
+                            <DockPanel.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Offset="0" Color="{DynamicResource MahApps.Colors.Accent3}" />
+                                    <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
+                                </LinearGradientBrush>
+                            </DockPanel.Background>
 
-                            <DockPanel Margin="6,0,6,3" DockPanel.Dock="Top">
-                                <DockPanel.Background>
-                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                        <GradientStop Offset="0" Color="{DynamicResource MahApps.Colors.Accent3}" />
-                                        <GradientStop Offset="1" Color="{DynamicResource MahApps.Colors.HamburgerMenu}" />
-                                    </LinearGradientBrush>
-                                </DockPanel.Background>
+                            <DockPanel Margin="6,0,6,3">
+
 
                                 <!--  Name  -->
                                 <StackPanel>
@@ -85,9 +87,6 @@
                                         </TextBlock.Style>
                                     </TextBlock>
                                 </StackPanel>
-
-
-
 
                                 <!--  Standard  -->
                                 <StackPanel Margin="6,0,0,0">
@@ -108,6 +107,8 @@
                                         </Style>
                                     </TextBlock.Style>
                                 </TextBlock>
+
+                                <Border Margin="3,0,0,0" Style="{StaticResource imageBar}" />
 
                                 <!--  Iamge Type  -->
                                 <StackPanel Margin="6,0,0,0">
@@ -133,8 +134,9 @@
                                             </iconPacks:PackIconMaterial.Style>
                                         </iconPacks:PackIconMaterial>
                                     </DockPanel>
-
                                 </StackPanel>
+
+                                <Border Margin="3,0,0,0" Style="{StaticResource imageBar}" />
 
                                 <!--  Sector Type  -->
                                 <StackPanel Margin="6,0,0,0">
@@ -163,6 +165,8 @@
 
                                 </StackPanel>
 
+                                <Border Margin="3,0,0,0" Style="{StaticResource imageBar}" />
+
                                 <StackPanel Margin="6,0,0,0">
                                     <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Locked" />
 
@@ -188,6 +192,8 @@
 
                                 </StackPanel>
 
+                                <Border Margin="3,0,0,0" Style="{StaticResource imageBar}" />
+
                                 <StackPanel Margin="6,0,0,0">
                                     <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Roll Type" />
 
@@ -212,6 +218,8 @@
                                     </DockPanel>
                                 </StackPanel>
 
+                                <Border Margin="3,0,0,0" Style="{StaticResource imageBar}" />
+
                                 <!--  Target DPI  -->
                                 <StackPanel Margin="6,0,0,0">
                                     <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Target DPI" />
@@ -233,264 +241,375 @@
                             </DockPanel>
 
                             <Border Style="{StaticResource imageBarHor}" />
-                        </DockPanel>
-
-                        <DockPanel HorizontalAlignment="Left">
-
-                            <Button
-                                Width="48"
-                                Command="{Binding AddImageTopCommand}"
-                                Content="{iconPacks:Material Kind=Image,
-                                                             Width=24,
-                                                             Height=24}"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                ToolTip="Add Image(s)">
-                                <Button.Style>
-                                    <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding SelectedImageRoll.IsLocked}" Value="False">
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Button.Style>
-                            </Button>
-
-                            <Button
-                                Width="48"
-                                Height="42"
-                                Background="{DynamicResource V5_Brush}"
-                                BorderBrush="{DynamicResource V5_Brush}"
-                                Command="{Binding AddV5ImageCommand}"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                ToolTipService.ShowOnDisabled="True">
-
-                                <Image
-                                    Width="24"
-                                    Height="24"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Source="/Assets/Images/v5-white-outline.ico" />
-
-                                <Button.Style>
-                                    <Style BasedOn="{StaticResource MahApps.Styles.Button.MetroSquare}" TargetType="{x:Type Button}">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                        <Style.Triggers>
-                                            <MultiDataTrigger>
-                                                <MultiDataTrigger.Conditions>
-                                                    <Condition Binding="{Binding SelectedScanner.Controller.IsConnected}" Value="True" />
-                                                    <Condition Binding="{Binding SelectedScanner.Controller.IsSimulator}" Value="False" />
-                                                    <Condition Binding="{Binding SelectedImageRoll.IsLocked}" Value="False" />
-                                                </MultiDataTrigger.Conditions>
-
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </MultiDataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Button.Style>
-                            </Button>
 
                         </DockPanel>
 
-                        <ToggleButton
-                            Width="48"
-                            BorderBrush="{DynamicResource L95xx_Brush}"
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                            IsChecked="{Binding IsL95xxSelected}">
-                            <ToggleButton.Style>
-                                <Style BasedOn="{StaticResource MahApps.Styles.ToggleButton}" TargetType="ToggleButton">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                    <Setter Property="ToolTip" Value="" />
-                                    <Setter Property="Background" Value="{DynamicResource MahApps.HamburgerMenu.Pane.Background}" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsL95xxSelected}" Value="True">
-                                            <Setter Property="ToolTip" Value="L95xx Data is redirected here." />
-                                            <Setter Property="Background" Value="{DynamicResource L95xx_Brush}" />
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding SelectedVerifier.Controller.IsConnected}" Value="True">
-                                            <Setter Property="Visibility" Value="Visible" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
+                        <!--  Image Roll Control  -->
+                        <DockPanel Margin="0,3,0,6">
 
-                                </Style>
-                            </ToggleButton.Style>
+                            <DockPanel HorizontalAlignment="Left">
 
-                            <md:ToggleButtonAssist.OnContent>
-                                <Grid Background="{DynamicResource L95xx_Brush}">
-                                    <Image Source="/Assets/Images/l95xx-white-outline.ico" />
-                                </Grid>
-                            </md:ToggleButtonAssist.OnContent>
+                                <Button
+                                    Width="48"
+                                    Height="48"
+                                    Margin="3,0,0,0"
+                                    VerticalContentAlignment="Stretch"
+                                    Command="{Binding AddImageTopCommand}"
+                                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                    ToolTip="Add Image(s)">
+                                    <Button.Style>
+                                        <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding SelectedImageRoll.IsLocked}" Value="False">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
 
-                            <Grid>
-                                <Image Source="/Assets/Images/l95xx-white-outline.ico" />
-                            </Grid>
+                                    <DockPanel>
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            DockPanel.Dock="Top"
+                                            Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                                            Text="Add Image"
+                                            Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                        <iconPacks:PackIconMaterial
+                                            Width="24"
+                                            Height="24"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Kind="Image" />
+                                    </DockPanel>
 
-                        </ToggleButton>
+                                </Button>
 
-                        <Border Margin="0,0,9,0" Style="{StaticResource imageBar}" />
+                                <!--  V5 Trigger  -->
+                                <Border
+                                    Margin="3,0,0,0"
+                                    BorderBrush="{DynamicResource V5_Brush}"
+                                    BorderThickness="1"
+                                    CornerRadius="3">
+                                    <Button
+                                        Width="48"
+                                        Height="48"
+                                        HorizontalContentAlignment="Stretch"
+                                        VerticalContentAlignment="Stretch"
+                                        Command="{Binding AddV5ImageCommand}"
+                                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                        ToolTipService.ShowOnDisabled="True">
+                                        <Button.Style>
+                                            <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                <Setter Property="ToolTip" Value="Trigger V5 and add the image and results to the image roll." />
+                                                <Style.Triggers>
+                                                    <MultiDataTrigger>
+                                                        <MultiDataTrigger.Conditions>
+                                                            <Condition Binding="{Binding SelectedScanner.Controller.IsConnected}" Value="True" />
+                                                            <Condition Binding="{Binding SelectedScanner.Controller.IsSimulator}" Value="False" />
+                                                            <Condition Binding="{Binding SelectedImageRoll.IsLocked}" Value="False" />
+                                                        </MultiDataTrigger.Conditions>
 
-                        <DockPanel Margin="0,0,9,0" HorizontalAlignment="Right">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </MultiDataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
 
-                            <md:SmartHint
-                                Margin="3,0,3,0"
-                                HorizontalAlignment="Center"
-                                DockPanel.Dock="Top">
-                                <md:SmartHint.Style>
-                                    <Style TargetType="md:SmartHint">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="400">
-                                                <Setter Property="Hint" Value="Ex. Large" />
-                                            </DataTrigger>
+                                        <DockPanel>
+                                            <TextBlock
+                                                HorizontalAlignment="Center"
+                                                DockPanel.Dock="Top"
+                                                Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                                                Text="V5"
+                                                Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
-                                            <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="300">
-                                                <Setter Property="Hint" Value="Large" />
-                                            </DataTrigger>
+                                            <Grid Background="{DynamicResource V5_Brush}">
+                                                <Image
+                                                    Width="24"
+                                                    Height="24"
+                                                    HorizontalAlignment="Left"
+                                                    VerticalAlignment="Center"
+                                                    Source="/Assets/Images/v5-white-outline.ico" />
+                                                <iconPacks:PackIconMaterial
+                                                    Width="18"
+                                                    Height="18"
+                                                    Margin="3,0"
+                                                    HorizontalAlignment="Right"
+                                                    VerticalAlignment="Center"
+                                                    Kind="CameraIris" />
+                                            </Grid>
 
-                                            <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="200">
-                                                <Setter Property="Hint" Value="Regular" />
-                                            </DataTrigger>
+                                        </DockPanel>
 
-                                            <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="100">
-                                                <Setter Property="Hint" Value="Small" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </md:SmartHint.Style>
-                            </md:SmartHint>
 
-                            <Slider
-                                Width="48"
-                                Height="24"
-                                mah:SliderHelper.ChangeValueBy="LargeChange"
-                                IsSnapToTickEnabled="True"
-                                Maximum="400"
-                                Minimum="100"
-                                Style="{StaticResource MahApps.Styles.Slider.Flat}"
-                                TickFrequency="100"
-                                TickPlacement="BottomRight"
-                                Value="{Binding ImagesMaxHeight}" />
+                                    </Button>
+                                </Border>
 
-                        </DockPanel>
+                            </DockPanel>
 
-                        <StackPanel>
-                            <TextBlock
-                                HorizontalAlignment="Center"
-                                Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
-                                Text="Alarms"
-                                Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                            <!--  95xx Redirect  -->
                             <ToggleButton
                                 Width="48"
-                                Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                                Height="48"
+                                Margin="3,0,0,0"
+                                Padding="0"
+                                HorizontalContentAlignment="Stretch"
+                                VerticalContentAlignment="Stretch"
+                                BorderBrush="{DynamicResource L95xx_Brush}"
                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                IsChecked="{Binding HideErrorsWarnings}">
+                                IsChecked="{Binding IsL95xxSelected}">
                                 <ToggleButton.Style>
-                                    <Style BasedOn="{StaticResource MaterialDesignActionToggleButton}" TargetType="ToggleButton">
-                                        <Setter Property="ToolTip" Value="Alarms are being displayed." />
+                                    <Style BasedOn="{StaticResource MahApps.Styles.ToggleButton}" TargetType="ToggleButton">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Setter Property="ToolTip" Value="Click to redirect 95xx results to the image roll." />
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <DockPanel>
+                                                    <DockPanel>
+                                                        <TextBlock
+                                                            HorizontalAlignment="Center"
+                                                            DockPanel.Dock="Top"
+                                                            Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                                                            Text="95xx"
+                                                            Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                                                        <Grid>
+                                                            <Image
+                                                                Width="24"
+                                                                Height="24"
+                                                                HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center"
+                                                                Source="/Assets/Images/l95xx-white-outline.ico" />
+                                                        </Grid>
+                                                    </DockPanel>
+                                                </DockPanel>
+                                            </Setter.Value>
+                                        </Setter>
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding HideErrorsWarnings}" Value="True">
-                                                <Setter Property="ToolTip" Value="Alarms are hidden." />
+
+                                            <DataTrigger Binding="{Binding IsL95xxSelected}" Value="True">
+                                                <Setter Property="ToolTip" Value="L95xx Data is redirected to the image roll." />
+                                                <Setter Property="Content">
+                                                    <Setter.Value>
+                                                        <DockPanel>
+                                                            <TextBlock
+                                                                HorizontalAlignment="Center"
+                                                                DockPanel.Dock="Top"
+                                                                Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                                                                Text="95xx"
+                                                                Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                                                            <Grid Background="{DynamicResource L95xx_Brush}">
+                                                                <Image
+                                                                    Width="24"
+                                                                    Height="24"
+                                                                    HorizontalAlignment="Left"
+                                                                    VerticalAlignment="Center"
+                                                                    Source="/Assets/Images/l95xx-white-outline.ico" />
+
+                                                                <iconPacks:PackIconMaterial
+                                                                    Width="18"
+                                                                    Height="18"
+                                                                    Margin="3,0"
+                                                                    HorizontalAlignment="Right"
+                                                                    VerticalAlignment="Center"
+                                                                    Kind="ChevronDoubleDown" />
+                                                            </Grid>
+                                                        </DockPanel>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </DataTrigger>
+
+                                            <DataTrigger Binding="{Binding SelectedVerifier.Controller.IsConnected}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible" />
                                             </DataTrigger>
                                         </Style.Triggers>
+
                                     </Style>
                                 </ToggleButton.Style>
 
-                                <md:ToggleButtonAssist.OnContent>
+
+
+                            </ToggleButton>
+
+                            <Border Margin="3,0,9,0" Style="{StaticResource imageBar}" />
+
+                            <!--  Image Size  -->
+                            <DockPanel Margin="0,0,9,0" HorizontalAlignment="Right">
+
+                                <md:SmartHint
+                                    Margin="3,0,3,0"
+                                    HorizontalAlignment="Center"
+                                    DockPanel.Dock="Top">
+                                    <md:SmartHint.Style>
+                                        <Style TargetType="md:SmartHint">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="400">
+                                                    <Setter Property="Hint" Value="Ex. Large" />
+                                                </DataTrigger>
+
+                                                <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="300">
+                                                    <Setter Property="Hint" Value="Large" />
+                                                </DataTrigger>
+
+                                                <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="200">
+                                                    <Setter Property="Hint" Value="Regular" />
+                                                </DataTrigger>
+
+                                                <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="100">
+                                                    <Setter Property="Hint" Value="Small" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </md:SmartHint.Style>
+                                </md:SmartHint>
+
+                                <Slider
+                                    Width="48"
+                                    Height="24"
+                                    mah:SliderHelper.ChangeValueBy="LargeChange"
+                                    IsSnapToTickEnabled="True"
+                                    Maximum="400"
+                                    Minimum="100"
+                                    Style="{StaticResource MahApps.Styles.Slider.Flat}"
+                                    TickFrequency="100"
+                                    TickPlacement="BottomRight"
+                                    Value="{Binding ImagesMaxHeight}" />
+
+                            </DockPanel>
+
+                            <!--  Alarms  -->
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                                    Text="Alarms"
+                                    Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                <ToggleButton
+                                    Width="48"
+                                    Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                    IsChecked="{Binding HideErrorsWarnings}">
+                                    <ToggleButton.Style>
+                                        <Style BasedOn="{StaticResource MaterialDesignActionToggleButton}" TargetType="ToggleButton">
+                                            <Setter Property="ToolTip" Value="Alarms are being displayed." />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding HideErrorsWarnings}" Value="True">
+                                                    <Setter Property="ToolTip" Value="Alarms are hidden." />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ToggleButton.Style>
+
+                                    <md:ToggleButtonAssist.OnContent>
+
+                                        <iconPacks:PackIconFontAwesome
+                                            Width="24"
+                                            Height="24"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Kind="BellSlashSolid" />
+
+                                    </md:ToggleButtonAssist.OnContent>
 
                                     <iconPacks:PackIconFontAwesome
                                         Width="24"
                                         Height="24"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
-                                        Kind="BellSlashSolid" />
+                                        Kind="BellSolid" />
 
-                                </md:ToggleButtonAssist.OnContent>
+                                </ToggleButton>
+                            </StackPanel>
 
-                                <iconPacks:PackIconFontAwesome
-                                    Width="24"
-                                    Height="24"
+                            <!--  Colums  -->
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock
                                     HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Kind="BellSolid" />
+                                    Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                                    Text="Columns"
+                                    Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                <ToggleButton
+                                    Width="48"
+                                    md:ToggleButtonAssist.OnContent="{iconPacks:Modern Kind=ColumnTwo,
+                                                                                       Width=24,
+                                                                                       Height=24}"
+                                    Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                    IsChecked="{Binding DualSectorColumns}">
+                                    <ToggleButton.Style>
+                                        <Style BasedOn="{StaticResource MaterialDesignActionToggleButton}" TargetType="ToggleButton">
+                                            <Setter Property="ToolTip" Value="Columns based on image size." />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding DualSectorColumns}" Value="True">
+                                                    <Setter Property="ToolTip" Value="Dual columns." />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ToggleButton.Style>
 
-                            </ToggleButton>
-                        </StackPanel>
-
-
-                        <StackPanel>
-                            <TextBlock
-                                HorizontalAlignment="Center"
-                                Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
-                                Text="Columns"
-                                Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                            <ToggleButton
-                                Width="48"
-                                md:ToggleButtonAssist.OnContent="{iconPacks:Modern Kind=ColumnTwo,
-                                                                                   Width=24,
-                                                                                   Height=24}"
-                                Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                IsChecked="{Binding DualSectorColumns}">
-                                <ToggleButton.Style>
-                                    <Style BasedOn="{StaticResource MaterialDesignActionToggleButton}" TargetType="ToggleButton">
-                                        <Setter Property="ToolTip" Value="Columns based on image size." />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding DualSectorColumns}" Value="True">
-                                                <Setter Property="ToolTip" Value="Dual columns." />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </ToggleButton.Style>
-
-                                <Grid>
-                                    <iconPacks:PackIconModern
-                                        Width="24"
-                                        Height="24"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        Kind="ColumnTwo" />
-                                    <iconPacks:PackIconMaterial
-                                        Width="18"
-                                        Height="18"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
-                                        Kind="AlphaA" />
-                                </Grid>
-                            </ToggleButton>
-                        </StackPanel>
-
-                        <StackPanel>
-                            <TextBlock
-                                HorizontalAlignment="Center"
-                                Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
-                                Text="2D Grids"
-                                Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                            <ToggleButton
-                                Width="48"
-                                HorizontalAlignment="Left"
-                                Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
-                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                                IsChecked="{Binding ShowExtendedData}">
-                                <ToggleButton.Style>
-                                    <Style BasedOn="{StaticResource MaterialDesignActionToggleButton}" TargetType="ToggleButton">
-                                        <Setter Property="ToolTip" Value="Hiding 2D grid data." />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding ShowExtendedData}" Value="True">
-                                                <Setter Property="ToolTip" Value="Displaying 2D grid data." />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </ToggleButton.Style>
-
-                                <md:ToggleButtonAssist.OnContent>
                                     <Grid>
                                         <iconPacks:PackIconModern
                                             Width="24"
                                             Height="24"
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
-                                            Kind="Grid" />
+                                            Kind="ColumnTwo" />
+                                        <iconPacks:PackIconMaterial
+                                            Width="18"
+                                            Height="18"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                                            Kind="AlphaA" />
+                                    </Grid>
+                                </ToggleButton>
+                            </StackPanel>
+
+                            <!--  2D Grid  -->
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                                    Text="2D Grids"
+                                    Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                                <ToggleButton
+                                    Width="48"
+                                    HorizontalAlignment="Left"
+                                    Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+                                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                    IsChecked="{Binding ShowExtendedData}">
+                                    <ToggleButton.Style>
+                                        <Style BasedOn="{StaticResource MaterialDesignActionToggleButton}" TargetType="ToggleButton">
+                                            <Setter Property="ToolTip" Value="Hiding 2D grid data." />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ShowExtendedData}" Value="True">
+                                                    <Setter Property="ToolTip" Value="Displaying 2D grid data." />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ToggleButton.Style>
+
+                                    <md:ToggleButtonAssist.OnContent>
+                                        <Grid>
+                                            <iconPacks:PackIconModern
+                                                Width="24"
+                                                Height="24"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Kind="Grid" />
+                                            <iconPacks:PackIconJamIcons
+                                                Width="24"
+                                                Height="24"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Kind="QrCode" />
+                                        </Grid>
+                                    </md:ToggleButtonAssist.OnContent>
+                                    <Grid>
                                         <iconPacks:PackIconJamIcons
                                             Width="24"
                                             Height="24"
@@ -498,95 +617,106 @@
                                             VerticalAlignment="Center"
                                             Kind="QrCode" />
                                     </Grid>
-                                </md:ToggleButtonAssist.OnContent>
-                                <Grid>
-                                    <iconPacks:PackIconJamIcons
+                                </ToggleButton>
+                            </StackPanel>
+
+                            <Border Margin="0,0,0,0" Style="{StaticResource imageBar}" />
+
+                            <Button
+                                Width="48"
+                                Height="48"
+                                VerticalContentAlignment="Stretch"
+                                Command="{Binding StoreAllCurrentResultsCommand}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                ToolTip="Store the current sectors and images to the database.">
+
+                                <Button.Style>
+                                    <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+
+                                <DockPanel>
+                                    <TextBlock
+                                        HorizontalAlignment="Center"
+                                        DockPanel.Dock="Top"
+                                        Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                                        Text="Store All"
+                                        Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                                    <iconPacks:PackIconMaterial
                                         Width="24"
                                         Height="24"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
-                                        Kind="QrCode" />
-                                </Grid>
-                            </ToggleButton>
-                        </StackPanel>
+                                        Kind="StorePlusOutline" />
+                                </DockPanel>
+                            </Button>
 
-                        <Border Margin="0,0,0,0" Style="{StaticResource imageBar}" />
+                            <Button
+                                Width="48"
+                                Height="48"
+                                VerticalContentAlignment="Stretch"
+                                Command="{Binding ClearAllCurrentResultsCommand}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                ToolTip="Clear the current sectors and image.">
 
+                                <DockPanel>
+                                    <TextBlock
+                                        HorizontalAlignment="Center"
+                                        DockPanel.Dock="Top"
+                                        Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                                        Text="Clear All"
+                                        Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
-                        <Button
-                            Width="48"
-                            VerticalAlignment="Stretch"
-                            Command="{Binding StoreAllCurrentResultsCommand}"
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                            ToolTip="Store the current sectors and images to the database.">
+                                    <iconPacks:PackIconMaterialDesign
+                                        Width="24"
+                                        Height="24"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Kind="ClearAll" />
+                                </DockPanel>
+                            </Button>
 
-                            <Button.Style>
-                                <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
-                                    <Setter Property="Visibility" Value="Visible" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
-                                            <Setter Property="Visibility" Value="Collapsed" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                            <DockPanel>
-                                <TextBlock
-                                    Margin="0,0,0,5"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Top"
-                                    DockPanel.Dock="Top"
-                                    Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
-                                    Text="Store All"
-                                    Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                                <iconPacks:PackIconMaterial
-                                    Width="24"
-                                    Height="24"
-                                    Margin="0,0,0,3"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Bottom"
-                                    DockPanel.Dock="Bottom"
-                                    Kind="StorePlusOutline" />
-                            </DockPanel>
-                        </Button>
+                            <Border Margin="3,0,3,0" Style="{StaticResource imageBar}" />
 
+                            <Button
+                                Width="48"
+                                Height="48"
+                                HorizontalAlignment="Left"
+                                VerticalContentAlignment="Stretch"
+                                Command="{Binding CopyAllSectorsToClipboardCommand}"
+                                Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                                Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                                ToolTip="Copy all sector details to clipboard ">
 
-                        <Button
-                            Width="48"
-                            Command="{Binding ClearAllCurrentResultsCommand}"
-                            Content="{iconPacks:MaterialDesign Kind=ClearAll,
-                                                               Width=24,
-                                                               Height=24}"
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                            ToolTip="Clear the current sectors and image.">
+                                <DockPanel>
+                                    <TextBlock
+                                        HorizontalAlignment="Center"
+                                        DockPanel.Dock="Top"
+                                        Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                                        Text="Copy Sect."
+                                        Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
-                            <Button.Style>
-                                <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
-                                    <Setter Property="Visibility" Value="Visible" />
-                                </Style>
-                            </Button.Style>
-                        </Button>
+                                    <iconPacks:PackIconModern
+                                        Width="24"
+                                        Height="24"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Kind="PageCopy" />
+                                </DockPanel>
+                            </Button>
+                        </DockPanel>
 
-                        <Border Margin="0,0,0,0" Style="{StaticResource imageBar}" />
-
-                        <Button
-                            Width="48"
-                            HorizontalAlignment="Left"
-                            Command="{Binding CopyAllSectorsToClipboardCommand}"
-                            Content="{iconPacks:Modern Kind=PageCopy,
-                                                       Width=24,
-                                                       Height=24}"
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                            ToolTip="Copy all sector details to clipboard ">
-
-                            <Button.Style>
-                                <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
-                                    <Setter Property="Visibility" Value="Visible" />
-                                </Style>
-                            </Button.Style>
-                        </Button>
 
                     </DockPanel>
+
                 </DockPanel>
             </md:Card>
 

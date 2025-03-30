@@ -92,18 +92,18 @@
             <StackPanel>
                 <json:JsonViewer
                     Title="System Info"
-                    JSON="{Binding SelectedScanner.Controller.SysInfoJSON}"
                     ButtonStyle="{StaticResource MahApps.Styles.Button.Hamburger}"
+                    JSON="{Binding SelectedScanner.Controller.SysInfoJSON}"
                     ShowSaveButton="True" />
                 <json:JsonViewer
                     Title="Boot Config"
-                    JSON="{Binding SelectedScanner.Controller.BootConfigJSON}"
                     ButtonStyle="{StaticResource MahApps.Styles.Button.Hamburger}"
+                    JSON="{Binding SelectedScanner.Controller.BootConfigJSON}"
                     ShowSaveButton="True" />
                 <json:JsonViewer
                     Title="Config"
-                    JSON="{Binding SelectedScanner.Controller.ConfigJSON}"
                     ButtonStyle="{StaticResource MahApps.Styles.Button.Hamburger}"
+                    JSON="{Binding SelectedScanner.Controller.ConfigJSON}"
                     ShowSaveButton="True" />
             </StackPanel>
 

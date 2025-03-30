@@ -43,12 +43,12 @@
                     </Style.Triggers>
                 </Style>
             </StatusBarItem.Style>
-            
+
             <StackPanel>
-                <TextBlock Text="Latest Info" Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"/>
-                <TextBlock Text="{Binding LatestInfo.Message}"/>
+                <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Latest Info" />
+                <TextBlock Text="{Binding LatestInfo.Message}" />
             </StackPanel>
-            
+
         </StatusBarItem>
         <StatusBarItem Margin="3,0">
             <StatusBarItem.Style>
@@ -60,10 +60,10 @@
                     </Style.Triggers>
                 </Style>
             </StatusBarItem.Style>
-            
+
             <StackPanel>
-                <TextBlock Text="Latest Warning" Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"/>
-                <TextBlock Text="{Binding LatestWarning.Message}"/>
+                <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Latest Warning" />
+                <TextBlock Text="{Binding LatestWarning.Message}" />
             </StackPanel>
 
         </StatusBarItem>
@@ -77,10 +77,10 @@
                     </Style.Triggers>
                 </Style>
             </StatusBarItem.Style>
-            
+
             <StackPanel>
-                <TextBlock Text="Latest Error" Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"/>
-                <TextBlock Text="{Binding LatestError.Message}"/>
+                <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Latest Error" />
+                <TextBlock Text="{Binding LatestError.Message}" />
             </StackPanel>
 
         </StatusBarItem>
@@ -96,8 +96,8 @@
             </StatusBarItem.Style>
 
             <StackPanel>
-                <TextBlock Text="Latest Debug" Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"/>
-                <TextBlock Text="{Binding LatestDebug.Message}"/>
+                <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Latest Debug" />
+                <TextBlock Text="{Binding LatestDebug.Message}" />
             </StackPanel>
 
         </StatusBarItem>

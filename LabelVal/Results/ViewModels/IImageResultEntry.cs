@@ -1,4 +1,5 @@
 ﻿using LabelVal.ImageRolls.ViewModels;
+using LabelVal.Main.ViewModels;
 using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Interfaces;
 using System.Collections.ObjectModel;
@@ -16,6 +17,8 @@ namespace LabelVal.Results.ViewModels;
 public interface IImageResultEntry
 {
     static string Version { get; set; } = "1.0";
+
+    public GlobalAppSettings AppSettings { get; }
 
     ImageEntry SourceImage { get; }
 

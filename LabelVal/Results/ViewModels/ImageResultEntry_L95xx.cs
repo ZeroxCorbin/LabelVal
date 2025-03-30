@@ -39,6 +39,8 @@ public partial class ImageResultEntry : IRecipient<PropertyChangedMessage<FullRe
 
     [ObservableProperty] private Sectors.Interfaces.ISector l95xxCurrentSectorSelected;
 
+    [ObservableProperty] private LabelHandlers l95xxSelectedHandler;
+
     //[ObservableProperty] private byte[] l95xxImage = null;
     //[ObservableProperty] private DrawingImage l95xxSectorsImageOverlay;
     //[ObservableProperty] private bool isL95xxImageStored;

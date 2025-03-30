@@ -3,8 +3,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:L95xx="clr-namespace:LabelVal.LVS_95xx.Views"
     xmlns:L95xxVm="clr-namespace:LabelVal.LVS_95xx.ViewModels"
+    xmlns:bar_common="clr-namespace:BarcodeVerification.lib.Common;assembly=BarcodeVerification.lib"
     xmlns:converters="clr-namespace:LabelVal.Converters"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:imageRoll_enums="clr-namespace:LabelVal.ImageRolls.ViewModels"
     xmlns:imageRolls="clr-namespace:LabelVal.ImageRolls.Views"
     xmlns:loc="clr-namespace:LabelVal.Localization"
     xmlns:local="clr-namespace:LabelVal.Main.Views"
@@ -22,10 +24,7 @@
     xmlns:v275Vm="clr-namespace:LabelVal.V275.ViewModels"
     xmlns:v5="clr-namespace:LabelVal.V5.Views"
     xmlns:v5Vm="clr-namespace:LabelVal.V5.ViewModels"
-    xmlns:viewModels="clr-namespace:LabelVal.Main.ViewModels"
-    xmlns:bar_common="clr-namespace:BarcodeVerification.lib.Common;assembly=BarcodeVerification.lib"
-    xmlns:imageRoll_enums="clr-namespace:LabelVal.ImageRolls.ViewModels"
-    >
+    xmlns:viewModels="clr-namespace:LabelVal.Main.ViewModels">
 
     <converters:LocalizeEnumValue x:Key="localizeEnumValue" />
     <converters:MACAddressSplitConverter x:Key="macAddressSplitConverter" />

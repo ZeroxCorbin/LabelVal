@@ -140,9 +140,9 @@
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
                         md:ToggleButtonAssist.OnContent="{iconPacks:Modern Kind=AlignRight}"
-                        ToolTip="Toggle name aligned left or right."
                         Content="{iconPacks:Modern Kind=AlignLeft}"
-                        IsChecked="{Binding RightAlignOverflow}">
+                        IsChecked="{Binding RightAlignOverflow}"
+                        ToolTip="Toggle name aligned left or right.">
                         <ToggleButton.LayoutTransform>
                             <ScaleTransform ScaleX="0.8" ScaleY="0.8" />
                         </ToggleButton.LayoutTransform>

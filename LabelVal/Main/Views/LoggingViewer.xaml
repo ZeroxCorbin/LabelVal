@@ -23,11 +23,11 @@
 
     <DockPanel>
         <DataGrid
-            DockPanel.Dock="Top"
             x:Name="dataGrid"
             MaxHeight="400"
             AutoGenerateColumns="False"
             CanUserSortColumns="True"
+            DockPanel.Dock="Top"
             ItemsSource="{Binding Source={StaticResource LoggerMessages}}"
             PreviewMouseDoubleClick="dataGrid_PreviewMouseDoubleClick"
             SelectionUnit="FullRow">

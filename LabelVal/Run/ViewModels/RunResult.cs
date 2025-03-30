@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
+using LabelVal.Main.ViewModels;
 using LabelVal.Results.Databases;
 using LabelVal.Results.ViewModels;
 using LabelVal.Run.Databases;
@@ -22,6 +23,8 @@ using System.Windows.Media;
 namespace LabelVal.Run.ViewModels;
 public partial class RunResult : ObservableRecipient, IImageResultEntry, IRecipient<PropertyChangedMessage<PrinterSettings>>
 {
+    public GlobalAppSettings AppSettings => GlobalAppSettings.Instance;
+
     [ObservableProperty] private ObservableCollection<Sectors.Interfaces.ISector> v275CurrentSectors = [];
     [ObservableProperty] private ObservableCollection<Sectors.Interfaces.ISector> v275StoredSectors = [];
     [ObservableProperty] private ObservableCollection<SectorDifferences> v275DiffSectors = [];

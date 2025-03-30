@@ -20,20 +20,23 @@
         <StackPanel>
             <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="Show Button Text" />
 
-            <ToggleButton IsChecked="{Binding ShowButtonText}">
-                
-            </ToggleButton>
+            <ToggleButton IsChecked="{Binding ShowButtonText}" />
 
         </StackPanel>
 
         <StackPanel>
             <TextBlock Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}" Text="ORM Support Testing" />
 
-            <Button x:Name="btnShowORMSettingsDialog" Click="btnShowORMSettingsDialog_Click" Width="48" HorizontalAlignment="Left" Style="{StaticResource MahApps.Styles.Button.Hamburger}">
+            <Button
+                x:Name="btnShowORMSettingsDialog"
+                Width="48"
+                HorizontalAlignment="Left"
+                Click="btnShowORMSettingsDialog_Click"
+                Style="{StaticResource MahApps.Styles.Button.Hamburger}">
                 <iconPacks:PackIconMaterial Kind="Cog" />
             </Button>
 
         </StackPanel>
-        
+
     </StackPanel>
 </UserControl>

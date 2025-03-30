@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
+using LabelVal.Main.ViewModels;
 using LabelVal.Results.Databases;
 using LabelVal.Utilities;
 using Lvs95xx.lib.Core.Controllers;
@@ -47,6 +48,8 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
 
     public delegate void DeleteImageDelegate(ImageResultEntry imageResults);
     public event DeleteImageDelegate DeleteImage;
+
+    public GlobalAppSettings AppSettings => GlobalAppSettings.Instance;
 
     public ImageEntry SourceImage { get; }
     public string SourceImageUID => SourceImage.UID;

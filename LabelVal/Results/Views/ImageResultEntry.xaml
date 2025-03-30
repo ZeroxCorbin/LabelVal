@@ -189,6 +189,198 @@
                     </Button.Style>
                 </Button>
 
+                <!--  V5 Trigger  -->
+                <!--<Border
+                    Margin="0,0,0,0"
+                    BorderBrush="{DynamicResource V5_Brush}"
+                    BorderThickness="1"
+                    CornerRadius="3"
+                    d:Visibility="Visible">
+                    <Border.Style>
+                        <Style  TargetType="{x:Type Border}">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Setter Property="ToolTip" Value="Trigger V5 and add the image and results to the image roll." />
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ImageResults.SelectedScanner.Controller.IsConnected}" Value="True" />
+                                        <Condition Binding="{Binding ImageResults.SelectedScanner.Controller.IsSimulator}" Value="False" />
+                                        <Condition Binding="{Binding ImageResults.SelectedImageRoll.IsLocked}" Value="False" />
+                                    </MultiDataTrigger.Conditions>
+
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>-->
+
+                <Border
+                    Margin="3,0,0,0"
+                    BorderBrush="{DynamicResource V5_Brush}"
+                    BorderThickness="1"
+                    CornerRadius="3">
+
+                    <Border.Style>
+                        <Style TargetType="{x:Type Border}">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ImageResults.SelectedScanner.Controller.IsSimulator}" Value="True" />
+                                        <Condition Binding="{Binding ImageResults.SelectedScanner.Controller.IsConnected}" Value="True" />
+                                        <Condition Binding="{Binding V5ResultRow, Converter={StaticResource IsNullOrEmpty}}" Value="True" />
+                                    </MultiDataTrigger.Conditions>
+
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </MultiDataTrigger>
+
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ImageResults.SelectedScanner.Controller.IsSimulator}" Value="True" />
+                                        <Condition Binding="{Binding ImageResults.SelectedScanner.Controller.IsConnected}" Value="True" />
+                                        <Condition Binding="{Binding V5ResultRow, Converter={StaticResource IsNullOrEmpty}}" Value="False" />
+                                    </MultiDataTrigger.Conditions>
+
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </MultiDataTrigger>
+
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ImageResults.SelectedScanner.Controller.IsSimulator}" Value="False" />
+                                        <Condition Binding="{Binding ImageResults.SelectedScanner.Controller.IsConnected}" Value="True" />
+                                    </MultiDataTrigger.Conditions>
+
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+
+                    <Button
+                        Width="48"
+                        Height="48"
+                        HorizontalContentAlignment="Stretch"
+                        VerticalContentAlignment="Stretch"
+                        Command="{Binding V5ProcessCommand}"
+                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                        ToolTipService.ShowOnDisabled="True">
+                        <Button.Style>
+                            <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding ImageResults.SelectedScanner.Controller.IsSimulator}" Value="True" />
+                                            <Condition Binding="{Binding ImageResults.SelectedScanner.Controller.IsConnected}" Value="True" />
+                                            <Condition Binding="{Binding V5ResultRow, Converter={StaticResource IsNullOrEmpty}}" Value="True" />
+                                        </MultiDataTrigger.Conditions>
+
+                                        <Setter Property="CommandParameter" Value="{x:Static ViewModels:ImageResultEntryImageTypes.Source}" />
+                                        <Setter Property="ToolTip" Value="V5: Process the source image with the simulator." />
+                                        <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}" />
+                                    </MultiDataTrigger>
+
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding ImageResults.SelectedScanner.Controller.IsSimulator}" Value="True" />
+                                            <Condition Binding="{Binding ImageResults.SelectedScanner.Controller.IsConnected}" Value="True" />
+                                            <Condition Binding="{Binding V5ResultRow, Converter={StaticResource IsNullOrEmpty}}" Value="False" />
+                                        </MultiDataTrigger.Conditions>
+
+                                        <Setter Property="CommandParameter" Value="{x:Static ViewModels:ImageResultEntryImageTypes.V5Stored}" />
+                                        <Setter Property="ToolTip" Value="V5: Process the stored image with the simulator." />
+                                        <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}" />
+                                    </MultiDataTrigger>
+
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding ImageResults.SelectedScanner.Controller.IsSimulator}" Value="False" />
+                                            <Condition Binding="{Binding ImageResults.SelectedScanner.Controller.IsConnected}" Value="True" />
+                                        </MultiDataTrigger.Conditions>
+
+                                        <Setter Property="CommandParameter" Value="{x:Static ViewModels:ImageResultEntryImageTypes.V5Sensor}" />
+                                        <Setter Property="ToolTip" Value="V5: Process the sensor image." />
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+
+
+                        <DockPanel>
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                DockPanel.Dock="Top"
+                                Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                                Text="V5"
+                                Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                            <Grid Background="{DynamicResource V5_Brush}">
+                                <!--<Image
+                                    Width="24"
+                                    Height="24"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Source="/Assets/Images/v5-white-outline.ico" />-->
+                                <Grid HorizontalAlignment="Left" VerticalAlignment="Center">
+                                    <Grid.Style>
+                                        <Style TargetType="{x:Type Grid}">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <!--<MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding ImageResults.SelectedScanner.Controller.IsSimulator}" Value="True" />
+                                                        <Condition Binding="{Binding ImageResults.SelectedScanner.Controller.IsConnected}" Value="True" />
+                                                        <Condition Binding="{Binding V5ResultRow, Converter={StaticResource IsNullOrEmpty}}" Value="True" />
+                                                    </MultiDataTrigger.Conditions>
+
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </MultiDataTrigger>-->
+
+                                                <!--<MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding ImageResults.SelectedScanner.Controller.IsSimulator}" Value="True" />
+                                                        <Condition Binding="{Binding ImageResults.SelectedScanner.Controller.IsConnected}" Value="True" />
+                                                        <Condition Binding="{Binding V5ResultRow, Converter={StaticResource IsNullOrEmpty}}" Value="False" />
+                                                    </MultiDataTrigger.Conditions>
+
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </MultiDataTrigger>-->
+
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding ImageResults.SelectedScanner.Controller.IsSimulator}" Value="False" />
+                                                        <Condition Binding="{Binding ImageResults.SelectedScanner.Controller.IsConnected}" Value="True" />
+                                                    </MultiDataTrigger.Conditions>
+
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </MultiDataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Style>
+
+                                    <iconPacks:PackIconMaterial
+                                        Width="18"
+                                        Height="18"
+                                        Margin="3,0"
+                                        VerticalAlignment="Center"
+                                        Kind="CameraIris" />
+                                    <mah:ProgressRing
+                                        Width="22"
+                                        Height="22"
+                                        Margin="0,0,1,0"
+                                        Foreground="White"
+                                        IsActive="{Binding IsV5Working}" />
+                                </Grid>
+
+                            </Grid>
+
+                        </DockPanel>
+
+
+
+                    </Button>
+                </Border>
+                <!--</Border>-->
+
                 <!--  V5 Process Source Image  -->
                 <Button
                     Width="48"
