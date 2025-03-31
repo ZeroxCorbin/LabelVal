@@ -119,51 +119,75 @@ public partial class Sector : UserControl
             return;
 
         //This lets us know which sector is being focused on
-        //switch (GroupName)
-        //{
-        //    case "v275Stored":
-        //        if(ImageResultEntry.V275FocusedStoredSector != null)
-        //            ImageResultEntry.V275FocusedStoredSector.IsFocused = false;
-        //        ImageResultEntry.V275FocusedStoredSector = (ISector)this.DataContext;
-        //        ImageResultEntry.V275FocusedStoredSector.IsFocused = true;
-        //        App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.ImageResultEntry)ImageResultEntry).UpdateV275StoredImageOverlay());
-        //        break;
-        //    case "v275Current":
-        //        if (ImageResultEntry.V275FocusedCurrentSector != null)
-        //            ImageResultEntry.V275FocusedCurrentSector.IsFocused = false;
-        //        ImageResultEntry.V275FocusedCurrentSector = (ISector)this.DataContext;
-        //        ImageResultEntry.V275FocusedCurrentSector.IsFocused = true;
-        //        App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.ImageResultEntry)ImageResultEntry).UpdateV275CurrentImageOverlay());
-        //        break;
-        //    case "v5Stored":
-        //        if(ImageResultEntry.V5FocusedStoredSector != null)
-        //            ImageResultEntry.V5FocusedStoredSector.IsFocused = false;
-        //        ImageResultEntry.V5FocusedStoredSector = (ISector)this.DataContext;
-        //        ImageResultEntry.V5FocusedStoredSector.IsFocused = true;
-        //        App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.ImageResultEntry)ImageResultEntry).UpdateV5StoredImageOverlay());
-        //        break;
-        //    case "v5Current":
-        //        if (ImageResultEntry.V5FocusedCurrentSector != null)
-        //            ImageResultEntry.V5FocusedCurrentSector.IsFocused = false;
-        //        ImageResultEntry.V5FocusedCurrentSector = (ISector)this.DataContext;
-        //        ImageResultEntry.V5FocusedCurrentSector.IsFocused = true;
-        //        App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.ImageResultEntry)ImageResultEntry).UpdateV5CurrentImageOverlay());
-        //        break;
-        //    case "l95xxStored":
-        //        if (ImageResultEntry.L95xxFocusedStoredSector != null)
-        //            ImageResultEntry.L95xxFocusedStoredSector.IsFocused = false;
-        //        ImageResultEntry.L95xxFocusedStoredSector = (ISector)this.DataContext;
-        //        ImageResultEntry.L95xxFocusedStoredSector.IsFocused = true;
-        //        App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.ImageResultEntry)ImageResultEntry).UpdateL95xxStoredImageOverlay());
-        //        break;
-        //    case "l95xxCurrent":
-        //        if (ImageResultEntry.L95xxFocusedCurrentSector != null)
-        //            ImageResultEntry.L95xxFocusedCurrentSector.IsFocused = false;
-        //        ImageResultEntry.L95xxFocusedCurrentSector = (ISector)this.DataContext;
-        //        ImageResultEntry.L95xxFocusedCurrentSector.IsFocused = true;
-        //        App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.ImageResultEntry)ImageResultEntry).UpdateL95xxCurrentImageOverlay());
-        //        break;
-        //}
+        switch (GroupName)
+        {
+            case "v275Stored":
+               var devices =  ImageResultEntry.ImageResultEntry.ImageResultDeviceEntries.Where(x => x.Device == Results.ViewModels.ImageResultEntryDevices.V275);
+                foreach (var device in devices)
+                {
+                    if (device.FocusedStoredSector != null)
+                        device.FocusedStoredSector.IsFocused = false;
+                    device.FocusedStoredSector = (ISector)this.DataContext;
+                    device.FocusedStoredSector.IsFocused = true;
+                    App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.IImageResultDeviceEntry)device).RefreshStoredOverlay());
+                }
+                break;
+            case "v275Current":
+                devices = ImageResultEntry.ImageResultEntry.ImageResultDeviceEntries.Where(x => x.Device == Results.ViewModels.ImageResultEntryDevices.V275);
+                foreach (var device in devices)
+                {
+                    if (device.FocusedCurrentSector != null)
+                        device.FocusedCurrentSector.IsFocused = false;
+                    device.FocusedCurrentSector = (ISector)this.DataContext;
+                    device.FocusedCurrentSector.IsFocused = true;
+                    App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.IImageResultDeviceEntry)device).RefreshCurrentOverlay());
+                }
+                break;
+            case "v5Stored":
+                devices = ImageResultEntry.ImageResultEntry.ImageResultDeviceEntries.Where(x => x.Device == Results.ViewModels.ImageResultEntryDevices.V5);
+                foreach (var device in devices)
+                {
+                    if (device.FocusedStoredSector != null)
+                        device.FocusedStoredSector.IsFocused = false;
+                    device.FocusedStoredSector = (ISector)this.DataContext;
+                    device.FocusedStoredSector.IsFocused = true;
+                    App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.IImageResultDeviceEntry)device).RefreshStoredOverlay());
+                }
+                break;
+            case "v5Current":
+                devices = ImageResultEntry.ImageResultEntry.ImageResultDeviceEntries.Where(x => x.Device == Results.ViewModels.ImageResultEntryDevices.V5);
+                foreach (var device in devices)
+                {
+                    if (device.FocusedCurrentSector != null)
+                        device.FocusedCurrentSector.IsFocused = false;
+                    device.FocusedCurrentSector = (ISector)this.DataContext;
+                    device.FocusedCurrentSector.IsFocused = true;
+                    App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.IImageResultDeviceEntry)device).RefreshCurrentOverlay());
+                }
+                break;
+            case "l95xxStored":
+                devices = ImageResultEntry.ImageResultEntry.ImageResultDeviceEntries.Where(x => x.Device == Results.ViewModels.ImageResultEntryDevices.L95);
+                foreach (var device in devices)
+                {
+                    if (device.FocusedStoredSector != null)
+                        device.FocusedStoredSector.IsFocused = false;
+                    device.FocusedStoredSector = (ISector)this.DataContext;
+                    device.FocusedStoredSector.IsFocused = true;
+                    App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.IImageResultDeviceEntry)device).RefreshStoredOverlay());
+                }
+                break;
+            case "l95xxCurrent":
+                devices = ImageResultEntry.ImageResultEntry.ImageResultDeviceEntries.Where(x => x.Device == Results.ViewModels.ImageResultEntryDevices.L95);
+                foreach (var device in devices)
+                {
+                    if (device.FocusedCurrentSector != null)
+                        device.FocusedCurrentSector.IsFocused = false;
+                    device.FocusedCurrentSector = (ISector)this.DataContext;
+                    device.FocusedCurrentSector.IsFocused = true;
+                    App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.IImageResultDeviceEntry)device).RefreshCurrentOverlay());
+                }
+                break;
+        }
 
 
     }

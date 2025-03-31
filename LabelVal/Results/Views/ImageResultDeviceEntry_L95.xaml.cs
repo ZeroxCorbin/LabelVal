@@ -29,7 +29,7 @@ public partial class ImageResultDeviceEntry_L95 : UserControl
 
     private void btnCloseDetails_Click(object sender, RoutedEventArgs e)
     {
-        var ire = (ViewModels.ImageResultEntry)DataContext;
+        var ire = (ViewModels.IImageResultDeviceEntry)DataContext;
 
         //if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
         //{
