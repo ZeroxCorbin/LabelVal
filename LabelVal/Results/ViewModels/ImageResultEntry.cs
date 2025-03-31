@@ -193,6 +193,17 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
         dev.Store();
     }
     [RelayCommand]
+    private void Process(ImageResultEntryDevices device)
+    {
+        IImageResultDeviceEntry dev = ImageResultDeviceEntries.FirstOrDefault(x => x.Device == device);
+        if (dev == null)
+        {
+            Logger.LogError($"Device not found: {device}");
+            return;
+        }
+        dev.Process();
+    }
+    [RelayCommand]
     private async Task ClearStored(ImageResultEntryDevices device)
     {
         if (await OkCancelDialog("Clear Stored Sectors", $"Are you sure you want to clear the stored sectors for this image?\r\nThis can not be undone!") == MessageDialogResult.Affirmative)
@@ -207,7 +218,6 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
             dev.GetStored();
         }
     }
-
     [RelayCommand]
     private void ClearCurrent(ImageResultEntryDevices device)
     {
@@ -244,7 +254,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     //[DllImport("user32.dll")]
     //static extern bool PostMessage(IntPtr hWnd, UInt32 Msg, int wParam, int lParam);
 
-    private void SendTo95xxApplication() => _ = Process.GetProcessesByName("LVS-95XX");//foreach (Process proc in processes)//    PostMessage(proc.MainWindowHandle, WM_KEYDOWN, VK_F5, 0);
+    private void SendTo95xxApplication() => _ = System.Diagnostics.Process.GetProcessesByName("LVS-95XX");//foreach (Process proc in processes)//    PostMessage(proc.MainWindowHandle, WM_KEYDOWN, VK_F5, 0);
     private string GetSaveFilePath()
     {
         SaveFileDialog saveFileDialog1 = new()

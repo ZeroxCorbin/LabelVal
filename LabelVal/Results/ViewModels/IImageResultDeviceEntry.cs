@@ -63,6 +63,8 @@ public interface IImageResultDeviceEntry
     void GetStored();
     void Store();
 
+    void Process();
+
     void RefreshOverlays();
     void RefreshCurrentOverlay();
     void RefreshStoredOverlay();

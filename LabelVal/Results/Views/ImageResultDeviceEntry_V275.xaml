@@ -30,7 +30,7 @@
             <converters:Double2String x:Key="double2String" />
 
 
-            <!--   Stored Toolbar  -->
+            <!--  Stored Toolbar  -->
             <DockPanel x:Key="Stored_Toolbar" x:Shared="False">
 
                 <Border Margin="3,0" Style="{StaticResource imageBar}" />
@@ -65,16 +65,16 @@
                         <Style TargetType="{x:Type DockPanel}">
                             <Setter Property="Visibility" Value="Visible" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding ImageResultEntry.ImageResults.SelectedV275Node, Mode=OneWay}" Value="{x:Null}">
+                                <DataTrigger Binding="{Binding ImageResultsManager.SelectedV275Node, Mode=OneWay}" Value="{x:Null}">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding ImageResultEntry.ImageResults.SelectedV275Node.Controller.IsLoggedIn_Control}" Value="False">
+                                <DataTrigger Binding="{Binding ImageResultsManager.SelectedV275Node.Controller.IsLoggedIn_Control}" Value="False">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding ImageResultEntry.ImageResults.SelectedV275Node.Controller.State}" Value="Running">
+                                <DataTrigger Binding="{Binding ImageResultsManager.SelectedV275Node.Controller.State}" Value="Running">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding ImageResultEntry.ImageResults.SelectedV275Node.Controller.State}" Value="Idle">
+                                <DataTrigger Binding="{Binding ImageResultsManager.SelectedV275Node.Controller.State}" Value="Idle">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
@@ -143,7 +143,7 @@
                                 <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Sectors">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
+                                <DataTrigger Binding="{Binding ImageResultsManager.SelectedDatabase.IsLocked}" Value="True">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -229,10 +229,10 @@
                         <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
                             <Setter Property="Visibility" Value="Collapsed" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding ImageResultEntry.ImageResults.SelectedV275Node.Controller.IsLoggedIn_Monitor}" Value="True">
+                                <DataTrigger Binding="{Binding ImageResultsManager.SelectedV275Node.Controller.IsLoggedIn_Monitor}" Value="True">
                                     <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding ImageResultEntry.ImageResults.SelectedV275Node.Controller.IsLoggedIn_Control}" Value="True">
+                                <DataTrigger Binding="{Binding ImageResultsManager.SelectedV275Node.Controller.IsLoggedIn_Control}" Value="True">
                                     <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
                                 <MultiDataTrigger>
@@ -359,7 +359,7 @@
             <!--  Stored  -->
             <DockPanel>
 
-                <!--   Stored Image  -->
+                <!--  Stored Image  -->
                 <DockPanel DockPanel.Dock="Top">
                     <DockPanel.Style>
                         <Style TargetType="{x:Type DockPanel}">
@@ -423,7 +423,7 @@
 
                 </DockPanel>
 
-                <!--   Stored Sectors  -->
+                <!--  Stored Sectors  -->
                 <DockPanel HorizontalAlignment="Left">
                     <DockPanel.Style>
                         <Style TargetType="{x:Type DockPanel}">
@@ -636,7 +636,7 @@
                                                         <Setter Property="Width" Value="auto" />
                                                     </DataTrigger>
 
-                                                    <DataTrigger Binding="{Binding DataContext.DualSectorColumns, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="True">
+                                                    <DataTrigger Binding="{Binding DataContext.ImageResultEntry.DualSectorColumns, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="True">
                                                         <Setter Property="MaxWidth" Value="400" />
                                                         <Setter Property="Width" Value="auto" />
                                                     </DataTrigger>
@@ -671,7 +671,7 @@
             <!--  Current  -->
             <DockPanel>
 
-                <!--   Current Image  -->
+                <!--  Current Image  -->
                 <DockPanel Margin="3,0" DockPanel.Dock="Top">
                     <DockPanel.Style>
                         <Style TargetType="{x:Type DockPanel}">
@@ -732,7 +732,7 @@
 
                 </DockPanel>
 
-                <!--   Current Sectors  -->
+                <!--  Current Sectors  -->
                 <DockPanel Margin="3,0">
                     <DockPanel.Style>
                         <Style TargetType="{x:Type DockPanel}">
@@ -949,7 +949,7 @@
                                                             <Setter Property="Width" Value="auto" />
                                                         </DataTrigger>
 
-                                                        <DataTrigger Binding="{Binding DataContext.DualSectorColumns, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="True">
+                                                        <DataTrigger Binding="{Binding DataContext.ImageResultEntry.DualSectorColumns, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="True">
                                                             <Setter Property="MaxWidth" Value="400" />
                                                             <Setter Property="Width" Value="auto" />
                                                         </DataTrigger>
@@ -969,7 +969,7 @@
 
                 </DockPanel>
 
-                <!--   Dissimilar Results  -->
+                <!--  Dissimilar Results  -->
                 <DockPanel>
                     <DockPanel.Style>
                         <Style TargetType="{x:Type DockPanel}">

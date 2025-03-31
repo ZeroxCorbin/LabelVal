@@ -151,8 +151,21 @@ public partial class ImageResultDeviceEntry_L95(ImageResultEntry imageResultsEnt
     }
 
     [RelayCommand]
-    private void Process()
+    public void Process()
     {
+    //    LabelHandlers type = LabelHandlers.CameraTrigger;
+    //    type = ImageResultEntry.ImageResultsManager.SelectedL95.Controller.IsSimulator
+    //? ImageResultEntry.ImageResultsManager.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic
+    //    ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
+    //        ? LabelHandlers.SimulatorRestore
+    //        : LabelHandlers.SimulatorDetect
+    //    : LabelHandlers.SimulatorTrigger
+    //: ImageResultEntry.ImageResultsManager.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic
+    //    ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
+    //        ? LabelHandlers.CameraRestore
+    //        : LabelHandlers.CameraDetect
+    //    : LabelHandlers.CameraTrigger;
+
         Label lab = new()
         {
             Config = new Lvs95xx.lib.Core.Controllers.Config()

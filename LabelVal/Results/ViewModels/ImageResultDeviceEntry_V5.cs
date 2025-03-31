@@ -155,12 +155,12 @@ public partial class ImageResultDeviceEntry_V5(ImageResultEntry imageResultsEntr
         LabelHandlers type = LabelHandlers.CameraTrigger;
         type = ImageResultEntry.ImageResultsManager.SelectedV5.Controller.IsSimulator
             ? ImageResultEntry.ImageResultsManager.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic
-                ? !string.IsNullOrEmpty(ResultRow.TemplateString)
+                ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
                     ? LabelHandlers.SimulatorRestore
                     : LabelHandlers.SimulatorDetect
                 : LabelHandlers.SimulatorTrigger
             : ImageResultEntry.ImageResultsManager.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic
-                ? !string.IsNullOrEmpty(ResultRow.TemplateString)
+                ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
                     ? LabelHandlers.CameraRestore
                     : LabelHandlers.CameraDetect
                 : LabelHandlers.CameraTrigger;
