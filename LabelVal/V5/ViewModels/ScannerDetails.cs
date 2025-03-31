@@ -6,27 +6,27 @@ namespace LabelVal.V5.ViewModels;
 
 public partial class ScannerDetails : ObservableRecipient, IRecipient<PropertyChangedMessage<Scanner>>
 {
-    [ObservableProperty] Scanner selectedScanner;
+    [ObservableProperty] Scanner selectedV5;
     public ScannerDetails() => IsActive = true;
     public void Receive(PropertyChangedMessage<Scanner> message)
     {
-        //if (SelectedScanner != null)
-        //    SelectedScanner.PropertyChanged -= SelectedScanner_PropertyChanged;
+        //if (SelectedV5 != null)
+        //    SelectedV5.PropertyChanged -= SelectedV5_PropertyChanged;
 
-        SelectedScanner = message.NewValue;
+        SelectedV5 = message.NewValue;
 
-        //if (SelectedScanner != null)
-        //    SelectedScanner.PropertyChanged += SelectedScanner_PropertyChanged;
+        //if (SelectedV5 != null)
+        //    SelectedV5.PropertyChanged += SelectedV5_PropertyChanged;
     }
 
-    //private void SelectedScanner_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    //private void SelectedV5_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     //{
 
     //    if (e.PropertyName == "SelectedCamera")
     //    {
-    //        var tmp = SelectedScanner as Scanner;
-    //        SelectedScanner = null;
-    //        SelectedScanner = tmp;
+    //        var tmp = SelectedV5 as Scanner;
+    //        SelectedV5 = null;
+    //        SelectedV5 = tmp;
     //    }
 
     //}

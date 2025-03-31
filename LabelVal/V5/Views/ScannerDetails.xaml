@@ -73,7 +73,7 @@
                                         <Setter Property="Text">
                                             <Setter.Value>
                                                 <MultiBinding StringFormat="{}{0}:{1}">
-                                                    <Binding Path="SelectedScanner.MAC" />
+                                                    <Binding Path="SelectedV5.MAC" />
                                                     <Binding Path="SystemPort" />
                                                 </MultiBinding>
 
@@ -93,17 +93,17 @@
                 <json:JsonViewer
                     Title="System Info"
                     ButtonStyle="{StaticResource MahApps.Styles.Button.Hamburger}"
-                    JSON="{Binding SelectedScanner.Controller.SysInfoJSON}"
+                    JSON="{Binding SelectedV5.Controller.SysInfoJSON}"
                     ShowSaveButton="True" />
                 <json:JsonViewer
                     Title="Boot Config"
                     ButtonStyle="{StaticResource MahApps.Styles.Button.Hamburger}"
-                    JSON="{Binding SelectedScanner.Controller.BootConfigJSON}"
+                    JSON="{Binding SelectedV5.Controller.BootConfigJSON}"
                     ShowSaveButton="True" />
                 <json:JsonViewer
                     Title="Config"
                     ButtonStyle="{StaticResource MahApps.Styles.Button.Hamburger}"
-                    JSON="{Binding SelectedScanner.Controller.ConfigJSON}"
+                    JSON="{Binding SelectedV5.Controller.ConfigJSON}"
                     ShowSaveButton="True" />
             </StackPanel>
 

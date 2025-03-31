@@ -1,11 +1,9 @@
 ﻿<UserControl
-    x:Class="LabelVal.Results.Views.ImageResultEntry_L95xx"
+    x:Class="LabelVal.Results.Views.ImageResultDeviceEntry_V5"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:Converters="clr-namespace:LabelVal.Converters"
-    xmlns:V275Converters="clr-namespace:LabelVal.V275.Converters"
-    xmlns:ViewModels="clr-namespace:LabelVal.Results.ViewModels"
     xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+    xmlns:converters="clr-namespace:LabelVal.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:local="clr-namespace:LabelVal.Results.Views"
@@ -13,7 +11,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:sectors="clr-namespace:LabelVal.Sectors.Views"
-    d:DataContext="{d:DesignInstance Type=ViewModels:ImageResultEntry,
+    xmlns:vm="clr-namespace:LabelVal.Results.ViewModels"
+    d:DataContext="{d:DesignInstance Type=vm:ImageResultDeviceEntry_V5,
                                      IsDesignTimeCreatable=False}"
     mc:Ignorable="d">
 
@@ -23,8 +22,13 @@
                 <ResourceDictionary Source="ImageDetailsTemplate.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
+            <converters:ShortenUIDConverter x:Key="shortenUID" />
 
-            <DockPanel x:Key="L95Stored_Toolbar" x:Shared="False">
+            <converters:Double2String x:Key="double2String" />
+
+
+            <DockPanel x:Key="Stored_Toolbar" x:Shared="False">
+
                 <Border Margin="3,0" Style="{StaticResource imageBar}" />
 
                 <!--  Image Only  -->
@@ -44,11 +48,48 @@
                     <Button
                         Width="28"
                         Command="{Binding SaveCommand}"
-                        CommandParameter="{x:Static ViewModels:ImageResultEntryImageTypes.L95xxStored}"
+                        CommandParameter="{x:Static vm:ImageResultEntryImageTypes.V5Stored}"
                         Content="{iconPacks:Material Kind=ContentSave}"
                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                         Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                         ToolTip="Save the image." />
+
+                </DockPanel>
+
+                <!--  Sectors Only  -->
+                <DockPanel>
+                    <DockPanel.Style>
+                        <Style TargetType="{x:Type DockPanel}">
+                            <Setter Property="Visibility" Value="Visible" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ImageResultEntry.SelectedV5, Mode=OneWay}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ImageResultEntry.SelectedV5.Controller.IsConnected}" Value="False">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                                <!--<DataTrigger Binding="{Binding ImageResults.SelectedV275Node.Controller.State}" Value="Running">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ImageResults.SelectedV275Node.Controller.State}" Value="Idle">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>-->
+                                <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DockPanel.Style>
+
+                    <Button
+                        Width="28"
+                        Command="{Binding LoadCommand}"
+                        Content="{iconPacks:Material Kind=Download}"
+                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                        ToolTip="Overwrite the template sectors with the stored data." />
+
+                    <Border Margin="3,0" Style="{StaticResource imageBar}" />
 
                 </DockPanel>
 
@@ -60,11 +101,11 @@
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
                     <Button.Style>
                         <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
-                            <Setter Property="Tag" Value="{Binding L95xxStoredSectors}" />
+                            <Setter Property="Tag" Value="{Binding StoredSectors}" />
                             <Setter Property="ToolTip" Value="Copy the sectors as DelimeterSV.&#x0a;Hold Shift for XLS." />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
-                                    <Setter Property="Tag" Value="{Binding L95xxStoredImage}" />
+                                    <Setter Property="Tag" Value="{Binding StoredImage}" />
                                     <Setter Property="ToolTip" Value="Copy the image to the clipboard and PNG.&#x0a;Hold Shift for BMP." />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -75,7 +116,7 @@
                 <!--  Sectors Only  -->
                 <Button
                     Width="28"
-                    Click="L95xxStoredSectors_Click"
+                    Click="StoredSectors_Click"
                     Content="{iconPacks:Modern Kind=Eye}"
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                     ToolTip="The all seeing eye! Click it...&#x0a;Hold Shift and click for more.">
@@ -99,7 +140,7 @@
                                 <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Sectors">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
+                                <DataTrigger Binding="{Binding ImageResultEntry.SelectedDatabase.IsLocked}" Value="True">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -111,7 +152,6 @@
                     <Button
                         Width="28"
                         Command="{Binding ClearStoredCommand}"
-                        CommandParameter="{x:Static ViewModels:ImageResultEntryDevices.L95xx}"
                         Content="{iconPacks:Modern Kind=Delete}"
                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                         Style="{StaticResource MahApps.Styles.Button.Hamburger}"
@@ -122,7 +162,7 @@
             </DockPanel>
 
             <!--  Current Toolbar  -->
-            <DockPanel x:Key="L96Current_Toolbar" x:Shared="False">
+            <DockPanel x:Key="Current_Toolbar" x:Shared="False">
 
                 <Border Margin="3,0" Style="{StaticResource imageBar}" />
 
@@ -139,22 +179,23 @@
                         </Style>
                     </DockPanel.Style>
 
+                    <!--  Save Image  -->
                     <Button
                         Width="28"
                         Command="{Binding SaveCommand}"
-                        CommandParameter="{x:Static ViewModels:ImageResultEntryImageTypes.L95xxCurrent}"
+                        CommandParameter="{x:Static vm:ImageResultEntryImageTypes.V5Current}"
                         Content="{iconPacks:Material Kind=ContentSave}"
                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                         Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                         ToolTip="Save the image." />
-
+                    
                 </DockPanel>
 
                 <!--  Sectors Only  -->
                 <Button
                     Width="28"
                     Command="{Binding StoreCommand}"
-                    CommandParameter="{x:Static ViewModels:ImageResultEntryDevices.L95xxAll}"
+                    CommandParameter="{x:Static vm:ImageResultEntryDevices.V5}"
                     Content="{iconPacks:Material Kind=StorePlusOutline}"
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                     ToolTip="Store the current sectors and images to the database.">
@@ -163,7 +204,7 @@
                         <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
                             <Setter Property="Visibility" Value="Visible" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
+                                <DataTrigger Binding="{Binding ImageResultEntry.SelectedDatabase.IsLocked}" Value="True">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
@@ -177,75 +218,25 @@
                 <!--  Sectors Only  -->
                 <Button
                     Width="28"
-                    Command="{Binding StoreCommand}"
-                    CommandParameter="{x:Static ViewModels:ImageResultEntryDevices.L95xx}"
-                    Content="{iconPacks:Material Kind=ChevronDoubleLeft}"
-                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                    ToolTip="Store the selected sector to the database.">
-
-                    <Button.Style>
-                        <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
-                            <Setter Property="Visibility" Value="Visible" />
-                            <Setter Property="IsEnabled" Value="True" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding SelectedDatabase.IsLocked}" Value="True">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding L95xxCurrentSectorSelected, Converter={StaticResource IsNullOrEmpty}}" Value="True">
-                                    <Setter Property="IsEnabled" Value="False" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
-
-                <Button
-                    Width="28"
-                    Command="{Binding ClearReadCommand}"
-                    CommandParameter="{x:Static ViewModels:ImageResultEntryDevices.L95xx}"
-                    Content="{iconPacks:MaterialDesign Kind=Clear}"
-                    Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                    ToolTip="Clear the selected sector.">
-
-                    <Button.Style>
-                        <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
-                            <Setter Property="Visibility" Value="Visible" />
-                            <Setter Property="IsEnabled" Value="True" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding L95xxCurrentSectorSelected, Converter={StaticResource IsNullOrEmpty}}" Value="True">
-                                    <Setter Property="IsEnabled" Value="False" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
-
-
-                <!--  Sectors Only  -->
-                <Button
-                    Width="28"
-                    Command="{Binding L95xxReadCommand}"
+                    Command="{Binding ReadCommand}"
                     Content="{iconPacks:Material Kind=Upload}"
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                     ToolTip="Read the last results and image from the V275.&#x0a;Just reads the data. No processing.">
 
                     <Button.Style>
                         <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
-                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Setter Property="Visibility" Value="Visible" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding ImageResults.SelectedVerifier.Controller.IsConnected}" Value="True">
-                                    <Setter Property="Visibility" Value="Visible" />
+                                <DataTrigger Binding="{Binding ImageResultEntry.SelectedV5, Mode=OneWay}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ImageResultEntry.SelectedV5.Controller.IsConnected}" Value="False">
+                                    <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
                                         <Condition Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image" />
-                                        <Condition Binding="{Binding L95xxCurrentSectors.Count, Converter={StaticResource NumberZeroOrNull}}" Value="False" />
+                                        <Condition Binding="{Binding CurrentSectors.Count, Converter={StaticResource NumberZeroOrNull}}" Value="False" />
                                     </MultiDataTrigger.Conditions>
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </MultiDataTrigger>
@@ -254,7 +245,6 @@
                         </Style>
                     </Button.Style>
                 </Button>
-
 
                 <DockPanel>
                     <DockPanel.Style>
@@ -280,11 +270,11 @@
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
                     <Button.Style>
                         <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
-                            <Setter Property="Tag" Value="{Binding L95xxCurrentSectors}" />
+                            <Setter Property="Tag" Value="{Binding StoredSectors}" />
                             <Setter Property="ToolTip" Value="Copy the sectors as DelimeterSV;Hold Shift for XLS." />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
-                                    <Setter Property="Tag" Value="{Binding L95xxCurrentImage}" />
+                                    <Setter Property="Tag" Value="{Binding StoredImage}" />
                                     <Setter Property="ToolTip" Value="Copy the image to the clipboard and PNG.&#x0a;Hold Shift for BMP." />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -292,14 +282,48 @@
                     </Button.Style>
                 </Button>
 
-
-
+                <!--  Sectors Only  -->
                 <Button
                     Width="28"
-                    Click="L95xxCurrentSectorDetails_Click"
-                    Content="{iconPacks:Modern Kind=Eye}"
-                    Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                    ToolTip="The all seeing eye! Click it...&#x0a;Hold Shift and click for more." />
+                    HorizontalAlignment="Right"
+                    Click="CurrentSectorDetails_Click"
+                    ToolTip="The all seeing eye! Click it...&#x0a;Hold Shift and click for more.">
+                    <Button.Style>
+                        <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Image">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                    <iconPacks:PackIconModern Kind="Eye" />
+                </Button>
+
+                <DockPanel>
+                    <DockPanel.Style>
+                        <Style TargetType="{x:Type DockPanel}">
+                            <Setter Property="Visibility" Value="Visible" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType=ContentControl}}" Value="Sectors">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DockPanel.Style>
+
+                    <Border Margin="3,0" Style="{StaticResource imageBar}" />
+
+                    <Button
+                        Width="28"
+                        Command="{Binding ClearReadCommand}"
+                        CommandParameter="{x:Static vm:ImageResultEntryDevices.V5}"
+                        Content="{iconPacks:MaterialDesign Kind=Clear}"
+                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                        Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                        ToolTip="Clear the current sectors and image." />
+
+                </DockPanel>
 
 
             </DockPanel>
@@ -309,34 +333,33 @@
 
     <DockPanel MaxHeight="800">
         <DockPanel.Style>
-            <Style TargetType="DockPanel">
+            <Style TargetType="{x:Type DockPanel}">
                 <Setter Property="Visibility" Value="Collapsed" />
                 <Style.Triggers>
-                    <DataTrigger Binding="{Binding L95xxStoredSectors.Count, Converter={StaticResource NumberZeroOrNull}}" Value="False">
+                    <DataTrigger Binding="{Binding StoredImage, Converter={StaticResource IsNullOrEmpty}}" Value="False">
                         <Setter Property="Visibility" Value="Visible" />
                     </DataTrigger>
 
-                    <DataTrigger Binding="{Binding L95xxCurrentSectors.Count, Converter={StaticResource NumberZeroOrNull}}" Value="False">
+                    <DataTrigger Binding="{Binding CurrentImage, Converter={StaticResource IsNullOrEmpty}}" Value="False">
                         <Setter Property="Visibility" Value="Visible" />
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
         </DockPanel.Style>
 
-        <Border Background="{DynamicResource L95xx_Brush}" Style="{StaticResource groupLeft}" />
+        <Border Background="{DynamicResource V5_Brush}" Style="{StaticResource groupLeft}" />
+        <Border Background="{DynamicResource V5_Brush}" Style="{StaticResource groupBottom}" />
 
-        <Border Background="{DynamicResource L95xx_Brush}" Style="{StaticResource groupBottom}" />
-
-        <!--  L95xx Stored  -->
+        <!--  Images  -->
         <DockPanel>
 
-            <!--  L95xx Stored Image  -->
+            <!--   Stored Image  -->
             <DockPanel DockPanel.Dock="Top">
                 <DockPanel.Style>
                     <Style TargetType="{x:Type DockPanel}">
                         <Setter Property="Visibility" Value="Collapsed" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding L95xxStoredImage, Converter={StaticResource IsNullOrEmpty}}" Value="False">
+                            <DataTrigger Binding="{Binding StoredImage, Converter={StaticResource IsNullOrEmpty}}" Value="False">
                                 <Setter Property="Visibility" Value="Visible" />
                             </DataTrigger>
                         </Style.Triggers>
@@ -357,15 +380,13 @@
                             Margin="3"
                             Padding="4,1"
                             HorizontalAlignment="Left"
-                            Background="{DynamicResource L95xx_Brush}">
+                            Background="{DynamicResource V5_Brush}">
                             <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Stored Image" />
                         </md:Card>
 
-                        <ContentControl Content="{StaticResource L95Stored_Toolbar}" Tag="Image" />
-
+                        <ContentControl Content="{StaticResource Stored_Toolbar}" Tag="Image" />
 
                     </DockPanel>
-
                 </md:Card>
 
                 <DockPanel
@@ -378,11 +399,11 @@
                         MaxWidth="{Binding ImagesMaxHeight}"
                         MaxHeight="{Binding ImagesMaxHeight}"
                         Margin="3"
-                        MouseDown="L95xxStoredImage_MouseDown">
+                        MouseDown="StoredImage_MouseDown">
 
-                        <Image RenderOptions.BitmapScalingMode="NearestNeighbor" Source="{Binding L95xxStoredImage.ImageLow, Mode=OneWay}" />
+                        <Image RenderOptions.BitmapScalingMode="NearestNeighbor" Source="{Binding StoredImage.ImageLow, Mode=OneWay}" />
 
-                        <Image RenderOptions.BitmapScalingMode="NearestNeighbor" Source="{Binding L95xxStoredImageOverlay, Mode=OneWay}" />
+                        <Image RenderOptions.BitmapScalingMode="NearestNeighbor" Source="{Binding StoredImageOverlay, Mode=OneWay}" />
 
                     </Grid>
 
@@ -390,13 +411,13 @@
 
             </DockPanel>
 
-            <!--  L95xx Stored Sectors  -->
+            <!--   Stored Sectors  -->
             <DockPanel HorizontalAlignment="Left">
                 <DockPanel.Style>
                     <Style TargetType="{x:Type DockPanel}">
                         <Setter Property="Visibility" Value="Collapsed" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding L95xxStoredSectors.Count, Converter={StaticResource NumberZeroOrNull}}" Value="False">
+                            <DataTrigger Binding="{Binding StoredSectors.Count, Converter={StaticResource NumberZeroOrNull}}" Value="False">
                                 <Setter Property="Visibility" Value="Visible" />
                             </DataTrigger>
                         </Style.Triggers>
@@ -418,11 +439,11 @@
                                 Margin="3"
                                 Padding="4,1"
                                 HorizontalAlignment="Left"
-                                Background="{DynamicResource L95xx_Brush}">
+                                Background="{DynamicResource V5_Brush}">
                                 <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Stored Sectors" />
                             </md:Card>
 
-                            <ContentControl Content="{StaticResource L95Stored_Toolbar}" Tag="Sectors" />
+                            <ContentControl Content="{StaticResource Stored_Toolbar}" Tag="Sectors" />
 
                         </DockPanel>
 
@@ -430,8 +451,9 @@
                             Margin="10,0,0,0"
                             HorizontalAlignment="Left"
                             Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
-                            Text="{Binding L95xxStoredSectors[0].Version}" />
+                            Text="{Binding StoredSectors[0].Version}" />
                     </StackPanel>
+
                 </md:Card>
 
                 <DockPanel
@@ -442,7 +464,7 @@
                         <Style TargetType="DockPanel">
                             <Setter Property="Visibility" Value="Visible" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding L95xxFocusedStoredSector, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                                <DataTrigger Binding="{Binding FocusedStoredSector, Converter={StaticResource IsNullOrEmpty}}" Value="True">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -478,8 +500,8 @@
 
                             <Button
                                 Width="28"
-                                Command="{Binding L95xxFocusedStoredSector.CopyToClipBoardCommand}"
-                                CommandParameter="{Binding SourceImage.Order}"
+                                Command="{Binding FocusedStoredSector.CopyToClipBoardCommand}"
+                                CommandParameter="{Binding ImageResultEntry.SourceImage.Order}"
                                 Content="{iconPacks:Material Kind=ContentCopy}"
                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                                 Style="{StaticResource MahApps.Styles.Button.Hamburger}"
@@ -491,7 +513,7 @@
                                 Content="{iconPacks:MaterialDesign Kind=Close}"
                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                                 Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                Tag="l95xxStored"
+                                Tag="v5Stored"
                                 ToolTip="Close this." />
 
                         </DockPanel>
@@ -499,25 +521,23 @@
                 </DockPanel>
 
                 <ScrollViewer
-                    x:Name="ScrollL95xxStoredSectors"
+                    x:Name="ScrollStoredSectors"
                     Margin="3"
                     mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
-                    ScrollChanged="ScrollL95xxStoredSectors_ScrollChanged"
+                    ScrollChanged="ScrollStoredSectors_ScrollChanged"
                     VerticalScrollBarVisibility="Auto">
-
-                    <DockPanel>
+                    <Grid>
 
                         <ListBox
                             Padding="0,1,0,0"
-                            DockPanel.Dock="Top"
-                            ItemsSource="{Binding L95xxStoredSectors}"
-                            Tag="l95xxStored">
+                            ItemsSource="{Binding StoredSectors}"
+                            Tag="v5Stored">
 
                             <ListBox.Style>
                                 <Style BasedOn="{StaticResource MahApps.Styles.ListBox}" TargetType="ListBox">
                                     <Setter Property="Visibility" Value="Visible" />
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding L95xxFocusedStoredSector, Converter={StaticResource IsNullOrEmpty}}" Value="False">
+                                        <DataTrigger Binding="{Binding FocusedStoredSector, Converter={StaticResource IsNullOrEmpty}}" Value="False">
                                             <Setter Property="Visibility" Value="Collapsed" />
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -538,19 +558,19 @@
                                             <Style TargetType="WrapPanel">
                                                 <Setter Property="ItemWidth" Value="200" />
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="400">
+                                                    <DataTrigger Binding="{Binding ImageResultEntry.ImagesMaxHeight}" Value="400">
                                                         <Setter Property="MaxWidth" Value="400" />
                                                     </DataTrigger>
-                                                    <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="300">
+                                                    <DataTrigger Binding="{Binding ImageResultEntry.ImagesMaxHeight}" Value="300">
                                                         <Setter Property="MaxWidth" Value="400" />
                                                     </DataTrigger>
-                                                    <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="200">
+                                                    <DataTrigger Binding="{Binding ImageResultEntry.ImagesMaxHeight}" Value="200">
                                                         <Setter Property="MaxWidth" Value="200" />
                                                     </DataTrigger>
-                                                    <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="100">
+                                                    <DataTrigger Binding="{Binding ImageResultEntry.ImagesMaxHeight}" Value="100">
                                                         <Setter Property="MaxWidth" Value="200" />
                                                     </DataTrigger>
-                                                    <DataTrigger Binding="{Binding DualSectorColumns}" Value="True">
+                                                    <DataTrigger Binding="{Binding ImageResultEntry.DualSectorColumns}" Value="True">
                                                         <Setter Property="MaxWidth" Value="400" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -568,7 +588,6 @@
                                         MouseLeave="storedSectorMouseLeave" />
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
-
                         </ListBox>
 
                         <DockPanel HorizontalAlignment="Center" VerticalAlignment="Top">
@@ -576,7 +595,7 @@
                                 <Style TargetType="DockPanel">
                                     <Setter Property="Visibility" Value="Visible" />
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding L95xxFocusedStoredSector, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                                        <DataTrigger Binding="{Binding FocusedStoredSector, Converter={StaticResource IsNullOrEmpty}}" Value="True">
                                             <Setter Property="Visibility" Value="Collapsed" />
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -585,22 +604,22 @@
 
                             <!--  Keep this Dockapnel. It is used for Saving and Coping the SectorDetails Visual.  -->
                             <DockPanel>
-                                <sectors:SectorDetails DataContext="{Binding L95xxFocusedStoredSector}">
+                                <sectors:SectorDetails DataContext="{Binding FocusedStoredSector}">
                                     <sectors:SectorDetails.Style>
                                         <Style TargetType="sectors:SectorDetails">
                                             <Setter Property="Width" Value="200" />
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding DataContext.ImagesMaxHeight, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="400">
+                                                <DataTrigger Binding="{Binding DataContext.ImageResultEntry.ImagesMaxHeight, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="400">
                                                     <Setter Property="MaxWidth" Value="400" />
                                                     <Setter Property="Width" Value="auto" />
                                                 </DataTrigger>
 
-                                                <DataTrigger Binding="{Binding DataContext.ImagesMaxHeight, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="300">
+                                                <DataTrigger Binding="{Binding DataContext.ImageResultEntry.ImagesMaxHeight, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="300">
                                                     <Setter Property="MaxWidth" Value="400" />
                                                     <Setter Property="Width" Value="auto" />
                                                 </DataTrigger>
 
-                                                <DataTrigger Binding="{Binding DataContext.DualSectorColumns, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="True">
+                                                <DataTrigger Binding="{Binding DataContext.ImageResultEntry.DualSectorColumns, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="True">
                                                     <Setter Property="MaxWidth" Value="400" />
                                                     <Setter Property="Width" Value="auto" />
                                                 </DataTrigger>
@@ -610,19 +629,18 @@
                                 </sectors:SectorDetails>
                             </DockPanel>
                         </DockPanel>
-                    </DockPanel>
+                    </Grid>
                 </ScrollViewer>
             </DockPanel>
-
         </DockPanel>
 
         <!--  Details  -->
-        <ContentControl Content="{Binding L95xxStoredImage, Mode=OneWay}" ContentTemplate="{StaticResource imageDetailsTemplate}">
+        <ContentControl Content="{Binding StoredImage, Mode=OneWay}" ContentTemplate="{StaticResource imageDetailsTemplate}">
             <ContentControl.Style>
                 <Style TargetType="{x:Type ContentControl}">
                     <Setter Property="Visibility" Value="Collapsed" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding L95xxStoredImage, Converter={StaticResource IsNullOrEmpty}}" Value="False">
+                        <DataTrigger Binding="{Binding StoredImage, Converter={StaticResource IsNullOrEmpty}}" Value="False">
                             <Setter Property="Visibility" Value="Visible" />
                         </DataTrigger>
                     </Style.Triggers>
@@ -630,16 +648,16 @@
             </ContentControl.Style>
         </ContentControl>
 
-        <!--  Current  -->
+        <!--  Sectors  -->
         <DockPanel>
 
-            <!--  L95xx Current Image  -->
-            <DockPanel Margin="3,0" DockPanel.Dock="Top">
+            <!--   Current Image  -->
+            <DockPanel DockPanel.Dock="Top">
                 <DockPanel.Style>
                     <Style TargetType="{x:Type DockPanel}">
                         <Setter Property="Visibility" Value="Collapsed" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding L95xxCurrentImage, Mode=OneWay, Converter={StaticResource IsNullOrEmpty}}" Value="False">
+                            <DataTrigger Binding="{Binding CurrentImage, Converter={StaticResource IsNullOrEmpty}}" Value="False">
                                 <Setter Property="Visibility" Value="Visible" />
                             </DataTrigger>
                         </Style.Triggers>
@@ -660,14 +678,13 @@
                             Margin="3"
                             Padding="4,1"
                             HorizontalAlignment="Left"
-                            Background="{DynamicResource L95xx_Brush}">
+                            Background="{DynamicResource V5_Brush}">
                             <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Current Image" />
                         </md:Card>
 
-                        <ContentControl Content="{StaticResource L96Current_Toolbar}" Tag="Image" />
+                        <ContentControl Content="{StaticResource Current_Toolbar}" Tag="Image" />
 
                     </DockPanel>
-
                 </md:Card>
 
                 <DockPanel
@@ -680,24 +697,25 @@
                         MaxWidth="{Binding ImagesMaxHeight}"
                         MaxHeight="{Binding ImagesMaxHeight}"
                         Margin="3"
-                        MouseDown="L95xxCurrentImage_MouseDown">
+                        MouseDown="CurrentImage_MouseDown">
 
-                        <Image RenderOptions.BitmapScalingMode="NearestNeighbor" Source="{Binding L95xxCurrentImage.ImageLow, Mode=OneWay}" />
+                        <Image RenderOptions.BitmapScalingMode="NearestNeighbor" Source="{Binding CurrentImage.ImageLow, Mode=OneWay}" />
 
-                        <Image RenderOptions.BitmapScalingMode="NearestNeighbor" Source="{Binding L95xxCurrentImageOverlay, Mode=OneWay}" />
+                        <Image RenderOptions.BitmapScalingMode="NearestNeighbor" Source="{Binding CurrentImageOverlay, Mode=OneWay}" />
+
                     </Grid>
 
                 </DockPanel>
 
             </DockPanel>
 
-            <!--  L95xx Current Sectors  -->
-            <DockPanel HorizontalAlignment="Left">
+            <!--   Current Sectors  -->
+            <DockPanel>
                 <DockPanel.Style>
                     <Style TargetType="{x:Type DockPanel}">
                         <Setter Property="Visibility" Value="Collapsed" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding L95xxCurrentSectors.Count, Converter={StaticResource NumberZeroOrNull}}" Value="False">
+                            <DataTrigger Binding="{Binding CurrentSectors.Count, Converter={StaticResource NumberZeroOrNull}}" Value="False">
                                 <Setter Property="Visibility" Value="Visible" />
                             </DataTrigger>
                         </Style.Triggers>
@@ -719,20 +737,19 @@
                                 Margin="3"
                                 Padding="4,1"
                                 HorizontalAlignment="Left"
-                                Background="{DynamicResource L95xx_Brush}">
+                                Background="{DynamicResource V5_Brush}">
                                 <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Current Sectors" />
                             </md:Card>
 
-                            <ContentControl Content="{StaticResource L96Current_Toolbar}" Tag="Sectors" />
+                            <ContentControl Content="{StaticResource Current_Toolbar}" Tag="Sectors" />
 
                         </DockPanel>
-
 
                         <TextBlock
                             Margin="10,0,0,0"
                             HorizontalAlignment="Left"
                             Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
-                            Text="{Binding L95xxCurrentSectors[0].Version}" />
+                            Text="{Binding CurrentSectors[0].Version}" />
                     </StackPanel>
                 </md:Card>
 
@@ -744,7 +761,7 @@
                         <Style TargetType="DockPanel">
                             <Setter Property="Visibility" Value="Visible" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding L95xxFocusedCurrentSector, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                                <DataTrigger Binding="{Binding FocusedCurrentSector, Converter={StaticResource IsNullOrEmpty}}" Value="True">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -773,15 +790,15 @@
                             <Button
                                 Width="28"
                                 Click="btnCopyImage_Click"
-                                Content="{iconPacks:MaterialDesign Kind=Image}"
+                                Content="{iconPacks:MaterialDesign Kind=ContentCopy}"
                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                                 Style="{StaticResource MahApps.Styles.Button.Hamburger}"
                                 ToolTip="Copy image to clipboard as PNG." />
 
                             <Button
                                 Width="28"
-                                Command="{Binding L95xxFocusedCurrentSector.CopyToClipBoardCommand}"
-                                CommandParameter="{Binding SourceImage.Order}"
+                                Command="{Binding FocusedCurrentSector.CopyToClipBoardCommand}"
+                                CommandParameter="{Binding ImageResultEntry.SourceImage.Order}"
                                 Content="{iconPacks:Material Kind=ContentCopy}"
                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                                 Style="{StaticResource MahApps.Styles.Button.Hamburger}"
@@ -793,7 +810,7 @@
                                 Content="{iconPacks:MaterialDesign Kind=Close}"
                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                                 Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                Tag="l95xxCurrent"
+                                Tag="v5Current"
                                 ToolTip="Close this." />
 
                         </DockPanel>
@@ -801,24 +818,24 @@
                 </DockPanel>
 
                 <ScrollViewer
-                    x:Name="ScrollL95xxCurrentSectors"
+                    x:Name="ScrollCurrentSectors"
                     Margin="3"
                     mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
-                    ScrollChanged="ScrollL95xxCurrentSectors_ScrollChanged"
+                    ScrollChanged="ScrollCurrentSectors_ScrollChanged"
                     VerticalScrollBarVisibility="Auto">
-                    <Grid>
+
+                    <DockPanel>
 
                         <ListBox
                             Padding="0,1,0,0"
-                            ItemsSource="{Binding L95xxCurrentSectors}"
-                            SelectedItem="{Binding L95xxCurrentSectorSelected}"
-                            Tag="l95xxCurrent">
+                            ItemsSource="{Binding CurrentSectors}"
+                            Tag="v5Current">
 
                             <ListBox.Style>
                                 <Style BasedOn="{StaticResource MahApps.Styles.ListBox}" TargetType="ListBox">
                                     <Setter Property="Visibility" Value="Visible" />
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding L95xxFocusedCurrentSector, Converter={StaticResource IsNullOrEmpty}}" Value="False">
+                                        <DataTrigger Binding="{Binding FocusedCurrentSector, Converter={StaticResource IsNullOrEmpty}}" Value="False">
                                             <Setter Property="Visibility" Value="Collapsed" />
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -865,8 +882,8 @@
                                 <DataTemplate>
                                     <sectors:Sector
                                         Background="{DynamicResource AccentColorBrush}"
-                                        MouseEnter="storedSectorMouseEnter"
-                                        MouseLeave="storedSectorMouseLeave" />
+                                        MouseEnter="currentSectorMouseEnter"
+                                        MouseLeave="currentSectorMouseLeave" />
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
@@ -876,15 +893,16 @@
                                 <Style TargetType="DockPanel">
                                     <Setter Property="Visibility" Value="Visible" />
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding L95xxFocusedCurrentSector, Converter={StaticResource IsNullOrEmpty}}" Value="True">
+                                        <DataTrigger Binding="{Binding FocusedCurrentSector, Converter={StaticResource IsNullOrEmpty}}" Value="True">
                                             <Setter Property="Visibility" Value="Collapsed" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
                             </DockPanel.Style>
-                            <!--  Keep this Dockapnel. It is used for Saving and Coping the SectorDetails Visual.  -->
+
                             <DockPanel>
-                                <sectors:SectorDetails DataContext="{Binding L95xxFocusedCurrentSector}">
+
+                                <sectors:SectorDetails DataContext="{Binding FocusedCurrentSector}">
                                     <sectors:SectorDetails.Style>
                                         <Style TargetType="sectors:SectorDetails">
                                             <Setter Property="Width" Value="200" />
@@ -909,17 +927,18 @@
                                 </sectors:SectorDetails>
                             </DockPanel>
                         </DockPanel>
-                    </Grid>
+
+                    </DockPanel>
                 </ScrollViewer>
             </DockPanel>
 
-            <!--  L95xx Dissimilar Results  -->
+            <!--   Dissimilar Results  -->
             <DockPanel>
                 <DockPanel.Style>
                     <Style TargetType="{x:Type DockPanel}">
                         <Setter Property="Visibility" Value="Collapsed" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding L95xxDiffSectors.Count, Converter={StaticResource NumberZeroOrNull}}" Value="False">
+                            <DataTrigger Binding="{Binding DiffSectors.Count, Converter={StaticResource NumberZeroOrNull}}" Value="False">
                                 <Setter Property="Visibility" Value="Visible" />
                             </DataTrigger>
                         </Style.Triggers>
@@ -940,7 +959,7 @@
                             Margin="3"
                             Padding="4,1"
                             HorizontalAlignment="Left"
-                            Background="{DynamicResource L95xx_Brush}">
+                            Background="{DynamicResource V5_Brush}">
                             <TextBlock FontSize="{DynamicResource MahApps.Font.Size.ContextMenu}" Text="Dissimilar Results" />
                         </md:Card>
 
@@ -954,40 +973,28 @@
                     mah:ScrollViewerHelper.BubbleUpScrollEventToParentScrollviewer="True"
                     VerticalScrollBarVisibility="Auto">
 
-                    <ListView
-                        Padding="0,1,0,0"
-                        ItemsSource="{Binding L95xxDiffSectors}"
-                        Style="{StaticResource MahApps.Styles.ListView}">
-
-                        <ListView.ItemContainerStyle>
-                            <Style BasedOn="{StaticResource MahApps.Styles.ListViewItem}" TargetType="ListViewItem">
-                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                            </Style>
-                        </ListView.ItemContainerStyle>
-
-                        <ListView.ItemTemplate>
+                    <ItemsControl Background="{DynamicResource MahApps.Brushes.ThemeBackground}" ItemsSource="{Binding DiffSectors}">
+                        <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <sectors:SectorDifferences
                                     Width="220"
-                                    Margin="6,0"
-                                    Background="{StaticResource AccentColorBrush}"
-                                    MouseDown="lstDissimilarSector_Click" />
+                                    Margin="3,0"
+                                    Background="{DynamicResource AccentColorBrush}" />
                             </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </ScrollViewer>
-
             </DockPanel>
 
         </DockPanel>
 
         <!--  Details  -->
-        <ContentControl Content="{Binding L95xxCurrentImage, Mode=OneWay}" ContentTemplate="{StaticResource imageDetailsTemplate}">
+        <ContentControl Content="{Binding CurrentImage}" ContentTemplate="{StaticResource imageDetailsTemplate}">
             <ContentControl.Style>
                 <Style TargetType="{x:Type ContentControl}">
                     <Setter Property="Visibility" Value="Collapsed" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding L95xxCurrentImage, Converter={StaticResource IsNullOrEmpty}}" Value="False">
+                        <DataTrigger Binding="{Binding CurrentImage, Converter={StaticResource IsNullOrEmpty}}" Value="False">
                             <Setter Property="Visibility" Value="Visible" />
                         </DataTrigger>
                     </Style.Triggers>

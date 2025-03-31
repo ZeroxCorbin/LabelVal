@@ -4,10 +4,10 @@ namespace LabelVal.Results.Views;
 /// <summary>
 /// Interaction logic for ImageResults.xaml
 /// </summary>
-public partial class ImageResults : UserControl
+public partial class ImageResultsManager : UserControl
 {
 
-    public ImageResults()
+    public ImageResultsManager()
     {
         InitializeComponent();
 

@@ -245,13 +245,13 @@
                                 <Setter Property="IsEnabled" Value="False" />
                                 <Setter Property="Content" Value="{iconPacks:Material Kind=Play, Width=24, Height=24}" />
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding SelectedNode.Controller.IsLoggedIn_Control}" Value="True">
+                                    <DataTrigger Binding="{Binding SelectedV275Node.Controller.IsLoggedIn_Control}" Value="True">
                                         <Setter Property="IsEnabled" Value="True" />
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding SelectedScanner.Controller.IsConnected}" Value="True">
+                                    <DataTrigger Binding="{Binding SelectedV5.Controller.IsConnected}" Value="True">
                                         <Setter Property="IsEnabled" Value="True" />
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding SelectedVerifier.Controller.IsConnected}" Value="True">
+                                    <DataTrigger Binding="{Binding SelectedL95.Controller.IsConnected}" Value="True">
                                         <Setter Property="IsEnabled" Value="True" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding QuickRunController.RunController.State}" Value="Running">

@@ -29,18 +29,18 @@ public partial class Sector : UserControl
     public string GroupName { get; private set; }
 
 
-    private Results.ViewModels.IImageResultEntry ImageResultEntry { get; set; }
+    private Results.ViewModels.IImageResultDeviceEntry ImageResultEntry { get; set; }
 
     private PopupGS1DecodeText popGS1DecodeText = new();
 
     public bool IsSectorFocused => GroupName switch
     {
-        "v275Stored" => ImageResultEntry.V275FocusedStoredSector != null,
-        "v275Current" => ImageResultEntry.V275FocusedCurrentSector != null,
-        "v5Stored" => ImageResultEntry.V5FocusedStoredSector != null,
-        "v5Current" => ImageResultEntry.V5FocusedCurrentSector != null,
-        "l95xxStored" => ImageResultEntry.L95xxFocusedStoredSector != null,
-        "l95xxCurrent" => ImageResultEntry.L95xxFocusedCurrentSector != null,
+        "v275Stored" => ImageResultEntry.FocusedStoredSector != null,
+        "v275Current" => ImageResultEntry.FocusedCurrentSector != null,
+        "v5Stored" => ImageResultEntry.FocusedStoredSector != null,
+        "v5Current" => ImageResultEntry.FocusedCurrentSector != null,
+        "l95xxStored" => ImageResultEntry.FocusedStoredSector != null,
+        "l95xxCurrent" => ImageResultEntry.FocusedCurrentSector != null,
         _ => false,
     };
 
@@ -71,7 +71,7 @@ public partial class Sector : UserControl
         if (list != null)
         {
             GroupName = list.Tag.ToString();
-            ImageResultEntry = (Results.ViewModels.IImageResultEntry)list.DataContext;
+            ImageResultEntry = (Results.ViewModels.IImageResultDeviceEntry)list.DataContext;
         }
         else
         {
@@ -79,7 +79,7 @@ public partial class Sector : UserControl
             if (itmc != null)
             {
                 GroupName = itmc.Tag.ToString();
-                ImageResultEntry = (Results.ViewModels.IImageResultEntry)itmc.DataContext;
+                ImageResultEntry = (Results.ViewModels.IImageResultDeviceEntry)itmc.DataContext;
             }
         }
     }
@@ -119,51 +119,51 @@ public partial class Sector : UserControl
             return;
 
         //This lets us know which sector is being focused on
-        switch (GroupName)
-        {
-            case "v275Stored":
-                if(ImageResultEntry.V275FocusedStoredSector != null)
-                    ImageResultEntry.V275FocusedStoredSector.IsFocused = false;
-                ImageResultEntry.V275FocusedStoredSector = (ISector)this.DataContext;
-                ImageResultEntry.V275FocusedStoredSector.IsFocused = true;
-                App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.ImageResultEntry)ImageResultEntry).UpdateV275StoredImageOverlay());
-                break;
-            case "v275Current":
-                if (ImageResultEntry.V275FocusedCurrentSector != null)
-                    ImageResultEntry.V275FocusedCurrentSector.IsFocused = false;
-                ImageResultEntry.V275FocusedCurrentSector = (ISector)this.DataContext;
-                ImageResultEntry.V275FocusedCurrentSector.IsFocused = true;
-                App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.ImageResultEntry)ImageResultEntry).UpdateV275CurrentImageOverlay());
-                break;
-            case "v5Stored":
-                if(ImageResultEntry.V5FocusedStoredSector != null)
-                    ImageResultEntry.V5FocusedStoredSector.IsFocused = false;
-                ImageResultEntry.V5FocusedStoredSector = (ISector)this.DataContext;
-                ImageResultEntry.V5FocusedStoredSector.IsFocused = true;
-                App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.ImageResultEntry)ImageResultEntry).UpdateV5StoredImageOverlay());
-                break;
-            case "v5Current":
-                if (ImageResultEntry.V5FocusedCurrentSector != null)
-                    ImageResultEntry.V5FocusedCurrentSector.IsFocused = false;
-                ImageResultEntry.V5FocusedCurrentSector = (ISector)this.DataContext;
-                ImageResultEntry.V5FocusedCurrentSector.IsFocused = true;
-                App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.ImageResultEntry)ImageResultEntry).UpdateV5CurrentImageOverlay());
-                break;
-            case "l95xxStored":
-                if (ImageResultEntry.L95xxFocusedStoredSector != null)
-                    ImageResultEntry.L95xxFocusedStoredSector.IsFocused = false;
-                ImageResultEntry.L95xxFocusedStoredSector = (ISector)this.DataContext;
-                ImageResultEntry.L95xxFocusedStoredSector.IsFocused = true;
-                App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.ImageResultEntry)ImageResultEntry).UpdateL95xxStoredImageOverlay());
-                break;
-            case "l95xxCurrent":
-                if (ImageResultEntry.L95xxFocusedCurrentSector != null)
-                    ImageResultEntry.L95xxFocusedCurrentSector.IsFocused = false;
-                ImageResultEntry.L95xxFocusedCurrentSector = (ISector)this.DataContext;
-                ImageResultEntry.L95xxFocusedCurrentSector.IsFocused = true;
-                App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.ImageResultEntry)ImageResultEntry).UpdateL95xxCurrentImageOverlay());
-                break;
-        }
+        //switch (GroupName)
+        //{
+        //    case "v275Stored":
+        //        if(ImageResultEntry.V275FocusedStoredSector != null)
+        //            ImageResultEntry.V275FocusedStoredSector.IsFocused = false;
+        //        ImageResultEntry.V275FocusedStoredSector = (ISector)this.DataContext;
+        //        ImageResultEntry.V275FocusedStoredSector.IsFocused = true;
+        //        App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.ImageResultEntry)ImageResultEntry).UpdateV275StoredImageOverlay());
+        //        break;
+        //    case "v275Current":
+        //        if (ImageResultEntry.V275FocusedCurrentSector != null)
+        //            ImageResultEntry.V275FocusedCurrentSector.IsFocused = false;
+        //        ImageResultEntry.V275FocusedCurrentSector = (ISector)this.DataContext;
+        //        ImageResultEntry.V275FocusedCurrentSector.IsFocused = true;
+        //        App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.ImageResultEntry)ImageResultEntry).UpdateV275CurrentImageOverlay());
+        //        break;
+        //    case "v5Stored":
+        //        if(ImageResultEntry.V5FocusedStoredSector != null)
+        //            ImageResultEntry.V5FocusedStoredSector.IsFocused = false;
+        //        ImageResultEntry.V5FocusedStoredSector = (ISector)this.DataContext;
+        //        ImageResultEntry.V5FocusedStoredSector.IsFocused = true;
+        //        App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.ImageResultEntry)ImageResultEntry).UpdateV5StoredImageOverlay());
+        //        break;
+        //    case "v5Current":
+        //        if (ImageResultEntry.V5FocusedCurrentSector != null)
+        //            ImageResultEntry.V5FocusedCurrentSector.IsFocused = false;
+        //        ImageResultEntry.V5FocusedCurrentSector = (ISector)this.DataContext;
+        //        ImageResultEntry.V5FocusedCurrentSector.IsFocused = true;
+        //        App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.ImageResultEntry)ImageResultEntry).UpdateV5CurrentImageOverlay());
+        //        break;
+        //    case "l95xxStored":
+        //        if (ImageResultEntry.L95xxFocusedStoredSector != null)
+        //            ImageResultEntry.L95xxFocusedStoredSector.IsFocused = false;
+        //        ImageResultEntry.L95xxFocusedStoredSector = (ISector)this.DataContext;
+        //        ImageResultEntry.L95xxFocusedStoredSector.IsFocused = true;
+        //        App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.ImageResultEntry)ImageResultEntry).UpdateL95xxStoredImageOverlay());
+        //        break;
+        //    case "l95xxCurrent":
+        //        if (ImageResultEntry.L95xxFocusedCurrentSector != null)
+        //            ImageResultEntry.L95xxFocusedCurrentSector.IsFocused = false;
+        //        ImageResultEntry.L95xxFocusedCurrentSector = (ISector)this.DataContext;
+        //        ImageResultEntry.L95xxFocusedCurrentSector.IsFocused = true;
+        //        App.Current.Dispatcher.BeginInvoke(() => ((Results.ViewModels.ImageResultEntry)ImageResultEntry).UpdateL95xxCurrentImageOverlay());
+        //        break;
+        //}
 
 
     }

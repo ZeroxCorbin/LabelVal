@@ -20,28 +20,11 @@ using System.Windows.Media;
 
 namespace LabelVal.Results.ViewModels;
 
-public enum ImageResultEntryDevices
-{
-    V275,
-    V5,
-    L95xx,
-    L95xxAll
-}
-
-public enum ImageResultEntryImageTypes
-{
-    Source,
-    V275Stored,
-    V275Current,
-    V275Print,
-    V5Stored,
-    V5Current,
-    V5Sensor,
-    L95xxStored,
-    L95xxCurrent
-}
-
-public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, IRecipient<PropertyChangedMessage<Databases.ImageResultsDatabase>>, IRecipient<PropertyChangedMessage<PrinterSettings>>
+/// <summary>
+/// This is a viewmodel to support both the Image Roll and the Results database information.
+/// 
+/// </summary>
+public partial class ImageResultEntry : ObservableRecipient, IRecipient<PropertyChangedMessage<Databases.ImageResultsDatabase>>, IRecipient<PropertyChangedMessage<PrinterSettings>>
 {
     public delegate void BringIntoViewDelegate();
     public event BringIntoViewDelegate BringIntoView;
@@ -49,14 +32,8 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
     public delegate void DeleteImageDelegate(ImageResultEntry imageResults);
     public event DeleteImageDelegate DeleteImage;
 
+    //Could be handled with dependency injection.
     public GlobalAppSettings AppSettings => GlobalAppSettings.Instance;
-
-    public ImageEntry SourceImage { get; }
-    public string SourceImageUID => SourceImage.UID;
-    public bool IsPlaceholder => SourceImage.IsPlaceholder;
-
-    public ImageResults ImageResults { get; }
-    public string ImageRollUID => ImageResults.SelectedImageRoll.UID;
 
     /// <see cref="ImagesMaxHeight"/>>
     [ObservableProperty] private int imagesMaxHeight = App.Settings.GetValue<int>(nameof(ImagesMaxHeight));
@@ -66,20 +43,50 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
     [ObservableProperty] private bool showExtendedData = App.Settings.GetValue<bool>(nameof(ShowExtendedData));
     partial void OnShowExtendedDataChanged(bool value)
     {
-        if (V275StoredImage != null)
-            V275StoredImageOverlay = CreateSectorsImageOverlay(V275StoredImage, V275StoredSectors);
-
-        if (V275CurrentImage != null)
-            V275CurrentImageOverlay = CreateSectorsImageOverlay(V275CurrentImage, V275CurrentSectors);
-
-        if (V5StoredImage != null)
-            V5StoredImageOverlay = CreateSectorsImageOverlay(V5StoredImage, V5StoredSectors);
-
-        if (V5CurrentImage != null)
-            V5CurrentImageOverlay = CreateSectorsImageOverlay(V5CurrentImage, V5CurrentSectors);
+        foreach(IImageResultDeviceEntry device in ImageResultDeviceEntries)
+            device.RefreshOverlays();
     }
 
-    private int PrintCount => App.Settings.GetValue<int>(nameof(PrintCount));
+    /// <summary>
+    /// Show the image details for the Source and Device image entries.
+    /// </summary>
+    [ObservableProperty] private bool showDetails;
+
+    /// <summary>
+    /// This is the database where all of the Results are stored.
+    /// It can be changed by sending a <see cref="PropertyChangedMessage{ImageResultsDatabase}"/>
+    /// When it changes, the results rows for each device are updated.
+    /// <see cref="SelectedDatabase"/>
+    /// </summary>
+    [ObservableProperty] private ImageResultsDatabase selectedDatabase;
+    partial void OnSelectedDatabaseChanged(Databases.ImageResultsDatabase value)
+    {
+        foreach (IImageResultDeviceEntry device in ImageResultDeviceEntries)
+            device.GetStored();
+    }
+
+    /// <summary>
+    /// This manages the Image Roll and Devices.
+    /// </summary>
+    public ImageResultsManager ImageResultsManager { get; }
+
+    /// <summary>
+    /// The currently selected Image Roll UID.
+    /// </summary>
+    public string ImageRollUID => ImageResultsManager.SelectedImageRoll.UID;
+
+    /// <summary>
+    /// The Source image for this entry
+    /// This is the same Source image as the Image Roll Entry.
+    /// </summary>
+    public ImageEntry SourceImage { get; }
+    public string SourceImageUID => SourceImage.UID;
+
+    public ObservableCollection<IImageResultDeviceEntry> ImageResultDeviceEntries { get; }
+    /// <summary>
+    /// How many times to print the image
+    /// </summary>
+    public int PrintCount => App.Settings.GetValue<int>(nameof(PrintCount));
 
     /// <see cref="ShowPrinterAreaOverSource"/>>
     [ObservableProperty] private bool showPrinterAreaOverSource;
@@ -89,34 +96,35 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
 
     private V275_REST_Lib.Printer.Controller PrinterController { get; } = new();
     [ObservableProperty] private PrinterSettings selectedPrinter;
-    [ObservableProperty] private ImageResultsDatabase selectedDatabase;
     partial void OnSelectedPrinterChanged(PrinterSettings value) => PrinterAreaOverlay = ShowPrinterAreaOverSource ? CreatePrinterAreaOverlay(true) : null;
-    partial void OnSelectedDatabaseChanged(Databases.ImageResultsDatabase value) => GetStored();
 
-    [ObservableProperty] private bool showDetails;
-    partial void OnShowDetailsChanged(bool value)
+    public ImageResultEntry(ImageEntry sourceImage, ImageResultsManager imageResults)
     {
-        //if(value)
-        //{
-        //    SourceImage?.InitPrinterVariables(SelectedPrinter);
-
-        //    V275CurrentImage?.InitPrinterVariables(SelectedPrinter);
-        //    V275StoredImage?.InitPrinterVariables(SelectedPrinter);
-
-        //    V5CurrentImage?.InitPrinterVariables(SelectedPrinter);
-        //    V5StoredImage?.InitPrinterVariables(SelectedPrinter);
-        //}
-    }
-
-    public ImageResultEntry(ImageEntry sourceImage, ImageResults imageResults)
-    {
-        ImageResults = imageResults;
+        ImageResultsManager = imageResults;
         SourceImage = sourceImage;
+
+        ImageResultDeviceEntries = [
+            new ImageResultDeviceEntry_V275(this),
+            new ImageResultDeviceEntry_V5(this) ,
+            new ImageResultDeviceEntry_L95(this) ,
+        ];
 
         IsActive = true;
         RecieveAll();
 
         App.Settings.PropertyChanged += (s, e) =>
+        {
+            if (e.PropertyName == nameof(ImagesMaxHeight))
+                ImagesMaxHeight = App.Settings.GetValue<int>(nameof(ImagesMaxHeight));
+            else if (e.PropertyName == nameof(DualSectorColumns))
+                DualSectorColumns = App.Settings.GetValue<bool>(nameof(DualSectorColumns));
+            else if (e.PropertyName == nameof(ShowExtendedData))
+                ShowExtendedData = App.Settings.GetValue<bool>(nameof(ShowExtendedData));
+        };
+    }
+    ~ImageResultEntry()
+    {
+        App.Settings.PropertyChanged -= (s, e) =>
         {
             if (e.PropertyName == nameof(ImagesMaxHeight))
                 ImagesMaxHeight = App.Settings.GetValue<int>(nameof(ImagesMaxHeight));
@@ -138,64 +146,6 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         SelectedDatabase = mes4.Response;
     }
 
-    //public StoredImageResultGroup GetStoredImageResultGroup(string runUID) => new()
-    //{
-    //    RunUID = runUID,
-    //    ImageRollUID = ImageRollUID,
-    //    SourceImageUID = SourceImageUID,
-    //    V275Result = V275ResultRow,
-    //    V5Result = V5ResultRow,
-    //    L95xxResult = L95xxResultRow,
-    //};
-
-    //public CurrentImageResultGroup GetCurrentImageResultGroup(string runUID) => new()
-    //{
-    //    RunUID = runUID,
-    //    ImageRollUID = ImageRollUID,
-    //    SourceImageUID = SourceImageUID,
-    //    V275Result = new Databases.V275Result
-    //    {
-    //        RunUID = runUID,
-    //        SourceImageUID = SourceImageUID,
-    //        ImageRollUID = ImageRollUID,
-
-    //        SourceImage = SourceImage?.Serialize,
-    //        StoredImage = V275CurrentImage?.Serialize,
-
-    //        Template = V275SerializeTemplate,
-    //        Report = V275SerializeReport,
-    //    },
-    //    V5Result = new Databases.V5Result
-    //    {
-    //        RunUID = runUID,
-    //        SourceImageUID = SourceImageUID,
-    //        ImageRollUID = ImageRollUID,
-
-    //        SourceImage = SourceImage?.Serialize,
-    //        StoredImage = V5CurrentImage?.Serialize,
-
-    //        Template = V5SerializeTemplate,
-    //        Report = V5SerializeReport,
-    //    },
-    //    L95xxResult = new Databases.L95xxResult
-    //    {
-    //        RunUID = runUID,
-    //        ImageRollUID = ImageRollUID,
-    //        SourceImageUID = SourceImageUID,
-
-    //        SourceImage = SourceImage?.Serialize,
-    //        Report = L95xxSerializeReport
-    //        //Report = JsonConvert.SerializeObject(L95xxStoredSectors.Select(x => new L95xxReport() { Report = ((LVS_95xx.Sectors.Sector)x).L95xxPacket, Template = (LVS_95xx.Sectors.Template)x.Template }).ToList()),
-    //    },
-    //};
-
-    private void GetStored()
-    {
-        V275GetStored();
-        V5GetStored();
-        L95xxGetStored();
-    }
-
     [RelayCommand]
     private void Save(ImageResultEntryImageTypes type)
     {
@@ -205,240 +155,83 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
 
         try
         {
-            var bmp = type == ImageResultEntryImageTypes.V275Stored
-                    ? V275StoredImage.ImageBytes
-                    : type == ImageResultEntryImageTypes.V275Current
-                    ? V275CurrentImage.ImageBytes
-                    : type == ImageResultEntryImageTypes.V5Stored
-                    ? V5StoredImage.ImageBytes
-                    : type == ImageResultEntryImageTypes.V5Current
-                    ? V5CurrentImage.ImageBytes
-                    : type == ImageResultEntryImageTypes.L95xxStored
-                    ? L95xxStoredImage.ImageBytes
-                    : type == ImageResultEntryImageTypes.Source
-                    ? SourceImage.ImageBytes : null;
+            //var bmp = type == ImageResultEntryImageTypes.V275Stored
+            //        ? V275StoredImage.ImageBytes
+            //        : type == ImageResultEntryImageTypes.V275Current
+            //        ? V275CurrentImage.ImageBytes
+            //        : type == ImageResultEntryImageTypes.V5Stored
+            //        ? V5StoredImage.ImageBytes
+            //        : type == ImageResultEntryImageTypes.V5Current
+            //        ? V5CurrentImage.ImageBytes
+            //        : type == ImageResultEntryImageTypes.L95xxStored
+            //        ? L95xxStoredImage.ImageBytes
+            //        : type == ImageResultEntryImageTypes.Source
+            //        ? SourceImage.ImageBytes : null;
 
-            if (bmp != null)
-            { 
-                using var img = new ImageMagick.MagickImage(bmp);
-                if (Path.GetExtension(path).Contains("png", StringComparison.InvariantCultureIgnoreCase))
-                    File.WriteAllBytes(path, img.ToByteArray(ImageMagick.MagickFormat.Png));
-                else
-                    File.WriteAllBytes(path, img.ToByteArray(ImageMagick.MagickFormat.Bmp3));
+            //if (bmp != null)
+            //{
+            //    using var img = new ImageMagick.MagickImage(bmp);
+            //    if (Path.GetExtension(path).Contains("png", StringComparison.InvariantCultureIgnoreCase))
+            //        File.WriteAllBytes(path, img.ToByteArray(ImageMagick.MagickFormat.Png));
+            //    else
+            //        File.WriteAllBytes(path, img.ToByteArray(ImageMagick.MagickFormat.Bmp3));
 
-                Clipboard.SetText(path);
-            }
+            //    Clipboard.SetText(path);
+            //}
         }
         catch { }
     }
     [RelayCommand]
-    private async Task Store(ImageResultEntryDevices device)
+    private void Store(ImageResultEntryDevices device)
     {
-        if (device == ImageResultEntryDevices.V275)
+        IImageResultDeviceEntry dev = ImageResultDeviceEntries.FirstOrDefault(x => x.Device == device);
+        if(dev == null)
         {
-            if (V275CurrentSectors.Count == 0)
-            {
-                Logger.LogDebug($"There are no sectors to store for: {device}");
-                return;
-            }
-
-            if (V275StoredSectors.Count > 0)
-                if (await OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for this image?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
-                    return;
-
-            _ = SelectedDatabase.InsertOrReplace_V275Result(new Databases.V275Result
-            {
-                ImageRollUID = ImageRollUID,
-                RunUID = ImageRollUID,
-                Source = SourceImage,
-                Stored = V275CurrentImage,
-
-                _Job = V275CurrentTemplate,
-                _Report = V275CurrentReport,
-            });
-
-            ClearRead(device);
-
-            V275GetStored();
+            Logger.LogError($"Device not found: {device}");
+            return;
         }
-        else if (device == ImageResultEntryDevices.V5)
-        {
-            if (V5CurrentSectors.Count == 0)
-            {
-                Logger.LogDebug($"There are no sectors to store for: {device}");
-                return;
-            }
-
-            if (V5StoredSectors.Count > 0)
-                if (await OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for this image?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
-                    return;
-
-            _ = SelectedDatabase.InsertOrReplace_V5Result(new Databases.V5Result
-            {
-                ImageRollUID = ImageRollUID,
-                RunUID = ImageRollUID,
-                Source = SourceImage,
-                Stored = V5CurrentImage,
-
-                _Config = V5CurrentTemplate,
-                _Report = V5CurrentReport,
-            });
-
-            ClearRead(device);
-
-            V5GetStored();
-        }
-        else if (device == ImageResultEntryDevices.L95xx)
-        {
-
-            if (L95xxCurrentSectorSelected == null)
-            {
-                Logger.LogError("No sector selected to store.");
-                return;
-            }
-            //Does the selected sector exist in the Stored sectors list?
-            //If so, prompt to overwrite or cancel.
-
-            Sectors.Interfaces.ISector old = L95xxStoredSectors.FirstOrDefault(x => x.Template.Name == L95xxCurrentSectorSelected.Template.Name);
-            if (old != null)
-            {
-                if (await OkCancelDialog("Overwrite Stored Sector", $"The sector already exists.\r\nAre you sure you want to overwrite the stored sector?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
-                    return;
-            }
-
-            //Save the list to the database.
-            List<FullReport> temp = [];
-            if (L95xxResultRow != null)
-                temp = L95xxResultRow._AllSectors;
-
-            temp.Add(new FullReport(((LVS_95xx.Sectors.Sector)L95xxCurrentSectorSelected).Template.Original, ((LVS_95xx.Sectors.Sector)L95xxCurrentSectorSelected).Report.Original));
-
-            _ = SelectedDatabase.InsertOrReplace_L95xxResult(new Databases.L95xxResult
-            {
-                ImageRollUID = ImageRollUID,
-                RunUID = ImageRollUID,
-                Source = SourceImage,
-                Stored = L95xxCurrentImage,
-
-                _AllSectors = temp,
-            });
-
-            ClearRead(device);
-
-            L95xxGetStored();
-        }
-        else if (device == ImageResultEntryDevices.L95xxAll)
-        {
-
-            if (L95xxCurrentSectors.Count == 0)
-            {
-                Logger.LogDebug($"There are no sectors to store for: {device}");
-                return;
-            }
-            //Does the selected sector exist in the Stored sectors list?
-            //If so, prompt to overwrite or cancel.
-
-            if (L95xxStoredSectors.Count > 0)
-                if (await OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for this image?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
-                    return;
-
-            //Save the list to the database.
-            List<FullReport> temp = [];
-            foreach (Sectors.Interfaces.ISector sector in L95xxCurrentSectors)
-
-                temp.Add(new FullReport(((LVS_95xx.Sectors.Sector)sector).Template.Original, ((LVS_95xx.Sectors.Sector)sector).Report.Original));
-
-
-            _ = SelectedDatabase.InsertOrReplace_L95xxResult(new Databases.L95xxResult
-            {
-                ImageRollUID = ImageRollUID,
-                RunUID = ImageRollUID,
-                Source = SourceImage,
-                Stored = L95xxCurrentImage,
-
-                _AllSectors = temp,
-            });
-
-            ClearRead(device);
-
-            L95xxGetStored();
-        }
+        dev.Store();
     }
     [RelayCommand]
     private async Task ClearStored(ImageResultEntryDevices device)
     {
         if (await OkCancelDialog("Clear Stored Sectors", $"Are you sure you want to clear the stored sectors for this image?\r\nThis can not be undone!") == MessageDialogResult.Affirmative)
         {
-            if (device is ImageResultEntryDevices.V275)
+            _ = SelectedDatabase.Delete_Result(device, ImageRollUID, SourceImageUID, ImageRollUID);
+            IImageResultDeviceEntry dev = ImageResultDeviceEntries.FirstOrDefault(x => x.Device == device);
+            if (dev == null)
             {
-                _ = SelectedDatabase.Delete_V275Result(ImageRollUID, SourceImageUID, ImageRollUID);
-                V275GetStored();
+                Logger.LogError($"Device not found: {device}");
+                return;
             }
-            else if (device is ImageResultEntryDevices.V5)
-            {
-                _ = SelectedDatabase.Delete_V5Result(ImageRollUID, SourceImageUID, ImageRollUID);
-                V5GetStored();
-            }
-            else if (device is ImageResultEntryDevices.L95xx or ImageResultEntryDevices.L95xxAll)
-            {
-                _ = SelectedDatabase.Delete_L95xxResult(ImageRollUID, SourceImageUID, ImageRollUID);
-                L95xxGetStored();
-            }
+            dev.GetStored();
         }
     }
     [RelayCommand]
     private void ClearRead(ImageResultEntryDevices device)
     {
-        if (!App.Current.Dispatcher.CheckAccess())
+        IImageResultDeviceEntry dev = ImageResultDeviceEntries.FirstOrDefault(x => x.Device == device);
+        if (dev == null)
         {
-            _ = App.Current.Dispatcher.BeginInvoke(() => ClearRead(device));
+            Logger.LogError($"Device not found: {device}");
             return;
         }
+        dev.ClearCurrent();
 
-        if (device == ImageResultEntryDevices.V275)
-        {
+        //else if (device == ImageResultEntryDevices.L95xx)
+        //{
+        //    //No CurrentReport for L95xx
+        //    //No template used for L95xx
 
-            V275CurrentReport = null;
-            V275CurrentTemplate = null;
+        //    _ = L95xxCurrentSectors.Remove(L95xxCurrentSectorSelected);
+        //    L95xxDiffSectors.Clear();
 
-            V275CurrentSectors.Clear();
-            V275DiffSectors.Clear();
-            V275CurrentImage = null;
-            V275CurrentImageOverlay = null;
-        }
-        else if (device == ImageResultEntryDevices.V5)
-        {
-            V5CurrentReport = null;
-            V5CurrentTemplate = null;
-
-            V5CurrentSectors.Clear();
-            V5DiffSectors.Clear();
-            V5CurrentImage = null;
-            V5CurrentImageOverlay = null;
-        }
-        else if (device == ImageResultEntryDevices.L95xx)
-        {
-            //No CurrentReport for L95xx
-            //No template used for L95xx
-
-            _ = L95xxCurrentSectors.Remove(L95xxCurrentSectorSelected);
-            L95xxDiffSectors.Clear();
-
-            if (L95xxCurrentSectors.Count == 0)
-            {
-                L95xxCurrentImage = null;
-                L95xxCurrentImageOverlay = null;
-            }
-        }
-        else if (device == ImageResultEntryDevices.L95xxAll)
-        {
-            L95xxCurrentReport = null;
-
-            L95xxCurrentSectors.Clear();
-            L95xxDiffSectors.Clear();
-            L95xxCurrentImage = null;
-            L95xxCurrentImageOverlay = null;
-        }
+        //    if (L95xxCurrentSectors.Count == 0)
+        //    {
+        //        L95xxCurrentImage = null;
+        //        L95xxCurrentImageOverlay = null;
+        //    }
+        //}
     }
 
     //[RelayCommand] private void RedoFiducial() => ImageUtilities.lib.Core.ImageUtilities.RedrawFiducial(SourceImage.Path, false);
@@ -507,343 +300,7 @@ public partial class ImageResultEntry : ObservableRecipient, IImageResultEntry, 
         return geometryImage;
     }
 
-    private DrawingImage CreateSectorsImageOverlay(ImageEntry image, ObservableCollection<Sectors.Interfaces.ISector> sectors)
-    {
-        if (sectors == null || sectors.Count == 0)
-            return null;
-
-        if (image == null)
-            return null;
-
-        DrawingGroup drwGroup = new();
-        // Define the clipping rectangle based on the image bounds
-        Rect imageBounds = new(0.5, 0.5, image.Image.PixelWidth - 1, image.Image.PixelHeight - 1);
-        drwGroup.ClipGeometry = new RectangleGeometry(imageBounds);
-
-        //Draw the image outline the same size as the stored image
-        GeometryDrawing border = new()
-        {
-            Geometry = new RectangleGeometry(new Rect(0, 0, image.Image.PixelWidth, image.Image.PixelHeight)),
-            Pen = new Pen(Brushes.Transparent, 1)
-        };
-        drwGroup.Children.Add(border);
-
-        // Define a scaling factor (e.g., text height should be 5% of the image height)
-        var scalingFactor = 0.04;
-
-        // Calculate the renderingEmSize based on the image height and scaling factor
-        var renderingEmSize = image.Image.PixelHeight * scalingFactor;
-        var renderingEmSizeHalf = renderingEmSize / 2;
-
-        var warnSecThickness = renderingEmSize / 5;
-        var warnSecThicknessHalf = warnSecThickness / 2;
-
-        GeometryGroup secCenter = new();
-        foreach (Sectors.Interfaces.ISector newSec in sectors)
-        {
-            if (newSec.Report.RegionType is AvailableRegionTypes.OCR or AvailableRegionTypes.OCV or AvailableRegionTypes.Blemish)
-                continue;
-
-            var hasReportSec = newSec.Report.Width > 0;
-
-            GeometryDrawing sectorT = new()
-            {
-                Geometry = new RectangleGeometry(new Rect(
-                    newSec.Template.Left + renderingEmSizeHalf,
-                    newSec.Template.Top + renderingEmSizeHalf,
-                    Math.Clamp(newSec.Template.Width - renderingEmSize, 0, double.MaxValue),
-                    Math.Clamp(newSec.Template.Height - renderingEmSize, 0, double.MaxValue))),
-                Pen = new Pen(GetGradeBrush(newSec.Report.OverallGrade != null ? newSec.Report.OverallGrade.Grade.Letter : "F", (byte)(newSec.IsFocused || newSec.IsMouseOver ? 0xFF : 0x28)), renderingEmSize),
-            };
-            drwGroup.Children.Add(sectorT);
-
-            GeometryDrawing warnSector = new()
-            {
-                Geometry = new RectangleGeometry(new Rect(
-                    newSec.Template.Left - warnSecThicknessHalf,
-                    newSec.Template.Top - warnSecThicknessHalf,
-                       newSec.Template.Width + warnSecThickness,
-                       newSec.Template.Height + warnSecThickness)),
-
-                Pen = new Pen(
-                    newSec.IsWarning ? new SolidColorBrush(Colors.Yellow) :
-                        newSec.IsError ? new SolidColorBrush(Colors.Red) : Brushes.Transparent,
-                    warnSecThickness)
-            };
-            drwGroup.Children.Add(warnSector);
-
-            drwGroup.Children.Add(new GlyphRunDrawing(Brushes.Black, CreateGlyphRun(newSec.Template.Username, new Typeface(SystemFonts.MessageFontFamily, SystemFonts.MessageFontStyle, SystemFonts.MessageFontWeight, new FontStretch()), renderingEmSize, new Point(newSec.Template.Left - 8, newSec.Template.Top - 8))));
-
-            if (hasReportSec)
-            {
-                GeometryDrawing sector = new()
-                {
-                    Geometry = new RectangleGeometry(new Rect(newSec.Report.Left + 0.5, newSec.Report.Top + 0.5, newSec.Report.Width, newSec.Report.Height)),
-                    Pen = new Pen(Brushes.Black, 1)
-                };
-                //sector.Geometry.Transform = new RotateTransform(newSec.Report.AngleDeg, newSec.Report.Left + (newSec.Report.Width / 2), newSec.Report.Top + (newSec.Report.Height / 2));
-                drwGroup.Children.Add(sector);
-
-                var x = newSec.Report.Left + (newSec.Report.Width / 2);
-                var y = newSec.Report.Top + (newSec.Report.Height / 2);
-                secCenter.Children.Add(new LineGeometry(new Point(x + 10, y), new Point(x + -10, y)));
-                secCenter.Children.Add(new LineGeometry(new Point(x, y + 10), new Point(x, y + -10)));
-            }
-        }
-
-        GeometryDrawing sectorCenters = new()
-        {
-            Geometry = secCenter,
-            Pen = new Pen(Brushes.Red, 4)
-        };
-        drwGroup.Children.Add(sectorCenters);
-
-        if (ShowExtendedData)
-            drwGroup.Children.Add(GetModuleGrid(sectors));
-
-        // drwGroup.Transform = new RotateTransform(ImageResults.SelectedScanner.RotateImage ? 180 : 0);
-
-        DrawingImage geometryImage = new(drwGroup);
-        geometryImage.Freeze();
-
-        return geometryImage;
-    }
-
-    public static GlyphRun CreateGlyphRun(string text, Typeface typeface, double emSize, Point baselineOrigin)
-    {
-        if (text == null)
-            return null;
-
-        if (!typeface.TryGetGlyphTypeface(out GlyphTypeface glyphTypeface))
-        {
-            throw new ArgumentException(string.Format(
-                "{0}: no GlyphTypeface found", typeface.FontFamily));
-        }
-
-        var glyphIndices = new ushort[text.Length];
-        var advanceWidths = new double[text.Length];
-
-        for (var i = 0; i < text.Length; i++)
-        {
-            var glyphIndex = glyphTypeface.CharacterToGlyphMap[text[i]];
-            glyphIndices[i] = glyphIndex;
-            advanceWidths[i] = glyphTypeface.AdvanceWidths[glyphIndex] * emSize;
-        }
-
-        return new GlyphRun(
-            glyphTypeface,
-            0,
-            false,
-            emSize,
-            (float)MonitorUtilities.GetDpi().PixelsPerDip,
-            glyphIndices,
-            baselineOrigin,
-            advanceWidths,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null);
-    }
-    private static DrawingGroup GetModuleGrid(ObservableCollection<Sectors.Interfaces.ISector> sectors)
-    {
-        DrawingGroup drwGroup = new();
-
-        foreach (Sectors.Interfaces.ISector sect in sectors)
-        {
-
-            if (sect == null)
-                continue;
-
-            if (sect.Report.SymbolType is AvailableSymbologies.QRCode or AvailableSymbologies.DataMatrix)
-            {
-                Sectors.Interfaces.ISectorReport res = sect.Report;
-
-                if (res.ExtendedData == null)
-                    continue;
-
-                if (res.ExtendedData.ModuleReflectance == null)
-                    continue;
-
-                GeometryGroup moduleGrid = new();
-                DrawingGroup textGrp = new();
-
-                double qzX = (sect.Report.SymbolType == AvailableSymbologies.DataMatrix) ? 0 : res.ExtendedData.QuietZone;
-                double qzY = res.ExtendedData.QuietZone;
-
-                var dX = (sect.Report.SymbolType == AvailableSymbologies.DataMatrix) ? 0 : (res.ExtendedData.DeltaX / 2);
-                var dY = (sect.Report.SymbolType == AvailableSymbologies.DataMatrix) ? (res.ExtendedData.DeltaY * res.ExtendedData.NumRows) : (res.ExtendedData.DeltaY / 2);
-
-                var startX = -0.5;// sec.left + res.ExtendedData.Xnw - dX + 1 - (qzX * res.ExtendedData.DeltaX);
-                var startY = -0.5;// sec.top + res.ExtendedData.Ynw - dY + 1 - (qzY * res.ExtendedData.DeltaY);
-
-                var cnt = 0;
-
-                for (var row = -qzX; row < res.ExtendedData.NumRows + qzX; row++)
-                    for (var col = -qzY; col < res.ExtendedData.NumColumns + qzY; col++)
-                    {
-                        RectangleGeometry area1 = new(new Rect(startX + (res.ExtendedData.DeltaX * (col + qzX)), startY + (res.ExtendedData.DeltaY * (row + qzY)), res.ExtendedData.DeltaX, res.ExtendedData.DeltaY));
-                        moduleGrid.Children.Add(area1);
-
-                        var text = res.ExtendedData.ModuleModulation[cnt].ToString();
-                        Typeface typeface = new("Arial");
-                        if (typeface.TryGetGlyphTypeface(out GlyphTypeface _glyphTypeface))
-                        {
-                            var _glyphIndexes = new ushort[text.Length];
-                            var _advanceWidths = new double[text.Length];
-
-                            double textWidth = 0;
-                            for (var ix = 0; ix < text.Length; ix++)
-                            {
-                                var glyphIndex = _glyphTypeface.CharacterToGlyphMap[text[ix]];
-                                _glyphIndexes[ix] = glyphIndex;
-
-                                var width = _glyphTypeface.AdvanceWidths[glyphIndex] * 2;
-                                _advanceWidths[ix] = width;
-
-                                textWidth += width;
-                            }
-
-                            GlyphRun gr = new(
-                                _glyphTypeface,
-                                0,
-                                false,
-                                2,
-                                1.0f,
-                                _glyphIndexes,
-                                new Point(
-                                    startX + (res.ExtendedData.DeltaX * (col + qzX)) + 1,
-                                    startY + (res.ExtendedData.DeltaY * (row + qzY)) + (_glyphTypeface.Height * (res.ExtendedData.DeltaY / 4))),
-                                _advanceWidths,
-                                null,
-                                null,
-                                null,
-                                null,
-                                null,
-                                null);
-
-                            GlyphRunDrawing grd = new(Brushes.Blue, gr);
-
-                            textGrp.Children.Add(grd);
-                        }
-
-                        text = res.ExtendedData.ModuleReflectance[cnt++].ToString();
-                        Typeface typeface1 = new("Arial");
-                        if (typeface1.TryGetGlyphTypeface(out GlyphTypeface _glyphTypeface1))
-                        {
-                            var _glyphIndexes = new ushort[text.Length];
-                            var _advanceWidths = new double[text.Length];
-
-                            double textWidth = 0;
-                            for (var ix = 0; ix < text.Length; ix++)
-                            {
-                                var glyphIndex = _glyphTypeface1.CharacterToGlyphMap[text[ix]];
-                                _glyphIndexes[ix] = glyphIndex;
-
-                                var width = _glyphTypeface1.AdvanceWidths[glyphIndex] * 2;
-                                _advanceWidths[ix] = width;
-
-                                textWidth += width;
-                            }
-
-                            GlyphRun gr = new(
-                                _glyphTypeface1,
-                                0,
-                                false,
-                                2,
-                                1.0f,
-                                _glyphIndexes,
-                                new Point(
-                                    startX + (res.ExtendedData.DeltaX * (col + qzX)) + 1,
-                                    startY + (res.ExtendedData.DeltaY * (row + qzY)) + (_glyphTypeface1.Height * (res.ExtendedData.DeltaY / 2))),
-                                _advanceWidths,
-                                null,
-                                null,
-                                null,
-                                null,
-                                null,
-                                null);
-
-                            GlyphRunDrawing grd = new(Brushes.Blue, gr);
-                            textGrp.Children.Add(grd);
-                        }
-
-                        //FormattedText formattedText = new FormattedText(
-                        //    res.ExtendedData.ModuleReflectance[row + col].ToString(),
-                        //    CultureInfo.GetCultureInfo("en-us"),
-                        //    FlowDirection.LeftToRight,
-                        //    new Typeface("Arial"),
-                        //    4,
-                        //    System.Windows.Media.Brushes.Black // This brush does not matter since we use the geometry of the text.
-                        //);
-
-                        //// Build the geometry object that represents the text.
-                        //Geometry textGeometry = formattedText.BuildGeometry(new System.Windows.Point(startX + (res.ExtendedData.DeltaX * row), startY + (res.ExtendedData.DeltaY * col)));
-                        //moduleGrid.Children.Add(textGeometry);
-                    }
-
-                TransformGroup transGroup = new();
-
-                transGroup.Children.Add(new RotateTransform(
-                    sect.Template.Orientation,
-                    res.ExtendedData.DeltaX * (res.ExtendedData.NumColumns + (qzX * 2)) / 2,
-                    res.ExtendedData.DeltaY * (res.ExtendedData.NumRows + (qzY * 2)) / 2));
-
-                transGroup.Children.Add(new TranslateTransform(sect.Report.Left, sect.Report.Top));
-
-                if (sect.Template.Orientation == 0)
-                    transGroup.Children.Add(new TranslateTransform(
-                        res.ExtendedData.Xnw - (qzX * res.ExtendedData.DeltaX) - dX + 1,
-                        res.ExtendedData.Ynw - (qzY * res.ExtendedData.DeltaY) - dY + 1));
-
-                if (sect.Template.Orientation == 90)
-                {
-                    var x = sect.Report.SymbolType == AvailableSymbologies.DataMatrix
-                        ? sect.Report.Width - res.ExtendedData.Ynw - (qzY * res.ExtendedData.DeltaY) - 1
-                        : sect.Report.Width - res.ExtendedData.Ynw - dY - ((res.ExtendedData.NumColumns + qzY) * res.ExtendedData.DeltaY);
-                    transGroup.Children.Add(new TranslateTransform(
-                        x,
-                        res.ExtendedData.Xnw - (qzX * res.ExtendedData.DeltaX) - dX + 1));
-                }
-
-                if (sect.Template.Orientation == 180)
-                {
-                    transGroup.Children.Add(new TranslateTransform(
-                        res.ExtendedData.Xnw - (qzX * res.ExtendedData.DeltaX) - dX + 1,
-                        res.ExtendedData.Ynw - (qzY * res.ExtendedData.DeltaY) - dY + 1));
-                }
-
-                moduleGrid.Transform = transGroup;
-                textGrp.Transform = transGroup;
-
-                GeometryDrawing mGrid = new()
-                {
-                    Geometry = moduleGrid,
-                    Pen = new Pen(Brushes.Yellow, 0.25)
-                };
-
-                drwGroup.Children.Add(mGrid);
-                drwGroup.Children.Add(textGrp);
-
-            }
-        }
-
-        return drwGroup;
-    }
-
-    private static SolidColorBrush GetGradeBrush(string grade, byte trans) => grade switch
-    {
-        "A" => ChangeTransparency((SolidColorBrush)App.Current.Resources["CB_Green"], trans),
-        "B" => ChangeTransparency((SolidColorBrush)App.Current.Resources["ISO_GradeB_Brush"], trans),
-        "C" => ChangeTransparency((SolidColorBrush)App.Current.Resources["ISO_GradeC_Brush"], trans),
-        "D" => ChangeTransparency((SolidColorBrush)App.Current.Resources["ISO_GradeD_Brush"], trans),
-        "F" => ChangeTransparency((SolidColorBrush)App.Current.Resources["ISO_GradeF_Brush"], trans),
-        _ => ChangeTransparency((SolidColorBrush)App.Current.Resources["CB_Green"], trans),
-    };
-
-    private static SolidColorBrush ChangeTransparency(SolidColorBrush original, byte trans) => new(Color.FromArgb(trans, original.Color.R, original.Color.G, original.Color.B));
-
+ 
     public static void SortList(List<Sectors.Interfaces.ISector> list) => list.Sort((item1, item2) =>
     {
         var distance1 = Math.Sqrt(Math.Pow(item1.Report.CenterPoint.X, 2) + Math.Pow(item1.Report.CenterPoint.Y, 2));

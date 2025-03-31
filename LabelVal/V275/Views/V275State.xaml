@@ -39,7 +39,7 @@
                     <Style TargetType="{x:Type DockPanel}">
                         <Setter Property="Visibility" Value="Visible" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding SelectedNode.IsLoggedIn}" Value="False">
+                            <DataTrigger Binding="{Binding SelectedV275Node.IsLoggedIn}" Value="False">
                                 <Setter Property="Visibility" Value="Collapsed" />
                             </DataTrigger>
                         </Style.Triggers>
@@ -52,12 +52,12 @@
                     <Label.Style>
                         <Style TargetType="{x:Type Label}">
                             <Setter Property="Background" Value="{DynamicResource SectorError_Brush}" />
-                            <Setter Property="Content" Value="{Binding SelectedNode.JobName}" />
+                            <Setter Property="Content" Value="{Binding SelectedV275Node.JobName}" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsWrongTemplateName}" Value="False">
                                     <Setter Property="Background" Value="{DynamicResource CB_Green}" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding SelectedNode.JobName}" Value="">
+                                <DataTrigger Binding="{Binding SelectedV275Node.JobName}" Value="">
                                     <Setter Property="Content" Value="-----" />
                                     <Setter Property="Background" Value="{DynamicResource SectorError_Brush}" />
                                 </DataTrigger>
@@ -68,7 +68,7 @@
 
                 <Label Content="State:" />
 
-                <Label Content="{Binding SelectedNode.State}">
+                <Label Content="{Binding SelectedV275Node.State}">
                     <Label.Style>
                         <Style TargetType="{x:Type Label}">
                             <Setter Property="Background" Value="{DynamicResource SectorError_Brush}" />
@@ -76,14 +76,14 @@
                             <Style.Triggers>
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding SelectedNode.State}" Value="Editing" />
+                                        <Condition Binding="{Binding SelectedV275Node.State}" Value="Editing" />
                                         <Condition Binding="{Binding SelectedImageRoll.IsGS1}" Value="True" />
                                     </MultiDataTrigger.Conditions>
                                     <Setter Property="Background" Value="{DynamicResource CB_Green}" />
                                 </MultiDataTrigger>
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding SelectedNode.State}" Value="Running" />
+                                        <Condition Binding="{Binding SelectedV275Node.State}" Value="Running" />
                                         <Condition Binding="{Binding SelectedImageRoll.IsGS1}" Value="False" />
                                     </MultiDataTrigger.Conditions>
                                     <Setter Property="Background" Value="{DynamicResource CB_Green}" />
@@ -102,10 +102,10 @@
                             <Setter Property="IsEnabled" Value="False" />
                             <Setter Property="Visibility" Value="Collapsed" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding SelectedNode.IsLoggedIn_Control}" Value="True">
+                                <DataTrigger Binding="{Binding SelectedV275Node.IsLoggedIn_Control}" Value="True">
                                     <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding SelectedNode.State}" Value="Editing">
+                                <DataTrigger Binding="{Binding SelectedV275Node.State}" Value="Editing">
                                     <Setter Property="IsEnabled" Value="True" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding MainWindow.ImageResultsDatabase.SelectedImageRoll.IsGS1}" Value="True">
@@ -125,13 +125,13 @@
                             <Setter Property="IsEnabled" Value="False" />
                             <Setter Property="Visibility" Value="Collapsed" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding SelectedNode.IsLoggedIn_Control}" Value="True">
+                                <DataTrigger Binding="{Binding SelectedV275Node.IsLoggedIn_Control}" Value="True">
                                     <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding SelectedNode.State}" Value="Running">
+                                <DataTrigger Binding="{Binding SelectedV275Node.State}" Value="Running">
                                     <Setter Property="IsEnabled" Value="True" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding SelectedNode.State}" Value="Paused">
+                                <DataTrigger Binding="{Binding SelectedV275Node.State}" Value="Paused">
                                     <Setter Property="IsEnabled" Value="True" />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -141,7 +141,7 @@
 
                 <Button
                     Margin="3,0"
-                    Command="{Binding SelectedNode.RemoveRepeatCommand}"
+                    Command="{Binding SelectedV275Node.RemoveRepeatCommand}"
                     Content="Remove">
                     <Button.Style>
                         <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="{x:Type Button}">
@@ -150,8 +150,8 @@
                             <Style.Triggers>
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding SelectedNode.IsLoggedIn_Control}" Value="True" />
-                                        <Condition Binding="{Binding SelectedNode.State}" Value="Paused" />
+                                        <Condition Binding="{Binding SelectedV275Node.IsLoggedIn_Control}" Value="True" />
+                                        <Condition Binding="{Binding SelectedV275Node.State}" Value="Paused" />
                                     </MultiDataTrigger.Conditions>
                                     <Setter Property="Visibility" Value="Visible" />
                                     <Setter Property="IsEnabled" Value="True" />

@@ -1,5 +1,5 @@
 ﻿<UserControl
-    x:Class="LabelVal.Results.Views.ImageResults"
+    x:Class="LabelVal.Results.Views.ImageResultsManager"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:bar_common="clr-namespace:BarcodeVerification.lib.Common;assembly=BarcodeVerification.lib"
@@ -306,8 +306,8 @@
                                                 <Style.Triggers>
                                                     <MultiDataTrigger>
                                                         <MultiDataTrigger.Conditions>
-                                                            <Condition Binding="{Binding SelectedScanner.Controller.IsConnected}" Value="True" />
-                                                            <Condition Binding="{Binding SelectedScanner.Controller.IsSimulator}" Value="False" />
+                                                            <Condition Binding="{Binding SelectedV5.Controller.IsConnected}" Value="True" />
+                                                            <Condition Binding="{Binding SelectedV5.Controller.IsSimulator}" Value="False" />
                                                             <Condition Binding="{Binding SelectedImageRoll.IsLocked}" Value="False" />
                                                         </MultiDataTrigger.Conditions>
 
@@ -422,7 +422,7 @@
                                                 </Setter>
                                             </DataTrigger>
 
-                                            <DataTrigger Binding="{Binding SelectedVerifier.Controller.IsConnected}" Value="True">
+                                            <DataTrigger Binding="{Binding SelectedL95.Controller.IsConnected}" Value="True">
                                                 <Setter Property="Visibility" Value="Visible" />
                                             </DataTrigger>
                                         </Style.Triggers>

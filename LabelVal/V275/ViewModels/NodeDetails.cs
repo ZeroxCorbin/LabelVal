@@ -5,7 +5,7 @@ using CommunityToolkit.Mvvm.Messaging.Messages;
 namespace LabelVal.V275.ViewModels;
 public partial class NodeDetails : ObservableRecipient, IRecipient<PropertyChangedMessage<Node>>
 {
-    [ObservableProperty] private Node selectedNode;
+    [ObservableProperty] private Node selectedV275Node;
     public NodeDetails() => IsActive = true;
-    public void Receive(PropertyChangedMessage<Node> message) => SelectedNode = message.NewValue;
+    public void Receive(PropertyChangedMessage<Node> message) => SelectedV275Node = message.NewValue;
 }

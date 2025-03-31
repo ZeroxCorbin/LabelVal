@@ -25,11 +25,11 @@ public partial class ResultEntry : ObservableObject
 {
     [PrimaryKey, AutoIncrement] public int ID { get; set; }
 
-    [ObservableProperty][property: Ignore] private V275Result v275Result;
-    partial void OnV275ResultChanged(V275Result value) { _results = JsonConvert.SerializeObject(value); DeviceType = DeviceTypes.V275; }
+    [ObservableProperty][property: Ignore] private Result v275Result;
+    partial void OnV275ResultChanged(Result value) { _results = JsonConvert.SerializeObject(value); DeviceType = DeviceTypes.V275; }
 
-    [ObservableProperty][property: Ignore] private V5Result v5Result;
-    partial void OnV5ResultChanged(V5Result value) { _results = JsonConvert.SerializeObject(value); DeviceType = DeviceTypes.V5; }
+    [ObservableProperty][property: Ignore] private Result v5Result;
+    partial void OnV5ResultChanged(Result value) { _results = JsonConvert.SerializeObject(value); DeviceType = DeviceTypes.V5; }
 
     [ObservableProperty][property: Ignore] private L95xxResult l95xxResult;
     partial void OnL95xxResultChanged(L95xxResult value) { _results = JsonConvert.SerializeObject(value); DeviceType = DeviceTypes.L95xx; }
@@ -53,8 +53,8 @@ public partial class ResultEntry : ObservableObject
         {
             object value1 = DeviceType switch
             {
-                DeviceTypes.V275 => V275Result = JsonConvert.DeserializeObject<V275Result>(_results = value),
-                DeviceTypes.V5 => V5Result = JsonConvert.DeserializeObject<V5Result>(_results = value),
+                DeviceTypes.V275 => V275Result = JsonConvert.DeserializeObject<Result>(_results = value),
+                DeviceTypes.V5 => V5Result = JsonConvert.DeserializeObject<Result>(_results = value),
                 DeviceTypes.L95xx => L95xxResult = JsonConvert.DeserializeObject<L95xxResult>(_results = value),
                 _ => _results = null
             };
@@ -65,10 +65,10 @@ public partial class ResultEntry : ObservableObject
     {
         ResultType = type;
 
-        if (results is V275Result v275Result)
+        if (results is Result v275Result)
             V275Result = v275Result;
         
-        else if (results is V5Result v5Result)
+        else if (results is Result v5Result)
             V5Result = v5Result;
         
         else if (results is L95xxResult l95xxResult)

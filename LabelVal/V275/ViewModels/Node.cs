@@ -16,7 +16,7 @@ namespace LabelVal.V275.ViewModels;
 public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessage<ImageRollEntry>>
 {
     public NodeManager Manager { get; set; }
-    [JsonProperty] public V275_REST_Lib.Controller Controller { get; set; }
+    [JsonProperty] public V275_REST_Lib.Controllers.Controller Controller { get; set; }
 
     [ObservableProperty] private bool loginMonitor;
 
@@ -42,7 +42,7 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
     {
         SelectedImageRoll = imageRollEntry;
 
-        Controller = new Controller(host, systemPort, nodeNumber, username, password, dir);
+        Controller = new V275_REST_Lib.Controllers.Controller(host, systemPort, nodeNumber, username, password, dir);
         Controller.PropertyChanged += Controller_PropertyChanged;
 
         IsActive = true;
@@ -50,7 +50,7 @@ public partial class Node : ObservableRecipient, IRecipient<PropertyChangedMessa
 
     private void Controller_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(V275_REST_Lib.Controller.JobName))
+        if (e.PropertyName == nameof(V275_REST_Lib.Controllers.Controller.JobName))
         {
             if (string.IsNullOrEmpty(Controller.JobName))
             {

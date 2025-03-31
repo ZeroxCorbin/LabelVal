@@ -21,16 +21,16 @@ public partial class RunResult
         V275StoredImage = StoredImageResultGroup.V275Result.Stored;
 
         List<Sectors.Interfaces.ISector> tempSectors = [];
-        if (!string.IsNullOrEmpty(StoredImageResultGroup.V275Result.Report) && !string.IsNullOrEmpty(StoredImageResultGroup.V275Result.Template))
+        if (!string.IsNullOrEmpty(StoredImageResultGroup.V275Result.ReportString) && !string.IsNullOrEmpty(StoredImageResultGroup.V275Result.TemplateString))
         {
-            foreach (JToken jSec in StoredImageResultGroup.V275Result._Job["sectors"])
+            foreach (JToken jSec in StoredImageResultGroup.V275Result.Template["sectors"])
             {
-                foreach (JToken rSec in StoredImageResultGroup.V275Result._Report["inspectLabel"]["inspectSector"])
+                foreach (JToken rSec in StoredImageResultGroup.V275Result.Report["inspectLabel"]["inspectSector"])
                 {
                     if (jSec["name"].ToString() == rSec["name"].ToString())
                     {
 
-                        tempSectors.Add(new V275.Sectors.Sector((JObject)jSec, (JObject)rSec, RunEntry.GradingStandard, RunEntry.Gs1TableName, StoredImageResultGroup.V275Result._Job["jobVersion"].ToString()));
+                        tempSectors.Add(new V275.Sectors.Sector((JObject)jSec, (JObject)rSec, RunEntry.GradingStandard, RunEntry.Gs1TableName, StoredImageResultGroup.V275Result.Template["jobVersion"].ToString()));
 
                         break;
                     }
@@ -58,15 +58,15 @@ public partial class RunResult
         V275CurrentImage = CurrentImageResultGroup.V275Result.Stored;
 
         List<Sectors.Interfaces.ISector> tempSectors = [];
-        if (!string.IsNullOrEmpty(CurrentImageResultGroup.V275Result.Report) && !string.IsNullOrEmpty(CurrentImageResultGroup.V275Result.Template))
+        if (!string.IsNullOrEmpty(CurrentImageResultGroup.V275Result.ReportString) && !string.IsNullOrEmpty(CurrentImageResultGroup.V275Result.TemplateString))
         {
-            foreach (JToken jSec in CurrentImageResultGroup.V275Result._Job["sectors"])
+            foreach (JToken jSec in CurrentImageResultGroup.V275Result.Template["sectors"])
             {
-                foreach (JToken rSec in CurrentImageResultGroup.V275Result._Report["inspectLabel"]["inspectSector"])
+                foreach (JToken rSec in CurrentImageResultGroup.V275Result.Report["inspectLabel"]["inspectSector"])
                 {
                     if (jSec["name"].ToString() == rSec["name"].ToString())
                     {
-                        tempSectors.Add(new V275.Sectors.Sector((JObject)jSec, (JObject)rSec, RunEntry.GradingStandard, RunEntry.Gs1TableName, CurrentImageResultGroup.V275Result._Job["jobVersion"].ToString()));
+                        tempSectors.Add(new V275.Sectors.Sector((JObject)jSec, (JObject)rSec, RunEntry.GradingStandard, RunEntry.Gs1TableName, CurrentImageResultGroup.V275Result.Template["jobVersion"].ToString()));
                         break;
                     }
                 }
@@ -80,7 +80,7 @@ public partial class RunResult
             foreach (Sectors.Interfaces.ISector sec in tempSectors)
                 V275CurrentSectors.Add(sec);
 
-            V275CurrentImageOverlay = V275CreateSectorsImageOverlay(CurrentImageResultGroup.V275Result._Job, false, CurrentImageResultGroup.V275Result._Report, V275CurrentImage, V275CurrentSectors);
+            V275CurrentImageOverlay = V275CreateSectorsImageOverlay(CurrentImageResultGroup.V275Result.Template, false, CurrentImageResultGroup.V275Result.Report, V275CurrentImage, V275CurrentSectors);
         }
     }
 

@@ -21,7 +21,11 @@ using System.Threading.Tasks;
 using System.Windows;
 
 namespace LabelVal.Results.ViewModels;
-public partial class ImageResults : ObservableRecipient,
+
+/// <summary>
+/// This is the ViewModel for the Image Results Manager.
+/// </summary>
+public partial class ImageResultsManager : ObservableRecipient,
     IRecipient<PropertyChangedMessage<ImageRollEntry>>,
     IRecipient<PropertyChangedMessage<Node>>,
     IRecipient<PropertyChangedMessage<Databases.ImageResultsDatabase>>,
@@ -30,38 +34,26 @@ public partial class ImageResults : ObservableRecipient,
     IRecipient<PropertyChangedMessage<PrinterSettings>>,
     IRecipient<PropertyChangedMessage<FullReport>>
 {
-
     public GlobalAppSettings AppSettings => GlobalAppSettings.Instance;
 
-    private class V275Repeat
-    {
-        public ImageResultEntry ImageResult { get; set; }
-        public int RepeatNumber { get; set; } = -1;
-    }
-
+    /// <see cref="ImagesMaxHeight"/>
     [ObservableProperty] private int imagesMaxHeight = App.Settings.GetValue(nameof(ImagesMaxHeight), 200, true);
     partial void OnImagesMaxHeightChanged(int value) => App.Settings.SetValue(nameof(ImagesMaxHeight), value);
 
+    /// <see cref="ImagesMaxWidth"/>
     [ObservableProperty] private bool dualSectorColumns = App.Settings.GetValue(nameof(DualSectorColumns), false, true);
     partial void OnDualSectorColumnsChanged(bool value) => App.Settings.SetValue(nameof(DualSectorColumns), value);
 
+    /// <see cref="ShowExtendedData"/>
     [ObservableProperty] private bool showExtendedData = App.Settings.GetValue(nameof(ShowExtendedData), true, true);
     partial void OnShowExtendedDataChanged(bool value) => App.Settings.SetValue(nameof(ShowExtendedData), value);
 
+    /// <see cref="HideErrorsWarnings"/>
     [ObservableProperty] private bool hideErrorsWarnings = App.Settings.GetValue(nameof(HideErrorsWarnings), false, true);
     partial void OnHideErrorsWarningsChanged(bool value) => App.Settings.SetValue(nameof(HideErrorsWarnings), value);
 
-    public ObservableCollection<ImageResultEntry> ImageResultsList { get; } = [];
-
-    [ObservableProperty] private JObject focusedTemplate;
-    [ObservableProperty] private JObject focusedReport;
-
-    [ObservableProperty] private Node selectedNode;
+    /// <see cref="SelectedImageRoll"/>
     [ObservableProperty] private ImageRollEntry selectedImageRoll;
-    [ObservableProperty] private PrinterSettings selectedPrinter;
-    [ObservableProperty] private Databases.ImageResultsDatabase selectedDatabase;
-    [ObservableProperty] private Scanner selectedScanner;
-    [ObservableProperty] private Verifier selectedVerifier;
     partial void OnSelectedImageRollChanged(ImageRollEntry oldValue, ImageRollEntry newValue)
     {
         if (oldValue != null)
@@ -78,22 +70,51 @@ public partial class ImageResults : ObservableRecipient,
             Application.Current.Dispatcher.Invoke(() => ImageResultsList.Clear());
     }
 
+    /// <see cref="SelectedDatabase"/>
+    [ObservableProperty] private Databases.ImageResultsDatabase selectedDatabase;
+
+    public ObservableCollection<ImageResultEntry> ImageResultsList { get; } = [];
+
+    /// <see cref="FocusedTemplate"/>
+    [ObservableProperty] private JObject focusedTemplate;
+    /// <see cref="FocusedReport"/>
+    [ObservableProperty] private JObject focusedReport;
+
+    /// <see cref="SelectedV275Node"/>
+    [ObservableProperty] private Node selectedV275Node;
+    /// <see cref="SelectedV5"/>
+    [ObservableProperty] private Scanner selectedV5;
+    /// <see cref="SelectedL95"/>
+    [ObservableProperty] private Verifier selectedL95;
+
+    /// <see cref="SelectedPrinter"/>
+    [ObservableProperty] private PrinterSettings selectedPrinter;
+
+    /// <see cref="IsV275Selected"/>
+    [ObservableProperty] private bool isV275Selected;
+    partial void OnIsV275SelectedChanging(bool value) { if (value) ResetSelected(ImageResultEntryDevices.V275); }
+    
+    /// <see cref="IsV5Selected"/>
+    [ObservableProperty] private bool isV5Selected;
+    partial void OnIsV5SelectedChanging(bool value) { if (value) ResetSelected(ImageResultEntryDevices.V5); }
+    
+    /// <see cref="IsL95xxSelected"/>
     [ObservableProperty] private bool isL95xxSelected;
-    partial void OnIsL95xxSelectedChanging(bool value) => ResetL95xxSelected();
+    partial void OnIsL95xxSelectedChanging(bool value) { if (value) ResetSelected(ImageResultEntryDevices.L95); }
+
 
     private bool reseting;
-    public bool ResetL95xxSelected()
+    public void ResetSelected(ImageResultEntryDevices device)
     {
-        if (reseting) return false;
-
-        reseting = true;
         foreach (ImageResultEntry lab in ImageResultsList)
-            lab.IsL95xxSelected = false;
-
-        return reseting = false;
+        {
+            IImageResultDeviceEntry dev = lab.ImageResultDeviceEntries.FirstOrDefault(d => d.Device == device);
+            if (dev != null)
+                dev.IsSelected = false; ;
+        }
     }
 
-    public ImageResults()
+    public ImageResultsManager()
     {
         WeakReferenceMessenger.Default.Register<RequestMessage<ImageRollEntry>>(
         this,
@@ -107,7 +128,7 @@ public partial class ImageResults : ObservableRecipient,
     {
         //var ret1 = WeakReferenceMessenger.Default.Send(new RequestMessage<Node>());
         //if(ret1.HasReceivedResponse)
-        //    SelectedNode = ret1.Response;
+        //    SelectedV275Node = ret1.Response;
 
         RequestMessage<PrinterSettings> ret2 = WeakReferenceMessenger.Default.Send(new RequestMessage<PrinterSettings>());
         if (ret2.HasReceivedResponse)
@@ -123,11 +144,11 @@ public partial class ImageResults : ObservableRecipient,
 
         RequestMessage<Scanner> ret5 = WeakReferenceMessenger.Default.Send(new RequestMessage<Scanner>());
         if (ret5.HasReceivedResponse)
-            SelectedScanner = ret5.Response;
+            SelectedV5 = ret5.Response;
 
         RequestMessage<Verifier> ret6 = WeakReferenceMessenger.Default.Send(new RequestMessage<Verifier>());
         if (ret6.HasReceivedResponse)
-            SelectedVerifier = ret6.Response;
+            SelectedL95 = ret6.Response;
 
     }
 
@@ -167,11 +188,11 @@ public partial class ImageResults : ObservableRecipient,
     {
         ImageResultEntry tmp = new(img, this);
 
-        if (img.NewData is V5_REST_Lib.Controllers.FullReport v5)
-            tmp.V5ProcessResults(v5);
+        //if (img.NewData is V5_REST_Lib.Controllers.FullReport v5)
+        //    tmp.ProcessFullReport(v5);
 
-        else if (img.NewData is FullReport l95)
-            tmp.L95xxProcessResults(l95, false);
+        //else if (img.NewData is FullReport l95)
+        //    tmp.L95xxProcessResults(l95, false);
 
         ImageResultsList.Add(tmp);
     }
@@ -215,7 +236,7 @@ public partial class ImageResults : ObservableRecipient,
         if (res == null)
             return;
 
-        ImageEntry imagEntry = SelectedImageRoll.GetNewImageEntry(res.FullImage);
+        ImageEntry imagEntry = SelectedImageRoll.GetNewImageEntry(res.Image);
         if (imagEntry == null)
             return;
 
@@ -258,14 +279,9 @@ public partial class ImageResults : ObservableRecipient,
     {
         foreach (ImageResultEntry img in ImageResultsList)
         {
-            if (img.V275CurrentSectors.Count != 0)
-                img.StoreCommand.Execute(ImageResultEntryDevices.V275);
-
-            if (img.V5CurrentSectors.Count != 0)
-                img.StoreCommand.Execute(ImageResultEntryDevices.V5);
-
-            if (img.L95xxCurrentSectors.Count != 0)
-                img.StoreCommand.Execute(ImageResultEntryDevices.L95xxAll);
+            img.StoreCommand.Execute(ImageResultEntryDevices.V275);
+            img.StoreCommand.Execute(ImageResultEntryDevices.V5);
+            img.StoreCommand.Execute(ImageResultEntryDevices.L95);
         }
     }
 
@@ -276,7 +292,7 @@ public partial class ImageResults : ObservableRecipient,
         {
             img.ClearReadCommand.Execute(ImageResultEntryDevices.V275);
             img.ClearReadCommand.Execute(ImageResultEntryDevices.V5);
-            img.ClearReadCommand.Execute(ImageResultEntryDevices.L95xxAll);
+            img.ClearReadCommand.Execute(ImageResultEntryDevices.L95);
         }
     }
 
@@ -284,30 +300,23 @@ public partial class ImageResults : ObservableRecipient,
     private void CopyAllSectorsToClipboard()
     {
         var data = "";
-        var sorted = ImageResultsList.OrderBy(i => i.SourceImage.Order);
+        IOrderedEnumerable<ImageResultEntry> sorted = ImageResultsList.OrderBy(i => i.SourceImage.Order);
         foreach (ImageResultEntry img in sorted)
         {
-            if (img.V275StoredSectors.Count != 0)
-                data += img.V275StoredSectors.GetSectorsReport($"{img.ImageResults.SelectedImageRoll.Name}{(char)SectorOutputSettings.CurrentDelimiter}{img.SourceImage.Order}") + Environment.NewLine;
-            if (img.V275CurrentSectors.Count != 0)
-                data += img.V275CurrentSectors.GetSectorsReport($"{img.ImageResults.SelectedImageRoll.Name}{(char)SectorOutputSettings.CurrentDelimiter}{img.SourceImage.Order}") + Environment.NewLine;
-
-            if (img.V5StoredSectors.Count != 0)
-                data += img.V5StoredSectors.GetSectorsReport($"{img.ImageResults.SelectedImageRoll.Name}{(char)SectorOutputSettings.CurrentDelimiter}{img.SourceImage.Order}") + Environment.NewLine;
-            if (img.V5CurrentSectors.Count != 0)
-                data += img.V5CurrentSectors.GetSectorsReport($"{img.ImageResults.SelectedImageRoll.Name}{(char)SectorOutputSettings.CurrentDelimiter}{img.SourceImage.Order}") + Environment.NewLine;
-
-            if (img.L95xxStoredSectors.Count != 0)
-                data += img.L95xxStoredSectors.GetSectorsReport($"{img.ImageResults.SelectedImageRoll.Name}{(char)SectorOutputSettings.CurrentDelimiter}{img.SourceImage.Order}") + Environment.NewLine;
-            if (img.L95xxCurrentSectors.Count != 0)
-                data += img.L95xxCurrentSectors.GetSectorsReport($"{img.ImageResults.SelectedImageRoll.Name}{(char)SectorOutputSettings.CurrentDelimiter}{img.SourceImage.Order}") + Environment.NewLine;
+            foreach (IImageResultDeviceEntry device in img.ImageResultDeviceEntries)
+            {
+                if (device.StoredSectors.Count != 0)
+                    data += device.StoredSectors.GetSectorsReport($"{img.ImageResultsManager.SelectedImageRoll.Name}{(char)SectorOutputSettings.CurrentDelimiter}{img.SourceImage.Order}") + Environment.NewLine;
+                if (device.CurrentSectors.Count != 0)
+                    data += device.CurrentSectors.GetSectorsReport($"{img.ImageResultsManager.SelectedImageRoll.Name}{(char)SectorOutputSettings.CurrentDelimiter}{img.SourceImage.Order}") + Environment.NewLine;
+            }
         }
         Clipboard.SetText(data);
     }
 
     private async Task<V5_REST_Lib.Controllers.FullReport> ProcessV5()
     {
-        V5_REST_Lib.Controllers.FullReport res = await SelectedScanner.Controller.Trigger_Wait_Return(true);
+        V5_REST_Lib.Controllers.FullReport res = await SelectedV5.Controller.Trigger_Wait_Return(true);
 
         if (!res.OK)
         {
@@ -317,7 +326,6 @@ public partial class ImageResults : ObservableRecipient,
 
         return res;
     }
-
     private void L95xxProcess(FullReport message)
     {
         if (message == null || message.Report == null)
@@ -549,38 +557,39 @@ public partial class ImageResults : ObservableRecipient,
             if (await OkCancelDialog("Missing Stored Sectors", "There are images that do not have stored sectors. Are you sure you want to continue?") == MessageDialogResult.Negative)
                 return;
 
-        //_ = RunViewModel.RunController.Init(ImageResultsList, LoopCount, SelectedDatabase, SelectedNode);
+        //_ = RunViewModel.RunController.Init(ImageResultsList, LoopCount, SelectedDatabase, SelectedV275Node);
 
         //RunViewModel.StartRunRequest();
     }
     private bool StartRunCheck()
     {
         foreach (ImageResultEntry lab in ImageResultsList)
-            if (lab.V275StoredSectors.Count == 0)
-                return false;
+            foreach (IImageResultDeviceEntry device in lab.ImageResultDeviceEntries)
+                if (device.StoredSectors.Count == 0)
+                    return false;
         return true;
     }
 
     #region Recieve Messages
-    public void Receive(PropertyChangedMessage<Node> message) => SelectedNode = message.NewValue;
+    public void Receive(PropertyChangedMessage<Node> message) => SelectedV275Node = message.NewValue;
     public void Receive(PropertyChangedMessage<ImageRollEntry> message) => SelectedImageRoll = message.NewValue;
     public void Receive(PropertyChangedMessage<PrinterSettings> message) => SelectedPrinter = message.NewValue;
     public void Receive(PropertyChangedMessage<Databases.ImageResultsDatabase> message) => SelectedDatabase = message.NewValue;
     public void Receive(PropertyChangedMessage<Scanner> message)
     {
-        if (SelectedScanner != null)
+        if (SelectedV5 != null)
         {
-            //SelectedScanner.ScannerController.ConfigUpdate -= ScannerController_ConfigUpdate;
+            //SelectedV5.ScannerController.ConfigUpdate -= ScannerController_ConfigUpdate;
         }
 
-        SelectedScanner = message.NewValue;
+        SelectedV5 = message.NewValue;
 
-        if (SelectedScanner != null)
+        if (SelectedV5 != null)
         {
-            //SelectedScanner.ScannerController.ConfigUpdate += ScannerController_ConfigUpdate;
+            //SelectedV5.ScannerController.ConfigUpdate += ScannerController_ConfigUpdate;
         }
     }
-    public void Receive(PropertyChangedMessage<Verifier> message) => SelectedVerifier = message.NewValue;
+    public void Receive(PropertyChangedMessage<Verifier> message) => SelectedL95 = message.NewValue;
     public void Receive(PropertyChangedMessage<FullReport> message)
     {
         if (IsL95xxSelected)

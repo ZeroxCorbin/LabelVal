@@ -14,10 +14,10 @@ namespace LabelVal.Run.ViewModels;
 
 public partial class RunManager : ObservableRecipient, IRecipient<PropertyChangedMessage<Node>>, IRecipient<PropertyChangedMessage<Scanner>>, IRecipient<PropertyChangedMessage<Verifier>>, IRecipient<PropertyChangedMessage<ImageRollEntry>>
 {
-    private ImageResults ImageResults { get; }
-    [ObservableProperty] private Node selectedNode;
-    [ObservableProperty] private Scanner selectedScanner;
-    [ObservableProperty] private Verifier selectedVerifier;
+    private ImageResultsManager ImageResults { get; }
+    [ObservableProperty] private Node selectedV275Node;
+    [ObservableProperty] private Scanner selectedV5;
+    [ObservableProperty] private Verifier selectedL95;
     [ObservableProperty] private ImageRollEntry selectedImageRoll;
 
     public ObservableCollection<RunControl> RunControllers { get; } = [];
@@ -30,7 +30,7 @@ public partial class RunManager : ObservableRecipient, IRecipient<PropertyChange
     [ObservableProperty] private int loopCount = App.Settings.GetValue(nameof(LoopCount), 1, true);
     partial void OnLoopCountChanged(int value) { App.Settings.SetValue(nameof(LoopCount), value); }
 
-    public RunManager(ImageResults imageResults)
+    public RunManager(ImageResultsManager imageResults)
     {
         ImageResults = imageResults;
 
@@ -42,7 +42,7 @@ public partial class RunManager : ObservableRecipient, IRecipient<PropertyChange
     {
         var ret1 = WeakReferenceMessenger.Default.Send(new RequestMessage<Node>());
         if (ret1.HasReceivedResponse)
-            SelectedNode = ret1.Response;
+            SelectedV275Node = ret1.Response;
 
         var ret2 = WeakReferenceMessenger.Default.Send(new RequestMessage<ImageRollEntry>());
         if (ret2.HasReceivedResponse)
@@ -50,11 +50,11 @@ public partial class RunManager : ObservableRecipient, IRecipient<PropertyChange
 
         var ret3 = WeakReferenceMessenger.Default.Send(new RequestMessage<Scanner>());
         if (ret3.HasReceivedResponse)
-            SelectedScanner = ret3.Response;
+            SelectedV5 = ret3.Response;
 
         var ret4 = WeakReferenceMessenger.Default.Send(new RequestMessage<Verifier>());
         if (ret4.HasReceivedResponse)
-            SelectedVerifier = ret4.Response;
+            SelectedL95 = ret4.Response;
     }
 
     [RelayCommand]
@@ -71,7 +71,7 @@ public partial class RunManager : ObservableRecipient, IRecipient<PropertyChange
         else
         {
             Logger.LogInfo($"Starting Run: {SelectedImageRoll.Name}; {LoopCount}");
-            QuickRunController.Update(LoopCount, ImageResults.ImageResultsList, SelectedImageRoll, SelectedNode, SelectedScanner, SelectedVerifier);
+            QuickRunController.Update(LoopCount, ImageResults.ImageResultsList, SelectedImageRoll, SelectedV275Node, SelectedV5, SelectedL95);
             QuickRunController.StartStopCommand.Execute(null);
         }
     }
@@ -86,10 +86,10 @@ public partial class RunManager : ObservableRecipient, IRecipient<PropertyChange
     }
 
     #region Recieve Messages
-    public void Receive(PropertyChangedMessage<Node> message) => SelectedNode = message.NewValue;
+    public void Receive(PropertyChangedMessage<Node> message) => SelectedV275Node = message.NewValue;
     public void Receive(PropertyChangedMessage<ImageRollEntry> message) => SelectedImageRoll = message.NewValue;
-    public void Receive(PropertyChangedMessage<Scanner> message) => SelectedScanner = message.NewValue;
-    public void Receive(PropertyChangedMessage<Verifier> message) => SelectedVerifier = message.NewValue;
+    public void Receive(PropertyChangedMessage<Scanner> message) => SelectedV5 = message.NewValue;
+    public void Receive(PropertyChangedMessage<Verifier> message) => SelectedL95 = message.NewValue;
     #endregion
 
 }

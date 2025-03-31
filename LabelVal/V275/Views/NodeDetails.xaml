@@ -48,33 +48,33 @@
                 <json:JsonViewer
                     Title="Product"
                     HideButtons="True"
-                    JSON="{Binding SelectedNode.Product}" />
+                    JSON="{Binding SelectedV275Node.Product}" />
                 <json:JsonViewer
                     Title="Device.Node"
                     HideButtons="True"
-                    JSON="{Binding SelectedNode.Details}" />
+                    JSON="{Binding SelectedV275Node.Details}" />
 
                 <json:JsonViewer
                     Title="Inspection"
                     HideButtons="True"
-                    JSON="{Binding SelectedNode.Inspection}" />
+                    JSON="{Binding SelectedV275Node.Inspection}" />
                 <json:JsonViewer
                     Title="Device.Camera"
                     HideButtons="True"
-                    JSON="{Binding SelectedNode.Camera}" />
+                    JSON="{Binding SelectedV275Node.Camera}" />
 
                 <json:JsonViewer
                     Title="Camera Configuration"
                     HideButtons="True"
-                    JSON="{Binding SelectedNode.ConfigurationCamera}" />
+                    JSON="{Binding SelectedV275Node.ConfigurationCamera}" />
                 <json:JsonViewer
                     Title="Calibration"
                     HideButtons="True"
-                    JSON="{Binding SelectedNode.Calibration}" />
+                    JSON="{Binding SelectedV275Node.Calibration}" />
                 <json:JsonViewer
                     Title="Symbologies"
                     HideButtons="True"
-                    JSON="{Binding SelectedNode.Symbologies}" />
+                    JSON="{Binding SelectedV275Node.Symbologies}" />
             </StackPanel>
         </GroupBox>
 

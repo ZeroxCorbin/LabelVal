@@ -3,6 +3,7 @@ using BarcodeVerification.lib.GS1;
 using CommunityToolkit.Mvvm.ComponentModel;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Results.Databases;
+using LabelVal.Results.ViewModels;
 using LabelVal.Run.Databases;
 using LabelVal.Sectors.Classes;
 using LabelVal.V275.ViewModels;
@@ -138,8 +139,6 @@ public partial class Controller : ObservableObject
     {
         try
         {
-
-
             CurrentLabelCount = 0;
 
             RequestedState = UpdateRunState(RunStates.Running);
@@ -186,22 +185,22 @@ public partial class Controller : ObservableObject
 
                     if (HasL95)
                         foreach (Results.ViewModels.ImageResultEntry ire in ImageResultEntries)
-                            ire.ClearReadCommand.Execute(Results.ViewModels.ImageResultEntryDevices.L95xxAll);
+                            ire.ClearReadCommand.Execute(Results.ViewModels.ImageResultEntryDevices.L95);
                 }
 
-                foreach (Results.ViewModels.ImageResultEntry ire in ImageResultEntries)
+                foreach (Results.ViewModels.IImageResultDeviceEntry ire in ImageResultEntries)
                 {
-                    UseV275 = HasV275 && ire.V275StoredSectors.Count > 0;
-                    if (HasV275 && ire.V275StoredSectors.Count == 0)
-                        Logger.LogInfo("Run: V275, No sectors to process.");
+                    //UseV275 = HasV275 && ire.V275StoredSectors.Count > 0;
+                    //if (HasV275 && ire.V275StoredSectors.Count == 0)
+                    //    Logger.LogInfo("Run: V275, No sectors to process.");
 
-                    UseV5 = HasV5 && ire.V5StoredSectors.Count > 0;
-                    if (HasV5 && ire.V5StoredSectors.Count == 0)
-                        Logger.LogInfo("Run: V5, No sectors to process.");
+                    //UseV5 = HasV5 && ire.V5StoredSectors.Count > 0;
+                    //if (HasV5 && ire.V5StoredSectors.Count == 0)
+                    //    Logger.LogInfo("Run: V5, No sectors to process.");
 
-                    UseL95 = HasL95 && ire.L95xxStoredSectors.Count > 0;
-                    if (HasL95 && ire.L95xxStoredSectors.Count == 0)
-                        Logger.LogInfo("Run: Lvs95xx, No sectors to process.");
+                    //UseL95 = HasL95 && ire.L95xxStoredSectors.Count > 0;
+                    //if (HasL95 && ire.L95xxStoredSectors.Count == 0)
+                    //    Logger.LogInfo("Run: Lvs95xx, No sectors to process.");
 
                     if (!UseV275 && !UseV5 && !UseL95)
                         continue;
@@ -232,12 +231,12 @@ public partial class Controller : ObservableObject
                     //This must occur before the print so it is added to the V275 image
                     CurrentLabelCount++;
 
-                    V275Result v275Res = null;
+                    Result v275Res = null;
                     if (UseV275)
                         if ((v275Res = await App.Current.Dispatcher.Invoke(() => ProcessV275(ire))) == null)
                             return UpdateRunState(RunStates.Error); ;
 
-                    V5Result v5Res = null;
+                    Result v5Res = null;
                     if (UseV5)
                         if ((v5Res = await ProcessV5(ire)) == null)
                             return UpdateRunState(RunStates.Error);
@@ -252,8 +251,8 @@ public partial class Controller : ObservableObject
                         Run.Databases.ResultEntry current = new(v275Res, ImageResultTypes.Current)
                         {
                             RunUID = RunUID,
-                            SourceImageUID = ire.SourceImageUID,
-                            ImageRollUID = ire.ImageRollUID,
+                            SourceImageUID = ire.ImageResultEntry.SourceImageUID,
+                            ImageRollUID = ire.ImageResultEntry.ImageRollUID,
                             Order = CurrentLabelCount,
                             TotalLoops = LoopCount,
                             CompletedLoops = CurrentLoopCount
@@ -267,8 +266,8 @@ public partial class Controller : ObservableObject
                         Run.Databases.ResultEntry current = new(v5Res, ImageResultTypes.Current)
                         {
                             RunUID = RunUID,
-                            SourceImageUID = ire.SourceImageUID,
-                            ImageRollUID = ire.ImageRollUID,
+                            SourceImageUID = ire.ImageResultEntry.SourceImageUID,
+                            ImageRollUID = ire.ImageResultEntry.ImageRollUID,
                             Order = CurrentLabelCount,
                             TotalLoops = LoopCount,
                             CompletedLoops = CurrentLoopCount
@@ -281,8 +280,8 @@ public partial class Controller : ObservableObject
                         Run.Databases.ResultEntry current = new(l95Res, ImageResultTypes.Current)
                         {
                             RunUID = RunUID,
-                            SourceImageUID = ire.SourceImageUID,
-                            ImageRollUID = ire.ImageRollUID,
+                            SourceImageUID = ire.ImageResultEntry.SourceImageUID,
+                            ImageRollUID = ire.ImageResultEntry.ImageRollUID,
                             Order = CurrentLabelCount,
                             TotalLoops = LoopCount,
                             CompletedLoops = CurrentLoopCount
@@ -318,7 +317,7 @@ public partial class Controller : ObservableObject
 
         return State;
     }
-    private async Task<RunStates> PreLoopV275(Results.ViewModels.ImageResultEntry ire)
+    private async Task<RunStates> PreLoopV275(Results.ViewModels.IImageResultDeviceEntry ire)
     {
         //If running a non-GS1 label then this will reset the match to file and sequences.
         //If running a GS1 label then edit mode is required.
@@ -342,28 +341,28 @@ public partial class Controller : ObservableObject
         }
         return State;
     }
-    private async Task<V275Result> ProcessV275(Results.ViewModels.ImageResultEntry ire)
+    private async Task<Result> ProcessV275(Results.ViewModels.IImageResultDeviceEntry ire)
     {
-        V275Result v275 = new()
+        Result v275 = new()
         {
             RunUID = RunUID,
-            ImageRollUID = ire.ImageRollUID,
+            ImageRollUID = ire.ImageResultEntry.ImageRollUID,
 
-            Source = ire.SourceImage,
+            Source = ire.ImageResultEntry.SourceImage,
         };
 
         //Start the V275 processing the image.
-        if (ire.ImageResults.SelectedImageRoll.ImageType == ImageRollImageTypes.Stored)
-            ire.V275ProcessCommand.Execute(Results.ViewModels.ImageResultEntryImageTypes.V275Stored);
+        if (ire.ImageResultsManager.SelectedImageRoll.ImageType == ImageRollImageTypes.Stored)
+           ((ImageResultDeviceEntry_V275) ire).ProcessCommand.Execute(Results.ViewModels.ImageResultEntryImageTypes.V275Stored);
         else
-            ire.V275ProcessCommand.Execute(Results.ViewModels.ImageResultEntryImageTypes.Source);
+            ((ImageResultDeviceEntry_V275)ire).ProcessCommand.Execute(Results.ViewModels.ImageResultEntryImageTypes.Source);
 
         //Wait for the V275 to finish processing the image or fault.
 
         await Task.Run(() =>
         {
             DateTime start = DateTime.Now;
-            while (ire.IsV275Working)
+            while (ire.IsWorking)
             {
                 if (RequestedState != RunStates.Running)
                 {
@@ -376,7 +375,7 @@ public partial class Controller : ObservableObject
                     _ = UpdateRunState(RunStates.Error);
                 }
 
-                if (ire.IsV275Faulted)
+                if (ire.IsFaulted)
                 {
                     Logger.LogError("Run: Error when interacting with V275.");
                     _ = UpdateRunState(RunStates.Error);
@@ -390,16 +389,16 @@ public partial class Controller : ObservableObject
         if (State != RunStates.Running)
             return null;
 
-        if (ire.V275ResultRow == null)
+        if (ire.Result == null)
         {
             Logger.LogError("Run: V275, No results returned.");
             _ = UpdateRunState(RunStates.Error);
             return null;
         }
 
-        v275.Report = ire.V275ResultRow.Report;
-        v275.Template = ire.V275ResultRow.Template;
-        v275.StoredImage = ire.V275ResultRow.StoredImage;
+        v275.Report = ire.Result.Report;
+        v275.Template = ire.Result.Template;
+        v275.StoredImage = ire.Result.StoredImage;
 
         return v275;
     }
@@ -413,22 +412,21 @@ public partial class Controller : ObservableObject
         }
         return State;
     }
-    private async Task<RunStates> PreLoopV5(Results.ViewModels.ImageResultEntry ire) => State;
-    private async Task<V5Result> ProcessV5(Results.ViewModels.ImageResultEntry ire)
+    private async Task<RunStates> PreLoopV5(Results.ViewModels.IImageResultDeviceEntry ire) => State;
+    private async Task<Result> ProcessV5(Results.ViewModels.IImageResultDeviceEntry ire)
     {
-        Results.Databases.V5Result v5 = new()
+        Results.Databases.Result v5 = new()
         {
             RunUID = RunUID,
-            ImageRollUID = ire.ImageRollUID,
-
-            Source = ire.SourceImage,
+            ImageRollUID = ire.ImageResultEntry.ImageRollUID,
+            Source = ire.ImageResultEntry.SourceImage,
         };
 
         if (V5.IsSimulator)
         {
-           if( ire.ImageResults.SelectedImageRoll.ImageType == ImageRollImageTypes.Stored)
+           if( ire.ImageResultsManager.SelectedImageRoll.ImageType == ImageRollImageTypes.Stored)
             {
-                if (!await V5.ChangeImage(ire.V5ResultRow.Stored.ImageBytes, false))
+                if (!await V5.ChangeImage(ire.StoredImage.ImageBytes, false))
                 {
                     Logger.LogError("Could not change the image.");
                     _ = UpdateRunState(RunStates.Error);
@@ -437,7 +435,7 @@ public partial class Controller : ObservableObject
             }
             else
             {
-                if (!await V5.ChangeImage(ire.SourceImage.ImageBytes, false))
+                if (!await V5.ChangeImage(ire.ImageResultEntry.SourceImage.ImageBytes, false))
                 {
                     Logger.LogError("Could not change the image.");
                     _ = UpdateRunState(RunStates.Error);
@@ -455,39 +453,39 @@ public partial class Controller : ObservableObject
             return null;
         }
 
-        v5.Template = JsonConvert.SerializeObject(V5.Config);
-        v5.Report = res.ReportJSON;
-        v5.StoredImage = JsonConvert.SerializeObject(new ImageEntry(ire.ImageRollUID, res.FullImage, 0));
+        v5.Template = V5.Config;
+        v5.Report = res.Report;
+        v5.StoredImage = JsonConvert.SerializeObject(new ImageEntry(ire.ImageResultEntry.ImageRollUID, res.Image, 0));
 
         if (UpdateUI)
-            _ = App.Current.Dispatcher.BeginInvoke(() => ire.V5ProcessResults(res));
+            _ = App.Current.Dispatcher.BeginInvoke(() => ((ImageResultDeviceEntry_V5)ire).ProcessFullReport(res));
 
         return v5;
     }
 
     private async Task<RunStates> PreRunL95() => State;
-    private async Task<RunStates> PreLoopL95(Results.ViewModels.ImageResultEntry ire) => State;
-    private async Task<L95xxResult> ProcessL95(Results.ViewModels.ImageResultEntry ire)
+    private async Task<RunStates> PreLoopL95(Results.ViewModels.IImageResultDeviceEntry ire) => State;
+    private async Task<L95xxResult> ProcessL95(Results.ViewModels.IImageResultDeviceEntry ire)
     {
         Results.Databases.L95xxResult l95 = new()
         {
             RunUID = RunUID,
-            ImageRollUID = ire.ImageRollUID,
+            ImageRollUID = ire.ImageResultEntry.ImageRollUID,
 
-            Source = ire.SourceImage,
+            Source = ire.ImageResultEntry.SourceImage,
         };
 
         Lvs95xx.lib.Core.Controllers.Label lab = new()
         {
             Config = new Lvs95xx.lib.Core.Controllers.Config()
             {
-                ApplicationStandard = ire.ImageResults.SelectedImageRoll.SelectedStandard.GetDescription(),
+                ApplicationStandard = ire.ImageResultsManager.SelectedImageRoll.SelectedStandard.GetDescription(),
             },
 
-            Image = ire.ImageResults.SelectedImageRoll.ImageType == ImageRollImageTypes.Stored ? ire.SourceImage.BitmapBytes : ire.L95xxStoredImage.BitmapBytes
+            Image = ire.ImageResultsManager.SelectedImageRoll.ImageType == ImageRollImageTypes.Stored ? ire.ImageResultEntry.SourceImage.BitmapBytes : ire.StoredImage.BitmapBytes
         };
-        if (ire.ImageResults.SelectedImageRoll.SelectedGS1Table != null)
-            lab.Config.Table = ((AvailableTables)ire.ImageResults.SelectedImageRoll.SelectedGS1Table).GetTableName();
+        if (ire.ImageResultsManager.SelectedImageRoll.SelectedGS1Table != AvailableTables.Unknown)
+            lab.Config.Table = ((AvailableTables)ire.ImageResultsManager.SelectedImageRoll.SelectedGS1Table).GetTableName();
 
         Lvs95xx.lib.Core.Controllers.FullReport res = await L95.ProcessLabelAsync(lab);
         if (res == null)
@@ -497,18 +495,18 @@ public partial class Controller : ObservableObject
             return null;
         }
 
-        l95.Report = JsonConvert.SerializeObject(res.Report);
-        l95.StoredImage = JsonConvert.SerializeObject(new ImageEntry(ire.ImageRollUID, res.Template.GetParameter<byte[]>("Report.Thumbnail"), 0));
+        l95.Report = res.Report;
+        l95.StoredImage = JsonConvert.SerializeObject(new ImageEntry(ire.ImageResultEntry.ImageRollUID, res.Template.GetParameter<byte[]>("Report.Thumbnail"), 0));
 
         if (UpdateUI)
-            _ = App.Current.Dispatcher.BeginInvoke(() => ire.L95xxProcessResults(res, true));
+            _ = App.Current.Dispatcher.BeginInvoke(() => ((ImageResultDeviceEntry_L95) ire).ProcessFullReport(res, true));
 
         return l95;
     }
 
-    private static bool HasSequencing(Results.ViewModels.ImageResultEntry label)
+    private static bool HasSequencing(Results.ViewModels.IImageResultDeviceEntry label)
     {
-        V275_REST_Lib.Models.Job template = JsonConvert.DeserializeObject<V275_REST_Lib.Models.Job>(label.V275ResultRow.Template);
+        V275_REST_Lib.Models.Job template = JsonConvert.DeserializeObject<V275_REST_Lib.Models.Job>(label.Result.TemplateString);
 
         foreach (V275_REST_Lib.Models.Job.Sector sect in template.sectors)
         {

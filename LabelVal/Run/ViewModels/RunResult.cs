@@ -21,7 +21,7 @@ using System.Windows;
 using System.Windows.Media;
 
 namespace LabelVal.Run.ViewModels;
-public partial class RunResult : ObservableRecipient, IImageResultEntry, IRecipient<PropertyChangedMessage<PrinterSettings>>
+public partial class RunResult : ObservableRecipient, IRecipient<PropertyChangedMessage<PrinterSettings>>
 {
     public GlobalAppSettings AppSettings => GlobalAppSettings.Instance;
 

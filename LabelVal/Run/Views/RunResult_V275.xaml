@@ -95,19 +95,19 @@
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource GroupHeaderCirlceButton}">
                                         <Setter Property="Visibility" Value="Visible"/>
                                         <Style.Triggers>
-                                            <DataTrigger Value="{x:Null}" Binding="{Binding ImageResults.SelectedNode}">
+                                            <DataTrigger Value="{x:Null}" Binding="{Binding ImageResults.SelectedV275Node}">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
-                                            <DataTrigger Value="False" Binding="{Binding ImageResults.SelectedNode.IsLoggedIn_Control}">
+                                            <DataTrigger Value="False" Binding="{Binding ImageResults.SelectedV275Node.IsLoggedIn_Control}">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
                                             <DataTrigger Value="0" Binding="{Binding V275StoredSectors.Count}">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
-                                            <DataTrigger Value="Running" Binding="{Binding ImageResults.SelectedNode.Connection.State}">
+                                            <DataTrigger Value="Running" Binding="{Binding ImageResults.SelectedV275Node.Connection.State}">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
-                                            <DataTrigger Value="Idle" Binding="{Binding ImageResults.SelectedNode.Connection.State}">
+                                            <DataTrigger Value="Idle" Binding="{Binding ImageResults.SelectedV275Node.Connection.State}">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                             </DataTrigger>
                                         </Style.Triggers>
