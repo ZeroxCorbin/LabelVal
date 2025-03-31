@@ -24,17 +24,17 @@
 
         <DataTemplate x:Key="V5Template">
             <!--  Define your V5 template here  -->
-            <local:ImageResultDeviceEntry_V5 DataContext="{Binding .}" />
+            <local:ImageResultDeviceEntry_V5 />
         </DataTemplate>
 
         <DataTemplate x:Key="V275Template">
             <!--  Define your V275 template here  -->
-            <local:ImageResultDeviceEntry_V275 DataContext="{Binding .}" />
+            <local:ImageResultDeviceEntry_V275 />
         </DataTemplate>
 
         <DataTemplate x:Key="L95Template">
             <!--  Define your L95 template here  -->
-            <local:ImageResultDeviceEntry_L95 DataContext="{Binding .}" />
+            <local:ImageResultDeviceEntry_L95 />
         </DataTemplate>
 
         <helpers:ImageResultDeviceEntryTemplateSelector
@@ -45,121 +45,12 @@
             V5Template="{StaticResource V5Template}" />
 
         <DataTemplate x:Key="V275Buttons">
-            <DockPanel DataContext="{Binding Content}">
-
-                <!--  V275  -->
-                <Button
-                    Width="48"
-                    Height="48"
-                    Margin="0"
-                    Padding="0"
-                    d:Visibility="Visible"
-                    Background="{DynamicResource V275_Brush}"
-                    Command="{Binding ProcessCommand}"
-                    CommandParameter="{x:Static vm:ImageResultEntryDevices.V275}">
-
-                    <Grid>
-
-                        <mah:Badged
-                            BadgeBackground="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
-                            BadgeMargin="3"
-                            BadgePlacementMode="BottomRight">
-                            <mah:Badged.Badge>
-                                <iconPacks:PackIconMaterial Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}" Kind="MagicStaff" />
-                            </mah:Badged.Badge>
-
-                            <mah:Badged.Style>
-                                <Style TargetType="mah:Badged">
-
-
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ImageResultsManager.SelectedImageRoll.SectorType}" Value="Dynamic">
-                                            <Setter Property="Visibility" Value="Visible" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-
-                                </Style>
-                            </mah:Badged.Style>
-
-                        </mah:Badged>
-
-                        <Grid>
-                            <mah:ProgressRing
-                                Width="28"
-                                Height="28"
-                                Foreground="White"
-                                IsActive="{Binding IsV275Working}" />
-                            <Image
-                                Width="24"
-                                Height="24"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Source="/Assets/Images/v275-white-outline.ico" />
-                        </Grid>
-                    </Grid>
-
-                    <Button.Style>
-                        <Style BasedOn="{StaticResource MahApps.Styles.Button.MetroSquare}" TargetType="{x:Type Button}">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                            <Setter Property="BorderBrush" Value="{DynamicResource V275_Brush}" />
-
-                            <Style.Triggers>
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding ImageResultsManager.SelectedV275Node.Controller.IsSimulator}" Value="False" />
-                                        <Condition Binding="{Binding ImageResultsManager.SelectedV275Node.Controller.IsLoggedIn_Control}" Value="True" />
-                                    </MultiDataTrigger.Conditions>
-
-                                    <Setter Property="Visibility" Value="Visible" />
-                                    <Setter Property="ToolTip" Value="Print the source image and read the results." />
-                                </MultiDataTrigger>
-
-
-                                <!--
-                                    Is Logged In with Simulator
-                                    No Stored Results
-                                -->
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding ImageResultsManager.SelectedV275Node.Controller.IsSimulator}" Value="True" />
-                                        <Condition Binding="{Binding ImageResultsManager.SelectedV275Node.Controller.IsLoggedIn}" Value="True" />
-                                        <Condition Binding="{Binding V275ResultRow, Converter={StaticResource IsNullOrEmpty}}" Value="True" />
-                                    </MultiDataTrigger.Conditions>
-
-                                    <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}" />
-                                    <Setter Property="Visibility" Value="Visible" />
-                                    <Setter Property="ToolTip" Value="V275: Process the source image with the simulator." />
-                                </MultiDataTrigger>
-
-                                <!--
-                                    Is Logged In with Simulator
-                                    Has Stored Results
-                                -->
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding ImageResultsManager.SelectedV275Node.Controller.IsSimulator}" Value="True" />
-                                        <Condition Binding="{Binding ImageResultsManager.SelectedV275Node.Controller.IsLoggedIn}" Value="True" />
-                                        <Condition Binding="{Binding V275ResultRow.StoredImage, Converter={StaticResource IsNullOrEmpty}}" Value="False" />
-                                    </MultiDataTrigger.Conditions>
-
-                                    <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}" />
-                                    <Setter Property="Visibility" Value="Visible" />
-                                    <Setter Property="ToolTip" Value="V275: Process the stored image with the simulator." />
-                                </MultiDataTrigger>
-
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
-            </DockPanel>
-        </DataTemplate>
-
-        <DataTemplate x:Key="V5Buttons">
             <DockPanel>
 
+                <!--  V275  -->
                 <Border
                     Margin="3,0,0,0"
+                    BorderBrush="{DynamicResource V275_Brush}"
                     BorderThickness="1"
                     CornerRadius="3">
 
@@ -168,37 +59,248 @@
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.Offline}">
                                     <Setter Property="Visibility" Value="Collapsed" />
-                                    <Setter Property="ToolTip" Value="Collapsed" />
                                 </DataTrigger>
 
                                 <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorDetect}">
                                     <Setter Property="ToolTip" Value="V5: Process and Detect sectors." />
-                                    <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}" />
                                 </DataTrigger>
 
                                 <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorRestore}">
                                     <Setter Property="ToolTip" Value="V5: Process and Restore sectors." />
-                                    <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}" />
                                 </DataTrigger>
 
                                 <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorTrigger}">
                                     <Setter Property="ToolTip" Value="V5: Process only." />
-                                    <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}" />
                                 </DataTrigger>
 
                                 <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.CameraDetect}">
                                     <Setter Property="ToolTip" Value="V5: Trigger, Detect sectors, and Trigger." />
-                                    <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}" />
                                 </DataTrigger>
 
                                 <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.CameraRestore}">
                                     <Setter Property="ToolTip" Value="V5: Trigger, Restore sectors, and Trigger." />
-                                    <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}" />
                                 </DataTrigger>
 
                                 <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.CameraTrigger}">
                                     <Setter Property="ToolTip" Value="V5: Trigger." />
-                                    <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+
+                    <Button
+                        Width="48"
+                        Height="48"
+                        HorizontalContentAlignment="Stretch"
+                        VerticalContentAlignment="Stretch"
+                        Command="{Binding ProcessCommand}"
+                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                        Style="{StaticResource MahApps.Styles.Button.Hamburger}">
+
+                        <DockPanel>
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                DockPanel.Dock="Top"
+                                Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                                Text="V275"
+                                Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                            <Grid Background="{DynamicResource V275_Brush}">
+
+                                <mah:MetroProgressBar
+                                    Width="62"
+                                    Height="6"
+                                    Padding="0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Foreground="White"
+                                    IsIndeterminate="{Binding IsWorking}"
+                                    Visibility="{Binding IsWorking, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                                <Grid
+                                    Margin="0,6"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Bottom">
+                                    <Grid.Style>
+                                        <Style TargetType="{x:Type Grid}">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.CameraDetect}">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+
+                                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.CameraRestore}">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+
+                                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.CameraTrigger}">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Style>
+
+                                    <iconPacks:PackIconMaterial
+                                        Width="18"
+                                        Height="18"
+                                        Margin="3,0"
+                                        VerticalAlignment="Center"
+                                        Kind="CameraIris" />
+                                </Grid>
+
+                                <Grid
+                                    Margin="0,6"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Bottom">
+                                    <Grid.Style>
+                                        <Style TargetType="{x:Type Grid}">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorDetect}">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorRestore}">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorTrigger}">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Style>
+
+                                    <iconPacks:PackIconMaterial
+                                        Width="18"
+                                        Height="18"
+                                        Margin="3,0"
+                                        VerticalAlignment="Center"
+                                        Kind="Image" />
+
+                                </Grid>
+
+
+                                <Grid
+                                    Margin="0,6"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Bottom">
+                                    <Grid.Style>
+                                        <Style TargetType="{x:Type Grid}">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorDetect}">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.CameraDetect}">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Style>
+
+                                    <iconPacks:PackIconMaterial
+                                        Width="18"
+                                        Height="18"
+                                        Margin="3,0"
+                                        VerticalAlignment="Center"
+                                        Kind="SmokeDetector" />
+                                </Grid>
+
+                                <Grid
+                                    Margin="0,6"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Bottom">
+                                    <Grid.Style>
+                                        <Style TargetType="{x:Type Grid}">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorRestore}">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.CameraRestore}">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Style>
+
+                                    <iconPacks:PackIconMaterial
+                                        Width="18"
+                                        Height="18"
+                                        Margin="3,0"
+                                        VerticalAlignment="Center"
+                                        Kind="Restore" />
+                                </Grid>
+
+                                <Grid
+                                    Margin="0,6"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Bottom">
+                                    <Grid.Style>
+                                        <Style TargetType="{x:Type Grid}">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorTrigger}">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.CameraTrigger}">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Style>
+
+                                    <iconPacks:PackIconMaterial
+                                        Width="18"
+                                        Height="18"
+                                        Margin="3,0"
+                                        VerticalAlignment="Center"
+                                        Kind="Crosshairs" />
+                                </Grid>
+                            </Grid>
+                        </DockPanel>
+                    </Button>
+                </Border>
+            </DockPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="V5Buttons">
+            <DockPanel>
+
+                <Border
+                    Margin="3,0,0,0"
+                    BorderBrush="{DynamicResource V5_Brush}"
+                    BorderThickness="1"
+                    CornerRadius="3">
+
+                    <Border.Style>
+                        <Style TargetType="{x:Type Border}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.Offline}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+
+                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorDetect}">
+                                    <Setter Property="ToolTip" Value="V5: Process and Detect sectors." />
+                                </DataTrigger>
+
+                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorRestore}">
+                                    <Setter Property="ToolTip" Value="V5: Process and Restore sectors." />
+                                </DataTrigger>
+
+                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorTrigger}">
+                                    <Setter Property="ToolTip" Value="V5: Process only." />
+                                </DataTrigger>
+
+                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.CameraDetect}">
+                                    <Setter Property="ToolTip" Value="V5: Trigger, Detect sectors, and Trigger." />
+                                </DataTrigger>
+
+                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.CameraRestore}">
+                                    <Setter Property="ToolTip" Value="V5: Trigger, Restore sectors, and Trigger." />
+                                </DataTrigger>
+
+                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.CameraTrigger}">
+                                    <Setter Property="ToolTip" Value="V5: Trigger." />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -211,11 +313,8 @@
                         VerticalContentAlignment="Stretch"
                         Command="{Binding ProcessCommand}"
                         CommandParameter="{x:Static vm:ImageResultEntryDevices.V5}"
-                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
-                        <Button.Style>
-                            <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}" />
-                        </Button.Style>
-
+                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                        Style="{StaticResource MahApps.Styles.Button.Hamburger}">
 
                         <DockPanel>
                             <TextBlock
@@ -226,45 +325,36 @@
                                 Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                             <Grid Background="{DynamicResource V5_Brush}">
-                                <!--<Image
-                     Width="24"
-                     Height="24"
-                     HorizontalAlignment="Left"
-                     VerticalAlignment="Center"
-                     Source="/Assets/Images/v5-white-outline.ico" />-->
-                                <Grid HorizontalAlignment="Left" VerticalAlignment="Center">
+
+                                <mah:MetroProgressBar
+                                    Width="62"
+                                    Height="6"
+                                    Padding="0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Foreground="White"
+                                    IsIndeterminate="{Binding IsWorking}"
+                                    Visibility="{Binding IsWorking, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                                <Grid
+                                    Margin="0,6"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Bottom">
                                     <Grid.Style>
                                         <Style TargetType="{x:Type Grid}">
                                             <Setter Property="Visibility" Value="Collapsed" />
                                             <Style.Triggers>
-                                                <!--<MultiDataTrigger>
-                                     <MultiDataTrigger.Conditions>
-                                         <Condition Binding="{Binding ImageResultsManager.SelectedV5.Controller.IsSimulator}" Value="True" />
-                                         <Condition Binding="{Binding ImageResultsManager.SelectedV5.Controller.IsConnected}" Value="True" />
-                                         <Condition Binding="{Binding V5ResultRow, Converter={StaticResource IsNullOrEmpty}}" Value="True" />
-                                     </MultiDataTrigger.Conditions>
-
-                                     <Setter Property="Visibility" Value="Visible" />
-                                 </MultiDataTrigger>-->
-
-                                                <!--<MultiDataTrigger>
-                                     <MultiDataTrigger.Conditions>
-                                         <Condition Binding="{Binding ImageResultsManager.SelectedV5.Controller.IsSimulator}" Value="True" />
-                                         <Condition Binding="{Binding ImageResultsManager.SelectedV5.Controller.IsConnected}" Value="True" />
-                                         <Condition Binding="{Binding V5ResultRow, Converter={StaticResource IsNullOrEmpty}}" Value="False" />
-                                     </MultiDataTrigger.Conditions>
-
-                                     <Setter Property="Visibility" Value="Visible" />
-                                 </MultiDataTrigger>-->
-
-                                                <MultiDataTrigger>
-                                                    <MultiDataTrigger.Conditions>
-                                                        <Condition Binding="{Binding ImageResultsManager.SelectedV5.Controller.IsSimulator}" Value="False" />
-                                                        <Condition Binding="{Binding ImageResultsManager.SelectedV5.Controller.IsConnected}" Value="True" />
-                                                    </MultiDataTrigger.Conditions>
-
+                                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.CameraDetect}">
                                                     <Setter Property="Visibility" Value="Visible" />
-                                                </MultiDataTrigger>
+                                                </DataTrigger>
+
+                                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.CameraRestore}">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+
+                                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.CameraTrigger}">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </Grid.Style>
@@ -275,20 +365,118 @@
                                         Margin="3,0"
                                         VerticalAlignment="Center"
                                         Kind="CameraIris" />
-                                    <mah:ProgressRing
-                                        Width="22"
-                                        Height="22"
-                                        Margin="0,0,1,0"
-                                        Foreground="White"
-                                        IsActive="{Binding IsV5Working}" />
                                 </Grid>
 
+                                <Grid
+                                    Margin="0,6"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Bottom">
+                                    <Grid.Style>
+                                        <Style TargetType="{x:Type Grid}">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorDetect}">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorRestore}">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorTrigger}">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Style>
+
+                                    <iconPacks:PackIconMaterial
+                                        Width="18"
+                                        Height="18"
+                                        Margin="3,0"
+                                        VerticalAlignment="Center"
+                                        Kind="Image" />
+
+                                </Grid>
+
+
+                                <Grid
+                                    Margin="0,6"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Bottom">
+                                    <Grid.Style>
+                                        <Style TargetType="{x:Type Grid}">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorDetect}">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.CameraDetect}">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Style>
+
+                                    <iconPacks:PackIconMaterial
+                                        Width="18"
+                                        Height="18"
+                                        Margin="3,0"
+                                        VerticalAlignment="Center"
+                                        Kind="SmokeDetector" />
+                                </Grid>
+
+                                <Grid
+                                    Margin="0,6"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Bottom">
+                                    <Grid.Style>
+                                        <Style TargetType="{x:Type Grid}">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorRestore}">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.CameraRestore}">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Style>
+
+                                    <iconPacks:PackIconMaterial
+                                        Width="18"
+                                        Height="18"
+                                        Margin="3,0"
+                                        VerticalAlignment="Center"
+                                        Kind="Restore" />
+                                </Grid>
+
+                                <Grid
+                                    Margin="0,6"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Bottom">
+                                    <Grid.Style>
+                                        <Style TargetType="{x:Type Grid}">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorTrigger}">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.CameraTrigger}">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Style>
+
+                                    <iconPacks:PackIconMaterial
+                                        Width="18"
+                                        Height="18"
+                                        Margin="3,0"
+                                        VerticalAlignment="Center"
+                                        Kind="Crosshairs" />
+                                </Grid>
                             </Grid>
-
                         </DockPanel>
-
-
-
                     </Button>
                 </Border>
 
@@ -296,26 +484,24 @@
         </DataTemplate>
 
         <DataTemplate x:Key="L95Buttons">
-            <DockPanel DataContext="{Binding Content}">
+            <DockPanel>
                 <!--  L95xx Select  -->
                 <ToggleButton
                     Width="48"
                     d:Visibility="Visible"
                     BorderBrush="{DynamicResource L95xx_Brush}"
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                    IsChecked="{Binding ImageResultsManager.IsL95xxSelected}">
+                    IsChecked="{Binding IsSelected}">
                     <ToggleButton.Style>
                         <Style BasedOn="{StaticResource MahApps.Styles.ToggleButton}" TargetType="ToggleButton">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                            <Setter Property="ToolTip" Value="" />
                             <Setter Property="Background" Value="{DynamicResource MahApps.HamburgerMenu.Pane.Background}" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding ImageResultsManager.IsL95xxSelected}" Value="True">
+                                <DataTrigger Binding="{Binding IsSelected}" Value="True">
                                     <Setter Property="ToolTip" Value="L95xx Data is redirected here." />
                                     <Setter Property="Background" Value="{DynamicResource L95xx_Brush}" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding ImageResultsManager.SelectedL95.Controller.IsConnected}" Value="True">
-                                    <Setter Property="Visibility" Value="Visible" />
+                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.Offline}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                             </Style.Triggers>
 
@@ -331,74 +517,218 @@
                 </ToggleButton>
 
                 <!--  L95xx Process Image  -->
-                <Button
-                    Width="48"
-                    Height="48"
-                    d:Visibility="Visible"
-                    Background="{DynamicResource L95xx_Brush}"
-                    Command="{Binding ProcessCommand}"
-                    CommandParameter="{x:Static vm:ImageResultEntryDevices.L95}"
-                    IsEnabled="{Binding IsL95xxWorking, Converter={StaticResource InvertBool}}">
+                <Border
+                    Margin="3,0,0,0"
+                    BorderBrush="{DynamicResource L95xx_Brush}"
+                    BorderThickness="1"
+                    CornerRadius="3">
 
-                    <Grid>
-                        <mah:ProgressRing
-                            Width="28"
-                            Height="28"
-                            Foreground="White"
-                            IsActive="{Binding IsL95xxWorking}" />
-                        <Image
-                            Width="24"
-                            Height="24"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Source="/Assets/Images/l95xx-white-outline.ico" />
-                    </Grid>
-
-                    <Button.Style>
-                        <Style BasedOn="{StaticResource MahApps.Styles.Button.MetroSquare}" TargetType="{x:Type Button}">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                            <Setter Property="BorderBrush" Value="{DynamicResource L95xx_Brush}" />
+                    <Border.Style>
+                        <Style TargetType="{x:Type Border}">
                             <Style.Triggers>
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding ImageResultsManager.SelectedL95.Controller.IsConnected}" Value="True" />
-                                        <Condition Binding="{Binding L95xxResultRow, Converter={StaticResource IsNullOrEmpty}}" Value="True" />
-                                        <Condition Binding="{Binding ImageResultsManager.SelectedL95.Controller.Process, Converter={StaticResource IsNullOrEmpty}}" Value="False" />
-                                    </MultiDataTrigger.Conditions>
+                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.Offline}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
 
-                                    <Setter Property="Visibility" Value="Visible" />
-                                    <Setter Property="CommandParameter" Value="{x:Static vm:ImageResultEntryImageTypes.Source}" />
-                                    <Setter Property="ToolTip" Value="95xx: Process the source image with the simulator." />
-                                    <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}" />
-                                </MultiDataTrigger>
+                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorDetect}">
+                                    <Setter Property="ToolTip" Value="V5: Process and Detect sectors." />
+                                </DataTrigger>
 
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding ImageResultsManager.SelectedL95.Controller.IsConnected}" Value="True" />
-                                        <Condition Binding="{Binding L95xxResultRow, Converter={StaticResource IsNullOrEmpty}}" Value="False" />
-                                        <Condition Binding="{Binding ImageResultsManager.SelectedL95.Controller.Process, Converter={StaticResource IsNullOrEmpty}}" Value="False" />
-                                    </MultiDataTrigger.Conditions>
+                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorRestore}">
+                                    <Setter Property="ToolTip" Value="V5: Process and Restore sectors." />
+                                </DataTrigger>
 
-                                    <Setter Property="Visibility" Value="Visible" />
-                                    <Setter Property="CommandParameter" Value="{x:Static vm:ImageResultEntryImageTypes.L95xxStored}" />
-                                    <Setter Property="ToolTip" Value="L95xx: Process the stored image with the simulator." />
-                                    <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}" />
-                                </MultiDataTrigger>
+                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorTrigger}">
+                                    <Setter Property="ToolTip" Value="V5: Process only." />
+                                </DataTrigger>
 
-                                <!--<MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding ImageResultsManager.SelectedV5.Controller.IsSimulator}" Value="False" />
-                                        <Condition Binding="{Binding ImageResultsManager.SelectedV5.Controller.IsConnected}" Value="True" />
-                                    </MultiDataTrigger.Conditions>
+                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.CameraDetect}">
+                                    <Setter Property="ToolTip" Value="V5: Trigger, Detect sectors, and Trigger." />
+                                </DataTrigger>
 
-                                    <Setter Property="Visibility" Value="Visible" />
-                                    <Setter Property="CommandParameter" Value="sensor" />
-                                    <Setter Property="ToolTip" Value="V5: Process the sensor image." />
-                                </MultiDataTrigger>-->
+                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.CameraRestore}">
+                                    <Setter Property="ToolTip" Value="V5: Trigger, Restore sectors, and Trigger." />
+                                </DataTrigger>
+
+                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.CameraTrigger}">
+                                    <Setter Property="ToolTip" Value="V5: Trigger." />
+                                </DataTrigger>
                             </Style.Triggers>
                         </Style>
-                    </Button.Style>
-                </Button>
+                    </Border.Style>
+
+                    <Button
+                        Width="48"
+                        Height="48"
+                        HorizontalContentAlignment="Stretch"
+                        VerticalContentAlignment="Stretch"
+                        Command="{Binding ProcessCommand}"
+                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                        Style="{StaticResource MahApps.Styles.Button.Hamburger}">
+
+                        <DockPanel>
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                DockPanel.Dock="Top"
+                                Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                                Text="L95"
+                                Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                            <Grid Background="{DynamicResource L95xx_Brush}">
+
+                                <mah:MetroProgressBar
+                                    Width="62"
+                                    Height="6"
+                                    Padding="0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Foreground="White"
+                                    IsIndeterminate="{Binding IsWorking}"
+                                    Visibility="{Binding IsWorking, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                                <Grid
+                                    Margin="0,6"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Bottom">
+                                    <Grid.Style>
+                                        <Style TargetType="{x:Type Grid}">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.CameraDetect}">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+
+                                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.CameraRestore}">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+
+                                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.CameraTrigger}">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Style>
+
+                                    <iconPacks:PackIconMaterial
+                                        Width="18"
+                                        Height="18"
+                                        Margin="3,0"
+                                        VerticalAlignment="Center"
+                                        Kind="CameraIris" />
+                                </Grid>
+
+                                <Grid
+                                    Margin="0,6"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Bottom">
+                                    <Grid.Style>
+                                        <Style TargetType="{x:Type Grid}">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorDetect}">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorRestore}">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorTrigger}">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Style>
+
+                                    <iconPacks:PackIconMaterial
+                                        Width="18"
+                                        Height="18"
+                                        Margin="3,0"
+                                        VerticalAlignment="Center"
+                                        Kind="Image" />
+
+                                </Grid>
+
+
+                                <Grid
+                                    Margin="0,6"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Bottom">
+                                    <Grid.Style>
+                                        <Style TargetType="{x:Type Grid}">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorDetect}">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.CameraDetect}">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Style>
+
+                                    <iconPacks:PackIconMaterial
+                                        Width="18"
+                                        Height="18"
+                                        Margin="3,0"
+                                        VerticalAlignment="Center"
+                                        Kind="SmokeDetector" />
+                                </Grid>
+
+                                <Grid
+                                    Margin="0,6"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Bottom">
+                                    <Grid.Style>
+                                        <Style TargetType="{x:Type Grid}">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorRestore}">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.CameraRestore}">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Style>
+
+                                    <iconPacks:PackIconMaterial
+                                        Width="18"
+                                        Height="18"
+                                        Margin="3,0"
+                                        VerticalAlignment="Center"
+                                        Kind="Restore" />
+                                </Grid>
+
+                                <Grid
+                                    Margin="0,6"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Bottom">
+                                    <Grid.Style>
+                                        <Style TargetType="{x:Type Grid}">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorTrigger}">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.CameraTrigger}">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Style>
+
+                                    <iconPacks:PackIconMaterial
+                                        Width="18"
+                                        Height="18"
+                                        Margin="3,0"
+                                        VerticalAlignment="Center"
+                                        Kind="Crosshairs" />
+                                </Grid>
+                            </Grid>
+                        </DockPanel>
+                    </Button>
+                </Border>
             </DockPanel>
         </DataTemplate>
 
@@ -415,7 +745,6 @@
 
         <!--  Top Bar  -->
         <md:Card
-            Height="48"
             Margin="3"
             HorizontalAlignment="Left"
             Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
@@ -459,11 +788,11 @@
                     ToolTip="Print the source image.">
 
                     <Grid>
-                        <mah:ProgressRing
+                        <!--<mah:ProgressRing
                             Width="28"
                             Height="28"
                             Foreground="White"
-                            IsActive="{Binding IsV275Working}" />
+                            IsActive="{Binding IsV275Working}" />-->
 
                         <iconPacks:PackIconMaterial
                             Width="24"
@@ -475,7 +804,13 @@
                     </Grid>
                 </Button>
 
-                <ItemsControl ItemTemplateSelector="{StaticResource ImageResultDeviceEntryButtonsTemplateSelector}" ItemsSource="{Binding ImageResultDeviceEntries}" />
+                <ItemsControl ItemTemplateSelector="{StaticResource ImageResultDeviceEntryButtonsTemplateSelector}" ItemsSource="{Binding ImageResultDeviceEntries}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <DockPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
 
             </DockPanel>
         </md:Card>
@@ -682,7 +1017,13 @@
 
                     <local:ImageResultEntry_Images DataContext="{Binding}" />
 
-                    <ItemsControl ItemTemplateSelector="{StaticResource ImageResultDeviceEntryTemplateSelector}" ItemsSource="{Binding ImageResultDeviceEntries}" />
+                    <ItemsControl ItemTemplateSelector="{StaticResource ImageResultDeviceEntryTemplateSelector}" ItemsSource="{Binding ImageResultDeviceEntries}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <DockPanel />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
                 </DockPanel>
             </ScrollViewer>
         </DockPanel>

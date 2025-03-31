@@ -22,7 +22,7 @@ public partial class ImageResultDeviceEntry_V275(ImageResultEntry imageResultsEn
     public string Version => throw new NotImplementedException();
 
     [ObservableProperty] private Databases.Result resultRow;
-    partial void OnResultRowChanged(Databases.Result value) => StoredImage = ResultRow?.Stored;
+    partial void OnResultRowChanged(Result value) { StoredImage = value?.Stored; HandlerUpdate(); }
     public Result Result { get => ResultRow; set { ResultRow = value; HandlerUpdate(); } }
 
     [ObservableProperty] private ImageEntry storedImage;
@@ -55,7 +55,7 @@ public partial class ImageResultDeviceEntry_V275(ImageResultEntry imageResultsEn
     [ObservableProperty] private bool isSelected = false;
     partial void OnIsSelectedChanging(bool value) { if (value) ImageResultEntry.ImageResultsManager.ResetSelected(Device); }
 
-    public LabelHandlers Handler => ImageResultsManager.SelectedV275Node.Controller.IsLoggedIn_Control ? ImageResultsManager.SelectedV275Node.Controller.IsSimulator
+    public LabelHandlers Handler => ImageResultsManager?.SelectedV275Node?.Controller != null && ImageResultsManager.SelectedV275Node.Controller.IsLoggedIn_Control ? ImageResultsManager.SelectedV275Node.Controller.IsSimulator
             ? ImageResultsManager.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic
                 ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
                     ? LabelHandlers.SimulatorRestore
@@ -149,7 +149,7 @@ public partial class ImageResultDeviceEntry_V275(ImageResultEntry imageResultsEn
     [RelayCommand]
     public void Store()
     {
-        if (StoredSectors.Count == 0)
+        if (CurrentSectors.Count == 0)
         {
             Logger.LogError("No sectors to store.");
             return;
@@ -173,6 +173,9 @@ public partial class ImageResultDeviceEntry_V275(ImageResultEntry imageResultsEn
 
         if (ImageResultEntry.SelectedDatabase.InsertOrReplace_Result(res) == null)
             Logger.LogError($"Error while storing results to: {ImageResultEntry.SelectedDatabase.File.Name}");
+
+        GetStored();
+        ClearCurrent();
     }
 
     [RelayCommand]

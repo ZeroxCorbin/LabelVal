@@ -28,7 +28,7 @@ public partial class ImageResultDeviceEntry_L95(ImageResultEntry imageResultsEnt
     public string Version => throw new NotImplementedException();
 
     [ObservableProperty] private Databases.L95xxResult resultRow;
-    partial void OnResultRowChanged(Databases.L95xxResult value) => StoredImage = ResultRow?.Stored;
+    partial void OnResultRowChanged(L95xxResult value) { StoredImage = value?.Stored; HandlerUpdate(); }
     public Result Result { get => ResultRow; set { ResultRow = (L95xxResult)value; HandlerUpdate(); } }
 
     [ObservableProperty] private ImageEntry storedImage;
@@ -61,7 +61,7 @@ public partial class ImageResultDeviceEntry_L95(ImageResultEntry imageResultsEnt
 
     ////95xx Only
     //[ObservableProperty] private Sectors.Interfaces.ISector currentSectorSelected;
-    public LabelHandlers Handler => ImageResultsManager.SelectedL95.Controller.IsConnected ? ImageResultsManager.SelectedL95.Controller.IsSimulator
+    public LabelHandlers Handler => ImageResultsManager?.SelectedL95?.Controller != null && ImageResultsManager.SelectedL95.Controller.IsConnected ? ImageResultsManager.SelectedL95.Controller.IsSimulator
             ? ImageResultsManager.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic
                 ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
                     ? LabelHandlers.SimulatorRestore
@@ -137,7 +137,7 @@ public partial class ImageResultDeviceEntry_L95(ImageResultEntry imageResultsEnt
     [RelayCommand]
     public void Store()
     {
-        if (StoredSectors.Count == 0)
+        if (CurrentSectors.Count == 0)
         {
             Logger.LogError("No sectors to store.");
             return;
@@ -162,6 +162,9 @@ public partial class ImageResultDeviceEntry_L95(ImageResultEntry imageResultsEnt
 
         if (ImageResultEntry.SelectedDatabase.InsertOrReplace_Result(res) == null)
             Logger.LogError($"Error while storing results to: {ImageResultEntry.SelectedDatabase.File.Name}");
+
+        GetStored();
+        ClearCurrent();
     }
 
     [RelayCommand]

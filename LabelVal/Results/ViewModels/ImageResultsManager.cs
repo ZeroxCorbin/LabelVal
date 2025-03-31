@@ -132,7 +132,7 @@ public partial class ImageResultsManager : ObservableRecipient,
 
         RequestMessage<PrinterSettings> ret2 = WeakReferenceMessenger.Default.Send(new RequestMessage<PrinterSettings>());
         if (ret2.HasReceivedResponse)
-            SelectedPrinter = ret2.Response;
+            Receive(new PropertyChangedMessage<PrinterSettings>("", "" , null, ret2.Response));
 
         //RequestMessage<ImageRollEntry> ret3 = WeakReferenceMessenger.Default.Send(new RequestMessage<ImageRollEntry>());
         //if (ret3.HasReceivedResponse)
@@ -140,15 +140,15 @@ public partial class ImageResultsManager : ObservableRecipient,
 
         RequestMessage<Databases.ImageResultsDatabase> ret4 = WeakReferenceMessenger.Default.Send(new RequestMessage<Databases.ImageResultsDatabase>());
         if (ret4.HasReceivedResponse)
-            SelectedDatabase = ret4.Response;
+            Receive(new PropertyChangedMessage<Databases.ImageResultsDatabase>("", "", null, ret4.Response));
 
         RequestMessage<Scanner> ret5 = WeakReferenceMessenger.Default.Send(new RequestMessage<Scanner>());
         if (ret5.HasReceivedResponse)
-            SelectedV5 = ret5.Response;
+            Receive(new PropertyChangedMessage<Scanner>("", "", null, ret5.Response));
 
         RequestMessage<Verifier> ret6 = WeakReferenceMessenger.Default.Send(new RequestMessage<Verifier>());
         if (ret6.HasReceivedResponse)
-            SelectedL95 = ret6.Response;
+            Receive(new PropertyChangedMessage<Verifier>("", "", null, ret6.Response));
 
     }
 
@@ -574,32 +574,6 @@ public partial class ImageResultsManager : ObservableRecipient,
     #region Recieve Messages
 
     /// <summary>
-    /// Recieve the selected Node.
-    /// Attach to the PropertyChanged event of the new Node.Controller.
-    /// </summary>
-    /// <param name="message"></param>
-    public void Receive(PropertyChangedMessage<Node> message)
-    {
-        if(SelectedV275Node != null && SelectedV275Node.Controller != null)
-            SelectedV275Node.Controller.PropertyChanged -= V275Controller_PropertyChanged;
-
-        SelectedV275Node = message.NewValue;
-
-        if (SelectedV275Node != null && SelectedV275Node.Controller != null)
-            SelectedV275Node.Controller.PropertyChanged += V275Controller_PropertyChanged;
-    }
-
-    /// <summary>
-    /// This will update the Handler for all ImageResultDeviceEntries.
-    /// </summary>
-    private void V275Controller_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName is nameof(Node.Controller.IsSimulator) or nameof(Node.Controller.IsLoggedIn_Control))
-            foreach (ImageResultEntry lab in ImageResultsList)
-                lab.HandlerUpdate(ImageResultEntryDevices.V275);
-    }
-
-    /// <summary>
     /// Recieve the selected ImageRoll.
     /// Attach to the PropertyChanged event of the new ImageRoll.
     /// </summary>
@@ -614,19 +588,47 @@ public partial class ImageResultsManager : ObservableRecipient,
         if (SelectedImageRoll != null)
             SelectedImageRoll.PropertyChanged += SelectedImageRoll_PropertyChanged;
     }
-
     /// <summary>
     /// This will update the Handler for all ImageResultDeviceEntries.
     /// </summary>
     private void SelectedImageRoll_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        if(e.PropertyName is nameof(ImageRollEntry.SectorType))
+        if (e.PropertyName is nameof(ImageRollEntry.SectorType))
             foreach (ImageResultEntry lab in ImageResultsList)
                 lab.HandlerUpdate(ImageResultEntryDevices.All);
     }
 
     public void Receive(PropertyChangedMessage<PrinterSettings> message) => SelectedPrinter = message.NewValue;
     public void Receive(PropertyChangedMessage<Databases.ImageResultsDatabase> message) => SelectedDatabase = message.NewValue;
+
+    /// <summary>
+    /// Recieve the selected Node.
+    /// Attach to the PropertyChanged event of the new Node.Controller.
+    /// </summary>
+    /// <param name="message"></param>
+    public void Receive(PropertyChangedMessage<Node> message)
+    {
+        if (SelectedV275Node != null && SelectedV275Node.Controller != null)
+            SelectedV275Node.Controller.PropertyChanged -= V275Controller_PropertyChanged;
+
+        SelectedV275Node = message.NewValue;
+
+        if (SelectedV275Node != null && SelectedV275Node.Controller != null)
+            SelectedV275Node.Controller.PropertyChanged += V275Controller_PropertyChanged;
+
+        foreach (ImageResultEntry lab in ImageResultsList)
+            lab.HandlerUpdate(ImageResultEntryDevices.V275);
+    }
+    /// <summary>
+    /// This will update the Handler for all ImageResultDeviceEntries.
+    /// </summary>
+    private void V275Controller_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName is nameof(Node.Controller.IsSimulator) or nameof(Node.Controller.IsLoggedIn_Control))
+            foreach (ImageResultEntry lab in ImageResultsList)
+                lab.HandlerUpdate(ImageResultEntryDevices.V275);
+    }
+
     public void Receive(PropertyChangedMessage<Scanner> message)
     {
         if (SelectedV5 != null && SelectedV5.Controller != null)
@@ -637,8 +639,10 @@ public partial class ImageResultsManager : ObservableRecipient,
         if (SelectedV5 != null && SelectedV5.Controller != null)
             SelectedV5.Controller.PropertyChanged += V5Controller_PropertyChanged;
 
-    }
+        foreach (ImageResultEntry lab in ImageResultsList)
+            lab.HandlerUpdate(ImageResultEntryDevices.V5);
 
+    }
     private void V5Controller_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
         if (e.PropertyName is nameof(V5_REST_Lib.Controllers.Controller.IsSimulator) or nameof(V5_REST_Lib.Controllers.Controller.IsConnected))
@@ -655,8 +659,10 @@ public partial class ImageResultsManager : ObservableRecipient,
 
         if (SelectedL95 != null && SelectedL95.Controller != null)
             SelectedL95.Controller.PropertyChanged += L95Controller_PropertyChanged;
-    }
 
+        foreach (ImageResultEntry lab in ImageResultsList)
+            lab.HandlerUpdate(ImageResultEntryDevices.L95);
+    }
     private void L95Controller_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
         if (e.PropertyName is nameof(Lvs95xx.lib.Core.Controllers.Controller.IsSimulator) or nameof(Lvs95xx.lib.Core.Controllers.Controller.IsConnected))
