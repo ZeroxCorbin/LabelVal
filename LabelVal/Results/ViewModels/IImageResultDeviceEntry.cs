@@ -6,6 +6,7 @@ using LabelVal.Sectors.Interfaces;
 using LabelVal.Utilities;
 using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace LabelVal.Results.ViewModels;
@@ -65,7 +66,7 @@ public interface IImageResultDeviceEntry
     void ClearCurrent();
 
     void GetStored();
-    void Store();
+    Task Store();
 
     void Process();
 

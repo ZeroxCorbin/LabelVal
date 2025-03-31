@@ -27,9 +27,9 @@ public partial class ImageResultDeviceEntry_L95(ImageResultEntry imageResultsEnt
     public ImageResultEntryDevices Device { get; } = ImageResultEntryDevices.L95;
     public string Version => throw new NotImplementedException();
 
-    [ObservableProperty] private Databases.L95xxResult resultRow;
-    partial void OnResultRowChanged(L95xxResult value) { StoredImage = value?.Stored; HandlerUpdate(); }
-    public Result Result { get => ResultRow; set { ResultRow = (L95xxResult)value; HandlerUpdate(); } }
+    [ObservableProperty] private Databases.Result resultRow;
+    partial void OnResultRowChanged(Result value) { StoredImage = value?.Stored; HandlerUpdate(); }
+    public Result Result { get => ResultRow; set { ResultRow = value; HandlerUpdate(); } }
 
     [ObservableProperty] private ImageEntry storedImage;
     [ObservableProperty] private DrawingImage storedImageOverlay;
@@ -37,11 +37,10 @@ public partial class ImageResultDeviceEntry_L95(ImageResultEntry imageResultsEnt
     [ObservableProperty] private ImageEntry currentImage;
     [ObservableProperty] private DrawingImage currentImageOverlay;
 
-    public JObject CurrentTemplate { get; set; }
+    public JObject CurrentTemplate { get; set; } = null;
     public string SerializeTemplate => JsonConvert.SerializeObject(CurrentTemplate);
 
     public JObject CurrentReport { get; private set; }
-    public List<FullReport> ActualReport { get; set; }
     public string SerializeReport => JsonConvert.SerializeObject(CurrentReport);
 
     public ObservableCollection<Sectors.Interfaces.ISector> CurrentSectors { get; } = [];
@@ -103,7 +102,7 @@ public partial class ImageResultDeviceEntry_L95(ImageResultEntry imageResultsEnt
 
         try
         {
-            var row = (Databases.L95xxResult)ImageResultEntry.SelectedDatabase.Select_Result(Device, ImageResultEntry.ImageRollUID, ImageResultEntry.SourceImageUID, ImageResultEntry.ImageRollUID);
+            var row = ImageResultEntry.SelectedDatabase.Select_Result(Device, ImageResultEntry.ImageRollUID, ImageResultEntry.SourceImageUID, ImageResultEntry.ImageRollUID);
 
             if (row == null)
             {
@@ -112,8 +111,8 @@ public partial class ImageResultDeviceEntry_L95(ImageResultEntry imageResultsEnt
             }
 
             List<Sectors.Interfaces.ISector> tempSectors = [];
-            foreach (FullReport rSec in row._AllSectors)
-                tempSectors.Add(new Sector(rSec.Template, rSec.Report, ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedStandard, ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGS1Table, rSec.Template.GetParameter<string>("Settings[SettingName:Version].SettingValue")));
+            foreach (var rSec in row.Report.GetParameter<JArray>("AllReports"))
+                tempSectors.Add(new Sector(((JObject)rSec).GetParameter<JObject>("Template"), ((JObject)rSec).GetParameter<JObject>("Report"), ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedStandard, ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGS1Table, ((JObject)rSec).GetParameter<string>("Template.Settings[SettingName:Version].SettingValue")));
 
             if (tempSectors.Count > 0)
             {
@@ -135,7 +134,7 @@ public partial class ImageResultDeviceEntry_L95(ImageResultEntry imageResultsEnt
     }
 
     [RelayCommand]
-    public void Store()
+    public async Task Store()
     {
         if (CurrentSectors.Count == 0)
         {
@@ -149,6 +148,20 @@ public partial class ImageResultDeviceEntry_L95(ImageResultEntry imageResultsEnt
             return;
         }
 
+        if (StoredSectors.Count > 0)
+            if (await ImageResultEntry.OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for this image?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
+                return;
+
+        //Save the list to the database.
+        List<FullReport> temp = [];
+        foreach (Sectors.Interfaces.ISector sector in CurrentSectors)
+            temp.Add(new FullReport(((LVS_95xx.Sectors.Sector)sector).Template.Original, ((LVS_95xx.Sectors.Sector)sector).Report.Original));
+
+        JObject report= new()
+        {
+            ["AllReports"] = JArray.FromObject(temp)
+        };
+
         var res = new Databases.Result
         {
             Device = Device,
@@ -156,8 +169,9 @@ public partial class ImageResultDeviceEntry_L95(ImageResultEntry imageResultsEnt
             SourceImageUID = ImageResultEntry.SourceImageUID,
             RunUID = ImageResultEntry.ImageRollUID,
             Template = CurrentTemplate,
-            Report = CurrentReport,
-            Stored = CurrentImage
+            Report = report,
+            Stored = CurrentImage,
+            
         };
 
         if (ImageResultEntry.SelectedDatabase.InsertOrReplace_Result(res) == null)
@@ -165,7 +179,85 @@ public partial class ImageResultDeviceEntry_L95(ImageResultEntry imageResultsEnt
 
         GetStored();
         ClearCurrent();
+
+        //        else if (device == ImageResultEntryDevices.L95xx)
+        //{
+
+        //    if (L95xxCurrentSectorSelected == null)
+        //    {
+        //        Logger.LogError("No sector selected to store.");
+        //        return;
+        //    }
+        //    //Does the selected sector exist in the Stored sectors list?
+        //    //If so, prompt to overwrite or cancel.
+
+        //    Sectors.Interfaces.ISector old = L95xxStoredSectors.FirstOrDefault(x => x.Template.Name == L95xxCurrentSectorSelected.Template.Name);
+        //    if (old != null)
+        //    {
+        //        if (await OkCancelDialog("Overwrite Stored Sector", $"The sector already exists.\r\nAre you sure you want to overwrite the stored sector?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
+        //            return;
+        //    }
+
+        //    //Save the list to the database.
+        //    List<FullReport> temp = [];
+        //    if (L95xxResultRow != null)
+        //        temp = L95xxResultRow._AllSectors;
+
+        //    temp.Add(new FullReport(((LVS_95xx.Sectors.Sector)L95xxCurrentSectorSelected).Template.Original, ((LVS_95xx.Sectors.Sector)L95xxCurrentSectorSelected).Report.Original));
+
+        //    _ = SelectedDatabase.InsertOrReplace_L95xxResult(new Databases.L95xxResult
+        //    {
+        //        ImageRollUID = ImageRollUID,
+        //        RunUID = ImageRollUID,
+        //        Source = SourceImage,
+        //        Stored = L95xxCurrentImage,
+
+        //        _AllSectors = temp,
+        //    });
+
+        //    ClearRead(device);
+
+        //    L95xxGetStored();
+        //}
+        //else if (device == ImageResultEntryDevices.L95xxAll)
+        //{
+
+        //    if (L95xxCurrentSectors.Count == 0)
+        //    {
+        //        Logger.LogDebug($"There are no sectors to store for: {device}");
+        //        return;
+        //    }
+        //    //Does the selected sector exist in the Stored sectors list?
+        //    //If so, prompt to overwrite or cancel.
+
+        //    if (L95xxStoredSectors.Count > 0)
+        //        if (await OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for this image?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
+        //            return;
+
+        //    //Save the list to the database.
+        //    List<FullReport> temp = [];
+        //    foreach (Sectors.Interfaces.ISector sector in L95xxCurrentSectors)
+
+        //        temp.Add(new FullReport(((LVS_95xx.Sectors.Sector)sector).Template.Original, ((LVS_95xx.Sectors.Sector)sector).Report.Original));
+
+
+        //    _ = SelectedDatabase.InsertOrReplace_L95xxResult(new Databases.L95xxResult
+        //    {
+        //        ImageRollUID = ImageRollUID,
+        //        RunUID = ImageRollUID,
+        //        Source = SourceImage,
+        //        Stored = L95xxCurrentImage,
+
+        //        _AllSectors = temp,
+        //    });
+
+        //    ClearRead(device);
+
+        //    L95xxGetStored();
+        //}
     }
+
+
 
     [RelayCommand]
     public void Process()
@@ -208,6 +300,9 @@ public partial class ImageResultDeviceEntry_L95(ImageResultEntry imageResultsEnt
                 IsFaulted = true;
                 return;
             }
+
+            //CurrentTemplate = message.Template;
+            //CurrentReport = message.Report;
 
             System.Drawing.Point center = new(message.Template.GetParameter<int>("Report.X1") + (message.Template.GetParameter<int>("Report.SizeX") / 2), message.Template.GetParameter<int>("Report.Y1") + (message.Template.GetParameter<int>("Report.SizeY") / 2));
 

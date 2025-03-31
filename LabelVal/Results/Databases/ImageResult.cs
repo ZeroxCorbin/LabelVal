@@ -44,8 +44,3 @@ public partial class Result : ObservableObject
     [SQLite.Ignore] public ImageEntry Source { get => !string.IsNullOrEmpty(SourceImage) ? JsonConvert.DeserializeObject<ImageEntry>(SourceImage) : null; set { SourceImage = JsonConvert.SerializeObject(value); SourceImageUID = value.UID; }  }
     [SQLite.Ignore] public ImageEntry Stored { get => !string.IsNullOrEmpty(StoredImage) ? JsonConvert.DeserializeObject<ImageEntry>(StoredImage) : null; set { StoredImage = JsonConvert.SerializeObject(value); } }
 }
-
-public class L95xxResult : Result
-{
-    [SQLite.Ignore][JsonIgnore] public List<FullReport> _AllSectors { get => !string.IsNullOrEmpty(ReportString) ? JsonConvert.DeserializeObject<List<FullReport>>(ReportString) : null; set => ReportString = JsonConvert.SerializeObject(value); }
-}

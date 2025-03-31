@@ -241,7 +241,7 @@ public partial class Controller : ObservableObject
                         if ((v5Res = await ProcessV5(ire)) == null)
                             return UpdateRunState(RunStates.Error);
 
-                    L95xxResult l95Res = null;
+                    Result l95Res = null;
                     if (UseL95)
                         if ((l95Res = await ProcessL95(ire)) == null)
                             return UpdateRunState(RunStates.Error);
@@ -465,13 +465,12 @@ public partial class Controller : ObservableObject
 
     private async Task<RunStates> PreRunL95() => State;
     private async Task<RunStates> PreLoopL95(Results.ViewModels.IImageResultDeviceEntry ire) => State;
-    private async Task<L95xxResult> ProcessL95(Results.ViewModels.IImageResultDeviceEntry ire)
+    private async Task<Result> ProcessL95(Results.ViewModels.IImageResultDeviceEntry ire)
     {
-        Results.Databases.L95xxResult l95 = new()
+        Results.Databases.Result l95 = new()
         {
             RunUID = RunUID,
             ImageRollUID = ire.ImageResultEntry.ImageRollUID,
-
             Source = ire.ImageResultEntry.SourceImage,
         };
 

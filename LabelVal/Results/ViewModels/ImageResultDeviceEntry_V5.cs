@@ -136,7 +136,7 @@ public partial class ImageResultDeviceEntry_V5(ImageResultEntry imageResultsEntr
     }
 
     [RelayCommand]
-    public void Store()
+    public async Task Store()
     {
         if (CurrentSectors.Count == 0)
         {
@@ -148,6 +148,10 @@ public partial class ImageResultDeviceEntry_V5(ImageResultEntry imageResultsEntr
             Logger.LogError("No image results database selected.");
             return;
         }
+
+        if (StoredSectors.Count > 0)
+            if (await ImageResultEntry.OkCancelDialog("Overwrite Stored Sectors", $"Are you sure you want to overwrite the stored sectors for this image?\r\nThis can not be undone!") != MessageDialogResult.Affirmative)
+                return;
 
         var res = new Databases.Result
         {
