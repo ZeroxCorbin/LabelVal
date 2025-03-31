@@ -15,6 +15,7 @@ public enum ImageResultEntryDevices
     V275,
     V5,
     L95,
+    All
 }
 
 public enum ImageResultEntryImageTypes
@@ -53,6 +54,9 @@ public interface IImageResultDeviceEntry
 
     ObservableCollection<ISector> CurrentSectors { get; }
     ISector FocusedCurrentSector { get; set; }
+
+    LabelHandlers Handler { get; }
+    void HandlerUpdate();
 
     bool IsSelected { get; set; }
     bool IsWorking { get; set; }

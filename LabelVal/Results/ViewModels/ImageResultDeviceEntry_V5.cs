@@ -23,7 +23,7 @@ public partial class ImageResultDeviceEntry_V5(ImageResultEntry imageResultsEntr
 
     [ObservableProperty] private Databases.Result resultRow;
     partial void OnResultRowChanged(Result value) => StoredImage = value?.Stored;
-    public Result Result { get => ResultRow; set => ResultRow = (Result)value; }
+    public Result Result { get => ResultRow; set { ResultRow = value; HandlerUpdate(); } }
 
     [ObservableProperty] private ImageEntry storedImage;
     [ObservableProperty] private DrawingImage storedImageOverlay;
@@ -55,6 +55,21 @@ public partial class ImageResultDeviceEntry_V5(ImageResultEntry imageResultsEntr
     [ObservableProperty] private bool isSelected = false;
     partial void OnIsSelectedChanging(bool value) { if (value) ImageResultEntry.ImageResultsManager.ResetSelected(Device); }
 
+    public LabelHandlers Handler => ImageResultsManager.SelectedV5.Controller.IsConnected ? ImageResultsManager.SelectedV5.Controller.IsSimulator
+            ? ImageResultsManager.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic
+                ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
+                    ? LabelHandlers.SimulatorRestore
+                    : LabelHandlers.SimulatorDetect
+                : LabelHandlers.SimulatorTrigger
+            : ImageResultsManager.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic
+                ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
+                    ? LabelHandlers.CameraRestore
+                    : LabelHandlers.CameraDetect
+                : LabelHandlers.CameraTrigger
+        :LabelHandlers.Offline;
+
+    public void HandlerUpdate() => OnPropertyChanged(nameof(Handler));
+
     public void GetStored()
     {
         if (!App.Current.Dispatcher.CheckAccess())
@@ -71,7 +86,7 @@ public partial class ImageResultDeviceEntry_V5(ImageResultEntry imageResultsEntr
 
         StoredSectors.Clear();
 
-        var row = ImageResultEntry.SelectedDatabase.Select_Result(Device, ImageResultEntry.ImageRollUID, ImageResultEntry.SourceImageUID, ImageResultEntry.ImageRollUID);
+        Result row = ImageResultEntry.SelectedDatabase.Select_Result(Device, ImageResultEntry.ImageRollUID, ImageResultEntry.SourceImageUID, ImageResultEntry.ImageRollUID);
 
         if (row == null)
         {
@@ -152,24 +167,11 @@ public partial class ImageResultDeviceEntry_V5(ImageResultEntry imageResultsEntr
     [RelayCommand]
     public void Process()
     {
-        LabelHandlers type = LabelHandlers.CameraTrigger;
-        type = ImageResultEntry.ImageResultsManager.SelectedV5.Controller.IsSimulator
-            ? ImageResultEntry.ImageResultsManager.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic
-                ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
-                    ? LabelHandlers.SimulatorRestore
-                    : LabelHandlers.SimulatorDetect
-                : LabelHandlers.SimulatorTrigger
-            : ImageResultEntry.ImageResultsManager.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic
-                ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
-                    ? LabelHandlers.CameraRestore
-                    : LabelHandlers.CameraDetect
-                : LabelHandlers.CameraTrigger;
-
         //BringIntoView?.Invoke();
 
-        V5_REST_Lib.Controllers.Label lab = new(ProcessRepeat, type is LabelHandlers.SimulatorRestore or LabelHandlers.CameraRestore ? ResultRow.Template : null, type, ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGS1Table);
+        V5_REST_Lib.Controllers.Label lab = new(ProcessRepeat, Handler is LabelHandlers.SimulatorRestore or LabelHandlers.CameraRestore ? ResultRow.Template : null, Handler, ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGS1Table);
 
-        if (type is LabelHandlers.SimulatorRestore or LabelHandlers.SimulatorDetect or LabelHandlers.SimulatorTrigger)
+        if (Handler is LabelHandlers.SimulatorRestore or LabelHandlers.SimulatorDetect or LabelHandlers.SimulatorTrigger)
         {
             if (ImageResultEntry.ImageResultsManager.SelectedImageRoll.ImageType == ImageRollImageTypes.Source)
                 lab.Image = ImageResultEntry.SourceImage.BitmapBytes;
@@ -448,7 +450,5 @@ public partial class ImageResultDeviceEntry_V5(ImageResultEntry imageResultsEntr
     }
     public void RefreshStoredOverlay() => StoredImageOverlay = IImageResultDeviceEntry.CreateSectorsImageOverlay(StoredImage, StoredSectors);
     public void RefreshCurrentOverlay() => CurrentImageOverlay = IImageResultDeviceEntry.CreateSectorsImageOverlay(CurrentImage, CurrentSectors);
-
-
 
 }

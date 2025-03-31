@@ -29,7 +29,7 @@ public partial class ImageResultDeviceEntry_L95(ImageResultEntry imageResultsEnt
 
     [ObservableProperty] private Databases.L95xxResult resultRow;
     partial void OnResultRowChanged(Databases.L95xxResult value) => StoredImage = ResultRow?.Stored;
-    public Result Result { get => ResultRow; set => ResultRow = (L95xxResult)value; }
+    public Result Result { get => ResultRow; set { ResultRow = (L95xxResult)value; HandlerUpdate(); } }
 
     [ObservableProperty] private ImageEntry storedImage;
     [ObservableProperty] private DrawingImage storedImageOverlay;
@@ -61,7 +61,21 @@ public partial class ImageResultDeviceEntry_L95(ImageResultEntry imageResultsEnt
 
     ////95xx Only
     //[ObservableProperty] private Sectors.Interfaces.ISector currentSectorSelected;
-    //[ObservableProperty] private LabelHandlers selectedHandler;
+    public LabelHandlers Handler => ImageResultsManager.SelectedL95.Controller.IsConnected ? ImageResultsManager.SelectedL95.Controller.IsSimulator
+            ? ImageResultsManager.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic
+                ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
+                    ? LabelHandlers.SimulatorRestore
+                    : LabelHandlers.SimulatorDetect
+                : LabelHandlers.SimulatorTrigger
+            : ImageResultsManager.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic
+                ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
+                    ? LabelHandlers.CameraRestore
+                    : LabelHandlers.CameraDetect
+                : LabelHandlers.CameraTrigger
+        : LabelHandlers.Offline;
+
+    public void HandlerUpdate() => OnPropertyChanged(nameof(Handler));
+
     [ObservableProperty] private bool isSelected = false;
     partial void OnIsSelectedChanging(bool value) { if (value) ImageResultEntry.ImageResultsManager.ResetSelected(Device); }
 
@@ -153,19 +167,6 @@ public partial class ImageResultDeviceEntry_L95(ImageResultEntry imageResultsEnt
     [RelayCommand]
     public void Process()
     {
-    //    LabelHandlers type = LabelHandlers.CameraTrigger;
-    //    type = ImageResultEntry.ImageResultsManager.SelectedL95.Controller.IsSimulator
-    //? ImageResultEntry.ImageResultsManager.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic
-    //    ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
-    //        ? LabelHandlers.SimulatorRestore
-    //        : LabelHandlers.SimulatorDetect
-    //    : LabelHandlers.SimulatorTrigger
-    //: ImageResultEntry.ImageResultsManager.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic
-    //    ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
-    //        ? LabelHandlers.CameraRestore
-    //        : LabelHandlers.CameraDetect
-    //    : LabelHandlers.CameraTrigger;
-
         Label lab = new()
         {
             Config = new Lvs95xx.lib.Core.Controllers.Config()

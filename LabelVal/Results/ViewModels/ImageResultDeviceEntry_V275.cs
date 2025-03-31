@@ -23,7 +23,7 @@ public partial class ImageResultDeviceEntry_V275(ImageResultEntry imageResultsEn
 
     [ObservableProperty] private Databases.Result resultRow;
     partial void OnResultRowChanged(Databases.Result value) => StoredImage = ResultRow?.Stored;
-    public Result Result { get => ResultRow; set => ResultRow = value; }
+    public Result Result { get => ResultRow; set { ResultRow = value; HandlerUpdate(); } }
 
     [ObservableProperty] private ImageEntry storedImage;
     [ObservableProperty] private DrawingImage storedImageOverlay;
@@ -54,6 +54,21 @@ public partial class ImageResultDeviceEntry_V275(ImageResultEntry imageResultsEn
 
     [ObservableProperty] private bool isSelected = false;
     partial void OnIsSelectedChanging(bool value) { if (value) ImageResultEntry.ImageResultsManager.ResetSelected(Device); }
+
+    public LabelHandlers Handler => ImageResultsManager.SelectedV275Node.Controller.IsLoggedIn_Control ? ImageResultsManager.SelectedV275Node.Controller.IsSimulator
+            ? ImageResultsManager.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic
+                ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
+                    ? LabelHandlers.SimulatorRestore
+                    : LabelHandlers.SimulatorDetect
+                : LabelHandlers.SimulatorTrigger
+            : ImageResultsManager.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic
+                ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
+                    ? LabelHandlers.CameraRestore
+                    : LabelHandlers.CameraDetect
+                : LabelHandlers.CameraTrigger
+        : LabelHandlers.Offline;
+
+    public void HandlerUpdate() => OnPropertyChanged(nameof(Handler));
 
     public delegate void ProcessImageDelegate(ImageResultEntry imageResults, string type);
     public event ProcessImageDelegate ProcessImage;
@@ -163,29 +178,14 @@ public partial class ImageResultDeviceEntry_V275(ImageResultEntry imageResultsEn
     [RelayCommand]
     public void Process()
     {
-        LabelHandlers type = LabelHandlers.CameraTrigger;
-        type = ImageResultEntry.ImageResultsManager.SelectedV275Node.Controller.IsSimulator
-            ? ImageResultEntry.ImageResultsManager.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic
-                ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
-                    ? LabelHandlers.SimulatorRestore
-                    : LabelHandlers.SimulatorDetect
-                : LabelHandlers.SimulatorTrigger
-            : ImageResultEntry.ImageResultsManager.SelectedImageRoll.SectorType == ImageRollSectorTypes.Dynamic
-                ? !string.IsNullOrEmpty(ResultRow?.TemplateString)
-                    ? LabelHandlers.CameraRestore
-                    : LabelHandlers.CameraDetect
-                : LabelHandlers.CameraTrigger;
-
         //ImageResultEntry.BringIntoView?.Invoke();
 
-        V275_REST_Lib.Controllers.Label lab = new(ProcessRepeat, type is LabelHandlers.SimulatorRestore or LabelHandlers.CameraRestore ? [.. ResultRow.Template["sectors"]] : null, type, ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGS1Table);
+        V275_REST_Lib.Controllers.Label lab = new(ProcessRepeat, Handler is LabelHandlers.SimulatorRestore or LabelHandlers.CameraRestore ? [.. ResultRow.Template["sectors"]] : null, Handler, ImageResultEntry.ImageResultsManager.SelectedImageRoll.SelectedGS1Table);
 
-
-            if (ImageResultEntry.ImageResultsManager.SelectedImageRoll.ImageType == ImageRollImageTypes.Source)
-                lab.Image = ImageResultEntry.SourceImage.BitmapBytes;
-            else if (ImageResultEntry.ImageResultsManager.SelectedImageRoll.ImageType == ImageRollImageTypes.Stored)
-                lab.Image = ResultRow.Stored.ImageBytes;
-
+        if (ImageResultEntry.ImageResultsManager.SelectedImageRoll.ImageType == ImageRollImageTypes.Source)
+            lab.Image = ImageResultEntry.SourceImage.BitmapBytes;
+        else if (ImageResultEntry.ImageResultsManager.SelectedImageRoll.ImageType == ImageRollImageTypes.Stored)
+            lab.Image = ResultRow.Stored.ImageBytes;
 
         _ = ImageResultEntry.ImageResultsManager.SelectedV275Node.Controller.IsSimulator
             ? ImageResultEntry.ImageResultsManager.SelectedV275Node.Controller.ProcessLabel_Simulator(lab)

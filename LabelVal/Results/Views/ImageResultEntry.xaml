@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+    xmlns:bar_common="clr-namespace:BarcodeVerification.lib.Common;assembly=BarcodeVerification.lib"
     xmlns:converters="clr-namespace:LabelVal.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:helpers="clr-namespace:LabelVal.Results.Helpers"
@@ -23,90 +24,28 @@
 
         <DataTemplate x:Key="V5Template">
             <!--  Define your V5 template here  -->
-            <local:ImageResultDeviceEntry_V5 />
+            <local:ImageResultDeviceEntry_V5 DataContext="{Binding .}" />
         </DataTemplate>
 
         <DataTemplate x:Key="V275Template">
             <!--  Define your V275 template here  -->
-            <local:ImageResultDeviceEntry_V275 />
+            <local:ImageResultDeviceEntry_V275 DataContext="{Binding .}" />
         </DataTemplate>
 
         <DataTemplate x:Key="L95Template">
             <!--  Define your L95 template here  -->
-            <local:ImageResultDeviceEntry_L95 />
+            <local:ImageResultDeviceEntry_L95 DataContext="{Binding .}" />
         </DataTemplate>
 
         <helpers:ImageResultDeviceEntryTemplateSelector
             x:Key="ImageResultDeviceEntryTemplateSelector"
+            x:Shared="false"
             L95Template="{StaticResource L95Template}"
             V275Template="{StaticResource V275Template}"
             V5Template="{StaticResource V5Template}" />
 
-    </UserControl.Resources>
-
-    <DockPanel HorizontalAlignment="Left">
-
-        <!--  Top Bar  -->
-        <md:Card
-            Height="48"
-            Margin="3"
-            HorizontalAlignment="Left"
-            Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
-            DockPanel.Dock="Top"
-            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
-
-            <DockPanel>
-
-                <DockPanel Width="48" Height="48">
-
-                    <DockPanel
-                        Width="36"
-                        Margin="0,4,0,2"
-                        VerticalAlignment="Top"
-                        DockPanel.Dock="Top">
-                        <iconPacks:PackIconMaterial
-                            Width="30"
-                            Height="18"
-                            HorizontalAlignment="Center"
-                            Kind="ImageText" />
-                    </DockPanel>
-
-                    <TextBlock
-                        Margin="11,0,0,0"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Top"
-                        FontSize="{DynamicResource MahApps.Font.Size.Dialog.Message}"
-                        FontWeight="Bold"
-                        Text="{Binding SourceImage.Order}" />
-                </DockPanel>
-
-                <Border Style="{StaticResource imageBar}" />
-
-                <!--  Only Print Source Image  -->
-                <Button
-                    Width="48"
-                    d:Visibility="Visible"
-                    Command="{Binding ProcessCommand}"
-                    CommandParameter="{x:Static vm:ImageResultEntryDevices.V275}"
-                    Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                    ToolTip="Print the source image.">
-
-                    <Grid>
-                        <mah:ProgressRing
-                            Width="28"
-                            Height="28"
-                            Foreground="White"
-                            IsActive="{Binding IsV275Working}" />
-
-                        <iconPacks:PackIconMaterial
-                            Width="24"
-                            Height="24"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                            Kind="Printer" />
-                    </Grid>
-                </Button>
+        <DataTemplate x:Key="V275Buttons">
+            <DockPanel DataContext="{Binding Content}">
 
                 <!--  V275  -->
                 <Button
@@ -213,70 +152,54 @@
                         </Style>
                     </Button.Style>
                 </Button>
+            </DockPanel>
+        </DataTemplate>
 
-                <!--  V5 Trigger  -->
-                <!--<Border
-                    Margin="0,0,0,0"
-                    BorderBrush="{DynamicResource V5_Brush}"
-                    BorderThickness="1"
-                    CornerRadius="3"
-                    d:Visibility="Visible">
-                    <Border.Style>
-                        <Style  TargetType="{x:Type Border}">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                            <Setter Property="ToolTip" Value="Trigger V5 and add the image and results to the image roll." />
-                            <Style.Triggers>
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding ImageResultsManager.SelectedV5.Controller.IsConnected}" Value="True" />
-                                        <Condition Binding="{Binding ImageResultsManager.SelectedV5.Controller.IsSimulator}" Value="False" />
-                                        <Condition Binding="{Binding ImageResultsManager.SelectedImageRoll.IsLocked}" Value="False" />
-                                    </MultiDataTrigger.Conditions>
-
-                                    <Setter Property="Visibility" Value="Visible" />
-                                </MultiDataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Border.Style>-->
+        <DataTemplate x:Key="V5Buttons">
+            <DockPanel>
 
                 <Border
                     Margin="3,0,0,0"
-                    BorderBrush="{DynamicResource V5_Brush}"
                     BorderThickness="1"
                     CornerRadius="3">
 
                     <Border.Style>
                         <Style TargetType="{x:Type Border}">
-                            <Setter Property="Visibility" Value="Collapsed" />
                             <Style.Triggers>
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding ImageResultsManager.SelectedV5.Controller.IsSimulator}" Value="True" />
-                                        <Condition Binding="{Binding ImageResultsManager.SelectedV5.Controller.IsConnected}" Value="True" />
-                                        <Condition Binding="{Binding V5ResultRow, Converter={StaticResource IsNullOrEmpty}}" Value="True" />
-                                    </MultiDataTrigger.Conditions>
+                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.Offline}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Setter Property="ToolTip" Value="Collapsed" />
+                                </DataTrigger>
 
-                                    <Setter Property="Visibility" Value="Visible" />
-                                </MultiDataTrigger>
+                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorDetect}">
+                                    <Setter Property="ToolTip" Value="V5: Process and Detect sectors." />
+                                    <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}" />
+                                </DataTrigger>
 
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding ImageResultsManager.SelectedV5.Controller.IsSimulator}" Value="True" />
-                                        <Condition Binding="{Binding ImageResultsManager.SelectedV5.Controller.IsConnected}" Value="True" />
-                                        <Condition Binding="{Binding V5ResultRow, Converter={StaticResource IsNullOrEmpty}}" Value="False" />
-                                    </MultiDataTrigger.Conditions>
+                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorRestore}">
+                                    <Setter Property="ToolTip" Value="V5: Process and Restore sectors." />
+                                    <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}" />
+                                </DataTrigger>
 
-                                    <Setter Property="Visibility" Value="Visible" />
-                                </MultiDataTrigger>
+                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.SimulatorTrigger}">
+                                    <Setter Property="ToolTip" Value="V5: Process only." />
+                                    <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}" />
+                                </DataTrigger>
 
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding ImageResultsManager.SelectedV5.Controller.IsSimulator}" Value="False" />
-                                        <Condition Binding="{Binding ImageResultsManager.SelectedV5.Controller.IsConnected}" Value="True" />
-                                    </MultiDataTrigger.Conditions>
+                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.CameraDetect}">
+                                    <Setter Property="ToolTip" Value="V5: Trigger, Detect sectors, and Trigger." />
+                                    <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}" />
+                                </DataTrigger>
 
-                                    <Setter Property="Visibility" Value="Visible" />
-                                </MultiDataTrigger>
+                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.CameraRestore}">
+                                    <Setter Property="ToolTip" Value="V5: Trigger, Restore sectors, and Trigger." />
+                                    <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}" />
+                                </DataTrigger>
+
+                                <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.CameraTrigger}">
+                                    <Setter Property="ToolTip" Value="V5: Trigger." />
+                                    <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}" />
+                                </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </Border.Style>
@@ -288,43 +211,9 @@
                         VerticalContentAlignment="Stretch"
                         Command="{Binding ProcessCommand}"
                         CommandParameter="{x:Static vm:ImageResultEntryDevices.V5}"
-                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
-                        ToolTipService.ShowOnDisabled="True">
+                        Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
                         <Button.Style>
-                            <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}">
-                                <Style.Triggers>
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ImageResultsManager.SelectedV5.Controller.IsSimulator}" Value="True" />
-                                            <Condition Binding="{Binding ImageResultsManager.SelectedV5.Controller.IsConnected}" Value="True" />
-                                            <Condition Binding="{Binding V5ResultRow, Converter={StaticResource IsNullOrEmpty}}" Value="True" />
-                                        </MultiDataTrigger.Conditions>
-
-                                        <Setter Property="ToolTip" Value="V5: Process the source image with the simulator." />
-                                        <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}" />
-                                    </MultiDataTrigger>
-
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ImageResultsManager.SelectedV5.Controller.IsSimulator}" Value="True" />
-                                            <Condition Binding="{Binding ImageResultsManager.SelectedV5.Controller.IsConnected}" Value="True" />
-                                            <Condition Binding="{Binding V5ResultRow, Converter={StaticResource IsNullOrEmpty}}" Value="False" />
-                                        </MultiDataTrigger.Conditions>
-
-                                        <Setter Property="ToolTip" Value="V5: Process the stored image with the simulator." />
-                                        <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}" />
-                                    </MultiDataTrigger>
-
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ImageResultsManager.SelectedV5.Controller.IsSimulator}" Value="False" />
-                                            <Condition Binding="{Binding ImageResultsManager.SelectedV5.Controller.IsConnected}" Value="True" />
-                                        </MultiDataTrigger.Conditions>
-
-                                        <Setter Property="ToolTip" Value="V5: Process the sensor image." />
-                                    </MultiDataTrigger>
-                                </Style.Triggers>
-                            </Style>
+                            <Style BasedOn="{StaticResource MahApps.Styles.Button.Hamburger}" TargetType="{x:Type Button}" />
                         </Button.Style>
 
 
@@ -338,35 +227,35 @@
 
                             <Grid Background="{DynamicResource V5_Brush}">
                                 <!--<Image
-                                    Width="24"
-                                    Height="24"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Center"
-                                    Source="/Assets/Images/v5-white-outline.ico" />-->
+                     Width="24"
+                     Height="24"
+                     HorizontalAlignment="Left"
+                     VerticalAlignment="Center"
+                     Source="/Assets/Images/v5-white-outline.ico" />-->
                                 <Grid HorizontalAlignment="Left" VerticalAlignment="Center">
                                     <Grid.Style>
                                         <Style TargetType="{x:Type Grid}">
                                             <Setter Property="Visibility" Value="Collapsed" />
                                             <Style.Triggers>
                                                 <!--<MultiDataTrigger>
-                                                    <MultiDataTrigger.Conditions>
-                                                        <Condition Binding="{Binding ImageResultsManager.SelectedV5.Controller.IsSimulator}" Value="True" />
-                                                        <Condition Binding="{Binding ImageResultsManager.SelectedV5.Controller.IsConnected}" Value="True" />
-                                                        <Condition Binding="{Binding V5ResultRow, Converter={StaticResource IsNullOrEmpty}}" Value="True" />
-                                                    </MultiDataTrigger.Conditions>
+                                     <MultiDataTrigger.Conditions>
+                                         <Condition Binding="{Binding ImageResultsManager.SelectedV5.Controller.IsSimulator}" Value="True" />
+                                         <Condition Binding="{Binding ImageResultsManager.SelectedV5.Controller.IsConnected}" Value="True" />
+                                         <Condition Binding="{Binding V5ResultRow, Converter={StaticResource IsNullOrEmpty}}" Value="True" />
+                                     </MultiDataTrigger.Conditions>
 
-                                                    <Setter Property="Visibility" Value="Visible" />
-                                                </MultiDataTrigger>-->
+                                     <Setter Property="Visibility" Value="Visible" />
+                                 </MultiDataTrigger>-->
 
                                                 <!--<MultiDataTrigger>
-                                                    <MultiDataTrigger.Conditions>
-                                                        <Condition Binding="{Binding ImageResultsManager.SelectedV5.Controller.IsSimulator}" Value="True" />
-                                                        <Condition Binding="{Binding ImageResultsManager.SelectedV5.Controller.IsConnected}" Value="True" />
-                                                        <Condition Binding="{Binding V5ResultRow, Converter={StaticResource IsNullOrEmpty}}" Value="False" />
-                                                    </MultiDataTrigger.Conditions>
+                                     <MultiDataTrigger.Conditions>
+                                         <Condition Binding="{Binding ImageResultsManager.SelectedV5.Controller.IsSimulator}" Value="True" />
+                                         <Condition Binding="{Binding ImageResultsManager.SelectedV5.Controller.IsConnected}" Value="True" />
+                                         <Condition Binding="{Binding V5ResultRow, Converter={StaticResource IsNullOrEmpty}}" Value="False" />
+                                     </MultiDataTrigger.Conditions>
 
-                                                    <Setter Property="Visibility" Value="Visible" />
-                                                </MultiDataTrigger>-->
+                                     <Setter Property="Visibility" Value="Visible" />
+                                 </MultiDataTrigger>-->
 
                                                 <MultiDataTrigger>
                                                     <MultiDataTrigger.Conditions>
@@ -402,77 +291,12 @@
 
                     </Button>
                 </Border>
-                <!--</Border>-->
 
-                <!--  V5 Process Source Image  -->
-                <!--<Button
-                    Width="48"
-                    Height="48"
-                    d:Visibility="Visible"
-                    Background="{DynamicResource V5_Brush}"
-                        Command="{Binding ProcessCommand}"
-                        CommandParameter="{x:Static vm:ImageResultEntryDevices.V5}">
+            </DockPanel>
+        </DataTemplate>
 
-                    <Grid>
-                        <mah:ProgressRing
-                            Width="28"
-                            Height="28"
-                            Foreground="White"
-                            IsActive="{Binding IsV5Working}" />
-                        <Image
-                            Width="24"
-                            Height="24"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Source="/Assets/Images/v5-white-outline.ico" />
-                    </Grid>
-
-                    <Button.Style>
-                        <Style BasedOn="{StaticResource MahApps.Styles.Button.MetroSquare}" TargetType="{x:Type Button}">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                            <Setter Property="BorderBrush" Value="{DynamicResource V5_Brush}" />
-                            <Style.Triggers>
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding ImageResultsManager.SelectedV5.Controller.IsSimulator}" Value="True" />
-                                        <Condition Binding="{Binding ImageResultsManager.SelectedV5.Controller.IsConnected}" Value="True" />
-                                        <Condition Binding="{Binding V5ResultRow, Converter={StaticResource IsNullOrEmpty}}" Value="True" />
-                                    </MultiDataTrigger.Conditions>
-
-                                    <Setter Property="Visibility" Value="Visible" />
-                                    <Setter Property="CommandParameter" Value="{x:Static vm:ImageResultEntryImageTypes.Source}" />
-                                    <Setter Property="ToolTip" Value="V5: Process the source image with the simulator." />
-                                    <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}" />
-                                </MultiDataTrigger>
-
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding ImageResultsManager.SelectedV5.Controller.IsSimulator}" Value="True" />
-                                        <Condition Binding="{Binding ImageResultsManager.SelectedV5.Controller.IsConnected}" Value="True" />
-                                        <Condition Binding="{Binding V5ResultRow, Converter={StaticResource IsNullOrEmpty}}" Value="False" />
-                                    </MultiDataTrigger.Conditions>
-
-                                    <Setter Property="Visibility" Value="Visible" />
-                                    <Setter Property="CommandParameter" Value="{x:Static vm:ImageResultEntryImageTypes.V5Stored}" />
-                                    <Setter Property="ToolTip" Value="V5: Process the stored image with the simulator." />
-                                    <Setter Property="BorderBrush" Value="{DynamicResource YellowBrush2}" />
-                                </MultiDataTrigger>
-
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding ImageResultsManager.SelectedV5.Controller.IsSimulator}" Value="False" />
-                                        <Condition Binding="{Binding ImageResultsManager.SelectedV5.Controller.IsConnected}" Value="True" />
-                                    </MultiDataTrigger.Conditions>
-
-                                    <Setter Property="Visibility" Value="Visible" />
-                                    <Setter Property="CommandParameter" Value="{x:Static vm:ImageResultEntryImageTypes.V5Sensor}" />
-                                    <Setter Property="ToolTip" Value="V5: Process the sensor image." />
-                                </MultiDataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>-->
-
+        <DataTemplate x:Key="L95Buttons">
+            <DockPanel DataContext="{Binding Content}">
                 <!--  L95xx Select  -->
                 <ToggleButton
                     Width="48"
@@ -506,15 +330,14 @@
 
                 </ToggleButton>
 
-
                 <!--  L95xx Process Image  -->
                 <Button
                     Width="48"
                     Height="48"
                     d:Visibility="Visible"
                     Background="{DynamicResource L95xx_Brush}"
-                        Command="{Binding ProcessCommand}"
-                        CommandParameter="{x:Static vm:ImageResultEntryDevices.L95}"
+                    Command="{Binding ProcessCommand}"
+                    CommandParameter="{x:Static vm:ImageResultEntryDevices.L95}"
                     IsEnabled="{Binding IsL95xxWorking, Converter={StaticResource InvertBool}}">
 
                     <Grid>
@@ -576,6 +399,83 @@
                         </Style>
                     </Button.Style>
                 </Button>
+            </DockPanel>
+        </DataTemplate>
+
+        <helpers:ImageResultDeviceEntryTemplateSelector
+            x:Key="ImageResultDeviceEntryButtonsTemplateSelector"
+            x:Shared="false"
+            L95Template="{StaticResource L95Buttons}"
+            V275Template="{StaticResource V275Buttons}"
+            V5Template="{StaticResource V5Buttons}" />
+
+    </UserControl.Resources>
+
+    <DockPanel HorizontalAlignment="Left">
+
+        <!--  Top Bar  -->
+        <md:Card
+            Height="48"
+            Margin="3"
+            HorizontalAlignment="Left"
+            Background="{DynamicResource MahApps.HamburgerMenu.Pane.Background}"
+            DockPanel.Dock="Top"
+            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}">
+
+            <DockPanel>
+
+                <DockPanel Width="48" Height="48">
+
+                    <DockPanel
+                        Width="36"
+                        Margin="0,4,0,2"
+                        VerticalAlignment="Top"
+                        DockPanel.Dock="Top">
+                        <iconPacks:PackIconMaterial
+                            Width="30"
+                            Height="18"
+                            HorizontalAlignment="Center"
+                            Kind="ImageText" />
+                    </DockPanel>
+
+                    <TextBlock
+                        Margin="11,0,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        FontSize="{DynamicResource MahApps.Font.Size.Dialog.Message}"
+                        FontWeight="Bold"
+                        Text="{Binding SourceImage.Order}" />
+                </DockPanel>
+
+                <Border Style="{StaticResource imageBar}" />
+
+                <!--  Only Print Source Image  -->
+                <Button
+                    Width="48"
+                    d:Visibility="Visible"
+                    Command="{Binding ProcessCommand}"
+                    CommandParameter="{x:Static vm:ImageResultEntryDevices.V275}"
+                    Style="{StaticResource MahApps.Styles.Button.Hamburger}"
+                    ToolTip="Print the source image.">
+
+                    <Grid>
+                        <mah:ProgressRing
+                            Width="28"
+                            Height="28"
+                            Foreground="White"
+                            IsActive="{Binding IsV275Working}" />
+
+                        <iconPacks:PackIconMaterial
+                            Width="24"
+                            Height="24"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
+                            Kind="Printer" />
+                    </Grid>
+                </Button>
+
+                <ItemsControl ItemTemplateSelector="{StaticResource ImageResultDeviceEntryButtonsTemplateSelector}" ItemsSource="{Binding ImageResultDeviceEntries}" />
 
             </DockPanel>
         </md:Card>

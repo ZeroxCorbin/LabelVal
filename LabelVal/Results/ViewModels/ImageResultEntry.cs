@@ -245,6 +245,25 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
         //}
     }
 
+    public void HandlerUpdate(ImageResultEntryDevices device)
+    {
+        if (device == ImageResultEntryDevices.All)
+        {
+            foreach (IImageResultDeviceEntry dev in ImageResultDeviceEntries)
+                dev.HandlerUpdate();
+        }
+        else
+        {
+            IImageResultDeviceEntry dev = ImageResultDeviceEntries.FirstOrDefault(x => x.Device == device);
+            if (dev == null)
+            {
+                Logger.LogError($"Device not found: {device}");
+                return;
+            }
+            dev.HandlerUpdate();
+        }
+    }
+
     //[RelayCommand] private void RedoFiducial() => ImageUtilities.lib.Core.ImageUtilities.RedrawFiducial(SourceImage.Path, false);
 
     [RelayCommand] private void Delete() => DeleteImage?.Invoke(this);
