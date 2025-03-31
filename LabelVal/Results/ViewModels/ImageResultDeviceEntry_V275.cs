@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Results.Databases;
 using LabelVal.Sectors.Classes;
+using MahApps.Metro.Controls.Dialogs;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
@@ -129,6 +130,8 @@ public partial class ImageResultDeviceEntry_V275(ImageResultEntry imageResultsEn
             Logger.LogError($"Error while loading stored results from: {ImageResultEntry.SelectedDatabase.File.Name}");
         }
     }
+
+    [RelayCommand]
     public void Store()
     {
         if (StoredSectors.Count == 0)
@@ -274,6 +277,7 @@ public partial class ImageResultDeviceEntry_V275(ImageResultEntry imageResultsEn
         }
     }
 
+    [RelayCommand]
     public void ClearCurrent()
     {
         if (!App.Current.Dispatcher.CheckAccess())
@@ -289,6 +293,16 @@ public partial class ImageResultDeviceEntry_V275(ImageResultEntry imageResultsEn
         CurrentReport = null;
         CurrentImage = null;
         CurrentImageOverlay = null;
+    }
+
+    [RelayCommand]
+    public async Task ClearStored()
+    {
+        if (await ImageResultEntry.OkCancelDialog("Clear Stored Sectors", $"Are you sure you want to clear the stored sectors for this image?\r\nThis can not be undone!") == MessageDialogResult.Affirmative)
+        {
+            _ = ImageResultEntry.SelectedDatabase.Delete_Result(Device, ImageResultEntry.ImageRollUID, ImageResultEntry.SourceImageUID, ImageResultEntry.ImageRollUID);
+            GetStored();
+        }
     }
 
     private void GetSectorDiff()

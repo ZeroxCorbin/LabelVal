@@ -282,11 +282,11 @@ public partial class ImageResultDeviceEntry_V5(ImageResultEntry imageResultsEntr
     }
 
     [RelayCommand]
-    public async Task ClearStored(ImageResultEntryDevices device)
+    public async Task ClearStored()
     {
         if (await ImageResultEntry.OkCancelDialog("Clear Stored Sectors", $"Are you sure you want to clear the stored sectors for this image?\r\nThis can not be undone!") == MessageDialogResult.Affirmative)
         {
-            _ = ImageResultEntry.SelectedDatabase.Delete_Result(device, ImageResultEntry.ImageRollUID, ImageResultEntry.SourceImageUID, ImageResultEntry.ImageRollUID);
+            _ = ImageResultEntry.SelectedDatabase.Delete_Result(Device, ImageResultEntry.ImageRollUID, ImageResultEntry.SourceImageUID, ImageResultEntry.ImageRollUID);
             GetStored();
         }
     }

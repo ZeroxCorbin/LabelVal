@@ -111,7 +111,7 @@
                     <Button
                         Width="28"
                         Command="{Binding ClearStoredCommand}"
-                        CommandParameter="{x:Static vm:ImageResultEntryDevices.L95xx}"
+                        CommandParameter="{x:Static vm:ImageResultEntryDevices.L95}"
                         Content="{iconPacks:Modern Kind=Delete}"
                         Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                         Style="{StaticResource MahApps.Styles.Button.Hamburger}"
@@ -154,7 +154,7 @@
                 <Button
                     Width="28"
                     Command="{Binding StoreCommand}"
-                    CommandParameter="{x:Static vm:ImageResultEntryDevices.L95xxAll}"
+                    CommandParameter="{x:Static vm:ImageResultEntryDevices.L95}"
                     Content="{iconPacks:Material Kind=StorePlusOutline}"
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                     ToolTip="Store the current sectors and images to the database.">
@@ -178,7 +178,7 @@
                 <Button
                     Width="28"
                     Command="{Binding StoreCommand}"
-                    CommandParameter="{x:Static vm:ImageResultEntryDevices.L95xx}"
+                    CommandParameter="{x:Static vm:ImageResultEntryDevices.L95}"
                     Content="{iconPacks:Material Kind=ChevronDoubleLeft}"
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                     ToolTip="Store the selected sector to the database.">
@@ -204,8 +204,8 @@
 
                 <Button
                     Width="28"
-                    Command="{Binding ClearReadCommand}"
-                    CommandParameter="{x:Static vm:ImageResultEntryDevices.L95xx}"
+                    Command="{Binding ClearCurrentCommand}"
+                    CommandParameter="{x:Static vm:ImageResultEntryDevices.L95}"
                     Content="{iconPacks:MaterialDesign Kind=Clear}"
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                     ToolTip="Clear the selected sector.">
@@ -375,8 +375,8 @@
                     Background="Black">
 
                     <Grid
-                        MaxWidth="{Binding ImagesMaxHeight}"
-                        MaxHeight="{Binding ImagesMaxHeight}"
+                        MaxWidth="{Binding ImageResultEntry.ImagesMaxHeight}"
+                        MaxHeight="{Binding ImageResultEntry.ImagesMaxHeight}"
                         Margin="3"
                         MouseDown="StoredImage_MouseDown">
 
@@ -538,16 +538,16 @@
                                             <Style TargetType="WrapPanel">
                                                 <Setter Property="ItemWidth" Value="200" />
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="400">
+                                                    <DataTrigger Binding="{Binding ImageResultEntry.ImagesMaxHeight}" Value="400">
                                                         <Setter Property="MaxWidth" Value="400" />
                                                     </DataTrigger>
-                                                    <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="300">
+                                                    <DataTrigger Binding="{Binding ImageResultEntry.ImagesMaxHeight}" Value="300">
                                                         <Setter Property="MaxWidth" Value="400" />
                                                     </DataTrigger>
-                                                    <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="200">
+                                                    <DataTrigger Binding="{Binding ImageResultEntry.ImagesMaxHeight}" Value="200">
                                                         <Setter Property="MaxWidth" Value="200" />
                                                     </DataTrigger>
-                                                    <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="100">
+                                                    <DataTrigger Binding="{Binding ImageResultEntry.ImagesMaxHeight}" Value="100">
                                                         <Setter Property="MaxWidth" Value="200" />
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding DualSectorColumns}" Value="True">
@@ -590,12 +590,12 @@
                                         <Style TargetType="sectors:SectorDetails">
                                             <Setter Property="Width" Value="200" />
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding DataContext.ImagesMaxHeight, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="400">
+                                                <DataTrigger Binding="{Binding DataContext.ImageResultEntry.ImagesMaxHeight, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="400">
                                                     <Setter Property="MaxWidth" Value="400" />
                                                     <Setter Property="Width" Value="auto" />
                                                 </DataTrigger>
 
-                                                <DataTrigger Binding="{Binding DataContext.ImagesMaxHeight, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="300">
+                                                <DataTrigger Binding="{Binding DataContext.ImageResultEntry.ImagesMaxHeight, RelativeSource={RelativeSource AncestorType=DockPanel}}" Value="300">
                                                     <Setter Property="MaxWidth" Value="400" />
                                                     <Setter Property="Width" Value="auto" />
                                                 </DataTrigger>
@@ -839,16 +839,16 @@
                                             <Style TargetType="WrapPanel">
                                                 <Setter Property="ItemWidth" Value="200" />
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="400">
+                                                    <DataTrigger Binding="{Binding ImageResultEntry.ImagesMaxHeight}" Value="400">
                                                         <Setter Property="MaxWidth" Value="400" />
                                                     </DataTrigger>
-                                                    <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="300">
+                                                    <DataTrigger Binding="{Binding ImageResultEntry.ImagesMaxHeight}" Value="300">
                                                         <Setter Property="MaxWidth" Value="400" />
                                                     </DataTrigger>
-                                                    <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="200">
+                                                    <DataTrigger Binding="{Binding ImageResultEntry.ImagesMaxHeight}" Value="200">
                                                         <Setter Property="MaxWidth" Value="200" />
                                                     </DataTrigger>
-                                                    <DataTrigger Binding="{Binding ImagesMaxHeight}" Value="100">
+                                                    <DataTrigger Binding="{Binding ImageResultEntry.ImagesMaxHeight}" Value="100">
                                                         <Setter Property="MaxWidth" Value="200" />
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding DualSectorColumns}" Value="True">

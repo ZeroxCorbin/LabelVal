@@ -177,15 +177,15 @@ public partial class Controller : ObservableObject
                 {
                     if (HasV275)
                         foreach (Results.ViewModels.ImageResultEntry ire in ImageResultEntries)
-                            ire.ClearReadCommand.Execute(Results.ViewModels.ImageResultEntryDevices.V275);
+                            ire.ClearCurrentCommand.Execute(Results.ViewModels.ImageResultEntryDevices.V275);
 
                     if (HasV5)
                         foreach (Results.ViewModels.ImageResultEntry ire in ImageResultEntries)
-                            ire.ClearReadCommand.Execute(Results.ViewModels.ImageResultEntryDevices.V5);
+                            ire.ClearCurrentCommand.Execute(Results.ViewModels.ImageResultEntryDevices.V5);
 
                     if (HasL95)
                         foreach (Results.ViewModels.ImageResultEntry ire in ImageResultEntries)
-                            ire.ClearReadCommand.Execute(Results.ViewModels.ImageResultEntryDevices.L95);
+                            ire.ClearCurrentCommand.Execute(Results.ViewModels.ImageResultEntryDevices.L95);
                 }
 
                 foreach (Results.ViewModels.IImageResultDeviceEntry ire in ImageResultEntries)

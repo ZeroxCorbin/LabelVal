@@ -11,6 +11,7 @@ using LabelVal.Sectors.Classes;
 using LabelVal.Sectors.Extensions;
 using LabelVal.Sectors.Interfaces;
 using Lvs95xx.lib.Core.Controllers;
+using MahApps.Metro.Controls.Dialogs;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
@@ -118,6 +119,8 @@ public partial class ImageResultDeviceEntry_L95(ImageResultEntry imageResultsEnt
             Logger.LogError($"Error while loading stored results from: {ImageResultEntry.SelectedDatabase.File.Name}");
         }
     }
+
+    [RelayCommand]
     public void Store()
     {
         if (StoredSectors.Count == 0)
@@ -172,7 +175,6 @@ public partial class ImageResultDeviceEntry_L95(ImageResultEntry imageResultsEnt
 
         _ = Task.Run(() => ImageResultEntry.ImageResultsManager.SelectedL95.Controller.ProcessLabelAsync(lab));
     }
-
     public void ProcessFullReport(FullReport message, bool replaceSectors)
     {
         if (!App.Current.Dispatcher.CheckAccess())
@@ -244,6 +246,7 @@ public partial class ImageResultDeviceEntry_L95(ImageResultEntry imageResultsEnt
         }
     }
 
+    [RelayCommand]
     public void ClearCurrent()
     {
         if (!App.Current.Dispatcher.CheckAccess())
@@ -259,6 +262,16 @@ public partial class ImageResultDeviceEntry_L95(ImageResultEntry imageResultsEnt
         CurrentReport = null;
         CurrentImage = null;
         CurrentImageOverlay = null;
+    }
+
+    [RelayCommand]
+    public async Task ClearStored()
+    {
+        if (await ImageResultEntry.OkCancelDialog("Clear Stored Sectors", $"Are you sure you want to clear the stored sectors for this image?\r\nThis can not be undone!") == MessageDialogResult.Affirmative)
+        {
+            _ = ImageResultEntry.SelectedDatabase.Delete_Result(Device, ImageResultEntry.ImageRollUID, ImageResultEntry.SourceImageUID, ImageResultEntry.ImageRollUID);
+            GetStored();
+        }
     }
 
     private void GetSectorDiff()

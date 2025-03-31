@@ -290,9 +290,9 @@ public partial class ImageResultsManager : ObservableRecipient,
     {
         foreach (ImageResultEntry img in ImageResultsList)
         {
-            img.ClearReadCommand.Execute(ImageResultEntryDevices.V275);
-            img.ClearReadCommand.Execute(ImageResultEntryDevices.V5);
-            img.ClearReadCommand.Execute(ImageResultEntryDevices.L95);
+            img.ClearCurrentCommand.Execute(ImageResultEntryDevices.V275);
+            img.ClearCurrentCommand.Execute(ImageResultEntryDevices.V5);
+            img.ClearCurrentCommand.Execute(ImageResultEntryDevices.L95);
         }
     }
 

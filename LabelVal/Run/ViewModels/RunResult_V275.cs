@@ -45,7 +45,7 @@ public partial class RunResult
             foreach (Sectors.Interfaces.ISector sec in tempSectors)
                 V275StoredSectors.Add(sec);
 
-            V275StoredImageOverlay = V275CreateSectorsImageOverlay(StoredImageResultGroup.V275Result._Job, false, StoredImageResultGroup.V275Result._Report, V275StoredImage, V275StoredSectors);
+            V275StoredImageOverlay = V275CreateSectorsImageOverlay(StoredImageResultGroup.V275Result.Template, false, StoredImageResultGroup.V275Result.Report, V275StoredImage, V275StoredSectors);
         }
     }
     private void V275LoadCurrent()

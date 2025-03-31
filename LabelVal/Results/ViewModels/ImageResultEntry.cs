@@ -207,8 +207,9 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
             dev.GetStored();
         }
     }
+
     [RelayCommand]
-    private void ClearRead(ImageResultEntryDevices device)
+    private void ClearCurrent(ImageResultEntryDevices device)
     {
         IImageResultDeviceEntry dev = ImageResultDeviceEntries.FirstOrDefault(x => x.Device == device);
         if (dev == null)

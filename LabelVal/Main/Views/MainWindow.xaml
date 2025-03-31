@@ -216,17 +216,17 @@
 
                             <!--<ContentControl Content="{Binding Source=imageRollsContent}" />-->
 
-                            <results:ImageResults DataContext="{Binding ImageResults}">
-                                <results:ImageResults.Style>
-                                    <Style TargetType="results:ImageResults">
+                            <results:ImageResultsManager DataContext="{Binding ImageResults}">
+                                <results:ImageResultsManager.Style>
+                                    <Style TargetType="results:ImageResultsManager">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding SelectedImageRoll, Converter={StaticResource IsNullOrEmpty}}" Value="True">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
-                                </results:ImageResults.Style>
-                            </results:ImageResults>
+                                </results:ImageResultsManager.Style>
+                            </results:ImageResultsManager>
 
                         </DockPanel>
                     </DockPanel>
