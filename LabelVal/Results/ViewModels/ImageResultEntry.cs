@@ -1,19 +1,14 @@
-﻿using BarcodeVerification.lib.Common;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using LabelVal.ImageRolls.ViewModels;
 using LabelVal.Main.ViewModels;
 using LabelVal.Results.Databases;
-using LabelVal.Utilities;
-using Lvs95xx.lib.Core.Controllers;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Drawing.Printing;
-using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -43,7 +38,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     [ObservableProperty] private bool showExtendedData = App.Settings.GetValue<bool>(nameof(ShowExtendedData));
     partial void OnShowExtendedDataChanged(bool value)
     {
-        foreach(IImageResultDeviceEntry device in ImageResultDeviceEntries)
+        foreach (IImageResultDeviceEntry device in ImageResultDeviceEntries)
             device.RefreshOverlays();
     }
 
@@ -185,12 +180,12 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     private void Store(ImageResultEntryDevices device)
     {
         IImageResultDeviceEntry dev = ImageResultDeviceEntries.FirstOrDefault(x => x.Device == device);
-        if(dev == null)
+        if (dev == null)
         {
             Logger.LogError($"Device not found: {device}");
             return;
         }
-        dev.Store();
+        _ = dev.Store();
     }
     [RelayCommand]
     private void Process(ImageResultEntryDevices device)
@@ -267,13 +262,7 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
     //[RelayCommand] private void RedoFiducial() => ImageUtilities.lib.Core.ImageUtilities.RedrawFiducial(SourceImage.Path, false);
 
     [RelayCommand] private void Delete() => DeleteImage?.Invoke(this);
-    //const UInt32 WM_KEYDOWN = 0x0100;
-    //const int VK_F5 = 0x74;
 
-    //[DllImport("user32.dll")]
-    //static extern bool PostMessage(IntPtr hWnd, UInt32 Msg, int wParam, int lParam);
-
-    private void SendTo95xxApplication() => _ = System.Diagnostics.Process.GetProcessesByName("LVS-95XX");//foreach (Process proc in processes)//    PostMessage(proc.MainWindowHandle, WM_KEYDOWN, VK_F5, 0);
     private string GetSaveFilePath()
     {
         SaveFileDialog saveFileDialog1 = new()
@@ -285,14 +274,6 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
 
         return saveFileDialog1.FileName;
     }
-    private string SaveImageBytesToFile(string path, byte[] img)
-    {
-        File.WriteAllBytes(path, img);
-
-        return "";
-    }
-
-    private void PrintImage(byte[] image, int count, string printerName) => Task.Run(() => PrinterController.Print(image, count, printerName, ""));
 
     public DrawingImage CreatePrinterAreaOverlay(bool useRatio)
     {
@@ -330,52 +311,10 @@ public partial class ImageResultEntry : ObservableRecipient, IRecipient<Property
         return geometryImage;
     }
 
- 
-    public static void SortList(List<Sectors.Interfaces.ISector> list) => list.Sort((item1, item2) =>
-    {
-        var distance1 = Math.Sqrt(Math.Pow(item1.Report.CenterPoint.X, 2) + Math.Pow(item1.Report.CenterPoint.Y, 2));
-        var distance2 = Math.Sqrt(Math.Pow(item2.Report.CenterPoint.X, 2) + Math.Pow(item2.Report.CenterPoint.Y, 2));
-        var distanceComparison = distance1.CompareTo(distance2);
-
-        if (distanceComparison == 0)
-        {
-            // If distances are equal, sort by X coordinate, then by Y if necessary
-            var xComparison = item1.Report.CenterPoint.X.CompareTo(item2.Report.CenterPoint.X);
-            if (xComparison == 0)
-            {
-                // If X coordinates are equal, sort by Y coordinate
-                return item1.Report.CenterPoint.Y.CompareTo(item2.Report.CenterPoint.Y);
-            }
-            return xComparison;
-        }
-        return distanceComparison;
-    });
-
-    //Sort the list by row and column, given x,y coordinates
-    public static void SortList2(List<Sectors.Interfaces.ISector> list) => list.Sort((item1, item2) =>
-    {
-        var row1 = (int)Math.Floor(item1.Report.CenterPoint.Y / item1.Report.Height);
-        var row2 = (int)Math.Floor(item2.Report.CenterPoint.Y / item2.Report.Height);
-        var rowComparison = row1.CompareTo(row2);
-        if (rowComparison == 0)
-        {
-            // If distances are equal, sort by X coordinate, then by Y if necessary
-            var col1 = (int)Math.Floor(item1.Report.CenterPoint.X / item1.Report.Width);
-            var col2 = (int)Math.Floor(item2.Report.CenterPoint.X / item2.Report.Width);
-            var colComparison = col1.CompareTo(col2);
-            if (colComparison == 0)
-            {
-                // If X coordinates are equal, sort by Y coordinate
-                return item1.Report.CenterPoint.Y.CompareTo(item2.Report.CenterPoint.Y);
-            }
-            return colComparison;
-        }
-        return rowComparison;
-    });
-
     public List<Sectors.Interfaces.ISector> SortList3(List<Sectors.Interfaces.ISector> list) =>
         //Sort the list from top to bottom, left to right given x,y coordinates
         list.OrderBy(x => x.Report.Top).ThenBy(x => x.Report.Left).ToList();
+
     #region Recieve Messages
     public void Receive(PropertyChangedMessage<Databases.ImageResultsDatabase> message) => SelectedDatabase = message.NewValue;
     public void Receive(PropertyChangedMessage<PrinterSettings> message) => SelectedPrinter = message.NewValue;

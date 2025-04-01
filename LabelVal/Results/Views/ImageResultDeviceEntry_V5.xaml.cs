@@ -26,75 +26,53 @@ public partial class ImageResultDeviceEntry_V5 : UserControl
 
     private void btnCloseDetails_Click(object sender, RoutedEventArgs e)
     {
-        var ire = (ViewModels.IImageResultDeviceEntry)DataContext;
+        if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+        {
+            foreach (ViewModels.IImageResultDeviceEntry device in _viewModel.ImageResultEntry.ImageResultDeviceEntries)
+            {
+                if (device.FocusedCurrentSector != null)
+                    device.FocusedCurrentSector.IsFocused = false;
+                device.FocusedCurrentSector = null;
 
-        //if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
-        //{
-        //    if (ire.V275FocusedStoredSector != null)
-        //    {
-        //        ire.V275FocusedStoredSector.IsFocused = false;
-        //        ire.V275FocusedStoredSector = null;
-        //        _ = App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV275StoredImageOverlay());
-        //    }
-        //    if (ire.V275FocusedCurrentSector != null)
-        //    {
-        //        ire.V275FocusedCurrentSector.IsFocused = false;
-        //        ire.V275FocusedCurrentSector = null;
-        //        _ = App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV275CurrentImageOverlay());
-        //    }
-        //    if (ire.V5FocusedStoredSector != null)
-        //    {
-        //        ire.V5FocusedStoredSector.IsFocused = false;
-        //        ire.V5FocusedStoredSector = null;
-        //        _ = App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV5StoredImageOverlay());
-        //    }
-        //    if (ire.V5FocusedCurrentSector != null)
-        //    {
-        //        ire.V5FocusedCurrentSector.IsFocused = false;
-        //        ire.V5FocusedCurrentSector = null;
-        //        _ = App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV5CurrentImageOverlay());
-        //    }
-        //    if (ire.L95xxFocusedStoredSector != null)
-        //    {
-        //        ire.L95xxFocusedStoredSector.IsFocused = false;
-        //        ire.L95xxFocusedStoredSector = null;
-        //        _ = App.Current.Dispatcher.BeginInvoke(() => ire.UpdateL95xxStoredImageOverlay());
-        //    }
-        //    if (ire.L95xxFocusedCurrentSector != null)
-        //    {
-        //        ire.L95xxFocusedCurrentSector.IsFocused = false;
-        //        ire.L95xxFocusedCurrentSector = null;
-        //        _ = App.Current.Dispatcher.BeginInvoke(() => ire.UpdateL95xxCurrentImageOverlay());
-        //    }
-        //}
-        //else
-        //{
-        //    switch ((string)((Button)sender).Tag)
-        //    {
-        //        case "v5Stored":
-        //            if (ire.V5FocusedStoredSector != null)
-        //            {
-        //                ire.V5FocusedStoredSector.IsFocused = false;
-        //                ire.V5FocusedStoredSector = null;
-        //                _ = App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV5StoredImageOverlay());
-        //            }
-        //            break;
-        //        case "v5Current":
-        //            if (ire.V5FocusedStoredSector != null)
-        //            {
-        //                ire.V5FocusedStoredSector.IsFocused = false;
-        //                ire.V5FocusedStoredSector = null;
-        //                _ = App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV5StoredImageOverlay());
-        //            }
-        //            if (ire.V5FocusedCurrentSector != null)
-        //            {
-        //                ire.V5FocusedCurrentSector.IsFocused = false;
-        //                ire.V5FocusedCurrentSector = null;
-        //                _ = App.Current.Dispatcher.BeginInvoke(() => ire.UpdateV5CurrentImageOverlay());
-        //            }
-        //            break;
-        //    }
-        //}
+                if (device.FocusedStoredSector != null)
+                    device.FocusedStoredSector.IsFocused = false;
+                device.FocusedStoredSector = null;
+
+                _ = App.Current.Dispatcher.BeginInvoke(device.RefreshCurrentOverlay);
+                _ = App.Current.Dispatcher.BeginInvoke(device.RefreshStoredOverlay);
+            }
+        }
+        else
+        {
+            switch ((string)((Button)sender).Tag)
+            {
+                case "Stored":
+                    foreach (ViewModels.IImageResultDeviceEntry device in _viewModel.ImageResultEntry.ImageResultDeviceEntries.Where(x => x.Device == _viewModel.Device))
+                    {
+                        if (device.FocusedStoredSector != null)
+                            device.FocusedStoredSector.IsFocused = false;
+                        device.FocusedStoredSector = null;
+
+                        _ = App.Current.Dispatcher.BeginInvoke(device.RefreshStoredOverlay);
+                    }
+                    break;
+                case "Current":
+                    foreach (ViewModels.IImageResultDeviceEntry device in _viewModel.ImageResultEntry.ImageResultDeviceEntries.Where(x => x.Device == _viewModel.Device))
+                    {
+                        if (device.FocusedCurrentSector != null)
+                            device.FocusedCurrentSector.IsFocused = false;
+                        device.FocusedCurrentSector = null;
+
+                        if (device.FocusedStoredSector != null)
+                            device.FocusedStoredSector.IsFocused = false;
+                        device.FocusedStoredSector = null;
+
+                        _ = App.Current.Dispatcher.BeginInvoke(device.RefreshCurrentOverlay);
+                        _ = App.Current.Dispatcher.BeginInvoke(device.RefreshStoredOverlay);
+                    }
+                    break;
+            }
+        }
     }
 
     private void StoredSectors_Click(object sender, RoutedEventArgs e)

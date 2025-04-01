@@ -205,7 +205,7 @@
                                         HorizontalAlignment="Right"
                                         Click="btnCloseDetails_Click"
                                         Style="{StaticResource GroupHeaderCirlceButton}"
-                                        Tag="v275Stored"
+                                        Tag="Stored"
                                         ToolTip="Close this.">
                                         <iconPacks:PackIconMaterial
                                             Width="14"
@@ -366,7 +366,7 @@
                                         HorizontalAlignment="Right"
                                         Click="btnCloseDetails_Click"
                                         Style="{StaticResource GroupHeaderCirlceButton}"
-                                        Tag="v275Current"
+                                        Tag="Current"
                                         ToolTip="Close this.">
                                         <iconPacks:PackIconMaterial
                                             Width="14"

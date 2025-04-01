@@ -491,7 +491,7 @@
                                 Content="{iconPacks:MaterialDesign Kind=Close}"
                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                                 Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                Tag="l95xxStored"
+                                Tag="Stored"
                                 ToolTip="Close this." />
 
                         </DockPanel>
@@ -793,7 +793,7 @@
                                 Content="{iconPacks:MaterialDesign Kind=Close}"
                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                                 Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                Tag="l95xxCurrent"
+                                Tag="Current"
                                 ToolTip="Close this." />
 
                         </DockPanel>

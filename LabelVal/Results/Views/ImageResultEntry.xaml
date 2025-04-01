@@ -485,21 +485,78 @@
 
         <DataTemplate x:Key="L95Buttons">
             <DockPanel>
-                <!--  L95xx Select  -->
+
                 <ToggleButton
                     Width="48"
-                    d:Visibility="Visible"
+                    Height="48"
+                    Margin="3,0,0,0"
+                    Padding="0"
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Stretch"
                     BorderBrush="{DynamicResource L95xx_Brush}"
                     Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                     IsChecked="{Binding IsSelected}">
                     <ToggleButton.Style>
                         <Style BasedOn="{StaticResource MahApps.Styles.ToggleButton}" TargetType="ToggleButton">
-                            <Setter Property="Background" Value="{DynamicResource MahApps.HamburgerMenu.Pane.Background}" />
+                            <Setter Property="ToolTip" Value="Click to redirect 95xx results to the image roll." />
+                            <Setter Property="Content">
+                                <Setter.Value>
+                                    <DockPanel>
+                                        <DockPanel>
+                                            <TextBlock
+                                                HorizontalAlignment="Center"
+                                                DockPanel.Dock="Top"
+                                                Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                                                Text="95xx"
+                                                Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                                            <Grid>
+                                                <Image
+                                                    Width="24"
+                                                    Height="24"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    Source="/Assets/Images/l95xx-white-outline.ico" />
+                                            </Grid>
+                                        </DockPanel>
+                                    </DockPanel>
+                                </Setter.Value>
+                            </Setter>
                             <Style.Triggers>
+
                                 <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                                    <Setter Property="ToolTip" Value="L95xx Data is redirected here." />
-                                    <Setter Property="Background" Value="{DynamicResource L95xx_Brush}" />
+                                    <Setter Property="ToolTip" Value="Data is redirected to the image roll." />
+                                    <Setter Property="Content">
+                                        <Setter.Value>
+                                            <DockPanel>
+                                                <TextBlock
+                                                    HorizontalAlignment="Center"
+                                                    DockPanel.Dock="Top"
+                                                    Style="{StaticResource MahApps.Styles.TextBlock.AutoCollapsing}"
+                                                    Text="95xx"
+                                                    Visibility="{Binding AppSettings.ShowButtonText, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                                                <Grid Background="{DynamicResource L95xx_Brush}">
+                                                    <Image
+                                                        Width="24"
+                                                        Height="24"
+                                                        HorizontalAlignment="Left"
+                                                        VerticalAlignment="Center"
+                                                        Source="/Assets/Images/l95xx-white-outline.ico" />
+
+                                                    <iconPacks:PackIconMaterial
+                                                        Width="18"
+                                                        Height="18"
+                                                        Margin="3,0"
+                                                        HorizontalAlignment="Right"
+                                                        VerticalAlignment="Center"
+                                                        Kind="ChevronDoubleDown" />
+                                                </Grid>
+                                            </DockPanel>
+                                        </Setter.Value>
+                                    </Setter>
                                 </DataTrigger>
+
                                 <DataTrigger Binding="{Binding Handler}" Value="{x:Static bar_common:LabelHandlers.Offline}">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
@@ -508,13 +565,10 @@
                         </Style>
                     </ToggleButton.Style>
 
-                    <md:ToggleButtonAssist.OnContent>
-                        <Image Source="/Assets/Images/l95xx-white-outline.ico" />
-                    </md:ToggleButtonAssist.OnContent>
 
-                    <Image Source="/Assets/Images/l95xx-white-outline.ico" />
 
                 </ToggleButton>
+
 
                 <!--  L95xx Process Image  -->
                 <Border

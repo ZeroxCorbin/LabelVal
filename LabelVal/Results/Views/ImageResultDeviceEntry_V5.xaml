@@ -501,7 +501,7 @@
                                 Content="{iconPacks:MaterialDesign Kind=Close}"
                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                                 Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                Tag="v5Stored"
+                                Tag="Stored"
                                 ToolTip="Close this." />
 
                         </DockPanel>
@@ -798,7 +798,7 @@
                                 Content="{iconPacks:MaterialDesign Kind=Close}"
                                 Foreground="{DynamicResource MahApps.HamburgerMenu.Pane.Foreground}"
                                 Style="{StaticResource MahApps.Styles.Button.Hamburger}"
-                                Tag="v5Current"
+                                Tag="Current"
                                 ToolTip="Close this." />
 
                         </DockPanel>

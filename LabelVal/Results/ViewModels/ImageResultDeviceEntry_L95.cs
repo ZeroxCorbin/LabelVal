@@ -14,15 +14,16 @@ using Lvs95xx.lib.Core.Controllers;
 using MahApps.Metro.Controls.Dialogs;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NHibernate.Linq.GroupJoin;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace LabelVal.Results.ViewModels;
-public partial class ImageResultDeviceEntry_L95(ImageResultEntry imageResultsEntry)
-    : ObservableObject, IImageResultDeviceEntry, IRecipient<PropertyChangedMessage<FullReport>>
+public partial class ImageResultDeviceEntry_L95
+    : ObservableRecipient, IImageResultDeviceEntry, IRecipient<PropertyChangedMessage<FullReport>>
 {
-    public ImageResultEntry ImageResultEntry { get; } = imageResultsEntry;
+    public ImageResultEntry ImageResultEntry { get; }
     public ImageResultsManager ImageResultsManager => ImageResultEntry.ImageResultsManager;
     public ImageResultEntryDevices Device { get; } = ImageResultEntryDevices.L95;
     public string Version => throw new NotImplementedException();
@@ -77,6 +78,12 @@ public partial class ImageResultDeviceEntry_L95(ImageResultEntry imageResultsEnt
 
     [ObservableProperty] private bool isSelected = false;
     partial void OnIsSelectedChanging(bool value) { if (value) ImageResultEntry.ImageResultsManager.ResetSelected(Device); }
+
+    public ImageResultDeviceEntry_L95(ImageResultEntry imageResultsEntry)
+    {
+        ImageResultEntry = imageResultsEntry;
+        this.IsActive = true;
+    }
 
     public void Receive(PropertyChangedMessage<FullReport> message)
     {
